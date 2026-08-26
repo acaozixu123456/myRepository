@@ -13,6 +13,7 @@ $script:Mcp = $null
 $script:McpSeq = 0
 $script:Tools = @{}
 $script:Runtime = ''
+$script:McpGeneration = 0
 
 function Log([string]$Text) { Write-Output "[$([DateTime]::Now.ToString('HH:mm:ss'))] $Text" }
 
@@ -23,38 +24,74 @@ function Find-NodeRuntime {
   throw 'node.exe was not found. The existing SolRouter requires Node >=22.'
 }
 
-function Stop-Mcp {
-  if ($script:Mcp) {
-    try { if (-not $script:Mcp.HasExited) { $script:Mcp.Kill() } } catch {}
-    try { $script:Mcp.Dispose() } catch {}
+function Stop-Mcp([string]$Reason='stop') {
+  $old = $script:Mcp
+  if ($old) {
+    Log "stdio reset reason=$Reason pid=$($old.Id) generation=$script:McpGeneration"
+    try { if (-not $old.HasExited) { $old.Kill() } } catch {}
+    try { $old.WaitForExit(1500) | Out-Null } catch {}
+    try { $old.Dispose() } catch {}
   }
   $script:Mcp = $null
+  $script:McpSeq = 0
+  $script:Tools = @{}
 }
 
-function Get-StderrAfterStop {
-  try { return ($script:Mcp.StandardError.ReadToEnd() | Out-String).Trim() } catch { return '' }
+function Reset-McpAndThrow([string]$Message,[string]$Reason) {
+  Stop-Mcp $Reason
+  throw $Message
 }
 
 function Invoke-Mcp {
   param([string]$Method,[object]$Params=@{},[switch]$Notification,[int]$TimeoutMs=12000)
   if (-not $script:Mcp -or $script:Mcp.HasExited) { throw 'MCP process is not running.' }
   if ($Notification) {
-    $msg = @{ jsonrpc='2.0'; method=$Method; params=$Params } | ConvertTo-Json -Depth 40 -Compress
-    $script:Mcp.StandardInput.WriteLine($msg); $script:Mcp.StandardInput.Flush(); return $null
+    try {
+      $msg = @{ jsonrpc='2.0'; method=$Method; params=$Params } | ConvertTo-Json -Depth 40 -Compress
+      $script:Mcp.StandardInput.WriteLine($msg); $script:Mcp.StandardInput.Flush(); return $null
+    } catch {
+      Reset-McpAndThrow "MCP notification write failed: $Method : $($_.Exception.Message)" 'notification-write-failed'
+    }
   }
 
   $script:McpSeq += 1
   $id = $script:McpSeq
-  $msg = @{ jsonrpc='2.0'; id=$id; method=$Method; params=$Params } | ConvertTo-Json -Depth 40 -Compress
-  $script:Mcp.StandardInput.WriteLine($msg); $script:Mcp.StandardInput.Flush()
+  try {
+    $msg = @{ jsonrpc='2.0'; id=$id; method=$Method; params=$Params } | ConvertTo-Json -Depth 40 -Compress
+    $script:Mcp.StandardInput.WriteLine($msg); $script:Mcp.StandardInput.Flush()
+  } catch {
+    Reset-McpAndThrow "MCP request write failed: $Method : $($_.Exception.Message)" 'request-write-failed'
+  }
+
   $deadline = [DateTime]::UtcNow.AddMilliseconds($TimeoutMs)
   while ([DateTime]::UtcNow -lt $deadline) {
     $remaining = [Math]::Max(50,[int]($deadline-[DateTime]::UtcNow).TotalMilliseconds)
-    $task = $script:Mcp.StandardOutput.ReadLineAsync()
-    if (-not $task.Wait($remaining)) { break }
+    try {
+      $task = $script:Mcp.StandardOutput.ReadLineAsync()
+    } catch {
+      Reset-McpAndThrow "MCP stdout reader was already occupied during $Method; the STDIO session was reset. $($_.Exception.Message)" 'stdout-reader-conflict'
+    }
+
+    try {
+      if (-not $task.Wait($remaining)) {
+        # IMPORTANT: ReadLineAsync cannot be cancelled. Never reuse this process after
+        # a timeout because the pending read would poison the next request.
+        Reset-McpAndThrow "MCP request timed out after $TimeoutMs ms: $Method; STDIO session reset to clear pending reader" 'read-timeout'
+      }
+    } catch {
+      $message = $_.Exception.Message
+      if ($message -match 'currently in use|previous operation|ReadLineAsync|stream') {
+        Reset-McpAndThrow "MCP stdout reader conflict during $Method; STDIO session reset. $message" 'stdout-reader-conflict'
+      }
+      if (-not $script:Mcp -or $script:Mcp.HasExited) {
+        Reset-McpAndThrow "SolRouter STDIO MCP exited while waiting for $Method: $message" 'process-exited'
+      }
+      throw
+    }
+
     $line = $task.Result
     if ($null -eq $line) {
-      if ($script:Mcp.HasExited) { throw "SolRouter STDIO MCP exited with code $($script:Mcp.ExitCode) during $Method" }
+      if ($script:Mcp.HasExited) { Reset-McpAndThrow "SolRouter STDIO MCP exited with code $($script:Mcp.ExitCode) during $Method" 'process-exited' }
       continue
     }
     $line = $line.Trim(); if (-not $line) { continue }
@@ -63,7 +100,7 @@ function Invoke-Mcp {
     if ($parsed.error) { throw "MCP RPC error $($parsed.error.code): $($parsed.error.message)" }
     return $parsed.result
   }
-  throw "MCP request timed out after $TimeoutMs ms: $Method"
+  Reset-McpAndThrow "MCP request timed out after $TimeoutMs ms: $Method; STDIO session reset" 'request-timeout'
 }
 
 function Start-Mcp {
@@ -88,11 +125,11 @@ function Start-Mcp {
 
   $script:Mcp = [Diagnostics.Process]::new(); $script:Mcp.StartInfo = $psi
   if (-not $script:Mcp.Start()) { throw 'Failed to start SolRouter STDIO MCP.' }
-  $script:Runtime = $node; $script:McpSeq = 0; $script:Tools = @{}
-  Log "stdio pid=$($script:Mcp.Id)"
+  $script:Runtime = $node; $script:McpSeq = 0; $script:Tools = @{}; $script:McpGeneration += 1
+  Log "stdio pid=$($script:Mcp.Id) generation=$script:McpGeneration"
 
   try {
-    $init = @{ protocolVersion='2025-03-26'; capabilities=@{}; clientInfo=@{ name='sol-router-windows-agent'; version='0.5.0' } }
+    $init = @{ protocolVersion='2025-03-26'; capabilities=@{}; clientInfo=@{ name='sol-router-windows-agent'; version='0.5.1' } }
     $r = Invoke-Mcp -Method 'initialize' -Params $init -TimeoutMs 12000
     Log "initialize ok server=$($r.serverInfo.name) version=$($r.serverInfo.version)"
     $null = Invoke-Mcp -Method 'notifications/initialized' -Params @{} -Notification
@@ -104,11 +141,7 @@ function Start-Mcp {
     Log "tools/list ok count=$($script:Tools.Count)"
   } catch {
     $message = $_.Exception.Message
-    try { if (-not $script:Mcp.HasExited) { $script:Mcp.Kill() } } catch {}
-    try { $script:Mcp.WaitForExit(1500) | Out-Null } catch {}
-    $stderr = Get-StderrAfterStop
-    if ($stderr) { Log "stdio stderr=$stderr" }
-    Stop-Mcp
+    Stop-Mcp 'initialization-failed'
     throw $message
   }
 }
@@ -151,7 +184,7 @@ function Map-StatusArgs($Payload) {
 function Execute-Command([string]$Method,$Payload) {
   Start-Mcp
   switch($Method){
-    'health' { return @{executor_healthy=$true;executor_version="SolRouter STDIO MCP $($script:Runtime)"} }
+    'health' { return @{executor_healthy=$true;executor_version="SolRouter STDIO MCP $($script:Runtime) generation=$script:McpGeneration"} }
     'list_workspaces' { return @{workspaces=@(Workspace-Names (Call-Tool 'cursor_list_workspaces' @{} 12000))} }
     'start' { $w=[string]$Payload.workspace; $available=@(Workspace-Names (Call-Tool 'cursor_list_workspaces' @{} 12000)); if($w -and $available.Count -gt 0 -and $available -notcontains $w){throw "workspace_not_available:$w"}; return Call-Tool 'cursor_start' (Map-StartArgs $Payload) 30000 }
     'status' { return Call-Tool 'cursor_status' (Map-StatusArgs $Payload) 12000 }
@@ -168,10 +201,10 @@ if (-not (Test-Path $RouterRoot)) { throw "Existing SolRouter app not found: $Ro
 Start-Mcp
 $workspaces=@(Workspace-Names (Call-Tool 'cursor_list_workspaces' @{} 12000))
 Log "workspaces=$($workspaces -join ', ')"
-if ($SelfTest) { Log 'SELFTEST PASS'; Stop-Mcp; exit 0 }
+if ($SelfTest) { Log 'SELFTEST PASS'; Stop-Mcp 'selftest-complete'; exit 0 }
 
 $token=Read-Token; $wsUrl="$Gateway$(if($Gateway.Contains('?')){'&'}else{'?'})agent_id=$([Uri]::EscapeDataString($AgentId))"
 $backoff=1
 while($true){
-  $ws=[Net.WebSockets.ClientWebSocket]::new(); try{$ws.Options.SetRequestHeader('Authorization',"Bearer $token");try{$ws.Options.KeepAliveInterval=[TimeSpan]::FromSeconds(20)}catch{};Log "connecting $wsUrl";$ws.ConnectAsync([Uri]$wsUrl,[Threading.CancellationToken]::None).GetAwaiter().GetResult();$hello=@{type='hello';agent_id=$AgentId;version='0.5.0';provider='cursor';platform='windows';default_model='cursor-default';executor_healthy=$true;executor_version="SolRouter STDIO MCP via $script:Runtime";capabilities=@('health','list_workspaces','start','status');workspaces=$workspaces;updated_at=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()};Ws-SendJson $ws $hello;Log 'connected';$backoff=1;while($ws.State -eq [Net.WebSockets.WebSocketState]::Open){$text=Ws-ReceiveText $ws;if($text -eq 'pong'){continue};try{$msg=$text|ConvertFrom-Json}catch{continue};if($msg.type -ne 'command'){continue};$cid=[string]$msg.id;$method=[string]$msg.method;$payload=if($msg.payload){$msg.payload}else{@{}};Log "command=$method id=$cid";try{$result=Execute-Command $method $payload;Ws-SendJson $ws @{type='result';id=$cid;ok=$true;result=$result};Log "result=$method ok"}catch{Ws-SendJson $ws @{type='result';id=$cid;ok=$false;error=$_.Exception.Message};Log "result=$method error=$($_.Exception.Message)"}}}catch{Log "disconnected: $($_.Exception.Message); retry in ${backoff}s"}finally{try{$ws.Dispose()}catch{}};Start-Sleep -Seconds $backoff;$backoff=[Math]::Min(30,$backoff*2)
+  $ws=[Net.WebSockets.ClientWebSocket]::new(); try{$ws.Options.SetRequestHeader('Authorization',"Bearer $token");try{$ws.Options.KeepAliveInterval=[TimeSpan]::FromSeconds(20)}catch{};Log "connecting $wsUrl";$ws.ConnectAsync([Uri]$wsUrl,[Threading.CancellationToken]::None).GetAwaiter().GetResult();$hello=@{type='hello';agent_id=$AgentId;version='0.5.1';provider='cursor';platform='windows';default_model='cursor-default';executor_healthy=$true;executor_version="SolRouter STDIO MCP via $script:Runtime generation=$script:McpGeneration";capabilities=@('health','list_workspaces','start','status');workspaces=$workspaces;updated_at=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()};Ws-SendJson $ws $hello;Log 'connected';$backoff=1;while($ws.State -eq [Net.WebSockets.WebSocketState]::Open){$text=Ws-ReceiveText $ws;if($text -eq 'pong'){continue};try{$msg=$text|ConvertFrom-Json}catch{continue};if($msg.type -ne 'command'){continue};$cid=[string]$msg.id;$method=[string]$msg.method;$payload=if($msg.payload){$msg.payload}else{@{}};Log "command=$method id=$cid";try{$result=Execute-Command $method $payload;Ws-SendJson $ws @{type='result';id=$cid;ok=$true;result=$result};Log "result=$method ok"}catch{Ws-SendJson $ws @{type='result';id=$cid;ok=$false;error=$_.Exception.Message};Log "result=$method error=$($_.Exception.Message)"}}}catch{Log "disconnected: $($_.Exception.Message); retry in ${backoff}s"}finally{try{$ws.Dispose()}catch{}};Start-Sleep -Seconds $backoff;$backoff=[Math]::Min(30,$backoff*2)
 }
