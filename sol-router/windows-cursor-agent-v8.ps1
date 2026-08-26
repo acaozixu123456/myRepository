@@ -33,7 +33,7 @@ function Resolve-Workspace([string]$Name){
   $p=$w.PSObject.Properties[$Name]
   if(-not $p){throw "workspace_not_available:$Name"}
   $path=[string]$p.Value
-  if(-not(Test-Path $path)){throw "workspace_path_missing:$Name:$path"}
+  if(-not(Test-Path $path)){throw ('workspace_path_missing:{0}:{1}' -f $Name,$path)}
   return $path
 }
 function Safe-Id([string]$Value){return($Value -replace '[^A-Za-z0-9._-]','_')}
