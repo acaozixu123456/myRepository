@@ -9,6 +9,7 @@ on:
       - 'sol-router/windows-cursor-git-task-v1.mjs'
       - 'sol-router/install-windows-git-agent-v1.ps1'
       - 'sol-router/install-windows-git-agent-v2.ps1'
+      - 'sol-router/install-windows-git-agent-v3.ps1'
       - '.github/workflows/validate-sol-router-git-agent.yml'
 
 permissions:
@@ -26,7 +27,7 @@ jobs:
         run: |
           node --check sol-router/windows-cursor-git-agent-v1.mjs
           node --check sol-router/windows-cursor-git-task-v1.mjs
-          foreach($file in @('sol-router/install-windows-git-agent-v1.ps1','sol-router/install-windows-git-agent-v2.ps1')){
+          foreach($file in @('sol-router/install-windows-git-agent-v1.ps1','sol-router/install-windows-git-agent-v2.ps1','sol-router/install-windows-git-agent-v3.ps1')){
             $tokens=$null; $errors=$null
             [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file),[ref]$tokens,[ref]$errors)|Out-Null
             if($errors.Count -gt 0){$errors|%{Write-Error ("$file :: " + $_.Message)};exit 1}
@@ -95,11 +96,7 @@ jobs:
             $resA=Join-Path $controller 'gateway-bridge/results/it-a.json'
             $resB=Join-Path $controller 'gateway-bridge/results/it-b.json'
             $found=$false
-            foreach($i in 1..30){
-              Start-Sleep -Seconds 1
-              git -C $controller pull --rebase origin sol-router-gateway-v0.1 | Out-Null
-              if((Test-Path $resA)-and(Test-Path $resB)){$found=$true;break}
-            }
+            foreach($i in 1..30){Start-Sleep -Seconds 1;git -C $controller pull --rebase origin sol-router-gateway-v0.1|Out-Null;if((Test-Path $resA)-and(Test-Path $resB)){$found=$true;break}}
             if(-not $found){throw 'start results not returned through Git relay'}
             $a=Get-Content $resA -Raw|ConvertFrom-Json
             $b=Get-Content $resB -Raw|ConvertFrom-Json
@@ -114,11 +111,7 @@ jobs:
             $statusA=Join-Path $controller 'gateway-bridge/results/it-sa.json'
             $statusB=Join-Path $controller 'gateway-bridge/results/it-sb.json'
             $found=$false
-            foreach($i in 1..30){
-              Start-Sleep -Seconds 1
-              git -C $controller pull --rebase origin sol-router-gateway-v0.1 | Out-Null
-              if((Test-Path $statusA)-and(Test-Path $statusB)){$found=$true;break}
-            }
+            foreach($i in 1..30){Start-Sleep -Seconds 1;git -C $controller pull --rebase origin sol-router-gateway-v0.1|Out-Null;if((Test-Path $statusA)-and(Test-Path $statusB)){$found=$true;break}}
             if(-not $found){throw 'status results not returned through Git relay'}
             $sa=Get-Content $statusA -Raw|ConvertFrom-Json
             $sb=Get-Content $statusB -Raw|ConvertFrom-Json
