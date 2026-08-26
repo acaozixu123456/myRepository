@@ -8,6 +8,7 @@ on:
       - 'sol-router/windows-cursor-git-agent-v1.mjs'
       - 'sol-router/windows-cursor-git-task-v1.mjs'
       - 'sol-router/install-windows-git-agent-v1.ps1'
+      - 'sol-router/install-windows-git-agent-v2.ps1'
       - '.github/workflows/validate-sol-router-git-agent.yml'
 
 permissions:
@@ -25,9 +26,11 @@ jobs:
         run: |
           node --check sol-router/windows-cursor-git-agent-v1.mjs
           node --check sol-router/windows-cursor-git-task-v1.mjs
-          $tokens=$null; $errors=$null
-          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'sol-router/install-windows-git-agent-v1.ps1'),[ref]$tokens,[ref]$errors)|Out-Null
-          if($errors.Count -gt 0){$errors|%{Write-Error $_.Message};exit 1}
+          foreach($file in @('sol-router/install-windows-git-agent-v1.ps1','sol-router/install-windows-git-agent-v2.ps1')){
+            $tokens=$null; $errors=$null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file),[ref]$tokens,[ref]$errors)|Out-Null
+            if($errors.Count -gt 0){$errors|%{Write-Error ("$file :: " + $_.Message)};exit 1}
+          }
       - name: Git relay integration with two concurrent Cursor runs
         shell: pwsh
         run: |
