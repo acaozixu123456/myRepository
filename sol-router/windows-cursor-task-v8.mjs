@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import os from 'node:os';
 
@@ -12,10 +12,8 @@ const errorFile = String(spec.errorFile || '');
 if (!stateFile || !logFile || !errorFile) throw new Error('task_paths_required');
 mkdirSync(dirname(stateFile), { recursive: true });
 
-function atomicJson(path, value) {
-  const tmp = `${path}.${process.pid}.tmp`;
-  writeFileSync(tmp, JSON.stringify(value));
-  renameSync(tmp, path);
+function writeJson(path, value) {
+  writeFileSync(path, JSON.stringify(value));
 }
 
 function now() { return Date.now(); }
@@ -25,7 +23,7 @@ function readState() {
 }
 function patchState(patch) {
   const next = { ...readState(), ...patch, updatedAt: now() };
-  atomicJson(stateFile, next);
+  writeJson(stateFile, next);
   return next;
 }
 function where(name) {
