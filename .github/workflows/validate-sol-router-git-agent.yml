@@ -5,12 +5,9 @@ on:
     branches:
       - sol-router-agent-dist
     paths:
-      - 'sol-router/windows-cursor-git-agent-v1.mjs'
-      - 'sol-router/windows-cursor-git-task-v1.mjs'
-      - 'sol-router/install-windows-git-agent-v1.ps1'
-      - 'sol-router/install-windows-git-agent-v2.ps1'
-      - 'sol-router/install-windows-git-agent-v3.ps1'
-      - 'sol-router/install-windows-git-agent-v4.ps1'
+      - 'sol-router/windows-cursor-git-agent-v2.mjs'
+      - 'sol-router/windows-cursor-git-task-v2.mjs'
+      - 'sol-router/install-windows-git-agent-final.ps1'
       - '.github/workflows/validate-sol-router-git-agent.yml'
 
 permissions:
@@ -23,21 +20,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: sol-router-agent-dist
+
       - name: Static validation
         shell: pwsh
         run: |
-          node --check sol-router/windows-cursor-git-agent-v1.mjs
-          node --check sol-router/windows-cursor-git-task-v1.mjs
-          foreach($file in @(
-            'sol-router/install-windows-git-agent-v1.ps1',
-            'sol-router/install-windows-git-agent-v2.ps1',
-            'sol-router/install-windows-git-agent-v3.ps1',
-            'sol-router/install-windows-git-agent-v4.ps1'
-          )){
-            $tokens=$null; $errors=$null
-            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file),[ref]$tokens,[ref]$errors)|Out-Null
-            if($errors.Count -gt 0){$errors|%{Write-Error ("$file :: " + $_.Message)};exit 1}
-          }
+          node --check sol-router/windows-cursor-git-agent-v2.mjs
+          node --check sol-router/windows-cursor-git-task-v2.mjs
+          $tokens=$null; $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'sol-router/install-windows-git-agent-final.ps1'),[ref]$tokens,[ref]$errors)|Out-Null
+          if($errors.Count -gt 0){$errors|%{Write-Error $_.Message};exit 1}
+
+      - name: Verify portable GitHub CLI bootstrap asset
+        shell: pwsh
+        run: |
+          $zip=Join-Path $env:RUNNER_TEMP 'gh.zip'
+          $out=Join-Path $env:RUNNER_TEMP 'gh-portable'
+          Invoke-WebRequest -UseBasicParsing 'https://github.com/cli/cli/releases/download/v2.98.0/gh_2.98.0_windows_amd64.zip' -OutFile $zip
+          $hash=(Get-FileHash -Algorithm SHA256 $zip).Hash.ToLowerInvariant()
+          if($hash -ne 'c28c7b3b584967a05b74d9eaf7481bff24ddc34930bf2d6e442c148236561eb1'){throw "bad gh checksum $hash"}
+          Expand-Archive $zip $out -Force
+          $gh=Get-ChildItem $out -Recurse -Filter gh.exe -File|Select-Object -First 1
+          if(-not $gh){throw 'gh.exe missing from archive'}
+          & $gh.FullName --version
+          if($LASTEXITCODE -ne 0){throw 'portable gh failed to run'}
+
       - name: Git relay integration with two concurrent Cursor runs
         shell: pwsh
         run: |
@@ -71,7 +77,10 @@ jobs:
           New-Item -ItemType Directory -Force -Path (Join-Path $controller 'gateway-bridge/commands'),(Join-Path $controller 'gateway-bridge/results'),(Join-Path $controller 'gateway-bridge/agents')|Out-Null
           @'
           param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Rest)
-          if($Rest -contains '--version'){Write-Output 'fake-cursor-1.0';exit 0}
+          if($Rest -contains '--version'){Write-Error 'agent must never be probed';exit 91}
+          $last=if($Rest.Count){[string]$Rest[$Rest.Count-1]}else{''}
+          if($last -match '-[pP]'){Write-Error "unsafe positional prompt: $last";exit 92}
+          if($last -notmatch 'Read the task instructions from '){Write-Error "missing prompt indirection: $last";exit 93}
           Start-Sleep -Milliseconds 400
           Write-Output '{"type":"progress","message":"running"}'
           Start-Sleep -Milliseconds 900
@@ -83,19 +92,18 @@ jobs:
             branch='sol-router-gateway-v0.1'
             agentId='work-windows-cursor'
             cursorCli=$fake
-            workerPath=(Resolve-Path 'sol-router/windows-cursor-git-task-v1.mjs').Path
+            workerPath=(Resolve-Path 'sol-router/windows-cursor-git-task-v2.mjs').Path
             localStateDir=$state
             workspaces=@{posif=$workspace}
           }
           $cfg|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 $config
-          $agent=Start-Process node -ArgumentList @((Resolve-Path 'sol-router/windows-cursor-git-agent-v1.mjs').Path,$config) -PassThru -WindowStyle Hidden -RedirectStandardOutput $out -RedirectStandardError $err
+          $agent=Start-Process node -ArgumentList @((Resolve-Path 'sol-router/windows-cursor-git-agent-v2.mjs').Path,$config) -PassThru -WindowStyle Hidden -RedirectStandardOutput $out -RedirectStandardError $err
           try {
             Start-Sleep -Seconds 3
             git -C $controller pull --rebase origin sol-router-gateway-v0.1 | Out-Null
             $cmdDir=Join-Path $controller 'gateway-bridge/commands'
-            New-Item -ItemType Directory -Force -Path $cmdDir|Out-Null
-            @{id='it-a';method='start';agent_id='work-windows-cursor';payload=@{workspace='posif';prompt='task A'}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-a.json')
-            @{id='it-b';method='start';agent_id='work-windows-cursor';payload=@{workspace='posif';prompt='task B'}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-b.json')
+            @{id='it-a';method='start';agent_id='work-windows-cursor';payload=@{workspace='posif';prompt='task A release-PROD-9'}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-a.json')
+            @{id='it-b';method='start';agent_id='work-windows-cursor';payload=@{workspace='posif';prompt='task B -patch'}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-b.json')
             git -C $controller add gateway-bridge/commands
             git -C $controller commit -m 'two starts' | Out-Null
             git -C $controller push origin sol-router-gateway-v0.1 | Out-Null
@@ -103,11 +111,11 @@ jobs:
             $resB=Join-Path $controller 'gateway-bridge/results/it-b.json'
             $found=$false
             foreach($i in 1..30){Start-Sleep -Seconds 1;git -C $controller pull --rebase origin sol-router-gateway-v0.1|Out-Null;if((Test-Path $resA)-and(Test-Path $resB)){$found=$true;break}}
-            if(-not $found){throw 'start results not returned through Git relay'}
+            if(-not $found){throw 'start results not returned'}
             $a=Get-Content $resA -Raw|ConvertFrom-Json
             $b=Get-Content $resB -Raw|ConvertFrom-Json
-            if(-not $a.ok -or -not $b.ok){throw 'one of the start commands failed'}
-            if($a.result.runId -eq $b.result.runId){throw 'concurrent starts reused the same run id'}
+            if(-not $a.ok -or -not $b.ok){throw 'one of the starts failed'}
+            if($a.result.runId -eq $b.result.runId){throw 'concurrent starts reused run id'}
             Start-Sleep -Seconds 3
             @{id='it-sa';method='status';agent_id='work-windows-cursor';payload=@{runId=$a.result.runId}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-sa.json')
             @{id='it-sb';method='status';agent_id='work-windows-cursor';payload=@{runId=$b.result.runId}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-sb.json')
@@ -118,12 +126,12 @@ jobs:
             $statusB=Join-Path $controller 'gateway-bridge/results/it-sb.json'
             $found=$false
             foreach($i in 1..30){Start-Sleep -Seconds 1;git -C $controller pull --rebase origin sol-router-gateway-v0.1|Out-Null;if((Test-Path $statusA)-and(Test-Path $statusB)){$found=$true;break}}
-            if(-not $found){throw 'status results not returned through Git relay'}
+            if(-not $found){throw 'status results not returned'}
             $sa=Get-Content $statusA -Raw|ConvertFrom-Json
             $sb=Get-Content $statusB -Raw|ConvertFrom-Json
             if($sa.result.state -ne 'completed' -or $sb.result.state -ne 'completed'){throw "runs not completed: A=$($sa.result.state) B=$($sb.result.state)"}
-            if([Math]::Abs([double]$sa.result.startedAt-[double]$sb.result.startedAt) -gt 1500){throw 'runs did not overlap closely enough to demonstrate concurrency'}
-            Write-Host "PASS two concurrent Git-relayed Cursor runs: $($a.result.runId), $($b.result.runId)"
+            if([Math]::Abs([double]$sa.result.startedAt-[double]$sb.result.startedAt) -gt 1500){throw 'runs did not overlap'}
+            Write-Host "PASS Git relay, prompt indirection, no health probe, two concurrent runs"
           } finally {
             Stop-Process -Id $agent.Id -Force -ErrorAction SilentlyContinue
             Get-Content $out -ErrorAction SilentlyContinue
