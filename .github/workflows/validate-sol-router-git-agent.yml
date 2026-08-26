@@ -7,7 +7,7 @@ on:
     paths:
       - 'sol-router/windows-cursor-git-agent-v2.mjs'
       - 'sol-router/windows-cursor-git-task-v2.mjs'
-      - 'sol-router/install-windows-git-agent-final.ps1'
+      - 'sol-router/install-windows-git-agent-ssh.ps1'
       - '.github/workflows/validate-sol-router-git-agent.yml'
 
 permissions:
@@ -21,28 +21,17 @@ jobs:
         with:
           ref: sol-router-agent-dist
 
-      - name: Static validation
+      - name: Static validation and SSH key smoke test
         shell: pwsh
         run: |
           node --check sol-router/windows-cursor-git-agent-v2.mjs
           node --check sol-router/windows-cursor-git-task-v2.mjs
           $tokens=$null; $errors=$null
-          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'sol-router/install-windows-git-agent-final.ps1'),[ref]$tokens,[ref]$errors)|Out-Null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'sol-router/install-windows-git-agent-ssh.ps1'),[ref]$tokens,[ref]$errors)|Out-Null
           if($errors.Count -gt 0){$errors|%{Write-Error $_.Message};exit 1}
-
-      - name: Verify portable GitHub CLI bootstrap asset
-        shell: pwsh
-        run: |
-          $zip=Join-Path $env:RUNNER_TEMP 'gh.zip'
-          $out=Join-Path $env:RUNNER_TEMP 'gh-portable'
-          Invoke-WebRequest -UseBasicParsing 'https://github.com/cli/cli/releases/download/v2.98.0/gh_2.98.0_windows_amd64.zip' -OutFile $zip
-          $hash=(Get-FileHash -Algorithm SHA256 $zip).Hash.ToLowerInvariant()
-          if($hash -ne 'c28c7b3b584967a05b74d9eaf7481bff24ddc34930bf2d6e442c148236561eb1'){throw "bad gh checksum $hash"}
-          Expand-Archive $zip $out -Force
-          $gh=Get-ChildItem $out -Recurse -Filter gh.exe -File|Select-Object -First 1
-          if(-not $gh){throw 'gh.exe missing from archive'}
-          & $gh.FullName --version
-          if($LASTEXITCODE -ne 0){throw 'portable gh failed to run'}
+          $key=Join-Path $env:RUNNER_TEMP 'deploy-key-test'
+          ssh-keygen -t ed25519 -N '' -f $key | Out-Null
+          if($LASTEXITCODE -ne 0 -or -not(Test-Path "$key.pub")){throw 'ssh-keygen smoke test failed'}
 
       - name: Git relay integration with two concurrent Cursor runs
         shell: pwsh
@@ -131,7 +120,7 @@ jobs:
             $sb=Get-Content $statusB -Raw|ConvertFrom-Json
             if($sa.result.state -ne 'completed' -or $sb.result.state -ne 'completed'){throw "runs not completed: A=$($sa.result.state) B=$($sb.result.state)"}
             if([Math]::Abs([double]$sa.result.startedAt-[double]$sb.result.startedAt) -gt 1500){throw 'runs did not overlap'}
-            Write-Host "PASS Git relay, prompt indirection, no health probe, two concurrent runs"
+            Write-Host 'PASS Git relay, prompt indirection, no health probe, two concurrent runs'
           } finally {
             Stop-Process -Id $agent.Id -Force -ErrorAction SilentlyContinue
             Get-Content $out -ErrorAction SilentlyContinue
