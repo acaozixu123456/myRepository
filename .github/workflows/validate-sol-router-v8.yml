@@ -39,5 +39,14 @@ jobs:
             }
             Write-Host "PASS $file"
           }
+      - name: Validate staged worker extension contract
+        shell: pwsh
+        run: |
+          $installer = Get-Content 'sol-router/install-windows-v8.ps1' -Raw
+          if ($installer -notmatch [regex]::Escape("`$StageWorker=Join-Path `$InstallRoot 'windows-cursor-task-v8.stage.mjs'")) {
+            throw 'Installer must stage the Cursor worker with an .mjs extension.'
+          }
+          Copy-Item 'sol-router/windows-cursor-task-v8.mjs' "$env:RUNNER_TEMP/windows-cursor-task-v8.stage.mjs"
+          node --check "$env:RUNNER_TEMP/windows-cursor-task-v8.stage.mjs"
       - name: Node syntax validation
         run: node --check sol-router/windows-cursor-task-v8.mjs
