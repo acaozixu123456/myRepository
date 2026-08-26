@@ -10,6 +10,7 @@ on:
       - 'sol-router/install-windows-git-agent-v1.ps1'
       - 'sol-router/install-windows-git-agent-v2.ps1'
       - 'sol-router/install-windows-git-agent-v3.ps1'
+      - 'sol-router/install-windows-git-agent-v4.ps1'
       - '.github/workflows/validate-sol-router-git-agent.yml'
 
 permissions:
@@ -27,7 +28,12 @@ jobs:
         run: |
           node --check sol-router/windows-cursor-git-agent-v1.mjs
           node --check sol-router/windows-cursor-git-task-v1.mjs
-          foreach($file in @('sol-router/install-windows-git-agent-v1.ps1','sol-router/install-windows-git-agent-v2.ps1','sol-router/install-windows-git-agent-v3.ps1')){
+          foreach($file in @(
+            'sol-router/install-windows-git-agent-v1.ps1',
+            'sol-router/install-windows-git-agent-v2.ps1',
+            'sol-router/install-windows-git-agent-v3.ps1',
+            'sol-router/install-windows-git-agent-v4.ps1'
+          )){
             $tokens=$null; $errors=$null
             [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file),[ref]$tokens,[ref]$errors)|Out-Null
             if($errors.Count -gt 0){$errors|%{Write-Error ("$file :: " + $_.Message)};exit 1}
