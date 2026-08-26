@@ -7,7 +7,7 @@ on:
     paths:
       - 'sol-router/windows-cursor-git-agent-v2.mjs'
       - 'sol-router/windows-cursor-git-task-v2.mjs'
-      - 'sol-router/install-windows-git-agent-ssh.ps1'
+      - 'sol-router/install-windows-git-agent-ssh-v2.ps1'
       - '.github/workflows/validate-sol-router-git-agent.yml'
 
 permissions:
@@ -21,17 +21,21 @@ jobs:
         with:
           ref: sol-router-agent-dist
 
-      - name: Static validation and SSH key smoke test
+      - name: Static validation and exact noninteractive SSH key generation
         shell: pwsh
         run: |
           node --check sol-router/windows-cursor-git-agent-v2.mjs
           node --check sol-router/windows-cursor-git-task-v2.mjs
           $tokens=$null; $errors=$null
-          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'sol-router/install-windows-git-agent-ssh.ps1'),[ref]$tokens,[ref]$errors)|Out-Null
+          [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path 'sol-router/install-windows-git-agent-ssh-v2.ps1'),[ref]$tokens,[ref]$errors)|Out-Null
           if($errors.Count -gt 0){$errors|%{Write-Error $_.Message};exit 1}
-          $key=Join-Path $env:RUNNER_TEMP 'deploy-key-test'
-          ssh-keygen -t ed25519 -N '' -f $key | Out-Null
-          if($LASTEXITCODE -ne 0 -or -not(Test-Path "$key.pub")){throw 'ssh-keygen smoke test failed'}
+          $ssh=(Get-Command ssh-keygen.exe).Source
+          $key=Join-Path $env:RUNNER_TEMP 'deploy-key-test-v2'
+          Remove-Item -Force $key,"$key.pub" -ErrorAction SilentlyContinue
+          $argLine=('-q -t ed25519 -N "" -C "ci-smoke" -f "{0}"' -f $key)
+          $p=Start-Process -FilePath $ssh -ArgumentList $argLine -NoNewWindow -Wait -PassThru
+          if($p.ExitCode -ne 0 -or -not(Test-Path $key) -or -not(Test-Path "$key.pub")){throw "exact ssh-keygen invocation failed exit=$($p.ExitCode)"}
+          Write-Host 'PASS exact noninteractive ssh-keygen invocation'
 
       - name: Git relay integration with two concurrent Cursor runs
         shell: pwsh
