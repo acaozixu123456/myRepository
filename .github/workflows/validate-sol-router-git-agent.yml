@@ -49,7 +49,7 @@ jobs:
           git -C $seed checkout -b sol-router-gateway-v0.1 | Out-Null
           git -C $seed config user.name test
           git -C $seed config user.email test@example.invalid
-          New-Item -ItemType Directory -Force -Path (Join-Path $seed 'gateway-bridge/commands'),(Join-Path $seed 'gateway-bridge/results'),(Join-Path $seed 'gateway-bridge/agents')|Out-Null
+          New-Item -ItemType Directory -Force -Path (Join-Path $seed 'gateway-bridge')|Out-Null
           Set-Content (Join-Path $seed 'gateway-bridge/.gitkeep') ''
           git -C $seed add .
           git -C $seed commit -m init | Out-Null
@@ -58,6 +58,7 @@ jobs:
           git clone --branch sol-router-gateway-v0.1 --single-branch $remote $controller | Out-Null
           git -C $controller config user.name controller
           git -C $controller config user.email controller@example.invalid
+          New-Item -ItemType Directory -Force -Path (Join-Path $controller 'gateway-bridge/commands'),(Join-Path $controller 'gateway-bridge/results'),(Join-Path $controller 'gateway-bridge/agents')|Out-Null
           @'
           param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Rest)
           if($Rest -contains '--version'){Write-Output 'fake-cursor-1.0';exit 0}
@@ -82,6 +83,7 @@ jobs:
             Start-Sleep -Seconds 3
             git -C $controller pull --rebase origin sol-router-gateway-v0.1 | Out-Null
             $cmdDir=Join-Path $controller 'gateway-bridge/commands'
+            New-Item -ItemType Directory -Force -Path $cmdDir|Out-Null
             @{id='it-a';method='start';agent_id='work-windows-cursor';payload=@{workspace='posif';prompt='task A'}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-a.json')
             @{id='it-b';method='start';agent_id='work-windows-cursor';payload=@{workspace='posif';prompt='task B'}}|ConvertTo-Json -Depth 10|Set-Content -Encoding UTF8 (Join-Path $cmdDir 'it-b.json')
             git -C $controller add gateway-bridge/commands
