@@ -7,42 +7,24 @@ $ErrorActionPreference = 'Stop'
 $InstallRoot = Join-Path $env:LOCALAPPDATA 'SolRouterGateway'
 $AgentHome = Join-Path $HOME '.sol-router-agent'
 $ExistingRouter = Join-Path $env:LOCALAPPDATA 'SolRouter\app'
-$AgentUrl = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/sol-router-agent-dist/sol-router/windows-cursor-agent.py'
+$AgentUrl = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/sol-router-agent-dist/sol-router/windows-cursor-agent.ps1'
 $LogDir = Join-Path $InstallRoot 'logs'
 $StartupDir = [Environment]::GetFolderPath('Startup')
 
 function Step([string]$Text) { Write-Host "[Sol Router Windows] $Text" -ForegroundColor Cyan }
 function EnsureDir([string]$Path) { if (-not (Test-Path $Path)) { New-Item -ItemType Directory -Force -Path $Path | Out-Null } }
 
-function FindPython {
-  $tests = @(
-    @{ Exe='py.exe'; Args=@('-3') },
-    @{ Exe='python.exe'; Args=@() },
-    @{ Exe='python3.exe'; Args=@() }
-  )
-  foreach ($t in $tests) {
-    $cmd = Get-Command $t.Exe -ErrorAction SilentlyContinue
-    if (-not $cmd) { continue }
-    try {
-      $resolved = & $cmd.Source @($t.Args) -c "import sys;print(sys.executable)" 2>$null | Select-Object -First 1
-      if ($LASTEXITCODE -eq 0 -and $resolved) { return @{ Exe=$cmd.Source; Args=$t.Args } }
-    } catch {}
-  }
-  throw 'Python 3 was not found. Install Python 3 and rerun this command.'
-}
-
 Step 'Checking existing Cursor SolRouter'
 if (-not (Test-Path $ExistingRouter)) { throw "Existing SolRouter was not found at $ExistingRouter" }
 Write-Host "  existing router: $ExistingRouter"
+Write-Host "  runtime: Windows PowerShell + .NET (no Python/Node install required)"
 
-$Python = FindPython
-Write-Host "  python: $($Python.Exe) $($Python.Args -join ' ')"
 EnsureDir $InstallRoot
 EnsureDir $AgentHome
 EnsureDir $LogDir
 
-Step 'Downloading Windows Cursor adapter'
-$AgentPath = Join-Path $InstallRoot 'windows-cursor-agent.py'
+Step 'Downloading pure PowerShell Windows Cursor adapter'
+$AgentPath = Join-Path $InstallRoot 'windows-cursor-agent.ps1'
 Invoke-WebRequest -UseBasicParsing -Uri $AgentUrl -OutFile $AgentPath
 
 $TokenFile = Join-Path $AgentHome 'agent-token'
@@ -61,17 +43,12 @@ if (-not (Test-Path $TokenFile)) {
 
 $Runner = Join-Path $InstallRoot 'run-agent.ps1'
 $OutLog = Join-Path $LogDir 'agent.log'
-$Prefix = if ($Python.Args.Count -gt 0) { ($Python.Args | ForEach-Object { "'$_'" }) -join ',' } else { '' }
 $RunnerText = @"
 `$ErrorActionPreference = 'Stop'
 `$env:SOL_ROUTER_GATEWAY = '$Gateway'
 `$env:SOL_ROUTER_AGENT_ID = '$AgentId'
 `$env:SOL_ROUTER_CURSOR_APP = '$ExistingRouter'
-`$prefix = @($Prefix)
-`$argsList = @()
-`$argsList += `$prefix
-`$argsList += '$AgentPath'
-& '$($Python.Exe)' @argsList *>> '$OutLog'
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File '$AgentPath' *>> '$OutLog'
 "@
 [IO.File]::WriteAllText($Runner, $RunnerText)
 
@@ -86,7 +63,7 @@ Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
   ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 Start-Sleep -Milliseconds 500
 Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',$Runner)
-Start-Sleep -Seconds 5
+Start-Sleep -Seconds 6
 
 Write-Host ''
 Step 'Bootstrap result'
@@ -97,7 +74,7 @@ Write-Host "  startup: $StartupCmd"
 Write-Host "  log: $OutLog"
 if (Test-Path $OutLog) {
   Write-Host ''
-  Get-Content $OutLog -Tail 25
+  Get-Content $OutLog -Tail 30
 }
 Write-Host ''
 Write-Host 'Windows adapter installation finished.' -ForegroundColor Green
