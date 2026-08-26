@@ -1,0 +1,43 @@
+name: Validate Sol Router Windows v8
+
+on:
+  push:
+    branches:
+      - sol-router-agent-dist
+    paths:
+      - 'sol-router/windows-cursor-agent-v8.ps1'
+      - 'sol-router/windows-cursor-task-v8.mjs'
+      - 'sol-router/install-windows-v8.ps1'
+      - 'sol-router/install-windows-v8-deferred.ps1'
+      - '.github/workflows/validate-sol-router-v8.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: sol-router-agent-dist
+      - name: PowerShell parser validation
+        shell: pwsh
+        run: |
+          $files = @(
+            'sol-router/windows-cursor-agent-v8.ps1',
+            'sol-router/install-windows-v8.ps1',
+            'sol-router/install-windows-v8-deferred.ps1'
+          )
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file), [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error "$file: $($_.Message)" }
+              exit 1
+            }
+            Write-Host "PASS $file"
+          }
+      - name: Node syntax validation
+        run: node --check sol-router/windows-cursor-task-v8.mjs
