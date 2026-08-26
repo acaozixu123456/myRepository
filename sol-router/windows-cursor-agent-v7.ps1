@@ -1,7 +1,7 @@
 param()
 
 $ErrorActionPreference='Stop'
-$AgentVersion='0.7.0'
+$AgentVersion='0.7.1'
 $AgentId=if($env:SOL_ROUTER_AGENT_ID){$env:SOL_ROUTER_AGENT_ID}else{'work-windows-cursor'}
 $Gateway=if($env:SOL_ROUTER_GATEWAY){$env:SOL_ROUTER_GATEWAY}else{'wss://sol-router-gateway.331004814.workers.dev/agent/connect'}
 $RouterRoot=if($env:SOL_ROUTER_CURSOR_APP){$env:SOL_ROUTER_CURSOR_APP}else{Join-Path $env:LOCALAPPDATA 'SolRouter\app'}
@@ -49,10 +49,10 @@ function Invoke-Helper([string]$Method,$Payload,[int]$TimeoutMs){
     $p=Start-Process powershell.exe -WindowStyle Hidden -ArgumentList $args -PassThru
     if(-not $p.WaitForExit($TimeoutMs)){
       try{& taskkill.exe /PID $p.Id /T /F|Out-Null}catch{}
-      $script:LastMcpError="helper_timeout:$Method:${TimeoutMs}ms"
+      $script:LastMcpError=('helper_timeout:{0}:{1}ms' -f $Method,$TimeoutMs)
       throw $script:LastMcpError
     }
-    if(-not(Test-Path $resultFile)){throw "helper_result_missing:$Method:exit=$($p.ExitCode)"}
+    if(-not(Test-Path $resultFile)){throw ('helper_result_missing:{0}:exit={1}' -f $Method,$p.ExitCode)}
     $envResult=Get-Content $resultFile -Raw|ConvertFrom-Json
     if(-not $envResult.ok){$script:LastMcpError=[string]$envResult.error;throw $script:LastMcpError}
     $script:LastMcpError=''
