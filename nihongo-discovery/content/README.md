@@ -13,6 +13,8 @@ A Discovery is not limited to vocabulary or news. It may center on:
 
 The learning target can be a word, phrase, grammar pattern, sentence shape, pragmatic signal, or another compact Japanese concept. Prefer rabbit-hole continuity: one Discovery should naturally make the learner want to play the next related one.
 
+The product is **Continue Play-first**. Content should be designed as playable scene material, not as a long article followed by exercises.
+
 ## Files
 
 - `nihongo-discovery/content/manifest.json` — canonical manifest consumed by the app backend.
@@ -35,7 +37,7 @@ There is **no human review or approval stage**. The scheduled editor performs au
 
 Legacy manifest statuses may remain for historical compatibility, but the normal new-content path is direct publication.
 
-Audio is independent. New text content normally publishes with `audio.status = "not_ready"`. The UI must not expose a fake audio control when no static audio exists.
+Audio is independent. New text content normally publishes with `audio.status = "not_ready"`; the backend later prepares reusable static audio. Text play must remain usable while audio is still preparing.
 
 ## Publishing rules
 
@@ -43,11 +45,12 @@ Audio is independent. New text content normally publishes with `audio.status = "
 2. Prefer usefulness, memorability and transfer value over filling a quota.
 3. Rotate content archetypes and learning targets; do not repeatedly publish the same grammar trick, keyword or headline angle.
 4. Build original Nihongo Discovery lessons. When using a news/fact source, use it only as a seed; never copy or lightly rewrite article bodies.
-5. Each item should support the play sequence: `听/看一句猜意思 -> 现场该怎么回 -> 换个场景还能说 -> 抓住搞笑错误 -> 再遇一次`.
-6. The Japanese target must resolve the curiosity gap or action. Do not bolt unrelated vocabulary onto trivia.
-7. Autonomous checks before direct publication: Japanese naturalness, N3+ level, factual accuracy when claims are present, safety tone, duplication, transfer value and complete Story shape.
-8. Serious topics must remain respectful; never create joke framing around harm.
-9. The hourly content task never changes App source code or production audio behavior.
+5. Each item should support the core play sequence: `听/看一句猜意思 -> 现场怎么回 -> 平时怎么说 -> 敬语怎么说 -> 商务日语怎么说 -> 换个情景 -> 自己说一遍`.
+6. `practice.examples[0..2]` should normally form one register ladder around the same target: everyday/casual -> polite/keigo -> business/formal. When business language is genuinely irrelevant, use the closest useful formal/service/news register and say so in the cue.
+7. The Japanese target must resolve the curiosity gap or action. Do not bolt unrelated vocabulary onto trivia.
+8. Autonomous checks before direct publication: Japanese naturalness, N3+ level, factual accuracy when claims are present, safety tone, duplication, transfer value, register correctness and complete Story shape.
+9. Serious topics must remain respectful; never create joke framing around harm.
+10. The hourly content task never changes App source code or production audio behavior.
 
 ## Story shape
 
