@@ -1,106 +1,82 @@
-# Nihongo Discovery — Dynamic Content Pipeline
+# Nihongo Discovery — Connected Immersion Content Pipeline
 
-This branch is the app-readable source of truth for continuously published Discovery content.
+This branch is the app-readable source of truth for continuously published Nihongo Discovery content.
 
-## Core rule
+## Current product model
 
-A Discovery is not limited to vocabulary or news. It may center on:
-- important N3/N2/N1 grammar or grammar contrasts;
-- pragmatic expressions, semantic traps, workplace or everyday Japanese;
-- Japanese-life / culture / system curiosities when they teach usable Japanese;
-- recent facts or news when there is a strong learning angle;
-- a useful follow-on derived from an existing Discovery.
+New content is organized as a **connected immersive world**, not a random feed.
 
-The learning target can be a word, phrase, grammar pattern, sentence shape, pragmatic signal, or another compact Japanese concept. Prefer rabbit-hole continuity: one Discovery should naturally make the learner want to play the next related one.
+Canonical structure:
 
-The product is **Continue Play-first and audio-first**. Content is designed as playable scene material, not as a long article followed by exercises. A complete new item must let the same Japanese target survive changes of relationship, formality and situation.
+`World -> Season -> Episode -> Callback -> Transfer`
+
+The active canon is stored in `WORLD_CANON.json`. The first world is `life-in-japan` (“在日本生活和工作的我”), and the first season is `release-week-01` (“项目上线前的一周”). Stable cast, locations, relationships and prior events persist across episodes.
+
+Old standalone Discoveries remain valid legacy/catalog content. Do not rewrite or delete them just to fit the new world. They may still be used by Atlas, Review and as early callback material.
 
 ## Files
 
-- `nihongo-discovery/content/manifest.json` — canonical manifest consumed by the app backend.
+- `nihongo-discovery/content/WORLD_CANON.json` — authoritative world/season/cast/location/episode-slot canon.
+- `nihongo-discovery/content/manifest.json` — canonical published dynamic Story manifest consumed by the App backend.
 - `nihongo-discovery/content/HOURLY_EDITOR.md` — execution contract for the scheduled content factory.
 
-## Difficulty policy — N3 is the hard floor
+## Core learning rule
 
-Main Discovery content may use only `N3`, `N2`, or `N1`.
+Each connected episode must maintain three lines:
 
-Target mix for the growing catalog:
-- N3: about 60% — high-frequency real-life nuance, indirectness, modality, workplace/public-service patterns, meaning shifts and useful grammar;
-- N2: about 30% — register changes, implication, compact grammar, idiomatic evaluation, formal/casual contrasts;
-- N1: about 10% — selective advanced nuance, formal/news expressions, omission and rhetoric.
+1. **Plot continuity** — people, time and events continue from earlier episodes.
+2. **Language progression** — at most one new core target, plus natural callback opportunities to earlier targets.
+3. **Memory retrieval** — the App can prioritize callback/review cues using the learner's local weakness state; the content factory supplies valid callback links but does not require private learner history.
 
-N4/N5 material must not become a main Discovery by itself unless the real learning target is genuinely N3+ in pragmatic/semantic difficulty.
+The product remains **Continue Play-first and audio-first**. The existing seven-stage loop is preserved:
 
-## Publication lifecycle
+`听一句猜意思 -> 现场怎么回 -> 平时怎么说 -> 敬语怎么说 -> 商务日语怎么说 -> 换个情景(5个) -> 自己说一遍`
 
-There is **no human review or approval stage**. The scheduled editor performs autonomous quality checks and, when the item meets the contract, writes it directly as `status: "published"`.
+For the five changed scenarios in a connected episode:
+- scenarios 1–3 stay inside the current continuous world/plot;
+- scenarios 4–5 leave that world and test genuine transfer to other life situations.
 
-Audio is independent. New text/play content publishes immediately with `audio.status = "not_ready"`. The unified backend Play Audio job later prepares reusable static clips. Learner taps only read cache; missing clips fall back to text and never block play.
+## Hourly publication behavior
 
-## Publishing rules
+“Runs every hour” does not mean “publishes every hour”.
 
-1. Publish at most one new item per hourly run; publishing zero is correct when nothing is strong enough.
-2. Prefer usefulness, memorability, listening value and transfer value over filling a quota.
-3. Rotate content archetypes and learning targets; do not repeatedly publish the same grammar trick, keyword or headline angle.
-4. Build original Nihongo Discovery lessons. When using a news/fact source, use it only as a seed; never copy or lightly rewrite article bodies.
-5. Each item must support the core play sequence: `听/看一句猜意思 -> 现场怎么回 -> 平时怎么说 -> 敬语怎么说 -> 商务日语怎么说 -> 换个情景(5个) -> 自己说一遍`.
-6. The same semantic target must remain aligned across everyday, polite/keigo and business/formal registers.
-7. Every complete item must include exactly five useful changed scenarios in `story.play.scenarios`; do not pad with near-duplicates.
-8. The Japanese target must resolve the curiosity gap or action. Do not bolt unrelated vocabulary onto trivia.
-9. Autonomous checks before direct publication: Japanese naturalness, N3+ level, factual accuracy when claims are present, safety tone, duplication, transfer value, register correctness, five-scenario diversity and complete Story shape.
-10. Serious topics must remain respectful; never create joke framing around harm.
-11. The hourly content task never changes App source code or production audio behavior.
+The editor must:
+1. read `WORLD_CANON.json`, the prior episode and recent summaries;
+2. locate the earliest missing canonical episode slot;
+3. publish nothing when the prepared forward buffer is already 3 episodes or more;
+4. otherwise generate at most one earliest-missing episode;
+5. validate cast/time/location/register/callback continuity;
+6. direct-publish after autonomous checks, with no human approval stage;
+7. save a compact durable episode summary for the next run.
 
-## Story shape
+While an active connected season exists, do not generate unrelated standalone filler. If the season is complete, publish zero until a new season is added to canon.
 
-Each `story` must satisfy the app Story contract:
+## Story shape for connected episodes
 
-- `id`, `title`, `category`, `level` (`N3|N2|N1`), `emoji`, `visual`
-- `prompt`, `guesses`, `guessCorrect`, `twist`
-- `key.term`, `key.reading`, `key.meaning`, `key.insight`, `key.anchor`
-- `jp`, `cn`
-- `points[]`, `use`, `transfer`, `review`
-- required first-class `play`
-- `nextId`
+Every new connected Story keeps the existing Story/Play compatibility fields and adds:
+- `series`: world/season/episode ids, previous/next episode ids, location, cast, canon revision, previous summary, today hook and durable episode summary;
+- `callbacks`: earlier episodes/Discoveries naturally reused by this episode.
 
-For source-driven items, include `news.source`, `news.sourceDate`, `news.sourceTitle`, `news.sourceUrl`, `news.mode`, `news.fact`. For evergreen grammar/expression/curiosity items, `news` is optional.
+`nextId` remains only for legacy compatibility. Connected navigation is controlled by `series.nextEpisodeId`.
 
-### Required `play` — authoritative play/audio text
+`play` remains the authoritative text source for the active UI and static audio pipeline. It must contain natural `daily`, `polite`, `business`, `businessNote`, `replyPrompt`, `reply`, and exactly five scenarios.
 
-```json
-{
-  "play": {
-    "daily": "朋友/熟人之间最自然的日常说法",
-    "polite": "对陌生人、同事、店员等自然的礼貌/敬语说法",
-    "business": "面向客户、上司、正式说明或工作文字的商务/正式说法",
-    "businessNote": "商务 / 正式通知 / 服务场景（按内容选择）",
-    "replyPrompt": "现场另一方实际说出的日语",
-    "reply": "学习者在现场最自然的正确回应",
-    "scenarios": [
-      {"emoji":"...","cue":"情景1","jp":"...","cn":"..."},
-      {"emoji":"...","cue":"情景2","jp":"...","cn":"..."},
-      {"emoji":"...","cue":"情景3","jp":"...","cn":"..."},
-      {"emoji":"...","cue":"情景4","jp":"...","cn":"..."},
-      {"emoji":"...","cue":"情景5","jp":"...","cn":"..."}
-    ]
-  }
-}
-```
+## Difficulty and quality
 
-`play` is the authoritative source for the active App flow and static Play Audio clips. The App/backend derive the same 12 user-facing audio targets from it: listening sentence, other-speaker prompt, correct reply, daily, polite, business, five scenario clips and spoken-recall reference.
+Main content uses `N3`, `N2` or `N1`; N3 is the hard floor for a standalone learning target. Prefer useful real-life nuance, modality, indirectness, workplace communication and register shifts.
 
-Scenario rules:
-- exactly 5 scenarios for new content;
-- each scenario should materially change person, relationship, place, risk, purpose or register rather than merely swap one noun;
-- at least one should be everyday/personal and at least one should be workplace/service/formal when natural for the target;
-- `jp` is the exact Japanese the learner should hear/use in that scenario;
-- `cn` is a concise meaning, not a lecture.
+Before publishing, autonomously check:
+- Japanese naturalness and N3+ learning value;
+- one-new-target discipline;
+- canonical plot/cast/time/location consistency;
+- valid callback links and non-repetitive reuse;
+- communicative-intent alignment across daily/polite/business registers;
+- exactly 5 meaningful changed scenarios with the 3+2 continuity/transfer split;
+- factual/source accuracy when external claims are used;
+- duplication and safety.
 
-Register rules:
-- `daily`, `polite`, `business` express the same intended meaning at different social levels;
-- if a literal business version is unnatural, use the closest genuinely useful formal/service/news register and explain that briefly in `businessNote`;
-- do not create three unrelated sentences just to fill the ladder.
+Publishing zero is better than filler.
 
-`practice` is now legacy compatibility only and is not required for newly published items. Do not maintain a second authoritative sentence list when `play` exists.
+## Audio boundary
 
-Stable ids should describe the learning target and date when useful, e.g. `grammar-souda-20260830`, `work-moushiwake-20260830`, `news-rail-20260830`.
+The hourly content task never generates or changes production audio. Newly published text uses `audio.status = "not_ready"`; the existing bounded Play Audio backfill later prepares reusable static clips. Learner taps remain cache-only and missing audio falls back to text.
