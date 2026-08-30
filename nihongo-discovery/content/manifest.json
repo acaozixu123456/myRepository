@@ -1,12 +1,11 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-30T07:14:00Z",
+  "updatedAt": "2026-08-30T07:40:00Z",
   "items": [
     {
-      "status": "published",
+      "status": "audio_validation_failed",
       "preparedAt": "2026-08-30T07:14:00Z",
-      "publishedAt": "2026-08-30T07:14:00Z",
-      "audio": {"status": "ready", "model": "gpt-realtime-1.5", "cacheVersion": "realtime15-news-v2"},
+      "audio": {"status": "validation_failed", "model": "gpt-realtime-1.5", "cacheVersion": "realtime15-news-v2"},
       "story": {
         "id": "news-yasai-20260828",
         "title": "新闻为什么不直接说「高くなります」，而说「高くなりそうです」？",
@@ -33,10 +32,9 @@
       }
     },
     {
-      "status": "published",
+      "status": "audio_validation_failed",
       "preparedAt": "2026-08-30T07:14:00Z",
-      "publishedAt": "2026-08-30T07:14:00Z",
-      "audio": {"status": "ready", "model": "gpt-realtime-1.5", "cacheVersion": "realtime15-news-v2"},
+      "audio": {"status": "validation_failed", "model": "gpt-realtime-1.5", "cacheVersion": "realtime15-news-v2"},
       "story": {
         "id": "news-rain-20260828",
         "title": "灾害信息写「かもしれません」，是不是代表“问题不大”？",
