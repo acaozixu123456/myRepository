@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "world": {
+    "id": "life-in-japan",
+    "title": "在日本生活和工作的我",
+    "premise": "你在日本生活并参与一个即将上线的项目。固定人物、地点和关系持续存在，语言目标随着剧情推进逐步累积。",
+    "canonRevision": "v1",
+    "cast": [
+      {"id":"tanaka","name":"田中","role":"关系较近的同事","languageRole":"自然职场口语","relationship":"familiar-colleague"},
+      {"id":"sato","name":"佐藤","role":"直属上司","languageRole":"礼貌表达与内部汇报","relationship":"manager"},
+      {"id":"yamamoto","name":"山本","role":"客户负责人","languageRole":"商务日语与客户沟通","relationship":"client"},
+      {"id":"mika","name":"美香","role":"朋友","languageRole":"日常口语与生活场景","relationship":"friend"},
+      {"id":"public-service","name":"店员／站务员","role":"公共服务角色","languageRole":"服务与公共场景","relationship":"public"}
+    ],
+    "locations": [
+      {"id":"station","name":"通勤车站"},
+      {"id":"project-office","name":"项目办公室"},
+      {"id":"meeting-room","name":"会议室"},
+      {"id":"client-office","name":"客户办公室"},
+      {"id":"izakaya","name":"下班后的居酒屋"},
+      {"id":"home","name":"家"}
+    ]
+  },
+  "season": {
+    "id": "release-week-01",
+    "title": "项目上线前的一周",
+    "episodeCount": 12,
+    "bufferTarget": 3,
+    "status": "active",
+    "rule": "世界稳定，剧情连续，场景逐渐变化；每集只新增一个核心目标，并在能自然成立时优先回收两个旧目标。",
+    "episodeSlots": [
+      {"episodeNo":1,"target":"遅れそうです","beat":"下雨，电车看起来要晚点"},
+      {"episodeNo":2,"target":"かもしれません","beat":"通知田中可能会迟到"},
+      {"episodeNo":3,"target":"ことになっています","beat":"确认九点会议已经安排好"},
+      {"episodeNo":4,"target":"念のため","beat":"上线前保险起见再次确认资料"},
+      {"episodeNo":5,"target":"今日はちょっと……","beat":"田中邀请喝酒，委婉拒绝"},
+      {"episodeNo":6,"target":"お先に失礼します","beat":"为了明早上线准备先下班"},
+      {"episodeNo":7,"target":"何卒よろしくお願いいたします","beat":"给山本发送最终确认"},
+      {"episodeNo":8,"target":"対応しておきます","beat":"上线前出现小问题并提前处理"},
+      {"episodeNo":9,"target":"お時間をいただきありがとうございます","beat":"客户会议开始"},
+      {"episodeNo":10,"target":"無事にリリースできました","beat":"项目正式上线"},
+      {"episodeNo":11,"target":"振り返ってみると","beat":"上线后复盘"},
+      {"episodeNo":12,"target":"おかげさまで","beat":"季终挑战：完成一整段职场交流"}
+    ]
+  }
+}
