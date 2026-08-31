@@ -39,46 +39,51 @@ jobs:
               }
             }
           };
-          const browser = await chromium.launch({headless: true});
-          const page = await browser.newPage({
-            locale: 'ja-JP',
-            userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
-            viewport: {width: 390, height: 844},
+          (async () => {
+            const browser = await chromium.launch({headless: true});
+            const page = await browser.newPage({
+              locale: 'ja-JP',
+              userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
+              viewport: {width: 390, height: 844},
+            });
+            const responses = [];
+            page.on('response', async response => {
+              const url = new URL(response.url());
+              if (!/(^|\.)mojidict\.com$/i.test(url.hostname)) return;
+              const contentType = response.headers()['content-type'] || '';
+              const record = {
+                origin: url.origin,
+                path: url.pathname,
+                queryKeys: [...url.searchParams.keys()],
+                status: response.status(),
+                contentType,
+              };
+              if (contentType.includes('json')) {
+                try {
+                  const payload = await response.json();
+                  record.topKeys = payload && typeof payload === 'object' ? Object.keys(payload).slice(0, 30) : [];
+                  const before = findings.length;
+                  inspect(payload, `${url.pathname}`);
+                  record.japaneseFindingCount = findings.length - before;
+                } catch {}
+              }
+              if (contentType.includes('json') || /article|read|detail|content|parse|function/i.test(url.pathname)) responses.push(record);
+            });
+            await page.goto(process.env.ARTICLE_URL, {waitUntil: 'domcontentloaded', timeout: 45000});
+            await page.waitForTimeout(12000);
+            const bodyText = await page.locator('body').innerText().catch(() => '');
+            const bodyLines = bodyText.split(/\n+/).map(line => line.trim()).filter(line => line.length >= 8 && hasJapanese(line)).slice(0, 20);
+            console.log(JSON.stringify({
+              pageTitle: await page.title(),
+              bodyTextLength: bodyText.length,
+              bodyJapaneseLines: bodyLines,
+              responses,
+              jsonJapaneseFindings: findings,
+            }, null, 2));
+            await browser.close();
+          })().catch(error => {
+            console.error(error instanceof Error ? error.stack : String(error));
+            process.exit(1);
           });
-          const responses = [];
-          page.on('response', async response => {
-            const url = new URL(response.url());
-            if (!/(^|\.)mojidict\.com$/i.test(url.hostname)) return;
-            const contentType = response.headers()['content-type'] || '';
-            const record = {
-              origin: url.origin,
-              path: url.pathname,
-              queryKeys: [...url.searchParams.keys()],
-              status: response.status(),
-              contentType,
-            };
-            if (contentType.includes('json')) {
-              try {
-                const payload = await response.json();
-                record.topKeys = payload && typeof payload === 'object' ? Object.keys(payload).slice(0, 30) : [];
-                const before = findings.length;
-                inspect(payload, `${url.pathname}`);
-                record.japaneseFindingCount = findings.length - before;
-              } catch {}
-            }
-            if (contentType.includes('json') || /article|read|detail|content|parse|function/i.test(url.pathname)) responses.push(record);
-          });
-          await page.goto(process.env.ARTICLE_URL, {waitUntil: 'domcontentloaded', timeout: 45000});
-          await page.waitForTimeout(12000);
-          const bodyText = await page.locator('body').innerText().catch(() => '');
-          const bodyLines = bodyText.split(/\n+/).map(line => line.trim()).filter(line => line.length >= 8 && hasJapanese(line)).slice(0, 20);
-          console.log(JSON.stringify({
-            pageTitle: await page.title(),
-            bodyTextLength: bodyText.length,
-            bodyJapaneseLines: bodyLines,
-            responses,
-            jsonJapaneseFindings: findings,
-          }, null, 2));
-          await browser.close();
           NODE
           node /tmp/inspect-moji.cjs
