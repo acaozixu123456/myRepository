@@ -17,6 +17,13 @@ type ClipState = 'ready' | 'pending' | 'failed';
 
 const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
 const SEASON_ORDER = ['release-week-01', 'life-beyond-work-02'];
+const FRONTIER_REFRESH_MS = 30_000;
+
+const fetchRemoteStories = async (): Promise<Story[]> => {
+  const {data} = await api.get('/api/news-content');
+  const payload = data as {ok?: boolean; stories?: Story[]};
+  return payload?.ok && Array.isArray(payload.stories) ? payload.stories : [];
+};
 
 function App() {
   const [tab, setTab] = useState<Tab>('play');
@@ -39,11 +46,8 @@ function App() {
 
   useEffect(() => {
     let active = true;
-    void api.get('/api/news-content').then(({data}) => {
-      if (!active) return;
-      const payload = data as {ok?: boolean; stories?: Story[]};
-      const remote = payload?.ok && Array.isArray(payload.stories) ? payload.stories : [];
-      if (remote.length) setDynamic(remote);
+    void fetchRemoteStories().then(remote => {
+      if (active && remote.length) setDynamic(remote);
     }).catch(() => {});
     return () => { active = false; };
   }, []);
@@ -95,6 +99,30 @@ function App() {
   const activeSeason = useMemo(() => resolveActiveSeason(stories, memories, SEASON_ORDER), [stories, memories]);
   const seasonStories = useMemo(() => seasonStoriesFor(stories, activeSeason), [stories, activeSeason]);
   const seasonProgress = useMemo(() => getSeasonProgress(seasonStories, memories), [seasonStories, memories]);
+
+  useEffect(() => {
+    if (!seasonProgress.waitingForNext) return;
+    let active = true;
+    const refresh = () => {
+      void fetchRemoteStories().then(remote => {
+        if (active && remote.length) setDynamic(remote);
+      }).catch(() => {});
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') refresh();
+    };
+
+    refresh();
+    const timer = window.setInterval(refresh, FRONTIER_REFRESH_MS);
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [seasonProgress.waitingForNext, activeSeason]);
 
   const selected = stories.find(s => s.id === selectedId) || null;
   const learned = stories.filter(s => (memories[s.id]?.lastSeen || 0) > 0);
