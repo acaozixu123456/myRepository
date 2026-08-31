@@ -1,0 +1,79 @@
+name: Validate Sol Router Codex 2.6 Distribution
+
+on:
+  push:
+    branches:
+      - sol-router-codex-dist-review-20260831
+    paths:
+      - 'sol-router/install-windows-git-agent-codex-v2_6.ps1'
+      - 'sol-router/v2_6-review/**'
+      - '.github/workflows/validate-sol-router-codex-v2_6.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sol-router-codex-v2-6-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-windows-distribution:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout distribution review branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Parse installer and runtime modules
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = Resolve-Path 'sol-router/install-windows-git-agent-codex-v2_6.ps1'
+          $tokens = $null
+          $errors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile($installer,[ref]$tokens,[ref]$errors)
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            throw 'Installer PowerShell syntax invalid'
+          }
+          Get-ChildItem 'sol-router/v2_6-review' -Filter '*.mjs' -File | ForEach-Object {
+            node --check $_.FullName
+            if ($LASTEXITCODE -ne 0) { throw "Node syntax failed: $($_.Name)" }
+          }
+          Write-Host 'PASS installer and module syntax'
+
+      - name: Run Codex hardening regression suite
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          node --test sol-router/v2_6-review/hardening.test.mjs
+
+      - name: Verify safe installer gates
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $text = Get-Content 'sol-router/install-windows-git-agent-codex-v2_6.ps1' -Raw
+          $required = @(
+            'SAFE_RECYCLE_BLOCKED_ACTIVE_RUN',
+            "executorKind = 'codex'",
+            "authMode = 'chatgpt-managed'",
+            "sandboxMode = 'workspace-write'",
+            'npm run test:windows',
+            'Wait-AgentHealth',
+            'Invoke-Canary',
+            'restoring backup',
+            'windows-git-agent-supervisor.mjs'
+          )
+          foreach ($needle in $required) {
+            if (-not $text.Contains($needle)) { throw "Required installer gate missing: $needle" }
+          }
+          if ($text -match 'OPENAI_API_KEY\s*=\s*["''][^"'']+') {
+            throw 'Installer contains an API key assignment'
+          }
+          Write-Host 'PASS installer safety gates and no API key assignment'
