@@ -27,7 +27,6 @@ export async function loadCanonicalStories(): Promise<Map<string, CanonicalStory
   if (cache && now - cache.at < CACHE_MS) return cache.byId;
   const upstream = await fetch(`${MANIFEST_URL}?ts=${now}`, {
     headers: {Accept: 'application/json', 'Cache-Control': 'no-cache'},
-    signal: AbortSignal.timeout(6000),
   });
   if (!upstream.ok) throw new Error(`manifest_http_${upstream.status}`);
   const manifest = (await upstream.json()) as {items?: ManifestItem[]};

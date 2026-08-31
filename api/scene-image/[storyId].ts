@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import {isEligibleSceneImageStory, loadCanonicalStories, resolveCanonicalVisual} from '../_canonicalContent';
+import {isEligibleSceneImageStory, loadCanonicalStories, resolveCanonicalVisual} from '../lib/canonicalContent';
 
 const STYLE_BIBLE =
   'warm modern Japanese editorial illustration, anime-inspired, cinematic but clean, soft lighting, no text in image, not photorealistic, consistent recurring cast';
@@ -56,6 +56,24 @@ async function generateViaEdge(storyId: string, prompt: string): Promise<{url?: 
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  try {
+    return await handleSceneImage(req, res);
+  } catch (error) {
+    console.error('scene-image handler failed', error);
+    const storyId = String(req.query.storyId || '');
+    res.setHeader('Cache-Control', 'public, max-age=60');
+    return res.status(200).json({
+      ok: true,
+      status: 'fallback',
+      storyId,
+      gradient: DEFAULT_GRADIENT,
+      palette: ['#4a6fa5', '#7ba7d9', '#c9d6e8'],
+      canaryBlocker: 'handler_error',
+    });
+  }
+}
+
+async function handleSceneImage(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') return res.status(405).json({ok: false, reason: 'method_not_allowed'});
   const storyId = String(req.query.storyId || '');
   if (!/^[a-zA-Z0-9_-]{1,100}$/.test(storyId)) return res.status(400).json({ok: false, reason: 'invalid_story'});
