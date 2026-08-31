@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const STYLE_BIBLE =
   'warm modern Japanese editorial illustration, anime-inspired, cinematic but clean, soft lighting, no text in image, not photorealistic, consistent recurring cast';
-const CANARY_STORY_IDS = new Set(['release-week-01-ep01']);
+const CANARY_STORY_IDS = new Set(['release-week-01-ep01', 'life-beyond-work-02-ep03']);
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kivebsjsdfdobxzaokbj.supabase.co';
 const SUPABASE_ANON_KEY =
@@ -64,7 +64,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const canGenerate = CANARY_STORY_IDS.has(storyId) && req.query.canary === '1';
   let canaryBlocker: string | undefined;
   if (canGenerate) {
-    const prompt = String(req.query.prompt || 'Rainy Tokyo station commute morning, young professional checking phone, cinematic editorial illustration');
+    const defaultPrompt = storyId === 'life-beyond-work-02-ep03'
+      ? 'Weekend evening izakaya counter, young professional with friend Mika ordering takeout bento boxes, warm lantern light, casual friendly atmosphere, warm editorial anime style, no text'
+      : 'Rainy Tokyo station commute morning, young professional checking phone, cinematic editorial illustration';
+    const prompt = String(req.query.prompt || defaultPrompt);
     const result = await generateViaEdge(storyId, prompt);
     if (result.url) {
       res.setHeader('Cache-Control', 'public, max-age=300');

@@ -34,4 +34,4 @@ export const buildSceneVisual = (story: Story): SceneVisual => {
 
 export const sceneImageApiPath = (storyId: string) => `/api/scene-image/${encodeURIComponent(storyId)}`;
 
-export const canaryStoryIds = new Set(['release-week-01-ep01']);
+export const canaryStoryIds = new Set(['release-week-01-ep01', 'life-beyond-work-02-ep03']);
