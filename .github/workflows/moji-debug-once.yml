@@ -10,57 +10,42 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Benchmark recent monthly NHK Easier text EPUB lookup
+      - name: Verify repeated production parsing is stable
         env:
-          HEADLINE: フランス子どもがSNSを使えないようにする
+          URL: https://nihongo-discovery-v2-20260831.vercel.app/api/moji-article?url=https%3A%2F%2Fwww.mojidict.com%2Farticle%2FlzXuLYNjQZ
         run: |
           python - <<'PY'
-          import concurrent.futures, html, io, json, os, re, time, urllib.error, urllib.request, zipfile
-
-          months=[(2026,9),(2026,8),(2026,7),(2026,6)]
-          target=re.sub(r'[\s　「」『』・：:、。！？!?（）()\[\]【】]','',os.environ['HEADLINE']).lower()
-          ua='NihongoDiscoveryArchiveProbe/1.0'
-
-          def norm(v):
-              v=html.unescape(re.sub(r'<[^>]+>','',v or ''))
-              return re.sub(r'[\s　「」『』・：:、。！？!?（）()\[\]【】]','',v).lower()
-
-          def fetch_month(ym):
-              y,m=ym; url=f'https://nhkeasier.com/{y:04d}/{m:02d}/epub'
+          import json, os, time, urllib.error, urllib.request
+          results=[]
+          for attempt in range(1, 9):
+              req=urllib.request.Request(os.environ['URL'], headers={'User-Agent':'NihongoDiscoveryStability/1.0'})
               try:
-                  req=urllib.request.Request(url,headers={'User-Agent':ua})
-                  with urllib.request.urlopen(req,timeout=10) as r: body=r.read()
-                  hits=[]
-                  with zipfile.ZipFile(io.BytesIO(body)) as z:
-                      names=[n for n in z.namelist() if n.startswith('EPUB/text/') and n.endswith('.xhtml') and not n.endswith('title_page.xhtml')]
-                      for name in names:
-                          text=z.read(name).decode('utf-8',errors='replace')
-                          title=re.search(r'<h3\b[^>]*>([\s\S]*?)</h3>',text,re.I)
-                          if not title: continue
-                          plain_title=html.unescape(re.sub(r'<[^>]+>','',title.group(1)))
-                          n=norm(plain_title)
-                          if n==target or target in n or n in target:
-                              hits.append({'month':f'{y:04d}-{m:02d}','url':url,'file':name,'title':plain_title,'xhtml':text})
-                  return {'ok':True,'month':f'{y:04d}-{m:02d}','bytes':len(body),'storyCount':len(names),'hits':hits}
-              except urllib.error.HTTPError as e:
-                  return {'ok':False,'month':f'{y:04d}-{m:02d}','status':e.code,'hits':[]}
-              except Exception as e:
-                  return {'ok':False,'month':f'{y:04d}-{m:02d}','error':repr(e),'hits':[]}
+                  with urllib.request.urlopen(req, timeout=25) as response:
+                      payload=json.loads(response.read().decode('utf-8'))
+                      row={
+                          'attempt':attempt,
+                          'status':response.status,
+                          'resolvedBy':payload.get('resolvedBy'),
+                          'title':payload.get('title'),
+                          'sentenceCount':len(payload.get('sentences') or []),
+                          'first':(payload.get('sentences') or [''])[0],
+                      }
+              except urllib.error.HTTPError as error:
+                  row={'attempt':attempt,'status':error.code,'body':error.read().decode('utf-8',errors='replace')}
+              except Exception as error:
+                  row={'attempt':attempt,'error':repr(error)}
+              print(json.dumps(row,ensure_ascii=False))
+              results.append(row)
+              time.sleep(1)
 
-          started=time.time()
-          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-              results=list(pool.map(fetch_month,months))
-          elapsed=time.time()-started
-          hits=[h for r in results for h in r['hits']]
-          compact_hits=[]
-          for h in hits:
-              text=re.sub(r'<(script|style)[^>]*>[\s\S]*?</\1>',' ',h['xhtml'],flags=re.I)
-              text=html.unescape(re.sub(r'<[^>]+>','\n',text))
-              lines=[' '.join(x.split()) for x in text.splitlines() if x.strip()]
-              compact_hits.append({k:v for k,v in h.items() if k!='xhtml'} | {'japaneseLines':[x for x in lines if re.search(r'[ぁ-んァ-ヶー]',x)][:8]})
-          print(json.dumps({
-              'elapsedSeconds':round(elapsed,3),'months':results,
-              'totalBytes':sum(r.get('bytes',0) for r in results),'hits':compact_hits
-          },ensure_ascii=False,indent=2,default=lambda o:'<xhtml>'))
-          if not hits: raise SystemExit('target not found')
+          bad=[]
+          for row in results:
+              if row.get('status') != 200: bad.append(row); continue
+              if row.get('resolvedBy') != 'public-nhk-archive': bad.append(row); continue
+              if '法国' not in (row.get('title') or ''): bad.append(row); continue
+              if row.get('sentenceCount',0) < 5: bad.append(row); continue
+              if '子どものSNSの使い方が' not in (row.get('first') or ''): bad.append(row); continue
+          if bad:
+              raise SystemExit('unstable production parse: '+json.dumps(bad,ensure_ascii=False))
+          print(json.dumps({'ok':True,'attempts':len(results)},ensure_ascii=False))
           PY
