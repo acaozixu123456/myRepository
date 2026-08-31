@@ -15,7 +15,19 @@ type RecallResult = 'good' | 'close' | 'miss';
 type ClipState = 'ready' | 'pending' | 'failed';
 
 const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
-const ACTIVE_SEASON = 'release-week-01';
+const SEASON_ORDER = ['release-week-01', 'life-beyond-work-02'];
+
+const resolveActiveSeason = (stories: Story[], memories: MemoryMap): string => {
+  for (const seasonId of SEASON_ORDER) {
+    const eps = stories
+      .filter(s => s.series?.seasonId === seasonId)
+      .sort((a, b) => (a.series?.episodeNo || 0) - (b.series?.episodeNo || 0));
+    if (!eps.length) continue;
+    const allDone = eps.every(s => (memories[s.id]?.lastSeen || 0) > 0);
+    if (!allDone) return seasonId;
+  }
+  return SEASON_ORDER.find(id => stories.some(s => s.series?.seasonId === id)) || 'release-week-01';
+};
 
 function App() {
   const [tab, setTab] = useState<Tab>('play');
@@ -65,9 +77,10 @@ function App() {
     return [...dynamic, ...evergreen.filter(s => !ids.has(s.id))];
   }, [dynamic, evergreen]);
 
+  const activeSeason = useMemo(() => resolveActiveSeason(stories, memories), [stories, memories]);
   const seasonStories = useMemo(() => stories
-    .filter(s => s.series?.seasonId === ACTIVE_SEASON)
-    .sort((a, b) => (a.series?.episodeNo || 0) - (b.series?.episodeNo || 0)), [stories]);
+    .filter(s => s.series?.seasonId === activeSeason)
+    .sort((a, b) => (a.series?.episodeNo || 0) - (b.series?.episodeNo || 0)), [stories, activeSeason]);
 
   const selected = stories.find(s => s.id === selectedId) || null;
   const learned = stories.filter(s => (memories[s.id]?.lastSeen || 0) > 0);
@@ -238,9 +251,9 @@ function App() {
             <header><strong>图鉴</strong></header>
             {seasonStories.length > 0 && (
               <div className="atlas-season">
-                <strong>连续世界</strong>
+                <strong>{seasonStories[0]?.series?.seasonTitle || '连续世界'}</strong>
                 <span>{seasonStories.length} 集</span>
-                <button onClick={() => openStory(seasonStories[0].id)}>从第1集</button>
+                <button onClick={() => openStory(seasonStories[0].id)}>从第1集开始</button>
               </div>
             )}
             <div className="atlas-simple">

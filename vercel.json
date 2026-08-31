@@ -3,6 +3,7 @@
   "framework": "vite",
   "regions": ["hnd1"],
   "functions": {
+    "api/scene-image/**/*.ts": { "maxDuration": 60 },
     "api/**/*.ts": { "maxDuration": 10 }
   }
 }

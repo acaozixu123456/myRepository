@@ -5,33 +5,14 @@ const STYLE_BIBLE =
 const CANARY_STORY_IDS = new Set(['release-week-01-ep01']);
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kivebsjsdfdobxzaokbj.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpdmVic2pzZGZkb2J4emFva2JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMzA2NDIsImV4cCI6MjEwMzcwNjY0Mn0.rzB2Yhn0vn1WqLJ2cq62WcSTsauNAm9vmn8MfNzgiYM';
+const SCENE_EDGE_URL = `${SUPABASE_URL}/functions/v1/nihongo-scene-image`;
 const SCENE_BUCKET = 'nihongo-audio';
 const SCENE_PREFIX = 'scene-images-v1';
 
 const DEFAULT_GRADIENT = 'linear-gradient(145deg, #4a6fa5 0%, #7ba7d9 55%, #c9d6e8 100%)';
-
-async function getOpenAIKey(): Promise<string | null> {
-  if (process.env.OPENAI_API_KEY) return process.env.OPENAI_API_KEY;
-  if (!SUPABASE_SERVICE_ROLE_KEY) return null;
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_vault_secret`, {
-      method: 'POST',
-      headers: {
-        apikey: SUPABASE_SERVICE_ROLE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({secret_name: 'nihongo_openai_api_key'}),
-      signal: AbortSignal.timeout(4000),
-    });
-    if (!res.ok) return null;
-    const data = await res.json() as {value?: string};
-    return data?.value || null;
-  } catch {
-    return null;
-  }
-}
 
 async function cachedImageUrl(storyId: string): Promise<string | null> {
   const path = `${SCENE_PREFIX}/${storyId}.webp`;
@@ -44,40 +25,29 @@ async function cachedImageUrl(storyId: string): Promise<string | null> {
   }
 }
 
-async function generateAndStore(storyId: string, prompt: string): Promise<string | null> {
-  const key = await getOpenAIKey();
-  if (!key || !SUPABASE_SERVICE_ROLE_KEY) return null;
-  const imageRes = await fetch('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: {Authorization: `Bearer ${key}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      model: 'gpt-image-1',
-      prompt: `${STYLE_BIBLE}. ${prompt}`,
-      size: '1024x1024',
-      quality: 'medium',
-      output_format: 'webp',
-    }),
-    signal: AbortSignal.timeout(25000),
-  });
-  if (!imageRes.ok) return null;
-  const payload = await imageRes.json() as {data?: Array<{b64_json?: string}>};
-  const b64 = payload.data?.[0]?.b64_json;
-  if (!b64) return null;
-  const bytes = new Uint8Array(Buffer.from(b64, 'base64'));
-  const path = `${SCENE_PREFIX}/${storyId}.webp`;
-  const upload = await fetch(`${SUPABASE_URL}/storage/v1/object/${SCENE_BUCKET}/${path}`, {
-    method: 'POST',
-    headers: {
-      apikey: SUPABASE_SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-      'Content-Type': 'image/webp',
-      'x-upsert': 'true',
-    },
-    body: bytes,
-    signal: AbortSignal.timeout(10000),
-  });
-  if (!upload.ok) return null;
-  return `${SUPABASE_URL}/storage/v1/object/public/${SCENE_BUCKET}/${path}`;
+async function generateViaEdge(storyId: string, prompt: string): Promise<{url?: string; blocker?: string}> {
+  try {
+    const res = await fetch(SCENE_EDGE_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        apikey: SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({storyId, prompt: `${STYLE_BIBLE}. ${prompt}`}),
+      signal: AbortSignal.timeout(55000),
+    });
+    const payload = await res.json().catch(() => ({})) as {ok?: boolean; url?: string; reason?: string; status?: string};
+    if (res.ok && payload.ok && payload.url) return {url: payload.url};
+    if (res.ok && payload.url) return {url: payload.url};
+    const cached = await cachedImageUrl(storyId);
+    if (cached) return {url: cached};
+    return {blocker: payload.reason || payload.status || `edge_http_${res.status}`};
+  } catch {
+    const cached = await cachedImageUrl(storyId);
+    if (cached) return {url: cached};
+    return {blocker: 'edge_timeout'};
+  }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -88,25 +58,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const cached = await cachedImageUrl(storyId);
   if (cached) {
     res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
-    return res.status(200).json({ok: true, status: 'ready', url: cached, storyId});
+    return res.status(200).json({ok: true, status: 'ready', url: cached, storyId, cached: true});
   }
 
   const canGenerate = CANARY_STORY_IDS.has(storyId) && req.query.canary === '1';
   let canaryBlocker: string | undefined;
   if (canGenerate) {
     const prompt = String(req.query.prompt || 'Rainy Tokyo station commute morning, young professional checking phone, cinematic editorial illustration');
-    if (!SUPABASE_SERVICE_ROLE_KEY) {
-      canaryBlocker = 'missing_supabase_service_role';
-    } else if (!await getOpenAIKey()) {
-      canaryBlocker = 'missing_openai_key';
-    } else {
-      const url = await generateAndStore(storyId, prompt);
-      if (url) {
-        res.setHeader('Cache-Control', 'public, max-age=300');
-        return res.status(200).json({ok: true, status: 'ready', url, storyId, generated: true});
-      }
-      canaryBlocker = 'generation_failed';
+    const result = await generateViaEdge(storyId, prompt);
+    if (result.url) {
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      return res.status(200).json({ok: true, status: 'ready', url: result.url, storyId, generated: true});
     }
+    canaryBlocker = result.blocker || 'generation_failed';
   }
 
   res.setHeader('Cache-Control', 'public, max-age=60');
