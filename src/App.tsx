@@ -8,6 +8,7 @@ import PracticeLane, {type Weakness} from './PracticeLane';
 import ReviewLane from './ReviewLane';
 import {PlayClipId} from './playPlan';
 import {playSfx} from './sfx';
+import {getSeasonProgress, resolveActiveSeason, seasonStoriesFor} from './seasonProgress';
 
 type Tab = 'play' | 'review' | 'collection' | 'atlas' | 'profile';
 type OpenMode = 'play' | 'review';
@@ -16,18 +17,6 @@ type ClipState = 'ready' | 'pending' | 'failed';
 
 const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
 const SEASON_ORDER = ['release-week-01', 'life-beyond-work-02'];
-
-const resolveActiveSeason = (stories: Story[], memories: MemoryMap): string => {
-  for (const seasonId of SEASON_ORDER) {
-    const eps = stories
-      .filter(s => s.series?.seasonId === seasonId)
-      .sort((a, b) => (a.series?.episodeNo || 0) - (b.series?.episodeNo || 0));
-    if (!eps.length) continue;
-    const allDone = eps.every(s => (memories[s.id]?.lastSeen || 0) > 0);
-    if (!allDone) return seasonId;
-  }
-  return SEASON_ORDER.find(id => stories.some(s => s.series?.seasonId === id)) || 'release-week-01';
-};
 
 function App() {
   const [tab, setTab] = useState<Tab>('play');
@@ -103,10 +92,9 @@ function App() {
     for (const story of latestBySeason.values()) reportProgress(story);
   }, [stories, memories]);
 
-  const activeSeason = useMemo(() => resolveActiveSeason(stories, memories), [stories, memories]);
-  const seasonStories = useMemo(() => stories
-    .filter(s => s.series?.seasonId === activeSeason)
-    .sort((a, b) => (a.series?.episodeNo || 0) - (b.series?.episodeNo || 0)), [stories, activeSeason]);
+  const activeSeason = useMemo(() => resolveActiveSeason(stories, memories, SEASON_ORDER), [stories, memories]);
+  const seasonStories = useMemo(() => seasonStoriesFor(stories, activeSeason), [stories, activeSeason]);
+  const seasonProgress = useMemo(() => getSeasonProgress(seasonStories, memories), [seasonStories, memories]);
 
   const selected = stories.find(s => s.id === selectedId) || null;
   const learned = stories.filter(s => (memories[s.id]?.lastSeen || 0) > 0);
@@ -114,9 +102,11 @@ function App() {
     .filter(s => (memories[s.id]?.nextReviewAt || 0) <= Date.now())
     .sort((a, b) => reviewPriority(memories[b.id]) - reviewPriority(memories[a.id]));
   const nextSeasonStory = seasonStories.find(s => !memories[s.id]?.lastSeen);
-  const continueStory = nextSeasonStory || due[0] || stories.find(s => !memories[s.id]?.lastSeen) || stories[0] || null;
+  const continueStory = seasonProgress.waitingForNext
+    ? null
+    : nextSeasonStory || due[0] || stories.find(s => !memories[s.id]?.lastSeen) || stories[0] || null;
   const continueSeries = continueStory?.series;
-  const completedSeason = seasonStories.filter(s => (memories[s.id]?.lastSeen || 0) > 0).length;
+  const completedSeason = seasonProgress.completedCount;
   const favoriteStories = stories.filter(s => favorites.includes(s.id));
 
   const unlock = () => {
@@ -179,8 +169,18 @@ function App() {
     }
     const meta = selected.series;
     const nextId = meta?.nextEpisodeId || selected.nextId;
-    const next = stories.find(s => s.id === nextId) || stories.find(s => s.id !== selected.id && !memories[s.id]?.lastSeen);
+    const explicitNext = stories.find(s => s.id === nextId);
     setOpenMode('play');
+    if (explicitNext) {
+      setSelectedId(explicitNext.id);
+      return;
+    }
+    if (meta) {
+      setSelectedId(null);
+      setTab('play');
+      return;
+    }
+    const next = stories.find(s => s.id !== selected.id && !memories[s.id]?.lastSeen);
     setSelectedId(next?.id || null);
   };
 
@@ -236,7 +236,7 @@ function App() {
           <>
             <header className="focus-header compact">
               <strong>继续玩</strong>
-              <span>{due.length ? `待复习 ${due.length}` : `${completedSeason}/${seasonStories.length || 12}`}</span>
+              <span>{completedSeason}/{seasonProgress.episodeCount || seasonStories.length || 12}</span>
             </header>
             {continueStory && (
               <section className="hero-play immersive">
@@ -254,6 +254,12 @@ function App() {
             )}
             {seasonStories.length > 0 && (
               <section className="season-progress compact">
+                {seasonProgress.waitingForNext && (
+                  <>
+                    <div><strong>下一集准备中</strong><span>第{seasonProgress.nextEpisodeNo}集</span></div>
+                    <small>故事会接着这里继续。</small>
+                  </>
+                )}
                 <div className="season-dots">{seasonStories.map(s => <i key={s.id} className={(memories[s.id]?.lastSeen || 0) > 0 ? 'done' : s.id === continueStory?.id ? 'current' : ''} />)}</div>
               </section>
             )}
@@ -279,7 +285,7 @@ function App() {
             {seasonStories.length > 0 && (
               <div className="atlas-season">
                 <strong>{seasonStories[0]?.series?.seasonTitle || '连续世界'}</strong>
-                <span>{seasonStories.length} 集</span>
+                <span>{seasonStories.length}/{seasonProgress.episodeCount || seasonStories.length} 集</span>
                 <button onClick={() => openStory(seasonStories[0].id)}>从第1集开始</button>
               </div>
             )}
