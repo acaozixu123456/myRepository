@@ -14,7 +14,7 @@ type OpenMode = 'play' | 'review';
 type RecallResult = 'good' | 'close' | 'miss';
 type ClipState = 'ready' | 'pending' | 'failed';
 
-const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
+const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
 const SEASON_ORDER = ['release-week-01', 'life-beyond-work-02'];
 
 const resolveActiveSeason = (stories: Story[], memories: MemoryMap): string => {
@@ -46,6 +46,7 @@ function App() {
   const [dynamic, setDynamic] = useState<Story[]>(fallbackDynamic);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const requestRef = useRef(0);
+  const progressReportedRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
     let active = true;
@@ -76,6 +77,31 @@ function App() {
     const ids = new Set(dynamic.map(s => s.id));
     return [...dynamic, ...evergreen.filter(s => !ids.has(s.id))];
   }, [dynamic, evergreen]);
+
+  const reportProgress = (story: Story) => {
+    const meta = story.series;
+    if (meta?.worldId !== 'life-in-japan' || !meta.seasonId || !meta.episodeNo) return;
+    const previous = progressReportedRef.current[meta.seasonId] || 0;
+    if (previous >= meta.episodeNo) return;
+    progressReportedRef.current[meta.seasonId] = meta.episodeNo;
+    void api.post('/api/content-progress', {storyId: story.id}).catch(() => {
+      if (progressReportedRef.current[meta.seasonId!] === meta.episodeNo) {
+        progressReportedRef.current[meta.seasonId!] = previous;
+      }
+    });
+  };
+
+  useEffect(() => {
+    const latestBySeason = new Map<string, Story>();
+    for (const story of stories) {
+      const meta = story.series;
+      if (meta?.worldId !== 'life-in-japan' || !meta.seasonId || !meta.episodeNo) continue;
+      if (!(memories[story.id]?.lastSeen || 0)) continue;
+      const current = latestBySeason.get(meta.seasonId);
+      if (!current || (current.series?.episodeNo || 0) < meta.episodeNo) latestBySeason.set(meta.seasonId, story);
+    }
+    for (const story of latestBySeason.values()) reportProgress(story);
+  }, [stories, memories]);
 
   const activeSeason = useMemo(() => resolveActiveSeason(stories, memories), [stories, memories]);
   const seasonStories = useMemo(() => stories
@@ -143,6 +169,7 @@ function App() {
   const finish = (result: RecallResult) => {
     if (!selected) return;
     const now = Date.now();
+    reportProgress(selected);
     setMemories(v => ({...v, [selected.id]: applyFinish(v[selected.id] || {strength: 0, nextReviewAt: 0, lastSeen: 0, version: 2}, result, selected)}));
     if (openMode === 'review') {
       const next = stories.find(s => s.id !== selected.id && (memories[s.id]?.lastSeen || 0) > 0 && (memories[s.id]?.nextReviewAt || 0) <= now);
