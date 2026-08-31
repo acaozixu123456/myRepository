@@ -104,6 +104,23 @@ const resolveEpisodeTerm = (
   return catalog?.find(s => s.id === episodeId)?.key?.term;
 };
 
+type EchoCandidate = {term: string; score: number};
+
+const seasonEpisodeIds = (story: Story, catalog?: Story[]): string[] => {
+  const seasonId = story.series?.seasonId;
+  if (!seasonId || !catalog?.length) return [];
+  return catalog
+    .filter(s => s.series?.seasonId === seasonId && (s.series?.episodeNo || 0) < (story.series?.episodeNo || 99))
+    .map(s => s.id);
+};
+
+const scoreExpression = (hit: ExpressionHit, weight: number, now: number): number => {
+  const recencyDays = Math.max(0, (now - hit.lastSeen) / (24 * 60 * 60 * 1000));
+  const recencyBoost = recencyDays <= 3 ? 3 : recencyDays <= 7 ? 1 : 0;
+  const weakness = hit.misses > 0 ? hit.misses * 4 + Math.max(0, 3 - hit.strength) : 0;
+  return weight * (weakness + recencyBoost);
+};
+
 export const pickMemoryEcho = (
   story: Story,
   memories: MemoryMap,
@@ -111,24 +128,38 @@ export const pickMemoryEcho = (
 ): {label: string; term: string} | null => {
   const rec = memories[story.id];
   const callbacks = (story as Story & {callbacks?: Array<{targetId: string; sourceEpisodeId: string}>}).callbacks || [];
-  const weakExpr = Object.entries(rec?.expressions || {})
-    .filter(([, v]) => v.misses > 0)
-    .sort((a, b) => b[1].misses - a[1].misses)[0];
-  const weakCallback = callbacks.find(cb => {
-    const hit = rec?.callbacks?.[cb.targetId];
-    return hit && hit.weak;
-  });
-  const seenCallback = callbacks
-    .filter(cb => memories[cb.sourceEpisodeId]?.lastSeen)
-    .map(cb => ({cb, term: resolveEpisodeTerm(cb.sourceEpisodeId, memories, catalog)}))
-    .find(entry => entry.term);
-  const callback = weakCallback || seenCallback?.cb;
-  if (callback) {
-    const term = resolveEpisodeTerm(callback.sourceEpisodeId, memories, catalog);
-    if (term) return {label: '以前见过', term};
+  const now = Date.now();
+  const candidates: EchoCandidate[] = [];
+
+  for (const [term, hit] of Object.entries(rec?.expressions || {})) {
+    const score = scoreExpression(hit, 1.2, now);
+    if (score > 0) candidates.push({term, score});
   }
-  if (weakExpr) return {label: '以前见过', term: weakExpr[0]};
-  return null;
+
+  for (const episodeId of seasonEpisodeIds(story, catalog)) {
+    const prior = memories[episodeId];
+    for (const [term, hit] of Object.entries(prior?.expressions || {})) {
+      const score = scoreExpression(hit, 1, now);
+      if (score > 0) candidates.push({term, score});
+    }
+  }
+
+  for (const cb of callbacks) {
+    const prior = memories[cb.sourceEpisodeId];
+    if (!prior?.lastSeen) continue;
+    const hit = rec?.callbacks?.[cb.targetId];
+    const term = resolveEpisodeTerm(cb.sourceEpisodeId, memories, catalog);
+    if (!term) continue;
+    let score = 2;
+    if (hit?.weak) score += 6;
+    const expr = prior.expressions?.[term];
+    if (expr) score += scoreExpression(expr, 0.5, now);
+    candidates.push({term, score});
+  }
+
+  if (!candidates.length) return null;
+  candidates.sort((a, b) => b.score - a.score);
+  return {label: '以前见过', term: candidates[0].term};
 };
 
 export const reviewPriority = (rec: MemoryRecord): number => {

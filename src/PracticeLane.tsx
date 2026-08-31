@@ -10,6 +10,8 @@ type RecallResult = 'good' | 'close' | 'miss';
 export type Weakness = 'meaning' | 'reply' | 'register' | 'transfer' | 'recall';
 
 const STAGE_LABELS = ['听一句猜意思', '现场怎么回', '平时怎么说', '敬语怎么说', '商务怎么说', '换个情景', '自己说一遍'];
+const SCENARIO_TASKS = ['跟上新情景', '看提示说一句', '只看场景说', '只听一次说', '直接说出来'];
+const stripCuePrefix = (cue: string) => cue.replace(/^(剧情|迁移)｜/, '');
 
 export default function PracticeLane({
   story,
@@ -84,10 +86,10 @@ export default function PracticeLane({
   };
 
   const registerData = step === 2
-    ? {label: '平时怎么说', prompt: '哪个最像平时真实会话？', choices: [{text: plan.daily, id: 'daily' as PlayClipId}, {text: plan.business, id: 'business' as PlayClipId}, {text: plan.polite, id: 'polite' as PlayClipId}], correct: 0, correctClip: 'daily' as PlayClipId, feedback: plan.daily}
+    ? {choices: [{text: plan.daily, id: 'daily' as PlayClipId}, {text: plan.business, id: 'business' as PlayClipId}, {text: plan.polite, id: 'polite' as PlayClipId}], correct: 0, correctClip: 'daily' as PlayClipId, feedback: plan.daily}
     : step === 3
-      ? {label: '敬语怎么说', prompt: '哪个版本更适合礼貌场景？', choices: [{text: plan.business, id: 'business' as PlayClipId}, {text: plan.polite, id: 'polite' as PlayClipId}, {text: plan.daily, id: 'daily' as PlayClipId}], correct: 1, correctClip: 'polite' as PlayClipId, feedback: plan.polite}
-      : {label: '商务怎么说', prompt: '正式场合最自然的是哪个？', choices: [{text: plan.polite, id: 'polite' as PlayClipId}, {text: plan.daily, id: 'daily' as PlayClipId}, {text: plan.business, id: 'business' as PlayClipId}], correct: 2, correctClip: 'business' as PlayClipId, feedback: `${plan.businessNote}｜${plan.business}`};
+      ? {choices: [{text: plan.business, id: 'business' as PlayClipId}, {text: plan.polite, id: 'polite' as PlayClipId}, {text: plan.daily, id: 'daily' as PlayClipId}], correct: 1, correctClip: 'polite' as PlayClipId, feedback: plan.polite}
+      : {choices: [{text: plan.polite, id: 'polite' as PlayClipId}, {text: plan.daily, id: 'daily' as PlayClipId}, {text: plan.business, id: 'business' as PlayClipId}], correct: 2, correctClip: 'business' as PlayClipId, feedback: `${plan.businessNote}｜${plan.business}`};
 
   const chooseRegister = (i: number) => {
     if (answer !== null) return;
@@ -108,7 +110,7 @@ export default function PracticeLane({
           onPick?.(i);
         }}>{c}</button>
       ))}</div>
-      {answer !== null && <div className="play-feedback"><strong>{answer === correct ? '对，就是这个感觉' : '记下错误点，马上听正确版本'}</strong><small>{feedback}</small></div>}
+      {answer !== null && <div className="play-feedback"><strong>{answer === correct ? '对了' : '听正确版本'}</strong><small>{feedback}</small></div>}
     </>
   );
 
@@ -138,7 +140,7 @@ export default function PracticeLane({
         ) : (
           <>
             <strong className="scene-line">{plan.scenarios[0].jp}</strong>
-            {clipStatus.listen !== 'ready' && <small className="audio-pending">声音准备中 · 先用文字玩</small>}
+            {clipStatus.listen !== 'ready' && <small className="audio-pending">声音准备中</small>}
           </>
         )}
         {(!ready('listen') || heard) && choice([plan.scenarios[0].cn, plan.scenarios[1].cn, plan.scenarios[2].cn], 0, `${plan.scenarios[0].jp} · ${plan.scenarios[0].cn}`, 'meaning')}
@@ -167,14 +169,14 @@ export default function PracticeLane({
     return (
       <section className="core-play">
         {top}
-        <h1>{registerData.prompt}</h1>
+        <h1>{STAGE_LABELS[step]}</h1>
         <div className="register-list">{registerData.choices.map((c, i) => (
           <div className={`register-row ${answer === i ? (i === registerData.correct ? 'correct' : 'wrong') : ''}`} key={`${i}-${c.text}`}>
             <button className="register-answer" onClick={() => chooseRegister(i)} disabled={answer !== null}>{c.text}</button>
             {ready(c.id) && <button className="register-audio" aria-label={`播放 ${c.text}`} disabled={!!busy} onClick={() => void play(c.id)}><Volume2 size={17} /></button>}
           </div>
         ))}</div>
-        {answer !== null && <div className="play-feedback"><strong>{answer === registerData.correct ? '对，关系和表达对上了' : '先抓住交际意图'}</strong><small>{registerData.feedback}</small></div>}
+        {answer !== null && <div className="play-feedback"><strong>{answer === registerData.correct ? '对了' : '听正确版本'}</strong><small>{registerData.feedback}</small></div>}
         {answer !== null && <div className="after-audio"><button disabled={!ready(registerData.correctClip) || !!busy} onClick={() => void play(registerData.correctClip)}><Volume2 size={16} /> 再听</button><button className="next-audio" onClick={next}>下一关 <ChevronRight size={17} /></button></div>}
       </section>
     );
@@ -198,12 +200,12 @@ export default function PracticeLane({
       setScenarioShown(true);
       if (!gaveUp && ready(id)) auto(id);
     };
-    const task = scenarioIndex === 0 ? '换情景，还能跟上吗？' : scenarioIndex === 1 ? '看提示，自己说一句' : scenarioIndex === 2 ? '只看场景，组织日语' : scenarioIndex === 3 ? '只听一次，自己说' : '直接说出来';
+    const task = SCENARIO_TASKS[Math.min(scenarioIndex, SCENARIO_TASKS.length - 1)];
     return (
       <section className="core-play">
         {top}
         <div className="scenario-counter">{scenarioIndex + 1}/{plan.scenarios.length}</div>
-        <p className="play-cue">{scene.cue}</p>
+        {scenarioIndex > 0 && scenarioIndex < 3 && <p className="play-cue">{stripCuePrefix(scene.cue)}</p>}
         <h1>{task}</h1>
         {scenarioIndex === 0 && !scenarioShown && (ready(id) ? (
           <button className="listen-first" disabled={!!busy} onClick={async () => { const ok = await play(id); if (ok) setScenarioShown(true); }}><Volume2 size={22} /><span>{busy === id ? '播放中…' : '先听'}</span></button>

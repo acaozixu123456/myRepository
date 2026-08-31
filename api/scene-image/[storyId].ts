@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import {isEligibleSceneImageStory, loadCanonicalStories, resolveCanonicalVisual} from '../_canonicalContent';
 
 const STYLE_BIBLE =
   'warm modern Japanese editorial illustration, anime-inspired, cinematic but clean, soft lighting, no text in image, not photorealistic, consistent recurring cast';
-const CANARY_STORY_IDS = new Set(['release-week-01-ep01', 'life-beyond-work-02-ep03']);
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kivebsjsdfdobxzaokbj.supabase.co';
 const SUPABASE_ANON_KEY =
@@ -13,6 +13,12 @@ const SCENE_BUCKET = 'nihongo-audio';
 const SCENE_PREFIX = 'scene-images-v1';
 
 const DEFAULT_GRADIENT = 'linear-gradient(145deg, #4a6fa5 0%, #7ba7d9 55%, #c9d6e8 100%)';
+
+function buildGradient(palette?: string[]): string {
+  if (!palette?.length) return DEFAULT_GRADIENT;
+  const [a, b, c] = palette;
+  return `linear-gradient(145deg, ${a} 0%, ${b || a} 55%, ${c || b || a} 100%)`;
+}
 
 async function cachedImageUrl(storyId: string): Promise<string | null> {
   const path = `${SCENE_PREFIX}/${storyId}.webp`;
@@ -38,7 +44,6 @@ async function generateViaEdge(storyId: string, prompt: string): Promise<{url?: 
       signal: AbortSignal.timeout(55000),
     });
     const payload = await res.json().catch(() => ({})) as {ok?: boolean; url?: string; reason?: string; status?: string};
-    if (res.ok && payload.ok && payload.url) return {url: payload.url};
     if (res.ok && payload.url) return {url: payload.url};
     const cached = await cachedImageUrl(storyId);
     if (cached) return {url: cached};
@@ -61,19 +66,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ok: true, status: 'ready', url: cached, storyId, cached: true});
   }
 
-  const canGenerate = CANARY_STORY_IDS.has(storyId) && req.query.canary === '1';
+  let visualMeta;
+  try {
+    visualMeta = await resolveCanonicalVisual(storyId);
+  } catch {
+    visualMeta = null;
+  }
+
+  const canGenerate = req.query.canary === '1' && visualMeta?.imagePrompt;
   let canaryBlocker: string | undefined;
   if (canGenerate) {
-    const defaultPrompt = storyId === 'life-beyond-work-02-ep03'
-      ? 'Weekend evening izakaya counter, young professional with friend Mika ordering takeout bento boxes, warm lantern light, casual friendly atmosphere, warm editorial anime style, no text'
-      : 'Rainy Tokyo station commute morning, young professional checking phone, cinematic editorial illustration';
-    const prompt = String(req.query.prompt || defaultPrompt);
-    const result = await generateViaEdge(storyId, prompt);
+    const result = await generateViaEdge(storyId, visualMeta!.imagePrompt!);
     if (result.url) {
       res.setHeader('Cache-Control', 'public, max-age=300');
       return res.status(200).json({ok: true, status: 'ready', url: result.url, storyId, generated: true});
     }
     canaryBlocker = result.blocker || 'generation_failed';
+  } else if (req.query.canary === '1') {
+    try {
+      const stories = await loadCanonicalStories();
+      canaryBlocker = isEligibleSceneImageStory(stories.get(storyId)) ? 'generation_failed' : 'not_eligible';
+    } catch {
+      canaryBlocker = 'manifest_unavailable';
+    }
   }
 
   res.setHeader('Cache-Control', 'public, max-age=60');
@@ -81,8 +96,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ok: true,
     status: 'fallback',
     storyId,
-    gradient: DEFAULT_GRADIENT,
-    palette: ['#4a6fa5', '#7ba7d9', '#c9d6e8'],
+    gradient: buildGradient(visualMeta?.palette),
+    palette: visualMeta?.palette || ['#4a6fa5', '#7ba7d9', '#c9d6e8'],
     ...(canaryBlocker ? {canaryAttempted: true, canaryBlocker} : {}),
   });
 }

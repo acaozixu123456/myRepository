@@ -215,7 +215,7 @@ function App() {
               <section className="hero-play immersive">
                 <EpisodeVisual story={continueStory} />
                 <div className="hero-copy">
-                  <small>{continueSeries ? `${continueSeries.worldTitle} · 第${continueSeries.episodeNo}集` : continueStory.category}</small>
+                  <small>{continueSeries ? `第${continueSeries.episodeNo}集` : continueStory.category}</small>
                   <h1>{continueSeries?.todayHook || continueStory.key.term}</h1>
                   <button onClick={() => openStory(continueStory.id, 'play')}>
                     <Sparkles size={19} />
@@ -234,7 +234,7 @@ function App() {
         )}
         {tab === 'review' && (
           <section className="secondary-page">
-            <header><strong>再遇</strong><small>按薄弱点优先安排</small></header>
+            <header><strong>再遇</strong></header>
             <div className="topic-list">{(due.length ? due : learned).map(s => card(s, 'review'))}</div>
             {!learned.length && <p className="empty-copy">先玩一组，这里会安排再遇。</p>}
           </section>

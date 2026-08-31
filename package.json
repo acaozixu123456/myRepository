@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "validate:semantics": "node scripts/patch-connected-semantics.mjs"
+    "validate:semantics": "node scripts/patch-connected-semantics.mjs",
+    "validate:connected": "node ../nihongo-content/scripts/validate-connected-episode.mjs ../nihongo-content/nihongo-discovery/content/manifest.json"
   },
   "dependencies": {
     "lucide-react": "^0.469.0",

@@ -118,6 +118,29 @@ describe('memory', () => {
     expect(next.expressions?.['遅れそうです']?.strength).toBe(1);
   });
 
+  it('prefers weak recent expression over static callback', () => {
+    const memories = migrateMemory({
+      'life-beyond-work-02-ep01': {
+        strength: 2, nextReviewAt: 0, lastSeen: Date.now() - 1000, version: 2,
+        expressions: {'お世話になっております': {strength: 1, lastSeen: Date.now() - 1000, misses: 2}},
+      },
+      'life-beyond-work-02-ep02': {strength: 2, nextReviewAt: 0, lastSeen: Date.now(), version: 2},
+    });
+    const ep03 = {
+      ...ep02,
+      id: 'life-beyond-work-02-ep03',
+      series: {seasonId: 'life-beyond-work-02', episodeNo: 3, castIds: ['mika']},
+      callbacks: [
+        {targetId: 'life-beyond-work-02-ep02', sourceEpisodeId: 'life-beyond-work-02-ep02', role: 'natural_reuse'},
+        {targetId: 'life-beyond-work-02-ep01', sourceEpisodeId: 'life-beyond-work-02-ep01', role: 'natural_reuse'},
+      ],
+    };
+    const ep02Story = {...ep02, id: 'life-beyond-work-02-ep02', key: {term: '少々お待ちください', reading: 'r', meaning: 'm', insight: 'i', anchor: 'a'}, series: {seasonId: 'life-beyond-work-02', episodeNo: 2}};
+    const ep01Story = {...ep01, id: 'life-beyond-work-02-ep01', key: {term: 'お世話になっております', reading: 'r', meaning: 'm', insight: 'i', anchor: 'a'}, series: {seasonId: 'life-beyond-work-02', episodeNo: 1}};
+    const echo = pickMemoryEcho(ep03, memories, [ep01Story, ep02Story, ep03]);
+    expect(echo?.term).toBe('お世話になっております');
+  });
+
   it('surfaces at most one memory echo', () => {
     const memories = migrateMemory({
       'release-week-01-ep01': {strength: 2, nextReviewAt: 0, lastSeen: 1, version: 2, expressions: {'遅れそうです': {strength: 1, lastSeen: 1, misses: 1}}},
@@ -156,5 +179,14 @@ describe('visual fallback', () => {
     const visual = buildSceneVisual(ep01);
     expect(visual.gradient).toContain('linear-gradient');
     expect(visual.sceneId).toBeTruthy();
+  });
+});
+
+describe('canonical scene image eligibility', () => {
+  it('requires visualMeta imagePrompt for connected stories', () => {
+    const withPrompt = buildSceneVisual({...ep01, visualMeta: {imagePrompt: 'rainy station', palette: ['#111', '#222']}});
+    expect(withPrompt.imagePrompt).toBe('rainy station');
+    const without = buildSceneVisual(ep01);
+    expect(without.imagePrompt).toBeUndefined();
   });
 });
