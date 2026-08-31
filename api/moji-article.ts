@@ -7,7 +7,8 @@ const FEED_CACHE_MS = 5 * 60_000;
 const NHK_EASIER_FEED_URL = 'https://nhkeasier.com/feed/?no-furiganas';
 const ALLOWED_HOSTS = new Set(['mojidict.com', 'www.mojidict.com', 'm.mojidict.com']);
 const ARTICLE_PATH = /^\/article\/[A-Za-z0-9_-]+\/?$/;
-const MEMBER_ONLY_PATTERN = /本文为会员专享文章|会员专享文章|请打开\s*App\s*阅读|请打开\s*APP\s*阅读/i;
+const MEMBER_ONLY_PATTERN = /本文为会员专享文章|会员专享文章|请打开\s*App\s*阅读|请打开\s*APP\s*阅读|isVIP["']?\s*[:=]\s*(?:true|[a-zA-Z])/i;
+const TRANSLATION_MARKER = /(?:👉|→)?\s*(?:点击单词查询释义|點擊單詞查詢釋義|クリックして単語の意味を調べる)/gi;
 const UI_NOISE = [
   '显示译文', '点击显示译文', '隐藏译文', '点击重新加载', '点赞', '收藏', '评论',
   '登录MOJi', '注册', '下载MOJi', '完整内容请下载', '扫码', '扫一扫', '相关推荐',
@@ -51,6 +52,11 @@ const decodeHtml = (value: string): string => value
   .replace(/&lt;/gi, '<')
   .replace(/&gt;/gi, '>');
 
+const decodeScriptText = (value: string): string => decodeHtml(value)
+  .replace(/\\u([0-9a-f]{4})/gi, (_, code: string) => decodeCodePoint(code, 16))
+  .replace(/\\n|\\r|\\t/g, ' ')
+  .replace(/\\(["'])/g, '$1');
+
 const normalizeMojiArticleUrl = (input: string): string | null => {
   try {
     const url = new URL(input.trim());
@@ -70,8 +76,9 @@ const readAttribute = (tag: string, name: string): string => {
 const metaContent = (html: string, names: string[]): string => {
   const accepted = new Set(names.map(value => value.toLowerCase()));
   for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
-    const name = (readAttribute(tag, 'property') || readAttribute(tag, 'name')).toLowerCase();
-    if (!accepted.has(name)) continue;
+    const property = readAttribute(tag, 'property').toLowerCase();
+    const name = readAttribute(tag, 'name').toLowerCase();
+    if (!accepted.has(property) && !accepted.has(name)) continue;
     const content = readAttribute(tag, 'content');
     if (content) return decodeHtml(content);
   }
@@ -86,12 +93,28 @@ const cleanTitle = (value: string): string => decodeHtml(value)
   .trim()
   .slice(0, 160);
 
+const scriptString = (html: string, property: string): string => {
+  const decoded = decodeScriptText(html);
+  const patterns = [
+    new RegExp(`${property}\\s*=\\s*["']([\\s\\S]{1,600}?)["']\\s*;`, 'i'),
+    new RegExp(`["']${property}["']\\s*:\\s*["']([\\s\\S]{1,600}?)["']`, 'i'),
+  ];
+  for (const pattern of patterns) {
+    const value = pattern.exec(decoded)?.[1];
+    if (value) return value;
+  }
+  return '';
+};
+
 const extractTitle = (html: string): string => {
   const heading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(html)?.[1] || '';
   const documentTitle = /<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(html)?.[1] || '';
-  const candidates = [metaContent(html, ['og:title', 'twitter:title']), heading, documentTitle]
-    .map(cleanTitle)
-    .filter(Boolean);
+  const candidates = [
+    metaContent(html, ['og:title', 'twitter:title']),
+    scriptString(html, 'notationTitle'),
+    heading,
+    documentTitle,
+  ].map(cleanTitle).filter(Boolean);
   return candidates.find(title => !/^MOJi(?:辞書|辞书)?$/i.test(title)) || 'NHK日语听力';
 };
 
@@ -103,7 +126,7 @@ const normalizeJapaneseSpacing = (value: string): string => value
 const cleanSentence = (value: string): string => normalizeJapaneseSpacing(decodeHtml(value)
   .replace(/<(rt|rp)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
   .replace(/<[^>]+>/g, ' ')
-  .replace(/👉?\s*点击单词查询释义\s*/gi, ' ')
+  .replace(TRANSLATION_MARKER, ' ')
   .replace(/^\s*(?:[•●▪︎◆◇■□▶︎▷]|[-–—*#>]|\d+[.)、．])\s*/u, '')
   .replace(/\s+/g, ' '))
   .trim();
@@ -143,27 +166,45 @@ const extractJapaneseSentences = (source: string): string[] => {
   return result;
 };
 
-const extractHeadlineHint = (html: string): string => {
-  const description = metaContent(html, ['og:description', 'description', 'twitter:description']);
-  const lead = description.split(/👉|→|点击单词查询释义|點擊單詞查詢釋義/i)[0] || '';
+const bestHeadlineFromText = (value: string): string => {
+  const marker = new RegExp(TRANSLATION_MARKER.source, 'i');
+  const lead = value.split(marker)[0] || '';
   const runs = lead.match(/[\u3000-\u30ff\u3400-\u9fffA-Za-z0-9０-９「」『』・、。！？!?\s]+/g) || [];
   return runs
     .map(cleanSentence)
-    .filter(value => value.length >= 8 && /[ぁ-んァ-ヶー]/.test(value))
+    .filter(candidate => candidate.length >= 8 && /[ぁ-んァ-ヶー]/.test(candidate))
     .sort((a, b) => b.length - a.length)[0]
     ?.replace(/[。！？!?]+$/, '') || '';
+};
+
+const extractHeadlineHint = (html: string): string => {
+  const descriptions = [
+    metaContent(html, ['og:description', 'description', 'twitter:description']),
+    scriptString(html, 'excerpt'),
+  ].filter(Boolean);
+  for (const description of descriptions) {
+    const candidate = bestHeadlineFromText(description);
+    if (candidate) return candidate;
+  }
+
+  const decoded = decodeScriptText(html);
+  const marker = new RegExp(TRANSLATION_MARKER.source, 'i');
+  const match = marker.exec(decoded);
+  if (!match) return '';
+  const nearby = decoded.slice(Math.max(0, match.index - 220), match.index + match[0].length);
+  return bestHeadlineFromText(nearby);
 };
 
 const parseMojiArticle = (html: string, sourceUrl: string): ParsedArticle => {
   const title = extractTitle(html);
   const headlineHint = extractHeadlineHint(html);
-  const memberOnly = MEMBER_ONLY_PATTERN.test(html);
+  const memberOnly = MEMBER_ONLY_PATTERN.test(decodeScriptText(html));
   const sentences = memberOnly ? [] : extractJapaneseSentences(html);
   return {
     sourceUrl,
     title,
     sentences,
-    access: memberOnly ? 'member-only' : sentences.length ? 'full' : 'excerpt',
+    access: memberOnly ? 'member-only' : sentences.length >= 2 ? 'full' : 'excerpt',
     ...(headlineHint ? {headlineHint} : {}),
   };
 };
@@ -218,11 +259,10 @@ const matchNhkFeed = (xml: string, headlineHint: string): FeedMatch | null => {
   return candidates.sort((a, b) => b.score - a.score)[0] || null;
 };
 
-const fetchArticleHtml = async (canonicalUrl: string): Promise<{html: string; finalUrl: string}> => {
+const fetchArticlePages = async (canonicalUrl: string): Promise<Array<{html: string; finalUrl: string}>> => {
   const articleId = canonicalUrl.split('/').pop();
   const candidates = [canonicalUrl, `https://m.mojidict.com/article/${articleId}`];
-  let lastStatus = 0;
-  for (const url of candidates) {
+  const pages = await Promise.all(candidates.map(async url => {
     try {
       const response = await fetch(url, {
         redirect: 'follow',
@@ -234,16 +274,15 @@ const fetchArticleHtml = async (canonicalUrl: string): Promise<{html: string; fi
         },
         signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       });
-      lastStatus = response.status;
       const finalUrl = normalizeMojiArticleUrl(response.url);
-      if (!response.ok || !finalUrl) continue;
+      if (!response.ok || !finalUrl) return null;
       const html = (await response.text()).slice(0, MAX_HTML_BYTES);
-      if (html.length >= 200) return {html, finalUrl};
+      return html.length >= 200 ? {html, finalUrl} : null;
     } catch {
-      // Try the alternate MOJi host.
+      return null;
     }
-  }
-  throw new Error(lastStatus ? `upstream_http_${lastStatus}` : 'upstream_unavailable');
+  }));
+  return pages.filter((page): page is {html: string; finalUrl: string} => Boolean(page));
 };
 
 const fetchNhkFeed = async (): Promise<string> => {
@@ -271,18 +310,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!canonicalUrl) return res.status(400).json({ok: false, reason: 'invalid_moji_article_url'});
 
   try {
-    const {html, finalUrl} = await fetchArticleHtml(canonicalUrl);
-    const article = parseMojiArticle(html, finalUrl);
-    if (article.access === 'full' && article.sentences.length) {
-      return res.status(200).json({ok: true, ...article, sentenceCount: article.sentences.length, resolvedBy: 'moji-page'});
-    }
+    const pages = await fetchArticlePages(canonicalUrl);
+    if (!pages.length) return res.status(502).json({ok: false, reason: 'upstream_unavailable'});
+    const articles = pages.map(page => parseMojiArticle(page.html, page.finalUrl));
+    const article = articles.sort((a, b) => Number(Boolean(b.headlineHint)) - Number(Boolean(a.headlineHint)) || b.sentences.length - a.sentences.length)[0];
 
-    if (article.headlineHint) {
-      const match = matchNhkFeed(await fetchNhkFeed(), article.headlineHint);
+    const headlineHint = articles.find(candidate => candidate.headlineHint)?.headlineHint;
+    if (headlineHint) {
+      const match = matchNhkFeed(await fetchNhkFeed(), headlineHint);
       if (match) {
         return res.status(200).json({
           ok: true,
           ...article,
+          headlineHint,
           sentences: match.sentences,
           access: 'matched-public',
           sentenceCount: match.sentences.length,
@@ -293,7 +333,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    return res.status(422).json({ok: false, reason: article.access === 'member-only' ? 'member_transcript_unavailable' : 'no_japanese_sentences', title: article.title});
+    const direct = articles.find(candidate => candidate.access === 'full' && candidate.sentences.length >= 2);
+    if (direct) return res.status(200).json({ok: true, ...direct, sentenceCount: direct.sentences.length, resolvedBy: 'moji-page'});
+
+    return res.status(422).json({
+      ok: false,
+      reason: articles.some(candidate => candidate.access === 'member-only') ? 'member_transcript_unavailable' : 'no_japanese_sentences',
+      title: article.title,
+      headlineDetected: Boolean(headlineHint),
+    });
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'parse_failed';
     console.error('moji-article handler failed', reason);
