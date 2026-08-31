@@ -1,0 +1,49 @@
+name: Validate Reviewed Codex Switch
+
+on:
+  push:
+    branches:
+      - sol-router-agent-dist
+    paths:
+      - 'sol-router/switch-windows-agent-to-codex.ps1'
+      - '.github/workflows/validate-codex-switch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: sol-router-agent-dist
+
+      - name: Parse reviewed bootstrap
+        shell: pwsh
+        run: |
+          $path=(Resolve-Path 'sol-router/switch-windows-agent-to-codex.ps1').Path
+          $tokens=$null
+          $errors=$null
+          [void][System.Management.Automation.Language.Parser]::ParseFile($path,[ref]$tokens,[ref]$errors)
+          if($errors -and $errors.Count -gt 0){
+            $errors|ForEach-Object{Write-Error ("line={0} col={1} {2}" -f $_.Extent.StartLineNumber,$_.Extent.StartColumnNumber,$_.Message)}
+            exit 1
+          }
+          Write-Host 'PASS reviewed bootstrap PowerShell syntax'
+
+      - name: Verify fail-closed gates are present
+        shell: pwsh
+        run: |
+          $body=Get-Content -Raw 'sol-router/switch-windows-agent-to-codex.ps1'
+          foreach($required in @(
+            'ACTIVE_AGENT_BUSY',
+            'RecoverStaleRunId',
+            'Language.Parser',
+            'full tests, active-run gate, health, isolated canary and automatic rollback'
+          )){
+            if(-not $body.Contains($required)){throw "missing reviewed gate: $required"}
+          }
+          Write-Host 'PASS reviewed bootstrap gate markers'
