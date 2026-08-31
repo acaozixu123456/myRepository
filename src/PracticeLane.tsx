@@ -169,7 +169,6 @@ export default function PracticeLane({
     return (
       <section className="core-play">
         {top}
-        <h1>{STAGE_LABELS[step]}</h1>
         <div className="register-list">{registerData.choices.map((c, i) => (
           <div className={`register-row ${answer === i ? (i === registerData.correct ? 'correct' : 'wrong') : ''}`} key={`${i}-${c.text}`}>
             <button className="register-answer" onClick={() => chooseRegister(i)} disabled={answer !== null}>{c.text}</button>
