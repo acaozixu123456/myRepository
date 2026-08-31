@@ -1,0 +1,25 @@
+name: MOJi parser production smoke
+
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths:
+      - '.github/workflows/moji-parser-smoke-once.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify the real shared MOJi article
+        env:
+          ENDPOINT: https://nihongo-discovery-v2-20260831.vercel.app/api/moji-article?url=https%3A%2F%2Fwww.mojidict.com%2Farticle%2FIzr0dhrpz3
+        run: |
+          for attempt in $(seq 1 12); do
+            body="$(curl --max-time 20 -fsS "$ENDPOINT" || true)"
+            if BODY="$body" node -e 'const p=JSON.parse(process.env.BODY||"{}"); if(!p.ok||!p.title||!Array.isArray(p.sentences)||p.sentences.length<1) process.exit(1); console.log(JSON.stringify({ok:true,title:p.title,sentenceCount:p.sentences.length}));'; then
+              exit 0
+            fi
+            BODY="$body" node -e 'try { const p=JSON.parse(process.env.BODY||"{}"); console.log(JSON.stringify({ok:Boolean(p.ok),reason:p.reason||"unknown",title:p.title||"",sentenceCount:Array.isArray(p.sentences)?p.sentences.length:0})); } catch { console.log(JSON.stringify({ok:false,reason:"non_json_response"})); }'
+            sleep 5
+          done
+          exit 1
