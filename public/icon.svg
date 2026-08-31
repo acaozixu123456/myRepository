@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="日语世界">
+  <rect width="512" height="512" rx="118" fill="#17221c"/>
+  <path d="M119 157c0-30 24-54 54-54h166c30 0 54 24 54 54v119c0 30-24 54-54 54H235l-82 73 18-73c-29-1-52-25-52-54V157Z" fill="#dff08a"/>
+  <path d="M169 216c29-39 57-39 86 0s57 39 86 0" fill="none" stroke="#17221c" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="183" cy="171" r="12" fill="#17221c"/>
+  <circle cx="329" cy="171" r="12" fill="#17221c"/>
+</svg>

@@ -1,8 +1,30 @@
 import {type ClipboardEvent, useEffect, useMemo, useRef, useState} from 'react';
-import {ArrowLeft, Check, ChevronRight, ExternalLink, Headphones, Link2, LoaderCircle, Mic2, RotateCcw, Sparkles, Square} from 'lucide-react';
+import {
+  ArrowLeft,
+  Check,
+  ChevronRight,
+  Copy,
+  ExternalLink,
+  Headphones,
+  Link2,
+  LoaderCircle,
+  Mic2,
+  RotateCcw,
+  Share2,
+  Smartphone,
+  Sparkles,
+  Square,
+} from 'lucide-react';
 import {api} from './api';
 import type {Story} from './content';
 import EpisodeVisual from './EpisodeVisual';
+import {
+  buildFallbackCoach,
+  isNhkCoachResult,
+  pickCoachRecommendation,
+  type NhkCoachRecommendation,
+  type NhkCoachResult,
+} from './nhkCoach';
 import {
   completedNhkStreak,
   createNhkSession,
@@ -17,6 +39,10 @@ import {
   toDateKey,
   upsertNhkSession,
 } from './nhkMorning';
+import {
+  clearCapturedSharedMojiUrl,
+  readCapturedSharedMojiUrl,
+} from './shareTarget';
 import './nhkMorning.css';
 
 type VoiceRecorderProps = {
@@ -26,6 +52,8 @@ type VoiceRecorderProps = {
 
 type RecorderState = 'idle' | 'recording' | 'ready' | 'error';
 type ArticleParseStatus = 'idle' | 'loading' | 'ready' | 'error';
+type CoachStatus = 'idle' | 'loading' | 'ready' | 'fallback';
+
 type MojiArticleResponse = {
   ok?: boolean;
   sourceUrl?: string;
@@ -34,10 +62,40 @@ type MojiArticleResponse = {
   reason?: string;
 };
 
+type NhkCoachResponse = {
+  ok?: boolean;
+  coach?: unknown;
+  model?: string;
+  cached?: boolean;
+  reason?: string;
+};
+
 const sessionSentences = (session: NhkMorningSession): string[] => {
   if (session.selectedSentences?.length) return session.selectedSentences.slice(0, 3);
   return session.shadowText.split(/\n+/).map(value => value.trim()).filter(Boolean).slice(0, 3);
 };
+
+const formatDate = (dateKey: string) => {
+  const [, month, day] = dateKey.split('-');
+  return `${Number(month)}月${Number(day)}日`;
+};
+
+const resetSessionForSource = (session: NhkMorningSession, sourceUrl: string): NhkMorningSession => ({
+  ...session,
+  sourceUrl,
+  title: '',
+  shadowText: '',
+  selectedSentences: [],
+  recapText: '',
+  keyExpression: '',
+  dailyVersion: '',
+  workVersion: '',
+  opinion: '',
+  worldAnswer: '',
+  recapRecordingSeconds: 0,
+  worldRecordingSeconds: 0,
+  completedAt: undefined,
+});
 
 function VoiceRecorder({label, onDuration}: VoiceRecorderProps) {
   const [state, setState] = useState<RecorderState>('idle');
@@ -150,11 +208,6 @@ type NhkMorningPageProps = {
 
 type PageView = 'home' | 'today' | 'recall';
 
-const formatDate = (dateKey: string) => {
-  const [, month, day] = dateKey.split('-');
-  return `${Number(month)}月${Number(day)}日`;
-};
-
 export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPageProps) {
   const todayKey = toDateKey();
   const [sessions, setSessions] = useState<NhkMorningSession[]>(() => loadNhkSessions());
@@ -169,84 +222,176 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const [selectedSentences, setSelectedSentences] = useState<string[]>(initialSentences);
   const [parseStatus, setParseStatus] = useState<ArticleParseStatus>(initialSentences.length ? 'ready' : 'idle');
   const [parseError, setParseError] = useState('');
+  const [coach, setCoach] = useState<NhkCoachResult | null>(null);
+  const [coachStatus, setCoachStatus] = useState<CoachStatus>('idle');
+  const [showShareHelp, setShowShareHelp] = useState(false);
+  const [shareCopyStatus, setShareCopyStatus] = useState('');
+  const draftRef = useRef(draft);
+  const selectedRef = useRef(selectedSentences);
+  const parseRequestRef = useRef(0);
+  const coachRequestRef = useRef(0);
+  const selectionTouchedRef = useRef(false);
+  const sharedHandledRef = useRef('');
 
   useEffect(() => saveNhkSessions(sessions), [sessions]);
+  useEffect(() => { draftRef.current = draft; }, [draft]);
+  useEffect(() => { selectedRef.current = selectedSentences; }, [selectedSentences]);
 
   const todaySession = useMemo(() => findTodayNhkSession(sessions, todayKey), [sessions, todayKey]);
   const recallSession = useMemo(() => pickRecallSession(sessions, todayKey), [sessions, todayKey]);
   const streak = useMemo(() => completedNhkStreak(sessions, todayKey), [sessions, todayKey]);
   const recent = useMemo(() => sessions.filter(session => session.completedAt).slice(0, 3), [sessions]);
+  const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
 
   const persist = (next: NhkMorningSession) => {
+    draftRef.current = next;
     setDraft(next);
     setSessions(current => upsertNhkSession(current, next));
   };
 
-  const patch = (values: Partial<NhkMorningSession>) => persist({...draft, ...values});
+  const patch = (values: Partial<NhkMorningSession>) => persist({...draftRef.current, ...values});
+
+  const recommendationFor = (sentence: string): NhkCoachRecommendation | undefined =>
+    coach?.recommendations.find(item => item.sentence === sentence);
+
+  const primaryRecommendation = useMemo(
+    () => pickCoachRecommendation(coach, selectedSentences),
+    [coach, selectedSentences],
+  );
+
+  const applyCoachFields = (
+    session: NhkMorningSession,
+    result: NhkCoachResult | null,
+    selected: string[],
+  ): NhkMorningSession => {
+    const recommendation = pickCoachRecommendation(result, selected);
+    const shadowText = selected.join('\n');
+    const fallbackExpression = suggestExpression(shadowText);
+    return {
+      ...session,
+      selectedSentences: selected,
+      shadowText,
+      keyExpression: recommendation?.expression || session.keyExpression || fallbackExpression,
+      dailyVersion: recommendation?.dailyVersion || session.dailyVersion || fallbackExpression,
+      workVersion: recommendation?.workVersion || session.workVersion,
+    };
+  };
+
+  const loadCoach = async (
+    title: string,
+    sentences: string[],
+    baseSession: NhkMorningSession,
+    autoSelect: boolean,
+  ) => {
+    const request = ++coachRequestRef.current;
+    const fallback = buildFallbackCoach(title, sentences);
+    setCoach(fallback);
+    setCoachStatus('loading');
+
+    if (autoSelect && !selectionTouchedRef.current) {
+      const recommended = fallback.recommendations.map(item => item.sentence).slice(0, 3);
+      selectedRef.current = recommended;
+      setSelectedSentences(recommended);
+      persist(applyCoachFields(baseSession, fallback, recommended));
+    }
+
+    try {
+      const {data} = await api.post<NhkCoachResponse>('/api/nhk-coach', {title, sentences});
+      if (request !== coachRequestRef.current) return;
+      if (!data?.ok || !isNhkCoachResult(data.coach)) throw new Error(data?.reason || 'coach_failed');
+      const generated = data.coach;
+      setCoach(generated);
+      setCoachStatus('ready');
+
+      if (autoSelect && !selectionTouchedRef.current && draftRef.current.sourceUrl === baseSession.sourceUrl) {
+        const recommended = generated.recommendations.map(item => item.sentence).slice(0, 3);
+        selectedRef.current = recommended;
+        setSelectedSentences(recommended);
+        persist(applyCoachFields(draftRef.current, generated, recommended));
+      }
+    } catch {
+      if (request !== coachRequestRef.current) return;
+      setCoach(fallback);
+      setCoachStatus('fallback');
+    }
+  };
 
   const openToday = () => {
     const next = todaySession || createNhkSession(todayKey);
     const selected = sessionSentences(next);
+    draftRef.current = next;
+    selectedRef.current = selected;
+    selectionTouchedRef.current = Boolean(selected.length);
     setDraft(next);
     setSelectedSentences(selected);
     setArticleSentences(selected);
     setParseStatus(selected.length ? 'ready' : 'idle');
     setParseError('');
+    setCoach(null);
+    setCoachStatus('idle');
     setStep(0);
     setShowOriginal(false);
     setView('today');
+    if (next.title && selected.length) void loadCoach(next.title, selected, next, false);
   };
 
-  const resetAfterSourceChange = (sourceUrl: string): NhkMorningSession => ({
-    ...draft,
-    sourceUrl,
-    title: '',
-    shadowText: '',
-    selectedSentences: [],
-    recapText: '',
-    keyExpression: '',
-    dailyVersion: '',
-    workVersion: '',
-    opinion: '',
-    worldAnswer: '',
-    recapRecordingSeconds: 0,
-    worldRecordingSeconds: 0,
-    completedAt: undefined,
-  });
-
   const changeSourceUrl = (sourceUrl: string) => {
-    setDraft(resetAfterSourceChange(sourceUrl));
+    parseRequestRef.current += 1;
+    coachRequestRef.current += 1;
+    selectionTouchedRef.current = false;
+    const next = resetSessionForSource(draftRef.current, sourceUrl);
+    draftRef.current = next;
+    selectedRef.current = [];
+    setDraft(next);
     setArticleSentences([]);
     setSelectedSentences([]);
     setParseStatus('idle');
     setParseError('');
+    setCoach(null);
+    setCoachStatus('idle');
   };
 
-  const parseArticle = async (inputUrl = draft.sourceUrl) => {
+  const parseArticle = async (inputUrl = draftRef.current.sourceUrl, baseSession = draftRef.current) => {
     const sourceUrl = inputUrl.trim();
     if (!sourceUrl) {
       setParseStatus('error');
       setParseError('先粘贴 MOJi 文章链接。');
       return;
     }
+
+    const request = ++parseRequestRef.current;
+    coachRequestRef.current += 1;
+    selectionTouchedRef.current = false;
+    const cleanSession = resetSessionForSource(baseSession, sourceUrl);
+    draftRef.current = cleanSession;
+    selectedRef.current = [];
+    setDraft(cleanSession);
+    setArticleSentences([]);
+    setSelectedSentences([]);
+    setCoach(null);
+    setCoachStatus('idle');
     setParseStatus('loading');
     setParseError('');
+
     try {
       const {data} = await api.post<MojiArticleResponse>('/api/moji-article', {url: sourceUrl});
+      if (request !== parseRequestRef.current) return;
       if (!data?.ok || !data.title || !Array.isArray(data.sentences) || !data.sentences.length) {
         throw new Error(data?.reason || 'parse_failed');
       }
       const next = {
-        ...resetAfterSourceChange(data.sourceUrl || sourceUrl),
+        ...cleanSession,
+        sourceUrl: data.sourceUrl || sourceUrl,
         title: data.title,
       };
       persist(next);
       setArticleSentences(data.sentences);
-      setSelectedSentences([]);
       setParseStatus('ready');
+      void loadCoach(data.title, data.sentences, next, true);
     } catch {
+      if (request !== parseRequestRef.current) return;
       setParseStatus('error');
-      setParseError('没有解析出正文。请确认这是能公开打开的 MOJi 文章链接，再重试。');
+      setParseError('没有解析出正文。请确认这是 MOJi 的 NHK 文章链接，再重试。');
     }
   };
 
@@ -254,25 +399,22 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     const value = event.clipboardData.getData('text').trim();
     if (!value) return;
     event.preventDefault();
-    changeSourceUrl(value);
-    void parseArticle(value);
+    const next = resetSessionForSource(draftRef.current, value);
+    void parseArticle(value, next);
   };
 
   const toggleSentence = (sentence: string) => {
-    const selected = selectedSentences.includes(sentence);
-    if (!selected && selectedSentences.length >= 3) return;
+    const selected = selectedRef.current.includes(sentence);
+    if (!selected && selectedRef.current.length >= 3) return;
+    selectionTouchedRef.current = true;
     const nextSelected = selected
-      ? selectedSentences.filter(value => value !== sentence)
-      : [...selectedSentences, sentence];
+      ? selectedRef.current.filter(value => value !== sentence)
+      : [...selectedRef.current, sentence];
+    selectedRef.current = nextSelected;
     setSelectedSentences(nextSelected);
     persist({
-      ...draft,
-      selectedSentences: nextSelected,
-      shadowText: nextSelected.join('\n'),
+      ...applyCoachFields(draftRef.current, coach, nextSelected),
       recapText: '',
-      keyExpression: '',
-      dailyVersion: '',
-      workVersion: '',
       opinion: '',
       worldAnswer: '',
       recapRecordingSeconds: 0,
@@ -282,14 +424,13 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   };
 
   const nextFromInput = () => {
-    const shadowText = selectedSentences.join('\n');
-    const expression = draft.keyExpression || suggestExpression(shadowText);
-    persist({...draft, shadowText, selectedSentences, keyExpression: expression, dailyVersion: draft.dailyVersion || expression});
+    const next = applyCoachFields(draftRef.current, coach, selectedRef.current);
+    persist(next);
     setStep(1);
   };
 
   const completeToday = () => {
-    const next = {...draft, completedAt: Date.now()};
+    const next = {...draftRef.current, completedAt: Date.now()};
     persist(next);
     setView('home');
   };
@@ -309,6 +450,37 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setSessions(current => upsertNhkSession(current, next));
     setView('home');
   };
+
+  const copyShortcutBase = async () => {
+    const value = `${window.location.origin}/?share_target=1&url=`;
+    try {
+      await navigator.clipboard.writeText(value);
+      setShareCopyStatus('已复制接收地址');
+    } catch {
+      setShareCopyStatus(value);
+    }
+  };
+
+  useEffect(() => {
+    const sharedUrl = readCapturedSharedMojiUrl(localStorage);
+    if (!sharedUrl || sharedHandledRef.current === sharedUrl) return;
+    sharedHandledRef.current = sharedUrl;
+    clearCapturedSharedMojiUrl(localStorage);
+    const base = findTodayNhkSession(loadNhkSessions(), todayKey) || createNhkSession(todayKey);
+    const next = resetSessionForSource(base, sharedUrl);
+    draftRef.current = next;
+    selectedRef.current = [];
+    setDraft(next);
+    setArticleSentences([]);
+    setSelectedSentences([]);
+    setCoach(null);
+    setCoachStatus('idle');
+    setParseError('');
+    setStep(0);
+    setShowOriginal(false);
+    setView('today');
+    void parseArticle(sharedUrl, next);
+  }, [todayKey]);
 
   if (view === 'recall' && recallSession) {
     return (
@@ -347,16 +519,16 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       <section className="nhk-page nhk-flow">
         <header className="nhk-flow-header">
           <button aria-label="返回" onClick={() => setView('home')}><ArrowLeft size={20} /></button>
-          <div><small>今朝のNHK</small><strong>{step + 1}/4</strong></div>
+          <div><small>今朝のNHK</small><strong>{step + 1}/3</strong></div>
           <span />
         </header>
-        <div className="nhk-step-dots">{[0, 1, 2, 3].map(index => <i key={index} className={index <= step ? 'active' : ''} />)}</div>
+        <div className="nhk-step-dots three">{[0, 1, 2].map(index => <i key={index} className={index <= step ? 'active' : ''} />)}</div>
 
         {step === 0 && (
           <div className="nhk-step-card">
-            <span className="nhk-kicker">INPUT</span>
-            <h1>贴链接，选句子。</h1>
-            <p>标题和正文自动识别。你只需要选出今天实际跟读过的 1～3 句。</p>
+            <span className="nhk-kicker">CHOOSE</span>
+            <h1>分享一篇，教练替你挑重点。</h1>
+            <p>标题、正文、推荐句和迁移表达都会自动准备；你只负责确认今天练哪 1～3 句。</p>
             <div className="nhk-link-entry">
               <div className="nhk-url-row">
                 <Link2 size={18} />
@@ -371,14 +543,14 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
                       void parseArticle();
                     }
                   }}
-                  placeholder="粘贴 MOJi 文章链接"
+                  placeholder="从 MOJi 分享，或粘贴文章链接"
                   inputMode="url"
                 />
                 <button type="button" disabled={parseStatus === 'loading'} onClick={() => void parseArticle()}>
                   {parseStatus === 'loading' ? <LoaderCircle className="nhk-spin" size={17} /> : '解析'}
                 </button>
               </div>
-              <small>粘贴后会自动解析。</small>
+              <small>{parseStatus === 'loading' ? '正在寻找原文并生成训练建议…' : '从分享菜单进入时会自动解析。'}</small>
             </div>
 
             {parseStatus === 'error' && <div className="nhk-parse-error">{parseError}</div>}
@@ -389,25 +561,41 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
                   <div><small>已识别</small><strong>{draft.title}</strong></div>
                   <a href={draft.sourceUrl} target="_blank" rel="noreferrer" aria-label="打开原文章"><ExternalLink size={17} /></a>
                 </div>
+
+                {coach && (
+                  <div className="nhk-coach-summary">
+                    <div className="nhk-coach-status">
+                      <Sparkles size={14} />
+                      <strong>{coachStatus === 'loading' ? '教练正在精炼' : coachStatus === 'fallback' ? '本地教练建议' : '今日教练建议'}</strong>
+                    </div>
+                    <p>{coach.summaryZh}</p>
+                    <blockquote>{coach.summaryJa}</blockquote>
+                  </div>
+                )}
+
                 <div className="nhk-sentence-picker-head">
-                  <div><strong>选择跟读过的句子</strong><small>按文章顺序显示，最多 3 句</small></div>
+                  <div><strong>推荐训练句</strong><small>已自动勾选，可自由更换，最多 3 句</small></div>
                   <b>{selectedSentences.length}/3</b>
                 </div>
-                <div className="nhk-sentence-list">
+                <div className="nhk-sentence-list coached">
                   {articleSentences.map((sentence, index) => {
                     const selected = selectedSentences.includes(sentence);
                     const blocked = !selected && selectedSentences.length >= 3;
+                    const recommendation = recommendationFor(sentence);
                     return (
                       <button
                         key={`${index}-${sentence}`}
                         type="button"
-                        className={selected ? 'selected' : ''}
+                        className={`${selected ? 'selected' : ''} ${recommendation ? 'recommended' : ''}`.trim()}
                         disabled={blocked}
                         aria-pressed={selected}
                         onClick={() => toggleSentence(sentence)}
                       >
                         <span>{selected ? <Check size={15} /> : index + 1}</span>
-                        <strong>{sentence}</strong>
+                        <div>
+                          {recommendation && <small><b>{recommendation.label}</b>{recommendation.reasonZh}</small>}
+                          <strong>{sentence}</strong>
+                        </div>
                       </button>
                     );
                   })}
@@ -415,49 +603,68 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
               </>
             )}
 
-            <button className="nhk-primary-action" disabled={!selectedSentences.length} onClick={nextFromInput}>用这几句开始脱稿<ChevronRight size={18} /></button>
+            <button className="nhk-primary-action" disabled={!selectedSentences.length} onClick={nextFromInput}>
+              用这{selectedSentences.length || ''}句开始<ChevronRight size={18} />
+            </button>
           </div>
         )}
 
         {step === 1 && (
           <div className="nhk-step-card">
-            <span className="nhk-kicker">RECALL</span>
-            <h1>关掉原文，讲 20～40 秒。</h1>
-            <p>先讲清楚“谁、发生了什么、为什么重要”，不要追求逐字复现。</p>
+            <span className="nhk-kicker">SAY</span>
+            <h1>先跟顺，再关掉原文说出来。</h1>
+            <p>影子跟读练语流；脱稿复述检验你是否真的听懂。</p>
+
+            {primaryRecommendation && (
+              <div className="nhk-shadow-guide">
+                <div><small>{primaryRecommendation.label} · 影子切分</small><strong>{primaryRecommendation.sentence}</strong></div>
+                <div className="nhk-chunks">
+                  {primaryRecommendation.chunks.map((chunk, index) => <span key={`${index}-${chunk}`}>{chunk}</span>)}
+                </div>
+                <p><b>{primaryRecommendation.expression}</b><span>{primaryRecommendation.meaningZh}</span></p>
+              </div>
+            )}
+
             <VoiceRecorder label="第一次脱稿复述" onDuration={seconds => patch({recapRecordingSeconds: seconds})} />
-            <label>我刚才真正说出来的内容<textarea value={draft.recapText} onChange={event => patch({recapText: event.target.value})} placeholder="可以简写，但不要复制原文" rows={5} /></label>
+            <label>我刚才真正说出来的内容<textarea value={draft.recapText} onChange={event => patch({recapText: event.target.value})} placeholder="先用自己的日语复述，不要复制原文" rows={5} /></label>
             <button className="nhk-text-toggle" onClick={() => setShowOriginal(value => !value)}>{showOriginal ? '收起原句' : '说完后看原句'}</button>
             {showOriginal && <blockquote>{draft.shadowText}</blockquote>}
-            <div className="nhk-step-actions"><button onClick={() => setStep(0)}>上一步</button><button disabled={!draft.recapText.trim()} onClick={() => setStep(2)}>继续</button></div>
+            <div className="nhk-step-actions"><button onClick={() => setStep(0)}>上一步</button><button disabled={!draft.recapText.trim()} onClick={() => setStep(2)}>用进世界</button></div>
           </div>
         )}
 
         {step === 2 && (
           <div className="nhk-step-card">
-            <span className="nhk-kicker">TRANSFER</span>
-            <h1>只带走一句。</h1>
-            <p>不要收藏所有生词。挑一句以后真的可能用到的表达。</p>
-            <label>新闻里的一句<input value={draft.keyExpression} onChange={event => patch({keyExpression: event.target.value})} placeholder="最值得主动掌握的表达" /></label>
-            <label>平时我会这样说<input value={draft.dailyVersion} onChange={event => patch({dailyVersion: event.target.value})} placeholder="更自然、更口语的版本" /></label>
-            <label>工作里我会这样说<textarea value={draft.workVersion} onChange={event => patch({workVersion: event.target.value})} placeholder="把新闻表达迁移到你的项目、会议或汇报" rows={3} /></label>
-            <label>我怎么看<textarea value={draft.opinion} onChange={event => patch({opinion: event.target.value})} placeholder="用日语写下你的真实观点（可选）" rows={3} /></label>
-            <div className="nhk-step-actions"><button onClick={() => setStep(1)}>上一步</button><button disabled={!draft.keyExpression.trim()} onClick={() => setStep(3)}>带进世界</button></div>
-          </div>
-        )}
+            <span className="nhk-kicker">USE</span>
+            <h1>把今天的一句，用进你自己的生活。</h1>
+            <p>教练已经完成表达迁移。你只需要用日语作出自己的回答。</p>
 
-        {step === 3 && (
-          <div className="nhk-step-card">
-            <span className="nhk-kicker">MY WORLD</span>
-            <h1>现在，用它解决你自己的场景。</h1>
+            <div className="nhk-transfer-card">
+              <small>今天带走</small>
+              <strong>{draft.keyExpression}</strong>
+              {primaryRecommendation?.meaningZh && <p>{primaryRecommendation.meaningZh}</p>}
+              <div><span>平时</span><b>{draft.dailyVersion || draft.keyExpression}</b></div>
+              <div><span>工作</span><b>{draft.workVersion || draft.keyExpression}</b></div>
+            </div>
+
+            {coach?.opinionQuestion && (
+              <label className="nhk-opinion-prompt">
+                <span>先想一想</span>
+                <strong>{coach.opinionQuestion}</strong>
+                <textarea value={draft.opinion} onChange={event => patch({opinion: event.target.value})} placeholder="可选：先写下你真正想说的观点" rows={3} />
+              </label>
+            )}
+
             {worldStory && <EpisodeVisual story={worldStory} />}
             <div className="nhk-world-scene">
               <small>{worldStory?.series?.seasonTitle || '在日本生活和工作的我'}</small>
-              <strong>田中问你：「このニュース、仕事や生活にも関係がありそうですか。」</strong>
-              <p>请尽量使用：{draft.workVersion || draft.keyExpression}</p>
+              {coach?.worldSetupZh && <p className="nhk-world-setup">{coach.worldSetupZh}</p>}
+              <strong>田中问你：「{coach?.worldPromptJa || 'このニュース、仕事や生活にも関係がありそうですか。'}」</strong>
+              <p>尽量用上：{draft.workVersion || draft.keyExpression}</p>
             </div>
             <VoiceRecorder label="回答田中" onDuration={seconds => patch({worldRecordingSeconds: seconds})} />
             <label>我的回答<textarea value={draft.worldAnswer} onChange={event => patch({worldAnswer: event.target.value})} placeholder="用 1～3 句日语回答" rows={4} /></label>
-            <div className="nhk-step-actions"><button onClick={() => setStep(2)}>上一步</button><button className="complete" disabled={!isNhkSessionReadyToComplete(draft)} onClick={completeToday}><Check size={17} />完成今天</button></div>
+            <div className="nhk-step-actions"><button onClick={() => setStep(1)}>上一步</button><button className="complete" disabled={!isNhkSessionReadyToComplete(draft)} onClick={completeToday}><Check size={17} />完成今天</button></div>
           </div>
         )}
       </section>
@@ -476,10 +683,39 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
         <div>
           <small>{todaySession?.completedAt ? 'TODAY COMPLETE' : '8 MINUTES AFTER NHK'}</small>
           <strong>{todaySession?.completedAt ? (todaySession.title || '今天的 NHK 已转化') : '把刚听过的日语，变成你能说的日语'}</strong>
-          <span>{todaySession?.completedAt ? todaySession.keyExpression : '贴链接 · 选句子 · 脱稿复述'}</span>
+          <span>{todaySession?.completedAt ? todaySession.keyExpression : '分享文章 · 自动推荐 · 脱稿表达'}</span>
         </div>
         <ChevronRight size={20} />
       </button>
+
+      <button className="nhk-share-card" onClick={() => setShowShareHelp(value => !value)}>
+        <Share2 size={19} />
+        <div><small>MOJI → 日语世界</small><strong>从分享菜单直接开始</strong></div>
+        <ChevronRight className={showShareHelp ? 'open' : ''} size={18} />
+      </button>
+
+      {showShareHelp && (
+        <div className="nhk-share-help">
+          <div><Smartphone size={19} /><strong>{isIOS ? 'iPhone 设置一次即可' : '安装后即可直接分享'}</strong></div>
+          {isIOS ? (
+            <>
+              <p>iPhone Safari 还不能把网页 PWA 直接注册到系统分享列表。用快捷指令桥接一次，之后在 MOJi 分享菜单里点「日语世界」即可。</p>
+              <ol>
+                <li>新建快捷指令，开启“在共享表单中显示”，接收 URL。</li>
+                <li>添加“URL”动作：先粘贴下方接收地址，再在末尾插入“快捷指令输入”。</li>
+                <li>添加“打开 URL”动作，并把快捷指令命名为「日语世界」。</li>
+              </ol>
+              <div className="nhk-share-help-actions">
+                <a href="shortcuts://create-shortcut">打开快捷指令</a>
+                <button onClick={copyShortcutBase}><Copy size={14} />复制接收地址</button>
+              </div>
+              {shareCopyStatus && <small>{shareCopyStatus}</small>}
+            </>
+          ) : (
+            <p>把本页安装到主屏幕后，支持 Web Share Target 的浏览器会在系统分享菜单中显示「日语世界」。</p>
+          )}
+        </div>
+      )}
 
       {recallSession && (
         <button className="nhk-recall-card" onClick={openRecall}>
