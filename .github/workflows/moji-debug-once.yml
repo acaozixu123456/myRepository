@@ -10,48 +10,29 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Compare target headline with NHK Easy feed
+      - name: Inspect target id context in MOJi Nuxt payload
         env:
-          HEADLINE: フランス子どもがSNSを使えないようにする
+          ARTICLE_ID: lzXuLYNjQZ
         run: |
           python - <<'PY'
-          import html, json, os, re, urllib.request, xml.etree.ElementTree as ET
-          from difflib import SequenceMatcher
-
-          def norm(v):
-              v=html.unescape(v or '')
-              v=re.sub(r'<[^>]+>','',v)
-              return re.sub(r'[\s　「」『』・：:、。！？!?（）()\[\]【】]','',v).lower()
-
-          def bigrams(v): return [v[i:i+2] for i in range(max(0,len(v)-1))]
-          def dice(a,b):
-              a,b=norm(a),norm(b)
-              if not a or not b: return 0.0
-              if a==b: return 1.0
-              if a in b or b in a: return min(len(a),len(b))/max(len(a),len(b))
-              ap,bp=bigrams(a),bigrams(b)
-              counts={}
-              for p in bp: counts[p]=counts.get(p,0)+1
-              overlap=0
-              for p in ap:
-                  if counts.get(p,0)>0:
-                      overlap+=1; counts[p]-=1
-              return 2*overlap/max(len(ap)+len(bp),1)
-
-          req=urllib.request.Request('https://nhkeasier.com/feed/?no-furiganas',headers={'User-Agent':'NihongoDiscoveryDebug/1.0'})
-          with urllib.request.urlopen(req,timeout=25) as r: xml=r.read()
-          root=ET.fromstring(xml)
-          target=os.environ['HEADLINE']
-          rows=[]
-          for item in root.findall('./channel/item'):
-              title=item.findtext('title') or ''
-              rows.append({
-                  'title':title,
-                  'dice':round(dice(target,title),4),
-                  'seq':round(SequenceMatcher(None,norm(target),norm(title)).ratio(),4),
-                  'link':item.findtext('link') or '',
-                  'pubDate':item.findtext('pubDate') or ''
-              })
-          rows.sort(key=lambda x:max(x['dice'],x['seq']),reverse=True)
-          print(json.dumps({'target':target,'top':rows[:15]},ensure_ascii=False,indent=2))
+          import html, json, os, urllib.request
+          article_id=os.environ['ARTICLE_ID']
+          ua='Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1'
+          for host in ['www.mojidict.com','m.mojidict.com']:
+              try:
+                  req=urllib.request.Request(f'https://{host}/article/{article_id}',headers={'User-Agent':ua,'Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(req,timeout=25) as r:
+                      body=r.read().decode('utf-8',errors='replace')
+                  decoded=html.unescape(body).replace('\\u3000','　').replace('\\n',' ')
+                  occurrences=[]
+                  start=0
+                  while True:
+                      idx=decoded.find(article_id,start)
+                      if idx<0: break
+                      occurrences.append(decoded[max(0,idx-1200):idx+1200])
+                      start=idx+len(article_id)
+                      if len(occurrences)>=6: break
+                  print(json.dumps({'host':host,'htmlLength':len(body),'occurrenceCount':decoded.count(article_id),'contexts':occurrences},ensure_ascii=False,indent=2))
+              except Exception as e:
+                  print(json.dumps({'host':host,'error':repr(e)},ensure_ascii=False))
           PY
