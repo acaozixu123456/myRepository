@@ -28,7 +28,7 @@ Do not modify App source code or production audio from this task.
    - naturally reuse two earlier targets when possible;
    - include first-class `series`, `callbacks`, `play.semantics`, and `visualMeta`;
    - keep exactly five `play.scenarios` (3 in-world, 2 transfer).
-7. Run autonomous continuity and quality checks before publishing.
+7. Run autonomous continuity and quality checks before publishing (`node scripts/validate-connected-episode.mjs`).
 8. If all checks pass, append/update exactly one item with `status: "published"` and `audio: {"status":"not_ready"}`.
 9. Commit `manifest.json` to branch `nihongo-content`.
 10. Re-read the committed manifest and verify `/api/news-content` propagation.
