@@ -82,7 +82,7 @@ const resolvePublicNhkTranscript = async (article: ParsedMojiArticle): Promise<P
   }
 };
 
-export default async function handler(req: VercelRequest, res: VercResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ok: false, reason: 'method_not_allowed'});
