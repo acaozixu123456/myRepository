@@ -69,7 +69,30 @@ else {
 
 Step 'Loading reviewed rollout implementation from the private command branch'
 $scriptShow = Invoke-Git @('-C', $RelayDir, 'show', "refs/remotes/origin/${Branch}:windows-git-agent/rollout-codex.ps1")
-[IO.File]::WriteAllText($TempScript, $scriptShow.Output, [Text.UTF8Encoding]::new($false))
+$rolloutText = $scriptShow.Output
+
+# Apply two narrow fail-closed fixes to the fetched snapshot before parsing/execution.
+# These are intentionally exact replacements: source drift stops the rollout instead
+# of silently running an unreviewed shape.
+$oldRemoteFetch = "Invoke-Native `$GitPath @('-C', `$ControllerDir, 'fetch', 'origin', `$RefBranch) -AllowFailure | Out-Null"
+$newRemoteFetch = "Invoke-Native `$GitPath @('-C', `$ControllerDir, 'fetch', 'origin', `"+refs/heads/`${RefBranch}:refs/remotes/origin/`${RefBranch}`") -AllowFailure | Out-Null"
+$oldRemoteShow = '$show = Invoke-Native $GitPath @(\'-C\', $ControllerDir, \'show\', "origin/${RefBranch}:$RepoPath") -AllowFailure'
+$newRemoteShow = '$show = Invoke-Native $GitPath @(\'-C\', $ControllerDir, \'show\', "refs/remotes/origin/${RefBranch}:$RepoPath") -AllowFailure'
+$oldCanaryGate = "if (-not `$startEnvelope.ok -or -not @('accepted', 'already_started') -contains [string]`$startEnvelope.result.startResult) {"
+$newCanaryGate = "if (-not `$startEnvelope.ok -or (@('accepted', 'already_started') -notcontains [string]`$startEnvelope.result.startResult)) {"
+
+foreach ($pair in @(
+  @($oldRemoteFetch, $newRemoteFetch),
+  @($oldRemoteShow, $newRemoteShow),
+  @($oldCanaryGate, $newCanaryGate)
+)) {
+  if (-not $rolloutText.Contains($pair[0])) {
+    throw "Reviewed rollout source shape changed; required guarded replacement was not found: $($pair[0])"
+  }
+  $rolloutText = $rolloutText.Replace($pair[0], $pair[1])
+}
+
+[IO.File]::WriteAllText($TempScript, $rolloutText, [Text.UTF8Encoding]::new($false))
 
 Step 'Validating rollout PowerShell syntax before execution'
 $tokens = $null
