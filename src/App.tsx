@@ -1,5 +1,5 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
-import {Bookmark, ChevronLeft, ChevronRight, Compass, Heart, Map, RotateCcw, Sparkles, User, Zap} from 'lucide-react';
+import {Bookmark, ChevronLeft, ChevronRight, Compass, Heart, Map as MapIcon, RotateCcw, Sparkles, User, Zap} from 'lucide-react';
 import {api} from './api';
 import {categories, stories as bundledStories, Story} from './content';
 import EpisodeVisual from './EpisodeVisual';
@@ -303,7 +303,7 @@ function App() {
           </section>
         )}
         <nav className="bottom-nav-simple">
-          {([{id: 'play', label: '继续', icon: Compass}, {id: 'review', label: '复习', icon: RotateCcw}, {id: 'collection', label: '收藏', icon: Bookmark}, {id: 'atlas', label: '图鉴', icon: Map}, {id: 'profile', label: '我的', icon: User}] as const).map(n => {
+          {([{id: 'play', label: '继续', icon: Compass}, {id: 'review', label: '复习', icon: RotateCcw}, {id: 'collection', label: '收藏', icon: Bookmark}, {id: 'atlas', label: '图鉴', icon: MapIcon}, {id: 'profile', label: '我的', icon: User}] as const).map(n => {
             const I = n.icon;
             return <button key={n.id} className={tab === n.id ? 'active' : ''} aria-label={n.label} onClick={() => setTab(n.id)}><I size={21} /></button>;
           })}
