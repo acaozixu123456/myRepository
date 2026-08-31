@@ -18,7 +18,7 @@ jobs:
         env:
           ARTICLE_URL: https://www.mojidict.com/article/Izr0dhrpz3
         run: |
-          cat > /tmp/inspect-moji.cjs <<'NODE'
+          cat > inspect-moji.cjs <<'NODE'
           const {chromium} = require('playwright');
           const hasJapanese = value => /[ぁ-んァ-ヶー]/.test(value);
           const interestingKey = key => /(article|detail|content|sentence|paragraph|text|title|audio|reading|news)/i.test(key);
@@ -86,4 +86,4 @@ jobs:
             process.exit(1);
           });
           NODE
-          node /tmp/inspect-moji.cjs
+          node inspect-moji.cjs
