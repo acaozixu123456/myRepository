@@ -122,8 +122,32 @@ describe('memory', () => {
     const memories = migrateMemory({
       'release-week-01-ep01': {strength: 2, nextReviewAt: 0, lastSeen: 1, version: 2, expressions: {'遅れそうです': {strength: 1, lastSeen: 1, misses: 1}}},
     });
-    const echo = pickMemoryEcho({...ep02, callbacks: [{targetId: 'release-week-01-ep01', sourceEpisodeId: 'release-week-01-ep01', role: 'natural_reuse'}]}, memories);
+    const echo = pickMemoryEcho({...ep02, callbacks: [{targetId: 'release-week-01-ep01', sourceEpisodeId: 'release-week-01-ep01', role: 'natural_reuse'}]}, memories, [ep01, ep02]);
     expect(echo?.label).toBe('以前见过');
+    expect(echo?.term).toBe('遅れそうです');
+  });
+
+  it('resolves callback echo from catalog key term when expressions are missing', () => {
+    const memories = migrateMemory({
+      'release-week-01-ep01': {strength: 2, nextReviewAt: 0, lastSeen: 1, version: 2},
+      'release-week-01-ep02': {strength: 2, nextReviewAt: 0, lastSeen: 2, version: 2},
+    });
+    const ep02WithKey = {
+      ...ep02,
+      key: {term: 'かもしれません', reading: 'r', meaning: 'm', insight: 'i', anchor: 'a'},
+    };
+    const ep03 = {
+      ...ep02WithKey,
+      id: 'release-week-01-ep03',
+      key: {term: 'ことになっています', reading: 'r', meaning: 'm', insight: 'i', anchor: 'a'},
+      callbacks: [
+        {targetId: 'release-week-01-ep02', sourceEpisodeId: 'release-week-01-ep02', role: 'natural_reuse'},
+        {targetId: 'release-week-01-ep01', sourceEpisodeId: 'release-week-01-ep01', role: 'natural_reuse'},
+      ],
+    };
+    const echo = pickMemoryEcho(ep03, memories, [ep01, ep02WithKey, ep03]);
+    expect(echo?.term).toBe('かもしれません');
+    expect(echo?.term).not.toMatch(/release-week/);
   });
 });
 

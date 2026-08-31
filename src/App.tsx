@@ -147,7 +147,7 @@ function App() {
   if (selected) {
     const memory = memories[selected.id] || {strength: 0, nextReviewAt: 0, lastSeen: 0, version: 2};
     const meta = selected.series;
-    const memoryEcho = pickMemoryEcho(selected, memories);
+    const memoryEcho = pickMemoryEcho(selected, memories, stories);
     const contextLine = meta?.todayHook || undefined;
     return (
       <div className="shell">

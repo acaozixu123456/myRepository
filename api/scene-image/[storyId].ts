@@ -92,12 +92,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const canGenerate = CANARY_STORY_IDS.has(storyId) && req.query.canary === '1';
+  let canaryBlocker: string | undefined;
   if (canGenerate) {
     const prompt = String(req.query.prompt || 'Rainy Tokyo station commute morning, young professional checking phone, cinematic editorial illustration');
-    const url = await generateAndStore(storyId, prompt);
-    if (url) {
-      res.setHeader('Cache-Control', 'public, max-age=300');
-      return res.status(200).json({ok: true, status: 'ready', url, storyId, generated: true});
+    if (!SUPABASE_SERVICE_ROLE_KEY) {
+      canaryBlocker = 'missing_supabase_service_role';
+    } else if (!await getOpenAIKey()) {
+      canaryBlocker = 'missing_openai_key';
+    } else {
+      const url = await generateAndStore(storyId, prompt);
+      if (url) {
+        res.setHeader('Cache-Control', 'public, max-age=300');
+        return res.status(200).json({ok: true, status: 'ready', url, storyId, generated: true});
+      }
+      canaryBlocker = 'generation_failed';
     }
   }
 
@@ -108,5 +116,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     storyId,
     gradient: DEFAULT_GRADIENT,
     palette: ['#4a6fa5', '#7ba7d9', '#c9d6e8'],
+    ...(canaryBlocker ? {canaryAttempted: true, canaryBlocker} : {}),
   });
 }

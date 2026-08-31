@@ -92,23 +92,40 @@ export const applyFinish = (
   return next;
 };
 
+const resolveEpisodeTerm = (
+  episodeId: string,
+  memories: MemoryMap,
+  catalog?: Story[],
+): string | undefined => {
+  const prior = memories[episodeId];
+  const fromExpr = Object.entries(prior?.expressions || {})
+    .sort((a, b) => b[1].misses - a[1].misses || b[1].strength - a[1].strength)[0]?.[0];
+  if (fromExpr) return fromExpr;
+  return catalog?.find(s => s.id === episodeId)?.key?.term;
+};
+
 export const pickMemoryEcho = (
   story: Story,
   memories: MemoryMap,
+  catalog?: Story[],
 ): {label: string; term: string} | null => {
   const rec = memories[story.id];
   const callbacks = (story as Story & {callbacks?: Array<{targetId: string; sourceEpisodeId: string}>}).callbacks || [];
   const weakExpr = Object.entries(rec?.expressions || {})
     .filter(([, v]) => v.misses > 0)
     .sort((a, b) => b[1].misses - a[1].misses)[0];
-  const callback = callbacks.find(cb => {
+  const weakCallback = callbacks.find(cb => {
     const hit = rec?.callbacks?.[cb.targetId];
     return hit && hit.weak;
-  }) || callbacks.find(cb => memories[cb.sourceEpisodeId]?.lastSeen);
-  if (callback && memories[callback.sourceEpisodeId]?.lastSeen) {
-    const prior = memories[callback.sourceEpisodeId];
-    const term = prior.expressions ? Object.keys(prior.expressions)[0] : undefined;
-    return {label: '以前见过', term: term || callback.targetId};
+  });
+  const seenCallback = callbacks
+    .filter(cb => memories[cb.sourceEpisodeId]?.lastSeen)
+    .map(cb => ({cb, term: resolveEpisodeTerm(cb.sourceEpisodeId, memories, catalog)}))
+    .find(entry => entry.term);
+  const callback = weakCallback || seenCallback?.cb;
+  if (callback) {
+    const term = resolveEpisodeTerm(callback.sourceEpisodeId, memories, catalog);
+    if (term) return {label: '以前见过', term};
   }
   if (weakExpr) return {label: '以前见过', term: weakExpr[0]};
   return null;
