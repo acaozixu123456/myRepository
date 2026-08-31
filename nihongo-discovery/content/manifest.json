@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-31T04:30:00.000Z",
+  "updatedAt": "2026-08-31T04:55:00.000Z",
   "items": [
     {
       "status": "published",
@@ -2151,6 +2151,170 @@
             "public-service"
           ],
           "imagePrompt": "Young professional at apartment entryway making first call to building management, smartphone to ear, calm weekend afternoon light, warm editorial anime style, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-31T04:55:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "life-beyond-work-02-ep02",
+        "title": "第2集｜超市排队，听懂「请稍等」",
+        "category": "日本生活",
+        "level": "N3",
+        "emoji": "🛒",
+        "visual": "life-beyond-work-ep02",
+        "prompt": "联系物业后的工作日傍晚，你去附近超市采购。收银台前排起长队，店员在处理前一位顾客的退货。你要听懂这句常见的服务缓冲语。",
+        "guesses": [
+          "少々お待ちください",
+          "お疲れ様です",
+          "お先に失礼します"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 从物业电话的「お世話になっております」切到超市现场：服务场景里这句「请稍等」几乎每天都会听到。",
+        "key": {
+          "term": "少々お待ちください",
+          "reading": "しょうしょう おまち ください",
+          "meaning": "请稍等一下",
+          "insight": "店员、前台、客服在需要时间处理时最常用的缓冲语；听懂它就知道不是拒绝你，只是暂时让你等。",
+          "anchor": "🛒 レジ → 少々お待ちください"
+        },
+        "jp": "すみません、少々お待ちください。前の方の返品処理をしています。\nはい、大丈夫です。お待ちします。",
+        "cn": "店员向你道歉并请稍等，正在处理前一位顾客的退货。你表示没问题，愿意等待。",
+        "points": [
+          {
+            "term": "少々お待ちください",
+            "reading": "しょうしょう おまち ください",
+            "meaning": "请稍等一下",
+            "note": "服务场景最常见的缓冲表达，语气礼貌。"
+          },
+          {
+            "term": "返品処理",
+            "reading": "へんぴん しょり",
+            "meaning": "退货处理",
+            "note": "解释为什么需要等待的具体原因。"
+          }
+        ],
+        "use": {
+          "prompt": "收银台店员说正在处理前一位顾客，最可能先说的是？",
+          "choices": [
+            "少々お待ちください。",
+            "お疲れ様です。",
+            "お先に失礼します。"
+          ],
+          "correct": 0,
+          "feedback": "服务场景需要缓冲时间时，这句最自然。"
+        },
+        "transfer": {
+          "prompt": "诊所前台让你稍等，护士会怎么说？",
+          "choices": [
+            "少々お待ちください。",
+            "ごちそうさまでした。",
+            "おかげさまで。"
+          ],
+          "correct": 0,
+          "feedback": "从超市收银台迁移到诊所前台，缓冲语相同。"
+        },
+        "review": {
+          "prompt": "店员需要时间处理，把礼貌缓冲语补出来。",
+          "cloze": "すみません、＿＿。",
+          "answer": "少々お待ちください",
+          "feedback": "服务场景→先听懂「请稍等」，不是催你走。"
+        },
+        "play": {
+          "daily": "ちょっと待ってね。",
+          "polite": "少々お待ちください。",
+          "business": "恐れ入りますが、少々お待ちいただけますでしょうか。",
+          "businessNote": "更正式场合会把「ください」展开成「いただけますでしょうか」。",
+          "replyPrompt": "すみません、少々お待ちください。前の方の返品処理をしています。",
+          "reply": "はい、大丈夫です。お待ちします。",
+          "scenarios": [
+            {
+              "emoji": "🛒",
+              "cue": "剧情｜超市收银台排队，店员请你稍等。",
+              "jp": "少々お待ちください。レジを開けますので。",
+              "cn": "请稍等，我这就开收银台。"
+            },
+            {
+              "emoji": "📦",
+              "cue": "剧情｜店员去仓库确认商品库存。",
+              "jp": "在庫を確認しますので、少々お待ちください。",
+              "cn": "我去确认库存，请稍等一下。"
+            },
+            {
+              "emoji": "🧾",
+              "cue": "剧情｜处理积分卡问题时，店员先安抚你。",
+              "jp": "少々お待ちください。すぐに確認いたします。",
+              "cn": "请稍等，我马上确认。"
+            },
+            {
+              "emoji": "🏥",
+              "cue": "迁移｜诊所前台让你稍等叫号。",
+              "jp": "少々お待ちください。お名前をお呼びします。",
+              "cn": "请稍等，会叫您的名字。"
+            },
+            {
+              "emoji": "📞",
+              "cue": "迁移｜物业回电前，先用上一集的礼貌开场。",
+              "jp": "お世話になっております。少々お待ちください。",
+              "cn": "承蒙关照。请稍等一下。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "public-service",
+            "learnerRole": "respond",
+            "uiCue": "先听店员说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "life-beyond-work-02",
+          "seasonTitle": "工作之外的日本生活",
+          "episodeNo": 2,
+          "episodeCount": 12,
+          "previousEpisodeId": "life-beyond-work-02-ep01",
+          "nextEpisodeId": "life-beyond-work-02-ep03",
+          "locationId": "supermarket",
+          "locationName": "超市",
+          "castIds": [
+            "public-service"
+          ],
+          "canonRevision": "v2",
+          "previousSummary": "你第一次联系物业，用礼貌开场说明对讲机问题，管理方答应安排确认。",
+          "todayHook": "下班去超市采购，收银台前排起长队——店员这句「请稍等」到底是什么意思？",
+          "summary": "你在超市排队时听懂店员的缓冲语，自然回应愿意等待，顺利完成采购。"
+        },
+        "callbacks": [
+          {
+            "targetId": "life-beyond-work-02-ep01",
+            "sourceEpisodeId": "life-beyond-work-02-ep01",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep06",
+            "sourceEpisodeId": "release-week-01-ep06",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "life-beyond-work-02-ep03",
+        "visualMeta": {
+          "sceneId": "life-beyond-work-ep02",
+          "palette": [
+            "#6b5b4f",
+            "#c4a882",
+            "#f5efe6"
+          ],
+          "locationId": "supermarket",
+          "castInScene": [
+            "public-service"
+          ],
+          "imagePrompt": "Evening supermarket checkout line, young professional with shopping basket waiting patiently, cashier helping previous customer, warm editorial anime style, no text"
         }
       }
     },
