@@ -1,46 +1,84 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "activeSeasonId": "release-week-01",
   "world": {
     "id": "life-in-japan",
     "title": "在日本生活和工作的我",
     "premise": "你在日本生活并参与一个即将上线的项目。固定人物、地点和关系持续存在，语言目标随着剧情推进逐步累积。",
-    "canonRevision": "v1",
+    "canonRevision": "v2",
+    "styleBible": {
+      "visual": "warm modern Japanese editorial/anime-inspired illustration, cinematic but clean, soft lighting, no text in image, not photorealistic",
+      "castConsistency": "Recurring cast must share the same face/hair/outfit descriptors across episodes and seasons",
+      "palette": "muted warm neutrals with one accent color per scene"
+    },
     "cast": [
-      {"id":"tanaka","name":"田中","role":"关系较近的同事","languageRole":"自然职场口语","relationship":"familiar-colleague"},
-      {"id":"sato","name":"佐藤","role":"直属上司","languageRole":"礼貌表达与内部汇报","relationship":"manager"},
-      {"id":"yamamoto","name":"山本","role":"客户负责人","languageRole":"商务日语与客户沟通","relationship":"client"},
-      {"id":"mika","name":"美香","role":"朋友","languageRole":"日常口语与生活场景","relationship":"friend"},
-      {"id":"public-service","name":"店员／站务员","role":"公共服务角色","languageRole":"服务与公共场景","relationship":"public"}
+      {"id": "tanaka", "name": "田中", "role": "关系较近的同事", "languageRole": "自然职场口语", "relationship": "familiar-colleague", "visualDescriptor": "short black hair, navy commuter jacket, friendly expression"},
+      {"id": "sato", "name": "佐藤", "role": "直属上司", "languageRole": "礼貌表达与内部汇报", "relationship": "manager", "visualDescriptor": "glasses, gray blazer, calm professional posture"},
+      {"id": "yamamoto", "name": "山本", "role": "客户负责人", "languageRole": "商务日语与客户沟通", "relationship": "client", "visualDescriptor": "dark suit, composed business demeanor"},
+      {"id": "mika", "name": "美香", "role": "朋友", "languageRole": "日常口语与生活场景", "relationship": "friend", "visualDescriptor": "shoulder-length brown hair, casual cardigan, warm smile"},
+      {"id": "public-service", "name": "店员／站务员", "role": "公共服务角色", "languageRole": "服务与公共场景", "relationship": "public", "visualDescriptor": "station uniform or shop apron, neutral service expression"}
     ],
     "locations": [
-      {"id":"station","name":"通勤车站"},
-      {"id":"project-office","name":"项目办公室"},
-      {"id":"meeting-room","name":"会议室"},
-      {"id":"client-office","name":"客户办公室"},
-      {"id":"izakaya","name":"下班后的居酒屋"},
-      {"id":"home","name":"家"}
+      {"id": "station", "name": "通勤车站"},
+      {"id": "project-office", "name": "项目办公室"},
+      {"id": "meeting-room", "name": "会议室"},
+      {"id": "client-office", "name": "客户办公室"},
+      {"id": "izakaya", "name": "下班后的居酒屋"},
+      {"id": "home", "name": "家"},
+      {"id": "supermarket", "name": "超市"},
+      {"id": "clinic", "name": "诊所"},
+      {"id": "park", "name": "附近公园"}
     ]
   },
-  "season": {
-    "id": "release-week-01",
-    "title": "项目上线前的一周",
-    "episodeCount": 12,
-    "bufferTarget": 3,
-    "status": "active",
-    "rule": "世界稳定，剧情连续，场景逐渐变化；每集只新增一个核心目标，并在能自然成立时优先回收两个旧目标。",
-    "episodeSlots": [
-      {"episodeNo":1,"target":"遅れそうです","beat":"下雨，电车看起来要晚点"},
-      {"episodeNo":2,"target":"かもしれません","beat":"通知田中可能会迟到"},
-      {"episodeNo":3,"target":"ことになっています","beat":"确认九点会议已经安排好"},
-      {"episodeNo":4,"target":"念のため","beat":"上线前保险起见再次确认资料"},
-      {"episodeNo":5,"target":"今日はちょっと……","beat":"田中邀请喝酒，委婉拒绝"},
-      {"episodeNo":6,"target":"お先に失礼します","beat":"为了明早上线准备先下班"},
-      {"episodeNo":7,"target":"何卒よろしくお願いいたします","beat":"给山本发送最终确认"},
-      {"episodeNo":8,"target":"対応しておきます","beat":"上线前出现小问题并提前处理"},
-      {"episodeNo":9,"target":"お時間をいただきありがとうございます","beat":"客户会议开始"},
-      {"episodeNo":10,"target":"無事にリリースできました","beat":"项目正式上线"},
-      {"episodeNo":11,"target":"振り返ってみると","beat":"上线后复盘"},
-      {"episodeNo":12,"target":"おかげさまで","beat":"季终挑战：完成一整段职场交流"}
-    ]
-  }
+  "seasons": [
+    {
+      "id": "release-week-01",
+      "title": "项目上线前的一周",
+      "episodeCount": 12,
+      "bufferTarget": 3,
+      "status": "complete",
+      "rule": "世界稳定，剧情连续；每集只新增一个核心目标，并自然回收旧目标。",
+      "episodeSlots": [
+        {"episodeNo": 1, "target": "遅れそうです", "beat": "下雨，电车看起来要晚点"},
+        {"episodeNo": 2, "target": "かもしれません", "beat": "通知田中可能会迟到"},
+        {"episodeNo": 3, "target": "ことになっています", "beat": "确认九点会议已经安排好"},
+        {"episodeNo": 4, "target": "念のため", "beat": "上线前保险起见再次确认资料"},
+        {"episodeNo": 5, "target": "今日はちょっと……", "beat": "田中邀请喝酒，委婉拒绝"},
+        {"episodeNo": 6, "target": "お先に失礼します", "beat": "为了明早上线准备先下班"},
+        {"episodeNo": 7, "target": "何卒よろしくお願いいたします", "beat": "给山本发送最终确认"},
+        {"episodeNo": 8, "target": "対応しておきます", "beat": "上线前出现小问题并提前处理"},
+        {"episodeNo": 9, "target": "お時間をいただきありがとうございます", "beat": "客户会议开始"},
+        {"episodeNo": 10, "target": "無事にリリースできました", "beat": "项目正式上线"},
+        {"episodeNo": 11, "target": "振り返ってみると", "beat": "上线后复盘"},
+        {"episodeNo": 12, "target": "おかげさまで", "beat": "季终挑战：完成一整段职场交流"}
+      ]
+    },
+    {
+      "id": "life-beyond-work-02",
+      "title": "工作之外的日本生活",
+      "episodeCount": 12,
+      "bufferTarget": 3,
+      "status": "active",
+      "rule": "延续同一世界与时间线，从职场扩展到租房、购物、健康、朋友聚会等真实生活；每集一个口语目标，优先回收第一季表达。",
+      "previousSeasonId": "release-week-01",
+      "episodeSlots": [
+        {"episodeNo": 1, "target": "お世話になっております", "beat": "上线后第一次联系物业，礼貌开场"},
+        {"episodeNo": 2, "target": "少々お待ちください", "beat": "超市排队，听懂服务场景常用缓冲语"},
+        {"episodeNo": 3, "target": "持ち帰りでお願いします", "beat": "和美香吃饭，自然点外带"},
+        {"episodeNo": 4, "target": "体調が優れません", "beat": "身体不适，向佐藤请假"},
+        {"episodeNo": 5, "target": "予約を変更したいのですが", "beat": "诊所改预约"},
+        {"episodeNo": 6, "target": "念のため", "beat": "换季购物前再确认尺寸（回收）"},
+        {"episodeNo": 7, "target": "かもしれません", "beat": "周末计划可能变动（回收）"},
+        {"episodeNo": 8, "target": "お邪魔します", "beat": "第一次去美香家做客"},
+        {"episodeNo": 9, "target": "ごちそうさまでした", "beat": "朋友做饭招待（回收）"},
+        {"episodeNo": 10, "target": "ちょっと……", "beat": "临时邀约委婉拒绝（回收）"},
+        {"episodeNo": 11, "target": "振り返ってみると", "beat": "回顾两个月在日本的适应（回收）"},
+        {"episodeNo": 12, "target": "おかげさまで", "beat": "季终：工作与生活用语串成一段真实一天"}
+      ],
+      "plannedHooks": {
+        "season3": "职场深化与客户长期关系",
+        "season4": "返乡探亲与跨文化表达"
+      }
+    }
+  ]
 }

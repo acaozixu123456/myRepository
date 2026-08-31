@@ -1,1 +1,2489 @@
-{"schemaVersion":1,"updatedAt":"2026-08-30T23:10:00Z","items":[{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep01","title":"第1集｜雨の朝、電車が遅れそう","category":"职场空气","level":"N3","emoji":"🌧️","visual":"release-week-ep01","prompt":"项目上线前的一周从雨天通勤开始。电车越来越挤，你要判断是不是要晚点。","guesses":["電車が遅れそうです","電車が遅れました","電車を遅れます"],"guessCorrect":0,"twist":"🎬 这不是孤立语法题：这一句会直接触发下一集给同事的联络。","key":{"term":"遅れそうです","reading":"おくれそう です","meaning":"看起来要晚点了","insight":"根据眼前迹象判断接下来很可能发生，把「～そうです」放进真实通勤与职场联络。","anchor":"🌧️🚃 → 遅れそうです"},"jp":"この雨で、電車が遅れそうです。\nわかりました。少し早めに連絡します。","cn":"这场雨看起来会让电车晚点。你决定提前联系公司。","points":[{"term":"～そうです","reading":"〜そう です","meaning":"看起来要……","note":"根据当前迹象做预测。"},{"term":"早めに","reading":"はやめ に","meaning":"提前一点","note":"风险出现时先行动。"}],"use":{"prompt":"车站已经开始拥堵，最自然的判断是？","choices":["電車が遅れそうです","電車が遅れました","電車を遅れます"],"correct":0,"feedback":"先从眼前迹象判断，不把未来说成已经发生。"},"transfer":{"prompt":"周末和朋友见面，雨突然变大。","choices":["雨が強くなりそうだから、少し遅れるかも。","雨が強いでした。","雨を遅れます。"],"correct":0,"feedback":"离开职场后仍然能用“迹象→预测”。"},"review":{"prompt":"看到拥堵线路图，把本集关键表达叫回来。","cloze":"電車が＿＿。","answer":"遅れそうです","feedback":"把声音、车站和即将发生的风险绑在一起。"},"play":{"daily":"電車、遅れそう。","polite":"電車が遅れそうです。","business":"交通状況により、到着が遅れる見込みです。","businessNote":"正式通知里常把口语判断换成「見込みです」，信息更明确。","replyPrompt":"この雨で、電車が遅れそうです。","reply":"わかりました。少し早めに連絡します。","scenarios":[{"emoji":"🚃","cue":"剧情｜车站里，你先给田中发消息。","jp":"電車が遅れそうなので、少し遅れるかもしれません。","cn":"电车看起来要晚点，我可能会稍微迟到。"},{"emoji":"🕘","cue":"剧情｜你再估算一次到公司的时间。","jp":"今のところ、九時には間に合いそうです。","cn":"目前看起来九点应该赶得上。"},{"emoji":"💬","cue":"剧情｜在项目群里发一个简短状态。","jp":"到着が少し遅れそうです。","cn":"看起来到达会稍微晚一点。"},{"emoji":"☔","cue":"迁移｜周末和朋友约好见面，雨突然变大。","jp":"雨が強くなりそうだから、少し遅れるかも。","cn":"雨看起来要变大，我可能会晚一点。"},{"emoji":"🍜","cue":"迁移｜餐厅门口排队越来越长。","jp":"このままだと、かなり待ちそうです。","cn":"这样下去看起来要等很久。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":1,"episodeCount":12,"nextEpisodeId":"release-week-01-ep02","locationId":"station","locationName":"通勤车站","castIds":["public-service"],"canonRevision":"v1","previousSummary":"本季开始：项目上线前的一周，今天是通勤早晨。","todayHook":"今天一早就出问题：电车到底会不会晚点？","summary":"雨天通勤开始出现延误，你决定先通知公司。"},"callbacks":[{"targetId":"news-yasai-20260828","sourceEpisodeId":"news-yasai-20260828","role":"natural_reuse"},{"targetId":"news-rain-20260828","sourceEpisodeId":"news-rain-20260828","role":"natural_reuse"}],"nextId":"release-week-01-ep02"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep02","title":"第2集｜田中に「遅れるかも」を伝える","category":"职场空气","level":"N3","emoji":"📱","visual":"release-week-ep02","prompt":"电车真的开始晚点。田中问你到哪里了，你要把不确定的迟到风险说清楚。","guesses":["少し遅れるかもしれません","必ず遅れます","遅れをします"],"guessCorrect":0,"twist":"🎬 上一集的「遅れそう」变成了这一集必须采取行动的「かもしれません」。","key":{"term":"かもしれません","reading":"かも しれません","meaning":"可能…… / 也许……","insight":"不是断言，但足以让对方提前采取行动。","anchor":"📱 ? → かもしれません"},"jp":"今どのあたりですか？\n電車が遅れていて、少し遅れるかもしれません。","cn":"田中问你在哪里。你说明电车晚点，自己可能会稍微迟到。","points":[{"term":"かもしれません","reading":"かも しれません","meaning":"可能……","note":"表达存在可能性，不等于可以忽略。"},{"term":"遅れていて","reading":"おくれて いて","meaning":"正在晚点，因此……","note":"把原因自然接到后续联络。"}],"use":{"prompt":"田中问「今どのあたりですか？」你怎么回？","choices":["電車が遅れていて、少し遅れるかもしれません。","必ず一時間遅れます。","今は電車ですか。"],"correct":0,"feedback":"把已知原因和不确定结果分开说。"},"transfer":{"prompt":"热门商品今天可能卖完，怎么提醒朋友？","choices":["夕方には売り切れるかもしれないよ。","夕方は絶対売り切れます。","売り切れをします。"],"correct":0,"feedback":"从迟到风险迁移到购物风险。"},"review":{"prompt":"列车状态还没确定，把句尾补出来。","cloze":"少し遅れる＿＿。","answer":"かもしれません","feedback":"不确定风险→先联络。"},"play":{"daily":"ちょっと遅れるかも。","polite":"少し遅れるかもしれません。","business":"到着が遅れる可能性があります。","businessNote":"正式说明常把「かも」展开成「可能性があります」。","replyPrompt":"今どのあたりですか？","reply":"電車が遅れていて、少し遅れるかもしれません。","scenarios":[{"emoji":"📍","cue":"剧情｜田中问你还有多久到。","jp":"あと十分くらいかかるかもしれません。","cn":"可能还要十分钟左右。"},{"emoji":"🕘","cue":"剧情｜你意识到九点会议有风险。","jp":"九時の会議に間に合わないかもしれません。","cn":"可能赶不上九点的会议。"},{"emoji":"🙇","cue":"剧情｜给佐藤发更礼貌的联络。","jp":"到着が少し遅れるかもしれません。申し訳ありません。","cn":"可能会稍晚到，非常抱歉。"},{"emoji":"🛍️","cue":"迁移｜提醒朋友热门商品可能卖完。","jp":"夕方には売り切れるかもしれないよ。","cn":"傍晚可能就卖完了。"},{"emoji":"🌦️","cue":"迁移｜出门前看天气预报。","jp":"午後は雨が降るかもしれません。","cn":"下午可能会下雨。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":2,"episodeCount":12,"previousEpisodeId":"release-week-01-ep01","nextEpisodeId":"release-week-01-ep03","locationId":"station","locationName":"通勤车站","castIds":["tanaka"],"canonRevision":"v1","previousSummary":"雨天通勤开始出现延误，你决定先通知公司。","todayHook":"车已经真的晚点了；怎么告诉田中“可能会迟到”？","summary":"你把迟到风险告诉田中，团队知道你正在赶来。"},"callbacks":[{"targetId":"release-week-01-ep01","sourceEpisodeId":"release-week-01-ep01","role":"natural_reuse"},{"targetId":"news-yasai-20260828","sourceEpisodeId":"news-yasai-20260828","role":"natural_reuse"}],"nextId":"release-week-01-ep03"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep03","title":"第3集｜九時の会議はもう決まっている","category":"职场空气","level":"N3","emoji":"🗓️","visual":"release-week-ep03","prompt":"你赶到公司，田中确认晨会时间。这里不是个人临时打算，而是已经定好的安排。","guesses":["九時から始めることになっています","九時から始めたいです","九時かもしれませんだけ"],"guessCorrect":0,"twist":"🎬 迟到风险刚落地，剧情立刻进入上线前既定流程。","key":{"term":"ことになっています","reading":"こと に なって います","meaning":"已经安排为…… / 按规定是……","insight":"说明已经形成的安排、规则或决定，不强调是谁临时决定。","anchor":"📋 決定済み → ことになっています"},"jp":"朝会は九時からでしたよね。\nはい、九時から始めることになっています。","cn":"田中确认晨会时间，你说明已经安排九点开始。","points":[{"term":"ことになっています","reading":"こと に なって います","meaning":"按安排/规定……","note":"焦点在已形成的状态。"},{"term":"予定となっております","reading":"よてい と なって おります","meaning":"正式说明中的“安排为……”","note":"对外更正式。"}],"use":{"prompt":"田中问晨会时间，你怎么说明？","choices":["九時から始めることになっています。","九時を始めます。","九時にしたそうですか。"],"correct":0,"feedback":"既定安排用「ことになっています」。"},"transfer":{"prompt":"设施规则规定受理到六点，怎么说明？","choices":["受付は六時までということになっています。","受付は六時をします。","受付は六時そうです。"],"correct":0,"feedback":"从项目安排迁移到公共规则。"},"review":{"prompt":"已经安排好九点开始。","cloze":"九時から始める＿＿。","answer":"ことになっています","feedback":"规则/既定安排→ことになっています。"},"play":{"daily":"九時からって決まってるよ。","polite":"九時から始めることになっています。","business":"会議は九時より開始する予定となっております。","businessNote":"对外正式说明常用「予定となっております」，内部「ことになっています」很自然。","replyPrompt":"朝会は九時からでしたよね。","reply":"はい、九時から始めることになっています。","scenarios":[{"emoji":"🧑‍💻","cue":"剧情｜田中再次确认晨会。","jp":"朝会は九時から始めることになっています。","cn":"晨会已经安排九点开始。"},{"emoji":"✅","cue":"剧情｜佐藤确认上线前流程。","jp":"本番前にチェックリストを確認することになっています。","cn":"上线前已经安排要确认检查表。"},{"emoji":"🚪","cue":"剧情｜确认稍后的会议室使用。","jp":"十時からこちらの会議室を使用することになっています。","cn":"已经安排十点开始使用这间会议室。"},{"emoji":"🏠","cue":"迁移｜朋友群里确认周末聚会。","jp":"土曜日は美香の家に集まることになってるよ。","cn":"周六已经说好去美香家集合。"},{"emoji":"🏢","cue":"迁移｜公共设施说明受付规则。","jp":"受付は六時までということになっています。","cn":"规定是受理到六点。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":3,"episodeCount":12,"previousEpisodeId":"release-week-01-ep02","nextEpisodeId":"release-week-01-ep04","locationId":"project-office","locationName":"项目办公室","castIds":["tanaka","sato"],"canonRevision":"v1","previousSummary":"你把迟到风险告诉田中，团队知道你正在赶来。","todayHook":"迟到风险刚解决，马上确认九点会议是临时想法还是已经定好的安排。","summary":"你赶到办公室，确认九点晨会和上线前流程。"},"callbacks":[{"targetId":"release-week-01-ep02","sourceEpisodeId":"release-week-01-ep02","role":"natural_reuse"},{"targetId":"release-week-01-ep01","sourceEpisodeId":"release-week-01-ep01","role":"natural_reuse"}],"nextId":"release-week-01-ep04"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep04","title":"第4集｜念のため、もう一度確認する","category":"职场空气","level":"N3","emoji":"🧷","visual":"release-week-ep04","prompt":"会议结束，资料看起来都齐了。佐藤还是让你上线前再核对一次。","guesses":["念のため、もう一度確認します","絶対に間違っています","ついでに忘れます"],"guessCorrect":0,"twist":"🎬 既定流程之后不是机械背词，而是剧情里真的出现了需要“保险起见”的风险。","key":{"term":"念のため","reading":"ねん の ため","meaning":"保险起见 / 以防万一","insight":"不是不信任，而是主动堵住小概率风险。","anchor":"✅ → もう一回 → 念のため"},"jp":"資料はもうそろっていますか。\nはい。念のため、もう一度確認します。","cn":"佐藤问资料是否齐全，你表示保险起见再确认一次。","points":[{"term":"念のため","reading":"ねん の ため","meaning":"保险起见","note":"常接确认、准备、保存等预防动作。"},{"term":"改めて","reading":"あらためて","meaning":"再次、重新","note":"正式确认中很常用。"}],"use":{"prompt":"资料已齐，但你想再确认一次。","choices":["念のため、もう一度確認します。","絶対に問題があります。","確認を念します。"],"correct":0,"feedback":"小概率风险→再做一次预防动作。"},"transfer":{"prompt":"旅行前确认护照。","choices":["念のため、パスポートを持ったか確認しよう。","パスポートが念です。","絶対に忘れた。"],"correct":0,"feedback":"从上线确认迁移到生活准备。"},"review":{"prompt":"大概没问题，但再确认一次。","cloze":"＿＿、もう一度確認します。","answer":"念のため","feedback":"“大概没事→仍预防”就是核心。"},"play":{"daily":"念のため、もう一回見るね。","polite":"念のため、もう一度確認します。","business":"念のため、改めて確認いたします。","businessNote":"核心一直是为了保险再确认，可自然提升礼貌度。","replyPrompt":"資料はもうそろっていますか。","reply":"はい。念のため、もう一度確認します。","scenarios":[{"emoji":"✅","cue":"剧情｜你和田中一起看上线检查表。","jp":"念のため、チェックリストをもう一度見ておこう。","cn":"保险起见，再看一次检查表吧。"},{"emoji":"📎","cue":"剧情｜佐藤让你确认附件。","jp":"念のため、添付ファイルも確認します。","cn":"保险起见，我也确认一下附件。"},{"emoji":"✉️","cue":"剧情｜给客户发送最终邮件前。","jp":"念のため、送信前に宛先を再確認いたします。","cn":"保险起见，发送前再次确认收件人。"},{"emoji":"🛂","cue":"迁移｜旅行出门前确认重要证件。","jp":"念のため、パスポートを持ったか確認しよう。","cn":"保险起见，确认一下护照带没带。"},{"emoji":"🔥","cue":"迁移｜离开家前想到厨房。","jp":"念のため、火を消したかもう一度見ておく。","cn":"保险起见，再看一次火关了没有。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":4,"episodeCount":12,"previousEpisodeId":"release-week-01-ep03","nextEpisodeId":"release-week-01-ep05","locationId":"project-office","locationName":"项目办公室","castIds":["tanaka","sato"],"canonRevision":"v1","previousSummary":"你赶到办公室，确认九点晨会和上线前流程。","todayHook":"资料明明齐了，为什么还要再看一遍？","summary":"会议结束后，佐藤要求最后确认；你开始承担上线前检查。"},"callbacks":[{"targetId":"release-week-01-ep03","sourceEpisodeId":"release-week-01-ep03","role":"natural_reuse"},{"targetId":"release-week-01-ep02","sourceEpisodeId":"release-week-01-ep02","role":"natural_reuse"}],"nextId":"release-week-01-ep05"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep05","title":"第5集｜田中の飲み会をやんわり断る","category":"职场空气","level":"N3","emoji":"🍺","visual":"release-week-ep05","prompt":"田中邀请你下班喝一杯，但明天要上线。熟人之间不必把拒绝说得很硬。","guesses":["今日はちょっと……","絶対に行きません","今日は飲み物です"],"guessCorrect":0,"twist":"🎬 上线压力改变了人物选择：你不是随机练拒绝，而是因为明天的剧情必须拒绝。","key":{"term":"今日はちょっと……","reading":"きょう は ちょっと","meaning":"今天有点……（委婉拒绝）","insight":"熟人邀请里，停在「ちょっと……」本身就能完成拒绝；正式关系要更清楚。","anchor":"🍺? → 今日はちょっと……"},"jp":"今日、終わったら飲みに行かない？\nごめん、今日はちょっと……。","cn":"田中约你喝酒，你因为明天上线而委婉拒绝。","points":[{"term":"ちょっと……","reading":"ちょっと","meaning":"留白式委婉拒绝","note":"关系越熟，留白越容易被理解。"},{"term":"都合がつかない","reading":"つごう が つかない","meaning":"时间不方便","note":"正式拒绝时更明确。"}],"use":{"prompt":"田中问今晚喝酒吗？","choices":["ごめん、今日はちょっと……。","絶対に拒否します。","飲みますをしません。"],"correct":0,"feedback":"熟人之间留白就够了。"},"transfer":{"prompt":"预约窗口问你不方便的日期。","choices":["その日はちょっと難しいですね。","その日は絶対です。","日をちょっとします。"],"correct":0,"feedback":"关系变化后把困难说清楚。"},"review":{"prompt":"明天有重要事，今晚邀约去不了。","cloze":"ごめん、今日は＿＿。","answer":"ちょっと……","feedback":"留白本身就是拒绝信号。"},"play":{"daily":"今日はちょっと……。","polite":"今日は少し難しいです。","business":"本日は都合がつかず、難しいです。","businessNote":"正式关系里通常不会只靠留白，而会明确说明今天有困难。","replyPrompt":"今日、終わったら飲みに行かない？","reply":"ごめん、今日はちょっと……。","scenarios":[{"emoji":"🍻","cue":"剧情｜田中当面再次邀请。","jp":"ごめん、今日はちょっと……。明日なら大丈夫。","cn":"抱歉，今天有点……明天可以。"},{"emoji":"📅","cue":"剧情｜普通同事约今天临时开会。","jp":"今日は少し難しいです。明日の午前中でもよろしいでしょうか。","cn":"今天有点困难，明天上午可以吗？"},{"emoji":"💼","cue":"剧情｜客户临时提出今天再开一次会。","jp":"本日は都合がつかず、難しいです。別のお時間をいただけますでしょうか。","cn":"今天时间不方便，能否另约时间？"},{"emoji":"🎮","cue":"迁移｜朋友临时约你今晚玩游戏。","jp":"今日はちょっと無理かも。今度にしよう。","cn":"今天可能有点不行，下次吧。"},{"emoji":"🏥","cue":"迁移｜预约窗口询问你不方便的日期。","jp":"その日はちょっと難しいですね。","cn":"那天有点困难。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":5,"episodeCount":12,"previousEpisodeId":"release-week-01-ep04","nextEpisodeId":"release-week-01-ep06","locationId":"project-office","locationName":"项目办公室","castIds":["tanaka"],"canonRevision":"v1","previousSummary":"会议结束后，佐藤要求最后确认；你开始承担上线前检查。","todayHook":"田中邀请喝酒，但明天要上线；怎么拒绝才不生硬？","summary":"你婉拒田中，决定早点回去，为第二天上线做准备。"},"callbacks":[{"targetId":"release-week-01-ep04","sourceEpisodeId":"release-week-01-ep04","role":"natural_reuse"},{"targetId":"release-week-01-ep03","sourceEpisodeId":"release-week-01-ep03","role":"natural_reuse"}],"nextId":"release-week-01-ep06"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep06","title":"第6集｜明日に備えて、今日は先に帰る","category":"职场空气","level":"N3","emoji":"🚪","visual":"release-week-ep06","prompt":"大家还在办公室，你为了明天上线准备先回去休息。","guesses":["お先に失礼します","お邪魔します","ごちそうさまでした"],"guessCorrect":0,"twist":"🎬 昨天拒绝喝酒不是终点，而是自然接到“我先下班”的职场动作。","key":{"term":"お先に失礼します","reading":"おさき に しつれい します","meaning":"我先走了 / 我先下班了","insight":"别人还在工作而自己先离开时，把“先走一步”和礼貌一起说完。","anchor":"💻💻 → 🚪 お先に失礼します"},"jp":"もう帰りますか？\nはい。明日に備えて、お先に失礼します。","cn":"同事问你要回去了吗，你说明为了明天准备先离开。","points":[{"term":"お先に失礼します","reading":"おさき に しつれい します","meaning":"我先走了","note":"典型职场下班表达。"},{"term":"明日に備えて","reading":"あした に そなえて","meaning":"为明天做准备","note":"把剧情原因接进去。"}],"use":{"prompt":"办公室里别人还在，你准备先走。","choices":["お先に失礼します。","ただいま。","いただきます。"],"correct":0,"feedback":"动作就是天然提示。"},"transfer":{"prompt":"学习会还没结束，但你必须离开。","choices":["すみません、今日は先に失礼します。","お邪魔します。","ごちそうさまです。"],"correct":0,"feedback":"离开职场也能迁移“先失礼”。"},"review":{"prompt":"别人还在工作，你拿包起身。","cloze":"お先に＿＿。","answer":"失礼します","feedback":"拿包、起身、别人还在→自动叫回来。"},"play":{"daily":"先に帰るね。","polite":"お先に失礼します。","business":"恐れ入りますが、お先に失礼いたします。","businessNote":"对象更正式时加入缓冲，并把「します」提升为「いたします」。","replyPrompt":"もう帰りますか？","reply":"はい。明日に備えて、お先に失礼します。","scenarios":[{"emoji":"🎒","cue":"剧情｜田中还在电脑前，你拿起包。","jp":"明日に備えて、今日はお先に失礼します。","cn":"为了明天做准备，我今天先走了。"},{"emoji":"🙇","cue":"剧情｜佐藤还在处理最后事项。","jp":"申し訳ありませんが、お先に失礼します。","cn":"不好意思，我先告辞了。"},{"emoji":"💼","cue":"剧情｜正式场合先于上司离开。","jp":"恐れ入りますが、本日はお先に失礼いたします。","cn":"不好意思，今天我先告辞了。"},{"emoji":"🏠","cue":"迁移｜朋友聚会中你要先回家。","jp":"ごめん、今日は先に帰るね。","cn":"抱歉，我今天先回去了。"},{"emoji":"📚","cue":"迁移｜学习会还没结束但你必须离开。","jp":"すみません、今日は先に失礼します。","cn":"不好意思，我今天先走了。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":6,"episodeCount":12,"previousEpisodeId":"release-week-01-ep05","nextEpisodeId":"release-week-01-ep07","locationId":"project-office","locationName":"项目办公室","castIds":["tanaka","sato"],"canonRevision":"v1","previousSummary":"你婉拒田中，决定早点回去，为第二天上线做准备。","todayHook":"大家还在办公室，你准备先回去休息；离开前怎么说？","summary":"你提前下班休息，第二天将直接面对客户最终确认。"},"callbacks":[{"targetId":"release-week-01-ep05","sourceEpisodeId":"release-week-01-ep05","role":"natural_reuse"},{"targetId":"release-week-01-ep04","sourceEpisodeId":"release-week-01-ep04","role":"natural_reuse"}],"nextId":"release-week-01-ep07"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep07","title":"第7集｜山本さんへ最終確認を送る","category":"职场空气","level":"N3","emoji":"✉️","visual":"release-week-ep07","prompt":"最终资料要发给客户山本。熟悉的「よろしく」在客户邮件里会变得更郑重。","guesses":["ご確認のほど、何卒よろしくお願いいたします","よろしく！","確認しないでください"],"guessCorrect":0,"twist":"🎬 固定角色山本第一次真正进入主线，语言也从内部同事切换到客户关系。","key":{"term":"何卒よろしくお願いいたします","reading":"なにとぞ よろしく おねがい いたします","meaning":"还请多多关照 / 恳请确认","insight":"把「よろしく」带到客户最终确认里，关系变化后表达更郑重。","anchor":"📎→山本 → 何卒よろしくお願いいたします"},"jp":"最終確認資料を送っていただけますか。\nはい。すぐにお送りします。ご確認のほど、何卒よろしくお願いいたします。","cn":"客户请你发送最终资料，你正式回应并请求确认。","points":[{"term":"何卒","reading":"なにとぞ","meaning":"恳请、务必","note":"正式请求中增加郑重感。"},{"term":"ご確認のほど","reading":"ごかくにん の ほど","meaning":"关于确认一事，还请……","note":"商务邮件常见缓冲。"}],"use":{"prompt":"给客户发最终资料，结尾怎么写？","choices":["ご確認のほど、何卒よろしくお願いいたします。","よろしく！","確認がいりません。"],"correct":0,"feedback":"具体请求+客户关系决定正式度。"},"transfer":{"prompt":"请朋友代收快递。","choices":["もし届いたら、よろしくお願いします。","何卒配送いたします。","届きをします。"],"correct":0,"feedback":"回到熟人关系时自然降级。"},"review":{"prompt":"客户最终确认邮件的郑重结尾。","cloze":"ご確認のほど、＿＿。","answer":"何卒よろしくお願いいたします","feedback":"关系改变，表达也改变。"},"play":{"daily":"よろしく！","polite":"よろしくお願いします。","business":"ご確認のほど、何卒よろしくお願いいたします。","businessNote":"对客户的具体确认请求可用「ご確認のほど、何卒よろしくお願いいたします」。","replyPrompt":"最終確認資料を送っていただけますか。","reply":"はい。すぐにお送りします。ご確認のほど、何卒よろしくお願いいたします。","scenarios":[{"emoji":"📎","cue":"剧情｜把资料发给山本。","jp":"資料を添付いたしました。ご確認のほど、何卒よろしくお願いいたします。","cn":"资料已附上，还请确认。"},{"emoji":"🙏","cue":"剧情｜佐藤让你再补一句礼貌请求。","jp":"お手数をおかけしますが、何卒よろしくお願いいたします。","cn":"麻烦您了，还请多多关照。"},{"emoji":"🚀","cue":"剧情｜上线前向客户做最后说明。","jp":"明日のリリースにつきまして、何卒よろしくお願いいたします。","cn":"关于明天的上线，还请多多关照。"},{"emoji":"🤝","cue":"迁移｜第一次参加朋友组织的活动。","jp":"今日から参加します。よろしくお願いします。","cn":"今天开始参加，请多关照。"},{"emoji":"📦","cue":"迁移｜请朋友代收一个快递。","jp":"もし届いたら、よろしくお願いします。","cn":"如果到了，就拜托你了。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":7,"episodeCount":12,"previousEpisodeId":"release-week-01-ep06","nextEpisodeId":"release-week-01-ep08","locationId":"project-office","locationName":"项目办公室","castIds":["sato","yamamoto"],"canonRevision":"v1","previousSummary":"你提前下班休息，第二天将直接面对客户最终确认。","todayHook":"最终资料要发给客户山本；邮件最后一句怎么收才自然？","summary":"最终确认邮件发出，山本回复会确认；上线进入倒计时。"},"callbacks":[{"targetId":"release-week-01-ep06","sourceEpisodeId":"release-week-01-ep06","role":"natural_reuse"},{"targetId":"release-week-01-ep05","sourceEpisodeId":"release-week-01-ep05","role":"natural_reuse"}],"nextId":"release-week-01-ep08"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep08","title":"第8集｜本番前の小さな問題を先に潰す","category":"职场空气","level":"N3","emoji":"🛠️","visual":"release-week-ep08","prompt":"上线前发现一个小显示问题。现在先处理，是为了后面不被它卡住。","guesses":["本番までに対応しておきます","あとで忘れます","対応かもしれませんだけ"],"guessCorrect":0,"twist":"🎬 客户确认之后突然出现小问题，前几集的“念のため”也会自然回归。","key":{"term":"対応しておきます","reading":"たいおう して おきます","meaning":"我会提前处理好","insight":"「～ておく」把“为了后面顺利，现在先做”编码进一句话。","anchor":"🛠️ 今やる → 後で安心"},"jp":"この表示、少しずれてますね。\n本番までに対応しておきます。","cn":"田中发现显示错位，你表示会在上线前先处理好。","points":[{"term":"～ておく","reading":"〜て おく","meaning":"提前做、先做好","note":"为了后续目的预先行动。"},{"term":"対応する","reading":"たいおう する","meaning":"处理、应对","note":"工作现场高频。"}],"use":{"prompt":"上线前发现小问题，你怎么承担？","choices":["本番までに対応しておきます。","問題を忘れます。","対応がありません。"],"correct":0,"feedback":"现在先处理，为后面顺利。"},"transfer":{"prompt":"旅行前先准备一点现金。","choices":["出発前に少し現金を用意しておきます。","現金を忘れておきます。","現金が対応です。"],"correct":0,"feedback":"从项目预处理迁移到生活准备。"},"review":{"prompt":"为了上线顺利，现在先处理。","cloze":"本番までに＿＿。","answer":"対応しておきます","feedback":"“后面有目标→现在先做”就是～ておく。"},"play":{"daily":"先に直しておくね。","polite":"本番までに対応しておきます。","business":"本番開始前までに対応を完了しておきます。","businessNote":"正式说明把处理时点说清楚，便于对方判断风险。","replyPrompt":"この表示、少しずれてますね。","reply":"本番までに対応しておきます。","scenarios":[{"emoji":"🖥️","cue":"剧情｜田中发现显示错位。","jp":"本番までに直しておくね。","cn":"上线前我会先修好。"},{"emoji":"✅","cue":"剧情｜修完以后再做一次保险确认。","jp":"対応後、念のためもう一度確認しておきます。","cn":"处理后保险起见我会再确认一次。"},{"emoji":"📣","cue":"剧情｜向佐藤汇报处理时点。","jp":"本番開始前までに対応を完了しておきます。","cn":"正式开始前会把处理完成。"},{"emoji":"🍚","cue":"迁移｜朋友来家里前先准备饭。","jp":"来る前に、ご飯を作っておくね。","cn":"你来之前我先把饭做好。"},{"emoji":"✈️","cue":"迁移｜旅行前先准备一点现金。","jp":"出発前に少し現金を用意しておきます。","cn":"出发前先准备一些现金。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":8,"episodeCount":12,"previousEpisodeId":"release-week-01-ep07","nextEpisodeId":"release-week-01-ep09","locationId":"project-office","locationName":"项目办公室","castIds":["tanaka","sato"],"canonRevision":"v1","previousSummary":"最终确认邮件发出，山本回复会确认；上线进入倒计时。","todayHook":"上线前突然发现一个小问题；怎么表达“我先处理好”？","summary":"小问题被处理并复核，项目没有因此推迟。"},"callbacks":[{"targetId":"release-week-01-ep07","sourceEpisodeId":"release-week-01-ep07","role":"natural_reuse"},{"targetId":"release-week-01-ep04","sourceEpisodeId":"release-week-01-ep04","role":"natural_reuse"}],"nextId":"release-week-01-ep09"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep09","title":"第9集｜山本さんとの最終ミーティング","category":"职场空气","level":"N2","emoji":"🤝","visual":"release-week-ep09","prompt":"客户会议终于开始。进入正题前，先承接对方为你抽出的时间。","guesses":["お時間をいただき、ありがとうございます","時間がありますかだけ","お疲れ！"],"guessCorrect":0,"twist":"🎬 同一个山本角色让商务表达不再是抽象“敬语题”，而是关系连续的真实需要。","key":{"term":"お時間をいただきありがとうございます","reading":"おじかん を いただき ありがとう ございます","meaning":"感谢您拨冗 / 谢谢您抽时间","insight":"客户会议开头先承接对方付出的时间，比直接进入正题更自然。","anchor":"🤝⏰ → ありがとうございます"},"jp":"では、始めましょうか。\n本日はお時間をいただき、ありがとうございます。よろしくお願いいたします。","cn":"客户示意开始，你先感谢对方抽时间再进入会议。","points":[{"term":"お時間をいただく","reading":"おじかん を いただく","meaning":"承蒙对方拨出时间","note":"正式会面常用。"},{"term":"お忙しい中","reading":"おいそがしい なか","meaning":"百忙之中","note":"更正式地承接对方成本。"}],"use":{"prompt":"客户会议开场第一句。","choices":["本日はお時間をいただき、ありがとうございます。","時間ください。","お疲れ！"],"correct":0,"feedback":"先感谢，再进正题。"},"transfer":{"prompt":"朋友专门腾时间见你。","choices":["時間つくってくれてありがとう。","お時間を賜りました。","時間を食べた。"],"correct":0,"feedback":"关系变化，表达自然降级。"},"review":{"prompt":"客户拨时间给你开会。","cloze":"本日は＿＿。","answer":"お時間をいただき、ありがとうございます","feedback":"把“对方付出的时间”作为感谢对象。"},"play":{"daily":"時間つくってくれてありがとう。","polite":"お時間をいただき、ありがとうございます。","business":"本日はお忙しい中、お時間をいただき誠にありがとうございます。","businessNote":"正式会议会明确感谢对方在忙碌中抽出时间。","replyPrompt":"では、始めましょうか。","reply":"本日はお時間をいただき、ありがとうございます。よろしくお願いいたします。","scenarios":[{"emoji":"🪑","cue":"剧情｜会议刚开始，先向山本致谢。","jp":"本日はお時間をいただき、ありがとうございます。","cn":"感谢您今天抽时间。"},{"emoji":"📋","cue":"剧情｜说明这是最终确认会议。","jp":"本日は最終確認のお時間をいただき、ありがとうございます。","cn":"感谢您为最终确认抽出时间。"},{"emoji":"💼","cue":"剧情｜更正式地向客户开场。","jp":"本日はお忙しい中、お時間をいただき誠にありがとうございます。","cn":"感谢您百忙之中拨冗。"},{"emoji":"☕","cue":"迁移｜朋友专门腾时间和你见面。","jp":"時間つくってくれてありがとう。","cn":"谢谢你专门腾时间。"},{"emoji":"🏥","cue":"迁移｜咨询结束时感谢工作人员。","jp":"お時間を取っていただき、ありがとうございます。","cn":"谢谢您抽时间。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":9,"episodeCount":12,"previousEpisodeId":"release-week-01-ep08","nextEpisodeId":"release-week-01-ep10","locationId":"client-office","locationName":"客户办公室","castIds":["sato","yamamoto"],"canonRevision":"v1","previousSummary":"小问题被处理并复核，项目没有因此推迟。","todayHook":"客户会议开始了；第一句先说什么，才能自然进入正题？","summary":"客户会议顺利开始，山本确认了最后的上线条件。"},"callbacks":[{"targetId":"release-week-01-ep08","sourceEpisodeId":"release-week-01-ep08","role":"natural_reuse"},{"targetId":"release-week-01-ep07","sourceEpisodeId":"release-week-01-ep07","role":"natural_reuse"}],"nextId":"release-week-01-ep10"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep10","title":"第10集｜ついに本番リリース","category":"职场空气","level":"N2","emoji":"🚀","visual":"release-week-ep10","prompt":"监控变绿，主要功能正常。经历前面的风险后，终于可以说“顺利上线了”。","guesses":["無事にリリースできました","リリースが危険です","リリースを食べました"],"guessCorrect":0,"twist":"🎬 前九集不是铺垫装饰：所有确认、联络和客户沟通终于在这一刻收束。","key":{"term":"無事にリリースできました","reading":"ぶじ に リリース できました","meaning":"顺利完成上线了","insight":"「無事に」带出经历风险但最终平安完成的结果感。","anchor":"🚀✅ → 無事に"},"jp":"本番の状況はいかがですか。\nはい。無事にリリースできました。","cn":"客户询问正式环境状态，你确认已顺利上线。","points":[{"term":"無事に","reading":"ぶじ に","meaning":"平安地、顺利地","note":"经过风险后尤其自然。"},{"term":"完了いたしました","reading":"かんりょう いたしました","meaning":"已完成（正式）","note":"对外结果报告常用。"}],"use":{"prompt":"佐藤问当前状态。","choices":["無事にリリースできました。","まだ絶対です。","リリースが食べました。"],"correct":0,"feedback":"“经历风险→顺利完成”的结果感。"},"transfer":{"prompt":"旅行到目的地后给朋友报平安。","choices":["無事に着いたよ。","到着を無事です。","無事を着ます。"],"correct":0,"feedback":"把「無事に」迁移到生活。"},"review":{"prompt":"终于顺利上线。","cloze":"＿＿リリースできました。","answer":"無事に","feedback":"风险之后的安心结果。"},"play":{"daily":"無事リリースできたね！","polite":"無事にリリースできました。","business":"おかげさまで、無事に本番リリースを完了いたしました。","businessNote":"对外正式报告会把“顺利”与完成对象一起说清楚。","replyPrompt":"本番の状況はいかがですか。","reply":"はい。無事にリリースできました。","scenarios":[{"emoji":"🎉","cue":"剧情｜田中看到监控正常。","jp":"無事にリリースできたね。","cn":"顺利上线了呢。"},{"emoji":"✅","cue":"剧情｜向佐藤汇报当前状态。","jp":"先ほど、無事にリリースできました。","cn":"刚才已经顺利上线了。"},{"emoji":"📧","cue":"剧情｜给山本发送正式结果。","jp":"おかげさまで、無事に本番リリースを完了いたしました。","cn":"承蒙关照，已顺利完成正式上线。"},{"emoji":"🚉","cue":"迁移｜旅行到目的地后给朋友报平安。","jp":"無事に着いたよ。","cn":"我顺利到了。"},{"emoji":"📦","cue":"迁移｜告诉店员包裹顺利收到。","jp":"荷物、無事に届きました。","cn":"包裹顺利收到了。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":10,"episodeCount":12,"previousEpisodeId":"release-week-01-ep09","nextEpisodeId":"release-week-01-ep11","locationId":"project-office","locationName":"项目办公室","castIds":["tanaka","sato","yamamoto"],"canonRevision":"v1","previousSummary":"客户会议顺利开始，山本确认了最后的上线条件。","todayHook":"项目正式上线；怎么把“终于顺利完成了”说出来？","summary":"项目正式上线，团队确认主要功能正常。"},"callbacks":[{"targetId":"release-week-01-ep09","sourceEpisodeId":"release-week-01-ep09","role":"natural_reuse"},{"targetId":"release-week-01-ep08","sourceEpisodeId":"release-week-01-ep08","role":"natural_reuse"}],"nextId":"release-week-01-ep11"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep11","title":"第11集｜リリース後の振り返り","category":"职场空气","level":"N2","emoji":"🔎","visual":"release-week-ep11","prompt":"上线成功后开始复盘。现在回看整个过程，要把哪些行动串成经验？","guesses":["振り返ってみると","これからだけ見ると","振り返りを食べると"],"guessCorrect":0,"twist":"🎬 这一集会主动把前面的迟到联络、念のため和提前处理重新叫回来。","key":{"term":"振り返ってみると","reading":"ふりかえって みる と","meaning":"回头看 / 回顾起来","insight":"从现在回看过去，找出哪些行动真正起了作用。","anchor":"🔎←一週間 → 振り返ってみると"},"jp":"今回、何が一番大きかったですか。\n振り返ってみると、早めに共有したことが大きかったと思います。","cn":"佐藤问最关键的因素，你回顾认为早点共享信息很重要。","points":[{"term":"振り返ってみると","reading":"ふりかえって みる と","meaning":"回头看","note":"复盘和经验总结很自然。"},{"term":"早期共有","reading":"そうき きょうゆう","meaning":"早期共享","note":"正式复盘可用。"}],"use":{"prompt":"复盘时怎么开启你的判断？","choices":["振り返ってみると、早めに共有してよかったです。","明日だけ見ます。","振り返りがです。"],"correct":0,"feedback":"从现在回看过去，再提炼经验。"},"transfer":{"prompt":"回顾最近日语学习。","choices":["振り返ってみると、毎日少し話したのがよかった。","毎日を返りました。","話すが振りです。"],"correct":0,"feedback":"从项目复盘迁移到学习复盘。"},"review":{"prompt":"从现在回看过去。","cloze":"＿＿、早めに共有してよかったです。","answer":"振り返ってみると","feedback":"回顾→提炼经验。"},"play":{"daily":"振り返ると、早めに言ってよかったね。","polite":"振り返ってみると、早めに共有してよかったです。","business":"振り返りますと、早期共有が有効だったと考えております。","businessNote":"正式复盘会把感想展开成可说明的判断。","replyPrompt":"今回、何が一番大きかったですか。","reply":"振り返ってみると、早めに共有したことが大きかったと思います。","scenarios":[{"emoji":"🗣️","cue":"剧情｜和田中回顾最早的迟到联络。","jp":"振り返ってみると、早めに相談したのがよかったです。","cn":"回头看，早点商量是对的。"},{"emoji":"🚃","cue":"剧情｜再次提到第一天的电车。","jp":"振り返ると、遅れるかもしれないと先に伝えてよかったね。","cn":"回头看，先说可能会迟到挺好的。"},{"emoji":"📊","cue":"剧情｜向佐藤做正式复盘。","jp":"振り返りますと、事前確認を重ねたことが安定稼働につながりました。","cn":"回顾来看，多次事前确认促成了稳定运行。"},{"emoji":"🗾","cue":"迁移｜回顾最近的日语学习。","jp":"振り返ってみると、毎日少し話したのがよかった。","cn":"回头看，每天说一点很有用。"},{"emoji":"🏃","cue":"迁移｜回顾一次训练安排。","jp":"振り返ると、最初に飛ばしすぎたかも。","cn":"回头看，一开始可能冲太快了。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":11,"episodeCount":12,"previousEpisodeId":"release-week-01-ep10","nextEpisodeId":"release-week-01-ep12","locationId":"meeting-room","locationName":"会议室","castIds":["tanaka","sato"],"canonRevision":"v1","previousSummary":"项目正式上线，团队确认主要功能正常。","todayHook":"上线成功后开始复盘；怎么自然地从“现在”回看整个过程？","summary":"复盘中，团队把早联络、既定安排、保险确认和提前处理串成经验线。"},"callbacks":[{"targetId":"release-week-01-ep10","sourceEpisodeId":"release-week-01-ep10","role":"natural_reuse"},{"targetId":"release-week-01-ep08","sourceEpisodeId":"release-week-01-ep08","role":"natural_reuse"}],"nextId":"release-week-01-ep12"}},{"status":"published","publishedAt":"2026-08-30T23:10:00Z","audio":{"status":"not_ready"},"story":{"id":"release-week-01-ep12","title":"第12集｜第一季终：おかげさまで、無事に","category":"职场空气","level":"N2","emoji":"🌟","visual":"release-week-ep12","prompt":"季终挑战：把这周从电车晚点、会议、确认、客户沟通到上线与复盘串成一段完整交流。","guesses":["おかげさまで、無事にリリースできました","全部自分だけです","おかげをします"],"guessCorrect":0,"twist":"🎬 十二张卡片终于变成一段经历：你不是“背完了”，而是活过了一次项目上线周。","key":{"term":"おかげさまで","reading":"おかげさま で","meaning":"托您的福 / 多亏大家","insight":"把结果和周围人的帮助连接起来，用关系性的结果收束整个事件。","anchor":"🤝×一週間 → おかげさまで"},"jp":"今回のリリース、無事に終わりましたね。\nはい。おかげさまで、無事にリリースできました。","cn":"季终时大家确认项目结束，你用“托大家的福”收束这一周。","points":[{"term":"おかげさまで","reading":"おかげさま で","meaning":"托您的福","note":"常用于积极结果和感谢。"},{"term":"お力添え","reading":"おちからぞえ","meaning":"帮助、协助","note":"正式感谢中常用。"}],"use":{"prompt":"山本说项目顺利结束，你怎么回应？","choices":["おかげさまで、無事にリリースできました。","全部自分だけです。","おかげを食べました。"],"correct":0,"feedback":"把成功和协作关系连接起来。"},"transfer":{"prompt":"朋友陪你练日语后，你终于说出来了。","choices":["おかげで、ちゃんと話せたよ。ありがとう。","話すをおかげです。","全部一人です。"],"correct":0,"feedback":"从职场正式感谢迁移到朋友关系。"},"review":{"prompt":"季终一句话收束结果与感谢。","cloze":"＿＿、無事に終わりました。","answer":"おかげさまで","feedback":"结果+周围人的帮助→おかげさまで。"},"play":{"daily":"みんなのおかげで、うまくいったよ。","polite":"おかげさまで、無事に終わりました。","business":"皆様のお力添えのおかげで、無事に完了いたしました。","businessNote":"正式感谢会把帮助来源说得更清楚；「おかげさまで」仍是自然的关系收束。","replyPrompt":"今回のリリース、無事に終わりましたね。","reply":"はい。おかげさまで、無事にリリースできました。","scenarios":[{"emoji":"🎊","cue":"剧情｜田中说终于结束了。","jp":"はい。おかげさまで、無事にリリースできました。","cn":"是的，托大家的福顺利上线了。"},{"emoji":"🧘","cue":"剧情｜对佐藤总结自己的应对。","jp":"おかげさまで、最後まで落ち着いて対応できました。","cn":"托大家的福，我直到最后都能冷静处理。"},{"emoji":"💼","cue":"剧情｜向山本做正式感谢。","jp":"皆様のお力添えのおかげで、無事に完了いたしました。","cn":"多亏各位的帮助，已顺利完成。"},{"emoji":"🗣️","cue":"迁移｜朋友陪你练习日语后。","jp":"おかげで、ちゃんと話せたよ。ありがとう。","cn":"多亏你，我好好说出来了，谢谢。"},{"emoji":"🏡","cue":"迁移｜家人一起完成一件麻烦的事。","jp":"みんなのおかげで、無事に終わったよ。","cn":"多亏大家，顺利结束了。"}]},"series":{"worldId":"life-in-japan","worldTitle":"在日本生活和工作的我","seasonId":"release-week-01","seasonTitle":"项目上线前的一周","episodeNo":12,"episodeCount":12,"previousEpisodeId":"release-week-01-ep11","locationId":"meeting-room","locationName":"会议室","castIds":["tanaka","sato","yamamoto"],"canonRevision":"v1","previousSummary":"复盘中，团队把早联络、既定安排、保险确认和提前处理串成经验线。","todayHook":"季终挑战：不看答案，把这一周的沟通串成一整段职场交流。","summary":"季终：你完成从通勤异常到客户沟通、故障处理、正式上线与复盘的完整职场交流，第一季闭环。"},"callbacks":[{"targetId":"release-week-01-ep11","sourceEpisodeId":"release-week-01-ep11","role":"natural_reuse"},{"targetId":"release-week-01-ep10","sourceEpisodeId":"release-week-01-ep10","role":"natural_reuse"}]}},{"status":"audio_validation_failed","preparedAt":"2026-08-30T07:14:00Z","audio":{"status":"validation_failed","model":"gpt-realtime-1.5","cacheVersion":"realtime15-news-v2"},"story":{"id":"news-yasai-20260828","title":"新闻为什么不直接说「高くなります」，而说「高くなりそうです」？","category":"今日发生","level":"N3","emoji":"🍅","visual":"news-yasai","prompt":"NHK 8月28日的新闻说：9月番茄和黄瓜预计比往年贵约20%～30%。如果未来还没有百分之百确定，哪种说法更贴合这种“预测”？","guesses":["高くなります","高くなりそうです","高かったです"],"guessCorrect":1,"twist":"📈 新闻不是在保证未来，而是在表达“按现在的信息看来，很可能会这样”。","key":{"term":"高くなりそうです","reading":"たかく なりそう です","meaning":"看起来会变贵 / 预计会变贵","insight":"这里的「～そうです」不是“听说”的传闻用法，而是根据当前情况做判断：看起来接下来会发生。","anchor":"🍅 ¥ ↑ → 高くなりそうです"},"jp":"来月、トマトは高くなりますか？\n今のところ、いつもの年より高くなりそうです。","cn":"下个月番茄会涨价吗？\n照目前来看，可能会比往年贵。","points":[{"term":"～そうです","reading":"〜そう です","meaning":"看起来会……；预计会……","note":"用于根据眼前信息、趋势或迹象作判断。"},{"term":"今のところ","reading":"いま の ところ","meaning":"目前；就现在来看","note":"给预测加上“以当前信息为准”的边界。"}],"use":{"prompt":"你看到天气图，感觉马上要下雨。哪句最自然？","choices":["雨が降りそうです","雨が降りました","雨を降ります"],"correct":0,"feedback":"从菜价换到天气，仍然是“根据现在的迹象判断接下来”。"},"transfer":{"prompt":"车站广播前，你看到线路已经开始拥堵。想说“电车看起来要晚点了”，哪句更自然？","choices":["電車が遅れそうです","電車が遅れたそうです","電車が遅れません"],"correct":0,"feedback":"新闻里的预测表达，一换到你自己的通勤场景就能直接用。"},"review":{"prompt":"你看着乌云，想说“看起来要下雨”。把那个预测信号叫回来。","cloze":"雨が降り＿＿。","answer":"そうです","feedback":"先记住“眼前迹象 → そうです”，再去区分传闻的「そうです」。"},"news":{"source":"NHKやさしいことばニュース","sourceDate":"2026-08-28","sourceTitle":"野菜の値段　9月はトマトやきゅうりが高い","sourceUrl":"https://news.web.nhk/news/easy/","mode":"discovery","fact":"农林水产省预计，9月番茄和黄瓜价格可能比往年高约20%～30%。"},"nextId":"news-rain-20260828"}},{"status":"audio_validation_failed","preparedAt":"2026-08-30T07:14:00Z","audio":{"status":"validation_failed","model":"gpt-realtime-1.5","cacheVersion":"realtime15-news-v2"},"story":{"id":"news-rain-20260828","title":"灾害信息写「かもしれません」，是不是代表“问题不大”？","category":"今日发生","level":"N3","emoji":"🌧️","visual":"news-rain","prompt":"NHK 8月28日的天气信息提醒：即使雨量看起来不大，也可能出现积水、河水上涨或山体滑坡。看到「～かもしれません」，你应该怎么理解？","guesses":["只是极小概率，可以忽略","存在这种可能，虽然不是断言，但需要结合风险采取行动","记者也不知道发生了什么"],"guessCorrect":1,"twist":"⚠️ “不确定”不等于“不重要”。在安全信息里，“可能”本身就是行动信号。","key":{"term":"かもしれません","reading":"かも しれません","meaning":"也许…… / 可能……","insight":"它不告诉你精确概率，只告诉你“这种情况存在可能性”。天气、交通和安全信息里，要继续看后面的行动提示。","anchor":"🌧️ → ? → かもしれません"},"jp":"この雨で、電車が遅れるかもしれません。\nわかりました。早めに出ます。","cn":"因为这场雨，电车可能会晚点。\n明白了，我早点出发。","points":[{"term":"かもしれません","reading":"かも しれません","meaning":"可能；也许","note":"比断言弱，但并不等于“可以无视”。"},{"term":"早めに","reading":"はやめ に","meaning":"提前一些；尽早","note":"风险信息之后经常连接具体行动。"}],"use":{"prompt":"“这场雨可能会影响电车”最自然的是？","choices":["この雨で、電車に影響が出るかもしれません","この雨で、電車が影響です","この雨を電車かもしれません"],"correct":0,"feedback":"把「かもしれません」和具体风险放在一起理解，而不是孤立背成“也许”。"},"transfer":{"prompt":"热门商品今天可能卖完。你会怎么提醒朋友？","choices":["夕方には売り切れるかもしれません","夕方には売り切れそうでした","夕方には売り切れをします"],"correct":0,"feedback":"从灾害信息换到购物场景，“存在这种可能”仍然成立。"},"review":{"prompt":"列车状态还没确定，但存在晚点可能。把句尾补出来。","cloze":"電車が遅れる＿＿。","answer":"かもしれません","feedback":"看到不确定风险时，先认出这不是断言，再判断要不要提前行动。"},"news":{"source":"NHKやさしいことばニュース","sourceDate":"2026-08-28","sourceTitle":"雨が降りやすい天気が続きそう","sourceUrl":"https://news.web.nhk/news/easy/","mode":"serious","fact":"气象信息称多地易下雨的天气可能持续到8月30日，并提醒积水、河水上涨和山体滑坡等风险。"},"nextId":"chotto"}},{"status":"published","publishedAt":"2026-08-30T12:40:00Z","audio":{"status":"not_ready"},"story":{"id":"news-aete-convenience-20260830","title":"明明追求“方便”，为什么偏偏写「あえて不便」？","category":"今日发生","level":"N2","emoji":"🏪","visual":"news-aete","prompt":"东京涩谷一个限时体验活动把便利店里原本方便的东西故意拿掉，并写成「あえて“不便”に設計」。这里的「あえて」最接近哪种感觉？","guesses":["明知道通常会做得更方便，却特意反着选","不小心变得不方便","因为没办法，只能勉强这样"],"guessCorrect":0,"twist":"↩️ 「あえて」常带一点“明明有更普通的选项，但我偏偏主动选另一条”的反差。","key":{"term":"あえて","reading":"あえて","meaning":"特意；偏偏；明知如此仍刻意去做","insight":"它不是普通的“故意”。说话人通常知道更自然、更轻松或更常见的选择，却为了某个目的主动选择不那么普通的做法。","anchor":"普通の道 → ↩️ あえて別の道"},"jp":"便利にできるけど、あえて不便にしてみます。\nそのほうが違いに気づきやすいです。","cn":"明明可以做得更方便，但我们偏偏试着把它变得不方便。\n这样反而更容易注意到差别。","points":[{"term":"あえて","reading":"あえて","meaning":"特意；偏偏","note":"常用于“知道普通选项，但仍主动选择另一种做法”的场景。"},{"term":"～てみる","reading":"〜て みる","meaning":"试着做……","note":"把想法变成一次尝试时非常常用。"}],"use":{"prompt":"周末天气很好，但你想故意不坐电车，走路看看城市。哪句最自然？","choices":["今日はあえて電車に乗らず、歩いてみます。","今日はうっかり電車に乗りません。","今日は電車があえてです。"],"correct":0,"feedback":"重点不是“忘了坐”，而是明知道可以坐，却主动选择步行。"},"transfer":{"prompt":"做日语题时，你决定先不看答案，自己多想30秒。哪句最贴合？","choices":["あえてすぐに答えを見ないで、考えてみます。","答えをあえて忘れました。","あえてが答えを見ます。"],"correct":0,"feedback":"从活动设计换到学习策略，核心仍是“主动选择不走最省事的路”。"},"review":{"prompt":"大家都带手机出门，你今天偏偏想体验半天不用手机。把那个反常但主动的信号补出来。","cloze":"今日は＿＿スマホを置いて出かけます。","answer":"あえて","feedback":"看到“明明可以A，却主动选B”的反差，就把「あえて」叫回来。"},"practice":{"examples":[{"emoji":"🚶","cue":"有近路，但你想看看街区，故意走远一点。","jp":"あえて遠い道を選びます。","cn":"我偏偏选择远一点的路。"},{"emoji":"📅","cue":"最近太忙，周日反而什么安排都不放。","jp":"今日はあえて何も予定を入れません。","cn":"今天我特意什么安排都不放。"},{"emoji":"🧠","cue":"题目不会，先忍住不看答案。","jp":"答えをすぐ見ないで、あえて自分で考えてみます。","cn":"先不马上看答案，特意自己想一想。"}],"fun":{"prompt":"哪句把「あえて」用得最像“我连忘东西都是精心策划的”？","choices":["今日はあえて歩きます。","財布を忘れました。あえて忘れました！","あえて何も予定を入れません。"],"correct":1,"feedback":"😂 普通的“忘钱包”通常是「うっかり」。硬说「あえて忘れました」就像在宣布：忘钱包也是我的战略。"}},"news":{"source":"Metaについて","sourceDate":"2026-08-06","sourceTitle":"Meta AIで“不便なコンビニ”に挑む！ 3日間限定の体験型イベント「Meta AI Convenience Store」を8月28日から渋谷で開催","sourceUrl":"https://about.fb.com/ja/news/2026/08/meta-ai-convenience-store/amp/","mode":"discovery","fact":"Metaは8月28日から30日まで東京・渋谷で、便利さをあえて取り除いたコンビニを舞台にAIで買い物ミッションへ挑む体験イベントを開催した。"},"nextId":"tekitou"}},{"status":"published","publishedAt":"2026-08-30T14:18:00Z","audio":{"status":"not_ready"},"story":{"id":"pragmatic-nenno-tame-20260830","title":"明明觉得没问题，为什么还要说「念のため」？","category":"会话暗号","level":"N3","emoji":"🧷","visual":"nenno-tame","prompt":"同事说资料应该已经上传好了，却又补一句「念のため、もう一度確認します」。他是在说自己很没把握吗？","guesses":["不是，主要是为了防万一再确认一次","是，说明他完全不相信刚才的操作","只是表示‘顺便’"],"guessCorrect":0,"twist":"🛟 「念のため」不是“我觉得一定会出事”，而是“即使概率不高，也把那个小风险先堵上”。","key":{"term":"念のため","reading":"ねん の ため","meaning":"以防万一；保险起见","insight":"常用于结果大概没问题、但仍做一次确认、备份或准备。它比单纯的「もう一度」多了‘预防小概率问题’的理由。","anchor":"たぶん大丈夫 → でも確認 → 念のため"},"jp":"アップロードできていると思います。\n念のため、もう一度確認します。","cn":"我想应该已经上传好了。\n保险起见，我再确认一次。","points":[{"term":"念のため","reading":"ねん の ため","meaning":"以防万一；保险起见","note":"后面常接「確認する」「持っていく」「保存する」「連絡する」等预防动作。"},{"term":"一応","reading":"いちおう","meaning":"姑且；基本上；先……一下","note":"「一応確認する」更像先做个基本确认；「念のため確認する」更明确强调防范风险。"}],"use":{"prompt":"朋友说天气预报是晴天，但你觉得山区天气可能变化。现场怎么回最自然？","choices":["念のため、折りたたみ傘を持っていこう。","念のため、雨が絶対に降る。","念のためを持っていこう。"],"correct":0,"feedback":"你不是断言会下雨，而是因为存在一点可能性，提前带伞。"},"transfer":{"prompt":"明天第一次去客户公司，地图已经看过了。你想今晚再确认一次路线。哪句自然？","choices":["念のため、今夜もう一度行き方を確認しておきます。","念のため、行き方を忘れておきます。","行き方が念のためです。"],"correct":0,"feedback":"从带伞换到商务出行，核心仍是‘大概没问题，但先堵住小风险’。"},"review":{"prompt":"文件应该已经保存好了，但你想在关电脑前再看一眼。不要看选项，自己把开头说出来。","cloze":"＿＿、保存先をもう一度確認します。","answer":"念のため","feedback":"把「大概没事 → 仍做预防动作」和「念のため」绑在一起。"},"practice":{"examples":[{"emoji":"☔","cue":"平时怎么说｜和朋友出门，天气大概没问题，但还是带把伞。","jp":"念のため、傘持っていこう。","cn":"保险起见，带把伞吧。"},{"emoji":"📩","cue":"敬语怎么说｜对同事或不熟的人，资料应该到了，但礼貌地再确认。","jp":"念のため、届いているか確認しておきます。","cn":"保险起见，我先确认一下是否已经收到。"},{"emoji":"💼","cue":"商务日语｜客户会议前，材料已经准备好，但再核对一次。","jp":"念のため、会議前に資料を再度確認いたします。","cn":"保险起见，我会在会议前再次确认资料。"}],"fun":{"prompt":"哪句听起来像把“保险起见”用到了荒谬的程度？","choices":["念のため、充電器も持っていく。","念のため、家を二軒持っていく。","念のため、予約時間を確認する。"],"correct":1,"feedback":"😂 「家を二軒持っていく」当然办不到。好笑点在于句型没错，但‘预防动作’离谱到失控。"}},"nextId":"news-rain-20260828"}},{"status":"published","publishedAt":"2026-08-30T17:19:05Z","audio":{"status":"not_ready"},"story":{"id":"grammar-kotoni-natteiru-20260831","title":"「9時に始めることになっています」到底是谁决定的？","category":"日语陷阱","level":"N3","emoji":"📋","visual":"kotoni-natteiru","prompt":"新同事问会议几点开始，你回答「9時に始めることになっています」。这句话最自然的感觉是什么？","guesses":["这是已经确定的安排或规则，不特别强调是谁决定的","这是我刚刚个人决定9点开始","我只是猜大概9点开始"],"guessCorrect":0,"twist":"📌 「ことになっています」常把焦点放在“已经这样安排/规定好了”，而不是把决定者推到台前。","key":{"term":"ことになっています","reading":"こと に なって います","meaning":"按规定/安排是……；已经定为……","insight":"它常用于说明既定规则、流程或安排。和「ことにしています」相比，前者更像外部或共同决定后形成的状态，后者更容易表达自己坚持的习惯或决定。","anchor":"決定した人より → 📋 決まっている状態"},"jp":"この会議は、9時に始めることになっています。\nわかりました。少し早めに来ます。","cn":"这个会议按安排9点开始。\n明白了，我会稍微早点来。","points":[{"term":"ことになっています","reading":"こと に なって います","meaning":"按规定/安排是……","note":"适合说明已经存在的制度、流程、约定或日程。"},{"term":"ことにしています","reading":"こと に して います","meaning":"我规定自己……；我一直坚持……","note":"常把决定或习惯更明确地放在说话人自己这一侧。"}],"use":{"prompt":"健身房规定进场要换室内鞋。工作人员怎么说明最自然？","choices":["中では室内用の靴に履き替えることになっています。","中では室内用の靴に履き替えることにしています、私が。","中では室内用の靴に履き替えそうです。"],"correct":0,"feedback":"这是场所已有的规则，所以用「ことになっています」把规则本身放在前面。"},"transfer":{"prompt":"公司流程规定申请必须先由直属上司确认。你向新人说明时怎么说？","choices":["申請前に、直属の上司に確認してもらうことになっています。","申請前に、上司を確認することにしています。","申請前に、確認したそうです。"],"correct":0,"feedback":"从会议安排换到公司流程，仍然是“已经这样规定好了”。"},"review":{"prompt":"宿舍规定晚上11点后要保持安静。把“按规定如此”的部分补出来。","cloze":"23時以降は静かにする＿＿。","answer":"ことになっています","feedback":"看到规则、制度、既定安排，就优先想起「ことになっています」。"},"play":{"daily":"明日は10時集合ってことになってるよ。","polite":"明日は10時に集合することになっています。","business":"明日は10時に集合することとなっております。","businessNote":"正式通知或对外说明中可用「こととなっております」提高书面和正式感；普通职场口头说明用「ことになっています」通常更自然。","replyPrompt":"明日の集合時間、何時でしたっけ？","reply":"10時に集合することになっています。","scenarios":[{"emoji":"🏠","cue":"合租规则｜垃圾要在早上8点前拿出去","jp":"ごみは朝8時までに出すことになっています。","cn":"规定垃圾要在早上8点前拿出去。"},{"emoji":"🏫","cue":"学校安排｜下周一开始穿夏季制服","jp":"来週の月曜日から夏服を着ることになっています。","cn":"安排从下周一开始穿夏季制服。"},{"emoji":"🏢","cue":"公司流程｜出差前先提交申请","jp":"出張の前に申請書を提出することになっています。","cn":"规定出差前要提交申请书。"},{"emoji":"🏨","cue":"酒店说明｜退房是上午11点","jp":"チェックアウトは午前11時までとなっています。","cn":"退房时间规定到上午11点。"},{"emoji":"🤝","cue":"项目约定｜每周五共享进度","jp":"毎週金曜日に進捗を共有することになっています。","cn":"项目约定每周五共享进度。"}]},"nextId":"pragmatic-nenno-tame-20260830"}}]}
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-31T03:22:22.150Z",
+  "items": [
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep01",
+        "title": "第1集｜雨の朝、電車が遅れそう",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "🌧️",
+        "visual": "release-week-ep01",
+        "prompt": "项目上线前的一周从雨天通勤开始。电车越来越挤，你要判断是不是要晚点。",
+        "guesses": [
+          "電車が遅れそうです",
+          "電車が遅れました",
+          "電車を遅れます"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 这不是孤立语法题：这一句会直接触发下一集给同事的联络。",
+        "key": {
+          "term": "遅れそうです",
+          "reading": "おくれそう です",
+          "meaning": "看起来要晚点了",
+          "insight": "根据眼前迹象判断接下来很可能发生，把「～そうです」放进真实通勤与职场联络。",
+          "anchor": "🌧️🚃 → 遅れそうです"
+        },
+        "jp": "この雨で、電車が遅れそうです。\nわかりました。少し早めに連絡します。",
+        "cn": "这场雨看起来会让电车晚点。你决定提前联系公司。",
+        "points": [
+          {
+            "term": "～そうです",
+            "reading": "〜そう です",
+            "meaning": "看起来要……",
+            "note": "根据当前迹象做预测。"
+          },
+          {
+            "term": "早めに",
+            "reading": "はやめ に",
+            "meaning": "提前一点",
+            "note": "风险出现时先行动。"
+          }
+        ],
+        "use": {
+          "prompt": "车站已经开始拥堵，最自然的判断是？",
+          "choices": [
+            "電車が遅れそうです",
+            "電車が遅れました",
+            "電車を遅れます"
+          ],
+          "correct": 0,
+          "feedback": "先从眼前迹象判断，不把未来说成已经发生。"
+        },
+        "transfer": {
+          "prompt": "周末和朋友见面，雨突然变大。",
+          "choices": [
+            "雨が強くなりそうだから、少し遅れるかも。",
+            "雨が強いでした。",
+            "雨を遅れます。"
+          ],
+          "correct": 0,
+          "feedback": "离开职场后仍然能用“迹象→预测”。"
+        },
+        "review": {
+          "prompt": "看到拥堵线路图，把本集关键表达叫回来。",
+          "cloze": "電車が＿＿。",
+          "answer": "遅れそうです",
+          "feedback": "把声音、车站和即将发生的风险绑在一起。"
+        },
+        "play": {
+          "daily": "電車、遅れそう。",
+          "polite": "電車が遅れそうです。",
+          "business": "交通状況により、到着が遅れる見込みです。",
+          "businessNote": "正式通知里常把口语判断换成「見込みです」，信息更明确。",
+          "replyPrompt": "この雨で、電車が遅れそうです。",
+          "reply": "わかりました。少し早めに連絡します。",
+          "scenarios": [
+            {
+              "emoji": "🚃",
+              "cue": "剧情｜车站里，你先给田中发消息。",
+              "jp": "電車が遅れそうなので、少し遅れるかもしれません。",
+              "cn": "电车看起来要晚点，我可能会稍微迟到。"
+            },
+            {
+              "emoji": "🕘",
+              "cue": "剧情｜你再估算一次到公司的时间。",
+              "jp": "今のところ、九時には間に合いそうです。",
+              "cn": "目前看起来九点应该赶得上。"
+            },
+            {
+              "emoji": "💬",
+              "cue": "剧情｜在项目群里发一个简短状态。",
+              "jp": "到着が少し遅れそうです。",
+              "cn": "看起来到达会稍微晚一点。"
+            },
+            {
+              "emoji": "☔",
+              "cue": "迁移｜周末和朋友约好见面，雨突然变大。",
+              "jp": "雨が強くなりそうだから、少し遅れるかも。",
+              "cn": "雨看起来要变大，我可能会晚一点。"
+            },
+            {
+              "emoji": "🍜",
+              "cue": "迁移｜餐厅门口排队越来越长。",
+              "jp": "このままだと、かなり待ちそうです。",
+              "cn": "这样下去看起来要等很久。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "self-observation",
+            "promptSpeaker": "learner",
+            "learnerRole": "decide",
+            "uiCue": "先听当下的判断，再想你会怎么做。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 1,
+          "episodeCount": 12,
+          "nextEpisodeId": "release-week-01-ep02",
+          "locationId": "station",
+          "locationName": "通勤车站",
+          "castIds": [
+            "public-service"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "本季开始：项目上线前的一周，今天是通勤早晨。",
+          "todayHook": "今天一早就出问题：电车到底会不会晚点？",
+          "summary": "雨天通勤开始出现延误，你决定先通知公司。"
+        },
+        "callbacks": [
+          {
+            "targetId": "news-yasai-20260828",
+            "sourceEpisodeId": "news-yasai-20260828",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "news-rain-20260828",
+            "sourceEpisodeId": "news-rain-20260828",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep02",
+        "visualMeta": {
+          "sceneId": "release-week-ep01",
+          "palette": [
+            "#3d5a80",
+            "#6b9ac4",
+            "#dbe7f3"
+          ],
+          "locationId": "station",
+          "castInScene": [
+            "public-service"
+          ],
+          "imagePrompt": "Rainy Tokyo station platform at dawn, young professional with umbrella checking train delay on phone, warm editorial anime style, cinematic, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep02",
+        "title": "第2集｜田中に「遅れるかも」を伝える",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "📱",
+        "visual": "release-week-ep02",
+        "prompt": "电车真的开始晚点。田中问你到哪里了，你要把不确定的迟到风险说清楚。",
+        "guesses": [
+          "少し遅れるかもしれません",
+          "必ず遅れます",
+          "遅れをします"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 上一集的「遅れそう」变成了这一集必须采取行动的「かもしれません」。",
+        "key": {
+          "term": "かもしれません",
+          "reading": "かも しれません",
+          "meaning": "可能…… / 也许……",
+          "insight": "不是断言，但足以让对方提前采取行动。",
+          "anchor": "📱 ? → かもしれません"
+        },
+        "jp": "今どのあたりですか？\n電車が遅れていて、少し遅れるかもしれません。",
+        "cn": "田中问你在哪里。你说明电车晚点，自己可能会稍微迟到。",
+        "points": [
+          {
+            "term": "かもしれません",
+            "reading": "かも しれません",
+            "meaning": "可能……",
+            "note": "表达存在可能性，不等于可以忽略。"
+          },
+          {
+            "term": "遅れていて",
+            "reading": "おくれて いて",
+            "meaning": "正在晚点，因此……",
+            "note": "把原因自然接到后续联络。"
+          }
+        ],
+        "use": {
+          "prompt": "田中问「今どのあたりですか？」你怎么回？",
+          "choices": [
+            "電車が遅れていて、少し遅れるかもしれません。",
+            "必ず一時間遅れます。",
+            "今は電車ですか。"
+          ],
+          "correct": 0,
+          "feedback": "把已知原因和不确定结果分开说。"
+        },
+        "transfer": {
+          "prompt": "热门商品今天可能卖完，怎么提醒朋友？",
+          "choices": [
+            "夕方には売り切れるかもしれないよ。",
+            "夕方は絶対売り切れます。",
+            "売り切れをします。"
+          ],
+          "correct": 0,
+          "feedback": "从迟到风险迁移到购物风险。"
+        },
+        "review": {
+          "prompt": "列车状态还没确定，把句尾补出来。",
+          "cloze": "少し遅れる＿＿。",
+          "answer": "かもしれません",
+          "feedback": "不确定风险→先联络。"
+        },
+        "play": {
+          "daily": "ちょっと遅れるかも。",
+          "polite": "少し遅れるかもしれません。",
+          "business": "到着が遅れる可能性があります。",
+          "businessNote": "正式说明常把「かも」展开成「可能性があります」。",
+          "replyPrompt": "今どのあたりですか？",
+          "reply": "電車が遅れていて、少し遅れるかもしれません。",
+          "scenarios": [
+            {
+              "emoji": "📍",
+              "cue": "剧情｜田中问你还有多久到。",
+              "jp": "あと十分くらいかかるかもしれません。",
+              "cn": "可能还要十分钟左右。"
+            },
+            {
+              "emoji": "🕘",
+              "cue": "剧情｜你意识到九点会议有风险。",
+              "jp": "九時の会議に間に合わないかもしれません。",
+              "cn": "可能赶不上九点的会议。"
+            },
+            {
+              "emoji": "🙇",
+              "cue": "剧情｜给佐藤发更礼貌的联络。",
+              "jp": "到着が少し遅れるかもしれません。申し訳ありません。",
+              "cn": "可能会稍晚到，非常抱歉。"
+            },
+            {
+              "emoji": "🛍️",
+              "cue": "迁移｜提醒朋友热门商品可能卖完。",
+              "jp": "夕方には売り切れるかもしれないよ。",
+              "cn": "傍晚可能就卖完了。"
+            },
+            {
+              "emoji": "🌦️",
+              "cue": "迁移｜出门前看天气预报。",
+              "jp": "午後は雨が降るかもしれません。",
+              "cn": "下午可能会下雨。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "tanaka",
+            "learnerRole": "respond",
+            "uiCue": "先听田中说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 2,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep01",
+          "nextEpisodeId": "release-week-01-ep03",
+          "locationId": "station",
+          "locationName": "通勤车站",
+          "castIds": [
+            "tanaka"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "雨天通勤开始出现延误，你决定先通知公司。",
+          "todayHook": "车已经真的晚点了；怎么告诉田中“可能会迟到”？",
+          "summary": "你把迟到风险告诉田中，团队知道你正在赶来。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep01",
+            "sourceEpisodeId": "release-week-01-ep01",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "news-yasai-20260828",
+            "sourceEpisodeId": "news-yasai-20260828",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep03",
+        "visualMeta": {
+          "sceneId": "release-week-ep02",
+          "palette": [
+            "#4f6d7a",
+            "#89a7b1",
+            "#e8f1f4"
+          ],
+          "locationId": "station",
+          "castInScene": [
+            "tanaka"
+          ],
+          "imagePrompt": "Crowded train interior, smartphone message conversation glow, commuter holding strap, warm editorial illustration, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep03",
+        "title": "第3集｜九時の会議はもう決まっている",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "🗓️",
+        "visual": "release-week-ep03",
+        "prompt": "你赶到公司，田中确认晨会时间。这里不是个人临时打算，而是已经定好的安排。",
+        "guesses": [
+          "九時から始めることになっています",
+          "九時から始めたいです",
+          "九時かもしれませんだけ"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 迟到风险刚落地，剧情立刻进入上线前既定流程。",
+        "key": {
+          "term": "ことになっています",
+          "reading": "こと に なって います",
+          "meaning": "已经安排为…… / 按规定是……",
+          "insight": "说明已经形成的安排、规则或决定，不强调是谁临时决定。",
+          "anchor": "📋 決定済み → ことになっています"
+        },
+        "jp": "朝会は九時からでしたよね。\nはい、九時から始めることになっています。",
+        "cn": "田中确认晨会时间，你说明已经安排九点开始。",
+        "points": [
+          {
+            "term": "ことになっています",
+            "reading": "こと に なって います",
+            "meaning": "按安排/规定……",
+            "note": "焦点在已形成的状态。"
+          },
+          {
+            "term": "予定となっております",
+            "reading": "よてい と なって おります",
+            "meaning": "正式说明中的“安排为……”",
+            "note": "对外更正式。"
+          }
+        ],
+        "use": {
+          "prompt": "田中问晨会时间，你怎么说明？",
+          "choices": [
+            "九時から始めることになっています。",
+            "九時を始めます。",
+            "九時にしたそうですか。"
+          ],
+          "correct": 0,
+          "feedback": "既定安排用「ことになっています」。"
+        },
+        "transfer": {
+          "prompt": "设施规则规定受理到六点，怎么说明？",
+          "choices": [
+            "受付は六時までということになっています。",
+            "受付は六時をします。",
+            "受付は六時そうです。"
+          ],
+          "correct": 0,
+          "feedback": "从项目安排迁移到公共规则。"
+        },
+        "review": {
+          "prompt": "已经安排好九点开始。",
+          "cloze": "九時から始める＿＿。",
+          "answer": "ことになっています",
+          "feedback": "规则/既定安排→ことになっています。"
+        },
+        "play": {
+          "daily": "九時からって決まってるよ。",
+          "polite": "九時から始めることになっています。",
+          "business": "会議は九時より開始する予定となっております。",
+          "businessNote": "对外正式说明常用「予定となっております」，内部「ことになっています」很自然。",
+          "replyPrompt": "朝会は九時からでしたよね。",
+          "reply": "はい、九時から始めることになっています。",
+          "scenarios": [
+            {
+              "emoji": "🧑‍💻",
+              "cue": "剧情｜田中再次确认晨会。",
+              "jp": "朝会は九時から始めることになっています。",
+              "cn": "晨会已经安排九点开始。"
+            },
+            {
+              "emoji": "✅",
+              "cue": "剧情｜佐藤确认上线前流程。",
+              "jp": "本番前にチェックリストを確認することになっています。",
+              "cn": "上线前已经安排要确认检查表。"
+            },
+            {
+              "emoji": "🚪",
+              "cue": "剧情｜确认稍后的会议室使用。",
+              "jp": "十時からこちらの会議室を使用することになっています。",
+              "cn": "已经安排十点开始使用这间会议室。"
+            },
+            {
+              "emoji": "🏠",
+              "cue": "迁移｜朋友群里确认周末聚会。",
+              "jp": "土曜日は美香の家に集まることになってるよ。",
+              "cn": "周六已经说好去美香家集合。"
+            },
+            {
+              "emoji": "🏢",
+              "cue": "迁移｜公共设施说明受付规则。",
+              "jp": "受付は六時までということになっています。",
+              "cn": "规定是受理到六点。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "tanaka",
+            "learnerRole": "respond",
+            "uiCue": "先听田中说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 3,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep02",
+          "nextEpisodeId": "release-week-01-ep04",
+          "locationId": "project-office",
+          "locationName": "项目办公室",
+          "castIds": [
+            "tanaka",
+            "sato"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "你把迟到风险告诉田中，团队知道你正在赶来。",
+          "todayHook": "迟到风险刚解决，马上确认九点会议是临时想法还是已经定好的安排。",
+          "summary": "你赶到办公室，确认九点晨会和上线前流程。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep02",
+            "sourceEpisodeId": "release-week-01-ep02",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep01",
+            "sourceEpisodeId": "release-week-01-ep01",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep04",
+        "visualMeta": {
+          "sceneId": "release-week-ep03",
+          "palette": [
+            "#5c6b4a",
+            "#a8b88a",
+            "#eef2e4"
+          ],
+          "locationId": "project-office",
+          "castInScene": [
+            "tanaka",
+            "sato"
+          ],
+          "imagePrompt": "Modern project office morning meeting area, colleagues near whiteboard, warm clean illustration, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep04",
+        "title": "第4集｜念のため、もう一度確認する",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "🧷",
+        "visual": "release-week-ep04",
+        "prompt": "会议结束，资料看起来都齐了。佐藤还是让你上线前再核对一次。",
+        "guesses": [
+          "念のため、もう一度確認します",
+          "絶対に間違っています",
+          "ついでに忘れます"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 既定流程之后不是机械背词，而是剧情里真的出现了需要“保险起见”的风险。",
+        "key": {
+          "term": "念のため",
+          "reading": "ねん の ため",
+          "meaning": "保险起见 / 以防万一",
+          "insight": "不是不信任，而是主动堵住小概率风险。",
+          "anchor": "✅ → もう一回 → 念のため"
+        },
+        "jp": "資料はもうそろっていますか。\nはい。念のため、もう一度確認します。",
+        "cn": "佐藤问资料是否齐全，你表示保险起见再确认一次。",
+        "points": [
+          {
+            "term": "念のため",
+            "reading": "ねん の ため",
+            "meaning": "保险起见",
+            "note": "常接确认、准备、保存等预防动作。"
+          },
+          {
+            "term": "改めて",
+            "reading": "あらためて",
+            "meaning": "再次、重新",
+            "note": "正式确认中很常用。"
+          }
+        ],
+        "use": {
+          "prompt": "资料已齐，但你想再确认一次。",
+          "choices": [
+            "念のため、もう一度確認します。",
+            "絶対に問題があります。",
+            "確認を念します。"
+          ],
+          "correct": 0,
+          "feedback": "小概率风险→再做一次预防动作。"
+        },
+        "transfer": {
+          "prompt": "旅行前确认护照。",
+          "choices": [
+            "念のため、パスポートを持ったか確認しよう。",
+            "パスポートが念です。",
+            "絶対に忘れた。"
+          ],
+          "correct": 0,
+          "feedback": "从上线确认迁移到生活准备。"
+        },
+        "review": {
+          "prompt": "大概没问题，但再确认一次。",
+          "cloze": "＿＿、もう一度確認します。",
+          "answer": "念のため",
+          "feedback": "“大概没事→仍预防”就是核心。"
+        },
+        "play": {
+          "daily": "念のため、もう一回見るね。",
+          "polite": "念のため、もう一度確認します。",
+          "business": "念のため、改めて確認いたします。",
+          "businessNote": "核心一直是为了保险再确认，可自然提升礼貌度。",
+          "replyPrompt": "資料はもうそろっていますか。",
+          "reply": "はい。念のため、もう一度確認します。",
+          "scenarios": [
+            {
+              "emoji": "✅",
+              "cue": "剧情｜你和田中一起看上线检查表。",
+              "jp": "念のため、チェックリストをもう一度見ておこう。",
+              "cn": "保险起见，再看一次检查表吧。"
+            },
+            {
+              "emoji": "📎",
+              "cue": "剧情｜佐藤让你确认附件。",
+              "jp": "念のため、添付ファイルも確認します。",
+              "cn": "保险起见，我也确认一下附件。"
+            },
+            {
+              "emoji": "✉️",
+              "cue": "剧情｜给客户发送最终邮件前。",
+              "jp": "念のため、送信前に宛先を再確認いたします。",
+              "cn": "保险起见，发送前再次确认收件人。"
+            },
+            {
+              "emoji": "🛂",
+              "cue": "迁移｜旅行出门前确认重要证件。",
+              "jp": "念のため、パスポートを持ったか確認しよう。",
+              "cn": "保险起见，确认一下护照带没带。"
+            },
+            {
+              "emoji": "🔥",
+              "cue": "迁移｜离开家前想到厨房。",
+              "jp": "念のため、火を消したかもう一度見ておく。",
+              "cn": "保险起见，再看一次火关了没有。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "sato",
+            "learnerRole": "respond",
+            "uiCue": "先听佐藤说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 4,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep03",
+          "nextEpisodeId": "release-week-01-ep05",
+          "locationId": "project-office",
+          "locationName": "项目办公室",
+          "castIds": [
+            "tanaka",
+            "sato"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "你赶到办公室，确认九点晨会和上线前流程。",
+          "todayHook": "资料明明齐了，为什么还要再看一遍？",
+          "summary": "会议结束后，佐藤要求最后确认；你开始承担上线前检查。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep03",
+            "sourceEpisodeId": "release-week-01-ep03",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep02",
+            "sourceEpisodeId": "release-week-01-ep02",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep05",
+        "visualMeta": {
+          "sceneId": "release-week-ep04",
+          "palette": [
+            "#6b5b4f",
+            "#b39a8a",
+            "#f3ebe4"
+          ],
+          "locationId": "project-office",
+          "castInScene": [
+            "tanaka",
+            "sato"
+          ],
+          "imagePrompt": "Office desk with checklist and laptop before launch, focused calm mood, editorial anime style, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep05",
+        "title": "第5集｜田中の飲み会をやんわり断る",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "🍺",
+        "visual": "release-week-ep05",
+        "prompt": "田中邀请你下班喝一杯，但明天要上线。熟人之间不必把拒绝说得很硬。",
+        "guesses": [
+          "今日はちょっと……",
+          "絶対に行きません",
+          "今日は飲み物です"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 上线压力改变了人物选择：你不是随机练拒绝，而是因为明天的剧情必须拒绝。",
+        "key": {
+          "term": "今日はちょっと……",
+          "reading": "きょう は ちょっと",
+          "meaning": "今天有点……（委婉拒绝）",
+          "insight": "熟人邀请里，停在「ちょっと……」本身就能完成拒绝；正式关系要更清楚。",
+          "anchor": "🍺? → 今日はちょっと……"
+        },
+        "jp": "今日、終わったら飲みに行かない？\nごめん、今日はちょっと……。",
+        "cn": "田中约你喝酒，你因为明天上线而委婉拒绝。",
+        "points": [
+          {
+            "term": "ちょっと……",
+            "reading": "ちょっと",
+            "meaning": "留白式委婉拒绝",
+            "note": "关系越熟，留白越容易被理解。"
+          },
+          {
+            "term": "都合がつかない",
+            "reading": "つごう が つかない",
+            "meaning": "时间不方便",
+            "note": "正式拒绝时更明确。"
+          }
+        ],
+        "use": {
+          "prompt": "田中问今晚喝酒吗？",
+          "choices": [
+            "ごめん、今日はちょっと……。",
+            "絶対に拒否します。",
+            "飲みますをしません。"
+          ],
+          "correct": 0,
+          "feedback": "熟人之间留白就够了。"
+        },
+        "transfer": {
+          "prompt": "预约窗口问你不方便的日期。",
+          "choices": [
+            "その日はちょっと難しいですね。",
+            "その日は絶対です。",
+            "日をちょっとします。"
+          ],
+          "correct": 0,
+          "feedback": "关系变化后把困难说清楚。"
+        },
+        "review": {
+          "prompt": "明天有重要事，今晚邀约去不了。",
+          "cloze": "ごめん、今日は＿＿。",
+          "answer": "ちょっと……",
+          "feedback": "留白本身就是拒绝信号。"
+        },
+        "play": {
+          "daily": "今日はちょっと……。",
+          "polite": "今日は少し難しいです。",
+          "business": "本日は都合がつかず、難しいです。",
+          "businessNote": "正式关系里通常不会只靠留白，而会明确说明今天有困难。",
+          "replyPrompt": "今日、終わったら飲みに行かない？",
+          "reply": "ごめん、今日はちょっと……。",
+          "scenarios": [
+            {
+              "emoji": "🍻",
+              "cue": "剧情｜田中当面再次邀请。",
+              "jp": "ごめん、今日はちょっと……。明日なら大丈夫。",
+              "cn": "抱歉，今天有点……明天可以。"
+            },
+            {
+              "emoji": "📅",
+              "cue": "剧情｜普通同事约今天临时开会。",
+              "jp": "今日は少し難しいです。明日の午前中でもよろしいでしょうか。",
+              "cn": "今天有点困难，明天上午可以吗？"
+            },
+            {
+              "emoji": "💼",
+              "cue": "剧情｜客户临时提出今天再开一次会。",
+              "jp": "本日は都合がつかず、難しいです。別のお時間をいただけますでしょうか。",
+              "cn": "今天时间不方便，能否另约时间？"
+            },
+            {
+              "emoji": "🎮",
+              "cue": "迁移｜朋友临时约你今晚玩游戏。",
+              "jp": "今日はちょっと無理かも。今度にしよう。",
+              "cn": "今天可能有点不行，下次吧。"
+            },
+            {
+              "emoji": "🏥",
+              "cue": "迁移｜预约窗口询问你不方便的日期。",
+              "jp": "その日はちょっと難しいですね。",
+              "cn": "那天有点困难。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "tanaka",
+            "learnerRole": "respond",
+            "uiCue": "先听田中说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 5,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep04",
+          "nextEpisodeId": "release-week-01-ep06",
+          "locationId": "project-office",
+          "locationName": "项目办公室",
+          "castIds": [
+            "tanaka"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "会议结束后，佐藤要求最后确认；你开始承担上线前检查。",
+          "todayHook": "田中邀请喝酒，但明天要上线；怎么拒绝才不生硬？",
+          "summary": "你婉拒田中，决定早点回去，为第二天上线做准备。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep04",
+            "sourceEpisodeId": "release-week-01-ep04",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep03",
+            "sourceEpisodeId": "release-week-01-ep03",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep06",
+        "visualMeta": {
+          "sceneId": "release-week-ep05",
+          "palette": [
+            "#5a4a6b",
+            "#9a8ab3",
+            "#ece8f3"
+          ],
+          "locationId": "project-office",
+          "castInScene": [
+            "tanaka"
+          ],
+          "imagePrompt": "Office after hours invitation to drinks, two colleagues chatting near desks, warm evening light, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep06",
+        "title": "第6集｜明日に備えて、今日は先に帰る",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "🚪",
+        "visual": "release-week-ep06",
+        "prompt": "大家还在办公室，你为了明天上线准备先回去休息。",
+        "guesses": [
+          "お先に失礼します",
+          "お邪魔します",
+          "ごちそうさまでした"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 昨天拒绝喝酒不是终点，而是自然接到“我先下班”的职场动作。",
+        "key": {
+          "term": "お先に失礼します",
+          "reading": "おさき に しつれい します",
+          "meaning": "我先走了 / 我先下班了",
+          "insight": "别人还在工作而自己先离开时，把“先走一步”和礼貌一起说完。",
+          "anchor": "💻💻 → 🚪 お先に失礼します"
+        },
+        "jp": "もう帰りますか？\nはい。明日に備えて、お先に失礼します。",
+        "cn": "同事问你要回去了吗，你说明为了明天准备先离开。",
+        "points": [
+          {
+            "term": "お先に失礼します",
+            "reading": "おさき に しつれい します",
+            "meaning": "我先走了",
+            "note": "典型职场下班表达。"
+          },
+          {
+            "term": "明日に備えて",
+            "reading": "あした に そなえて",
+            "meaning": "为明天做准备",
+            "note": "把剧情原因接进去。"
+          }
+        ],
+        "use": {
+          "prompt": "办公室里别人还在，你准备先走。",
+          "choices": [
+            "お先に失礼します。",
+            "ただいま。",
+            "いただきます。"
+          ],
+          "correct": 0,
+          "feedback": "动作就是天然提示。"
+        },
+        "transfer": {
+          "prompt": "学习会还没结束，但你必须离开。",
+          "choices": [
+            "すみません、今日は先に失礼します。",
+            "お邪魔します。",
+            "ごちそうさまです。"
+          ],
+          "correct": 0,
+          "feedback": "离开职场也能迁移“先失礼”。"
+        },
+        "review": {
+          "prompt": "别人还在工作，你拿包起身。",
+          "cloze": "お先に＿＿。",
+          "answer": "失礼します",
+          "feedback": "拿包、起身、别人还在→自动叫回来。"
+        },
+        "play": {
+          "daily": "先に帰るね。",
+          "polite": "お先に失礼します。",
+          "business": "恐れ入りますが、お先に失礼いたします。",
+          "businessNote": "对象更正式时加入缓冲，并把「します」提升为「いたします」。",
+          "replyPrompt": "もう帰りますか？",
+          "reply": "はい。明日に備えて、お先に失礼します。",
+          "scenarios": [
+            {
+              "emoji": "🎒",
+              "cue": "剧情｜田中还在电脑前，你拿起包。",
+              "jp": "明日に備えて、今日はお先に失礼します。",
+              "cn": "为了明天做准备，我今天先走了。"
+            },
+            {
+              "emoji": "🙇",
+              "cue": "剧情｜佐藤还在处理最后事项。",
+              "jp": "申し訳ありませんが、お先に失礼します。",
+              "cn": "不好意思，我先告辞了。"
+            },
+            {
+              "emoji": "💼",
+              "cue": "剧情｜正式场合先于上司离开。",
+              "jp": "恐れ入りますが、本日はお先に失礼いたします。",
+              "cn": "不好意思，今天我先告辞了。"
+            },
+            {
+              "emoji": "🏠",
+              "cue": "迁移｜朋友聚会中你要先回家。",
+              "jp": "ごめん、今日は先に帰るね。",
+              "cn": "抱歉，我今天先回去了。"
+            },
+            {
+              "emoji": "📚",
+              "cue": "迁移｜学习会还没结束但你必须离开。",
+              "jp": "すみません、今日は先に失礼します。",
+              "cn": "不好意思，我今天先走了。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "tanaka",
+            "learnerRole": "respond",
+            "uiCue": "先听同事说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 6,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep05",
+          "nextEpisodeId": "release-week-01-ep07",
+          "locationId": "project-office",
+          "locationName": "项目办公室",
+          "castIds": [
+            "tanaka",
+            "sato"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "你婉拒田中，决定早点回去，为第二天上线做准备。",
+          "todayHook": "大家还在办公室，你准备先回去休息；离开前怎么说？",
+          "summary": "你提前下班休息，第二天将直接面对客户最终确认。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep05",
+            "sourceEpisodeId": "release-week-01-ep05",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep04",
+            "sourceEpisodeId": "release-week-01-ep04",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep07",
+        "visualMeta": {
+          "sceneId": "release-week-ep06",
+          "palette": [
+            "#4a5a6b",
+            "#8aa0b3",
+            "#e8eef3"
+          ],
+          "locationId": "project-office",
+          "castInScene": [
+            "tanaka",
+            "sato"
+          ],
+          "imagePrompt": "Office at night, one colleague leaving with bag while others still working, cinematic clean illustration, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep07",
+        "title": "第7集｜山本さんへ最終確認を送る",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "✉️",
+        "visual": "release-week-ep07",
+        "prompt": "最终资料要发给客户山本。熟悉的「よろしく」在客户邮件里会变得更郑重。",
+        "guesses": [
+          "ご確認のほど、何卒よろしくお願いいたします",
+          "よろしく！",
+          "確認しないでください"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 固定角色山本第一次真正进入主线，语言也从内部同事切换到客户关系。",
+        "key": {
+          "term": "何卒よろしくお願いいたします",
+          "reading": "なにとぞ よろしく おねがい いたします",
+          "meaning": "还请多多关照 / 恳请确认",
+          "insight": "把「よろしく」带到客户最终确认里，关系变化后表达更郑重。",
+          "anchor": "📎→山本 → 何卒よろしくお願いいたします"
+        },
+        "jp": "最終確認資料を送っていただけますか。\nはい。すぐにお送りします。ご確認のほど、何卒よろしくお願いいたします。",
+        "cn": "客户请你发送最终资料，你正式回应并请求确认。",
+        "points": [
+          {
+            "term": "何卒",
+            "reading": "なにとぞ",
+            "meaning": "恳请、务必",
+            "note": "正式请求中增加郑重感。"
+          },
+          {
+            "term": "ご確認のほど",
+            "reading": "ごかくにん の ほど",
+            "meaning": "关于确认一事，还请……",
+            "note": "商务邮件常见缓冲。"
+          }
+        ],
+        "use": {
+          "prompt": "给客户发最终资料，结尾怎么写？",
+          "choices": [
+            "ご確認のほど、何卒よろしくお願いいたします。",
+            "よろしく！",
+            "確認がいりません。"
+          ],
+          "correct": 0,
+          "feedback": "具体请求+客户关系决定正式度。"
+        },
+        "transfer": {
+          "prompt": "请朋友代收快递。",
+          "choices": [
+            "もし届いたら、よろしくお願いします。",
+            "何卒配送いたします。",
+            "届きをします。"
+          ],
+          "correct": 0,
+          "feedback": "回到熟人关系时自然降级。"
+        },
+        "review": {
+          "prompt": "客户最终确认邮件的郑重结尾。",
+          "cloze": "ご確認のほど、＿＿。",
+          "answer": "何卒よろしくお願いいたします",
+          "feedback": "关系改变，表达也改变。"
+        },
+        "play": {
+          "daily": "よろしく！",
+          "polite": "よろしくお願いします。",
+          "business": "ご確認のほど、何卒よろしくお願いいたします。",
+          "businessNote": "对客户的具体确认请求可用「ご確認のほど、何卒よろしくお願いいたします」。",
+          "replyPrompt": "最終確認資料を送っていただけますか。",
+          "reply": "はい。すぐにお送りします。ご確認のほど、何卒よろしくお願いいたします。",
+          "scenarios": [
+            {
+              "emoji": "📎",
+              "cue": "剧情｜把资料发给山本。",
+              "jp": "資料を添付いたしました。ご確認のほど、何卒よろしくお願いいたします。",
+              "cn": "资料已附上，还请确认。"
+            },
+            {
+              "emoji": "🙏",
+              "cue": "剧情｜佐藤让你再补一句礼貌请求。",
+              "jp": "お手数をおかけしますが、何卒よろしくお願いいたします。",
+              "cn": "麻烦您了，还请多多关照。"
+            },
+            {
+              "emoji": "🚀",
+              "cue": "剧情｜上线前向客户做最后说明。",
+              "jp": "明日のリリースにつきまして、何卒よろしくお願いいたします。",
+              "cn": "关于明天的上线，还请多多关照。"
+            },
+            {
+              "emoji": "🤝",
+              "cue": "迁移｜第一次参加朋友组织的活动。",
+              "jp": "今日から参加します。よろしくお願いします。",
+              "cn": "今天开始参加，请多关照。"
+            },
+            {
+              "emoji": "📦",
+              "cue": "迁移｜请朋友代收一个快递。",
+              "jp": "もし届いたら、よろしくお願いします。",
+              "cn": "如果到了，就拜托你了。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "yamamoto",
+            "learnerRole": "respond",
+            "uiCue": "先听山本说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 7,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep06",
+          "nextEpisodeId": "release-week-01-ep08",
+          "locationId": "project-office",
+          "locationName": "项目办公室",
+          "castIds": [
+            "sato",
+            "yamamoto"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "你提前下班休息，第二天将直接面对客户最终确认。",
+          "todayHook": "最终资料要发给客户山本；邮件最后一句怎么收才自然？",
+          "summary": "最终确认邮件发出，山本回复会确认；上线进入倒计时。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep06",
+            "sourceEpisodeId": "release-week-01-ep06",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep05",
+            "sourceEpisodeId": "release-week-01-ep05",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep08",
+        "visualMeta": {
+          "sceneId": "release-week-ep07",
+          "palette": [
+            "#4a566b",
+            "#8a9bb3",
+            "#e6ebf3"
+          ],
+          "locationId": "project-office",
+          "castInScene": [
+            "sato",
+            "yamamoto"
+          ],
+          "imagePrompt": "Business email send moment, laptop with attachment icon, professional calm atmosphere, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep08",
+        "title": "第8集｜本番前の小さな問題を先に潰す",
+        "category": "职场空气",
+        "level": "N3",
+        "emoji": "🛠️",
+        "visual": "release-week-ep08",
+        "prompt": "上线前发现一个小显示问题。现在先处理，是为了后面不被它卡住。",
+        "guesses": [
+          "本番までに対応しておきます",
+          "あとで忘れます",
+          "対応かもしれませんだけ"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 客户确认之后突然出现小问题，前几集的“念のため”也会自然回归。",
+        "key": {
+          "term": "対応しておきます",
+          "reading": "たいおう して おきます",
+          "meaning": "我会提前处理好",
+          "insight": "「～ておく」把“为了后面顺利，现在先做”编码进一句话。",
+          "anchor": "🛠️ 今やる → 後で安心"
+        },
+        "jp": "この表示、少しずれてますね。\n本番までに対応しておきます。",
+        "cn": "田中发现显示错位，你表示会在上线前先处理好。",
+        "points": [
+          {
+            "term": "～ておく",
+            "reading": "〜て おく",
+            "meaning": "提前做、先做好",
+            "note": "为了后续目的预先行动。"
+          },
+          {
+            "term": "対応する",
+            "reading": "たいおう する",
+            "meaning": "处理、应对",
+            "note": "工作现场高频。"
+          }
+        ],
+        "use": {
+          "prompt": "上线前发现小问题，你怎么承担？",
+          "choices": [
+            "本番までに対応しておきます。",
+            "問題を忘れます。",
+            "対応がありません。"
+          ],
+          "correct": 0,
+          "feedback": "现在先处理，为后面顺利。"
+        },
+        "transfer": {
+          "prompt": "旅行前先准备一点现金。",
+          "choices": [
+            "出発前に少し現金を用意しておきます。",
+            "現金を忘れておきます。",
+            "現金が対応です。"
+          ],
+          "correct": 0,
+          "feedback": "从项目预处理迁移到生活准备。"
+        },
+        "review": {
+          "prompt": "为了上线顺利，现在先处理。",
+          "cloze": "本番までに＿＿。",
+          "answer": "対応しておきます",
+          "feedback": "“后面有目标→现在先做”就是～ておく。"
+        },
+        "play": {
+          "daily": "先に直しておくね。",
+          "polite": "本番までに対応しておきます。",
+          "business": "本番開始前までに対応を完了しておきます。",
+          "businessNote": "正式说明把处理时点说清楚，便于对方判断风险。",
+          "replyPrompt": "この表示、少しずれてますね。",
+          "reply": "本番までに対応しておきます。",
+          "scenarios": [
+            {
+              "emoji": "🖥️",
+              "cue": "剧情｜田中发现显示错位。",
+              "jp": "本番までに直しておくね。",
+              "cn": "上线前我会先修好。"
+            },
+            {
+              "emoji": "✅",
+              "cue": "剧情｜修完以后再做一次保险确认。",
+              "jp": "対応後、念のためもう一度確認しておきます。",
+              "cn": "处理后保险起见我会再确认一次。"
+            },
+            {
+              "emoji": "📣",
+              "cue": "剧情｜向佐藤汇报处理时点。",
+              "jp": "本番開始前までに対応を完了しておきます。",
+              "cn": "正式开始前会把处理完成。"
+            },
+            {
+              "emoji": "🍚",
+              "cue": "迁移｜朋友来家里前先准备饭。",
+              "jp": "来る前に、ご飯を作っておくね。",
+              "cn": "你来之前我先把饭做好。"
+            },
+            {
+              "emoji": "✈️",
+              "cue": "迁移｜旅行前先准备一点现金。",
+              "jp": "出発前に少し現金を用意しておきます。",
+              "cn": "出发前先准备一些现金。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "tanaka",
+            "learnerRole": "respond",
+            "uiCue": "先听田中说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 8,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep07",
+          "nextEpisodeId": "release-week-01-ep09",
+          "locationId": "project-office",
+          "locationName": "项目办公室",
+          "castIds": [
+            "tanaka",
+            "sato"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "最终确认邮件发出，山本回复会确认；上线进入倒计时。",
+          "todayHook": "上线前突然发现一个小问题；怎么表达“我先处理好”？",
+          "summary": "小问题被处理并复核，项目没有因此推迟。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep07",
+            "sourceEpisodeId": "release-week-01-ep07",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep04",
+            "sourceEpisodeId": "release-week-01-ep04",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep09",
+        "visualMeta": {
+          "sceneId": "release-week-ep08",
+          "palette": [
+            "#5a6b4a",
+            "#9ab38a",
+            "#edf3e8"
+          ],
+          "locationId": "project-office",
+          "castInScene": [
+            "tanaka",
+            "sato"
+          ],
+          "imagePrompt": "Developer fixing UI layout issue on monitor before launch, focused teamwork, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep09",
+        "title": "第9集｜山本さんとの最終ミーティング",
+        "category": "职场空气",
+        "level": "N2",
+        "emoji": "🤝",
+        "visual": "release-week-ep09",
+        "prompt": "客户会议终于开始。进入正题前，先承接对方为你抽出的时间。",
+        "guesses": [
+          "お時間をいただき、ありがとうございます",
+          "時間がありますかだけ",
+          "お疲れ！"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 同一个山本角色让商务表达不再是抽象“敬语题”，而是关系连续的真实需要。",
+        "key": {
+          "term": "お時間をいただきありがとうございます",
+          "reading": "おじかん を いただき ありがとう ございます",
+          "meaning": "感谢您拨冗 / 谢谢您抽时间",
+          "insight": "客户会议开头先承接对方付出的时间，比直接进入正题更自然。",
+          "anchor": "🤝⏰ → ありがとうございます"
+        },
+        "jp": "では、始めましょうか。\n本日はお時間をいただき、ありがとうございます。よろしくお願いいたします。",
+        "cn": "客户示意开始，你先感谢对方抽时间再进入会议。",
+        "points": [
+          {
+            "term": "お時間をいただく",
+            "reading": "おじかん を いただく",
+            "meaning": "承蒙对方拨出时间",
+            "note": "正式会面常用。"
+          },
+          {
+            "term": "お忙しい中",
+            "reading": "おいそがしい なか",
+            "meaning": "百忙之中",
+            "note": "更正式地承接对方成本。"
+          }
+        ],
+        "use": {
+          "prompt": "客户会议开场第一句。",
+          "choices": [
+            "本日はお時間をいただき、ありがとうございます。",
+            "時間ください。",
+            "お疲れ！"
+          ],
+          "correct": 0,
+          "feedback": "先感谢，再进正题。"
+        },
+        "transfer": {
+          "prompt": "朋友专门腾时间见你。",
+          "choices": [
+            "時間つくってくれてありがとう。",
+            "お時間を賜りました。",
+            "時間を食べた。"
+          ],
+          "correct": 0,
+          "feedback": "关系变化，表达自然降级。"
+        },
+        "review": {
+          "prompt": "客户拨时间给你开会。",
+          "cloze": "本日は＿＿。",
+          "answer": "お時間をいただき、ありがとうございます",
+          "feedback": "把“对方付出的时间”作为感谢对象。"
+        },
+        "play": {
+          "daily": "時間つくってくれてありがとう。",
+          "polite": "お時間をいただき、ありがとうございます。",
+          "business": "本日はお忙しい中、お時間をいただき誠にありがとうございます。",
+          "businessNote": "正式会议会明确感谢对方在忙碌中抽出时间。",
+          "replyPrompt": "では、始めましょうか。",
+          "reply": "本日はお時間をいただき、ありがとうございます。よろしくお願いいたします。",
+          "scenarios": [
+            {
+              "emoji": "🪑",
+              "cue": "剧情｜会议刚开始，先向山本致谢。",
+              "jp": "本日はお時間をいただき、ありがとうございます。",
+              "cn": "感谢您今天抽时间。"
+            },
+            {
+              "emoji": "📋",
+              "cue": "剧情｜说明这是最终确认会议。",
+              "jp": "本日は最終確認のお時間をいただき、ありがとうございます。",
+              "cn": "感谢您为最终确认抽出时间。"
+            },
+            {
+              "emoji": "💼",
+              "cue": "剧情｜更正式地向客户开场。",
+              "jp": "本日はお忙しい中、お時間をいただき誠にありがとうございます。",
+              "cn": "感谢您百忙之中拨冗。"
+            },
+            {
+              "emoji": "☕",
+              "cue": "迁移｜朋友专门腾时间和你见面。",
+              "jp": "時間つくってくれてありがとう。",
+              "cn": "谢谢你专门腾时间。"
+            },
+            {
+              "emoji": "🏥",
+              "cue": "迁移｜咨询结束时感谢工作人员。",
+              "jp": "お時間を取っていただき、ありがとうございます。",
+              "cn": "谢谢您抽时间。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "yamamoto",
+            "learnerRole": "respond",
+            "uiCue": "先听山本说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 9,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep08",
+          "nextEpisodeId": "release-week-01-ep10",
+          "locationId": "client-office",
+          "locationName": "客户办公室",
+          "castIds": [
+            "sato",
+            "yamamoto"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "小问题被处理并复核，项目没有因此推迟。",
+          "todayHook": "客户会议开始了；第一句先说什么，才能自然进入正题？",
+          "summary": "客户会议顺利开始，山本确认了最后的上线条件。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep08",
+            "sourceEpisodeId": "release-week-01-ep08",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep07",
+            "sourceEpisodeId": "release-week-01-ep07",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep10",
+        "visualMeta": {
+          "sceneId": "release-week-ep09",
+          "palette": [
+            "#4a5a52",
+            "#8aa39a",
+            "#e8f3ef"
+          ],
+          "locationId": "client-office",
+          "castInScene": [
+            "sato",
+            "yamamoto"
+          ],
+          "imagePrompt": "Client meeting room handshake beginning, polite business atmosphere, warm editorial style, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep10",
+        "title": "第10集｜ついに本番リリース",
+        "category": "职场空气",
+        "level": "N2",
+        "emoji": "🚀",
+        "visual": "release-week-ep10",
+        "prompt": "监控变绿，主要功能正常。经历前面的风险后，终于可以说“顺利上线了”。",
+        "guesses": [
+          "無事にリリースできました",
+          "リリースが危険です",
+          "リリースを食べました"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 前九集不是铺垫装饰：所有确认、联络和客户沟通终于在这一刻收束。",
+        "key": {
+          "term": "無事にリリースできました",
+          "reading": "ぶじ に リリース できました",
+          "meaning": "顺利完成上线了",
+          "insight": "「無事に」带出经历风险但最终平安完成的结果感。",
+          "anchor": "🚀✅ → 無事に"
+        },
+        "jp": "本番の状況はいかがですか。\nはい。無事にリリースできました。",
+        "cn": "客户询问正式环境状态，你确认已顺利上线。",
+        "points": [
+          {
+            "term": "無事に",
+            "reading": "ぶじ に",
+            "meaning": "平安地、顺利地",
+            "note": "经过风险后尤其自然。"
+          },
+          {
+            "term": "完了いたしました",
+            "reading": "かんりょう いたしました",
+            "meaning": "已完成（正式）",
+            "note": "对外结果报告常用。"
+          }
+        ],
+        "use": {
+          "prompt": "佐藤问当前状态。",
+          "choices": [
+            "無事にリリースできました。",
+            "まだ絶対です。",
+            "リリースが食べました。"
+          ],
+          "correct": 0,
+          "feedback": "“经历风险→顺利完成”的结果感。"
+        },
+        "transfer": {
+          "prompt": "旅行到目的地后给朋友报平安。",
+          "choices": [
+            "無事に着いたよ。",
+            "到着を無事です。",
+            "無事を着ます。"
+          ],
+          "correct": 0,
+          "feedback": "把「無事に」迁移到生活。"
+        },
+        "review": {
+          "prompt": "终于顺利上线。",
+          "cloze": "＿＿リリースできました。",
+          "answer": "無事に",
+          "feedback": "风险之后的安心结果。"
+        },
+        "play": {
+          "daily": "無事リリースできたね！",
+          "polite": "無事にリリースできました。",
+          "business": "おかげさまで、無事に本番リリースを完了いたしました。",
+          "businessNote": "对外正式报告会把“顺利”与完成对象一起说清楚。",
+          "replyPrompt": "本番の状況はいかがですか。",
+          "reply": "はい。無事にリリースできました。",
+          "scenarios": [
+            {
+              "emoji": "🎉",
+              "cue": "剧情｜田中看到监控正常。",
+              "jp": "無事にリリースできたね。",
+              "cn": "顺利上线了呢。"
+            },
+            {
+              "emoji": "✅",
+              "cue": "剧情｜向佐藤汇报当前状态。",
+              "jp": "先ほど、無事にリリースできました。",
+              "cn": "刚才已经顺利上线了。"
+            },
+            {
+              "emoji": "📧",
+              "cue": "剧情｜给山本发送正式结果。",
+              "jp": "おかげさまで、無事に本番リリースを完了いたしました。",
+              "cn": "承蒙关照，已顺利完成正式上线。"
+            },
+            {
+              "emoji": "🚉",
+              "cue": "迁移｜旅行到目的地后给朋友报平安。",
+              "jp": "無事に着いたよ。",
+              "cn": "我顺利到了。"
+            },
+            {
+              "emoji": "📦",
+              "cue": "迁移｜告诉店员包裹顺利收到。",
+              "jp": "荷物、無事に届きました。",
+              "cn": "包裹顺利收到了。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "yamamoto",
+            "learnerRole": "respond",
+            "uiCue": "先听对方说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 10,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep09",
+          "nextEpisodeId": "release-week-01-ep11",
+          "locationId": "project-office",
+          "locationName": "项目办公室",
+          "castIds": [
+            "tanaka",
+            "sato",
+            "yamamoto"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "客户会议顺利开始，山本确认了最后的上线条件。",
+          "todayHook": "项目正式上线；怎么把“终于顺利完成了”说出来？",
+          "summary": "项目正式上线，团队确认主要功能正常。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep09",
+            "sourceEpisodeId": "release-week-01-ep09",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep08",
+            "sourceEpisodeId": "release-week-01-ep08",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep11",
+        "visualMeta": {
+          "sceneId": "release-week-ep10",
+          "palette": [
+            "#3d6b4f",
+            "#7ab39a",
+            "#e4f3ec"
+          ],
+          "locationId": "project-office",
+          "castInScene": [
+            "tanaka",
+            "sato",
+            "yamamoto"
+          ],
+          "imagePrompt": "Launch success on monitoring dashboard with relieved team, celebratory but calm, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep11",
+        "title": "第11集｜リリース後の振り返り",
+        "category": "职场空气",
+        "level": "N2",
+        "emoji": "🔎",
+        "visual": "release-week-ep11",
+        "prompt": "上线成功后开始复盘。现在回看整个过程，要把哪些行动串成经验？",
+        "guesses": [
+          "振り返ってみると",
+          "これからだけ見ると",
+          "振り返りを食べると"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 这一集会主动把前面的迟到联络、念のため和提前处理重新叫回来。",
+        "key": {
+          "term": "振り返ってみると",
+          "reading": "ふりかえって みる と",
+          "meaning": "回头看 / 回顾起来",
+          "insight": "从现在回看过去，找出哪些行动真正起了作用。",
+          "anchor": "🔎←一週間 → 振り返ってみると"
+        },
+        "jp": "今回、何が一番大きかったですか。\n振り返ってみると、早めに共有したことが大きかったと思います。",
+        "cn": "佐藤问最关键的因素，你回顾认为早点共享信息很重要。",
+        "points": [
+          {
+            "term": "振り返ってみると",
+            "reading": "ふりかえって みる と",
+            "meaning": "回头看",
+            "note": "复盘和经验总结很自然。"
+          },
+          {
+            "term": "早期共有",
+            "reading": "そうき きょうゆう",
+            "meaning": "早期共享",
+            "note": "正式复盘可用。"
+          }
+        ],
+        "use": {
+          "prompt": "复盘时怎么开启你的判断？",
+          "choices": [
+            "振り返ってみると、早めに共有してよかったです。",
+            "明日だけ見ます。",
+            "振り返りがです。"
+          ],
+          "correct": 0,
+          "feedback": "从现在回看过去，再提炼经验。"
+        },
+        "transfer": {
+          "prompt": "回顾最近日语学习。",
+          "choices": [
+            "振り返ってみると、毎日少し話したのがよかった。",
+            "毎日を返りました。",
+            "話すが振りです。"
+          ],
+          "correct": 0,
+          "feedback": "从项目复盘迁移到学习复盘。"
+        },
+        "review": {
+          "prompt": "从现在回看过去。",
+          "cloze": "＿＿、早めに共有してよかったです。",
+          "answer": "振り返ってみると",
+          "feedback": "回顾→提炼经验。"
+        },
+        "play": {
+          "daily": "振り返ると、早めに言ってよかったね。",
+          "polite": "振り返ってみると、早めに共有してよかったです。",
+          "business": "振り返りますと、早期共有が有効だったと考えております。",
+          "businessNote": "正式复盘会把感想展开成可说明的判断。",
+          "replyPrompt": "今回、何が一番大きかったですか。",
+          "reply": "振り返ってみると、早めに共有したことが大きかったと思います。",
+          "scenarios": [
+            {
+              "emoji": "🗣️",
+              "cue": "剧情｜和田中回顾最早的迟到联络。",
+              "jp": "振り返ってみると、早めに相談したのがよかったです。",
+              "cn": "回头看，早点商量是对的。"
+            },
+            {
+              "emoji": "🚃",
+              "cue": "剧情｜再次提到第一天的电车。",
+              "jp": "振り返ると、遅れるかもしれないと先に伝えてよかったね。",
+              "cn": "回头看，先说可能会迟到挺好的。"
+            },
+            {
+              "emoji": "📊",
+              "cue": "剧情｜向佐藤做正式复盘。",
+              "jp": "振り返りますと、事前確認を重ねたことが安定稼働につながりました。",
+              "cn": "回顾来看，多次事前确认促成了稳定运行。"
+            },
+            {
+              "emoji": "🗾",
+              "cue": "迁移｜回顾最近的日语学习。",
+              "jp": "振り返ってみると、毎日少し話したのがよかった。",
+              "cn": "回头看，每天说一点很有用。"
+            },
+            {
+              "emoji": "🏃",
+              "cue": "迁移｜回顾一次训练安排。",
+              "jp": "振り返ると、最初に飛ばしすぎたかも。",
+              "cn": "回头看，一开始可能冲太快了。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "sato",
+            "learnerRole": "respond",
+            "uiCue": "先听佐藤说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 11,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep10",
+          "nextEpisodeId": "release-week-01-ep12",
+          "locationId": "meeting-room",
+          "locationName": "会议室",
+          "castIds": [
+            "tanaka",
+            "sato"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "项目正式上线，团队确认主要功能正常。",
+          "todayHook": "上线成功后开始复盘；怎么自然地从“现在”回看整个过程？",
+          "summary": "复盘中，团队把早联络、既定安排、保险确认和提前处理串成经验线。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep10",
+            "sourceEpisodeId": "release-week-01-ep10",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep08",
+            "sourceEpisodeId": "release-week-01-ep08",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "release-week-01-ep12",
+        "visualMeta": {
+          "sceneId": "release-week-ep11",
+          "palette": [
+            "#5a5a4a",
+            "#b3b38a",
+            "#f3f3e8"
+          ],
+          "locationId": "meeting-room",
+          "castInScene": [
+            "tanaka",
+            "sato"
+          ],
+          "imagePrompt": "Post-launch retrospective meeting with notes on table, thoughtful mood, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T23:10:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "release-week-01-ep12",
+        "title": "第12集｜第一季终：おかげさまで、無事に",
+        "category": "职场空气",
+        "level": "N2",
+        "emoji": "🌟",
+        "visual": "release-week-ep12",
+        "prompt": "季终挑战：把这周从电车晚点、会议、确认、客户沟通到上线与复盘串成一段完整交流。",
+        "guesses": [
+          "おかげさまで、無事にリリースできました",
+          "全部自分だけです",
+          "おかげをします"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 十二张卡片终于变成一段经历：你不是“背完了”，而是活过了一次项目上线周。",
+        "key": {
+          "term": "おかげさまで",
+          "reading": "おかげさま で",
+          "meaning": "托您的福 / 多亏大家",
+          "insight": "把结果和周围人的帮助连接起来，用关系性的结果收束整个事件。",
+          "anchor": "🤝×一週間 → おかげさまで"
+        },
+        "jp": "今回のリリース、無事に終わりましたね。\nはい。おかげさまで、無事にリリースできました。",
+        "cn": "季终时大家确认项目结束，你用“托大家的福”收束这一周。",
+        "points": [
+          {
+            "term": "おかげさまで",
+            "reading": "おかげさま で",
+            "meaning": "托您的福",
+            "note": "常用于积极结果和感谢。"
+          },
+          {
+            "term": "お力添え",
+            "reading": "おちからぞえ",
+            "meaning": "帮助、协助",
+            "note": "正式感谢中常用。"
+          }
+        ],
+        "use": {
+          "prompt": "山本说项目顺利结束，你怎么回应？",
+          "choices": [
+            "おかげさまで、無事にリリースできました。",
+            "全部自分だけです。",
+            "おかげを食べました。"
+          ],
+          "correct": 0,
+          "feedback": "把成功和协作关系连接起来。"
+        },
+        "transfer": {
+          "prompt": "朋友陪你练日语后，你终于说出来了。",
+          "choices": [
+            "おかげで、ちゃんと話せたよ。ありがとう。",
+            "話すをおかげです。",
+            "全部一人です。"
+          ],
+          "correct": 0,
+          "feedback": "从职场正式感谢迁移到朋友关系。"
+        },
+        "review": {
+          "prompt": "季终一句话收束结果与感谢。",
+          "cloze": "＿＿、無事に終わりました。",
+          "answer": "おかげさまで",
+          "feedback": "结果+周围人的帮助→おかげさまで。"
+        },
+        "play": {
+          "daily": "みんなのおかげで、うまくいったよ。",
+          "polite": "おかげさまで、無事に終わりました。",
+          "business": "皆様のお力添えのおかげで、無事に完了いたしました。",
+          "businessNote": "正式感谢会把帮助来源说得更清楚；「おかげさまで」仍是自然的关系收束。",
+          "replyPrompt": "今回のリリース、無事に終わりましたね。",
+          "reply": "はい。おかげさまで、無事にリリースできました。",
+          "scenarios": [
+            {
+              "emoji": "🎊",
+              "cue": "剧情｜田中说终于结束了。",
+              "jp": "はい。おかげさまで、無事にリリースできました。",
+              "cn": "是的，托大家的福顺利上线了。"
+            },
+            {
+              "emoji": "🧘",
+              "cue": "剧情｜对佐藤总结自己的应对。",
+              "jp": "おかげさまで、最後まで落ち着いて対応できました。",
+              "cn": "托大家的福，我直到最后都能冷静处理。"
+            },
+            {
+              "emoji": "💼",
+              "cue": "剧情｜向山本做正式感谢。",
+              "jp": "皆様のお力添えのおかげで、無事に完了いたしました。",
+              "cn": "多亏各位的帮助，已顺利完成。"
+            },
+            {
+              "emoji": "🗣️",
+              "cue": "迁移｜朋友陪你练习日语后。",
+              "jp": "おかげで、ちゃんと話せたよ。ありがとう。",
+              "cn": "多亏你，我好好说出来了，谢谢。"
+            },
+            {
+              "emoji": "🏡",
+              "cue": "迁移｜家人一起完成一件麻烦的事。",
+              "jp": "みんなのおかげで、無事に終わったよ。",
+              "cn": "多亏大家，顺利结束了。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "tanaka",
+            "learnerRole": "respond",
+            "uiCue": "先听同事说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "release-week-01",
+          "seasonTitle": "项目上线前的一周",
+          "episodeNo": 12,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep11",
+          "locationId": "meeting-room",
+          "locationName": "会议室",
+          "castIds": [
+            "tanaka",
+            "sato",
+            "yamamoto"
+          ],
+          "canonRevision": "v1",
+          "previousSummary": "复盘中，团队把早联络、既定安排、保险确认和提前处理串成经验线。",
+          "todayHook": "季终挑战：不看答案，把这一周的沟通串成一整段职场交流。",
+          "summary": "季终：你完成从通勤异常到客户沟通、故障处理、正式上线与复盘的完整职场交流，第一季闭环。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep11",
+            "sourceEpisodeId": "release-week-01-ep11",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep10",
+            "sourceEpisodeId": "release-week-01-ep10",
+            "role": "natural_reuse"
+          }
+        ],
+        "visualMeta": {
+          "sceneId": "release-week-ep12",
+          "palette": [
+            "#4a4a6b",
+            "#8a8ab3",
+            "#ececf3"
+          ],
+          "locationId": "meeting-room",
+          "castInScene": [
+            "tanaka",
+            "sato",
+            "yamamoto"
+          ],
+          "imagePrompt": "Season finale team moment after successful release, warm gratitude atmosphere, editorial anime style, no text"
+        }
+      }
+    },
+    {
+      "status": "audio_validation_failed",
+      "preparedAt": "2026-08-30T07:14:00Z",
+      "audio": {
+        "status": "validation_failed",
+        "model": "gpt-realtime-1.5",
+        "cacheVersion": "realtime15-news-v2"
+      },
+      "story": {
+        "id": "news-yasai-20260828",
+        "title": "新闻为什么不直接说「高くなります」，而说「高くなりそうです」？",
+        "category": "今日发生",
+        "level": "N3",
+        "emoji": "🍅",
+        "visual": "news-yasai",
+        "prompt": "NHK 8月28日的新闻说：9月番茄和黄瓜预计比往年贵约20%～30%。如果未来还没有百分之百确定，哪种说法更贴合这种“预测”？",
+        "guesses": [
+          "高くなります",
+          "高くなりそうです",
+          "高かったです"
+        ],
+        "guessCorrect": 1,
+        "twist": "📈 新闻不是在保证未来，而是在表达“按现在的信息看来，很可能会这样”。",
+        "key": {
+          "term": "高くなりそうです",
+          "reading": "たかく なりそう です",
+          "meaning": "看起来会变贵 / 预计会变贵",
+          "insight": "这里的「～そうです」不是“听说”的传闻用法，而是根据当前情况做判断：看起来接下来会发生。",
+          "anchor": "🍅 ¥ ↑ → 高くなりそうです"
+        },
+        "jp": "来月、トマトは高くなりますか？\n今のところ、いつもの年より高くなりそうです。",
+        "cn": "下个月番茄会涨价吗？\n照目前来看，可能会比往年贵。",
+        "points": [
+          {
+            "term": "～そうです",
+            "reading": "〜そう です",
+            "meaning": "看起来会……；预计会……",
+            "note": "用于根据眼前信息、趋势或迹象作判断。"
+          },
+          {
+            "term": "今のところ",
+            "reading": "いま の ところ",
+            "meaning": "目前；就现在来看",
+            "note": "给预测加上“以当前信息为准”的边界。"
+          }
+        ],
+        "use": {
+          "prompt": "你看到天气图，感觉马上要下雨。哪句最自然？",
+          "choices": [
+            "雨が降りそうです",
+            "雨が降りました",
+            "雨を降ります"
+          ],
+          "correct": 0,
+          "feedback": "从菜价换到天气，仍然是“根据现在的迹象判断接下来”。"
+        },
+        "transfer": {
+          "prompt": "车站广播前，你看到线路已经开始拥堵。想说“电车看起来要晚点了”，哪句更自然？",
+          "choices": [
+            "電車が遅れそうです",
+            "電車が遅れたそうです",
+            "電車が遅れません"
+          ],
+          "correct": 0,
+          "feedback": "新闻里的预测表达，一换到你自己的通勤场景就能直接用。"
+        },
+        "review": {
+          "prompt": "你看着乌云，想说“看起来要下雨”。把那个预测信号叫回来。",
+          "cloze": "雨が降り＿＿。",
+          "answer": "そうです",
+          "feedback": "先记住“眼前迹象 → そうです”，再去区分传闻的「そうです」。"
+        },
+        "news": {
+          "source": "NHKやさしいことばニュース",
+          "sourceDate": "2026-08-28",
+          "sourceTitle": "野菜の値段　9月はトマトやきゅうりが高い",
+          "sourceUrl": "https://news.web.nhk/news/easy/",
+          "mode": "discovery",
+          "fact": "农林水产省预计，9月番茄和黄瓜价格可能比往年高约20%～30%。"
+        },
+        "nextId": "news-rain-20260828"
+      }
+    },
+    {
+      "status": "audio_validation_failed",
+      "preparedAt": "2026-08-30T07:14:00Z",
+      "audio": {
+        "status": "validation_failed",
+        "model": "gpt-realtime-1.5",
+        "cacheVersion": "realtime15-news-v2"
+      },
+      "story": {
+        "id": "news-rain-20260828",
+        "title": "灾害信息写「かもしれません」，是不是代表“问题不大”？",
+        "category": "今日发生",
+        "level": "N3",
+        "emoji": "🌧️",
+        "visual": "news-rain",
+        "prompt": "NHK 8月28日的天气信息提醒：即使雨量看起来不大，也可能出现积水、河水上涨或山体滑坡。看到「～かもしれません」，你应该怎么理解？",
+        "guesses": [
+          "只是极小概率，可以忽略",
+          "存在这种可能，虽然不是断言，但需要结合风险采取行动",
+          "记者也不知道发生了什么"
+        ],
+        "guessCorrect": 1,
+        "twist": "⚠️ “不确定”不等于“不重要”。在安全信息里，“可能”本身就是行动信号。",
+        "key": {
+          "term": "かもしれません",
+          "reading": "かも しれません",
+          "meaning": "也许…… / 可能……",
+          "insight": "它不告诉你精确概率，只告诉你“这种情况存在可能性”。天气、交通和安全信息里，要继续看后面的行动提示。",
+          "anchor": "🌧️ → ? → かもしれません"
+        },
+        "jp": "この雨で、電車が遅れるかもしれません。\nわかりました。早めに出ます。",
+        "cn": "因为这场雨，电车可能会晚点。\n明白了，我早点出发。",
+        "points": [
+          {
+            "term": "かもしれません",
+            "reading": "かも しれません",
+            "meaning": "可能；也许",
+            "note": "比断言弱，但并不等于“可以无视”。"
+          },
+          {
+            "term": "早めに",
+            "reading": "はやめ に",
+            "meaning": "提前一些；尽早",
+            "note": "风险信息之后经常连接具体行动。"
+          }
+        ],
+        "use": {
+          "prompt": "“这场雨可能会影响电车”最自然的是？",
+          "choices": [
+            "この雨で、電車に影響が出るかもしれません",
+            "この雨で、電車が影響です",
+            "この雨を電車かもしれません"
+          ],
+          "correct": 0,
+          "feedback": "把「かもしれません」和具体风险放在一起理解，而不是孤立背成“也许”。"
+        },
+        "transfer": {
+          "prompt": "热门商品今天可能卖完。你会怎么提醒朋友？",
+          "choices": [
+            "夕方には売り切れるかもしれません",
+            "夕方には売り切れそうでした",
+            "夕方には売り切れをします"
+          ],
+          "correct": 0,
+          "feedback": "从灾害信息换到购物场景，“存在这种可能”仍然成立。"
+        },
+        "review": {
+          "prompt": "列车状态还没确定，但存在晚点可能。把句尾补出来。",
+          "cloze": "電車が遅れる＿＿。",
+          "answer": "かもしれません",
+          "feedback": "看到不确定风险时，先认出这不是断言，再判断要不要提前行动。"
+        },
+        "news": {
+          "source": "NHKやさしいことばニュース",
+          "sourceDate": "2026-08-28",
+          "sourceTitle": "雨が降りやすい天気が続きそう",
+          "sourceUrl": "https://news.web.nhk/news/easy/",
+          "mode": "serious",
+          "fact": "气象信息称多地易下雨的天气可能持续到8月30日，并提醒积水、河水上涨和山体滑坡等风险。"
+        },
+        "nextId": "chotto"
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T12:40:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "news-aete-convenience-20260830",
+        "title": "明明追求“方便”，为什么偏偏写「あえて不便」？",
+        "category": "今日发生",
+        "level": "N2",
+        "emoji": "🏪",
+        "visual": "news-aete",
+        "prompt": "东京涩谷一个限时体验活动把便利店里原本方便的东西故意拿掉，并写成「あえて“不便”に設計」。这里的「あえて」最接近哪种感觉？",
+        "guesses": [
+          "明知道通常会做得更方便，却特意反着选",
+          "不小心变得不方便",
+          "因为没办法，只能勉强这样"
+        ],
+        "guessCorrect": 0,
+        "twist": "↩️ 「あえて」常带一点“明明有更普通的选项，但我偏偏主动选另一条”的反差。",
+        "key": {
+          "term": "あえて",
+          "reading": "あえて",
+          "meaning": "特意；偏偏；明知如此仍刻意去做",
+          "insight": "它不是普通的“故意”。说话人通常知道更自然、更轻松或更常见的选择，却为了某个目的主动选择不那么普通的做法。",
+          "anchor": "普通の道 → ↩️ あえて別の道"
+        },
+        "jp": "便利にできるけど、あえて不便にしてみます。\nそのほうが違いに気づきやすいです。",
+        "cn": "明明可以做得更方便，但我们偏偏试着把它变得不方便。\n这样反而更容易注意到差别。",
+        "points": [
+          {
+            "term": "あえて",
+            "reading": "あえて",
+            "meaning": "特意；偏偏",
+            "note": "常用于“知道普通选项，但仍主动选择另一种做法”的场景。"
+          },
+          {
+            "term": "～てみる",
+            "reading": "〜て みる",
+            "meaning": "试着做……",
+            "note": "把想法变成一次尝试时非常常用。"
+          }
+        ],
+        "use": {
+          "prompt": "周末天气很好，但你想故意不坐电车，走路看看城市。哪句最自然？",
+          "choices": [
+            "今日はあえて電車に乗らず、歩いてみます。",
+            "今日はうっかり電車に乗りません。",
+            "今日は電車があえてです。"
+          ],
+          "correct": 0,
+          "feedback": "重点不是“忘了坐”，而是明知道可以坐，却主动选择步行。"
+        },
+        "transfer": {
+          "prompt": "做日语题时，你决定先不看答案，自己多想30秒。哪句最贴合？",
+          "choices": [
+            "あえてすぐに答えを見ないで、考えてみます。",
+            "答えをあえて忘れました。",
+            "あえてが答えを見ます。"
+          ],
+          "correct": 0,
+          "feedback": "从活动设计换到学习策略，核心仍是“主动选择不走最省事的路”。"
+        },
+        "review": {
+          "prompt": "大家都带手机出门，你今天偏偏想体验半天不用手机。把那个反常但主动的信号补出来。",
+          "cloze": "今日は＿＿スマホを置いて出かけます。",
+          "answer": "あえて",
+          "feedback": "看到“明明可以A，却主动选B”的反差，就把「あえて」叫回来。"
+        },
+        "practice": {
+          "examples": [
+            {
+              "emoji": "🚶",
+              "cue": "有近路，但你想看看街区，故意走远一点。",
+              "jp": "あえて遠い道を選びます。",
+              "cn": "我偏偏选择远一点的路。"
+            },
+            {
+              "emoji": "📅",
+              "cue": "最近太忙，周日反而什么安排都不放。",
+              "jp": "今日はあえて何も予定を入れません。",
+              "cn": "今天我特意什么安排都不放。"
+            },
+            {
+              "emoji": "🧠",
+              "cue": "题目不会，先忍住不看答案。",
+              "jp": "答えをすぐ見ないで、あえて自分で考えてみます。",
+              "cn": "先不马上看答案，特意自己想一想。"
+            }
+          ],
+          "fun": {
+            "prompt": "哪句把「あえて」用得最像“我连忘东西都是精心策划的”？",
+            "choices": [
+              "今日はあえて歩きます。",
+              "財布を忘れました。あえて忘れました！",
+              "あえて何も予定を入れません。"
+            ],
+            "correct": 1,
+            "feedback": "😂 普通的“忘钱包”通常是「うっかり」。硬说「あえて忘れました」就像在宣布：忘钱包也是我的战略。"
+          }
+        },
+        "news": {
+          "source": "Metaについて",
+          "sourceDate": "2026-08-06",
+          "sourceTitle": "Meta AIで“不便なコンビニ”に挑む！ 3日間限定の体験型イベント「Meta AI Convenience Store」を8月28日から渋谷で開催",
+          "sourceUrl": "https://about.fb.com/ja/news/2026/08/meta-ai-convenience-store/amp/",
+          "mode": "discovery",
+          "fact": "Metaは8月28日から30日まで東京・渋谷で、便利さをあえて取り除いたコンビニを舞台にAIで買い物ミッションへ挑む体験イベントを開催した。"
+        },
+        "nextId": "tekitou"
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T14:18:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "pragmatic-nenno-tame-20260830",
+        "title": "明明觉得没问题，为什么还要说「念のため」？",
+        "category": "会话暗号",
+        "level": "N3",
+        "emoji": "🧷",
+        "visual": "nenno-tame",
+        "prompt": "同事说资料应该已经上传好了，却又补一句「念のため、もう一度確認します」。他是在说自己很没把握吗？",
+        "guesses": [
+          "不是，主要是为了防万一再确认一次",
+          "是，说明他完全不相信刚才的操作",
+          "只是表示‘顺便’"
+        ],
+        "guessCorrect": 0,
+        "twist": "🛟 「念のため」不是“我觉得一定会出事”，而是“即使概率不高，也把那个小风险先堵上”。",
+        "key": {
+          "term": "念のため",
+          "reading": "ねん の ため",
+          "meaning": "以防万一；保险起见",
+          "insight": "常用于结果大概没问题、但仍做一次确认、备份或准备。它比单纯的「もう一度」多了‘预防小概率问题’的理由。",
+          "anchor": "たぶん大丈夫 → でも確認 → 念のため"
+        },
+        "jp": "アップロードできていると思います。\n念のため、もう一度確認します。",
+        "cn": "我想应该已经上传好了。\n保险起见，我再确认一次。",
+        "points": [
+          {
+            "term": "念のため",
+            "reading": "ねん の ため",
+            "meaning": "以防万一；保险起见",
+            "note": "后面常接「確認する」「持っていく」「保存する」「連絡する」等预防动作。"
+          },
+          {
+            "term": "一応",
+            "reading": "いちおう",
+            "meaning": "姑且；基本上；先……一下",
+            "note": "「一応確認する」更像先做个基本确认；「念のため確認する」更明确强调防范风险。"
+          }
+        ],
+        "use": {
+          "prompt": "朋友说天气预报是晴天，但你觉得山区天气可能变化。现场怎么回最自然？",
+          "choices": [
+            "念のため、折りたたみ傘を持っていこう。",
+            "念のため、雨が絶対に降る。",
+            "念のためを持っていこう。"
+          ],
+          "correct": 0,
+          "feedback": "你不是断言会下雨，而是因为存在一点可能性，提前带伞。"
+        },
+        "transfer": {
+          "prompt": "明天第一次去客户公司，地图已经看过了。你想今晚再确认一次路线。哪句自然？",
+          "choices": [
+            "念のため、今夜もう一度行き方を確認しておきます。",
+            "念のため、行き方を忘れておきます。",
+            "行き方が念のためです。"
+          ],
+          "correct": 0,
+          "feedback": "从带伞换到商务出行，核心仍是‘大概没问题，但先堵住小风险’。"
+        },
+        "review": {
+          "prompt": "文件应该已经保存好了，但你想在关电脑前再看一眼。不要看选项，自己把开头说出来。",
+          "cloze": "＿＿、保存先をもう一度確認します。",
+          "answer": "念のため",
+          "feedback": "把「大概没事 → 仍做预防动作」和「念のため」绑在一起。"
+        },
+        "practice": {
+          "examples": [
+            {
+              "emoji": "☔",
+              "cue": "平时怎么说｜和朋友出门，天气大概没问题，但还是带把伞。",
+              "jp": "念のため、傘持っていこう。",
+              "cn": "保险起见，带把伞吧。"
+            },
+            {
+              "emoji": "📩",
+              "cue": "敬语怎么说｜对同事或不熟的人，资料应该到了，但礼貌地再确认。",
+              "jp": "念のため、届いているか確認しておきます。",
+              "cn": "保险起见，我先确认一下是否已经收到。"
+            },
+            {
+              "emoji": "💼",
+              "cue": "商务日语｜客户会议前，材料已经准备好，但再核对一次。",
+              "jp": "念のため、会議前に資料を再度確認いたします。",
+              "cn": "保险起见，我会在会议前再次确认资料。"
+            }
+          ],
+          "fun": {
+            "prompt": "哪句听起来像把“保险起见”用到了荒谬的程度？",
+            "choices": [
+              "念のため、充電器も持っていく。",
+              "念のため、家を二軒持っていく。",
+              "念のため、予約時間を確認する。"
+            ],
+            "correct": 1,
+            "feedback": "😂 「家を二軒持っていく」当然办不到。好笑点在于句型没错，但‘预防动作’离谱到失控。"
+          }
+        },
+        "nextId": "news-rain-20260828"
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-30T17:19:05Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "grammar-kotoni-natteiru-20260831",
+        "title": "「9時に始めることになっています」到底是谁决定的？",
+        "category": "日语陷阱",
+        "level": "N3",
+        "emoji": "📋",
+        "visual": "kotoni-natteiru",
+        "prompt": "新同事问会议几点开始，你回答「9時に始めることになっています」。这句话最自然的感觉是什么？",
+        "guesses": [
+          "这是已经确定的安排或规则，不特别强调是谁决定的",
+          "这是我刚刚个人决定9点开始",
+          "我只是猜大概9点开始"
+        ],
+        "guessCorrect": 0,
+        "twist": "📌 「ことになっています」常把焦点放在“已经这样安排/规定好了”，而不是把决定者推到台前。",
+        "key": {
+          "term": "ことになっています",
+          "reading": "こと に なって います",
+          "meaning": "按规定/安排是……；已经定为……",
+          "insight": "它常用于说明既定规则、流程或安排。和「ことにしています」相比，前者更像外部或共同决定后形成的状态，后者更容易表达自己坚持的习惯或决定。",
+          "anchor": "決定した人より → 📋 決まっている状態"
+        },
+        "jp": "この会議は、9時に始めることになっています。\nわかりました。少し早めに来ます。",
+        "cn": "这个会议按安排9点开始。\n明白了，我会稍微早点来。",
+        "points": [
+          {
+            "term": "ことになっています",
+            "reading": "こと に なって います",
+            "meaning": "按规定/安排是……",
+            "note": "适合说明已经存在的制度、流程、约定或日程。"
+          },
+          {
+            "term": "ことにしています",
+            "reading": "こと に して います",
+            "meaning": "我规定自己……；我一直坚持……",
+            "note": "常把决定或习惯更明确地放在说话人自己这一侧。"
+          }
+        ],
+        "use": {
+          "prompt": "健身房规定进场要换室内鞋。工作人员怎么说明最自然？",
+          "choices": [
+            "中では室内用の靴に履き替えることになっています。",
+            "中では室内用の靴に履き替えることにしています、私が。",
+            "中では室内用の靴に履き替えそうです。"
+          ],
+          "correct": 0,
+          "feedback": "这是场所已有的规则，所以用「ことになっています」把规则本身放在前面。"
+        },
+        "transfer": {
+          "prompt": "公司流程规定申请必须先由直属上司确认。你向新人说明时怎么说？",
+          "choices": [
+            "申請前に、直属の上司に確認してもらうことになっています。",
+            "申請前に、上司を確認することにしています。",
+            "申請前に、確認したそうです。"
+          ],
+          "correct": 0,
+          "feedback": "从会议安排换到公司流程，仍然是“已经这样规定好了”。"
+        },
+        "review": {
+          "prompt": "宿舍规定晚上11点后要保持安静。把“按规定如此”的部分补出来。",
+          "cloze": "23時以降は静かにする＿＿。",
+          "answer": "ことになっています",
+          "feedback": "看到规则、制度、既定安排，就优先想起「ことになっています」。"
+        },
+        "play": {
+          "daily": "明日は10時集合ってことになってるよ。",
+          "polite": "明日は10時に集合することになっています。",
+          "business": "明日は10時に集合することとなっております。",
+          "businessNote": "正式通知或对外说明中可用「こととなっております」提高书面和正式感；普通职场口头说明用「ことになっています」通常更自然。",
+          "replyPrompt": "明日の集合時間、何時でしたっけ？",
+          "reply": "10時に集合することになっています。",
+          "scenarios": [
+            {
+              "emoji": "🏠",
+              "cue": "合租规则｜垃圾要在早上8点前拿出去",
+              "jp": "ごみは朝8時までに出すことになっています。",
+              "cn": "规定垃圾要在早上8点前拿出去。"
+            },
+            {
+              "emoji": "🏫",
+              "cue": "学校安排｜下周一开始穿夏季制服",
+              "jp": "来週の月曜日から夏服を着ることになっています。",
+              "cn": "安排从下周一开始穿夏季制服。"
+            },
+            {
+              "emoji": "🏢",
+              "cue": "公司流程｜出差前先提交申请",
+              "jp": "出張の前に申請書を提出することになっています。",
+              "cn": "规定出差前要提交申请书。"
+            },
+            {
+              "emoji": "🏨",
+              "cue": "酒店说明｜退房是上午11点",
+              "jp": "チェックアウトは午前11時までとなっています。",
+              "cn": "退房时间规定到上午11点。"
+            },
+            {
+              "emoji": "🤝",
+              "cue": "项目约定｜每周五共享进度",
+              "jp": "毎週金曜日に進捗を共有することになっています。",
+              "cn": "项目约定每周五共享进度。"
+            }
+          ]
+        },
+        "nextId": "pragmatic-nenno-tame-20260830"
+      }
+    }
+  ]
+}
