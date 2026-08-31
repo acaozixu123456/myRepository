@@ -5,7 +5,9 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   return res.status(200).json({
     ok: true,
     platform: 'vercel',
-    migrationStage: 'supabase-audio-dual-read',
-    audioRouting: 'supabase-first-appdeploy-fallback',
+    migrationStage: 'supabase-native-audio',
+    audioRouting: 'supabase-only',
+    nativeBackfill: true,
+    appdeployDependency: false,
   });
 }
