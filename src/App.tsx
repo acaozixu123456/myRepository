@@ -1,21 +1,22 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
-import {Bookmark, ChevronLeft, ChevronRight, Compass, Heart, Map as MapIcon, RotateCcw, Sparkles, User, Zap} from 'lucide-react';
+import {ChevronLeft, ChevronRight, Compass, Headphones, Heart, Map as MapIcon, RotateCcw, Sparkles, User, Zap} from 'lucide-react';
 import {api} from './api';
 import {categories, stories as bundledStories, Story} from './content';
 import EpisodeVisual from './EpisodeVisual';
 import {applyFinish, migrateMemory, MemoryMap, pickMemoryEcho, reviewPriority} from './memory';
+import NhkMorningPage from './NhkMorningPage';
 import PracticeLane, {type Weakness} from './PracticeLane';
 import ReviewLane from './ReviewLane';
 import {PlayClipId} from './playPlan';
 import {playSfx} from './sfx';
 import {getSeasonProgress, resolveActiveSeason, seasonStoriesFor} from './seasonProgress';
 
-type Tab = 'play' | 'review' | 'collection' | 'atlas' | 'profile';
+type Tab = 'morning' | 'play' | 'review' | 'atlas' | 'profile';
 type OpenMode = 'play' | 'review';
 type RecallResult = 'good' | 'close' | 'miss';
 type ClipState = 'ready' | 'pending' | 'failed';
 
-const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
+const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
 const SEASON_ORDER = ['release-week-01', 'life-beyond-work-02'];
 const FRONTIER_REFRESH_MS = 30_000;
 
@@ -26,7 +27,7 @@ const fetchRemoteStories = async (): Promise<Story[]> => {
 };
 
 function App() {
-  const [tab, setTab] = useState<Tab>('play');
+  const [tab, setTab] = useState<Tab>('morning');
   const [openMode, setOpenMode] = useState<OpenMode>('play');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [clipStatus, setClipStatus] = useState<Partial<Record<PlayClipId, ClipState>>>({});
@@ -136,6 +137,7 @@ function App() {
   const continueSeries = continueStory?.series;
   const completedSeason = seasonProgress.completedCount;
   const favoriteStories = stories.filter(s => favorites.includes(s.id));
+  const morningWorldStory = continueStory || seasonStories[seasonStories.length - 1] || null;
 
   const unlock = () => {
     audioRef.current?.pause();
@@ -260,10 +262,19 @@ function App() {
   return (
     <div className="shell">
       <main className="phone focus-app">
+        {tab === 'morning' && (
+          <NhkMorningPage
+            worldStory={morningWorldStory}
+            onEnterWorld={() => {
+              setTab('play');
+              if (continueStory) openStory(continueStory.id, 'play');
+            }}
+          />
+        )}
         {tab === 'play' && (
           <>
             <header className="focus-header compact">
-              <strong>继续玩</strong>
+              <strong>你的连续世界</strong>
               <span>{completedSeason}/{seasonProgress.episodeCount || seasonStories.length || 12}</span>
             </header>
             {continueStory && (
@@ -300,13 +311,6 @@ function App() {
             {!learned.length && <p className="empty-copy">先玩一组，这里会安排再遇。</p>}
           </section>
         )}
-        {tab === 'collection' && (
-          <section className="secondary-page">
-            <header><strong>收藏</strong></header>
-            <div className="topic-list">{favoriteStories.map(s => card(s))}</div>
-            {!favoriteStories.length && <p className="empty-copy">玩法顶部可收藏。</p>}
-          </section>
-        )}
         {tab === 'atlas' && (
           <section className="secondary-page">
             <header><strong>图鉴</strong></header>
@@ -334,10 +338,16 @@ function App() {
               <div><strong>{due.length}</strong><span>待复习</span></div>
             </div>
             <button className="sound-toggle" onClick={() => setSfxEnabled(v => !v)}><Zap size={18} /><span>反馈音效</span><b>{sfxEnabled ? '开' : '关'}</b></button>
+            {favoriteStories.length > 0 && (
+              <div className="profile-favorites">
+                <small>收藏的表达</small>
+                <div className="topic-list">{favoriteStories.map(s => card(s))}</div>
+              </div>
+            )}
           </section>
         )}
         <nav className="bottom-nav-simple">
-          {([{id: 'play', label: '继续', icon: Compass}, {id: 'review', label: '复习', icon: RotateCcw}, {id: 'collection', label: '收藏', icon: Bookmark}, {id: 'atlas', label: '图鉴', icon: MapIcon}, {id: 'profile', label: '我的', icon: User}] as const).map(n => {
+          {([{id: 'morning', label: '今朝', icon: Headphones}, {id: 'play', label: '世界', icon: Compass}, {id: 'review', label: '复习', icon: RotateCcw}, {id: 'atlas', label: '图鉴', icon: MapIcon}, {id: 'profile', label: '我的', icon: User}] as const).map(n => {
             const I = n.icon;
             return <button key={n.id} className={tab === n.id ? 'active' : ''} aria-label={n.label} onClick={() => setTab(n.id)}><I size={21} /></button>;
           })}
