@@ -71,13 +71,13 @@ Step 'Loading reviewed rollout implementation from the private command branch'
 $scriptShow = Invoke-Git @('-C', $RelayDir, 'show', "refs/remotes/origin/${Branch}:windows-git-agent/rollout-codex.ps1")
 $rolloutText = $scriptShow.Output
 
-# Apply two narrow fail-closed fixes to the fetched snapshot before parsing/execution.
-# These are intentionally exact replacements: source drift stops the rollout instead
-# of silently running an unreviewed shape.
+# Apply narrow fail-closed fixes to the fetched snapshot before parsing/execution.
+# Exact replacements make source drift stop the rollout instead of silently
+# running an unreviewed shape.
 $oldRemoteFetch = "Invoke-Native `$GitPath @('-C', `$ControllerDir, 'fetch', 'origin', `$RefBranch) -AllowFailure | Out-Null"
 $newRemoteFetch = "Invoke-Native `$GitPath @('-C', `$ControllerDir, 'fetch', 'origin', `"+refs/heads/`${RefBranch}:refs/remotes/origin/`${RefBranch}`") -AllowFailure | Out-Null"
-$oldRemoteShow = '$show = Invoke-Native $GitPath @(\'-C\', $ControllerDir, \'show\', "origin/${RefBranch}:$RepoPath") -AllowFailure'
-$newRemoteShow = '$show = Invoke-Native $GitPath @(\'-C\', $ControllerDir, \'show\', "refs/remotes/origin/${RefBranch}:$RepoPath") -AllowFailure'
+$oldRemoteShow = 'origin/${RefBranch}:$RepoPath'
+$newRemoteShow = 'refs/remotes/origin/${RefBranch}:$RepoPath'
 $oldCanaryGate = "if (-not `$startEnvelope.ok -or -not @('accepted', 'already_started') -contains [string]`$startEnvelope.result.startResult) {"
 $newCanaryGate = "if (-not `$startEnvelope.ok -or (@('accepted', 'already_started') -notcontains [string]`$startEnvelope.result.startResult)) {"
 
