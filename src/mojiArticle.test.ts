@@ -1,5 +1,10 @@
 import {describe, expect, it} from 'vitest';
-import {extractJapaneseSentences, normalizeMojiArticleUrl, parseMojiArticleHtml} from './mojiArticle';
+import {
+  extractJapaneseSentences,
+  extractJapaneseSentencesFromText,
+  normalizeMojiArticleUrl,
+  parseMojiArticleHtml,
+} from './mojiArticle';
 
 describe('MOJi article parser', () => {
   it('accepts only public MOJi article URLs', () => {
@@ -8,7 +13,7 @@ describe('MOJi article parser', () => {
     expect(normalizeMojiArticleUrl('http://www.mojidict.com/article/Izr0dhrpz3')).toBeNull();
   });
 
-  it('extracts the title and Japanese sentences from structured data', () => {
+  it('extracts the title and Japanese sentences from a public article', () => {
     const html = `<!doctype html><html><head>
       <meta property="og:title" content="物価高を受けて政府が新しい対策 - MOJi辞書">
       <script type="application/ld+json">${JSON.stringify({
@@ -18,8 +23,31 @@ describe('MOJi article parser', () => {
     </head><body><button>显示译文</button></body></html>`;
     const result = parseMojiArticleHtml(html, 'https://www.mojidict.com/article/demo123');
     expect(result.title).toBe('物価高を受けて政府が新しい対策');
+    expect(result.access).toBe('full');
+    expect(result.requiresClipboard).toBe(false);
     expect(result.sentences).toContain('政府は物価高を受けて、新しい支援策を発表しました。');
     expect(result.sentences).toContain('対象となる世帯には来月から給付金が支給される予定です。');
+  });
+
+  it('recognizes member-only delivery without pretending the full body was parsed', () => {
+    const html = `<!doctype html><html><head>
+      <meta property="og:title" content="亚撒西NHK：暑假变身小老师 - MOJi辞書">
+      <meta property="og:description" content="島根県 中学生が保育園の先生の仕事を体験 👉点击单词查询释义 島根県大田市で昨日、夏休みの中学生">
+    </head><body>本文为会员专享文章,请打开App阅读</body></html>`;
+    const result = parseMojiArticleHtml(html, 'https://www.mojidict.com/article/Izr0dhrpz3');
+    expect(result.title).toBe('亚撒西NHK：暑假变身小老师');
+    expect(result.access).toBe('member-only');
+    expect(result.requiresClipboard).toBe(true);
+    expect(result.sentences).toEqual(['島根県中学生が保育園の先生の仕事を体験']);
+    expect(result.excerpt).toContain('島根県大田市');
+  });
+
+  it('turns copied article text into selectable Japanese sentences', () => {
+    const copied = `政府は新しい支援策を発表しました。\n点击显示译文\n対象となる世帯には来月から給付金が支給される予定です。`;
+    expect(extractJapaneseSentencesFromText(copied)).toEqual([
+      '政府は新しい支援策を発表しました。',
+      '対象となる世帯には来月から給付金が支給される予定です。',
+    ]);
   });
 
   it('removes ruby readings and filters Chinese interface noise', () => {
