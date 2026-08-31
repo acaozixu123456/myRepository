@@ -40,10 +40,15 @@ jobs:
           $body=Get-Content -Raw 'sol-router/switch-windows-agent-to-codex.ps1'
           foreach($required in @(
             'ACTIVE_AGENT_BUSY',
+            'BUSY_WITHOUT_HEARTBEAT',
             'RecoverStaleRunId',
             'Language.Parser',
+            'refs/remotes/origin/${StateBranch}',
+            '$powerShellArgs',
+            '-notcontains [string]`$startEnvelope.result.startResult',
             'full tests, active-run gate, health, isolated canary and automatic rollback'
           )){
             if(-not $body.Contains($required)){throw "missing reviewed gate: $required"}
           }
+          if($body.Contains('$args = @(')){throw 'PowerShell automatic $args collision reintroduced'}
           Write-Host 'PASS reviewed bootstrap gate markers'
