@@ -6,6 +6,7 @@ export type NhkMorningSession = {
   sourceUrl: string;
   title: string;
   shadowText: string;
+  selectedSentences?: string[];
   recapText: string;
   keyExpression: string;
   dailyVersion: string;
@@ -42,6 +43,7 @@ export const createNhkSession = (dateKey = toDateKey()): NhkMorningSession => ({
   sourceUrl: '',
   title: '',
   shadowText: '',
+  selectedSentences: [],
   recapText: '',
   keyExpression: '',
   dailyVersion: '',
@@ -58,6 +60,20 @@ const isNhkSession = (value: unknown): value is NhkMorningSession => {
   return typeof session.id === 'string' && typeof session.dateKey === 'string';
 };
 
+const sentenceListFromText = (value: string): string[] => value
+  .split(/\n+/)
+  .map(sentence => sentence.trim())
+  .filter(Boolean)
+  .slice(0, 3);
+
+const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => ({
+  ...createNhkSession(session.dateKey),
+  ...session,
+  selectedSentences: Array.isArray(session.selectedSentences)
+    ? session.selectedSentences.filter(value => typeof value === 'string' && value.trim()).slice(0, 3)
+    : sentenceListFromText(session.shadowText || ''),
+});
+
 const resolveStorage = (storage?: StorageLike): StorageLike | null => {
   if (storage) return storage;
   return typeof localStorage === 'undefined' ? null : localStorage;
@@ -68,7 +84,7 @@ export const loadNhkSessions = (storage?: StorageLike): NhkMorningSession[] => {
   if (!target) return [];
   try {
     const parsed = JSON.parse(target.getItem(STORAGE_KEY) || '[]') as unknown;
-    return Array.isArray(parsed) ? parsed.filter(isNhkSession) : [];
+    return Array.isArray(parsed) ? parsed.filter(isNhkSession).map(normalizeNhkSession) : [];
   } catch {
     return [];
   }
