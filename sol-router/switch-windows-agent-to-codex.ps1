@@ -36,28 +36,39 @@ if (-not (Test-Path $RelayDir)) {
   throw "Existing Sol Router relay checkout not found: $RelayDir"
 }
 
-Step 'Fetching command and state branches'
-Invoke-Git @('-C', $RelayDir, 'fetch', 'origin', $Branch, $StateBranch) | Out-Null
+Step 'Fetching command and state branches explicitly'
+Invoke-Git @(
+  '-C', $RelayDir,
+  'fetch', 'origin',
+  "+refs/heads/${Branch}:refs/remotes/origin/${Branch}",
+  "+refs/heads/${StateBranch}:refs/remotes/origin/${StateBranch}"
+) | Out-Null
 
 $recoverStaleRunId = ''
-$agentShow = Invoke-Git @('-C', $RelayDir, 'show', "origin/${StateBranch}:gateway-bridge/agents/work-windows-cursor.json") -AllowFailure
+$agentShow = Invoke-Git @('-C', $RelayDir, 'show', "refs/remotes/origin/${StateBranch}:gateway-bridge/agents/work-windows-cursor.json") -AllowFailure
 if ($agentShow.Code -eq 0 -and $agentShow.Output.Trim()) {
-  try { $agent = $agentShow.Output | ConvertFrom-Json } catch { $agent = $null }
+  try { $agent = $agentShow.Output | ConvertFrom-Json } catch { throw 'State-branch agent health JSON is unreadable; refusing recycle.' }
   if ($agent -and [string]$agent.agentState -eq 'busy' -and $agent.activeRunId) {
     $heartbeat = 0L
     [void][long]::TryParse([string]$agent.heartbeatAt, [ref]$heartbeat)
+    if ($heartbeat -le 0) {
+      throw "BUSY_WITHOUT_HEARTBEAT: activeRunId=$($agent.activeRunId). Refusing automatic stale-run recovery."
+    }
     $ageMs = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() - $heartbeat
     $minimumStaleMs = [long]$StaleAfterMinutes * 60L * 1000L
-    if ($heartbeat -gt 0 -and $ageMs -lt $minimumStaleMs) {
+    if ($ageMs -lt $minimumStaleMs) {
       throw ("ACTIVE_AGENT_BUSY: activeRunId={0}, heartbeat age={1:N1} minutes. Refusing to recycle a fresh run." -f $agent.activeRunId, ($ageMs / 60000.0))
     }
     $recoverStaleRunId = [string]$agent.activeRunId
     Step ("Remote heartbeat is stale; authorizing exact run recovery: {0}" -f $recoverStaleRunId)
   }
 }
+else {
+  throw 'Unable to read authoritative state-branch agent health; refusing automatic recycle.'
+}
 
 Step 'Loading reviewed rollout implementation from the private command branch'
-$scriptShow = Invoke-Git @('-C', $RelayDir, 'show', "origin/${Branch}:windows-git-agent/rollout-codex.ps1")
+$scriptShow = Invoke-Git @('-C', $RelayDir, 'show', "refs/remotes/origin/${Branch}:windows-git-agent/rollout-codex.ps1")
 [IO.File]::WriteAllText($TempScript, $scriptShow.Output, [Text.UTF8Encoding]::new($false))
 
 Step 'Validating rollout PowerShell syntax before execution'
