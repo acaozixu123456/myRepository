@@ -1,5 +1,6 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
-import {ArrowLeft, Check, ChevronRight, ExternalLink, Headphones, Mic2, RotateCcw, Sparkles, Square} from 'lucide-react';
+import {type ClipboardEvent, useEffect, useMemo, useRef, useState} from 'react';
+import {ArrowLeft, Check, ChevronRight, ExternalLink, Headphones, Link2, LoaderCircle, Mic2, RotateCcw, Sparkles, Square} from 'lucide-react';
+import {api} from './api';
 import type {Story} from './content';
 import EpisodeVisual from './EpisodeVisual';
 import {
@@ -24,6 +25,19 @@ type VoiceRecorderProps = {
 };
 
 type RecorderState = 'idle' | 'recording' | 'ready' | 'error';
+type ArticleParseStatus = 'idle' | 'loading' | 'ready' | 'error';
+type MojiArticleResponse = {
+  ok?: boolean;
+  sourceUrl?: string;
+  title?: string;
+  sentences?: string[];
+  reason?: string;
+};
+
+const sessionSentences = (session: NhkMorningSession): string[] => {
+  if (session.selectedSentences?.length) return session.selectedSentences.slice(0, 3);
+  return session.shadowText.split(/\n+/).map(value => value.trim()).filter(Boolean).slice(0, 3);
+};
 
 function VoiceRecorder({label, onDuration}: VoiceRecorderProps) {
   const [state, setState] = useState<RecorderState>('idle');
@@ -145,11 +159,16 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const todayKey = toDateKey();
   const [sessions, setSessions] = useState<NhkMorningSession[]>(() => loadNhkSessions());
   const [draft, setDraft] = useState<NhkMorningSession>(() => findTodayNhkSession(loadNhkSessions(), todayKey) || createNhkSession(todayKey));
+  const initialSentences = sessionSentences(draft);
   const [view, setView] = useState<PageView>('home');
   const [step, setStep] = useState(0);
   const [showOriginal, setShowOriginal] = useState(false);
   const [recallRevealed, setRecallRevealed] = useState(false);
   const [recallSeconds, setRecallSeconds] = useState(0);
+  const [articleSentences, setArticleSentences] = useState<string[]>(initialSentences);
+  const [selectedSentences, setSelectedSentences] = useState<string[]>(initialSentences);
+  const [parseStatus, setParseStatus] = useState<ArticleParseStatus>(initialSentences.length ? 'ready' : 'idle');
+  const [parseError, setParseError] = useState('');
 
   useEffect(() => saveNhkSessions(sessions), [sessions]);
 
@@ -166,15 +185,106 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const patch = (values: Partial<NhkMorningSession>) => persist({...draft, ...values});
 
   const openToday = () => {
-    setDraft(todaySession || createNhkSession(todayKey));
+    const next = todaySession || createNhkSession(todayKey);
+    const selected = sessionSentences(next);
+    setDraft(next);
+    setSelectedSentences(selected);
+    setArticleSentences(selected);
+    setParseStatus(selected.length ? 'ready' : 'idle');
+    setParseError('');
     setStep(0);
     setShowOriginal(false);
     setView('today');
   };
 
+  const resetAfterSourceChange = (sourceUrl: string): NhkMorningSession => ({
+    ...draft,
+    sourceUrl,
+    title: '',
+    shadowText: '',
+    selectedSentences: [],
+    recapText: '',
+    keyExpression: '',
+    dailyVersion: '',
+    workVersion: '',
+    opinion: '',
+    worldAnswer: '',
+    recapRecordingSeconds: 0,
+    worldRecordingSeconds: 0,
+    completedAt: undefined,
+  });
+
+  const changeSourceUrl = (sourceUrl: string) => {
+    setDraft(resetAfterSourceChange(sourceUrl));
+    setArticleSentences([]);
+    setSelectedSentences([]);
+    setParseStatus('idle');
+    setParseError('');
+  };
+
+  const parseArticle = async (inputUrl = draft.sourceUrl) => {
+    const sourceUrl = inputUrl.trim();
+    if (!sourceUrl) {
+      setParseStatus('error');
+      setParseError('先粘贴 MOJi 文章链接。');
+      return;
+    }
+    setParseStatus('loading');
+    setParseError('');
+    try {
+      const {data} = await api.post<MojiArticleResponse>('/api/moji-article', {url: sourceUrl});
+      if (!data?.ok || !data.title || !Array.isArray(data.sentences) || !data.sentences.length) {
+        throw new Error(data?.reason || 'parse_failed');
+      }
+      const next = {
+        ...resetAfterSourceChange(data.sourceUrl || sourceUrl),
+        title: data.title,
+      };
+      persist(next);
+      setArticleSentences(data.sentences);
+      setSelectedSentences([]);
+      setParseStatus('ready');
+    } catch {
+      setParseStatus('error');
+      setParseError('没有解析出正文。请确认这是能公开打开的 MOJi 文章链接，再重试。');
+    }
+  };
+
+  const pasteAndParse = (event: ClipboardEvent<HTMLInputElement>) => {
+    const value = event.clipboardData.getData('text').trim();
+    if (!value) return;
+    event.preventDefault();
+    changeSourceUrl(value);
+    void parseArticle(value);
+  };
+
+  const toggleSentence = (sentence: string) => {
+    const selected = selectedSentences.includes(sentence);
+    if (!selected && selectedSentences.length >= 3) return;
+    const nextSelected = selected
+      ? selectedSentences.filter(value => value !== sentence)
+      : [...selectedSentences, sentence];
+    setSelectedSentences(nextSelected);
+    persist({
+      ...draft,
+      selectedSentences: nextSelected,
+      shadowText: nextSelected.join('\n'),
+      recapText: '',
+      keyExpression: '',
+      dailyVersion: '',
+      workVersion: '',
+      opinion: '',
+      worldAnswer: '',
+      recapRecordingSeconds: 0,
+      worldRecordingSeconds: 0,
+      completedAt: undefined,
+    });
+  };
+
   const nextFromInput = () => {
-    const expression = draft.keyExpression || suggestExpression(draft.shadowText);
-    persist({...draft, keyExpression: expression, dailyVersion: draft.dailyVersion || expression});
+    const shadowText = selectedSentences.join('\n');
+    const expression = draft.keyExpression || suggestExpression(shadowText);
+    persist({...draft, shadowText, selectedSentences, keyExpression: expression, dailyVersion: draft.dailyVersion || expression});
     setStep(1);
   };
 
@@ -245,13 +355,67 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
         {step === 0 && (
           <div className="nhk-step-card">
             <span className="nhk-kicker">INPUT</span>
-            <h1>今天听了什么？</h1>
-            <p>不用搬整篇文章，只留下你真正影子跟读的 1～3 句。</p>
-            <label>MOJi文章链接<input value={draft.sourceUrl} onChange={event => patch({sourceUrl: event.target.value})} placeholder="https://www.mojidict.com/article/..." /></label>
-            <label>新闻标题<input value={draft.title} onChange={event => patch({title: event.target.value})} placeholder="用一句话写下主题" /></label>
-            <label>今天跟读的句子<textarea value={draft.shadowText} onChange={event => patch({shadowText: event.target.value})} placeholder="粘贴你今天反复跟读的短句" rows={5} /></label>
-            {draft.sourceUrl.startsWith('http') && <a className="nhk-source-link" href={draft.sourceUrl} target="_blank" rel="noreferrer"><ExternalLink size={15} />打开原文章</a>}
-            <button className="nhk-primary-action" disabled={!draft.shadowText.trim()} onClick={nextFromInput}>开始脱稿<ChevronRight size={18} /></button>
+            <h1>贴链接，选句子。</h1>
+            <p>标题和正文自动识别。你只需要选出今天实际跟读过的 1～3 句。</p>
+            <div className="nhk-link-entry">
+              <div className="nhk-url-row">
+                <Link2 size={18} />
+                <input
+                  aria-label="MOJi文章链接"
+                  value={draft.sourceUrl}
+                  onChange={event => changeSourceUrl(event.target.value)}
+                  onPaste={pasteAndParse}
+                  onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      void parseArticle();
+                    }
+                  }}
+                  placeholder="粘贴 MOJi 文章链接"
+                  inputMode="url"
+                />
+                <button type="button" disabled={parseStatus === 'loading'} onClick={() => void parseArticle()}>
+                  {parseStatus === 'loading' ? <LoaderCircle className="nhk-spin" size={17} /> : '解析'}
+                </button>
+              </div>
+              <small>粘贴后会自动解析。</small>
+            </div>
+
+            {parseStatus === 'error' && <div className="nhk-parse-error">{parseError}</div>}
+
+            {parseStatus === 'ready' && draft.title && (
+              <>
+                <div className="nhk-parsed-article">
+                  <div><small>已识别</small><strong>{draft.title}</strong></div>
+                  <a href={draft.sourceUrl} target="_blank" rel="noreferrer" aria-label="打开原文章"><ExternalLink size={17} /></a>
+                </div>
+                <div className="nhk-sentence-picker-head">
+                  <div><strong>选择跟读过的句子</strong><small>按文章顺序显示，最多 3 句</small></div>
+                  <b>{selectedSentences.length}/3</b>
+                </div>
+                <div className="nhk-sentence-list">
+                  {articleSentences.map((sentence, index) => {
+                    const selected = selectedSentences.includes(sentence);
+                    const blocked = !selected && selectedSentences.length >= 3;
+                    return (
+                      <button
+                        key={`${index}-${sentence}`}
+                        type="button"
+                        className={selected ? 'selected' : ''}
+                        disabled={blocked}
+                        aria-pressed={selected}
+                        onClick={() => toggleSentence(sentence)}
+                      >
+                        <span>{selected ? <Check size={15} /> : index + 1}</span>
+                        <strong>{sentence}</strong>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            <button className="nhk-primary-action" disabled={!selectedSentences.length} onClick={nextFromInput}>用这几句开始脱稿<ChevronRight size={18} /></button>
           </div>
         )}
 
@@ -312,7 +476,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
         <div>
           <small>{todaySession?.completedAt ? 'TODAY COMPLETE' : '8 MINUTES AFTER NHK'}</small>
           <strong>{todaySession?.completedAt ? (todaySession.title || '今天的 NHK 已转化') : '把刚听过的日语，变成你能说的日语'}</strong>
-          <span>{todaySession?.completedAt ? todaySession.keyExpression : '脱稿复述 · 一句迁移 · 连续世界'}</span>
+          <span>{todaySession?.completedAt ? todaySession.keyExpression : '贴链接 · 选句子 · 脱稿复述'}</span>
         </div>
         <ChevronRight size={20} />
       </button>
