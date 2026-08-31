@@ -10,7 +10,7 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Verify the sample link resolves to selectable sentences
+      - name: Inspect the sample link response
         env:
           ENDPOINT: https://nihongo-discovery-v2-20260831.vercel.app/api/moji-article
           ARTICLE_URL: https://www.mojidict.com/article/Izr0dhrpz3
@@ -19,37 +19,47 @@ jobs:
           import json
           import os
           import time
+          import urllib.error
           import urllib.parse
           import urllib.request
 
           endpoint = os.environ['ENDPOINT'] + '?' + urllib.parse.urlencode({'url': os.environ['ARTICLE_URL']})
           last = None
-          for attempt in range(1, 13):
+          for attempt in range(1, 7):
               try:
-                  request = urllib.request.Request(endpoint, headers={'User-Agent': 'NihongoDiscoverySmoke/0.1'})
-                  with urllib.request.urlopen(request, timeout=20) as response:
-                      payload = json.loads(response.read().decode('utf-8'))
-                  last = payload
-                  sentences = payload.get('sentences') or []
-                  if (
-                      payload.get('ok') is True
-                      and payload.get('access') == 'matched-public'
-                      and payload.get('resolvedBy') == 'public-nhk-match'
-                      and len(sentences) >= 3
-                      and any('仕事を体験しました' in sentence for sentence in sentences)
-                  ):
+                  request = urllib.request.Request(endpoint, headers={'User-Agent': 'NihongoDiscoverySmoke/0.2'})
+                  with urllib.request.urlopen(request, timeout=25) as response:
+                      body = response.read().decode('utf-8', errors='replace')
+                      payload = json.loads(body)
                       print(json.dumps({
                           'attempt': attempt,
-                          'title': payload.get('title'),
-                          'access': payload.get('access'),
-                          'sentenceCount': len(sentences),
-                          'firstThree': sentences[:3],
-                          'referenceUrl': payload.get('referenceUrl'),
+                          'status': response.status,
+                          'headers': dict(response.headers.items()),
+                          'payload': payload,
                       }, ensure_ascii=False, indent=2))
-                      break
+                      sentences = payload.get('sentences') or []
+                      if (
+                          payload.get('ok') is True
+                          and payload.get('access') == 'matched-public'
+                          and payload.get('resolvedBy') == 'public-nhk-match'
+                          and len(sentences) >= 3
+                          and any('仕事を体験しました' in sentence for sentence in sentences)
+                      ):
+                          raise SystemExit(0)
+                      last = payload
+              except urllib.error.HTTPError as error:
+                  body = error.read().decode('utf-8', errors='replace')
+                  last = {
+                      'attempt': attempt,
+                      'status': error.code,
+                      'reason': error.reason,
+                      'headers': dict(error.headers.items()),
+                      'body': body,
+                  }
+                  print(json.dumps(last, ensure_ascii=False, indent=2))
               except Exception as error:
-                  last = {'error': str(error)}
-              if attempt == 12:
-                  raise SystemExit('production parser did not become ready: ' + json.dumps(last, ensure_ascii=False))
-              time.sleep(10)
+                  last = {'attempt': attempt, 'error': repr(error)}
+                  print(json.dumps(last, ensure_ascii=False, indent=2))
+              time.sleep(8)
+          raise SystemExit('production parser verification failed: ' + json.dumps(last, ensure_ascii=False))
           PY
