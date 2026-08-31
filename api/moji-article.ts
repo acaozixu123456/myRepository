@@ -7,7 +7,6 @@ const FEED_CACHE_MS = 5 * 60_000;
 const NHK_EASIER_FEED_URL = 'https://nhkeasier.com/feed/?no-furiganas';
 const ALLOWED_HOSTS = new Set(['mojidict.com', 'www.mojidict.com', 'm.mojidict.com']);
 const ARTICLE_PATH = /^\/article\/[A-Za-z0-9_-]+\/?$/;
-const MEMBER_ONLY_PATTERN = /本文为会员专享文章|会员专享文章|请打开\s*App\s*阅读|请打开\s*APP\s*阅读|isVIP["']?\s*[:=]\s*(?:true|[a-zA-Z])/i;
 const TRANSLATION_MARKER = /(?:👉|→)?\s*(?:点击单词查询释义|點擊單詞查詢釋義|クリックして単語の意味を調べる)/gi;
 const UI_NOISE = [
   '显示译文', '点击显示译文', '隐藏译文', '点击重新加载', '点赞', '收藏', '评论',
@@ -57,6 +56,8 @@ const decodeScriptText = (value: string): string => decodeHtml(value)
   .replace(/\\n|\\r|\\t/g, ' ')
   .replace(/\\(["'])/g, '$1');
 
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const normalizeMojiArticleUrl = (input: string): string | null => {
   try {
     const url = new URL(input.trim());
@@ -67,6 +68,8 @@ const normalizeMojiArticleUrl = (input: string): string | null => {
     return null;
   }
 };
+
+const articleIdFromUrl = (url: string): string => url.split('/').filter(Boolean).pop() || '';
 
 const readAttribute = (tag: string, name: string): string => {
   const match = new RegExp(`${name}\\s*=\\s*(["'])([\\s\\S]*?)\\1`, 'i').exec(tag);
@@ -85,6 +88,29 @@ const metaContent = (html: string, names: string[]): string => {
   return '';
 };
 
+const findArticleVariable = (decodedHtml: string, articleId: string): string => {
+  if (!articleId) return '';
+  const id = escapeRegex(articleId);
+  return new RegExp(`([A-Za-z_$][\\w$]*)\\.objectId\\s*=\\s*["']${id}["']`, 'i').exec(decodedHtml)?.[1] || '';
+};
+
+const targetScriptString = (html: string, articleId: string, property: string): string => {
+  const decoded = decodeScriptText(html);
+  const variable = findArticleVariable(decoded, articleId);
+  if (!variable) return '';
+  const variablePattern = escapeRegex(variable);
+  const propertyPattern = escapeRegex(property);
+  return new RegExp(`${variablePattern}\\.${propertyPattern}\\s*=\\s*["']([\\s\\S]{1,1200}?)["']\\s*;`, 'i').exec(decoded)?.[1] || '';
+};
+
+const targetScriptBoolean = (html: string, articleId: string, property: string): boolean | null => {
+  const decoded = decodeScriptText(html);
+  const variable = findArticleVariable(decoded, articleId);
+  if (!variable) return null;
+  const value = new RegExp(`${escapeRegex(variable)}\\.${escapeRegex(property)}\\s*=\\s*(true|false)\\s*;`, 'i').exec(decoded)?.[1];
+  return value ? value.toLowerCase() === 'true' : null;
+};
+
 const cleanTitle = (value: string): string => decodeHtml(value)
   .replace(/<[^>]+>/g, ' ')
   .replace(/^日语阅读\s*[-–—|]\s*/i, '')
@@ -93,25 +119,13 @@ const cleanTitle = (value: string): string => decodeHtml(value)
   .trim()
   .slice(0, 160);
 
-const scriptString = (html: string, property: string): string => {
-  const decoded = decodeScriptText(html);
-  const patterns = [
-    new RegExp(`${property}\\s*=\\s*["']([\\s\\S]{1,600}?)["']\\s*;`, 'i'),
-    new RegExp(`["']${property}["']\\s*:\\s*["']([\\s\\S]{1,600}?)["']`, 'i'),
-  ];
-  for (const pattern of patterns) {
-    const value = pattern.exec(decoded)?.[1];
-    if (value) return value;
-  }
-  return '';
-};
-
-const extractTitle = (html: string): string => {
+const extractTitle = (html: string, articleId: string): string => {
   const heading = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(html)?.[1] || '';
   const documentTitle = /<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(html)?.[1] || '';
   const candidates = [
+    targetScriptString(html, articleId, 'notationTitle'),
+    targetScriptString(html, articleId, 'title'),
     metaContent(html, ['og:title', 'twitter:title']),
-    scriptString(html, 'notationTitle'),
     heading,
     documentTitle,
   ].map(cleanTitle).filter(Boolean);
@@ -177,28 +191,25 @@ const bestHeadlineFromText = (value: string): string => {
     ?.replace(/[。！？!?]+$/, '') || '';
 };
 
-const extractHeadlineHint = (html: string): string => {
+const extractHeadlineHint = (html: string, articleId: string): string => {
   const descriptions = [
+    targetScriptString(html, articleId, 'excerpt'),
     metaContent(html, ['og:description', 'description', 'twitter:description']),
-    scriptString(html, 'excerpt'),
   ].filter(Boolean);
   for (const description of descriptions) {
     const candidate = bestHeadlineFromText(description);
     if (candidate) return candidate;
   }
-
-  const decoded = decodeScriptText(html);
-  const marker = new RegExp(TRANSLATION_MARKER.source, 'i');
-  const match = marker.exec(decoded);
-  if (!match) return '';
-  const nearby = decoded.slice(Math.max(0, match.index - 220), match.index + match[0].length);
-  return bestHeadlineFromText(nearby);
+  return '';
 };
 
 const parseMojiArticle = (html: string, sourceUrl: string): ParsedArticle => {
-  const title = extractTitle(html);
-  const headlineHint = extractHeadlineHint(html);
-  const memberOnly = MEMBER_ONLY_PATTERN.test(decodeScriptText(html));
+  const articleId = articleIdFromUrl(sourceUrl);
+  const title = extractTitle(html, articleId);
+  const headlineHint = extractHeadlineHint(html, articleId);
+  const targetVip = targetScriptBoolean(html, articleId, 'isVIP');
+  const visibleMemberOnly = /本文为会员专享文章|会员专享文章|请打开\s*App\s*阅读|请打开\s*APP\s*阅读/i.test(decodeScriptText(html));
+  const memberOnly = targetVip === true || visibleMemberOnly;
   const sentences = memberOnly ? [] : extractJapaneseSentences(html);
   return {
     sourceUrl,
@@ -260,7 +271,7 @@ const matchNhkFeed = (xml: string, headlineHint: string): FeedMatch | null => {
 };
 
 const fetchArticlePages = async (canonicalUrl: string): Promise<Array<{html: string; finalUrl: string}>> => {
-  const articleId = canonicalUrl.split('/').pop();
+  const articleId = articleIdFromUrl(canonicalUrl);
   const candidates = [canonicalUrl, `https://m.mojidict.com/article/${articleId}`];
   const pages = await Promise.all(candidates.map(async url => {
     try {
@@ -314,8 +325,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!pages.length) return res.status(502).json({ok: false, reason: 'upstream_unavailable'});
     const articles = pages.map(page => parseMojiArticle(page.html, page.finalUrl));
     const article = articles.sort((a, b) => Number(Boolean(b.headlineHint)) - Number(Boolean(a.headlineHint)) || b.sentences.length - a.sentences.length)[0];
-
     const headlineHint = articles.find(candidate => candidate.headlineHint)?.headlineHint;
+
     if (headlineHint) {
       const match = matchNhkFeed(await fetchNhkFeed(), headlineHint);
       if (match) {
@@ -341,6 +352,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       reason: articles.some(candidate => candidate.access === 'member-only') ? 'member_transcript_unavailable' : 'no_japanese_sentences',
       title: article.title,
       headlineDetected: Boolean(headlineHint),
+      ...(headlineHint ? {headlineHint} : {}),
     });
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'parse_failed';
