@@ -35,9 +35,13 @@ const fetchArticleHtml = async (canonicalUrl: string): Promise<{html: string; fi
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
-  if (req.method !== 'POST') return res.status(405).json({ok: false, reason: 'method_not_allowed'});
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    return res.status(405).json({ok: false, reason: 'method_not_allowed'});
+  }
 
-  const inputUrl = typeof req.body?.url === 'string' ? req.body.url : '';
+  const inputUrl = req.method === 'GET'
+    ? String(req.query.url || '')
+    : typeof req.body?.url === 'string' ? req.body.url : '';
   const canonicalUrl = normalizeMojiArticleUrl(inputUrl);
   if (!canonicalUrl) return res.status(400).json({ok: false, reason: 'invalid_moji_article_url'});
 
