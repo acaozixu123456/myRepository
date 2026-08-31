@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const OLD_BACKEND = 'https://api-v2.appdeploy.ai/app/nihongo-discovery-e819sz/api';
 const SUPABASE_PUBLIC = 'https://kivebsjsdfdobxzaokbj.supabase.co/storage/v1/object/public/nihongo-audio/play-audio-v2/by-story';
+const ALLOWED_CLIPS = new Set(['listen','replyPrompt','reply','daily','polite','business','scene0','scene1','scene2','scene3','scene4','recall']);
 
 async function getSupabaseClip(storyId: string, clipId: string) {
   const base = `${SUPABASE_PUBLIC}/${encodeURIComponent(storyId)}/${encodeURIComponent(clipId)}`;
@@ -18,6 +18,7 @@ async function getSupabaseClip(storyId: string, clipId: string) {
       model?: string | null;
       source?: string | null;
       migratedFrom?: string;
+      generatedBy?: string;
     };
     if (meta.storyId !== storyId || meta.clipId !== clipId) return null;
     return {
@@ -29,7 +30,8 @@ async function getSupabaseClip(storyId: string, clipId: string) {
       model: meta.model || undefined,
       source: meta.source || 'play-v2',
       storage: 'supabase',
-      migratedFrom: meta.migratedFrom || 'appdeploy',
+      ...(meta.migratedFrom ? { migratedFrom: meta.migratedFrom } : {}),
+      ...(meta.generatedBy ? { generatedBy: meta.generatedBy } : {}),
     };
   } catch {
     return null;
@@ -40,23 +42,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') return res.status(405).json({ ok: false, reason: 'method_not_allowed' });
   const storyId = String(req.query.storyId || '');
   const clipId = String(req.query.clipId || '');
-  if (!storyId || !clipId) return res.status(400).json({ ok: false, reason: 'missing_audio_target' });
-
-  const migrated = await getSupabaseClip(storyId, clipId);
-  if (migrated) {
-    res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json(migrated);
+  if (!/^[a-zA-Z0-9_-]{1,100}$/.test(storyId) || !ALLOWED_CLIPS.has(clipId)) {
+    return res.status(400).json({ ok: false, reason: 'invalid_audio_target' });
   }
 
-  try {
-    const upstream = await fetch(`${OLD_BACKEND}/play-audio/${encodeURIComponent(storyId)}/${encodeURIComponent(clipId)}`, { signal: AbortSignal.timeout(6000) });
-    const body = await upstream.text();
-    res.setHeader('Content-Type', upstream.headers.get('content-type') || 'application/json');
-    res.setHeader('Cache-Control', 'no-store');
-    res.setHeader('X-Nihongo-Audio-Storage', 'appdeploy-fallback');
-    return res.status(upstream.status).send(body);
-  } catch (error) {
-    console.error('audio fallback proxy failed', error);
-    return res.status(502).json({ ok: false, status: 'pending', reason: 'audio_backend_unavailable' });
-  }
+  const clip = await getSupabaseClip(storyId, clipId);
+  res.setHeader('Cache-Control', 'no-store');
+  if (clip) return res.status(200).json(clip);
+
+  return res.status(200).json({
+    ok: true,
+    clipId,
+    status: 'pending',
+    storage: 'supabase',
+    reason: 'audio_not_ready',
+    generation: 'supabase-native-backfill',
+  });
 }
