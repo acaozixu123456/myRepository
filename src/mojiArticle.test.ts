@@ -2,6 +2,9 @@ import {describe, expect, it} from 'vitest';
 import {
   extractJapaneseSentences,
   extractJapaneseSentencesFromText,
+  extractMojiHeadlineHint,
+  headlineSimilarity,
+  matchNhkEasierFeed,
   normalizeMojiArticleUrl,
   parseMojiArticleHtml,
 } from './mojiArticle';
@@ -29,7 +32,7 @@ describe('MOJi article parser', () => {
     expect(result.sentences).toContain('対象となる世帯には来月から給付金が支給される予定です。');
   });
 
-  it('recognizes member-only delivery without pretending the full body was parsed', () => {
+  it('recognizes member-only delivery and extracts its Japanese headline hint', () => {
     const html = `<!doctype html><html><head>
       <meta property="og:title" content="亚撒西NHK：暑假变身小老师 - MOJi辞書">
       <meta property="og:description" content="島根県 中学生が保育園の先生の仕事を体験 👉点击单词查询释义 島根県大田市で昨日、夏休みの中学生">
@@ -38,8 +41,41 @@ describe('MOJi article parser', () => {
     expect(result.title).toBe('亚撒西NHK：暑假变身小老师');
     expect(result.access).toBe('member-only');
     expect(result.requiresClipboard).toBe(true);
+    expect(result.headlineHint).toBe('島根県中学生が保育園の先生の仕事を体験');
+    expect(extractMojiHeadlineHint(html)).toBe(result.headlineHint);
     expect(result.sentences).toEqual(['島根県中学生が保育園の先生の仕事を体験']);
     expect(result.excerpt).toContain('島根県大田市');
+  });
+
+  it('matches a MOJi headline to recent public NHK Easy feed sentences', () => {
+    const feed = `<?xml version="1.0"?><rss><channel>
+      <item>
+        <title>別のニュース</title>
+        <link>https://nhkeasier.com/story/1/</link>
+        <description>&lt;p&gt;別のニュースです。&lt;/p&gt;</description>
+      </item>
+      <item>
+        <title>島根県　中学生が保育園の先生の仕事を体験</title>
+        <link>https://nhkeasier.com/story/9883/</link>
+        <description>
+          &lt;p&gt;島根県大田市で17日、夏休みの中学生たちが保育園の先生の仕事を体験しました。&lt;/p&gt;
+          &lt;p&gt;5人の中学生が保育園に集まりました。&lt;/p&gt;
+          &lt;p&gt;中学生たちは、仕事の説明を聞いたあと、子どもたちと一緒に遊んだり本を読んだりしました。&lt;/p&gt;
+          &lt;a href="https://www3.nhk.or.jp/news/easy/k10000000000000/k10000000000000.html"&gt;Original&lt;/a&gt;
+        </description>
+      </item>
+    </channel></rss>`;
+    const match = matchNhkEasierFeed(feed, '島根県 中学生が保育園の先生の仕事を体験');
+    expect(match?.sourceUrl).toBe('https://nhkeasier.com/story/9883/');
+    expect(match?.officialUrl).toContain('www3.nhk.or.jp/news/easy/');
+    expect(match?.sentences).toHaveLength(3);
+    expect(match?.sentences[0]).toContain('仕事を体験しました');
+    expect(match?.score).toBe(1);
+  });
+
+  it('keeps fuzzy title matching strict enough for small punctuation differences', () => {
+    expect(headlineSimilarity('島根県 中学生が保育園の先生の仕事を体験', '島根県　中学生が保育園の先生の仕事を体験')).toBe(1);
+    expect(headlineSimilarity('東京都で大雨', '北海道で大雪')).toBeLessThan(0.78);
   });
 
   it('turns copied article text into selectable Japanese sentences', () => {
