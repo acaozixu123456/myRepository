@@ -4,6 +4,7 @@ import {
   createNhkSession,
   findTodayNhkSession,
   isNhkSessionReadyToComplete,
+  loadNhkSessions,
   pickRecallSession,
   suggestExpression,
   upsertNhkSession,
@@ -24,6 +25,12 @@ describe('NHK morning learning loop', () => {
     const older = {...createNhkSession('2026-08-29'), completedAt: 10};
     const latest = {...createNhkSession('2026-08-30'), completedAt: 20};
     expect(pickRecallSession([older, latest], '2026-08-31')?.dateKey).toBe('2026-08-30');
+  });
+
+  it('migrates old shadow text into the new sentence selection', () => {
+    const payload = JSON.stringify([{...createNhkSession('2026-08-30'), selectedSentences: undefined, shadowText: '一文目です。\n二文目です。'}]);
+    const storage = {getItem: () => payload, setItem: () => undefined};
+    expect(loadNhkSessions(storage)[0].selectedSentences).toEqual(['一文目です。', '二文目です。']);
   });
 
   it('counts consecutive completed mornings and requires output before completion', () => {
