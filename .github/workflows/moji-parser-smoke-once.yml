@@ -7,48 +7,49 @@ on:
       - '.github/workflows/moji-parser-smoke-once.yml'
 
 jobs:
-  inspect:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Match the sample MOJi headline against the recent NHK Easy feed
+      - name: Verify the sample link resolves to selectable sentences
         env:
-          HEADLINE: 島根県 中学生が保育園の先生の仕事を体験
+          ENDPOINT: https://nihongo-discovery-v2-20260831.vercel.app/api/moji-article
+          ARTICLE_URL: https://www.mojidict.com/article/Izr0dhrpz3
         run: |
           python - <<'PY'
-          import html
+          import json
           import os
-          import re
+          import time
+          import urllib.parse
           import urllib.request
-          import xml.etree.ElementTree as ET
 
-          request = urllib.request.Request(
-              'https://nhkeasier.com/feed/?no-furiganas',
-              headers={'User-Agent': 'NihongoDiscovery/0.1 (+private language study)'}
-          )
-          with urllib.request.urlopen(request, timeout=20) as response:
-              body = response.read()
-          root = ET.fromstring(body)
-
-          def norm(value):
-              value = html.unescape(value or '')
-              value = re.sub(r'<[^>]+>', '', value)
-              return re.sub(r'[\s　「」『』・：:、。！？!?（）()]', '', value)
-
-          target = norm(os.environ['HEADLINE'])
-          matches = []
-          for item in root.findall('./channel/item'):
-              title = item.findtext('title') or ''
-              if norm(title) == target or target in norm(title) or norm(title) in target:
-                  description = html.unescape(item.findtext('description') or '')
-                  plain = re.sub(r'<[^>]+>', '\n', description)
-                  lines = [re.sub(r'\s+', ' ', line).strip() for line in plain.splitlines()]
-                  japanese = [line for line in lines if re.search(r'[ぁ-んァ-ヶー]', line)]
-                  matches.append({
-                      'title': title,
-                      'link': item.findtext('link'),
-                      'japanese_lines': japanese[:12],
-                  })
-          print({'feed_bytes': len(body), 'match_count': len(matches), 'matches': matches})
-          if not matches or len(matches[0]['japanese_lines']) < 3:
-              raise SystemExit('expected matching story with at least three Japanese lines')
+          endpoint = os.environ['ENDPOINT'] + '?' + urllib.parse.urlencode({'url': os.environ['ARTICLE_URL']})
+          last = None
+          for attempt in range(1, 13):
+              try:
+                  request = urllib.request.Request(endpoint, headers={'User-Agent': 'NihongoDiscoverySmoke/0.1'})
+                  with urllib.request.urlopen(request, timeout=20) as response:
+                      payload = json.loads(response.read().decode('utf-8'))
+                  last = payload
+                  sentences = payload.get('sentences') or []
+                  if (
+                      payload.get('ok') is True
+                      and payload.get('access') == 'matched-public'
+                      and payload.get('resolvedBy') == 'public-nhk-match'
+                      and len(sentences) >= 3
+                      and any('仕事を体験しました' in sentence for sentence in sentences)
+                  ):
+                      print(json.dumps({
+                          'attempt': attempt,
+                          'title': payload.get('title'),
+                          'access': payload.get('access'),
+                          'sentenceCount': len(sentences),
+                          'firstThree': sentences[:3],
+                          'referenceUrl': payload.get('referenceUrl'),
+                      }, ensure_ascii=False, indent=2))
+                      break
+              except Exception as error:
+                  last = {'error': str(error)}
+              if attempt == 12:
+                  raise SystemExit('production parser did not become ready: ' + json.dumps(last, ensure_ascii=False))
+              time.sleep(10)
           PY
