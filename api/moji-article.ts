@@ -1,9 +1,13 @@
 import type {VercelRequest, VercelResponse} from '@vercel/node';
+import {inflateRawSync} from 'node:zlib';
 
 const MAX_HTML_BYTES = 2_500_000;
 const MAX_FEED_BYTES = 1_000_000;
-const FETCH_TIMEOUT_MS = 8_000;
+const MAX_EPUB_BYTES = 750_000;
+const FETCH_TIMEOUT_MS = 7_000;
 const FEED_CACHE_MS = 5 * 60_000;
+const ARCHIVE_CACHE_MS = 30 * 60_000;
+const ARCHIVE_MONTHS = 6;
 const NHK_EASIER_FEED_URL = 'https://nhkeasier.com/feed/?no-furiganas';
 const ALLOWED_HOSTS = new Set(['mojidict.com', 'www.mojidict.com', 'm.mojidict.com']);
 const ARTICLE_PATH = /^\/article\/[A-Za-z0-9_-]+\/?$/;
@@ -21,11 +25,9 @@ type ParsedArticle = {
   sentences: string[];
   access: 'full' | 'excerpt' | 'member-only' | 'matched-public';
   headlineHint?: string;
-  referenceUrl?: string;
-  officialUrl?: string;
 };
 
-type FeedMatch = {
+type PublicMatch = {
   title: string;
   sourceUrl: string;
   officialUrl?: string;
@@ -33,7 +35,15 @@ type FeedMatch = {
   score: number;
 };
 
+type ArchiveStory = {
+  title: string;
+  sourceUrl: string;
+  officialUrl?: string;
+  sentences: string[];
+};
+
 let feedCache: {at: number; xml: string} | null = null;
+const archiveCache = new Map<string, {at: number; stories: ArchiveStory[]}>();
 
 const decodeCodePoint = (value: string, radix: number): string => {
   const codePoint = Number.parseInt(value, radix);
@@ -98,9 +108,7 @@ const targetScriptString = (html: string, articleId: string, property: string): 
   const decoded = decodeScriptText(html);
   const variable = findArticleVariable(decoded, articleId);
   if (!variable) return '';
-  const variablePattern = escapeRegex(variable);
-  const propertyPattern = escapeRegex(property);
-  return new RegExp(`${variablePattern}\\.${propertyPattern}\\s*=\\s*["']([\\s\\S]{1,1200}?)["']\\s*;`, 'i').exec(decoded)?.[1] || '';
+  return new RegExp(`${escapeRegex(variable)}\\.${escapeRegex(property)}\\s*=\\s*["']([\\s\\S]{1,1200}?)["']\\s*;`, 'i').exec(decoded)?.[1] || '';
 };
 
 const targetScriptBoolean = (html: string, articleId: string, property: string): boolean | null => {
@@ -210,12 +218,11 @@ const parseMojiArticle = (html: string, sourceUrl: string): ParsedArticle => {
   const targetVip = targetScriptBoolean(html, articleId, 'isVIP');
   const visibleMemberOnly = /本文为会员专享文章|会员专享文章|请打开\s*App\s*阅读|请打开\s*APP\s*阅读/i.test(decodeScriptText(html));
   const memberOnly = targetVip === true || visibleMemberOnly;
-  const sentences = memberOnly ? [] : extractJapaneseSentences(html);
   return {
     sourceUrl,
     title,
-    sentences,
-    access: memberOnly ? 'member-only' : sentences.length >= 2 ? 'full' : 'excerpt',
+    sentences: memberOnly ? [] : extractJapaneseSentences(html),
+    access: memberOnly ? 'member-only' : 'excerpt',
     ...(headlineHint ? {headlineHint} : {}),
   };
 };
@@ -254,8 +261,8 @@ const xmlTag = (xml: string, tag: string): string => {
   return value.replace(/^<!\[CDATA\[|\]\]>$/g, '').trim();
 };
 
-const matchNhkFeed = (xml: string, headlineHint: string): FeedMatch | null => {
-  const candidates: FeedMatch[] = [];
+const matchNhkFeed = (xml: string, headlineHint: string): PublicMatch | null => {
+  const candidates: PublicMatch[] = [];
   for (const item of xml.match(/<item\b[\s\S]*?<\/item>/gi) || []) {
     const title = cleanSentence(decodeHtml(xmlTag(item, 'title')));
     const score = headlineSimilarity(headlineHint, title);
@@ -268,6 +275,124 @@ const matchNhkFeed = (xml: string, headlineHint: string): FeedMatch | null => {
     candidates.push({title, sourceUrl, officialUrl, sentences, score});
   }
   return candidates.sort((a, b) => b.score - a.score)[0] || null;
+};
+
+const unzipTextEntries = (buffer: Buffer): Array<{name: string; text: string}> => {
+  const eocdSignature = 0x06054b50;
+  const centralSignature = 0x02014b50;
+  const localSignature = 0x04034b50;
+  const minOffset = Math.max(0, buffer.length - 0xffff - 22);
+  let eocdOffset = -1;
+  for (let offset = buffer.length - 22; offset >= minOffset; offset -= 1) {
+    if (buffer.readUInt32LE(offset) === eocdSignature) {
+      eocdOffset = offset;
+      break;
+    }
+  }
+  if (eocdOffset < 0) return [];
+
+  const totalEntries = buffer.readUInt16LE(eocdOffset + 10);
+  let centralOffset = buffer.readUInt32LE(eocdOffset + 16);
+  const output: Array<{name: string; text: string}> = [];
+
+  for (let index = 0; index < totalEntries; index += 1) {
+    if (centralOffset + 46 > buffer.length || buffer.readUInt32LE(centralOffset) !== centralSignature) break;
+    const method = buffer.readUInt16LE(centralOffset + 10);
+    const compressedSize = buffer.readUInt32LE(centralOffset + 20);
+    const nameLength = buffer.readUInt16LE(centralOffset + 28);
+    const extraLength = buffer.readUInt16LE(centralOffset + 30);
+    const commentLength = buffer.readUInt16LE(centralOffset + 32);
+    const localOffset = buffer.readUInt32LE(centralOffset + 42);
+    const nameStart = centralOffset + 46;
+    const nameEnd = nameStart + nameLength;
+    const name = buffer.toString('utf8', nameStart, nameEnd);
+
+    if (name.startsWith('EPUB/text/') && name.endsWith('.xhtml') && !name.endsWith('title_page.xhtml')) {
+      if (localOffset + 30 <= buffer.length && buffer.readUInt32LE(localOffset) === localSignature) {
+        const localNameLength = buffer.readUInt16LE(localOffset + 26);
+        const localExtraLength = buffer.readUInt16LE(localOffset + 28);
+        const dataStart = localOffset + 30 + localNameLength + localExtraLength;
+        const dataEnd = dataStart + compressedSize;
+        if (dataStart >= 0 && dataEnd <= buffer.length) {
+          const compressed = buffer.subarray(dataStart, dataEnd);
+          try {
+            const data = method === 0 ? compressed : method === 8 ? inflateRawSync(compressed) : null;
+            if (data && data.length <= 250_000) output.push({name, text: data.toString('utf8')});
+          } catch {
+            // Ignore a single malformed entry and continue through the archive.
+          }
+        }
+      }
+    }
+
+    centralOffset = nameEnd + extraLength + commentLength;
+  }
+  return output;
+};
+
+const archiveStoryFromXhtml = (xhtml: string): ArchiveStory | null => {
+  const titleHtml = /<h3\b[^>]*>([\s\S]*?)<\/h3>/i.exec(xhtml)?.[1] || /<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(xhtml)?.[1] || '';
+  const title = cleanSentence(titleHtml);
+  if (!title) return null;
+  const section = /<section\b[^>]*>([\s\S]*?)<\/section>/i.exec(xhtml)?.[1] || xhtml;
+  const body = section
+    .replace(/<h3\b[^>]*>[\s\S]*?<\/h3>/i, ' ')
+    .replace(/<time\b[^>]*>[\s\S]*?<\/time>/i, ' ')
+    .replace(/<ul\b[^>]*>[\s\S]*?<\/ul>/i, ' ');
+  const sentences = extractJapaneseSentences(body).filter(sentence => normalizeHeadline(sentence) !== normalizeHeadline(title));
+  if (sentences.length < 2) return null;
+  const sourceUrl = xhtml.match(/https:\/\/nhkeasier\.com\/story\/\d+\/?/i)?.[0] || '';
+  const officialUrl = xhtml.match(/https:\/\/www3\.nhk\.or\.jp\/news\/easy\/[A-Za-z0-9_-]+\/[A-Za-z0-9_-]+\.html/i)?.[0];
+  return {title, sourceUrl, officialUrl, sentences};
+};
+
+const jstRecentMonths = (): string[] => {
+  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const year = jst.getUTCFullYear();
+  const month = jst.getUTCMonth();
+  return Array.from({length: ARCHIVE_MONTHS}, (_, offset) => {
+    const date = new Date(Date.UTC(year, month - offset, 1));
+    return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+  });
+};
+
+const fetchArchiveMonth = async (monthKey: string): Promise<ArchiveStory[]> => {
+  const now = Date.now();
+  const cached = archiveCache.get(monthKey);
+  if (cached && now - cached.at < ARCHIVE_CACHE_MS) return cached.stories;
+  const [year, month] = monthKey.split('-');
+  try {
+    const response = await fetch(`https://nhkeasier.com/${year}/${month}/epub`, {
+      headers: {Accept: 'application/epub+zip,application/zip,*/*', 'User-Agent': 'NihongoDiscovery/0.2 (+private language study)'},
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
+    if (response.status === 404) {
+      archiveCache.set(monthKey, {at: now, stories: []});
+      return [];
+    }
+    if (!response.ok) throw new Error(`archive_http_${response.status}`);
+    const declaredLength = Number(response.headers.get('content-length') || 0);
+    if (declaredLength > MAX_EPUB_BYTES) throw new Error('archive_too_large');
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (buffer.length > MAX_EPUB_BYTES) throw new Error('archive_too_large');
+    const stories = unzipTextEntries(buffer).map(entry => archiveStoryFromXhtml(entry.text)).filter((story): story is ArchiveStory => Boolean(story));
+    archiveCache.set(monthKey, {at: now, stories});
+    return stories;
+  } catch {
+    return [];
+  }
+};
+
+const matchNhkArchive = async (headlineHint: string): Promise<PublicMatch | null> => {
+  const months = jstRecentMonths();
+  const monthStories = await Promise.all(months.map(month => fetchArchiveMonth(month)));
+  const matches: PublicMatch[] = [];
+  for (const story of monthStories.flat()) {
+    const score = headlineSimilarity(headlineHint, story.title);
+    if (score < 0.78) continue;
+    matches.push({...story, score});
+  }
+  return matches.sort((a, b) => b.score - a.score)[0] || null;
 };
 
 const fetchArticlePages = async (canonicalUrl: string): Promise<Array<{html: string; finalUrl: string}>> => {
@@ -300,7 +425,7 @@ const fetchNhkFeed = async (): Promise<string> => {
   const now = Date.now();
   if (feedCache && now - feedCache.at < FEED_CACHE_MS) return feedCache.xml;
   const response = await fetch(NHK_EASIER_FEED_URL, {
-    headers: {Accept: 'application/rss+xml,application/xml,text/xml', 'User-Agent': 'NihongoDiscovery/0.1 (+private language study)'},
+    headers: {Accept: 'application/rss+xml,application/xml,text/xml', 'User-Agent': 'NihongoDiscovery/0.2 (+private language study)'},
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
   if (!response.ok) throw new Error(`nhk_feed_http_${response.status}`);
@@ -309,6 +434,18 @@ const fetchNhkFeed = async (): Promise<string> => {
   feedCache = {at: now, xml};
   return xml;
 };
+
+const matchedResponse = (res: VercelResponse, article: ParsedArticle, headlineHint: string, match: PublicMatch, resolvedBy: string) => res.status(200).json({
+  ok: true,
+  ...article,
+  headlineHint,
+  sentences: match.sentences,
+  access: 'matched-public',
+  sentenceCount: match.sentences.length,
+  resolvedBy,
+  referenceUrl: match.sourceUrl,
+  ...(match.officialUrl ? {officialUrl: match.officialUrl} : {}),
+});
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
@@ -324,36 +461,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const pages = await fetchArticlePages(canonicalUrl);
     if (!pages.length) return res.status(502).json({ok: false, reason: 'upstream_unavailable'});
     const articles = pages.map(page => parseMojiArticle(page.html, page.finalUrl));
-    const article = articles.sort((a, b) => Number(Boolean(b.headlineHint)) - Number(Boolean(a.headlineHint)) || b.sentences.length - a.sentences.length)[0];
+    const article = articles.sort((a, b) => Number(Boolean(b.headlineHint)) - Number(Boolean(a.headlineHint)))[0];
     const headlineHint = articles.find(candidate => candidate.headlineHint)?.headlineHint;
+    const nhkArticle = Boolean(headlineHint) || /NHK/i.test(article.title);
 
     if (headlineHint) {
-      const match = matchNhkFeed(await fetchNhkFeed(), headlineHint);
-      if (match) {
-        return res.status(200).json({
-          ok: true,
-          ...article,
-          headlineHint,
-          sentences: match.sentences,
-          access: 'matched-public',
-          sentenceCount: match.sentences.length,
-          resolvedBy: 'public-nhk-match',
-          referenceUrl: match.sourceUrl,
-          ...(match.officialUrl ? {officialUrl: match.officialUrl} : {}),
-        });
+      try {
+        const recentMatch = matchNhkFeed(await fetchNhkFeed(), headlineHint);
+        if (recentMatch) return matchedResponse(res, article, headlineHint, recentMatch, 'public-nhk-feed');
+      } catch {
+        // Continue to the historical archive fallback.
       }
+
+      const archiveMatch = await matchNhkArchive(headlineHint);
+      if (archiveMatch) return matchedResponse(res, article, headlineHint, archiveMatch, 'public-nhk-archive');
     }
 
-    const direct = articles.find(candidate => candidate.access === 'full' && candidate.sentences.length >= 2);
-    if (direct) return res.status(200).json({ok: true, ...direct, sentenceCount: direct.sentences.length, resolvedBy: 'moji-page'});
+    // For NHK member pages, never scan generic MOJi page text as a fallback:
+    // recommendation cards can contain unrelated Japanese and must never become lesson sentences.
+    if (nhkArticle) {
+      return res.status(422).json({
+        ok: false,
+        reason: 'nhk_transcript_not_matched',
+        title: article.title,
+        headlineDetected: Boolean(headlineHint),
+        ...(headlineHint ? {headlineHint} : {}),
+      });
+    }
 
-    return res.status(422).json({
-      ok: false,
-      reason: articles.some(candidate => candidate.access === 'member-only') ? 'member_transcript_unavailable' : 'no_japanese_sentences',
-      title: article.title,
-      headlineDetected: Boolean(headlineHint),
-      ...(headlineHint ? {headlineHint} : {}),
-    });
+    const direct = articles.find(candidate => candidate.access !== 'member-only' && candidate.sentences.length >= 2);
+    if (direct) return res.status(200).json({ok: true, ...direct, access: 'full', sentenceCount: direct.sentences.length, resolvedBy: 'moji-page'});
+
+    return res.status(422).json({ok: false, reason: 'no_japanese_sentences', title: article.title});
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'parse_failed';
     console.error('moji-article handler failed', reason);
