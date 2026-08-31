@@ -57,6 +57,10 @@ export default function PracticeLane({
 
   if (!plan) return <section className="play-empty">这个主题还没有完整玩法。</section>;
 
+  const series = story.series;
+  const connectedStory = series?.worldId === 'life-in-japan';
+  const previousSummary = series?.previousSummary?.trim();
+  const todayHook = (contextLine || series?.todayHook || '').trim();
   const ready = (id: PlayClipId) => clipStatus[id] === 'ready';
   const rate = slow ? 0.82 : 1;
   const play = async (id: PlayClipId, mark = false) => {
@@ -124,15 +128,25 @@ export default function PracticeLane({
           <strong>{STAGE_LABELS[step]}</strong>
         </div>
       </div>
-      {contextLine && step === 0 && <p className="play-context">{contextLine}</p>}
-      {memoryEcho && step === 0 && <p className="memory-echo">{memoryEcho.label} · {memoryEcho.term}</p>}
+      {!connectedStory && contextLine && step === 0 && <p className="play-context">{contextLine}</p>}
+      {!connectedStory && memoryEcho && step === 0 && <p className="memory-echo">{memoryEcho.label} · {memoryEcho.term}</p>}
     </>
   );
+
+  const storyBridge = connectedStory && step === 0 && (previousSummary || todayHook || memoryEcho) ? (
+    <div className="episode-recap">
+      <span>剧情接上了</span>
+      {previousSummary && <p><b>上集</b>{previousSummary}</p>}
+      {todayHook && <p><b>现在</b>{todayHook}</p>}
+      {memoryEcho && <p><b>又遇到</b>{memoryEcho.term}</p>}
+    </div>
+  ) : null;
 
   if (step === 0) {
     return (
       <section className="core-play">
         {top}
+        {storyBridge}
         <EpisodeVisual story={story} compact />
         <h1>这句话最接近什么意思？</h1>
         {ready('listen') && !heard ? (
@@ -246,6 +260,7 @@ export default function PracticeLane({
           <strong>{plan.clips.recall.text}</strong>
           <small>{story.review.feedback}</small>
           {ready('recall') ? <button className="reference-audio" disabled={!!busy} onClick={() => void play('recall')}><Volume2 size={17} /> 听参考</button> : <small className="audio-pending">参考音频准备中</small>}
+          {series?.summary && <div className="episode-recap episode-outcome"><span>这一集发生了</span><p>{series.summary}</p></div>}
           <div className="speak-actions three">
             <button onClick={() => onComplete('miss')}>完全不会</button>
             <button onClick={() => onComplete('close')}>有点不同</button>
