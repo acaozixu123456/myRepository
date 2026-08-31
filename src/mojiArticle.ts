@@ -1,4 +1,4 @@
-export type MojiArticleAccess = 'full' | 'excerpt' | 'member-only';
+export type MojiArticleAccess = 'full' | 'excerpt' | 'member-only' | 'matched-public';
 
 export type ParsedMojiArticle = {
   sourceUrl: string;
@@ -7,6 +7,17 @@ export type ParsedMojiArticle = {
   access: MojiArticleAccess;
   requiresClipboard: boolean;
   excerpt?: string;
+  headlineHint?: string;
+  referenceUrl?: string;
+  officialUrl?: string;
+};
+
+export type NhkFeedMatch = {
+  title: string;
+  sourceUrl: string;
+  officialUrl?: string;
+  sentences: string[];
+  score: number;
 };
 
 const ALLOWED_HOSTS = new Set(['mojidict.com', 'www.mojidict.com', 'm.mojidict.com']);
@@ -19,6 +30,7 @@ const UI_NOISE = [
   '登录MOJi', '注册', '下载MOJi', '完整内容请下载', '阅读', '扫码', '扫一扫',
   '请选择', '上一篇', '下一篇', '相关推荐', '打开APP', 'APP内打开', '版权',
   '点击单词查询释义', '本文为会员专享文章', '专栏推荐',
+  'Original', 'Permalink', 'Story illustration', 'Content is missing',
 ];
 
 const decodeCodePoint = (value: string, radix: number): string => {
@@ -158,7 +170,7 @@ const cleanSentence = (value: string): string => normalizeJapaneseSpacing(decode
 const count = (value: string, pattern: RegExp): number => value.match(pattern)?.length || 0;
 
 const sentenceScore = (sentence: string): number => {
-  if (sentence.length < 10 || sentence.length > 220) return -1;
+  if (sentence.length < 10 || sentence.length > 260) return -1;
   if (UI_NOISE.some(noise => sentence.includes(noise))) return -1;
   if (/https?:\/\//i.test(sentence)) return -1;
   if (/^(?:NHK|MOJi|APP|PR|SNS)[\s\w-]*$/i.test(sentence)) return -1;
@@ -171,7 +183,7 @@ const sentenceScore = (sentence: string): number => {
 
   const punctuation = /[。！？]$/.test(sentence) ? 10 : 0;
   const conversational = /(?:です|ます|ました|ません|でしょう|という|について|によると|しています)/.test(sentence) ? 5 : 0;
-  return kana * 2 + kanji + punctuation + conversational - Math.max(0, sentence.length - 150) / 5;
+  return kana * 2 + kanji + punctuation + conversational - Math.max(0, sentence.length - 170) / 5;
 };
 
 const splitIntoCandidates = (source: string): string[] => source
@@ -209,9 +221,19 @@ export const extractJapaneseSentences = (html: string): string[] => collectSente
   htmlToText(html),
 ]);
 
+export const extractMojiHeadlineHint = (html: string): string => {
+  const rawDescription = extractMetaContent(html, ['og:description', 'description', 'twitter:description']);
+  const lead = decodeHtml(rawDescription).split(/👉|→|点击单词查询释义|點擊單詞查詢釋義/i)[0] || '';
+  const runs = lead.match(/[\u3000-\u30ff\u3400-\u9fffA-Za-z0-9０-９「」『』・、。！？!?\s]+/g) || [];
+  return runs
+    .map(cleanSentence)
+    .filter(value => value.length >= 8 && /[ぁ-んァ-ヶー]/.test(value))
+    .sort((a, b) => b.length - a.length)[0]
+    ?.replace(/[。！？!?]+$/, '') || '';
+};
+
 const memberPreviewSentences = (rawDescription: string): string[] => {
-  const beforeHint = decodeHtml(rawDescription).split(/👉|点击单词查询释义/i)[0] || '';
-  const headline = cleanSentence(beforeHint);
+  const headline = extractMojiHeadlineHint(`<meta name="description" content="${rawDescription.replace(/"/g, '&quot;')}">`);
   const complete = extractJapaneseSentencesFromText(cleanExcerpt(rawDescription))
     .filter(sentence => /[。！？]$/.test(sentence));
   const preview = sentenceScore(headline) >= 20 ? [headline] : [];
@@ -223,6 +245,7 @@ export const parseMojiArticleHtml = (html: string, sourceUrl: string): ParsedMoj
   const title = extractTitle(html);
   const rawDescription = extractMetaContent(html, ['og:description', 'description', 'twitter:description']);
   const excerpt = cleanExcerpt(rawDescription);
+  const headlineHint = extractMojiHeadlineHint(html);
   const memberOnly = MEMBER_ONLY_PATTERN.test(html);
 
   if (memberOnly) {
@@ -233,6 +256,7 @@ export const parseMojiArticleHtml = (html: string, sourceUrl: string): ParsedMoj
       access: 'member-only',
       requiresClipboard: true,
       ...(excerpt ? {excerpt} : {}),
+      ...(headlineHint ? {headlineHint} : {}),
     };
   }
 
@@ -245,6 +269,7 @@ export const parseMojiArticleHtml = (html: string, sourceUrl: string): ParsedMoj
       access: 'full',
       requiresClipboard: false,
       ...(excerpt ? {excerpt} : {}),
+      ...(headlineHint ? {headlineHint} : {}),
     };
   }
 
@@ -255,5 +280,65 @@ export const parseMojiArticleHtml = (html: string, sourceUrl: string): ParsedMoj
     access: 'excerpt',
     requiresClipboard: true,
     ...(excerpt ? {excerpt} : {}),
+    ...(headlineHint ? {headlineHint} : {}),
   };
+};
+
+const extractXmlTag = (xml: string, tag: string): string => {
+  const match = new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i').exec(xml);
+  return (match?.[1] || '').replace(/^<!\[CDATA\[|\]\]>$/g, '').trim();
+};
+
+export const normalizeJapaneseHeadline = (value: string): string => cleanSentence(value)
+  .replace(/[\s　「」『』・：:、。！？!?（）()\[\]【】]/g, '')
+  .toLowerCase();
+
+const bigrams = (value: string): string[] => {
+  if (value.length < 2) return value ? [value] : [];
+  const output: string[] = [];
+  for (let index = 0; index < value.length - 1; index += 1) output.push(value.slice(index, index + 2));
+  return output;
+};
+
+export const headlineSimilarity = (left: string, right: string): number => {
+  const a = normalizeJapaneseHeadline(left);
+  const b = normalizeJapaneseHeadline(right);
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  if (a.includes(b) || b.includes(a)) return Math.min(a.length, b.length) / Math.max(a.length, b.length);
+
+  const aPairs = bigrams(a);
+  const bPairs = bigrams(b);
+  const bCounts = new Map<string, number>();
+  for (const pair of bPairs) bCounts.set(pair, (bCounts.get(pair) || 0) + 1);
+  let overlap = 0;
+  for (const pair of aPairs) {
+    const remaining = bCounts.get(pair) || 0;
+    if (remaining <= 0) continue;
+    overlap += 1;
+    bCounts.set(pair, remaining - 1);
+  }
+  return (2 * overlap) / Math.max(aPairs.length + bPairs.length, 1);
+};
+
+export const matchNhkEasierFeed = (feedXml: string, headlineHint: string): NhkFeedMatch | null => {
+  if (!headlineHint.trim()) return null;
+  const items = feedXml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
+  const candidates: NhkFeedMatch[] = [];
+
+  for (const item of items) {
+    const title = cleanSentence(decodeHtml(extractXmlTag(item, 'title')));
+    const score = headlineSimilarity(headlineHint, title);
+    if (score < 0.78) continue;
+
+    const description = decodeHtml(extractXmlTag(item, 'description'));
+    const sentences = extractJapaneseSentences(description);
+    if (sentences.length < 2) continue;
+
+    const sourceUrl = decodeHtml(extractXmlTag(item, 'link') || extractXmlTag(item, 'guid'));
+    const officialUrl = description.match(/https:\/\/www3\.nhk\.or\.jp\/news\/easy\/[A-Za-z0-9_-]+\/[A-Za-z0-9_-]+\.html/i)?.[0];
+    candidates.push({title, sourceUrl, officialUrl, sentences, score});
+  }
+
+  return candidates.sort((a, b) => b.score - a.score)[0] || null;
 };
