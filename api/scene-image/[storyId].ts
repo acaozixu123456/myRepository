@@ -61,8 +61,8 @@ async function cachedImageUrl(storyId: string): Promise<string | null> {
   const path = `${SCENE_PREFIX}/${storyId}.webp`;
   const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${SCENE_BUCKET}/${path}`;
   try {
-    const head = await fetch(publicUrl, {method: 'HEAD'});
-    return head.ok ? publicUrl : null;
+    const res = await fetch(publicUrl, {method: 'GET', headers: {Range: 'bytes=0-0'}});
+    return res.ok || res.status === 206 ? publicUrl : null;
   } catch {
     return null;
   }
