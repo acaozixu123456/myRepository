@@ -11,6 +11,8 @@ Publishing zero is correct whenever the active season already has enough prepare
 Canon lives in `WORLD_CANON.json` with:
 - `activeSeasonId` — the season the hourly task should extend
 - `seasons[]` — durable season bibles (do not fork parallel worlds)
+- `world.cast[]` — canonical recurring people and their fixed visual descriptors
+- `world.locations[]` — canonical recurring locations
 - `world.styleBible` — shared visual + cast consistency rules for scene images
 
 Do not modify App source code or production audio from this task.
@@ -26,9 +28,10 @@ Do not modify App source code or production audio from this task.
    - teach at most one new core Japanese target;
    - advance the same plot timeline;
    - naturally reuse two earlier targets when possible;
+   - reuse only canonical cast/location IDs from `WORLD_CANON.json`;
    - include first-class `series`, `callbacks`, `play.semantics`, and `visualMeta`;
    - keep exactly five `play.scenarios` (3 in-world, 2 transfer).
-7. Run autonomous continuity and quality checks before publishing (`node scripts/validate-connected-episode.mjs`).
+7. Run autonomous continuity and quality checks before publishing (`node scripts/validate-connected-episode.mjs`). The validator reads `WORLD_CANON.json`; do not bypass it by inventing local cast/location IDs.
 8. If all checks pass, append/update exactly one item with `status: "published"` and `audio: {"status":"not_ready"}`.
 9. Commit `manifest.json` to branch `nihongo-content`.
 10. Re-read the committed manifest and verify `/api/news-content` propagation.
@@ -54,7 +57,7 @@ Step 2 of the seven-stage flow is **not** always “listen to the other speaker�
 ```
 
 Rules:
-- `exchange`: `replyPrompt` is the other speaker (must align with `series.castIds` via `promptSpeakerId`); `reply` is the learner; pair must be plausible.
+- `exchange`: `replyPrompt` is the other speaker and `promptSpeakerId` must be a canonical cast ID also present in `series.castIds`; `reply` is the learner; pair must be plausible.
 - `self-observation`: `replyPrompt` is the learner's judgment/observation; UI must not label it as 对方.
 - `system-announcement`: station/broadcast voice; learner responds in `reply`.
 - Audio text must remain **identical** to the canonical displayed utterance for each clip.
@@ -68,12 +71,18 @@ Rules:
     "palette": ["#3d5a80", "#6b9ac4", "#dbe7f3"],
     "locationId": "station",
     "castInScene": ["public-service"],
-    "imagePrompt": "Scene description following world.styleBible; no text in image"
+    "imagePrompt": "Rainy station platform at dawn; protagonist checks the delay while the station staff watches the platform; anxious but restrained mood; no text"
   }
 }
 ```
 
-The App lazy-loads scene images and never blocks on missing art.
+Rules:
+- `series.locationId` and `visualMeta.locationId` must be the same canonical location ID from `WORLD_CANON.json`.
+- Every `series.castIds` and `visualMeta.castInScene` entry must exist in `WORLD_CANON.json`; visual cast must also be part of the episode's `series.castIds`.
+- `imagePrompt` describes **scene action, framing, weather/light, and mood only**. Do **not** redesign hair, face, outfit, age, or other recurring-character appearance inside each episode.
+- Runtime image generation injects `world.styleBible`, canonical location name, and each recurring character's `visualDescriptor` from `WORLD_CANON.json`. This is the source of truth for visual continuity.
+- Never place readable Japanese/Chinese/English copy, captions, UI, speech bubbles, logos, or watermarks in the image.
+- The App lazy-loads scene images and never blocks learning on missing art.
 
 ## Season progression
 
@@ -83,9 +92,16 @@ The App lazy-loads scene images and never blocks on missing art.
 
 ## Story / series contract
 
-Every connected episode must include `series` with `worldId`, `seasonId`, `episodeNo`, `castIds`, `previousSummary`, `todayHook`, `summary`, and `callbacks`.
+Every connected episode must include `series` with `worldId`, `seasonId`, `episodeNo`, `castIds`, `locationId`, `previousSummary`, `todayHook`, `summary`, and `callbacks`.
 
-`summary` must contain only durable story facts for later episodes.
+`summary` must contain only durable story facts for later episodes: what actually happened, relationship changes, promises/plans, and other facts a future episode should know. Do not copy teaching prose into the durable story summary.
+
+## Memory / callback contract
+
+- Prefer callbacks that can naturally reappear in the current plot; never insert an old expression only to satisfy a quota.
+- Reuse up to two earlier targets in a way that changes what the learner must understand or say now.
+- A callback must point to an actual prior episode/source and must not expose internal episode IDs in UI-facing text.
+- Keep the new episode centered on one new core target; callbacks are retrieval, not extra lessons.
 
 ## Publication rules
 
@@ -93,3 +109,4 @@ Every connected episode must include `series` with `worldId`, `seasonId`, `episo
 - If active-season buffer >= 3, publish 0.
 - Never publish unrelated standalone content while a connected season is active.
 - Never generate audio from this task (`audio.status="not_ready"` is normal).
+- Never publish an episode that fails `validate-connected-episode.mjs`; fix the content or publish zero.
