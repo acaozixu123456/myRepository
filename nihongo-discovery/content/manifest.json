@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-31T04:55:00.000Z",
+  "updatedAt": "2026-08-31T05:30:00.000Z",
   "items": [
     {
       "status": "published",
@@ -2315,6 +2315,172 @@
             "public-service"
           ],
           "imagePrompt": "Evening supermarket checkout line, young professional with shopping basket waiting patiently, cashier helping previous customer, warm editorial anime style, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-31T05:30:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "life-beyond-work-02-ep03",
+        "title": "第3集｜和美香吃饭，自然点外带",
+        "category": "日本生活",
+        "level": "N3",
+        "emoji": "🍱",
+        "visual": "life-beyond-work-ep03",
+        "prompt": "超市采购后的周末傍晚，朋友美香约你去附近居酒屋。电影快开场了，你们决定外带。店员问「店内吃还是带走」时，你怎么自然回应？",
+        "guesses": [
+          "持ち帰りでお願いします",
+          "店内でお願いします",
+          "お先に失礼します"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 从超市排队的「少々お待ちください」切到居酒屋柜台：外带这句在餐厅、便当店几乎每天都会用到。",
+        "key": {
+          "term": "持ち帰りでお願いします",
+          "reading": "もちかえり で おねがい します",
+          "meaning": "请帮我打包带走",
+          "insight": "店员问店内还是外带时，这句是最直接自然的回答；「持ち帰り」=外带/打包，「でお願いします」=请按这个方式处理。",
+          "anchor": "🍱 居酒屋 → 持ち帰りでお願いします"
+        },
+        "jp": "いらっしゃいませ。店内でお召し上がりですか？\n持ち帰りでお願いします。映画の時間が近いので。",
+        "cn": "店员欢迎并问是否在店内用餐。你说要外带，因为电影快开场了。",
+        "points": [
+          {
+            "term": "持ち帰り",
+            "reading": "もちかえり",
+            "meaning": "外带、打包带走",
+            "note": "餐厅、便当店柜台最常见的选项之一。"
+          },
+          {
+            "term": "お召し上がり",
+            "reading": "おめしあがり",
+            "meaning": "用餐（敬语）",
+            "note": "店员问「店内でお召し上がりですか」=在店里吃吗？"
+          }
+        ],
+        "use": {
+          "prompt": "店员问是否在店内用餐，你想外带，最自然的是？",
+          "choices": [
+            "持ち帰りでお願いします。",
+            "店内でお願いします。",
+            "お先に失礼します。"
+          ],
+          "correct": 0,
+          "feedback": "外带场景直接说「持ち帰りでお願いします」最清楚。"
+        },
+        "transfer": {
+          "prompt": "便当店柜台问「こちらでお召し上がりですか」，你要带走。",
+          "choices": [
+            "持ち帰りでお願いします。",
+            "ごちそうさまでした。",
+            "お疲れ様です。"
+          ],
+          "correct": 0,
+          "feedback": "从居酒屋迁移到便当店，外带说法相同。"
+        },
+        "review": {
+          "prompt": "店员问是否在店内吃，把外带请求补出来。",
+          "cloze": "店内でお召し上がりですか？\n＿＿。",
+          "answer": "持ち帰りでお願いします",
+          "feedback": "柜台场景→持ち帰りでお願いします。"
+        },
+        "play": {
+          "daily": "持ち帰りで。",
+          "polite": "持ち帰りでお願いします。",
+          "business": "お持ち帰りでお願いいたします。",
+          "businessNote": "更正式场合会在「持ち帰り」前加「お」并展开敬语结尾。",
+          "replyPrompt": "いらっしゃいませ。店内でお召し上がりですか？",
+          "reply": "持ち帰りでお願いします。映画の時間が近いので。",
+          "scenarios": [
+            {
+              "emoji": "🍱",
+              "cue": "剧情｜和美香在居酒屋柜台，决定外带去看电影。",
+              "jp": "持ち帰りでお願いします。二人分お願いします。",
+              "cn": "请帮我外带。要两份。"
+            },
+            {
+              "emoji": "🥡",
+              "cue": "剧情｜美香说这家炸鸡外带很好吃，你向店员确认。",
+              "jp": "持ち帰りでお願いします。唐揚げセット一つください。",
+              "cn": "请外带。一份炸鸡套餐。"
+            },
+            {
+              "emoji": "⏰",
+              "cue": "剧情｜柜台有点忙，你先听懂店员的缓冲语再点单。",
+              "jp": "少々お待ちください。…では、店内ですか？",
+              "cn": "请稍等。…那么，在店内吃吗？"
+            },
+            {
+              "emoji": "🏪",
+              "cue": "迁移｜便利店便当加热后外带。",
+              "jp": "持ち帰りでお願いします。温めてください。",
+              "cn": "请外带。请帮我加热。"
+            },
+            {
+              "emoji": "📞",
+              "cue": "迁移｜外带前想起物业回电，先用上一集的礼貌开场。",
+              "jp": "お世話になっております。持ち帰りでお願いします。",
+              "cn": "承蒙关照。请帮我外带。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "public-service",
+            "learnerRole": "respond",
+            "uiCue": "先听店员问什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "life-beyond-work-02",
+          "seasonTitle": "工作之外的日本生活",
+          "episodeNo": 3,
+          "episodeCount": 12,
+          "previousEpisodeId": "life-beyond-work-02-ep02",
+          "nextEpisodeId": "life-beyond-work-02-ep04",
+          "locationId": "izakaya",
+          "locationName": "居酒屋",
+          "castIds": [
+            "mika",
+            "public-service"
+          ],
+          "canonRevision": "v2",
+          "previousSummary": "你在超市排队时听懂店员的缓冲语，自然回应愿意等待，顺利完成采购。",
+          "todayHook": "美香约你去居酒屋，电影快开场了——店员问「店内吃还是带走」，你怎么说？",
+          "summary": "你和美香在居酒屋柜台自然点了外带，顺利赶上看电影，生活线从购物扩展到朋友聚会场景。"
+        },
+        "callbacks": [
+          {
+            "targetId": "life-beyond-work-02-ep02",
+            "sourceEpisodeId": "life-beyond-work-02-ep02",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "life-beyond-work-02-ep01",
+            "sourceEpisodeId": "life-beyond-work-02-ep01",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "life-beyond-work-02-ep04",
+        "visualMeta": {
+          "sceneId": "life-beyond-work-ep03",
+          "palette": [
+            "#8b5a4a",
+            "#d4a574",
+            "#fff5eb"
+          ],
+          "locationId": "izakaya",
+          "castInScene": [
+            "mika",
+            "public-service"
+          ],
+          "imagePrompt": "Weekend evening izakaya counter, young professional with friend Mika ordering takeout bento boxes, warm lantern light, casual friendly atmosphere, warm editorial anime style, no text"
         }
       }
     },
