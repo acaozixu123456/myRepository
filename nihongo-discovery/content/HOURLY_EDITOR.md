@@ -6,7 +6,7 @@ This file is the execution contract for the scheduled ChatGPT content task.
 
 The App is a **connected immersive Japanese world**, not a random hourly knowledge feed.
 
-Publishing zero is correct whenever the active season already has enough prepared episodes or the next episode cannot meet continuity/quality requirements.
+Publishing zero is correct whenever the active season already has enough episodes prepared **ahead of actual learning progress** or the next episode cannot meet continuity/quality requirements.
 
 Canon lives in `WORLD_CANON.json` with:
 - `activeSeasonId` — the season the hourly task should extend
@@ -15,26 +15,42 @@ Canon lives in `WORLD_CANON.json` with:
 - `world.locations[]` — canonical recurring locations
 - `world.styleBible` — shared visual + cast consistency rules for scene images
 
+Anonymous rolling learning demand lives behind the production endpoint:
+`https://nihongo-discovery-v2-20260831.vercel.app/api/content-progress?seasonId=<activeSeasonId>`
+
+It exposes only the monotonic highest completed episode number for a season. It contains no account, device, personal text, mistakes, favorites, or other learner data.
+
 Do not modify App source code or production audio from this task.
 
 ## Required run sequence
 
 1. Read `README.md`, this file, `WORLD_CANON.json`, and the latest `manifest.json` from branch `nihongo-content`.
 2. Resolve `activeSeasonId` and the matching season entry in `WORLD_CANON.json`.
-3. Inspect the previous episode plus the latest three connected-world episodes and their summaries/callbacks.
-4. Inspect the next canonical episode slot for the active season only.
-5. Count prepared connected-world episodes ahead of the earliest missing slot in the active season. If buffer >= `bufferTarget` (default 3), publish nothing.
-6. Otherwise generate only the earliest missing episode slot. It must:
+3. GET `/api/content-progress?seasonId=<activeSeasonId>` from the stable production alias. If the progress endpoint is unavailable, malformed, or reports the wrong world/season, **publish zero** rather than guessing.
+4. Let `completedEpisodeNo` be the returned monotonic progress value. Let `bufferTarget` come from the active season (default 3). Compute `requiredThrough = min(episodeCount, completedEpisodeNo + bufferTarget)`.
+5. Inspect the active-season entries already present in `manifest.json` and find the highest **contiguous published** episode starting from episode 1. Also identify the earliest missing canonical slot.
+6. If the contiguous published prefix already reaches `requiredThrough`, publish nothing. Example: completed=0 and published EP01–EP03 means 3 future/current episodes are already prepared, so publish 0. When completed becomes 1, `requiredThrough=4`; if only EP01–EP03 exist, EP04 becomes eligible for this run.
+7. If content is needed, inspect the previous episode plus the latest three connected-world episodes and their summaries/callbacks, then generate **only the earliest missing slot at or below `requiredThrough`**. Never jump over a gap and never generate more than one episode in a run. It must:
    - teach at most one new core Japanese target;
    - advance the same plot timeline;
    - naturally reuse two earlier targets when possible;
    - reuse only canonical cast/location IDs from `WORLD_CANON.json`;
    - include first-class `series`, `callbacks`, `play.semantics`, and `visualMeta`;
    - keep exactly five `play.scenarios` (3 in-world, 2 transfer).
-7. Run autonomous continuity and quality checks before publishing (`node scripts/validate-connected-episode.mjs`). The validator reads `WORLD_CANON.json`; do not bypass it by inventing local cast/location IDs.
-8. If all checks pass, append/update exactly one item with `status: "published"` and `audio: {"status":"not_ready"}`.
-9. Commit `manifest.json` to branch `nihongo-content`.
-10. Re-read the committed manifest and verify `/api/news-content` propagation.
+8. Run autonomous continuity and quality checks before publishing (`node scripts/validate-connected-episode.mjs`). The validator reads `WORLD_CANON.json`; do not bypass it by inventing local cast/location IDs.
+9. If all checks pass, append/update exactly one item with `status: "published"` and `audio: {"status":"not_ready"}`.
+10. Commit `manifest.json` to branch `nihongo-content`.
+11. Re-read the committed manifest and verify `/api/news-content` propagation.
+
+## Rolling-buffer rules
+
+- `bufferTarget` means **how far published content stays ahead of the fastest anonymous learner progress**, not the total number of episodes that have ever been published.
+- Published episodes are durable and never removed merely because they were consumed; therefore raw manifest count must never be used as the buffer calculation.
+- The App reports only canonical completed story IDs. The production API resolves their canonical season/episode and stores a monotonic per-season maximum.
+- If two people use the App, the faster progression drives shared content preparation; the slower person can still play all earlier published episodes normally.
+- Progress may increase but never decrease. Replaying/reviewing an old episode must not move the rolling cursor backward.
+- If `completedEpisodeNo + bufferTarget` exceeds the season's `episodeCount`, clamp to `episodeCount`.
+- When the active season is fully published, publish zero until `WORLD_CANON.json` explicitly activates a future season.
 
 ## Play semantics contract (required for connected episodes)
 
@@ -87,7 +103,7 @@ Rules:
 ## Season progression
 
 - Season 1 (`release-week-01`) is complete (12/12). Do not republish it.
-- Season 2 (`life-beyond-work-02`) is active with 12 planned slots; publish at most one episode per run and keep buffer at 3.
+- Season 2 (`life-beyond-work-02`) is active with 12 planned slots; publish at most one episode per run and keep a rolling buffer of 3 ahead of anonymous completion progress.
 - Future seasons remain hooks in `WORLD_CANON.json` until explicitly activated via `activeSeasonId`.
 
 ## Story / series contract
@@ -106,7 +122,8 @@ Every connected episode must include `series` with `worldId`, `seasonId`, `episo
 ## Publication rules
 
 - Maximum 1 new connected episode per hourly run for the active season.
-- If active-season buffer >= 3, publish 0.
+- Publish only when the contiguous published prefix is below `completedEpisodeNo + bufferTarget` (clamped to season length).
+- If progress is unavailable or validation cannot establish the safe next slot, publish 0.
 - Never publish unrelated standalone content while a connected season is active.
 - Never generate audio from this task (`audio.status="not_ready"` is normal).
 - Never publish an episode that fails `validate-connected-episode.mjs`; fix the content or publish zero.
