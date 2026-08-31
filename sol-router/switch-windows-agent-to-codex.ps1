@@ -71,7 +71,7 @@ if ($errors -and $errors.Count -gt 0) {
 
 Step 'Executing guarded rollout: full tests, active-run gate, health, isolated canary and automatic rollback'
 try {
-  $args = @(
+  $powerShellArgs = @(
     '-NoProfile',
     '-ExecutionPolicy', 'Bypass',
     '-File', $TempScript,
@@ -81,9 +81,9 @@ try {
     '-StaleAfterMinutes', [string]$StaleAfterMinutes
   )
   if ($recoverStaleRunId) {
-    $args += @('-RecoverStaleRunId', $recoverStaleRunId)
+    $powerShellArgs += @('-RecoverStaleRunId', $recoverStaleRunId)
   }
-  & powershell.exe @args
+  & powershell.exe @powerShellArgs
   if ($LASTEXITCODE -ne 0) { throw "Reviewed Codex rollout exited with code $LASTEXITCODE" }
 }
 finally {
