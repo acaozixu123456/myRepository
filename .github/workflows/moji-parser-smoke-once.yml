@@ -14,31 +14,13 @@ jobs:
         run: |
           npm install --no-save --no-audit --no-fund playwright@1.55.0
           npx playwright install chromium
-      - name: Inspect public article data requests
+      - name: Inspect public article delivery
         env:
           ARTICLE_URL: https://www.mojidict.com/article/Izr0dhrpz3
         run: |
           cat > inspect-moji.cjs <<'NODE'
           const {chromium} = require('playwright');
-          const hasJapanese = value => /[ぁ-んァ-ヶー]/.test(value);
-          const interestingKey = key => /(article|detail|content|sentence|paragraph|text|title|audio|reading|news)/i.test(key);
-          const findings = [];
-          const inspect = (value, path = '$', depth = 0) => {
-            if (depth > 8 || findings.length >= 80) return;
-            if (typeof value === 'string') {
-              if (value.length >= 8 && hasJapanese(value)) findings.push({path, length: value.length, preview: value.slice(0, 100)});
-              return;
-            }
-            if (Array.isArray(value)) {
-              value.slice(0, 30).forEach((item, index) => inspect(item, `${path}[${index}]`, depth + 1));
-              return;
-            }
-            if (value && typeof value === 'object') {
-              for (const [key, item] of Object.entries(value)) {
-                if (interestingKey(key) || depth < 3) inspect(item, `${path}.${key}`, depth + 1);
-              }
-            }
-          };
+          const fs = require('fs');
           (async () => {
             const browser = await chromium.launch({headless: true});
             const page = await browser.newPage({
@@ -47,39 +29,64 @@ jobs:
               viewport: {width: 390, height: 844},
             });
             const responses = [];
-            page.on('response', async response => {
-              const url = new URL(response.url());
-              if (!/(^|\.)mojidict\.com$/i.test(url.hostname)) return;
-              const contentType = response.headers()['content-type'] || '';
-              const record = {
-                origin: url.origin,
-                path: url.pathname,
-                queryKeys: [...url.searchParams.keys()],
+            page.on('response', response => {
+              const request = response.request();
+              const type = request.resourceType();
+              if (!['document', 'xhr', 'fetch', 'image', 'media'].includes(type)) return;
+              responses.push({
+                type,
                 status: response.status(),
-                contentType,
-              };
-              if (contentType.includes('json')) {
-                try {
-                  const payload = await response.json();
-                  record.topKeys = payload && typeof payload === 'object' ? Object.keys(payload).slice(0, 30) : [];
-                  const before = findings.length;
-                  inspect(payload, `${url.pathname}`);
-                  record.japaneseFindingCount = findings.length - before;
-                } catch {}
-              }
-              if (contentType.includes('json') || /article|read|detail|content|parse|function/i.test(url.pathname)) responses.push(record);
+                url: response.url(),
+                contentType: response.headers()['content-type'] || '',
+              });
             });
-            await page.goto(process.env.ARTICLE_URL, {waitUntil: 'domcontentloaded', timeout: 45000});
-            await page.waitForTimeout(12000);
-            const bodyText = await page.locator('body').innerText().catch(() => '');
-            const bodyLines = bodyText.split(/\n+/).map(line => line.trim()).filter(line => line.length >= 8 && hasJapanese(line)).slice(0, 20);
-            console.log(JSON.stringify({
-              pageTitle: await page.title(),
-              bodyTextLength: bodyText.length,
-              bodyJapaneseLines: bodyLines,
-              responses,
-              jsonJapaneseFindings: findings,
-            }, null, 2));
+            await page.goto(process.env.ARTICLE_URL, {waitUntil: 'networkidle', timeout: 60000});
+            await page.waitForTimeout(5000);
+            const snapshot = await page.evaluate(() => {
+              const globals = {};
+              for (const key of ['__NEXT_DATA__', '__NUXT__', '__INITIAL_STATE__', '__APOLLO_STATE__']) {
+                const value = window[key];
+                if (value !== undefined) globals[key] = JSON.stringify(value).slice(0, 5000);
+              }
+              return {
+                url: location.href,
+                title: document.title,
+                bodyText: document.body?.innerText || '',
+                htmlLength: document.documentElement.outerHTML.length,
+                meta: [...document.querySelectorAll('meta')].map(node => ({
+                  name: node.getAttribute('name'),
+                  property: node.getAttribute('property'),
+                  content: node.getAttribute('content'),
+                })).filter(item => item.content),
+                images: [...document.images].map(image => ({
+                  src: image.currentSrc || image.src,
+                  alt: image.alt,
+                  width: image.naturalWidth,
+                  height: image.naturalHeight,
+                })),
+                links: [...document.querySelectorAll('a[href]')].map(node => ({
+                  text: (node.textContent || '').trim().slice(0, 120),
+                  href: node.href,
+                })).filter(item => item.text || item.href.includes('moji')).slice(0, 80),
+                inlineScripts: [...document.querySelectorAll('script:not([src])')]
+                  .map(node => (node.textContent || '').trim())
+                  .filter(Boolean)
+                  .map(text => ({length: text.length, preview: text.slice(0, 1500)})),
+                globals,
+              };
+            });
+            await page.screenshot({path: 'moji-page.png', fullPage: true});
+            const largest = [...snapshot.images].sort((a, b) => b.width * b.height - a.width * a.height)[0];
+            let largestImage = null;
+            if (largest?.src) {
+              const response = await page.request.get(largest.src);
+              if (response.ok()) {
+                const body = await response.body();
+                fs.writeFileSync('moji-largest-image.bin', body);
+                largestImage = {...largest, bytes: body.length};
+              }
+            }
+            console.log(JSON.stringify({snapshot, responses, largestImage}, null, 2));
             await browser.close();
           })().catch(error => {
             console.error(error instanceof Error ? error.stack : String(error));
@@ -87,3 +94,5 @@ jobs:
           });
           NODE
           node inspect-moji.cjs
+          file moji-page.png moji-largest-image.bin || true
+          ls -lh moji-page.png moji-largest-image.bin || true
