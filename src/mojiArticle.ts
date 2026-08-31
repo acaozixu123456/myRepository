@@ -1,17 +1,24 @@
+export type MojiArticleAccess = 'full' | 'excerpt' | 'member-only';
+
 export type ParsedMojiArticle = {
   sourceUrl: string;
   title: string;
   sentences: string[];
+  access: MojiArticleAccess;
+  requiresClipboard: boolean;
+  excerpt?: string;
 };
 
 const ALLOWED_HOSTS = new Set(['mojidict.com', 'www.mojidict.com', 'm.mojidict.com']);
 const ARTICLE_PATH = /^\/article\/[A-Za-z0-9_-]+\/?$/;
 const MAX_SENTENCES = 48;
+const MEMBER_ONLY_PATTERN = /本文为会员专享文章|会员专享文章|请打开\s*App\s*阅读|请打开\s*APP\s*阅读/i;
 
 const UI_NOISE = [
   '显示译文', '点击显示译文', '隐藏译文', '点击重新加载', '点赞', '收藏', '评论',
   '登录MOJi', '注册', '下载MOJi', '完整内容请下载', '阅读', '扫码', '扫一扫',
   '请选择', '上一篇', '下一篇', '相关推荐', '打开APP', 'APP内打开', '版权',
+  '点击单词查询释义', '本文为会员专享文章', '专栏推荐',
 ];
 
 const decodeCodePoint = (value: string, radix: number): string => {
@@ -42,6 +49,22 @@ export const normalizeMojiArticleUrl = (input: string): string | null => {
   }
 };
 
+const readAttribute = (tag: string, name: string): string => {
+  const pattern = new RegExp(`${name}\\s*=\\s*(["'])([\\s\\S]*?)\\1`, 'i');
+  return pattern.exec(tag)?.[2] || '';
+};
+
+const extractMetaContent = (html: string, acceptedNames: string[]): string => {
+  const accepted = new Set(acceptedNames.map(value => value.toLowerCase()));
+  for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
+    const key = (readAttribute(tag, 'property') || readAttribute(tag, 'name')).toLowerCase();
+    if (!accepted.has(key)) continue;
+    const content = readAttribute(tag, 'content');
+    if (content) return content;
+  }
+  return '';
+};
+
 const cleanTitle = (value: string): string => decodeHtml(value)
   .replace(/<[^>]+>/g, ' ')
   .replace(/^日语阅读\s*[-–—|]\s*/i, '')
@@ -59,17 +82,21 @@ const firstMatch = (html: string, patterns: RegExp[]): string => {
 };
 
 const extractTitle = (html: string): string => {
-  const meta = firstMatch(html, [
-    /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["'][^>]*>/i,
-    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["'][^>]*>/i,
-    /<meta[^>]+name=["']twitter:title["'][^>]+content=["']([^"']+)["'][^>]*>/i,
-    /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:title["'][^>]*>/i,
-  ]);
+  const meta = extractMetaContent(html, ['og:title', 'twitter:title']);
   const heading = firstMatch(html, [/<h1\b[^>]*>([\s\S]*?)<\/h1>/i]);
   const documentTitle = firstMatch(html, [/<title\b[^>]*>([\s\S]*?)<\/title>/i]);
   const candidates = [meta, heading, documentTitle].map(cleanTitle).filter(Boolean);
   return candidates.find(title => !/^MOJi(?:辞書|辞书)?$/i.test(title)) || 'NHK日语听力';
 };
+
+const cleanExcerpt = (value: string): string => decodeHtml(value)
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/👉?\s*点击单词查询释义\s*/gi, '\n')
+  .replace(/本篇听读难度预估[:：]?\s*N\d(?:\s*[-–]\s*N\d)?/gi, ' ')
+  .replace(/[ \t]+/g, ' ')
+  .replace(/\n\s+/g, '\n')
+  .trim()
+  .slice(0, 500);
 
 const removeHiddenMarkup = (html: string): string => html
   .replace(/<(script|style|noscript|svg|canvas|template)\b[^>]*>[\s\S]*?<\/\1>/gi, ' ')
@@ -108,7 +135,7 @@ const extractJsonText = (html: string): string[] => {
     try {
       collectJsonStrings(JSON.parse(raw), output);
     } catch {
-      // Visible extraction below handles non-JSON script payloads.
+      // Non-JSON application state is intentionally not evaluated.
     }
   }
   return output;
@@ -122,10 +149,10 @@ const normalizeJapaneseSpacing = (value: string): string => value
 
 const cleanSentence = (value: string): string => normalizeJapaneseSpacing(decodeHtml(value)
   .replace(/<[^>]+>/g, ' ')
+  .replace(/👉?\s*点击单词查询释义\s*/gi, '\n')
   .replace(/^\s*(?:[•●▪︎◆◇■□▶︎▷]|[-–—*#>]|\d+[.)、．])\s*/u, '')
   .replace(/^Image:\s*/i, '')
   .replace(/\s+/g, ' '))
-  .replace(/^[「『]\s*/, match => match.trim())
   .trim();
 
 const count = (value: string, pattern: RegExp): number => value.match(pattern)?.length || 0;
@@ -153,8 +180,7 @@ const splitIntoCandidates = (source: string): string[] => source
   .map(cleanSentence)
   .filter(Boolean);
 
-export const extractJapaneseSentences = (html: string): string[] => {
-  const sources = [...extractJsonText(html), htmlToText(html)];
+const collectSentences = (sources: string[]): string[] => {
   const seen = new Set<string>();
   const accepted: Array<{sentence: string; score: number; order: number}> = [];
   let order = 0;
@@ -165,20 +191,69 @@ export const extractJapaneseSentences = (html: string): string[] => {
       if (seen.has(key)) continue;
       seen.add(key);
       const score = sentenceScore(sentence);
-      if (score < 0) continue;
+      if (score < 20) continue;
       accepted.push({sentence, score, order: order++});
     }
   }
 
   return accepted
-    .filter(item => item.score >= 20)
     .sort((a, b) => a.order - b.order)
     .slice(0, MAX_SENTENCES)
     .map(item => item.sentence);
 };
 
-export const parseMojiArticleHtml = (html: string, sourceUrl: string): ParsedMojiArticle => ({
-  sourceUrl: normalizeMojiArticleUrl(sourceUrl) || sourceUrl,
-  title: extractTitle(html),
-  sentences: extractJapaneseSentences(html),
-});
+export const extractJapaneseSentencesFromText = (text: string): string[] => collectSentences([text]);
+
+export const extractJapaneseSentences = (html: string): string[] => collectSentences([
+  ...extractJsonText(html),
+  htmlToText(html),
+]);
+
+const memberPreviewSentences = (rawDescription: string): string[] => {
+  const beforeHint = decodeHtml(rawDescription).split(/👉|点击单词查询释义/i)[0] || '';
+  const headline = cleanSentence(beforeHint);
+  const complete = extractJapaneseSentencesFromText(cleanExcerpt(rawDescription))
+    .filter(sentence => /[。！？]$/.test(sentence));
+  const preview = sentenceScore(headline) >= 20 ? [headline] : [];
+  return [...new Set([...preview, ...complete])].slice(0, 4);
+};
+
+export const parseMojiArticleHtml = (html: string, sourceUrl: string): ParsedMojiArticle => {
+  const canonicalUrl = normalizeMojiArticleUrl(sourceUrl) || sourceUrl;
+  const title = extractTitle(html);
+  const rawDescription = extractMetaContent(html, ['og:description', 'description', 'twitter:description']);
+  const excerpt = cleanExcerpt(rawDescription);
+  const memberOnly = MEMBER_ONLY_PATTERN.test(html);
+
+  if (memberOnly) {
+    return {
+      sourceUrl: canonicalUrl,
+      title,
+      sentences: memberPreviewSentences(rawDescription),
+      access: 'member-only',
+      requiresClipboard: true,
+      ...(excerpt ? {excerpt} : {}),
+    };
+  }
+
+  const fullSentences = extractJapaneseSentences(html);
+  if (fullSentences.length) {
+    return {
+      sourceUrl: canonicalUrl,
+      title,
+      sentences: fullSentences,
+      access: 'full',
+      requiresClipboard: false,
+      ...(excerpt ? {excerpt} : {}),
+    };
+  }
+
+  return {
+    sourceUrl: canonicalUrl,
+    title,
+    sentences: memberPreviewSentences(rawDescription),
+    access: 'excerpt',
+    requiresClipboard: true,
+    ...(excerpt ? {excerpt} : {}),
+  };
+};
