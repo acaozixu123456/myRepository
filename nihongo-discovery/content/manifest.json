@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-31T03:22:22.150Z",
+  "updatedAt": "2026-08-31T04:30:00.000Z",
   "items": [
     {
       "status": "published",
@@ -1947,6 +1947,7 @@
           "episodeNo": 12,
           "episodeCount": 12,
           "previousEpisodeId": "release-week-01-ep11",
+          "nextEpisodeId": "life-beyond-work-02-ep01",
           "locationId": "meeting-room",
           "locationName": "会议室",
           "castIds": [
@@ -1971,6 +1972,7 @@
             "role": "natural_reuse"
           }
         ],
+        "nextId": "life-beyond-work-02-ep01",
         "visualMeta": {
           "sceneId": "release-week-ep12",
           "palette": [
@@ -1985,6 +1987,170 @@
             "yamamoto"
           ],
           "imagePrompt": "Season finale team moment after successful release, warm gratitude atmosphere, editorial anime style, no text"
+        }
+      }
+    },
+    {
+      "status": "published",
+      "publishedAt": "2026-08-31T04:30:00Z",
+      "audio": {
+        "status": "not_ready"
+      },
+      "story": {
+        "id": "life-beyond-work-02-ep01",
+        "title": "第1集｜上线后第一次联系物业",
+        "category": "日本生活",
+        "level": "N3",
+        "emoji": "🏠",
+        "visual": "life-beyond-work-ep01",
+        "prompt": "项目上线后的周末，你发现公寓对讲机有点问题。第一次给物业打电话，第一句怎么开口才自然？",
+        "guesses": [
+          "お世話になっております",
+          "お疲れ様です",
+          "ごちそうさまでした"
+        ],
+        "guessCorrect": 0,
+        "twist": "🎬 第一季职场刚告一段落，生活线从「第一次联系物业」开始：这句开场会反复出现在租房、报修和日常联络里。",
+        "key": {
+          "term": "お世話になっております",
+          "reading": "おせわ に なって おります",
+          "meaning": "承蒙关照 / 您好（礼貌开场）",
+          "insight": "联系物业、房东或长期服务方时，即使还不熟，也常用这句先建立礼貌距离，再说明来意。",
+          "anchor": "📞 管理センター → お世話になっております"
+        },
+        "jp": "もしもし、○○マンション管理センターです。\nお世話になっております。302号室の林と申します。インターホンの件でご連絡しました。",
+        "cn": "物业管理中心接电话。你用礼貌开场自报家门，说明是关于对讲机的事。",
+        "points": [
+          {
+            "term": "お世話になっております",
+            "reading": "おせわ に なって おります",
+            "meaning": "承蒙关照（开场）",
+            "note": "联系服务机构、物业、房东时非常常见。"
+          },
+          {
+            "term": "～と申します",
+            "reading": "〜と もうし ます",
+            "meaning": "我叫……（自报姓名）",
+            "note": "电话开场里自然接在问候后面。"
+          }
+        ],
+        "use": {
+          "prompt": "第一次给物业打电话，接通后最自然的开场是？",
+          "choices": [
+            "お世話になっております。302号室の林と申します。",
+            "お疲れ様です。林です。",
+            "ごちそうさまでした。林です。"
+          ],
+          "correct": 0,
+          "feedback": "先礼貌问候，再自报姓名和房间号。"
+        },
+        "transfer": {
+          "prompt": "给不太熟的新同事发工作消息，想礼貌开场。",
+          "choices": [
+            "お世話になっております。企画部の林です。",
+            "お疲れ様です。林です。",
+            "ごちそうさまでした。林です。"
+          ],
+          "correct": 0,
+          "feedback": "从物业联络迁移到职场初次联络，核心仍是礼貌开场。"
+        },
+        "review": {
+          "prompt": "电话接通，先礼貌问候再说明来意。",
+          "cloze": "＿＿。302号室の林と申します。",
+          "answer": "お世話になっております",
+          "feedback": "服务机构电话→お世話になっております。"
+        },
+        "play": {
+          "daily": "お世話になってます。林です。",
+          "polite": "お世話になっております。林と申します。",
+          "business": "お世話になっております。302号室の林と申します。",
+          "businessNote": "正式联络时把房间号、姓名和来意说清楚；「お世話になっております」仍是自然开头。",
+          "replyPrompt": "もしもし、○○マンション管理センターです。",
+          "reply": "お世話になっております。302号室の林と申します。インターホンの件でご連絡しました。",
+          "scenarios": [
+            {
+              "emoji": "📞",
+              "cue": "剧情｜向物业说明对讲机问题。",
+              "jp": "お世話になっております。インターホンの調子が少しおかしいので、ご相談したいです。",
+              "cn": "承蒙关照。对讲机状态有点不对，想咨询一下。"
+            },
+            {
+              "emoji": "📮",
+              "cue": "剧情｜确认信箱钥匙领取方式。",
+              "jp": "お世話になっております。郵便受けの鍵について教えていただけますか。",
+              "cn": "承蒙关照。能请教一下信箱钥匙的事吗？"
+            },
+            {
+              "emoji": "🔧",
+              "cue": "剧情｜上线后第一周，念のため再确认报修流程。",
+              "jp": "お世話になっております。念のため、エアコンの点検予約方法を確認したいです。",
+              "cn": "承蒙关照。保险起见，想确认一下空调检修的预约方式。"
+            },
+            {
+              "emoji": "💼",
+              "cue": "迁移｜给新客户负责人发第一封邮件。",
+              "jp": "お世話になっております。企画部の林と申します。",
+              "cn": "承蒙关照。我是企划部的林。"
+            },
+            {
+              "emoji": "🏥",
+              "cue": "迁移｜第一次给诊所前台打电话改预约。",
+              "jp": "お世話になっております。予約を変更したいのですが。",
+              "cn": "承蒙关照。我想更改预约。"
+            }
+          ],
+          "semantics": {
+            "interactionType": "exchange",
+            "promptSpeaker": "other",
+            "promptSpeakerId": "public-service",
+            "learnerRole": "respond",
+            "uiCue": "先听物业说什么，再决定你怎么回。"
+          }
+        },
+        "series": {
+          "worldId": "life-in-japan",
+          "worldTitle": "在日本生活和工作的我",
+          "seasonId": "life-beyond-work-02",
+          "seasonTitle": "工作之外的日本生活",
+          "episodeNo": 1,
+          "episodeCount": 12,
+          "previousEpisodeId": "release-week-01-ep12",
+          "nextEpisodeId": "life-beyond-work-02-ep02",
+          "locationId": "home",
+          "locationName": "家",
+          "castIds": [
+            "public-service"
+          ],
+          "canonRevision": "v2",
+          "previousSummary": "第一季结束：项目顺利上线，你和团队完成了从通勤异常到客户沟通、故障处理与复盘的完整一周。",
+          "todayHook": "上线后的第一个周末，公寓对讲机出了问题；第一次给物业打电话，怎么开口？",
+          "summary": "你第一次联系物业，用礼貌开场说明对讲机问题，管理方答应安排确认。"
+        },
+        "callbacks": [
+          {
+            "targetId": "release-week-01-ep12",
+            "sourceEpisodeId": "release-week-01-ep12",
+            "role": "natural_reuse"
+          },
+          {
+            "targetId": "release-week-01-ep04",
+            "sourceEpisodeId": "release-week-01-ep04",
+            "role": "natural_reuse"
+          }
+        ],
+        "nextId": "life-beyond-work-02-ep02",
+        "visualMeta": {
+          "sceneId": "life-beyond-work-ep01",
+          "palette": [
+            "#5a6b5f",
+            "#9ab3a8",
+            "#e8f3ee"
+          ],
+          "locationId": "home",
+          "castInScene": [
+            "public-service"
+          ],
+          "imagePrompt": "Young professional at apartment entryway making first call to building management, smartphone to ear, calm weekend afternoon light, warm editorial anime style, no text"
         }
       }
     },
