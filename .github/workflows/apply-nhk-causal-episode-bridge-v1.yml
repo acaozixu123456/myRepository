@@ -1,0 +1,135 @@
+name: Apply NHK causal episode bridge v1
+
+on:
+  push:
+    branches: [nihongo-causal-episode-bridge-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-causal-episode-bridge-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-causal-episode-bridge-v1-20260901
+          fetch-depth: 0
+
+      - name: Require verified unseen-recall production base
+        run: |
+          python - <<'PY'
+          import json, time, urllib.request
+          url = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/nihongo-vercel/docs/verification/NHK_UNSEEN_RECALL_V1.json'
+          last = None
+          for attempt in range(1, 51):
+              try:
+                  request = urllib.request.Request(url, headers={'User-Agent':'NihongoEpisodeBridgeGate/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = json.loads(response.read().decode('utf-8'))
+                  if payload.get('result') != 'PASS':
+                      raise RuntimeError('unseen-recall evidence is not PASS')
+                  print(json.dumps(payload, ensure_ascii=False, indent=2))
+                  break
+              except Exception as error:
+                  last = repr(error)
+                  if attempt == 50:
+                      raise
+                  time.sleep(10)
+          else:
+              raise RuntimeError(last)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Refresh from current production and restore feature sources
+        run: |
+          tar -czf /tmp/episode-bridge-source.tgz \
+            src/nhkWorldEpisodeBridge.ts \
+            src/nhkWorldEpisodeBridge.test.ts \
+            scripts/patch-nhk-causal-episode-bridge-v1.py
+          git fetch origin nihongo-vercel
+          git reset --hard origin/nihongo-vercel
+          tar -xzf /tmp/episode-bridge-source.tgz
+
+      - name: Apply causal episode bridge integration
+        run: python scripts/patch-nhk-causal-episode-bridge-v1.py
+
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+      - name: Verify bridge markers and one-shot semantics
+        run: |
+          grep -q "NHK_WORLD_EPISODE_BRIDGE_VERSION" src/nhkWorldEpisodeBridge.ts
+          grep -q "markNhkWorldEpisodeBridgeConsumed" src/App.tsx
+          grep -q "今天的回答改变了这一集的开场" src/App.tsx
+          grep -q "onEnterWorld(activeWorldEvent)" src/NhkMorningPage.tsx
+          grep -q "nhk-world-episode-bridge-v1" src/nhkMorning.css
+
+      - name: Create one clean verified feature commit and promote
+        run: |
+          rm -f scripts/patch-nhk-causal-episode-bridge-v1.py
+          rm -f .github/workflows/apply-nhk-causal-episode-bridge-v1.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Bridge causal NHK events into the next episode"
+          git push --force-with-lease origin HEAD:nihongo-causal-episode-bridge-v1-20260901
+          git push origin HEAD:nihongo-vercel
+
+      - name: Verify deployed production bundle
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base = os.environ['BASE'].rstrip('/')
+          result = None
+          for attempt in range(1, 25):
+              try:
+                  request = urllib.request.Request(base + '/', headers={'User-Agent':'NihongoEpisodeBridgeSmoke/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=40) as response:
+                      html = response.read().decode('utf-8')
+                  match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+                  if not match:
+                      raise RuntimeError('asset_not_found')
+                  asset_url = urllib.parse.urljoin(base + '/', match.group(1))
+                  with urllib.request.urlopen(urllib.request.Request(asset_url, headers={'User-Agent':'NihongoEpisodeBridgeSmoke/1.0','Cache-Control':'no-cache'}), timeout=45) as response:
+                      javascript = response.read().decode('utf-8')
+                  markers = ['nhk-world-episode-bridge-v1', '今天的回答改变了这一集的开场', '三天前的选择接进了这一集']
+                  missing = [value for value in markers if value not in javascript and json.dumps(value, ensure_ascii=True)[1:-1].lower() not in javascript.lower()]
+                  if missing:
+                      raise RuntimeError('missing:' + ','.join(missing))
+                  result = {
+                      'result': 'PASS',
+                      'commit': os.environ.get('GITHUB_SHA', ''),
+                      'attempt': attempt,
+                      'asset': asset_url,
+                      'markers': markers,
+                      'contract': 'the causal answer and reaction persist into exactly one target canonical episode and are consumed on episode completion',
+                  }
+                  break
+              except Exception:
+                  if attempt == 24:
+                      raise
+                  time.sleep(min(5 + attempt, 15))
+          with open('/tmp/episode-bridge-verification.json', 'w', encoding='utf-8') as handle:
+              json.dump(result, handle, ensure_ascii=False, indent=2)
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Record verified production evidence
+        run: |
+          mkdir -p docs/verification
+          cp /tmp/episode-bridge-verification.json docs/verification/NHK_CAUSAL_EPISODE_BRIDGE_V1.json
+          git add docs/verification/NHK_CAUSAL_EPISODE_BRIDGE_V1.json
+          git commit -m "Record verified causal episode bridge"
+          git push origin HEAD:nihongo-causal-episode-bridge-v1-20260901
+          git push origin HEAD:nihongo-vercel
