@@ -38,8 +38,8 @@ jobs:
           grep -q "responseMode" src/nhkMorning.ts
           grep -q "quietReviews" src/nhkMorning.ts
           grep -q "voiceCompleted" src/nhkEvidence.ts
-          grep -q "font-size:15px" src/nhkReadable.css
-          grep -q "\.nhk-page small" src/nhkReadable.css
+          grep -Eq "font-size:[[:space:]]*15px" src/nhkReadable.css
+          grep -Eq "\.nhk-page[[:space:]]+small" src/nhkReadable.css
       - run: npm install --no-audit --no-fund
       - run: npm run typecheck
       - run: npm test
