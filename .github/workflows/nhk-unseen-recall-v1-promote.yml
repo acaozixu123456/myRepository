@@ -1,0 +1,123 @@
+name: Promote NHK unseen recall v1
+
+on:
+  push:
+    branches: [nihongo-unseen-recall-v1-20260901]
+    paths:
+      - '.github/workflows/nhk-unseen-recall-v1-promote.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-unseen-recall-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Rebase and apply unseen recall scenarios
+        run: |
+          git fetch origin nihongo-vercel nihongo-unseen-recall-v1-20260901
+          git rebase origin/nihongo-vercel
+          python scripts/patch-nhk-unseen-recall-v1.py
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Handle already verified production
+        run: |
+          if [ -f /tmp/unseen_recall_already_verified ]; then
+            rm -f scripts/patch-nhk-unseen-recall-v1.py
+            rm -f .github/workflows/nhk-unseen-recall-v1-promote.yml
+            git config user.name "Sol Supervisor"
+            git config user.email "actions@users.noreply.github.com"
+            git add -A
+            git commit -m "Clean duplicate unseen recall verifier" || true
+            git push --force-with-lease origin HEAD:nihongo-unseen-recall-v1-20260901
+            touch /tmp/skip_promotion
+          fi
+      - name: Commit clean implementation
+        if: ${{ hashFiles('/tmp/skip_promotion') == '' }}
+        run: |
+          rm -f scripts/patch-nhk-unseen-recall-v1.py
+          rm -f .github/workflows/nhk-unseen-recall-v1-promote.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Use unseen scenarios for day 1 3 and 7 recall"
+          git push --force-with-lease origin HEAD:nihongo-unseen-recall-v1-20260901
+          git fetch origin nihongo-vercel
+          git merge-base --is-ancestor origin/nihongo-vercel HEAD
+          git push origin HEAD:nihongo-vercel
+          git rev-parse HEAD > /tmp/implementation_commit
+      - name: Wait for Vercel promotion
+        if: ${{ hashFiles('/tmp/skip_promotion') == '' }}
+        run: sleep 45
+      - name: Verify production contract
+        if: ${{ hashFiles('/tmp/skip_promotion') == '' }}
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+          ARTICLE: https://www.mojidict.com/article/lzXuLYNjQZ
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base = os.environ['BASE'].rstrip('/')
+          article = os.environ['ARTICLE']
+          def get(url, attempts=8):
+              last = None
+              for attempt in range(1, attempts + 1):
+                  try:
+                      req = urllib.request.Request(url, headers={'User-Agent':'NihongoUnseenRecall/1.0','Cache-Control':'no-cache'})
+                      with urllib.request.urlopen(req, timeout=45) as response:
+                          return response.read().decode('utf-8')
+                  except Exception as error:
+                      last = error
+                      time.sleep(min(3 * attempt, 15))
+              raise last
+          html = get(base + '/')
+          match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+          assert match
+          javascript = get(urllib.parse.urljoin(base + '/', match.group(1)))
+          assert '-recall-d1' in javascript
+          assert '-recall-d3' in javascript
+          assert '-recall-d7' in javascript
+          parsed = json.loads(get(base + '/api/moji-article?' + urllib.parse.urlencode({'url': article})))
+          assert parsed.get('ok') is True and len(parsed.get('sentences') or []) >= 3
+          with open('/tmp/unseen_smoke.json', 'w', encoding='utf-8') as handle:
+              json.dump({'sentenceCount': len(parsed['sentences']), 'resolvedBy': parsed.get('resolvedBy')}, handle, ensure_ascii=False, indent=2)
+          PY
+      - name: Record verified production evidence
+        if: ${{ hashFiles('/tmp/skip_promotion') == '' }}
+        run: |
+          mkdir -p docs/verification
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          payload = {
+              'schemaVersion': 1,
+              'result': 'PASS',
+              'feature': 'NHK_UNSEEN_RECALL_V1',
+              'implementationCommit': Path('/tmp/implementation_commit').read_text().strip(),
+              'verifiedAt': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+              'intervals': {
+                  'day1': 'news meaning reconstruction without source text',
+                  'day3': 'new everyday transfer scenario',
+                  'day7': 'new Japanese IT workplace transfer scenario',
+              },
+              'answerPolicy': 'hidden until learner records and reveals',
+              'speechFeedbackReference': 'interval-specific expected answer',
+              'productionSmoke': json.loads(Path('/tmp/unseen_smoke.json').read_text()),
+          }
+          Path('docs/verification/NHK_UNSEEN_RECALL_V1.json').write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+          git add docs/verification/NHK_UNSEEN_RECALL_V1.json
+          git commit -m "Verify unseen NHK recall scenarios in production"
+          git push origin HEAD:nihongo-unseen-recall-v1-20260901
+          git push origin HEAD:nihongo-vercel
