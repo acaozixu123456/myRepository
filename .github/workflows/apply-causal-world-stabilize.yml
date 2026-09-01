@@ -1,0 +1,46 @@
+name: Apply causal world stabilization
+
+on:
+  push:
+    branches: [nihongo-causal-world-stabilize-20260901]
+    paths:
+      - '.github/workflows/apply-causal-world-stabilize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-causal-world-stabilize-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply stabilization payload
+        run: |
+          cat .tmp/cws-stabilize-*.b64 > /tmp/cws-stabilize.b64
+          base64 --decode /tmp/cws-stabilize.b64 > /tmp/cws-stabilize.tar.gz
+          echo '68248a478c85f663fc10704e237db6cf4aa39f0409ba234b617bff0cfb3d2a90  /tmp/cws-stabilize.tar.gz' | sha256sum --check
+          tar -xzf /tmp/cws-stabilize.tar.gz
+          grep -q "eventId: .*session.dateKey" src/nhkMorning.ts
+          grep -q 'targetExpressionUsed' src/NhkWorldEvent.tsx
+          grep -q 'recordingSecondsRef' src/NhkWorldEvent.tsx
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified stabilization and remove one-time files
+        run: |
+          rm -rf .tmp
+          rm .github/workflows/export-causal-world-stabilize.yml
+          rm .github/workflows/apply-causal-world-stabilize.yml
+          git config user.name 'Sol Supervisor'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/nhkMorning.ts src/NhkWorldEvent.tsx src/nhkMorning.test.ts src/nhkMorning.css .tmp .github/workflows/export-causal-world-stabilize.yml .github/workflows/apply-causal-world-stabilize.yml
+          git commit -m 'Stabilize causal NHK world evidence'
+          git push origin HEAD:nihongo-causal-world-stabilize-20260901
