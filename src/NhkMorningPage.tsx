@@ -13,9 +13,20 @@ import {
   Smartphone,
   Sparkles,
   TrendingUp,
+  Trophy,
 } from 'lucide-react';
 import {api} from './api';
 import type {Story} from './content';
+import NhkBossPage from './NhkBossPage';
+import {
+  buildNhkBossCandidate,
+  createNhkBossSession,
+  findNhkBossSession,
+  loadNhkBossSessions,
+  saveNhkBossSessions,
+  upsertNhkBossSession,
+  type NhkBossSession,
+} from './nhkBoss';
 import NhkEvidencePage from './NhkEvidencePage';
 import {buildNhkWeeklyEvidence} from './nhkEvidence';
 import NhkWorldEvent, {type NhkWorldEventMode} from './NhkWorldEvent';
@@ -127,11 +138,13 @@ type NhkMorningPageProps = {
   onEnterWorld: () => void;
 };
 
-type PageView = 'home' | 'today' | 'recall' | 'world' | 'evidence';
+type PageView = 'home' | 'today' | 'recall' | 'world' | 'evidence' | 'boss';
 
 export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPageProps) {
   const todayKey = toDateKey();
   const [sessions, setSessions] = useState<NhkMorningSession[]>(() => loadNhkSessions());
+  const [bossSessions, setBossSessions] = useState<NhkBossSession[]>(() => loadNhkBossSessions());
+  const [activeBossId, setActiveBossId] = useState('');
   const [draft, setDraft] = useState<NhkMorningSession>(() => findTodayNhkSession(loadNhkSessions(), todayKey) || createNhkSession(todayKey));
   const initialSentences = sessionSentences(draft);
   const initialInput = draft.dailyInput;
@@ -162,6 +175,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const sharedHandledRef = useRef('');
 
   useEffect(() => saveNhkSessions(sessions), [sessions]);
+  useEffect(() => saveNhkBossSessions(bossSessions), [bossSessions]);
   useEffect(() => { draftRef.current = draft; }, [draft]);
   useEffect(() => { selectedRef.current = selectedSentences; }, [selectedSentences]);
 
@@ -172,6 +186,16 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const activeWorldSession = useMemo(() => sessions.find(session => session.id === worldSessionId) || null, [sessions, worldSessionId]);
   const streak = useMemo(() => completedNhkStreak(sessions, todayKey), [sessions, todayKey]);
   const evidence = useMemo(() => buildNhkWeeklyEvidence(sessions, todayKey), [sessions, todayKey]);
+  const bossCandidate = useMemo(() => buildNhkBossCandidate(sessions, todayKey), [sessions, todayKey]);
+  const weeklyBoss = useMemo(
+    () => findNhkBossSession(bossSessions, bossCandidate.weekKey),
+    [bossSessions, bossCandidate.weekKey],
+  );
+  const activeBoss = useMemo(
+    () => bossSessions.find(session => session.id === activeBossId) || null,
+    [bossSessions, activeBossId],
+  );
+  const bossProgress = weeklyBoss?.turns.filter(turn => turn.completedAt).length || 0;
   const recent = useMemo(() => sessions.filter(session => session.completedAt).slice(0, 3), [sessions]);
   const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
 
@@ -179,6 +203,23 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     draftRef.current = next;
     setDraft(next);
     setSessions(current => upsertNhkSession(current, next));
+  };
+
+  const persistBossSession = (next: NhkBossSession) => {
+    setBossSessions(current => upsertNhkBossSession(current, next));
+  };
+
+  const openBoss = () => {
+    const next = weeklyBoss || (bossCandidate.eligible ? createNhkBossSession(bossCandidate, sessions) : null);
+    if (!next) return;
+    persistBossSession(next);
+    setActiveBossId(next.id);
+    setView('boss');
+  };
+
+  const closeBoss = () => {
+    setActiveBossId('');
+    setView('home');
   };
 
   const persistWorldSession = (next: NhkMorningSession) => {
@@ -460,6 +501,10 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setView('today');
     void parseArticle(sharedUrl, next);
   }, [todayKey]);
+
+  if (view === 'boss' && activeBoss) {
+    return <NhkBossPage session={activeBoss} onBack={closeBoss} onUpdate={persistBossSession} />;
+  }
 
   if (view === 'evidence') {
     return <NhkEvidencePage evidence={evidence} onBack={() => setView('home')} />;
@@ -754,6 +799,43 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
         </div>
         <ChevronRight size={18} />
       </button>
+
+      {(bossCandidate.expressions.length > 0 || weeklyBoss) && (
+        <button
+          className={`nhk-boss-card ${weeklyBoss?.outcome ? 'complete' : weeklyBoss || bossCandidate.eligible ? 'ready' : 'locked'}`}
+          disabled={!weeklyBoss && !bossCandidate.eligible}
+          onClick={openBoss}
+        >
+          <Trophy size={19} />
+          <div>
+            <small>{weeklyBoss?.outcome
+              ? 'WEEKLY BOSS COMPLETE'
+              : weeklyBoss
+                ? `WEEKLY BOSS · ${bossProgress}/5`
+                : bossCandidate.eligible
+                  ? 'WEEKLY BOSS READY'
+                  : `还差 ${Math.max(0, bossCandidate.requiredExpressionCount - bossCandidate.expressions.length)} 个表达`}
+            </small>
+            <strong>{weeklyBoss?.outcome
+              ? '本周五轮对话已完成'
+              : weeklyBoss
+                ? '继续没有选项的五轮对话'
+                : bossCandidate.eligible
+                  ? '把本周表达混进一次真实对话'
+                  : '收集 5 个本周表达后解锁'}
+            </strong>
+            <span>{weeklyBoss?.outcome
+              ? `成功使用 ${weeklyBoss.outcome.usedExpressionCount}/5 个表达`
+              : weeklyBoss
+                ? '回答会改变田中的下一轮追问'
+                : bossCandidate.eligible
+                  ? '日常 · 礼貌 · 工作 · 约 3 分钟'
+                  : `${bossCandidate.expressions.length}/${bossCandidate.requiredExpressionCount} 个表达`}
+            </span>
+          </div>
+          <ChevronRight size={18} />
+        </button>
+      )}
 
       <button className="nhk-share-card" onClick={() => setShowShareHelp(value => !value)}>
         <Share2 size={19} />
