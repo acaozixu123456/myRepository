@@ -1,0 +1,57 @@
+name: Verify NHK entry performance v2
+
+on:
+  push:
+    branches: [nihongo-entry-performance-v1-20260901]
+    paths:
+      - '.github/workflows/verify-nhk-entry-performance-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-entry-performance-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Integrate parser cache and user-visible timing
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if ! grep -q "readPersistentArticleCache" api/moji-article.ts; then
+            python scripts/patch-persistent-article-cache-v1.py
+          fi
+          python scripts/patch-nhk-entry-performance-v2.py
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified bounded source changes
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            api/moji-article.ts \
+            src/nhkArticleCache.ts \
+            src/nhkArticleCache.test.ts \
+            src/nhkPerformance.ts \
+            src/nhkPerformance.test.ts \
+            src/NhkMorningPage.tsx \
+            src/nhkMorning.ts \
+            src/nhkMorning.test.ts \
+            src/nhkEvidence.ts \
+            src/nhkEvidence.test.ts \
+            src/NhkEvidencePage.tsx \
+            supabase/migrations/20260901043000_add_nihongo_article_cache.sql
+          git diff --cached --check
+          git commit -m "Add durable article cache and entry timing evidence"
+          git push origin HEAD:nihongo-entry-performance-v1-20260901
