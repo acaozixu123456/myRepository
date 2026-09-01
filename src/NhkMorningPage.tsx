@@ -12,9 +12,12 @@ import {
   Share2,
   Smartphone,
   Sparkles,
+  TrendingUp,
 } from 'lucide-react';
 import {api} from './api';
 import type {Story} from './content';
+import NhkEvidencePage from './NhkEvidencePage';
+import {buildNhkWeeklyEvidence} from './nhkEvidence';
 import NhkWorldEvent, {type NhkWorldEventMode} from './NhkWorldEvent';
 import {
   NhkRecordingCoach,
@@ -111,7 +114,7 @@ type NhkMorningPageProps = {
   onEnterWorld: () => void;
 };
 
-type PageView = 'home' | 'today' | 'recall' | 'world';
+type PageView = 'home' | 'today' | 'recall' | 'world' | 'evidence';
 
 export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPageProps) {
   const todayKey = toDateKey();
@@ -154,6 +157,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const worldCallbackTarget = useMemo(() => pickNhkWorldCallbackTarget(sessions, todayKey), [sessions, todayKey]);
   const activeWorldSession = useMemo(() => sessions.find(session => session.id === worldSessionId) || null, [sessions, worldSessionId]);
   const streak = useMemo(() => completedNhkStreak(sessions, todayKey), [sessions, todayKey]);
+  const evidence = useMemo(() => buildNhkWeeklyEvidence(sessions, todayKey), [sessions, todayKey]);
   const recent = useMemo(() => sessions.filter(session => session.completedAt).slice(0, 3), [sessions]);
   const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
 
@@ -442,6 +446,10 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     void parseArticle(sharedUrl, next);
   }, [todayKey]);
 
+  if (view === 'evidence') {
+    return <NhkEvidencePage evidence={evidence} onBack={() => setView('home')} />;
+  }
+
   if (view === 'world' && activeWorldSession?.dailyInput) {
     return (
       <NhkWorldEvent
@@ -707,6 +715,16 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
           <span>{todaySession?.completedAt ? todaySession.keyExpression : '分享文章 · 自动推荐 · 脱稿表达'}</span>
         </div>
         <ChevronRight size={20} />
+      </button>
+
+      <button className="nhk-evidence-card" onClick={() => setView('evidence')}>
+        <TrendingUp size={19} />
+        <div>
+          <small>本周证据 · {evidence.periodLabel}</small>
+          <strong>{evidence.headlineZh}</strong>
+          <span>{evidence.completedInputs} 篇真实输入 · {evidence.analyzedResponses} 次语音分析</span>
+        </div>
+        <ChevronRight size={18} />
       </button>
 
       <button className="nhk-share-card" onClick={() => setShowShareHelp(value => !value)}>
