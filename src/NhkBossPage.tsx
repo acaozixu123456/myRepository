@@ -14,6 +14,7 @@ import {
   type NhkSpeechReview,
 } from './NhkSpeechCoach';
 import {
+  finalizeNhkBossSession,
   nextNhkBossTurnIndex,
   recordNhkBossTurn,
   type NhkBossRegister,
@@ -62,6 +63,12 @@ export default function NhkBossPage({
 
   const saveReview = (review: NhkSpeechReview) => {
     const next = recordNhkBossTurn(current, displayIndex, review, recordingSeconds);
+    setCurrent(next);
+    onUpdate(next);
+  };
+
+  const finishBoss = () => {
+    const next = finalizeNhkBossSession(current);
     setCurrent(next);
     onUpdate(next);
   };
@@ -163,11 +170,7 @@ export default function NhkBossPage({
                 听田中继续追问<ChevronRight size={17} />
               </button>
             ) : (
-              <button className="nhk-boss-next complete" onClick={() => {
-                const next = recordNhkBossTurn(current, displayIndex, turn.review!, turn.recordingSeconds, turn.completedAt);
-                setCurrent(next);
-                onUpdate(next);
-              }}>
+              <button className="nhk-boss-next complete" onClick={finishBoss}>
                 <Check size={17} />查看本周结果
               </button>
             )}
