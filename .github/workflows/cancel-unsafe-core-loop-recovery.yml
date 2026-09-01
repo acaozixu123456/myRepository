@@ -1,0 +1,75 @@
+name: Cancel unsafe core-loop recovery
+
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths:
+      - '.github/workflows/cancel-unsafe-core-loop-recovery.yml'
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  cancel-remove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-vercel
+          fetch-depth: 0
+      - name: Cancel queued or active unsafe recovery runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          repository = os.environ['REPOSITORY']
+          token = os.environ['GH_TOKEN']
+          current = int(os.environ['CURRENT_RUN_ID'])
+          url = f'https://api.github.com/repos/{repository}/actions/workflows/repair-verify-nhk-core-loop-v1.yml/runs?per_page=30'
+          request = urllib.request.Request(url, headers={
+              'Authorization': f'Bearer {token}',
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+              'User-Agent': 'SolSafetyGate/1.0',
+          })
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  runs = json.loads(response.read().decode('utf-8')).get('workflow_runs', [])
+          except Exception as error:
+              print('list failed:', repr(error))
+              runs = []
+          for run in runs:
+              if int(run.get('id', 0)) == current or run.get('status') not in {'queued','in_progress','waiting','requested','pending'}:
+                  continue
+              cancel = urllib.request.Request(
+                  f"https://api.github.com/repos/{repository}/actions/runs/{run['id']}/cancel",
+                  data=b'{}',
+                  method='POST',
+                  headers={
+                      'Authorization': f'Bearer {token}',
+                      'Accept': 'application/vnd.github+json',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'Content-Type': 'application/json',
+                      'User-Agent': 'SolSafetyGate/1.0',
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(cancel, timeout=30) as response:
+                      print('cancelled', run['id'], response.status)
+              except Exception as error:
+                  print('cancel failed', run.get('id'), repr(error))
+          PY
+      - name: Remove unsafe and emergency workflows
+        run: |
+          git pull --rebase origin nihongo-vercel
+          rm -f .github/workflows/repair-verify-nhk-core-loop-v1.yml
+          rm -f .github/workflows/cancel-unsafe-core-loop-recovery.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Remove unsafe core-loop recovery path"
+          git push origin HEAD:nihongo-vercel
