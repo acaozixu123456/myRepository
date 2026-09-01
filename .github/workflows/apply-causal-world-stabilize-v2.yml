@@ -1,0 +1,51 @@
+name: Apply causal world stabilization v2
+
+on:
+  push:
+    branches: [nihongo-causal-world-stabilize-v2-20260901]
+    paths:
+      - '.github/workflows/apply-causal-world-stabilize-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-causal-world-stabilize-v2-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply rebased stabilization payload
+        run: |
+          cat .tmp/cws-v2-*.b64 > /tmp/cws-v2.b64
+          base64 --decode /tmp/cws-v2.b64 > /tmp/cws-v2-files.tar.gz
+          echo '25424bf1df71bbd6b0d41af21946272e9d87fd27e47766aeb9762f53ae23c7b8  /tmp/cws-v2-files.tar.gz' | sha256sum --check
+          tar -xzf /tmp/cws-v2-files.tar.gz
+          if ! grep -q '.nhk-causal-metrics' src/nhkMorning.css; then
+            cat >> src/nhkMorning.css <<'CSS'
+          .nhk-causal-metrics{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.nhk-causal-metrics span{border-radius:999px;background:#eef4dc;color:#52683a;padding:6px 9px;font-size:8px;font-weight:800}.nhk-causal-metrics b{font-size:11px;margin-left:3px}
+          CSS
+          fi
+          grep -q 'eventId: `${sourceKey}-${session.dateKey}-world-event`' src/nhkMorning.ts
+          grep -q 'targetExpressionUsed' src/NhkWorldEvent.tsx
+          grep -q 'recordingSecondsRef' src/NhkWorldEvent.tsx
+          grep -q 'NhkEvidencePage' src/NhkMorningPage.tsx
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified stabilization and remove one-time files
+        run: |
+          rm -rf .tmp
+          rm .github/workflows/apply-causal-world-stabilize-v2.yml
+          git config user.name 'Sol Supervisor'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/nhkMorning.ts src/NhkWorldEvent.tsx src/nhkMorning.test.ts src/nhkMorning.css .tmp .github/workflows/apply-causal-world-stabilize-v2.yml
+          git commit -m 'Stabilize causal world alongside weekly evidence'
+          git push origin HEAD:nihongo-causal-world-stabilize-v2-20260901
