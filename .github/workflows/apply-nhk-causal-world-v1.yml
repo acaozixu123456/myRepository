@@ -1,0 +1,82 @@
+name: Apply NHK causal world v1
+
+on:
+  push:
+    branches: [nihongo-causal-world-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-causal-world-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-causal-world-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply causal world integration
+        run: python scripts/patch-nhk-causal-world-v1.py
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Verify feature markers
+        run: |
+          grep -q "NHK_CAUSAL_WORLD_VERSION" src/nhkCausalWorld.ts
+          grep -q "nhk-causal-world-v1" src/nhkMorning.css
+          grep -q "pickNhkWorldCallback" src/NhkMorningPage.tsx
+          grep -q "dailyInput: undefined" src/NhkMorningPage.tsx
+      - name: Create one clean verified commit and promote
+        run: |
+          rm -f scripts/patch-nhk-causal-world-v1.py
+          rm -f .github/workflows/apply-nhk-causal-world-v1.yml
+          rm -f .github/workflows/export-causal-world-source.yml
+          git fetch origin nihongo-vercel
+          git reset --soft origin/nihongo-vercel
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Add causal NHK world events and callbacks"
+          git push --force-with-lease origin HEAD:nihongo-causal-world-v1-20260901
+          git push origin HEAD:nihongo-vercel
+      - name: Verify production promotion
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+
+          base = os.environ['BASE'].rstrip('/')
+          last = None
+          for attempt in range(1, 25):
+              try:
+                  req = urllib.request.Request(base + '/', headers={'User-Agent':'NihongoCausalWorldSmoke/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(req, timeout=40) as response:
+                      html = response.read().decode('utf-8')
+                  asset = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+                  if not asset:
+                      raise RuntimeError('asset_not_found')
+                  asset_url = urllib.parse.urljoin(base + '/', asset.group(1))
+                  with urllib.request.urlopen(urllib.request.Request(asset_url, headers={'User-Agent':'NihongoCausalWorldSmoke/1.0','Cache-Control':'no-cache'}), timeout=45) as response:
+                      javascript = response.read().decode('utf-8')
+                  markers = ['nhk-causal-world-v1', '三天前的选择产生了后续', '今天造成的变化']
+                  missing = [marker for marker in markers if marker not in javascript and json.dumps(marker, ensure_ascii=True)[1:-1].lower() not in javascript.lower()]
+                  if missing:
+                      raise RuntimeError('missing_markers:' + ','.join(missing))
+                  print(json.dumps({'ok': True, 'attempt': attempt, 'asset': asset_url, 'markers': markers}, ensure_ascii=False, indent=2))
+                  break
+              except Exception as error:
+                  last = repr(error)
+                  if attempt == 24:
+                      raise
+                  time.sleep(min(5 + attempt, 15))
+          else:
+              raise RuntimeError(last)
+          PY
