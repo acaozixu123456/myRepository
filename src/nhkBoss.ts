@@ -220,8 +220,8 @@ export const recordNhkBossTurn = (
   recordingSeconds: number,
   completedAt = Date.now(),
 ): NhkBossSession => {
-  if (turnIndex < 0 || turnIndex >= session.turns.length) return session;
-  const turns = session.turns.map(turn => turn.index === turnIndex
+  if (turnIndex < 0 || turnIndex >= session.turns.length || session.outcome) return session;
+  const turns: NhkBossTurn[] = session.turns.map(turn => turn.index === turnIndex
     ? {
       ...turn,
       answer: review.transcript,
@@ -237,22 +237,26 @@ export const recordNhkBossTurn = (
     next.promptJa = `${reactionJa} ${next.basePromptJa}`;
     next.promptZh = reactionZh ? `${reactionZh} 接着，田中追问：${next.promptZh}` : next.promptZh;
   }
+  return {...session, turns, updatedAt: completedAt};
+};
 
-  const allComplete = turns.every(turn => Boolean(turn.completedAt));
-  if (!allComplete) return {...session, turns, updatedAt: completedAt};
-
-  const reviews = turns.map(turn => turn.review).filter((value): value is NhkSpeechReview => Boolean(value));
+export const finalizeNhkBossSession = (
+  session: NhkBossSession,
+  completedAt = Date.now(),
+): NhkBossSession => {
+  if (session.outcome) return session;
+  if (!session.turns.length || session.turns.some(turn => !turn.completedAt || !turn.review)) return session;
+  const reviews = session.turns.map(turn => turn.review!);
   const finalReview = reviews[reviews.length - 1];
-  const finalAnswer = firstSentence(turns[turns.length - 1]?.answer || '你的提案');
+  const finalAnswer = firstSentence(session.turns[session.turns.length - 1]?.answer || '你的提案');
   return {
     ...session,
-    turns,
     updatedAt: completedAt,
     outcome: {
       usedExpressionCount: reviews.filter(item => item.metrics.targetExpressionUsed).length,
       averageContentScore: average(reviews.map(item => item.metrics.contentScore)),
-      characterReactionJa: clean(finalReview?.characterReactionJa, 180) || '来週、その提案をもう少し具体的に考えてみましょう。',
-      characterReactionZh: clean(finalReview?.characterReactionZh, 180) || '田中记住了你的提案，准备下周继续讨论。',
+      characterReactionJa: clean(finalReview.characterReactionJa, 180) || '来週、その提案をもう少し具体的に考えてみましょう。',
+      characterReactionZh: clean(finalReview.characterReactionZh, 180) || '田中记住了你的提案，准备下周继续讨论。',
       nextWeekHookZh: `下周，田中会把你关于「${finalAnswer || '这件事'}」的想法带进一次真实的工作讨论。`,
       completedAt,
     },
@@ -266,6 +270,7 @@ const isBossSession = (value: unknown): value is NhkBossSession => {
     && typeof session.id === 'string'
     && typeof session.weekKey === 'string'
     && Array.isArray(session.turns)
+    && session.turns.length === BOSS_TURN_COUNT
     && typeof session.startedAt === 'number';
 };
 
