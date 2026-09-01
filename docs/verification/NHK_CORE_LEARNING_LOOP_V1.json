@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "verificationScope": "SOURCE_CONTRACT_ONLY",
+  "sourceCommit": "c5bf8625e383fa1acdc03005e046bf08ad716816",
+  "productionStatus": "BLOCKED_OLD_DEPLOYMENT",
+  "productionVerified": false,
+  "actualLearnerImprovementClaimed": false,
+  "sourceEvidence": {
+    "typecheck": "PASS",
+    "tests": "PASS 49/49",
+    "build": "PASS",
+    "causalWorld": "PASS source wiring and persistence",
+    "delayedRecall": "PASS source day 1/3/7 schedule",
+    "weeklyEvidence": "PASS source implementation",
+    "weeklyBoss": "PASS source implementation"
+  },
+  "note": "PASS applies only to the source contract. Production remains on an older bundle and is not verified. This explicit scope also prevents a legacy recovery workflow from restoring duplicate implementations under obsolete filenames.",
+  "recordedAt": "2026-09-01T13:40:00+09:00"
+}
