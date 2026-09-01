@@ -1,0 +1,38 @@
+name: Apply NHK entry cost v1
+
+on:
+  push:
+    branches: [nihongo-entry-cost-v1-20260901]
+    paths:
+      - '.github/workflows/nhk-entry-cost-v1-apply.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-entry-cost-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply entry-cost integration
+        run: python scripts/patch-nhk-entry-cost-v1.py
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified feature and remove one-time files
+        run: |
+          rm scripts/patch-nhk-entry-cost-v1.py
+          rm .github/workflows/nhk-entry-cost-v1-apply.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/NhkMorningPage.tsx src/nhkMorning.css src/nhkEntryCost.ts src/nhkEntryCost.test.ts src/NhkEntryEvidence.tsx scripts/patch-nhk-entry-cost-v1.py .github/workflows/nhk-entry-cost-v1-apply.yml
+          git commit -m "Cache NHK article entry and measure training latency"
+          git push origin HEAD:nihongo-entry-cost-v1-20260901
