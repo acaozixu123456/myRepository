@@ -5,6 +5,7 @@ import {
   type NhkCoachRecommendation,
   type NhkCoachResult,
 } from './nhkCoach';
+import type {NhkSpeechMode, NhkSpeechReview} from './NhkSpeechCoach';
 
 export type NhkRecallRating = 'good' | 'close' | 'miss';
 export type NhkRecallIntervalDay = 1 | 3 | 7;
@@ -19,6 +20,7 @@ export type NhkRecallAttempt = NhkRecallPlan & {
   rating: NhkRecallRating;
   recordingSeconds: number;
   completedAt: number;
+  review?: NhkSpeechReview;
 };
 
 export type NhkTrainingSentence = {
@@ -54,6 +56,8 @@ export type NhkDailyInputV2 = {
     answer: string;
     usedInWorld: boolean;
     characterReaction?: string;
+    characterReactionJa?: string;
+    characterReactionZh?: string;
   };
   recallSchedule: NhkRecallPlan[];
 };
@@ -73,8 +77,11 @@ export type NhkMorningSession = {
   workVersion: string;
   opinion: string;
   worldAnswer: string;
+  shadowRecordingSeconds: number;
   recapRecordingSeconds: number;
   worldRecordingSeconds: number;
+  speechFallback: boolean;
+  speechReviews: Partial<Record<NhkSpeechMode, NhkSpeechReview>>;
   completedAt?: number;
   recallAttempts: NhkRecallAttempt[];
   recall?: {
@@ -244,6 +251,37 @@ export const syncNhkDailyInputUserFields = (session: NhkMorningSession): NhkMorn
   };
 };
 
+export const applyNhkSpeechReview = (
+  session: NhkMorningSession,
+  review: NhkSpeechReview,
+): NhkMorningSession => {
+  let next: NhkMorningSession = {
+    ...session,
+    speechReviews: {...session.speechReviews, [review.mode]: review},
+  };
+  if (review.mode === 'recap') next = {...next, recapText: review.transcript};
+  if (review.mode === 'world') {
+    next = {...next, worldAnswer: review.transcript};
+    if (next.dailyInput) {
+      const combinedReaction = [review.characterReactionJa, review.characterReactionZh].filter(Boolean).join('\n');
+      next = {
+        ...next,
+        dailyInput: {
+          ...next.dailyInput,
+          world: {
+            ...next.dailyInput.world,
+            answer: review.transcript,
+            ...(combinedReaction ? {characterReaction: combinedReaction} : {}),
+            ...(review.characterReactionJa ? {characterReactionJa: review.characterReactionJa} : {}),
+            ...(review.characterReactionZh ? {characterReactionZh: review.characterReactionZh} : {}),
+          },
+        },
+      };
+    }
+  }
+  return syncNhkDailyInputUserFields(next);
+};
+
 export const markNhkDailyInputUsedInWorld = (session: NhkMorningSession): NhkMorningSession => {
   const synced = syncNhkDailyInputUserFields(session);
   if (!synced.dailyInput) return synced;
@@ -270,8 +308,11 @@ export const createNhkSession = (dateKey = toDateKey()): NhkMorningSession => ({
   workVersion: '',
   opinion: '',
   worldAnswer: '',
+  shadowRecordingSeconds: 0,
   recapRecordingSeconds: 0,
   worldRecordingSeconds: 0,
+  speechFallback: false,
+  speechReviews: {},
   recallAttempts: [],
 });
 
@@ -301,6 +342,29 @@ const migratedLegacyAttempt = (session: NhkMorningSession): NhkRecallAttempt[] =
   }];
 };
 
+const SPEECH_MODES: NhkSpeechMode[] = ['shadow', 'recap', 'world', 'recall'];
+
+const normalizeSpeechReview = (value: unknown): NhkSpeechReview | undefined => {
+  if (!value || typeof value !== 'object') return undefined;
+  const review = value as Partial<NhkSpeechReview>;
+  if (typeof review.id !== 'string'
+    || !SPEECH_MODES.includes(review.mode as NhkSpeechMode)
+    || typeof review.transcript !== 'string'
+    || typeof review.analyzedAt !== 'number') return undefined;
+  return review as NhkSpeechReview;
+};
+
+const normalizeSpeechReviews = (value: unknown): Partial<Record<NhkSpeechMode, NhkSpeechReview>> => {
+  if (!value || typeof value !== 'object') return {};
+  const source = value as Partial<Record<NhkSpeechMode, unknown>>;
+  const result: Partial<Record<NhkSpeechMode, NhkSpeechReview>> = {};
+  for (const mode of SPEECH_MODES) {
+    const review = normalizeSpeechReview(source[mode]);
+    if (review) result[mode] = review;
+  }
+  return result;
+};
+
 const normalizeAttempts = (value: unknown, fallback: NhkRecallAttempt[]): NhkRecallAttempt[] => {
   if (!Array.isArray(value)) return fallback;
   const attempts = value.filter(item => item && typeof item === 'object').map(item => item as Partial<NhkRecallAttempt>)
@@ -308,14 +372,18 @@ const normalizeAttempts = (value: unknown, fallback: NhkRecallAttempt[]): NhkRec
       && typeof item.dateKey === 'string'
       && typeof item.rating === 'string'
       && typeof item.completedAt === 'number')
-    .map(item => ({
-      intervalDay: item.intervalDay as NhkRecallIntervalDay,
-      dueDateKey: clean(item.dueDateKey, 10) || '',
-      dateKey: item.dateKey!,
-      rating: item.rating as NhkRecallRating,
-      recordingSeconds: Number(item.recordingSeconds) || 0,
-      completedAt: item.completedAt!,
-    }));
+    .map(item => {
+      const review = normalizeSpeechReview(item.review);
+      return {
+        intervalDay: item.intervalDay as NhkRecallIntervalDay,
+        dueDateKey: clean(item.dueDateKey, 10) || '',
+        dateKey: item.dateKey!,
+        rating: item.rating as NhkRecallRating,
+        recordingSeconds: Number(item.recordingSeconds) || 0,
+        completedAt: item.completedAt!,
+        ...(review ? {review} : {}),
+      };
+    });
   return attempts.length ? attempts : fallback;
 };
 
@@ -350,6 +418,8 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
       answer: clean(world?.answer, 1200) || session.worldAnswer,
       usedInWorld: Boolean(world?.usedInWorld),
       ...(clean(world?.characterReaction, 600) ? {characterReaction: clean(world?.characterReaction, 600)} : {}),
+      ...(clean(world?.characterReactionJa, 300) ? {characterReactionJa: clean(world?.characterReactionJa, 300)} : {}),
+      ...(clean(world?.characterReactionZh, 300) ? {characterReactionZh: clean(world?.characterReactionZh, 300)} : {}),
     },
     recallSchedule: recallSchedule.length === 3 ? recallSchedule : rebuilt.recallSchedule,
   };
@@ -364,6 +434,9 @@ const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => {
     ...session,
     schemaVersion: 2,
     selectedSentences,
+    shadowRecordingSeconds: Number(session.shadowRecordingSeconds) || 0,
+    speechFallback: Boolean(session.speechFallback),
+    speechReviews: normalizeSpeechReviews(session.speechReviews),
     recallAttempts: [],
   };
   base.recallAttempts = normalizeAttempts(session.recallAttempts, migratedLegacyAttempt(base));
@@ -444,6 +517,7 @@ export const recordNhkRecallAttempt = (
   rating: NhkRecallRating,
   recordingSeconds: number,
   completedAt = Date.now(),
+  review?: NhkSpeechReview,
 ): NhkMorningSession => ({
   ...session,
   recallAttempts: [
@@ -454,6 +528,7 @@ export const recordNhkRecallAttempt = (
       rating,
       recordingSeconds,
       completedAt,
+      ...(review ? {review} : {}),
     },
   ].sort((a, b) => a.intervalDay - b.intervalDay),
 });
@@ -480,5 +555,13 @@ export const suggestExpression = (shadowText: string): string => {
   return candidate ? `${candidate}。` : '';
 };
 
-export const isNhkSessionReadyToComplete = (session: NhkMorningSession): boolean =>
-  Boolean(session.shadowText.trim() && session.recapText.trim() && session.keyExpression.trim() && session.worldAnswer.trim());
+export const isNhkSessionReadyToComplete = (session: NhkMorningSession): boolean => {
+  const recapSpoken = session.recapRecordingSeconds > 0 || session.speechFallback;
+  const worldSpoken = session.worldRecordingSeconds > 0 || session.speechFallback;
+  return Boolean(session.shadowText.trim()
+    && session.recapText.trim()
+    && session.keyExpression.trim()
+    && session.worldAnswer.trim()
+    && recapSpoken
+    && worldSpoken);
+};

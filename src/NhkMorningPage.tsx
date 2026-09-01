@@ -8,16 +8,19 @@ import {
   Headphones,
   Link2,
   LoaderCircle,
-  Mic2,
   RotateCcw,
   Share2,
   Smartphone,
   Sparkles,
-  Square,
 } from 'lucide-react';
 import {api} from './api';
 import type {Story} from './content';
 import EpisodeVisual from './EpisodeVisual';
+import {
+  NhkRecordingCoach,
+  NhkSentencePlayer,
+  type NhkSpeechReview,
+} from './NhkSpeechCoach';
 import {
   buildFallbackCoach,
   isNhkCoachResult,
@@ -27,6 +30,7 @@ import {
 } from './nhkCoach';
 import {
   applyNhkDailyInput,
+  applyNhkSpeechReview,
   buildNhkDailyInput,
   completedNhkStreak,
   createNhkSession,
@@ -49,12 +53,6 @@ import {
 } from './shareTarget';
 import './nhkMorning.css';
 
-type VoiceRecorderProps = {
-  label: string;
-  onDuration: (seconds: number) => void;
-};
-
-type RecorderState = 'idle' | 'recording' | 'ready' | 'error';
 type ArticleParseStatus = 'idle' | 'loading' | 'ready' | 'error';
 type CoachStatus = 'idle' | 'loading' | 'ready' | 'fallback';
 
@@ -97,116 +95,15 @@ const resetSessionForSource = (session: NhkMorningSession, sourceUrl: string): N
   workVersion: '',
   opinion: '',
   worldAnswer: '',
+  shadowRecordingSeconds: 0,
   recapRecordingSeconds: 0,
   worldRecordingSeconds: 0,
+  speechFallback: false,
+  speechReviews: {},
   recallAttempts: [],
   recall: undefined,
   completedAt: undefined,
 });
-
-function VoiceRecorder({label, onDuration}: VoiceRecorderProps) {
-  const [state, setState] = useState<RecorderState>('idle');
-  const [seconds, setSeconds] = useState(0);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [error, setError] = useState('');
-  const recorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const chunksRef = useRef<BlobPart[]>([]);
-  const startedAtRef = useRef(0);
-  const timerRef = useRef<number | null>(null);
-
-  const stopTimer = () => {
-    if (timerRef.current !== null) {
-      window.clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  };
-
-  const stopStream = () => {
-    streamRef.current?.getTracks().forEach(track => track.stop());
-    streamRef.current = null;
-  };
-
-  useEffect(() => () => {
-    stopTimer();
-    stopStream();
-  }, []);
-
-  useEffect(() => () => {
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
-  }, [audioUrl]);
-
-  const start = async () => {
-    setError('');
-    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
-      setState('error');
-      setError('这个浏览器暂时不能录音。');
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-      const recorder = new MediaRecorder(stream);
-      streamRef.current = stream;
-      recorderRef.current = recorder;
-      chunksRef.current = [];
-      startedAtRef.current = Date.now();
-      setSeconds(0);
-      setState('recording');
-      recorder.ondataavailable = event => {
-        if (event.data.size > 0) chunksRef.current.push(event.data);
-      };
-      recorder.onstop = () => {
-        stopTimer();
-        const duration = Math.max(1, Math.round((Date.now() - startedAtRef.current) / 1000));
-        const blob = new Blob(chunksRef.current, {type: recorder.mimeType || 'audio/webm'});
-        const nextUrl = URL.createObjectURL(blob);
-        setAudioUrl(previous => {
-          if (previous) URL.revokeObjectURL(previous);
-          return nextUrl;
-        });
-        setSeconds(duration);
-        setState('ready');
-        onDuration(duration);
-        stopStream();
-      };
-      recorder.start();
-      timerRef.current = window.setInterval(() => {
-        setSeconds(Math.floor((Date.now() - startedAtRef.current) / 1000));
-      }, 250);
-    } catch {
-      stopTimer();
-      stopStream();
-      setState('error');
-      setError('没有取得麦克风权限。');
-    }
-  };
-
-  const stop = () => {
-    if (recorderRef.current?.state === 'recording') recorderRef.current.stop();
-  };
-
-  const reset = () => {
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
-    setAudioUrl(null);
-    setSeconds(0);
-    setState('idle');
-    setError('');
-  };
-
-  return (
-    <div className="nhk-recorder">
-      <div><strong>{label}</strong><small>{state === 'recording' ? `${seconds}秒` : '录音只在本次页面临时使用'}</small></div>
-      {state === 'recording' ? (
-        <button className="recording" onClick={stop}><Square size={17} fill="currentColor" />停止</button>
-      ) : (
-        <button onClick={start}><Mic2 size={17} />{state === 'ready' ? '再录一次' : '开始录音'}</button>
-      )}
-      {audioUrl && <audio controls src={audioUrl} />}
-      {state === 'ready' && <button className="recorder-reset" onClick={reset}><RotateCcw size={14} />清除</button>}
-      {error && <p>{error}</p>}
-    </div>
-  );
-}
 
 type NhkMorningPageProps = {
   worldStory: Story | null;
@@ -227,6 +124,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const [showOriginal, setShowOriginal] = useState(false);
   const [recallRevealed, setRecallRevealed] = useState(false);
   const [recallSeconds, setRecallSeconds] = useState(0);
+  const [recallReview, setRecallReview] = useState<NhkSpeechReview | undefined>();
   const [articleSentences, setArticleSentences] = useState<string[]>(initialCandidates);
   const [selectedSentences, setSelectedSentences] = useState<string[]>(initialSentences);
   const [parseStatus, setParseStatus] = useState<ArticleParseStatus>(initialCandidates.length ? 'ready' : 'idle');
@@ -262,6 +160,9 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
 
   const patch = (values: Partial<NhkMorningSession>) =>
     persist(syncNhkDailyInputUserFields({...draftRef.current, ...values}));
+
+  const saveSpeechReview = (review: NhkSpeechReview) =>
+    persist(applyNhkSpeechReview(draftRef.current, review));
 
   const recommendationFor = (sentence: string): NhkCoachRecommendation | undefined =>
     coach?.recommendations.find(item => item.sentence === sentence);
@@ -446,8 +347,11 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       recapText: '',
       opinion: '',
       worldAnswer: '',
+      shadowRecordingSeconds: 0,
       recapRecordingSeconds: 0,
       worldRecordingSeconds: 0,
+      speechFallback: false,
+      speechReviews: {},
       recallAttempts: [],
       completedAt: undefined,
     };
@@ -469,12 +373,13 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const openRecall = () => {
     setRecallRevealed(false);
     setRecallSeconds(0);
+    setRecallReview(undefined);
     setView('recall');
   };
 
   const finishRecall = (rating: NhkRecallRating) => {
     if (!recallSession || !recallTarget) return;
-    const next = recordNhkRecallAttempt(recallSession, recallTarget, todayKey, rating, recallSeconds);
+    const next = recordNhkRecallAttempt(recallSession, recallTarget, todayKey, rating, recallSeconds, Date.now(), recallReview);
     setSessions(current => upsertNhkSession(current, next));
     setView('home');
   };
@@ -523,7 +428,17 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
           <small>{formatDate(recallSession.dateKey)} · 第{recallTarget?.intervalDay || 1}天 · {recallSession.title || 'NHK日语听力'}</small>
           <h1>不用看原文，先说出最值得带走的一句。</h1>
           <p>再用这句话，说一句和你工作或生活有关的话。</p>
-          <VoiceRecorder label="20秒无提示回忆" onDuration={setRecallSeconds} />
+          <NhkRecordingCoach
+            label="20秒无提示回忆"
+            mode="recall"
+            referenceText={recallSession.keyExpression}
+            summary={recallSession.dailyInput?.coach.summaryJa || recallSession.title}
+            question={`第${recallTarget?.intervalDay || 1}天，把这句迁移到工作或生活。`}
+            targetExpression={recallSession.keyExpression}
+            review={recallReview}
+            onDuration={setRecallSeconds}
+            onReview={setRecallReview}
+          />
           {!recallRevealed ? (
             <button className="nhk-secondary-action" onClick={() => setRecallRevealed(true)}>说完了，查看答案</button>
           ) : (
@@ -646,20 +561,44 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
             <p>影子跟读练语流；脱稿复述检验你是否真的听懂。</p>
 
             {primaryRecommendation && (
-              <div className="nhk-shadow-guide">
-                <div><small>今日核心 · 影子切分</small><strong>{primaryRecommendation.sentence}</strong></div>
-                <div className="nhk-chunks">
-                  {primaryRecommendation.chunks.map((chunk, index) => <span key={`${index}-${chunk}`}>{chunk}</span>)}
+              <>
+                <NhkSentencePlayer sentence={primaryRecommendation.sentence} chunks={primaryRecommendation.chunks} />
+                <div className="nhk-shadow-guide">
+                  <div><small>今日核心 · 影子切分</small><strong>{primaryRecommendation.sentence}</strong></div>
+                  <div className="nhk-chunks">
+                    {primaryRecommendation.chunks.map((chunk, index) => <span key={`${index}-${chunk}`}>{chunk}</span>)}
+                  </div>
+                  <p><b>{primaryRecommendation.expression}</b><span>{primaryRecommendation.meaningZh}</span></p>
                 </div>
-                <p><b>{primaryRecommendation.expression}</b><span>{primaryRecommendation.meaningZh}</span></p>
-              </div>
+                <NhkRecordingCoach
+                  label="跟读后再说一次"
+                  mode="shadow"
+                  referenceText={primaryRecommendation.sentence}
+                  summary={coach?.summaryJa || ''}
+                  targetExpression={primaryRecommendation.expression}
+                  review={draft.speechReviews.shadow}
+                  onDuration={seconds => patch({shadowRecordingSeconds: seconds})}
+                  onReview={saveSpeechReview}
+                  onUnavailable={() => patch({speechFallback: true})}
+                />
+              </>
             )}
 
-            <VoiceRecorder label="第一次脱稿复述" onDuration={seconds => patch({recapRecordingSeconds: seconds})} />
-            <label>我刚才真正说出来的内容<textarea value={draft.recapText} onChange={event => patch({recapText: event.target.value})} placeholder="先用自己的日语复述，不要复制原文" rows={5} /></label>
+            <NhkRecordingCoach
+              label="20～40秒脱稿复述"
+              mode="recap"
+              referenceText={draft.shadowText || primaryRecommendation?.sentence || draft.keyExpression}
+              summary={coach?.summaryJa || ''}
+              targetExpression={draft.keyExpression}
+              review={draft.speechReviews.recap}
+              onDuration={seconds => patch({recapRecordingSeconds: seconds})}
+              onReview={saveSpeechReview}
+              onUnavailable={() => patch({speechFallback: true})}
+            />
+            <label>系统转写（可修正）<textarea value={draft.recapText} onChange={event => patch({recapText: event.target.value})} placeholder="录音分析后自动填写；不能录音时可手动输入" rows={5} /></label>
             <button className="nhk-text-toggle" onClick={() => setShowOriginal(value => !value)}>{showOriginal ? '收起原句' : '说完后看原句'}</button>
             {showOriginal && <blockquote>{draft.shadowText}</blockquote>}
-            <div className="nhk-step-actions"><button onClick={() => setStep(0)}>上一步</button><button disabled={!draft.recapText.trim()} onClick={() => setStep(2)}>用进世界</button></div>
+            <div className="nhk-step-actions"><button onClick={() => setStep(0)}>上一步</button><button disabled={!draft.recapText.trim() || (!draft.recapRecordingSeconds && !draft.speechFallback)} onClick={() => setStep(2)}>用进世界</button></div>
           </div>
         )}
 
@@ -692,8 +631,19 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
               <strong>田中问你：「{coach?.worldPromptJa || 'このニュース、仕事や生活にも関係がありそうですか。'}」</strong>
               <p>尽量用上：{draft.workVersion || draft.keyExpression}</p>
             </div>
-            <VoiceRecorder label="回答田中" onDuration={seconds => patch({worldRecordingSeconds: seconds})} />
-            <label>我的回答<textarea value={draft.worldAnswer} onChange={event => patch({worldAnswer: event.target.value})} placeholder="用 1～3 句日语回答" rows={4} /></label>
+            <NhkRecordingCoach
+              label="用日语回答田中"
+              mode="world"
+              referenceText={coach?.worldPromptJa || 'このニュースについて、どう思いますか。'}
+              summary={coach?.summaryJa || ''}
+              question={coach?.worldPromptJa || ''}
+              targetExpression={draft.keyExpression}
+              review={draft.speechReviews.world}
+              onDuration={seconds => patch({worldRecordingSeconds: seconds})}
+              onReview={saveSpeechReview}
+              onUnavailable={() => patch({speechFallback: true})}
+            />
+            <label>系统转写（可修正）<textarea value={draft.worldAnswer} onChange={event => patch({worldAnswer: event.target.value})} placeholder="录音分析后自动填写；不能录音时可手动输入" rows={4} /></label>
             <div className="nhk-step-actions"><button onClick={() => setStep(1)}>上一步</button><button className="complete" disabled={!isNhkSessionReadyToComplete(draft)} onClick={completeToday}><Check size={17} />完成今天</button></div>
           </div>
         )}

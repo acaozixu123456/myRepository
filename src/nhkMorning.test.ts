@@ -1,7 +1,9 @@
 import {describe, expect, it} from 'vitest';
 import {buildFallbackCoach} from './nhkCoach';
+import type {NhkSpeechReview} from './NhkSpeechCoach';
 import {
   applyNhkDailyInput,
+  applyNhkSpeechReview,
   buildNhkDailyInput,
   completedNhkStreak,
   createNhkSession,
@@ -112,7 +114,58 @@ describe('NHK morning learning loop', () => {
       recapText: '自分の要約。',
       keyExpression: '〜を受けて',
       worldAnswer: '仕様変更を受けて、確認します。',
+      recapRecordingSeconds: 18,
+      worldRecordingSeconds: 12,
     };
     expect(isNhkSessionReadyToComplete(ready)).toBe(true);
   });
+
+  it('persists speech reviews, fills transcripts and keeps speaking as the primary path', () => {
+    const review: NhkSpeechReview = {
+      id: 'review-1',
+      mode: 'world',
+      transcript: '仕様変更を受けて、確認方法を見直したほうがいいと思います。',
+      summaryZh: '观点清楚，也使用了目标表达。',
+      strengthsZh: ['回答了问题。'],
+      omissions: [],
+      substitutions: [],
+      particles: [],
+      pauseAdviceZh: [],
+      minimalRevisionJa: '仕様変更を受けて、確認方法を見直したほうがいいと思います。',
+      naturalVersionJa: '仕様変更を受けて、確認方法を見直したほうがいいと思います。',
+      characterReactionJa: '確かに、その進め方がよさそうですね。',
+      characterReactionZh: '田中赞同你的处理方式。',
+      metrics: {
+        textAccuracy: 0,
+        contentScore: 88,
+        omissionRate: 0,
+        substitutionCount: 0,
+        particleIssueCount: 0,
+        targetExpressionUsed: true,
+        charactersPerSecond: 3.2,
+      },
+      analyzedAt: 100,
+      transcriptionModel: 'test-transcribe',
+      feedbackModel: 'test-feedback',
+    };
+    const coach = buildFallbackCoach('仕様変更', sourceSentences);
+    const base = applyNhkDailyInput(
+      {...createNhkSession('2026-09-01'), sourceUrl: 'https://www.mojidict.com/article/speech', title: '仕様変更'},
+      buildNhkDailyInput({
+        session: {...createNhkSession('2026-09-01'), sourceUrl: 'https://www.mojidict.com/article/speech', title: '仕様変更'},
+        coach,
+        selectedSentences: [sourceSentences[0]],
+        candidateSentences: sourceSentences,
+      }),
+    );
+    const reviewed = applyNhkSpeechReview(base, review);
+    expect(reviewed.worldAnswer).toBe(review.transcript);
+    expect(reviewed.speechReviews.world?.id).toBe('review-1');
+    expect(reviewed.dailyInput?.world.characterReactionJa).toBe(review.characterReactionJa);
+
+    const typedOnly = {...reviewed, recapText: '要約です。', recapRecordingSeconds: 0, worldRecordingSeconds: 0};
+    expect(isNhkSessionReadyToComplete(typedOnly)).toBe(false);
+    expect(isNhkSessionReadyToComplete({...typedOnly, speechFallback: true})).toBe(true);
+  });
+
 });
