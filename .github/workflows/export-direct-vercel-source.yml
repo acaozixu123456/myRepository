@@ -1,0 +1,27 @@
+name: Export direct Vercel source
+
+on:
+  push:
+    branches: [nihongo-direct-vercel-deploy-20260901]
+    paths:
+      - '.github/workflows/export-direct-vercel-source.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-direct-vercel-deploy-20260901
+      - name: Package verified production source
+        run: |
+          tar --exclude=.git --exclude=node_modules --exclude=.github -czf /tmp/nihongo-production-f03.tar.gz .
+          sha256sum /tmp/nihongo-production-f03.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nihongo-production-f03
+          path: /tmp/nihongo-production-f03.tar.gz
+          retention-days: 1
