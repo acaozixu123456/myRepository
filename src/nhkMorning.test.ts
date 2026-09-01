@@ -166,6 +166,9 @@ describe('NHK morning learning loop', () => {
     expect(reviewed.worldAnswer).toBe(review.transcript);
     expect(reviewed.speechReviews.world?.id).toBe('review-1');
     expect(reviewed.dailyInput?.world.characterReactionJa).toBe(review.characterReactionJa);
+    expect(reviewed.dailyInput?.world.targetExpressionUsed).toBe(true);
+    expect(reviewed.dailyInput?.world.contentScore).toBe(88);
+    expect(reviewed.dailyInput?.world.answeredAt).toBe(100);
 
     const typedOnly = {...reviewed, recapText: '要約です。', recapRecordingSeconds: 0, worldRecordingSeconds: 0};
     expect(isNhkSessionReadyToComplete(typedOnly)).toBe(false);
@@ -189,8 +192,19 @@ describe('NHK morning learning loop', () => {
       candidateSentences: sourceSentences,
     }));
     expect(session.dailyInput?.world.usedInWorld).toBe(false);
+    expect(session.dailyInput?.world.eventId).toBe('causal123-2026-09-01-world-event');
     expect(session.dailyInput?.world.callback.dueDateKey).toBe('2026-09-04');
     expect(pickNhkWorldCallbackTarget([session], '2026-09-04')).toBeNull();
+
+    const blankAnswer = markNhkDailyInputUsedInWorld({
+      ...session,
+      worldAnswer: '',
+      dailyInput: session.dailyInput ? {
+        ...session.dailyInput,
+        world: {...session.dailyInput.world, answer: ''},
+      } : undefined,
+    }, 99);
+    expect(pickNhkWorldCallbackTarget([blankAnswer], '2026-09-04')).toBeNull();
 
     session = markNhkDailyInputUsedInWorld(session, 100);
     expect(session.dailyInput?.world.enteredAt).toBe(100);
@@ -226,6 +240,9 @@ describe('NHK morning learning loop', () => {
     };
     session = applyNhkWorldCallbackReview(session, review, 14);
     expect(session.dailyInput?.world.callback.answer).toBe(review.transcript);
+    expect(session.dailyInput?.world.callback.targetExpressionUsed).toBe(true);
+    expect(session.dailyInput?.world.callback.contentScore).toBe(90);
+    expect(session.dailyInput?.world.callback.answeredAt).toBe(200);
     session = completeNhkWorldCallback(session, review.transcript, 14, review, 300);
     expect(session.dailyInput?.world.callback.completedAt).toBe(300);
     expect(session.dailyInput?.world.callback.characterReactionJa).toBe(review.characterReactionJa);

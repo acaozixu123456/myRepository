@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {
   ArrowLeft,
   Check,
@@ -42,11 +42,14 @@ export default function NhkWorldEvent({
   const [recordingSeconds, setRecordingSeconds] = useState(session.dailyInput?.world.callback.recordingSeconds || 0);
   const [fallback, setFallback] = useState(false);
   const [review, setReview] = useState<NhkSpeechReview | undefined>(session.dailyInput?.world.callback.review);
+  const recordingSecondsRef = useRef(session.dailyInput?.world.callback.recordingSeconds || 0);
 
   useEffect(() => {
     setCurrent(session);
     setAnswer(session.dailyInput?.world.callback.answer || '');
-    setRecordingSeconds(session.dailyInput?.world.callback.recordingSeconds || 0);
+    const nextSeconds = session.dailyInput?.world.callback.recordingSeconds || 0;
+    recordingSecondsRef.current = nextSeconds;
+    setRecordingSeconds(nextSeconds);
     setReview(session.dailyInput?.world.callback.review);
     setFallback(false);
   }, [session, mode]);
@@ -63,8 +66,13 @@ export default function NhkWorldEvent({
   const callbackReactionJa = callback.characterReactionJa || review?.characterReactionJa;
   const callbackReactionZh = callback.characterReactionZh || review?.characterReactionZh;
 
+  const updateRecordingSeconds = (seconds: number) => {
+    recordingSecondsRef.current = seconds;
+    setRecordingSeconds(seconds);
+  };
+
   const saveReview = (nextReview: NhkSpeechReview) => {
-    const next = applyNhkWorldCallbackReview(current, nextReview, recordingSeconds);
+    const next = applyNhkWorldCallbackReview(current, nextReview, recordingSecondsRef.current);
     setCurrent(next);
     setAnswer(nextReview.transcript);
     setReview(nextReview);
@@ -72,8 +80,9 @@ export default function NhkWorldEvent({
   };
 
   const finishCallback = () => {
-    if (!answer.trim() || (!recordingSeconds && !fallback && !review)) return;
-    const next = completeNhkWorldCallback(current, answer, recordingSeconds, review);
+    const currentSeconds = recordingSecondsRef.current;
+    if (!answer.trim() || (!currentSeconds && !fallback && !review)) return;
+    const next = completeNhkWorldCallback(current, answer, currentSeconds, review);
     setCurrent(next);
     onUpdate(next);
   };
@@ -108,6 +117,12 @@ export default function NhkWorldEvent({
               <small>你当时的回答</small>
               <strong>{world.answer || current.worldAnswer}</strong>
             </div>
+            {(typeof world.contentScore === 'number' || typeof world.targetExpressionUsed === 'boolean') && (
+              <div className="nhk-causal-metrics">
+                {typeof world.contentScore === 'number' && <span>表达完成度 <b>{world.contentScore}</b></span>}
+                {world.targetExpressionUsed === true && <span>已用上今日表达</span>}
+              </div>
+            )}
             <div className="nhk-causal-reaction">
               <MessageCircle size={18} />
               <div><strong>{originalReactionJa}</strong><p>{originalReactionZh}</p></div>
@@ -140,6 +155,12 @@ export default function NhkWorldEvent({
               <small>你现在的回答</small>
               <strong>{callback.answer}</strong>
             </div>
+            {(typeof callback.contentScore === 'number' || typeof callback.targetExpressionUsed === 'boolean') && (
+              <div className="nhk-causal-metrics">
+                {typeof callback.contentScore === 'number' && <span>这次完成度 <b>{callback.contentScore}</b></span>}
+                {callback.targetExpressionUsed === true && <span>成功迁移目标表达</span>}
+              </div>
+            )}
             {(callbackReactionJa || callbackReactionZh) && (
               <div className="nhk-causal-reaction">
                 <Check size={18} />
@@ -173,7 +194,7 @@ export default function NhkWorldEvent({
               question={callback.promptJa}
               targetExpression={primary?.expression || current.keyExpression}
               review={review}
-              onDuration={setRecordingSeconds}
+              onDuration={updateRecordingSeconds}
               onReview={saveReview}
               onUnavailable={() => setFallback(true)}
             />
