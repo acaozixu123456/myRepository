@@ -38,6 +38,18 @@ export type NhkTrainingSentence = {
   workVersion: string;
 };
 
+export type NhkWorldCallback = {
+  dueDateKey: string;
+  setupZh: string;
+  promptJa: string;
+  answer: string;
+  recordingSeconds: number;
+  completedAt?: number;
+  review?: NhkSpeechReview;
+  characterReactionJa?: string;
+  characterReactionZh?: string;
+};
+
 export type NhkDailyInputV2 = {
   version: 2;
   articleId: string;
@@ -51,13 +63,19 @@ export type NhkDailyInputV2 = {
   primaryTrainingSentenceId: string;
   userOpinion: string;
   world: {
+    eventId: string;
+    characterId: 'tanaka';
+    characterName: string;
+    locationNameZh: string;
     setupZh: string;
     promptJa: string;
     answer: string;
     usedInWorld: boolean;
+    enteredAt?: number;
     characterReaction?: string;
     characterReactionJa?: string;
     characterReactionZh?: string;
+    callback: NhkWorldCallback;
   };
   recallSchedule: NhkRecallPlan[];
 };
@@ -150,6 +168,14 @@ const uniqueSentences = (sentences: string[], limit: number): string[] =>
 export const buildNhkRecallSchedule = (dateKey: string): NhkRecallPlan[] =>
   RECALL_INTERVALS.map(intervalDay => ({intervalDay, dueDateKey: shiftDateKey(dateKey, intervalDay)}));
 
+const buildNhkWorldCallback = (dateKey: string, title: string): NhkWorldCallback => ({
+  dueDateKey: shiftDateKey(dateKey, 3),
+  setupZh: `几天后，田中再次提起「${title || '那条新闻'}」。他记得你上次的回答，想确认你的想法有没有变化。`,
+  promptJa: 'この前話したニュースのことですが、今も同じ考えですか。理由も教えてください。',
+  answer: '',
+  recordingSeconds: 0,
+});
+
 const trainingSentenceFromRecommendation = (
   recommendation: NhkCoachRecommendation,
   sourceKey: string,
@@ -194,6 +220,9 @@ export const buildNhkDailyInput = ({
   const previous = session.dailyInput?.version === 2 && session.dailyInput.sourceUrl === session.sourceUrl
     ? session.dailyInput
     : undefined;
+  const previousWorld = previous?.primaryTrainingSentenceId === selectedTrainingSentences[0]?.id
+    ? previous.world
+    : undefined;
 
   return {
     version: 2,
@@ -208,11 +237,19 @@ export const buildNhkDailyInput = ({
     primaryTrainingSentenceId: selectedTrainingSentences[0]?.id || '',
     userOpinion: session.opinion,
     world: {
+      eventId: `${sourceKey}-world-event`,
+      characterId: 'tanaka',
+      characterName: '田中',
+      locationNameZh: '公司午休区',
       setupZh: coach.worldSetupZh,
       promptJa: coach.worldPromptJa,
       answer: session.worldAnswer,
-      usedInWorld: previous?.world.usedInWorld || false,
-      ...(previous?.world.characterReaction ? {characterReaction: previous.world.characterReaction} : {}),
+      usedInWorld: previousWorld?.usedInWorld || false,
+      ...(previousWorld?.enteredAt ? {enteredAt: previousWorld.enteredAt} : {}),
+      ...(previousWorld?.characterReaction ? {characterReaction: previousWorld.characterReaction} : {}),
+      ...(previousWorld?.characterReactionJa ? {characterReactionJa: previousWorld.characterReactionJa} : {}),
+      ...(previousWorld?.characterReactionZh ? {characterReactionZh: previousWorld.characterReactionZh} : {}),
+      callback: previousWorld?.callback || buildNhkWorldCallback(session.dateKey, session.title),
     },
     recallSchedule: previous?.recallSchedule?.length ? previous.recallSchedule : buildNhkRecallSchedule(session.dateKey),
   };
@@ -282,14 +319,73 @@ export const applyNhkSpeechReview = (
   return syncNhkDailyInputUserFields(next);
 };
 
-export const markNhkDailyInputUsedInWorld = (session: NhkMorningSession): NhkMorningSession => {
+export const markNhkDailyInputUsedInWorld = (
+  session: NhkMorningSession,
+  enteredAt = Date.now(),
+): NhkMorningSession => {
   const synced = syncNhkDailyInputUserFields(session);
   if (!synced.dailyInput) return synced;
   return {
     ...synced,
     dailyInput: {
       ...synced.dailyInput,
-      world: {...synced.dailyInput.world, usedInWorld: true},
+      world: {
+        ...synced.dailyInput.world,
+        usedInWorld: true,
+        enteredAt: synced.dailyInput.world.enteredAt || enteredAt,
+      },
+    },
+  };
+};
+
+export const applyNhkWorldCallbackReview = (
+  session: NhkMorningSession,
+  review: NhkSpeechReview,
+  recordingSeconds: number,
+): NhkMorningSession => {
+  if (!session.dailyInput) return session;
+  const callback = session.dailyInput.world.callback;
+  return {
+    ...session,
+    dailyInput: {
+      ...session.dailyInput,
+      world: {
+        ...session.dailyInput.world,
+        callback: {
+          ...callback,
+          answer: review.transcript,
+          recordingSeconds,
+          review,
+          ...(review.characterReactionJa ? {characterReactionJa: review.characterReactionJa} : {}),
+          ...(review.characterReactionZh ? {characterReactionZh: review.characterReactionZh} : {}),
+        },
+      },
+    },
+  };
+};
+
+export const completeNhkWorldCallback = (
+  session: NhkMorningSession,
+  answer: string,
+  recordingSeconds: number,
+  review?: NhkSpeechReview,
+  completedAt = Date.now(),
+): NhkMorningSession => {
+  const reviewed = review ? applyNhkWorldCallbackReview(session, review, recordingSeconds) : session;
+  if (!reviewed.dailyInput) return reviewed;
+  return {
+    ...reviewed,
+    dailyInput: {
+      ...reviewed.dailyInput,
+      world: {
+        ...reviewed.dailyInput.world,
+        callback: {
+          ...reviewed.dailyInput.world.callback,
+          answer: clean(answer, 1200),
+          recordingSeconds,
+          completedAt,
+        },
+      },
     },
   };
 };
@@ -387,6 +483,24 @@ const normalizeAttempts = (value: unknown, fallback: NhkRecallAttempt[]): NhkRec
   return attempts.length ? attempts : fallback;
 };
 
+const normalizeWorldCallback = (value: unknown, fallback: NhkWorldCallback): NhkWorldCallback => {
+  if (!value || typeof value !== 'object') return fallback;
+  const callback = value as Partial<NhkWorldCallback>;
+  const review = normalizeSpeechReview(callback.review);
+  return {
+    ...fallback,
+    dueDateKey: clean(callback.dueDateKey, 10) || fallback.dueDateKey,
+    setupZh: clean(callback.setupZh, 600) || fallback.setupZh,
+    promptJa: clean(callback.promptJa, 500) || fallback.promptJa,
+    answer: clean(callback.answer, 1200),
+    recordingSeconds: Number(callback.recordingSeconds) || 0,
+    ...(typeof callback.completedAt === 'number' ? {completedAt: callback.completedAt} : {}),
+    ...(review ? {review} : {}),
+    ...(clean(callback.characterReactionJa, 300) ? {characterReactionJa: clean(callback.characterReactionJa, 300)} : {}),
+    ...(clean(callback.characterReactionZh, 300) ? {characterReactionZh: clean(callback.characterReactionZh, 300)} : {}),
+  };
+};
+
 const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDailyInputV2 | undefined => {
   if (!value || typeof value !== 'object') return undefined;
   const input = value as Partial<NhkDailyInputV2>;
@@ -415,11 +529,17 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
     userOpinion: clean(input.userOpinion, 1200) || session.opinion,
     world: {
       ...rebuilt.world,
+      eventId: clean(world?.eventId, 180) || rebuilt.world.eventId,
+      characterId: 'tanaka',
+      characterName: clean(world?.characterName, 80) || rebuilt.world.characterName,
+      locationNameZh: clean(world?.locationNameZh, 120) || rebuilt.world.locationNameZh,
       answer: clean(world?.answer, 1200) || session.worldAnswer,
       usedInWorld: Boolean(world?.usedInWorld),
+      ...(typeof world?.enteredAt === 'number' ? {enteredAt: world.enteredAt} : {}),
       ...(clean(world?.characterReaction, 600) ? {characterReaction: clean(world?.characterReaction, 600)} : {}),
       ...(clean(world?.characterReactionJa, 300) ? {characterReactionJa: clean(world?.characterReactionJa, 300)} : {}),
       ...(clean(world?.characterReactionZh, 300) ? {characterReactionZh: clean(world?.characterReactionZh, 300)} : {}),
+      callback: normalizeWorldCallback(world?.callback, rebuilt.world.callback),
     },
     recallSchedule: recallSchedule.length === 3 ? recallSchedule : rebuilt.recallSchedule,
   };
@@ -479,6 +599,23 @@ export const findTodayNhkSession = (
   sessions: NhkMorningSession[],
   todayKey = toDateKey(),
 ): NhkMorningSession | null => sessions.find(session => session.dateKey === todayKey) || null;
+
+export type NhkWorldCallbackTarget = {
+  session: NhkMorningSession;
+  dueDateKey: string;
+};
+
+export const pickNhkWorldCallbackTarget = (
+  sessions: NhkMorningSession[],
+  todayKey = toDateKey(),
+): NhkWorldCallbackTarget | null => sessions
+  .filter(session => Boolean(session.completedAt
+    && session.dailyInput?.world.usedInWorld
+    && !session.dailyInput.world.callback.completedAt
+    && session.dailyInput.world.callback.dueDateKey <= todayKey))
+  .sort((a, b) => a.dailyInput!.world.callback.dueDateKey.localeCompare(b.dailyInput!.world.callback.dueDateKey)
+    || b.dateKey.localeCompare(a.dateKey))
+  .map(session => ({session, dueDateKey: session.dailyInput!.world.callback.dueDateKey}))[0] || null;
 
 export type NhkRecallTarget = {
   session: NhkMorningSession;

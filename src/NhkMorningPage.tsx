@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import {api} from './api';
 import type {Story} from './content';
-import EpisodeVisual from './EpisodeVisual';
+import NhkWorldEvent, {type NhkWorldEventMode} from './NhkWorldEvent';
 import {
   NhkRecordingCoach,
   NhkSentencePlayer,
@@ -40,6 +40,7 @@ import {
   markNhkDailyInputUsedInWorld,
   NhkMorningSession,
   NhkRecallRating,
+  pickNhkWorldCallbackTarget,
   pickRecallTarget,
   recordNhkRecallAttempt,
   saveNhkSessions,
@@ -110,7 +111,7 @@ type NhkMorningPageProps = {
   onEnterWorld: () => void;
 };
 
-type PageView = 'home' | 'today' | 'recall';
+type PageView = 'home' | 'today' | 'recall' | 'world';
 
 export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPageProps) {
   const todayKey = toDateKey();
@@ -125,6 +126,8 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const [recallRevealed, setRecallRevealed] = useState(false);
   const [recallSeconds, setRecallSeconds] = useState(0);
   const [recallReview, setRecallReview] = useState<NhkSpeechReview | undefined>();
+  const [worldSessionId, setWorldSessionId] = useState('');
+  const [worldMode, setWorldMode] = useState<NhkWorldEventMode>('event');
   const [articleSentences, setArticleSentences] = useState<string[]>(initialCandidates);
   const [selectedSentences, setSelectedSentences] = useState<string[]>(initialSentences);
   const [parseStatus, setParseStatus] = useState<ArticleParseStatus>(initialCandidates.length ? 'ready' : 'idle');
@@ -148,6 +151,8 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const todaySession = useMemo(() => findTodayNhkSession(sessions, todayKey), [sessions, todayKey]);
   const recallTarget = useMemo(() => pickRecallTarget(sessions, todayKey), [sessions, todayKey]);
   const recallSession = recallTarget?.session || null;
+  const worldCallbackTarget = useMemo(() => pickNhkWorldCallbackTarget(sessions, todayKey), [sessions, todayKey]);
+  const activeWorldSession = useMemo(() => sessions.find(session => session.id === worldSessionId) || null, [sessions, worldSessionId]);
   const streak = useMemo(() => completedNhkStreak(sessions, todayKey), [sessions, todayKey]);
   const recent = useMemo(() => sessions.filter(session => session.completedAt).slice(0, 3), [sessions]);
   const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
@@ -156,6 +161,27 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     draftRef.current = next;
     setDraft(next);
     setSessions(current => upsertNhkSession(current, next));
+  };
+
+  const persistWorldSession = (next: NhkMorningSession) => {
+    if (draftRef.current.id === next.id) {
+      draftRef.current = next;
+      setDraft(next);
+    }
+    setSessions(current => upsertNhkSession(current, next));
+  };
+
+  const openWorldSession = (session: NhkMorningSession, mode: NhkWorldEventMode) => {
+    const next = mode === 'event' ? markNhkDailyInputUsedInWorld(session) : session;
+    persistWorldSession(next);
+    setWorldSessionId(next.id);
+    setWorldMode(mode);
+    setView('world');
+  };
+
+  const closeWorldSession = () => {
+    setWorldSessionId('');
+    setView('home');
   };
 
   const patch = (values: Partial<NhkMorningSession>) =>
@@ -365,7 +391,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   };
 
   const completeToday = () => {
-    const next = markNhkDailyInputUsedInWorld({...draftRef.current, completedAt: Date.now()});
+    const next = syncNhkDailyInputUserFields({...draftRef.current, completedAt: Date.now()});
     persist(next);
     setView('home');
   };
@@ -415,6 +441,22 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setView('today');
     void parseArticle(sharedUrl, next);
   }, [todayKey]);
+
+  if (view === 'world' && activeWorldSession?.dailyInput) {
+    return (
+      <NhkWorldEvent
+        session={activeWorldSession}
+        mode={worldMode}
+        worldTitle={worldStory?.series?.seasonTitle}
+        onBack={closeWorldSession}
+        onUpdate={persistWorldSession}
+        onContinueStory={() => {
+          closeWorldSession();
+          onEnterWorld();
+        }}
+      />
+    );
+  }
 
   if (view === 'recall' && recallSession) {
     return (
@@ -624,7 +666,6 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
               </label>
             )}
 
-            {worldStory && <EpisodeVisual story={worldStory} />}
             <div className="nhk-world-scene">
               <small>{worldStory?.series?.seasonTitle || '在日本生活和工作的我'}</small>
               {coach?.worldSetupZh && <p className="nhk-world-setup">{coach.worldSetupZh}</p>}
@@ -697,6 +738,14 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
         </div>
       )}
 
+      {worldCallbackTarget && (
+        <button className="nhk-world-callback-card" onClick={() => openWorldSession(worldCallbackTarget.session, 'callback')}>
+          <RotateCcw size={19} />
+          <div><small>几天后的回响 · {formatDate(worldCallbackTarget.dueDateKey)}</small><strong>田中真的又提起了那件事</strong></div>
+          <ChevronRight size={18} />
+        </button>
+      )}
+
       {recallSession && (
         <button className="nhk-recall-card" onClick={openRecall}>
           <RotateCcw size={19} />
@@ -706,9 +755,9 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       )}
 
       {todaySession?.completedAt && (
-        <button className="nhk-enter-world" onClick={onEnterWorld}>
+        <button className="nhk-enter-world" onClick={() => openWorldSession(todaySession, 'event')}>
           <Sparkles size={19} />
-          <div><small>今天带进去</small><strong>{todaySession.workVersion || todaySession.keyExpression}</strong></div>
+          <div><small>{todaySession.dailyInput?.world.usedInWorld ? '今天的事件' : '让这件事发生'}</small><strong>{todaySession.dailyInput?.world.setupZh || todaySession.workVersion || todaySession.keyExpression}</strong></div>
           <ChevronRight size={18} />
         </button>
       )}

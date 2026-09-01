@@ -4,12 +4,16 @@ import type {NhkSpeechReview} from './NhkSpeechCoach';
 import {
   applyNhkDailyInput,
   applyNhkSpeechReview,
+  applyNhkWorldCallbackReview,
   buildNhkDailyInput,
+  completeNhkWorldCallback,
   completedNhkStreak,
   createNhkSession,
   findTodayNhkSession,
   isNhkSessionReadyToComplete,
   loadNhkSessions,
+  markNhkDailyInputUsedInWorld,
+  pickNhkWorldCallbackTarget,
   pickRecallTarget,
   recordNhkRecallAttempt,
   saveNhkSessions,
@@ -166,6 +170,66 @@ describe('NHK morning learning loop', () => {
     const typedOnly = {...reviewed, recapText: '要約です。', recapRecordingSeconds: 0, worldRecordingSeconds: 0};
     expect(isNhkSessionReadyToComplete(typedOnly)).toBe(false);
     expect(isNhkSessionReadyToComplete({...typedOnly, speechFallback: true})).toBe(true);
+  });
+
+
+  it('turns the daily input into a causal world event with a later callback', () => {
+    const coach = buildFallbackCoach('フランスのSNS規制', sourceSentences);
+    const base = {
+      ...createNhkSession('2026-09-01'),
+      sourceUrl: 'https://www.mojidict.com/article/causal123',
+      title: 'フランスのSNS規制',
+      worldAnswer: '年齢に応じたルールが必要だと思います。',
+      completedAt: 1,
+    };
+    let session = applyNhkDailyInput(base, buildNhkDailyInput({
+      session: base,
+      coach,
+      selectedSentences: [sourceSentences[0]],
+      candidateSentences: sourceSentences,
+    }));
+    expect(session.dailyInput?.world.usedInWorld).toBe(false);
+    expect(session.dailyInput?.world.callback.dueDateKey).toBe('2026-09-04');
+    expect(pickNhkWorldCallbackTarget([session], '2026-09-04')).toBeNull();
+
+    session = markNhkDailyInputUsedInWorld(session, 100);
+    expect(session.dailyInput?.world.enteredAt).toBe(100);
+    expect(pickNhkWorldCallbackTarget([session], '2026-09-03')).toBeNull();
+    expect(pickNhkWorldCallbackTarget([session], '2026-09-04')?.session.id).toBe(session.id);
+
+    const review: NhkSpeechReview = {
+      id: 'callback-review',
+      mode: 'world',
+      transcript: '今も同じ考えです。子どもの安全を守るためです。',
+      summaryZh: '立场和理由都很清楚。',
+      strengthsZh: ['说明了理由。'],
+      omissions: [],
+      substitutions: [],
+      particles: [],
+      pauseAdviceZh: [],
+      minimalRevisionJa: '今も同じ考えです。子どもの安全を守るためです。',
+      naturalVersionJa: '今も同じ考えです。子どもの安全を守るためです。',
+      characterReactionJa: '前より理由がはっきりしましたね。',
+      characterReactionZh: '田中发现你的理由比上次更清楚。',
+      metrics: {
+        textAccuracy: 0,
+        contentScore: 90,
+        omissionRate: 0,
+        substitutionCount: 0,
+        particleIssueCount: 0,
+        targetExpressionUsed: true,
+        charactersPerSecond: 3,
+      },
+      analyzedAt: 200,
+      transcriptionModel: 'test-transcribe',
+      feedbackModel: 'test-feedback',
+    };
+    session = applyNhkWorldCallbackReview(session, review, 14);
+    expect(session.dailyInput?.world.callback.answer).toBe(review.transcript);
+    session = completeNhkWorldCallback(session, review.transcript, 14, review, 300);
+    expect(session.dailyInput?.world.callback.completedAt).toBe(300);
+    expect(session.dailyInput?.world.callback.characterReactionJa).toBe(review.characterReactionJa);
+    expect(pickNhkWorldCallbackTarget([session], '2026-09-04')).toBeNull();
   });
 
 });
