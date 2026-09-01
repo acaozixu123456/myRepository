@@ -1,0 +1,56 @@
+name: Smoke quiet readable UI in production
+
+on:
+  push:
+    branches: [nihongo-quiet-readable-ui-v1-20260902]
+    paths:
+      - '.github/workflows/smoke-quiet-readable-ui-production.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify deployed HTML and assets
+        shell: bash
+        env:
+          BASE_URL: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          set -euxo pipefail
+          for attempt in 1 2 3 4 5; do
+            if curl -fsSL --retry 2 --max-time 30 "$BASE_URL/" -o /tmp/index.html; then
+              break
+            fi
+            sleep 8
+          done
+          test -s /tmp/index.html
+          JS_PATH=$(grep -oE '/assets/index-[^" ]+\.js' /tmp/index.html | head -1)
+          CSS_PATH=$(grep -oE '/assets/index-[^" ]+\.css' /tmp/index.html | head -1)
+          test -n "$JS_PATH"
+          test -n "$CSS_PATH"
+          curl -fsSL --retry 3 --max-time 30 "$BASE_URL$JS_PATH" -o /tmp/app.js
+          curl -fsSL --retry 3 --max-time 30 "$BASE_URL$CSS_PATH" -o /tmp/app.css
+          grep -Fq '静音学习' /tmp/app.js
+          grep -Fq '不方便开口' /tmp/app.js
+          grep -Fq '开口练习' /tmp/app.js
+          grep -Fq 'WEEKLY BOSS' /tmp/app.js
+          grep -Fq 'nhk-practice-mode-switch' /tmp/app.css
+          grep -Fq 'nhk-quiet-response' /tmp/app.css
+          grep -Eq 'font-size:15px' /tmp/app.css
+          grep -Eq 'font-size:12px' /tmp/app.css
+          echo "PRODUCTION_JS=$JS_PATH"
+          echo "PRODUCTION_CSS=$CSS_PATH"
+          echo "PRODUCTION_JS_BYTES=$(wc -c </tmp/app.js)"
+          echo "PRODUCTION_CSS_BYTES=$(wc -c </tmp/app.css)"
+      - name: Verify production API health
+        shell: bash
+        env:
+          BASE_URL: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          set -euxo pipefail
+          STATUS=$(curl -fsSL --retry 3 --max-time 30 -o /tmp/health.json -w '%{http_code}' "$BASE_URL/api/healthcheck")
+          test "$STATUS" = '200'
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' /tmp/health.json
+          cat /tmp/health.json
