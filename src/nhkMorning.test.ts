@@ -124,7 +124,7 @@ describe('NHK morning learning loop', () => {
     expect(isNhkSessionReadyToComplete(ready)).toBe(true);
   });
 
-  it('persists speech reviews, fills transcripts and keeps speaking as the primary path', () => {
+  it('persists speech reviews, fills transcripts and keeps manual fallback available', () => {
     const review: NhkSpeechReview = {
       id: 'review-1',
       mode: 'world',
@@ -162,16 +162,110 @@ describe('NHK morning learning loop', () => {
         candidateSentences: sourceSentences,
       }),
     );
-    const reviewed = applyNhkSpeechReview(base, review);
+    const reviewed = applyNhkSpeechReview(base, {
+      ...review,
+      audioBase64: 'review-audio-must-not-survive',
+    } as NhkSpeechReview);
     expect(reviewed.worldAnswer).toBe(review.transcript);
     expect(reviewed.speechReviews.world?.id).toBe('review-1');
     expect(reviewed.dailyInput?.world.characterReactionJa).toBe(review.characterReactionJa);
 
+    let saved = '';
+    saveNhkSessions([reviewed], {
+      getItem: () => saved,
+      setItem: (_key: string, value: string) => { saved = value; },
+    });
+    expect(saved).not.toContain('review-audio-must-not-survive');
+    const restored = JSON.parse(saved)[0] as NhkMorningSession;
+    expect(restored.speechReviews.world?.metrics.charactersPerSecond).toBe(0);
+
     const typedOnly = {...reviewed, recapText: '要約です。', recapRecordingSeconds: 0, worldRecordingSeconds: 0};
-    expect(isNhkSessionReadyToComplete(typedOnly)).toBe(false);
+    expect(isNhkSessionReadyToComplete(typedOnly)).toBe(true);
     expect(isNhkSessionReadyToComplete({...typedOnly, speechFallback: true})).toBe(true);
   });
 
+  it('loads a sparse legacy session without requiring the v2 fields', () => {
+    const payload = JSON.stringify([{
+      id: 'nhk-2026-08-30',
+      dateKey: '2026-08-30',
+      sourceUrl: '',
+      title: '旧セッション',
+      shadowText: '一文目です。\n二文目です。',
+      recapText: '',
+      keyExpression: '',
+      dailyVersion: '',
+      workVersion: '',
+      opinion: '',
+      worldAnswer: '',
+      recapRecordingSeconds: 0,
+      worldRecordingSeconds: 0,
+    }]);
+    const values = new Map<string, string>([['nihongo-nhk-morning-v1', payload]]);
+    const storage = {
+      getItem: (key: string) => values.get(key) || null,
+      setItem: () => undefined,
+    };
+    const migrated = loadNhkSessions(storage)[0];
+    expect(migrated.selectedSentences).toEqual(['一文目です。', '二文目です。']);
+    expect(migrated.schemaVersion).toBe(2);
+    expect(migrated.shadowRecordingSeconds).toBe(0);
+    expect(migrated.recallAttempts).toEqual([]);
+  });
+
+  it('persists only bounded text feedback and metrics, never audio-like fields', () => {
+    let saved = '';
+    const storage = {
+      getItem: () => saved,
+      setItem: (_key: string, value: string) => { saved = value; },
+    };
+    const coach = buildFallbackCoach('制度変更', sourceSentences);
+    const base = {
+      ...createNhkSession('2026-08-31'),
+      sourceUrl: 'https://www.mojidict.com/article/speech-test',
+      title: '制度変更',
+    };
+    const dailyInput = buildNhkDailyInput({
+      session: base,
+      coach,
+      selectedSentences: [sourceSentences[0]],
+      candidateSentences: sourceSentences,
+    });
+    const unsafe = {
+      ...applyNhkDailyInput(base, dailyInput),
+      recapText: '制度が変わるそうです。',
+      recapRecordingSeconds: 24,
+      recapFeedback: {
+        version: 1,
+        mode: 'recap',
+        expectedText: '来年から制度が変わります。',
+        transcript: '制度が変わるそうです。',
+        durationSeconds: 24,
+        usedFallback: false,
+        minimalRevision: '制度が変わるそうです。',
+        naturalJapanese: '来年から制度が変わるそうです。',
+        missingFacts: ['来年から'],
+        linkageFeedback: '时间信息放在句首更清楚。',
+        naturalnessFeedback: '自然です。',
+        rawAudio: 'nested-audio-must-not-survive',
+      },
+      dailyInput: {
+        ...dailyInput,
+        rawAudio: 'daily-input-audio-must-not-survive',
+        coach: {...coach, audioBase64: 'coach-audio-must-not-survive'},
+      },
+      audioBase64: 'top-level-audio-must-not-survive',
+      audioUrl: 'blob:must-not-survive',
+      blob: {size: 1234},
+    };
+
+    saveNhkSessions([unsafe as ReturnType<typeof createNhkSession>], storage);
+    expect(saved).not.toContain('audio-must-not-survive');
+    expect(saved).not.toContain('blob:must-not-survive');
+    const restored = loadNhkSessions(storage)[0];
+    expect(restored.recapFeedback?.transcript).toBe('制度が変わるそうです。');
+    expect(restored.recapRecordingSeconds).toBe(24);
+    expect(restored.dailyInput?.selectedTrainingSentences[0].sourceSentence).toBe(sourceSentences[0]);
+  });
 
   it('turns the daily input into a causal world event with a later callback', () => {
     const coach = buildFallbackCoach('フランスのSNS規制', sourceSentences);
@@ -231,5 +325,4 @@ describe('NHK morning learning loop', () => {
     expect(session.dailyInput?.world.callback.characterReactionJa).toBe(review.characterReactionJa);
     expect(pickNhkWorldCallbackTarget([session], '2026-09-04')).toBeNull();
   });
-
 });

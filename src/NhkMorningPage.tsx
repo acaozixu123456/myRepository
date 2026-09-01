@@ -8,17 +8,19 @@ import {
   Headphones,
   Link2,
   LoaderCircle,
+  Mic2,
   RotateCcw,
   Share2,
   Smartphone,
   Sparkles,
+  Square,
+  Volume2,
 } from 'lucide-react';
 import {api} from './api';
 import type {Story} from './content';
 import NhkWorldEvent, {type NhkWorldEventMode} from './NhkWorldEvent';
 import {
   NhkRecordingCoach,
-  NhkSentencePlayer,
   type NhkSpeechReview,
 } from './NhkSpeechCoach';
 import {
@@ -49,13 +51,43 @@ import {
   upsertNhkSession,
 } from './nhkMorning';
 import {
+  blobToBoundedBase64,
+  estimateBase64Length,
+  isSupportedSpeechMimeType,
+  MAX_AUDIO_BASE64_LENGTH,
+  MAX_AUDIO_BYTES,
+  MAX_RECORDING_SECONDS,
+  normalizeSpeechMimeType,
+  parseNhkSpeechFeedback,
+  type NhkRecapSpeechFeedback,
+  type NhkShadowSpeechFeedback,
+  type NhkSpeechFeedbackMode,
+} from './nhkSpeechFeedback';
+import {
   clearCapturedSharedMojiUrl,
   readCapturedSharedMojiUrl,
 } from './shareTarget';
 import './nhkMorning.css';
 
+type VoiceRecorderProps = {
+  label: string;
+  onDuration: (seconds: number) => void;
+  targetHint?: string;
+  analyzeLabel?: string;
+  onAnalyze?: (recording: VoiceRecording) => Promise<void>;
+  onDiscard?: () => void;
+};
+
+type RecorderState = 'idle' | 'recording' | 'ready' | 'error';
+type RecorderAnalysisState = 'idle' | 'loading' | 'done';
 type ArticleParseStatus = 'idle' | 'loading' | 'ready' | 'error';
 type CoachStatus = 'idle' | 'loading' | 'ready' | 'fallback';
+
+type VoiceRecording = {
+  blob: Blob;
+  mimeType: string;
+  durationSeconds: number;
+};
 
 type MojiArticleResponse = {
   ok?: boolean;
@@ -70,6 +102,14 @@ type NhkCoachResponse = {
   coach?: unknown;
   model?: string;
   cached?: boolean;
+  reason?: string;
+};
+
+type NhkSpeechFeedbackResponse = {
+  ok?: boolean;
+  feedback?: unknown;
+  model?: string;
+  usedFallback?: boolean;
   reason?: string;
 };
 
@@ -103,9 +143,261 @@ const resetSessionForSource = (session: NhkMorningSession, sourceUrl: string): N
   speechReviews: {},
   recallAttempts: [],
   recall: undefined,
+  speechFeedbackVersion: undefined,
+  shadowFeedback: undefined,
+  recapFeedback: undefined,
   completedAt: undefined,
 });
 
+const preferredRecorderMimeType = (): string => {
+  const candidates = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg;codecs=opus'];
+  if (typeof MediaRecorder === 'undefined' || typeof MediaRecorder.isTypeSupported !== 'function') return '';
+  return candidates.find(value => MediaRecorder.isTypeSupported(value)) || '';
+};
+
+function VoiceRecorder({label, onDuration, targetHint, analyzeLabel, onAnalyze, onDiscard}: VoiceRecorderProps) {
+  const [state, setState] = useState<RecorderState>('idle');
+  const [analysisState, setAnalysisState] = useState<RecorderAnalysisState>('idle');
+  const [seconds, setSeconds] = useState(0);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<BlobPart[]>([]);
+  const blobRef = useRef<Blob | null>(null);
+  const audioUrlRef = useRef<string | null>(null);
+  const startedAtRef = useRef(0);
+  const timerRef = useRef<number | null>(null);
+
+  const stopTimer = () => {
+    if (timerRef.current !== null) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const stopStream = () => {
+    streamRef.current?.getTracks().forEach(track => track.stop());
+    streamRef.current = null;
+  };
+
+  const replaceAudioUrl = (next: string | null) => {
+    if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+    audioUrlRef.current = next;
+    setAudioUrl(next);
+  };
+
+  useEffect(() => () => {
+    stopTimer();
+    if (recorderRef.current?.state === 'recording') {
+      recorderRef.current.onstop = null;
+      recorderRef.current.stop();
+    }
+    stopStream();
+    if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+    audioUrlRef.current = null;
+    blobRef.current = null;
+  }, []);
+
+  const discardRecording = () => {
+    replaceAudioUrl(null);
+    blobRef.current = null;
+    chunksRef.current = [];
+    setSeconds(0);
+    setState('idle');
+    setAnalysisState('idle');
+    setError('');
+    setNotice('');
+    onDuration(0);
+    onDiscard?.();
+  };
+
+  const start = async () => {
+    if (blobRef.current || audioUrlRef.current) discardRecording();
+    setError('');
+    setNotice('');
+    setAnalysisState('idle');
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+      setState('error');
+      setError('这个浏览器暂时不能录音。你仍可在下方手动填写实际说出的内容。');
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+      const mimeType = preferredRecorderMimeType();
+      const recorder = new MediaRecorder(stream, mimeType ? {mimeType} : undefined);
+      streamRef.current = stream;
+      recorderRef.current = recorder;
+      chunksRef.current = [];
+      startedAtRef.current = Date.now();
+      setSeconds(0);
+      setState('recording');
+      recorder.ondataavailable = event => {
+        if (event.data.size > 0) chunksRef.current.push(event.data);
+      };
+      recorder.onstop = () => {
+        stopTimer();
+        const duration = Math.min(MAX_RECORDING_SECONDS, Math.max(1, Math.round((Date.now() - startedAtRef.current) / 1000)));
+        const blob = new Blob(chunksRef.current, {type: recorder.mimeType || 'audio/webm'});
+        recorderRef.current = null;
+        chunksRef.current = [];
+        if (!isSupportedSpeechMimeType(blob.type)) {
+          blobRef.current = null;
+          setState('error');
+          setError('这个录音格式暂时不能分析，请换浏览器或重新录制。');
+          onDuration(0);
+          stopStream();
+          return;
+        }
+        if (blob.size <= 0) {
+          blobRef.current = null;
+          setState('error');
+          setError('没有录到声音，请重新录制。');
+          onDuration(0);
+          stopStream();
+          return;
+        }
+        if (blob.size > MAX_AUDIO_BYTES || estimateBase64Length(blob.size) > MAX_AUDIO_BASE64_LENGTH) {
+          blobRef.current = null;
+          setState('error');
+          setError('录音超过约 2 MB 的分析请求上限，请缩短后重新录制。');
+          onDuration(0);
+          stopStream();
+          return;
+        }
+        blobRef.current = blob;
+        const nextUrl = URL.createObjectURL(blob);
+        replaceAudioUrl(nextUrl);
+        setSeconds(duration);
+        setState('ready');
+        onDuration(duration);
+        stopStream();
+      };
+      recorder.onerror = () => {
+        stopTimer();
+        stopStream();
+        recorderRef.current = null;
+        chunksRef.current = [];
+        blobRef.current = null;
+        setState('error');
+        setError('录音发生错误，请重新录制。');
+        onDuration(0);
+      };
+      recorder.start(250);
+      timerRef.current = window.setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startedAtRef.current) / 1000);
+        setSeconds(Math.min(MAX_RECORDING_SECONDS, elapsed));
+        if (elapsed >= MAX_RECORDING_SECONDS && recorder.state === 'recording') {
+          setNotice('已到 60 秒上限，录音已自动停止。');
+          recorder.stop();
+        }
+      }, 250);
+    } catch {
+      stopTimer();
+      stopStream();
+      setState('error');
+      setError('没有取得麦克风权限。');
+    }
+  };
+
+  const stop = () => {
+    if (recorderRef.current?.state === 'recording') recorderRef.current.stop();
+  };
+
+  const analyze = async () => {
+    const blob = blobRef.current;
+    if (!blob || !onAnalyze || state !== 'ready') return;
+    setError('');
+    setAnalysisState('loading');
+    try {
+      await onAnalyze({
+        blob,
+        mimeType: normalizeSpeechMimeType(blob.type),
+        durationSeconds: seconds,
+      });
+      setAnalysisState('done');
+    } catch (caught) {
+      const message = caught instanceof Error ? caught.message : '分析失败，请稍后重试。';
+      setError(message);
+      setAnalysisState('idle');
+    }
+  };
+
+  return (
+    <div className={`nhk-recorder ${onAnalyze ? 'analyzable' : ''}`.trim()}>
+      <div>
+        <strong>{label}</strong>
+        <small>{state === 'recording' ? `${seconds}/60秒` : state === 'ready' ? `${seconds}秒 · ${Math.ceil((blobRef.current?.size || 0) / 1024)} KB` : targetHint || '录音只在本次页面临时使用'}</small>
+      </div>
+      {state === 'recording' ? (
+        <button className="recording" onClick={stop}><Square size={17} fill="currentColor" />停止</button>
+      ) : (
+        <button disabled={analysisState === 'loading'} onClick={start}><Mic2 size={17} />{state === 'ready' ? '再录一次' : '开始录音'}</button>
+      )}
+      {onAnalyze && <p className="nhk-recorder-consent">停止录音不会上传。只有点击“{analyzeLabel || '分析'}”后，这段所选录音才会临时上传用于分析；服务端不会存储原始音频。</p>}
+      {audioUrl && <audio controls src={audioUrl} />}
+      {state === 'ready' && onAnalyze && (
+        <button className="recorder-analyze" disabled={analysisState === 'loading'} onClick={analyze}>
+          {analysisState === 'loading' ? <LoaderCircle className="nhk-spin" size={15} /> : <Sparkles size={15} />}
+          {analysisState === 'loading' ? '正在分析' : analysisState === 'done' ? '重新分析' : analyzeLabel || '分析'}
+        </button>
+      )}
+      {state === 'ready' && <button className="recorder-reset" disabled={analysisState === 'loading'} onClick={discardRecording}><RotateCcw size={14} />清除录音</button>}
+      {analysisState === 'done' && <small className="nhk-recorder-done">分析完成；原始录音仍只保留在本页，清除或重录会立即丢弃。</small>}
+      {notice && <p className="nhk-recorder-notice">{notice}</p>}
+      {error && <p>{error}</p>}
+    </div>
+  );
+}
+
+const speechErrorMessage = (reason: string): string => {
+  if (reason === 'daily_quota' || reason === 'client_quota') return '今天的语音分析额度已用完。录音仍未上传保存，你可以手动填写后继续。';
+  if (reason === 'transcription_failed') return '没有取得可靠的日语转写。请靠近麦克风并缩短后重试。';
+  if (reason === 'speech_timeout') return '语音分析超时。录音仍留在本页，可以直接重试。';
+  if (reason === 'invalid_input' || reason === 'content_type') return '录音格式、时长或大小不符合分析要求，请重新录制。';
+  return '语音分析暂时不可用。录音仍留在本页，你可以重试或手动填写。';
+};
+
+function ShadowFeedbackCard({feedback}: {feedback: NhkShadowSpeechFeedback}) {
+  return (
+    <div className="nhk-speech-feedback shadow">
+      <div><small>实际转写</small><strong>{feedback.transcript}</strong></div>
+      <section>
+        <span>漏说</span>
+        <p>{feedback.omissions.length ? feedback.omissions.join(' ／ ') : '没有检出明确漏说'}</p>
+      </section>
+      <section>
+        <span>替换</span>
+        <p>{feedback.substitutions.length
+          ? feedback.substitutions.map(item => `「${item.expected}」→「${item.heard}」`).join(' ／ ')
+          : '没有检出明确替换'}</p>
+      </section>
+      <section>
+        <span>助词</span>
+        <p>{feedback.particleIssues.length
+          ? feedback.particleIssues.map(item => `「${item.expected}」→「${item.heard}」（${item.context}）`).join(' ／ ')
+          : '没有检出明确助词问题'}</p>
+      </section>
+      <blockquote>{feedback.retryTip}</blockquote>
+      <small className="nhk-secondary-metric">文字一致度 {feedback.accuracyPercent}% · 仅作辅助，不是发音分数</small>
+    </div>
+  );
+}
+
+function RecapFeedbackCard({feedback}: {feedback: NhkRecapSpeechFeedback}) {
+  return (
+    <div className="nhk-speech-feedback recap">
+      <div><small>实际转写</small><strong>{feedback.transcript}</strong></div>
+      <section><span>最小修改</span><p lang="ja">{feedback.minimalRevision}</p></section>
+      <section><span>更自然的口语</span><p lang="ja">{feedback.naturalJapanese}</p></section>
+      <section><span>缺少的信息</span><p>{feedback.missingFacts.length ? feedback.missingFacts.join(' ／ ') : '主要信息已覆盖'}</p></section>
+      <section><span>连接</span><p>{feedback.linkageFeedback}</p></section>
+      <section><span>自然度</span><p>{feedback.naturalnessFeedback}</p></section>
+      {feedback.usedFallback && <small className="nhk-secondary-metric">本次为转写后的确定性文字对照；未生成扩展教练建议。</small>}
+    </div>
+  );
+}
 type NhkMorningPageProps = {
   worldStory: Story | null;
   onEnterWorld: () => void;
@@ -135,12 +427,14 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const [coach, setCoach] = useState<NhkCoachResult | null>(initialInput?.coach || null);
   const [coachStatus, setCoachStatus] = useState<CoachStatus>(initialInput ? 'ready' : 'idle');
   const [coachModel, setCoachModel] = useState(initialInput?.coachModel || '');
+  const [playbackStatus, setPlaybackStatus] = useState<'idle' | 'playing' | 'error'>('idle');
   const [showShareHelp, setShowShareHelp] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState('');
   const draftRef = useRef(draft);
   const selectedRef = useRef(selectedSentences);
   const parseRequestRef = useRef(0);
   const coachRequestRef = useRef(0);
+  const speechRequestRef = useRef(0);
   const selectionTouchedRef = useRef(false);
   const sharedHandledRef = useRef('');
 
@@ -197,6 +491,14 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     () => pickCoachRecommendation(coach, selectedSentences, articleSentences),
     [coach, selectedSentences, articleSentences],
   );
+  const primarySentence = primaryRecommendation?.sentence || selectedSentences[0] || '';
+  const primarySentenceRef = useRef(primarySentence);
+
+  useEffect(() => { primarySentenceRef.current = primarySentence; }, [primarySentence]);
+
+  useEffect(() => () => {
+    if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+  }, []);
 
   const applyCoachFields = (
     session: NhkMorningSession,
@@ -360,6 +662,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   };
 
   const toggleSentence = (sentence: string) => {
+    speechRequestRef.current += 1;
     const selected = selectedRef.current.includes(sentence);
     if (!selected && selectedRef.current.length >= 3) return;
     selectionTouchedRef.current = true;
@@ -379,6 +682,9 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       speechFallback: false,
       speechReviews: {},
       recallAttempts: [],
+      speechFeedbackVersion: undefined,
+      shadowFeedback: undefined,
+      recapFeedback: undefined,
       completedAt: undefined,
     };
     persist(applyCoachFields(resetOutput, coach, nextSelected, articleSentences, coachModel));
@@ -388,6 +694,85 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     const next = applyCoachFields(draftRef.current, coach, selectedRef.current, articleSentences, coachModel);
     persist(next);
     setStep(1);
+  };
+
+  const playPrimarySentence = () => {
+    setPlaybackStatus('idle');
+    if (!primarySentence || typeof speechSynthesis === 'undefined' || typeof SpeechSynthesisUtterance === 'undefined') {
+      setPlaybackStatus('error');
+      return;
+    }
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(primarySentence);
+    utterance.lang = 'ja-JP';
+    utterance.rate = 0.88;
+    const japaneseVoice = speechSynthesis.getVoices().find(voice => voice.lang.toLowerCase().startsWith('ja'));
+    if (japaneseVoice) utterance.voice = japaneseVoice;
+    utterance.onend = () => setPlaybackStatus('idle');
+    utterance.onerror = () => setPlaybackStatus('error');
+    setPlaybackStatus('playing');
+    speechSynthesis.speak(utterance);
+  };
+
+  const analyzeSpeech = async (mode: NhkSpeechFeedbackMode, recording: VoiceRecording) => {
+    if (!primarySentence) throw new Error('没有可对照的原句，请返回上一步重新选择。');
+    const request = ++speechRequestRef.current;
+    const expectedText = primarySentence;
+    const sessionId = draftRef.current.id;
+    const sourceUrl = draftRef.current.sourceUrl;
+    const contextText = [draftRef.current.title, ...selectedRef.current].filter(Boolean).join('\n');
+    try {
+      const audioBase64 = await blobToBoundedBase64(recording.blob);
+      const {data} = await api.post<NhkSpeechFeedbackResponse>('/api/nhk-speech-feedback', {
+        mode,
+        mimeType: recording.mimeType,
+        durationSeconds: recording.durationSeconds,
+        expectedText,
+        contextText,
+        audioBase64,
+      });
+      if (!data?.ok) throw new Error(data?.reason || 'speech_unavailable');
+      const feedback = parseNhkSpeechFeedback(data.feedback, mode);
+      if (!feedback || feedback.expectedText !== expectedText) throw new Error('invalid_feedback');
+      if (request !== speechRequestRef.current || draftRef.current.id !== sessionId
+        || draftRef.current.sourceUrl !== sourceUrl || primarySentenceRef.current !== expectedText) return;
+      if (feedback.mode === 'shadow') {
+        patch({
+          speechFeedbackVersion: 1,
+          shadowRecordingSeconds: recording.durationSeconds,
+          shadowFeedback: feedback,
+        });
+      } else {
+        patch({
+          speechFeedbackVersion: 1,
+          recapRecordingSeconds: recording.durationSeconds,
+          recapFeedback: feedback,
+          recapText: feedback.transcript,
+        });
+      }
+    } catch (caught) {
+      const reason = caught instanceof Error ? caught.message : 'speech_unavailable';
+      if (/[　-鿿]/.test(reason)) throw caught;
+      throw new Error(speechErrorMessage(reason));
+    }
+  };
+
+  const discardShadowFeedback = () => {
+    speechRequestRef.current += 1;
+    patch({
+      shadowFeedback: undefined,
+      speechFeedbackVersion: draftRef.current.recapFeedback ? 1 : undefined,
+    });
+  };
+
+  const discardRecapFeedback = () => {
+    speechRequestRef.current += 1;
+    const hadFeedback = Boolean(draftRef.current.recapFeedback);
+    patch({
+      recapFeedback: undefined,
+      recapText: hadFeedback ? '' : draftRef.current.recapText,
+      speechFeedbackVersion: draftRef.current.shadowFeedback ? 1 : undefined,
+    });
   };
 
   const completeToday = () => {
@@ -602,45 +987,62 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
             <h1>先跟顺，再关掉原文说出来。</h1>
             <p>影子跟读练语流；脱稿复述检验你是否真的听懂。</p>
 
-            {primaryRecommendation && (
-              <>
-                <NhkSentencePlayer sentence={primaryRecommendation.sentence} chunks={primaryRecommendation.chunks} />
-                <div className="nhk-shadow-guide">
-                  <div><small>今日核心 · 影子切分</small><strong>{primaryRecommendation.sentence}</strong></div>
-                  <div className="nhk-chunks">
-                    {primaryRecommendation.chunks.map((chunk, index) => <span key={`${index}-${chunk}`}>{chunk}</span>)}
-                  </div>
-                  <p><b>{primaryRecommendation.expression}</b><span>{primaryRecommendation.meaningZh}</span></p>
-                </div>
-                <NhkRecordingCoach
-                  label="跟读后再说一次"
-                  mode="shadow"
-                  referenceText={primaryRecommendation.sentence}
-                  summary={coach?.summaryJa || ''}
-                  targetExpression={primaryRecommendation.expression}
-                  review={draft.speechReviews.shadow}
-                  onDuration={seconds => patch({shadowRecordingSeconds: seconds})}
-                  onReview={saveSpeechReview}
-                  onUnavailable={() => patch({speechFallback: true})}
-                />
-              </>
+            {primarySentence && (
+              <div className="nhk-shadow-guide">
+                <div><small>{primaryRecommendation ? '今日核心 · ' : ''}原句跟读</small><strong>{primarySentence}</strong></div>
+                {primaryRecommendation && (
+                  <>
+                    <div className="nhk-chunks">
+                      {primaryRecommendation.chunks.map((chunk, index) => <span key={`${index}-${chunk}`}>{chunk}</span>)}
+                    </div>
+                    <p><b>{primaryRecommendation.expression}</b><span>{primaryRecommendation.meaningZh}</span></p>
+                  </>
+                )}
+                <button className="nhk-play-source" type="button" onClick={playPrimarySentence}>
+                  <Volume2 size={16} />{playbackStatus === 'playing' ? '正在播放原句' : '播放短句（日本语 TTS）'}
+                </button>
+                {playbackStatus === 'error' && <small className="nhk-playback-error">此浏览器无法播放语音；仍可看原句跟读或使用手动复述。</small>}
+              </div>
             )}
 
-            <NhkRecordingCoach
-              label="20～40秒脱稿复述"
-              mode="recap"
-              referenceText={draft.shadowText || primaryRecommendation?.sentence || draft.keyExpression}
-              summary={coach?.summaryJa || ''}
-              targetExpression={draft.keyExpression}
-              review={draft.speechReviews.recap}
-              onDuration={seconds => patch({recapRecordingSeconds: seconds})}
-              onReview={saveSpeechReview}
-              onUnavailable={() => patch({speechFallback: true})}
+            <div className="nhk-speech-stage-head"><small>1 · SHADOW</small><strong>跟着原句说一遍</strong><span>先听短句，再录下同一句；停止后由你决定是否上传分析。</span></div>
+            <VoiceRecorder
+              key={`shadow-${draft.id}-${primarySentence}`}
+              label="原句跟读"
+              targetHint="建议 5～15 秒 · 最长 60 秒"
+              analyzeLabel="分析跟读"
+              onDuration={seconds => patch({shadowRecordingSeconds: seconds})}
+              onAnalyze={recording => analyzeSpeech('shadow', recording)}
+              onDiscard={discardShadowFeedback}
             />
-            <label>系统转写（可修正）<textarea value={draft.recapText} onChange={event => patch({recapText: event.target.value})} placeholder="录音分析后自动填写；不能录音时可手动输入" rows={5} /></label>
+            {draft.shadowFeedback?.expectedText === primarySentence && <ShadowFeedbackCard feedback={draft.shadowFeedback} />}
+
+            <div className="nhk-speech-stage-head recap"><small>2 · RECAP</small><strong>关掉原文，脱稿复述</strong><span>用 20～40 秒说出你真正理解的内容；不要照抄，也不用追求完整。</span></div>
+            <VoiceRecorder
+              key={`recap-${draft.id}-${primarySentence}`}
+              label="20～40 秒脱稿复述"
+              targetHint="建议 20～40 秒 · 最长 60 秒"
+              analyzeLabel="分析复述"
+              onDuration={seconds => patch({recapRecordingSeconds: seconds})}
+              onAnalyze={recording => analyzeSpeech('recap', recording)}
+              onDiscard={discardRecapFeedback}
+            />
+            {draft.recapFeedback?.expectedText === primarySentence && <RecapFeedbackCard feedback={draft.recapFeedback} />}
+            <label>我刚才真正说出来的内容
+              <textarea
+                value={draft.recapText}
+                onChange={event => patch({
+                  recapText: event.target.value,
+                  recapFeedback: undefined,
+                  speechFeedbackVersion: draftRef.current.shadowFeedback ? 1 : undefined,
+                })}
+                placeholder="语音分析后会自动填入实际转写；浏览器不支持录音时，可在这里手动填写"
+                rows={5}
+              />
+            </label>
             <button className="nhk-text-toggle" onClick={() => setShowOriginal(value => !value)}>{showOriginal ? '收起原句' : '说完后看原句'}</button>
-            {showOriginal && <blockquote>{draft.shadowText}</blockquote>}
-            <div className="nhk-step-actions"><button onClick={() => setStep(0)}>上一步</button><button disabled={!draft.recapText.trim() || (!draft.recapRecordingSeconds && !draft.speechFallback)} onClick={() => setStep(2)}>用进世界</button></div>
+            {showOriginal && <blockquote>{primarySentence}</blockquote>}
+            <div className="nhk-step-actions"><button onClick={() => setStep(0)}>上一步</button><button disabled={!draft.recapText.trim()} onClick={() => setStep(2)}>用进世界</button></div>
           </div>
         )}
 

@@ -6,6 +6,11 @@ import {
   type NhkCoachResult,
 } from './nhkCoach';
 import type {NhkSpeechMode, NhkSpeechReview} from './NhkSpeechCoach';
+import {
+  parseNhkSpeechFeedback,
+  type NhkRecapSpeechFeedback,
+  type NhkShadowSpeechFeedback,
+} from './nhkSpeechFeedback';
 
 export type NhkRecallRating = 'good' | 'close' | 'miss';
 export type NhkRecallIntervalDay = 1 | 3 | 7;
@@ -100,6 +105,9 @@ export type NhkMorningSession = {
   worldRecordingSeconds: number;
   speechFallback: boolean;
   speechReviews: Partial<Record<NhkSpeechMode, NhkSpeechReview>>;
+  speechFeedbackVersion?: 1;
+  shadowFeedback?: NhkShadowSpeechFeedback;
+  recapFeedback?: NhkRecapSpeechFeedback;
   completedAt?: number;
   recallAttempts: NhkRecallAttempt[];
   recall?: {
@@ -424,6 +432,60 @@ const sentenceListFromText = (value: string): string[] => value
   .filter(Boolean)
   .slice(0, 3);
 
+const cleanMultiline = (value: unknown, max: number): string => typeof value === 'string'
+  ? value.replace(/\r\n?/g, '\n').trim().slice(0, max)
+  : '';
+
+const recordingSeconds = (value: unknown): number => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric > 0 ? Math.min(60, Math.round(numeric)) : 0;
+};
+
+const timestamp = (value: unknown): number | undefined => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric > 0 ? Math.round(numeric) : undefined;
+};
+
+const normalizeRecall = (value: unknown): NhkMorningSession['recall'] => {
+  if (!value || typeof value !== 'object') return undefined;
+  const recall = value as Partial<NonNullable<NhkMorningSession['recall']>>;
+  const rating = recall.rating === 'good' || recall.rating === 'close' || recall.rating === 'miss' ? recall.rating : null;
+  const dateKey = clean(recall.dateKey, 10);
+  const completedAt = timestamp(recall.completedAt);
+  if (!rating || !dateKey || !completedAt) return undefined;
+  return {
+    dateKey,
+    rating,
+    recordingSeconds: recordingSeconds(recall.recordingSeconds),
+    completedAt,
+  };
+};
+
+const normalizeCoachResult = (value: unknown): NhkCoachResult | null => {
+  if (!isNhkCoachResult(value)) return null;
+  const labels: NhkCoachLabel[] = ['核心', '跟读', '迁移'];
+  const recommendations = value.recommendations.map((item, index) => ({
+    sentenceIndex: Number.isInteger(item.sentenceIndex) && item.sentenceIndex >= 0 ? item.sentenceIndex : index,
+    sentence: clean(item.sentence, 280),
+    label: labels.includes(item.label) ? item.label : labels[index] || '迁移',
+    reasonZh: clean(item.reasonZh, 160),
+    chunks: item.chunks.map(chunk => clean(chunk, 100)).filter(Boolean).slice(0, 6),
+    expression: clean(item.expression, 120),
+    meaningZh: clean(item.meaningZh, 240),
+    dailyVersion: clean(item.dailyVersion, 300),
+    workVersion: clean(item.workVersion, 300),
+  })).filter(item => item.sentence).slice(0, 3);
+  if (!recommendations.length) return null;
+  return {
+    summaryJa: clean(value.summaryJa, 300),
+    summaryZh: clean(value.summaryZh, 300),
+    recommendations,
+    opinionQuestion: clean(value.opinionQuestion, 300),
+    worldSetupZh: clean(value.worldSetupZh, 300),
+    worldPromptJa: clean(value.worldPromptJa, 300),
+  };
+};
+
 const migratedLegacyAttempt = (session: NhkMorningSession): NhkRecallAttempt[] => {
   if (!session.recall) return [];
   const elapsed = daysBetween(session.dateKey, session.recall.dateKey);
@@ -439,15 +501,70 @@ const migratedLegacyAttempt = (session: NhkMorningSession): NhkRecallAttempt[] =
 };
 
 const SPEECH_MODES: NhkSpeechMode[] = ['shadow', 'recap', 'world', 'recall'];
+const UNSUPPORTED_REVIEW_MEASUREMENT = /(?:停顿|間|pause).{0,16}\d+(?:\.\d+)?\s*(?:秒|ms|毫秒)|(?:延迟|latency).{0,16}\d+/iu;
+
+const boundedNumber = (value: unknown, min: number, max: number): number => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? Math.max(min, Math.min(max, numeric)) : 0;
+};
+
+const reviewTextList = (value: unknown, maxItems: number, maxLength: number): string[] => Array.isArray(value)
+  ? value.map(item => clean(item, maxLength)).filter(Boolean).slice(0, maxItems)
+  : [];
 
 const normalizeSpeechReview = (value: unknown): NhkSpeechReview | undefined => {
   if (!value || typeof value !== 'object') return undefined;
   const review = value as Partial<NhkSpeechReview>;
-  if (typeof review.id !== 'string'
-    || !SPEECH_MODES.includes(review.mode as NhkSpeechMode)
-    || typeof review.transcript !== 'string'
-    || typeof review.analyzedAt !== 'number') return undefined;
-  return review as NhkSpeechReview;
+  const id = clean(review.id, 120);
+  const mode = review.mode as NhkSpeechMode;
+  const transcript = cleanMultiline(review.transcript, 1_200);
+  const analyzedAt = timestamp(review.analyzedAt);
+  if (!id || !SPEECH_MODES.includes(mode) || !transcript || !analyzedAt) return undefined;
+  const differences = (items: unknown): NhkSpeechReview['substitutions'] => Array.isArray(items)
+    ? items.map(item => {
+      const source = item && typeof item === 'object' ? item as Record<string, unknown> : {};
+      return {
+        heard: clean(source.heard, 160),
+        expected: clean(source.expected, 160),
+        noteZh: clean(source.noteZh, 240),
+      };
+    }).filter(item => item.heard || item.expected).slice(0, 8)
+    : [];
+  const omissions: NhkSpeechReview['omissions'] = Array.isArray(review.omissions)
+    ? review.omissions.map(item => ({
+      expected: clean(item?.expected, 160),
+      noteZh: clean(item?.noteZh, 240),
+    })).filter(item => item.expected).slice(0, 8)
+    : [];
+  const metrics = review.metrics && typeof review.metrics === 'object' ? review.metrics : undefined;
+  return {
+    id,
+    mode,
+    transcript,
+    summaryZh: clean(review.summaryZh, 600),
+    strengthsZh: reviewTextList(review.strengthsZh, 8, 240),
+    omissions,
+    substitutions: differences(review.substitutions),
+    particles: differences(review.particles),
+    pauseAdviceZh: reviewTextList(review.pauseAdviceZh, 8, 240)
+      .filter(item => !UNSUPPORTED_REVIEW_MEASUREMENT.test(item)),
+    minimalRevisionJa: cleanMultiline(review.minimalRevisionJa, 1_200),
+    naturalVersionJa: cleanMultiline(review.naturalVersionJa, 1_200),
+    characterReactionJa: clean(review.characterReactionJa, 300),
+    characterReactionZh: clean(review.characterReactionZh, 300),
+    metrics: {
+      textAccuracy: boundedNumber(metrics?.textAccuracy, 0, 100),
+      contentScore: boundedNumber(metrics?.contentScore, 0, 100),
+      omissionRate: boundedNumber(metrics?.omissionRate, 0, 100),
+      substitutionCount: Math.round(boundedNumber(metrics?.substitutionCount, 0, 50)),
+      particleIssueCount: Math.round(boundedNumber(metrics?.particleIssueCount, 0, 50)),
+      targetExpressionUsed: metrics?.targetExpressionUsed === true,
+      charactersPerSecond: 0,
+    },
+    analyzedAt,
+    transcriptionModel: clean(review.transcriptionModel, 80),
+    feedbackModel: clean(review.feedbackModel, 80),
+  };
 };
 
 const normalizeSpeechReviews = (value: unknown): Partial<Record<NhkSpeechMode, NhkSpeechReview>> => {
@@ -463,24 +580,27 @@ const normalizeSpeechReviews = (value: unknown): Partial<Record<NhkSpeechMode, N
 
 const normalizeAttempts = (value: unknown, fallback: NhkRecallAttempt[]): NhkRecallAttempt[] => {
   if (!Array.isArray(value)) return fallback;
-  const attempts = value.filter(item => item && typeof item === 'object').map(item => item as Partial<NhkRecallAttempt>)
-    .filter(item => RECALL_INTERVALS.includes(item.intervalDay as NhkRecallIntervalDay)
-      && typeof item.dateKey === 'string'
-      && typeof item.rating === 'string'
-      && typeof item.completedAt === 'number')
-    .map(item => {
-      const review = normalizeSpeechReview(item.review);
-      return {
-        intervalDay: item.intervalDay as NhkRecallIntervalDay,
-        dueDateKey: clean(item.dueDateKey, 10) || '',
-        dateKey: item.dateKey!,
-        rating: item.rating as NhkRecallRating,
-        recordingSeconds: Number(item.recordingSeconds) || 0,
-        completedAt: item.completedAt!,
-        ...(review ? {review} : {}),
-      };
+  const attempts: NhkRecallAttempt[] = [];
+  for (const raw of value) {
+    if (!raw || typeof raw !== 'object') continue;
+    const item = raw as Partial<NhkRecallAttempt>;
+    const intervalDay = item.intervalDay as NhkRecallIntervalDay;
+    const rating = item.rating === 'good' || item.rating === 'close' || item.rating === 'miss' ? item.rating : null;
+    const dateKey = clean(item.dateKey, 10);
+    const completedAt = timestamp(item.completedAt);
+    if (!RECALL_INTERVALS.includes(intervalDay) || !rating || !dateKey || !completedAt) continue;
+    const review = normalizeSpeechReview(item.review);
+    attempts.push({
+      intervalDay,
+      dueDateKey: clean(item.dueDateKey, 10) || '',
+      dateKey,
+      rating,
+      recordingSeconds: recordingSeconds(item.recordingSeconds),
+      completedAt,
+      ...(review ? {review} : {}),
     });
-  return attempts.length ? attempts : fallback;
+  }
+  return attempts.length ? attempts.slice(0, 3).sort((a, b) => a.intervalDay - b.intervalDay) : fallback;
 };
 
 const normalizeWorldCallback = (value: unknown, fallback: NhkWorldCallback): NhkWorldCallback => {
@@ -504,9 +624,10 @@ const normalizeWorldCallback = (value: unknown, fallback: NhkWorldCallback): Nhk
 const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDailyInputV2 | undefined => {
   if (!value || typeof value !== 'object') return undefined;
   const input = value as Partial<NhkDailyInputV2>;
-  if (input.version !== 2 || !isNhkCoachResult(input.coach)) return undefined;
+  const coach = normalizeCoachResult(input.coach);
+  if (input.version !== 2 || !coach) return undefined;
   const selected = Array.isArray(input.selectedTrainingSentences)
-    ? input.selectedTrainingSentences.map(item => clean(item?.sourceSentence, 280)).filter(Boolean)
+    ? input.selectedTrainingSentences.map(item => clean(item?.sourceSentence, 280)).filter(Boolean).slice(0, 3)
     : session.selectedSentences;
   if (!selected.length) return undefined;
   const candidateSentences = Array.isArray(input.candidateSentences)
@@ -514,16 +635,25 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
     : selected;
   const rebuilt = buildNhkDailyInput({
     session: {...session, dailyInput: undefined},
-    coach: input.coach,
+    coach,
     selectedSentences: selected,
     candidateSentences,
     coachModel: clean(input.coachModel, 80),
-    generatedAt: typeof input.generatedAt === 'number' ? input.generatedAt : Date.now(),
+    generatedAt: timestamp(input.generatedAt) || Date.now(),
   });
-  const world = input.world && typeof input.world === 'object' ? input.world : undefined;
+  const world = input.world && typeof input.world === 'object'
+    ? input.world as Partial<NhkDailyInputV2['world']>
+    : undefined;
   const recallSchedule = Array.isArray(input.recallSchedule)
-    ? input.recallSchedule.filter(plan => plan && RECALL_INTERVALS.includes(plan.intervalDay) && typeof plan.dueDateKey === 'string')
+    ? input.recallSchedule.flatMap(plan => {
+      if (!plan || !RECALL_INTERVALS.includes(plan.intervalDay)) return [];
+      const dueDateKey = clean(plan.dueDateKey, 10);
+      return dueDateKey ? [{intervalDay: plan.intervalDay, dueDateKey}] : [];
+    }).slice(0, 3)
     : [];
+  const characterReaction = clean(world?.characterReaction, 600);
+  const characterReactionJa = clean(world?.characterReactionJa, 300);
+  const characterReactionZh = clean(world?.characterReactionZh, 300);
   return {
     ...rebuilt,
     userOpinion: clean(input.userOpinion, 1200) || session.opinion,
@@ -536,32 +666,55 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
       answer: clean(world?.answer, 1200) || session.worldAnswer,
       usedInWorld: Boolean(world?.usedInWorld),
       ...(typeof world?.enteredAt === 'number' ? {enteredAt: world.enteredAt} : {}),
-      ...(clean(world?.characterReaction, 600) ? {characterReaction: clean(world?.characterReaction, 600)} : {}),
-      ...(clean(world?.characterReactionJa, 300) ? {characterReactionJa: clean(world?.characterReactionJa, 300)} : {}),
-      ...(clean(world?.characterReactionZh, 300) ? {characterReactionZh: clean(world?.characterReactionZh, 300)} : {}),
+      ...(characterReaction ? {characterReaction} : {}),
+      ...(characterReactionJa ? {characterReactionJa} : {}),
+      ...(characterReactionZh ? {characterReactionZh} : {}),
       callback: normalizeWorldCallback(world?.callback, rebuilt.world.callback),
     },
     recallSchedule: recallSchedule.length === 3 ? recallSchedule : rebuilt.recallSchedule,
   };
 };
 
-const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => {
+export const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => {
+  const dateKey = clean(session.dateKey, 10);
+  const shadowText = cleanMultiline(session.shadowText, 1_600);
   const selectedSentences = Array.isArray(session.selectedSentences)
-    ? uniqueSentences(session.selectedSentences, 3)
-    : sentenceListFromText(session.shadowText || '');
-  const base: NhkMorningSession = {
-    ...createNhkSession(session.dateKey),
-    ...session,
+    ? session.selectedSentences.map(value => clean(value, 400)).filter(Boolean).slice(0, 3)
+    : sentenceListFromText(shadowText);
+  const shadowFeedback = parseNhkSpeechFeedback(session.shadowFeedback, 'shadow');
+  const recapFeedback = parseNhkSpeechFeedback(session.recapFeedback, 'recap');
+  const normalized: NhkMorningSession = {
     schemaVersion: 2,
+    id: clean(session.id, 120) || `nhk-${dateKey}`,
+    dateKey,
+    sourceUrl: clean(session.sourceUrl, 2_048),
+    title: clean(session.title, 300),
+    shadowText,
     selectedSentences,
-    shadowRecordingSeconds: Number(session.shadowRecordingSeconds) || 0,
+    recapText: cleanMultiline(session.recapText, 1_200),
+    keyExpression: clean(session.keyExpression, 240),
+    dailyVersion: cleanMultiline(session.dailyVersion, 600),
+    workVersion: cleanMultiline(session.workVersion, 600),
+    opinion: cleanMultiline(session.opinion, 1_200),
+    worldAnswer: cleanMultiline(session.worldAnswer, 1_200),
+    shadowRecordingSeconds: recordingSeconds(session.shadowRecordingSeconds),
+    recapRecordingSeconds: recordingSeconds(session.recapRecordingSeconds),
+    worldRecordingSeconds: recordingSeconds(session.worldRecordingSeconds),
     speechFallback: Boolean(session.speechFallback),
     speechReviews: normalizeSpeechReviews(session.speechReviews),
     recallAttempts: [],
   };
-  base.recallAttempts = normalizeAttempts(session.recallAttempts, migratedLegacyAttempt(base));
-  const dailyInput = normalizeDailyInput(session.dailyInput, base);
-  return dailyInput ? applyNhkDailyInput(base, dailyInput) : base;
+  const completedAt = timestamp(session.completedAt);
+  const recall = normalizeRecall(session.recall);
+  if (completedAt) normalized.completedAt = completedAt;
+  if (recall) normalized.recall = recall;
+  normalized.recallAttempts = normalizeAttempts(session.recallAttempts, migratedLegacyAttempt(normalized));
+  const dailyInput = normalizeDailyInput(session.dailyInput, normalized);
+  const aligned = dailyInput ? applyNhkDailyInput(normalized, dailyInput) : normalized;
+  if (shadowFeedback || recapFeedback) aligned.speechFeedbackVersion = 1;
+  if (shadowFeedback?.mode === 'shadow') aligned.shadowFeedback = shadowFeedback;
+  if (recapFeedback?.mode === 'recap') aligned.recapFeedback = recapFeedback;
+  return aligned;
 };
 
 const resolveStorage = (storage?: StorageLike): StorageLike | null => {
@@ -584,15 +737,16 @@ export const loadNhkSessions = (storage?: StorageLike): NhkMorningSession[] => {
 export const saveNhkSessions = (sessions: NhkMorningSession[], storage?: StorageLike): void => {
   const target = resolveStorage(storage);
   if (!target) return;
-  target.setItem(STORAGE_KEY, JSON.stringify(sessions.map(normalizeNhkSession)));
+  target.setItem(STORAGE_KEY, JSON.stringify(sessions.filter(isNhkSession).map(normalizeNhkSession)));
 };
 
 export const upsertNhkSession = (
   sessions: NhkMorningSession[],
   session: NhkMorningSession,
 ): NhkMorningSession[] => {
-  const next = sessions.filter(item => item.id !== session.id);
-  return [...next, normalizeNhkSession(session)].sort((a, b) => b.dateKey.localeCompare(a.dateKey));
+  const normalized = normalizeNhkSession(session);
+  const next = sessions.filter(item => item.id !== normalized.id);
+  return [...next, normalized].sort((a, b) => b.dateKey.localeCompare(a.dateKey));
 };
 
 export const findTodayNhkSession = (
@@ -692,13 +846,5 @@ export const suggestExpression = (shadowText: string): string => {
   return candidate ? `${candidate}。` : '';
 };
 
-export const isNhkSessionReadyToComplete = (session: NhkMorningSession): boolean => {
-  const recapSpoken = session.recapRecordingSeconds > 0 || session.speechFallback;
-  const worldSpoken = session.worldRecordingSeconds > 0 || session.speechFallback;
-  return Boolean(session.shadowText.trim()
-    && session.recapText.trim()
-    && session.keyExpression.trim()
-    && session.worldAnswer.trim()
-    && recapSpoken
-    && worldSpoken);
-};
+export const isNhkSessionReadyToComplete = (session: NhkMorningSession): boolean =>
+  Boolean(session.shadowText.trim() && session.recapText.trim() && session.keyExpression.trim() && session.worldAnswer.trim());
