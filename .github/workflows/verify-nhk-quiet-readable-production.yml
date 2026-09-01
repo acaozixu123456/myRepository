@@ -1,0 +1,96 @@
+name: Verify NHK quiet readable production
+
+on:
+  push:
+    branches: [nihongo-quiet-ui-production-verifier-20260902]
+    paths:
+      - '.github/workflows/verify-nhk-quiet-readable-production.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-quiet-ui-production-verifier-20260902
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Wait for the verified product commit and check it out
+        shell: bash
+        run: |
+          set -euxo pipefail
+          FOUND=false
+          for attempt in $(seq 1 36); do
+            git fetch origin nihongo-vercel
+            if git cat-file -e origin/nihongo-vercel:src/nhkStudyMode.ts \
+              && git show origin/nihongo-vercel:src/NhkMorningPage.tsx | grep -q "isNhkSessionReadyToComplete(draft, studyMode)" \
+              && git show origin/nihongo-vercel:src/NhkReviewPage.tsx | grep -q "不会伪装成口语分析成绩"; then
+              FOUND=true
+              break
+            fi
+            sleep 5
+          done
+          test "$FOUND" = true
+          PROD_HEAD=$(git rev-parse origin/nihongo-vercel)
+          echo "PROD_HEAD=$PROD_HEAD" >> "$GITHUB_ENV"
+          git worktree add /tmp/nihongo-production "$PROD_HEAD"
+      - name: Run independent production-source verification
+        working-directory: /tmp/nihongo-production
+        shell: bash
+        run: |
+          set -euxo pipefail
+          grep -q "recordNhkQuietWorldAnswer" src/nhkMorning.ts
+          grep -q "completionMode: studyMode" src/NhkMorningPage.tsx
+          grep -q "studyMode === 'quiet'" src/NhkMorningPage.tsx
+          grep -q "安静预习，不计口语成绩" src/NhkMorningPage.tsx
+          grep -q "responseMode: 'quiet'" src/nhkMorning.ts
+          grep -q "font-size:16px" src/nhkReadable.css
+          ! grep -q "speechSynthesis" src/NhkMorningPage.tsx
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+      - name: Record verified production evidence
+        working-directory: /tmp/nihongo-production
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p docs/verification
+          cat > docs/verification/NHK_QUIET_READABLE_UI_V1.json <<EOF
+          {
+            "result": "PASS",
+            "productionCommit": "$PROD_HEAD",
+            "scope": [
+              "explicit voice and quiet study modes",
+              "quiet daily recap and world answer",
+              "quiet day 1/3/7 recall",
+              "quiet causal callback",
+              "anytime review hub",
+              "weekly Boss speech score isolation",
+              "readable typography and simplified home hierarchy"
+            ],
+            "privacy": {
+              "quietWorkCountedAsSpeech": false,
+              "rawAudioPersisted": false
+            },
+            "verification": {
+              "typecheck": "PASS",
+              "tests": "PASS",
+              "productionBuild": "PASS"
+            },
+            "verifiedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/verification/NHK_QUIET_READABLE_UI_V1.json
+          git commit -m "Verify quiet study and readable NHK UI"
+          git fetch origin nihongo-vercel
+          test "$(git rev-parse origin/nihongo-vercel)" = "$PROD_HEAD"
+          git push origin HEAD:nihongo-vercel
