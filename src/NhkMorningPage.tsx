@@ -26,16 +26,20 @@ import {
   type NhkCoachResult,
 } from './nhkCoach';
 import {
+  applyNhkDailyInput,
+  buildNhkDailyInput,
   completedNhkStreak,
   createNhkSession,
   findTodayNhkSession,
   isNhkSessionReadyToComplete,
   loadNhkSessions,
+  markNhkDailyInputUsedInWorld,
   NhkMorningSession,
   NhkRecallRating,
-  pickRecallSession,
+  pickRecallTarget,
+  recordNhkRecallAttempt,
   saveNhkSessions,
-  suggestExpression,
+  syncNhkDailyInputUserFields,
   toDateKey,
   upsertNhkSession,
 } from './nhkMorning';
@@ -86,6 +90,7 @@ const resetSessionForSource = (session: NhkMorningSession, sourceUrl: string): N
   title: '',
   shadowText: '',
   selectedSentences: [],
+  dailyInput: undefined,
   recapText: '',
   keyExpression: '',
   dailyVersion: '',
@@ -94,6 +99,8 @@ const resetSessionForSource = (session: NhkMorningSession, sourceUrl: string): N
   worldAnswer: '',
   recapRecordingSeconds: 0,
   worldRecordingSeconds: 0,
+  recallAttempts: [],
+  recall: undefined,
   completedAt: undefined,
 });
 
@@ -213,17 +220,20 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const [sessions, setSessions] = useState<NhkMorningSession[]>(() => loadNhkSessions());
   const [draft, setDraft] = useState<NhkMorningSession>(() => findTodayNhkSession(loadNhkSessions(), todayKey) || createNhkSession(todayKey));
   const initialSentences = sessionSentences(draft);
+  const initialInput = draft.dailyInput;
+  const initialCandidates = initialInput?.candidateSentences?.length ? initialInput.candidateSentences : initialSentences;
   const [view, setView] = useState<PageView>('home');
   const [step, setStep] = useState(0);
   const [showOriginal, setShowOriginal] = useState(false);
   const [recallRevealed, setRecallRevealed] = useState(false);
   const [recallSeconds, setRecallSeconds] = useState(0);
-  const [articleSentences, setArticleSentences] = useState<string[]>(initialSentences);
+  const [articleSentences, setArticleSentences] = useState<string[]>(initialCandidates);
   const [selectedSentences, setSelectedSentences] = useState<string[]>(initialSentences);
-  const [parseStatus, setParseStatus] = useState<ArticleParseStatus>(initialSentences.length ? 'ready' : 'idle');
+  const [parseStatus, setParseStatus] = useState<ArticleParseStatus>(initialCandidates.length ? 'ready' : 'idle');
   const [parseError, setParseError] = useState('');
-  const [coach, setCoach] = useState<NhkCoachResult | null>(null);
-  const [coachStatus, setCoachStatus] = useState<CoachStatus>('idle');
+  const [coach, setCoach] = useState<NhkCoachResult | null>(initialInput?.coach || null);
+  const [coachStatus, setCoachStatus] = useState<CoachStatus>(initialInput ? 'ready' : 'idle');
+  const [coachModel, setCoachModel] = useState(initialInput?.coachModel || '');
   const [showShareHelp, setShowShareHelp] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState('');
   const draftRef = useRef(draft);
@@ -238,7 +248,8 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   useEffect(() => { selectedRef.current = selectedSentences; }, [selectedSentences]);
 
   const todaySession = useMemo(() => findTodayNhkSession(sessions, todayKey), [sessions, todayKey]);
-  const recallSession = useMemo(() => pickRecallSession(sessions, todayKey), [sessions, todayKey]);
+  const recallTarget = useMemo(() => pickRecallTarget(sessions, todayKey), [sessions, todayKey]);
+  const recallSession = recallTarget?.session || null;
   const streak = useMemo(() => completedNhkStreak(sessions, todayKey), [sessions, todayKey]);
   const recent = useMemo(() => sessions.filter(session => session.completedAt).slice(0, 3), [sessions]);
   const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
@@ -249,32 +260,35 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setSessions(current => upsertNhkSession(current, next));
   };
 
-  const patch = (values: Partial<NhkMorningSession>) => persist({...draftRef.current, ...values});
+  const patch = (values: Partial<NhkMorningSession>) =>
+    persist(syncNhkDailyInputUserFields({...draftRef.current, ...values}));
 
   const recommendationFor = (sentence: string): NhkCoachRecommendation | undefined =>
     coach?.recommendations.find(item => item.sentence === sentence);
 
   const primaryRecommendation = useMemo(
-    () => pickCoachRecommendation(coach, selectedSentences),
-    [coach, selectedSentences],
+    () => pickCoachRecommendation(coach, selectedSentences, articleSentences),
+    [coach, selectedSentences, articleSentences],
   );
 
   const applyCoachFields = (
     session: NhkMorningSession,
     result: NhkCoachResult | null,
     selected: string[],
+    candidates: string[] = articleSentences,
+    model = coachModel,
   ): NhkMorningSession => {
-    const recommendation = pickCoachRecommendation(result, selected);
-    const shadowText = selected.join('\n');
-    const fallbackExpression = suggestExpression(shadowText);
-    return {
-      ...session,
+    if (!selected.length) {
+      return {...session, selectedSentences: [], shadowText: '', dailyInput: undefined, keyExpression: '', dailyVersion: '', workVersion: ''};
+    }
+    const resolvedCoach = result || buildFallbackCoach(session.title || 'NHK日语听力', candidates.length ? candidates : selected);
+    return applyNhkDailyInput(session, buildNhkDailyInput({
+      session,
+      coach: resolvedCoach,
       selectedSentences: selected,
-      shadowText,
-      keyExpression: recommendation?.expression || session.keyExpression || fallbackExpression,
-      dailyVersion: recommendation?.dailyVersion || session.dailyVersion || fallbackExpression,
-      workVersion: recommendation?.workVersion || session.workVersion,
-    };
+      candidateSentences: candidates.length ? candidates : selected,
+      coachModel: model || 'local-fallback',
+    }));
   };
 
   const loadCoach = async (
@@ -286,13 +300,14 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     const request = ++coachRequestRef.current;
     const fallback = buildFallbackCoach(title, sentences);
     setCoach(fallback);
+    setCoachModel('local-fallback');
     setCoachStatus('loading');
 
     if (autoSelect && !selectionTouchedRef.current) {
       const recommended = fallback.recommendations.map(item => item.sentence).slice(0, 3);
       selectedRef.current = recommended;
       setSelectedSentences(recommended);
-      persist(applyCoachFields(baseSession, fallback, recommended));
+      persist(applyCoachFields(baseSession, fallback, recommended, sentences, 'local-fallback'));
     }
 
     try {
@@ -300,39 +315,51 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       if (request !== coachRequestRef.current) return;
       if (!data?.ok || !isNhkCoachResult(data.coach)) throw new Error(data?.reason || 'coach_failed');
       const generated = data.coach;
+      const generatedModel = data.model || 'openai-coach';
       setCoach(generated);
+      setCoachModel(generatedModel);
       setCoachStatus('ready');
 
-      if (autoSelect && !selectionTouchedRef.current && draftRef.current.sourceUrl === baseSession.sourceUrl) {
+      if (draftRef.current.sourceUrl === baseSession.sourceUrl) {
         const recommended = generated.recommendations.map(item => item.sentence).slice(0, 3);
-        selectedRef.current = recommended;
-        setSelectedSentences(recommended);
-        persist(applyCoachFields(draftRef.current, generated, recommended));
+        const nextSelected = autoSelect && !selectionTouchedRef.current ? recommended : selectedRef.current;
+        if (autoSelect && !selectionTouchedRef.current) {
+          selectedRef.current = recommended;
+          setSelectedSentences(recommended);
+        }
+        if (nextSelected.length) persist(applyCoachFields(draftRef.current, generated, nextSelected, sentences, generatedModel));
       }
     } catch {
       if (request !== coachRequestRef.current) return;
       setCoach(fallback);
+      setCoachModel('local-fallback');
       setCoachStatus('fallback');
+      if (selectedRef.current.length && draftRef.current.sourceUrl === baseSession.sourceUrl) {
+        persist(applyCoachFields(draftRef.current, fallback, selectedRef.current, sentences, 'local-fallback'));
+      }
     }
   };
 
   const openToday = () => {
     const next = todaySession || createNhkSession(todayKey);
     const selected = sessionSentences(next);
+    const storedInput = next.dailyInput;
+    const candidates = storedInput?.candidateSentences?.length ? storedInput.candidateSentences : selected;
     draftRef.current = next;
     selectedRef.current = selected;
     selectionTouchedRef.current = Boolean(selected.length);
     setDraft(next);
     setSelectedSentences(selected);
-    setArticleSentences(selected);
-    setParseStatus(selected.length ? 'ready' : 'idle');
+    setArticleSentences(candidates);
+    setParseStatus(candidates.length ? 'ready' : 'idle');
     setParseError('');
-    setCoach(null);
-    setCoachStatus('idle');
+    setCoach(storedInput?.coach || null);
+    setCoachModel(storedInput?.coachModel || '');
+    setCoachStatus(storedInput ? 'ready' : 'idle');
     setStep(0);
     setShowOriginal(false);
     setView('today');
-    if (next.title && selected.length) void loadCoach(next.title, selected, next, false);
+    if (!storedInput && next.title && selected.length) void loadCoach(next.title, selected, next, false);
   };
 
   const changeSourceUrl = (sourceUrl: string) => {
@@ -348,6 +375,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setParseStatus('idle');
     setParseError('');
     setCoach(null);
+    setCoachModel('');
     setCoachStatus('idle');
   };
 
@@ -369,6 +397,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setArticleSentences([]);
     setSelectedSentences([]);
     setCoach(null);
+    setCoachModel('');
     setCoachStatus('idle');
     setParseStatus('loading');
     setParseError('');
@@ -412,25 +441,27 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       : [...selectedRef.current, sentence];
     selectedRef.current = nextSelected;
     setSelectedSentences(nextSelected);
-    persist({
-      ...applyCoachFields(draftRef.current, coach, nextSelected),
+    const resetOutput: NhkMorningSession = {
+      ...draftRef.current,
       recapText: '',
       opinion: '',
       worldAnswer: '',
       recapRecordingSeconds: 0,
       worldRecordingSeconds: 0,
+      recallAttempts: [],
       completedAt: undefined,
-    });
+    };
+    persist(applyCoachFields(resetOutput, coach, nextSelected, articleSentences, coachModel));
   };
 
   const nextFromInput = () => {
-    const next = applyCoachFields(draftRef.current, coach, selectedRef.current);
+    const next = applyCoachFields(draftRef.current, coach, selectedRef.current, articleSentences, coachModel);
     persist(next);
     setStep(1);
   };
 
   const completeToday = () => {
-    const next = {...draftRef.current, completedAt: Date.now()};
+    const next = markNhkDailyInputUsedInWorld({...draftRef.current, completedAt: Date.now()});
     persist(next);
     setView('home');
   };
@@ -442,11 +473,8 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   };
 
   const finishRecall = (rating: NhkRecallRating) => {
-    if (!recallSession) return;
-    const next: NhkMorningSession = {
-      ...recallSession,
-      recall: {dateKey: todayKey, rating, recordingSeconds: recallSeconds, completedAt: Date.now()},
-    };
+    if (!recallSession || !recallTarget) return;
+    const next = recordNhkRecallAttempt(recallSession, recallTarget, todayKey, rating, recallSeconds);
     setSessions(current => upsertNhkSession(current, next));
     setView('home');
   };
@@ -474,6 +502,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setArticleSentences([]);
     setSelectedSentences([]);
     setCoach(null);
+    setCoachModel('');
     setCoachStatus('idle');
     setParseError('');
     setStep(0);
@@ -487,11 +516,11 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       <section className="nhk-page nhk-flow">
         <header className="nhk-flow-header">
           <button aria-label="返回" onClick={() => setView('home')}><ArrowLeft size={20} /></button>
-          <div><small>昨日の一文</small><strong>先说，再看答案</strong></div>
+          <div><small>第{recallTarget?.intervalDay || 1}天回忆</small><strong>先说，再看答案</strong></div>
           <span />
         </header>
         <div className="nhk-recall-stage">
-          <small>{formatDate(recallSession.dateKey)} · {recallSession.title || 'NHK日语听力'}</small>
+          <small>{formatDate(recallSession.dateKey)} · 第{recallTarget?.intervalDay || 1}天 · {recallSession.title || 'NHK日语听力'}</small>
           <h1>不用看原文，先说出最值得带走的一句。</h1>
           <p>再用这句话，说一句和你工作或生活有关的话。</p>
           <VoiceRecorder label="20秒无提示回忆" onDuration={setRecallSeconds} />
@@ -528,7 +557,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
           <div className="nhk-step-card">
             <span className="nhk-kicker">CHOOSE</span>
             <h1>分享一篇，教练替你挑重点。</h1>
-            <p>标题、正文、推荐句和迁移表达都会自动准备；你只负责确认今天练哪 1～3 句。</p>
+            <p>标题、正文和迁移表达都会自动准备。第 1 句完整训练，其余最多两句进入轻量跟读和后续回忆。</p>
             <div className="nhk-link-entry">
               <div className="nhk-url-row">
                 <Link2 size={18} />
@@ -574,7 +603,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
                 )}
 
                 <div className="nhk-sentence-picker-head">
-                  <div><strong>推荐训练句</strong><small>已自动勾选，可自由更换，最多 3 句</small></div>
+                  <div><strong>推荐训练句</strong><small>第 1 句是今日核心，可自由更换，最多 3 句</small></div>
                   <b>{selectedSentences.length}/3</b>
                 </div>
                 <div className="nhk-sentence-list coached">
@@ -582,6 +611,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
                     const selected = selectedSentences.includes(sentence);
                     const blocked = !selected && selectedSentences.length >= 3;
                     const recommendation = recommendationFor(sentence);
+                    const selectedOrder = selectedSentences.indexOf(sentence);
                     return (
                       <button
                         key={`${index}-${sentence}`}
@@ -593,7 +623,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
                       >
                         <span>{selected ? <Check size={15} /> : index + 1}</span>
                         <div>
-                          {recommendation && <small><b>{recommendation.label}</b>{recommendation.reasonZh}</small>}
+                          {(recommendation || selectedOrder >= 0) && <small><b>{selectedOrder === 0 ? '今日核心' : selectedOrder > 0 ? '补充句' : recommendation?.label}</b>{selectedOrder === 0 ? '完整训练这句' : selectedOrder > 0 ? '轻量跟读，之后再遇' : recommendation?.reasonZh}</small>}
                           <strong>{sentence}</strong>
                         </div>
                       </button>
@@ -604,7 +634,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
             )}
 
             <button className="nhk-primary-action" disabled={!selectedSentences.length} onClick={nextFromInput}>
-              用这{selectedSentences.length || ''}句开始<ChevronRight size={18} />
+              完整训练第 1 句<ChevronRight size={18} />
             </button>
           </div>
         )}
@@ -617,7 +647,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
 
             {primaryRecommendation && (
               <div className="nhk-shadow-guide">
-                <div><small>{primaryRecommendation.label} · 影子切分</small><strong>{primaryRecommendation.sentence}</strong></div>
+                <div><small>今日核心 · 影子切分</small><strong>{primaryRecommendation.sentence}</strong></div>
                 <div className="nhk-chunks">
                   {primaryRecommendation.chunks.map((chunk, index) => <span key={`${index}-${chunk}`}>{chunk}</span>)}
                 </div>
@@ -720,7 +750,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       {recallSession && (
         <button className="nhk-recall-card" onClick={openRecall}>
           <RotateCcw size={19} />
-          <div><small>昨日の一文</small><strong>先说，再看答案</strong></div>
+          <div><small>第{recallTarget?.intervalDay || 1}天回忆</small><strong>先说，再看答案</strong></div>
           <ChevronRight size={18} />
         </button>
       )}
