@@ -6,6 +6,7 @@ import {
   type NhkCoachResult,
 } from './nhkCoach';
 import type {NhkSpeechMode, NhkSpeechReview} from './NhkSpeechCoach';
+import {normalizeNhkPracticeMode, type NhkPracticeMode} from './nhkPracticeMode';
 
 export type NhkRecallRating = 'good' | 'close' | 'miss';
 export type NhkRecallIntervalDay = 1 | 3 | 7;
@@ -27,9 +28,17 @@ export type NhkRecallPlan = {
 export type NhkRecallAttempt = NhkRecallPlan & {
   dateKey: string;
   rating: NhkRecallRating;
+  responseMode: NhkPracticeMode;
+  quietNote?: string;
   recordingSeconds: number;
   completedAt: number;
   review?: NhkSpeechReview;
+};
+
+export type NhkQuietReviewEntry = {
+  completedAt: number;
+  rating: NhkRecallRating;
+  note?: string;
 };
 
 export type NhkTrainingSentence = {
@@ -53,6 +62,7 @@ export type NhkWorldCallback = {
   promptJa: string;
   answer: string;
   recordingSeconds: number;
+  responseMode?: NhkPracticeMode;
   answeredAt?: number;
   targetExpressionUsed?: boolean;
   contentScore?: number;
@@ -113,6 +123,9 @@ export type NhkMorningSession = {
   shadowRecordingSeconds: number;
   recapRecordingSeconds: number;
   worldRecordingSeconds: number;
+  practiceMode: NhkPracticeMode;
+  completedMode?: NhkPracticeMode;
+  quietReviews: NhkQuietReviewEntry[];
   speechFallback: boolean;
   speechReviews: Partial<Record<NhkSpeechMode, NhkSpeechReview>>;
   completedAt?: number;
@@ -451,6 +464,7 @@ export const applyNhkWorldCallbackReview = (
           ...callback,
           answer: review.transcript,
           recordingSeconds,
+          responseMode: 'voice',
           answeredAt: review.analyzedAt,
           targetExpressionUsed: review.metrics.targetExpressionUsed,
           contentScore: review.metrics.contentScore,
@@ -469,6 +483,7 @@ export const completeNhkWorldCallback = (
   recordingSeconds: number,
   review?: NhkSpeechReview,
   completedAt = Date.now(),
+  responseMode: NhkPracticeMode = review ? 'voice' : 'quiet',
 ): NhkMorningSession => {
   const reviewed = review ? applyNhkWorldCallbackReview(session, review, recordingSeconds) : session;
   if (!reviewed.dailyInput) return reviewed;
@@ -482,6 +497,7 @@ export const completeNhkWorldCallback = (
           ...reviewed.dailyInput.world.callback,
           answer: clean(answer, 1200),
           recordingSeconds,
+          responseMode,
           answeredAt: reviewed.dailyInput.world.callback.answeredAt || completedAt,
           completedAt,
         },
@@ -490,7 +506,10 @@ export const completeNhkWorldCallback = (
   };
 };
 
-export const createNhkSession = (dateKey = toDateKey()): NhkMorningSession => ({
+export const createNhkSession = (
+  dateKey = toDateKey(),
+  practiceMode: NhkPracticeMode = 'voice',
+): NhkMorningSession => ({
   schemaVersion: 2,
   id: `nhk-${dateKey}`,
   dateKey,
@@ -507,6 +526,8 @@ export const createNhkSession = (dateKey = toDateKey()): NhkMorningSession => ({
   shadowRecordingSeconds: 0,
   recapRecordingSeconds: 0,
   worldRecordingSeconds: 0,
+  practiceMode,
+  quietReviews: [],
   speechFallback: false,
   speechReviews: {},
   recallAttempts: [],
@@ -549,6 +570,7 @@ const migratedLegacyAttempt = (
     ...plan,
     dateKey: session.recall.dateKey,
     rating: session.recall.rating,
+    responseMode: 'voice',
     recordingSeconds: session.recall.recordingSeconds,
     completedAt: session.recall.completedAt,
   }];
@@ -577,6 +599,22 @@ const normalizeSpeechReviews = (value: unknown): Partial<Record<NhkSpeechMode, N
   return result;
 };
 
+const normalizeQuietReviews = (value: unknown): NhkQuietReviewEntry[] => {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter(item => item && typeof item === 'object')
+    .map(item => item as Partial<NhkQuietReviewEntry>)
+    .filter(item => typeof item.completedAt === 'number'
+      && ['good', 'close', 'miss'].includes(String(item.rating)))
+    .map(item => ({
+      completedAt: item.completedAt!,
+      rating: item.rating as NhkRecallRating,
+      ...(clean(item.note, 800) ? {note: clean(item.note, 800)} : {}),
+    }))
+    .sort((left, right) => left.completedAt - right.completedAt)
+    .slice(-30);
+};
+
 const normalizeAttempts = (
   value: unknown,
   fallback: NhkRecallAttempt[],
@@ -598,6 +636,8 @@ const normalizeAttempts = (
       dueDateKey: clean(item.dueDateKey, 10) || plan.dueDateKey,
       dateKey: item.dateKey,
       rating: item.rating as NhkRecallRating,
+      responseMode: normalizeNhkPracticeMode(item.responseMode),
+      ...(clean(item.quietNote, 800) ? {quietNote: clean(item.quietNote, 800)} : {}),
       recordingSeconds: Number(item.recordingSeconds) || 0,
       completedAt: item.completedAt,
       ...(review ? {review} : {}),
@@ -617,6 +657,7 @@ const normalizeWorldCallback = (value: unknown, fallback: NhkWorldCallback): Nhk
     promptJa: clean(callback.promptJa, 500) || fallback.promptJa,
     answer: clean(callback.answer, 1200),
     recordingSeconds: Number(callback.recordingSeconds) || 0,
+    ...(callback.responseMode ? {responseMode: normalizeNhkPracticeMode(callback.responseMode)} : {}),
     ...(typeof callback.answeredAt === 'number' ? {answeredAt: callback.answeredAt} : {}),
     ...(typeof callback.targetExpressionUsed === 'boolean' ? {targetExpressionUsed: callback.targetExpressionUsed} : {}),
     ...(typeof callback.contentScore === 'number' ? {contentScore: callback.contentScore} : {}),
@@ -686,6 +727,11 @@ const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => {
     schemaVersion: 2,
     selectedSentences,
     shadowRecordingSeconds: Number(session.shadowRecordingSeconds) || 0,
+    recapRecordingSeconds: Number(session.recapRecordingSeconds) || 0,
+    worldRecordingSeconds: Number(session.worldRecordingSeconds) || 0,
+    practiceMode: normalizeNhkPracticeMode(session.practiceMode),
+    ...(session.completedMode ? {completedMode: normalizeNhkPracticeMode(session.completedMode)} : {}),
+    quietReviews: normalizeQuietReviews(session.quietReviews),
     speechFallback: Boolean(session.speechFallback),
     speechReviews: normalizeSpeechReviews(session.speechReviews),
     recallAttempts: [],
@@ -793,6 +839,8 @@ export const recordNhkRecallAttempt = (
   recordingSeconds: number,
   completedAt = Date.now(),
   review?: NhkSpeechReview,
+  responseMode: NhkPracticeMode = 'voice',
+  quietNote = '',
 ): NhkMorningSession => {
   const attempt: NhkRecallAttempt = {
     intervalDay: target.intervalDay,
@@ -806,6 +854,8 @@ export const recordNhkRecallAttempt = (
     referenceJa: target.referenceJa,
     dateKey,
     rating,
+    responseMode,
+    ...(clean(quietNote, 800) ? {quietNote: clean(quietNote, 800)} : {}),
     recordingSeconds,
     completedAt,
     ...(review ? {review} : {}),
@@ -818,6 +868,23 @@ export const recordNhkRecallAttempt = (
     ].sort((a, b) => a.intervalDay - b.intervalDay),
   };
 };
+
+export const recordNhkQuietReview = (
+  session: NhkMorningSession,
+  rating: NhkRecallRating,
+  note = '',
+  completedAt = Date.now(),
+): NhkMorningSession => ({
+  ...session,
+  quietReviews: [
+    ...session.quietReviews,
+    {
+      completedAt,
+      rating,
+      ...(clean(note, 800) ? {note: clean(note, 800)} : {}),
+    },
+  ].sort((left, right) => left.completedAt - right.completedAt).slice(-30),
+});
 
 export const completedNhkStreak = (
   sessions: NhkMorningSession[],
@@ -842,12 +909,13 @@ export const suggestExpression = (shadowText: string): string => {
 };
 
 export const isNhkSessionReadyToComplete = (session: NhkMorningSession): boolean => {
-  const recapSpoken = session.recapRecordingSeconds > 0 || session.speechFallback;
-  const worldSpoken = session.worldRecordingSeconds > 0 || session.speechFallback;
-  return Boolean(session.shadowText.trim()
+  const coreReady = Boolean(session.shadowText.trim()
     && session.recapText.trim()
     && session.keyExpression.trim()
-    && session.worldAnswer.trim()
-    && recapSpoken
-    && worldSpoken);
+    && session.worldAnswer.trim());
+  if (!coreReady) return false;
+  if (session.practiceMode === 'quiet') return true;
+  const recapSpoken = session.recapRecordingSeconds > 0 || session.speechFallback;
+  const worldSpoken = session.worldRecordingSeconds > 0 || session.speechFallback;
+  return recapSpoken && worldSpoken;
 };

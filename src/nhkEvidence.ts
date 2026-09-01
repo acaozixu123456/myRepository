@@ -32,9 +32,18 @@ export type NhkEvidenceComparison = {
 export type NhkRecallEvidence = {
   intervalDay: NhkRecallIntervalDay;
   attempts: number;
+  voiceAttempts: number;
+  quietAttempts: number;
   masteryPercent: number | null;
   averageScore: number | null;
   averageOmissionRate: number | null;
+};
+
+export type NhkStudyModeEvidence = {
+  voiceCompletedInputs: number;
+  quietCompletedInputs: number;
+  quietReviews: number;
+  quietRecallAttempts: number;
 };
 
 export type NhkWeeklyEvidence = {
@@ -47,6 +56,7 @@ export type NhkWeeklyEvidence = {
   allTimeAnalyzedResponses: number;
   speakingSeconds: number;
   headlineZh: string;
+  studyModes: NhkStudyModeEvidence;
   current: {
     shadowAccuracy: NhkEvidenceValue;
     omissionRate: NhkEvidenceValue;
@@ -99,6 +109,14 @@ const dateLabel = (dateKey: string): string => {
   return `${Number(month)}月${Number(day)}日`;
 };
 
+const dateKeyAtTimestamp = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const collectReviewPoints = (sessions: NhkMorningSession[]): ReviewPoint[] => {
   const points: ReviewPoint[] = [];
   const seen = new Set<string>();
@@ -121,10 +139,14 @@ const collectReviewPoints = (sessions: NhkMorningSession[]): ReviewPoint[] => {
     push(session, 'recap', session.speechReviews.recap, session.dateKey);
     push(session, 'world', session.speechReviews.world, session.dateKey);
     for (const attempt of session.recallAttempts) {
-      push(session, 'recall', attempt.review, attempt.dateKey, attempt.intervalDay);
+      if (attempt.responseMode !== 'quiet') {
+        push(session, 'recall', attempt.review, attempt.dateKey, attempt.intervalDay);
+      }
     }
     const callback = session.dailyInput?.world.callback;
-    if (callback?.completedAt) push(session, 'callback', callback.review, callback.dueDateKey);
+    if (callback?.completedAt && callback.responseMode !== 'quiet') {
+      push(session, 'callback', callback.review, callback.dueDateKey);
+    }
   }
   return points.sort((left, right) => left.review.analyzedAt - right.review.analyzedAt || left.key.localeCompare(right.key));
 };
@@ -187,11 +209,15 @@ const buildComparisons = (points: ReviewPoint[]): NhkEvidenceComparison[] => {
 
 const recallEvidence = (sessions: NhkMorningSession[]): NhkRecallEvidence[] => RECALL_INTERVALS.map(intervalDay => {
   const attempts = sessions.flatMap(session => session.recallAttempts).filter(attempt => attempt.intervalDay === intervalDay);
-  const scores = attempts.map(attempt => attempt.review ? numeric(attempt.review.metrics.contentScore) : null);
-  const omissions = attempts.map(attempt => attempt.review ? numeric(attempt.review.metrics.omissionRate) : null);
+  const voiceAttempts = attempts.filter(attempt => attempt.responseMode !== 'quiet');
+  const quietAttempts = attempts.filter(attempt => attempt.responseMode === 'quiet');
+  const scores = voiceAttempts.map(attempt => attempt.review ? numeric(attempt.review.metrics.contentScore) : null);
+  const omissions = voiceAttempts.map(attempt => attempt.review ? numeric(attempt.review.metrics.omissionRate) : null);
   return {
     intervalDay,
     attempts: attempts.length,
+    voiceAttempts: voiceAttempts.length,
+    quietAttempts: quietAttempts.length,
     masteryPercent: attempts.length
       ? round(attempts.reduce((sum, attempt) => sum + ratingScore(attempt.rating), 0) / attempts.length)
       : null,
@@ -204,6 +230,7 @@ const strongestHeadline = (
   comparisons: NhkEvidenceComparison[],
   analyzedResponses: number,
   completedInputs: number,
+  quietActivity: number,
 ): string => {
   const improvements = comparisons
     .map(item => ({item, improvement: item.lowerIsBetter ? -item.delta : item.delta}))
@@ -216,8 +243,9 @@ const strongestHeadline = (
     return `${strongest.item.label}比开始时提高 ${amount}${strongest.item.unit}`;
   }
   if (analyzedResponses > 0) return `本周留下了 ${analyzedResponses} 次可比较的口语证据`;
+  if (quietActivity > 0) return `本周完成了 ${quietActivity} 次静音学习与复习`;
   if (completedInputs > 0) return `本周已把 ${completedInputs} 篇真实输入变成主动表达`;
-  return '完成一次语音分析后，这里会开始积累真实证据';
+  return '开口或静音完成一次学习后，这里会开始积累证据';
 };
 
 export const buildNhkWeeklyEvidence = (
@@ -228,18 +256,31 @@ export const buildNhkWeeklyEvidence = (
   const allPoints = collectReviewPoints(sessions);
   const weeklyPoints = allPoints.filter(point => point.dateKey >= periodStart && point.dateKey <= todayKey);
   const metricPoints = weeklyPoints.length ? weeklyPoints : allPoints.slice(-8);
-  const completedInputs = sessions.filter(session => Boolean(session.completedAt)
-    && session.dateKey >= periodStart
-    && session.dateKey <= todayKey).length;
+  const weeklySessions = sessions.filter(session => session.dateKey >= periodStart && session.dateKey <= todayKey);
+  const completedSessions = weeklySessions.filter(session => Boolean(session.completedAt));
+  const voiceCompletedInputs = completedSessions.filter(session => session.completedMode !== 'quiet').length;
+  const quietCompletedInputs = completedSessions.filter(session => session.completedMode === 'quiet').length;
+  const quietReviews = sessions.reduce((total, session) => total + session.quietReviews.filter(review => {
+    const dateKey = dateKeyAtTimestamp(review.completedAt);
+    return dateKey >= periodStart && dateKey <= todayKey;
+  }).length, 0);
+  const quietRecallAttempts = sessions.reduce((total, session) => total + session.recallAttempts.filter(attempt =>
+    attempt.responseMode === 'quiet'
+      && attempt.dateKey >= periodStart
+      && attempt.dateKey <= todayKey).length, 0);
+  const completedInputs = completedSessions.length;
   const speakingSeconds = sessions.reduce((total, session) => {
     const main = session.dateKey >= periodStart && session.dateKey <= todayKey
       ? session.shadowRecordingSeconds + session.recapRecordingSeconds + session.worldRecordingSeconds
       : 0;
     const recall = session.recallAttempts
-      .filter(attempt => attempt.dateKey >= periodStart && attempt.dateKey <= todayKey)
+      .filter(attempt => attempt.responseMode !== 'quiet'
+        && attempt.dateKey >= periodStart
+        && attempt.dateKey <= todayKey)
       .reduce((sum, attempt) => sum + attempt.recordingSeconds, 0);
     const callback = session.dailyInput?.world.callback;
     const callbackSeconds = callback?.completedAt
+      && callback.responseMode !== 'quiet'
       && callback.dueDateKey >= periodStart
       && callback.dueDateKey <= todayKey
       ? callback.recordingSeconds
@@ -247,16 +288,23 @@ export const buildNhkWeeklyEvidence = (
     return total + main + recall + callbackSeconds;
   }, 0);
   const comparisons = buildComparisons(allPoints);
+  const quietActivity = quietCompletedInputs + quietReviews + quietRecallAttempts;
   return {
     periodStart,
     periodEnd: todayKey,
     periodLabel: `${dateLabel(periodStart)}—${dateLabel(todayKey)}`,
-    hasEvidence: Boolean(allPoints.length || completedInputs),
+    hasEvidence: Boolean(allPoints.length || completedInputs || quietReviews || quietRecallAttempts),
     completedInputs,
     analyzedResponses: weeklyPoints.length,
     allTimeAnalyzedResponses: allPoints.length,
     speakingSeconds,
-    headlineZh: strongestHeadline(comparisons, weeklyPoints.length, completedInputs),
+    headlineZh: strongestHeadline(comparisons, weeklyPoints.length, completedInputs, quietActivity),
+    studyModes: {
+      voiceCompletedInputs,
+      quietCompletedInputs,
+      quietReviews,
+      quietRecallAttempts,
+    },
     current: currentMetrics(metricPoints),
     comparisons,
     recall: recallEvidence(sessions),
