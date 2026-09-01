@@ -1,5 +1,12 @@
 import type {VercelRequest, VercelResponse} from '@vercel/node';
 import {inflateRawSync} from 'node:zlib';
+import {
+  boundedCandidateSentences,
+  buildPersistentArticlePayload,
+  MOJI_PARSER_VERSION,
+  readPersistentArticleCache,
+  writePersistentArticleCache,
+} from '../src/nhkArticleCache';
 
 const MAX_HTML_BYTES = 2_500_000;
 const MAX_FEED_BYTES = 1_000_000;
@@ -31,6 +38,7 @@ type PublicMatch = {
   title: string;
   sourceUrl: string;
   officialUrl?: string;
+  publishedAt?: string;
   sentences: string[];
   score: number;
 };
@@ -39,7 +47,16 @@ type ArchiveStory = {
   title: string;
   sourceUrl: string;
   officialUrl?: string;
+  publishedAt?: string;
   sentences: string[];
+};
+
+type RequestTiming = {
+  startedAt: number;
+  cacheLookupMs: number;
+  upstreamFetchMs: number;
+  publicLookupMs: number;
+  cacheWriteMs: number;
 };
 
 let feedCache: {at: number; xml: string} | null = null;
@@ -80,6 +97,19 @@ const normalizeMojiArticleUrl = (input: string): string | null => {
 };
 
 const articleIdFromUrl = (url: string): string => url.split('/').filter(Boolean).pop() || '';
+
+const toIsoDate = (value: string): string => {
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : '';
+};
+
+const timingPayload = (timing: RequestTiming) => ({
+  totalMs: Date.now() - timing.startedAt,
+  cacheLookupMs: timing.cacheLookupMs,
+  upstreamFetchMs: timing.upstreamFetchMs,
+  publicLookupMs: timing.publicLookupMs,
+  cacheWriteMs: timing.cacheWriteMs,
+});
 
 const readAttribute = (tag: string, name: string): string => {
   const match = new RegExp(`${name}\\s*=\\s*(["'])([\\s\\S]*?)\\1`, 'i').exec(tag);
@@ -272,7 +302,15 @@ const matchNhkFeed = (xml: string, headlineHint: string): PublicMatch | null => 
     if (sentences.length < 2) continue;
     const sourceUrl = decodeHtml(xmlTag(item, 'link') || xmlTag(item, 'guid'));
     const officialUrl = description.match(/https:\/\/www3\.nhk\.or\.jp\/news\/easy\/[A-Za-z0-9_-]+\/[A-Za-z0-9_-]+\.html/i)?.[0];
-    candidates.push({title, sourceUrl, officialUrl, sentences, score});
+    const publishedAt = toIsoDate(decodeHtml(xmlTag(item, 'pubDate')));
+    candidates.push({
+      title,
+      sourceUrl,
+      officialUrl,
+      sentences,
+      score,
+      ...(publishedAt ? {publishedAt} : {}),
+    });
   }
   return candidates.sort((a, b) => b.score - a.score)[0] || null;
 };
@@ -335,6 +373,8 @@ const archiveStoryFromXhtml = (xhtml: string): ArchiveStory | null => {
   const title = cleanSentence(titleHtml);
   if (!title) return null;
   const section = /<section\b[^>]*>([\s\S]*?)<\/section>/i.exec(xhtml)?.[1] || xhtml;
+  const timeTag = /<time\b[^>]*>[\s\S]*?<\/time>/i.exec(section)?.[0] || '';
+  const publishedAt = toIsoDate(readAttribute(timeTag, 'datetime') || cleanSentence(timeTag));
   const body = section
     .replace(/<h3\b[^>]*>[\s\S]*?<\/h3>/i, ' ')
     .replace(/<time\b[^>]*>[\s\S]*?<\/time>/i, ' ')
@@ -343,7 +383,13 @@ const archiveStoryFromXhtml = (xhtml: string): ArchiveStory | null => {
   if (sentences.length < 2) return null;
   const sourceUrl = xhtml.match(/https:\/\/nhkeasier\.com\/story\/\d+\/?/i)?.[0] || '';
   const officialUrl = xhtml.match(/https:\/\/www3\.nhk\.or\.jp\/news\/easy\/[A-Za-z0-9_-]+\/[A-Za-z0-9_-]+\.html/i)?.[0];
-  return {title, sourceUrl, officialUrl, sentences};
+  return {
+    title,
+    sourceUrl,
+    officialUrl,
+    sentences,
+    ...(publishedAt ? {publishedAt} : {}),
+  };
 };
 
 const jstRecentMonths = (): string[] => {
@@ -435,67 +481,154 @@ const fetchNhkFeed = async (): Promise<string> => {
   return xml;
 };
 
-const matchedResponse = (res: VercelResponse, article: ParsedArticle, headlineHint: string, match: PublicMatch, resolvedBy: string) => res.status(200).json({
-  ok: true,
-  ...article,
-  headlineHint,
-  sentences: match.sentences,
-  access: 'matched-public',
-  sentenceCount: match.sentences.length,
-  resolvedBy,
-  referenceUrl: match.sourceUrl,
-  ...(match.officialUrl ? {officialUrl: match.officialUrl} : {}),
-});
+const matchedResponse = async (
+  res: VercelResponse,
+  articleId: string,
+  article: ParsedArticle,
+  headlineHint: string,
+  match: PublicMatch,
+  resolvedBy: string,
+  timing: RequestTiming,
+) => {
+  const cachePayload = buildPersistentArticlePayload(articleId, {
+    ok: true,
+    sourceUrl: article.sourceUrl,
+    title: article.title,
+    sentences: boundedCandidateSentences(match.sentences),
+    access: 'matched-public',
+    resolvedBy,
+    headlineHint,
+    referenceUrl: match.sourceUrl,
+    ...(match.officialUrl ? {officialUrl: match.officialUrl} : {}),
+    ...(match.publishedAt ? {publishedAt: match.publishedAt} : {}),
+  });
+  const cacheWriteStarted = Date.now();
+  const cacheStored = cachePayload ? await writePersistentArticleCache(articleId, cachePayload) : false;
+  timing.cacheWriteMs = Date.now() - cacheWriteStarted;
+  const payload = cachePayload || {
+    ok: true as const,
+    sourceUrl: article.sourceUrl,
+    title: article.title,
+    sentences: boundedCandidateSentences(match.sentences),
+    access: 'matched-public' as const,
+    sentenceCount: Math.min(match.sentences.length, 16),
+    resolvedBy,
+    sourceVersion: MOJI_PARSER_VERSION,
+    headlineHint,
+    referenceUrl: match.sourceUrl,
+    ...(match.officialUrl ? {officialUrl: match.officialUrl} : {}),
+    ...(match.publishedAt ? {publishedAt: match.publishedAt} : {}),
+  };
+  return res.status(200).json({
+    ...payload,
+    cached: false,
+    cacheStored,
+    timingMs: timingPayload(timing),
+  });
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
-  if (req.method !== 'POST' && req.method !== 'GET') return res.status(405).json({ok: false, reason: 'method_not_allowed'});
+  const timing: RequestTiming = {
+    startedAt: Date.now(),
+    cacheLookupMs: 0,
+    upstreamFetchMs: 0,
+    publicLookupMs: 0,
+    cacheWriteMs: 0,
+  };
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    return res.status(405).json({ok: false, reason: 'method_not_allowed', timingMs: timingPayload(timing)});
+  }
 
   const inputUrl = req.method === 'GET'
     ? String(req.query.url || '')
     : typeof req.body?.url === 'string' ? req.body.url : '';
   const canonicalUrl = normalizeMojiArticleUrl(inputUrl);
-  if (!canonicalUrl) return res.status(400).json({ok: false, reason: 'invalid_moji_article_url'});
+  if (!canonicalUrl) {
+    return res.status(400).json({ok: false, reason: 'invalid_moji_article_url', timingMs: timingPayload(timing)});
+  }
+
+  const articleId = articleIdFromUrl(canonicalUrl);
+  const cacheStarted = Date.now();
+  const cached = await readPersistentArticleCache(articleId);
+  timing.cacheLookupMs = Date.now() - cacheStarted;
+  if (cached) {
+    return res.status(200).json({
+      ...cached,
+      cached: true,
+      timingMs: timingPayload(timing),
+    });
+  }
 
   try {
+    const upstreamStarted = Date.now();
     const pages = await fetchArticlePages(canonicalUrl);
-    if (!pages.length) return res.status(502).json({ok: false, reason: 'upstream_unavailable'});
+    timing.upstreamFetchMs = Date.now() - upstreamStarted;
+    if (!pages.length) {
+      return res.status(502).json({ok: false, reason: 'upstream_unavailable', timingMs: timingPayload(timing)});
+    }
     const articles = pages.map(page => parseMojiArticle(page.html, page.finalUrl));
     const article = articles.sort((a, b) => Number(Boolean(b.headlineHint)) - Number(Boolean(a.headlineHint)))[0];
     const headlineHint = articles.find(candidate => candidate.headlineHint)?.headlineHint;
     const nhkArticle = Boolean(headlineHint) || /NHK/i.test(article.title);
 
     if (headlineHint) {
+      const publicLookupStarted = Date.now();
       try {
         const recentMatch = matchNhkFeed(await fetchNhkFeed(), headlineHint);
-        if (recentMatch) return matchedResponse(res, article, headlineHint, recentMatch, 'public-nhk-feed');
+        if (recentMatch) {
+          timing.publicLookupMs = Date.now() - publicLookupStarted;
+          return matchedResponse(res, articleId, article, headlineHint, recentMatch, 'public-nhk-feed', timing);
+        }
       } catch {
         // Continue to the historical archive fallback.
       }
 
       const archiveMatch = await matchNhkArchive(headlineHint);
-      if (archiveMatch) return matchedResponse(res, article, headlineHint, archiveMatch, 'public-nhk-archive');
+      timing.publicLookupMs = Date.now() - publicLookupStarted;
+      if (archiveMatch) {
+        return matchedResponse(res, articleId, article, headlineHint, archiveMatch, 'public-nhk-archive', timing);
+      }
     }
 
-    // For NHK member pages, never scan generic MOJi page text as a fallback:
-    // recommendation cards can contain unrelated Japanese and must never become lesson sentences.
     if (nhkArticle) {
       return res.status(422).json({
         ok: false,
         reason: 'nhk_transcript_not_matched',
         title: article.title,
         headlineDetected: Boolean(headlineHint),
+        sourceVersion: MOJI_PARSER_VERSION,
+        timingMs: timingPayload(timing),
         ...(headlineHint ? {headlineHint} : {}),
       });
     }
 
     const direct = articles.find(candidate => candidate.access !== 'member-only' && candidate.sentences.length >= 2);
-    if (direct) return res.status(200).json({ok: true, ...direct, access: 'full', sentenceCount: direct.sentences.length, resolvedBy: 'moji-page'});
+    if (direct) {
+      const sentences = boundedCandidateSentences(direct.sentences);
+      return res.status(200).json({
+        ok: true,
+        ...direct,
+        sentences,
+        access: 'full',
+        sentenceCount: sentences.length,
+        resolvedBy: 'moji-page',
+        sourceVersion: MOJI_PARSER_VERSION,
+        cached: false,
+        timingMs: timingPayload(timing),
+      });
+    }
 
-    return res.status(422).json({ok: false, reason: 'no_japanese_sentences', title: article.title});
+    return res.status(422).json({
+      ok: false,
+      reason: 'no_japanese_sentences',
+      title: article.title,
+      sourceVersion: MOJI_PARSER_VERSION,
+      timingMs: timingPayload(timing),
+    });
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'parse_failed';
     console.error('moji-article handler failed', reason);
-    return res.status(502).json({ok: false, reason});
+    return res.status(502).json({ok: false, reason, timingMs: timingPayload(timing)});
   }
 }
