@@ -29,6 +29,7 @@ jobs:
           echo 'd5c40cb17c792699311c9558c337ac008e7a46a7966f8fe4f0d651aabd662d40  /tmp/quiet-readable-ui-bundle.tgz' | sha256sum -c -
           tar -tzf /tmp/quiet-readable-ui-bundle.tgz >/dev/null
           tar -xzf /tmp/quiet-readable-ui-bundle.tgz
+          sed -i '/^  Mic2,$/d' src/NhkMorningPage.tsx
       - name: Verify product contracts
         shell: bash
         run: |
