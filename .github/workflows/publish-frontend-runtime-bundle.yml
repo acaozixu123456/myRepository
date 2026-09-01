@@ -23,7 +23,7 @@ jobs:
           tar -czf /tmp/frontend-runtime.tar.gz src public index.html tsconfig.json vite.config.ts postcss.config.js tailwind.config.js
           sha256sum /tmp/frontend-runtime.tar.gz
           base64 -w0 /tmp/frontend-runtime.tar.gz > .deploy/frontend-runtime.b64
-          test "$(sha256sum /tmp/frontend-runtime.tar.gz | cut -d' ' -f1)" = "fc58e98d6c6b235ed6e93adb6dfcae05e1d1746b7bab87e56c6c2d72af66b6e3"
+          test "$(sha256sum /tmp/frontend-runtime.tar.gz | cut -d' ' -f1)" = "b2abcd18e177779f7210d678083000e08eaaedd5c04c9fe273039b0480476454"
       - name: Commit bundle and remove one-time workflows
         run: |
           rm .github/workflows/export-direct-vercel-source.yml
