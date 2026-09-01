@@ -1,0 +1,25 @@
+name: Export quiet readable UI source
+
+on:
+  push:
+    branches: [nihongo-quiet-readable-ui-v1-20260902]
+    paths:
+      - '.github/workflows/export-quiet-readable-ui-source.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-quiet-readable-ui-v1-20260902
+      - name: Package source
+        run: tar --exclude=.git --exclude=node_modules -czf /tmp/nihongo-quiet-readable-ui-source.tar.gz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nihongo-quiet-readable-ui-source
+          path: /tmp/nihongo-quiet-readable-ui-source.tar.gz
+          retention-days: 1
