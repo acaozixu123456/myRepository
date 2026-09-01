@@ -33,7 +33,7 @@ jobs:
           grep -q 'eventId: `${sourceKey}-${session.dateKey}-world-event`' src/nhkMorning.ts
           grep -q 'targetExpressionUsed' src/NhkWorldEvent.tsx
           grep -q 'recordingSecondsRef' src/NhkWorldEvent.tsx
-          grep -q 'recallTask' src/nhkMorning.ts
+          grep -q 'export type NhkRecallPlan' src/nhkMorning.ts
           grep -q 'NhkEvidencePage' src/NhkMorningPage.tsx
       - run: npm install --no-audit --no-fund
       - run: npm run typecheck
