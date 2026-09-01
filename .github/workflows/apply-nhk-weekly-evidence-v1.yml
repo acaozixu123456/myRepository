@@ -1,0 +1,142 @@
+name: Apply NHK weekly evidence v1
+
+on:
+  push:
+    branches: [nihongo-weekly-evidence-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-weekly-evidence-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-weekly-evidence-v1-20260901
+          fetch-depth: 0
+
+      - name: Require verified causal-world production base
+        run: |
+          python - <<'PY'
+          import json, time, urllib.request
+          url = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/nihongo-vercel/docs/verification/NHK_CAUSAL_WORLD_V1.json'
+          last = None
+          for attempt in range(1, 31):
+              try:
+                  request = urllib.request.Request(url, headers={'User-Agent':'NihongoWeeklyEvidenceGate/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = json.loads(response.read().decode('utf-8'))
+                  if payload.get('result') != 'PASS':
+                      raise RuntimeError('causal-world evidence is not PASS')
+                  print(json.dumps(payload, ensure_ascii=False, indent=2))
+                  break
+              except Exception as error:
+                  last = repr(error)
+                  if attempt == 30:
+                      raise
+                  time.sleep(10)
+          else:
+              raise RuntimeError(last)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Refresh from current production and restore feature sources
+        run: |
+          tar -czf /tmp/weekly-evidence-source.tgz \
+            src/nhkLearningEvidence.ts \
+            src/NhkWeeklyEvidence.tsx \
+            src/nhkLearningEvidence.test.ts \
+            scripts/patch-nhk-weekly-evidence-v1.py
+          git fetch origin nihongo-vercel
+          git reset --hard origin/nihongo-vercel
+          tar -xzf /tmp/weekly-evidence-source.tgz
+
+      - name: Apply weekly evidence integration
+        run: python scripts/patch-nhk-weekly-evidence-v1.py
+
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+      - name: Verify evidence markers and boundaries
+        run: |
+          grep -q "NHK_WEEKLY_EVIDENCE_VERSION" src/nhkLearningEvidence.ts
+          grep -q "nhk-weekly-evidence-v1" src/NhkWeeklyEvidence.tsx
+          grep -q "NhkWeeklyEvidence sessions={sessions}" src/NhkMorningPage.tsx
+          grep -q "不把它冒充成口音或声学发音评分" src/NhkWeeklyEvidence.tsx
+          grep -q "nhk-weekly-evidence-v1" src/nhkMorning.css
+
+      - name: Create one clean verified feature commit and promote
+        run: |
+          rm -f scripts/patch-nhk-weekly-evidence-v1.py
+          rm -f .github/workflows/apply-nhk-weekly-evidence-v1.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Add weekly Japanese learning evidence"
+          git push --force-with-lease origin HEAD:nihongo-weekly-evidence-v1-20260901
+          git push origin HEAD:nihongo-vercel
+
+      - name: Verify deployed production bundle
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base = os.environ['BASE'].rstrip('/')
+          result = None
+          for attempt in range(1, 25):
+              try:
+                  request = urllib.request.Request(base + '/', headers={'User-Agent':'NihongoWeeklyEvidenceSmoke/1.0','Cache-Control':'no-cache'})
+                  started = time.monotonic()
+                  with urllib.request.urlopen(request, timeout=40) as response:
+                      html = response.read().decode('utf-8')
+                  root_ms = round((time.monotonic() - started) * 1000)
+                  match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+                  if not match:
+                      raise RuntimeError('asset_not_found')
+                  asset_url = urllib.parse.urljoin(base + '/', match.group(1))
+                  started = time.monotonic()
+                  with urllib.request.urlopen(urllib.request.Request(asset_url, headers={'User-Agent':'NihongoWeeklyEvidenceSmoke/1.0','Cache-Control':'no-cache'}), timeout=45) as response:
+                      javascript = response.read().decode('utf-8')
+                  asset_ms = round((time.monotonic() - started) * 1000)
+                  markers = ['nhk-weekly-evidence-v1', '以前的你 vs 现在的你', '不把它冒充成口音或声学发音评分']
+                  missing = [value for value in markers if value not in javascript and json.dumps(value, ensure_ascii=True)[1:-1].lower() not in javascript.lower()]
+                  if missing:
+                      raise RuntimeError('missing:' + ','.join(missing))
+                  result = {
+                      'result': 'PASS',
+                      'commit': os.environ.get('GITHUB_SHA', ''),
+                      'attempt': attempt,
+                      'rootMs': root_ms,
+                      'assetMs': asset_ms,
+                      'asset': asset_url,
+                      'markers': markers,
+                      'evidenceBoundary': 'transcript, task completion, transfer use, and recall only; no acoustic pronunciation claim',
+                  }
+                  break
+              except Exception:
+                  if attempt == 24:
+                      raise
+                  time.sleep(min(5 + attempt, 15))
+          with open('/tmp/weekly-evidence-verification.json', 'w', encoding='utf-8') as handle:
+              json.dump(result, handle, ensure_ascii=False, indent=2)
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Record verified production evidence
+        run: |
+          mkdir -p docs/verification
+          cp /tmp/weekly-evidence-verification.json docs/verification/NHK_WEEKLY_EVIDENCE_V1.json
+          git add docs/verification/NHK_WEEKLY_EVIDENCE_V1.json
+          git commit -m "Record verified weekly Japanese learning evidence"
+          git push origin HEAD:nihongo-weekly-evidence-v1-20260901
+          git push origin HEAD:nihongo-vercel
