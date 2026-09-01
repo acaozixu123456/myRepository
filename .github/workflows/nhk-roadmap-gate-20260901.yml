@@ -1,0 +1,154 @@
+name: Gate current NHK roadmap milestones
+
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths:
+      - '.github/workflows/nhk-roadmap-gate-20260901.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  gate-and-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-vercel
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Wait for milestone evidence and refresh production
+        run: |
+          python - <<'PY'
+          import json, subprocess, time
+          required = [
+              'docs/verification/NHK_ENTRY_COST_V1.json',
+              'docs/verification/NHK_UNSEEN_RECALL_V1.json',
+              'docs/verification/NHK_WEEKLY_BOSS_V1.json',
+          ]
+          last = []
+          for attempt in range(1, 61):
+              subprocess.run(['git', 'fetch', 'origin', 'nihongo-vercel'], check=True)
+              subprocess.run(['git', 'reset', '--hard', 'origin/nihongo-vercel'], check=True)
+              last = []
+              for path in required:
+                  try:
+                      with open(path, encoding='utf-8') as handle:
+                          payload = json.load(handle)
+                      if payload.get('result') != 'PASS':
+                          last.append(f'{path}:not-pass')
+                  except Exception as error:
+                      last.append(f'{path}:{error!r}')
+              if not last:
+                  break
+              time.sleep(10)
+          else:
+              raise RuntimeError('missing milestone evidence: ' + '; '.join(last))
+          PY
+      - name: Validate evidence contracts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          entry = json.loads(Path('docs/verification/NHK_ENTRY_COST_V1.json').read_text())
+          recall = json.loads(Path('docs/verification/NHK_UNSEEN_RECALL_V1.json').read_text())
+          boss = json.loads(Path('docs/verification/NHK_WEEKLY_BOSS_V1.json').read_text())
+          assert entry['articleCache']['scope'] == 'browser-local-only'
+          assert entry['articleCache']['serverLearningStateUpload'] is False
+          assert entry['acceptanceTargetMs'] == 10000
+          assert {'parseSource','parseMs','coachMs','readyMs','completedMs'}.issubset(entry['metrics'])
+          assert {'day1','day3','day7'}.issubset(recall['intervals'])
+          assert recall['answerPolicy'] == 'hidden until learner records and reveals'
+          assert boss['sourcePolicy']['minimumUniqueExpressions'] == 5
+          assert boss['choiceQuestions'] == 0
+          assert len(boss['rounds']) == 5
+          assert boss['nextWeekWorldHook'] is True
+          PY
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Verify deployed bundle and core APIs
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+          ARTICLE: https://www.mojidict.com/article/lzXuLYNjQZ
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base = os.environ['BASE'].rstrip('/')
+          article = os.environ['ARTICLE']
+          def get(url, attempts=10):
+              last = None
+              for attempt in range(1, attempts + 1):
+                  started = time.monotonic()
+                  try:
+                      req = urllib.request.Request(url, headers={'User-Agent':'NihongoRoadmapGate/1.0','Cache-Control':'no-cache'})
+                      with urllib.request.urlopen(req, timeout=50) as response:
+                          return response.read().decode('utf-8'), round((time.monotonic() - started) * 1000)
+                  except Exception as error:
+                      last = error
+                      time.sleep(min(attempt * 3, 15))
+              raise last
+          html, root_ms = get(base + '/')
+          match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+          assert match
+          javascript, asset_ms = get(urllib.parse.urljoin(base + '/', match.group(1)))
+          markers = [
+              'nihongo-moji-article-cache-v1',
+              'nihongo-nhk-entry-metrics-v1',
+              '-recall-d1', '-recall-d3', '-recall-d7',
+              'nihongo-nhk-weekly-boss-v1',
+              '-synthesis-round-5',
+          ]
+          missing = [marker for marker in markers if marker not in javascript]
+          assert not missing, f'missing production markers: {missing}'
+          parse_text, parse_ms = get(base + '/api/moji-article?' + urllib.parse.urlencode({'url': article}))
+          parsed = json.loads(parse_text)
+          assert parsed.get('ok') is True and len(parsed.get('sentences') or []) >= 3
+          health_text, health_ms = get(base + '/api/healthcheck')
+          health = json.loads(health_text)
+          assert health.get('ok') is True
+          result = {
+              'rootMs': root_ms,
+              'assetMs': asset_ms,
+              'parseMs': parse_ms,
+              'healthMs': health_ms,
+              'sentenceCount': len(parsed['sentences']),
+              'resolvedBy': parsed.get('resolvedBy'),
+              'markers': markers,
+          }
+          with open('/tmp/roadmap_smoke.json', 'w', encoding='utf-8') as handle:
+              json.dump(result, handle, ensure_ascii=False, indent=2)
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+      - name: Record final gate and self-clean
+        run: |
+          rm -f .github/workflows/nhk-roadmap-gate-20260901.yml
+          python - <<'PY'
+          import json, subprocess
+          from datetime import datetime, timezone
+          from pathlib import Path
+          evidence = {}
+          for name in ['NHK_ENTRY_COST_V1','NHK_UNSEEN_RECALL_V1','NHK_WEEKLY_BOSS_V1']:
+              evidence[name] = json.loads(Path(f'docs/verification/{name}.json').read_text())
+          payload = {
+              'schemaVersion': 1,
+              'result': 'PASS',
+              'feature': 'NHK_ROADMAP_GATE_20260901',
+              'productionCommit': subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip(),
+              'verifiedAt': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+              'milestones': {name: value.get('result') for name, value in evidence.items()},
+              'build': {'typecheck': 'PASS', 'tests': 'PASS', 'productionBuild': 'PASS'},
+              'productionSmoke': json.loads(Path('/tmp/roadmap_smoke.json').read_text()),
+          }
+          Path('docs/verification/NHK_ROADMAP_GATE_20260901.json').write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n')
+          PY
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add docs/verification/NHK_ROADMAP_GATE_20260901.json .github/workflows/nhk-roadmap-gate-20260901.yml
+          git commit -m "Gate verified NHK entry recall and weekly Boss"
+          git push origin HEAD:nihongo-vercel
