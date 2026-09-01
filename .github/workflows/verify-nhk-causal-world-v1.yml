@@ -1,0 +1,79 @@
+name: Verify NHK causal world v1
+
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths:
+      - '.github/workflows/verify-nhk-causal-world-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-vercel
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Verify causal implementation markers
+        run: |
+          test -f src/nhkCausalWorld.ts
+          test -f src/NhkCausalWorld.tsx
+          test -f src/nhkCausalWorld.test.ts
+          grep -q "NHK_CAUSAL_WORLD_VERSION" src/nhkCausalWorld.ts
+          grep -q "pickNhkWorldCallback" src/NhkMorningPage.tsx
+          grep -q "worldCallbackRevealedAt" src/nhkMorning.ts
+          grep -q "nhk-causal-world-v1" src/nhkMorning.css
+      - name: Verify deployed production bundle
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base = os.environ['BASE'].rstrip('/')
+          result = None
+          for attempt in range(1, 25):
+              try:
+                  request = urllib.request.Request(base + '/', headers={'User-Agent':'NihongoCausalWorldFinal/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=40) as response:
+                      html = response.read().decode('utf-8')
+                  match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+                  if not match:
+                      raise RuntimeError('asset_not_found')
+                  asset_url = urllib.parse.urljoin(base + '/', match.group(1))
+                  with urllib.request.urlopen(urllib.request.Request(asset_url, headers={'User-Agent':'NihongoCausalWorldFinal/1.0','Cache-Control':'no-cache'}), timeout=45) as response:
+                      javascript = response.read().decode('utf-8')
+                  markers = ['nhk-causal-world-v1', '三天前的选择产生了后续', '今天造成的变化']
+                  missing = [value for value in markers if value not in javascript and json.dumps(value, ensure_ascii=True)[1:-1].lower() not in javascript.lower()]
+                  if missing:
+                      raise RuntimeError('missing:' + ','.join(missing))
+                  result = {'result':'PASS','commit':os.environ.get('GITHUB_SHA',''),'attempt':attempt,'asset':asset_url,'markers':markers}
+                  break
+              except Exception:
+                  if attempt == 24:
+                      raise
+                  time.sleep(min(5 + attempt, 15))
+          with open('/tmp/causal-world-verification.json','w',encoding='utf-8') as handle:
+              json.dump(result, handle, ensure_ascii=False, indent=2)
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+      - name: Record verified production state and remove one-time workflow
+        run: |
+          mkdir -p docs/verification
+          cp /tmp/causal-world-verification.json docs/verification/NHK_CAUSAL_WORLD_V1.json
+          rm .github/workflows/verify-nhk-causal-world-v1.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Record verified causal NHK world"
+          git push origin HEAD:nihongo-vercel
