@@ -1,0 +1,35 @@
+name: Publish frontend runtime bundle
+
+on:
+  push:
+    branches: [nihongo-direct-vercel-deploy-20260901]
+    paths:
+      - '.github/workflows/publish-frontend-runtime-bundle.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-direct-vercel-deploy-20260901
+          fetch-depth: 0
+      - name: Build reproducible frontend source bundle
+        run: |
+          mkdir -p .deploy
+          tar -czf /tmp/frontend-runtime.tar.gz src public index.html tsconfig.json vite.config.ts postcss.config.js tailwind.config.js
+          sha256sum /tmp/frontend-runtime.tar.gz
+          base64 -w0 /tmp/frontend-runtime.tar.gz > .deploy/frontend-runtime.b64
+          test "$(sha256sum /tmp/frontend-runtime.tar.gz | cut -d' ' -f1)" = "fc58e98d6c6b235ed6e93adb6dfcae05e1d1746b7bab87e56c6c2d72af66b6e3"
+      - name: Commit bundle and remove one-time workflows
+        run: |
+          rm .github/workflows/export-direct-vercel-source.yml
+          rm .github/workflows/publish-frontend-runtime-bundle.yml
+          git config user.name 'Sol Supervisor'
+          git config user.email 'actions@users.noreply.github.com'
+          git add .deploy/frontend-runtime.b64 .github/workflows/export-direct-vercel-source.yml .github/workflows/publish-frontend-runtime-bundle.yml
+          git commit -m 'Publish verified frontend runtime bundle'
+          git push origin HEAD:nihongo-direct-vercel-deploy-20260901
