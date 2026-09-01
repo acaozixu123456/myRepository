@@ -44,6 +44,9 @@ export type NhkWorldCallback = {
   promptJa: string;
   answer: string;
   recordingSeconds: number;
+  answeredAt?: number;
+  targetExpressionUsed?: boolean;
+  contentScore?: number;
   completedAt?: number;
   review?: NhkSpeechReview;
   characterReactionJa?: string;
@@ -72,6 +75,9 @@ export type NhkDailyInputV2 = {
     answer: string;
     usedInWorld: boolean;
     enteredAt?: number;
+    answeredAt?: number;
+    targetExpressionUsed?: boolean;
+    contentScore?: number;
     characterReaction?: string;
     characterReactionJa?: string;
     characterReactionZh?: string;
@@ -237,7 +243,7 @@ export const buildNhkDailyInput = ({
     primaryTrainingSentenceId: selectedTrainingSentences[0]?.id || '',
     userOpinion: session.opinion,
     world: {
-      eventId: `${sourceKey}-world-event`,
+      eventId: `${sourceKey}-${session.dateKey}-world-event`,
       characterId: 'tanaka',
       characterName: '田中',
       locationNameZh: '公司午休区',
@@ -246,6 +252,9 @@ export const buildNhkDailyInput = ({
       answer: session.worldAnswer,
       usedInWorld: previousWorld?.usedInWorld || false,
       ...(previousWorld?.enteredAt ? {enteredAt: previousWorld.enteredAt} : {}),
+      ...(previousWorld?.answeredAt ? {answeredAt: previousWorld.answeredAt} : {}),
+      ...(typeof previousWorld?.targetExpressionUsed === 'boolean' ? {targetExpressionUsed: previousWorld.targetExpressionUsed} : {}),
+      ...(typeof previousWorld?.contentScore === 'number' ? {contentScore: previousWorld.contentScore} : {}),
       ...(previousWorld?.characterReaction ? {characterReaction: previousWorld.characterReaction} : {}),
       ...(previousWorld?.characterReactionJa ? {characterReactionJa: previousWorld.characterReactionJa} : {}),
       ...(previousWorld?.characterReactionZh ? {characterReactionZh: previousWorld.characterReactionZh} : {}),
@@ -308,6 +317,9 @@ export const applyNhkSpeechReview = (
           world: {
             ...next.dailyInput.world,
             answer: review.transcript,
+            answeredAt: review.analyzedAt,
+            targetExpressionUsed: review.metrics.targetExpressionUsed,
+            contentScore: review.metrics.contentScore,
             ...(combinedReaction ? {characterReaction: combinedReaction} : {}),
             ...(review.characterReactionJa ? {characterReactionJa: review.characterReactionJa} : {}),
             ...(review.characterReactionZh ? {characterReactionZh: review.characterReactionZh} : {}),
@@ -355,6 +367,9 @@ export const applyNhkWorldCallbackReview = (
           ...callback,
           answer: review.transcript,
           recordingSeconds,
+          answeredAt: review.analyzedAt,
+          targetExpressionUsed: review.metrics.targetExpressionUsed,
+          contentScore: review.metrics.contentScore,
           review,
           ...(review.characterReactionJa ? {characterReactionJa: review.characterReactionJa} : {}),
           ...(review.characterReactionZh ? {characterReactionZh: review.characterReactionZh} : {}),
@@ -383,6 +398,7 @@ export const completeNhkWorldCallback = (
           ...reviewed.dailyInput.world.callback,
           answer: clean(answer, 1200),
           recordingSeconds,
+          answeredAt: reviewed.dailyInput.world.callback.answeredAt || completedAt,
           completedAt,
         },
       },
@@ -494,6 +510,9 @@ const normalizeWorldCallback = (value: unknown, fallback: NhkWorldCallback): Nhk
     promptJa: clean(callback.promptJa, 500) || fallback.promptJa,
     answer: clean(callback.answer, 1200),
     recordingSeconds: Number(callback.recordingSeconds) || 0,
+    ...(typeof callback.answeredAt === 'number' ? {answeredAt: callback.answeredAt} : {}),
+    ...(typeof callback.targetExpressionUsed === 'boolean' ? {targetExpressionUsed: callback.targetExpressionUsed} : {}),
+    ...(typeof callback.contentScore === 'number' ? {contentScore: callback.contentScore} : {}),
     ...(typeof callback.completedAt === 'number' ? {completedAt: callback.completedAt} : {}),
     ...(review ? {review} : {}),
     ...(clean(callback.characterReactionJa, 300) ? {characterReactionJa: clean(callback.characterReactionJa, 300)} : {}),
@@ -536,6 +555,9 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
       answer: clean(world?.answer, 1200) || session.worldAnswer,
       usedInWorld: Boolean(world?.usedInWorld),
       ...(typeof world?.enteredAt === 'number' ? {enteredAt: world.enteredAt} : {}),
+      ...(typeof world?.answeredAt === 'number' ? {answeredAt: world.answeredAt} : {}),
+      ...(typeof world?.targetExpressionUsed === 'boolean' ? {targetExpressionUsed: world.targetExpressionUsed} : {}),
+      ...(typeof world?.contentScore === 'number' ? {contentScore: world.contentScore} : {}),
       ...(clean(world?.characterReaction, 600) ? {characterReaction: clean(world?.characterReaction, 600)} : {}),
       ...(clean(world?.characterReactionJa, 300) ? {characterReactionJa: clean(world?.characterReactionJa, 300)} : {}),
       ...(clean(world?.characterReactionZh, 300) ? {characterReactionZh: clean(world?.characterReactionZh, 300)} : {}),
@@ -611,6 +633,7 @@ export const pickNhkWorldCallbackTarget = (
 ): NhkWorldCallbackTarget | null => sessions
   .filter(session => Boolean(session.completedAt
     && session.dailyInput?.world.usedInWorld
+    && Boolean(session.dailyInput.world.answer.trim())
     && !session.dailyInput.world.callback.completedAt
     && session.dailyInput.world.callback.dueDateKey <= todayKey))
   .sort((a, b) => a.dailyInput!.world.callback.dueDateKey.localeCompare(b.dailyInput!.world.callback.dueDateKey)
