@@ -138,8 +138,8 @@ export const buildNhkBossCandidate = (
   for (const session of sourceSessions) {
     const input = session.dailyInput!;
     const ordered = [...input.selectedTrainingSentences].sort((left, right) => {
-      if (left.role === right.role) return left.sourceIndex - right.sourceIndex;
-      return left.role === 'primary' ? -1 : 1;
+      if (left.isPrimary === right.isPrimary) return left.selectionOrder - right.selectionOrder;
+      return left.isPrimary ? -1 : 1;
     });
     for (const item of ordered) {
       const expression = clean(item.expression) || clean(item.sourceSentence);
