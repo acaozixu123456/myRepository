@@ -1,0 +1,25 @@
+name: Export causal world stabilization source
+
+on:
+  push:
+    branches: [nihongo-causal-world-stabilize-20260901]
+    paths:
+      - '.github/workflows/export-causal-world-stabilize.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-causal-world-stabilize-20260901
+      - name: Package source
+        run: tar --exclude=.git --exclude=node_modules -czf /tmp/nihongo-causal-world-stabilize.tar.gz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nihongo-causal-world-stabilize
+          path: /tmp/nihongo-causal-world-stabilize.tar.gz
+          retention-days: 1
