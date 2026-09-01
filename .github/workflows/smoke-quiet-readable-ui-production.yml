@@ -36,7 +36,7 @@ jobs:
           grep -Fq '不方便开口' /tmp/app.js
           grep -Fq '开口练习' /tmp/app.js
           grep -Fq 'WEEKLY BOSS' /tmp/app.js
-          grep -Fq 'nhk-practice-mode-switch' /tmp/app.css
+          grep -Fq 'nhk-mode-switch' /tmp/app.css
           grep -Fq 'nhk-quiet-response' /tmp/app.css
           grep -Eq 'font-size:15px' /tmp/app.css
           grep -Eq 'font-size:12px' /tmp/app.css
