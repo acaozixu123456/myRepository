@@ -1,0 +1,57 @@
+name: Verify NHK quiet readable UI v1
+
+on:
+  push:
+    branches: [nihongo-quiet-readable-ui-v1-20260902]
+    paths:
+      - '.github/workflows/verify-nhk-quiet-readable-ui-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-quiet-readable-ui-v1-20260902
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Integrate quiet study and readable layout
+        run: python scripts/patch-nhk-quiet-readable-ui-v1.py
+      - name: Assert product boundaries
+        shell: bash
+        run: |
+          set -euxo pipefail
+          grep -q "recordNhkQuietWorldAnswer" src/nhkMorning.ts
+          grep -q "isNhkSessionReadyToComplete(draft, studyMode)" src/NhkMorningPage.tsx
+          grep -q "安静学习" src/NhkStudyModeToggle.tsx
+          grep -q "不会伪装成口语分析成绩" src/NhkReviewPage.tsx
+          grep -q "font-size:16px" src/nhkReadable.css
+          ! grep -q "speechSynthesis" src/NhkMorningPage.tsx
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified product files
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            src/NhkMorningPage.tsx \
+            src/nhkMorning.ts \
+            src/nhkStudyMode.ts \
+            src/NhkStudyModeToggle.tsx \
+            src/NhkQuietWorld.tsx \
+            src/NhkReviewPage.tsx \
+            src/nhkReadable.css \
+            src/nhkStudyMode.test.ts
+          git diff --cached --check
+          git commit -m "Add quiet study mode and readable NHK layout"
+          git push origin HEAD:nihongo-quiet-readable-ui-v1-20260902
