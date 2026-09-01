@@ -1,0 +1,125 @@
+name: Assert NHK entry performance on production source
+
+on:
+  push:
+    branches: [nihongo-entry-performance-v1-20260901]
+    paths:
+      - '.github/workflows/assert-entry-performance-production-v4.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  assert-production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-entry-performance-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Ensure verified feature source exists
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if ! grep -q "readPersistentArticleCache" api/moji-article.ts; then
+            python scripts/patch-persistent-article-cache-v1.py
+          fi
+          if ! grep -q "recordNhkFirstTraining" src/NhkMorningPage.tsx; then
+            python scripts/patch-nhk-entry-performance-v2.py
+          fi
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            api/moji-article.ts \
+            src/nhkArticleCache.ts \
+            src/nhkArticleCache.test.ts \
+            src/nhkPerformance.ts \
+            src/nhkPerformance.test.ts \
+            src/NhkMorningPage.tsx \
+            src/nhkMorning.ts \
+            src/nhkMorning.test.ts \
+            src/nhkEvidence.ts \
+            src/nhkEvidence.test.ts \
+            src/NhkEvidencePage.tsx \
+            supabase/migrations/20260901043000_add_nihongo_article_cache.sql
+          git diff --cached --check
+          if ! git diff --cached --quiet; then
+            git commit -m "Add durable article cache and entry timing evidence"
+            git push origin HEAD:nihongo-entry-performance-v1-20260901
+          fi
+      - name: Verify or safely integrate current production
+        shell: bash
+        run: |
+          set -euxo pipefail
+          FEATURE_HEAD=$(git rev-parse HEAD)
+          BASE=3d233517446ecd1fc14a68a9d58d678bbabbe110
+          git fetch origin nihongo-vercel
+          PROD_BASE=$(git rev-parse origin/nihongo-vercel)
+          git worktree add /tmp/nihongo-production "$PROD_BASE"
+          cd /tmp/nihongo-production
+
+          if grep -q "readPersistentArticleCache" api/moji-article.ts \
+            && grep -q "recordNhkFirstTraining" src/NhkMorningPage.tsx \
+            && test -f src/nhkPerformance.ts; then
+            echo "ENTRY_PERFORMANCE_ALREADY_PRESENT=true"
+          else
+            git -C "$GITHUB_WORKSPACE" diff --binary "$BASE" "$FEATURE_HEAD" -- \
+              api/moji-article.ts \
+              src/nhkArticleCache.ts \
+              src/nhkArticleCache.test.ts \
+              src/nhkPerformance.ts \
+              src/nhkPerformance.test.ts \
+              src/NhkMorningPage.tsx \
+              src/nhkMorning.ts \
+              src/nhkMorning.test.ts \
+              src/nhkEvidence.ts \
+              src/nhkEvidence.test.ts \
+              src/NhkEvidencePage.tsx \
+              supabase/migrations/20260901043000_add_nihongo_article_cache.sql \
+              > /tmp/entry-performance.patch
+            test -s /tmp/entry-performance.patch
+            git apply --3way /tmp/entry-performance.patch
+            git diff --check
+          fi
+
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+
+          if ! git diff --quiet; then
+            git config user.name "Sol Supervisor"
+            git config user.email "actions@users.noreply.github.com"
+            git add \
+              api/moji-article.ts \
+              src/nhkArticleCache.ts \
+              src/nhkArticleCache.test.ts \
+              src/nhkPerformance.ts \
+              src/nhkPerformance.test.ts \
+              src/NhkMorningPage.tsx \
+              src/nhkMorning.ts \
+              src/nhkMorning.test.ts \
+              src/nhkEvidence.ts \
+              src/nhkEvidence.test.ts \
+              src/NhkEvidencePage.tsx \
+              supabase/migrations/20260901043000_add_nihongo_article_cache.sql
+            git diff --cached --check
+            git commit -m "Add durable article cache and entry timing evidence"
+            git fetch origin nihongo-vercel
+            test "$(git rev-parse origin/nihongo-vercel)" = "$PROD_BASE"
+            git push origin HEAD:nihongo-vercel
+          fi
+
+          git fetch origin nihongo-vercel
+          git show origin/nihongo-vercel:api/moji-article.ts | grep -q "readPersistentArticleCache"
+          git show origin/nihongo-vercel:src/NhkMorningPage.tsx | grep -q "recordNhkFirstTraining"
+          git cat-file -e origin/nihongo-vercel:src/nhkPerformance.ts
+          echo "ENTRY_PERFORMANCE_PRODUCTION_SOURCE_VERIFIED=true"
