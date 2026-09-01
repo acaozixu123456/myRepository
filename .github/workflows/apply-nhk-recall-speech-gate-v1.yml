@@ -1,0 +1,121 @@
+name: Apply NHK recall speech gate v1
+
+on:
+  push:
+    branches: [nihongo-recall-speech-gate-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-recall-speech-gate-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-recall-speech-gate-v1-20260901
+          fetch-depth: 0
+
+      - name: Require unseen-recall production evidence
+        run: |
+          python - <<'PY'
+          import json, time, urllib.request
+          url = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/nihongo-vercel/docs/verification/NHK_UNSEEN_RECALL_V1.json'
+          for attempt in range(1, 81):
+              try:
+                  request = urllib.request.Request(url, headers={'User-Agent':'NihongoRecallSpeechGate/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = json.loads(response.read().decode('utf-8'))
+                  if payload.get('result') != 'PASS':
+                      raise RuntimeError('unseen recall is not PASS')
+                  print(json.dumps(payload, ensure_ascii=False, indent=2))
+                  break
+              except Exception:
+                  if attempt == 80:
+                      raise
+                  time.sleep(10)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Refresh production and apply the speech gate
+        run: |
+          cp scripts/patch-nhk-recall-speech-gate-v1.py /tmp/patch-nhk-recall-speech-gate-v1.py
+          git fetch origin nihongo-vercel
+          git reset --hard origin/nihongo-vercel
+          cp /tmp/patch-nhk-recall-speech-gate-v1.py scripts/patch-nhk-recall-speech-gate-v1.py
+          python scripts/patch-nhk-recall-speech-gate-v1.py
+
+      - name: Verify before any push
+        run: |
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+          grep -q 'data-recall-speech-gate="nhk-recall-speech-gate-v1"' src/NhkMorningPage.tsx
+          grep -q '先录一次，再看答案' src/NhkMorningPage.tsx
+          grep -q 'onUnavailable={() => setRecallSpeechFallback(true)}' src/NhkMorningPage.tsx
+
+      - name: Promote only the verified gate
+        run: |
+          rm -f scripts/patch-nhk-recall-speech-gate-v1.py
+          rm -f .github/workflows/apply-nhk-recall-speech-gate-v1.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Require speech before revealing delayed-recall answers"
+          git push --force-with-lease origin HEAD:nihongo-recall-speech-gate-v1-20260901
+          git push origin HEAD:nihongo-vercel
+          git rev-parse HEAD > /tmp/recall-gate-code-sha
+
+      - name: Verify deployed production bundle
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base = os.environ['BASE'].rstrip('/')
+          result = None
+          for attempt in range(1, 31):
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(base+'/', headers={'User-Agent':'NihongoRecallSpeechGate/1.0','Cache-Control':'no-cache'}), timeout=40) as response:
+                      html = response.read().decode('utf-8')
+                  match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+                  if not match:
+                      raise RuntimeError('asset_not_found')
+                  asset = urllib.parse.urljoin(base+'/', match.group(1))
+                  with urllib.request.urlopen(urllib.request.Request(asset, headers={'User-Agent':'NihongoRecallSpeechGate/1.0','Cache-Control':'no-cache'}), timeout=45) as response:
+                      javascript = response.read().decode('utf-8')
+                  markers = ['nhk-recall-speech-gate-v1', '先录一次，再看答案', '使用备用路径查看答案']
+                  missing = [value for value in markers if value not in javascript and json.dumps(value, ensure_ascii=True)[1:-1].lower() not in javascript.lower()]
+                  if missing:
+                      raise RuntimeError('missing:' + ','.join(missing))
+                  result = {
+                      'result': 'PASS',
+                      'productionCommit': open('/tmp/recall-gate-code-sha').read().strip(),
+                      'asset': asset,
+                      'markers': markers,
+                      'contract': 'on supported browsers, the delayed-recall reference answer remains disabled until one recording completes; unsupported browsers use an explicit fallback path',
+                  }
+                  break
+              except Exception:
+                  if attempt == 30:
+                      raise
+                  time.sleep(min(5 + attempt, 15))
+          open('/tmp/recall-speech-gate-verification.json','w',encoding='utf-8').write(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Record verified gate evidence
+        run: |
+          mkdir -p docs/verification
+          cp /tmp/recall-speech-gate-verification.json docs/verification/NHK_RECALL_SPEECH_GATE_V1.json
+          git add docs/verification/NHK_RECALL_SPEECH_GATE_V1.json
+          git commit -m "Record verified delayed-recall speech gate"
+          git push origin HEAD:nihongo-recall-speech-gate-v1-20260901
+          git push origin HEAD:nihongo-vercel
