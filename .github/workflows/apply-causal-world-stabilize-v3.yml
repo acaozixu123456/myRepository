@@ -23,8 +23,13 @@ jobs:
           cache: npm
       - name: Replay verified stabilization diff
         run: |
-          git show --format= a2fb071ada0a8dfaf41109728707f317762ff986 -- src/NhkWorldEvent.tsx src/nhkMorning.ts src/nhkMorning.test.ts src/nhkMorning.css > /tmp/causal-stabilize.patch
+          git show --format= a2fb071ada0a8dfaf41109728707f317762ff986 -- src/NhkWorldEvent.tsx src/nhkMorning.ts src/nhkMorning.test.ts > /tmp/causal-stabilize.patch
           git apply --3way /tmp/causal-stabilize.patch
+          if ! grep -q '.nhk-causal-metrics' src/nhkMorning.css; then
+            cat >> src/nhkMorning.css <<'CSS'
+          .nhk-causal-metrics{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.nhk-causal-metrics span{border-radius:999px;background:#eef4dc;color:#52683a;padding:6px 9px;font-size:8px;font-weight:800}.nhk-causal-metrics b{font-size:11px;margin-left:3px}
+          CSS
+          fi
           grep -q 'eventId: `${sourceKey}-${session.dateKey}-world-event`' src/nhkMorning.ts
           grep -q 'targetExpressionUsed' src/NhkWorldEvent.tsx
           grep -q 'recordingSecondsRef' src/NhkWorldEvent.tsx
