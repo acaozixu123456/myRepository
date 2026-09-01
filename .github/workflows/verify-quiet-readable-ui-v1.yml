@@ -1,0 +1,69 @@
+name: Verify quiet learning and readable UI v1
+
+on:
+  push:
+    branches: [nihongo-quiet-readable-ui-v1-20260902]
+    paths:
+      - '.github/workflows/verify-quiet-readable-ui-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-quiet-readable-ui-v1-20260902
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply bounded quiet-mode and UI source bundle
+        shell: bash
+        run: |
+          set -euxo pipefail
+          test -f scripts/quiet-readable-ui-bundle.tgz
+          tar -xzf scripts/quiet-readable-ui-bundle.tgz
+      - name: Verify product contracts
+        shell: bash
+        run: |
+          set -euxo pipefail
+          grep -q "export type NhkPracticeMode = 'voice' | 'quiet'" src/nhkPracticeMode.ts
+          grep -q "静音学习" src/NhkPracticeModeSwitch.tsx
+          grep -q "responseMode" src/nhkMorning.ts
+          grep -q "quietReviews" src/nhkMorning.ts
+          grep -q "voiceCompleted" src/nhkEvidence.ts
+          grep -q "font-size:15px" src/nhkReadable.css
+          grep -q "\.nhk-page small" src/nhkReadable.css
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified bounded source changes
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            src/NhkBossPage.tsx \
+            src/NhkEvidencePage.tsx \
+            src/NhkMorningPage.tsx \
+            src/NhkPracticeModeSwitch.tsx \
+            src/NhkQuietResponseCard.tsx \
+            src/NhkQuietReview.tsx \
+            src/NhkWorldEvent.tsx \
+            src/nhkEvidence.ts \
+            src/nhkEvidence.test.ts \
+            src/nhkMorning.ts \
+            src/nhkMorning.test.ts \
+            src/nhkPracticeMode.ts \
+            src/nhkPracticeMode.test.ts \
+            src/nhkReadable.css \
+            src/nhkReadable.test.ts
+          git diff --cached --check
+          git commit -m "Add quiet learning mode and readable UI"
+          git push origin HEAD:nihongo-quiet-readable-ui-v1-20260902
