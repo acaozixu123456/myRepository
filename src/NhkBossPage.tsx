@@ -1,6 +1,7 @@
 import {useEffect, useMemo, useState} from 'react';
 import {
   ArrowLeft,
+  BookOpen,
   Check,
   ChevronRight,
   MessageCircle,
@@ -20,6 +21,7 @@ import {
   type NhkBossRegister,
   type NhkBossSession,
 } from './nhkBoss';
+import type {NhkPracticeMode} from './nhkPracticeMode';
 
 const registerLabel = (register: NhkBossRegister): string => {
   if (register === 'work') return '工作表达';
@@ -37,10 +39,14 @@ const formatPeriod = (start: string, end: string): string => {
 
 export default function NhkBossPage({
   session,
+  practiceMode,
+  onRequestVoiceMode,
   onBack,
   onUpdate,
 }: {
   session: NhkBossSession;
+  practiceMode: NhkPracticeMode;
+  onRequestVoiceMode: () => void;
   onBack: () => void;
   onUpdate: (session: NhkBossSession) => void;
 }) {
@@ -103,6 +109,34 @@ export default function NhkBossPage({
             <div><small>下周剧情种子</small><strong>{current.outcome.nextWeekHookZh}</strong></div>
           </div>
           <button className="nhk-boss-back" onClick={onBack}>保存结果，回到今朝</button>
+        </div>
+      </section>
+    );
+  }
+
+
+  if (practiceMode === 'quiet') {
+    return (
+      <section className="nhk-page nhk-flow nhk-boss-page">
+        <header className="nhk-flow-header">
+          <button aria-label="返回" onClick={onBack}><ArrowLeft size={22} /></button>
+          <div><small>WEEKLY BOSS</small><strong>需要开口完成</strong></div>
+          <span />
+        </header>
+        <div className="nhk-boss-quiet-gate">
+          <div className="nhk-boss-quiet-icon"><BookOpen size={28} /></div>
+          <small>{formatPeriod(current.weekStartKey, current.weekEndKey)} · 已完成 {completedCount}/5 轮</small>
+          <h1>现在不方便开口，也不会丢失 Boss 进度。</h1>
+          <p>Weekly Boss 用来检验能否在没有提示时真正说出来，所以不会把打字冒充口语成绩。你可以先返回做静音复习，方便时再继续这一轮。</p>
+          <div className="nhk-boss-quiet-points">
+            <span><Check size={17} />已完成的轮次全部保留</span>
+            <span><BookOpen size={17} />最近内容仍可静音复习</span>
+            <span><Mic2 size={17} />切回开口模式后从当前轮继续</span>
+          </div>
+          <div className="nhk-boss-quiet-actions">
+            <button onClick={onBack}>先做静音复习</button>
+            <button className="primary" onClick={onRequestVoiceMode}><Mic2 size={18} />切换开口练习</button>
+          </div>
         </div>
       </section>
     );

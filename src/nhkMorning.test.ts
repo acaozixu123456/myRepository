@@ -16,6 +16,7 @@ import {
   markNhkDailyInputUsedInWorld,
   pickNhkWorldCallbackTarget,
   pickRecallTarget,
+  recordNhkQuietReview,
   recordNhkRecallAttempt,
   saveNhkSessions,
   suggestExpression,
@@ -122,6 +123,7 @@ describe('NHK morning learning loop', () => {
     session = recordNhkRecallAttempt(session, day7!, '2026-09-08', 'good', 9, 4);
     expect(pickRecallTarget([session], '2026-09-09')).toBeNull();
     expect(session.recallAttempts).toHaveLength(3);
+    expect(session.recallAttempts.every(attempt => attempt.responseMode === 'voice')).toBe(true);
     expect((session.recallAttempts[0] as NhkMorningSession['recallAttempts'][number] & {session?: unknown}).session).toBeUndefined();
   });
 
@@ -329,6 +331,106 @@ describe('NHK morning learning loop', () => {
       register: 'daily',
     });
     expect(migrated.dailyInput?.recallSchedule[2].referenceJa).toBe(complete.workVersion);
+  });
+
+
+  it('supports a deliberate quiet study completion without pretending it was spoken', () => {
+    const quiet = {
+      ...createNhkSession('2026-09-02', 'quiet'),
+      shadowText: '原文です。',
+      recapText: 'ニュースの要点です。',
+      keyExpression: '〜を受けて',
+      worldAnswer: '変更を受けて、確認します。',
+      recapRecordingSeconds: 0,
+      worldRecordingSeconds: 0,
+    };
+    expect(isNhkSessionReadyToComplete(quiet)).toBe(true);
+    expect(isNhkSessionReadyToComplete({...quiet, recapText: ''})).toBe(false);
+
+    const voice = {...quiet, practiceMode: 'voice' as const};
+    expect(isNhkSessionReadyToComplete(voice)).toBe(false);
+    expect(isNhkSessionReadyToComplete({
+      ...voice,
+      recapRecordingSeconds: 12,
+      worldRecordingSeconds: 9,
+    })).toBe(true);
+  });
+
+  it('stores quiet delayed recall separately from speech evidence', () => {
+    const session = {
+      ...createNhkSession('2026-09-01', 'quiet'),
+      shadowText: sourceSentences[0],
+      keyExpression: '〜てはいけない',
+      completedAt: 1,
+      completedMode: 'quiet' as const,
+    };
+    const target = pickRecallTarget([session], '2026-09-02')!;
+    const reviewed = recordNhkRecallAttempt(
+      session,
+      target,
+      '2026-09-02',
+      'close',
+      0,
+      20,
+      undefined,
+      'quiet',
+      'SNSのルール',
+    );
+    expect(reviewed.recallAttempts[0]).toMatchObject({
+      responseMode: 'quiet',
+      quietNote: 'SNSのルール',
+      recordingSeconds: 0,
+      rating: 'close',
+    });
+    expect(reviewed.recallAttempts[0].review).toBeUndefined();
+  });
+
+  it('keeps a bounded local history of anytime quiet reviews', () => {
+    let session = createNhkSession('2026-09-01', 'quiet');
+    for (let index = 0; index < 35; index += 1) {
+      session = recordNhkQuietReview(session, index % 2 ? 'good' : 'close', `note-${index}`, index + 1);
+    }
+    expect(session.quietReviews).toHaveLength(30);
+    expect(session.quietReviews[0].completedAt).toBe(6);
+    expect(session.quietReviews[29]).toMatchObject({completedAt: 35, note: 'note-34'});
+
+    const payload = JSON.stringify([session]);
+    const storage = {getItem: () => payload, setItem: () => undefined};
+    const restored = loadNhkSessions(storage)[0];
+    expect(restored.practiceMode).toBe('quiet');
+    expect(restored.quietReviews).toHaveLength(30);
+  });
+
+  it('records quiet callback completion without a speech review', () => {
+    const coach = buildFallbackCoach('静音回访', sourceSentences);
+    const base = {
+      ...createNhkSession('2026-09-01', 'quiet'),
+      sourceUrl: 'https://www.mojidict.com/article/quiet-callback',
+      title: '静音回访',
+      worldAnswer: '最初の回答です。',
+      completedAt: 1,
+      completedMode: 'quiet' as const,
+    };
+    const session = applyNhkDailyInput(base, buildNhkDailyInput({
+      session: base,
+      coach,
+      selectedSentences: [sourceSentences[0]],
+      candidateSentences: sourceSentences,
+    }));
+    const completed = completeNhkWorldCallback(
+      session,
+      '今も同じ考えです。',
+      0,
+      undefined,
+      200,
+      'quiet',
+    );
+    expect(completed.dailyInput?.world.callback).toMatchObject({
+      responseMode: 'quiet',
+      recordingSeconds: 0,
+      completedAt: 200,
+    });
+    expect(completed.dailyInput?.world.callback.review).toBeUndefined();
   });
 
 });

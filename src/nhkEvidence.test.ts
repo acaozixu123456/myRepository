@@ -42,6 +42,7 @@ const recallAttempt = (
   dateKey: string,
   rating: 'good' | 'close' | 'miss',
   speechReview?: NhkSpeechReview,
+  responseMode: 'voice' | 'quiet' = 'voice',
 ): NhkRecallAttempt => {
   const plan = buildNhkRecallSchedule('2026-08-20').find(item => item.intervalDay === intervalDay)!;
   return {
@@ -49,7 +50,8 @@ const recallAttempt = (
     dueDateKey: dateKey,
     dateKey,
     rating,
-    recordingSeconds: 12,
+    responseMode,
+    recordingSeconds: responseMode === 'quiet' ? 0 : 12,
     completedAt: speechReview?.analyzedAt || 1,
     ...(speechReview ? {review: speechReview} : {}),
   };
@@ -82,6 +84,12 @@ describe('NHK weekly learning evidence', () => {
     expect(evidence.completedInputs).toBe(2);
     expect(evidence.analyzedResponses).toBe(4);
     expect(evidence.speakingSeconds).toBe(66);
+    expect(evidence.studyModes).toEqual({
+      voiceCompletedInputs: 2,
+      quietCompletedInputs: 0,
+      quietReviews: 0,
+      quietRecallAttempts: 0,
+    });
     expect(evidence.current.shadowAccuracy.value).toBe(74);
     expect(evidence.current.omissionRate.value).toBe(16);
     expect(evidence.current.outputScore.value).toBe(73);
@@ -129,6 +137,35 @@ describe('NHK weekly learning evidence', () => {
     expect(evidence.hasEvidence).toBe(false);
     expect(evidence.current.shadowAccuracy.value).toBeNull();
     expect(evidence.comparisons).toEqual([]);
-    expect(evidence.headlineZh).toContain('完成一次语音分析');
+    expect(evidence.headlineZh).toContain('开口或静音');
   });
+
+  it('keeps quiet study activity without turning it into speech evidence', () => {
+    const quietReviewAt = new Date(2026, 8, 1, 12, 0, 0).getTime();
+    const quiet = {
+      ...createNhkSession('2026-09-01', 'quiet'),
+      completedAt: quietReviewAt,
+      completedMode: 'quiet' as const,
+      quietReviews: [{completedAt: quietReviewAt, rating: 'good' as const, note: '要点を思い出した'}],
+      recallAttempts: [recallAttempt(1, '2026-09-01', 'close', undefined, 'quiet')],
+    };
+    const evidence = buildNhkWeeklyEvidence([quiet], '2026-09-01');
+    expect(evidence.hasEvidence).toBe(true);
+    expect(evidence.analyzedResponses).toBe(0);
+    expect(evidence.speakingSeconds).toBe(0);
+    expect(evidence.studyModes).toEqual({
+      voiceCompletedInputs: 0,
+      quietCompletedInputs: 1,
+      quietReviews: 1,
+      quietRecallAttempts: 1,
+    });
+    expect(evidence.recall[0]).toMatchObject({
+      attempts: 1,
+      voiceAttempts: 0,
+      quietAttempts: 1,
+      averageScore: null,
+    });
+    expect(evidence.headlineZh).toContain('静音学习');
+  });
+
 });
