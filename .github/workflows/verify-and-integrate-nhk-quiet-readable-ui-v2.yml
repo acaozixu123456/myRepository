@@ -1,0 +1,104 @@
+name: Verify and integrate NHK quiet readable UI v2
+
+on:
+  push:
+    branches: [nihongo-quiet-readable-ui-v1-20260902]
+    paths:
+      - '.github/workflows/verify-and-integrate-nhk-quiet-readable-ui-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-quiet-readable-ui-v1-20260902
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Ensure product patch is applied
+        shell: bash
+        run: |
+          set -euxo pipefail
+          if ! grep -q "recordNhkQuietWorldAnswer" src/nhkMorning.ts; then
+            python scripts/patch-nhk-quiet-readable-ui-v1.py
+          fi
+      - name: Verify feature branch
+        shell: bash
+        run: |
+          set -euxo pipefail
+          grep -q "isNhkSessionReadyToComplete(draft, studyMode)" src/NhkMorningPage.tsx
+          grep -q "NhkReviewPage" src/NhkMorningPage.tsx
+          grep -q "responseMode: 'quiet'" src/nhkMorning.ts
+          grep -q "不会伪装成口语分析成绩" src/NhkReviewPage.tsx
+          grep -q "font-size:16px" src/nhkReadable.css
+          ! grep -q "speechSynthesis" src/NhkMorningPage.tsx
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+      - name: Commit verified feature source if needed
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            src/NhkMorningPage.tsx \
+            src/nhkMorning.ts \
+            src/nhkStudyMode.ts \
+            src/NhkStudyModeToggle.tsx \
+            src/NhkQuietWorld.tsx \
+            src/NhkReviewPage.tsx \
+            src/nhkReadable.css \
+            src/nhkStudyMode.test.ts
+          git diff --cached --check
+          if ! git diff --cached --quiet; then
+            git commit -m "Add quiet study mode and readable NHK layout"
+            git push origin HEAD:nihongo-quiet-readable-ui-v1-20260902
+          fi
+      - name: Integrate only verified product files into current production
+        shell: bash
+        run: |
+          set -euxo pipefail
+          FEATURE_HEAD=$(git rev-parse HEAD)
+          FEATURE_BASE=3be753c10e05e1b2da5a92b85163dd68f09a1093
+          TARGETS=(
+            src/NhkMorningPage.tsx
+            src/nhkMorning.ts
+            src/nhkStudyMode.ts
+            src/NhkStudyModeToggle.tsx
+            src/NhkQuietWorld.tsx
+            src/NhkReviewPage.tsx
+            src/nhkReadable.css
+            src/nhkStudyMode.test.ts
+          )
+
+          git fetch origin nihongo-vercel
+          PROD_BASE=$(git rev-parse origin/nihongo-vercel)
+          if ! git diff --quiet "$FEATURE_BASE" "$PROD_BASE" -- src/NhkMorningPage.tsx src/nhkMorning.ts; then
+            echo "Production learning source moved after the feature branch was created; refusing to overwrite it."
+            exit 72
+          fi
+
+          git worktree add /tmp/nihongo-production "$PROD_BASE"
+          cd /tmp/nihongo-production
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout "$FEATURE_HEAD" -- "${TARGETS[@]}"
+          git diff --check
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+          git add "${TARGETS[@]}"
+          git diff --cached --check
+          git commit -m "Add quiet study mode and simplify NHK layout"
+          git fetch origin nihongo-vercel
+          test "$(git rev-parse origin/nihongo-vercel)" = "$PROD_BASE"
+          git push origin HEAD:nihongo-vercel
