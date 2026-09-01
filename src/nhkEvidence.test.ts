@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'vitest';
 import type {NhkSpeechMode, NhkSpeechReview} from './NhkSpeechCoach';
 import {buildNhkWeeklyEvidence} from './nhkEvidence';
-import {createNhkSession, type NhkRecallAttempt} from './nhkMorning';
+import {buildNhkRecallSchedule, createNhkSession, type NhkRecallAttempt} from './nhkMorning';
 
 const review = (
   id: string,
@@ -42,15 +42,18 @@ const recallAttempt = (
   dateKey: string,
   rating: 'good' | 'close' | 'miss',
   speechReview?: NhkSpeechReview,
-): NhkRecallAttempt => ({
-  intervalDay,
-  dueDateKey: dateKey,
-  dateKey,
-  rating,
-  recordingSeconds: 12,
-  completedAt: speechReview?.analyzedAt || 1,
-  ...(speechReview ? {review: speechReview} : {}),
-});
+): NhkRecallAttempt => {
+  const plan = buildNhkRecallSchedule('2026-08-20').find(item => item.intervalDay === intervalDay)!;
+  return {
+    ...plan,
+    dueDateKey: dateKey,
+    dateKey,
+    rating,
+    recordingSeconds: 12,
+    completedAt: speechReview?.analyzedAt || 1,
+    ...(speechReview ? {review: speechReview} : {}),
+  };
+};
 
 describe('NHK weekly learning evidence', () => {
   it('aggregates this week from actual speech reviews and recording durations', () => {

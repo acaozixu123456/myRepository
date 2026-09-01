@@ -9,10 +9,19 @@ import type {NhkSpeechMode, NhkSpeechReview} from './NhkSpeechCoach';
 
 export type NhkRecallRating = 'good' | 'close' | 'miss';
 export type NhkRecallIntervalDay = 1 | 3 | 7;
+export type NhkRecallScenarioKind = 'reconstruct' | 'daily-transfer' | 'work-transfer';
+export type NhkRecallRegister = 'core' | 'daily' | 'work';
 
 export type NhkRecallPlan = {
   intervalDay: NhkRecallIntervalDay;
   dueDateKey: string;
+  scenarioKind: NhkRecallScenarioKind;
+  register: NhkRecallRegister;
+  titleZh: string;
+  promptZh: string;
+  promptJa: string;
+  revealLabelZh: string;
+  referenceJa: string;
 };
 
 export type NhkRecallAttempt = NhkRecallPlan & {
@@ -122,7 +131,6 @@ type BuildDailyInputOptions = {
 
 const STORAGE_KEY = 'nihongo-nhk-morning-v2';
 const LEGACY_STORAGE_KEY = 'nihongo-nhk-morning-v1';
-const RECALL_INTERVALS: NhkRecallIntervalDay[] = [1, 3, 7];
 const pad = (value: number) => String(value).padStart(2, '0');
 const clean = (value: unknown, max = 400): string => typeof value === 'string'
   ? value.replace(/\s+/g, ' ').trim().slice(0, max)
@@ -165,8 +173,84 @@ const stableHash = (value: string): string => {
 const uniqueSentences = (sentences: string[], limit: number): string[] =>
   Array.from(new Set(sentences.map(value => clean(value, 280)).filter(Boolean))).slice(0, limit);
 
-export const buildNhkRecallSchedule = (dateKey: string): NhkRecallPlan[] =>
-  RECALL_INTERVALS.map(intervalDay => ({intervalDay, dueDateKey: shiftDateKey(dateKey, intervalDay)}));
+type NhkRecallSeed = Pick<NhkTrainingSentence, 'sourceSentence' | 'expression' | 'dailyVersion' | 'workVersion'>;
+
+export const buildNhkRecallSchedule = (
+  dateKey: string,
+  seed?: Partial<NhkRecallSeed> | null,
+): NhkRecallPlan[] => {
+  const sourceSentence = clean(seed?.sourceSentence, 500) || clean(seed?.expression, 200) || '今日の核心表現';
+  const dailyVersion = clean(seed?.dailyVersion, 500) || sourceSentence;
+  const workVersion = clean(seed?.workVersion, 500) || dailyVersion;
+  return [
+    {
+      intervalDay: 1,
+      dueDateKey: shiftDateKey(dateKey, 1),
+      scenarioKind: 'reconstruct',
+      register: 'core',
+      titleZh: '重建核心',
+      promptZh: '不看原句，先用自己的话说清新闻重点，再用今天的核心表达补一句。',
+      promptJa: 'ニュースの要点を一文で言い直し、今日の核心表現を使ってもう一文続けてください。',
+      revealLabelZh: '核心原句',
+      referenceJa: sourceSentence,
+    },
+    {
+      intervalDay: 3,
+      dueDateKey: shiftDateKey(dateKey, 3),
+      scenarioKind: 'daily-transfer',
+      register: 'daily',
+      titleZh: '日常迁移',
+      promptZh: '朋友问这件事会不会影响日常生活。不要复述新闻，用自然口语回答 1～2 句。',
+      promptJa: '友だちに「それ、普段の生活にも関係あるの？」と聞かれました。ニュースをそのまま繰り返さず、自然な話し言葉で答えてください。',
+      revealLabelZh: '日常参考',
+      referenceJa: dailyVersion,
+    },
+    {
+      intervalDay: 7,
+      dueDateKey: shiftDateKey(dateKey, 7),
+      scenarioKind: 'work-transfer',
+      register: 'work',
+      titleZh: '工作迁移',
+      promptZh: '会议上说明这项变化对项目的影响，并说下一步要确认什么。用两句工作日语回答。',
+      promptJa: '会議で「この変更はプロジェクトにどんな影響がありますか。次に何を確認しますか」と聞かれました。仕事の日本語で二文答えてください。',
+      revealLabelZh: '工作参考',
+      referenceJa: workVersion,
+    },
+  ];
+};
+
+const RECALL_SCENARIO_KINDS: NhkRecallScenarioKind[] = ['reconstruct', 'daily-transfer', 'work-transfer'];
+const RECALL_REGISTERS: NhkRecallRegister[] = ['core', 'daily', 'work'];
+
+const normalizeRecallSchedule = (
+  value: unknown,
+  dateKey: string,
+  seed?: Partial<NhkRecallSeed> | null,
+): NhkRecallPlan[] => {
+  const defaults = buildNhkRecallSchedule(dateKey, seed);
+  const source = Array.isArray(value)
+    ? value.filter(item => item && typeof item === 'object').map(item => item as Partial<NhkRecallPlan>)
+    : [];
+  return defaults.map(fallback => {
+    const item = source.find(candidate => candidate.intervalDay === fallback.intervalDay);
+    if (!item) return fallback;
+    return {
+      ...fallback,
+      dueDateKey: clean(item.dueDateKey, 10) || fallback.dueDateKey,
+      scenarioKind: RECALL_SCENARIO_KINDS.includes(item.scenarioKind as NhkRecallScenarioKind)
+        ? item.scenarioKind as NhkRecallScenarioKind
+        : fallback.scenarioKind,
+      register: RECALL_REGISTERS.includes(item.register as NhkRecallRegister)
+        ? item.register as NhkRecallRegister
+        : fallback.register,
+      titleZh: clean(item.titleZh, 100) || fallback.titleZh,
+      promptZh: clean(item.promptZh, 500) || fallback.promptZh,
+      promptJa: clean(item.promptJa, 500) || fallback.promptJa,
+      revealLabelZh: clean(item.revealLabelZh, 100) || fallback.revealLabelZh,
+      referenceJa: clean(item.referenceJa, 500) || fallback.referenceJa,
+    };
+  });
+};
 
 const buildNhkWorldCallback = (dateKey: string, title: string): NhkWorldCallback => ({
   dueDateKey: shiftDateKey(dateKey, 3),
@@ -220,9 +304,9 @@ export const buildNhkDailyInput = ({
   const previous = session.dailyInput?.version === 2 && session.dailyInput.sourceUrl === session.sourceUrl
     ? session.dailyInput
     : undefined;
-  const previousWorld = previous?.primaryTrainingSentenceId === selectedTrainingSentences[0]?.id
-    ? previous.world
-    : undefined;
+  const primary = selectedTrainingSentences[0];
+  const previousPrimary = previous?.primaryTrainingSentenceId === primary?.id ? previous : undefined;
+  const previousWorld = previousPrimary?.world;
 
   return {
     version: 2,
@@ -251,7 +335,7 @@ export const buildNhkDailyInput = ({
       ...(previousWorld?.characterReactionZh ? {characterReactionZh: previousWorld.characterReactionZh} : {}),
       callback: previousWorld?.callback || buildNhkWorldCallback(session.dateKey, session.title),
     },
-    recallSchedule: previous?.recallSchedule?.length ? previous.recallSchedule : buildNhkRecallSchedule(session.dateKey),
+    recallSchedule: normalizeRecallSchedule(previousPrimary?.recallSchedule, session.dateKey, primary),
   };
 };
 
@@ -424,13 +508,29 @@ const sentenceListFromText = (value: string): string[] => value
   .filter(Boolean)
   .slice(0, 3);
 
-const migratedLegacyAttempt = (session: NhkMorningSession): NhkRecallAttempt[] => {
+const recallSeedForSession = (session: NhkMorningSession): NhkRecallSeed => {
+  const primary = primaryNhkTrainingSentence(session.dailyInput);
+  if (primary) return primary;
+  const sourceSentence = sentenceListFromText(session.shadowText)[0] || session.keyExpression || '今日の核心表現';
+  return {
+    sourceSentence,
+    expression: session.keyExpression || sourceSentence,
+    dailyVersion: session.dailyVersion || sourceSentence,
+    workVersion: session.workVersion || session.dailyVersion || sourceSentence,
+  };
+};
+
+const migratedLegacyAttempt = (
+  session: NhkMorningSession,
+  schedule: NhkRecallPlan[],
+): NhkRecallAttempt[] => {
   if (!session.recall) return [];
   const elapsed = daysBetween(session.dateKey, session.recall.dateKey);
   const intervalDay: NhkRecallIntervalDay = elapsed >= 7 ? 7 : elapsed >= 3 ? 3 : 1;
+  const plan = schedule.find(item => item.intervalDay === intervalDay)
+    || buildNhkRecallSchedule(session.dateKey, recallSeedForSession(session))[0];
   return [{
-    intervalDay,
-    dueDateKey: shiftDateKey(session.dateKey, intervalDay),
+    ...plan,
     dateKey: session.recall.dateKey,
     rating: session.recall.rating,
     recordingSeconds: session.recall.recordingSeconds,
@@ -461,25 +561,32 @@ const normalizeSpeechReviews = (value: unknown): Partial<Record<NhkSpeechMode, N
   return result;
 };
 
-const normalizeAttempts = (value: unknown, fallback: NhkRecallAttempt[]): NhkRecallAttempt[] => {
+const normalizeAttempts = (
+  value: unknown,
+  fallback: NhkRecallAttempt[],
+  schedule: NhkRecallPlan[],
+): NhkRecallAttempt[] => {
   if (!Array.isArray(value)) return fallback;
-  const attempts = value.filter(item => item && typeof item === 'object').map(item => item as Partial<NhkRecallAttempt>)
-    .filter(item => RECALL_INTERVALS.includes(item.intervalDay as NhkRecallIntervalDay)
-      && typeof item.dateKey === 'string'
-      && typeof item.rating === 'string'
-      && typeof item.completedAt === 'number')
-    .map(item => {
-      const review = normalizeSpeechReview(item.review);
-      return {
-        intervalDay: item.intervalDay as NhkRecallIntervalDay,
-        dueDateKey: clean(item.dueDateKey, 10) || '',
-        dateKey: item.dateKey!,
-        rating: item.rating as NhkRecallRating,
-        recordingSeconds: Number(item.recordingSeconds) || 0,
-        completedAt: item.completedAt!,
-        ...(review ? {review} : {}),
-      };
+  const attempts: NhkRecallAttempt[] = [];
+  for (const raw of value) {
+    if (!raw || typeof raw !== 'object') continue;
+    const item = raw as Partial<NhkRecallAttempt>;
+    const plan = schedule.find(candidate => candidate.intervalDay === item.intervalDay);
+    if (!plan
+      || typeof item.dateKey !== 'string'
+      || !['good', 'close', 'miss'].includes(String(item.rating))
+      || typeof item.completedAt !== 'number') continue;
+    const review = normalizeSpeechReview(item.review);
+    attempts.push({
+      ...plan,
+      dueDateKey: clean(item.dueDateKey, 10) || plan.dueDateKey,
+      dateKey: item.dateKey,
+      rating: item.rating as NhkRecallRating,
+      recordingSeconds: Number(item.recordingSeconds) || 0,
+      completedAt: item.completedAt,
+      ...(review ? {review} : {}),
     });
+  }
   return attempts.length ? attempts : fallback;
 };
 
@@ -521,9 +628,11 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
     generatedAt: typeof input.generatedAt === 'number' ? input.generatedAt : Date.now(),
   });
   const world = input.world && typeof input.world === 'object' ? input.world : undefined;
-  const recallSchedule = Array.isArray(input.recallSchedule)
-    ? input.recallSchedule.filter(plan => plan && RECALL_INTERVALS.includes(plan.intervalDay) && typeof plan.dueDateKey === 'string')
-    : [];
+  const recallSchedule = normalizeRecallSchedule(
+    input.recallSchedule,
+    session.dateKey,
+    primaryNhkTrainingSentence(rebuilt),
+  );
   return {
     ...rebuilt,
     userOpinion: clean(input.userOpinion, 1200) || session.opinion,
@@ -541,7 +650,7 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
       ...(clean(world?.characterReactionZh, 300) ? {characterReactionZh: clean(world?.characterReactionZh, 300)} : {}),
       callback: normalizeWorldCallback(world?.callback, rebuilt.world.callback),
     },
-    recallSchedule: recallSchedule.length === 3 ? recallSchedule : rebuilt.recallSchedule,
+    recallSchedule,
   };
 };
 
@@ -559,9 +668,17 @@ const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => {
     speechReviews: normalizeSpeechReviews(session.speechReviews),
     recallAttempts: [],
   };
-  base.recallAttempts = normalizeAttempts(session.recallAttempts, migratedLegacyAttempt(base));
   const dailyInput = normalizeDailyInput(session.dailyInput, base);
-  return dailyInput ? applyNhkDailyInput(base, dailyInput) : base;
+  const normalized = dailyInput ? applyNhkDailyInput(base, dailyInput) : base;
+  const recallSchedule = dailyInput?.recallSchedule?.length
+    ? dailyInput.recallSchedule
+    : buildNhkRecallSchedule(normalized.dateKey, recallSeedForSession(normalized));
+  normalized.recallAttempts = normalizeAttempts(
+    session.recallAttempts,
+    migratedLegacyAttempt(normalized, recallSchedule),
+    recallSchedule,
+  );
+  return normalized;
 };
 
 const resolveStorage = (storage?: StorageLike): StorageLike | null => {
@@ -617,10 +734,8 @@ export const pickNhkWorldCallbackTarget = (
     || b.dateKey.localeCompare(a.dateKey))
   .map(session => ({session, dueDateKey: session.dailyInput!.world.callback.dueDateKey}))[0] || null;
 
-export type NhkRecallTarget = {
+export type NhkRecallTarget = NhkRecallPlan & {
   session: NhkMorningSession;
-  intervalDay: NhkRecallIntervalDay;
-  dueDateKey: string;
 };
 
 export const pickRecallTarget = (
@@ -634,7 +749,7 @@ export const pickRecallTarget = (
     const completed = new Set(session.recallAttempts.map(attempt => attempt.intervalDay));
     const schedule = session.dailyInput?.recallSchedule?.length
       ? session.dailyInput.recallSchedule
-      : buildNhkRecallSchedule(session.dateKey);
+      : buildNhkRecallSchedule(session.dateKey, recallSeedForSession(session));
     const due = schedule.find(plan => plan.dueDateKey <= todayKey && !completed.has(plan.intervalDay));
     if (due) targets.push({session, ...due});
   }
@@ -649,26 +764,37 @@ export const pickRecallSession = (
 
 export const recordNhkRecallAttempt = (
   session: NhkMorningSession,
-  target: Pick<NhkRecallTarget, 'intervalDay' | 'dueDateKey'>,
+  target: NhkRecallPlan | NhkRecallTarget,
   dateKey: string,
   rating: NhkRecallRating,
   recordingSeconds: number,
   completedAt = Date.now(),
   review?: NhkSpeechReview,
-): NhkMorningSession => ({
-  ...session,
-  recallAttempts: [
-    ...session.recallAttempts.filter(attempt => attempt.intervalDay !== target.intervalDay),
-    {
-      ...target,
-      dateKey,
-      rating,
-      recordingSeconds,
-      completedAt,
-      ...(review ? {review} : {}),
-    },
-  ].sort((a, b) => a.intervalDay - b.intervalDay),
-});
+): NhkMorningSession => {
+  const attempt: NhkRecallAttempt = {
+    intervalDay: target.intervalDay,
+    dueDateKey: target.dueDateKey,
+    scenarioKind: target.scenarioKind,
+    register: target.register,
+    titleZh: target.titleZh,
+    promptZh: target.promptZh,
+    promptJa: target.promptJa,
+    revealLabelZh: target.revealLabelZh,
+    referenceJa: target.referenceJa,
+    dateKey,
+    rating,
+    recordingSeconds,
+    completedAt,
+    ...(review ? {review} : {}),
+  };
+  return {
+    ...session,
+    recallAttempts: [
+      ...session.recallAttempts.filter(item => item.intervalDay !== target.intervalDay),
+      attempt,
+    ].sort((a, b) => a.intervalDay - b.intervalDay),
+  };
+};
 
 export const completedNhkStreak = (
   sessions: NhkMorningSession[],

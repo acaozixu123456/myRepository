@@ -6,6 +6,7 @@ import {
   applyNhkSpeechReview,
   applyNhkWorldCallbackReview,
   buildNhkDailyInput,
+  buildNhkRecallSchedule,
   completeNhkWorldCallback,
   completedNhkStreak,
   createNhkSession,
@@ -58,6 +59,12 @@ describe('NHK morning learning loop', () => {
     expect(session.dailyInput?.selectedTrainingSentences[0].isPrimary).toBe(true);
     expect(session.keyExpression).toContain('会社でも利用ルール');
     expect(session.dailyInput?.recallSchedule.map(item => item.intervalDay)).toEqual([1, 3, 7]);
+    expect(session.dailyInput?.recallSchedule.map(item => item.scenarioKind)).toEqual([
+      'reconstruct',
+      'daily-transfer',
+      'work-transfer',
+    ]);
+    expect(session.dailyInput?.recallSchedule[0].referenceJa).toBe(sourceSentences[2]);
   });
 
   it('migrates legacy storage and writes the new v2 key', () => {
@@ -88,19 +95,34 @@ describe('NHK morning learning loop', () => {
       completedAt: 1,
     };
     const day1 = pickRecallTarget([session], '2026-09-02');
-    expect(day1?.intervalDay).toBe(1);
+    expect(day1).toMatchObject({
+      intervalDay: 1,
+      scenarioKind: 'reconstruct',
+      register: 'core',
+      titleZh: '重建核心',
+      referenceJa: sourceSentences[0],
+    });
     session = recordNhkRecallAttempt(session, day1!, '2026-09-02', 'good', 12, 2);
     expect(pickRecallTarget([session], '2026-09-02')).toBeNull();
 
     const day3 = pickRecallTarget([session], '2026-09-04');
-    expect(day3?.intervalDay).toBe(3);
+    expect(day3).toMatchObject({
+      intervalDay: 3,
+      scenarioKind: 'daily-transfer',
+      register: 'daily',
+    });
     session = recordNhkRecallAttempt(session, day3!, '2026-09-04', 'close', 15, 3);
 
     const day7 = pickRecallTarget([session], '2026-09-08');
-    expect(day7?.intervalDay).toBe(7);
+    expect(day7).toMatchObject({
+      intervalDay: 7,
+      scenarioKind: 'work-transfer',
+      register: 'work',
+    });
     session = recordNhkRecallAttempt(session, day7!, '2026-09-08', 'good', 9, 4);
     expect(pickRecallTarget([session], '2026-09-09')).toBeNull();
     expect(session.recallAttempts).toHaveLength(3);
+    expect((session.recallAttempts[0] as NhkMorningSession['recallAttempts'][number] & {session?: unknown}).session).toBeUndefined();
   });
 
   it('upserts, counts streaks and requires output before completion', () => {
@@ -230,6 +252,66 @@ describe('NHK morning learning loop', () => {
     expect(session.dailyInput?.world.callback.completedAt).toBe(300);
     expect(session.dailyInput?.world.callback.characterReactionJa).toBe(review.characterReactionJa);
     expect(pickNhkWorldCallbackTarget([session], '2026-09-04')).toBeNull();
+  });
+
+
+  it('builds different unseen tasks for day 1, 3 and 7', () => {
+    const schedule = buildNhkRecallSchedule('2026-09-01', {
+      sourceSentence: sourceSentences[0],
+      expression: '〜てはいけない',
+      dailyVersion: '子どものSNSには、ある程度ルールが必要だと思います。',
+      workVersion: 'この変更を受けて、プロジェクトへの影響を確認します。',
+    });
+    expect(schedule[0]).toMatchObject({
+      scenarioKind: 'reconstruct',
+      referenceJa: sourceSentences[0],
+      revealLabelZh: '核心原句',
+    });
+    expect(schedule[1]).toMatchObject({
+      scenarioKind: 'daily-transfer',
+      referenceJa: '子どものSNSには、ある程度ルールが必要だと思います。',
+      revealLabelZh: '日常参考',
+    });
+    expect(schedule[2]).toMatchObject({
+      scenarioKind: 'work-transfer',
+      referenceJa: 'この変更を受けて、プロジェクトへの影響を確認します。',
+      revealLabelZh: '工作参考',
+    });
+    expect(new Set(schedule.map(item => item.promptJa)).size).toBe(3);
+  });
+
+  it('enriches old minimal v2 recall schedules during storage migration', () => {
+    const coach = buildFallbackCoach('フランスのSNS規制', sourceSentences);
+    const base = {
+      ...createNhkSession('2026-09-01'),
+      sourceUrl: 'https://www.mojidict.com/article/migrate-recall',
+      title: 'フランスのSNS規制',
+    };
+    const complete = applyNhkDailyInput(base, buildNhkDailyInput({
+      session: base,
+      coach,
+      selectedSentences: [sourceSentences[0]],
+      candidateSentences: sourceSentences,
+    }));
+    const payload = JSON.stringify([{
+      ...complete,
+      dailyInput: {
+        ...complete.dailyInput,
+        recallSchedule: [
+          {intervalDay: 1, dueDateKey: '2026-09-02'},
+          {intervalDay: 3, dueDateKey: '2026-09-04'},
+          {intervalDay: 7, dueDateKey: '2026-09-08'},
+        ],
+      },
+    }]);
+    const storage = {getItem: () => payload, setItem: () => undefined};
+    const migrated = loadNhkSessions(storage)[0];
+    expect(migrated.dailyInput?.recallSchedule[1]).toMatchObject({
+      dueDateKey: '2026-09-04',
+      scenarioKind: 'daily-transfer',
+      register: 'daily',
+    });
+    expect(migrated.dailyInput?.recallSchedule[2].referenceJa).toBe(complete.workVersion);
   });
 
 });

@@ -43,6 +43,7 @@ import {
   markNhkDailyInputUsedInWorld,
   NhkMorningSession,
   NhkRecallRating,
+  type NhkRecallPlan,
   pickNhkWorldCallbackTarget,
   pickRecallTarget,
   recordNhkRecallAttempt,
@@ -84,6 +85,18 @@ const sessionSentences = (session: NhkMorningSession): string[] => {
 const formatDate = (dateKey: string) => {
   const [, month, day] = dateKey.split('-');
   return `${Number(month)}月${Number(day)}日`;
+};
+
+const recallRegisterLabel = (plan: NhkRecallPlan): string => {
+  if (plan.register === 'work') return '工作场景';
+  if (plan.register === 'daily') return '日常场景';
+  return '核心重建';
+};
+
+const recallRecorderLabel = (plan: NhkRecallPlan): string => {
+  if (plan.scenarioKind === 'work-transfer') return '两句工作表达';
+  if (plan.scenarioKind === 'daily-transfer') return '日常口语回答';
+  return '30秒重建核心';
 };
 
 const resetSessionForSource = (session: NhkMorningSession, sourceUrl: string): NhkMorningSession => ({
@@ -129,6 +142,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
   const [recallRevealed, setRecallRevealed] = useState(false);
   const [recallSeconds, setRecallSeconds] = useState(0);
   const [recallReview, setRecallReview] = useState<NhkSpeechReview | undefined>();
+  const [recallFallback, setRecallFallback] = useState(false);
   const [worldSessionId, setWorldSessionId] = useState('');
   const [worldMode, setWorldMode] = useState<NhkWorldEventMode>('event');
   const [articleSentences, setArticleSentences] = useState<string[]>(initialCandidates);
@@ -404,6 +418,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     setRecallRevealed(false);
     setRecallSeconds(0);
     setRecallReview(undefined);
+    setRecallFallback(false);
     setView('recall');
   };
 
@@ -466,40 +481,53 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
     );
   }
 
-  if (view === 'recall' && recallSession) {
+  if (view === 'recall' && recallSession && recallTarget) {
     return (
       <section className="nhk-page nhk-flow">
         <header className="nhk-flow-header">
           <button aria-label="返回" onClick={() => setView('home')}><ArrowLeft size={20} /></button>
-          <div><small>第{recallTarget?.intervalDay || 1}天回忆</small><strong>先说，再看答案</strong></div>
+          <div><small>第{recallTarget.intervalDay}天 · {recallRegisterLabel(recallTarget)}</small><strong>先说，再看参考</strong></div>
           <span />
         </header>
-        <div className="nhk-recall-stage">
-          <small>{formatDate(recallSession.dateKey)} · 第{recallTarget?.intervalDay || 1}天 · {recallSession.title || 'NHK日语听力'}</small>
-          <h1>不用看原文，先说出最值得带走的一句。</h1>
-          <p>再用这句话，说一句和你工作或生活有关的话。</p>
+        <div className={`nhk-recall-stage nhk-recall-${recallTarget.scenarioKind}`}>
+          <small>{formatDate(recallSession.dateKey)} · {recallSession.title || 'NHK日语听力'}</small>
+          <div className="nhk-recall-task">
+            <span>{recallRegisterLabel(recallTarget)}</span>
+            <h1>{recallTarget.titleZh}</h1>
+            <p>{recallTarget.promptZh}</p>
+            <blockquote>{recallTarget.promptJa}</blockquote>
+          </div>
           <NhkRecordingCoach
-            label="20秒无提示回忆"
+            label={recallRecorderLabel(recallTarget)}
             mode="recall"
-            referenceText={recallSession.keyExpression}
+            referenceText={recallTarget.referenceJa || recallSession.keyExpression}
             summary={recallSession.dailyInput?.coach.summaryJa || recallSession.title}
-            question={`第${recallTarget?.intervalDay || 1}天，把这句迁移到工作或生活。`}
+            question={recallTarget.promptJa}
             targetExpression={recallSession.keyExpression}
             review={recallReview}
             onDuration={setRecallSeconds}
             onReview={setRecallReview}
+            onUnavailable={() => setRecallFallback(true)}
           />
           {!recallRevealed ? (
-            <button className="nhk-secondary-action" onClick={() => setRecallRevealed(true)}>说完了，查看答案</button>
+            <button
+              className="nhk-secondary-action"
+              disabled={!recallSeconds && !recallReview && !recallFallback}
+              onClick={() => setRecallRevealed(true)}
+            >
+              已回答，查看参考
+            </button>
           ) : (
             <div className="nhk-recall-answer">
-              <small>第{recallTarget?.intervalDay || 1}天要想起</small>
-              <strong>{recallSession.keyExpression}</strong>
-              {recallSession.workVersion && <p>{recallSession.workVersion}</p>}
+              <small>{recallTarget.revealLabelZh}</small>
+              <strong>{recallTarget.referenceJa}</strong>
+              {recallTarget.referenceJa !== recallSession.keyExpression && (
+                <p><b>核心表达：</b>{recallSession.keyExpression}</p>
+              )}
               <div className="nhk-rating">
-                <button onClick={() => finishRecall('miss')}>没想起</button>
-                <button onClick={() => finishRecall('close')}>差一点</button>
-                <button onClick={() => finishRecall('good')}>说出来了</button>
+                <button onClick={() => finishRecall('miss')}>没说出来</button>
+                <button onClick={() => finishRecall('close')}>接近了</button>
+                <button onClick={() => finishRecall('good')}>{recallTarget.intervalDay === 1 ? '重建成功' : '迁移成功'}</button>
               </div>
             </div>
           )}
@@ -767,7 +795,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
       {recallSession && (
         <button className="nhk-recall-card" onClick={openRecall}>
           <RotateCcw size={19} />
-          <div><small>第{recallTarget?.intervalDay || 1}天回忆</small><strong>先说，再看答案</strong></div>
+          <div><small>第{recallTarget?.intervalDay || 1}天 · {recallTarget ? recallRegisterLabel(recallTarget) : '主动回忆'}</small><strong>{recallTarget?.titleZh || '先说，再看参考'}</strong></div>
           <ChevronRight size={18} />
         </button>
       )}
