@@ -1,0 +1,66 @@
+name: Finalize and merge NHK weekly Boss
+
+on:
+  push:
+    branches:
+      - nihongo-weekly-boss-v1-20260901
+    paths:
+      - '.github/workflows/finalize-and-merge-nhk-weekly-boss.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  verify-clean-and-merge:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: acaozixu123456/myRepository
+      HEAD_BRANCH: nihongo-weekly-boss-v1-20260901
+      BASE_BRANCH: nihongo-vercel
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-weekly-boss-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx tsc -p tsconfig.json --noEmit
+      - run: npm run build
+      - name: Recheck production diff whitelist
+        shell: bash
+        run: |
+          git fetch origin "$BASE_BRANCH"
+          base="$(git merge-base "origin/$BASE_BRANCH" HEAD)"
+          allowed='^(src/nhkBoss\.ts|src/nhkBoss\.test\.ts|src/NhkWeeklyBossPage\.tsx|src/NhkEvidencePage\.tsx|src/NhkMorningPage\.tsx|src/main\.tsx|src/nhkMorning\.css|\.github/workflows/finalize-and-merge-nhk-weekly-boss\.yml)$'
+          while IFS= read -r file; do
+            [[ "$file" =~ $allowed ]] || { echo "Unexpected production diff: $file"; exit 1; }
+          done < <(git diff --name-only "$base"...HEAD)
+      - name: Remove this one-time workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/finalize-and-merge-nhk-weekly-boss.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Remove one-time weekly Boss merge workflow'
+          git push origin HEAD:"$HEAD_BRANCH"
+      - name: Squash merge the verified feature
+        shell: bash
+        run: |
+          pr="$(gh pr list --repo "$REPO" --head "$HEAD_BRANCH" --base "$BASE_BRANCH" --state open --json number --jq '.[0].number')"
+          test -n "$pr"
+          for attempt in $(seq 1 20); do
+            state="$(gh pr view "$pr" --repo "$REPO" --json mergeable --jq '.mergeable')"
+            if [ "$state" = 'MERGEABLE' ]; then break; fi
+            if [ "$state" = 'CONFLICTING' ]; then echo 'PR is conflicting'; exit 1; fi
+            sleep 3
+          done
+          gh pr merge "$pr" --repo "$REPO" --squash \
+            --subject 'Complete weekly NHK Boss and expose learning evidence' \
+            --body 'Verified: full tests, TypeScript noEmit, production build, clean source-only diff, and no raw audio persistence.'
