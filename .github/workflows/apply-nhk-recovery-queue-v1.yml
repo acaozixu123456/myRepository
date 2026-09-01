@@ -1,0 +1,174 @@
+name: Apply NHK recovery queue v1
+
+on:
+  push:
+    branches: [nihongo-recovery-queue-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-recovery-queue-v1.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nihongo-recovery-queue-v1
+  cancel-in-progress: false
+
+jobs:
+  verify-promote-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-recovery-queue-v1-20260901
+          fetch-depth: 0
+
+      - name: Require hardened core-loop revision 2
+        run: |
+          python - <<'PY'
+          import json, time, urllib.request
+          url = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/nihongo-vercel/docs/verification/NHK_CORE_LEARNING_LOOP_V1.json'
+          payload = None
+          for attempt in range(1, 121):
+              try:
+                  request = urllib.request.Request(url, headers={
+                      'User-Agent': 'NihongoRecoveryQueueGate/1.0',
+                      'Cache-Control': 'no-cache',
+                  })
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = json.loads(response.read().decode('utf-8'))
+                  if payload.get('result') != 'PASS' or payload.get('verificationRevision') != 2:
+                      raise RuntimeError('core learning loop is not revision-2 PASS')
+                  if payload.get('actualLearnerImprovementClaimed') is not False:
+                      raise RuntimeError('invalid learner-improvement claim')
+                  print(json.dumps(payload, ensure_ascii=False, indent=2))
+                  break
+              except Exception:
+                  if attempt == 120:
+                      raise
+                  time.sleep(10)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Refresh production and restore recovery feature sources
+        run: |
+          tar -czf /tmp/recovery-queue-source.tgz \
+            src/nhkRecoveryQueue.ts \
+            src/NhkRecoveryQueue.tsx \
+            src/nhkRecoveryQueue.test.ts \
+            scripts/patch-nhk-recovery-queue-v1.py
+          git fetch origin nihongo-vercel
+          git reset --hard origin/nihongo-vercel
+          tar -xzf /tmp/recovery-queue-source.tgz
+
+      - name: Apply recovery queue integration
+        run: python scripts/patch-nhk-recovery-queue-v1.py
+
+      - name: Run the non-negotiable verification gate
+        run: |
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+          grep -q "NHK_RECOVERY_QUEUE_VERSION" src/nhkRecoveryQueue.ts
+          grep -q "NHK_RECOVERY_DAILY_LIMIT = 3" src/nhkRecoveryQueue.ts
+          grep -q "buildNhkRecoveryQueue(sessions, todayKey, bossWeakExpressions)" src/NhkMorningPage.tsx
+          grep -q "今天有 {recoveryQueue.length} 个薄弱表达需要找回" src/NhkMorningPage.tsx
+          grep -q "nhk-recovery-queue-v1" src/nhkMorning.css
+          grep -q "recoveryAttempts" src/nhkMorning.ts
+
+      - name: Create one clean verified feature commit and promote
+        run: |
+          rm -f scripts/patch-nhk-recovery-queue-v1.py
+          rm -f .github/workflows/apply-nhk-recovery-queue-v1.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Add evidence-driven weak-expression recovery queue"
+          git push --force-with-lease origin HEAD:nihongo-recovery-queue-v1-20260901
+          git push origin HEAD:nihongo-vercel
+          git rev-parse HEAD > /tmp/recovery-queue-code-sha
+
+      - name: Verify the actual deployed production bundle
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+
+          base = os.environ['BASE'].rstrip('/')
+          markers = [
+              'nhk-recovery-queue-v1',
+              '今天有 ',
+              ' 个薄弱表达需要找回',
+              '换个场景再说一次',
+              '本周 Boss 里还没有稳定说出来',
+          ]
+          result = None
+          for attempt in range(1, 41):
+              try:
+                  started = time.monotonic()
+                  request = urllib.request.Request(base + '/', headers={
+                      'User-Agent': 'NihongoRecoveryQueueSmoke/1.0',
+                      'Cache-Control': 'no-cache',
+                  })
+                  with urllib.request.urlopen(request, timeout=40) as response:
+                      html = response.read().decode('utf-8')
+                  root_ms = round((time.monotonic() - started) * 1000)
+                  asset_match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+                  if not asset_match:
+                      raise RuntimeError('production JS asset not found')
+                  asset_url = urllib.parse.urljoin(base + '/', asset_match.group(1))
+                  started = time.monotonic()
+                  with urllib.request.urlopen(urllib.request.Request(asset_url, headers={
+                      'User-Agent': 'NihongoRecoveryQueueSmoke/1.0',
+                      'Cache-Control': 'no-cache',
+                  }), timeout=45) as response:
+                      javascript = response.read().decode('utf-8')
+                  asset_ms = round((time.monotonic() - started) * 1000)
+                  missing = [
+                      value for value in markers
+                      if value not in javascript
+                      and json.dumps(value, ensure_ascii=True)[1:-1].lower() not in javascript.lower()
+                  ]
+                  if missing:
+                      raise RuntimeError('missing markers: ' + ','.join(missing))
+                  result = {
+                      'result': 'PASS',
+                      'productionCommit': open('/tmp/recovery-queue-code-sha', encoding='utf-8').read().strip(),
+                      'verifiedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+                      'rootMs': root_ms,
+                      'assetMs': asset_ms,
+                      'asset': asset_url,
+                      'markers': markers,
+                      'contract': [
+                          'Boss weak expressions, failed recall, failed world transfer, high omission, and weak recap produce prioritized recovery candidates',
+                          'the same expression is deduplicated and no more than three recovery items appear per day',
+                          'successful recovery suppresses the expression for seven days; close for two days; miss for one day',
+                          'recovery uses a new daily, polite, or workplace scenario and speech-first transcript-grounded review',
+                          'unsupported browsers use an explicit self-rating fallback',
+                          'changing the article or core sentence clears recovery attempts tied to the old expression',
+                      ],
+                      'actualLearnerImprovementClaimed': False,
+                  }
+                  break
+              except Exception:
+                  if attempt == 40:
+                      raise
+                  time.sleep(min(5 + attempt, 15))
+          with open('/tmp/recovery-queue-verification.json', 'w', encoding='utf-8') as handle:
+              json.dump(result, handle, ensure_ascii=False, indent=2)
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Record verified production evidence
+        run: |
+          mkdir -p docs/verification
+          cp /tmp/recovery-queue-verification.json docs/verification/NHK_RECOVERY_QUEUE_V1.json
+          git add docs/verification/NHK_RECOVERY_QUEUE_V1.json
+          git commit -m "Record verified weak-expression recovery queue"
+          git push origin HEAD:nihongo-recovery-queue-v1-20260901
+          git push origin HEAD:nihongo-vercel
