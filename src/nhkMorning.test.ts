@@ -12,6 +12,7 @@ import {
   recordNhkRecallAttempt,
   saveNhkSessions,
   suggestExpression,
+  type NhkMorningSession,
   upsertNhkSession,
 } from './nhkMorning';
 
@@ -74,7 +75,7 @@ describe('NHK morning learning loop', () => {
   });
 
   it('schedules durable day 1, 3 and 7 recall attempts', () => {
-    let session = {
+    let session: NhkMorningSession = {
       ...createNhkSession('2026-09-01'),
       shadowText: sourceSentences[0],
       keyExpression: '〜てはいけない',
