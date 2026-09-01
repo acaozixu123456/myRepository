@@ -1,0 +1,129 @@
+name: Correct and apply NHK causal world v1
+
+on:
+  push:
+    branches: [nihongo-causal-world-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-causal-world-v1-corrected.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-causal-world-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Refresh production and restore causal sources
+        run: |
+          tar -czf /tmp/causal-source.tgz \
+            src/nhkCausalWorld.ts \
+            src/NhkCausalWorld.tsx \
+            src/nhkCausalWorld.test.ts \
+            scripts/patch-nhk-causal-world-v1.py
+          git fetch origin nihongo-vercel
+          git reset --hard origin/nihongo-vercel
+          if test -f docs/verification/NHK_CAUSAL_WORLD_V1.json; then
+            python - <<'PY'
+            import json
+            payload=json.load(open('docs/verification/NHK_CAUSAL_WORLD_V1.json',encoding='utf-8'))
+            open('/tmp/causal-already-complete','w').write('true' if payload.get('result')=='PASS' else 'false')
+            PY
+          else
+            echo false > /tmp/causal-already-complete
+          fi
+          if [ "$(cat /tmp/causal-already-complete)" = "true" ]; then exit 0; fi
+          tar -xzf /tmp/causal-source.tgz
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('src/nhkMorning.ts')
+          text=path.read_text(encoding='utf-8')
+          if 'worldCallbackRevealedAt?: number;' not in text:
+              anchor='  completedAt?: number;'
+              if anchor not in text: raise RuntimeError('completedAt type anchor missing')
+              text=text.replace(anchor,'  worldCallbackRevealedAt?: number;\n'+anchor,1)
+          if 'worldCallbackRevealedAt: undefined,' not in text:
+              anchor='  recallAttempts: [],'
+              if anchor not in text: raise RuntimeError('recallAttempts default anchor missing')
+              text=text.replace(anchor,'  worldCallbackRevealedAt: undefined,\n'+anchor,1)
+          path.write_text(text,encoding='utf-8')
+
+          causal=Path('src/nhkCausalWorld.ts')
+          value=causal.read_text(encoding='utf-8')
+          value=value.replace(
+              'reactionZh: world.characterReactionZh || world.characterReaction || FALLBACK_REACTION_ZH,',
+              "reactionZh: world.characterReactionZh || (world as {characterReaction?: string}).characterReaction || FALLBACK_REACTION_ZH,",
+          )
+          causal.write_text(value,encoding='utf-8')
+          PY
+          python scripts/patch-nhk-causal-world-v1.py
+
+      - name: Verify corrected causal world before push
+        run: |
+          if [ "$(cat /tmp/causal-already-complete)" = "true" ]; then exit 0; fi
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+          grep -q "worldCallbackRevealedAt" src/nhkMorning.ts
+          grep -q "nhk-causal-world-v1" src/nhkMorning.css
+
+      - name: Promote only corrected verified causal code
+        run: |
+          if [ "$(cat /tmp/causal-already-complete)" = "true" ]; then exit 0; fi
+          rm -f scripts/patch-nhk-causal-world-v1.py
+          rm -f .github/workflows/apply-nhk-causal-world-v1.yml
+          rm -f .github/workflows/apply-nhk-causal-world-v1-corrected.yml
+          rm -f .github/workflows/export-causal-world-source.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Add corrected causal NHK world events and callbacks"
+          git push --force-with-lease origin HEAD:nihongo-causal-world-v1-20260901
+          git push origin HEAD:nihongo-vercel
+          git rev-parse HEAD > /tmp/causal-code-sha
+
+      - name: Verify corrected causal production
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          if [ "$(cat /tmp/causal-already-complete)" = "true" ]; then exit 0; fi
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base=os.environ['BASE'].rstrip('/')
+          result=None
+          for attempt in range(1,31):
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(base+'/',headers={'User-Agent':'NihongoCausalCorrected/1.0','Cache-Control':'no-cache'}),timeout=40) as response: html=response.read().decode('utf-8')
+                  match=re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']',html)
+                  if not match: raise RuntimeError('asset_not_found')
+                  asset=urllib.parse.urljoin(base+'/',match.group(1))
+                  with urllib.request.urlopen(urllib.request.Request(asset,headers={'User-Agent':'NihongoCausalCorrected/1.0','Cache-Control':'no-cache'}),timeout=45) as response: js=response.read().decode('utf-8')
+                  markers=['nhk-causal-world-v1','三天前的选择产生了后续','今天造成的变化']
+                  missing=[m for m in markers if m not in js and json.dumps(m,ensure_ascii=True)[1:-1].lower() not in js.lower()]
+                  if missing: raise RuntimeError('missing:'+','.join(missing))
+                  result={'result':'PASS','productionCommit':open('/tmp/causal-code-sha').read().strip(),'asset':asset,'markers':markers,'contract':'independent event, persisted answer/reaction, day-3 callback, one-time reveal, reset-safe alignment'}
+                  break
+              except Exception:
+                  if attempt==30: raise
+                  time.sleep(min(5+attempt,15))
+          open('/tmp/causal-verification.json','w',encoding='utf-8').write(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+
+      - name: Record corrected causal evidence
+        run: |
+          if [ "$(cat /tmp/causal-already-complete)" = "true" ]; then exit 0; fi
+          mkdir -p docs/verification
+          cp /tmp/causal-verification.json docs/verification/NHK_CAUSAL_WORLD_V1.json
+          git add docs/verification/NHK_CAUSAL_WORLD_V1.json
+          git commit -m "Record corrected causal NHK world"
+          git push origin HEAD:nihongo-causal-world-v1-20260901
+          git push origin HEAD:nihongo-vercel
