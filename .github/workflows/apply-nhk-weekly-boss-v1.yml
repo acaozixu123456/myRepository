@@ -1,0 +1,137 @@
+name: Apply NHK weekly Boss v1
+
+on:
+  push:
+    branches: [nihongo-weekly-boss-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-weekly-boss-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-weekly-boss-v1-20260901
+          fetch-depth: 0
+
+      - name: Require verified causal episode bridge base
+        run: |
+          python - <<'PY'
+          import json, time, urllib.request
+          url = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/nihongo-vercel/docs/verification/NHK_CAUSAL_EPISODE_BRIDGE_V1.json'
+          last = None
+          for attempt in range(1, 61):
+              try:
+                  request = urllib.request.Request(url, headers={'User-Agent':'NihongoWeeklyBossGate/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = json.loads(response.read().decode('utf-8'))
+                  if payload.get('result') != 'PASS':
+                      raise RuntimeError('causal episode bridge evidence is not PASS')
+                  print(json.dumps(payload, ensure_ascii=False, indent=2))
+                  break
+              except Exception as error:
+                  last = repr(error)
+                  if attempt == 60:
+                      raise
+                  time.sleep(10)
+          else:
+              raise RuntimeError(last)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Refresh from current production and restore feature sources
+        run: |
+          tar -czf /tmp/weekly-boss-source.tgz \
+            src/nhkWeeklyBoss.ts \
+            src/NhkWeeklyBoss.tsx \
+            src/nhkWeeklyBoss.test.ts \
+            scripts/patch-nhk-weekly-boss-v1.py
+          git fetch origin nihongo-vercel
+          git reset --hard origin/nihongo-vercel
+          tar -xzf /tmp/weekly-boss-source.tgz
+
+      - name: Apply weekly Boss integration
+        run: python scripts/patch-nhk-weekly-boss-v1.py
+
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+      - name: Verify Boss contract markers
+        run: |
+          grep -q "NHK_WEEKLY_BOSS_VERSION" src/nhkWeeklyBoss.ts
+          grep -q "NHK_WEEKLY_BOSS_REQUIRED_EXPRESSIONS = 5" src/nhkWeeklyBoss.ts
+          grep -q "bossTurnNeedsRecovery" src/nhkWeeklyBoss.ts
+          grep -q "WEEKLY BOSS · 3 MIN" src/NhkWeeklyBoss.tsx
+          grep -q "5 个真实表达，没有选择题" src/NhkMorningPage.tsx
+          grep -q "nhk-weekly-boss-v1" src/nhkMorning.css
+
+      - name: Create one clean verified feature commit and promote
+        run: |
+          rm -f scripts/patch-nhk-weekly-boss-v1.py
+          rm -f .github/workflows/apply-nhk-weekly-boss-v1.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Add adaptive speech-first weekly Boss"
+          git push --force-with-lease origin HEAD:nihongo-weekly-boss-v1-20260901
+          git push origin HEAD:nihongo-vercel
+
+      - name: Verify deployed production bundle
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base = os.environ['BASE'].rstrip('/')
+          result = None
+          for attempt in range(1, 25):
+              try:
+                  request = urllib.request.Request(base + '/', headers={'User-Agent':'NihongoWeeklyBossSmoke/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=40) as response:
+                      html = response.read().decode('utf-8')
+                  match = re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']', html)
+                  if not match:
+                      raise RuntimeError('asset_not_found')
+                  asset_url = urllib.parse.urljoin(base + '/', match.group(1))
+                  with urllib.request.urlopen(urllib.request.Request(asset_url, headers={'User-Agent':'NihongoWeeklyBossSmoke/1.0','Cache-Control':'no-cache'}), timeout=45) as response:
+                      javascript = response.read().decode('utf-8')
+                  markers = ['nhk-weekly-boss-v1', 'WEEKLY BOSS · 3 MIN', '5 个真实表达，没有选择题', '同一个表达的即时补救']
+                  missing = [value for value in markers if value not in javascript and json.dumps(value, ensure_ascii=True)[1:-1].lower() not in javascript.lower()]
+                  if missing:
+                      raise RuntimeError('missing:' + ','.join(missing))
+                  result = {
+                      'result': 'PASS',
+                      'commit': os.environ.get('GITHUB_SHA', ''),
+                      'attempt': attempt,
+                      'asset': asset_url,
+                      'markers': markers,
+                      'contract': 'five unique weekly expressions, no choices, speech review, one adaptive recovery attempt, persistent progress, and explicit weak-expression outcome',
+                  }
+                  break
+              except Exception:
+                  if attempt == 24:
+                      raise
+                  time.sleep(min(5 + attempt, 15))
+          with open('/tmp/weekly-boss-verification.json', 'w', encoding='utf-8') as handle:
+              json.dump(result, handle, ensure_ascii=False, indent=2)
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Record verified production evidence
+        run: |
+          mkdir -p docs/verification
+          cp /tmp/weekly-boss-verification.json docs/verification/NHK_WEEKLY_BOSS_V1.json
+          git add docs/verification/NHK_WEEKLY_BOSS_V1.json
+          git commit -m "Record verified adaptive weekly Boss"
+          git push origin HEAD:nihongo-weekly-boss-v1-20260901
+          git push origin HEAD:nihongo-vercel
