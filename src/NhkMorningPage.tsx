@@ -528,7 +528,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
             <button className="nhk-secondary-action" onClick={() => setRecallRevealed(true)}>说完了，查看答案</button>
           ) : (
             <div className="nhk-recall-answer">
-              <small>昨天的一句</small>
+              <small>第{recallTarget?.intervalDay || 1}天要想起</small>
               <strong>{recallSession.keyExpression}</strong>
               {recallSession.workVersion && <p>{recallSession.workVersion}</p>}
               <div className="nhk-rating">
@@ -557,7 +557,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
           <div className="nhk-step-card">
             <span className="nhk-kicker">CHOOSE</span>
             <h1>分享一篇，教练替你挑重点。</h1>
-            <p>标题、正文和迁移表达都会自动准备。第 1 句完整训练，其余最多两句进入轻量跟读和后续回忆。</p>
+            <p>标题、正文和迁移表达都会自动准备。第 1 句完整训练，其余最多两句会保存为补充句。</p>
             <div className="nhk-link-entry">
               <div className="nhk-url-row">
                 <Link2 size={18} />
@@ -623,7 +623,7 @@ export default function NhkMorningPage({worldStory, onEnterWorld}: NhkMorningPag
                       >
                         <span>{selected ? <Check size={15} /> : index + 1}</span>
                         <div>
-                          {(recommendation || selectedOrder >= 0) && <small><b>{selectedOrder === 0 ? '今日核心' : selectedOrder > 0 ? '补充句' : recommendation?.label}</b>{selectedOrder === 0 ? '完整训练这句' : selectedOrder > 0 ? '轻量跟读，之后再遇' : recommendation?.reasonZh}</small>}
+                          {(recommendation || selectedOrder >= 0) && <small><b>{selectedOrder === 0 ? '今日核心' : selectedOrder > 0 ? '补充句' : recommendation?.label}</b>{selectedOrder === 0 ? '完整训练这句' : selectedOrder > 0 ? '已保存为补充句' : recommendation?.reasonZh}</small>}
                           <strong>{sentence}</strong>
                         </div>
                       </button>

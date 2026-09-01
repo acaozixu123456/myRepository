@@ -420,6 +420,7 @@ export const pickRecallTarget = (
   const targets: NhkRecallTarget[] = [];
   for (const session of sessions) {
     if (!session.completedAt || session.dateKey >= todayKey) continue;
+    if (session.recallAttempts.some(attempt => attempt.dateKey === todayKey)) continue;
     const completed = new Set(session.recallAttempts.map(attempt => attempt.intervalDay));
     const schedule = session.dailyInput?.recallSchedule?.length
       ? session.dailyInput.recallSchedule

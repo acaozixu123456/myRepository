@@ -84,6 +84,7 @@ describe('NHK morning learning loop', () => {
     const day1 = pickRecallTarget([session], '2026-09-02');
     expect(day1?.intervalDay).toBe(1);
     session = recordNhkRecallAttempt(session, day1!, '2026-09-02', 'good', 12, 2);
+    expect(pickRecallTarget([session], '2026-09-02')).toBeNull();
 
     const day3 = pickRecallTarget([session], '2026-09-04');
     expect(day3?.intervalDay).toBe(3);
