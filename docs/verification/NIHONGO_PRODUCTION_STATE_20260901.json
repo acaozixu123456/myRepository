@@ -1,0 +1,25 @@
+{
+  "result": "BLOCKED_OLD_DEPLOYMENT",
+  "sourceCommit": "044813bcd35bfc2b6da6f7c401f7c5627eec4b88",
+  "productionBase": "https://nihongo-discovery-v2-20260831.vercel.app",
+  "asset": "https://nihongo-discovery-v2-20260831.vercel.app/assets/index-DMr7tXNz.js",
+  "attempt": 6,
+  "markers": [
+    "今天的新闻，真的进入了你的世界。",
+    "本周真实进步",
+    "WEEKLY BOSS",
+    "第1天",
+    "第3天",
+    "第7天"
+  ],
+  "present": [],
+  "missing": [
+    "今天的新闻，真的进入了你的世界。",
+    "本周真实进步",
+    "WEEKLY BOSS",
+    "第1天",
+    "第3天",
+    "第7天"
+  ],
+  "error": ""
+}
