@@ -1,0 +1,134 @@
+name: Correct and apply NHK weekly Boss v1
+
+on:
+  push:
+    branches: [nihongo-weekly-boss-v1-20260901]
+    paths:
+      - '.github/workflows/apply-nhk-weekly-boss-v1-corrected.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-promote-record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-weekly-boss-v1-20260901
+          fetch-depth: 0
+
+      - name: Require verified causal episode bridge base
+        run: |
+          python - <<'PY'
+          import json, time, urllib.request
+          url = 'https://raw.githubusercontent.com/acaozixu123456/myRepository/nihongo-vercel/docs/verification/NHK_CAUSAL_EPISODE_BRIDGE_V1.json'
+          for attempt in range(1, 61):
+              try:
+                  request = urllib.request.Request(url, headers={'User-Agent':'NihongoWeeklyBossCorrected/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      payload = json.loads(response.read().decode('utf-8'))
+                  if payload.get('result') != 'PASS':
+                      raise RuntimeError('bridge evidence is not PASS')
+                  break
+              except Exception:
+                  if attempt == 60:
+                      raise
+                  time.sleep(10)
+          PY
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Refresh production and restore corrected Boss sources
+        run: |
+          tar -czf /tmp/weekly-boss-source.tgz \
+            src/nhkWeeklyBoss.ts \
+            src/NhkWeeklyBoss.tsx \
+            src/nhkWeeklyBoss.test.ts \
+            scripts/patch-nhk-weekly-boss-v1.py
+          git fetch origin nihongo-vercel
+          git reset --hard origin/nihongo-vercel
+          if test -f docs/verification/NHK_WEEKLY_BOSS_V1.json; then
+            python - <<'PY'
+            import json
+            payload=json.load(open('docs/verification/NHK_WEEKLY_BOSS_V1.json',encoding='utf-8'))
+            open('/tmp/boss-already-complete','w').write('true' if payload.get('result')=='PASS' else 'false')
+            PY
+          else
+            echo false > /tmp/boss-already-complete
+          fi
+          if [ "$(cat /tmp/boss-already-complete)" = "true" ]; then exit 0; fi
+          tar -xzf /tmp/weekly-boss-source.tgz
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('src/nhkWeeklyBoss.ts')
+          text=path.read_text(encoding='utf-8')
+          text=text.replace("const expression = clean(primary?.expression || session.keyExpression, 180);", "const expression = clean(session.keyExpression || primary?.expression, 180);")
+          path.write_text(text,encoding='utf-8')
+          PY
+          python scripts/patch-nhk-weekly-boss-v1.py
+
+      - name: Verify corrected Boss before push
+        run: |
+          if [ "$(cat /tmp/boss-already-complete)" = "true" ]; then exit 0; fi
+          npm install --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run build
+          grep -q "session.keyExpression || primary?.expression" src/nhkWeeklyBoss.ts
+          grep -q "bossTurnNeedsRecovery" src/nhkWeeklyBoss.ts
+
+      - name: Promote only corrected verified code
+        run: |
+          if [ "$(cat /tmp/boss-already-complete)" = "true" ]; then exit 0; fi
+          rm -f scripts/patch-nhk-weekly-boss-v1.py
+          rm -f .github/workflows/apply-nhk-weekly-boss-v1.yml
+          rm -f .github/workflows/apply-nhk-weekly-boss-v1-corrected.yml
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Add corrected adaptive speech-first weekly Boss"
+          git push --force-with-lease origin HEAD:nihongo-weekly-boss-v1-20260901
+          git push origin HEAD:nihongo-vercel
+          git rev-parse HEAD > /tmp/boss-code-sha
+
+      - name: Verify corrected production bundle
+        env:
+          BASE: https://nihongo-discovery-v2-20260831.vercel.app
+        run: |
+          if [ "$(cat /tmp/boss-already-complete)" = "true" ]; then exit 0; fi
+          python - <<'PY'
+          import json, os, re, time, urllib.parse, urllib.request
+          base=os.environ['BASE'].rstrip('/')
+          result=None
+          for attempt in range(1,31):
+              try:
+                  request=urllib.request.Request(base+'/',headers={'User-Agent':'NihongoWeeklyBossCorrected/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(request,timeout=40) as response: html=response.read().decode('utf-8')
+                  match=re.search(r'<script[^>]+src=["\']([^"\']+\.js)["\']',html)
+                  if not match: raise RuntimeError('asset_not_found')
+                  asset=urllib.parse.urljoin(base+'/',match.group(1))
+                  with urllib.request.urlopen(urllib.request.Request(asset,headers={'User-Agent':'NihongoWeeklyBossCorrected/1.0','Cache-Control':'no-cache'}),timeout=45) as response: js=response.read().decode('utf-8')
+                  markers=['nhk-weekly-boss-v1','WEEKLY BOSS · 3 MIN','同一个表达的即时补救']
+                  missing=[m for m in markers if m not in js and json.dumps(m,ensure_ascii=True)[1:-1].lower() not in js.lower()]
+                  if missing: raise RuntimeError('missing:'+','.join(missing))
+                  result={'result':'PASS','productionCommit':open('/tmp/boss-code-sha').read().strip(),'asset':asset,'markers':markers,'contract':'five unique expressions after deduplication, no choices, one adaptive recovery attempt, persistent progress'}
+                  break
+              except Exception:
+                  if attempt==30: raise
+                  time.sleep(min(5+attempt,15))
+          open('/tmp/boss-verification.json','w',encoding='utf-8').write(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          PY
+
+      - name: Record corrected evidence
+        run: |
+          if [ "$(cat /tmp/boss-already-complete)" = "true" ]; then exit 0; fi
+          mkdir -p docs/verification
+          cp /tmp/boss-verification.json docs/verification/NHK_WEEKLY_BOSS_V1.json
+          git add docs/verification/NHK_WEEKLY_BOSS_V1.json
+          git commit -m "Record corrected adaptive weekly Boss"
+          git push origin HEAD:nihongo-weekly-boss-v1-20260901
+          git push origin HEAD:nihongo-vercel
