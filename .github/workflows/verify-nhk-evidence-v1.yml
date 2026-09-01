@@ -1,0 +1,43 @@
+name: Verify NHK weekly evidence v1
+
+on:
+  push:
+    branches: [nihongo-evidence-v1-20260901]
+    paths:
+      - '.github/workflows/verify-nhk-evidence-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-evidence-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Integrate weekly evidence UI
+        run: python scripts/patch-nhk-evidence-v1.py
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified bounded source changes
+        run: |
+          set -euxo pipefail
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            src/NhkEvidencePage.tsx \
+            src/nhkEvidence.ts \
+            src/nhkEvidence.test.ts \
+            src/NhkMorningPage.tsx \
+            src/nhkMorning.css
+          git diff --cached --check
+          git commit -m "Add weekly NHK learning evidence"
+          git push origin HEAD:nihongo-evidence-v1-20260901
