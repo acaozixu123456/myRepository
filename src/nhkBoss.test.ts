@@ -4,6 +4,7 @@ import type {NhkSpeechReview} from './NhkSpeechCoach';
 import {
   buildNhkBossCandidate,
   createNhkBossSession,
+  finalizeNhkBossSession,
   findNhkBossSession,
   loadNhkBossSessions,
   nextNhkBossTurnIndex,
@@ -109,7 +110,7 @@ describe('weekly spoken NHK Boss', () => {
     expect(nextNhkBossTurnIndex(next)).toBe(1);
   });
 
-  it('finishes after five answers and stores a next-week consequence', () => {
+  it('shows the fifth-turn feedback before calculating the weekly outcome', () => {
     const candidate = buildNhkBossCandidate(weeklySessions, '2026-09-01');
     let session = createNhkBossSession(candidate, weeklySessions, 10);
     for (let index = 0; index < 5; index += 1) {
@@ -122,12 +123,20 @@ describe('weekly spoken NHK Boss', () => {
       );
     }
     expect(nextNhkBossTurnIndex(session)).toBe(-1);
-    expect(session.outcome).toMatchObject({
+    expect(session.outcome).toBeUndefined();
+    const completed = finalizeNhkBossSession(session, 200);
+    expect(completed.outcome).toMatchObject({
       usedExpressionCount: 4,
       averageContentScore: 80,
-      completedAt: 104,
+      completedAt: 200,
     });
-    expect(session.outcome?.nextWeekHookZh).toContain('下周');
+    expect(completed.outcome?.nextWeekHookZh).toContain('下周');
+  });
+
+  it('does not finalize an incomplete Boss', () => {
+    const candidate = buildNhkBossCandidate(weeklySessions, '2026-09-01');
+    const session = createNhkBossSession(candidate, weeklySessions, 10);
+    expect(finalizeNhkBossSession(session, 20)).toBe(session);
   });
 
   it('persists and resumes the current weekly Boss locally', () => {
