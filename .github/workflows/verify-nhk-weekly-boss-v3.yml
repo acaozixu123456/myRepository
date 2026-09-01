@@ -1,0 +1,48 @@
+name: Verify NHK weekly Boss v3
+
+on:
+  push:
+    branches:
+      - nihongo-weekly-boss-v1-20260901
+    paths:
+      - '.github/workflows/verify-nhk-weekly-boss-v3.yml'
+      - 'scripts/finalize-nhk-weekly-boss-v3.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-weekly-boss-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Apply final weekly Boss implementation
+        run: python3 scripts/finalize-nhk-weekly-boss-v3.py
+      - name: Install dependencies
+        run: npm ci
+      - name: Run full tests
+        run: npm test
+      - name: Typecheck
+        run: npx tsc -p tsconfig.json --noEmit
+      - name: Build production bundle
+        run: npm run build
+      - name: Commit verified source changes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No generated source change to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A src .github/workflows/verify-nhk-weekly-boss-v1.yml scripts/patch-nhk-weekly-boss-v1.py
+          git commit -m 'Complete weekly NHK Boss and expose learning evidence'
+          git push origin HEAD:nihongo-weekly-boss-v1-20260901
