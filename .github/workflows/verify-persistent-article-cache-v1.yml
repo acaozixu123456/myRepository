@@ -1,0 +1,42 @@
+name: Verify persistent NHK article cache v1
+
+on:
+  push:
+    branches: [nihongo-entry-performance-v1-20260901]
+    paths:
+      - '.github/workflows/verify-persistent-article-cache-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-entry-performance-v1-20260901
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Integrate persistent article cache
+        run: python scripts/patch-persistent-article-cache-v1.py
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Commit verified bounded source changes
+        run: |
+          set -euxo pipefail
+          git config user.name "Sol Supervisor"
+          git config user.email "actions@users.noreply.github.com"
+          git add \
+            api/moji-article.ts \
+            src/nhkArticleCache.ts \
+            src/nhkArticleCache.test.ts \
+            supabase/migrations/20260901043000_add_nihongo_article_cache.sql
+          git diff --cached --check
+          git commit -m "Add durable bounded NHK article cache"
+          git push origin HEAD:nihongo-entry-performance-v1-20260901
