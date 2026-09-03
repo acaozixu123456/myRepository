@@ -21,8 +21,6 @@ jobs:
           base64 --decode /tmp/nhk-reading-studio.tar.gz.b64 > /tmp/nhk-reading-studio.tar.gz
           echo "e7b7695a79ff1f3f2dde663b45d6510ecf0f4cca288875feeba8ef3274722eee  /tmp/nhk-reading-studio.tar.gz" | sha256sum --check
           tar -xzf /tmp/nhk-reading-studio.tar.gz
-          rm -rf .github/nhk-reading-studio-payload
-          rm -f .github/workflows/apply-nhk-reading-studio.yml
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -36,6 +34,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add api/nhk-coach.ts index.html public/icon.svg public/manifest.webmanifest public/sw.js src/App.tsx src/NhkMorningPage.tsx src/nhkArticleStudio.css src/nhkCoach.test.ts src/nhkCoach.ts src/nhkLibrary.test.ts src/nhkLibrary.ts supabase/functions/nihongo-coach/index.ts
           git commit -m "Build NHK article reading studio"
           git push origin "HEAD:${GITHUB_REF_NAME}"
