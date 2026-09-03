@@ -2,9 +2,9 @@ import {createHash} from 'node:crypto';
 import type {VercelRequest, VercelResponse} from '@vercel/node';
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kivebsjsdfdobxzaokbj.supabase.co';
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpdmVic2pzZGZkb2J4emFva2JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMzA2NDIsImV4cCI6MjEwMzcwNjY0Mn0.rzB2Yhn0vn1WqLJ2cq62WcSTsauNAm9vmn8MfNzgiYM';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJraXZlYnNqc2RmZG9ieHphb2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMzA2NDIsImV4cCI6MjEwMzcwNjQyfQ.rzB2Yhn0vn1WqLJ2cq62WcSTsauNAm9vmn8MfNzgiYM';
 const EDGE_URL = `${SUPABASE_URL}/functions/v1/nihongo-coach`;
-const TIMEOUT_MS = 32_000;
+const TIMEOUT_MS = 57_000;
 
 const clean = (value: unknown, max: number): string => typeof value === 'string'
   ? value.replace(/\s+/g, ' ').trim().slice(0, max)

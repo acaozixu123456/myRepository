@@ -1,7 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="日语世界">
-  <rect width="512" height="512" rx="118" fill="#17221c"/>
-  <path d="M119 157c0-30 24-54 54-54h166c30 0 54 24 54 54v119c0 30-24 54-54 54H235l-82 73 18-73c-29-1-52-25-52-54V157Z" fill="#dff08a"/>
-  <path d="M169 216c29-39 57-39 86 0s57 39 86 0" fill="none" stroke="#17221c" stroke-width="24" stroke-linecap="round"/>
-  <circle cx="183" cy="171" r="12" fill="#17221c"/>
-  <circle cx="329" cy="171" r="12" fill="#17221c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NHK精读">
+  <rect width="512" height="512" rx="118" fill="#15382f"/>
+  <path d="M118 126c0-18 14-32 32-32h212c18 0 32 14 32 32v260c0 18-14 32-32 32H150c-18 0-32-14-32-32V126Z" fill="#f7f4e8"/>
+  <path d="M171 164h170M171 218h170M171 272h108" fill="none" stroke="#15382f" stroke-width="20" stroke-linecap="round"/>
+  <path d="M304 316c38 0 69 31 69 69" fill="none" stroke="#dce98a" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="304" cy="385" r="12" fill="#dce98a"/>
+  <path d="M304 350c19 0 35 16 35 35" fill="none" stroke="#dce98a" stroke-width="22" stroke-linecap="round"/>
 </svg>

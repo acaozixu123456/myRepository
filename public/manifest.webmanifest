@@ -1,15 +1,15 @@
 {
   "id": "/",
-  "name": "日语世界",
-  "short_name": "日语世界",
-  "description": "把早上听过的 NHK 日语，变成今天能说出口的日语。",
+  "name": "NHK精读",
+  "short_name": "NHK精读",
+  "description": "保存每篇 MOJi / NHK 文章，逐句拆解语法和单词，并收藏复习。",
   "lang": "zh-CN",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#f7f7f1",
-  "theme_color": "#17221c",
+  "background_color": "#f4f7f3",
+  "theme_color": "#15382f",
   "categories": ["education", "productivity"],
   "icons": [
     {
