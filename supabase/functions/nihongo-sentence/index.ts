@@ -12,10 +12,10 @@ function valid(v: unknown): v is Input {
 }
 const stringSchema = {type:'string'};
 const shape = (properties: Record<string,unknown>) => ({type:'object',additionalProperties:false,required:Object.keys(properties),properties});
-const list = (items: unknown, maxItems: number) => ({type:'array',items,maxItems});
+const list = (items: unknown, maxItems: number, minItems = 0) => ({type:'array',items,minItems,maxItems});
 const example = shape({ja:stringSchema,zh:stringSchema});
-const grammar = shape({pattern:stringSchema,meaningZh:stringSchema,formation:stringSchema,explanationZh:stringSchema,nuanceZh:stringSchema,examples:list(example,3)});
-const vocabulary = shape({word:stringSchema,reading:stringSchema,meaningZh:stringSchema,partOfSpeech:stringSchema,nuanceZh:stringSchema,examples:list(example,3)});
+const grammar = shape({pattern:stringSchema,meaningZh:stringSchema,formation:stringSchema,explanationZh:stringSchema,nuanceZh:stringSchema,examples:list(example,3,1)});
+const vocabulary = shape({word:stringSchema,reading:stringSchema,meaningZh:stringSchema,partOfSpeech:stringSchema,nuanceZh:stringSchema,examples:list(example,3,1)});
 const schema = shape({translationZh:stringSchema,structureZh:stringSchema,chunks:list(stringSchema,40),expression:stringSchema,meaningZh:stringSchema,dailyVersion:stringSchema,workVersion:stringSchema,grammarPoints:list(grammar,4),vocabularyPoints:list(vocabulary,8)});
 function check(raw: unknown, input: Input) {
   if (!object(raw)) throw new Error('invalid_analysis');
@@ -24,10 +24,10 @@ function check(raw: unknown, input: Input) {
   }
   if (!Array.isArray(raw.chunks) || !raw.chunks.length || !raw.chunks.every(str) || raw.chunks.join('').replace(/\s/g,'') !== input.sentence.replace(/\s/g,'')) throw new Error('source_alignment_failed');
   const points = (values: unknown, kind: string, keys: string[]) => {
-    if (!Array.isArray(values)) throw new Error('invalid_points');
+    if (!Array.isArray(values)) throw new Error(`invalid_points_${kind}_array`);
     return values.map((v,i)=>{
-      if (!object(v) || !keys.every(k=>str(v[k])) || !Array.isArray(v.examples) || v.examples.length < 1
-        || !v.examples.every((e:unknown)=>object(e)&&str(e.ja)&&str(e.zh))) throw new Error('invalid_points');
+      if (!object(v) || !keys.every(k=>str(v[k]))) throw new Error(`invalid_points_${kind}_fields`);
+      if (!Array.isArray(v.examples) || v.examples.length < 1 || !v.examples.every((e:unknown)=>object(e)&&str(e.ja)&&str(e.zh))) throw new Error(`invalid_points_${kind}_examples`);
       return {...v,id:`${kind}-${i}`};
     });
   };
@@ -65,6 +65,7 @@ Deno.serve(async req => {
     'expression is a reusable expression from the selected sentence. dailyVersion and workVersion are new natural examples, clearly not article facts. Work example may use an IT setting when appropriate.',
     'Explain in concise Chinese, Japanese only for source, readings, patterns and examples. This is not a full-article summary or a proficiency score.',
   ].join(' ');
+  let stage = 'request';
   try {
     const model = 'gpt-5.6-luna';
     const response = await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify({model,reasoning:{effort:'medium'},input:[{role:'system',content:instructions},{role:'user',content:JSON.stringify({title:input.title,contextBefore:input.before,SELECTED_SENTENCE:input.sentence,contextAfter:input.after})}],text:{format:{type:'json_schema',name:'nhk_single_sentence',strict:true,schema}},max_output_tokens:6000}),signal:AbortSignal.timeout(50000)});
@@ -75,11 +76,21 @@ Deno.serve(async req => {
       console.error('sentence_provider_error', JSON.stringify(diagnostic));
       return json({ok:false,reason:'generation_unavailable',...diagnostic},502);
     }
+    stage = 'response';
     const payload = await response.json();
     if (payload.status !== 'completed') throw new Error('incomplete_analysis');
     const output = payload.output_text || payload.output?.flatMap((item:any)=>item.content || []).filter((item:any)=>item.type==='output_text').map((item:any)=>item.text).join('');
-    const recommendation = check(JSON.parse(output),input); const generatedAt = Date.now();
+    stage = 'parse';
+    const parsed = JSON.parse(output);
+    stage = 'validate';
+    const recommendation = check(parsed,input); const generatedAt = Date.now();
+    stage = 'cache';
     await db.from('nihongo_coach_cache').upsert({cache_key:cacheKey,payload:recommendation,model,updated_at:new Date(generatedAt).toISOString()});
     return json({ok:true,cached:false,analysis:{version:1,model,generatedAt,recommendation}});
-  } catch {return json({ok:false,reason:'sentence_analysis_failed'},502);}
+  } catch (error) {
+    const known = /^(invalid_analysis|source_alignment_failed|invalid_points_(grammar|vocabulary)_(array|fields|examples)|incomplete_analysis)$/;
+    const detail = error instanceof Error && known.test(error.message) ? error.message : error instanceof Error && error.name === 'TimeoutError' ? 'timeout' : 'unexpected_response';
+    console.error('sentence_analysis_error',JSON.stringify({stage,detail}));
+    return json({ok:false,reason:'sentence_analysis_failed',stage,detail},502);
+  }
 });

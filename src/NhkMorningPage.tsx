@@ -1,6 +1,6 @@
 import NhkBackupPanel from './NhkBackupPanel';
 import {commitStudyRestore, serializeStudyBackup, type StudyData} from './nhkBackup';
-import {loadPracticeHistory, savePracticeHistory, newSentenceAttempt, upsertSentenceAttempt, practiceId} from './nhkPracticeHistory';
+import {loadPracticeHistory, savePracticeHistory, newSentenceAttempt, upsertSentenceAttempt, practiceId, sessionForTarget} from './nhkPracticeHistory';
 import {NhkSentenceInsight, NhkHistoryPanel} from './NhkSentenceTools';
 import {findSentenceAnalysis, type SentenceAnalysis} from './nhkSentenceAnalysis';
 import {type ClipboardEvent, useEffect, useMemo, useRef, useState} from 'react';
@@ -450,6 +450,7 @@ export default function NhkMorningPage() {
     candidates: string[] = articleSentences,
     model = coachModel,
   ): NhkMorningSession => {
+    session = sessionForTarget(session, selected);
     if (!selected.length) {
       return {...session, selectedSentences: [], shadowText: '', dailyInput: undefined, keyExpression: '', dailyVersion: '', workVersion: ''};
     }
@@ -674,7 +675,7 @@ export default function NhkMorningPage() {
     setAnalysisFocus(0);
     const resetOutput: NhkMorningSession = {
       ...draftRef.current,
-      id: draftRef.current.recapText || draftRef.current.completedAt ? practiceId('nhk') : draftRef.current.id,
+      id: sessionForTarget(draftRef.current, nextSelected).id,
       recapText: '',
       opinion: '',
       shadowRecordingSeconds: 0,
