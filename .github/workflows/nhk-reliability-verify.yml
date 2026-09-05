@@ -1,0 +1,137 @@
+name: NHK Reliability Verification
+on:
+  push:
+    branches: [nihongo-reliability-20260905]
+    paths:
+      - '.github/workflows/nhk-reliability-verify.yml'
+      - 'scripts/reliability-trigger.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nhk-reliability-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/nihongo-reliability-20260905'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Recover exactly scoped supervisor patch
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/nhk-artifacts
+          python3 - <<'PY'
+          import pathlib,base64,lzma,hashlib,subprocess
+          allowed=set('api/nhk-sentence.ts public/sw.js scripts/nhk-reliability-browser.mjs src/NhkBackupPanel.tsx src/NhkGentleUI.tsx src/NhkMorningPage.tsx src/NhkSentenceTools.tsx src/main.tsx src/nhkBackup.ts src/nhkCalm.css src/nhkGentle.ts src/nhkLibrary.ts src/nhkMorning.ts src/nhkPracticeHistory.ts src/nhkReliability.test.ts src/nhkSentenceAnalysis.ts supabase/functions/nihongo-sentence/index.ts'.split())
+          if not pathlib.Path('src/nhkBackup.ts').exists():
+              blob=base64.b64decode(''.join(pathlib.Path(f'scripts/reliability-transfer.part{i}').read_text().strip() for i in range(2)),validate=True)
+              assert hashlib.sha256(blob).hexdigest()=='bf54bc12618168f1b7f894830db16c59280e33e44263aef195459e5042d6608f','Patch transport mismatch'
+              patch=lzma.decompress(blob).decode()
+              paths={line.split(' b/',1)[1] for line in patch.splitlines() if line.startswith('diff --git ')}
+              assert paths==allowed, 'Scope mismatch'
+              target=pathlib.Path('/tmp/nhk-reliability.patch');target.write_text(patch)
+              subprocess.run(['git','apply','--check',str(target)],check=True)
+              subprocess.run(['git','apply',str(target)],check=True)
+          path=pathlib.Path('src/nhkLibrary.ts');text=path.read_text()
+          old='  return record ? upsertNhkArticleRecord(current, record) : current;'
+          new='''  if (!record) return current;
+            const existing = current.find(item => item.id === record.id);
+            if (!existing) return upsertNhkArticleRecord(current, record);
+            // Sessions are practice snapshots, never authoritative replacements for archived source.
+            return current.map(item => item.id === existing.id ? {...item,
+              completedAt: Math.max(item.completedAt || 0, record.completedAt || 0) || undefined,
+              studyDateKeys: [...new Set([...item.studyDateKeys, ...record.studyDateKeys])].sort().reverse(),
+            } : item);'''
+          if old in text:
+              assert text.count(old)==1;path.write_text(text.replace(old,new))
+          path=pathlib.Path('src/nhkReliability.test.ts');text=path.read_text()
+          if 'sessions never replace archived source snapshots' not in text:
+              text=text.replace('createNhkArticleRecord,loadNhkArticleRecords,saveNhkArticleRecords','createNhkArticleRecord,loadNhkArticleRecords,saveNhkArticleRecords,mergeNhkArticlesWithSessions')
+              text+='''\nit('sessions never replace archived source snapshots',()=>{
+            const data=fixture(); const original=data.articles[0]; original.sentences=[sentence,'第二の文です。'];
+            const old={...data.sessions[0],selectedSentences:[sentence],shadowText:sentence};
+            const result=mergeNhkArticlesWithSessions([original],[old]);
+            expect(result[0].sentences).toEqual(original.sentences);
+            expect(mergeNhkArticlesWithSessions([], [old])[0].sentences).toEqual([sentence]);
+          });\n'''
+              path.write_text(text)
+          pathlib.Path('/tmp/nhk-allowed').write_text('\n'.join(sorted(allowed)))
+          PY
+      - name: Save candidate source to isolated branch, not production
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/nihongo-reliability-20260905
+          mapfile -t paths < /tmp/nhk-allowed
+          git add -- "${paths[@]}"
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Implement reliable study records, restore and focused sentence analysis (candidate)'
+            git push origin HEAD:nihongo-reliability-20260905
+          fi
+          git rev-parse HEAD > /tmp/nhk-artifacts/source-commit.txt
+      - run: npm ci --no-audit --no-fund
+      - name: Typecheck and unit tests
+        run: |
+          set -euo pipefail
+          npm run typecheck 2>&1 | tee /tmp/nhk-artifacts/typecheck.txt
+          npm test 2>&1 | tee /tmp/nhk-artifacts/tests.txt
+          npm run build 2>&1 | tee /tmp/nhk-artifacts/build.txt
+      - name: Browser acceptance with synthetic records
+        run: |
+          set -euo pipefail
+          npm install --no-save --package-lock=false playwright @axe-core/playwright --no-audit --no-fund
+          npx playwright install --with-deps chromium webkit
+          npm run dev -- --host 127.0.0.1 > /tmp/nhk-artifacts/vite.txt 2>&1 &
+          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:5173/ >/dev/null && break || sleep 1; done
+          timeout 180s node scripts/nhk-reliability-browser.mjs 2>&1 | tee /tmp/nhk-artifacts/reliability-browser.txt
+          timeout 240s node scripts/nhk-calm-browser.mjs 2>&1 | tee /tmp/nhk-artifacts/calm-browser.txt
+      - name: Live focused coach smoke, no user data or secret output
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'JS'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import assert from 'node:assert/strict';
+          const source=readFileSync('api/nhk-coach.ts','utf8');
+          const key=source.match(/SUPABASE_ANON_KEY = .*\|\| '([^']+)'/)[1];
+          const endpoint='https://kivebsjsdfdobxzaokbj.supabase.co/functions/v1/nihongo-sentence';
+          const sentence='図書館を利用することができなくなるわけではありません。';
+          const input={title:'図書館の窓口変更（開発用の例）',sentence,sentenceIndex:19,before:['図書館では、来月から建物の工事を行います。','工事の間、窓口の場所が変わります。'],after:['オンラインのサービスも続けます。'],clientKey:'release-reliability-smoke'};
+          const call=async(body,auth=true)=>{const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',...(auth?{Authorization:`Bearer ${key}`,apikey:key}:{})},body:JSON.stringify(body),signal:AbortSignal.timeout(60000)});return {status:r.status,body:await r.json()};};
+          const result={scope:'Synthetic input through LIVE deployed edge; not a real NHK article',checks:[]};
+          try {
+            const unauthorized=await call(input,false);assert.equal(unauthorized.status,401);result.checks.push('JWT required');
+            const invalid=await call({...input,sentence:'日'.repeat(8001)});assert.equal(invalid.status,400);result.checks.push('Oversize rejected explicitly');
+            const first=await call(input);result.first=first;assert.equal(first.status,200);assert.equal(first.body.ok,true);
+            const r=first.body.analysis.recommendation;assert.equal(r.sentence,sentence);assert.equal(r.sentenceIndex,19);assert.equal(r.chunks.join('').replace(/\s/g,''),sentence);assert(r.translationZh.length>0);assert(r.structureZh.length>0);result.checks.push('Exact source/index/chunks, nonempty real explanation');
+            const second=await call(input);assert.equal(second.status,200);assert.equal(second.body.cached,true);result.checks.push('Server cache reused');result.status='PASS';
+          } catch(e){result.status='FAIL';result.error=e.message;process.exitCode=1;}
+          writeFileSync('/tmp/nhk-artifacts/live-sentence-smoke.json',JSON.stringify(result,null,2));console.log(JSON.stringify({status:result.status,checks:result.checks,error:result.error}));
+          JS
+      - name: Preserve evidence and source hashes
+        if: always()
+        run: |
+          mkdir -p /tmp/nhk-artifacts
+          python3 - <<'PY'
+          import pathlib,hashlib,json,tarfile
+          paths=pathlib.Path('/tmp/nhk-allowed').read_text().splitlines() if pathlib.Path('/tmp/nhk-allowed').exists() else []
+          hashes={p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest() for p in paths if pathlib.Path(p).exists()}
+          pathlib.Path('/tmp/nhk-artifacts/source-hashes.json').write_text(json.dumps(hashes,indent=2))
+          with tarfile.open('/tmp/nhk-artifacts/review-source.tar.gz','w:gz') as tar:
+              for p in hashes: tar.add(p,arcname=p)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-reliability-${{ github.run_number }}
+          path: /tmp/nhk-artifacts/
+          retention-days: 14
