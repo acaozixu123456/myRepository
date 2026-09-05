@@ -1,0 +1,134 @@
+name: MOJi Mojiread Verification
+on:
+  push:
+    branches: [nihongo-moji-mojiread-20260905]
+    paths:
+      - '.github/workflows/moji-mojiread-verify.yml'
+      - 'scripts/moji-mojiread-trigger.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: moji-mojiread-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply bounded URL compatibility patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('api/moji-article.ts');s=p.read_text()
+          old="const ARTICLE_PATH = /^\\/article\\/[A-Za-z0-9_-]+\\/?$/;"
+          new="const ARTICLE_PATH = /^\\/(?:mojiread\\/)?article\\/([A-Za-z0-9_-]+)\\/?$/;"
+          if old in s:
+              assert s.count(old)==1;s=s.replace(old,new)
+          assert new in s
+          old_norm="""const normalizeMojiArticleUrl = (input: string): string | null => {
+            try {
+              const url = new URL(input.trim());
+              if (url.protocol !== 'https:' || !ALLOWED_HOSTS.has(url.hostname.toLowerCase()) || !ARTICLE_PATH.test(url.pathname)) return null;
+              const articleId = url.pathname.split('/').filter(Boolean)[1];
+              return `https://www.mojidict.com/article/${articleId}`;
+            } catch {
+              return null;
+            }
+          };"""
+          new_norm="""export const normalizeMojiArticleUrl = (input: string): string | null => {
+            try {
+              const url = new URL(input.trim());
+              const match = ARTICLE_PATH.exec(url.pathname);
+              if (url.protocol !== 'https:' || !ALLOWED_HOSTS.has(url.hostname.toLowerCase()) || !match) return null;
+              return `https://www.mojidict.com/article/${match[1]}`;
+            } catch {
+              return null;
+            }
+          };"""
+          if old_norm in s:
+              assert s.count(old_norm)==1;s=s.replace(old_norm,new_norm)
+          assert new_norm in s
+          old_fetch="""const fetchArticlePages = async (canonicalUrl: string): Promise<Array<{html: string; finalUrl: string}>> => {
+            const articleId = articleIdFromUrl(canonicalUrl);
+            const candidates = [canonicalUrl, `https://m.mojidict.com/article/${articleId}`];"""
+          new_fetch="""export const mojiArticleFetchUrls = (canonicalUrl: string): string[] => {
+            const articleId = articleIdFromUrl(canonicalUrl);
+            return [
+              `https://m.mojidict.com/mojiread/article/${articleId}`,
+              canonicalUrl,
+              `https://m.mojidict.com/article/${articleId}`,
+              `https://www.mojidict.com/mojiread/article/${articleId}`,
+            ];
+          };
+
+          const fetchArticlePages = async (canonicalUrl: string): Promise<Array<{html: string; finalUrl: string}>> => {
+            const candidates = mojiArticleFetchUrls(canonicalUrl);"""
+          if old_fetch in s:
+              assert s.count(old_fetch)==1;s=s.replace(old_fetch,new_fetch)
+          assert new_fetch in s
+          p.write_text(s)
+          t=Path('src/mojiArticleUrl.test.ts')
+          if not t.exists():
+              t.write_text("""import {describe,it,expect} from 'vitest';
+          import {mojiArticleFetchUrls,normalizeMojiArticleUrl} from '../api/moji-article';
+
+          describe('MOJi share URLs',()=>{
+            const id='GKfNZSHmCI';
+            const canonical=`https://www.mojidict.com/article/${id}`;
+            it('accepts the current mobile mojiread share format',()=>{
+              expect(normalizeMojiArticleUrl(`https://m.mojidict.com/mojiread/article/${id}`)).toBe(canonical);
+              expect(normalizeMojiArticleUrl(`https://m.mojidict.com/mojiread/article/${id}/?from=share#x`)).toBe(canonical);
+            });
+            it('keeps legacy article links compatible',()=>{
+              expect(normalizeMojiArticleUrl(`https://m.mojidict.com/article/${id}`)).toBe(canonical);
+              expect(normalizeMojiArticleUrl(canonical)).toBe(canonical);
+            });
+            it('rejects lookalike hosts, http and unrelated paths',()=>{
+              expect(normalizeMojiArticleUrl(`https://evil.example/mojiread/article/${id}`)).toBeNull();
+              expect(normalizeMojiArticleUrl(`https://m.mojidict.com.evil.example/mojiread/article/${id}`)).toBeNull();
+              expect(normalizeMojiArticleUrl(`http://m.mojidict.com/mojiread/article/${id}`)).toBeNull();
+              expect(normalizeMojiArticleUrl(`https://m.mojidict.com/mojiread/user/${id}`)).toBeNull();
+            });
+            it('tries the actual shared mobile route first while retaining fallbacks',()=>{
+              expect(mojiArticleFetchUrls(canonical)).toEqual([
+                `https://m.mojidict.com/mojiread/article/${id}`,
+                canonical,
+                `https://m.mojidict.com/article/${id}`,
+                `https://www.mojidict.com/mojiread/article/${id}`,
+              ]);
+            });
+          });
+          """)
+          PY
+          git add api/moji-article.ts src/mojiArticleUrl.test.ts
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Support current MOJi mojiread share links'
+            git push origin HEAD:nihongo-moji-mojiread-20260905
+          fi
+      - run: npm ci --no-audit --no-fund
+      - name: Typecheck tests and build
+        run: |
+          npm run typecheck
+          npm test
+          npm run build
+      - name: Confirm the provided share route is reachable from CI
+        run: |
+          node --input-type=module <<'JS'
+          const url='https://m.mojidict.com/mojiread/article/GKfNZSHmCI';
+          const response=await fetch(url,{redirect:'follow',headers:{'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1'},signal:AbortSignal.timeout(15000)});
+          if (!response.ok) throw new Error(`share_route_http_${response.status}`);
+          const html=await response.text();
+          if (html.length<200) throw new Error('share_route_body_too_small');
+          console.log(JSON.stringify({status:response.status,finalUrl:response.url,bytes:html.length}));
+          JS
