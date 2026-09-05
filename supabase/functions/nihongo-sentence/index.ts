@@ -11,12 +11,13 @@ function valid(v: unknown): v is Input {
     && [v.before,v.after].every(a=>Array.isArray(a) && a.length<=2 && a.every(s=>str(s)&&s.length<=8000));
 }
 const stringSchema = {type:'string'};
+const japaneseSchema = {type:'string',description:'Japanese sentence only. Do not append Chinese translation, gloss, separators, notes or commentary.'};
 const shape = (properties: Record<string,unknown>) => ({type:'object',additionalProperties:false,required:Object.keys(properties),properties});
 const list = (items: unknown, maxItems: number, minItems = 0) => ({type:'array',items,minItems,maxItems});
-const example = shape({ja:stringSchema,zh:stringSchema});
+const example = shape({ja:japaneseSchema,zh:stringSchema});
 const grammar = shape({pattern:stringSchema,meaningZh:stringSchema,formation:stringSchema,explanationZh:stringSchema,nuanceZh:stringSchema,examples:list(example,3,1)});
 const vocabulary = shape({word:stringSchema,reading:stringSchema,meaningZh:stringSchema,partOfSpeech:stringSchema,nuanceZh:stringSchema,examples:list(example,3,1)});
-const schema = shape({translationZh:stringSchema,structureZh:stringSchema,chunks:list(stringSchema,40),expression:stringSchema,meaningZh:stringSchema,dailyVersion:stringSchema,workVersion:stringSchema,grammarPoints:list(grammar,4),vocabularyPoints:list(vocabulary,8)});
+const schema = shape({translationZh:stringSchema,structureZh:stringSchema,chunks:list(stringSchema,40),expression:stringSchema,meaningZh:stringSchema,dailyVersion:japaneseSchema,workVersion:japaneseSchema,grammarPoints:list(grammar,4),vocabularyPoints:list(vocabulary,8)});
 function check(raw: unknown, input: Input) {
   if (!object(raw)) throw new Error('invalid_analysis');
   for (const key of ['translationZh','structureZh','expression','meaningZh','dailyVersion','workVersion']) {
@@ -41,7 +42,7 @@ Deno.serve(async req => {
   let input: unknown; try {input = await req.json();} catch {return json({ok:false,reason:'bad_json'},400);}
   if (!valid(input)) return json({ok:false,reason:'invalid_or_oversized_sentence'},400);
   const db = createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false,autoRefreshToken:false}});
-  const cacheKey = await hash(JSON.stringify({version:'sentence-v1',title:input.title,sentence:input.sentence,sentenceIndex:input.sentenceIndex,before:input.before,after:input.after}));
+  const cacheKey = await hash(JSON.stringify({version:'sentence-v2',title:input.title,sentence:input.sentence,sentenceIndex:input.sentenceIndex,before:input.before,after:input.after}));
   const {data:cached} = await db.from('nihongo_coach_cache').select('payload,model,updated_at').eq('cache_key',cacheKey).gte('updated_at',new Date(Date.now()-14*86400000).toISOString()).maybeSingle();
   if (cached?.payload) {
     try {return json({ok:true,cached:true,analysis:{version:1,model:cached.model,generatedAt:Date.parse(cached.updated_at),recommendation:check(cached.payload,input)}});} catch { /* Invalid cache cannot masquerade as a successful lesson. */ }
@@ -63,6 +64,9 @@ Deno.serve(async req => {
     'Identify 0-4 genuinely present grammar patterns and 0-8 useful words/collocations. Never pad with unrelated grammar or trivial particles to meet a count.',
     'Each included point has 1-3 accurate bilingual NEW example sentences. Readings use kana, and word meanings are contextual.',
     'expression is a reusable expression from the selected sentence. dailyVersion and workVersion are new natural examples, clearly not article facts. Work example may use an IT setting when appropriate.',
+    'dailyVersion, workVersion and every examples.ja MUST contain ONLY Japanese. Put translations ONLY in examples.zh. Never append Chinese after an em dash, equals sign or parentheses in these Japanese fields.',
+    'Formation must give an actually usable morphological rule, not a misleading concatenation. For ～なくなる, say 动词ない形去掉末尾ない＋なくなる, e.g. できない→できなくなる; never say 否定形＋なくなる. The pattern also applies to non-potential verbs.',
+    'Grammar and vocabulary must not duplicate each other: vocabulary should prefer actual words/collocations such as 図書館 and 利用する, not repeat わけではない as a vocabulary item. Do not repeat examples inside explanation or nuance when already provided in examples.',
     'Explain in concise Chinese, Japanese only for source, readings, patterns and examples. This is not a full-article summary or a proficiency score.',
   ].join(' ');
   let stage = 'request';
