@@ -24,51 +24,68 @@ jobs:
           cache: npm
       - run: mkdir -p /tmp/nhk-artifacts && npm ci --no-audit --no-fund
       - run: npm run build 2>&1 | tee /tmp/nhk-artifacts/build.txt
-      - name: Confirm production serves exactly this build and current service worker
+      - name: Confirm production serves this build and exact service worker
         run: |
           python3 - <<'PY'
           import hashlib,json,os,pathlib,re,time,urllib.request
           base='https://nihongo-discovery-v2-20260831.vercel.app'
           dist=pathlib.Path('dist')
           expected={p:hashlib.sha256((dist/p.lstrip('/')).read_bytes()).hexdigest() for p in re.findall(r'(?:src|href)="(/assets/[^"]+)"',(dist/'index.html').read_text())}
+          expected_sw=hashlib.sha256(pathlib.Path('public/sw.js').read_bytes()).hexdigest()
           assert len(expected)>=2
           report={'sourceCommit':os.environ['GITHUB_SHA'],'productionUrl':base,'expectedAssets':expected,'attempts':[],'syntheticBrowserTests':True}
           def get(path):
               with urllib.request.urlopen(urllib.request.Request(base+path,headers={'Cache-Control':'no-cache'}),timeout=20) as r:
                   assert r.status==200
                   return r.read()
-          for attempt in range(24):
+          for attempt in range(18):
               try:
                   html=get('/?release_check='+os.environ['GITHUB_SHA']).decode()
                   assert all(asset in html for asset in expected),'Production still serves a different bundle'
                   actual={asset:hashlib.sha256(get(asset)).hexdigest() for asset in expected}
                   assert actual==expected,'Asset content hash mismatch'
-                  sw=get('/sw.js').decode()
-                  assert 'nihongo-nhk-calm-20260905-v1' in sw,'Service worker version mismatch'
+                  sw_hash=hashlib.sha256(get('/sw.js')).hexdigest()
+                  assert sw_hash==expected_sw,'Service worker hash mismatch'
                   health=json.loads(get('/api/healthcheck'))
                   assert health.get('ok') is True and health.get('platform')=='vercel',health
-                  report.update(status='PASS',actualAssets=actual,healthcheck=health,serviceWorker='nihongo-nhk-calm-20260905-v1',verifiedAt=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()))
+                  report.update(status='PASS',actualAssets=actual,healthcheck=health,serviceWorkerHash=sw_hash,verifiedAt=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()))
                   break
               except Exception as e:
                   report['attempts'].append({'attempt':attempt+1,'error':str(e)})
                   print('Deployment check',attempt+1,str(e),flush=True)
-                  if attempt<23: time.sleep(15)
+                  if attempt<17: time.sleep(10)
           else: report['status']='FAIL'
           pathlib.Path('/tmp/nhk-artifacts/production-release.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
           print(json.dumps(report,ensure_ascii=False,indent=2))
           assert report['status']=='PASS','Production did not converge to reviewed build'
           PY
-      - name: Exercise deployed UI with isolated synthetic records and mocked AI only
+      - name: Exercise deployed UI with isolated records and mocked AI
         run: |
           npm install --no-save --package-lock=false playwright @axe-core/playwright --no-audit --no-fund
           npx playwright install --with-deps chromium webkit
+          NHK_BASE_URL=https://nihongo-discovery-v2-20260831.vercel.app timeout 180s node scripts/nhk-reliability-browser.mjs 2>&1 | tee /tmp/nhk-artifacts/reliability-browser.txt
           NHK_TEST_BASE=https://nihongo-discovery-v2-20260831.vercel.app timeout 180s node scripts/nhk-calm-browser.mjs 2>&1 | tee /tmp/nhk-artifacts/browser-log.txt
           python3 - <<'PY'
           import json
-          r=json.load(open('/tmp/nhk-artifacts/browser-results.json'))
+          r=json.load(open('/tmp/nhk-artifacts/browser-results.json'));n=json.load(open('/tmp/nhk-artifacts/reliability-browser.json'))
           assert r['status']=='PASS' and len(r['results'])>=15 and not r['errors']
           assert all(not a['violations'] for a in r['audits'])
+          assert n['status']=='PASS' and len(n['cases'])>=6 and not n['errors']
           PY
+      - name: Live production sentence endpoint, separate from mocked browser checks
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+          const input={title:'図書館の窓口変更（開発用の例）',sentence:'図書館を利用することができなくなるわけではありません。',sentenceIndex:19,before:['図書館では、来月から建物の工事を行います。','工事の間、窓口の場所が変わります。'],after:['オンラインのサービスも続けます。']};
+          const report={scope:'Synthetic input, REAL production proxy and REAL deployed coach'};
+          try {
+            const r=await fetch('https://nihongo-discovery-v2-20260831.vercel.app/api/nhk-sentence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input),signal:AbortSignal.timeout(60000)});
+            const body=await r.json();report.httpStatus=r.status;report.payload=body;
+            assert.equal(r.status,200);assert.equal(body.ok,true);assert.equal(body.analysis.recommendation.sentence,input.sentence);assert.equal(body.analysis.recommendation.sentenceIndex,19);report.status='PASS';
+          }catch(e){report.status='FAIL';report.error=e.message;process.exitCode=1;}
+          writeFileSync('/tmp/nhk-artifacts/production-live-coach.json',JSON.stringify(report,null,2));console.log(JSON.stringify({status:report.status,httpStatus:report.httpStatus,error:report.error}));
+          JS
       - uses: actions/upload-artifact@v4
         if: always()
         with:
