@@ -1,9 +1,11 @@
 import {createHash} from 'node:crypto';
 import type {VercelRequest, VercelResponse} from '@vercel/node';
+import {validSentenceRequest} from '../src/nhkSentenceAnalysis';
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kivebsjsdfdobxzaokbj.supabase.co';
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJraXZlYnNqc2RmZG9ieHphb2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMzA2NDIsImV4cCI6MjEwMzcwNjQyfQ.rzB2Yhn0vn1WqLJ2cq62WcSTsauNAm9vmn8MfNzgiYM';
-import {validSentenceRequest} from '../src/nhkSentenceAnalysis';
+// Public anon configuration, read back from the connected project's enabled keys.
+// This is not the OpenAI API key or the Supabase service-role credential.
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpdmVic2pzZGZkb2J4emFva2JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMzA2NDIsImV4cCI6MjEwMzcwNjY0Mn0.rzB2Yhn0vn1WqLJ2cq62WcSTsauNAm9vmn8MfNzgiYM';
 const EDGE_URL = `${SUPABASE_URL}/functions/v1/nihongo-sentence`;
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control','no-store');
