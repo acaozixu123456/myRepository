@@ -751,7 +751,7 @@ const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => {
 
 const resolveStorage = (storage?: StorageLike): StorageLike | null => {
   if (storage) return storage;
-  return typeof localStorage === 'undefined' ? null : localStorage;
+  try { return typeof localStorage === 'undefined' ? null : localStorage; } catch { return null; }
 };
 
 export const loadNhkSessions = (storage?: StorageLike): NhkMorningSession[] => {
@@ -766,10 +766,13 @@ export const loadNhkSessions = (storage?: StorageLike): NhkMorningSession[] => {
   }
 };
 
-export const saveNhkSessions = (sessions: NhkMorningSession[], storage?: StorageLike): void => {
-  const target = resolveStorage(storage);
-  if (!target) return;
-  target.setItem(STORAGE_KEY, JSON.stringify(sessions.map(normalizeNhkSession)));
+export const saveNhkSessions = (sessions: NhkMorningSession[], storage?: StorageLike): boolean => {
+  try {
+    const target = resolveStorage(storage);
+    if (!target) return false;
+    target.setItem(STORAGE_KEY, JSON.stringify(sessions.map(normalizeNhkSession)));
+    return true;
+  } catch { return false; }
 };
 
 export const upsertNhkSession = (

@@ -5,7 +5,7 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
 const resolveStorage = (storage?: StorageLike): StorageLike | null => {
   if (storage) return storage;
-  return typeof localStorage === 'undefined' ? null : localStorage;
+  try { return typeof localStorage === 'undefined' ? null : localStorage; } catch { return null; }
 };
 
 export const normalizeNhkPracticeMode = (value: unknown): NhkPracticeMode =>
@@ -14,14 +14,14 @@ export const normalizeNhkPracticeMode = (value: unknown): NhkPracticeMode =>
 export const loadNhkPracticeMode = (storage?: StorageLike): NhkPracticeMode => {
   const target = resolveStorage(storage);
   if (!target) return 'voice';
-  return normalizeNhkPracticeMode(target.getItem(STORAGE_KEY));
+  try { return normalizeNhkPracticeMode(target.getItem(STORAGE_KEY)); } catch { return 'voice'; }
 };
 
-export const saveNhkPracticeMode = (
-  mode: NhkPracticeMode,
-  storage?: StorageLike,
-): void => {
-  const target = resolveStorage(storage);
-  if (!target) return;
-  target.setItem(STORAGE_KEY, normalizeNhkPracticeMode(mode));
+export const saveNhkPracticeMode = (mode: NhkPracticeMode, storage?: StorageLike): boolean => {
+  try {
+    const target = resolveStorage(storage);
+    if (!target) return false;
+    target.setItem(STORAGE_KEY, normalizeNhkPracticeMode(mode));
+    return true;
+  } catch { return false; }
 };

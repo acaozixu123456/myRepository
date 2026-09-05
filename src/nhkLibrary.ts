@@ -81,7 +81,7 @@ const clean = (value: unknown, max = 1000): string => typeof value === 'string'
 
 const resolveStorage = (storage?: StorageLike): StorageLike | null => {
   if (storage) return storage;
-  return typeof localStorage === 'undefined' ? null : localStorage;
+  try { return typeof localStorage === 'undefined' ? null : localStorage; } catch { return null; }
 };
 
 const stableHash = (value: string): string => {
@@ -221,14 +221,13 @@ export const loadNhkArticleRecords = (storage?: StorageLike): NhkArticleRecord[]
   }
 };
 
-export const saveNhkArticleRecords = (records: NhkArticleRecord[], storage?: StorageLike): void => {
-  const target = resolveStorage(storage);
-  if (!target) return;
+export const saveNhkArticleRecords = (records: NhkArticleRecord[], storage?: StorageLike): boolean => {
   try {
+    const target = resolveStorage(storage);
+    if (!target) return false;
     target.setItem(ARTICLE_STORAGE_KEY, JSON.stringify(records.map(normalizeArticleRecord).filter(Boolean)));
-  } catch {
-    // Keep the current in-memory study session usable even if browser storage is unavailable.
-  }
+    return true;
+  } catch { return false; }
 };
 
 const dateKeyTimestamp = (dateKey: string): number => {
@@ -399,14 +398,13 @@ export const loadNhkKnowledge = (storage?: StorageLike): NhkKnowledgeItem[] => {
   }
 };
 
-export const saveNhkKnowledge = (items: NhkKnowledgeItem[], storage?: StorageLike): void => {
-  const target = resolveStorage(storage);
-  if (!target) return;
+export const saveNhkKnowledge = (items: NhkKnowledgeItem[], storage?: StorageLike): boolean => {
   try {
+    const target = resolveStorage(storage);
+    if (!target) return false;
     target.setItem(KNOWLEDGE_STORAGE_KEY, JSON.stringify(items.map(normalizeKnowledgeItem).filter(Boolean)));
-  } catch {
-    // The article itself remains readable even if browser storage is temporarily unavailable.
-  }
+    return true;
+  } catch { return false; }
 };
 
 export const isNhkKnowledgeSaved = (

@@ -2,9 +2,9 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import {captureSharedMojiUrl, stripShareParameters} from './shareTarget';
-import './index.css';
 
-const sharedUrl = captureSharedMojiUrl(window.location.href, window.localStorage);
+let sharedUrl = '';
+try { sharedUrl = captureSharedMojiUrl(window.location.href, window.localStorage) || ''; } catch { /* Let the app explain storage availability instead of crashing. */ }
 if (sharedUrl) {
   window.history.replaceState({}, document.title, stripShareParameters(window.location.href));
 }
