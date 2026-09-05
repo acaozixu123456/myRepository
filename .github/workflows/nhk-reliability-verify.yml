@@ -25,41 +25,28 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Final bounded candidate integration
+      - name: Match exact reviewed backend source
         run: |
           mkdir -p /tmp/nhk-artifacts
           python3 - <<'PY'
+          import hashlib
           from pathlib import Path
-          p=Path('src/NhkMorningPage.tsx');s=p.read_text()
-          if 'session = sessionForTarget(session, selected);' not in s:
-              old='  ): NhkMorningSession => {\n    if (!selected.length)';assert s.count(old)==1
-              s=s.replace('upsertSentenceAttempt, practiceId}', 'upsertSentenceAttempt, practiceId, sessionForTarget}')
-              s=s.replace(old,'  ): NhkMorningSession => {\n    session = sessionForTarget(session, selected);\n    if (!selected.length)')
-              s=s.replace("id: draftRef.current.recapText || draftRef.current.completedAt ? practiceId('nhk') : draftRef.current.id,",'id: sessionForTarget(draftRef.current, nextSelected).id,')
-              p.write_text(s)
           p=Path('supabase/functions/nihongo-sentence/index.ts');s=p.read_text()
-          if 'minItems = 0' not in s:
-              s=s.replace("const list = (items: unknown, maxItems: number) => ({type:'array',items,maxItems});", "const list = (items: unknown, maxItems: number, minItems = 0) => ({type:'array',items,minItems,maxItems});").replace('examples:list(example,3)', 'examples:list(example,3,1)')
-              s=s.replace("if (!Array.isArray(values)) throw new Error('invalid_points');", "if (!Array.isArray(values)) throw new Error(`invalid_points_${kind}_array`);")
-              s=s.replace("      if (!object(v) || !keys.every(k=>str(v[k])) || !Array.isArray(v.examples) || v.examples.length < 1\n        || !v.examples.every((e:unknown)=>object(e)&&str(e.ja)&&str(e.zh))) throw new Error('invalid_points');", "      if (!object(v) || !keys.every(k=>str(v[k]))) throw new Error(`invalid_points_${kind}_fields`);\n      if (!Array.isArray(v.examples) || v.examples.length < 1 || !v.examples.every((e:unknown)=>object(e)&&str(e.ja)&&str(e.zh))) throw new Error(`invalid_points_${kind}_examples`);")
-              s=s.replace("  try {\n    const model", "  let stage = 'request';\n  try {\n    const model")
-              s=s.replace('    const payload = await response.json();', "    stage = 'response';\n    const payload = await response.json();")
-              s=s.replace('    const recommendation = check(JSON.parse(output),input); const generatedAt = Date.now();', "    stage = 'parse';\n    const parsed = JSON.parse(output);\n    stage = 'validate';\n    const recommendation = check(parsed,input); const generatedAt = Date.now();\n    stage = 'cache';")
-              s=s.replace("  } catch {return json({ok:false,reason:'sentence_analysis_failed'},502);}", """  } catch (error) {
-              const known = /^(invalid_analysis|source_alignment_failed|invalid_points_(grammar|vocabulary)_(array|fields|examples)|incomplete_analysis)$/;
-              const detail = error instanceof Error && known.test(error.message) ? error.message : error instanceof Error && error.name === 'TimeoutError' ? 'timeout' : 'unexpected_response';
-              console.error('sentence_analysis_error',JSON.stringify({stage,detail}));
-              return json({ok:false,reason:'sentence_analysis_failed',stage,detail},502);
-            }""")
+          wanted='0faff0a49537bbd15d3a5c53237a83f859c47777e9e6138ae539ae0180501206'
+          if hashlib.sha256(s.encode()).hexdigest()!=wanted:
+              assert hashlib.sha256(s.encode()).hexdigest()=='5abb9841a24c0e449884ea8536ac6b1c503fa62b569fc5991d592bee045c3766','Unexpected source drift'
+              s=s.replace("version:'sentence-v2'", "version:'sentence-v3-terra'").replace("const model = 'gpt-5.6-luna';", "const model = 'gpt-5.6-terra';")
+              s=s.replace("    'Grammar and vocabulary must not duplicate each other:", "    'For できなくなる the change is from being able to being unable; for 使わなくなる it is from using to no longer using. Never explain this as an unchanged negative state. In translation, preserve the change/future nuance of なる even under わけではない.',\n    'Grammar and vocabulary must not duplicate each other:")
+              s=s.replace('`global:${new Date().toISOString().slice(0,10)}`,p_limit:200','`sentence-global:${new Date().toISOString().slice(0,10)}`,p_limit:40').replace('`client:${client}`,p_limit:20','`sentence-client:${client}`,p_limit:10')
+              assert hashlib.sha256(s.encode()).hexdigest()==wanted,'Final source mismatch'
               p.write_text(s)
           assert 'session = sessionForTarget(session, selected);' in Path('src/NhkMorningPage.tsx').read_text()
-          assert 'minItems = 0' in s and 'gpt-5.6-luna' in s and "stage = 'validate'" in s
           PY
-          git add -- src/NhkMorningPage.tsx supabase/functions/nihongo-sentence/index.ts
+          git add -- supabase/functions/nihongo-sentence/index.ts
           if ! git diff --cached --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'Preserve answer target identity and align focused response contract'
+            git commit -m 'Finalize focused teaching model and separate generation budget'
             git push origin HEAD:nihongo-reliability-20260905
           fi
           git rev-parse HEAD > /tmp/nhk-artifacts/source-commit.txt
