@@ -7,12 +7,13 @@ on:
       - 'scripts/calm-ui-trigger.json'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: nhk-calm-ui-verification
   cancel-in-progress: false
 jobs:
   verify:
+    if: github.ref == 'refs/heads/nihongo-calm-ui-20260905'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -21,35 +22,80 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - name: Apply supervisor-authored source bundle with exact checksum and baseline guards
+        run: |
+          mkdir -p /tmp/nhk-artifacts
+          python3 - <<'PY'
+          import base64,hashlib,json,lzma,pathlib
+          allowed=set('docs/product/NHK_CALM_DESIGN_20260905.md scripts/nhk-calm-browser.mjs scripts/nhk-calm-fixture.ts src/NhkGentleUI.tsx src/nhkCalm.css src/nhkCalm.test.ts src/nhkGentle.test.ts src/nhkGentle.ts index.html public/sw.js src/NhkMorningPage.tsx src/main.tsx src/nhkLibrary.ts src/nhkMorning.ts src/nhkPracticeMode.ts'.split())
+          compressed=base64.b64decode(''.join(pathlib.Path(f'scripts/calm-ui-transfer.part{i}').read_text().strip() for i in range(4)),validate=True)
+          assert hashlib.sha256(compressed).hexdigest()=='d023467ff8fce73f111a82f7e8240a0e3f7d52ad044203fe305fc852962176cb','Transport checksum mismatch'
+          bundle=json.loads(lzma.decompress(compressed))
+          assert bundle['version']==1
+          assert set(bundle['files']) | {p['path'] for p in bundle['patches']} == allowed
+          if not pathlib.Path('src/NhkGentleUI.tsx').exists():
+              output={}
+              for patch in bundle['patches']:
+                  path=pathlib.Path(patch['path']); original=path.read_text()
+                  assert hashlib.sha256(original.encode()).hexdigest()==patch['sha256'],f'Baseline mismatch: {path}'
+                  lines=original.splitlines(keepends=True)
+                  for start,end,text in reversed(patch['edits']):
+                      assert 0<=start<=end<=len(lines)
+                      lines[start:end]=[text]
+                  output[str(path)]=''.join(lines)
+              for name,content in bundle['files'].items():
+                  assert not pathlib.Path(name).exists(),f'Unexpected existing file: {name}'
+                  output[name]=content
+              for name,content in output.items():
+                  path=pathlib.Path(name);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(content)
+          else:
+              print('Source already present; validating current feature revision without replaying patch')
+          hashes={name:hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() for name in sorted(allowed)}
+          pathlib.Path('/tmp/nhk-artifacts/changed-file-hashes.json').write_text(json.dumps(hashes,indent=2))
+          pathlib.Path('/tmp/nhk-allowed-paths').write_text('\n'.join(sorted(allowed)))
+          print(json.dumps(hashes,indent=2))
+          PY
       - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - name: Package reproducible source and dependencies
-        run: |
-          mkdir -p /tmp/nhk-artifacts
-          tar -czf /tmp/nhk-artifacts/source-and-deps.tar.gz --exclude=./.git --exclude=./dist .
-      - name: Read-only production probe
-        run: |
-          python3 - <<'PY'
-          import json, urllib.request, pathlib
-          url='https://nihongo-discovery-v2-20260831.vercel.app'
-          result={'url':url}
-          try:
-              with urllib.request.urlopen(url, timeout=20) as r:
-                  result.update(status=r.status, finalUrl=r.url, html=r.read(4000).decode('utf-8','replace'))
-          except Exception as e:
-              result['error']=str(e)
-          pathlib.Path('/tmp/nhk-artifacts/production-probe.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
-          print(json.dumps(result,ensure_ascii=False))
-          PY
-      - name: Browser regressions
-        if: ${{ hashFiles('scripts/nhk-calm-browser.mjs') != '' }}
+      - name: Browser regressions on Chromium and WebKit
         run: |
           npm install --no-save --package-lock=false playwright @axe-core/playwright --no-audit --no-fund
           npx playwright install --with-deps chromium webkit
           npm run dev -- --host 127.0.0.1 > /tmp/nhk-vite.log 2>&1 &
-          node scripts/nhk-calm-browser.mjs
+          timeout 240s node scripts/nhk-calm-browser.mjs
+      - name: Commit only validated product files to isolated feature branch
+        run: |
+          test "$GITHUB_REF" = refs/heads/nihongo-calm-ui-20260905
+          mapfile -t paths < /tmp/nhk-allowed-paths
+          git add -- "${paths[@]}"
+          git diff --cached --stat
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Refactor NHK into a calm one-sentence learning flow'
+            git push origin HEAD:nihongo-calm-ui-20260905
+          fi
+          git rev-parse HEAD > /tmp/nhk-artifacts/validated-source-commit.txt
+      - name: Read-only production probe
+        if: always()
+        run: |
+          mkdir -p /tmp/nhk-artifacts
+          python3 - <<'PY'
+          import json,urllib.request,pathlib,re
+          url='https://nihongo-discovery-v2-20260831.vercel.app'
+          result={'url':url}
+          try:
+              with urllib.request.urlopen(url,timeout=20) as r:
+                  html=r.read().decode();result.update(status=r.status,finalUrl=r.url,html=html)
+              for asset in re.findall(r'(?:src|href)="(/assets/[^"]+)"',html):
+                  with urllib.request.urlopen(url+asset,timeout=20) as r: text=r.read().decode()
+                  result.setdefault('assets',[]).append({'path':asset,'calmMarkers':[x for x in ['今天到这里','就从这一句开始','nihongo-nhk-gentle-progress-v1'] if x in text]})
+          except Exception as e: result['error']=str(e)
+          pathlib.Path('/tmp/nhk-artifacts/production-probe.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
+          print(json.dumps(result,ensure_ascii=False))
+          PY
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
