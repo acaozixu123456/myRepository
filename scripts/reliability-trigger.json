@@ -1,1 +1,1 @@
-{"revision":2,"purpose":"Verify multi-article history, fresh-context restore, sentence20 exact binding, accessible panels and live coach","candidate":"6069ec4fcc526661ab82f23cba1ed43be0495423"}
+{"revision":4,"purpose":"Full release gate after project-verified public JWT fix; browser mocks and real AI acceptance remain separate","candidate":"91c47e12455c396a5ab0c9788eacb807808d98be"}
