@@ -14,6 +14,9 @@ try {
  const invalid=await call({...input,sentence:'日'.repeat(8001)});result.invalid=invalid;assert.equal(invalid.status,400);result.checks.push('Oversize rejected explicitly');
  const first=await call(input);result.first=first;assert.equal(first.status,200);assert.equal(first.body.ok,true);
  const r=first.body.analysis.recommendation;assert.equal(r.sentence,sentence);assert.equal(r.sentenceIndex,19);assert.equal(r.chunks.join('').replace(/\s/g,''),sentence);assert(r.translationZh.length>0);assert(r.structureZh.length>0);result.checks.push('Exact source/index/chunks, real nonempty explanation');
+ assert(!r.dailyVersion.includes('——') && !r.workVersion.includes('——'),'Japanese example fields must not append translation after an em dash');
+ for(const p of [...r.grammarPoints,...r.vocabularyPoints]) {assert(p.examples.length>0);assert(p.examples.every(e=>e.ja.trim()&&e.zh.trim()));}
+ result.checks.push('Bilingual examples present; Japanese transfer fields have no appended translation delimiter');
  const second=await call(input);assert.equal(second.status,200);assert.equal(second.body.cached,true);result.cacheDurationMs=second.durationMs;result.checks.push('Server cache reused');result.status='PASS';
 } catch(e){result.status='FAIL';result.error=e.message;process.exitCode=1;}
 writeFileSync(`${out}/live-sentence-smoke.json`,JSON.stringify(result,null,2));console.log(JSON.stringify({status:result.status,checks:result.checks,error:result.error}));
