@@ -1,1 +1,1 @@
-{"revision":4,"edgeFunctionVersion":5,"purpose":"Require bilingual examples in response schema, matching runtime quality validation"}
+{"revision":5,"edgeFunctionVersion":7,"model":"gpt-5.6-terra","purpose":"Resolve a reviewed change-of-state explanation error; on-demand only with cache and separate spending limits"}
