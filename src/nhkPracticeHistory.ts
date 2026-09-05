@@ -48,3 +48,19 @@ export function articlePracticeSessions(sessions: NhkMorningSession[], url: stri
   return sessions.filter(item => item.sourceUrl === url && (item.recapText.trim() || item.opinion.trim()))
     .sort((a,b) => (b.updatedAt || b.completedAt || 0) - (a.updatedAt || a.completedAt || 0));
 }
+
+// Changing a study target must not re-label a previously typed/recorded answer.
+// The caller keeps the original persisted session; this returns a new blank attempt.
+export function sessionForTarget(session: NhkMorningSession, selected: string[], now = Date.now()): NhkMorningSession {
+  const previous = session.selectedSentences?.length ? session.selectedSentences : session.shadowText.split(/\n+/).filter(Boolean);
+  const changed = JSON.stringify(previous) !== JSON.stringify(selected);
+  const hasEvidence = Boolean(session.recapText.trim() || session.opinion.trim() || session.completedAt
+    || session.shadowRecordingSeconds || session.recapRecordingSeconds || session.worldRecordingSeconds
+    || Object.keys(session.speechReviews || {}).length || session.quietReviews?.length);
+  if (!changed || !hasEvidence) return session;
+  return {...session, id:practiceId('nhk'), updatedAt:now,
+    selectedSentences:[], shadowText:'', dailyInput:undefined, keyExpression:'', dailyVersion:'', workVersion:'',
+    recapText:'', opinion:'', worldAnswer:'', completedAt:undefined, completedMode:undefined,
+    shadowRecordingSeconds:0, recapRecordingSeconds:0, worldRecordingSeconds:0,
+    speechFallback:false, speechReviews:{}, quietReviews:[], recallAttempts:[], recall:undefined};
+}

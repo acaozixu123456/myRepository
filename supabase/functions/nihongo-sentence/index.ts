@@ -66,9 +66,15 @@ Deno.serve(async req => {
     'Explain in concise Chinese, Japanese only for source, readings, patterns and examples. This is not a full-article summary or a proficiency score.',
   ].join(' ');
   try {
-    const model = 'gpt-5-mini';
-    const response = await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify({model,reasoning:{effort:'low'},input:[{role:'system',content:instructions},{role:'user',content:JSON.stringify({title:input.title,contextBefore:input.before,SELECTED_SENTENCE:input.sentence,contextAfter:input.after})}],text:{format:{type:'json_schema',name:'nhk_single_sentence',strict:true,schema}},max_output_tokens:6000}),signal:AbortSignal.timeout(50000)});
-    if (!response.ok) return json({ok:false,reason:'generation_unavailable'},502);
+    const model = 'gpt-5.6-luna';
+    const response = await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify({model,reasoning:{effort:'medium'},input:[{role:'system',content:instructions},{role:'user',content:JSON.stringify({title:input.title,contextBefore:input.before,SELECTED_SENTENCE:input.sentence,contextAfter:input.after})}],text:{format:{type:'json_schema',name:'nhk_single_sentence',strict:true,schema}},max_output_tokens:6000}),signal:AbortSignal.timeout(50000)});
+    if (!response.ok) {
+      const problem = await response.json().catch(() => ({}));
+      const safe = (v: unknown) => typeof v === 'string' && /^[a-zA-Z0-9_./\[\]-]{1,120}$/.test(v) ? v : 'unspecified';
+      const diagnostic = {upstreamStatus: response.status, providerCode: safe(problem?.error?.code), providerType: safe(problem?.error?.type), parameter: safe(problem?.error?.param)};
+      console.error('sentence_provider_error', JSON.stringify(diagnostic));
+      return json({ok:false,reason:'generation_unavailable',...diagnostic},502);
+    }
     const payload = await response.json();
     if (payload.status !== 'completed') throw new Error('incomplete_analysis');
     const output = payload.output_text || payload.output?.flatMap((item:any)=>item.content || []).filter((item:any)=>item.type==='output_text').map((item:any)=>item.text).join('');
