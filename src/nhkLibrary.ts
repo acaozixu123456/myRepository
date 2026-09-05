@@ -1,3 +1,4 @@
+import {isSentenceAnalysis} from './nhkSentenceAnalysis';
 import {
   isNhkCoachResult,
   normalizeNhkCoachResult,
@@ -16,6 +17,7 @@ export type NhkArticleRecord = {
   title: string;
   sentences: string[];
   selectedSentences: string[];
+  sentenceAnalyses?: import('./nhkSentenceAnalysis').SentenceAnalysis[];
   coach?: NhkCoachResult;
   coachModel?: string;
   importedAt: number;
@@ -93,6 +95,9 @@ const stableHash = (value: string): string => {
   return (hash >>> 0).toString(36);
 };
 
+const sourceSentences = (values: unknown): string[] => Array.isArray(values)
+  ? values.filter((v): v is string => typeof v === 'string' && !!v.trim()).map(v => v.trim()) : [];
+
 const uniqueStrings = (values: unknown, limit = 64, max = 320): string[] => Array.isArray(values)
   ? Array.from(new Set(values.map(value => clean(value, max)).filter(Boolean))).slice(0, limit)
   : [];
@@ -133,7 +138,7 @@ export const createNhkArticleRecord = ({
   importedAt?: number;
   completedAt?: number;
 }): NhkArticleRecord => {
-  const normalizedSentences = uniqueStrings(sentences, 64, 320);
+  const normalizedSentences = sourceSentences(sentences);
   const normalizedCoach = coach && isNhkCoachResult(coach)
     ? normalizeNhkCoachResult(coach, title, normalizedSentences)
     : undefined;
@@ -144,7 +149,7 @@ export const createNhkArticleRecord = ({
     sourceUrl: clean(sourceUrl, 1000),
     title: clean(title, 200) || 'NHK日语听力',
     sentences: normalizedSentences,
-    selectedSentences: uniqueStrings(selectedSentences, 3, 320),
+    selectedSentences: uniqueStrings(selectedSentences, 3, 8000),
     ...(normalizedCoach ? {coach: normalizedCoach} : {}),
     ...(clean(coachModel, 100) ? {coachModel: clean(coachModel, 100)} : {}),
     importedAt,
@@ -161,7 +166,7 @@ const normalizeArticleRecord = (value: unknown): NhkArticleRecord | null => {
   const sourceUrl = clean(raw.sourceUrl, 1000);
   const title = clean(raw.title, 200) || 'NHK日语听力';
   if (!sourceUrl) return null;
-  const sentences = uniqueStrings(raw.sentences, 64, 320);
+  const sentences = sourceSentences(raw.sentences);
   const importedAt = typeof raw.importedAt === 'number' ? raw.importedAt : Date.now();
   const coach = raw.coach && isNhkCoachResult(raw.coach)
     ? normalizeNhkCoachResult(raw.coach, title, sentences)
@@ -173,7 +178,8 @@ const normalizeArticleRecord = (value: unknown): NhkArticleRecord | null => {
     sourceUrl,
     title,
     sentences,
-    selectedSentences: uniqueStrings(raw.selectedSentences, 3, 320),
+    sentenceAnalyses: Array.isArray(raw.sentenceAnalyses) ? raw.sentenceAnalyses.filter(item => isSentenceAnalysis(item) && sentences[item.recommendation.sentenceIndex] === item.recommendation.sentence) : [],
+    selectedSentences: uniqueStrings(raw.selectedSentences, 3, 8000),
     ...(coach ? {coach} : {}),
     ...(clean(raw.coachModel, 100) ? {coachModel: clean(raw.coachModel, 100)} : {}),
     importedAt,
@@ -198,6 +204,7 @@ export const upsertNhkArticleRecord = (
     lastOpenedAt: Math.max(previous.lastOpenedAt, normalized.lastOpenedAt),
     sentences: normalized.sentences.length ? normalized.sentences : previous.sentences,
     selectedSentences: normalized.selectedSentences.length ? normalized.selectedSentences : previous.selectedSentences,
+    sentenceAnalyses: [...(previous.sentenceAnalyses || []).filter(item => !(normalized.sentenceAnalyses || []).some(next => next.recommendation.sentenceIndex === item.recommendation.sentenceIndex)), ...(normalized.sentenceAnalyses || [])],
     coach: normalized.coach || previous.coach,
     coachModel: normalized.coachModel || previous.coachModel,
     completedAt: Math.max(previous.completedAt || 0, normalized.completedAt || 0) || undefined,
@@ -260,7 +267,14 @@ export const mergeNhkArticlesWithSessions = (
   sessions: NhkMorningSession[],
 ): NhkArticleRecord[] => sessions.reduce((current, session) => {
   const record = recordFromSession(session);
-  return record ? upsertNhkArticleRecord(current, record) : current;
+  if (!record) return current;
+  const existing = current.find(item => item.id === record.id);
+  if (!existing) return upsertNhkArticleRecord(current, record);
+  // Sessions are practice snapshots, never authoritative replacements for archived source.
+  return current.map(item => item.id === existing.id ? {...item,
+    completedAt: Math.max(item.completedAt || 0, record.completedAt || 0) || undefined,
+    studyDateKeys: [...new Set([...item.studyDateKeys, ...record.studyDateKeys])].sort().reverse(),
+  } : item);
 }, records);
 
 export const updateNhkArticleCoach = (

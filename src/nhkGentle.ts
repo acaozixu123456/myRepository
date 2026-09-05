@@ -12,8 +12,8 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 export const GENTLE_KEY = 'nihongo-nhk-gentle-progress-v1';
 const empty = (): GentleProgress => ({version: 1, lastArticleId: '', articles: {}, activity: []});
 const safeKey = (id: string) => id !== '__proto__' && id !== 'constructor' && id !== 'prototype';
-const clean = (s: unknown) => typeof s === 'string' ? s.slice(0, 1000) : '';
-const strings = (v: unknown): string[] => Array.isArray(v) ? [...new Set(v.filter((s): s is string => typeof s === 'string').map(s => s.slice(0, 1000)))].slice(0, 64) : [];
+const clean = (s: unknown) => typeof s === 'string' ? s.slice(0, 8000) : '';
+const strings = (v: unknown): string[] => Array.isArray(v) ? [...new Set(v.filter((s): s is string => typeof s === 'string').map(s => s.slice(0, 8000)))] : [];
 const getStorage = (storage?: StorageLike) => storage || (typeof localStorage === 'undefined' ? null : localStorage);
 
 export function loadGentle(storage?: StorageLike): GentleProgress {

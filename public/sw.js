@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nihongo-nhk-calm-20260905-v1';
+const CACHE_NAME = 'nihongo-nhk-reliable-20260905-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', event => {

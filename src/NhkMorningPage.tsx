@@ -1,3 +1,8 @@
+import NhkBackupPanel from './NhkBackupPanel';
+import {commitStudyRestore, serializeStudyBackup, type StudyData} from './nhkBackup';
+import {loadPracticeHistory, savePracticeHistory, newSentenceAttempt, upsertSentenceAttempt, practiceId} from './nhkPracticeHistory';
+import {NhkSentenceInsight, NhkHistoryPanel} from './NhkSentenceTools';
+import {findSentenceAnalysis, type SentenceAnalysis} from './nhkSentenceAnalysis';
 import {type ClipboardEvent, useEffect, useMemo, useRef, useState} from 'react';
 import {
   ArrowLeft,
@@ -64,7 +69,6 @@ import {
 import {
   createNhkArticleRecord,
   dueNhkKnowledge,
-  exportNhkStudyData,
   isNhkKnowledgeSaved,
   knowledgePointFromGrammar,
   knowledgePointFromVocabulary,
@@ -137,6 +141,7 @@ const sessionSentences = (session: NhkMorningSession): string[] => {
 
 const resetSessionForSource = (session: NhkMorningSession, sourceUrl: string): NhkMorningSession => ({
   ...session,
+  id: session.sourceUrl && session.sourceUrl !== sourceUrl ? practiceId('nhk') : session.id,
   sourceUrl,
   title: '',
   shadowText: '',
@@ -315,6 +320,8 @@ function StudioNav({
 export default function NhkMorningPage() {
   const todayKey = toDateKey();
   const initialSessions = useMemo(() => loadNhkSessions(), []);
+  const [history, setHistory] = useState(() => loadPracticeHistory());
+  const [activeAttemptId, setActiveAttemptId] = useState('');
   const [sessions, setSessions] = useState<NhkMorningSession[]>(initialSessions);
   const [articles, setArticles] = useState<NhkArticleRecord[]>(() =>
     mergeNhkArticlesWithSessions(loadNhkArticleRecords(), initialSessions));
@@ -370,6 +377,7 @@ export default function NhkMorningPage() {
     storageFailures.current[area] = !success;
     setStorageWarning(Object.values(storageFailures.current).some(Boolean));
   };
+  useEffect(() => {storageResult('history', savePracticeHistory(history));}, [history]);
   useEffect(() => {storageResult('sessions', saveNhkSessions(sessions));}, [sessions]);
   useEffect(() => {storageResult('gentle', saveGentle(gentle));}, [gentle]);
   useEffect(() => {
@@ -402,8 +410,8 @@ export default function NhkMorningPage() {
   }, [articles, archiveQuery]);
 
   const selectedRecommendations = useMemo(
-    () => alignCoachRecommendations(coach, selectedSentences, articleSentences),
-    [coach, selectedSentences, articleSentences],
+    () => alignCoachRecommendations(coach, selectedSentences, articleSentences).map(item => findSentenceAnalysis(currentArticle?.sentenceAnalyses,articleSentences[item.sentenceIndex] || item.sentence,item.sentenceIndex)?.recommendation || item),
+    [coach, selectedSentences, articleSentences, currentArticle],
   );
   const primaryRecommendation = useMemo(
     () => pickCoachRecommendation(coach, selectedSentences, articleSentences),
@@ -419,9 +427,10 @@ export default function NhkMorningPage() {
   }, [view, step, currentArticleId, gentleSentence]);
 
   const persist = (next: NhkMorningSession) => {
-    draftRef.current = next;
-    setDraft(next);
-    setSessions(current => upsertNhkSession(current, next));
+    const updated = {...next, updatedAt: Date.now()};
+    draftRef.current = updated;
+    setDraft(updated);
+    setSessions(current => upsertNhkSession(current, updated));
   };
 
   const patch = (values: Partial<NhkMorningSession>) =>
@@ -665,6 +674,7 @@ export default function NhkMorningPage() {
     setAnalysisFocus(0);
     const resetOutput: NhkMorningSession = {
       ...draftRef.current,
+      id: draftRef.current.recapText || draftRef.current.completedAt ? practiceId('nhk') : draftRef.current.id,
       recapText: '',
       opinion: '',
       shadowRecordingSeconds: 0,
@@ -717,15 +727,15 @@ export default function NhkMorningPage() {
     setView('article');
   };
 
-  const studySavedArticle = (record: NhkArticleRecord, regenerate = false) => {
+  const studySavedArticle = (record: NhkArticleRecord, regenerate = false, targetSentence?: string) => {
     selectionTouchedRef.current = Boolean(record.selectedSentences.length);
-    const previous = sessions.find(session => session.sourceUrl === record.sourceUrl && session.dateKey === todayKey);
+    const previous = sessions.find(session => session.sourceUrl === record.sourceUrl && session.dateKey === todayKey && !session.completedAt);
     const base = previous ? {...previous, practiceMode} : {
       ...resetSessionForSource(createNhkSession(todayKey, practiceMode), record.sourceUrl),
       title: record.title,
     };
     const resolvedCoach = record.coach || buildFallbackCoach(record.title, record.sentences);
-    const focus = gentle.articles[record.id]?.focus;
+    const focus = targetSentence || gentle.articles[record.id]?.focus;
     const selected = focus && record.sentences.includes(focus) ? [focus] : record.selectedSentences.length
       ? record.selectedSentences.slice(0, 1)
       : resolvedCoach.recommendations.map(item => item.sentence).slice(0, 1);
@@ -774,16 +784,27 @@ export default function NhkMorningPage() {
     }
   };
 
+  const studyData: StudyData = {articles, knowledge, sessions, gentleProgress:gentle, history};
   const exportBackup = () => {
-    const blob = new Blob([JSON.stringify({...JSON.parse(exportNhkStudyData(articles, knowledge, sessions)), gentleProgress: gentle}, null, 2)], {type: 'application/json;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `nhk-study-backup-${todayKey}.json`;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(() => URL.revokeObjectURL(url), 500);
+    const blob = new Blob([serializeStudyBackup(studyData)], {type:'application/json;charset=utf-8'});
+    const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
+    anchor.href = url; anchor.download = `nhk-study-backup-${todayKey}-${Date.now()}.json`;
+    document.body.appendChild(anchor); anchor.click(); anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url),500);
+  };
+  const restoreBackup = (data: StudyData): boolean => {
+    try {
+      if (!commitStudyRestore(data,localStorage)) return false;
+      parseRequestRef.current++; coachRequestRef.current++;
+      setArticles(data.articles); setKnowledge(data.knowledge); setSessions(data.sessions);
+      setGentle(data.gentleProgress); setHistory(data.history); setActiveAttemptId('');
+      setCoach(null); setArticleSentences([]); setSelectedSentences([]);setStep(0);setView('home');
+      return true;
+    } catch {return false;}
+  };
+  const saveSentenceAnalysis = (id: string, analysis: SentenceAnalysis) => {
+    setArticles(current => current.map(article => article.id === id && article.sentences[analysis.recommendation.sentenceIndex] === analysis.recommendation.sentence
+      ? {...article, updatedAt:Date.now(), sentenceAnalyses:[...(article.sentenceAnalyses || []).filter(a => a.recommendation.sentenceIndex !== analysis.recommendation.sentenceIndex),analysis]} : article));
   };
 
   useEffect(() => {
@@ -924,13 +945,14 @@ export default function NhkMorningPage() {
           />
         )}
 
+        <NhkHistoryPanel article={activeArticle} history={history} sessions={sessions}/>
         <section className="nhk-all-sentences-card">
           <button className="nhk-collapse-head" onClick={() => setShowAllSentences(value => !value)}>
             <div><small>ARTICLE</small><strong>查看完整正文句子</strong></div>
             {showAllSentences ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
           {showAllSentences && (
-            <ol>{activeArticle.sentences.map((sentence, index) => <li key={`${index}-${sentence}`}><span>{index + 1}</span><p>{sentence}</p></li>)}</ol>
+            <ol>{activeArticle.sentences.map((sentence, index) => <li key={`${index}-${sentence}`}><span>{index + 1}</span><p lang="ja">{sentence}</p><button className="calm-text-button" onClick={() => studySavedArticle(activeArticle,false,sentence)}>精读第 {index + 1} 句</button></li>)}</ol>
           )}
         </section>
       </section>
@@ -1027,11 +1049,22 @@ export default function NhkMorningPage() {
         {gentlePhase === 'read' && <>
           {(coachStatus === 'loading' || coachStatus === 'fallback' || coachModel === 'local-fallback') && <div className="calm-coach-status" role="status">{coachStatus === 'loading' ? '正在补全精讲，可以先读正文。' : '当前是基础讲解；AI 精讲暂未完成。'}{coachStatus !== 'loading' && <button onClick={() => void loadCoach(draft.title, articleSentences, draftRef.current, false)}>重试精讲</button>}</div>}
           {selectedRecommendations.length > 1 && <div className="nhk-analysis-tabs" role="group" aria-label="已选句子">{selectedRecommendations.map((item,index) => <button key={item.sentence} aria-pressed={index === analysisFocus} className={index === analysisFocus ? 'active' : ''} onClick={() => setAnalysisFocus(index)}>第 {index + 1} 句</button>)}</div>}
-          <DeepAnalysisCard key={activeRecommendation.sentence} recommendation={activeRecommendation} article={studyArticle} knowledge={knowledge} onToggleKnowledge={toggleKnowledge}/>
-          <div className="calm-focus-actions"><button className="calm-primary" onClick={() => {selectionTouchedRef.current = true; setGentlePhase('recall');}}>合上提示，想一想<ChevronRight size={18}/></button><button className="calm-text-button" onClick={() => setStep(0)}>换一句 / 查看全文</button></div>
+          <NhkSentenceInsight key={`${studyArticle.id}|${activeRecommendation.sentenceIndex}|${activeRecommendation.sentence}`} article={studyArticle} recommendation={activeRecommendation} onSave={saveSentenceAnalysis}>
+            {value => <DeepAnalysisCard recommendation={value} article={studyArticle} knowledge={knowledge} onToggleKnowledge={toggleKnowledge}/>}
+          </NhkSentenceInsight>
+          <div className="calm-focus-actions"><button className="calm-primary" onClick={() => {selectionTouchedRef.current = true;
+            const existing = history.attempts.find(a => a.articleId === studyArticle.id && a.sentence === activeRecommendation.sentence && !a.completedAt);
+            const attempt = existing || newSentenceAttempt(studyArticle.id,activeRecommendation.sentence,activeRecommendation.translationZh);
+            setHistory(value => upsertSentenceAttempt(value,attempt)); setActiveAttemptId(attempt.id); setGentlePhase('recall');}}>合上提示，想一想<ChevronRight size={18}/></button><button className="calm-text-button" onClick={() => setStep(0)}>换一句 / 查看全文</button></div>
         </>}
         {gentlePhase === 'recall' && <GentleSentenceCheck key={activeRecommendation.sentence} sentence={activeRecommendation.sentence} meaning={activeRecommendation.translationZh}
-          onBack={() => setGentlePhase('read')} onFinish={rating => {setGentle(value => checkGentleSentence(value, studyArticle.id, activeRecommendation.sentence, rating)); setGentlePhase('done');}}/>}
+          initialAnswer={history.attempts.find(a=>a.id===activeAttemptId)?.answer}
+          initialRevealed={Boolean(history.attempts.find(a=>a.id===activeAttemptId)?.revealedAt)}
+          onAnswer={answer=>setHistory(value=>{const a=value.attempts.find(a=>a.id===activeAttemptId);return a ? upsertSentenceAttempt(value,{...a,answer,updatedAt:Date.now()}) : value;})}
+          onReveal={()=>setHistory(value=>{const a=value.attempts.find(a=>a.id===activeAttemptId);return a ? upsertSentenceAttempt(value,{...a,revealedAt:Date.now(),updatedAt:Date.now()}) : value;})}
+          onBack={() => setGentlePhase('read')} onFinish={(rating,answer) => {
+            setHistory(value=>{const a=value.attempts.find(a=>a.id===activeAttemptId);return a ? upsertSentenceAttempt(value,{...a,answer,rating,updatedAt:Date.now(),completedAt:Date.now()}) : value;});
+            setGentle(value => checkGentleSentence(value, studyArticle.id, activeRecommendation.sentence, rating)); setGentlePhase('done');}}/>}
         {gentlePhase === 'done' && <section className="calm-finish-card"><span className="calm-finish-icon"><Check size={30}/></span><span className="calm-eyebrow">这一句，离你近了一点</span><h2>今天的小练习，完成了。</h2><p>你读过，也试着回想了。这不是一次考试，之后还会慢慢熟悉。</p><button className="calm-primary" onClick={() => setView('home')}>今天到这里<Check size={18}/></button><div className="calm-finish-options"><button onClick={nextSentence}>{nextRecommendation ? '再读一句' : '回看这篇文章'}<ChevronRight size={16}/></button><button onClick={() => setStep(2)}>试着说一说<ChevronRight size={16}/></button></div></section>}
       </section>;
     }
@@ -1210,6 +1243,7 @@ export default function NhkMorningPage() {
       {storageWarning && <p className="calm-storage-warning" role="alert">浏览器暂时无法保存。请先导出备份，避免关闭后丢失本次记录。</p>}
       <GentleHome article={gentleContinueArticle(articles, gentle)} progress={gentle} dueCount={dueKnowledge.length} articleCount={articles.length}
         onContinue={openToday} onImport={startNewArticle} onReview={() => setView('knowledge')} onArchive={() => setView('archive')}/>
+      <NhkBackupPanel data={studyData} onRestore={restoreBackup} onExport={exportBackup}/>
       <div className="calm-home-utilities"><button className="calm-text-button" onClick={exportBackup}><Download size={16}/>导出备份</button><small>仅保存在当前浏览器，暂未云同步</small></div>
       <button className="nhk-share-card nhk-studio-share" onClick={() => setShowShareHelp(value => !value)}>
         <Share2 size={20} />

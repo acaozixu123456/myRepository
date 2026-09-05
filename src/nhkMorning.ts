@@ -1,3 +1,4 @@
+import {practiceId} from './nhkPracticeHistory';
 import {
   alignCoachRecommendations,
   isNhkCoachResult,
@@ -108,6 +109,7 @@ export type NhkDailyInputV2 = {
 export type NhkMorningSession = {
   schemaVersion: 2;
   id: string;
+  updatedAt?: number;
   dateKey: string;
   sourceUrl: string;
   title: string;
@@ -190,7 +192,7 @@ const stableHash = (value: string): string => {
 };
 
 const uniqueSentences = (sentences: string[], limit: number): string[] =>
-  Array.from(new Set(sentences.map(value => clean(value, 280)).filter(Boolean))).slice(0, limit);
+  Array.from(new Set(sentences.map(value => clean(value, 8000)).filter(Boolean))).slice(0, limit);
 
 type NhkRecallSeed = Pick<NhkTrainingSentence, 'sourceSentence' | 'expression' | 'dailyVersion' | 'workVersion'>;
 
@@ -314,7 +316,7 @@ export const buildNhkDailyInput = ({
   coachModel,
   generatedAt = Date.now(),
 }: BuildDailyInputOptions): NhkDailyInputV2 => {
-  const candidates = uniqueSentences(candidateSentences, 16);
+  const candidates = candidateSentences.map(value => clean(value, 8000)).filter(Boolean);
   const aligned = alignCoachRecommendations(coach, selectedSentences, candidates);
   const articleId = articleIdFromUrl(session.sourceUrl);
   const sourceKey = articleId || stableHash(session.sourceUrl || session.id);
@@ -511,7 +513,8 @@ export const createNhkSession = (
   practiceMode: NhkPracticeMode = 'voice',
 ): NhkMorningSession => ({
   schemaVersion: 2,
-  id: `nhk-${dateKey}`,
+  id: practiceId(`nhk-${dateKey}`),
+  updatedAt: Date.now(),
   dateKey,
   sourceUrl: '',
   title: '',
@@ -677,7 +680,7 @@ const normalizeDailyInput = (value: unknown, session: NhkMorningSession): NhkDai
     : session.selectedSentences;
   if (!selected.length) return undefined;
   const candidateSentences = Array.isArray(input.candidateSentences)
-    ? uniqueSentences(input.candidateSentences, 16)
+    ? input.candidateSentences.map(value => clean(value, 8000)).filter(Boolean)
     : selected;
   const rebuilt = buildNhkDailyInput({
     session: {...session, dailyInput: undefined},
@@ -725,6 +728,7 @@ const normalizeNhkSession = (session: NhkMorningSession): NhkMorningSession => {
     ...createNhkSession(session.dateKey),
     ...session,
     schemaVersion: 2,
+    updatedAt: session.updatedAt || session.completedAt || Date.parse(`${session.dateKey}T12:00:00+09:00`),
     selectedSentences,
     shadowRecordingSeconds: Number(session.shadowRecordingSeconds) || 0,
     recapRecordingSeconds: Number(session.recapRecordingSeconds) || 0,
@@ -779,8 +783,13 @@ export const upsertNhkSession = (
   sessions: NhkMorningSession[],
   session: NhkMorningSession,
 ): NhkMorningSession[] => {
-  const next = sessions.filter(item => item.id !== session.id);
-  return [...next, normalizeNhkSession(session)].sort((a, b) => b.dateKey.localeCompare(a.dateKey));
+  const existing = sessions.find(item => item.id === session.id);
+  // Keep legacy daily IDs readable, but never overwrite a different article with one.
+  const incoming = existing?.sourceUrl && session.sourceUrl && existing.sourceUrl !== session.sourceUrl
+    ? {...session, id: `${session.id}-article-${stableHash(session.sourceUrl)}`} : session;
+  const next = sessions.filter(item => item.id !== incoming.id);
+  return [...next, normalizeNhkSession(incoming)].sort((a, b) => b.dateKey.localeCompare(a.dateKey)
+    || (b.updatedAt || b.completedAt || 0) - (a.updatedAt || a.completedAt || 0));
 };
 
 export const findTodayNhkSession = (

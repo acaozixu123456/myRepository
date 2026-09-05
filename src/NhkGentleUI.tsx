@@ -32,14 +32,14 @@ export function GentleHome({article, progress, dueCount, articleCount, onContinu
   </>;
 }
 
-export function GentleSentenceCheck({meaning, sentence, onFinish, onBack}: {meaning: string; sentence: string; onFinish: (rating: GentleRating) => void; onBack: () => void}) {
-  const [revealed, setRevealed] = useState(false);
-  const [note, setNote] = useState('');
+export function GentleSentenceCheck({meaning, sentence, onFinish, onBack, initialAnswer = '', initialRevealed = false, onAnswer, onReveal}: {meaning: string; sentence: string; onFinish: (rating: GentleRating, answer: string) => void; onBack: () => void; initialAnswer?: string; initialRevealed?: boolean; onAnswer?: (answer: string) => void; onReveal?: () => void}) {
+  const [revealed, setRevealed] = useState(initialRevealed);
+  const [note, setNote] = useState(initialAnswer);
   const finished = useRef(false);
   return <section className="calm-recall-card" aria-label="一句回想">
     <span className="calm-eyebrow">小小回想</span><h2>这句话，你会怎么说？</h2><p className="calm-recall-prompt">{meaning || '回想刚刚读过的句子，先抓住它的意思。'}</p>
-    <label className="calm-optional-note">在心里试一试，也可以写下来<textarea rows={3} value={note} onChange={e => setNote(e.target.value)} placeholder="关键词也可以（可选）"/></label>
-    {!revealed ? <><button className="calm-primary" onClick={() => setRevealed(true)}>看看原句<ArrowRight size={18}/></button><button className="calm-text-button" onClick={onBack}>再读一遍讲解</button></> : <><blockquote className="calm-revealed" lang="ja">{sentence}</blockquote><p className="calm-muted">想不起来很正常，这次回想本身也是练习。</p><div className="calm-rating">{(['again','good'] as const).map(rating => <button className={rating === 'good' ? 'calm-primary' : 'calm-secondary'} key={rating} onClick={() => {if (!finished.current) {finished.current = true; onFinish(rating);}}}>{rating === 'good' ? '想起来了' : '还有点模糊'}</button>)}</div></>}
+    <label className="calm-optional-note">在心里试一试，也可以写下来<textarea rows={3} value={note} onChange={e => {setNote(e.target.value); onAnswer?.(e.target.value);}} placeholder="关键词也可以（可选）"/></label>
+    {!revealed ? <><button className="calm-primary" onClick={() => {setRevealed(true);onReveal?.();}}>看看原句<ArrowRight size={18}/></button><button className="calm-text-button" onClick={onBack}>再读一遍讲解</button></> : <><blockquote className="calm-revealed" lang="ja">{sentence}</blockquote><p className="calm-muted">想不起来很正常，这次回想本身也是练习。</p><div className="calm-rating">{(['again','good'] as const).map(rating => <button className={rating === 'good' ? 'calm-primary' : 'calm-secondary'} key={rating} onClick={() => {if (!finished.current) {finished.current = true; onFinish(rating, note);}}}>{rating === 'good' ? '想起来了' : '还有点模糊'}</button>)}</div></>}
   </section>;
 }
 

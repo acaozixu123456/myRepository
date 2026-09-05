@@ -354,3 +354,16 @@ details[open] > summary { margin-bottom: 12px; }
 
 /* Release contrast correction: pastel surface, readable small text. */
 .calm-pill { color: #275748; background: #e7f1e9; }
+
+/* Reliability controls stay secondary to the reading flow. */
+.nhk-backup-panel,.nhk-history-panel {margin:24px 0;padding:18px;border:1px solid #dce5dd;border-radius:16px;background:#fff;}
+.nhk-backup-panel summary,.nhk-history-panel summary,.nhk-sentence-tools summary {cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;}
+.nhk-backup-panel p,.nhk-history-panel p,.nhk-sentence-tools p {line-height:1.8;overflow-wrap:anywhere;}
+.nhk-backup-actions {display:flex;flex-wrap:wrap;gap:12px;margin:14px 0;}
+.nhk-backup-actions button,.nhk-sentence-tools button {min-height:44px;padding:10px 16px;border-radius:12px;}
+.nhk-restore-preview {border-top:1px solid #dce5dd;margin-top:20px;padding-top:16px;}
+.nhk-sentence-tools {margin:16px 0;}
+.nhk-context-text {padding:12px;border-left:3px solid #4c735e;}
+.nhk-history-panel article {padding:14px 0;border-top:1px solid #dce5dd;}
+.nhk-history-panel blockquote {margin:10px 0;line-height:1.8;}
+.nhk-backup-panel [role=alert],.nhk-sentence-tools [role=alert] {color:#8a352d;}
