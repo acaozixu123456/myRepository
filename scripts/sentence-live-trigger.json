@@ -1,1 +1,1 @@
-{"revision":3,"edgeFunctionVersion":4,"purpose":"Identify exact parse/validation failure; keep JWT and exact source checks enabled"}
+{"revision":4,"edgeFunctionVersion":5,"purpose":"Require bilingual examples in response schema, matching runtime quality validation"}
