@@ -42,15 +42,15 @@ Deno.serve(async req => {
   let input: unknown; try {input = await req.json();} catch {return json({ok:false,reason:'bad_json'},400);}
   if (!valid(input)) return json({ok:false,reason:'invalid_or_oversized_sentence'},400);
   const db = createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false,autoRefreshToken:false}});
-  const cacheKey = await hash(JSON.stringify({version:'sentence-v2',title:input.title,sentence:input.sentence,sentenceIndex:input.sentenceIndex,before:input.before,after:input.after}));
+  const cacheKey = await hash(JSON.stringify({version:'sentence-v3-terra',title:input.title,sentence:input.sentence,sentenceIndex:input.sentenceIndex,before:input.before,after:input.after}));
   const {data:cached} = await db.from('nihongo_coach_cache').select('payload,model,updated_at').eq('cache_key',cacheKey).gte('updated_at',new Date(Date.now()-14*86400000).toISOString()).maybeSingle();
   if (cached?.payload) {
     try {return json({ok:true,cached:true,analysis:{version:1,model:cached.model,generatedAt:Date.parse(cached.updated_at),recommendation:check(cached.payload,input)}});} catch { /* Invalid cache cannot masquerade as a successful lesson. */ }
   }
-  const global = await db.rpc('consume_nihongo_coach_quota',{p_bucket:`global:${new Date().toISOString().slice(0,10)}`,p_limit:200,p_window_minutes:1440});
+  const global = await db.rpc('consume_nihongo_coach_quota',{p_bucket:`sentence-global:${new Date().toISOString().slice(0,10)}`,p_limit:40,p_window_minutes:1440});
   if (global.error || global.data !== true) return json({ok:false,reason:'daily_quota'},429);
   const client = str(input.clientKey) ? input.clientKey.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,128) : 'unknown';
-  const quota = await db.rpc('consume_nihongo_coach_quota',{p_bucket:`client:${client}`,p_limit:20,p_window_minutes:60});
+  const quota = await db.rpc('consume_nihongo_coach_quota',{p_bucket:`sentence-client:${client}`,p_limit:10,p_window_minutes:60});
   if (quota.error || quota.data !== true) return json({ok:false,reason:'client_quota'},429);
   let key = Deno.env.get('OPENAI_API_KEY');
   if (!key) {const result = await db.rpc('get_nihongo_openai_key'); if (!result.error && str(result.data)) key = result.data;}
@@ -66,12 +66,13 @@ Deno.serve(async req => {
     'expression is a reusable expression from the selected sentence. dailyVersion and workVersion are new natural examples, clearly not article facts. Work example may use an IT setting when appropriate.',
     'dailyVersion, workVersion and every examples.ja MUST contain ONLY Japanese. Put translations ONLY in examples.zh. Never append Chinese after an em dash, equals sign or parentheses in these Japanese fields.',
     'Formation must give an actually usable morphological rule, not a misleading concatenation. For ～なくなる, say 动词ない形去掉末尾ない＋なくなる, e.g. できない→できなくなる; never say 否定形＋なくなる. The pattern also applies to non-potential verbs.',
+    'For できなくなる the change is from being able to being unable; for 使わなくなる it is from using to no longer using. Never explain this as an unchanged negative state. In translation, preserve the change/future nuance of なる even under わけではない.',
     'Grammar and vocabulary must not duplicate each other: vocabulary should prefer actual words/collocations such as 図書館 and 利用する, not repeat わけではない as a vocabulary item. Do not repeat examples inside explanation or nuance when already provided in examples.',
     'Explain in concise Chinese, Japanese only for source, readings, patterns and examples. This is not a full-article summary or a proficiency score.',
   ].join(' ');
   let stage = 'request';
   try {
-    const model = 'gpt-5.6-luna';
+    const model = 'gpt-5.6-terra';
     const response = await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify({model,reasoning:{effort:'medium'},input:[{role:'system',content:instructions},{role:'user',content:JSON.stringify({title:input.title,contextBefore:input.before,SELECTED_SENTENCE:input.sentence,contextAfter:input.after})}],text:{format:{type:'json_schema',name:'nhk_single_sentence',strict:true,schema}},max_output_tokens:6000}),signal:AbortSignal.timeout(50000)});
     if (!response.ok) {
       const problem = await response.json().catch(() => ({}));
