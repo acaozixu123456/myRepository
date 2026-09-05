@@ -1,0 +1,29 @@
+name: NHK Sentence Live Check
+on:
+  push:
+    branches: [nihongo-reliability-20260905]
+    paths:
+      - '.github/workflows/nhk-sentence-live-check.yml'
+      - 'scripts/sentence-live-trigger.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nhk-sentence-live-check
+  cancel-in-progress: false
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/nhk-live-sentence-smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-sentence-live-${{ github.run_number }}
+          path: /tmp/nhk-artifacts/live-sentence-smoke.json
+          retention-days: 7
