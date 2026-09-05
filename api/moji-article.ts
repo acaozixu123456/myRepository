@@ -10,7 +10,7 @@ const ARCHIVE_CACHE_MS = 30 * 60_000;
 const ARCHIVE_MONTHS = 6;
 const NHK_EASIER_FEED_URL = 'https://nhkeasier.com/feed/?no-furiganas';
 const ALLOWED_HOSTS = new Set(['mojidict.com', 'www.mojidict.com', 'm.mojidict.com']);
-const ARTICLE_PATH = /^\/article\/[A-Za-z0-9_-]+\/?$/;
+const ARTICLE_PATH = /^\/(?:mojiread\/)?article\/([A-Za-z0-9_-]+)\/?$/;
 const TRANSLATION_MARKER = /(?:👉|→)?\s*(?:点击单词查询释义|點擊單詞查詢釋義|クリックして単語の意味を調べる)/gi;
 const UI_NOISE = [
   '显示译文', '点击显示译文', '隐藏译文', '点击重新加载', '点赞', '收藏', '评论',
@@ -68,12 +68,12 @@ const decodeScriptText = (value: string): string => decodeHtml(value)
 
 const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const normalizeMojiArticleUrl = (input: string): string | null => {
+export const normalizeMojiArticleUrl = (input: string): string | null => {
   try {
     const url = new URL(input.trim());
-    if (url.protocol !== 'https:' || !ALLOWED_HOSTS.has(url.hostname.toLowerCase()) || !ARTICLE_PATH.test(url.pathname)) return null;
-    const articleId = url.pathname.split('/').filter(Boolean)[1];
-    return `https://www.mojidict.com/article/${articleId}`;
+    const match = ARTICLE_PATH.exec(url.pathname);
+    if (url.protocol !== 'https:' || !ALLOWED_HOSTS.has(url.hostname.toLowerCase()) || !match) return null;
+    return `https://www.mojidict.com/article/${match[1]}`;
   } catch {
     return null;
   }
@@ -395,9 +395,18 @@ const matchNhkArchive = async (headlineHint: string): Promise<PublicMatch | null
   return matches.sort((a, b) => b.score - a.score)[0] || null;
 };
 
-const fetchArticlePages = async (canonicalUrl: string): Promise<Array<{html: string; finalUrl: string}>> => {
+export const mojiArticleFetchUrls = (canonicalUrl: string): string[] => {
   const articleId = articleIdFromUrl(canonicalUrl);
-  const candidates = [canonicalUrl, `https://m.mojidict.com/article/${articleId}`];
+  return [
+    `https://m.mojidict.com/mojiread/article/${articleId}`,
+    canonicalUrl,
+    `https://m.mojidict.com/article/${articleId}`,
+    `https://www.mojidict.com/mojiread/article/${articleId}`,
+  ];
+};
+
+const fetchArticlePages = async (canonicalUrl: string): Promise<Array<{html: string; finalUrl: string}>> => {
+  const candidates = mojiArticleFetchUrls(canonicalUrl);
   const pages = await Promise.all(candidates.map(async url => {
     try {
       const response = await fetch(url, {
