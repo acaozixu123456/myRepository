@@ -1,0 +1,59 @@
+name: NHK Calm UI Verification
+on:
+  push:
+    branches: [nihongo-calm-ui-20260905]
+    paths:
+      - '.github/workflows/nhk-calm-ui-verify.yml'
+      - 'scripts/calm-ui-trigger.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nhk-calm-ui-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Package reproducible source and dependencies
+        run: |
+          mkdir -p /tmp/nhk-artifacts
+          tar -czf /tmp/nhk-artifacts/source-and-deps.tar.gz --exclude=.git --exclude=dist .
+      - name: Read-only production probe
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request, pathlib
+          url='https://nihongo-discovery-v2-20260831.vercel.app'
+          result={'url':url}
+          try:
+              with urllib.request.urlopen(url, timeout=20) as r:
+                  result.update(status=r.status, finalUrl=r.url, html=r.read(4000).decode('utf-8','replace'))
+          except Exception as e:
+              result['error']=str(e)
+          pathlib.Path('/tmp/nhk-artifacts/production-probe.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
+          print(json.dumps(result,ensure_ascii=False))
+          PY
+      - name: Browser regressions
+        if: ${{ hashFiles('scripts/nhk-calm-browser.mjs') != '' }}
+        run: |
+          npm install --no-save --package-lock=false playwright @axe-core/playwright --no-audit --no-fund
+          npx playwright install --with-deps chromium webkit
+          npm run dev -- --host 127.0.0.1 > /tmp/nhk-vite.log 2>&1 &
+          node scripts/nhk-calm-browser.mjs
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nhk-calm-ui-${{ github.run_number }}
+          path: /tmp/nhk-artifacts/
+          retention-days: 7
