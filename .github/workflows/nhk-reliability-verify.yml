@@ -25,58 +25,52 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Source-alignment hardening and candidate snapshot
+      - name: Final bounded candidate integration
         run: |
           mkdir -p /tmp/nhk-artifacts
           python3 - <<'PY'
-          import pathlib
-          assert pathlib.Path('src/nhkBackup.ts').exists(),'Candidate source is required; never replay transport data'
-          path=pathlib.Path('src/nhkCoach.ts');text=path.read_text()
-          old='''      && item.sentenceIndex < candidates.length
-                ? item.sentenceIndex
-                : candidates.findIndex(candidate => sentenceKey(candidate) === sentenceKey(item.sentence));'''
-          new='''      && item.sentenceIndex < candidates.length
-                && sentenceKey(candidates[item.sentenceIndex]) === sentenceKey(item.sentence)
-                ? item.sentenceIndex
-                : candidates.findIndex((candidate, index) => !used.has(index) && sentenceKey(candidate) === sentenceKey(item.sentence));'''
-          if old in text:
-              assert text.count(old)==1;path.write_text(text.replace(old,new))
-          else: assert '&& sentenceKey(candidates[item.sentenceIndex]) === sentenceKey(item.sentence)' in text
-          path=pathlib.Path('src/nhkReliability.test.ts');text=path.read_text()
-          if 'numeric indices cannot attach explanations to different source text' not in text:
-              text=text.replace("import {buildRecommendationForSentence} from './nhkCoach';", "import {buildRecommendationForSentence,normalizeNhkCoachResult} from './nhkCoach';")
-              text+='''\nit('numeric indices cannot attach explanations to different source text',()=>{
-            const source=[sentence,'別の文です。',sentence];
-            const point={...buildRecommendationForSentence(sentence,1),translationZh:'SOURCE_BOUND_TRANSLATION'};
-            const input={summaryJa:'test',summaryZh:'test',opinionQuestion:'test',recommendations:[point]};
-            const result=normalizeNhkCoachResult(input,'test',source);
-            const bound=result.recommendations.find(r=>r.translationZh==='SOURCE_BOUND_TRANSLATION');
-            expect(bound?.sentence).toBe(sentence);expect(bound?.sentenceIndex).toBe(0);
-          });\n'''
-              path.write_text(text)
-          allowed='api/nhk-sentence.ts public/sw.js scripts/nhk-reliability-browser.mjs scripts/nhk-live-sentence-smoke.mjs src/NhkBackupPanel.tsx src/NhkGentleUI.tsx src/NhkMorningPage.tsx src/NhkSentenceTools.tsx src/main.tsx src/nhkBackup.ts src/nhkCalm.css src/nhkCoach.ts src/nhkGentle.ts src/nhkLibrary.ts src/nhkMorning.ts src/nhkPracticeHistory.ts src/nhkReliability.test.ts src/nhkSentenceAnalysis.ts supabase/functions/nihongo-sentence/index.ts'.split()
-          assert all(pathlib.Path(p).exists() for p in allowed)
-          pathlib.Path('/tmp/nhk-allowed').write_text('\n'.join(allowed))
+          from pathlib import Path
+          p=Path('src/NhkMorningPage.tsx');s=p.read_text()
+          if 'session = sessionForTarget(session, selected);' not in s:
+              old='  ): NhkMorningSession => {\n    if (!selected.length)';assert s.count(old)==1
+              s=s.replace('upsertSentenceAttempt, practiceId}', 'upsertSentenceAttempt, practiceId, sessionForTarget}')
+              s=s.replace(old,'  ): NhkMorningSession => {\n    session = sessionForTarget(session, selected);\n    if (!selected.length)')
+              s=s.replace("id: draftRef.current.recapText || draftRef.current.completedAt ? practiceId('nhk') : draftRef.current.id,",'id: sessionForTarget(draftRef.current, nextSelected).id,')
+              p.write_text(s)
+          p=Path('supabase/functions/nihongo-sentence/index.ts');s=p.read_text()
+          if 'minItems = 0' not in s:
+              s=s.replace("const list = (items: unknown, maxItems: number) => ({type:'array',items,maxItems});", "const list = (items: unknown, maxItems: number, minItems = 0) => ({type:'array',items,minItems,maxItems});").replace('examples:list(example,3)', 'examples:list(example,3,1)')
+              s=s.replace("if (!Array.isArray(values)) throw new Error('invalid_points');", "if (!Array.isArray(values)) throw new Error(`invalid_points_${kind}_array`);")
+              s=s.replace("      if (!object(v) || !keys.every(k=>str(v[k])) || !Array.isArray(v.examples) || v.examples.length < 1\n        || !v.examples.every((e:unknown)=>object(e)&&str(e.ja)&&str(e.zh))) throw new Error('invalid_points');", "      if (!object(v) || !keys.every(k=>str(v[k]))) throw new Error(`invalid_points_${kind}_fields`);\n      if (!Array.isArray(v.examples) || v.examples.length < 1 || !v.examples.every((e:unknown)=>object(e)&&str(e.ja)&&str(e.zh))) throw new Error(`invalid_points_${kind}_examples`);")
+              s=s.replace("  try {\n    const model", "  let stage = 'request';\n  try {\n    const model")
+              s=s.replace('    const payload = await response.json();', "    stage = 'response';\n    const payload = await response.json();")
+              s=s.replace('    const recommendation = check(JSON.parse(output),input); const generatedAt = Date.now();', "    stage = 'parse';\n    const parsed = JSON.parse(output);\n    stage = 'validate';\n    const recommendation = check(parsed,input); const generatedAt = Date.now();\n    stage = 'cache';")
+              s=s.replace("  } catch {return json({ok:false,reason:'sentence_analysis_failed'},502);}", """  } catch (error) {
+              const known = /^(invalid_analysis|source_alignment_failed|invalid_points_(grammar|vocabulary)_(array|fields|examples)|incomplete_analysis)$/;
+              const detail = error instanceof Error && known.test(error.message) ? error.message : error instanceof Error && error.name === 'TimeoutError' ? 'timeout' : 'unexpected_response';
+              console.error('sentence_analysis_error',JSON.stringify({stage,detail}));
+              return json({ok:false,reason:'sentence_analysis_failed',stage,detail},502);
+            }""")
+              p.write_text(s)
+          assert 'session = sessionForTarget(session, selected);' in Path('src/NhkMorningPage.tsx').read_text()
+          assert 'minItems = 0' in s and 'gpt-5.6-luna' in s and "stage = 'validate'" in s
           PY
-          test "$GITHUB_REF" = refs/heads/nihongo-reliability-20260905
-          mapfile -t paths < /tmp/nhk-allowed
-          git add -- "${paths[@]}"
-          git rm --ignore-unmatch -- scripts/reliability-transfer.part0 scripts/reliability-transfer.part1
+          git add -- src/NhkMorningPage.tsx supabase/functions/nihongo-sentence/index.ts
           if ! git diff --cached --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'Bind explanations by source text and remove completed transfer files'
+            git commit -m 'Preserve answer target identity and align focused response contract'
             git push origin HEAD:nihongo-reliability-20260905
           fi
           git rev-parse HEAD > /tmp/nhk-artifacts/source-commit.txt
       - run: npm ci --no-audit --no-fund
-      - name: Typecheck, unit tests and production build
+      - name: Typecheck, unit tests and build
         id: codecheck
         run: |
           npm run typecheck 2>&1 | tee /tmp/nhk-artifacts/typecheck.txt
           npm test 2>&1 | tee /tmp/nhk-artifacts/tests.txt
           npm run build 2>&1 | tee /tmp/nhk-artifacts/build.txt
-      - name: Browser acceptance with synthetic records
+      - name: Browser acceptance with isolated synthetic records
         run: |
           npm install --no-save --package-lock=false playwright @axe-core/playwright --no-audit --no-fund
           npx playwright install --with-deps chromium webkit
@@ -84,20 +78,18 @@ jobs:
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:5173/ >/dev/null && break || sleep 1; done
           timeout 150s node scripts/nhk-reliability-browser.mjs 2>&1 | tee /tmp/nhk-artifacts/reliability-browser.txt
           timeout 180s node scripts/nhk-calm-browser.mjs 2>&1 | tee /tmp/nhk-artifacts/calm-browser.txt
-      - name: Real focused coach smoke independently of browser mocks
+      - name: Real focused coach, no browser mocks
         if: ${{ always() && steps.codecheck.outcome == 'success' }}
         run: timeout 150s node scripts/nhk-live-sentence-smoke.mjs
-      - name: Preserve evidence and source hashes
+      - name: Preserve reviewed source
         if: always()
         run: |
           mkdir -p /tmp/nhk-artifacts
+          git archive HEAD | gzip > /tmp/nhk-artifacts/review-source.tar.gz
           python3 - <<'PY'
-          import pathlib,hashlib,json,tarfile
-          paths=pathlib.Path('/tmp/nhk-allowed').read_text().splitlines() if pathlib.Path('/tmp/nhk-allowed').exists() else []
-          hashes={p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest() for p in paths if pathlib.Path(p).exists()}
-          pathlib.Path('/tmp/nhk-artifacts/source-hashes.json').write_text(json.dumps(hashes,indent=2))
-          with tarfile.open('/tmp/nhk-artifacts/review-source.tar.gz','w:gz') as tar:
-              for p in hashes: tar.add(p,arcname=p)
+          import hashlib,json,pathlib,subprocess
+          paths=subprocess.check_output(['git','ls-files','src','api','supabase/functions/nihongo-sentence','public/sw.js'],text=True).splitlines()
+          pathlib.Path('/tmp/nhk-artifacts/source-hashes.json').write_text(json.dumps({p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest() for p in paths},indent=2))
           PY
       - uses: actions/upload-artifact@v4
         if: always()
