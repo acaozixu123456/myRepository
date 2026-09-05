@@ -2,7 +2,7 @@
 :root {
   font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', 'Microsoft YaHei', sans-serif;
   color: #293e34; background: #f8f9f5; font-synthesis: none;
-  --paper: #fff; --ink: #293e34; --muted: #607166; --green: #38624f;
+  --paper: #fff; --ink: #293e34; --muted: #4f6055; --green: #38624f;
   --sage: #e5eee5; --line: #dce5dc; --soft: #f1f5ed; --peach: #f6eee5;
   --radius: 22px;
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;

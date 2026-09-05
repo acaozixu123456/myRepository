@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import assert from 'node:assert/strict';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+const browsers = [];
 const output = '/tmp/nhk-artifacts'; mkdirSync(output, {recursive: true});
 execFileSync('node_modules/.bin/esbuild', ['scripts/nhk-calm-fixture.ts','--bundle','--platform=node','--outfile=/tmp/nhk-calm-fixture.cjs']);
 execFileSync('node', ['/tmp/nhk-calm-fixture.cjs']);
@@ -13,6 +14,7 @@ const report = {syntheticData: true, realAIRequests: 0, results: [], audits: [],
 const keys = {articles:'nihongo-nhk-article-library-v1', knowledge:'nihongo-nhk-knowledge-library-v1', gentle:'nihongo-nhk-gentle-progress-v1', sessions:'nihongo-nhk-morning-v2'};
 const result = (name, detail='') => {report.results.push({name, result:'PASS', detail}); console.log('PASS',name);};
 async function audit(page, name) {
+  await page.screenshot({path:`${output}/${name}.png`, fullPage:true});
   const width = await page.evaluate(() => ({body:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert(width.body <= width.viewport+1, `${name}: horizontal overflow ${JSON.stringify(width)}`);
   const targets = await page.locator('button:visible, input:visible, summary:visible').evaluateAll(elements => elements.filter(e => !e.disabled).map(e => ({name:e.textContent?.slice(0,40)||e.getAttribute('aria-label'),...(() => {const r=e.getBoundingClientRect(); return {width:r.width,height:r.height};})()})).filter(e => e.width<43.8 || e.height<43.8));
@@ -30,7 +32,7 @@ async function setFixture(page) {
 }
 try {
  for (const config of [{engine:'chromium',width:390},{engine:'chromium',width:1280},{engine:'webkit',width:390},{engine:'chromium',width:320}]) {
-  const browser = await ({chromium,webkit})[config.engine].launch();
+  const browser = await ({chromium,webkit})[config.engine].launch(); browsers.push(browser);
   const context = await browser.newContext({viewport:{width:config.width,height:844}, timezoneId:'Asia/Tokyo',locale:'zh-CN',serviceWorkers:'block',reducedMotion:'reduce'});
   const page = await context.newPage(); page.setDefaultTimeout(15000);
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -123,5 +125,5 @@ try {
   await browser.close();
  }
  report.status='PASS';
-} catch(error) {report.status='FAIL';report.errors.push(error.stack || String(error));console.error(error);process.exit(1);}
-finally {writeFileSync(`${output}/browser-results.json`,JSON.stringify(report,null,2));}
+} catch(error) {report.status='FAIL';report.errors.push(error.stack || String(error));console.error(error);process.exitCode=1;}
+finally {await Promise.allSettled(browsers.map(browser => browser.close())); writeFileSync(`${output}/browser-results.json`,JSON.stringify(report,null,2));}
