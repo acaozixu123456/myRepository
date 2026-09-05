@@ -450,8 +450,9 @@ export const normalizeNhkCoachResult = (
     const sentenceIndex = Number.isInteger(item.sentenceIndex)
       && item.sentenceIndex >= 0
       && item.sentenceIndex < candidates.length
+      && sentenceKey(candidates[item.sentenceIndex]) === sentenceKey(item.sentence)
       ? item.sentenceIndex
-      : candidates.findIndex(candidate => sentenceKey(candidate) === sentenceKey(item.sentence));
+      : candidates.findIndex((candidate, index) => !used.has(index) && sentenceKey(candidate) === sentenceKey(item.sentence));
     if (sentenceIndex < 0 || used.has(sentenceIndex)) continue;
     used.add(sentenceIndex);
     const label = LABEL_ORDER[recommendations.length] || '迁移';

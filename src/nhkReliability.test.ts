@@ -4,7 +4,7 @@ import {createNhkArticleRecord,loadNhkArticleRecords,saveNhkArticleRecords,merge
 import {loadGentle} from './nhkGentle';
 import {newSentenceAttempt,upsertSentenceAttempt,savePracticeHistory,loadPracticeHistory} from './nhkPracticeHistory';
 import {parseStudyBackup,serializeStudyBackup,mergeStudyBackup,commitStudyRestore,recoverStudyRestore,DATA_KEYS,RESTORE_JOURNAL,type StudyData} from './nhkBackup';
-import {buildRecommendationForSentence} from './nhkCoach';
+import {buildRecommendationForSentence,normalizeNhkCoachResult} from './nhkCoach';
 import {isSentenceAnalysis,findSentenceAnalysis,sentenceRequest,validSentenceRequest} from './nhkSentenceAnalysis';
 function store() {const data=new Map<string,string>();return {data,getItem:(k:string)=>data.get(k)??null,setItem:(k:string,v:string)=>{data.set(k,v);},removeItem:(k:string)=>{data.delete(k);}};}
 const sentence='図書館は、来月から夜も利用できるようになります。';
@@ -109,4 +109,13 @@ it('sessions never replace archived source snapshots',()=>{
   const result=mergeNhkArticlesWithSessions([original],[old]);
   expect(result[0].sentences).toEqual(original.sentences);
   expect(mergeNhkArticlesWithSessions([], [old])[0].sentences).toEqual([sentence]);
+});
+
+it('numeric indices cannot attach explanations to different source text',()=>{
+  const source=[sentence,'別の文です。',sentence];
+  const point={...buildRecommendationForSentence(sentence,1),translationZh:'SOURCE_BOUND_TRANSLATION'};
+  const input={summaryJa:'test',summaryZh:'test',opinionQuestion:'test',recommendations:[point]};
+  const result=normalizeNhkCoachResult(input,'test',source);
+  const bound=result.recommendations.find(r=>r.translationZh==='SOURCE_BOUND_TRANSLATION');
+  expect(bound?.sentence).toBe(sentence);expect(bound?.sentenceIndex).toBe(0);
 });
