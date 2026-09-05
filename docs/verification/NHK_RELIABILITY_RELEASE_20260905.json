@@ -1,0 +1,40 @@
+{
+  "result": "PASS",
+  "reviewedBy": "ChatGPT Sol",
+  "verified": true,
+  "scope": "Roadmap batch 1: reliable local records, backup restore, and focused explanations for any saved sentence within input limits",
+  "productionBranch": "nihongo-vercel",
+  "releasedCommit": "1a9e39409f5be30f6cb6f3c227a431f015bbb3b5",
+  "previousStableCommit": "b92bb9ee263dc2d61cc837bcaba8856c0ad16f00",
+  "productionUrl": "https://nihongo-discovery-v2-20260831.vercel.app",
+  "vercelDeploymentStatus": "success",
+  "featureVerificationRun": 33944502569,
+  "productionCiRun": 33944657860,
+  "productionVerificationRun": 33944657874,
+  "featureArtifact": 9962915148,
+  "productionArtifact": 9962960969,
+  "unitTestsPassed": 101,
+  "testFilesPassed": 16,
+  "productionBrowserCaseGroupsPassed": 21,
+  "productionPageAuditsPassed": 46,
+  "browserEngines": ["Chromium", "WebKit"],
+  "productionBrowserFixtureMode": "isolated synthetic records and mocked AI; no learner records used",
+  "realProductionProxy": {"status": "PASS", "httpStatus": 200, "model": "gpt-5.6-terra", "testSentenceIndex": 19, "cached": true},
+  "realGenerationReview": "One synthetic double-negation/change-of-state example was actually generated, reviewed and then reused from cache; not universal content accuracy proof",
+  "edgeFunction": {"name": "nihongo-sentence", "version": 7, "verifyJwt": true, "sourceSha256": "0faff0a49537bbd15d3a5c53237a83f859c47777e9e6138ae539ae0180501206"},
+  "productionAssets": {
+    "/assets/index-C7kXFWAh.js": "4f58fa71dafdb215468888c6d064a21b0513bfd0d5d33133ec0848bc302439e8",
+    "/assets/index-D3qjc0uW.css": "791e00e96d26508e01477c4c2707c37792d0794faaa0036c3a0948af002ffa19"
+  },
+  "serviceWorkerSha256": "876a95673e6136709badfb48648e41f2c76512971458257ced252519d36f9777",
+  "resolvedReleaseIssue": "Initial production run 33944179556 failed the live proxy step despite passing UI checks. The proxy was made self-contained for Node ESM and five runtime/HTTP regression tests were added. Final production live step passed.",
+  "knownLimits": [
+    "Browser-local data with manual backup restore, not account cloud sync",
+    "Preserves supplied source; upstream MOJi extraction and initial whole-article coach limits are not fully resolved",
+    "Focused sentence size at most 8000 characters; oversized input rejected explicitly",
+    "New focused generation limited to 40/day globally and 10/hour/client; public transport JWT is not end-user identity",
+    "Real iPhone audio, PWA handoff, recording quality and long-term learning effectiveness not verified in this batch",
+    "Delayed light-practice recall, cross-article re-encounters and personalized scheduling remain later roadmap work"
+  ],
+  "storageInvariant": "Do not clear localStorage to refresh the UI; existing article snapshots and submitted answers must be retained"
+}
