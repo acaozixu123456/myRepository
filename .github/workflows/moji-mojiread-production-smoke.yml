@@ -1,0 +1,32 @@
+name: MOJi Mojiread Production Smoke
+on:
+  push:
+    branches: [nihongo-vercel]
+permissions:
+  contents: read
+concurrency:
+  group: moji-mojiread-production-smoke
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Parse the exact shared URL through production
+        run: |
+          node --input-type=module <<'JS'
+          const endpoint='https://nihongo-discovery-v2-20260831.vercel.app/api/moji-article';
+          const source='https://m.mojidict.com/mojiread/article/GKfNZSHmCI';
+          let last;
+          for(let attempt=1;attempt<=18;attempt++){
+            try{
+              const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Cache-Control':'no-cache'},body:JSON.stringify({url:source}),signal:AbortSignal.timeout(45000)});
+              const body=await response.json().catch(()=>({}));
+              last={attempt,status:response.status,ok:body.ok,reason:body.reason,title:body.title,sentenceCount:Array.isArray(body.sentences)?body.sentences.length:0,sourceUrl:body.sourceUrl,resolvedBy:body.resolvedBy};
+              console.log(JSON.stringify(last));
+              if(response.status===200 && body.ok===true && typeof body.title==='string' && body.title.length>0 && Array.isArray(body.sentences) && body.sentences.length>=2 && body.sourceUrl==='https://www.mojidict.com/article/GKfNZSHmCI') process.exit(0);
+            }catch(error){last={attempt,error:String(error)};console.log(JSON.stringify(last));}
+            if(attempt<18) await new Promise(r=>setTimeout(r,10000));
+          }
+          throw new Error(`production_mojiread_parse_failed ${JSON.stringify(last)}`);
+          JS
