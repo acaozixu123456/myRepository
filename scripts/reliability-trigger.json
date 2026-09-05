@@ -1,1 +1,1 @@
-{"revision":4,"purpose":"Full release gate after project-verified public JWT fix; browser mocks and real AI acceptance remain separate","candidate":"91c47e12455c396a5ab0c9788eacb807808d98be"}
+{"revision":5,"purpose":"Verify standalone Node ESM proxy boot, validation parity, HTTP failures and all record/restore/browser flows before hotfix promotion","candidate":"7c0928b8189967fde2436745c5baaad316d49768"}
