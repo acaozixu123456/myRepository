@@ -1,0 +1,77 @@
+name: NHK Calm Production Smoke
+on:
+  push:
+    branches: [nihongo-vercel]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: nhk-production-smoke
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash --noprofile --norc -e -o pipefail {0}
+jobs:
+  verify-production:
+    if: github.ref == 'refs/heads/nihongo-vercel'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: mkdir -p /tmp/nhk-artifacts && npm ci --no-audit --no-fund
+      - run: npm run build 2>&1 | tee /tmp/nhk-artifacts/build.txt
+      - name: Confirm production serves exactly this build and current service worker
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,re,time,urllib.request
+          base='https://nihongo-discovery-v2-20260831.vercel.app'
+          dist=pathlib.Path('dist')
+          expected={p:hashlib.sha256((dist/p.lstrip('/')).read_bytes()).hexdigest() for p in re.findall(r'(?:src|href)="(/assets/[^"]+)"',(dist/'index.html').read_text())}
+          assert len(expected)>=2
+          report={'sourceCommit':os.environ['GITHUB_SHA'],'productionUrl':base,'expectedAssets':expected,'attempts':[],'syntheticBrowserTests':True}
+          def get(path):
+              with urllib.request.urlopen(urllib.request.Request(base+path,headers={'Cache-Control':'no-cache'}),timeout=20) as r:
+                  assert r.status==200
+                  return r.read()
+          for attempt in range(24):
+              try:
+                  html=get('/?release_check='+os.environ['GITHUB_SHA']).decode()
+                  assert all(asset in html for asset in expected),'Production still serves a different bundle'
+                  actual={asset:hashlib.sha256(get(asset)).hexdigest() for asset in expected}
+                  assert actual==expected,'Asset content hash mismatch'
+                  sw=get('/sw.js').decode()
+                  assert 'nihongo-nhk-calm-20260905-v1' in sw,'Service worker version mismatch'
+                  health=json.loads(get('/api/healthcheck'))
+                  assert health.get('ok') is True and health.get('platform')=='vercel',health
+                  report.update(status='PASS',actualAssets=actual,healthcheck=health,serviceWorker='nihongo-nhk-calm-20260905-v1',verifiedAt=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()))
+                  break
+              except Exception as e:
+                  report['attempts'].append({'attempt':attempt+1,'error':str(e)})
+                  print('Deployment check',attempt+1,str(e),flush=True)
+                  if attempt<23: time.sleep(15)
+          else: report['status']='FAIL'
+          pathlib.Path('/tmp/nhk-artifacts/production-release.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          assert report['status']=='PASS','Production did not converge to reviewed build'
+          PY
+      - name: Exercise deployed UI with isolated synthetic records and mocked AI only
+        run: |
+          npm install --no-save --package-lock=false playwright @axe-core/playwright --no-audit --no-fund
+          npx playwright install --with-deps chromium webkit
+          NHK_TEST_BASE=https://nihongo-discovery-v2-20260831.vercel.app timeout 180s node scripts/nhk-calm-browser.mjs 2>&1 | tee /tmp/nhk-artifacts/browser-log.txt
+          python3 - <<'PY'
+          import json
+          r=json.load(open('/tmp/nhk-artifacts/browser-results.json'))
+          assert r['status']=='PASS' and len(r['results'])>=15 and not r['errors']
+          assert all(not a['violations'] for a in r['audits'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-calm-production-${{ github.run_number }}
+          path: /tmp/nhk-artifacts/
+          retention-days: 14
