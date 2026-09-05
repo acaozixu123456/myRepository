@@ -28,7 +28,7 @@ jobs:
       - name: Package reproducible source and dependencies
         run: |
           mkdir -p /tmp/nhk-artifacts
-          tar -czf /tmp/nhk-artifacts/source-and-deps.tar.gz --exclude=.git --exclude=dist .
+          tar -czf /tmp/nhk-artifacts/source-and-deps.tar.gz --exclude=./.git --exclude=./dist .
       - name: Read-only production probe
         run: |
           python3 - <<'PY'
