@@ -1,0 +1,24 @@
+{
+  "riseSeconds": 1.35,
+  "settleSeconds": 1.5,
+  "checks": {
+    "right": {
+      "allPhases": true,
+      "sixRiseFrames": true,
+      "sixSettleFrames": true,
+      "grounded": true,
+      "attentionHoldsPose": true,
+      "pauseHoldsPose": true,
+      "arrived": true
+    },
+    "left": {
+      "allPhases": true,
+      "sixRiseFrames": true,
+      "sixSettleFrames": true,
+      "grounded": true,
+      "attentionHoldsPose": true,
+      "pauseHoldsPose": true,
+      "arrived": true
+    }
+  }
+}

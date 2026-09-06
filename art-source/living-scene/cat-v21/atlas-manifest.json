@@ -1,0 +1,500 @@
+{
+  "canvas": 640,
+  "restCanvas": 384,
+  "transitionScale": 1.46,
+  "walkScale": 1.56,
+  "records": [
+    {
+      "name": "transition-left-0",
+      "cell": [
+        0,
+        0,
+        500,
+        282
+      ],
+      "bounds": [
+        169,
+        96,
+        402,
+        259
+      ],
+      "scale": 1,
+      "paste": [
+        128,
+        211
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "../cat-v2/observing-rgba.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.5
+    },
+    {
+      "name": "transition-left-1",
+      "cell": [
+        500,
+        0,
+        970,
+        282
+      ],
+      "bounds": [
+        92,
+        104,
+        354,
+        262
+      ],
+      "scale": 1.46,
+      "paste": [
+        136,
+        297
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.48
+    },
+    {
+      "name": "transition-left-2",
+      "cell": [
+        970,
+        0,
+        1536,
+        282
+      ],
+      "bounds": [
+        57,
+        107,
+        378,
+        262
+      ],
+      "scale": 1.46,
+      "paste": [
+        109,
+        302
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.45
+    },
+    {
+      "name": "transition-left-3",
+      "cell": [
+        0,
+        282,
+        500,
+        522
+      ],
+      "bounds": [
+        160,
+        27,
+        436,
+        221
+      ],
+      "scale": 1.46,
+      "paste": [
+        143,
+        245
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.44
+    },
+    {
+      "name": "transition-left-4",
+      "cell": [
+        500,
+        282,
+        970,
+        522
+      ],
+      "bounds": [
+        58,
+        14,
+        420,
+        222
+      ],
+      "scale": 1.46,
+      "paste": [
+        93,
+        224
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.43
+    },
+    {
+      "name": "transition-left-5",
+      "cell": [
+        970,
+        282,
+        1536,
+        522
+      ],
+      "bounds": [
+        43,
+        21,
+        426,
+        225
+      ],
+      "scale": 1.46,
+      "paste": [
+        80,
+        230
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.43
+    },
+    {
+      "name": "transition-right-0",
+      "cell": [
+        0,
+        522,
+        500,
+        715
+      ],
+      "bounds": [
+        160,
+        11,
+        390,
+        175
+      ],
+      "scale": 1,
+      "paste": [
+        128,
+        211
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "../cat-v2/observing-rgba.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.5
+    },
+    {
+      "name": "transition-right-1",
+      "cell": [
+        500,
+        522,
+        970,
+        715
+      ],
+      "bounds": [
+        105,
+        14,
+        353,
+        184
+      ],
+      "scale": 1.46,
+      "paste": [
+        146,
+        280
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.48
+    },
+    {
+      "name": "transition-right-2",
+      "cell": [
+        970,
+        522,
+        1536,
+        715
+      ],
+      "bounds": [
+        40,
+        18,
+        359,
+        180
+      ],
+      "scale": 1.46,
+      "paste": [
+        101,
+        291
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.47
+    },
+    {
+      "name": "transition-right-3",
+      "cell": [
+        0,
+        715,
+        500,
+        1024
+      ],
+      "bounds": [
+        135,
+        9,
+        417,
+        217
+      ],
+      "scale": 1.46,
+      "paste": [
+        93,
+        224
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.55
+    },
+    {
+      "name": "transition-right-4",
+      "cell": [
+        500,
+        715,
+        970,
+        1024
+      ],
+      "bounds": [
+        35,
+        15,
+        391,
+        225
+      ],
+      "scale": 1.46,
+      "paste": [
+        24,
+        221
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.57
+    },
+    {
+      "name": "transition-right-5",
+      "cell": [
+        970,
+        715,
+        1536,
+        1024
+      ],
+      "bounds": [
+        11,
+        14,
+        384,
+        227
+      ],
+      "scale": 1.46,
+      "paste": [
+        9,
+        217
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "source": "transition-atlas-raw.png",
+      "baseline": 528,
+      "bodyCenterFraction": 0.57
+    },
+    {
+      "name": "walk-left-0",
+      "source": "../cat-v2/walk-left-0-rgba.png",
+      "bounds": [
+        23,
+        92,
+        358,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        95,
+        177
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.43
+    },
+    {
+      "name": "walk-left-1",
+      "source": "../cat-v2/walk-left-1-rgba.png",
+      "bounds": [
+        23,
+        92,
+        355,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        97,
+        177
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.43
+    },
+    {
+      "name": "walk-left-2",
+      "source": "../cat-v2/walk-left-2-rgba.png",
+      "bounds": [
+        23,
+        92,
+        355,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        97,
+        177
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.43
+    },
+    {
+      "name": "walk-left-3",
+      "source": "../cat-v2/walk-left-3-rgba.png",
+      "bounds": [
+        23,
+        92,
+        361,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        93,
+        177
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.43
+    },
+    {
+      "name": "walk-right-0",
+      "source": "../cat-v2/walk-right-0-rgba.png",
+      "bounds": [
+        23,
+        98,
+        361,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        20,
+        186
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.57
+    },
+    {
+      "name": "walk-right-1",
+      "source": "../cat-v2/walk-right-1-rgba.png",
+      "bounds": [
+        25,
+        98,
+        361,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        21,
+        186
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.57
+    },
+    {
+      "name": "walk-right-2",
+      "source": "../cat-v2/walk-right-2-rgba.png",
+      "bounds": [
+        26,
+        98,
+        361,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        22,
+        186
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.57
+    },
+    {
+      "name": "walk-right-3",
+      "source": "../cat-v2/walk-right-3-rgba.png",
+      "bounds": [
+        23,
+        98,
+        361,
+        317
+      ],
+      "scale": 1.56,
+      "paste": [
+        20,
+        186
+      ],
+      "size": [
+        640,
+        640
+      ],
+      "baseline": 528,
+      "bodyCenterFraction": 0.57
+    }
+  ]
+}

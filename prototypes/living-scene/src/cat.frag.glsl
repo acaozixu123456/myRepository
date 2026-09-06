@@ -1,7 +1,7 @@
 precision highp float;
 varying vec2 vUv;
-uniform sampler2D uRest,uAlert,uContent,uWalkA,uWalkB;
-uniform float uTravel,uFrameBlend;
+uniform sampler2D uRest,uAlert,uContent,uMotion;
+uniform float uTravel;
 uniform float uTime,uPose,uContentMix,uBlink,uGaze,uEar,uFade;
 float zone(vec2 p,vec2 c,vec2 r){return exp(-dot((p-c)/r,(p-c)/r)*2.);}
 void main(){
@@ -25,8 +25,8 @@ void main(){
  col.rgb=mix(col.rgb,lc.rgb,smoothstep(.06,.40,le)*uBlink);
  col.rgb=mix(col.rgb,rc.rgb,smoothstep(.06,.40,re)*uBlink);
  col=mix(col,closed,uContentMix);
- vec4 walk=mix(texture2D(uWalkA,vUv),texture2D(uWalkB,vUv),uFrameBlend);
- col=mix(col,walk,uTravel);
+ // A single authored silhouette at every motion instant, including interruption.
+ if(uTravel>.5) col=texture2D(uMotion,vUv);
  // Match a warmly lit subject to the blue-hour doorstep instead of a white studio.
  col.rgb*=vec3(.72,.68,.63);
  col.a*=uFade;

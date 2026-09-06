@@ -1,0 +1,282 @@
+[
+  {
+    "file": "transition-left-0-rgba.png",
+    "alphaBounds": [
+      151,
+      240,
+      489,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-left-1-rgba.png",
+    "alphaBounds": [
+      136,
+      297,
+      519,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-left-2-rgba.png",
+    "alphaBounds": [
+      109,
+      302,
+      578,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-left-3-rgba.png",
+    "alphaBounds": [
+      143,
+      245,
+      546,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-left-4-rgba.png",
+    "alphaBounds": [
+      93,
+      224,
+      622,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-left-5-rgba.png",
+    "alphaBounds": [
+      80,
+      230,
+      639,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-right-0-rgba.png",
+    "alphaBounds": [
+      151,
+      240,
+      489,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-right-1-rgba.png",
+    "alphaBounds": [
+      146,
+      280,
+      508,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-right-2-rgba.png",
+    "alphaBounds": [
+      101,
+      291,
+      567,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-right-3-rgba.png",
+    "alphaBounds": [
+      93,
+      224,
+      505,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-right-4-rgba.png",
+    "alphaBounds": [
+      24,
+      221,
+      544,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "transition-right-5-rgba.png",
+    "alphaBounds": [
+      9,
+      217,
+      554,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-left-0-rgba.png",
+    "alphaBounds": [
+      95,
+      177,
+      618,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-left-1-rgba.png",
+    "alphaBounds": [
+      97,
+      177,
+      615,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-left-2-rgba.png",
+    "alphaBounds": [
+      97,
+      177,
+      615,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-left-3-rgba.png",
+    "alphaBounds": [
+      93,
+      177,
+      620,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-right-0-rgba.png",
+    "alphaBounds": [
+      20,
+      186,
+      547,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-right-1-rgba.png",
+    "alphaBounds": [
+      21,
+      186,
+      545,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-right-2-rgba.png",
+    "alphaBounds": [
+      22,
+      186,
+      545,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  },
+  {
+    "file": "walk-right-3-rgba.png",
+    "alphaBounds": [
+      20,
+      186,
+      547,
+      528
+    ],
+    "canvas": [
+      640,
+      640
+    ],
+    "notClipped": true
+  }
+]

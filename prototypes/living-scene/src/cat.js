@@ -1,5 +1,5 @@
 import * as T from 'three';
-import { catAnchors, createCatDirector } from './cat-director.js';
+import { catAnchors, createCatDirector, travelPose } from './cat-director.js';
 import fragmentShader from './cat.frag.glsl?raw';
 
 const anchors = catAnchors.map(a => a.uv);
@@ -16,7 +16,7 @@ export function createCat({ sound, focusScene, closeStory }) {
   const persist=()=>{if(canSave)try{localStorage.setItem(key,JSON.stringify(saved));}catch{}};
   persist();
   const director=createCatDirector(anchorIndex);
-  let anchor=[...anchors[anchorIndex]],travelMix=0,walkTextures,lastStep=-1;
+  let anchor=[...anchors[anchorIndex]],travelMix=0,walkTextures,transitionTextures,lastStep=-1;
   let ready=false, state='observing',elapsed=0,idle=0,until=0,near=false,active=false;
   let gaze=0,targetGaze=0,ear=0,pose=0,content=0,blink=0,nextBlink=3.5,blinkAt=-10;
   let group,mesh,uniforms,shadow,downAt=0,pointerHeld=false,petTriggered=false;
@@ -81,10 +81,12 @@ export function createCat({ sound, focusScene, closeStory }) {
   return {
     async load(scene) {
       const loader=new T.TextureLoader();
-      const textures=await Promise.all(['observing','attentive','content',...['left','right'].flatMap(d=>[0,1,2,3].map(i=>`walk-${d}-${i}`))].map(n=>loader.loadAsync(`/cat-v2/${n}.webp`)));
+      const textures=await Promise.all(['observing','attentive','content',...['left','right'].flatMap(d=>[0,1,2,3].map(i=>`walk-${d}-${i}`))].map(n=>loader.loadAsync(`/${n.startsWith('walk-')?'cat-v21':'cat-v2'}/${n}.webp`)));
       walkTextures=textures.slice(3);
+      transitionTextures=await Promise.all(['left','right'].flatMap(d=>[0,1,2,3,4,5].map(i=>loader.loadAsync(`/cat-v21/transition-${d}-${i}.webp`))));
+      transitionTextures.forEach(t=>t.colorSpace=T.SRGBColorSpace);
       textures.forEach(t=>t.colorSpace=T.SRGBColorSpace);
-      uniforms={uRest:{value:textures[0]},uAlert:{value:textures[1]},uContent:{value:textures[2]},uTime:{value:0},uPose:{value:0},uContentMix:{value:0},uBlink:{value:0},uGaze:{value:0},uEar:{value:0},uFade:{value:1},uWalkA:{value:walkTextures[0]},uWalkB:{value:walkTextures[1]},uTravel:{value:0},uFrameBlend:{value:0}};
+      uniforms={uRest:{value:textures[0]},uAlert:{value:textures[1]},uContent:{value:textures[2]},uTime:{value:0},uPose:{value:0},uContentMix:{value:0},uBlink:{value:0},uGaze:{value:0},uEar:{value:0},uFade:{value:1},uMotion:{value:walkTextures[0]},uTravel:{value:0}};
       group=new T.Group();
       mesh=new T.Mesh(new T.PlaneGeometry(1,1),new T.ShaderMaterial({uniforms,vertexShader:'varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader,transparent:true,depthWrite:false,depthTest:false}));
       mesh.renderOrder=1;mesh.frustumCulled=false;group.add(mesh);
@@ -117,33 +119,35 @@ export function createCat({ sound, focusScene, closeStory }) {
       content+=(Number(['sleeping','purring'].includes(state))-content)*blend;
       uniforms.uTime.value=time;uniforms.uPose.value=pose;uniforms.uContentMix.value=content;
       uniforms.uBlink.value=reduced?0:blink;uniforms.uGaze.value=reduced?0:gaze;uniforms.uEar.value=reduced?0:ear;
-      const traveling=!!motion.trip&&!near&&!active;
-      if(!paused)travelMix=T.MathUtils.damp(travelMix,traveling?motion.trip.mix:0,9,dt);
+      // Hold the current authored pose when approached, including mid-step. Never
+      // dissolve a standing cat back into a loaf while its route is suspended.
+      const visual=travelPose(motion.trip);
+      travelMix=visual?1:0;
       uniforms.uTravel.value=travelMix;
-      if(motion.trip){
-        const phase=motion.trip.distance/.014*4;
-        const frame=Math.floor(phase)%4,offset=motion.trip.direction==='right'?4:0;
-        uniforms.uWalkA.value=walkTextures[offset+frame];uniforms.uWalkB.value=walkTextures[offset+(frame+1)%4];
-        uniforms.uFrameBlend.value=T.MathUtils.smoothstep(phase%1,.75,1);
-        const step=Math.floor(phase/2);
-        if(traveling&&!paused&&travelMix>.8&&step!==lastStep){sound.catStep();lastStep=step;}
+      if(visual){
+        uniforms.uMotion.value=(visual.family==='walk'?walkTextures:transitionTextures)[visual.frame];
+        const step=Math.floor(motion.trip.distance/.014*2);
+        if(visual.phase==='walking'&&!near&&!active&&!paused&&!reduced&&step!==lastStep){sound.catStep();lastStep=step;}
       }
       const z=1.035+push*.045,depth=.8;
       const x=.5+((anchor[0]-.5-focusOffset.x-pointer.x*.006*(depth-.2))/cover.x)*z;
       const y=.5+((anchor[1]-.5-focusOffset.y-pointer.y*.003*(depth-.2))/cover.y)*z;
-      const spriteW=.045/cover.x*z*width, spriteH=spriteW;
+      const restingW=.045/cover.x*z*width;
+      // Keep the accepted resting size exactly. A larger transparent motion canvas
+      // accommodates extended legs/tail at the same anatomical pixel scale.
+      const spriteW=restingW*(visual?640/384:1), spriteH=spriteW;
       const cx=x*width, baseline=(1-y)*height;
       // Source feet lie near y=.825; preserve that contact when changing poses.
       const cy=baseline-spriteH*.325;
       mesh.position.set((cx/width*2-1)*aspect,1-cy/height*2,.5);
       mesh.scale.set(spriteW/width*2*aspect,spriteH/height*2,1);
       shadow.position.set((cx/width*2-1)*aspect,1-baseline/height*2,.4);
-      shadow.scale.set(spriteW/width*1.85*aspect,spriteH/height*.18,1);
+      shadow.scale.set(restingW/width*1.85*aspect,restingW/height*.18,1);
       button.style.transform=`translate3d(${cx.toFixed(2)}px,${cy.toFixed(2)}px,0) translate(-50%,-50%)`;
       button.style.width=`${spriteW}px`;button.style.height=`${spriteH}px`;
       button.hidden=cx<0||cx>width||baseline<0||baseline>height||storyFocused;
     },
-    snapshot:()=>({ready,state,active,anchorIndex:director.snapshot().anchorIndex,anchor,travelMix,director:director.snapshot(),visits:saved.visits,touches:saved.touches,blink,gaze,ear,pose,content,elapsed,source:'Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths'}),
+    snapshot:()=>({ready,state,active,anchorIndex:director.snapshot().anchorIndex,anchor,travelMix,motionPose:travelPose(director.snapshot().trip),director:director.snapshot(),visits:saved.visits,touches:saved.touches,blink,gaze,ear,pose,content,elapsed,source:'12 authored directional rise/turn poses, reverse settle, 3 rest and 8 walk frames; single motion silhouette'}),
     close,
   };
 }

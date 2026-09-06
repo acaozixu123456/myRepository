@@ -1,0 +1,2282 @@
+{
+  "date": "2026-09-06T07:57:26.033Z",
+  "checks": {
+    "continuousDryPathFrom0": true,
+    "continuousDryPathFrom1": true,
+    "continuousDryPathFrom2": true,
+    "attentionPostponesDeparture": true,
+    "directorPause": true,
+    "nameConfirmed": true,
+    "defaultMuted": true,
+    "petWorks": true,
+    "shopPreserved": true,
+    "reducedMotionStopsTravel": true,
+    "approachHoldsExactPose": true,
+    "actualAnchorChanged": true,
+    "actualIntermediatePositions": true,
+    "singleMotionSilhouette": true,
+    "actualPhase_rising": true,
+    "actualPhase_turning": true,
+    "actualPhase_walking": true,
+    "actualPhase_settling": true,
+    "allSixDeparturePoses": true,
+    "allSixSettlePoses": true,
+    "audioStillDucks": true,
+    "actualAudioNotSilent": true,
+    "noBrowserErrors": true
+  },
+  "states": {
+    "departure": {
+      "cat": {
+        "ready": true,
+        "state": "walking",
+        "active": false,
+        "anchorIndex": 1,
+        "anchor": [
+          0.74,
+          0.229
+        ],
+        "travelMix": 1,
+        "motionPose": {
+          "phase": "rising",
+          "family": "transition",
+          "frame": 6
+        },
+        "director": {
+          "clock": 62.18306666666733,
+          "idle": 62.18306666666733,
+          "anchorIndex": 1,
+          "position": [
+            0.74,
+            0.229
+          ],
+          "trip": {
+            "from": 1,
+            "to": 2,
+            "elapsed": 0.0665,
+            "duration": 4.326918328582393,
+            "direction": "right",
+            "distance": 0
+          },
+          "arrivals": 0,
+          "nextMove": 62.09939331934657
+        },
+        "visits": 2,
+        "touches": 1,
+        "blink": 0,
+        "gaze": 0,
+        "ear": 0.000003920074105015151,
+        "pose": 0,
+        "content": 0.44241806301836584,
+        "elapsed": 62.18306666666733,
+        "source": "12 authored directional rise/turn poses, reverse settle, 3 rest and 8 walk frames; single motion silhouette"
+      },
+      "audio": {
+        "supported": true,
+        "enabled": true,
+        "started": true,
+        "state": "running",
+        "focused": false,
+        "hovered": false,
+        "preferred": true,
+        "catState": "walking",
+        "catNear": false,
+        "buses": {
+          "music": 0.07930111140012741,
+          "ambience": 0.08500000089406967,
+          "cat": 0.10999999940395355,
+          "purr": 0
+        }
+      },
+      "story": {
+        "active": null,
+        "node": null,
+        "completed": [],
+        "read": []
+      },
+      "paused": false,
+      "time": 62.18306666666733,
+      "errors": []
+    },
+    "arrival": {
+      "cat": {
+        "ready": true,
+        "state": "sleeping",
+        "active": false,
+        "anchorIndex": 2,
+        "anchor": [
+          0.79,
+          0.215
+        ],
+        "travelMix": 0,
+        "motionPose": null,
+        "director": {
+          "clock": 71.71646666666734,
+          "idle": 1.2329999999999999,
+          "anchorIndex": 2,
+          "position": [
+            0.79,
+            0.215
+          ],
+          "trip": null,
+          "arrivals": 1,
+          "nextMove": 170.69786602390653
+        },
+        "visits": 2,
+        "touches": 1,
+        "blink": 0,
+        "gaze": -0.00016119387578409313,
+        "ear": 0.00031894241140106963,
+        "pose": 0,
+        "content": 0.9998746624424557,
+        "elapsed": 71.71646666666734,
+        "source": "12 authored directional rise/turn poses, reverse settle, 3 rest and 8 walk frames; single motion silhouette"
+      },
+      "audio": {
+        "supported": true,
+        "enabled": true,
+        "started": true,
+        "state": "running",
+        "focused": false,
+        "hovered": false,
+        "preferred": true,
+        "catState": "sleeping",
+        "catNear": false,
+        "buses": {
+          "music": 0.07692243903875351,
+          "ambience": 0.08498357236385345,
+          "cat": 0.10999999940395355,
+          "purr": 0
+        }
+      },
+      "story": {
+        "active": null,
+        "node": null,
+        "completed": [],
+        "read": []
+      },
+      "paused": false,
+      "time": 71.71646666666734,
+      "errors": []
+    },
+    "purring": {
+      "cat": {
+        "ready": true,
+        "state": "purring",
+        "active": true,
+        "anchorIndex": 2,
+        "anchor": [
+          0.79,
+          0.215
+        ],
+        "travelMix": 0,
+        "motionPose": null,
+        "director": {
+          "clock": 74.96656666666742,
+          "idle": 0,
+          "anchorIndex": 2,
+          "position": [
+            0.79,
+            0.215
+          ],
+          "trip": null,
+          "arrivals": 1,
+          "nextMove": 170.69786602390653
+        },
+        "visits": 2,
+        "touches": 2,
+        "blink": 0,
+        "gaze": -3.0807203395404238e-9,
+        "ear": 0.00028905314327275266,
+        "pose": 0.9999999944756486,
+        "content": 0.9999999944462831,
+        "elapsed": 74.96656666666742,
+        "source": "12 authored directional rise/turn poses, reverse settle, 3 rest and 8 walk frames; single motion silhouette"
+      },
+      "audio": {
+        "supported": true,
+        "enabled": true,
+        "started": true,
+        "state": "running",
+        "focused": true,
+        "hovered": false,
+        "preferred": true,
+        "catState": "purring",
+        "catNear": true,
+        "buses": {
+          "music": 0.048086315393447876,
+          "ambience": 0.06202511116862297,
+          "cat": 0.10999999940395355,
+          "purr": 0.30000001192092896
+        }
+      },
+      "story": {
+        "active": null,
+        "node": null,
+        "completed": [],
+        "read": []
+      },
+      "paused": false,
+      "time": 74.96656666666742,
+      "errors": []
+    }
+  },
+  "events": [
+    {
+      "at": 61806.400000002235,
+      "pose": null,
+      "anchor": [
+        0.74,
+        0.229
+      ],
+      "travelMix": 0
+    },
+    {
+      "at": 64838.199999999255,
+      "pose": {
+        "phase": "rising",
+        "family": "transition",
+        "frame": 6
+      },
+      "anchor": [
+        0.74,
+        0.229
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 65293.400000002235,
+      "pose": {
+        "phase": "rising",
+        "family": "transition",
+        "frame": 7
+      },
+      "anchor": [
+        0.74,
+        0.229
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 65504.400000002235,
+      "pose": {
+        "phase": "rising",
+        "family": "transition",
+        "frame": 8
+      },
+      "anchor": [
+        0.74,
+        0.229
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 66426.19999999925,
+      "pose": {
+        "phase": "turning",
+        "family": "transition",
+        "frame": 9
+      },
+      "anchor": [
+        0.74,
+        0.229
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 66703.90000000224,
+      "pose": {
+        "phase": "turning",
+        "family": "transition",
+        "frame": 10
+      },
+      "anchor": [
+        0.74,
+        0.229
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67525.90000000224,
+      "pose": {
+        "phase": "turning",
+        "family": "transition",
+        "frame": 11
+      },
+      "anchor": [
+        0.74,
+        0.229
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67732.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7400143607954546,
+        0.22899597897727272
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67749.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7400892230914486,
+        0.2289750175343944
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67782.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7401716210463313,
+        0.22895194610702724
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67820.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7402833754973699,
+        0.22892065486073643
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67872.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7405052941647559,
+        0.22885851763386836
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67895.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.740593247066361,
+        0.22883389082141894
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67926.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7407890482533046,
+        0.22877906648907473
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67951.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.741012009500607,
+        0.22871663733983005
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 67980.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7411380496358242,
+        0.22868134610196922
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68007.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7414030332394794,
+        0.22860715069294577
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68042.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7416966510571217,
+        0.22852493770400595
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68073.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7420191549770705,
+        0.22843463660642027
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68112.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7423729882654438,
+        0.22833556328567572
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68134.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7427612787884408,
+        0.2282268419392366
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68163.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7431561930132183,
+        0.22811626595629889
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68239.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.743370722071419,
+        0.2280561978200027
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68255,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7440389980724804,
+        0.2278690805397055
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68298.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7442477861803911,
+        0.2278106198694905
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68333.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7453495045611278,
+        0.22750213872288422
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68362.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.74557142399658,
+        0.2274400012809576
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68368.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7457854646355074,
+        0.22738006990205792
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68379.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7460008184071889,
+        0.22731977084598712
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68465,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7466626373152835,
+        0.22713446155172062
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68520.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7470907185931381,
+        0.22701459879392133
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68522.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.747747284970216,
+        0.22683076020833953
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68534.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7479678912729142,
+        0.22676899044358403
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68545.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7481911238411206,
+        0.22670648532448623
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68562.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7484064776128021,
+        0.2266461862684154
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68577.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7486244576499921,
+        0.22658515185800224
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 68596.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.748842437687182,
+        0.22652411744758905
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69332.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7501555704413376,
+        0.22615644027642545
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69334.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7503735504785276,
+        0.2260954058660123
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69347.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7505941567812258,
+        0.2260336361012568
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69362,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7508134499511697,
+        0.22597223401367247
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69402.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7512572888220744,
+        0.22584795912981917
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69447.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7519112289336438,
+        0.22566485589857974
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69500.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7525743609744925,
+        0.22547917892714212
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69535.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.753009007916118,
+        0.22535747778348694
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69571,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.753446281123252,
+        0.22523504128548946
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69608.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7538796149321233,
+        0.22511370781900547
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69649.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7545322419109387,
+        0.2249309722649372
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69668.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7547515350808827,
+        0.22486957017735287
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69706.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7551980002172956,
+        0.22474455993915726
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69731,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7556339602916752,
+        0.22462249111833094
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69766.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7560646678350383,
+        0.22450189300618928
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69805,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7565058804404348,
+        0.22437835347667828
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69832.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7569418405148144,
+        0.22425628465585198
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69869.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7573896187839816,
+        0.22413090674048516
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69896.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7578190131945904,
+        0.2240106763055147
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69929.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7580343669662719,
+        0.2239503772494439
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69944.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.75847295330616,
+        0.2238275730742752
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 69984.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.758911539646048,
+        0.2237047688991066
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70016.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7593474997204276,
+        0.2235827000782803
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70048.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7595667928903715,
+        0.22352129799069598
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70070.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.759790025458578,
+        0.22345879287159817
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70084.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7602246724002036,
+        0.223337091727943
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70104.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7604479049684101,
+        0.2232745866088452
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70129.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7606619456073376,
+        0.2232146552299455
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70159.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7611018450799797,
+        0.2230914833776057
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70200.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7617584114570575,
+        0.2229076447920239
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70223.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7619737652287389,
+        0.22284734573595308
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70255,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7624189172323979,
+        0.2227227031749286
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70289.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7628483116430068,
+        0.22260247273995812
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70321.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.763297403044928,
+        0.22247672714742017
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70329.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7635035648873304,
+        0.2224190018315475
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70358.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7637267974555368,
+        0.2223564967124497
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70388.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7641627575299165,
+        0.2222344278916234
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70418.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7643807375671064,
+        0.2221733934812102
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70462.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7650412433424468,
+        0.2219884518641149
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70483.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7652565971141283,
+        0.2219281528080441
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70520.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7659262948187476,
+        0.22174063745075068
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70555.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.76635043669834,
+        0.22162187772446482
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70591.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7665723561337923,
+        0.2215597402825382
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70610.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7670122556064344,
+        0.22143656843019838
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70637.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.76744690254806,
+        0.2213148672865432
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70661.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7678828626224397,
+        0.2211927984657169
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70691.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7681060951906461,
+        0.2211302933466191
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70724.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7685394289995175,
+        0.2210089598801351
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70757.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7689793284721597,
+        0.2208857880277953
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70780.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7691946822438414,
+        0.22082548897172444
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70802.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7696358948492376,
+        0.2207019494422135
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70824.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7698538748864274,
+        0.22064091503180033
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70857,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7702950874918236,
+        0.2205173755022894
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70887.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7707284213006951,
+        0.2203960420358054
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70914.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7711696339060914,
+        0.2202725025062944
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70949.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7713836745450189,
+        0.22021257112739473
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70968.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7718262002831693,
+        0.2200886639207126
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 70990.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.772042867187605,
+        0.22002799718747063
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71024.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7724775141292306,
+        0.21990629604381545
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71059.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7729226661328893,
+        0.219781653482791
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71077.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7731353936390625,
+        0.21972208978106253
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71102.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7735726668461963,
+        0.21959965328306502
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71123,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7737932731488946,
+        0.21953788351830952
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71155.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7740112531860843,
+        0.21947684910789642
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71163.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7744524657914806,
+        0.21935330957838542
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71198.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7748871127331063,
+        0.21923160843473025
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71230.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7753270122057484,
+        0.21910843658239043
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71257,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7755410528446757,
+        0.2190485052034908
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71291.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7757695379438989,
+        0.21898452937570834
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71316.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.776200245487262,
+        0.21886393126356665
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71329.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7766414580926582,
+        0.2187403917340557
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71360.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7768607512626021,
+        0.21867898964647142
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71389.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7773032770007527,
+        0.21855508243978922
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71430.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7777392370751324,
+        0.21843301361896292
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71448.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7779532777140599,
+        0.21837308224006324
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71462.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7783866115229312,
+        0.21825174877357925
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71494.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7786085309583834,
+        0.21818961133165263
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71521.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7790471172982714,
+        0.21806680715648402
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71549.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.779481764239897,
+        0.21794510601282885
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71570.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7797023705425952,
+        0.21788333624807335
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71616.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 7
+      },
+      "anchor": [
+        0.7801501488117621,
+        0.21775795833270659
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71641.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7805756038241087,
+        0.21763883092924954
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71681,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7810168164295049,
+        0.21751529139973863
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71701.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7814554027693931,
+        0.21739248722456994
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71733.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7818966153747893,
+        0.21726894769505903
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71774.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7823338885819231,
+        0.21714651119706152
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71808.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7827659092580405,
+        0.21702554540774868
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71814.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.782990454959001,
+        0.21696267261147972
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71845.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.7832150006599617,
+        0.21689979981521074
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71873.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 4
+      },
+      "anchor": [
+        0.783640455672308,
+        0.21678067241175375
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71897.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7838702539042853,
+        0.21671632890680012
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71939.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7845281334141174,
+        0.21653212264404714
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 71968,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7847342952565198,
+        0.21647439732817447
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72005.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.785174194729162,
+        0.21635122547583466
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72029.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7856167204673123,
+        0.21622731826915254
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72057.80000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7860474280106755,
+        0.21610672015701088
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72095,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7867030565802334,
+        0.21592314415753464
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72135.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 5
+      },
+      "anchor": [
+        0.7871299093293613,
+        0.21580362538777884
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72159.30000000075,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7873171207602253,
+        0.21575120618713692
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72187.5,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.787696411953561,
+        0.2156450046530029
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72215.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7880408426381341,
+        0.21554856406132245
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72237.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7882083209372545,
+        0.21550167013756877
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72268.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7885130372427451,
+        0.21541634957203137
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72298.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.788784672190404,
+        0.21534029178668687
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72328.90000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7889076242934399,
+        0.21530586519783684
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72349.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7891417866596049,
+        0.21524029973531064
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72374.10000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7892470544154118,
+        0.21521082476368472
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72408.19999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7894401317650298,
+        0.21515676310579165
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72438.60000000149,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7896042104255245,
+        0.2151108210808531
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72459.69999999925,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7896737812650485,
+        0.21509134124578644
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72491,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.789797272881546,
+        0.21505676359316714
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72522.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7898882252397142,
+        0.21503129693288
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72552.40000000224,
+      "pose": {
+        "phase": "walking",
+        "family": "walk",
+        "frame": 6
+      },
+      "anchor": [
+        0.7899550553205554,
+        0.2150125845102445
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 72628.30000000075,
+      "pose": {
+        "phase": "settling",
+        "family": "transition",
+        "frame": 11
+      },
+      "anchor": [
+        0.79,
+        0.215
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 74763.60000000149,
+      "pose": {
+        "phase": "settling",
+        "family": "transition",
+        "frame": 10
+      },
+      "anchor": [
+        0.79,
+        0.215
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 75016.40000000224,
+      "pose": {
+        "phase": "settling",
+        "family": "transition",
+        "frame": 9
+      },
+      "anchor": [
+        0.79,
+        0.215
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 75281.30000000075,
+      "pose": {
+        "phase": "settling",
+        "family": "transition",
+        "frame": 8
+      },
+      "anchor": [
+        0.79,
+        0.215
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 76263.90000000224,
+      "pose": {
+        "phase": "settling",
+        "family": "transition",
+        "frame": 7
+      },
+      "anchor": [
+        0.79,
+        0.215
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 76461.30000000075,
+      "pose": {
+        "phase": "settling",
+        "family": "transition",
+        "frame": 6
+      },
+      "anchor": [
+        0.79,
+        0.215
+      ],
+      "travelMix": 1
+    },
+    {
+      "at": 76731.40000000224,
+      "pose": null,
+      "anchor": [
+        0.79,
+        0.215
+      ],
+      "travelMix": 0
+    }
+  ],
+  "errors": [],
+  "hardware": {
+    "vendor": "Google Inc. (AMD)",
+    "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)"
+  },
+  "recording": {
+    "method": "Chrome DevTools Page.startScreencast; actual viewport including HTML UI",
+    "frames": 348,
+    "durationSeconds": 30.305854082107544,
+    "animationSeconds": 26.28250000000014,
+    "paused": false,
+    "encoding": "Resampled by timestamp to 15 fps; never used for performance numbers"
+  },
+  "audio": {
+    "duration": 30.35997732426304,
+    "sampleRate": 44100,
+    "channels": 2,
+    "peak": 0.015908192843198776,
+    "rms": 0.002542200451565152,
+    "started": 1788681412.7,
+    "offsetSeconds": -0.10132884979248047
+  },
+  "performance": "No FPS benchmark; natural elapsed time, not forced travel."
+}
