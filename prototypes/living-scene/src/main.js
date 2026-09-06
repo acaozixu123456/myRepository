@@ -16,6 +16,8 @@ import {
   RenderMode,
 } from "three.quarks";
 import "./style.css";
+import "./chapter.css";
+import { createChapter } from "./chapter.js";
 import { createCat } from "./cat.js";
 import { createLivingSceneAudio } from "./audio.js";
 import { encounters } from "./encounters.js";
@@ -31,6 +33,7 @@ const $ = (s) => document.querySelector(s),
   canvas = $("#scene"),
   reduced = matchMedia("(prefers-reduced-motion: reduce)");
 let contextLost = false;
+let chapterRoom = 'street';
 let paused = reduced.matches || (qa && params.get("still") === "1"),
   focused = false,
   time = 0,
@@ -99,6 +102,29 @@ const story = encounters({
   },
 });
 const cat = createCat({ sound, focusScene, closeStory: () => story.close() });
+const chapter = createChapter({ onChange(room) {
+  story.close(); cat.close();
+  chapterRoom = room;
+  document.querySelector('#hotspots').inert = room !== 'street';
+  sound.setRoom(room);
+  last = 0;
+} });
+for (const [room, text] of [['shop', '推门进便当店'], ['sento', '沿巷去钱汤']]) {
+  const entry = document.createElement('button');
+  entry.textContent = text; entry.id = `enter-${room}`;
+  entry.onclick = () => chapter.go(room);
+  document.querySelector('#places-nav').append(entry);
+}
+const enter = document.createElement('button');
+enter.id = 'story-enter'; enter.hidden = true;
+enter.onclick = () => chapter.go(story.snapshot().active === 'shop' ? 'shop' : 'sento');
+document.querySelector('#subtitle .story-actions').prepend(enter);
+new MutationObserver(() => {
+  const place = story.snapshot().active;
+  enter.hidden = !['shop', 'alley'].includes(place);
+  enter.textContent = place === 'shop' ? '推门进店 →' : '沿巷去钱汤 →';
+}).observe(document.querySelector('#story-line'), { childList: true });
+window.__chapter = { snapshot: chapter.snapshot };
 updateSoundButton();
 $("#sound").onclick = async () => {
   $("#sound").disabled = true;
@@ -260,6 +286,7 @@ async function init() {
       paused,
       focused,
       story: story.snapshot(),
+      chapter: chapter.snapshot(),
       cat: cat.snapshot(),
       audio: sound.snapshot(),
       time,
@@ -376,7 +403,8 @@ function tick(now) {
     if (frames.length > 18000) frames.shift();
   }
   last = now;
-  if (!document.hidden && !contextLost) {
+  if (!document.hidden && chapterRoom !== 'street') chapter.update(dt, paused, reduced.matches);
+  if (!document.hidden && !contextLost && chapterRoom === 'street') {
     const cpuStart = performance.now();
     if (!paused) {
       time += dt;

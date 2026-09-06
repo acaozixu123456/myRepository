@@ -1,0 +1,21 @@
+{
+  "url": "http://127.0.0.1:8782/",
+  "builtPreview": true,
+  "failedImageKeepsOriginalScene": true,
+  "retrySucceeds": true,
+  "state": {
+    "room": "shop",
+    "busy": false,
+    "dialogue": null,
+    "ordered": false,
+    "bathed": false,
+    "collected": false,
+    "motion": {
+      "ready": true,
+      "room": "shop",
+      "elapsed": 1.0324666666666662,
+      "regions": "authored UV masks; water, steam, curtain, lamp; no depth reconstruction"
+    }
+  },
+  "errors": []
+}

@@ -1,0 +1,17 @@
+{
+  "scope": "Same actual browser framing, 2.1 seconds apart; image-region change, not performance.",
+  "regions": {
+    "water": {
+      "meanChannelChange255": 6.57281540397954,
+      "pixelsChangedAbove3": 0.7711195468787659
+    },
+    "steam": {
+      "meanChannelChange255": 5.612577755492011,
+      "pixelsChangedAbove3": 0.5265283443331662
+    },
+    "solid_left_wall": {
+      "meanChannelChange255": 0.02906977949422771,
+      "pixelsChangedAbove3": 0.001082109740853374
+    }
+  }
+}

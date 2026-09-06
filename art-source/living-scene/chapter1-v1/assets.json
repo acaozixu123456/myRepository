@@ -1,0 +1,38 @@
+[
+  {
+    "file": "bath.png",
+    "pixels": [
+      1672,
+      941
+    ],
+    "bytes": 2226740,
+    "sha256": "ced4e8ad3747eda5bd4303b58f6a3408e9403243d4ab61dee9bd73e074bb131a",
+    "origin": "Codex built-in imagegen; generated using project-owned Chapter 1 artwork as reference",
+    "license": "Generated project asset; no third-party purchased stock. Model output is not asserted to have exclusive copyright.",
+    "runtimeCopy": "prototypes/living-scene/public/chapter1/bath.png"
+  },
+  {
+    "file": "sento.png",
+    "pixels": [
+      1672,
+      941
+    ],
+    "bytes": 2444046,
+    "sha256": "8b88d984e128ea81f21822b2fa4b7cfb40de412468c19fa58cf8be360559d7cb",
+    "origin": "Codex built-in imagegen; generated using project-owned Chapter 1 artwork as reference",
+    "license": "Generated project asset; no third-party purchased stock. Model output is not asserted to have exclusive copyright.",
+    "runtimeCopy": "prototypes/living-scene/public/chapter1/sento.png"
+  },
+  {
+    "file": "shop.png",
+    "pixels": [
+      1672,
+      941
+    ],
+    "bytes": 2400850,
+    "sha256": "438cc4f68487cccd450944342d80dfa01013b123c5038867725bf5a17e44745a",
+    "origin": "Codex built-in imagegen; generated using project-owned Chapter 1 artwork as reference",
+    "license": "Generated project asset; no third-party purchased stock. Model output is not asserted to have exclusive copyright.",
+    "runtimeCopy": "prototypes/living-scene/public/chapter1/shop.png"
+  }
+]

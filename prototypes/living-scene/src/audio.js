@@ -385,6 +385,11 @@ class LivingSceneAudio {
     this.pointerX = clamp(x, -1, 1);
   }
 
+  setRoom(room) {
+    this.room = room;
+    this._applySceneState();
+  }
+
   setHover(value, place = "shop") {
     this.hoverPlace = place;
     if (this.hovered === value) return;
@@ -460,9 +465,11 @@ class LivingSceneAudio {
     const now = this.ctx.currentTime;
     const warmFocus = this.focused && ["shop", "lantern"].includes(this.focusPlace);
     const warmHover = this.hovered && ["shop", "lantern"].includes(this.hoverPlace);
-    const shop = warmFocus ? 0.19 : warmHover ? 0.085 : 0.0001;
+    const inside = this.room && this.room !== 'street';
+    const shop = this.room === 'shop' ? .14 : inside ? .0001 : warmFocus ? 0.19 : warmHover ? 0.085 : 0.0001;
     const music = this.catState === "purring" ? .048 : this.catState === "sleeping" ? .075 : this.focused ? .074 : .105;
-    const ambience = this.catNear ? .062 : this.focused ? .062 : .085;
+    const ambience = this.room === 'bath' ? .012 : this.room === 'shop' ? .035 : this.catNear ? .062 : this.focused ? .062 : .085;
+    setGain(this.catBus.gain, inside ? .0001 : .11, now, .4);
     setGain(this.shop.gain, shop, now, 0.28);
     setGain(this.music.gain, music, now, 0.45);
     setGain(this.ambience.gain, ambience, now, 0.4);

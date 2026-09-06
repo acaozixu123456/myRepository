@@ -1,0 +1,18 @@
+{
+  "recording": {
+    "method": "Chrome DevTools Page.startScreencast; actual viewport including HTML UI",
+    "frames": 848,
+    "durationSeconds": 52.385810136795044,
+    "animationSeconds": 14.650366666666685,
+    "paused": false,
+    "encoding": "Resampled by timestamp to 15 fps; never used for performance numbers"
+  },
+  "audio": {
+    "duration": 52.38,
+    "peak": 0.014557138085365295,
+    "rms": 0.0026181191349522134,
+    "started": 1788686762.316,
+    "offsetSeconds": -0.16819190979003906
+  },
+  "scope": "Real browser viewport and the same page Web Audio output. 15 fps delivery encoding is not renderer FPS."
+}

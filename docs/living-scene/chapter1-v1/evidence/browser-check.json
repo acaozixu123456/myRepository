@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-06T09:23:52.300Z",
+  "browser": "152.0.7977.82",
+  "hardware": {
+    "vendor": "Google Inc. (AMD)",
+    "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)"
+  },
+  "viewport": [
+    1920,
+    1080
+  ],
+  "checks": {
+    "fiveOriginalHotspots": true,
+    "interiorAnimationAdvances": true,
+    "translationOptIn": true,
+    "translationVisible": true,
+    "dinnerReserved": true,
+    "pauseStopsInteriors": true,
+    "reducedMotionStopsInteriors": true,
+    "bathingRemembered": true,
+    "ownerRemembersPromise": true,
+    "dinnerCollected": true,
+    "escapeFirstHidesDialogue": true,
+    "catStaysInStreet": true,
+    "chapterSurvivesRefresh": true,
+    "bathFirstDoesNotInventOrder": true,
+    "audioEnabled": true,
+    "catBusQuietIndoors": true,
+    "catBusReturnsOutside": true,
+    "noBrowserErrors": true
+  },
+  "errors": [],
+  "catDefaultSourceWidth": 0.045,
+  "scope": "Chapter continuity, region animation, controls and audio routing. No FPS optimization or NHK tests."
+}
