@@ -1,0 +1,52 @@
+WARN (translation.language): source/blender/blentranslation/intern/blt_lang.cc:214 BLT_lang_init: Falling back to standard locale ("C")
+INFO Draco mesh compression is available, use library at /Users/xiaruonan/nihongo-art-work/toolchain/Blender.app/Contents/Resources/4.5/scripts/addons_core/io_scene_gltf2/libextern_draco.dylib
+11:51:52 | INFO: Starting glTF 2.0 export
+11:51:52 | INFO: Extracting primitive: Curved eave support
+11:51:52 | INFO: Primitives created: 1
+11:51:52 | INFO: Extracting primitive: Shop name
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Tailored canvas awning
+11:51:53 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Awning hem seam
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Overlapping rolled roof tile
+11:51:53 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Half round gutter
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Kettle lid handle
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Terracotta planter
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Visible soil
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Plant stem
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Curled lanceolate leaf
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Closed plaster gable.002
+11:51:53 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Cube.002
+11:51:53 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Cube.113
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Cube.409
+11:51:53 | INFO: Primitives created: 1
+11:51:53 | INFO: Extracting primitive: Sphere.007
+11:51:54 | INFO: Primitives created: 1
+11:51:54 | INFO: Extracting primitive: Sphere.056
+11:51:54 | INFO: Primitives created: 1
+11:51:54 | INFO: Extracting primitive: Sphere.057
+11:51:54 | INFO: Primitives created: 1
+11:51:54 | INFO: Extracting primitive: Sphere.060
+11:51:54 | INFO: Primitives created: 1
+11:51:54 | INFO: Finished glTF 2.0 export in 1.2757580280303955 s
+
+Pruned unused attributes: yorimichi-shop.glb 20537216 -> 18068128 bytes
+Blender 4.5.9 LTS (hash 8bf95cbd38d1 built 2026-04-21 01:30:47)
+Read blend: "/Users/xiaruonan/nihongo-art-work/desktop-v1/art-source/desktop-v1/yorimichi-shop.blend"
+
+Blender quit
