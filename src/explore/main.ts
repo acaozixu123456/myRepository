@@ -11,7 +11,7 @@ const escape=(value:string)=>value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;
 let loaded:ReturnType<typeof loadProgress>;
 try{loaded=loadProgress(localStorage);}catch{loaded={progress:loadProgress({getItem(){throw Error();}}).progress,writable:false,warning:'浏览器禁止存储，本次只试玩，不会保存进度。'};}
 let progress:Progress=loaded.progress,writable=loaded.writable,world:World|null=null,started=false,modal='',showHints=false,showTranslation=false,usedHint=false,lastReply='',currentSpeech='',audioState='idle',audioMessage='';
-let lastFocus:HTMLElement|null=null,toastTimer=0;
+let lastFocus:HTMLElement|null=null,toastTimer=0,conversationAnimationTimer=0;
 root.innerHTML=`<canvas id="street" tabindex="0" aria-label="第一人称谷中街道。使用 WASD 行走，鼠标拖动转向，E 互动。"></canvas>
 <div class="vignette" aria-hidden="true"></div>
 <header class="topbar"><a class="brand" href="/" aria-label="返回 NHK 学习">${icon('spark')}<span>日本散步日记<small>Y A N A K A</small></span></a><div class="top-actions"><span class="build-label">可玩样片 01</span><a class="round-button old-entry" href="/" title="NHK 学习">${icon('book')}<span>NHK 学习</span></a><button class="round-button" id="about" aria-label="地图来源与操作帮助">${icon('help')}</button></div></header>
@@ -27,7 +27,7 @@ function updateAudioUI(){const button=document.getElementById('speak');if(button
 function toast(text:string){window.clearTimeout(toastTimer);$('toast').textContent=text;$('toast').hidden=false;toastTimer=window.setTimeout(()=>{$('toast').hidden=true;},4500);}
 function persist(){if(!world)return;progress={...progress,pose:world.getPose()};if(writable){try{if(!saveProgress(localStorage,progress)){writable=false;$('save-state').textContent='暂未保存';toast('游戏进度暂时无法保存，原有 NHK 记录没有被改动。');}else $('save-state').textContent='游戏进度已保存';}catch{writable=false;$('save-state').textContent='暂未保存';}}}
 function updateHUD(){world?.setProgress(progress);$('objective').textContent=progress.purchase.paid?'晚饭买好了，继续随意走走':progress.purchase.step==='order'?'去右侧的「よりみち弁当」':'继续和便当店员聊聊';$('held-item').hidden=!progress.purchase.paid;$('held-item').classList.toggle('in-bag',Boolean(progress.purchase.bag));}
-function closeModal(){speech.stop();$('modal-layer').hidden=true;$('modal-layer').replaceChildren();modal='';world?.pause(!started);lastFocus?.focus();lastFocus=null;persist();}
+function closeModal(){speech.stop();window.clearTimeout(conversationAnimationTimer);world?.setHeroAnimation('idle');$('modal-layer').hidden=true;$('modal-layer').replaceChildren();modal='';world?.pause(!started);lastFocus?.focus();lastFocus=null;persist();}
 function modalFrame(kind:string,title:string,body:string,wide=false){
   speech.stop();if(!modal)lastFocus=document.activeElement as HTMLElement;modal=kind;world?.pause(true);
   const layer=$('modal-layer');layer.hidden=false;layer.innerHTML=`<section class="panel ${wide?'wide':''} ${kind==='shop'?'dialogue-panel':''}" role="dialog" aria-modal="true" aria-labelledby="panel-title"><header class="panel-header"><div><small>${kind==='shop'?'よりみち弁当 · 店员 美咲':'日本散步日记'}</small><h2 id="panel-title">${title}</h2></div><button class="icon-button close-panel" aria-label="关闭">${icon('close')}</button></header>${body}</section>`;
@@ -59,7 +59,7 @@ function submitReply(raw:string,assisted:boolean){
 }
 function interact(id:TargetId){
   progress={...progress,visited:[...new Set([...progress.visited,id])]};persist();showHints=false;showTranslation=false;usedHint=false;lastReply='';
-  if(id==='shop'){renderShop();void speech.play(currentSpeech);return;}
+  if(id==='shop'){world?.setHeroAnimation('greet',false);window.clearTimeout(conversationAnimationTimer);conversationAnimationTimer=window.setTimeout(()=>world?.setHeroAnimation('talk'),900);renderShop();void speech.play(currentSpeech);return;}
   const data={guide:{title:'一位熟悉这条街的居民',ja:'お弁当屋さんは、この先の右側です。',zh:'便当店就在前面右手边。',note:'沿街向前走，找到绿色门帘的「よりみち弁当」。',phrase:'directions' as PhraseId},menu:{title:'今天的菜单',ja:'日替わり弁当、六百五十円です。',zh:'每日便当，650 日元。',note:'日替わり（ひがわり）：每天更换内容。门帘中间可以走进去。',phrase:'order' as PhraseId},notice:{title:'路边的告示',ja:'今週末、まちの広場で小さな市を開きます。',zh:'这周末，街区广场会举办一个小市集。',note:'这是剧情告示，不是真实活动信息；市集尚未加入本样片。',phrase:null},cat:{title:'路地裏で、ひと休み。',ja:'猫が日なたで休んでいます。',zh:'猫正在向阳的地方休息。',note:'日なた（ひなた）：阳光照到的地方。走累了，就在这里停一会儿。',phrase:null}}[id];
   modalFrame(id,data.title,`<p class="observation-ja" lang="ja">${escape(data.ja)}</p>${voiceRow(data.ja)}<details class="meaning"><summary>看看意思</summary><p>${escape(data.zh)}</p><p>${escape(data.note)}</p></details>${data.phrase?`<button class="secondary-button" id="bookmark">${progress.bookmarked.includes(data.phrase)?'已放入笔记':'收藏这句'}</button>`:''}<button class="primary-button" id="keep-walking">继续散步 ${icon('arrow')}</button>`);
   wireVoice();if(data.phrase){const phrase=data.phrase;$('bookmark').onclick=()=>bookmark(phrase);progress=recordSeen(progress,phrase);persist();}$('keep-walking').onclick=closeModal;void speech.play(currentSpeech);

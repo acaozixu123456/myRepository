@@ -24,7 +24,7 @@ import {loadHeroArt} from './heroArt';
 export type TargetId='shop'|'guide'|'menu'|'notice'|'cat';
 export type Target={id:TargetId;label:string;point:Vector3;radius:number};
 export type World={
-  pause:(v:boolean)=>void;setMove:(x:number,y:number)=>void;look:(dx:number,dy:number)=>void;
+  pause:(v:boolean)=>void;setMove:(x:number,y:number)=>void;look:(dx:number,dy:number)=>void;setHeroAnimation:(name:'idle'|'greet'|'talk',loop?:boolean)=>void;
   interact:()=>void;setProgress:(p:Progress)=>void;getPose:()=>Progress['pose'];
   resetPosition:()=>void;dispose:()=>void;diagnostics:()=>Record<string,unknown>;
 };
@@ -284,10 +284,10 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   const visibility=()=>{clear();if(document.hidden)engine.stopRenderLoop(render);else if(!disposed)engine.runRenderLoop(render);};document.addEventListener('visibilitychange',visibility);
   engine.runRenderLoop(render);
   return {
-    pause(v){paused=v;clear();if(v){near=null;events.near(null);if(document.pointerLockElement===canvas)document.exitPointerLock();}},setMove,look,
+    pause(v){paused=v;clear();if(v){near=null;events.near(null);if(document.pointerLockElement===canvas)document.exitPointerLock();}},setMove,look,setHeroAnimation(name,loop=true){heroArt?.play(name,loop);},
     interact(){if(!paused&&near)events.interact(near.id);},setProgress(p){progress=p;},
     getPose(){return{x:player.position.x,z:player.position.z,yaw,pitch};},resetPosition,
-    diagnostics(){return{fps,floorY:player.position.y,keys:[...keys],meshCount:scene.meshes.length,roadLength:ROAD_LENGTH,pose:{x:player.position.x,z:player.position.z,yaw,pitch},paused,nearest:near?.id||null,webgl:engine.webGLVersion,artStatus:heroArt?.status||'unavailable',artError:heroArt?.error||null,artMeshCount:heroArt?.meshCount||0,artAnimations:heroArt?.animationNames||[],heroProxyVisible:heroProxyMeshes.filter(mesh=>mesh.visibility>0&&!belongsToReceipt(mesh)).length};},
+    diagnostics(){return{fps,floorY:player.position.y,keys:[...keys],meshCount:scene.meshes.length,roadLength:ROAD_LENGTH,pose:{x:player.position.x,z:player.position.z,yaw,pitch},paused,nearest:near?.id||null,webgl:engine.webGLVersion,artStatus:heroArt?.status||'unavailable',artError:heroArt?.error||null,artMeshCount:heroArt?.meshCount||0,artAnimations:heroArt?.animationNames||[],artActiveAnimation:heroArt?.activeAnimation||null,heroProxyVisible:heroProxyMeshes.filter(mesh=>mesh.visibility>0&&!belongsToReceipt(mesh)).length};},
     dispose(){if(disposed)return;disposed=true;engine.stopRenderLoop(render);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);document.removeEventListener('pointerlockchange',lock);window.removeEventListener('keydown',keyDown);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',clear);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',visibility);if(document.pointerLockElement===canvas)document.exitPointerLock();heroArt?.dispose();scene.dispose();engine.dispose();},
   };
 }
