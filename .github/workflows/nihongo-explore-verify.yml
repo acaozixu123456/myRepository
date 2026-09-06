@@ -14,7 +14,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 16
     defaults:
       run:
         shell: bash --noprofile --norc -e -o pipefail {0}
@@ -24,38 +24,21 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Materialize checksummed source once on development branch only
+      - name: Apply bounded reviewed follow-up on development branch only
         run: |
           test "$GITHUB_REF_NAME" = 'nihongo-explore-slice-20260906'
-          python3 - <<'PY'
-          import base64, hashlib, json, lzma
-          from pathlib import Path
-          if Path('src/explore/main.ts').exists():
-              print('Source already materialized; preserve subsequent reviewed changes.')
-          else:
-              data=base64.b64decode(''.join(Path(f'scripts/explore-transfer.part{i}').read_text().strip() for i in range(4)),validate=True)
-              assert hashlib.sha256(data).hexdigest()=='d6aa8cd205f7b2c0ae12ea92c7307f2e148b153bcfe5c9d7bc9f58e8664e3106','transfer checksum mismatch'
-              files=json.loads(lzma.decompress(data))
-              allowed={'explore.html','vite.config.ts','public/sw.js','scripts/explore-fixture.ts','scripts/explore-browser.mjs','docs/product/EXPLORATION_SLICE_20260906.md','src/explore/style.css','src/explore/audio.ts','src/explore/state.ts','src/explore/roadData.ts','src/explore/geo.ts','src/explore/main.ts','src/explore/explore.test.ts','src/explore/world.ts','public/explore/map-source.json','public/explore/yanaka-roads.geojson'}
-              assert isinstance(files,dict) and set(files)==allowed,'unexpected source path set'
-              assert all(isinstance(v,str) for v in files.values())
-              for name,content in files.items():
-                  p=Path(name);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(content,encoding='utf-8')
-              print('Materialized',len(files),'allowlisted files')
-          PY
-          npm ci --no-audit --no-fund
-          if ! node -e "const p=require('./package.json');process.exit(p.dependencies?.['@babylonjs/core']==='9.25.0'?0:1)"; then
-            npm install --save-exact @babylonjs/core@9.25.0 --no-audit --no-fund
-          fi
-          git add explore.html vite.config.ts public/sw.js scripts/explore-fixture.ts scripts/explore-browser.mjs docs/product/EXPLORATION_SLICE_20260906.md src/explore public/explore package.json package-lock.json
+          test -f src/explore/main.ts
+          if test -f scripts/explore-review-patch.py; then python3 scripts/explore-review-patch.py; fi
+          git add src/explore scripts/explore-browser.mjs
           if ! git diff --cached --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'Implement isolated first-person Yanaka exploration slice with preserved NHK data'
+            git commit -m 'Cache static street shadows and preserve browser return lifecycle'
             git push origin HEAD:nihongo-explore-slice-20260906
           fi
           mkdir -p /tmp/explore-artifacts
           git rev-parse HEAD > /tmp/explore-artifacts/source-sha.txt
+          npm ci --no-audit --no-fund
       - name: Typecheck, complete unit regression and production build
         run: |
           npm run typecheck 2>&1 | tee /tmp/explore-artifacts/typecheck.log
