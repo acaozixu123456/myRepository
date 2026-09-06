@@ -1,0 +1,61 @@
+{
+  "date": "2026-09-06T08:53:02.470Z",
+  "browser": "152.0.7977.82",
+  "viewport": [
+    2560,
+    1440
+  ],
+  "deviceScaleFactor": 1,
+  "images": [
+    {
+      "id": "hero",
+      "native": [
+        1672,
+        941
+      ],
+      "display": [
+        2560,
+        1440
+      ],
+      "loaded": true
+    },
+    {
+      "id": "dim",
+      "native": [
+        1672,
+        941
+      ],
+      "display": [
+        2560,
+        1440
+      ],
+      "loaded": true
+    },
+    {
+      "id": "clear",
+      "native": [
+        1672,
+        941
+      ],
+      "display": [
+        2560,
+        1440
+      ],
+      "loaded": true
+    },
+    {
+      "id": "latte-detail",
+      "native": [
+        1672,
+        941
+      ],
+      "display": [
+        2560,
+        1440
+      ],
+      "loaded": true
+    }
+  ],
+  "errors": [],
+  "scope": "Static image loading and 16:9 presentation only. Browser viewport size is not native artwork resolution. No interaction or performance benchmark."
+}

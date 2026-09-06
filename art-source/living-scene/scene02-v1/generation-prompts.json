@@ -1,0 +1,47 @@
+{
+  "tool": "Codex built-in imagegen",
+  "authorization": "User authorized built-in image generation. No external paid API.",
+  "entries": [
+    {
+      "id": "hero-initial",
+      "status": "Not selected: cat too large",
+      "prompt": "Use case: stylized-concept. Create ONE finished collectible wallpaper / cinematic Japanese Living Scene environment painting, Scene 02 \"Window-side dusk\". Pure picture, NO typography, UI, logos, collage, borders or watermark. Landscape 16:9, compose for 2560x1440. Highest available actual output resolution, finely resolved environmental painting.\nINPUTS: image1 is ONLY the project's painterly cinematic environment/style/quality reference, not architecture to copy. Images2 and3 are ONLY real cat identity and quiet window-watching posture reference (not a room to copy, do not reproduce private text). Image4 is the cat's stylized character reference. Cat is Latte, same brown-black classic tabby white adult, sage green eyes, forehead M, white chin/bib/paws, unobtrusive thin brown collar. NO generic orange cat.\nSCENE: a modest lived-in contemporary Japanese apartment in early evening, quiet and intimate, the view from a seated person at slightly low eye height about 1.05m, medium-wide 38mm perspective. Three-depth composition: small foreground sliver of an olive fabric sofa at lower left and a curved worn wood tabletop edge with ONE slightly open book; middle ground broad window and shallow wooden window bench, a subdued oatmeal cushion and SMALL resting Latte at right-lower third; distant ordinary residential Japan visible through glass and a dark slender balcony railing. Window occupies central and right two thirds. Left wall and a softly glowing small shaded lamp provide a restrained amber light pool; a loose off-white linen curtain softly frames the left edge, one small unshowy plant. A few traces of everyday use, no staged showroom.\nCAT SCALE IS CRITICAL: complete cat body only about 7-9% of total image WIDTH, a secondary discovery, not a portrait. Quiet loaf/low resting posture on the cushion near x=.76,y=.73. Back in three-quarter view, head turned toward the LEFT into the window view, eye visible only in restrained side profile; she is watching outside, NEVER staring at viewer. Tail tucked alongside her body, realistic adult compact proportions. Identifiable but SMALL. Body and feet convincingly weighted into cushion; painterly integrated light and soft contact shadow, never pasted photo.\nOUTSIDE: ordinary dense Japanese residential neighborhood seen from second/third floor: foreground balcony railing; nearest low houses with small balconies, utility poles/wires and a narrow local road; a few mid-distance apartment buildings; far apartment silhouettes in atmospheric lavender blue, pale muted apricot line along horizon and cool evening blue sky. No landmarks, temple, pagoda, mountain postcard, giant sunset sun, neon street or tourist poster. City remains legible but quieter than interior. Not night yet.\nLIGHT AND ART: soft cool dusk daylight from window meets weak warm practical lamplight inside. Warm honey wood, muted olive, slate blue, ivory linen. Rich graduated shadows with detail, no crushed blacks; sky neither white nor blown out. Controlled edge hierarchy, refined brush texture in fabric/wood/fur, subtle glass reflections but clear view out. Elegant asymmetric composition, space to breathe, believable room/window geometry. Light and composition are the focal point, the cat is companionship. No hard lens flare, god-ray spectacle, plastic CGI gloss, excessive objects or stereotypical Japanese décor. Museum-quality environmental illustration, pausable wallpaper beauty, not game screenshot or pet app.",
+      "references": [
+        "Cat V2.1 actual street screenshot (style)",
+        "User cat window-back photo (identity/posture)",
+        "User cat side-profile photo (identity)",
+        "Cat V2 character-reference.png (stylized identity)"
+      ]
+    },
+    {
+      "id": "hero",
+      "status": "Selected scale correction",
+      "prompt": "Use case: precise-object-edit. Edit this exact image ONLY in the lower-right cat/cushion region. Keep the camera, all architecture, city view, sky, colors, warm lamp, curtain, book and sofa EXACTLY the same. This is a scale correction, not a redesign.\nThe cat is currently about 18% of the whole image width and MUCH TOO LARGE. Make the COMPLETE CAT INCLUDING TAIL exactly about HALF of its current linear width and height (target 8-9% of total image width, about 145 pixels in a 1672-wide image). The oatmeal cushion must also become about HALF its current width and height. Cat remains a natural adult, do not change proportions or make a kitten. Keep same quiet left-facing three-quarter back loaf looking OUT the window, not at camera. Preserve brown/black broad tabby swirls, white chin/chest/paws, narrow collar, tiny visible muted green eye. Keep her grounded on the smaller cushion at the same right-side window bench location; preserve the current bottom cushion contact height, reconstruct the revealed wooden bench seamlessly around the smaller cushion.\nThe desired visual hierarchy: window and dusk atmosphere first, small cat as a detail you discover, absolutely not a cat portrait. Do not zoom image or crop, do not move camera. Preserve same 16:9 canvas. Output high quality original-size or larger (2560x1440 preferred), no text.",
+      "references": [
+        "hero-initial generated candidate"
+      ]
+    },
+    {
+      "id": "dim",
+      "prompt": "Use case: lighting-weather. Make a SLIGHTLY DIMMER LAMPLIGHT variant of this EXACT Scene 02 hero image. Preserve identical 16:9 framing, camera, all objects, window geometry, outside buildings and sky, cat pose, cat identity and small size (9% image width), cushion placement. Change ONLY the interior practical-light mood: reduce the small lamp output around half a stop and its amber bounce on curtain, wall and bench around a third of a stop. Keep soft cool window fill, textured shadows still legible, retain muted wood and sage fabric detail. Exterior dusk exposure and color unchanged. Quiet, intimate, slightly later-feeling indoor light, NOT pitch black, no hard contrast filter. The cat continues looking out, never looks at viewer. No new things, text, overlays or vignette. Fine painterly finish matching the input. Output same 16:9 full image, 2560x1440 if available.",
+      "references": [
+        "hero.png"
+      ]
+    },
+    {
+      "id": "clear",
+      "prompt": "Use case: precise-object-edit. Make an OUTSIDE VIEW MORE LEGIBLE variant of this EXACT Scene 02 hero artwork. Keep camera, 16:9 framing, interior, lamp, curtain, wooden bench, book, small cat and cushion EXACTLY unchanged. Cat stays about 9% width and looks away into window. Change ONLY the exterior view through the window: modestly improve architectural definition and local detail in the nearest roof tiles, roadside houses, a readable ordinary narrow residential road with its subtle white markings, middle apartment balconies, distant apartment silhouettes. Reduce near/middle exterior haze a little but PRESERVE gentle distance falloff at horizon. Ordinary Japanese lived-in neighborhood, no landmarks, neon or tourism imagery. Keep SAME dusk sky and cool blue-lavender exterior exposure, don't brighten exterior into daytime or over-sharpen everything. Exterior still secondary to whole room atmosphere. No new focal buildings, no bold signage, no HDR crunch, no flare, no text/overlays. High quality restrained cinematic painting, same geometry and same color relationships. Output full 16:9 same scene, 2560x1440 if available.",
+      "references": [
+        "hero.png"
+      ]
+    },
+    {
+      "id": "latte-detail",
+      "prompt": "Use case: precise-object-edit / local focus. Create a companion DETAIL ARTWORK of the lower-right window-bench/cat region of the first image. Reference 1 is the authoritative hero for scene, pose, cushion, lighting, markings and orientation. Reference 2 ONLY clarifies this individual cat Latte's white bib/paws, sage-green eyes and brown-black classic tabby identity, do not copy its frontal posing or parchment background.\nThis is a separate closer viewing crop, NOT a change to the main hero's cat size. Landscape 16:9. Frame the cushion, the complete resting cat including tucked tail, a generous length of bench and balcony railing, with cool Japanese rooftops readable softly behind. Cat occupies about 30% of this DETAIL frame width, placed right of center. Keep EXACT same three-quarter back / left-facing quiet loaf looking outdoors; never turn toward camera or make cute eye contact. Show tiny side green eye naturally, M forehead from side where visible, white lower chin and bib edge, a small glimpse of tucked white forepaw, the same dark broad flank swirls and plain fine brown collar. Real adult proportions and painterly soft fur masses, not photo cutout, no glossy CGI. Preserve original warm left light / cool window fill, soft weight into cushion, precise textured linen and worn wood. Do not invent toys, UI, additional objects or lettering. Still feels like a cinematic environment observation, not a pet advertising portrait. Match crop perspective, not a new camera angle. Highest available finish, 16:9 2560x1440 preferred.",
+      "references": [
+        "hero.png",
+        "Cat V2 character-reference.png"
+      ]
+    }
+  ]
+}

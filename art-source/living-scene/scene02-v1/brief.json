@@ -1,0 +1,43 @@
+{
+  "title": "窓辺の夕方 / 窗边黄昏",
+  "scope": "Static visual baseline only; no new interactions or scene integration.",
+  "composition": {
+    "format": "16:9 landscape, compose for 2560×1440; record actual returned pixels honestly",
+    "viewpoint": "Interior medium view, seated eye height, slightly low",
+    "layers": [
+      "small foreground furniture edge",
+      "window/cushion/Latte in right or lower-right",
+      "ordinary Japanese residential district"
+    ],
+    "cat": "Small quiet companion, loaf/rest, looking outdoors, never facing the viewer for attention"
+  },
+  "variants": [
+    {
+      "id": "hero",
+      "purpose": "Default visual baseline"
+    },
+    {
+      "id": "dim",
+      "purpose": "Same composition, slightly dimmer interior lamp"
+    },
+    {
+      "id": "clear",
+      "purpose": "Same composition, clearer outside neighborhood"
+    },
+    {
+      "id": "latte-detail",
+      "purpose": "Separate local-focus artwork for identity/light review; does not enlarge hero cat"
+    }
+  ],
+  "lighting": "Cool soft evening outside, weak warm lamp inside, readable shadows, no flare or CG sheen",
+  "acceptance": [
+    "Wallpaper-quality paused image",
+    "Clear hierarchy",
+    "Credible dusk light",
+    "Latte small but recognizable",
+    "Ordinary Japanese lived-in feeling",
+    "No game/pet-app UI"
+  ],
+  "name": "User confirmed 拿铁 / ラテ",
+  "referencePolicy": "User cat photos are identity references, not open-license material; private originals are not committed."
+}

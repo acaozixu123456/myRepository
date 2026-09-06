@@ -1,0 +1,50 @@
+[
+  {
+    "id": "hero",
+    "file": "hero.png",
+    "nativePixels": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "bytes": 2225890,
+    "sha256": "70cba5dfdbc0f1f31648c96bd52b57dd138f07d7cfd5aa2b496a24c8a7aadbf0",
+    "processing": "Unmodified built-in generator output; no interpolation enlargement."
+  },
+  {
+    "id": "dim",
+    "file": "dim.png",
+    "nativePixels": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "bytes": 2280791,
+    "sha256": "9cb6f7887ac4959a4a5eebdc8095bab4e4d89d62b8d2c4a0933ab3457e0fb21d",
+    "processing": "Unmodified built-in generator output; no interpolation enlargement."
+  },
+  {
+    "id": "clear",
+    "file": "clear.png",
+    "nativePixels": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "bytes": 2584735,
+    "sha256": "edd5679b1167971fc92f10784d773c3e12f3b43a8462a516ff32079c28ca0f78",
+    "processing": "Unmodified built-in generator output; no interpolation enlargement."
+  },
+  {
+    "id": "latte-detail",
+    "file": "latte-detail.png",
+    "nativePixels": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "bytes": 2268382,
+    "sha256": "9606986870ada728ccc26d02de3a691bbcd4e76420bc5c30dbe5f9204ec94907",
+    "processing": "Unmodified built-in generator output; no interpolation enlargement."
+  }
+]
