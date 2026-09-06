@@ -81,18 +81,18 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
     const plane=MeshBuilder.CreatePlane('text'+serial++,{width:w,height:h,sideOrientation:Mesh.DOUBLESIDE},scene);plane.material=material;plane.position.set(x,y,z);if(parent)plane.parent=parent;return plane;
   }
   // Small procedural materials are generated locally; no image CDN, map tiles or external fonts at runtime.
-  const roadMat=mat('#72736e');const roadTex=new DynamicTexture('paving',{width:512,height:512},scene,false);const c=roadTex.getContext();
-  c.fillStyle='#747570';c.fillRect(0,0,512,512);let seed=19;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
+  const roadMat=mat('#7b7c77');const roadTex=new DynamicTexture('paving',{width:512,height:512},scene,false);const c=roadTex.getContext();
+  c.fillStyle='#7b7c77';c.fillRect(0,0,512,512);let seed=19;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
   // Fine asphalt aggregate. Keep it irregular; the previous grid read like tiled flooring rather than a Japanese side street.
   for(let i=0;i<22000;i++){const v=68+Math.floor(rand()*92);const alpha=.09+rand()*.18;c.fillStyle=`rgba(${v},${v+Math.floor(rand()*5)},${v+Math.floor(rand()*4)},${alpha})`;const r=.45+rand()*1.35;c.fillRect(rand()*512,rand()*512,r,r);}
   // Subtle repaired seams and hairline cracks, intentionally sparse enough not to become a repeating pattern.
   for(let i=0;i<22;i++){let x=rand()*512,y=rand()*512;c.beginPath();c.moveTo(x,y);for(let k=0;k<4;k++){x+=-18+rand()*36;y+=10+rand()*38;c.lineTo(x,y);}c.strokeStyle=`rgba(40,42,40,${.07+rand()*.08})`;c.lineWidth=.6+rand()*1.1;c.stroke();}
   for(let i=0;i<8;i++){const y=rand()*512;c.fillStyle=`rgba(44,46,44,${.025+rand()*.035})`;c.fillRect(0,y,512,4+rand()*15);}
-  roadTex.update();roadTex.uScale=1.9;roadTex.vScale=7.2;roadMat.diffuseTexture=roadTex;roadMat.specularColor=new Color3(.025,.025,.023);roadMat.specularPower=20;roadMat.emissiveColor=Color3.FromHexString('#777971').scale(.075);
+  roadTex.update();roadTex.uScale=1.9;roadTex.vScale=7.2;roadMat.diffuseTexture=roadTex;roadMat.specularColor=new Color3(.018,.018,.017);roadMat.specularPower=16;roadMat.emissiveColor=Color3.FromHexString('#858780').scale(.12);
   box(230,.2,270,0,-.23,80,'#77796c',undefined,true);
   for(let i=0;i<ROAD.length-1;i++){
     const a=ROAD[i],b=ROAD[i+1],len=Math.hypot(b.x-a.x,b.z-a.z),root=new TransformNode('road'+i,scene);root.position.set((a.x+b.x)/2,-.04,(a.z+b.z)/2);root.rotation.y=Math.atan2(b.x-a.x,b.z-a.z);
-    const paving=box(7.3,.1,len+.18,0,0,0,'#72736e',root,true);paving.material=roadMat;
+    const paving=box(7.3,.1,len+.18,0,0,0,'#7b7c77',root,true);paving.material=roadMat;
     for(const side of [-1,1]){box(.30,.13,len+.1,side*3.67,.025,0,'#85847d',root);box(.15,.028,len,side*3.47,.074,0,'#454846',root);for(let dz=-len/2+.7;dz<len/2;dz+=3.1)box(.06,.016,.44,side*3.45,.095,dz,'#343735',root);}
   }
   const targets:Target[]=[];
