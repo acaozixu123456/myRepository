@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@babylonjs/core": "9.25.0",
+    "@babylonjs/loaders": "9.25.0",
     "lucide-react": "^0.469.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

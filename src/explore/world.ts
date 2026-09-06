@@ -19,6 +19,7 @@ import '@babylonjs/core/Collisions/collisionCoordinator';
 
 import {ROAD, ROAD_LENGTH, sampleRoad, distanceToRoad} from './geo';
 import type {Progress} from './state';
+import {loadHeroArt} from './heroArt';
 
 export type TargetId='shop'|'guide'|'menu'|'notice'|'cat';
 export type Target={id:TargetId;label:string;point:Vector3;radius:number};
@@ -62,9 +63,11 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   const warmWindow=emissiveMat('warm-window','#ffd59a',.42);const lampGlow=emissiveMat('lamp-glow','#ffc879',.58);const glassDay=new StandardMaterial('cool-window-glass',scene);glassDay.diffuseColor=Color3.FromHexString('#6f817d');glassDay.specularColor=Color3.FromHexString('#d7e0dc').scale(.44);glassDay.specularPower=96;glassDay.emissiveColor=Color3.FromHexString('#263633').scale(.15);
   let serial=0;const batches:Mesh[]=[];const animated:TransformNode[]=[];
   const blocked:Mesh[]=[];
+  function underHero(parent?:TransformNode){let node:any=parent;while(node){if(node.metadata?.heroShop)return true;node=node.parent;}return false;}
   function finish(mesh:Mesh,color:string,parent?:TransformNode,collision=false,merge=true){
-    mesh.material=mat(color);if(parent)mesh.parent=parent;mesh.receiveShadows=true;
-    if(collision){mesh.checkCollisions=true;mesh.metadata={blocker:true};blocked.push(mesh);}else if(merge)batches.push(mesh);
+    mesh.material=mat(color);if(parent)mesh.parent=parent;mesh.receiveShadows=true;const heroProxy=underHero(parent);
+    if(heroProxy)mesh.metadata={...(mesh.metadata||{}),heroProxy:true};
+    if(collision){mesh.checkCollisions=true;mesh.metadata={...(mesh.metadata||{}),blocker:true};blocked.push(mesh);}else if(merge&&!heroProxy)batches.push(mesh);
     return mesh;
   }
   function box(w:number,h:number,d:number,x:number,y:number,z:number,color:string,parent?:TransformNode,collision=false,merge=true){const m=MeshBuilder.CreateBox('b'+serial++,{width:w,height:h,depth:d},scene);m.position.set(x,y,z);return finish(m,color,parent,collision,merge);}
@@ -138,7 +141,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
       const point=sampleRoad(s),shop=side===1 && index===3,variant=(index*3+(side===1?1:4))%5;
       const setbacks=[0,.08,.18,.05,.24],widths=[8.42,8.70,8.86,8.54,8.76],heights=[5.02,5.40,5.86,5.20,5.64],depths=[5.45,5.80,5.62,5.94,5.35];
       const setback=shop?4.03:4.03+setbacks[variant],root=new TransformNode(`facade-${side}-${index}`,scene);root.position.set(point.x+point.tz*setback*side,0,point.z-point.tx*setback*side);root.rotation.y=Math.atan2(point.tz*side,-point.tx*side);
-      if(shop)shopRoot=root;
+      if(shop){shopRoot=root;root.metadata={heroShop:true};}
       const w=shop?8.55:widths[variant],h=shop?5.65:heights[variant],d=shop?5.7:depths[variant],colors=palettes[(index+(side===1?0:2))%palettes.length];
       if(shop){
         box(w,.14,d,0,.01,d/2,'#bcaa88',root,true);
@@ -217,11 +220,22 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   for(const z of [-.4,ROAD_LENGTH+.4]){const b=box(45,9,.3,0,4.5,z,'#eeeeee',undefined,true);b.isVisible=false;label('ここから先は、次のお散歩。',4,.6,0,1.8,z<0?1:ROAD_LENGTH-.8,'#d8dbc2','#425e52');}
   for(const x of [-25,25]){const b=box(.3,9,ROAD_LENGTH+10,x,4.5,ROAD_LENGTH/2,'#eeeeee',undefined,true);b.isVisible=false;}
   // Merge decorative geometry by material; leave walls and interactive objects individually addressable.
+  const heroProxyMeshes=shopRoot?shopRoot.getChildMeshes(false):[];
+  const belongsToReceipt=(mesh:Mesh)=>{let node:any=mesh.parent;while(node){if(node===receiptBag)return true;node=node.parent;}return false;};
   const groups=new Map<StandardMaterial,Mesh[]>();
   for(const mesh of batches){mesh.computeWorldMatrix(true);const m=mesh.material as StandardMaterial;const list=groups.get(m)||[];list.push(mesh);groups.set(m,list);}
   for(const list of groups.values()){const merged=Mesh.MergeMeshes(list,true,true,undefined,false,false);if(merged){merged.receiveShadows=true;merged.isPickable=false;shadows.addShadowCaster(merged);merged.freezeWorldMatrix();}}
   for(const b of blocked){b.freezeWorldMatrix();if(b.isVisible)shadows.addShadowCaster(b);}
   for(const m of mats.values())m.freeze();
+  let heroArt:ReturnType<typeof loadHeroArt>|null=null;
+  if(shopRoot){
+    heroArt=loadHeroArt(scene,shopRoot,shadows,coarse);
+    void heroArt.ready.then(()=>{
+      if(heroArt?.status!=='ready')return;
+      // Hide only the old hero-shop visuals after both GLBs are confirmed loaded. Keep collision proxies and the stateful bento/steam item alive.
+      for(const mesh of heroProxyMeshes){if(!belongsToReceipt(mesh)){mesh.visibility=0;mesh.isPickable=false;}}
+    });
+  }
   const player=MeshBuilder.CreateBox('player',{size:1},scene);player.isVisible=false;player.isPickable=false;player.ellipsoid=new Vector3(.27,.80,.27);player.ellipsoidOffset=new Vector3(0,.83,0);
   let yaw=initial.pose.yaw,pitch=initial.pose.pitch,paused=true,disposed=false,near:Target|null=null,scanTimer=0;
   let joyX=0,joyY=0,progress=initial,frameCounter=0,lastFrame=performance.now(),fps=0;
@@ -260,7 +274,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
     camera.position.copyFrom(player.position).addInPlace(new Vector3(0,1.68,0));camera.rotation.set(pitch,yaw,0);
     const time=performance.now()/1000;
     for(let i=0;i<animated.length;i++){const p=animated[i];p.scaling.y=1+Math.sin(time*1.7+i)*.009;}
-    if(keeper)keeper.rotation.y=near?.id==='shop'?.06*Math.sin(time*.8):0;
+    const activeKeeper=heroArt?.status==='ready'?heroArt.keeperAnchor:keeper;if(activeKeeper)activeKeeper.rotation.y=near?.id==='shop'?.06*Math.sin(time*.8):0;
     if(receiptBag)receiptBag.setEnabled(!progress.purchase.paid);
     for(let i=0;i<steam.length;i++){steam[i].visibility=progress.purchase.warm&&!progress.purchase.paid?.2+.15*Math.sin(time*2+i):0;steam[i].position.y=.20+((time*.15+i*.10)%.43);}
     scene.render();frameCounter++;if(performance.now()-lastFrame>1000){fps=Math.round(frameCounter*1000/(performance.now()-lastFrame));frameCounter=0;lastFrame=performance.now();}
@@ -271,7 +285,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
     pause(v){paused=v;clear();if(v){near=null;events.near(null);if(document.pointerLockElement===canvas)document.exitPointerLock();}},setMove,look,
     interact(){if(!paused&&near)events.interact(near.id);},setProgress(p){progress=p;},
     getPose(){return{x:player.position.x,z:player.position.z,yaw,pitch};},resetPosition,
-    diagnostics(){return{fps,floorY:player.position.y,keys:[...keys],meshCount:scene.meshes.length,roadLength:ROAD_LENGTH,pose:{x:player.position.x,z:player.position.z,yaw,pitch},paused,nearest:near?.id||null,webgl:engine.webGLVersion};},
-    dispose(){if(disposed)return;disposed=true;engine.stopRenderLoop(render);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);document.removeEventListener('pointerlockchange',lock);window.removeEventListener('keydown',keyDown);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',clear);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',visibility);if(document.pointerLockElement===canvas)document.exitPointerLock();scene.dispose();engine.dispose();},
+    diagnostics(){return{fps,floorY:player.position.y,keys:[...keys],meshCount:scene.meshes.length,roadLength:ROAD_LENGTH,pose:{x:player.position.x,z:player.position.z,yaw,pitch},paused,nearest:near?.id||null,webgl:engine.webGLVersion,artStatus:heroArt?.status||'unavailable',artError:heroArt?.error||null,artMeshCount:heroArt?.meshCount||0,artAnimations:heroArt?.animationNames||[],heroProxyVisible:heroProxyMeshes.filter(mesh=>mesh.visibility>0&&!belongsToReceipt(mesh)).length};},
+    dispose(){if(disposed)return;disposed=true;engine.stopRenderLoop(render);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);document.removeEventListener('pointerlockchange',lock);window.removeEventListener('keydown',keyDown);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',clear);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',visibility);if(document.pointerLockElement===canvas)document.exitPointerLock();heroArt?.dispose();scene.dispose();engine.dispose();},
   };
 }
