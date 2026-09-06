@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/explore-visual-v3.yml'
       - 'scripts/visual-v3-patch.py'
+      - 'scripts/visual-v3-browser.mjs'
       - 'src/explore/cinematic-v3.css'
       - 'explore.html'
   workflow_dispatch:
@@ -42,14 +43,14 @@ jobs:
           npm run typecheck
           npm test -- src/explore/explore.test.ts
           npm run build
-      - name: Desktop browser interaction and screenshot evidence
+      - name: Desktop visual/game evidence
         run: |
           npm install --no-save --package-lock=false --no-audit --no-fund playwright
           npx playwright install --with-deps chromium
           npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/preview.log 2>&1 &
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/explore.html >/dev/null && break; sleep 1; done
           mkdir -p /tmp/visual-v3
-          EXPLORE_ARTIFACTS=/tmp/visual-v3 node scripts/explore-browser.mjs
+          EXPLORE_ARTIFACTS=/tmp/visual-v3 node scripts/visual-v3-browser.mjs
       - name: Upload visual evidence
         if: always()
         uses: actions/upload-artifact@v4
