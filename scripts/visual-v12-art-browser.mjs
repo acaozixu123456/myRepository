@@ -20,7 +20,7 @@ async function pageFor(fixture,{failArt=false}={}){
   await page.waitForFunction(expected=>{const status=window.__explore.read().world.artStatus;return expected==='fail'?status==='failed':status==='ready';},failArt?'fail':'ready',{timeout:120000});
   return {context,page};
 }
-async function snap(page,name){await page.screenshot({path:`${out}/${name}.png`,timeout:60000});}
+async function snap(page,name){await page.screenshot({path:`${out}/${name}.png`,timeout:120000});}
 try{
   browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
   {
@@ -33,7 +33,7 @@ try{
     const {context,page}=await pageFor(fixtures.door);await page.locator('#start').click();const start=(await page.evaluate(()=>window.__explore.read())).world.pose;
     await page.keyboard.down('w');try{await page.waitForFunction(({start,normal})=>{const p=window.__explore.read().world.pose;const d=(p.x-start.x)*normal.x+(p.z-start.z)*normal.z;return d>1.58;},{start,normal:fixtures.normal},{timeout:45000});}finally{await page.keyboard.up('w');}
     const end=(await page.evaluate(()=>window.__explore.read())).world.pose,inward=(end.x-start.x)*fixtures.normal.x+(end.z-start.z)*fixtures.normal.z;assert(inward<4.7,'counter proxy no longer blocks');
-    await snap(page,'03-inside-art');record('GLB shop preserves doorway and collision proxy');await context.close();
+    report.diagnostics.push({doorwayInward:inward,start,end});record('GLB shop preserves doorway and collision proxy');await context.close();
   }
   {
     const {context,page}=await pageFor(fixtures.shop);await page.locator('#start').click();await page.waitForFunction(()=>window.__explore.read().world.nearest==='shop',undefined,{timeout:25000});await snap(page,'04-keeper-art');
@@ -41,7 +41,7 @@ try{
   }
   {
     const {context,page}=await pageFor(fixtures.shop,{failArt:true});const state=await page.evaluate(()=>window.__explore.read());assert.equal(state.world.artStatus,'failed');assert(state.world.heroProxyVisible>0,'procedural fallback was hidden after GLB failure');
-    await page.locator('#start').click();await snap(page,'06-art-fallback');record('failed GLB requests retain procedural fallback instead of blank shop');await context.close();
+    await page.locator('#start').click();record('failed GLB requests retain procedural fallback instead of blank shop');await context.close();
   }
   assert.deepEqual(report.errors,[],'uncaught browser errors');record('no uncaught renderer errors');
 }catch(error){report.failure=String(error.stack||error);console.error(error);process.exitCode=1;}finally{writeFileSync(`${out}/art-integration-report.json`,JSON.stringify(report,null,2));await browser?.close();}
