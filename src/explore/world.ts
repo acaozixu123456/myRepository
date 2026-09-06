@@ -222,6 +222,8 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   // Merge decorative geometry by material; leave walls and interactive objects individually addressable.
   const heroProxyMeshes=shopRoot?shopRoot.getChildMeshes(false):[];
   const belongsToReceipt=(mesh:Mesh)=>{let node:any=mesh.parent;while(node){if(node===receiptBag)return true;node=node.parent;}return false;};
+  const heroProxyMeshes=shopRoot?shopRoot.getChildMeshes(false):[];
+  const belongsToReceipt=(mesh:any)=>{let node:any=mesh.parent;while(node){if(node===receiptBag)return true;node=node.parent;}return false;};
   const groups=new Map<StandardMaterial,Mesh[]>();
   for(const mesh of batches){mesh.computeWorldMatrix(true);const m=mesh.material as StandardMaterial;const list=groups.get(m)||[];list.push(mesh);groups.set(m,list);}
   for(const list of groups.values()){const merged=Mesh.MergeMeshes(list,true,true,undefined,false,false);if(merged){merged.receiveShadows=true;merged.isPickable=false;shadows.addShadowCaster(merged);merged.freezeWorldMatrix();}}
