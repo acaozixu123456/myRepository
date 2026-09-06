@@ -11,6 +11,7 @@ import {StandardMaterial} from '@babylonjs/core/Materials/standardMaterial';
 import {DynamicTexture} from '@babylonjs/core/Materials/Textures/dynamicTexture';
 import {TransformNode} from '@babylonjs/core/Meshes/transformNode';
 import {ShadowGenerator} from '@babylonjs/core/Lights/Shadows/shadowGenerator';
+import {DefaultRenderingPipeline} from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline';
 import {Ray} from '@babylonjs/core/Culling/ray';
 import '@babylonjs/core/Collisions/collisionCoordinator';
 
@@ -29,21 +30,26 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   const engine=new Engine(canvas,true,{preserveDrawingBuffer:false,stencil:true,audioEngine:false,powerPreference:'high-performance'});
   engine.setHardwareScalingLevel(1/Math.min(devicePixelRatio||1,coarse?1.15:1.5));
   const scene=new Scene(engine);
-  scene.clearColor=new Color4(.78,.87,.86,1);
-  scene.fogMode=Scene.FOGMODE_EXP2;scene.fogColor=new Color3(.78,.86,.83);scene.fogDensity=.0085;
+  scene.clearColor=new Color4(.55,.66,.68,1);
+  scene.fogMode=Scene.FOGMODE_EXP2;scene.fogColor=Color3.FromHexString('#9eada9');scene.fogDensity=.0042;
   scene.collisionsEnabled=true;
-  scene.imageProcessingConfiguration.contrast=1.08;
-  scene.imageProcessingConfiguration.exposure=1.08;
+  scene.imageProcessingConfiguration.contrast=1.16;
+  scene.imageProcessingConfiguration.exposure=.91;
+  scene.imageProcessingConfiguration.toneMappingEnabled=true;
   const camera=new FreeCamera('eyes',new Vector3(0,1.68,8),scene);
-  camera.minZ=.065;camera.maxZ=220;camera.fov=.97;camera.inputs.clear();
-  const hemi=new HemisphericLight('sky',new Vector3(0,1,0),scene);hemi.intensity=.83;hemi.groundColor=Color3.FromHexString('#a69678');
-  const sun=new DirectionalLight('afternoon',new Vector3(-.65,-1,.45),scene);sun.position=new Vector3(35,60,10);sun.intensity=1.5;sun.diffuse=Color3.FromHexString('#fff0d8');
+  camera.minZ=.065;camera.maxZ=240;camera.fov=.94;camera.inputs.clear();
+  const cinematic=new DefaultRenderingPipeline('cinematic',true,scene,[camera]);
+  cinematic.samples=coarse?1:2;cinematic.fxaaEnabled=true;cinematic.bloomEnabled=true;cinematic.bloomThreshold=.82;cinematic.bloomWeight=.16;cinematic.bloomKernel=40;
+  const hemi=new HemisphericLight('sky',new Vector3(.12,1,-.18),scene);hemi.intensity=.48;hemi.diffuse=Color3.FromHexString('#bfd1d0');hemi.groundColor=Color3.FromHexString('#765f4a');
+  const sun=new DirectionalLight('afternoon',new Vector3(-.72,-.66,.34),scene);sun.position=new Vector3(46,58,-18);sun.intensity=2.35;sun.diffuse=Color3.FromHexString('#ffd6a0');sun.specular=Color3.FromHexString('#fff2d8');
   sun.shadowMinZ=1;sun.shadowMaxZ=160;sun.autoCalcShadowZBounds=true;
-  const shadows=new ShadowGenerator(coarse?512:1024,sun);shadows.useBlurExponentialShadowMap=true;shadows.useKernelBlur=true;shadows.blurKernel=12;shadows.bias=.002;shadows.normalBias=.025;shadows.setDarkness(.28);
+  const shadows=new ShadowGenerator(coarse?512:2048,sun);shadows.useBlurExponentialShadowMap=true;shadows.useKernelBlur=true;shadows.blurKernel=coarse?12:28;shadows.bias=.0018;shadows.normalBias=.021;shadows.setDarkness(.36);
   // All shadow casters in this slice are static. Reuse the depth map instead of redrawing the entire street every frame.
   const shadowMap=shadows.getShadowMap();if(shadowMap)shadowMap.refreshRate=0;
   const mats=new Map<string,StandardMaterial>();
-  function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=new Color3(.055,.055,.045);mats.set(color,m);}return m;}
+  function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=new Color3(.085,.08,.07);m.specularPower=48;m.ambientColor=Color3.FromHexString(color).scale(.08);mats.set(color,m);}return m;}
+  function emissiveMat(name:string,color:string,strength=.35){const m=new StandardMaterial(name,scene);const c=Color3.FromHexString(color);m.diffuseColor=c.scale(.72);m.emissiveColor=c.scale(strength);m.specularColor=c.scale(.08);return m;}
+  const warmWindow=emissiveMat('warm-window','#ffd59a',.42);const lampGlow=emissiveMat('lamp-glow','#ffc879',.58);
   let serial=0;const batches:Mesh[]=[];const animated:TransformNode[]=[];
   const blocked:Mesh[]=[];
   function finish(mesh:Mesh,color:string,parent?:TransformNode,collision=false,merge=true){
@@ -99,18 +105,19 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   let receiptBag:TransformNode|null=null,steam:Mesh[]=[];
   function person(root:TransformNode,x:number,z:number,coat:string,apron=false):TransformNode{
     const group=new TransformNode('person'+serial++,scene);group.parent=root;group.position.set(x,0,z);
-    // A consistent hand-built stylized character, not a photorealistic or rigged asset.
-    box(.15,.44,.20,-.115,.25,0,'#3b474b',group,false,false);box(.15,.44,.20,.115,.25,0,'#3b474b',group,false,false);
-    box(.18,.10,.29,-.115,.05,-.045,'#ede1c9',group,false,false);box(.18,.10,.29,.115,.05,-.045,'#ede1c9',group,false,false);
-    sphere(.30,.38,.18,0,.91,0,coat,group,false);
-    for(const sign of [-1,1]){const arm=cyl(.12,.14,.49,sign*.33,.89,0,coat,group,false);arm.rotation.z=sign*.15;sphere(.075,.1,.07,sign*.36,.62,-.01,'#e6b392',group,false);}
-    cyl(.15,.17,.16,0,1.27,0,'#e6b392',group,false);sphere(.215,.26,.21,0,1.50,0,'#edc4a3',group,false);
-    sphere(.227,.18,.22,0,1.62,.023,'#423d38',group,false);
-    box(.36,.10,.07,0,1.66,-.17,'#423d38',group,false,false);
-    for(const sign of [-1,1]){sphere(.017,.026,.012,sign*.075,1.49,-.20,'#49443e',group,false);sphere(.04,.018,.01,sign*.12,1.43,-.187,'#d8927a',group,false);}
-    box(.075,.012,.012,0,1.405,-.208,'#ad705e',group,false,false);
-    if(apron){box(.39,.57,.045,0,.83,-.175,'#d6cfaa',group,false,false);box(.23,.11,.025,0,.79,-.208,'#aeb493',group,false,false);for(const sign of [-1,1])box(.06,.24,.03,sign*.13,1.16,-.12,'#d6cfaa',group,false,false);}
-    else{box(.07,.46,.025,0,.96,-.18,'#e8ddc8',group,false,false);box(.13,.1,.03,-.13,1.03,-.18,'#a4b2a1',group,false,false);}
+    // Deliberately stylized: larger head, simplified face, graphic hair and clothing. No realistic skin rendering.
+    box(.17,.42,.21,-.105,.23,0,'#394247',group,false,false);box(.17,.42,.21,.105,.23,0,'#394247',group,false,false);
+    box(.19,.095,.30,-.105,.05,-.04,'#eee4cf',group,false,false);box(.19,.095,.30,.105,.05,-.04,'#eee4cf',group,false,false);
+    sphere(.34,.42,.22,0,.91,0,coat,group,false);
+    for(const sign of [-1,1]){const arm=cyl(.13,.155,.47,sign*.34,.90,.015,coat,group,false);arm.rotation.z=sign*.19;sphere(.085,.105,.075,sign*.385,.62,-.025,'#f0c29f',group,false);}
+    cyl(.16,.18,.13,0,1.28,0,'#f0c29f',group,false);
+    sphere(.255,.30,.245,0,1.53,-.015,'#f2c7a5',group,false);
+    sphere(.278,.235,.258,0,1.69,.045,'#3f3a37',group,false);
+    for(const sign of [-1,1])sphere(.095,.19,.105,sign*.18,1.63,.02,'#3f3a37',group,false);
+    for(const sign of [-1,1]){sphere(.026,.038,.016,sign*.088,1.525,-.246,'#343637',group,false);sphere(.052,.022,.012,sign*.13,1.44,-.229,'#df9a83',group,false);}
+    box(.085,.010,.010,0,1.427,-.255,'#a8665c',group,false,false);
+    if(apron){box(.41,.58,.05,0,.83,-.18,'#d9d2ac',group,false,false);box(.24,.12,.03,0,.78,-.215,'#a6b08f',group,false,false);for(const sign of [-1,1])box(.065,.24,.03,sign*.14,1.17,-.13,'#d9d2ac',group,false,false);}
+    else{box(.075,.46,.027,0,.96,-.185,'#ede3d0',group,false,false);box(.14,.10,.03,-.13,1.03,-.185,'#a4b2a1',group,false,false);}
     animated.push(group);return group;
   }
   for(let s=9,index=0;s<ROAD_LENGTH-6;s+=9.4,index++){
@@ -151,12 +158,16 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
       const names=side===1?['花とくらし','喫茶 こもれび','暮らしの道具','よりみち弁当','甘味 ひなた','古書 あおば','手づくり工房','山の茶屋']:['パンと日々','うつわ','小さな本屋','珈琲 日和','まちの写真室','和菓子 つむぎ','くらしの雑貨','はなや'];
       label(shop?'よりみち弁当':names[index%names.length],shop?5.6:5.1,.74,0,3.05,-.37,shop?'#f0e5c9':'#e5dbc3',shop?'#32574d':'#665d4e',root,shop?'あたたかいごはん、あります。':'やなか ・ さんぽ');
       if(shop){for(const x of [-.71,0,.71]){const curtain=box(.67,.51,.026,x,2.28,-.08,'#4a7166',root);curtain.metadata={noren:true};}label('弁当',.49,.28,0,2.30,-.105,'#4a7166','#f4ead3',root);}
-      // Lower facades carry the detail budget: wood slats, lanterns, plants and menus.
-      for(const x of [-3.95,3.95])for(let k=0;k<5;k++)box(.075,2.20,.045,x+(x<0?1:-1)*k*.12,1.13,-.24,'#b79c75',root);
+      // Lower facades carry the detail budget: varied setbacks, timber, tile, glazing and shop lights.
+      for(const x of [-3.95,3.95])for(let k=0;k<5;k++)box(.075,2.20,.045,x+(x<0?1:-1)*k*.12,1.13,-.24,'#a88962',root);
+      if(!shop&&index%4===0){for(let x=-3.5;x<3.6;x+=.34)box(.09,2.28,.06,x,1.22,-.34,'#745b45',root);box(7.55,.12,.42,0,.18,-.32,'#4e443a',root);}
+      if(!shop&&index%4===1){for(let x=-3.1;x<=3.1;x+=2.05){const glow=box(1.48,1.32,.035,x,1.43,-.34,'#f2c98d',root);glow.material=warmWindow;}box(7.6,.18,.32,0,.18,-.28,'#655d50',root);}
+      if(!shop&&index%4===2){for(let y=.45;y<2.5;y+=.34)box(7.2,.045,.05,0,y,-.36,'#9c7f61',root);box(2.4,1.1,.08,1.8,1.35,-.39,'#b6c5bc',root);}
+      if(!shop&&index%4===3){box(7.1,2.15,.07,0,1.22,-.34,'#c8b59a',root);for(let x=-3;x<3.1;x+=1.0)box(.06,2.08,.045,x,1.22,-.40,'#7c6b57',root);}
       plant(root,-3.7,-.75,.94);if(index%2===0)plant(root,3.5,-.67,1.2);
       if(index%3===1){const stand=box(.69,1,.075,2.9,.60,-1.25,'#6b6150',root);stand.rotation.x=-.12;label(shop?'日替わり 650円':'本日のおすすめ',.60,.82,2.9,.64,-1.34,'#344a42','#eee4c6',root,shop?'袋 3円':'いらっしゃいませ');}
       if(shop){label('日替わり弁当',1.45,1.07,-2.45,1.41,-.32,'#f0e5c9','#365b50',root,'650円 ・ 袋 3円');targets.push({id:'menu',label:'菜单 · 日替わり弁当',point:global(root,new Vector3(-2.45,1.41,-.6)),radius:3.0});}
-      if(index%3===0){const lantern=cyl(.30,.35,.55,-3.1,2.30,-.7,'#dca36a',root);lantern.rotation.z=.035;for(let k=0;k<6;k++)cyl(.348,.348,.012,-3.1,2.08+k*.078,-.7,'#c78c60',root);}
+      if(index%3===0){const lantern=cyl(.30,.35,.55,-3.1,2.30,-.7,'#dca36a',root);lantern.material=lampGlow;lantern.rotation.z=.035;for(let k=0;k<6;k++){const ring=cyl(.348,.348,.012,-3.1,2.08+k*.078,-.7,'#c78c60',root);ring.material=lampGlow;}}
       if(index%4===2){box(.92,.64,.39,3.2,3.01,-.52,'#c7c4ae',root);for(let k=0;k<6;k++)box(.69,.027,.013,3.2,2.84+k*.07,-.723,'#878f81',root);tube([new Vector3(3.45,3,-.56),new Vector3(3.70,3,-.56),new Vector3(3.70,.6,-.56)],.028,'#e4d9bf',root);}
     }
   }
@@ -171,7 +182,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   for(const s of [5,82,ROAD_LENGTH-3]){const p=sampleRoad(s),r=new TransformNode('arch'+s,scene);r.position.set(p.x,0,p.z);r.rotation.y=Math.atan2(p.tx,p.tz);for(const side of [-1,1]){cyl(.13,.17,4.8,side*3.32,2.4,0,'#536d61',r);cyl(.28,.28,.12,side*3.32,4.7,0,'#bfab7a',r);}box(6.7,.13,.14,0,4.60,0,'#536d61',r);label('谷中を、歩こう。',3.1,.61,0,4.32,-.02,'#e6dcc0','#3f6054',r);}
   const noticeP=sampleRoad(68),notice=new TransformNode('noticeRoot',scene);notice.position.set(noticeP.x-2.9,0,noticeP.z);notice.rotation.y=-Math.PI/2;
   box(1.5,1.7,.10,0,1.35,0,'#87785e',notice);label('路地の小さな市',1.35,1.45,0,1.35,-.07,'#f0e5ca','#566853',notice,'今週末 ・ まちの広場');targets.push({id:'notice',label:'読む · 街角的告示',point:global(notice,new Vector3(0,1.4,-.2)),radius:3.0});
-  for(let s=2;s<ROAD_LENGTH;s+=33){const p=sampleRoad(s),r=new TransformNode('tree'+s,scene);r.position.set(p.x+(s%2?12:-12),0,p.z);cyl(.18,.30,3.6,0,1.8,0,'#918169',r);for(let i=0;i<8;i++)sphere(1.25+rand()*.5,1.2,1.25,Math.cos(i*2.4)*1.1,3.7+rand()*.8,Math.sin(i*2.4),i%3===0?'#a5b57d':i%2?'#869d70':'#6e8b69',r);}
+  for(let s=2;s<ROAD_LENGTH;s+=24){const p=sampleRoad(s),r=new TransformNode('tree'+s,scene);r.position.set(p.x+(s%2?10.5:-10.5),0,p.z);cyl(.20,.34,3.8,0,1.9,0,'#705d4b',r);for(let i=0;i<11;i++){const leaf=sphere(1.15+rand()*.65,.95+rand()*.42,1.05+rand()*.5,Math.cos(i*2.1)*1.15,3.65+rand()*1.15,Math.sin(i*2.1)*1.05,i%3===0?'#84945d':i%2?'#687f5a':'#536f57',r);leaf.rotation.y=rand()*Math.PI;}for(let i=0;i<3;i++)plant(r,-.8+i*.75,-.55,.65+rand()*.35);}
   const catP=sampleRoad(57),cat=new TransformNode('cat',scene);cat.position.set(catP.x-3.15,0,catP.z);sphere(.18,.24,.28,0,.28,0,'#c9a077',cat);sphere(.18,.17,.17,0,.52,-.16,'#c9a077',cat);for(const side of [-1,1]){const ear=cyl(0,.17,.19,side*.11,.69,-.13,'#aa8665',cat);ear.rotation.z=-side*.2;sphere(.017,.026,.015,side*.065,.52,-.32,'#4b5040',cat);}tube([new Vector3(0,.20,.2),new Vector3(.25,.15,.4),new Vector3(.42,.26,.3)],.045,'#c9a077',cat);targets.push({id:'cat',label:'路边有一只猫',point:global(cat,new Vector3(0,.4,0)),radius:2.6});
   // Keep the sample finite. Invisible bounds prevent falling out; both ends are visibly signposted.
   for(const z of [-.4,ROAD_LENGTH+.4]){const b=box(45,9,.3,0,4.5,z,'#eeeeee',undefined,true);b.isVisible=false;label('ここから先は、次のお散歩。',4,.6,0,1.8,z<0?1:ROAD_LENGTH-.8,'#d8dbc2','#425e52');}
