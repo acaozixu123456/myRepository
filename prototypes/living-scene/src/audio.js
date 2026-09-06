@@ -434,6 +434,15 @@ class LivingSceneAudio {
     if (changed && ["attentive", "watching"].includes(state)) this.catCue();
   }
 
+  catStep() {
+    if (!this.ctx || !this.enabled) return;
+    const at=this.ctx.currentTime;
+    const noise=this.ctx.createBufferSource();noise.buffer=makeNoiseBuffer(this.ctx,.10);
+    const filter=this.ctx.createBiquadFilter();filter.type="lowpass";filter.frequency.value=480;
+    const env=this.ctx.createGain();env.gain.setValueAtTime(0,at);env.gain.linearRampToValueAtTime(.025,at+.015);env.gain.exponentialRampToValueAtTime(.0001,at+.09);
+    noise.connect(filter).connect(env).connect(this.catBus);noise.start();noise.stop(at+.11);
+  }
+
   catCue() {
     if (!this.ctx || !this.enabled || performance.now() - this.lastCatCue < 4000) return;
     this.lastCatCue = performance.now();

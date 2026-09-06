@@ -1,0 +1,149 @@
+{
+  "files": [
+    {
+      "path": "art-source/living-scene/cat-v2/attentive-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "d50468fe296fbc2c635965efa43111cf52982e06aa13fb98b15bcdfd69904f23"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/character-reference.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "56891b8eaa7c76e8a5725287b807da04330b6be91e02a42315f6afaed4cb95f3"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/content-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "6f45b922b0b6dc81d0049ba76d64e4c2a9d51cfd589f2e16b7c111d9d3ffc86c"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/observing-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "43aa0de49c823dd57d7cbe755da9b9dee23325bbcee0fa9a25eec95bb823f221"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/rest-atlas-raw.png",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGB",
+      "sha256": "f4a0146ad26eec8eeeaa287be7f8a475e67d646aaac6f35dbf55b02dcad33ce3"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-atlas-raw.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "sha256": "9cb07e761f5b6d5e3dc4eee56fd895f8dcfb365da272288cf5d67616a57cd4b3"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-left-0-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "72b8082ffb0eb37f88d8a3f5a48dceb0aa6d3da13527d9efb936a1a27caa2850"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-left-1-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "c56f4addd77c6b1c73cd600e7975b11216313a1b9b4177587702f68aa5c41fc4"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-left-2-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "e80409938ba60e0696c26c8877e26ad78758f2a181f67ad12ff0ceb894373d35"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-left-3-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "891607ec28eed60fa3d28bf384abf88ed31d632180e77fcd5c1087c9228b9aa6"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-right-0-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "890ee135b9984ca8f123bb86e3c6e2dd37a6233cdb2553d475f4486c008fe7f1"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-right-1-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "e95edacd0c204f5b7d8d8cd429351aac09b0dd6103aa1c65941f43cd63c9ef51"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-right-2-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "ff3c84b140e5d40feae14f9e804a44faed035591c539207cb931755c42772b87"
+    },
+    {
+      "path": "art-source/living-scene/cat-v2/walk-right-3-rgba.png",
+      "size": [
+        384,
+        384
+      ],
+      "mode": "RGBA",
+      "sha256": "fa0ff2f5e4a34922388f01681a04b38a282f8ce3c06c106e033b8e2bfe5f8f6b"
+    }
+  ],
+  "identityReferences": [
+    {
+      "name": "1661788674880_.pic.jpg",
+      "sha256": "8aa35ed28850e27c71925895a14dc1588db3168e2178bdae584e6478cfdfa389",
+      "role": "identity; photo remains private"
+    },
+    {
+      "name": "1631788674876_.pic.jpg",
+      "sha256": "ffef3a465d822d25bf211a447f5ea0575915a9a4e453bc7e42b574a43ba1954b",
+      "role": "identity; photo remains private"
+    },
+    {
+      "name": "1621788674875_.pic.jpg",
+      "sha256": "22c386571cb242de54c4fc59f38919c5bf3f6f5e67f9839f6f4577c6825f5140",
+      "role": "identity; photo remains private"
+    }
+  ],
+  "runtimeUse": "Derived original project art; no CC0 or other public asset license asserted.",
+  "tool": "Codex built-in imagegen, 3 calls; exact prompts retained."
+}

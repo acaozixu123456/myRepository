@@ -1,0 +1,409 @@
+[
+  {
+    "name": "walk-left-0",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      0,
+      0,
+      384,
+      512
+    ],
+    "bounds": [
+      30,
+      195,
+      382,
+      433
+    ],
+    "familyCrop": [
+      30,
+      195,
+      388,
+      433
+    ],
+    "registrationX": 0,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9439106145251397,
+    "paste": [
+      23,
+      92
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "walk-left-1",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      384,
+      0,
+      768,
+      512
+    ],
+    "bounds": [
+      24,
+      195,
+      373,
+      431
+    ],
+    "familyCrop": [
+      30,
+      195,
+      388,
+      433
+    ],
+    "registrationX": 6,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9439106145251397,
+    "paste": [
+      23,
+      92
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "walk-left-2",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      768,
+      0,
+      1152,
+      512
+    ],
+    "bounds": [
+      14,
+      196,
+      363,
+      432
+    ],
+    "familyCrop": [
+      30,
+      195,
+      388,
+      433
+    ],
+    "registrationX": 16,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9439106145251397,
+    "paste": [
+      23,
+      92
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "walk-left-3",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      1152,
+      0,
+      1536,
+      512
+    ],
+    "bounds": [
+      3,
+      195,
+      361,
+      432
+    ],
+    "familyCrop": [
+      30,
+      195,
+      388,
+      433
+    ],
+    "registrationX": 27,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9439106145251397,
+    "paste": [
+      23,
+      92
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "walk-right-0",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      0,
+      512,
+      390,
+      1024
+    ],
+    "bounds": [
+      17,
+      70,
+      374,
+      302
+    ],
+    "familyCrop": [
+      14,
+      70,
+      374,
+      303
+    ],
+    "registrationX": 0,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9386666666666668,
+    "paste": [
+      23,
+      98
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "walk-right-1",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      390,
+      512,
+      760,
+      1024
+    ],
+    "bounds": [
+      2,
+      70,
+      357,
+      302
+    ],
+    "familyCrop": [
+      14,
+      70,
+      374,
+      303
+    ],
+    "registrationX": 17,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9386666666666668,
+    "paste": [
+      23,
+      98
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "walk-right-2",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      760,
+      512,
+      1138,
+      1024
+    ],
+    "bounds": [
+      6,
+      72,
+      360,
+      302
+    ],
+    "familyCrop": [
+      14,
+      70,
+      374,
+      303
+    ],
+    "registrationX": 14,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9386666666666668,
+    "paste": [
+      23,
+      98
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "walk-right-3",
+    "rawAtlas": "walk-atlas-raw.png",
+    "rawSize": [
+      1536,
+      1024
+    ],
+    "cell": [
+      1138,
+      512,
+      1536,
+      1024
+    ],
+    "bounds": [
+      3,
+      70,
+      363,
+      303
+    ],
+    "familyCrop": [
+      14,
+      70,
+      374,
+      303
+    ],
+    "registrationX": 11,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.9386666666666668,
+    "paste": [
+      23,
+      98
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "observing",
+    "rawAtlas": "rest-atlas-raw.png",
+    "rawSize": [
+      2172,
+      724
+    ],
+    "cell": [
+      0,
+      0,
+      724,
+      724
+    ],
+    "bounds": [
+      147,
+      150,
+      668,
+      589
+    ],
+    "familyCrop": [
+      147,
+      138,
+      668,
+      589
+    ],
+    "registrationX": 0,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.6485988483685221,
+    "paste": [
+      23,
+      24
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "attentive",
+    "rawAtlas": "rest-atlas-raw.png",
+    "rawSize": [
+      2172,
+      724
+    ],
+    "cell": [
+      724,
+      0,
+      1448,
+      724
+    ],
+    "bounds": [
+      129,
+      140,
+      645,
+      589
+    ],
+    "familyCrop": [
+      147,
+      138,
+      668,
+      589
+    ],
+    "registrationX": 23,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.6485988483685221,
+    "paste": [
+      23,
+      24
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  },
+  {
+    "name": "content",
+    "rawAtlas": "rest-atlas-raw.png",
+    "rawSize": [
+      2172,
+      724
+    ],
+    "cell": [
+      1448,
+      0,
+      2172,
+      724
+    ],
+    "bounds": [
+      60,
+      138,
+      570,
+      588
+    ],
+    "familyCrop": [
+      147,
+      138,
+      668,
+      589
+    ],
+    "registrationX": 98,
+    "outputSize": [
+      384,
+      384
+    ],
+    "scale": 0.6485988483685221,
+    "paste": [
+      23,
+      24
+    ],
+    "method": "connected subject alpha, fringe cleanup, family scale and horizontal registration"
+  }
+]

@@ -1,0 +1,556 @@
+{
+  "date": "2026-09-06T07:25:07.333Z",
+  "checks": {
+    "continuousDryPathFrom0": true,
+    "continuousDryPathFrom1": true,
+    "continuousDryPathFrom2": true,
+    "attentionPostponesDeparture": true,
+    "directorPause": true,
+    "nameConfirmed": true,
+    "defaultMuted": true,
+    "petWorks": true,
+    "shopPreserved": true,
+    "reducedMotionStopsTravel": true,
+    "actualAnchorChanged": true,
+    "actualIntermediatePositions": true,
+    "walkingFramesVisible": true,
+    "audioStillDucks": true,
+    "actualAudioNotSilent": true,
+    "noBrowserErrors": true
+  },
+  "states": {
+    "departure": {
+      "cat": {
+        "ready": true,
+        "state": "walking",
+        "active": false,
+        "anchorIndex": 1,
+        "anchor": [
+          0.74,
+          0.229
+        ],
+        "travelMix": 0,
+        "director": {
+          "clock": 62.88236666666767,
+          "idle": 62.88236666666767,
+          "anchorIndex": 1,
+          "position": [
+            0.74,
+            0.229
+          ],
+          "trip": {
+            "from": 1,
+            "to": 2,
+            "elapsed": 0,
+            "duration": 4.326918328582393,
+            "direction": "right",
+            "distance": 0,
+            "mix": 0
+          },
+          "arrivals": 0,
+          "nextMove": 62.87125249076314
+        },
+        "visits": 2,
+        "touches": 1,
+        "blink": 0,
+        "gaze": 0,
+        "ear": 4.80326382775341e-7,
+        "pose": 0,
+        "content": 0.7920743621275812,
+        "elapsed": 62.88236666666767,
+        "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+      },
+      "audio": {
+        "supported": true,
+        "enabled": true,
+        "started": true,
+        "state": "running",
+        "focused": false,
+        "hovered": false,
+        "preferred": true,
+        "catState": "walking",
+        "catNear": false,
+        "buses": {
+          "music": 0.07729887217283249,
+          "ambience": 0.08500000089406967,
+          "cat": 0.10999999940395355,
+          "purr": 0
+        }
+      },
+      "story": {
+        "active": null,
+        "node": null,
+        "completed": [],
+        "read": []
+      },
+      "paused": false,
+      "time": 62.88236666666767,
+      "errors": []
+    },
+    "arrival": {
+      "cat": {
+        "ready": true,
+        "state": "observing",
+        "active": false,
+        "anchorIndex": 2,
+        "anchor": [
+          0.79,
+          0.215
+        ],
+        "travelMix": 0.000002452108956549944,
+        "director": {
+          "clock": 69.73256666666755,
+          "idle": 1.216800000000003,
+          "anchorIndex": 2,
+          "position": [
+            0.79,
+            0.215
+          ],
+          "trip": null,
+          "arrivals": 1,
+          "nextMove": 173.655104985327
+        },
+        "visits": 2,
+        "touches": 1,
+        "blink": 0,
+        "gaze": 0,
+        "ear": 0.1286705522251916,
+        "pose": 0,
+        "content": 1.1850523524275298e-21,
+        "elapsed": 69.73256666666755,
+        "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+      },
+      "audio": {
+        "supported": true,
+        "enabled": true,
+        "started": true,
+        "state": "running",
+        "focused": false,
+        "hovered": false,
+        "preferred": true,
+        "catState": "observing",
+        "catNear": false,
+        "buses": {
+          "music": 0.10499999672174454,
+          "ambience": 0.08500000089406967,
+          "cat": 0.10999999940395355,
+          "purr": 0
+        }
+      },
+      "story": {
+        "active": null,
+        "node": null,
+        "completed": [],
+        "read": []
+      },
+      "paused": false,
+      "time": 69.73256666666755,
+      "errors": []
+    },
+    "purring": {
+      "cat": {
+        "ready": true,
+        "state": "purring",
+        "active": true,
+        "anchorIndex": 2,
+        "anchor": [
+          0.79,
+          0.215
+        ],
+        "travelMix": 4.6780442475614454e-24,
+        "director": {
+          "clock": 74.26596666666751,
+          "idle": 0,
+          "anchorIndex": 2,
+          "position": [
+            0.79,
+            0.215
+          ],
+          "trip": null,
+          "arrivals": 1,
+          "nextMove": 173.655104985327
+        },
+        "visits": 2,
+        "touches": 2,
+        "blink": 0,
+        "gaze": 0,
+        "ear": 0.00022479987409960845,
+        "pose": 0.9999999969272718,
+        "content": 0.99999998239178,
+        "elapsed": 74.26596666666751,
+        "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+      },
+      "audio": {
+        "supported": true,
+        "enabled": true,
+        "started": true,
+        "state": "running",
+        "focused": true,
+        "hovered": false,
+        "preferred": true,
+        "catState": "purring",
+        "catNear": true,
+        "buses": {
+          "music": 0.0481574684381485,
+          "ambience": 0.062022387981414795,
+          "cat": 0.10999999940395355,
+          "purr": 0.30000001192092896
+        }
+      },
+      "story": {
+        "active": null,
+        "node": null,
+        "completed": [],
+        "read": []
+      },
+      "paused": false,
+      "time": 74.26596666666751,
+      "errors": []
+    }
+  },
+  "events": [
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7420252230577286,
+        0.228432937543836
+      ],
+      "travelMix": 0.9965050074414562,
+      "director": {
+        "clock": 63.93256666666767,
+        "idle": 63.93256666666767,
+        "anchorIndex": 1,
+        "position": [
+          0.7420252230577286,
+          0.228432937543836
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 1.0501999999999974,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.0021031139443088162,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 2.057066099222061e-8,
+      "pose": 0,
+      "content": 0.0005082688591978067,
+      "elapsed": 63.93256666666767,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    },
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7473139511613445,
+        0.22695209367482355
+      ],
+      "travelMix": 0.999917608149898,
+      "director": {
+        "clock": 64.34896666666766,
+        "idle": 64.34896666666766,
+        "anchorIndex": 1,
+        "position": [
+          0.7473139511613445,
+          0.22695209367482355
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 1.4665999999999915,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.007595248640250692,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 5.898309809747986e-9,
+      "pose": 0,
+      "content": 0.000027555731612297613,
+      "elapsed": 64.34896666666766,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    },
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7532269879533076,
+        0.2252964433730739
+      ],
+      "travelMix": 0.9999985684088393,
+      "director": {
+        "clock": 64.79926666666768,
+        "idle": 64.79926666666768,
+        "anchorIndex": 1,
+        "position": [
+          0.7532269879533076,
+          0.2252964433730739
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 1.9168999999999938,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.013735703185705196,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 1.5277038201054728e-9,
+      "pose": 0,
+      "content": 0.0000011783445832698597,
+      "elapsed": 64.79926666666768,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    },
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7624070990376102,
+        0.22272601226946914
+      ],
+      "travelMix": 0.9999999973497823,
+      "director": {
+        "clock": 65.49836666666764,
+        "idle": 65.49836666666764,
+        "anchorIndex": 1,
+        "position": [
+          0.7624070990376102,
+          0.22272601226946914
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 2.6159999999999997,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.02326888500388712,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 1.8758294406263777e-10,
+      "pose": 0,
+      "content": 8.8300955616956e-9,
+      "elapsed": 65.49836666666764,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    },
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7729187267346266,
+        0.21978275651430457
+      ],
+      "travelMix": 0.9999999999980302,
+      "director": {
+        "clock": 66.2988666666676,
+        "idle": 66.2988666666676,
+        "anchorIndex": 1,
+        "position": [
+          0.7729187267346266,
+          0.21978275651430457
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 3.416499999999999,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.034184794094796224,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 1.69916341809436e-11,
+      "pose": 0,
+      "content": 3.253840603907972e-11,
+      "elapsed": 66.2988666666676,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    },
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7779506514485512,
+        0.21837381759440566
+      ],
+      "travelMix": 0.9999999999999375,
+      "director": {
+        "clock": 66.68206666666762,
+        "idle": 66.68206666666762,
+        "anchorIndex": 1,
+        "position": [
+          0.7779506514485512,
+          0.21837381759440566
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 3.799699999999996,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.03941024864025078,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 5.382328654457621e-12,
+      "pose": 0,
+      "content": 2.225587923351859e-12,
+      "elapsed": 66.68206666666762,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    },
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7836470213360787,
+        0.21677883402589798
+      ],
+      "travelMix": 0.9999999999999987,
+      "director": {
+        "clock": 67.1158666666676,
+        "idle": 67.1158666666676,
+        "anchorIndex": 1,
+        "position": [
+          0.7836470213360787,
+          0.21677883402589798
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 4.2334999999999985,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.04532570318570531,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 1.4648035177951684e-12,
+      "pose": 0,
+      "content": 1.0682333497235596e-13,
+      "elapsed": 67.1158666666676,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    },
+    {
+      "ready": true,
+      "state": "walking",
+      "active": false,
+      "anchorIndex": 1,
+      "anchor": [
+        0.7889128213318977,
+        0.21530441002706868
+      ],
+      "travelMix": 0.9999999999999999,
+      "director": {
+        "clock": 67.5660666666676,
+        "idle": 67.5660666666676,
+        "anchorIndex": 1,
+        "position": [
+          0.7889128213318977,
+          0.21530441002706868
+        ],
+        "trip": {
+          "from": 1,
+          "to": 2,
+          "elapsed": 4.683699999999996,
+          "duration": 4.326918328582393,
+          "direction": "right",
+          "distance": 0.050794027949679285,
+          "mix": 1
+        },
+        "arrivals": 0,
+        "nextMove": 62.87125249076314
+      },
+      "visits": 2,
+      "touches": 1,
+      "blink": 0,
+      "gaze": 0,
+      "ear": 3.7950827245961235e-13,
+      "pose": 0,
+      "content": 4.57120293661439e-15,
+      "elapsed": 67.5660666666676,
+      "source": "Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths"
+    }
+  ],
+  "errors": [],
+  "hardware": {
+    "vendor": "Google Inc. (AMD)",
+    "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)"
+  },
+  "recording": {
+    "method": "Chrome DevTools Page.startScreencast; actual viewport including HTML UI",
+    "frames": 363,
+    "durationSeconds": 28.645097970962524,
+    "animationSeconds": 23.882399999999762,
+    "paused": false,
+    "encoding": "Resampled by timestamp to 15 fps; never used for performance numbers"
+  },
+  "audio": {
+    "duration": 25.68,
+    "sampleRate": 44100,
+    "channels": 2,
+    "peak": 0.015383311547338963,
+    "rms": 0.0025308996570266263,
+    "started": 1788679479.021,
+    "offsetSeconds": 2.6659209728240967
+  },
+  "performance": "No FPS benchmark; natural elapsed time, not forced travel."
+}

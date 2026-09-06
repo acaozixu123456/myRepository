@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "displayName": {
+    "zh": "拿铁",
+    "ja": "ラテ"
+  },
+  "nameStatus": "Explicitly confirmed by user in Codex on 2026-09-06.",
+  "traits": {
+    "face": "Adult, slightly tapered cheek silhouette; avoid round chibi cheeks.",
+    "eyes": "Sage green iris, dark rim, almond-round aperture; not oversized kitten eyes.",
+    "nose": "Narrow warm tan bridge, muted pink-brown nose with dark outline.",
+    "forehead": "Dark M with narrow forked central stripes and pale channels.",
+    "cheeks": "Two strong sweeping dark bars; white lower muzzle and chin.",
+    "chestAndPaws": "Broad white bib and front socks, preserve white transitions.",
+    "coat": "Brown-black classic tabby, broad dark dorsal saddle and large side swirls.",
+    "body": "Stocky adult proportions, consistent torso length across poses.",
+    "ears": "Proportionate upright triangles, pale fine edge, muted pink inner ear.",
+    "tail": "Dark ringed tail, consistent attachment and length.",
+    "collar": "Plain narrow brown collar, no readable tag or added bell."
+  },
+  "style": "Cinematic semi-illustration, painterly fur masses, warm right key and cool fill.",
+  "scale": "Preserve accepted 0.045 source-width scale in the rainy scene.",
+  "referencePhotosRemainPrivate": true,
+  "reviewStatus": "Candidate visual specification; likeness must be reviewed by the user."
+}

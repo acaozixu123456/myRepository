@@ -1,7 +1,8 @@
 import * as T from 'three';
+import { catAnchors, createCatDirector } from './cat-director.js';
 import fragmentShader from './cat.frag.glsl?raw';
 
-const anchors = [[.69,.24],[.79,.215]];
+const anchors = catAnchors.map(a => a.uv);
 const key='livingScene.cat.latte.v1';
 export function createCat({ sound, focusScene, closeStory }) {
   const $=s=>document.querySelector(s), button=$('#cat-hotspot');
@@ -14,7 +15,8 @@ export function createCat({ sound, focusScene, closeStory }) {
   saved.visits++;
   const persist=()=>{if(canSave)try{localStorage.setItem(key,JSON.stringify(saved));}catch{}};
   persist();
-  const anchor=anchors[anchorIndex];
+  const director=createCatDirector(anchorIndex);
+  let anchor=[...anchors[anchorIndex]],travelMix=0,walkTextures,lastStep=-1;
   let ready=false, state='observing',elapsed=0,idle=0,until=0,near=false,active=false;
   let gaze=0,targetGaze=0,ear=0,pose=0,content=0,blink=0,nextBlink=3.5,blinkAt=-10;
   let group,mesh,uniforms,shadow,downAt=0,pointerHeld=false,petTriggered=false;
@@ -22,6 +24,7 @@ export function createCat({ sound, focusScene, closeStory }) {
     attentive: ['こっち、見てくれた。','它看向我了。','「〜てくれた」带一点“它为我做了这件事”的亲近感。'],
     purring:['気持ちよさそう。','看起来好舒服。','「〜そう」在这里是根据眼前的样子作判断。'],
     watching:['何か、見つけた？','发现什么了吗？','顺着它的目光，看看树枝和远处的小巷。'],
+    walking:['どこに行くの？','要去哪里呀？','安静地看它走到下一个落脚点。'],
     sleeping:['眠そうだね。','看起来困了呢。','「眠い」是困，「眠そう」是看上去困。'],
     observing:['そこが好きなんだね。','原来你喜欢待在那里啊。','先在这里陪它安静一会儿。'],
   };
@@ -40,7 +43,7 @@ export function createCat({ sound, focusScene, closeStory }) {
   }
   function open() {
     if(!ready)return;
-    closeStory();active=true;
+    closeStory();active=true;director.attend();
     $('#places-nav').hidden=true;$('#places-toggle').setAttribute('aria-expanded','false');
     document.body.classList.add('cat-focused');
     $('#cat-panel').hidden=false;$('#hotspots').inert=true;
@@ -56,7 +59,7 @@ export function createCat({ sound, focusScene, closeStory }) {
     sound.setCatState(state,near);
   }
   button.onclick=()=>{if(!petTriggered)open();petTriggered=false;};
-  button.onpointerenter=button.onfocus=()=>{near=true;ear=1;idle=0;sound.setCatState(state,true);};
+  button.onpointerenter=button.onfocus=()=>{near=true;ear=1;idle=0;director.attend();sound.setCatState(state,true);};
   button.onpointerleave=button.onblur=()=>{near=false;pointerHeld=false;sound.setCatState(state,active);};
   button.onpointermove=e=>{
     const r=button.getBoundingClientRect();targetGaze=T.MathUtils.clamp((e.clientX-r.left)/r.width*2-1,-1,1);
@@ -68,7 +71,7 @@ export function createCat({ sound, focusScene, closeStory }) {
   };
   addEventListener('pointerup',()=>pointerHeld=false);
   addEventListener('pointercancel',()=>pointerHeld=false);
-  $('#cat-pet').onclick=()=>setState('purring',7);
+  $('#cat-pet').onclick=()=>{director.attend();setState('purring',7);};
   $('#cat-look').onclick=()=>{ear=1;setState('watching',6);};
   $('#cat-rest').onclick=()=>setState('sleeping',25);
   $('#cat-back').onclick=close;
@@ -78,9 +81,10 @@ export function createCat({ sound, focusScene, closeStory }) {
   return {
     async load(scene) {
       const loader=new T.TextureLoader();
-      const textures=await Promise.all(['alert-loaf','attentive','content'].map(n=>loader.loadAsync(`/cat/${n}.webp`)));
+      const textures=await Promise.all(['observing','attentive','content',...['left','right'].flatMap(d=>[0,1,2,3].map(i=>`walk-${d}-${i}`))].map(n=>loader.loadAsync(`/cat-v2/${n}.webp`)));
+      walkTextures=textures.slice(3);
       textures.forEach(t=>t.colorSpace=T.SRGBColorSpace);
-      uniforms={uRest:{value:textures[0]},uAlert:{value:textures[1]},uContent:{value:textures[2]},uTime:{value:0},uPose:{value:0},uContentMix:{value:0},uBlink:{value:0},uGaze:{value:0},uEar:{value:0},uFade:{value:1}};
+      uniforms={uRest:{value:textures[0]},uAlert:{value:textures[1]},uContent:{value:textures[2]},uTime:{value:0},uPose:{value:0},uContentMix:{value:0},uBlink:{value:0},uGaze:{value:0},uEar:{value:0},uFade:{value:1},uWalkA:{value:walkTextures[0]},uWalkB:{value:walkTextures[1]},uTravel:{value:0},uFrameBlend:{value:0}};
       group=new T.Group();
       mesh=new T.Mesh(new T.PlaneGeometry(1,1),new T.ShaderMaterial({uniforms,vertexShader:'varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader,transparent:true,depthWrite:false,depthTest:false}));
       mesh.renderOrder=1;mesh.frustumCulled=false;group.add(mesh);
@@ -90,12 +94,18 @@ export function createCat({ sound, focusScene, closeStory }) {
     },
     update(dt,time,{cover,pointer,focusOffset,push,width,height,aspect,paused,reduced,storyFocused}) {
       if(!ready)return;
+      const action=director.update(dt,{blocked:near||active,resting:state==='sleeping',paused:paused||reduced});
+      if(action==='depart'){setState('walking');lastStep=-1;}
+      if(action==='arrived')setState('observing');
+      if(action==='rest')setState('sleeping',24);
+      if(action==='glance'){targetGaze=-.6;ear=1;setState('watching',4);}
+      const motion=director.snapshot();anchor=motion.position;
       if(!paused){
         elapsed+=dt;idle+=dt;
         if(pointerHeld&&elapsed-downAt>.45&&!petTriggered){open();setState('purring',7);petTriggered=true;pointerHeld=false;}
         if(['purring','attentive','watching'].includes(state)&&elapsed>until)setState('observing');
         if(state==='sleeping'&&elapsed>until)setState('observing');
-        if(idle>38&&!active&&!near&&state==='observing')setState('sleeping',28);
+        if(idle>38&&!active&&!near&&state==='observing'&&!motion.trip)setState('sleeping',28);
         if(elapsed>nextBlink){blinkAt=elapsed;nextBlink=elapsed+4+Math.random()*4;}
         const b=(elapsed-blinkAt)/.26;blink=b>=0&&b<=1?Math.sin(b*Math.PI):0;
         if(Math.sin(elapsed*.57)>.994)ear=1;
@@ -107,6 +117,17 @@ export function createCat({ sound, focusScene, closeStory }) {
       content+=(Number(['sleeping','purring'].includes(state))-content)*blend;
       uniforms.uTime.value=time;uniforms.uPose.value=pose;uniforms.uContentMix.value=content;
       uniforms.uBlink.value=reduced?0:blink;uniforms.uGaze.value=reduced?0:gaze;uniforms.uEar.value=reduced?0:ear;
+      const traveling=!!motion.trip&&!near&&!active;
+      if(!paused)travelMix=T.MathUtils.damp(travelMix,traveling?motion.trip.mix:0,9,dt);
+      uniforms.uTravel.value=travelMix;
+      if(motion.trip){
+        const phase=motion.trip.distance/.014*4;
+        const frame=Math.floor(phase)%4,offset=motion.trip.direction==='right'?4:0;
+        uniforms.uWalkA.value=walkTextures[offset+frame];uniforms.uWalkB.value=walkTextures[offset+(frame+1)%4];
+        uniforms.uFrameBlend.value=T.MathUtils.smoothstep(phase%1,.75,1);
+        const step=Math.floor(phase/2);
+        if(traveling&&!paused&&travelMix>.8&&step!==lastStep){sound.catStep();lastStep=step;}
+      }
       const z=1.035+push*.045,depth=.8;
       const x=.5+((anchor[0]-.5-focusOffset.x-pointer.x*.006*(depth-.2))/cover.x)*z;
       const y=.5+((anchor[1]-.5-focusOffset.y-pointer.y*.003*(depth-.2))/cover.y)*z;
@@ -122,7 +143,7 @@ export function createCat({ sound, focusScene, closeStory }) {
       button.style.width=`${spriteW}px`;button.style.height=`${spriteH}px`;
       button.hidden=cx<0||cx>width||baseline<0||baseline>height||storyFocused;
     },
-    snapshot:()=>({ready,state,active,anchorIndex,anchor,visits:saved.visits,touches:saved.touches,blink,gaze,ear,pose,content,elapsed,source:'3 imagegen-painted RGBA poses; localized shader deformation'}),
+    snapshot:()=>({ready,state,active,anchorIndex:director.snapshot().anchorIndex,anchor,travelMix,director:director.snapshot(),visits:saved.visits,touches:saved.touches,blink,gaze,ear,pose,content,elapsed,source:'Character-sheet-guided 3 rest poses + 8 directional walk frames; authored dry-step paths'}),
     close,
   };
 }

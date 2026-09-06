@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-export async function recordBrowser(page, capture, tour) {
+export async function recordBrowser(page, capture, tour, {prepare} = {}) {
   await page.bringToFront();
   await page.emulateMedia({ reducedMotion: "no-preference" });
   // A fresh foreground page prevents preceding reduced-motion QA state leaking into recording.
@@ -16,6 +16,7 @@ export async function recordBrowser(page, capture, tour) {
   await page.setViewportSize({ width: 1600, height: 900 });
   await page.mouse.move(800, 450);
   await page.waitForTimeout(2500);
+  if (prepare) await prepare(page);
   const before = await page.evaluate(
     () => window.__livingScene.snapshot().time,
   );
