@@ -1,0 +1,63 @@
+name: Exploration Visual V12 Art Integration
+on:
+  push:
+    branches: [nihongo-visual-v12-art-integration-20260906]
+    paths:
+      - '.github/workflows/explore-visual-v12-art-integration.yml'
+      - 'scripts/visual-v12-art-integration-patch.py'
+      - 'scripts/visual-v12-art-browser.mjs'
+      - 'src/explore/heroArt.ts'
+      - 'public/explore/assets/desktop-v1/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: exploration-visual-v12-art-integration
+  cancel-in-progress: false
+jobs:
+  integrate-art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply runtime integration and pin Babylon glTF loader
+        run: |
+          npm ci --no-audit --no-fund
+          if ! node -e "const p=require('./package.json');process.exit(p.dependencies?.['@babylonjs/loaders']==='9.25.0'?0:1)"; then
+            npm install --save-exact @babylonjs/loaders@9.25.0 --no-audit --no-fund
+          fi
+          python3 scripts/visual-v12-art-integration-patch.py
+          git add package.json package-lock.json src/explore/world.ts
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Integrate reviewed hero GLBs with procedural collision fallback'
+            git push origin HEAD:nihongo-visual-v12-art-integration-20260906
+          fi
+      - name: Game-only source gates
+        run: |
+          npm run typecheck
+          npm test -- src/explore/explore.test.ts
+          npm run build
+      - name: Desktop integrated-art browser evidence
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/explore.html >/dev/null && break; sleep 1; done
+          mkdir -p /tmp/visual-v12
+          EXPLORE_ARTIFACTS=/tmp/visual-v12 node scripts/visual-v12-art-browser.mjs
+      - name: Upload integrated art evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: explore-visual-v12-${{ github.run_number }}
+          path: /tmp/visual-v12/
+          retention-days: 14
