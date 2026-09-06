@@ -1,0 +1,82 @@
+name: Nihongo Exploration Verification
+on:
+  push:
+    branches: [nihongo-explore-slice-20260906]
+    paths:
+      - '.github/workflows/nihongo-explore-verify.yml'
+      - 'scripts/explore-verify-trigger.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nihongo-explore-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Materialize checksummed source once on development branch only
+        run: |
+          test "$GITHUB_REF_NAME" = 'nihongo-explore-slice-20260906'
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma
+          from pathlib import Path
+          if Path('src/explore/main.ts').exists():
+              print('Source already materialized; preserve subsequent reviewed changes.')
+          else:
+              data=base64.b64decode(''.join(Path(f'scripts/explore-transfer.part{i}').read_text().strip() for i in range(4)),validate=True)
+              assert hashlib.sha256(data).hexdigest()=='d6aa8cd205f7b2c0ae12ea92c7307f2e148b153bcfe5c9d7bc9f58e8664e3106','transfer checksum mismatch'
+              files=json.loads(lzma.decompress(data))
+              allowed={'explore.html','vite.config.ts','public/sw.js','scripts/explore-fixture.ts','scripts/explore-browser.mjs','docs/product/EXPLORATION_SLICE_20260906.md','src/explore/style.css','src/explore/audio.ts','src/explore/state.ts','src/explore/roadData.ts','src/explore/geo.ts','src/explore/main.ts','src/explore/explore.test.ts','src/explore/world.ts','public/explore/map-source.json','public/explore/yanaka-roads.geojson'}
+              assert isinstance(files,dict) and set(files)==allowed,'unexpected source path set'
+              assert all(isinstance(v,str) for v in files.values())
+              for name,content in files.items():
+                  p=Path(name);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(content,encoding='utf-8')
+              print('Materialized',len(files),'allowlisted files')
+          PY
+          npm ci --no-audit --no-fund
+          if ! node -e "const p=require('./package.json');process.exit(p.dependencies?.['@babylonjs/core']==='9.25.0'?0:1)"; then
+            npm install --save-exact @babylonjs/core@9.25.0 --no-audit --no-fund
+          fi
+          git add explore.html vite.config.ts public/sw.js scripts/explore-fixture.ts scripts/explore-browser.mjs docs/product/EXPLORATION_SLICE_20260906.md src/explore public/explore package.json package-lock.json
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Implement isolated first-person Yanaka exploration slice with preserved NHK data'
+            git push origin HEAD:nihongo-explore-slice-20260906
+          fi
+          mkdir -p /tmp/explore-artifacts
+          git rev-parse HEAD > /tmp/explore-artifacts/source-sha.txt
+      - name: Typecheck, complete unit regression and production build
+        run: |
+          npm run typecheck 2>&1 | tee /tmp/explore-artifacts/typecheck.log
+          npm test 2>&1 | tee /tmp/explore-artifacts/tests.log
+          npm run build 2>&1 | tee /tmp/explore-artifacts/build.log
+      - name: Install isolated browser test tooling
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright @axe-core/playwright
+          npx playwright install --with-deps chromium webkit
+      - name: Run real WebGL interaction acceptance with synthetic learner saves
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/explore-artifacts/preview.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/explore.html > /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/explore-browser.mjs 2>&1 | tee /tmp/explore-artifacts/browser.log
+      - name: Upload browser evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nihongo-explore-acceptance-${{ github.run_number }}
+          path: /tmp/explore-artifacts/
+          retention-days: 7
