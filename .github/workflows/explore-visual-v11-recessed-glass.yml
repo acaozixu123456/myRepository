@@ -1,0 +1,59 @@
+name: Exploration Visual V11 Recessed Glass
+on:
+  push:
+    branches: [nihongo-visual-v11-recessed-glass-20260906]
+    paths:
+      - '.github/workflows/explore-visual-v11-recessed-glass.yml'
+      - 'scripts/visual-v11-recessed-glass-patch.py'
+      - 'scripts/visual-v3-browser.mjs'
+      - 'src/explore/cinematic-v3.css'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: exploration-visual-v11-recessed-glass
+  cancel-in-progress: false
+jobs:
+  recessed-glass:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply recessed glass patch
+        run: |
+          python3 scripts/visual-v11-recessed-glass-patch.py
+          git add src/explore/world.ts
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Recess facade glass and add controlled window highlights'
+            git push origin HEAD:nihongo-visual-v11-recessed-glass-20260906
+          fi
+      - name: Game-only source gates
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm test -- src/explore/explore.test.ts
+          npm run build
+      - name: Desktop visual and movement evidence
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/explore.html >/dev/null && break; sleep 1; done
+          mkdir -p /tmp/visual-v11
+          EXPLORE_ARTIFACTS=/tmp/visual-v11 node scripts/visual-v3-browser.mjs
+      - name: Upload window evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: explore-visual-v11-${{ github.run_number }}
+          path: /tmp/visual-v11/
+          retention-days: 14
