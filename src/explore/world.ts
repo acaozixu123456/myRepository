@@ -135,9 +135,11 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   }
   for(let s=9,index=0;s<ROAD_LENGTH-6;s+=9.4,index++){
     for(const side of [-1,1]){
-      const point=sampleRoad(s),root=new TransformNode(`facade-${side}-${index}`,scene);root.position.set(point.x+point.tz*4.03*side,0,point.z-point.tx*4.03*side);root.rotation.y=Math.atan2(point.tz*side,-point.tx*side);
-      const shop=side===1 && index===3; if(shop)shopRoot=root;
-      const w=8.55,h=shop?5.65:5.25+(index%3)*.55,d=5.7,colors=palettes[(index+(side===1?0:2))%palettes.length];
+      const point=sampleRoad(s),shop=side===1 && index===3,variant=(index*3+(side===1?1:4))%5;
+      const setbacks=[0,.08,.18,.05,.24],widths=[8.42,8.70,8.86,8.54,8.76],heights=[5.02,5.40,5.86,5.20,5.64],depths=[5.45,5.80,5.62,5.94,5.35];
+      const setback=shop?4.03:4.03+setbacks[variant],root=new TransformNode(`facade-${side}-${index}`,scene);root.position.set(point.x+point.tz*setback*side,0,point.z-point.tx*setback*side);root.rotation.y=Math.atan2(point.tz*side,-point.tx*side);
+      if(shop)shopRoot=root;
+      const w=shop?8.55:widths[variant],h=shop?5.65:heights[variant],d=shop?5.7:depths[variant],colors=palettes[(index+(side===1?0:2))%palettes.length];
       if(shop){
         box(w,.14,d,0,.01,d/2,'#bcaa88',root,true);
         box(.18,h,d,-w/2,h/2,d/2,colors[0],root,true);box(.18,h,d,w/2,h/2,d/2,colors[0],root,true);
@@ -160,16 +162,18 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
       }else{
         box(w,h,d,0,h/2,d/2,colors[0],root,true);
         box(w-.35,2.43,.10,0,1.25,-.14,'#806e58',root);
-        for(const x of [-2.7,0,2.7])windowFrame(root,x,1.45,2.25,1.64,-.25);
+        const lowerXs=variant===1||variant===4?[-2.18,2.18]:variant===3?[-2.78,0,2.78]:[-2.62,0,2.62],lowerW=variant===1||variant===4?2.62:2.12;
+        for(const x of lowerXs)windowFrame(root,x,1.45,lowerW,1.64,-.25);
       }
       for(const x of [-w/2+.14,w/2-.14])box(.17,h+.02,.21,x,h/2,-.23,'#817158',root);
       box(w+.13,.16,.32,0,2.64,-.21,'#786551',root);
-      for(const x of [-2.55,0,2.55]){windowFrame(root,x,4.09,1.65,1.37,-.18);for(let k=0;k<5;k++)box(.035,.46,.04,x-.7+k*.35,3.56,-.53,'#6d7765',root);box(1.74,.05,.07,x,3.81,-.53,'#6d7765',root);}
+      const upperXs=shop?[-2.55,0,2.55]:(variant===1||variant===4?[-2.12,2.12]:[-2.55,0,2.55]);
+      for(const x of upperXs){windowFrame(root,x,4.09,variant===2?1.48:1.65,1.37,-.18);for(let k=0;k<5;k++)box(.035,.46,.04,x-.7+k*.35,3.56,-.53,'#6d7765',root);box(1.74,.05,.07,x,3.81,-.53,'#6d7765',root);}
       roof(root,w,h,d,colors[1]);
-      const awningColor=shop?'#426b60':colors[2];
-      const awning=box(w-.16,.10,1.2,0,2.79,-.65,awningColor,root);awning.rotation.x=-.14;
-      box(w-.16,.23,.055,0,2.59,-1.25,awningColor,root);
-      for(let j=0;j<12;j++){const trim=box(.17,.015,1.16,-w/2+.35+j*.7,2.855,-.64,'#dfd5b5',root);trim.rotation.x=-.14;}
+      const awningColor=shop?'#426b60':colors[2],awningWidth=shop?w-.16:(variant===1?w*.62:variant===4?w*.76:w-.16),awningX=shop?0:(variant===1?-.88:variant===4?.52:0),awningDepth=shop?1.2:(variant===3?.76:1.0+(variant%2)*.16);
+      const awning=box(awningWidth,.10,awningDepth,awningX,2.79,-.65,awningColor,root);awning.rotation.x=-.14;
+      box(awningWidth,.23,.055,awningX,2.59,-1.25,awningColor,root);
+      const trimCount=Math.max(5,Math.floor(awningWidth/.7));for(let j=0;j<trimCount;j++){const trim=box(.17,.015,awningDepth,awningX-awningWidth/2+.35+j*.7,2.855,-.64,'#dfd5b5',root);trim.rotation.x=-.14;}
       const names=side===1?['花とくらし','喫茶 こもれび','暮らしの道具','よりみち弁当','甘味 ひなた','古書 あおば','手づくり工房','山の茶屋']:['パンと日々','うつわ','小さな本屋','珈琲 日和','まちの写真室','和菓子 つむぎ','くらしの雑貨','はなや'];
       label(shop?'よりみち弁当':names[index%names.length],shop?5.6:5.1,.74,0,3.05,-.37,shop?'#f0e5c9':'#e5dbc3',shop?'#32574d':'#665d4e',root,shop?'あたたかいごはん、あります。':'やなか ・ さんぽ');
       if(shop){for(const x of [-.71,0,.71]){const curtain=box(.67,.51,.026,x,2.28,-.08,'#4a7166',root);curtain.metadata={noren:true};}label('弁当',.49,.28,0,2.30,-.105,'#4a7166','#f4ead3',root);}
