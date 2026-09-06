@@ -59,7 +59,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   const mats=new Map<string,StandardMaterial>();
   function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);const base=Color3.FromHexString(color);m.diffuseColor=base;m.specularColor=new Color3(.06,.055,.05);m.specularPower=42;m.ambientColor=base.scale(.08);if(color==='#f0c29f'||color==='#f2c7a5'){m.emissiveColor=base.scale(.035);m.specularPower=18;}mats.set(color,m);}return m;}
   function emissiveMat(name:string,color:string,strength=.35){const m=new StandardMaterial(name,scene);const c=Color3.FromHexString(color);m.diffuseColor=c.scale(.72);m.emissiveColor=c.scale(strength);m.specularColor=c.scale(.08);return m;}
-  const warmWindow=emissiveMat('warm-window','#ffd59a',.42);const lampGlow=emissiveMat('lamp-glow','#ffc879',.58);
+  const warmWindow=emissiveMat('warm-window','#ffd59a',.42);const lampGlow=emissiveMat('lamp-glow','#ffc879',.58);const glassDay=new StandardMaterial('cool-window-glass',scene);glassDay.diffuseColor=Color3.FromHexString('#6f817d');glassDay.specularColor=Color3.FromHexString('#d7e0dc').scale(.44);glassDay.specularPower=96;glassDay.emissiveColor=Color3.FromHexString('#263633').scale(.15);
   let serial=0;const batches:Mesh[]=[];const animated:TransformNode[]=[];
   const blocked:Mesh[]=[];
   function finish(mesh:Mesh,color:string,parent?:TransformNode,collision=false,merge=true){
@@ -103,10 +103,10 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
     for(let i=0;i<6;i++){const angle=i*Math.PI/3;const leaf=sphere(.13*scale,.36*scale,.055*scale,x+Math.cos(angle)*.16*scale,.72*scale,z+Math.sin(angle)*.16*scale,i%2?'#658767':'#80905c',root);leaf.rotation.z=Math.cos(angle)*.4;leaf.rotation.y=-angle;}
   }
   function windowFrame(root:TransformNode,x:number,y:number,w:number,h:number,z:number){
-    box(w+.12,h+.12,.14,x,y,z,'#66594c',root);box(w,h,.06,x,y,z-.09,'#aec8bf',root);
-    box(.05,h,.08,x,y,z-.15,'#efdfc2',root);box(w,.045,.08,x,y-.05,z-.15,'#efdfc2',root);
-    // Glazing highlight and recessed sill.
-    box(w*.36,h*.82,.02,x-w*.28,y+.025,z-.14,'#c3d5c8',root);box(w+.22,.11,.34,x,y-h/2-.08,z-.08,'#786e59',root);
+    box(w+.12,h+.12,.14,x,y,z,'#66594c',root);const pane=box(w,h,.045,x,y,z+.045,'#6f817d',root);pane.material=glassDay;
+    // Frames sit forward of the glass; the pane now reads as genuinely recessed instead of pasted onto the facade.
+    box(.05,h,.065,x,y,z-.07,'#e6d8bc',root);box(w,.045,.065,x,y-.05,z-.07,'#e6d8bc',root);
+    box(w*.18,h*.80,.014,x-w*.30,y+.025,z+.018,'#9eafa9',root);box(w+.22,.11,.34,x,y-h/2-.08,z-.015,'#786e59',root);
   }
   function roof(root:TransformNode,w:number,h:number,d:number,color:string){
     const slope=.30,half=d/2;for(const sign of [-1,1]){const panel=box(w+.7,.18,half/Math.cos(slope)+.2,0,h+.55,half+sign*half/2-.2,color,root);panel.rotation.x=sign*slope;
