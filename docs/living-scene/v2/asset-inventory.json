@@ -1,0 +1,127 @@
+[
+  {
+    "path": "art-source/living-scene/v2/MASTER_ATTEMPT_PROMPT.txt",
+    "bytes": 1970,
+    "sha256": "7868b60ba95bed37dcf919d0d6adebe8276c15b8e1876bcf8dc6a4e93956893b"
+  },
+  {
+    "path": "art-source/living-scene/v2/PROVENANCE.md",
+    "bytes": 1900,
+    "sha256": "c2cb45a5bc44a0fecf9b15f15969b127e4d881659559f0195d591f7ad0e9d38a"
+  },
+  {
+    "path": "art-source/living-scene/v2/foliage-rgba.png",
+    "bytes": 3138265,
+    "sha256": "90d0ec650239ba7c99525370ee5c5467f5421097f092a33978b793371e3a5668"
+  },
+  {
+    "path": "art-source/living-scene/v2/matte-fog.png",
+    "bytes": 22982,
+    "sha256": "232fb3d91fdd33403bb2d0615853f0b930fdb6ccd9136bb34b44dedca2ad3ef7"
+  },
+  {
+    "path": "art-source/living-scene/v2/matte-foliage.png",
+    "bytes": 43499,
+    "sha256": "db0c3b741523828c0c28861927df28bbf3f1eab783966fc6bbcc77a4925ef2e6"
+  },
+  {
+    "path": "art-source/living-scene/v2/matte-lantern.png",
+    "bytes": 3547,
+    "sha256": "0be7edf2a093b25038b795ff5fdd3b8f66b2896c319176644c785e73cc4e97c1"
+  },
+  {
+    "path": "art-source/living-scene/v2/matte-reflection.png",
+    "bytes": 48304,
+    "sha256": "b28a4cce4a2ff5734e15ff1bfd63e0bf60c17e56bcfbb30fe0f84d6ab107cc64"
+  },
+  {
+    "path": "art-source/living-scene/v2/matte-warm-air.png",
+    "bytes": 26501,
+    "sha256": "172640bb1c2b208e224d102a71e2f31455a4ed036e893cf32ee1c19d41950c4c"
+  },
+  {
+    "path": "art-source/living-scene/v2/matte-window.png",
+    "bytes": 5779,
+    "sha256": "7327796916c738b17767eddd6793f6996225229aaf118855a95a25173f51d89e"
+  },
+  {
+    "path": "art-source/living-scene/v2/rejected-master-native.png",
+    "bytes": 2733671,
+    "sha256": "60439fef765c8208c02f35e6916b3563aa4ab85427ec61aa5d5cf58316eb6bd8"
+  },
+  {
+    "path": "art-source/living-scene/v2/repair-collar.png",
+    "bytes": 28547,
+    "sha256": "e11c79235bbccca9a661cdad6145b9d0300163c0d434ff3a82a4cb7a4fca0ce7"
+  },
+  {
+    "path": "art-source/living-scene/v2/semantic-manifest.json",
+    "bytes": 677,
+    "sha256": "daf2370ea2a930a0f58915933ecf342d7bef451ac33998f67bb3ea4fd3d59764"
+  },
+  {
+    "path": "art-source/living-scene/v2/semantic-regions.json",
+    "bytes": 1951,
+    "sha256": "356e0a204807f2b60e58862951a9ff10a54e3d97215d55dfc817e39c27522cd2"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/depth.png",
+    "bytes": 225104,
+    "sha256": "309895918dd054e1ca5e2f5ddf45fe479b5be6b08224e5d01bb818e24b4b9c8e"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/foliage-back.webp",
+    "bytes": 649002,
+    "sha256": "b0c68feac73c1eec96dd792f27b6c21d11682f3e563576c53e6fb36a9622b683"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/hero.webp",
+    "bytes": 578918,
+    "sha256": "e81c31f25783c1cf81b37e5b5e4b226e658794fbb1ead91e5dacb77105e32d50"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/local-glow.webp",
+    "bytes": 29416,
+    "sha256": "66fd59706223ca6e8158893ed5181460c41212b40af0a46cb745e679946bd02c"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/mask-far.png",
+    "bytes": 87975,
+    "sha256": "27f01cbc0081b4fd1991fa400c762515ee955f07753b91e8823eadf23a8c2077"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/mask-mid.png",
+    "bytes": 182506,
+    "sha256": "23106868c4cd994c76e3028aa11e9de07e6474e73411e27ff4787010c0572752"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/mask-near.png",
+    "bytes": 109414,
+    "sha256": "f0123ac84f26416105ec09c32c5219292bab8f9eac60947fd71e76b5a786f1c3"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/motion-masks.png",
+    "bytes": 293169,
+    "sha256": "3ed9d00b0a386f4e5bdaa5b526595008914d97244a579d2a286778124b517ba4"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/noto-jp-subset.woff2",
+    "bytes": 41316,
+    "sha256": "6fe4ea9e7c4bb293bc0d779dd2741a24a7dffc536e64ed76570125c0d2fbe28f"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/scene.json",
+    "bytes": 150,
+    "sha256": "d73bf20206262f14596546230c92181875e06d9a2ca10272e37280fd31712c12"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/semantic-a.png",
+    "bytes": 64533,
+    "sha256": "520c12103ccb5187bdd186e759037e6fbed706ea9a8bda2500e76cdcd6fed3cc"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/semantic-b.png",
+    "bytes": 134275,
+    "sha256": "e5d3ec24582e9c028c3c97a4a07d537d401903b30170bfefc8a5ed1591404569"
+  }
+]

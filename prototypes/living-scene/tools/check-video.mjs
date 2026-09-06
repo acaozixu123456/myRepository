@@ -1,10 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-const dir = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../../../docs/living-scene/evidence",
-);
+const dir =
+  process.env.EVIDENCE_DIR ||
+  path.resolve(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "../../../docs/living-scene/evidence",
+  );
 const { chromium } = await import(
   process.env.PLAYWRIGHT_MODULE ||
     "/Users/xiaruonan/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs"

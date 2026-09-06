@@ -1,0 +1,30 @@
+{
+  "size": [
+    1672,
+    941
+  ],
+  "method": "authored object polygons + foreground colour matte; not depth thresholds",
+  "channels_a": [
+    "foliage",
+    "window",
+    "lantern"
+  ],
+  "channels_b": [
+    "reflection",
+    "fog",
+    "warm_air"
+  ],
+  "wind_max_source_pixels": [
+    1.0,
+    0.45
+  ],
+  "repair": "Telea radius 3px, applied only to a 4px inner foreground boundary collar; not global background reconstruction",
+  "coverage": {
+    "foliage": 0.05664915591478348,
+    "window": 0.03443405404686928,
+    "lantern": 0.006556637119501829,
+    "reflection": 0.026514524593949318,
+    "fog": 0.048295192420482635,
+    "warm_air": 0.017550453543663025
+  }
+}

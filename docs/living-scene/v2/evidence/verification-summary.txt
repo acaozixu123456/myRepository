@@ -1,0 +1,117 @@
+{"name":"v1-A","durationMs":33050.200000000004,"samples":1983,"avgFps":59.99963691596419,"p50":16.69999999999709,"p95":18.200000000000728,"p99":18.600000000000364,"slow":0,"drawCalls":49,"renderSize":[1920,1080],"dpr":1}
+{"name":"v2-B","durationMs":31965.2,"samples":1918,"avgFps":60.00275299388085,"p50":16.69999999999709,"p95":18.400000000000546,"p99":18.69999999999891,"slow":0,"drawCalls":5,"renderSize":[1920,1080],"dpr":1}
+{"name":"v2-B-repeat","durationMs":31965.200000000004,"samples":1918,"avgFps":60.00275299388084,"p50":16.69999999999891,"p95":17.400000000001455,"p99":17.699999999999818,"slow":0,"drawCalls":5,"renderSize":[1920,1080],"dpr":1}
+{"name":"v1-A-repeat","durationMs":31966.700000000004,"samples":1918,"avgFps":59.99993743489318,"p50":16.69999999999709,"p95":17.5,"p99":17.700000000000728,"slow":0,"drawCalls":49,"renderSize":[1920,1080],"dpr":1}
+{"name":"v2-retina","durationMs":33032.4,"samples":1982,"avgFps":60.001695305215485,"p50":16.69999999999891,"p95":17.599999999999454,"p99":17.700000000000728,"slow":0,"drawCalls":5,"renderSize":[1821,1138],"dpr":1.2649110640673518}
+{
+  "date": "2026-09-06T05:05:13.894Z",
+  "browser": "152.0.7977.82",
+  "hardware": {
+    "vendor": "Google Inc. (AMD)",
+    "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)"
+  },
+  "performance": [
+    {
+      "name": "v1-A",
+      "durationMs": 33050.200000000004,
+      "samples": 1983,
+      "avgFps": 59.99963691596419,
+      "p50": 16.69999999999709,
+      "p95": 18.200000000000728,
+      "p99": 18.600000000000364,
+      "slow": 0,
+      "drawCalls": 49,
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "dpr": 1
+    },
+    {
+      "name": "v2-B",
+      "durationMs": 31965.2,
+      "samples": 1918,
+      "avgFps": 60.00275299388085,
+      "p50": 16.69999999999709,
+      "p95": 18.400000000000546,
+      "p99": 18.69999999999891,
+      "slow": 0,
+      "drawCalls": 5,
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "dpr": 1
+    },
+    {
+      "name": "v2-B-repeat",
+      "durationMs": 31965.200000000004,
+      "samples": 1918,
+      "avgFps": 60.00275299388084,
+      "p50": 16.69999999999891,
+      "p95": 17.400000000001455,
+      "p99": 17.699999999999818,
+      "slow": 0,
+      "drawCalls": 5,
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "dpr": 1
+    },
+    {
+      "name": "v1-A-repeat",
+      "durationMs": 31966.700000000004,
+      "samples": 1918,
+      "avgFps": 59.99993743489318,
+      "p50": 16.69999999999709,
+      "p95": 17.5,
+      "p99": 17.700000000000728,
+      "slow": 0,
+      "drawCalls": 49,
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "dpr": 1
+    },
+    {
+      "name": "v2-retina",
+      "durationMs": 33032.4,
+      "samples": 1982,
+      "avgFps": 60.001695305215485,
+      "p50": 16.69999999999891,
+      "p95": 17.599999999999454,
+      "p99": 17.700000000000728,
+      "slow": 0,
+      "drawCalls": 5,
+      "renderSize": [
+        1821,
+        1138
+      ],
+      "dpr": 1.2649110640673518
+    }
+  ],
+  "tests": {
+    "chromeFades": true,
+    "keyboardReveal": true,
+    "edgeReveal": true,
+    "focus": true,
+    "noScroll": true,
+    "escape": true,
+    "pause": true,
+    "fullscreen": true,
+    "reducedMotion": true,
+    "mobileNoOverflow": true,
+    "fallback": true
+  },
+  "errors": [],
+  "capture": {
+    "method": "Chrome DevTools Page.startScreencast; actual viewport including HTML UI",
+    "frames": 354,
+    "durationSeconds": 21.416189193725586,
+    "animationSeconds": 21.66560000000004,
+    "paused": false,
+    "encoding": "Resampled by timestamp to 15 fps; never used for performance numbers"
+  }
+}

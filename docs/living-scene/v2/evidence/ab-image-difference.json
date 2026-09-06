@@ -1,0 +1,27 @@
+{
+  "ab-local-instanced.png": {
+    "mean_channel_delta_255": 0.1448173868312757,
+    "p99_channel_delta_255": 2.0,
+    "mean_luminance": 48.70866110468107
+  },
+  "ab-small-instanced.png": {
+    "mean_channel_delta_255": 0.08237493569958848,
+    "p99_channel_delta_255": 1.0,
+    "mean_luminance": 48.64267216435185
+  },
+  "ab-half-mesh.png": {
+    "mean_channel_delta_255": 0.0,
+    "p99_channel_delta_255": 0.0,
+    "mean_luminance": 48.59030205118313
+  },
+  "ab-byte-mesh.png": {
+    "mean_channel_delta_255": 0.10435635288065843,
+    "p99_channel_delta_255": 1.0,
+    "mean_luminance": 48.64032905735597
+  },
+  "ab-byte-instanced.png": {
+    "mean_channel_delta_255": 0.08092865869341563,
+    "p99_channel_delta_255": 1.0,
+    "mean_luminance": 48.640252379115225
+  }
+}

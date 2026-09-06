@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "request_count": 1,
+  "input": "/Users/xiaruonan/nihongo-art-work/living-scene-v2/art-source/living-scene/hero-original.png",
+  "raw_output": "/Users/xiaruonan/.codex/generated_images/01a07506-c72b-7ab0-9fca-ec817ce39e56/exec-e66d67fc-bb6b-4afb-b587-561b60b93da1.png",
+  "preserved_copy": "art-source/living-scene/v2/rejected-master-native.png",
+  "native_dimensions": [
+    1672,
+    941
+  ],
+  "mode": "RGB",
+  "requested_dimensions": [
+    3840,
+    2160
+  ],
+  "minimum_requested_width": 2560,
+  "resized_or_upscaled": false,
+  "sha256": "60439fef765c8208c02f35e6916b3563aa4ab85427ec61aa5d5cf58316eb6bd8",
+  "prompt_file": "art-source/living-scene/v2/MASTER_ATTEMPT_PROMPT.txt",
+  "verified_at": "2026-09-06T04:44:59.587021+00:00",
+  "visual_review": "Composition is closely preserved: maple upper-left, warm bento shop right, lane vanishing left-center, blue-hour rain palette. Wet stone patterns and highlights, maple silhouettes, roof tile ridges and timber grain differ. Slightly crisper/higher-contrast texture; no obvious framing shift. Native output is only 1672x941, below required 2560px width, so this is not an acceptable high-resolution master."
+}

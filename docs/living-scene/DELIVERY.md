@@ -1,3 +1,5 @@
+> 本文件归档 V1 交付。当前 V2 请见 [V2 交付清单](v2/DELIVERY.md)。
+
 # 雨あがりの路地 — Living Scene 交付清单
 
 2026-09-06。第一张街景的画面优先原型，供 Sol 做视觉审核。独立分支 `nihongo-living-scene-local-20260906`；基于 `0f3a4c4289b314791e9b7aee15fd5fca28cd425f`。最新交付 commit 以本文件所在的分支 HEAD 为准。

@@ -1,6 +1,19 @@
 {
-  "name": "nihongo-living-scene", "version": "0.1.0", "private": true, "type": "module",
-  "scripts": {"dev":"vite --host 127.0.0.1 --port 8767", "build":"vite build", "preview":"vite preview --host 127.0.0.1 --port 8767"},
-  "dependencies": {"three":"0.183.2", "postprocessing":"6.38.3", "three.quarks":"0.17.1"},
-  "devDependencies": {"vite":"6.4.1"}
+  "name": "nihongo-living-scene",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 8769",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 8770"
+  },
+  "dependencies": {
+    "three": "0.183.2",
+    "postprocessing": "6.38.3",
+    "three.quarks": "0.17.1"
+  },
+  "devDependencies": {
+    "vite": "6.4.1"
+  }
 }

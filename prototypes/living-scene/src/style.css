@@ -366,4 +366,77 @@ body.focused #hint {
     transition: none !important;
   }
 }
-h1,#subtitle .line{font-family:'Hiragino Mincho ProN','Yu Mincho',SceneJP,serif}
+h1,
+#subtitle .line {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", SceneJP, serif;
+}
+/* V2: an artwork at rest; screen-edge intent and keyboard focus reveal controls. */
+header,
+.chapter,
+footer {
+  opacity: 0;
+  transition: opacity 1.3s;
+  pointer-events: none;
+}
+body.show-chrome header,
+body.show-chrome .chapter,
+body.show-chrome footer,
+footer:focus-within {
+  opacity: 1;
+}
+body.show-chrome footer,
+.controls:focus-within {
+  pointer-events: auto;
+}
+body.focused .chapter {
+  opacity: 0;
+}
+.shade {
+  background: linear-gradient(
+    180deg,
+    #030a1017,
+    transparent 18%,
+    transparent 78%,
+    #03090e24
+  );
+  transition: background 1s;
+}
+body.show-chrome .shade,
+body.focused .shade {
+  background: linear-gradient(
+    180deg,
+    #030a1042,
+    transparent 19%,
+    transparent 60%,
+    #03090e99
+  );
+}
+#hotspot {
+  left: 0;
+  top: 0;
+  width: 190px;
+  height: 130px;
+  justify-content: center;
+  will-change: transform;
+  filter: none;
+}
+#hotspot .pin {
+  display: none;
+}
+#hotspot .hotspot-label {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 0.6s;
+  text-shadow: 0 2px 10px #000;
+  background: transparent;
+}
+#hotspot:hover .hotspot-label,
+#hotspot:focus-visible .hotspot-label {
+  opacity: 0.85;
+}
+#hotspot:focus-visible {
+  outline-offset: -25px;
+}
+.controls {
+  pointer-events: auto;
+}

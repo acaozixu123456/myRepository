@@ -1,4 +1,6 @@
-# 雨あがりの路地 · Living Scene
+# 雨あがりの路地 · Living Scene V2
+
+当前 V2 交付：`../../docs/living-scene/v2/DELIVERY.md`。高分辨率母图 P0 仍未通过；语义区域、局部动态、隐退 UI 与性能优化已交付审核。
 
 独立、仅在本机验收的动态场景原型。入口是本目录的 `index.html`，不接入旧游戏、NHK、API、数据库或存储。
 
@@ -6,9 +8,9 @@
 cd prototypes/living-scene
 pnpm install --frozen-lockfile
 pnpm dev
-# http://127.0.0.1:8767/
+# http://127.0.0.1:8769/
 pnpm build
-pnpm preview --port 8768
+pnpm preview --port 8770
 ```
 
 验证环境使用 Node 24.19.0、pnpm 11.19.0；依赖版本已锁定。`pnpm-workspace.yaml` 仅允许 esbuild 的正常安装脚本。也可使用常规 Node + pnpm 环境。根目录依赖与配置没有修改。
@@ -43,3 +45,13 @@ blender -b --python tools/encode_capture.py -- /path/to/capture /path/to/browser
 录屏源是 Chrome 实际视口的 CDP 帧，含 HTML 字幕与控件；按照时间戳重采样编码为 15 fps。渲染性能在录制之前另行采样。
 
 详细交付、许可、技术边界与待改进项见 `../../docs/living-scene/DELIVERY.md`。
+
+## V2 验证与素材
+
+- `python tools/prepare_semantic.py`：从已审母图和 `semantic-regions.json` 制作六类语义区域与有限边缘修补。
+- `node tools/ab-performance.mjs`：固定1920×1080、五种渲染实现的GPU/CPU/帧时间对照。
+- `node tools/verify-v2.mjs`：V1/V2交替复测、V2功能、窄屏与真实录屏。需要V1已审构建在8768、本V2构建在8770。
+- `blender -b --python tools/encode_capture.py -- /path/to/capture /path/to/v2/evidence/browser-tour.mp4`。
+- `EVIDENCE_DIR=/path/to/v2/evidence node tools/check-video.mjs`：验证编码后视频可解码播放。
+
+开发A/B参数只在 `?qa=1` 时启用：`pipeline=half|byte|small|local`、`leaves=mesh|instanced`、`still=1`。正常页面使用 local + instanced；性能数据通过内存快照读取，不写用户存储。

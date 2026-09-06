@@ -16,18 +16,32 @@ import {
   RenderMode,
 } from "three.quarks";
 import "./style.css";
+import fragmentShader from "./scene.frag.glsl?raw";
+const params = new URLSearchParams(location.search);
+const qa = params.get("qa") === "1";
+const pipeline =
+  qa && ["half", "byte", "small", "local"].includes(params.get("pipeline"))
+    ? params.get("pipeline")
+    : "local";
+const instanced = !qa || params.get("leaves") !== "mesh";
 const $ = (s) => document.querySelector(s),
   canvas = $("#scene"),
   hotspot = $("#hotspot"),
   reduced = matchMedia("(prefers-reduced-motion: reduce)");
 let contextLost = false;
-let paused = reduced.matches,
+let paused = reduced.matches || (qa && params.get("still") === "1"),
   focused = false,
   time = 0,
   last = 0,
   push = 0,
   hover = 0,
   hovered = false;
+const cpuMs = [],
+  gpuMs = [],
+  gpuPending = [];
+let gpuExt,
+  glContext,
+  frameId = 0;
 const pointer = new T.Vector2(),
   mouse = new T.Vector2(),
   cover = new T.Vector2(),
@@ -41,6 +55,8 @@ let renderer,
   u,
   batch,
   dust,
+  leafBatch,
+  dummy = new T.Object3D(),
   width = innerWidth,
   height = innerHeight,
   aspect = width / height;
@@ -101,8 +117,7 @@ function align() {
       ((0.445 - 0.5 + push * 0.004) / cover.y) * z +
       (pointer.y * 0.0015) / cover.y) *
     height;
-  hotspot.style.left = `${Math.min(width - 90, Math.max(85, x))}px`;
-  hotspot.style.top = `${Math.min(height - 200, Math.max(140, y))}px`;
+  hotspot.style.transform = `translate3d(${Math.min(width - 90, Math.max(85, x)).toFixed(2)}px,${Math.min(height - 200, Math.max(140, y)).toFixed(2)}px,0) translate(-50%,-50%)`;
 }
 function resize() {
   width = innerWidth;
@@ -111,7 +126,9 @@ function resize() {
   const ia = 1672 / 941;
   cover.set(aspect > ia ? 1 : aspect / ia, aspect > ia ? ia / aspect : 1);
   if (renderer && composer) {
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5, Math.sqrt(2073600 / (width * height))));
+    renderer.setPixelRatio(
+      Math.min(devicePixelRatio, 1.5, Math.sqrt(2073600 / (width * height))),
+    );
     renderer.setSize(width, height);
     composer.setSize(width, height);
     camera.left = -aspect;
@@ -135,56 +152,65 @@ async function init() {
   camera = new T.OrthographicCamera(-aspect, aspect, 1, -1, 0.1, 10);
   camera.position.z = 3;
   const loader = new T.TextureLoader();
-  const [hero, depth, masks] = await Promise.all(
-    ["hero.webp", "depth.png", "motion-masks.png"].map((p) =>
-      loader.loadAsync("/scene/" + p),
-    ),
+  const [hero, back, depth, semanticA, semanticB, glow] = await Promise.all(
+    [
+      "hero.webp",
+      "foliage-back.webp",
+      "depth.png",
+      "semantic-a.png",
+      "semantic-b.png",
+      "local-glow.webp",
+    ].map((p) => loader.loadAsync("/scene/" + p)),
   );
-  hero.colorSpace = T.SRGBColorSpace;
+  hero.colorSpace = back.colorSpace = glow.colorSpace = T.SRGBColorSpace;
   u = {
     uHero: { value: hero },
+    uBack: { value: back },
     uDepth: { value: depth },
-    uMasks: { value: masks },
+    uSemanticA: { value: semanticA },
+    uSemanticB: { value: semanticB },
+    uGlow: { value: glow },
     uCover: { value: cover },
     uPointer: { value: pointer },
     uTime: { value: 0 },
     uPush: { value: 0 },
     uHover: { value: 0 },
+    uLocalGlow: { value: pipeline === "local" ? 1 : 0 },
   };
   const material = new T.ShaderMaterial({
     uniforms: u,
     depthTest: false,
     depthWrite: false,
     vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}`,
-    fragmentShader: `precision highp float;varying vec2 vUv;uniform sampler2D uHero,uDepth,uMasks;uniform vec2 uCover,uPointer;uniform float uTime,uPush,uHover;
-void main(){vec2 uv=(vUv-.5)*uCover/(1.035+uPush*.045)+.5+vec2(uPush*.019,-uPush*.004);float d=texture2D(uDepth,uv).r;vec2 p=uv+uPointer*vec2(.006,.003)*(d-.20);d=texture2D(uDepth,p).r;p=uv+uPointer*vec2(.006,.003)*(d-.20);vec3 m=texture2D(uMasks,p).rgb;p.x+=sin(uTime*.8+p.y*23.)*.00055*m.r;p.y+=sin(uTime*.63+p.x*17.)*.00025*m.r;vec3 col=texture2D(uHero,clamp(p,vec2(.002),vec2(.998))).rgb;float breath=.65+.35*sin(uTime*.19+uv.x*7.);col=mix(col,vec3(.26,.36,.43),m.g*.018*breath);col*=1.+m.b*(.012*sin(uTime*.7)+.075*uHover);float ray=exp(-pow((p.x-.78+(p.y-.48)*.26)/.052,2.))*(1.-smoothstep(.46,.78,p.y))*smoothstep(.36,.65,p.y);col+=vec3(.16,.095,.035)*ray*.028*breath;gl_FragColor=vec4(col,1.);}`,
+    fragmentShader,
   });
   const plane = new T.Mesh(new T.PlaneGeometry(2, 2), material);
   plane.frustumCulled = false;
   plane.renderOrder = -10;
   scene.add(plane);
   composer = new EffectComposer(renderer, {
-    frameBufferType: T.HalfFloatType,
+    frameBufferType: pipeline === "half" ? T.HalfFloatType : T.UnsignedByteType,
     multisampling: 0,
   });
   composer.addPass(new RenderPass(scene, camera));
-  composer.addPass(
-    new EffectPass(
-      camera,
+  const effects = [new VignetteEffect({ offset: 0.25, darkness: 0.18 })];
+  if (pipeline !== "local")
+    effects.unshift(
       new BloomEffect({
         intensity: 0.12,
         luminanceThreshold: 0.72,
         luminanceSmoothing: 0.25,
         mipmapBlur: true,
-        resolutionScale: 0.5,
+        levels: pipeline === "small" ? 4 : 8,
       }),
-      new VignetteEffect({ offset: 0.25, darkness: 0.18 }),
-    ),
-  );
+    );
+  composer.addPass(new EffectPass(camera, ...effects));
   particles();
   resize();
   const gl = renderer.getContext(),
     ext = gl.getExtension("WEBGL_debug_renderer_info");
+  glContext = gl;
+  gpuExt = qa ? gl.getExtension("EXT_disjoint_timer_query_webgl2") : null;
   window.__livingScene = {
     ready: true,
     errors,
@@ -197,6 +223,12 @@ void main(){vec2 uv=(vUv-.5)*uCover/(1.035+uPush*.045)+.5+vec2(uPush*.019,-uPush
     versions: { three: T.REVISION, postprocessing: "6.38.3", quarks: "0.17.1" },
     snapshot: () => ({
       frames: [...frames],
+      pipeline,
+      instanced,
+      sourceSize: [1672, 941],
+      cpuMs: [...cpuMs],
+      gpuMs: [...gpuMs],
+      gpuTiming: !!gpuExt,
       width,
       height,
       dpr: renderer.getPixelRatio(),
@@ -275,22 +307,34 @@ function particles() {
   ].forEach(([x, y], i) => (i ? shape.lineTo(x, y) : shape.moveTo(x, y)));
   shape.closePath();
   const geo = new T.ShapeGeometry(shape);
+  const mat = new T.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.64,
+    side: T.DoubleSide,
+    depthTest: false,
+    depthWrite: false,
+  });
+  if (instanced) {
+    leafBatch = new T.InstancedMesh(geo, mat, 18);
+    leafBatch.instanceMatrix.setUsage(T.DynamicDrawUsage);
+    leafBatch.frustumCulled = false;
+    leafBatch.renderOrder = 3;
+    scene.add(leafBatch);
+  }
   for (let i = 0; i < 18; i++) {
-    const mesh = new T.Mesh(
-      geo,
-      new T.MeshBasicMaterial({
-        color: i % 3 ? 0x75402d : 0x9b5634,
-        transparent: true,
-        opacity: 0.64,
-        side: T.DoubleSide,
-        depthTest: false,
-        depthWrite: false,
-      }),
-    );
-    mesh.renderOrder = 3;
-    scene.add(mesh);
+    let mesh;
+    if (instanced) {
+      leafBatch.setColorAt(i, new T.Color(i % 3 ? 0x75402d : 0x9b5634));
+    } else {
+      mesh = new T.Mesh(geo, mat.clone());
+      mesh.material.color.setHex(i % 3 ? 0x75402d : 0x9b5634);
+      mesh.renderOrder = 3;
+      scene.add(mesh);
+    }
     leaves.push({
       mesh,
+      index: i,
       seed: i * 2.399,
       speed: 0.013 + (i % 5) * 0.002,
       size: 0.0035 + (i % 4) * 0.0014,
@@ -305,6 +349,7 @@ function tick(now) {
   }
   last = now;
   if (!document.hidden && !contextLost) {
+    const cpuStart = performance.now();
     if (!paused) {
       time += dt;
       pointer.lerp(mouse, 1 - Math.exp(-dt * 2.4));
@@ -319,7 +364,8 @@ function tick(now) {
     u.uTime.value = time;
     u.uPush.value = push;
     u.uHover.value = hover;
-    for (const { mesh, seed, speed, size } of leaves) {
+    for (const { mesh: single, index, seed, speed, size } of leaves) {
+      const mesh = instanced ? dummy : single;
       mesh.position.set(
         ((seed * 0.371 + time * speed * 0.22) % 1) * 2 * aspect -
           aspect +
@@ -333,10 +379,42 @@ function tick(now) {
         time * 0.23 + seed,
       );
       mesh.scale.setScalar(size);
+      if (instanced) {
+        mesh.updateMatrix();
+        leafBatch.setMatrixAt(index, mesh.matrix);
+      }
     }
+    if (instanced) leafBatch.instanceMatrix.needsUpdate = true;
     align();
     renderer.info.reset();
+    let query;
+    if (gpuExt && frameId++ % 30 === 0 && gpuPending.length < 4) {
+      query = glContext.createQuery();
+      glContext.beginQuery(gpuExt.TIME_ELAPSED_EXT, query);
+    }
     composer.render(dt);
+    if (query) {
+      glContext.endQuery(gpuExt.TIME_ELAPSED_EXT);
+      gpuPending.push(query);
+    }
+    if (
+      gpuPending.length &&
+      glContext.getQueryParameter(
+        gpuPending[0],
+        glContext.QUERY_RESULT_AVAILABLE,
+      )
+    ) {
+      const q = gpuPending.shift();
+      if (!glContext.getParameter(gpuExt.GPU_DISJOINT_EXT))
+        gpuMs.push(
+          glContext.getQueryParameter(q, glContext.QUERY_RESULT) / 1e6,
+        );
+      glContext.deleteQuery(q);
+    }
+    if (qa) {
+      cpuMs.push(performance.now() - cpuStart);
+      if (cpuMs.length > 18000) cpuMs.shift();
+    }
   }
   requestAnimationFrame(tick);
 }
@@ -352,4 +430,21 @@ init().catch((e) => {
   window.__livingScene = { ready: false, errors };
   $("#notice").textContent = "当前环境显示静态街景；动态效果未能加载。";
   resize();
+});
+
+let chromeTimer;
+function revealChrome(duration = 2600) {
+  document.body.classList.add("show-chrome");
+  clearTimeout(chromeTimer);
+  chromeTimer = setTimeout(
+    () => document.body.classList.remove("show-chrome"),
+    duration,
+  );
+}
+revealChrome(4500);
+addEventListener("pointermove", (e) => {
+  if (e.clientY < 90 || e.clientY > innerHeight - 90) revealChrome();
+});
+addEventListener("keydown", (e) => {
+  if (e.key === "Tab") revealChrome(6000);
 });
