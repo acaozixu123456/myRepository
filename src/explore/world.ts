@@ -221,8 +221,6 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   for(const x of [-25,25]){const b=box(.3,9,ROAD_LENGTH+10,x,4.5,ROAD_LENGTH/2,'#eeeeee',undefined,true);b.isVisible=false;}
   // Merge decorative geometry by material; leave walls and interactive objects individually addressable.
   const heroProxyMeshes=shopRoot?shopRoot.getChildMeshes(false):[];
-  const belongsToReceipt=(mesh:Mesh)=>{let node:any=mesh.parent;while(node){if(node===receiptBag)return true;node=node.parent;}return false;};
-  const heroProxyMeshes=shopRoot?shopRoot.getChildMeshes(false):[];
   const belongsToReceipt=(mesh:any)=>{let node:any=mesh.parent;while(node){if(node===receiptBag)return true;node=node.parent;}return false;};
   const groups=new Map<StandardMaterial,Mesh[]>();
   for(const mesh of batches){mesh.computeWorldMatrix(true);const m=mesh.material as StandardMaterial;const list=groups.get(m)||[];list.push(mesh);groups.set(m,list);}
@@ -269,7 +267,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
       if(player.position.y < -.4)resetPosition();
       scanTimer+=dt;
       if(scanTimer>.12){scanTimer=0;const eye=player.position.add(new Vector3(0,1.68,0)),forward=new Vector3(Math.sin(yaw)*Math.cos(pitch),-Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch));let pick:Target|null=null,closest=Infinity;
-        for(const t of targets){const dir=t.point.subtract(eye),dist=dir.length();if(dist>t.radius||Vector3.Dot(forward,dir.normalize())<.50||dist>closest)continue;const hit=scene.pickWithRay(new Ray(eye,dir,Math.max(.1,dist-.40)),m=>Boolean(m.metadata?.blocker)&&m.isVisible);if(!hit?.hit){pick=t;closest=dist;}}
+        for(const t of targets){const dir=t.point.subtract(eye),dist=dir.length();if(dist>t.radius||Vector3.Dot(forward,dir.normalize())<.50||dist>closest)continue;const hit=scene.pickWithRay(new Ray(eye,dir,Math.max(.1,dist-.40)),m=>Boolean(m.metadata?.blocker));if(!hit?.hit){pick=t;closest=dist;}}
         if(pick?.id!==near?.id){near=pick;events.near(near);}
       }
     }
