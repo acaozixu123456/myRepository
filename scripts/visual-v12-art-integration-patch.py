@@ -27,9 +27,10 @@ rep("""  const blocked:Mesh[]=[];
 rep("if(shop)shopRoot=root;", "if(shop){shopRoot=root;root.metadata={heroShop:true};}")
 rep("""  const groups=new Map<StandardMaterial,Mesh[]>();
 """, """  const heroProxyMeshes=shopRoot?shopRoot.getChildMeshes(false):[];
-  const belongsToReceipt=(mesh:Mesh)=>{let node:any=mesh.parent;while(node){if(node===receiptBag)return true;node=node.parent;}return false;};
+  const belongsToReceipt=(mesh:any)=>{let node:any=mesh.parent;while(node){if(node===receiptBag)return true;node=node.parent;}return false;};
   const groups=new Map<StandardMaterial,Mesh[]>();
 """)
+rep("const belongsToReceipt=(mesh:Mesh)=>", "const belongsToReceipt=(mesh:any)=>")
 rep("""  for(const b of blocked){b.freezeWorldMatrix();if(b.isVisible)shadows.addShadowCaster(b);}
   for(const m of mats.values())m.freeze();
 """, """  for(const b of blocked){b.freezeWorldMatrix();if(b.isVisible)shadows.addShadowCaster(b);}
