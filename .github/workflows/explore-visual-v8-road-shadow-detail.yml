@@ -1,0 +1,59 @@
+name: Exploration Visual V8 Road Shadow Detail
+on:
+  push:
+    branches: [nihongo-visual-v8-road-shadow-detail-20260906]
+    paths:
+      - '.github/workflows/explore-visual-v8-road-shadow-detail.yml'
+      - 'scripts/visual-v8-road-shadow-detail-patch.py'
+      - 'scripts/visual-v3-browser.mjs'
+      - 'src/explore/cinematic-v3.css'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: exploration-visual-v8-road-shadow-detail
+  cancel-in-progress: false
+jobs:
+  road-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply road-only shadow detail patch
+        run: |
+          python3 scripts/visual-v8-road-shadow-detail-patch.py
+          git add src/explore/world.ts
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Preserve asphalt texture in deep street shadow'
+            git push origin HEAD:nihongo-visual-v8-road-shadow-detail-20260906
+          fi
+      - name: Game-only source gates
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm test -- src/explore/explore.test.ts
+          npm run build
+      - name: Desktop visual and movement evidence
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/explore.html >/dev/null && break; sleep 1; done
+          mkdir -p /tmp/visual-v8
+          EXPLORE_ARTIFACTS=/tmp/visual-v8 node scripts/visual-v3-browser.mjs
+      - name: Upload road-shadow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: explore-visual-v8-${{ github.run_number }}
+          path: /tmp/visual-v8/
+          retention-days: 14
