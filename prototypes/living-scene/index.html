@@ -30,21 +30,29 @@
         <h1 lang="ja">雨あがりの路地</h1>
         <p class="intro">雨停了。沿着灯光，停留一会儿。</p>
       </section>
-      <button id="hotspot" aria-label="走近灯下，读一句日语">
-        <span class="pin"><span></span></span
-        ><span class="hotspot-label" lang="ja">灯りのほうへ</span>
-      </button>
-      <section id="subtitle" aria-live="polite" aria-hidden="true">
-        <p class="line" lang="ja">雨がやんだね。</p>
-        <p class="translation">雨停了呢。</p>
-        <button id="back">回到街景 <span aria-hidden="true">↗</span></button>
+      <div id="hotspots" aria-label="街景里的五处停留"></div>
+      <section id="subtitle" aria-label="场景对话" hidden>
+        <p id="speaker"></p>
+        <p id="story-line" class="line" lang="ja" tabindex="-1"></p>
+        <div id="explanation" hidden>
+          <p id="translation" class="translation"></p>
+          <p id="word-note"></p>
+        </div>
+        <div id="choices" aria-label="想说的话"></div>
+        <div class="story-actions">
+          <button id="explain" aria-expanded="false" aria-controls="explanation">读懂这一句</button>
+          <button id="next">继续 <span aria-hidden="true">→</span></button>
+          <button id="back">回到街景</button>
+        </div>
       </section>
+      <nav id="places-nav" aria-label="找一处停留" hidden></nav>
       <footer>
         <span class="location"
           ><span class="dot"></span>夕暮れ <i>／</i> 雨のあと</span
         >
-        <p id="hint">轻移鼠标，让街景呼吸</p>
+        <p id="hint">沿着灯光，找一处停留</p>
         <div class="controls">
+          <button id="places-toggle" aria-label="选择一处停留" aria-expanded="false" aria-controls="places-nav">散步</button>
           <button id="pause" aria-label="暂停动态" title="暂停动态">Ⅱ</button
           ><button id="fullscreen" aria-label="全屏欣赏" title="全屏欣赏">
             ⛶

@@ -440,3 +440,66 @@ body.focused .shade {
 .controls {
   pointer-events: auto;
 }
+/* V3 encounters stay in the painting. Hidden content leaves the keyboard tree. */
+[hidden] { display: none !important; }
+.scene-hotspot {
+  position: absolute; z-index: 2; left: 0; top: 0;
+  border: 0; background: transparent; padding: 12px;
+  display: grid; place-items: center; will-change: transform;
+}
+.scene-hotspot .hotspot-label {
+  opacity: 0; font-size: 14px; line-height: 1.8;
+  background: transparent; text-shadow: 0 2px 12px #000, 0 0 20px #000;
+  transform: translateY(35px); transition: opacity .6s;
+}
+.scene-hotspot:hover .hotspot-label,
+.scene-hotspot:focus-visible .hotspot-label { opacity: .9; }
+.scene-hotspot:focus-visible { outline-offset: -12px; }
+body.focused .scene-hotspot { opacity: 0; pointer-events: none; }
+#subtitle {
+  bottom: 86px; width: min(90%, 820px); max-height: calc(100% - 135px);
+  overflow-y: auto; scrollbar-width: thin; padding: 16px;
+}
+#subtitle .line {
+  white-space: pre-line; font-size: clamp(24px, 2.1vw, 34px);
+  line-height: 1.9; letter-spacing: .09em; margin: 0 0 18px;
+}
+#story-line:focus { outline: none; }
+#speaker { font-size: 13px; letter-spacing: .18em; color: #e9c69a; margin: 0 0 13px; }
+#explanation { max-width: 620px; margin: 0 auto 20px; }
+#subtitle .translation { font-size: 16px; line-height: 1.9; letter-spacing: .06em; opacity: .88; }
+#word-note { font-size: 14px; line-height: 1.9; letter-spacing: .025em; opacity: .72; margin: 9px 0 0; }
+#choices { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 26px; }
+#choices button {
+  display: flex; flex-direction: column; align-items: center;
+  font-size: 18px; line-height: 1.8; background: transparent;
+  border: 0; border-bottom: 1px solid #ead2af55; padding: 8px 2px;
+  text-shadow: 0 2px 8px #000; transition: color .3s, border-color .3s;
+}
+#choices button:hover { color: #ffe4b9; border-color: #ffe4b9; }
+.choice-translation { font-size: 14px; color: #d3c8b8; }
+.story-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 24px; margin-top: 22px; }
+.story-actions button, #back {
+  margin: 0; border: 0; background: transparent; font-size: 14px;
+  color: #d7c7af; padding: 10px 4px; letter-spacing: .04em;
+}
+.story-actions button:hover { color: #fff0d3; }
+#next { color: #ffe0b0; }
+#places-toggle { width: auto; min-width: 58px; padding: 0 12px; border-radius: 18px; font-size: 14px; }
+#places-nav {
+  position: absolute; z-index: 3; bottom: 84px; right: 44px;
+  display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px 20px;
+  max-width: calc(100% - 50px); padding: 14px;
+  background: linear-gradient(90deg, transparent, #06131bcc);
+}
+#places-nav button { border: 0; border-bottom: 1px solid #d5bb874f; background: transparent; font-size: 14px; padding: 8px 0; }
+body.focused #places-toggle { visibility: hidden; }
+@media (max-width: 700px) {
+  #subtitle { bottom: 82px; width: 96%; padding: 12px; max-height: calc(100% - 115px); }
+  #subtitle .line { font-size: 23px; line-height: 1.75; letter-spacing: .03em; }
+  #choices { gap: 8px; flex-direction: column; align-items: center; }
+  #choices button { font-size: 16px; }
+  .story-actions { gap: 8px 15px; }
+  #places-nav { right: 20px; bottom: 74px; }
+  .edition { display: none; }
+}

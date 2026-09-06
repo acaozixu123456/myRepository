@@ -1,0 +1,11 @@
+{
+  "size": [
+    3039,
+    1710
+  ],
+  "generated_any_coverage_percent": 95.9731482924708,
+  "original_only_fallback_percent": 4.026851707529215,
+  "generated_full_contribution_percent": 88.95273722311701,
+  "boundary_mixed_percent": 7.020411069353762,
+  "warning": "Evaluation composite only; original fallback is Lanczos interpolated, explicitly not native new detail. Registered generated tiles have added native detail. Overlap seams need visual review. Homographies are near uniform scaling/translation fits and were not manually warped."
+}

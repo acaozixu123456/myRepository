@@ -1,0 +1,34 @@
+{
+  "source_size": [
+    1672,
+    941
+  ],
+  "source": "/Users/xiaruonan/nihongo-art-work/living-scene-v2/art-source/living-scene/hero-original.png",
+  "boxes": {
+    "top-left": [
+      0,
+      0,
+      920,
+      518
+    ],
+    "top-right": [
+      752,
+      0,
+      1672,
+      518
+    ],
+    "bottom-left": [
+      0,
+      423,
+      920,
+      941
+    ],
+    "bottom-right": [
+      752,
+      423,
+      1672,
+      941
+    ]
+  },
+  "method": "Deterministic lossless crop. No resampling."
+}

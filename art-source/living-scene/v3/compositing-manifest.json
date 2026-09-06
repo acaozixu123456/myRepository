@@ -1,0 +1,265 @@
+{
+  "status": "3039x1710 registered review candidate adopted in isolated V3 preview; seam and fallback review pending",
+  "method": "Four built-in imagegen localized redraws, exactly one pass per tile. Native generated pixels; not ordinary interpolation.",
+  "source_size": [
+    1672,
+    941
+  ],
+  "proposed_composite_size": [
+    3039,
+    1710
+  ],
+  "nominal_scale_x": 1.817391304347826,
+  "nominal_scale_y": 1.8166023166023166,
+  "source_overlap_pixels": {
+    "horizontal": 168,
+    "vertical": 95
+  },
+  "placement_instructions": "Each tile covers source_box in original coordinates. For a naive placement, map native tile bounds to source_box and scale full source to proposed_composite_size. Homographies are optional approximate registration from native output pixel coordinates to original crop coordinates; translate by source_box left/top, then scale to target canvas. Do not treat this as exact alignment. Choose seams inside overlaps, inspect at 100%, and retain separate editable tiles.",
+  "tiles": [
+    {
+      "id": "top-left",
+      "input_size": [
+        920,
+        518
+      ],
+      "source_box": [
+        0,
+        0,
+        920,
+        518
+      ],
+      "native_output_size": [
+        1672,
+        941
+      ],
+      "output": "outputs/top-left.png",
+      "sha256": "d8bbb55cd5c779914f1d212aa2fcd22539a97fdf1903581daeef36345bb2c2d1",
+      "feature_matches": 738,
+      "ransac_inliers": 644,
+      "median_nominal_drift_source_px": 0.5416211366508832,
+      "p90_nominal_drift_source_px": 1.1042534210008634,
+      "median_registered_error_source_px": 0.4634479880332947,
+      "output_to_source_crop_homography": [
+        [
+          0.5498733763415978,
+          -0.00014541237866710932,
+          -0.1781266820148428
+        ],
+        [
+          -4.492794993510555e-05,
+          0.5499691062547455,
+          0.013433351479508245
+        ],
+        [
+          -7.261825131627036e-07,
+          -2.624305547563007e-08,
+          1.0
+        ]
+      ],
+      "warning": "Homography is approximate global feature fit only; redraw has local drift that global registration cannot fix. This is not an approved seamless composite.",
+      "registered_output_corners_in_source_crop": [
+        [
+          -0.17812667787075043,
+          0.013433351181447506
+        ],
+        [
+          920.3275756835938,
+          -0.061761170625686646
+        ],
+        [
+          920.21337890625,
+          518.10107421875
+        ],
+        [
+          -0.3149675130844116,
+          517.547119140625
+        ]
+      ],
+      "registered_evaluation_layer": "evaluation/top-left-registered-rgba.png"
+    },
+    {
+      "id": "top-right",
+      "input_size": [
+        920,
+        518
+      ],
+      "source_box": [
+        752,
+        0,
+        1672,
+        518
+      ],
+      "native_output_size": [
+        1672,
+        941
+      ],
+      "output": "outputs/top-right.png",
+      "sha256": "24ba999dd4b116b1499860c29d5b5223baa1e3580338ee50d1b8d64294b6bbf7",
+      "feature_matches": 449,
+      "ransac_inliers": 411,
+      "median_nominal_drift_source_px": 2.228770079447073,
+      "p90_nominal_drift_source_px": 3.3057191781133617,
+      "median_registered_error_source_px": 0.602708101272583,
+      "output_to_source_crop_homography": [
+        [
+          0.5485048779233622,
+          0.0001669268437973438,
+          -1.0768996411361706
+        ],
+        [
+          -8.426912932346825e-05,
+          0.5494586652316267,
+          -0.5544427362031688
+        ],
+        [
+          -1.7000632999346676e-07,
+          -1.0057920218547023e-06,
+          1.0
+        ]
+      ],
+      "warning": "Homography is approximate global feature fit only; redraw has local drift that global registration cannot fix. This is not an approved seamless composite.",
+      "registered_output_corners_in_source_crop": [
+        [
+          -1.0768996477127075,
+          -0.5544427633285522
+        ],
+        [
+          916.28369140625,
+          -0.6955384016036987
+        ],
+        [
+          917.3092651367188,
+          516.9815063476562
+        ],
+        [
+          -0.9206928610801697,
+          516.9754638671875
+        ]
+      ],
+      "registered_evaluation_layer": "evaluation/top-right-registered-rgba.png"
+    },
+    {
+      "id": "bottom-left",
+      "input_size": [
+        920,
+        518
+      ],
+      "source_box": [
+        0,
+        423,
+        920,
+        941
+      ],
+      "native_output_size": [
+        1672,
+        941
+      ],
+      "output": "outputs/bottom-left.png",
+      "sha256": "bc33f0b86e3e0047c286ea53593f8efaf2e9b7af57176fa85ca61ee93eb8b036",
+      "feature_matches": 232,
+      "ransac_inliers": 206,
+      "median_nominal_drift_source_px": 93.45687663885039,
+      "p90_nominal_drift_source_px": 148.9101164916163,
+      "median_registered_error_source_px": 0.576313853263855,
+      "output_to_source_crop_homography": [
+        [
+          0.4322757128641913,
+          -0.0006974756838692926,
+          30.605404655409455
+        ],
+        [
+          0.00027057769279739615,
+          0.43221364278780666,
+          53.267124759125025
+        ],
+        [
+          6.431039993681793e-07,
+          -1.3424854895638229e-06,
+          0.9999999999999999
+        ]
+      ],
+      "warning": "Homography is approximate global feature fit only; redraw has local drift that global registration cannot fix. This is not an approved seamless composite.",
+      "registered_output_corners_in_source_crop": [
+        [
+          30.605403900146484,
+          53.26712417602539
+        ],
+        [
+          752.5612182617188,
+          53.66183090209961
+        ],
+        [
+          752.8555908203125,
+          460.5191650390625
+        ],
+        [
+          29.986961364746094,
+          460.5619812011719
+        ]
+      ],
+      "registered_evaluation_layer": "evaluation/bottom-left-registered-rgba.png"
+    },
+    {
+      "id": "bottom-right",
+      "input_size": [
+        920,
+        518
+      ],
+      "source_box": [
+        752,
+        423,
+        1672,
+        941
+      ],
+      "native_output_size": [
+        1672,
+        941
+      ],
+      "output": "outputs/bottom-right.png",
+      "sha256": "19c36b1760f0a07e2487d5d1f6d061632675ec1e4be9576c442ae7192ddb8a6f",
+      "feature_matches": 305,
+      "ransac_inliers": 245,
+      "median_nominal_drift_source_px": 18.266929458731347,
+      "p90_nominal_drift_source_px": 20.488483393222065,
+      "median_registered_error_source_px": 0.504889965057373,
+      "output_to_source_crop_homography": [
+        [
+          0.5404237950176641,
+          0.0025146971983223995,
+          4.342321181917849
+        ],
+        [
+          2.205837176766511e-05,
+          0.5373194339537555,
+          20.41321025438347
+        ],
+        [
+          6.604928246932726e-07,
+          2.1306110940950005e-06,
+          1.0
+        ]
+      ],
+      "warning": "Homography is approximate global feature fit only; redraw has local drift that global registration cannot fix. This is not an approved seamless composite.",
+      "registered_output_corners_in_source_crop": [
+        [
+          4.342321395874023,
+          20.413209915161133
+        ],
+        [
+          906.9293212890625,
+          20.427532196044922
+        ],
+        [
+          907.4756469726562,
+          524.4370727539062
+        ],
+        [
+          6.695228099822998,
+          524.978271484375
+        ]
+      ],
+      "registered_evaluation_layer": "evaluation/bottom-right-registered-rgba.png"
+    }
+  ]
+}

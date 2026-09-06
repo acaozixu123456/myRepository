@@ -1,0 +1,33 @@
+{
+  "source": "hero-original.png",
+  "size": [
+    3039,
+    1710
+  ],
+  "depth": {
+    "model": "Depth-Anything-V2-Small",
+    "encoder": "vits",
+    "license": "Apache-2.0",
+    "input_size": 518,
+    "device": "cpu",
+    "seconds": 5.124272520000886,
+    "white": "near",
+    "normalization_percentiles": [
+      1,
+      99
+    ],
+    "refinement": "colour-supported near maple override; raw depth preserved",
+    "weights_sha256": "715fade13be8f229f8a70cc02066f656f2423a59effd0579197bbf57860e1378"
+  },
+  "layers": [
+    "layer-far.png",
+    "layer-mid.png",
+    "layer-near.png"
+  ],
+  "motion_channels": {
+    "R": "maple leaf wind",
+    "G": "distant atmospheric haze",
+    "B": "shop hover light"
+  },
+  "limits": "Relative monocular depth, feathered depth-band masks. Not semantic cutouts or hidden-surface reconstruction. Runtime uses bounded continuous depth reprojection; layers supplied for subsequent authoring."
+}

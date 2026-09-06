@@ -13,7 +13,11 @@ OUT = ROOT/'prototypes/living-scene/public/scene'
 p = argparse.ArgumentParser()
 p.add_argument('--model-repo', type=Path, required=True)
 p.add_argument('--weights', type=Path, required=True)
+p.add_argument('--source-dir',type=Path,default=SOURCE)
+p.add_argument('--output-dir',type=Path,default=OUT)
 a = p.parse_args()
+SOURCE=a.source_dir; OUT=a.output_dir
+SOURCE.mkdir(parents=True,exist_ok=True); OUT.mkdir(parents=True,exist_ok=True)
 sys.path.insert(0,str(a.model_repo))
 import torch, cv2
 # Upstream image2tensor auto-selects MPS even when the model is on CPU.

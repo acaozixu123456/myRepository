@@ -2,10 +2,15 @@
 No depth bands are used to select shop, lantern, reflection or foreground vegetation.
 """
 from pathlib import Path
-import json, numpy as np, cv2
+import argparse, json, numpy as np, cv2
 from PIL import Image,ImageDraw,ImageFilter
 R=Path(__file__).resolve().parents[3];S=R/'art-source/living-scene';O=R/'prototypes/living-scene/public/scene';V=S/'v2'
-V.mkdir(exist_ok=True); cfg=json.loads((V/'semantic-regions.json').read_text());im=Image.open(S/'hero-original.png').convert('RGB');rgb=np.asarray(im);h,w=rgb.shape[:2];f=rgb.astype(np.float32)/255
+parser=argparse.ArgumentParser()
+parser.add_argument('--master',type=Path,default=S/'hero-original.png')
+parser.add_argument('--work-dir',type=Path,default=V)
+parser.add_argument('--evidence-dir',type=Path,default=R/'docs/living-scene/v2/evidence')
+args=parser.parse_args(); V=args.work_dir
+V.mkdir(exist_ok=True); cfg=json.loads((V/'semantic-regions.json').read_text());im=Image.open(args.master).convert('RGB');rgb=np.asarray(im);h,w=rgb.shape[:2];f=rgb.astype(np.float32)/255
 
 def poly(points,blur=0):
  m=Image.new('L',(w,h));ImageDraw.Draw(m).polygon([(round(x*w),round(y*h))for x,y in points],fill=255)
@@ -50,6 +55,6 @@ board=Image.new('RGB',(1500,660),(19,28,33));d=ImageDraw.Draw(board)
 for i,name in enumerate(['foliage','window','lantern','reflection','fog','warm-air']):
  a=np.asarray(Image.open(V/f'matte-{name}.png'))/255
  tint=rgb*.33+np.dstack([a*150,a*200,a*30]);v=Image.fromarray(np.clip(tint,0,255).astype(np.uint8));v.thumbnail((490,282));x=i%3*500;y=i//3*330;board.paste(v,(x+5,y+32));d.text((x+12,y+10),name,fill='#f0dfba')
-board.save(R/'docs/living-scene/v2/evidence/semantic-mattes.png')
-report={'size':[w,h],'method':'authored object polygons + foreground colour matte; not depth thresholds','channels_a':['foliage','window','lantern'],'channels_b':['reflection','fog','warm_air'],'wind_max_source_pixels':[1.0,.45],'repair':'Telea radius 3px, applied only to a 4px inner foreground boundary collar; not global background reconstruction','coverage':{name:float(np.mean(a))for name,a in [('foliage',leaf),('window',window),('lantern',lantern),('reflection',reflection),('fog',fog),('warm_air',air)]}}
+board.save(args.evidence_dir/'semantic-mattes.png')
+report={'size':[w,h],'method':'authored object polygons + foreground colour matte; not depth thresholds','channels_a':['foliage','window','lantern'],'channels_b':['reflection','fog','warm_air'],'wind_max_source_pixels':[round(w*.00060,3),round(h*.00027,3)],'repair':'Telea radius 3px, applied only to a 4px inner foreground boundary collar; not global background reconstruction','coverage':{name:float(np.mean(a))for name,a in [('foliage',leaf),('window',window),('lantern',lantern),('reflection',reflection),('fog',fog),('warm_air',air)]}}
 (V/'semantic-manifest.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

@@ -16,6 +16,7 @@ import {
   RenderMode,
 } from "three.quarks";
 import "./style.css";
+import { encounters } from "./encounters.js";
 import fragmentShader from "./scene.frag.glsl?raw";
 const params = new URLSearchParams(location.search);
 const qa = params.get("qa") === "1";
@@ -26,7 +27,6 @@ const pipeline =
 const instanced = !qa || params.get("leaves") !== "mesh";
 const $ = (s) => document.querySelector(s),
   canvas = $("#scene"),
-  hotspot = $("#hotspot"),
   reduced = matchMedia("(prefers-reduced-motion: reduce)");
 let contextLost = false;
 let paused = reduced.matches || (qa && params.get("still") === "1"),
@@ -65,23 +65,24 @@ function pauseLabel() {
   $("#pause").title = paused ? "恢复动态" : "暂停动态";
   $("#pause").textContent = paused ? "▷" : "Ⅱ";
 }
-function focus(next) {
-  focused = next;
-  document.body.classList.toggle("focused", next);
-  $("#subtitle").setAttribute("aria-hidden", String(!next));
-  hotspot.tabIndex = next ? -1 : 0;
-  $("#back").tabIndex = next ? 0 : -1;
-  (next ? $("#back") : hotspot).focus({ preventScroll: true });
-}
-$("#back").tabIndex = -1;
-hotspot.onpointerenter = () => (hovered = true);
-hotspot.onpointerleave = () => (hovered = false);
-hotspot.onfocus = () => (hovered = true);
-hotspot.onblur = () => (hovered = false);
-hotspot.onclick = () => focus(true);
-$("#back").onclick = () => focus(false);
-addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && focused) focus(false);
+const focusOffset = new T.Vector2();
+const targetOffset = new T.Vector2();
+const hoverPoint = new T.Vector2(.735, .445);
+let hoverKind = 0;
+const story = encounters({
+  onFocus(place) {
+    focused = !!place;
+    document.body.classList.toggle("focused", focused);
+    targetOffset.set(place ? (place.uv[0] - .5) * .081 : 0,
+                     place ? (place.uv[1] - .5) * .073 : 0);
+  },
+  onHover(place) {
+    hovered = !!place;
+    if (place) {
+      hoverPoint.set(...place.uv);
+      hoverKind = {shop: 0, reflection: 1, lantern: 2, maple: 3, alley: 4}[place.id];
+    }
+  },
 });
 addEventListener("pointermove", (e) =>
   mouse.set((e.clientX / width) * 2 - 1, 1 - (e.clientY / height) * 2),
@@ -107,23 +108,19 @@ $("#fullscreen").onclick = async () => {
 document.addEventListener("visibilitychange", () => (last = 0));
 function align() {
   const z = 1.035 + push * 0.045;
-  const x =
-    (0.5 +
-      ((0.735 - 0.5 - push * 0.019) / cover.x) * z -
-      (pointer.x * 0.003) / cover.x) *
-    width;
-  const y =
-    (0.5 -
-      ((0.445 - 0.5 + push * 0.004) / cover.y) * z +
-      (pointer.y * 0.0015) / cover.y) *
-    height;
-  hotspot.style.transform = `translate3d(${Math.min(width - 90, Math.max(85, x)).toFixed(2)}px,${Math.min(height - 200, Math.max(140, y)).toFixed(2)}px,0) translate(-50%,-50%)`;
+  for (const { place, button } of story.buttons) {
+    const x = (.5 + ((place.uv[0] - .5 - focusOffset.x - pointer.x*.006*(place.depth-.2)) / cover.x)*z)*width;
+    const y = (.5 - ((place.uv[1] - .5 - focusOffset.y - pointer.y*.003*(place.depth-.2)) / cover.y)*z)*height;
+    button.style.transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) translate(-50%,-50%)`;
+    // Keep hotspots on their objects; cropped objects remain accessible through the walk menu.
+    button.hidden = x < 25 || x > width-25 || y < 35 || y > height-70;
+  }
 }
 function resize() {
   width = innerWidth;
   height = innerHeight;
   aspect = width / height;
-  const ia = 1672 / 941;
+  const ia = 3039 / 1710;
   cover.set(aspect > ia ? 1 : aspect / ia, aspect > ia ? ia / aspect : 1);
   if (renderer && composer) {
     renderer.setPixelRatio(
@@ -175,6 +172,9 @@ async function init() {
     uTime: { value: 0 },
     uPush: { value: 0 },
     uHover: { value: 0 },
+    uFocusOffset: { value: focusOffset },
+    uHoverPoint: { value: hoverPoint },
+    uHoverKind: { value: 0 },
     uLocalGlow: { value: pipeline === "local" ? 1 : 0 },
   };
   const material = new T.ShaderMaterial({
@@ -225,7 +225,7 @@ async function init() {
       frames: [...frames],
       pipeline,
       instanced,
-      sourceSize: [1672, 941],
+      sourceSize: [3039, 1710],
       cpuMs: [...cpuMs],
       gpuMs: [...gpuMs],
       gpuTiming: !!gpuExt,
@@ -235,6 +235,7 @@ async function init() {
       renderSize: renderer.getDrawingBufferSize(new T.Vector2()).toArray(),
       paused,
       focused,
+      story: story.snapshot(),
       time,
       push,
       drawCalls: renderer.info.render.calls,
@@ -356,14 +357,17 @@ function tick(now) {
       batch.update(dt);
     }
     push = T.MathUtils.damp(push, focused ? 1 : 0, 2, dt);
+    focusOffset.lerp(targetOffset, 1 - Math.exp(-dt * 2));
     hover = T.MathUtils.damp(hover, hovered ? 1 : 0, 4, dt);
     if (reduced.matches) {
       push = focused ? 1 : 0;
       pointer.set(0, 0);
+      focusOffset.copy(targetOffset);
     }
     u.uTime.value = time;
     u.uPush.value = push;
     u.uHover.value = hover;
+    u.uHoverKind.value = hoverKind;
     for (const { mesh: single, index, seed, speed, size } of leaves) {
       const mesh = instanced ? dummy : single;
       mesh.position.set(

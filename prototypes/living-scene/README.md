@@ -1,3 +1,7 @@
+# V3 review candidate
+
+Current preview ports: 8771 (development), 8772 (build). See `../../docs/living-scene/v3/DELIVERY.md` for the multi-tile source and five encounters. Prior V2 notes below are retained as history.
+
 # 雨あがりの路地 · Living Scene V2
 
 当前 V2 交付：`../../docs/living-scene/v2/DELIVERY.md`。高分辨率母图 P0 仍未通过；语义区域、局部动态、隐退 UI 与性能优化已交付审核。

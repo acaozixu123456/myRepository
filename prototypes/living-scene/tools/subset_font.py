@@ -2,7 +2,7 @@ from pathlib import Path
 from fontTools import subset
 import sys
 root=Path(__file__).resolve().parents[1]
-text=(root/'index.html').read_text()+(root/'src/main.js').read_text()
+text=(root/'index.html').read_text()+''.join(p.read_text() for p in (root/'src').glob('*.js'))
 options=subset.Options(); options.flavor='woff2'
 font=subset.load_font(sys.argv[1],options)
 s=subset.Subsetter(options=options);s.populate(text=text);s.subset(font)

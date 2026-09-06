@@ -1,0 +1,1 @@
+Four overlapping source crops, one localized imagegen redraw per tile, then assess geometry and seam registration. Target about 3000px total width; no claim of native single-frame 4K. Output dimensions to be measured.

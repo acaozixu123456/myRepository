@@ -1,3 +1,5 @@
+> 后续 V3 候选交付见 `../v3/DELIVERY.md`；本文件保留 V2 审核记录。
+
 # Rainy Living Scene V2 — P0 审核候选
 
 按 `docs/living-scene/SOL_REVIEW_20260906.md` 继续推进。独立分支 `nihongo-living-scene-v2-local-20260906`，基于 Sol 审核后的 `b94d9542224aa93f3d4726beadd9852f63c26b52`。没有开展第二张晴天场景。

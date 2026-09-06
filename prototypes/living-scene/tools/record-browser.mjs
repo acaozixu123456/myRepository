@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-export async function recordBrowser(page, capture) {
+export async function recordBrowser(page, capture, tour) {
   await page.bringToFront();
   await page.emulateMedia({ reducedMotion: "no-preference" });
   // A fresh foreground page prevents preceding reduced-motion QA state leaking into recording.
@@ -46,7 +46,8 @@ export async function recordBrowser(page, capture) {
     maxHeight: 900,
     everyNthFrame: 2,
   });
-  for (let i = 0; i < 40; i++) {
+  if (tour) await tour(page);
+  else for (let i = 0; i < 40; i++) {
     await page.mouse.move(
       800 + 550 * Math.sin(i * 0.14),
       450 + 230 * Math.cos(i * 0.15),
