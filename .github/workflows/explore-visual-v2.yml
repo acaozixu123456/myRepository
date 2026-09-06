@@ -1,0 +1,77 @@
+name: Exploration Visual V2
+on:
+  push:
+    branches: [nihongo-visual-v2-20260906]
+    paths: ['.github/workflows/explore-visual-v2.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: explore-visual-v2
+  cancel-in-progress: false
+jobs:
+  visual-pass:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply reviewed cinematic scene patch
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/explore/world.ts');s=p.read_text()
+          def rep(old,new):
+              global s
+              if new in s:return
+              assert s.count(old)==1, old[:100]
+              s=s.replace(old,new)
+          rep("import {ShadowGenerator} from '@babylonjs/core/Lights/Shadows/shadowGenerator';", "import {ShadowGenerator} from '@babylonjs/core/Lights/Shadows/shadowGenerator';\nimport {DefaultRenderingPipeline} from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline';")
+          rep("scene.clearColor=new Color4(.78,.87,.86,1);\n  scene.fogMode=Scene.FOGMODE_EXP2;scene.fogColor=new Color3(.78,.86,.83);scene.fogDensity=.0085;", "scene.clearColor=new Color4(.55,.66,.68,1);\n  scene.fogMode=Scene.FOGMODE_EXP2;scene.fogColor=Color3.FromHexString('#9eada9');scene.fogDensity=.0042;")
+          rep("scene.imageProcessingConfiguration.contrast=1.08;\n  scene.imageProcessingConfiguration.exposure=1.08;\n  const camera=new FreeCamera('eyes',new Vector3(0,1.68,8),scene);", "scene.imageProcessingConfiguration.contrast=1.16;\n  scene.imageProcessingConfiguration.exposure=.91;\n  scene.imageProcessingConfiguration.toneMappingEnabled=true;\n  const camera=new FreeCamera('eyes',new Vector3(0,1.68,8),scene);")
+          rep("camera.minZ=.065;camera.maxZ=220;camera.fov=.97;camera.inputs.clear();", "camera.minZ=.065;camera.maxZ=240;camera.fov=.94;camera.inputs.clear();\n  const cinematic=new DefaultRenderingPipeline('cinematic',true,scene,[camera]);\n  cinematic.samples=coarse?1:2;cinematic.fxaaEnabled=true;cinematic.bloomEnabled=true;cinematic.bloomThreshold=.82;cinematic.bloomWeight=.16;cinematic.bloomKernel=40;")
+          rep("const hemi=new HemisphericLight('sky',new Vector3(0,1,0),scene);hemi.intensity=.83;hemi.groundColor=Color3.FromHexString('#a69678');\n  const sun=new DirectionalLight('afternoon',new Vector3(-.65,-1,.45),scene);sun.position=new Vector3(35,60,10);sun.intensity=1.5;sun.diffuse=Color3.FromHexString('#fff0d8');", "const hemi=new HemisphericLight('sky',new Vector3(.12,1,-.18),scene);hemi.intensity=.48;hemi.diffuse=Color3.FromHexString('#bfd1d0');hemi.groundColor=Color3.FromHexString('#765f4a');\n  const sun=new DirectionalLight('afternoon',new Vector3(-.72,-.66,.34),scene);sun.position=new Vector3(46,58,-18);sun.intensity=2.35;sun.diffuse=Color3.FromHexString('#ffd6a0');sun.specular=Color3.FromHexString('#fff2d8');")
+          rep("const shadows=new ShadowGenerator(coarse?512:1024,sun);shadows.useBlurExponentialShadowMap=true;shadows.useKernelBlur=true;shadows.blurKernel=12;shadows.bias=.002;shadows.normalBias=.025;shadows.setDarkness(.28);", "const shadows=new ShadowGenerator(coarse?512:2048,sun);shadows.useBlurExponentialShadowMap=true;shadows.useKernelBlur=true;shadows.blurKernel=coarse?12:28;shadows.bias=.0018;shadows.normalBias=.021;shadows.setDarkness(.36);")
+          rep("function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=new Color3(.055,.055,.045);mats.set(color,m);}return m;}", "function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=new Color3(.085,.08,.07);m.specularPower=48;m.ambientColor=Color3.FromHexString(color).scale(.08);mats.set(color,m);}return m;}\n  function emissiveMat(name:string,color:string,strength=.35){const m=new StandardMaterial(name,scene);const c=Color3.FromHexString(color);m.diffuseColor=c.scale(.72);m.emissiveColor=c.scale(strength);m.specularColor=c.scale(.08);return m;}\n  const warmWindow=emissiveMat('warm-window','#ffd59a',.42);const lampGlow=emissiveMat('lamp-glow','#ffc879',.58);")
+          start=s.index("  function person(root:TransformNode,x:number,z:number,coat:string,apron=false):TransformNode{")
+          end=s.index("  for(let s=9,index=0;s<ROAD_LENGTH-6;s+=9.4,index++){",start)
+          person="""  function person(root:TransformNode,x:number,z:number,coat:string,apron=false):TransformNode{\n    const group=new TransformNode('person'+serial++,scene);group.parent=root;group.position.set(x,0,z);\n    // Deliberately stylized: larger head, simplified face, graphic hair and clothing. No realistic skin rendering.\n    box(.17,.42,.21,-.105,.23,0,'#394247',group,false,false);box(.17,.42,.21,.105,.23,0,'#394247',group,false,false);\n    box(.19,.095,.30,-.105,.05,-.04,'#eee4cf',group,false,false);box(.19,.095,.30,.105,.05,-.04,'#eee4cf',group,false,false);\n    sphere(.34,.42,.22,0,.91,0,coat,group,false);\n    for(const sign of [-1,1]){const arm=cyl(.13,.155,.47,sign*.34,.90,.015,coat,group,false);arm.rotation.z=sign*.19;sphere(.085,.105,.075,sign*.385,.62,-.025,'#f0c29f',group,false);}\n    cyl(.16,.18,.13,0,1.28,0,'#f0c29f',group,false);\n    sphere(.255,.30,.245,0,1.53,-.015,'#f2c7a5',group,false);\n    sphere(.278,.235,.258,0,1.69,.045,'#3f3a37',group,false);\n    for(const sign of [-1,1])sphere(.095,.19,.105,sign*.18,1.63,.02,'#3f3a37',group,false);\n    for(const sign of [-1,1]){sphere(.026,.038,.016,sign*.088,1.525,-.246,'#343637',group,false);sphere(.052,.022,.012,sign*.13,1.44,-.229,'#df9a83',group,false);}\n    box(.085,.010,.010,0,1.427,-.255,'#a8665c',group,false,false);\n    if(apron){box(.41,.58,.05,0,.83,-.18,'#d9d2ac',group,false,false);box(.24,.12,.03,0,.78,-.215,'#a6b08f',group,false,false);for(const sign of [-1,1])box(.065,.24,.03,sign*.14,1.17,-.13,'#d9d2ac',group,false,false);}\n    else{box(.075,.46,.027,0,.96,-.185,'#ede3d0',group,false,false);box(.14,.10,.03,-.13,1.03,-.185,'#a4b2a1',group,false,false);}\n    animated.push(group);return group;\n  }\n"""
+          s=s[:start]+person+s[end:]
+          rep("// Lower facades carry the detail budget: wood slats, lanterns, plants and menus.\n      for(const x of [-3.95,3.95])for(let k=0;k<5;k++)box(.075,2.20,.045,x+(x<0?1:-1)*k*.12,1.13,-.24,'#b79c75',root);", "// Lower facades carry the detail budget: varied setbacks, timber, tile, glazing and shop lights.\n      for(const x of [-3.95,3.95])for(let k=0;k<5;k++)box(.075,2.20,.045,x+(x<0?1:-1)*k*.12,1.13,-.24,'#a88962',root);\n      if(!shop&&index%4===0){for(let x=-3.5;x<3.6;x+=.34)box(.09,2.28,.06,x,1.22,-.34,'#745b45',root);box(7.55,.12,.42,0,.18,-.32,'#4e443a',root);}\n      if(!shop&&index%4===1){for(let x=-3.1;x<=3.1;x+=2.05){const glow=box(1.48,1.32,.035,x,1.43,-.34,'#f2c98d',root);glow.material=warmWindow;}box(7.6,.18,.32,0,.18,-.28,'#655d50',root);}\n      if(!shop&&index%4===2){for(let y=.45;y<2.5;y+=.34)box(7.2,.045,.05,0,y,-.36,'#9c7f61',root);box(2.4,1.1,.08,1.8,1.35,-.39,'#b6c5bc',root);}\n      if(!shop&&index%4===3){box(7.1,2.15,.07,0,1.22,-.34,'#c8b59a',root);for(let x=-3;x<3.1;x+=1.0)box(.06,2.08,.045,x,1.22,-.40,'#7c6b57',root);}")
+          rep("if(index%3===0){const lantern=cyl(.30,.35,.55,-3.1,2.30,-.7,'#dca36a',root);lantern.rotation.z=.035;for(let k=0;k<6;k++)cyl(.348,.348,.012,-3.1,2.08+k*.078,-.7,'#c78c60',root);}", "if(index%3===0){const lantern=cyl(.30,.35,.55,-3.1,2.30,-.7,'#dca36a',root);lantern.material=lampGlow;lantern.rotation.z=.035;for(let k=0;k<6;k++){const ring=cyl(.348,.348,.012,-3.1,2.08+k*.078,-.7,'#c78c60',root);ring.material=lampGlow;}}")
+          rep("for(let s=2;s<ROAD_LENGTH;s+=33){const p=sampleRoad(s),r=new TransformNode('tree'+s,scene);r.position.set(p.x+(s%2?12:-12),0,p.z);cyl(.18,.30,3.6,0,1.8,0,'#918169',r);for(let i=0;i<8;i++)sphere(1.25+rand()*.5,1.2,1.25,Math.cos(i*2.4)*1.1,3.7+rand()*.8,Math.sin(i*2.4),i%3===0?'#a5b57d':i%2?'#869d70':'#6e8b69',r);}", "for(let s=2;s<ROAD_LENGTH;s+=24){const p=sampleRoad(s),r=new TransformNode('tree'+s,scene);r.position.set(p.x+(s%2?10.5:-10.5),0,p.z);cyl(.20,.34,3.8,0,1.9,0,'#705d4b',r);for(let i=0;i<11;i++){const leaf=sphere(1.15+rand()*.65,.95+rand()*.42,1.05+rand()*.5,Math.cos(i*2.1)*1.15,3.65+rand()*1.15,Math.sin(i*2.1)*1.05,i%3===0?'#84945d':i%2?'#687f5a':'#536f57',r);leaf.rotation.y=rand()*Math.PI;}for(let i=0;i<3;i++)plant(r,-.8+i*.75,-.55,.65+rand()*.35);}")
+          p.write_text(s)
+          PY
+          git add src/explore/world.ts
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Rebuild lighting facades and NPC styling for cinematic desktop pass'
+            git push origin HEAD:nihongo-visual-v2-20260906
+          fi
+      - name: Build and game-only regression
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm test -- src/explore/explore.test.ts
+          npm run build
+      - name: Render desktop screenshots
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/explore.html >/dev/null && break; sleep 1; done
+          mkdir -p /tmp/visual
+          EXPLORE_ARTIFACTS=/tmp/visual node scripts/explore-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: explore-visual-v2-${{ github.run_number }}
+          path: /tmp/visual/
+          retention-days: 14
