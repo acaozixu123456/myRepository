@@ -12,8 +12,10 @@ export type HeroArtController={
   error:string|null;
   keeperAnchor:TransformNode|null;
   animationNames:string[];
+  activeAnimation:string|null;
   meshCount:number;
   ready:Promise<void>;
+  play:(name:string,loop?:boolean)=>void;
   dispose:()=>void;
 };
 
@@ -34,10 +36,21 @@ function configureMeshes(meshes:AbstractMesh[],shadows:ShadowGenerator){
 }
 
 export function loadHeroArt(scene:Scene,shopRoot:TransformNode,shadows:ShadowGenerator,coarse:boolean):HeroArtController{
-  const controller:HeroArtController={status:'loading',error:null,keeperAnchor:null,animationNames:[],meshCount:0,ready:Promise.resolve(),dispose:()=>{}};
   const importedRoots:TransformNode[]=[];
   const animationGroups:AnimationGroup[]=[];
   let disposed=false;
+  const controller:HeroArtController={
+    status:'loading',error:null,keeperAnchor:null,animationNames:[],activeAnimation:null,meshCount:0,ready:Promise.resolve(),
+    play(name,loop=true){
+      if(disposed)return;
+      const next=animationGroups.find(group=>group.name.toLowerCase()===name.toLowerCase());
+      if(!next)return;
+      if(controller.activeAnimation?.toLowerCase()===next.name.toLowerCase())return;
+      for(const group of animationGroups)group.stop();
+      next.start(loop,1.0,next.from,next.to,false);controller.activeAnimation=next.name;
+    },
+    dispose:()=>{},
+  };
 
   controller.ready=(async()=>{
     try{
@@ -59,17 +72,14 @@ export function loadHeroArt(scene:Scene,shopRoot:TransformNode,shadows:ShadowGen
       animationGroups.push(...keeper.animationGroups);
       controller.animationNames=keeper.animationGroups.map(group=>group.name);
       controller.meshCount=shop.meshes.length+keeper.meshes.length;
-      for(const group of keeper.animationGroups)group.stop();
-      const idle=keeper.animationGroups.find(group=>group.name.toLowerCase()==='idle')||keeper.animationGroups[0];
-      idle?.start(true,1.0,idle.from,idle.to,false);
+      controller.status='ready';controller.play('idle',true);
 
       const shadowMap=shadows.getShadowMap();
       if(shadowMap&&!coarse)shadowMap.refreshRate=1; // Desktop hero character is animated; do not freeze its shadow map.
-      controller.status='ready';
     }catch(error){
       controller.status='failed';controller.error=error instanceof Error?error.message:String(error);
       for(const root of importedRoots)root.dispose(false,true);
-      controller.keeperAnchor=null;controller.meshCount=0;controller.animationNames=[];
+      controller.keeperAnchor=null;controller.meshCount=0;controller.animationNames=[];controller.activeAnimation=null;
     }
   })();
 
