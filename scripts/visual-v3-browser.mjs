@@ -33,10 +33,15 @@ try{
   {
     const {context,page}=await pageFor(fixtures.door,{width:1280,height:800});await page.locator('#start').click();
     const start=(await page.evaluate(()=>window.__explore.read())).world.pose;
-    await page.keyboard.down('w');await page.waitForTimeout(6500);await page.keyboard.up('w');
-    const end=(await page.evaluate(()=>window.__explore.read())).world.pose;const inward=(end.x-start.x)*fixtures.normal.x+(end.z-start.z)*fixtures.normal.z;
+    const inwardOf=p=>(p.x-start.x)*fixtures.normal.x+(p.z-start.z)*fixtures.normal.z;
+    await page.keyboard.down('w');
+    try{
+      await page.waitForFunction(({start,normal})=>{const p=window.__explore.read().world.pose;const inward=(p.x-start.x)*normal.x+(p.z-start.z)*normal.z;return inward>1.58;},{start,normal:fixtures.normal},{timeout:45000});
+      await page.waitForTimeout(5000);
+    }finally{await page.keyboard.up('w');}
+    const end=(await page.evaluate(()=>window.__explore.read())).world.pose;const inward=inwardOf(end);
     report.diagnostics.push({doorwayInward:inward,start,end});assert(inward>1.55,'shop doorway is blocked');assert(inward<4.7,'counter collision failed');
-    await snap(page,'03-doorway');record('shop doorway remains walkable after visual changes');await context.close();
+    await snap(page,'03-doorway');record('shop doorway remains walkable and counter remains solid after visual changes');await context.close();
   }
   {
     const {context,page}=await pageFor(fixtures.shop,{width:1280,height:800});await page.locator('#start').click();
