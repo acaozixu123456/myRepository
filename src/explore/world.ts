@@ -39,7 +39,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   const hemi=new HemisphericLight('sky',new Vector3(0,1,0),scene);hemi.intensity=.83;hemi.groundColor=Color3.FromHexString('#a69678');
   const sun=new DirectionalLight('afternoon',new Vector3(-.65,-1,.45),scene);sun.position=new Vector3(35,60,10);sun.intensity=1.5;sun.diffuse=Color3.FromHexString('#fff0d8');
   sun.shadowMinZ=1;sun.shadowMaxZ=160;sun.autoCalcShadowZBounds=true;
-  const shadows=new ShadowGenerator(coarse?512:1024,sun);shadows.usePoissonSampling=true;shadows.bias=.002;shadows.normalBias=.025;shadows.setDarkness(.28);
+  const shadows=new ShadowGenerator(coarse?512:1024,sun);shadows.useBlurExponentialShadowMap=true;shadows.useKernelBlur=true;shadows.blurKernel=12;shadows.bias=.002;shadows.normalBias=.025;shadows.setDarkness(.28);
   // All shadow casters in this slice are static. Reuse the depth map instead of redrawing the entire street every frame.
   const shadowMap=shadows.getShadowMap();if(shadowMap)shadowMap.refreshRate=0;
   const mats=new Map<string,StandardMaterial>();
@@ -200,8 +200,9 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   const resize=()=>engine.resize();
   const lost=(e:Event)=>{e.preventDefault();paused=true;clear();events.lost();};
   canvas.addEventListener('webglcontextlost',lost);canvas.addEventListener('pointerdown',down);window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);document.addEventListener('pointerlockchange',lock);window.addEventListener('keydown',keyDown);window.addEventListener('keyup',keyUp);window.addEventListener('blur',clear);window.addEventListener('resize',resize);
+  let lastDraw=0;
   const render=()=>{
-    if(disposed)return;const dt=Math.min(engine.getDeltaTime()/1000,.035);
+    if(disposed)return;const now=performance.now();if(paused&&now-lastDraw<100)return;lastDraw=now;const dt=Math.min(engine.getDeltaTime()/1000,.035);
     if(!paused){
       let x=(keys.has('KeyD')?1:0)-(keys.has('KeyA')?1:0)+joyX;
       let f=(keys.has('KeyW')||keys.has('ArrowUp')?1:0)-(keys.has('KeyS')||keys.has('ArrowDown')?1:0)-joyY;
@@ -230,7 +231,7 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
     pause(v){paused=v;clear();if(v){near=null;events.near(null);if(document.pointerLockElement===canvas)document.exitPointerLock();}},setMove,look,
     interact(){if(!paused&&near)events.interact(near.id);},setProgress(p){progress=p;},
     getPose(){return{x:player.position.x,z:player.position.z,yaw,pitch};},resetPosition,
-    diagnostics(){return{fps,meshCount:scene.meshes.length,roadLength:ROAD_LENGTH,pose:{x:player.position.x,z:player.position.z,yaw,pitch},paused,nearest:near?.id||null,webgl:engine.webGLVersion};},
+    diagnostics(){return{fps,floorY:player.position.y,keys:[...keys],meshCount:scene.meshes.length,roadLength:ROAD_LENGTH,pose:{x:player.position.x,z:player.position.z,yaw,pitch},paused,nearest:near?.id||null,webgl:engine.webGLVersion};},
     dispose(){if(disposed)return;disposed=true;engine.stopRenderLoop(render);canvas.removeEventListener('webglcontextlost',lost);canvas.removeEventListener('pointerdown',down);window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);document.removeEventListener('pointerlockchange',lock);window.removeEventListener('keydown',keyDown);window.removeEventListener('keyup',keyUp);window.removeEventListener('blur',clear);window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',visibility);if(document.pointerLockElement===canvas)document.exitPointerLock();scene.dispose();engine.dispose();},
   };
 }

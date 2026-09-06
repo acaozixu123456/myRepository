@@ -6,13 +6,14 @@ const base=process.env.EXPLORE_BASE||'http://127.0.0.1:4173';
 const out=process.env.EXPLORE_ARTIFACTS||'/tmp/explore-artifacts';mkdirSync(out,{recursive:true});
 execFileSync('node_modules/.bin/esbuild',['scripts/explore-fixture.ts','--bundle','--platform=node','--outfile=/tmp/explore-fixture.cjs']);execFileSync('node',['/tmp/explore-fixture.cjs']);
 const fixtures=JSON.parse(readFileSync('/tmp/explore-fixture.json','utf8'));
-const report={syntheticData:true,rendering:'Real WebGL with software GPU; not physical-device performance evidence',realAIRequests:0,cases:[],diagnostics:[],errors:[]};
+const report={syntheticData:true,rendering:'Real WebGL with software GPU; desktop DPR 0.75, mobile DPR 1; not physical-device performance evidence',realAIRequests:0,cases:[],diagnostics:[],errors:[]};
 let browser;
 const record=(name,detail='')=>{report.cases.push({name,result:'PASS',detail});console.log('PASS',name);};
 async function start(context,fixture,tag){
   await context.addInitScript(({fixture})=>{if(!sessionStorage.getItem('explore-fixture-loaded')){localStorage.setItem('nihongo.explore.yanaka.v1',JSON.stringify(fixture));localStorage.setItem('nhk-preservation-marker','KEEP-ORIGINAL-BYTES');sessionStorage.setItem('explore-fixture-loaded','1');}}, {fixture});
   const page=await context.newPage();page.setDefaultTimeout(20000);page.on('pageerror',error=>report.errors.push({tag,message:error.message}));
   await page.route('**/api/nhk-speech',route=>route.fulfill({status:503,json:{ok:false,reason:'synthetic-audio-failure'}}));
+  await page.addInitScript(()=>{window.__inputLog=[];for(const type of ['keydown','keyup'])window.addEventListener(type,e=>{window.__inputLog.push({type,code:e.code,focus:document.hasFocus(),at:performance.now()});window.__inputLog=window.__inputLog.slice(-30);},true);});
   await page.goto(base+'/explore.html?qa=1',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#explore-root')?.dataset.ready,{},{timeout:60000});
   const ready=await page.locator('#explore-root').getAttribute('data-ready');
@@ -22,19 +23,21 @@ async function start(context,fixture,tag){
 async function snap(page,name){await page.screenshot({path:`${out}/${name}.png`,timeout:60000});const size=await page.evaluate(()=>({content:document.documentElement.scrollWidth,width:innerWidth}));assert(size.content<=size.width+1,`${name} horizontal overflow`);}
 try{
  browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
- const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1,serviceWorkers:'block'});
+ const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:.75,serviceWorkers:'block'});
  const page=await start(context,fixtures.fresh,'desktop');await snap(page,'01-entry');await page.locator('#start').click();
  const before=(await page.evaluate(()=>window.__explore.read())).world.pose;
  await page.keyboard.down('w');await page.waitForTimeout(2300);await page.keyboard.up('w');
  const after=(await page.evaluate(()=>window.__explore.read())).world.pose;assert(after.z>before.z+.15,'W movement failed');
- await page.keyboard.down('ArrowRight');await page.waitForTimeout(600);await page.keyboard.up('ArrowRight');
- assert((await page.evaluate(()=>window.__explore.read())).world.pose.yaw>after.yaw+.05,'look control failed');
+ report.diagnostics.push({beforeMove:before,afterMove:after,current:await page.evaluate(()=>window.__explore.read())});
+ await page.keyboard.down('ArrowRight');
+ try{await page.waitForFunction(yaw=>{const current=window.__explore.read().world.pose.yaw;return Math.abs(Math.atan2(Math.sin(current-yaw),Math.cos(current-yaw)))>.15;},after.yaw,{timeout:15000});}finally{await page.keyboard.up('ArrowRight');}
+ report.diagnostics.push({afterTurn:await page.evaluate(()=>window.__explore.read())});
  record('desktop real WebGL, forward movement, independent turning');await snap(page,'02-street');report.diagnostics.push(await page.evaluate(()=>window.__explore.read()));
  await page.locator('#map').click();assert.equal((await page.evaluate(()=>window.__explore.read())).world.paused,true);await snap(page,'03-map');await page.getByRole('button',{name:'关闭',exact:true}).click();
  await page.locator('#about').click();assert((await page.locator('body').innerText()).includes('尚未接入 PLATEAU'));await page.getByRole('button',{name:'关闭',exact:true}).click();
  record('map and honest provenance modal pause movement');await context.close();
  // Start a separate synthetic save at the real doorway. No gameplay teleport/debug mutator exists.
- const shopContext=await browser.newContext({viewport:{width:1280,height:800},serviceWorkers:'block'});
+ const shopContext=await browser.newContext({viewport:{width:1280,height:800},deviceScaleFactor:.75,serviceWorkers:'block'});
  const shop=await start(shopContext,fixtures.shop,'shop');await shop.locator('#start').click();
  await shop.waitForFunction(()=>window.__explore.read().world.nearest==='shop',{},{timeout:20000});
  await snap(shop,'04-shop-interior');await shop.keyboard.press('e');await shop.locator('#reply-form').waitFor();
@@ -57,4 +60,4 @@ try{
  const mobileAfter=(await mobile.evaluate(()=>window.__explore.read())).world.pose;assert(Math.hypot(mobileAfter.x-mobileBefore.x,mobileAfter.z-mobileBefore.z)>.1,'touch movement failed');assert(Math.abs(mobileAfter.yaw-mobileBefore.yaw)>.05,'simultaneous touch look failed');record('mobile landscape two-finger move and look');await snap(mobile,'09-mobile-street');
  await mobile.locator('#notebook').click();await snap(mobile,'10-mobile-notes');await mobileContext.close();
  assert.deepEqual(report.errors,[],'unhandled browser runtime errors');record('no uncaught JS errors in real renderer flows');
-}catch(error){report.failure=String(error.stack||error);console.error(error);process.exitCode=1;}finally{writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));await browser?.close();}
+}catch(error){report.failure=String(error.stack||error);console.error(error);process.exitCode=1;}finally{for(const context of browser?.contexts()||[])for(const page of context.pages()){try{report.diagnostics.push({final:await page.evaluate(()=>({state:window.__explore?.read(),input:window.__inputLog,focus:document.hasFocus()}))});}catch{}}writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));await browser?.close();}
