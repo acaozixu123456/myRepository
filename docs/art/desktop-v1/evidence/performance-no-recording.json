@@ -1,0 +1,431 @@
+{
+  "browserVersion": "152.0.7977.82",
+  "physicalPanel": [
+    2880,
+    1800
+  ],
+  "DPRContext": 2,
+  "method": "headed Chrome ANGLE Metal; 1280x800 viewport; rAF interval distributions; three-second warmup before sustained orbit; no video or screenshot capture while measuring; no offline renderer running; not a full-game FPS result",
+  "runs": [
+    {
+      "scenario": "shop orbit; recording disabled",
+      "asset": "shop",
+      "bounds": {
+        "min": [
+          -4.539999783039093,
+          -0.20999999344348907,
+          -1.1555838584899902
+        ],
+        "max": [
+          4.545000076293945,
+          5.650000095367432,
+          6.183000087738037
+        ]
+      },
+      "babylon": "9.25.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)",
+      "softwareRenderer": false,
+      "devicePixelRatio": 2,
+      "screen": [
+        1280,
+        800
+      ],
+      "viewport": [
+        1280,
+        800
+      ],
+      "renderResolution": [
+        1920,
+        1200
+      ],
+      "frameSamples": 899,
+      "frameTimeMs": {
+        "p50": 16.699999999720603,
+        "p95": 17.700000000186265,
+        "p99": 18
+      },
+      "shadowResolution": 2048,
+      "light": "neutral",
+      "importedAnchors": {
+        "ANCHOR_door": [
+          0,
+          0,
+          0
+        ],
+        "ANCHOR_interior": [
+          0,
+          0,
+          5
+        ],
+        "ANCHOR_right": [
+          1,
+          0,
+          0
+        ],
+        "ANCHOR_counter": [
+          0,
+          1.159999966621399,
+          3.4000000953674316
+        ],
+        "ANCHOR_npc": [
+          0.4000000059604645,
+          0,
+          4.25
+        ]
+      },
+      "meshCount": 19,
+      "triangles": 130842,
+      "vertices": 155966,
+      "materials": 19,
+      "animationGroups": [],
+      "errors": [],
+      "loaded": true
+    },
+    {
+      "scenario": "shop orbit; recording disabled",
+      "asset": "shop",
+      "bounds": {
+        "min": [
+          -4.539999783039093,
+          -0.20999999344348907,
+          -1.1555838584899902
+        ],
+        "max": [
+          4.545000076293945,
+          5.650000095367432,
+          6.183000087738037
+        ]
+      },
+      "babylon": "9.25.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)",
+      "softwareRenderer": false,
+      "devicePixelRatio": 2,
+      "screen": [
+        1280,
+        800
+      ],
+      "viewport": [
+        1280,
+        800
+      ],
+      "renderResolution": [
+        1280,
+        800
+      ],
+      "frameSamples": 900,
+      "frameTimeMs": {
+        "p50": 16.699999999720603,
+        "p95": 17.600000000093132,
+        "p99": 18
+      },
+      "shadowResolution": 2048,
+      "light": "neutral",
+      "importedAnchors": {
+        "ANCHOR_door": [
+          0,
+          0,
+          0
+        ],
+        "ANCHOR_interior": [
+          0,
+          0,
+          5
+        ],
+        "ANCHOR_right": [
+          1,
+          0,
+          0
+        ],
+        "ANCHOR_counter": [
+          0,
+          1.159999966621399,
+          3.4000000953674316
+        ],
+        "ANCHOR_npc": [
+          0.4000000059604645,
+          0,
+          4.25
+        ]
+      },
+      "meshCount": 19,
+      "triangles": 130842,
+      "vertices": 155966,
+      "materials": 19,
+      "animationGroups": [],
+      "errors": [],
+      "loaded": true
+    },
+    {
+      "scenario": "doorway-to-counter movement; recording disabled",
+      "asset": "shop",
+      "bounds": {
+        "min": [
+          -4.539999783039093,
+          -0.20999999344348907,
+          -1.1555838584899902
+        ],
+        "max": [
+          4.545000076293945,
+          5.650000095367432,
+          6.183000087738037
+        ]
+      },
+      "babylon": "9.25.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)",
+      "softwareRenderer": false,
+      "devicePixelRatio": 2,
+      "screen": [
+        1280,
+        800
+      ],
+      "viewport": [
+        1280,
+        800
+      ],
+      "renderResolution": [
+        1280,
+        800
+      ],
+      "frameSamples": 626,
+      "frameTimeMs": {
+        "p50": 16.699999999720603,
+        "p95": 17.600000000093132,
+        "p99": 18.100000000093132
+      },
+      "shadowResolution": 2048,
+      "light": "neutral",
+      "importedAnchors": {
+        "ANCHOR_door": [
+          0,
+          0,
+          0
+        ],
+        "ANCHOR_interior": [
+          0,
+          0,
+          5
+        ],
+        "ANCHOR_right": [
+          1,
+          0,
+          0
+        ],
+        "ANCHOR_counter": [
+          0,
+          1.159999966621399,
+          3.4000000953674316
+        ],
+        "ANCHOR_npc": [
+          0.4000000059604645,
+          0,
+          4.25
+        ]
+      },
+      "meshCount": 19,
+      "triangles": 130842,
+      "vertices": 155966,
+      "materials": 19,
+      "animationGroups": [],
+      "errors": [],
+      "loaded": true
+    },
+    {
+      "scenario": "keeper orbit; recording disabled",
+      "asset": "keeper",
+      "bounds": {
+        "min": [
+          -0.3668792247772217,
+          0.0001561571261845529,
+          -0.1957051157951355
+        ],
+        "max": [
+          0.3668791949748993,
+          1.6434069871902466,
+          0.18037743866443634
+        ]
+      },
+      "babylon": "9.25.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)",
+      "softwareRenderer": false,
+      "devicePixelRatio": 2,
+      "screen": [
+        1280,
+        800
+      ],
+      "viewport": [
+        1280,
+        800
+      ],
+      "renderResolution": [
+        1920,
+        1200
+      ],
+      "frameSamples": 900,
+      "frameTimeMs": {
+        "p50": 16.699999999720603,
+        "p95": 17.799999999813735,
+        "p99": 18.200000000186265
+      },
+      "shadowResolution": 2048,
+      "light": "neutral",
+      "importedAnchors": {},
+      "meshCount": 13,
+      "triangles": 57852,
+      "vertices": 29531,
+      "materials": 13,
+      "animationGroups": [
+        {
+          "name": "idle",
+          "from": 0,
+          "to": 240
+        },
+        {
+          "name": "greet",
+          "from": 0,
+          "to": 180
+        },
+        {
+          "name": "talk",
+          "from": 0,
+          "to": 240
+        }
+      ],
+      "errors": [],
+      "loaded": true
+    },
+    {
+      "scenario": "keeper orbit; recording disabled",
+      "asset": "keeper",
+      "bounds": {
+        "min": [
+          -0.3668792247772217,
+          0.0001561571261845529,
+          -0.1957051157951355
+        ],
+        "max": [
+          0.3668791949748993,
+          1.6434069871902466,
+          0.18037743866443634
+        ]
+      },
+      "babylon": "9.25.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)",
+      "softwareRenderer": false,
+      "devicePixelRatio": 2,
+      "screen": [
+        1280,
+        800
+      ],
+      "viewport": [
+        1280,
+        800
+      ],
+      "renderResolution": [
+        1280,
+        800
+      ],
+      "frameSamples": 900,
+      "frameTimeMs": {
+        "p50": 16.600000000093132,
+        "p95": 17.799999999813735,
+        "p99": 18.100000000093132
+      },
+      "shadowResolution": 2048,
+      "light": "neutral",
+      "importedAnchors": {},
+      "meshCount": 13,
+      "triangles": 57852,
+      "vertices": 29531,
+      "materials": 13,
+      "animationGroups": [
+        {
+          "name": "idle",
+          "from": 0,
+          "to": 240
+        },
+        {
+          "name": "greet",
+          "from": 0,
+          "to": 180
+        },
+        {
+          "name": "talk",
+          "from": 0,
+          "to": 240
+        }
+      ],
+      "errors": [],
+      "loaded": true
+    },
+    {
+      "scenario": "animated character close-up; recording disabled",
+      "asset": "keeper",
+      "bounds": {
+        "min": [
+          -0.3668792247772217,
+          0.0001561571261845529,
+          -0.1957051157951355
+        ],
+        "max": [
+          0.3668791949748993,
+          1.6434069871902466,
+          0.18037743866443634
+        ]
+      },
+      "babylon": "9.25.0",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)",
+      "softwareRenderer": false,
+      "devicePixelRatio": 2,
+      "screen": [
+        1280,
+        800
+      ],
+      "viewport": [
+        1280,
+        800
+      ],
+      "renderResolution": [
+        1280,
+        800
+      ],
+      "frameSamples": 624,
+      "frameTimeMs": {
+        "p50": 16.699999999720603,
+        "p95": 18,
+        "p99": 18.299999999813735
+      },
+      "shadowResolution": 2048,
+      "light": "neutral",
+      "importedAnchors": {},
+      "meshCount": 13,
+      "triangles": 57852,
+      "vertices": 29531,
+      "materials": 13,
+      "animationGroups": [
+        {
+          "name": "idle",
+          "from": 0,
+          "to": 240
+        },
+        {
+          "name": "greet",
+          "from": 0,
+          "to": 180
+        },
+        {
+          "name": "talk",
+          "from": 0,
+          "to": 240
+        }
+      ],
+      "errors": [],
+      "loaded": true
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "animation": "idle",
+  "animationFrame": 105,
+  "timeSeconds": 1.75,
+  "nodes": [
+    {
+      "name": "blink-1",
+      "scale": [
+        1,
+        0.08999999612569809,
+        1
+      ]
+    },
+    {
+      "name": "blink1",
+      "scale": [
+        1,
+        0.08999999612569809,
+        1
+      ]
+    }
+  ]
+}
