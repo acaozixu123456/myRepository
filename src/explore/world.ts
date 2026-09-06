@@ -5,6 +5,7 @@ import {Vector3} from '@babylonjs/core/Maths/math.vector';
 import {Color3, Color4} from '@babylonjs/core/Maths/math.color';
 import {HemisphericLight} from '@babylonjs/core/Lights/hemisphericLight';
 import {DirectionalLight} from '@babylonjs/core/Lights/directionalLight';
+import {PointLight} from '@babylonjs/core/Lights/pointLight';
 import {Mesh} from '@babylonjs/core/Meshes/mesh';
 import {MeshBuilder} from '@babylonjs/core/Meshes/meshBuilder';
 import {StandardMaterial} from '@babylonjs/core/Materials/standardMaterial';
@@ -28,26 +29,27 @@ export type World={
 export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{near:(t:Target|null)=>void;interact:(id:TargetId)=>void;lock:(v:boolean)=>void;lost:()=>void}):World{
   const coarse=matchMedia('(pointer: coarse)').matches;
   const engine=new Engine(canvas,true,{preserveDrawingBuffer:false,stencil:true,audioEngine:false,powerPreference:'high-performance'});
-  engine.setHardwareScalingLevel(1/Math.min(devicePixelRatio||1,coarse?1.15:1.5));
+  // Desktop renders at native canvas resolution; mobile may downscale. Supersampling here made the cinematic pass unnecessarily expensive.
+  engine.setHardwareScalingLevel(coarse?1.18:1);
   const scene=new Scene(engine);
   scene.clearColor=new Color4(.55,.66,.68,1);
   scene.fogMode=Scene.FOGMODE_EXP2;scene.fogColor=Color3.FromHexString('#9eada9');scene.fogDensity=.0042;
   scene.collisionsEnabled=true;
-  scene.imageProcessingConfiguration.contrast=1.16;
-  scene.imageProcessingConfiguration.exposure=.91;
+  scene.imageProcessingConfiguration.contrast=1.13;
+  scene.imageProcessingConfiguration.exposure=.82;
   scene.imageProcessingConfiguration.toneMappingEnabled=true;
   const camera=new FreeCamera('eyes',new Vector3(0,1.68,8),scene);
   camera.minZ=.065;camera.maxZ=240;camera.fov=.94;camera.inputs.clear();
   const cinematic=new DefaultRenderingPipeline('cinematic',true,scene,[camera]);
-  cinematic.samples=coarse?1:2;cinematic.fxaaEnabled=true;cinematic.bloomEnabled=true;cinematic.bloomThreshold=.82;cinematic.bloomWeight=.16;cinematic.bloomKernel=40;
-  const hemi=new HemisphericLight('sky',new Vector3(.12,1,-.18),scene);hemi.intensity=.48;hemi.diffuse=Color3.FromHexString('#bfd1d0');hemi.groundColor=Color3.FromHexString('#765f4a');
-  const sun=new DirectionalLight('afternoon',new Vector3(-.72,-.66,.34),scene);sun.position=new Vector3(46,58,-18);sun.intensity=2.35;sun.diffuse=Color3.FromHexString('#ffd6a0');sun.specular=Color3.FromHexString('#fff2d8');
+  cinematic.samples=1;cinematic.fxaaEnabled=true;cinematic.bloomEnabled=true;cinematic.bloomThreshold=.90;cinematic.bloomWeight=.10;cinematic.bloomKernel=28;
+  const hemi=new HemisphericLight('sky',new Vector3(.12,1,-.18),scene);hemi.intensity=.42;hemi.diffuse=Color3.FromHexString('#b8cbcc');hemi.groundColor=Color3.FromHexString('#6f5a48');
+  const sun=new DirectionalLight('afternoon',new Vector3(-.72,-.66,.34),scene);sun.position=new Vector3(46,58,-18);sun.intensity=1.72;sun.diffuse=Color3.FromHexString('#f6c895');sun.specular=Color3.FromHexString('#f7dfc4');
   sun.shadowMinZ=1;sun.shadowMaxZ=160;sun.autoCalcShadowZBounds=true;
   const shadows=new ShadowGenerator(coarse?512:2048,sun);shadows.useBlurExponentialShadowMap=true;shadows.useKernelBlur=true;shadows.blurKernel=coarse?12:28;shadows.bias=.0018;shadows.normalBias=.021;shadows.setDarkness(.36);
   // All shadow casters in this slice are static. Reuse the depth map instead of redrawing the entire street every frame.
   const shadowMap=shadows.getShadowMap();if(shadowMap)shadowMap.refreshRate=0;
   const mats=new Map<string,StandardMaterial>();
-  function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=new Color3(.085,.08,.07);m.specularPower=48;m.ambientColor=Color3.FromHexString(color).scale(.08);mats.set(color,m);}return m;}
+  function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);const base=Color3.FromHexString(color);m.diffuseColor=base;m.specularColor=new Color3(.06,.055,.05);m.specularPower=42;m.ambientColor=base.scale(.08);if(color==='#f0c29f'||color==='#f2c7a5'){m.emissiveColor=base.scale(.035);m.specularPower=18;}mats.set(color,m);}return m;}
   function emissiveMat(name:string,color:string,strength=.35){const m=new StandardMaterial(name,scene);const c=Color3.FromHexString(color);m.diffuseColor=c.scale(.72);m.emissiveColor=c.scale(strength);m.specularColor=c.scale(.08);return m;}
   const warmWindow=emissiveMat('warm-window','#ffd59a',.42);const lampGlow=emissiveMat('lamp-glow','#ffc879',.58);
   let serial=0;const batches:Mesh[]=[];const animated:TransformNode[]=[];
@@ -71,15 +73,15 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
     const plane=MeshBuilder.CreatePlane('text'+serial++,{width:w,height:h,sideOrientation:Mesh.DOUBLESIDE},scene);plane.material=material;plane.position.set(x,y,z);if(parent)plane.parent=parent;return plane;
   }
   // Small procedural materials are generated locally; no image CDN, map tiles or external fonts at runtime.
-  const roadMat=mat('#b0a18a');const roadTex=new DynamicTexture('paving',{width:512,height:512},scene,false);const c=roadTex.getContext();
-  c.fillStyle='#b4a58f';c.fillRect(0,0,512,512);let seed=19;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
+  const roadMat=mat('#958a77');const roadTex=new DynamicTexture('paving',{width:512,height:512},scene,false);const c=roadTex.getContext();
+  c.fillStyle='#9d927f';c.fillRect(0,0,512,512);let seed=19;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
   for(let i=0;i<14000;i++){const v=110+Math.floor(rand()*90);c.fillStyle=`rgba(${v},${v*.94},${v*.82},.24)`;c.fillRect(rand()*512,rand()*512,1+rand()*2,1+rand()*2);}
   c.strokeStyle='rgba(100,91,75,.2)';c.lineWidth=1;for(let y=0;y<512;y+=64){c.beginPath();c.moveTo(0,y);c.lineTo(512,y);c.stroke();for(let x=(y%128?32:0);x<512;x+=128){c.beginPath();c.moveTo(x,y);c.lineTo(x,y+64);c.stroke();}}
   roadTex.update();roadTex.uScale=1.3;roadTex.vScale=4;roadMat.diffuseTexture=roadTex;
   box(230,.2,270,0,-.23,80,'#b6bd99',undefined,true);
   for(let i=0;i<ROAD.length-1;i++){
     const a=ROAD[i],b=ROAD[i+1],len=Math.hypot(b.x-a.x,b.z-a.z),root=new TransformNode('road'+i,scene);root.position.set((a.x+b.x)/2,-.04,(a.z+b.z)/2);root.rotation.y=Math.atan2(b.x-a.x,b.z-a.z);
-    const paving=box(7.3,.1,len+.18,0,0,0,'#b0a18a',root,true);paving.material=roadMat;
+    const paving=box(7.3,.1,len+.18,0,0,0,'#958a77',root,true);paving.material=roadMat;
     for(const side of [-1,1]){box(.24,.15,len+.1,side*3.7,.035,0,'#d5c7af',root);box(.18,.04,len,side*3.48,.071,0,'#857f70',root);}
   }
   const targets:Target[]=[];
@@ -135,6 +137,8 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
         box(w-.5,1.0,.65,0,.56,3.45,'#8a7155',root,true);box(w-.4,.11,.84,0,1.11,3.40,'#d8bf95',root,true);
         box(1.6,.72,.45,-2.8,1.54,5.30,'#d8c8a9',root);
         label('本日の日替わり',2.8,.75,0,2.04,5.56,'#e9dfc4','#454f42',root,'手づくりのお弁当');
+        const shopLight=new PointLight('shop-warm-light',new Vector3(0,2.15,2.5),scene);shopLight.parent=root;shopLight.diffuse=Color3.FromHexString('#ffd3a0');shopLight.specular=Color3.FromHexString('#d99b68');shopLight.intensity=.72;shopLight.range=8.5;
+        for(const lx of [-2.0,0,2.0]){const bulb=sphere(.055,.055,.055,lx,2.42,2.4,'#f4c27d',root,false);bulb.material=lampGlow;}
         for(let i=0;i<4;i++){cyl(.40,.47,.2,-2.4+i*1.55,2.60,2,'#eee1bf',root);sphere(.15,.06,.15,-2.4+i*1.55,2.48,2,'#fff2c9',root);}
         keeper=person(root,.4,4.25,'#4a7166',true);
         const target=global(root,new Vector3(.4,1.42,4.25));targets.push({id:'shop',label:'和店员说话',point:target,radius:3.6});
