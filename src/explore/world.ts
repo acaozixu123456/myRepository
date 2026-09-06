@@ -32,8 +32,8 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   // Desktop renders at native canvas resolution; mobile may downscale. Supersampling here made the cinematic pass unnecessarily expensive.
   engine.setHardwareScalingLevel(coarse?1.18:1);
   const scene=new Scene(engine);
-  scene.clearColor=new Color4(.55,.66,.68,1);
-  scene.fogMode=Scene.FOGMODE_EXP2;scene.fogColor=Color3.FromHexString('#9eada9');scene.fogDensity=.0042;
+  scene.clearColor=new Color4(.43,.55,.60,1);
+  scene.fogMode=Scene.FOGMODE_EXP2;scene.fogColor=Color3.FromHexString('#b8aa98');scene.fogDensity=.00355;
   scene.collisionsEnabled=true;
   scene.imageProcessingConfiguration.contrast=1.13;
   scene.imageProcessingConfiguration.exposure=.82;
@@ -42,6 +42,15 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   camera.minZ=.065;camera.maxZ=240;camera.fov=.94;camera.inputs.clear();
   const cinematic=new DefaultRenderingPipeline('cinematic',true,scene,[camera]);
   cinematic.samples=1;cinematic.fxaaEnabled=true;cinematic.bloomEnabled=true;cinematic.bloomThreshold=.90;cinematic.bloomWeight=.10;cinematic.bloomKernel=28;
+  // Lightweight procedural atmosphere: a cool upper sky, warm late-afternoon horizon and restrained haze.
+  // This intentionally avoids an HDRI dependency so the current prototype stays self-contained while hero assets are built separately.
+  const skyTex=new DynamicTexture('yanaka-sky',{width:1024,height:512},scene,false);
+  {const ctx=skyTex.getContext() as CanvasRenderingContext2D;const grad=ctx.createLinearGradient(0,0,0,512);
+    grad.addColorStop(0,'#536d79');grad.addColorStop(.28,'#738a91');grad.addColorStop(.57,'#9da7a2');grad.addColorStop(.76,'#c7ad8f');grad.addColorStop(1,'#b88f70');ctx.fillStyle=grad;ctx.fillRect(0,0,1024,512);
+    const glow=ctx.createRadialGradient(190,350,8,190,350,230);glow.addColorStop(0,'rgba(255,224,174,.62)');glow.addColorStop(.28,'rgba(249,194,139,.22)');glow.addColorStop(1,'rgba(249,194,139,0)');ctx.fillStyle=glow;ctx.fillRect(0,100,520,410);
+    ctx.globalAlpha=.10;ctx.fillStyle='#e8ddd0';for(const cloud of [[650,145,170,24],[760,205,120,18],[410,110,135,16],[900,95,90,12]]){ctx.beginPath();ctx.ellipse(cloud[0],cloud[1],cloud[2],cloud[3],0,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;skyTex.update();}
+  const skyMat=new StandardMaterial('yanaka-sky-mat',scene);skyMat.disableLighting=true;skyMat.backFaceCulling=false;skyMat.diffuseColor=Color3.Black();skyMat.specularColor=Color3.Black();skyMat.emissiveTexture=skyTex;skyMat.fogEnabled=false;
+  const sky=MeshBuilder.CreateSphere('yanaka-atmosphere',{diameter:390,segments:24,sideOrientation:Mesh.BACKSIDE},scene);sky.material=skyMat;sky.infiniteDistance=true;sky.isPickable=false;sky.applyFog=false;
   const hemi=new HemisphericLight('sky',new Vector3(.12,1,-.18),scene);hemi.intensity=.42;hemi.diffuse=Color3.FromHexString('#b8cbcc');hemi.groundColor=Color3.FromHexString('#6f5a48');
   const sun=new DirectionalLight('afternoon',new Vector3(-.72,-.66,.34),scene);sun.position=new Vector3(46,58,-18);sun.intensity=1.72;sun.diffuse=Color3.FromHexString('#f6c895');sun.specular=Color3.FromHexString('#f7dfc4');
   sun.shadowMinZ=1;sun.shadowMaxZ=160;sun.autoCalcShadowZBounds=true;
