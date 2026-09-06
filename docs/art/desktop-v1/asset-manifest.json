@@ -1,0 +1,234 @@
+{
+  "baseCommit": "0f3a4c4289b314791e9b7aee15fd5fca28cd425f",
+  "branch": "nihongo-art-assets-local-20260906",
+  "assets": [
+    {
+      "id": "shop",
+      "path": "public/explore/assets/desktop-v1/yorimichi-shop.glb",
+      "sha256": "69d019712fc8ba6d6a9eadfe2d99bfa7164f23def24de69a36c4b9b458ef1477",
+      "bytes": 18068128,
+      "triangles": 130842,
+      "vertices": 155966,
+      "meshes": 19,
+      "materials": 19,
+      "images": [
+        {
+          "name": "signs_basecolor",
+          "width": 2048,
+          "height": 2048,
+          "embeddedBytes": 207082
+        },
+        {
+          "name": "cloth_normal",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 2099094
+        },
+        {
+          "name": "cloth_basecolor",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 556061
+        },
+        {
+          "name": "cloth_orm",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 280877
+        },
+        {
+          "name": "roof_normal",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 2673627
+        },
+        {
+          "name": "roof_basecolor",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 642619
+        },
+        {
+          "name": "roof_orm",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 466092
+        },
+        {
+          "name": "plaster_normal",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 2991355
+        },
+        {
+          "name": "plaster_basecolor",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 650055
+        },
+        {
+          "name": "plaster_orm",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 598813
+        },
+        {
+          "name": "cedar_normal",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 174272
+        },
+        {
+          "name": "cedar_basecolor",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 470482
+        },
+        {
+          "name": "cedar_orm",
+          "width": 1024,
+          "height": 1024,
+          "embeddedBytes": 30517
+        }
+      ],
+      "joints": 0,
+      "animations": [],
+      "extensionsUsed": [],
+      "status": "candidate_for_Sol_review_not_accepted"
+    },
+    {
+      "id": "keeper",
+      "path": "public/explore/assets/desktop-v1/yorimichi-keeper.glb",
+      "sha256": "865a22ed1a83f1b437d8874d5d0a1cd03ef5574b857c3e1b7b5ffae6584dd257",
+      "bytes": 1708484,
+      "triangles": 57852,
+      "vertices": 29531,
+      "meshes": 13,
+      "materials": 13,
+      "images": [],
+      "joints": 18,
+      "animations": [
+        {
+          "name": "idle",
+          "seconds": 3.9583333333333335,
+          "channels": 54
+        },
+        {
+          "name": "greet",
+          "seconds": 2.9583333333333335,
+          "channels": 54
+        },
+        {
+          "name": "talk",
+          "seconds": 3.9583333333333335,
+          "channels": 54
+        }
+      ],
+      "extensionsUsed": [],
+      "status": "candidate_for_Sol_review_not_accepted"
+    }
+  ],
+  "externalTextures": [
+    {
+      "path": "public/explore/assets/desktop-v1/textures/cedar_basecolor.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 470482,
+      "sha256": "9c7e033c0bf7212f6b969ada97bf32b308558cae69223ec17f599b4b9413b4a2"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/cedar_normal.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 174272,
+      "sha256": "c8e76041cf11aa49f00ec5b9e09c462f2731f344043c9eed2c81fa2ba85510a2"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/cedar_orm.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 30517,
+      "sha256": "cf5885a6b37ffc15a14cea0a3329d1ba088f6ee80023895bce0bf3483960759c"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/cloth_basecolor.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 556061,
+      "sha256": "8944233e3943cbb9b88c0e1a4b1d688f5b15e8888501b598ccfd59bccbd373c2"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/cloth_normal.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 2099094,
+      "sha256": "983e55ab3eed3cf000e963bfa1a7c18f203b3af1c845e6c5fb59e2bc6bf36d42"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/cloth_orm.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 280877,
+      "sha256": "3452d80415e7fb4421a23e7cb80a313d83e8d86359461c96e983e89c6971297c"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/plaster_basecolor.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 650055,
+      "sha256": "37a19d489dbaf1c1bee4aa0dbd011c388561859ecc99693e2959731f079b7420"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/plaster_normal.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 2991355,
+      "sha256": "2c85cda884f413ddf8a80bacfffc72e8845206b5e7d0168c8c213184a78beaee"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/plaster_orm.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 598813,
+      "sha256": "05314e781ad41438d94be3738c67a9f4f52cf3c7e4f72a2b5a321cd8ee9bf07a"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/roof_basecolor.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 642619,
+      "sha256": "de4ff5ecc6ae0ee9da4f4b302f30956483d847a3aac8dd26998afce9d25eb5ba"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/roof_normal.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 2673627,
+      "sha256": "26aba0771290ac75fd7712f005953d8ee726a2e3087d2d77fe42adb6c9f5d52f"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/roof_orm.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 466092,
+      "sha256": "b5cc51e4cd6d581626d5dd1a939ce32b1a64add2783c248a13a61520127c33ee"
+    },
+    {
+      "path": "public/explore/assets/desktop-v1/textures/signs_basecolor.png",
+      "width": 2048,
+      "height": 2048,
+      "bytes": 207082,
+      "sha256": "54daf3ac099cab4a1e8b4c04aac497dbc402bcc95e8df26f050655f95f96ce28"
+    }
+  ],
+  "evidence": {
+    "browser-hardware": {
+      "path": "docs/art/desktop-v1/evidence/browser-hardware.json",
+      "sha256": "4fff74e92340be068049dcf1b46c8090cbc58071c9f8d3ce93a01a3715605ec6"
+    },
+    "performance-no-recording": {
+      "path": "docs/art/desktop-v1/evidence/performance-no-recording.json",
+      "sha256": "5fd14fceab8e7ad5a437352bbb794c39d1ca6f9dee1e903ff106838825b196fb"
+    }
+  }
+}
