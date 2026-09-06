@@ -17,7 +17,7 @@
   #explore-root .interact{top:auto;bottom:6.5%;padding:7px 13px 7px 8px;border-radius:999px;background:rgba(12,27,22,.72);color:#f8f1df;border:1px solid rgba(248,240,218,.18);box-shadow:0 8px 30px #0006;backdrop-filter:blur(10px);font-size:12px;max-width:340px}
   #explore-root .interact kbd{width:27px;height:27px;background:rgba(239,226,193,.16);color:#fff6df;border:1px solid rgba(255,244,219,.24)}
 
-  #modal-layer{align-items:flex-end;justify-content:center;padding:0 28px 18px;background:linear-gradient(0deg,rgba(4,11,8,.42),rgba(4,11,8,.035) 48%,transparent 72%);backdrop-filter:none}
+  #explore-root #modal-layer{align-items:flex-end;justify-content:center;padding:0 28px 18px;background:linear-gradient(0deg,rgba(4,11,8,.42),rgba(4,11,8,.035) 48%,transparent 72%);backdrop-filter:none}
   #modal-layer .panel,#modal-layer .panel.wide{width:min(860px,calc(100vw - 56px));max-height:38vh;padding:14px 18px 12px;border-radius:17px;background:linear-gradient(180deg,rgba(18,29,25,.72),rgba(11,20,17,.90));color:#f5edda;border:1px solid rgba(241,228,198,.14);box-shadow:0 16px 62px #0008;backdrop-filter:blur(17px) saturate(.88);scrollbar-color:#756d5c transparent;overflow:auto}
   #modal-layer .panel-header{margin-bottom:9px;min-height:30px}#modal-layer .panel-header small,#modal-layer .panel-header h2{color:#f2e8d2}#modal-layer .panel-header small{font-size:8px;letter-spacing:1.5px}#modal-layer .panel-header h2{margin-top:2px;font-size:14px;line-height:1.35}
   #modal-layer .icon-button{width:30px;height:30px;background:rgba(241,229,204,.10);color:#f2ead8}
