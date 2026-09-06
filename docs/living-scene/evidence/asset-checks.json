@@ -1,0 +1,18 @@
+{
+  "original_size": [
+    1672,
+    941
+  ],
+  "depth_size": [
+    1672,
+    941
+  ],
+  "raw_depth_finite": true,
+  "mask_sum_range": [
+    255,
+    255
+  ],
+  "expected_mask_sum": 255,
+  "maximum_rounding_error": 0,
+  "runtime_initial_image_bytes": 1138507
+}

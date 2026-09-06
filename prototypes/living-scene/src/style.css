@@ -1,0 +1,369 @@
+@font-face {
+  font-family: SceneJP;
+  src: url("/scene/noto-jp-subset.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 100 900;
+}
+:root {
+  font-family: SceneJP, "Hiragino Mincho ProN", "Yu Mincho", serif;
+  color: #f1ece1;
+  background: #101b22;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: clip;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible {
+  outline: 2px solid #e6c49a;
+  outline-offset: 7px;
+}
+#app {
+  position: relative;
+  isolation: isolate;
+}
+.still,
+#scene,
+.shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.still {
+  object-fit: cover;
+  transform: scale(1.035);
+}
+#scene {
+  opacity: 0;
+  transition: opacity 1.2s;
+}
+body.ready #scene {
+  opacity: 1;
+}
+.shade {
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    #030a1042,
+    transparent 19%,
+    transparent 60%,
+    #03090e99
+  );
+  z-index: 1;
+}
+header,
+footer,
+.chapter,
+#hotspot,
+#subtitle,
+#notice {
+  position: absolute;
+  z-index: 2;
+}
+header {
+  top: 35px;
+  left: 44px;
+  right: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-shadow: 0 2px 12px #000;
+}
+.seal {
+  width: 26px;
+  height: 29px;
+  background: #9b4b37;
+  border: 1px solid #c28062;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+.edition {
+  font:
+    9px Arial,
+    sans-serif;
+  letter-spacing: 0.23em;
+  opacity: 0.65;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.edition i {
+  height: 1px;
+  width: 26px;
+  background: currentColor;
+}
+.chapter {
+  bottom: 125px;
+  left: 60px;
+  transition:
+    opacity 0.7s,
+    transform 0.7s;
+  pointer-events: none;
+}
+.eyebrow {
+  font:
+    9px Arial,
+    sans-serif;
+  letter-spacing: 0.34em;
+  opacity: 0.7;
+  margin: 0 0 17px;
+}
+h1 {
+  font-weight: 400;
+  font-size: clamp(28px, 2.6vw, 48px);
+  letter-spacing: 0.12em;
+  margin: 0 0 16px;
+  line-height: 1.5;
+  text-shadow: 0 2px 28px #00101e;
+}
+.intro {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  opacity: 0.72;
+  margin: 0;
+}
+footer {
+  bottom: 30px;
+  left: 44px;
+  right: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.location {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.75;
+}
+.location i {
+  font-style: normal;
+  opacity: 0.4;
+  padding: 0 4px;
+}
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d1af7c;
+  box-shadow: 0 0 8px #ad7548;
+}
+#hint {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.47;
+  font-size: 10px;
+}
+.controls {
+  display: flex;
+  gap: 10px;
+}
+.controls button {
+  border: 1px solid #f6e8d035;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  background: #09151b25;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  transition: background 0.3s;
+}
+.controls button:hover {
+  background: #e5c59820;
+}
+.controls #pause {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+#hotspot {
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 2px 5px #000);
+  transition: opacity 0.5s;
+}
+.pin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #efd4ac70;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 0.4s,
+    border-color 0.4s;
+  background: #b6772825;
+}
+.pin span {
+  width: 5px;
+  height: 5px;
+  background: #f1d6ad;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffd498;
+}
+#hotspot:hover .pin,
+#hotspot:focus-visible .pin {
+  transform: scale(1.25);
+  border-color: #ffe2b5;
+}
+.hotspot-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #f9e9ce;
+  background: #17170f40;
+  padding: 6px 8px;
+  border-radius: 2px;
+}
+#subtitle {
+  left: 50%;
+  bottom: 107px;
+  transform: translate(-50%, 12px);
+  width: min(90%, 520px);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.8s,
+    transform 0.8s;
+  text-shadow:
+    0 2px 12px #000,
+    0 2px 24px #000;
+}
+#subtitle .line {
+  font-size: 30px;
+  letter-spacing: 0.16em;
+  margin: 0 0 16px;
+  font-weight: 400;
+}
+.translation {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  opacity: 0.75;
+  margin: 0;
+}
+#back {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  margin-top: 24px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  color: #e7d2ae;
+}
+#back span {
+  padding-left: 8px;
+}
+body.focused .chapter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+body.focused #hotspot {
+  opacity: 0;
+  pointer-events: none;
+}
+body.focused #subtitle {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+body.focused #hint {
+  opacity: 0;
+}
+#notice {
+  bottom: 78px;
+  right: 44px;
+  font-size: 10px;
+  color: #eadbc8;
+  max-width: 260px;
+  text-align: right;
+  opacity: 0.8;
+}
+@media (max-width: 700px) {
+  header {
+    top: 25px;
+    left: 25px;
+    right: 25px;
+  }
+  .brand {
+    font-size: 11px;
+    gap: 10px;
+  }
+  .edition {
+    font-size: 8px;
+    gap: 7px;
+  }
+  .edition i {
+    width: 12px;
+  }
+  .chapter {
+    left: 28px;
+    bottom: 136px;
+  }
+  .intro {
+    font-size: 10px;
+    max-width: 240px;
+    line-height: 1.8;
+  }
+  footer {
+    left: 25px;
+    right: 25px;
+    bottom: 23px;
+  }
+  .location {
+    font-size: 9px;
+  }
+  #hint {
+    display: none;
+  }
+  .hotspot-label {
+    font-size: 10px;
+  }
+  #subtitle {
+    bottom: 128px;
+  }
+  #subtitle .line {
+    font-size: 25px;
+  }
+  #notice {
+    right: 25px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+h1,#subtitle .line{font-family:'Hiragino Mincho ProN','Yu Mincho',SceneJP,serif}

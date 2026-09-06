@@ -1,0 +1,92 @@
+[
+  {
+    "path": "art-source/living-scene/PROMPT.txt",
+    "bytes": 2295,
+    "sha256": "426b58b6cbfbcc1b484e4b13b90e7de26a3d8adb49e5b6c040b2da1c30bd1e79"
+  },
+  {
+    "path": "art-source/living-scene/PROVENANCE.md",
+    "bytes": 2359,
+    "sha256": "ae8a4ed4a0dcccd31cd94393c05078ff3721b68637f05b8981dfe54a164768cb"
+  },
+  {
+    "path": "art-source/living-scene/depth-16bit.png",
+    "bytes": 1363282,
+    "sha256": "49330136a0d5b0483f81b1ebd7a6b21107c18a5fb4e533eb119d9a6c85423020"
+  },
+  {
+    "path": "art-source/living-scene/depth-raw.npy",
+    "bytes": 6293536,
+    "sha256": "91b468bfb868c20caf4dfc817da17d5a97abd4b883023f2142e774b1d9adc0c5"
+  },
+  {
+    "path": "art-source/living-scene/depth-refined-16bit.png",
+    "bytes": 1394600,
+    "sha256": "515683cf1f712b677ddc3e4c2ee7c12267d721e425899e4a91201513b188de02"
+  },
+  {
+    "path": "art-source/living-scene/hero-original.png",
+    "bytes": 2757212,
+    "sha256": "2695b969b99582188f0c4d831b655dc87e4644b64a4d16a36040e58b0441ddad"
+  },
+  {
+    "path": "art-source/living-scene/layer-far.png",
+    "bytes": 3171777,
+    "sha256": "e4a2b072450a103eabd8cd49ec629d26842b83cbc20c680df13434099fee27a5"
+  },
+  {
+    "path": "art-source/living-scene/layer-mid.png",
+    "bytes": 3246043,
+    "sha256": "d57e8368016f89a99f6f21e81faadd57b9f2252016ef532d016aa37ed2f9de4a"
+  },
+  {
+    "path": "art-source/living-scene/layer-near.png",
+    "bytes": 3192576,
+    "sha256": "4aa7c0b04e440ea17d6bc2986d958987a06a2fafb1f8dfde19ff9b9dd5b81887"
+  },
+  {
+    "path": "art-source/living-scene/manifest.json",
+    "bytes": 929,
+    "sha256": "bff97c719da5daa1a4035f29156f6dd5b0407050be9e9c9cd2fcf05fe3593528"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/depth.png",
+    "bytes": 225104,
+    "sha256": "309895918dd054e1ca5e2f5ddf45fe479b5be6b08224e5d01bb818e24b4b9c8e"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/hero.webp",
+    "bytes": 578918,
+    "sha256": "e81c31f25783c1cf81b37e5b5e4b226e658794fbb1ead91e5dacb77105e32d50"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/mask-far.png",
+    "bytes": 87975,
+    "sha256": "27f01cbc0081b4fd1991fa400c762515ee955f07753b91e8823eadf23a8c2077"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/mask-mid.png",
+    "bytes": 182506,
+    "sha256": "23106868c4cd994c76e3028aa11e9de07e6474e73411e27ff4787010c0572752"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/mask-near.png",
+    "bytes": 109414,
+    "sha256": "f0123ac84f26416105ec09c32c5219292bab8f9eac60947fd71e76b5a786f1c3"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/motion-masks.png",
+    "bytes": 293169,
+    "sha256": "3ed9d00b0a386f4e5bdaa5b526595008914d97244a579d2a286778124b517ba4"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/noto-jp-subset.woff2",
+    "bytes": 41316,
+    "sha256": "6fe4ea9e7c4bb293bc0d779dd2741a24a7dffc536e64ed76570125c0d2fbe28f"
+  },
+  {
+    "path": "prototypes/living-scene/public/scene/scene.json",
+    "bytes": 150,
+    "sha256": "d73bf20206262f14596546230c92181875e06d9a2ca10272e37280fd31712c12"
+  }
+]

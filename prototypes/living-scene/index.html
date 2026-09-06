@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#101b22" />
+    <meta
+      name="description"
+      content="雨后的日式小街。移一移目光，停留在一盏灯下。"
+    />
+    <title>雨あがりの路地 · 日本散步日记</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <main id="app" aria-label="雨后日式街景">
+      <img
+        class="still"
+        src="/scene/hero.webp"
+        alt="雨后暮色中的日式木屋街道，枫枝映着暖灯，湿润石路延伸至远处薄雾。"
+      /><canvas id="scene" aria-label="轻微视差动态街景"></canvas>
+      <div class="shade" aria-hidden="true"></div>
+      <header>
+        <div class="brand">
+          <span class="seal" aria-hidden="true">日</span>日本散歩日記
+        </div>
+        <span class="edition">LIVING SCENE <i></i> 01</span>
+      </header>
+      <section class="chapter">
+        <p class="eyebrow">AFTER THE RAIN</p>
+        <h1 lang="ja">雨あがりの路地</h1>
+        <p class="intro">雨停了。沿着灯光，停留一会儿。</p>
+      </section>
+      <button id="hotspot" aria-label="走近灯下，读一句日语">
+        <span class="pin"><span></span></span
+        ><span class="hotspot-label" lang="ja">灯りのほうへ</span>
+      </button>
+      <section id="subtitle" aria-live="polite" aria-hidden="true">
+        <p class="line" lang="ja">雨がやんだね。</p>
+        <p class="translation">雨停了呢。</p>
+        <button id="back">回到街景 <span aria-hidden="true">↗</span></button>
+      </section>
+      <footer>
+        <span class="location"
+          ><span class="dot"></span>夕暮れ <i>／</i> 雨のあと</span
+        >
+        <p id="hint">轻移鼠标，让街景呼吸</p>
+        <div class="controls">
+          <button id="pause" aria-label="暂停动态" title="暂停动态">Ⅱ</button
+          ><button id="fullscreen" aria-label="全屏欣赏" title="全屏欣赏">
+            ⛶
+          </button>
+        </div>
+      </footer>
+      <p id="notice" role="status"></p>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

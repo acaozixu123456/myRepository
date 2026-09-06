@@ -1,0 +1,85 @@
+{
+  "date": "2026-09-06T04:21:51.924Z",
+  "url": "http://127.0.0.1:8768/",
+  "browser": "152.0.7977.82",
+  "hardware": {
+    "vendor": "Google Inc. (AMD)",
+    "renderer": "ANGLE (AMD, ANGLE Metal Renderer: AMD Radeon Pro 555, Unspecified Version)"
+  },
+  "tests": {
+    "noScrollOnFocus": true,
+    "focus": true,
+    "escape": true,
+    "pause": true,
+    "fullscreen": true,
+    "reducedMotion": true,
+    "mobileNoOverflow": true,
+    "staticFallback": true
+  },
+  "errors": [],
+  "networkErrors": [],
+  "performance": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "dpr": 1,
+      "renderSize": [
+        1920,
+        1080
+      ],
+      "paused": false,
+      "focused": false,
+      "time": 56.399266666666776,
+      "push": 1.482953882362049e-11,
+      "drawCalls": 49,
+      "triangles": 543,
+      "particleCount": 52,
+      "leafCount": 18,
+      "textureCount": 21,
+      "errors": [],
+      "requestedDpr": 1,
+      "samples": 1585,
+      "durationMs": 32916,
+      "averageFps": 48.152873982257866,
+      "p50Ms": 16.700000000004366,
+      "p95Ms": 49.700000000004366,
+      "p99Ms": 50.60000000000582,
+      "over33ms": 181
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "dpr": 1.2649110640673518,
+      "renderSize": [
+        1821,
+        1138
+      ],
+      "paused": false,
+      "focused": false,
+      "time": 36.28216666666665,
+      "push": 1.6972952576519285e-11,
+      "drawCalls": 51,
+      "triangles": 569,
+      "particleCount": 51,
+      "leafCount": 18,
+      "textureCount": 21,
+      "errors": [],
+      "requestedDpr": 2,
+      "samples": 1645,
+      "durationMs": 32166.399999999998,
+      "averageFps": 51.140320334261844,
+      "p50Ms": 16.700000000000728,
+      "p95Ms": 33.79999999999927,
+      "p99Ms": 50.5,
+      "over33ms": 132
+    }
+  ],
+  "capture": {
+    "method": "Chrome DevTools Page.startScreencast; actual viewport including HTML UI",
+    "frames": 300,
+    "durationSeconds": 23.509198904037476,
+    "animationSeconds": 23.448800000000006,
+    "paused": false,
+    "encoding": "Resampled by timestamp to 15 fps; never used for performance numbers"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  method: 'Chrome DevTools Page.startScreencast; actual viewport including HTML UI',
+  frames: 300,
+  durationSeconds: 23.509198904037476,
+  animationSeconds: 23.448800000000006,
+  paused: false,
+  encoding: 'Resampled by timestamp to 15 fps; never used for performance numbers'
+}
