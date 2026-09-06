@@ -153,7 +153,9 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
         box(w-.5,1.0,.65,0,.56,3.45,'#8a7155',root,true);box(w-.4,.11,.84,0,1.11,3.40,'#d8bf95',root,true);
         box(1.6,.72,.45,-2.8,1.54,5.30,'#d8c8a9',root);
         label('本日の日替わり',2.8,.75,0,2.04,5.56,'#e9dfc4','#454f42',root,'手づくりのお弁当');
-        const shopLight=new PointLight('shop-warm-light',new Vector3(0,2.15,2.5),scene);shopLight.parent=root;shopLight.diffuse=Color3.FromHexString('#ffd3a0');shopLight.specular=Color3.FromHexString('#d99b68');shopLight.intensity=.72;shopLight.range=8.5;
+        const shopLight=new PointLight('shop-warm-light',new Vector3(0,2.15,2.5),scene);shopLight.parent=root;shopLight.diffuse=Color3.FromHexString('#ffd3a0');shopLight.specular=Color3.FromHexString('#d99b68');shopLight.intensity=.98;shopLight.range=9.2;
+        const keeperFill=new PointLight('shop-keeper-fill',new Vector3(-.45,2.35,1.55),scene);keeperFill.parent=root;keeperFill.diffuse=Color3.FromHexString('#ffd7ad');keeperFill.specular=Color3.FromHexString('#d6a27f');keeperFill.intensity=.42;keeperFill.range=5.4;
+        const keeperRim=new PointLight('shop-keeper-rim',new Vector3(.65,2.55,5.15),scene);keeperRim.parent=root;keeperRim.diffuse=Color3.FromHexString('#f0b67c');keeperRim.specular=Color3.FromHexString('#d58f62');keeperRim.intensity=.26;keeperRim.range=3.8;
         for(const lx of [-2.0,0,2.0]){const bulb=sphere(.055,.055,.055,lx,2.42,2.4,'#f4c27d',root,false);bulb.material=lampGlow;}
         // Give the hero shop visible depth: back-wall shelves, jars, pendant shades and a slatted counter front.
         for(const sx of [-2.65,2.65]){
