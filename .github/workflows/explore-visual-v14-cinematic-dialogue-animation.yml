@@ -1,0 +1,60 @@
+name: Exploration Visual V14 Cinematic Dialogue Animation
+on:
+  push:
+    branches: [nihongo-visual-v14-cinematic-dialogue-animation-20260906]
+    paths:
+      - '.github/workflows/explore-visual-v14-cinematic-dialogue-animation.yml'
+      - 'scripts/visual-v14-dialogue-animation-patch.py'
+      - 'scripts/visual-v14-cinematic-browser.mjs'
+      - 'src/explore/heroArt.ts'
+      - 'src/explore/cinematic-v3.css'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: exploration-visual-v14-cinematic-dialogue-animation
+  cancel-in-progress: false
+jobs:
+  cinematic-dialogue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply cinematic dialogue and animation lifecycle
+        run: |
+          python3 scripts/visual-v14-dialogue-animation-patch.py
+          git add src/explore/world.ts src/explore/main.ts src/explore/cinematic-v3.css
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Turn shop dialogue into subtitles and animate the keeper'
+            git push origin HEAD:nihongo-visual-v14-cinematic-dialogue-animation-20260906
+          fi
+      - name: Game-only source gates
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm test -- src/explore/explore.test.ts
+          npm run build
+      - name: Focused desktop cinematic evidence
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/explore.html >/dev/null && break; sleep 1; done
+          mkdir -p /tmp/visual-v14
+          EXPLORE_ARTIFACTS=/tmp/visual-v14 node scripts/visual-v14-cinematic-browser.mjs
+      - name: Upload cinematic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: explore-visual-v14-${{ github.run_number }}
+          path: /tmp/visual-v14/
+          retention-days: 14
