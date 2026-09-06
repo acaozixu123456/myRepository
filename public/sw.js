@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nihongo-nhk-reliable-20260905-v2';
+const CACHE_NAME = 'nihongo-explore-isolated-20260906-v1';
 const SHELL = ['/', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', event => {
@@ -25,14 +25,21 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
 
   if (request.mode === 'navigate') {
+    // Keep the independent game shell out of the NHK homepage cache.
+    const shellKey = url.pathname === '/explore.html' ? '/explore.html' : '/';
     event.respondWith(
       fetch(request)
         .then(response => {
-          const copy = response.clone();
-          void caches.open(CACHE_NAME).then(cache => cache.put('/', copy));
+          if (response.ok && response.headers.get('content-type')?.includes('text/html')) {
+            const copy = response.clone();
+            void caches.open(CACHE_NAME).then(cache => cache.put(shellKey, copy)).catch(() => {});
+          }
           return response;
         })
-        .catch(() => caches.match('/')),
+        .catch(async () => (await caches.match(shellKey)) || new Response(
+          'This page is not available offline. Please reconnect. / 暂无此页面的离线副本，请联网后重试。',
+          {status: 503, headers: {'Content-Type': 'text/plain; charset=utf-8'}},
+        )),
     );
     return;
   }

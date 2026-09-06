@@ -1,0 +1,15 @@
+{
+  "query": "[out:json][timeout:30];way[\"highway\"](35.7262,139.7643,35.7285,139.7688);out geom;",
+  "endpoint": "https://overpass-api.de/api/interpreter",
+  "retrievedAt": "2026-09-06T00:27:51.396Z",
+  "attribution": "© OpenStreetMap contributors",
+  "license": "ODbL-1.0",
+  "licenseUrl": "https://www.openstreetmap.org/copyright",
+  "roadCount": 100,
+  "usedWayIds": [
+    737745076,
+    671851311
+  ],
+  "osmTimestamp": "2026-09-06T00:25:58Z",
+  "rendering": "Road centerlines retained. Widths, flat elevation, building placements, interiors and shop identities are fictional gameplay adaptations. PLATEAU not integrated in this slice."
+}
