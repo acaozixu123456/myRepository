@@ -440,3 +440,20 @@ body.focused .shade {
 .controls {
   pointer-events: auto;
 }
+
+/* Audio stays inside the disappearing chrome: sound should enrich the artwork, not become UI. */
+.controls #sound {
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  transition: background .3s, border-color .3s, color .3s, box-shadow .3s;
+}
+.controls #sound[data-on="true"] {
+  color: #f3d6a5;
+  border-color: #ecc38f66;
+  background: #c98d4930;
+  box-shadow: 0 0 18px #be814526;
+}
+.controls #sound:disabled {
+  opacity: .35;
+  cursor: default;
+}

@@ -17,6 +17,7 @@ import {
 } from "three.quarks";
 import "./style.css";
 import fragmentShader from "./scene.frag.glsl?raw";
+import { createLivingSceneAudio } from "./audio.js";
 const params = new URLSearchParams(location.search);
 const qa = params.get("qa") === "1";
 const pipeline =
@@ -60,6 +61,24 @@ let renderer,
   width = innerWidth,
   height = innerHeight,
   aspect = width / height;
+const sound = createLivingSceneAudio((state) => updateSoundButton(state));
+function updateSoundButton(state = sound.snapshot()) {
+  const button = $("#sound");
+  if (!button) return;
+  button.disabled = !state.supported;
+  button.dataset.on = String(state.enabled);
+  button.setAttribute("aria-pressed", String(state.enabled));
+  const label = !state.supported
+    ? "当前浏览器不支持声音"
+    : state.enabled
+      ? "关闭声音"
+      : state.preferred
+        ? "恢复声音"
+        : "开启声音";
+  button.setAttribute("aria-label", label);
+  button.title = label;
+  button.textContent = state.enabled ? "♫" : "♪";
+}
 function pauseLabel() {
   $("#pause").setAttribute("aria-label", paused ? "恢复动态" : "暂停动态");
   $("#pause").title = paused ? "恢复动态" : "暂停动态";
@@ -67,6 +86,7 @@ function pauseLabel() {
 }
 function focus(next) {
   focused = next;
+  sound.setFocus(next);
   document.body.classList.toggle("focused", next);
   $("#subtitle").setAttribute("aria-hidden", String(!next));
   hotspot.tabIndex = next ? -1 : 0;
@@ -74,18 +94,20 @@ function focus(next) {
   (next ? $("#back") : hotspot).focus({ preventScroll: true });
 }
 $("#back").tabIndex = -1;
-hotspot.onpointerenter = () => (hovered = true);
-hotspot.onpointerleave = () => (hovered = false);
-hotspot.onfocus = () => (hovered = true);
-hotspot.onblur = () => (hovered = false);
+hotspot.onpointerenter = () => { hovered = true; sound.setHover(true); };
+hotspot.onpointerleave = () => { hovered = false; sound.setHover(false); };
+hotspot.onfocus = () => { hovered = true; sound.setHover(true); };
+hotspot.onblur = () => { hovered = false; sound.setHover(false); };
 hotspot.onclick = () => focus(true);
 $("#back").onclick = () => focus(false);
 addEventListener("keydown", (e) => {
   if (e.key === "Escape" && focused) focus(false);
 });
-addEventListener("pointermove", (e) =>
-  mouse.set((e.clientX / width) * 2 - 1, 1 - (e.clientY / height) * 2),
-);
+addEventListener("pointermove", (e) => {
+  const px = (e.clientX / width) * 2 - 1;
+  mouse.set(px, 1 - (e.clientY / height) * 2);
+  sound.setPointer(px);
+});
 document.documentElement.onpointerleave = () => mouse.set(0, 0);
 $("#pause").onclick = () => {
   paused = !paused;
@@ -96,6 +118,19 @@ reduced.addEventListener("change", () => {
   pauseLabel();
 });
 pauseLabel();
+updateSoundButton();
+$("#sound").onclick = async () => {
+  const before = sound.snapshot();
+  await sound.toggle();
+  const after = sound.snapshot();
+  updateSoundButton(after);
+  if (!before.supported || (!after.enabled && !after.started))
+    $("#notice").textContent = "当前浏览器暂时无法开启声音。";
+  else if (after.enabled)
+    $("#notice").textContent = "雨后的街道有声音了。";
+  else
+    $("#notice").textContent = "声音已关闭。";
+};
 $("#fullscreen").onclick = async () => {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
@@ -104,7 +139,10 @@ $("#fullscreen").onclick = async () => {
     $("#notice").textContent = "当前浏览器暂不支持全屏。";
   }
 };
-document.addEventListener("visibilitychange", () => (last = 0));
+document.addEventListener("visibilitychange", () => {
+  last = 0;
+  sound.setHidden(document.hidden);
+});
 function align() {
   const z = 1.035 + push * 0.045;
   const x =
@@ -243,6 +281,7 @@ async function init() {
       leafCount: leaves.length,
       textureCount: renderer.info.memory.textures,
       errors: [...errors],
+      audio: sound.snapshot(),
     }),
   };
   document.body.classList.add("ready");
