@@ -1,0 +1,70 @@
+name: Living Scene Audio V1 Verify
+on:
+  push:
+    branches: [nihongo-living-scene-audio-v1-20260906]
+    paths:
+      - '.github/workflows/living-scene-audio-v1-verify.yml'
+      - 'prototypes/living-scene/src/audio.js'
+      - 'prototypes/living-scene/tools/apply_audio_patch.py'
+      - 'docs/living-scene/audio/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: living-scene-audio-v1
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply bounded audio integration
+        run: |
+          cd prototypes/living-scene
+          python3 tools/apply_audio_patch.py
+          node --check src/audio.js
+          node --check src/main.js
+          git diff --check
+          cd ../..
+          git add prototypes/living-scene/index.html prototypes/living-scene/src/main.js prototypes/living-scene/src/style.css
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Wire adaptive music and soundscape into Living Scene V2'
+            git push origin HEAD:nihongo-living-scene-audio-v1-20260906
+          fi
+      - name: Build isolated Living Scene
+        run: |
+          corepack enable
+          cd prototypes/living-scene
+          pnpm install --frozen-lockfile
+          pnpm build
+          test -s dist/index.html
+          grep -R "livingScene.audio" -n dist/assets >/tmp/audio-build-grep.txt
+          grep -q 'id="sound"' index.html
+          grep -q 'audio: sound.snapshot()' src/main.js
+          grep -q 'setFocus(next)' src/main.js
+          grep -q 'setHover(true)' src/main.js
+      - name: Summarize verified audio contract
+        run: |
+          cat > /tmp/audio-summary.txt <<'TXT'
+          Living Scene Audio V1 source gates PASS.
+          Verified: audio module syntax, main syntax, bounded integration, Vite production build, sound control, scene-state hooks, QA snapshot hook.
+          Not verified in CI: human-perceived music quality, speaker output quality, actual autoplay/unlock behavior on Safari/iOS, mastering/loudness on physical headphones/speakers.
+          TXT
+          cat /tmp/audio-summary.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: living-scene-audio-v1-build
+          path: |
+            prototypes/living-scene/dist/
+            /tmp/audio-build-grep.txt
+            /tmp/audio-summary.txt
+          retention-days: 5
