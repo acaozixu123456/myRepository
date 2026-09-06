@@ -4,51 +4,49 @@ on:
     branches: [nihongo-explore-slice-20260906]
     paths:
       - '.github/workflows/nihongo-explore-verify.yml'
+      - 'src/explore/**'
+      - 'public/explore/**'
+      - 'scripts/explore-*.mjs'
+      - 'scripts/explore-fixture.ts'
       - 'scripts/explore-verify-trigger.json'
+      - 'explore.html'
+      - 'public/sw.js'
+      - 'vite.config.ts'
+      - 'package*.json'
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: nihongo-explore-verification
   cancel-in-progress: false
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 16
+    timeout-minutes: 14
     defaults:
       run:
         shell: bash --noprofile --norc -e -o pipefail {0}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-      - name: Apply bounded reviewed follow-up on development branch only
+      - name: Typecheck, unit regression and production build without modifying source
         run: |
-          test "$GITHUB_REF_NAME" = 'nihongo-explore-slice-20260906'
-          test -f src/explore/main.ts
-          if test -f scripts/explore-review-patch2.py; then python3 scripts/explore-review-patch2.py; fi
-          git add src/explore scripts/explore-browser.mjs
-          if ! git diff --cached --quiet; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'Use cached soft street shadows and verify angular input directly'
-            git push origin HEAD:nihongo-explore-slice-20260906
-          fi
           mkdir -p /tmp/explore-artifacts
           git rev-parse HEAD > /tmp/explore-artifacts/source-sha.txt
           npm ci --no-audit --no-fund
-      - name: Typecheck, complete unit regression and production build
-        run: |
           npm run typecheck 2>&1 | tee /tmp/explore-artifacts/typecheck.log
           npm test 2>&1 | tee /tmp/explore-artifacts/tests.log
           npm run build 2>&1 | tee /tmp/explore-artifacts/build.log
       - name: Install isolated browser test tooling
         run: |
-          npm install --no-save --package-lock=false --no-audit --no-fund playwright @axe-core/playwright
-          npx playwright install --with-deps chromium webkit
-      - name: Run real WebGL interaction acceptance with synthetic learner saves
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Exercise real renderer and sustained counter collision with synthetic saves
         run: |
           npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/explore-artifacts/preview.log 2>&1 &
           for i in $(seq 1 30); do
@@ -56,10 +54,11 @@ jobs:
             sleep 1
           done
           node scripts/explore-browser.mjs 2>&1 | tee /tmp/explore-artifacts/browser.log
-      - name: Upload browser evidence even on failure
+          node scripts/explore-counter-browser.mjs 2>&1 | tee /tmp/explore-artifacts/counter.log
+      - name: Upload evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nihongo-explore-acceptance-${{ github.run_number }}
           path: /tmp/explore-artifacts/
-          retention-days: 7
+          retention-days: 14
