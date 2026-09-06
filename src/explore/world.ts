@@ -13,6 +13,7 @@ import {DynamicTexture} from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import {TransformNode} from '@babylonjs/core/Meshes/transformNode';
 import {ShadowGenerator} from '@babylonjs/core/Lights/Shadows/shadowGenerator';
 import {DefaultRenderingPipeline} from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline';
+import {ShaderMaterial} from '@babylonjs/core/Materials/shaderMaterial';
 import {Ray} from '@babylonjs/core/Culling/ray';
 import '@babylonjs/core/Collisions/collisionCoordinator';
 
@@ -42,17 +43,15 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   camera.minZ=.065;camera.maxZ=240;camera.fov=.94;camera.inputs.clear();
   const cinematic=new DefaultRenderingPipeline('cinematic',true,scene,[camera]);
   cinematic.samples=1;cinematic.fxaaEnabled=true;cinematic.bloomEnabled=true;cinematic.bloomThreshold=.90;cinematic.bloomWeight=.10;cinematic.bloomKernel=28;
-  // Lightweight procedural atmosphere: a cool upper sky, warm late-afternoon horizon and restrained haze.
-  // This intentionally avoids an HDRI dependency so the current prototype stays self-contained while hero assets are built separately.
-  const skyTex=new DynamicTexture('yanaka-sky',{width:1024,height:512},scene,false);
-  {const ctx=skyTex.getContext() as CanvasRenderingContext2D;const grad=ctx.createLinearGradient(0,0,0,512);
-    grad.addColorStop(0,'#536d79');grad.addColorStop(.28,'#738a91');grad.addColorStop(.57,'#9da7a2');grad.addColorStop(.76,'#c7ad8f');grad.addColorStop(1,'#b88f70');ctx.fillStyle=grad;ctx.fillRect(0,0,1024,512);
-    const glow=ctx.createRadialGradient(190,350,8,190,350,230);glow.addColorStop(0,'rgba(255,224,174,.62)');glow.addColorStop(.28,'rgba(249,194,139,.22)');glow.addColorStop(1,'rgba(249,194,139,0)');ctx.fillStyle=glow;ctx.fillRect(0,100,520,410);
-    ctx.globalAlpha=.10;ctx.fillStyle='#e8ddd0';for(const cloud of [[650,145,170,24],[760,205,120,18],[410,110,135,16],[900,95,90,12]]){ctx.beginPath();ctx.ellipse(cloud[0],cloud[1],cloud[2],cloud[3],0,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;skyTex.update();}
-  const skyMat=new StandardMaterial('yanaka-sky-mat',scene);skyMat.disableLighting=true;skyMat.backFaceCulling=false;skyMat.diffuseColor=Color3.Black();skyMat.specularColor=Color3.Black();skyMat.emissiveTexture=skyTex;skyMat.fogEnabled=false;
-  const sky=MeshBuilder.CreateSphere('yanaka-atmosphere',{diameter:390,segments:24,sideOrientation:Mesh.BACKSIDE},scene);sky.material=skyMat;sky.infiniteDistance=true;sky.isPickable=false;sky.applyFog=false;
+  // Directional procedural sky. The horizon and visible sun glow share the same late-afternoon direction as the key light.
+  const skyMat=new ShaderMaterial('yanaka-sky-mat',scene,{
+    vertexSource:`precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vDir;void main(void){vDir=normalize(position);gl_Position=worldViewProjection*vec4(position,1.0);}`,
+    fragmentSource:`precision highp float;varying vec3 vDir;void main(void){vec3 d=normalize(vDir);float h=clamp(d.y*.5+.5,0.0,1.0);vec3 horizon=vec3(.78,.60,.44);vec3 middle=vec3(.55,.64,.66);vec3 zenith=vec3(.27,.39,.47);vec3 col=mix(horizon,middle,smoothstep(.48,.70,h));col=mix(col,zenith,smoothstep(.69,1.0,h));vec3 sunDir=normalize(vec3(-.52,.48,.70));float sd=max(dot(d,sunDir),0.0);float halo=pow(sd,12.0);float disc=pow(sd,260.0);col+=vec3(1.0,.58,.30)*halo*.26+vec3(1.0,.88,.68)*disc*1.15;float band=1.0-smoothstep(.48,.59,h);col=mix(col,vec3(.73,.64,.54),band*.11);gl_FragColor=vec4(col,1.0);}`
+  },{attributes:['position'],uniforms:['worldViewProjection']});
+  skyMat.backFaceCulling=false;skyMat.disableDepthWrite=true;
+  const sky=MeshBuilder.CreateSphere('yanaka-atmosphere',{diameter:390,segments:28,sideOrientation:Mesh.BACKSIDE},scene);sky.material=skyMat;sky.infiniteDistance=true;sky.isPickable=false;sky.applyFog=false;
   const hemi=new HemisphericLight('sky',new Vector3(.12,1,-.18),scene);hemi.intensity=.42;hemi.diffuse=Color3.FromHexString('#b8cbcc');hemi.groundColor=Color3.FromHexString('#6f5a48');
-  const sun=new DirectionalLight('afternoon',new Vector3(-.72,-.66,.34),scene);sun.position=new Vector3(46,58,-18);sun.intensity=1.72;sun.diffuse=Color3.FromHexString('#f6c895');sun.specular=Color3.FromHexString('#f7dfc4');
+  const sun=new DirectionalLight('afternoon',new Vector3(.52,-.48,-.70),scene);sun.position=new Vector3(-55,52,82);sun.intensity=1.62;sun.diffuse=Color3.FromHexString('#f4c48d');sun.specular=Color3.FromHexString('#f7dfc4');
   sun.shadowMinZ=1;sun.shadowMaxZ=160;sun.autoCalcShadowZBounds=true;
   const shadows=new ShadowGenerator(coarse?512:2048,sun);shadows.useBlurExponentialShadowMap=true;shadows.useKernelBlur=true;shadows.blurKernel=coarse?12:28;shadows.bias=.0018;shadows.normalBias=.021;shadows.setDarkness(.36);
   // All shadow casters in this slice are static. Reuse the depth map instead of redrawing the entire street every frame.
