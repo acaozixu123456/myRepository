@@ -1,0 +1,40 @@
+name: Sol Cat V2 Review Evidence
+on:
+  push:
+    branches: [nihongo-living-scene-cat-v2-local-20260906]
+    paths: ['.github/workflows/sol-cat-v2-review-artifact.yml']
+permissions:
+  contents: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify Cat V2 evidence
+        run: |
+          test -s art-source/living-scene/cat-v2/character-reference.png
+          test -s docs/living-scene/cat-v2/evidence/hero-clean.png
+          test -s docs/living-scene/cat-v2/evidence/cat-attentive.png
+          test -s docs/living-scene/cat-v2/evidence/cat-purring.png
+          test -s docs/living-scene/cat-v2/evidence/departure.png
+          test -s docs/living-scene/cat-v2/evidence/mid-walk.png
+          test -s docs/living-scene/cat-v2/evidence/arrival.png
+          test -s docs/living-scene/cat-v2/evidence/atlas-mattes.png
+          test -s docs/living-scene/cat-v2/evidence/browser-tour.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cat-v2-sol-review
+          path: |
+            art-source/living-scene/cat-v2/character-reference.png
+            docs/living-scene/cat-v2/evidence/hero-clean.png
+            docs/living-scene/cat-v2/evidence/cat-attentive.png
+            docs/living-scene/cat-v2/evidence/cat-purring.png
+            docs/living-scene/cat-v2/evidence/departure.png
+            docs/living-scene/cat-v2/evidence/mid-walk.png
+            docs/living-scene/cat-v2/evidence/arrival.png
+            docs/living-scene/cat-v2/evidence/atlas-mattes.png
+            docs/living-scene/cat-v2/evidence/browser-tour.mp4
+            docs/living-scene/cat-v2/evidence/browser-report.json
+          retention-days: 3
