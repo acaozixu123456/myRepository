@@ -17,9 +17,9 @@ async function start(context,fixture,tag){
   await page.waitForFunction(()=>document.querySelector('#explore-root')?.dataset.ready,{},{timeout:60000});
   const ready=await page.locator('#explore-root').getAttribute('data-ready');
   if(ready!=='true'){await page.screenshot({path:`${out}/${tag}-render-error.png`});throw Error('Renderer failed: '+await page.locator('body').innerText());}
-  await page.waitForTimeout(2200);return page;
+  await page.waitForTimeout(2200);report.diagnostics.push({tag,initial:await page.evaluate(()=>window.__explore.read())});writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));return page;
 }
-async function snap(page,name){await page.screenshot({path:`${out}/${name}.png`});const size=await page.evaluate(()=>({content:document.documentElement.scrollWidth,width:innerWidth}));assert(size.content<=size.width+1,`${name} horizontal overflow`);}
+async function snap(page,name){await page.screenshot({path:`${out}/${name}.png`,timeout:60000});const size=await page.evaluate(()=>({content:document.documentElement.scrollWidth,width:innerWidth}));assert(size.content<=size.width+1,`${name} horizontal overflow`);}
 try{
  browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1,serviceWorkers:'block'});

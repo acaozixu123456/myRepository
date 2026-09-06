@@ -39,7 +39,9 @@ export function createWorld(canvas:HTMLCanvasElement,initial:Progress,events:{ne
   const hemi=new HemisphericLight('sky',new Vector3(0,1,0),scene);hemi.intensity=.83;hemi.groundColor=Color3.FromHexString('#a69678');
   const sun=new DirectionalLight('afternoon',new Vector3(-.65,-1,.45),scene);sun.position=new Vector3(35,60,10);sun.intensity=1.5;sun.diffuse=Color3.FromHexString('#fff0d8');
   sun.shadowMinZ=1;sun.shadowMaxZ=160;sun.autoCalcShadowZBounds=true;
-  const shadows=new ShadowGenerator(coarse?1024:2048,sun);shadows.usePercentageCloserFiltering=true;shadows.filteringQuality=ShadowGenerator.QUALITY_LOW;shadows.bias=.002;shadows.normalBias=.025;shadows.setDarkness(.28);
+  const shadows=new ShadowGenerator(coarse?512:1024,sun);shadows.usePoissonSampling=true;shadows.bias=.002;shadows.normalBias=.025;shadows.setDarkness(.28);
+  // All shadow casters in this slice are static. Reuse the depth map instead of redrawing the entire street every frame.
+  const shadowMap=shadows.getShadowMap();if(shadowMap)shadowMap.refreshRate=0;
   const mats=new Map<string,StandardMaterial>();
   function mat(color:string){let m=mats.get(color);if(!m){m=new StandardMaterial('m'+color,scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=new Color3(.055,.055,.045);mats.set(color,m);}return m;}
   let serial=0;const batches:Mesh[]=[];const animated:TransformNode[]=[];

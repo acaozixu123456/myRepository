@@ -90,9 +90,9 @@ window.addEventListener('keydown',e=>{
   if(e.code==='Escape'){e.preventDefault();if(modal)closeModal();else if(started)pauseMenu();}
   if(e.code==='Tab'&&modal){const elements=Array.from($('modal-layer').querySelectorAll<HTMLElement>('button:not([hidden]),input,a,summary'));const first=elements[0],last=elements[elements.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}
 });
-window.addEventListener('pagehide',()=>{persist();speech.stop();});document.addEventListener('visibilitychange',()=>{if(document.hidden){persist();speech.stop();}});
+window.addEventListener('pagehide',event=>{persist();speech.stop();if(!event.persisted){clearInterval(saveTimer);speech.dispose();world?.dispose();}});document.addEventListener('visibilitychange',()=>{if(document.hidden){persist();speech.stop();}});
 const saveTimer=window.setInterval(()=>{if(started&&!document.hidden)persist();},5000);
-window.addEventListener('beforeunload',()=>{clearInterval(saveTimer);speech.dispose();world?.dispose();},{once:true});
+// Keep the engine alive when the browser places this page in its back-forward cache.
 requestAnimationFrame(()=>requestAnimationFrame(()=>{
   try{
     world=createWorld($<HTMLCanvasElement>('street'),progress,{near(target){$('interact').hidden=!target;if(target)$('interact').querySelector('span')!.textContent=target.label;},interact,lock(v){$('controls-hint').textContent=v?'WASD 行走 · E 互动 · Esc 释放鼠标':'WASD 行走 · 拖动转向 · E 互动';},lost(){modalFrame('error','画面暂时中断',`<p>浏览器中断了 3D 渲染。已暂停移动，请重新打开页面恢复。</p><a class="primary-button" href="/explore.html">重新进入街道</a><a class="secondary-button" href="/">返回 NHK 学习</a>`);persist();}});
