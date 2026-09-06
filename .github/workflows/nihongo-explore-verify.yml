@@ -28,12 +28,12 @@ jobs:
         run: |
           test "$GITHUB_REF_NAME" = 'nihongo-explore-slice-20260906'
           test -f src/explore/main.ts
-          if test -f scripts/explore-review-patch.py; then python3 scripts/explore-review-patch.py; fi
+          if test -f scripts/explore-review-patch2.py; then python3 scripts/explore-review-patch2.py; fi
           git add src/explore scripts/explore-browser.mjs
           if ! git diff --cached --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'Cache static street shadows and preserve browser return lifecycle'
+            git commit -m 'Use cached soft street shadows and verify angular input directly'
             git push origin HEAD:nihongo-explore-slice-20260906
           fi
           mkdir -p /tmp/explore-artifacts
