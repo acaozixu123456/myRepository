@@ -30,6 +30,14 @@
         <h1 lang="ja">雨あがりの路地</h1>
         <p class="intro">雨停了。沿着灯光，停留一会儿。</p>
       </section>
+      <button id="cat-hotspot" aria-label="走近店旁的猫拿铁" hidden><span class="hotspot-label" lang="ja">そこにいたの。</span></button>
+      <section id="cat-panel" aria-label="陪猫待一会儿" hidden>
+        <p class="cat-caption" lang="ja">軒下の、ラテ</p>
+        <p id="cat-line" class="line" lang="ja" tabindex="-1"></p>
+        <div id="cat-explanation" hidden><p id="cat-translation"></p><p id="cat-note"></p></div>
+        <div class="cat-actions"><button id="cat-pet">轻挠下巴</button><button id="cat-look">看看树枝</button><button id="cat-rest">陪它休息</button></div>
+        <div class="story-actions"><button id="cat-explain" aria-expanded="false" aria-controls="cat-explanation">读懂这一句</button><button id="cat-back">回到街景</button></div>
+      </section>
       <div id="hotspots" aria-label="街景里的五处停留"></div>
       <section id="subtitle" aria-label="场景对话" hidden>
         <p id="speaker"></p>
@@ -53,6 +61,7 @@
         <p id="hint">沿着灯光，找一处停留</p>
         <div class="controls">
           <button id="places-toggle" aria-label="选择一处停留" aria-expanded="false" aria-controls="places-nav">散步</button>
+          <button id="sound" aria-label="开启声音" aria-pressed="false" title="开启声音">♪</button>
           <button id="pause" aria-label="暂停动态" title="暂停动态">Ⅱ</button
           ><button id="fullscreen" aria-label="全屏欣赏" title="全屏欣赏">
             ⛶

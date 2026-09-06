@@ -440,6 +440,37 @@ body.focused .shade {
 .controls {
   pointer-events: auto;
 }
+#cat-hotspot {
+  position: absolute; left: 0; top: 0; z-index: 2;
+  border: 0; background: transparent; padding: 0;
+  display: grid; align-items: end; justify-items: center;
+  touch-action: none;
+}
+#cat-hotspot .hotspot-label { opacity: 0; background: transparent; font-size: 14px; transform: translateY(12px); text-shadow: 0 2px 10px #000; transition: opacity .5s; }
+#cat-hotspot:hover .hotspot-label, #cat-hotspot:focus-visible .hotspot-label { opacity: .8; }
+body.cat-focused #cat-hotspot .hotspot-label { opacity: 0; }
+#cat-hotspot:focus-visible { outline-offset: -25px; }
+#cat-panel {
+  position: absolute; z-index: 3; bottom: 90px; left: 50%; transform: translateX(-50%);
+  width: min(90%,650px); text-align: center;
+  text-shadow: 0 2px 14px #000, 0 2px 24px #000;
+}
+.cat-caption { font-size: 13px; color: #e0c69f; letter-spacing: .16em; }
+#cat-panel .line { font-family: "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: clamp(25px,2.1vw,34px); font-weight: 400; letter-spacing: .10em; line-height: 1.8; margin: 12px 0 18px; }
+#cat-line:focus { outline: none; }
+#cat-explanation { margin: 0 auto 16px; max-width: 540px; }
+#cat-translation { font-size: 16px; line-height: 1.8; margin: 8px 0; }
+#cat-note { font-size: 14px; opacity: .7; line-height: 1.8; margin: 8px 0; }
+.cat-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; }
+.cat-actions button { background: transparent; border: 0; border-bottom: 1px solid #d6bc934f; padding: 8px 0; font-size: 15px; }
+.cat-actions button:hover { color: #ffe3b5; }
+.controls #sound { font: 16px Arial, sans-serif; }
+.controls #sound[aria-pressed="true"] { color: #f2d1a2; border-color: #cda36c88; }
+@media(max-width:700px) {
+  #cat-panel { bottom: 88px; }
+  .controls { gap: 6px; }
+  .cat-actions { gap: 18px; }
+}
 /* V3 encounters stay in the painting. Hidden content leaves the keyboard tree. */
 [hidden] { display: none !important; }
 .scene-hotspot {

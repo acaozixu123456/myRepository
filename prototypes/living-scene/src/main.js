@@ -16,6 +16,8 @@ import {
   RenderMode,
 } from "three.quarks";
 import "./style.css";
+import { createCat } from "./cat.js";
+import { createLivingSceneAudio } from "./audio.js";
 import { encounters } from "./encounters.js";
 import fragmentShader from "./scene.frag.glsl?raw";
 const params = new URLSearchParams(location.search);
@@ -69,24 +71,45 @@ const focusOffset = new T.Vector2();
 const targetOffset = new T.Vector2();
 const hoverPoint = new T.Vector2(.735, .445);
 let hoverKind = 0;
+const sound = createLivingSceneAudio(updateSoundButton);
+function updateSoundButton(state = sound.snapshot()) {
+  const button = $("#sound");
+  button.disabled = !state.supported;
+  button.setAttribute("aria-pressed", String(state.enabled));
+  button.setAttribute("aria-label", state.enabled ? "关闭声音" : "开启声音");
+  button.title = state.enabled ? "关闭声音" : "开启声音";
+  button.textContent = state.enabled ? "♫" : "♪";
+}
+function focusScene(place) {
+  focused = !!place;
+  document.body.classList.toggle("focused", focused);
+  targetOffset.set(place ? (place.uv[0] - .5) * .081 : 0,
+                   place ? (place.uv[1] - .5) * .073 : 0);
+  sound.setFocus(focused, place?.id);
+}
 const story = encounters({
-  onFocus(place) {
-    focused = !!place;
-    document.body.classList.toggle("focused", focused);
-    targetOffset.set(place ? (place.uv[0] - .5) * .081 : 0,
-                     place ? (place.uv[1] - .5) * .073 : 0);
-  },
+  onFocus(place) { focusScene(place); },
   onHover(place) {
     hovered = !!place;
+    sound.setHover(hovered, place?.id);
     if (place) {
       hoverPoint.set(...place.uv);
       hoverKind = {shop: 0, reflection: 1, lantern: 2, maple: 3, alley: 4}[place.id];
     }
   },
 });
-addEventListener("pointermove", (e) =>
-  mouse.set((e.clientX / width) * 2 - 1, 1 - (e.clientY / height) * 2),
-);
+const cat = createCat({ sound, focusScene, closeStory: () => story.close() });
+updateSoundButton();
+$("#sound").onclick = async () => {
+  $("#sound").disabled = true;
+  await sound.toggle();
+  updateSoundButton();
+  if (!sound.snapshot().started) $("#notice").textContent="声音暂时未能开启，街景仍可继续欣赏。";
+};
+addEventListener("pointermove", (e) => {
+  mouse.set((e.clientX / width) * 2 - 1, 1 - (e.clientY / height) * 2);
+  sound.setPointer(mouse.x);
+});
 document.documentElement.onpointerleave = () => mouse.set(0, 0);
 $("#pause").onclick = () => {
   paused = !paused;
@@ -105,7 +128,7 @@ $("#fullscreen").onclick = async () => {
     $("#notice").textContent = "当前浏览器暂不支持全屏。";
   }
 };
-document.addEventListener("visibilitychange", () => (last = 0));
+document.addEventListener("visibilitychange", () => { last = 0; sound.setHidden(document.hidden); });
 function align() {
   const z = 1.035 + push * 0.045;
   for (const { place, button } of story.buttons) {
@@ -206,6 +229,7 @@ async function init() {
     );
   composer.addPass(new EffectPass(camera, ...effects));
   particles();
+  await cat.load(scene);
   resize();
   const gl = renderer.getContext(),
     ext = gl.getExtension("WEBGL_debug_renderer_info");
@@ -236,6 +260,8 @@ async function init() {
       paused,
       focused,
       story: story.snapshot(),
+      cat: cat.snapshot(),
+      audio: sound.snapshot(),
       time,
       push,
       drawCalls: renderer.info.render.calls,
@@ -246,6 +272,7 @@ async function init() {
       errors: [...errors],
     }),
   };
+  if (qa) window.__livingAudioCapture = () => { const dest = sound.ctx.createMediaStreamDestination(); sound.output.connect(dest); return dest.stream; };
   document.body.classList.add("ready");
   requestAnimationFrame(tick);
 }
@@ -390,6 +417,7 @@ function tick(now) {
     }
     if (instanced) leafBatch.instanceMatrix.needsUpdate = true;
     align();
+    cat.update(dt, time, { cover, pointer, focusOffset, push, width, height, aspect, paused, reduced: reduced.matches, storyFocused: !!story.snapshot().active });
     renderer.info.reset();
     let query;
     if (gpuExt && frameId++ % 30 === 0 && gpuPending.length < 4) {

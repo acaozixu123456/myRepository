@@ -1,3 +1,9 @@
+# Cat Companion V1 — 当前审核候选
+
+预览端口：8773（开发）、8774（构建）。交付与未完成项见 [Cat V1 清单](../../docs/living-scene/cat-v1/DELIVERY.md)。点店旁的猫，轻挠下巴、观察或休息；屏幕边缘唤出声音开关。猫按用户两轮反馈缩至最初的约 39%，与门槛保持接触。
+
+使用 `pnpm dev` / `pnpm build` / `pnpm preview`。下面保留 V3/V2 历史记录，旧端口与旧性能脚本不属于本轮验收。当前猫状态存储只使用 `livingScene.cat.latte.v1`，声音偏好只使用已有的 `livingScene.audio`。
+
 # V3 review candidate
 
 Current preview ports: 8771 (development), 8772 (build). See `../../docs/living-scene/v3/DELIVERY.md` for the multi-tile source and five encounters. Prior V2 notes below are retained as history.

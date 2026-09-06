@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1 --port 8771",
+    "dev": "vite --host 127.0.0.1 --port 8773",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1 --port 8772"
+    "preview": "vite preview --host 127.0.0.1 --port 8774"
   },
   "dependencies": {
     "three": "0.183.2",

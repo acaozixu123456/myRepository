@@ -1,0 +1,15 @@
+{
+  "width": 1600,
+  "height": 900,
+  "duration": 27.541,
+  "decodedFrames": 15,
+  "currentTime": 10,
+  "readyState": 4,
+  "error": null,
+  "audio": {
+    "duration": 27.540997732426305,
+    "channels": 2,
+    "sampleRate": 44100,
+    "peak": 0.014081045985221863
+  }
+}

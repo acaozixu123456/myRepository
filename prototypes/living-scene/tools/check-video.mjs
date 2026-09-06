@@ -37,6 +37,18 @@ const result = await p.evaluate(async () => {
   };
 });
 await p.screenshot({ path: path.join(dir, "video-playback-check.png") });
+if (process.env.REQUIRE_AUDIO === '1') {
+  const b64 = (await fs.readFile(path.join(dir, 'browser-tour.mp4'))).toString('base64');
+  result.audio = await p.evaluate(async encoded => {
+    const context = new AudioContext();
+    const buffer = await context.decodeAudioData(Uint8Array.from(atob(encoded), c => c.charCodeAt(0)).buffer);
+    let peak = 0;
+    for (let c=0;c<buffer.numberOfChannels;c++) for (const v of buffer.getChannelData(c)) peak = Math.max(peak,Math.abs(v));
+    await context.close();
+    return { duration: buffer.duration, channels: buffer.numberOfChannels, sampleRate: buffer.sampleRate, peak };
+  }, b64);
+  if (result.audio.duration < 20 || result.audio.peak <= 0) throw Error('Missing or silent video audio track');
+}
 await fs.writeFile(
   path.join(dir, "video-check.json"),
   JSON.stringify(result, null, 2),

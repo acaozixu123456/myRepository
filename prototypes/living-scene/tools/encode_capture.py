@@ -16,6 +16,11 @@ scene.view_settings.view_transform='Standard';scene.view_settings.look='None'
 editor=scene.sequence_editor_create()
 start=frames[0]['timestamp'];duration=frames[-1]['timestamp']-start
 scene.frame_start=1;scene.frame_end=math.ceil(duration*15)
+# Optional actual Web Audio capture from the same browser tour; preserve its measured offset.
+if len(args)>2:
+    audio=Path(args[2]);offset=float(args[3]) if len(args)>3 else 0
+    editor.strips.new_sound('Browser Web Audio output',str(audio),channel=2,frame_start=1+round(offset*15))
+    scene.render.ffmpeg.audio_codec='AAC';scene.render.ffmpeg.audio_bitrate=192
 index=0
 for f in range(scene.frame_end):
     t=start+f/15

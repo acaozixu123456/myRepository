@@ -96,6 +96,7 @@ export function encounters({ onFocus, onHover }) {
   });
   return {
     buttons,
+    close,
     snapshot: () => ({ active: active?.id ?? null, node: nodeId, completed: [...completed], read: [...read] }),
   };
 }

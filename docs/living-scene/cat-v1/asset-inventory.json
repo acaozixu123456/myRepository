@@ -1,0 +1,82 @@
+[
+  {
+    "path": "art-source/living-scene/cat-v1/animation-anchors.json",
+    "bytes": 3616,
+    "sha256": "231fc5abfda2eaca0a24ca4cbb90809370f6447332de4ba013a51919d9f9ff85"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/generation-provenance.json",
+    "bytes": 5760,
+    "sha256": "bc5013254a462828c7d69da35836d8ddd215035448adb512d6b9e982c81e996a"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/image-inspection.json",
+    "bytes": 1671,
+    "sha256": "a2d3c7385e4e061b507f1c62c3b6e32bfa021bf70e704cfe6c08322fd778f911"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/latte-alert-loaf-rgba.png",
+    "bytes": 1997938,
+    "sha256": "380b2190bd7e027c2f3bbbd9028f0ef83cd7b9a725d59669d3a2aeff6dcc99ab"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/latte-attentive-rgba.png",
+    "bytes": 2174362,
+    "sha256": "53e050ecaf89faa2faddce41d13d8a590cd0aeb5eb669f2aadbd695544328400"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/latte-content-rgba.png",
+    "bytes": 2059262,
+    "sha256": "937896de950de4efff99418002171da7de0d9a14348a401131eda28d536b1c2a"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/matte-alert-loaf.png",
+    "bytes": 16264,
+    "sha256": "4b334013d0e037a48bce7d3bdf2aaa4b37f6083128a89b5992c324bd2f76cc1d"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/matte-attentive.png",
+    "bytes": 17090,
+    "sha256": "c29369ef93ab99916125b8decfde38cfd57e09364ff0fd59a41f99f92a3da300"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/matte-content.png",
+    "bytes": 13650,
+    "sha256": "527b6fb10d6a8e19155d900dace78c86c73c87019fe117fd7bf10510d7b7e8c3"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/matte-manifest.json",
+    "bytes": 1349,
+    "sha256": "b4457b0b211c17cbcd976d86232b7dd16f6dde63bb435ba414456650f867868d"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/raw/latte-alert-loaf.png",
+    "bytes": 1792215,
+    "sha256": "816610c859a2ec74ec952ddd7e959796fec8e5a763818b324dc8bac44aff859e"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/raw/latte-attentive.png",
+    "bytes": 1944480,
+    "sha256": "4f4d734c1faa65317a57cad1a9b77ad2eebf6989a6b833836fe38003d4dfa846"
+  },
+  {
+    "path": "art-source/living-scene/cat-v1/raw/latte-content.png",
+    "bytes": 1833470,
+    "sha256": "6aa709897d4aa65314757b57bd0c27a5a540b46796f37734776e5da8bf8c7098"
+  },
+  {
+    "path": "prototypes/living-scene/public/cat/alert-loaf.webp",
+    "bytes": 892042,
+    "sha256": "0de6e920a964da1d635635a561263942becd0921f0b380993f5e8cc27c6ef014"
+  },
+  {
+    "path": "prototypes/living-scene/public/cat/attentive.webp",
+    "bytes": 903626,
+    "sha256": "9f7894a0b48b15cc54b616da0f2ed50f8e7c3763284385087de9b2cb8c3fab1e"
+  },
+  {
+    "path": "prototypes/living-scene/public/cat/content.webp",
+    "bytes": 854266,
+    "sha256": "f96c680bb5a8ee5e2b8e7c526f475e3337e0466d6f89b5c29fd057afb8ad842b"
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "pose": "alert-loaf",
+    "size": [
+      1254,
+      1254
+    ],
+    "source_alpha": false,
+    "output_alpha": true,
+    "bounds": [
+      96,
+      222,
+      1216,
+      1028
+    ],
+    "coverage": 0.41370453464384466,
+    "method": "border-connected background classification + GrabCut + 0.45px edge softening",
+    "limits": "Fine white whiskers and subpixel fur may be lost; inspect against dark scene. Not a hand-perfect matte."
+  },
+  {
+    "pose": "attentive",
+    "size": [
+      1254,
+      1254
+    ],
+    "source_alpha": false,
+    "output_alpha": true,
+    "bounds": [
+      128,
+      163,
+      1214,
+      1039
+    ],
+    "coverage": 0.4270703763904469,
+    "method": "border-connected background classification + GrabCut + 0.45px edge softening",
+    "limits": "Fine white whiskers and subpixel fur may be lost; inspect against dark scene. Not a hand-perfect matte."
+  },
+  {
+    "pose": "content",
+    "size": [
+      1254,
+      1254
+    ],
+    "source_alpha": false,
+    "output_alpha": true,
+    "bounds": [
+      109,
+      180,
+      1214,
+      1027
+    ],
+    "coverage": 0.4149356826893971,
+    "method": "border-connected background classification + GrabCut + 0.45px edge softening",
+    "limits": "Fine white whiskers and subpixel fur may be lost; inspect against dark scene. Not a hand-perfect matte."
+  }
+]

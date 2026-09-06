@@ -1,0 +1,56 @@
+{
+  "assets": [
+    {
+      "file": "/Users/xiaruonan/nihongo-art-work/toolchain/cat-companion-v1/latte-content.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "color_type": 2,
+      "has_alpha": false,
+      "sha256": "6aa709897d4aa65314757b57bd0c27a5a540b46796f37734776e5da8bf8c7098"
+    },
+    {
+      "file": "/Users/xiaruonan/nihongo-art-work/toolchain/cat-companion-v1/latte-alert-loaf.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "color_type": 2,
+      "has_alpha": false,
+      "sha256": "816610c859a2ec74ec952ddd7e959796fec8e5a763818b324dc8bac44aff859e"
+    },
+    {
+      "file": "/Users/xiaruonan/nihongo-art-work/toolchain/cat-companion-v1/latte-attentive.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "color_type": 2,
+      "has_alpha": false,
+      "sha256": "4f4d734c1faa65317a57cad1a9b77ad2eebf6989a6b833836fe38003d4dfa846"
+    }
+  ],
+  "identity_reference_hashes": [
+    {
+      "reference_name": "1591788674872_.pic.jpg",
+      "sha256": "3795e0adec200b2f11c1cda0811039a4e67673fe81066ebbedf6d7eddb562ca3"
+    },
+    {
+      "reference_name": "1641788674878_.pic.jpg",
+      "sha256": "11c0b841c35572bb09cf2dbbc4c364474a6a638820c661f734df86d252928575"
+    },
+    {
+      "reference_name": "1611788674874_.pic.jpg",
+      "sha256": "d6c4e270af11ca9a218b3a0880721fcaa1d776e661ee22937dc5364b617a6850"
+    },
+    {
+      "reference_name": "1631788674876_.pic.jpg",
+      "sha256": "ffef3a465d822d25bf211a447f5ea0575915a9a4e453bc7e42b574a43ba1954b"
+    },
+    {
+      "reference_name": "1661788674880_.pic.jpg",
+      "sha256": "8aa35ed28850e27c71925895a14dc1588db3168e2178bdae584e6478cfdfa389"
+    }
+  ]
+}

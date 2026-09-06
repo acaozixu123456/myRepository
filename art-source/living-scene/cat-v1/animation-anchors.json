@@ -1,0 +1,171 @@
+{
+  "schema": "Approximate hand-inspected pixel coordinates on raw 1254x1254 images; not segmentation masks. Each box [left,top,right,bottom].",
+  "animationCautions": [
+    "Tail joins hindquarters at far right; its free tip is bottom-center, so anchor right and animate tip gently.",
+    "Body/markings drift slightly between generated poses: crossfade states, or use one common body and only extracted head states. Direct frame swaps may shimmer.",
+    "Do not use pure-white color key: white chest and paws are identity features. Connected exterior segmentation is required on checkerboard images.",
+    "Use small feathered deformations; coordinates include background and require existing alpha/masks."
+  ],
+  "poses": {
+    "latte-alert-loaf.png": {
+      "subjectBounds": [
+        95,
+        220,
+        1215,
+        1030
+      ],
+      "headBox": [
+        100,
+        220,
+        610,
+        785
+      ],
+      "headPivot": [
+        391,
+        749
+      ],
+      "leftEarBox": [
+        95,
+        231,
+        306,
+        462
+      ],
+      "leftEarPivot": [
+        225,
+        424
+      ],
+      "rightEarBox": [
+        439,
+        220,
+        604,
+        444
+      ],
+      "rightEarPivot": [
+        496,
+        407
+      ],
+      "tailBox": [
+        627,
+        776,
+        1215,
+        1026
+      ],
+      "tailRoot": [
+        1179,
+        832
+      ],
+      "tailTip": [
+        646,
+        1004
+      ],
+      "frontPawBaselineY": 1024
+    },
+    "latte-attentive.png": {
+      "subjectBounds": [
+        128,
+        162,
+        1214,
+        1040
+      ],
+      "headBox": [
+        128,
+        162,
+        609,
+        760
+      ],
+      "headPivot": [
+        387,
+        736
+      ],
+      "leftEarBox": [
+        128,
+        164,
+        287,
+        414
+      ],
+      "leftEarPivot": [
+        220,
+        378
+      ],
+      "rightEarBox": [
+        442,
+        164,
+        606,
+        384
+      ],
+      "rightEarPivot": [
+        492,
+        362
+      ],
+      "tailBox": [
+        626,
+        787,
+        1214,
+        1034
+      ],
+      "tailRoot": [
+        1183,
+        838
+      ],
+      "tailTip": [
+        642,
+        1007
+      ],
+      "frontPawBaselineY": 1034
+    },
+    "latte-content.png": {
+      "subjectBounds": [
+        107,
+        176,
+        1217,
+        1032
+      ],
+      "headBox": [
+        106,
+        176,
+        614,
+        779
+      ],
+      "headPivot": [
+        391,
+        747
+      ],
+      "leftEarBox": [
+        106,
+        185,
+        295,
+        420
+      ],
+      "leftEarPivot": [
+        215,
+        390
+      ],
+      "rightEarBox": [
+        448,
+        176,
+        615,
+        399
+      ],
+      "rightEarPivot": [
+        492,
+        368
+      ],
+      "tailBox": [
+        627,
+        779,
+        1217,
+        1028
+      ],
+      "tailRoot": [
+        1183,
+        828
+      ],
+      "tailTip": [
+        643,
+        1006
+      ],
+      "frontPawBaselineY": 1027
+    }
+  },
+  "identityAssessment": "Strong overall preservation of brown-black classic tabby swirl pattern, forehead M, tan bridge/pinkbrown nose, sagegreen eyes, white chest/paws, plain brown collar. Face has slightly enlarged expressive eyes compared with loaf photo but remains natural adult cat. Art is clearly painterly rather than photo cutout. Back stays long/stocky, complete curved tail, amber upper-right and cool left light. Brown muzzle vibrissae pads are consistent with actual pet photos, with white lower muzzle/chin. Third pose is contented closed-eye chin-up rest rather than full sleeping curl."
+}
