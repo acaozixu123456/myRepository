@@ -1,0 +1,60 @@
+name: Exploration Visual V13 Hero Presentation
+on:
+  push:
+    branches: [nihongo-visual-v13-hero-presentation-20260906]
+    paths:
+      - '.github/workflows/explore-visual-v13-hero-presentation.yml'
+      - 'scripts/visual-v13-hero-presentation-patch.py'
+      - 'scripts/visual-v13-hero-browser.mjs'
+      - 'src/explore/cinematic-v3.css'
+      - 'src/explore/heroArt.ts'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: exploration-visual-v13-hero-presentation
+  cancel-in-progress: false
+jobs:
+  hero-presentation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Apply local hero presentation changes
+        run: |
+          python3 scripts/visual-v13-hero-presentation-patch.py
+          git add src/explore/world.ts src/explore/cinematic-v3.css
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Present integrated hero art with warmer local light and lighter UI'
+            git push origin HEAD:nihongo-visual-v13-hero-presentation-20260906
+          fi
+      - name: Game-only source gates
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm test -- src/explore/explore.test.ts
+          npm run build
+      - name: Focused desktop hero evidence
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/explore.html >/dev/null && break; sleep 1; done
+          mkdir -p /tmp/visual-v13
+          EXPLORE_ARTIFACTS=/tmp/visual-v13 node scripts/visual-v13-hero-browser.mjs
+      - name: Upload hero presentation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: explore-visual-v13-${{ github.run_number }}
+          path: /tmp/visual-v13/
+          retention-days: 14
