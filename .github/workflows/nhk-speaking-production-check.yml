@@ -1,0 +1,28 @@
+name: NHK speaking production acceptance
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths: [.github/workflows/nhk-speaking-production-check.yml, scripts/nhk-speaking-production.mjs]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: npm install --no-save --package-lock=false playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Verify deployed assets, security checks and real proxy audio
+        run: node --check scripts/nhk-speaking-production.mjs && node scripts/nhk-speaking-production.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-speaking-production
+          path: artifacts/speaking-production/
+          if-no-files-found: ignore

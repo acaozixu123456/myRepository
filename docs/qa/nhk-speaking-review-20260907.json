@@ -1,0 +1,29 @@
+{
+  "reviewer": "ChatGPT Sol",
+  "decision": "PASS_FOR_BOUNDED_PERSONAL_PILOT",
+  "runtimeSourceCommit": "eeed7a47590dff3a138c5aa26acf0f3e83585f83",
+  "productionBaseCommit": "85134634d7eeb0b593c9b533145711849f7d57b1",
+  "verified": {
+    "typecheck": "PASS",
+    "unitTests": {"passed": 162, "files": 20, "includesExistingSuite": true},
+    "productionBuild": "PASS",
+    "browserWorkflowRun": 34136897037,
+    "browserScope": "Mocked media and provider; real application UI at 1280x1000 and 390x844",
+    "browserChecks": ["No microphone request before click", "Current article and exact source word passed", "Help does not advance", "Three ASR-backed attempts close", "Dismissal stops tracks", "Article storage unchanged", "No page exceptions"],
+    "screenshotsReviewed": ["entry-1280.png", "entry-390.png", "coach-1280.png", "coach-390.png"],
+    "realApiWorkflowRun": 34136897133,
+    "realApiScope": "REAL_MODEL_SDP_SIDEBAND_AND_ONE_GENERATED_AUDIO_RESPONSE_NO_HUMAN_MIC",
+    "realModel": "gpt-realtime-2.1",
+    "receivedAudioBytes": 20142,
+    "generatedTranscript": "まず、子どもと言ってみましょう。",
+    "realResponseStatus": "completed",
+    "realPlaybackEnded": true,
+    "duplicateStartRejected": true,
+    "missingConsentRejected": true,
+    "stopEndpointReturnedSuccess": true,
+    "existingRuntimeEdits": "Only additive action routing and speaking entry/optional advanced recap wrappers. No library, favorites, evidence, existing speech backend or exploration source replacements."
+  },
+  "notYetVerified": ["Production deployment and Vercel proxy; checked separately by production workflow", "Human Japanese microphone input, natural pauses and perceived voice quality", "Physical iPhone/Safari microphone and autoplay", "Semantic accuracy of every generated response", "Long-term learning transfer"],
+  "pilotLimits": {"secondsPerSession": 110, "responsesPerSession": 12, "globalStartsPerDay": 30, "clientStartsPerHour": 8},
+  "securityNotes": ["Long-lived provider key remains on the server", "No raw audio or transcript persistence added to this app", "Provider retention is not claimed to be zero", "Existing app has no individual account authentication; global atomic quota bounds the personal pilot, not broad public release", "Time and token guards are not a guaranteed dollar-accurate billing cap"]
+}
