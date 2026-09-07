@@ -6,7 +6,8 @@ await mkdir('artifacts/speaking',{recursive:true});
 const browser=await chromium.launch({headless:true});
 const results=[];
 try{
-  for(const viewport of [{width:1280,height:1000},{width:390,height:844}]){
+  // User scope: mobile only. Do not restore desktop QA without explicit approval.
+  for(const viewport of [{width:390,height:844}]){
     const context=await browser.newContext({viewport});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
     await page.addInitScript(()=>{
       const state=window.__voice={calls:0,stops:0,requests:[],events:[],tracks:[],dc:null};
