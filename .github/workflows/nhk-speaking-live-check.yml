@@ -1,0 +1,27 @@
+name: NHK speaking real API smoke
+on:
+  push:
+    branches: [nhk-speaking-low-friction-20260907]
+    paths: [.github/workflows/nhk-speaking-live-check.yml, scripts/nhk-speaking-live.mjs]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: npm install --no-save --package-lock=false playwright
+      - run: npx playwright install --with-deps chromium
+      - run: node --check scripts/nhk-speaking-live.mjs && node scripts/nhk-speaking-live.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-speaking-real-api
+          path: artifacts/speaking-live/
+          if-no-files-found: ignore

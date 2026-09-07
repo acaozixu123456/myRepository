@@ -10,7 +10,8 @@ try{
     const context=await browser.newContext({viewport});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
     await page.addInitScript(()=>{
       const state=window.__voice={calls:0,stops:0,requests:[],events:[],tracks:[],dc:null};
-      Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{state.calls++;const track={enabled:true,stop(){state.stops++;}};state.tracks.push(track);return{getTracks:()=>[track],getAudioTracks:()=>[track]};}});
+      const getUserMedia=async()=>{state.calls++;const track={enabled:true,stop(){state.stops++;}};state.tracks.push(track);return{getTracks:()=>[track],getAudioTracks:()=>[track]};};
+      Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia}});
       window.RTCPeerConnection=class{
         connectionState='connected';localDescription=null;onconnectionstatechange=null;ontrack=null;
         addTrack(){}createDataChannel(){const dc={readyState:'connecting',onmessage:null,onopen:null,onclose:null,onerror:null,send(s){state.events.push(JSON.parse(s));},close(){this.readyState='closed';}};state.dc=dc;return dc;}
@@ -21,7 +22,6 @@ try{
       const body=route.request().postDataJSON();
       if(body?.action==='speaking_start'){await page.evaluate(v=>window.__voice.requests.push(v),body);return route.fulfill({json:{ok:true,model:'gpt-realtime-2.1',contractVersion:'nhk-speaking-v1',sdp:'v=0',callId:'rtc_browser_test',expiresAt:Date.now()+110000,stopToken:'a'.repeat(64)}});}
       if(body?.action==='speaking_stop')return route.fulfill({json:{ok:true}});
-      // Never advance real production progress or issue paid legacy coaching during UI QA.
       return route.fulfill({status:503,json:{ok:false,reason:'qa_mock_no_external_calls'}});
     });
     await page.goto(base);await page.evaluate(async()=>{
