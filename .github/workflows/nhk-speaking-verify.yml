@@ -1,0 +1,46 @@
+name: NHK low-friction speaking verification
+on:
+  push:
+    branches: [nhk-speaking-low-friction-20260907]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply bounded integration to existing files
+        run: |
+          node scripts/install-nhk-speaking.mjs
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/NhkMorningPage.tsx api/nhk-speech.ts
+          if ! git diff --cached --quiet; then
+            git commit -m 'Wire article-scoped speaking entry and preserve optional advanced recap'
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+          echo VERIFIED_SOURCE_HEAD=$(git rev-parse HEAD)
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Browser lifecycle and responsive UI, explicitly mocked media
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/nhk-speaking-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/nhk-speaking-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-speaking-verification
+          path: artifacts/speaking/
+          if-no-files-found: ignore
