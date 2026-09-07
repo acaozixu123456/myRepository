@@ -1,0 +1,46 @@
+{
+  "reviewer": "ChatGPT Sol",
+  "decision": "PASS_FOR_PERSONAL_MOBILE_PILOT",
+  "runtimeSourceCommit": "4f2dbe305dd99ea45ecd678cdf7721d4b91addd4",
+  "testedRevision": "3ed9f381a832a8550038d53efe1b9b44fb08daa8",
+  "reviewedAt": "2026-09-08T01:34:30+09:00",
+  "sourceGate": {
+    "workflowRun": 34142409827,
+    "typecheck": "PASS",
+    "allUnitTestsIncludingLegacy": "PASS",
+    "build": "PASS",
+    "phoneUi": "PASS, 390x844; media mocked, no desktop suite",
+    "screenshotsReviewed": ["phone-entry.png", "phone-chat.png"],
+    "checks": ["20 preview topic changes use no API or microphone", "10 in-call topic changes reuse peer and microphone", "Five ASR-event responses do not auto-end", "Help references the latest question", "Original article localStorage remains unchanged", "Distinct rate-limit message and retry control", "End/error release microphone"]
+  },
+  "realVoiceGate": {
+    "workflowRun": 34143640145,
+    "artifact": 10026889546,
+    "scope": "REAL_EDGE_REAL_WEBRTC_SYNTHETIC_AUDIO_NOT_HUMAN",
+    "result": "PASS",
+    "model": "gpt-realtime-2.1",
+    "firstQuestion": "どんな動画を見るのが好きですか。",
+    "recognizedSpeech": "猫の動画が好きです。",
+    "adaptiveReply": "猫の動画、癒やされますよね。お気に入りの猫の動きってありますか？",
+    "topicSwitchQuestion": "寝る前に、スマホを見ますか。",
+    "atLeastFourAsrAnswersWithoutLessonTermination": true,
+    "topicSwitchPreservesPeer": true,
+    "realLeaseRenewalUsesSameMicrophone": true,
+    "thirdValidStartAfterMilliseconds": 95387,
+    "thirdStartAllowed": true,
+    "explicitEndStopsTrack": true,
+    "runtimeErrors": []
+  },
+  "backend": {
+    "project": "kivebsjsdfdobxzaokbj",
+    "edge": "nihongo-speaking-session",
+    "version": 2,
+    "verifyJwt": true,
+    "sourcePinnedTo": "4f2dbe305dd99ea45ecd678cdf7721d4b91addd4",
+    "legacyCompatible": true
+  },
+  "productionFrontendStatus": "PROMOTION_REQUESTED_CHECK_SEPARATELY",
+  "notVerified": ["Physical iPhone/Safari microphone and autoplay", "Human hesitation or accent robustness", "Every possible model reply's difficulty or grounding", "Long-term learning improvement"],
+  "limits": ["Finite curated article-matched topic pool, not infinite unique generation", "110-second transport lease renews with possible short pause", "60 seconds idle closes microphone", "12 connection starts/minute/client, 60/hour/client, 120/day/app; local topic browsing does not count", "Server reply/token/time limits are not an exact dollar billing cap", "No individual account authentication; not approved for broad public release", "No learner recordings/transcripts persisted by app; not a zero-provider-retention claim"],
+  "testRepair": "Initial real-input probes lacked trailing silence because the synthetic AudioBufferSource stopped its media clock. The harness now supplies continuous silent frames, like a real microphone. Runtime assertions were not relaxed."
+}

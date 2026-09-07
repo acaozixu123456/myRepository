@@ -2,6 +2,7 @@ name: Nihongo Exploration Production Smoke
 on:
   push:
     branches: [nihongo-vercel]
+    paths: ['src/explore/**', 'public/explore/**', 'explore.html']
   workflow_dispatch:
 permissions:
   contents: read
@@ -35,7 +36,7 @@ jobs:
           import hashlib,json,os,pathlib,re,time,urllib.request
           base='https://nihongo-discovery-v2-20260831.vercel.app'
           dist=pathlib.Path('dist')
-          pages={name:re.findall(r'(?:src|href)="(/assets/[^"]+)"',(dist/name).read_text()) for name in ['index.html','explore.html']}
+          pages={name:re.findall(r'(?:src|href)="(/assets/[^\"]+)"',(dist/name).read_text()) for name in ['index.html','explore.html']}
           assets=set(x for paths in pages.values() for x in paths)
           expected={p:hashlib.sha256((dist/p.lstrip('/')).read_bytes()).hexdigest() for p in assets}
           for p in ['/sw.js','/explore/map-source.json','/explore/yanaka-roads.geojson']:
