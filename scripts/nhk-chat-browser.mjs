@@ -1,0 +1,33 @@
+import {chromium} from 'playwright';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+await mkdir('artifacts/chat',{recursive:true});
+const browser=await chromium.launch({headless:true});const results={scope:'PHONE_390x844_MOCKED_MEDIA_NOT_PHYSICAL_DEVICE',checks:[]};
+try{
+ const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{const s=window.__voice={calls:0,stops:0,requests:[],events:[],dc:null};Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{s.calls++;const track={enabled:true,stop(){s.stops++;}};return{getTracks:()=>[track],getAudioTracks:()=>[track]};}}});window.RTCPeerConnection=class{connectionState='connected';localDescription=null;ontrack=null;onconnectionstatechange=null;addTrack(){}createDataChannel(){const dc={readyState:'connecting',onopen:null,onmessage:null,onclose:null,onerror:null,send(v){s.events.push(JSON.parse(v));},close(){this.readyState='closed';}};s.dc=dc;return dc;}async createOffer(){return{type:'offer',sdp:'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\n'};}async setLocalDescription(v){this.localDescription=v;}async setRemoteDescription(){s.dc.readyState='open';s.dc.onopen?.();}close(){}};});
+ let failNext=false;
+ await page.route('**/api/**',async route=>{const body=route.request().postDataJSON();if(body?.action==='speaking_start'){await page.evaluate(v=>window.__voice.requests.push(v),body);if(failNext)return route.fulfill({status:429,json:{ok:false,reason:'app_burst_limited',retryAfterSeconds:2}});return route.fulfill({json:{ok:true,contractVersion:'nhk-speaking-v1',chatContract:'nhk-chat-v2',model:'gpt-realtime-2.1',sdp:'v=0',callId:'rtc_test',expiresAt:Date.now()+110000,stopToken:'a'.repeat(64)}});}if(body?.action==='speaking_stop')return route.fulfill({json:{ok:true}});return route.fulfill({status:503,json:{ok:false,reason:'qa_no_external_calls'}});});
+ await page.goto('http://127.0.0.1:4173');await page.evaluate(async()=>{const {createNhkArticleRecord,saveNhkArticleRecords}=await import('/src/nhkLibrary.ts');const {buildFallbackCoach}=await import('/src/nhkCoach.ts');const sentences=['子どもがSNSを使うことについて、新しいニュースがありました。'];const coach=buildFallbackCoach('SNSについてのニュース',sentences);saveNhkArticleRecords([createNhkArticleRecord({sourceUrl:'https://www.mojidict.com/article/chat-qa-fixture',title:'SNSについてのニュース',sentences,selectedSentences:sentences,coach,dateKey:'2026-09-08'})]);});await page.reload();
+ await page.getByRole('button',{name:/我的文章/}).click();await page.locator('.nhk-article-list button').first().click();
+ const preview=page.locator('.nhk-chat-preview>span');await preview.waitFor();let last=await preview.textContent();
+ for(let i=0;i<20;i++){await page.getByRole('button',{name:'换个话题',exact:true}).click();const current=await preview.textContent();assert.notEqual(current,last);last=current;}
+ assert.equal(await page.evaluate(()=>window.__voice.calls),0);assert.equal(await page.evaluate(()=>window.__voice.requests.length),0);results.checks.push('20 local shuffles, no mic and no API');
+ const savedBefore=await page.evaluate(()=>localStorage.getItem('nihongo-nhk-article-library-v1'));
+ await page.screenshot({path:'artifacts/chat/phone-entry.png',fullPage:true});
+ await page.getByRole('button',{name:'陪我说一句',exact:true}).click();await page.waitForFunction(()=>window.__voice.events.some(e=>e.type==='response.create'));
+ let number=0;
+ const reply=async()=>page.evaluate(id=>{const emit=e=>window.__voice.dc.onmessage({data:JSON.stringify(e)});emit({type:'response.created',response:{id}});emit({type:'response.output_audio_transcript.done',response_id:id,transcript:'かわいいですよね。猫は飼っていますか。'});emit({type:'output_audio_buffer.started',response_id:id});emit({type:'response.done',response:{id,status:'completed'}});emit({type:'output_audio_buffer.stopped',response_id:id});},`r${++number}`);
+ const speak=async(id,text)=>page.evaluate(({id,text})=>{const emit=e=>window.__voice.dc.onmessage({data:JSON.stringify(e)});emit({type:'input_audio_buffer.speech_started'});emit({type:'input_audio_buffer.speech_stopped'});emit({type:'input_audio_buffer.committed',item_id:id});emit({type:'conversation.item.input_audio_transcription.completed',item_id:id,transcript:text});},{id,text});
+ await reply();for(let i=0;i<5;i++){await speak(String(i),i?'はい':'猫の動画');await reply();}
+ assert.equal(await page.evaluate(()=>window.__voice.stops),0);assert.equal(await page.evaluate(()=>window.__voice.calls),1);assert.equal(await page.evaluate(()=>window.__voice.requests.length),1);results.checks.push('five real ASR-event turns do not end or reconnect (audio mocked)');
+ const d=page.getByRole('dialog');await d.getByRole('button',{name:'帮我接',exact:true}).click();await reply();const lastRequest=await page.evaluate(()=>window.__voice.events.filter(e=>e.type==='response.create').at(-1));assert.ok(lastRequest.response.instructions.includes('MOST RECENT question'));assert.ok(lastRequest.response.instructions.includes('猫は飼っていますか'));results.checks.push('help uses current question');
+ for(let i=0;i<10;i++)await d.getByRole('button',{name:'换个话题',exact:true}).click();await page.waitForTimeout(550);await reply();
+ assert.equal(await page.evaluate(()=>window.__voice.requests.length),1);assert.equal(await page.evaluate(()=>window.__voice.calls),1);results.checks.push('10 in-call shuffles reuse the connection');
+ await page.screenshot({path:'artifacts/chat/phone-chat.png',fullPage:true});
+ assert.equal(await page.evaluate(()=>localStorage.getItem('nihongo-nhk-article-library-v1')),savedBefore);results.checks.push('article preserved');
+ await d.getByRole('button',{name:'结束并关闭陪练',exact:true}).click();assert.equal(await page.evaluate(()=>window.__voice.stops),1);
+ failNext=true;await page.getByRole('button',{name:'陪我说一句',exact:true}).click();await page.getByRole('alert').waitFor();assert.ok((await page.getByRole('alert').textContent()).includes('不是 OpenAI 余额用完'));assert.equal(await page.getByRole('button',{name:/秒后可重连/}).isDisabled(),true);assert.equal(await page.evaluate(()=>window.__voice.stops),2);results.checks.push('specific throttling reason and mic cleanup');
+ await page.screenshot({path:'artifacts/chat/phone-rate-limit.png',fullPage:true});
+ assert.deepEqual(errors,[]);results.ok=true;console.log(JSON.stringify(results));await context.close();
+}finally{await writeFile('artifacts/chat/browser.json',JSON.stringify(results,null,2));await browser.close();}

@@ -1,0 +1,51 @@
+name: NHK random chat mobile verification
+on:
+  push:
+    branches: [nhk-chat-random-20260908]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply bounded integration
+        run: |
+          node scripts/install-nhk-chat.mjs
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/nhkChat.ts src/NhkSpeakingCoach.tsx server/nhkSpeakingProxy.ts supabase/functions/nihongo-speaking-session/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Integrate random chat validation and separate app/provider rate-limit reasons'
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+          echo VERIFIED_SOURCE_HEAD=$(git rev-parse HEAD)
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm install --no-save --package-lock=false playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Phone-only UI and mocked media acceptance
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/nhk-chat.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/nhk-chat-browser.mjs
+      - name: Export reviewed sources and test evidence
+        if: always()
+        run: |
+          mkdir -p artifacts/chat/source
+          cp src/nhkChat.ts src/nhkChatConnection.ts src/NhkSpeakingCoach.tsx artifacts/chat/source/
+          cp supabase/functions/nihongo-speaking-session/index.ts artifacts/chat/source/edge-index.ts
+          git rev-parse HEAD > artifacts/chat/source-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-chat-mobile-verification
+          path: artifacts/chat/
+          if-no-files-found: ignore
