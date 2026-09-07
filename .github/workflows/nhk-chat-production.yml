@@ -2,7 +2,7 @@ name: NHK random chat production mobile acceptance
 on:
   push:
     branches: [nihongo-vercel]
-    paths: ['.github/workflows/nhk-chat-production.yml','scripts/nhk-chat-production.mjs']
+    paths: ['.github/workflows/nhk-chat-production.yml','scripts/nhk-chat-production.mjs','server/nhkSpeakingProxy.ts','src/nhkChat*.ts']
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck && npm test
       - run: npm install --no-save --package-lock=false playwright
       - run: npx playwright install --with-deps chromium
       - name: Deployed assets, origin, consent, source validation and legacy route
