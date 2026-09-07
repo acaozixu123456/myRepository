@@ -1,5 +1,6 @@
 import type {VercelRequest,VercelResponse} from '@vercel/node';
 import {SPEAKING_CONSENT,validateSpeakingPlan} from '../src/nhkSpeaking.js';
+import {validateChatPlan} from '../src/nhkChat.js';
 type Config={url:string;anonKey:string;clientKey:string};
 export async function handleSpeakingProxy(req:VercelRequest,res:VercelResponse,body:Record<string,unknown>,config:Config){
   res.setHeader('Cache-Control','no-store');const action=String(body.action||'');let payload:Record<string,unknown>;
@@ -8,7 +9,7 @@ export async function handleSpeakingProxy(req:VercelRequest,res:VercelResponse,b
     const origin=String(req.headers.origin||''),host=String(req.headers.host||'');
     if(!origin||origin!==`https://${host}`||req.headers['sec-fetch-site']==='cross-site')return res.status(403).json({ok:false,reason:'same_origin_required'});
     if(action==='speaking_start'){
-      const plan=validateSpeakingPlan(body.plan),sdp=typeof body.sdp==='string'?body.sdp:'',clientRequestId=typeof body.clientRequestId==='string'?body.clientRequestId:'';
+      const plan=(body.plan as any)?.chatMode===true?validateChatPlan(body.plan):validateSpeakingPlan(body.plan);const sdp=typeof body.sdp==='string'?body.sdp:'',clientRequestId=typeof body.clientRequestId==='string'?body.clientRequestId:'';
       if(body.consent!==SPEAKING_CONSENT)return res.status(400).json({ok:false,reason:'explicit_audio_consent_required'});
       if(!plan||!sdp.startsWith('v=0')||!sdp.includes('m=audio')||sdp.length>64000||!/^[a-zA-Z0-9-]{16,80}$/.test(clientRequestId))return res.status(400).json({ok:false,reason:'invalid_speaking_input'});
       payload={action:'start',consent:SPEAKING_CONSENT,plan,sdp,clientRequestId,clientKey:config.clientKey};

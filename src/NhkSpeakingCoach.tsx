@@ -5,6 +5,7 @@ import {buildSpeakingPlan,type SpeakingArticle} from './nhkSpeaking';
 import {chatError,chatTopics,nextChatTopic,type ChatPlan} from './nhkChat';
 import {NhkChatConnection,type ChatPhase} from './nhkChatConnection';
 import './nhkSpeaking.css';
+import './nhkChat.css';
 type Props={article:SpeakingArticle;preferredSentence?:string};
 export default function NhkSpeakingCoach({article,preferredSentence=''}:Props){
   const base=useMemo(()=>buildSpeakingPlan(article,preferredSentence),[article,preferredSentence]);
