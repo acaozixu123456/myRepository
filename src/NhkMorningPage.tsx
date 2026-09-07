@@ -1,3 +1,4 @@
+import NhkSpeakingCoach from './NhkSpeakingCoach';
 import NhkBackupPanel from './NhkBackupPanel';
 import {commitStudyRestore, serializeStudyBackup, type StudyData} from './nhkBackup';
 import {loadPracticeHistory, savePracticeHistory, newSentenceAttempt, upsertSentenceAttempt, practiceId, sessionForTarget} from './nhkPracticeHistory';
@@ -922,6 +923,8 @@ export default function NhkMorningPage() {
           <div><b>{activeArticle.sentences.length}</b><small>正文句子</small><b>{counts.grammar}</b><small>语法点</small><b>{counts.vocabulary}</b><small>单词</small></div>
         </article>
 
+        <NhkSpeakingCoach key={`speaking-${activeArticle.id}`} article={activeArticle} preferredSentence={activeRecommendation?.sentence}/>
+
         <div className="nhk-article-detail-actions">
           <button className="primary" onClick={() => studySavedArticle(activeArticle)}><GraduationCap size={18} />从一句开始</button>
           <button onClick={() => studySavedArticle(activeArticle, true)}><Sparkles size={18} />重试 AI 精讲</button>
@@ -1053,6 +1056,7 @@ export default function NhkMorningPage() {
           <NhkSentenceInsight key={`${studyArticle.id}|${activeRecommendation.sentenceIndex}|${activeRecommendation.sentence}`} article={studyArticle} recommendation={activeRecommendation} onSave={saveSentenceAnalysis}>
             {value => <DeepAnalysisCard recommendation={value} article={studyArticle} knowledge={knowledge} onToggleKnowledge={toggleKnowledge}/>}
           </NhkSentenceInsight>
+          <NhkSpeakingCoach key={`speaking-${studyArticle.id}-${activeRecommendation.sentence}`} article={studyArticle} preferredSentence={activeRecommendation.sentence}/>
           <div className="calm-focus-actions"><button className="calm-primary" onClick={() => {selectionTouchedRef.current = true;
             const existing = history.attempts.find(a => a.articleId === studyArticle.id && a.sentence === activeRecommendation.sentence && !a.completedAt);
             const attempt = existing || newSentenceAttempt(studyArticle.id,activeRecommendation.sentence,activeRecommendation.translationZh);
@@ -1164,6 +1168,8 @@ export default function NhkMorningPage() {
 
         {step === 2 && (
           <div className="nhk-study-step">
+            <NhkSpeakingCoach key={`speaking-${studyArticle.id}`} article={studyArticle} preferredSentence={primaryRecommendation?.sentence}/>
+            <details className="nhk-speaking-advanced"><summary>进阶：自己复述整篇（可选）</summary>
             <div className="nhk-step-intro">
               <span>OUTPUT</span>
               <h1>用自己的话，说一点就好。</h1>
@@ -1233,6 +1239,7 @@ export default function NhkMorningPage() {
               <button onClick={() => setStep(1)}>返回精讲</button>
               <button className="complete" disabled={!studyCompletionReady} onClick={completeToday}><Check size={18} />保存这次表达</button>
             </div>
+            </details>
           </div>
         )}
       </section>

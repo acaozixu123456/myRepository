@@ -1,3 +1,4 @@
+import {handleSpeakingProxy} from '../server/nhkSpeakingProxy.js';
 import {createHash} from 'node:crypto';
 import type {VercelRequest, VercelResponse} from '@vercel/node';
 
@@ -30,6 +31,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const body = requestBody(req);
   const action = clean(body.action, 16);
+  if (['speaking_start', 'speaking_stop', 'speaking_health'].includes(action)) {
+    return handleSpeakingProxy(req, res, body, {url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, clientKey: clientKey(req)});
+  }
   let payload: Record<string, unknown>;
 
   if (action === 'tts') {
