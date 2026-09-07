@@ -1,0 +1,7 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+let s=readFileSync('scripts/nhk-chat-live.mjs','utf8');
+const once=(from,to)=>{if(s.split(from).length!==2)throw new Error(`Diagnostic anchor: ${from.slice(0,80)}`);s=s.replace(from,to);};
+once('await window.__chat.start();',`const original=window.__chat.event.bind(window.__chat);window.__state.events=[];window.__chat.event=e=>{window.__state.events.push({type:e.type,itemId:e.item_id,transcript:e.transcript,code:e.error?.code});original(e);};\n  await window.__chat.start();`);
+once('await page.evaluate(()=>{const node=window.__audioContext.createBufferSource();', 'await page.waitForTimeout(500);await page.evaluate(async()=>{await window.__audioContext.resume();const node=window.__audioContext.createBufferSource();');
+once("await page.waitForFunction(n=>window.__state.heard.length>n||window.__state.phase==='error',count,{timeout:25000});", `try{await page.waitForFunction(n=>window.__state.heard.length>n||window.__state.phase==='error',count,{timeout:25000});}catch(e){report.inputDiagnostic=await page.evaluate(async()=>{const stats=await window.__chat.pc?.getStats();const outbound=[];stats?.forEach(s=>{if(s.type==='outbound-rtp'||s.type==='media-source')outbound.push(s);});return{state:window.__state,context:window.__audioContext.state,trackEnabled:window.__testTrack.enabled,trackState:window.__testTrack.readyState,sampleDuration:window.__fixtureAudio.duration,outbound};});throw e;}`);
+writeFileSync('scripts/nhk-chat-live.mjs',s);

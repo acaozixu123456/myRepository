@@ -2,7 +2,7 @@ name: NHK random chat real mobile voice probe
 on:
   push:
     branches: [nhk-chat-random-20260908]
-    paths: ['scripts/nhk-chat-live.mjs','.github/workflows/nhk-chat-live.yml']
+    paths: ['scripts/nhk-chat-live.mjs','scripts/nhk-chat-live-diagnostics.mjs','.github/workflows/nhk-chat-live.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +20,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Real synthetic-audio multi-turn and lease renewal
         run: |
+          node scripts/nhk-chat-live-diagnostics.mjs
           npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/chat-live.log 2>&1 &
           for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
           node --check scripts/nhk-chat-live.mjs
