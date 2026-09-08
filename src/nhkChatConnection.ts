@@ -1,8 +1,8 @@
-import {TeacherTurnChannel,TEACHER_SPEED,TEACHER_SLOW_SPEED,teacherControl,teacherFrame,teacherLastQuestion,teacherVoiceInstructions,fallbackTeacherTurn,type TeacherTurn,type TeacherContext} from './nhkGentleTeacher';
+import {TeacherTurnChannel,TEACHER_SPEED,TEACHER_SLOW_SPEED,teacherControl,teacherFrame,teacherVoiceInstructions,fallbackTeacherTurn,type TeacherTurn,type TeacherContext} from './nhkGentleTeacher';
 import {TurnSupportChannel,type TurnSupportFrame} from './nhkTurnSupport';
 import type {ExperienceMetric} from './nhkChatExperience';
 import {SPEAKING_CONSENT} from './nhkSpeaking';
-import {CHAT_CONTRACT, chatInstructions, chatIntent, type ChatAction, type ChatLine, type ChatPlan} from './nhkChat';
+import {CHAT_CONTRACT, chatIntent, type ChatAction, type ChatLine, type ChatPlan} from './nhkChat';
 export type ChatPhase='connecting'|'renewing'|'coach'|'listening'|'thinking'|'done'|'error';
 export type ChatHooks={phase:(p:ChatPhase)=>void;assistant:(s:string)=>void;hint:(s:string)=>void;blocked:(v:boolean)=>void;error:(reason:string,retryAfter?:number)=>void;shuffle:()=>void;heard:(text:string)=>void;support?:(frame:TurnSupportFrame|null)=>void;metric?:(event:ExperienceMetric)=>void;pace?:(value:number)=>void};
 type Ticket={callId:string;expiresAt:number;stopToken:string};
@@ -96,7 +96,7 @@ export class NhkChatConnection{
     if(this.configuredSpeed!==this.speed){this.emit({type:'session.update',session:{type:'realtime',audio:{output:{speed:this.speed}}}});this.configuredSpeed=this.speed;}
     this.plannedTeacher=turn;if(job.kind!=='help'&&job.kind!=='repeat')this.lastTeacher=turn;
     this.responses++;this.generation=true;this.activeJob=job;this.hooks.phase('coach');this.hooks.metric?.('request_sent');
-    this.emit({type:'response.create',response:{conversation:'none',input:[],output_modalities:['audio'],max_output_tokens:256,instructions:teacherVoiceInstructions(turn),metadata:{purpose:CHAT_CONTRACT,seq:String(this.requestSeq),topic:String(this.topicSerial)}}});
+    this.emit({type:'response.create',response:{conversation:'none',input:[],output_modalities:['audio'],max_output_tokens:384,instructions:teacherVoiceInstructions(turn),metadata:{purpose:CHAT_CONTRACT,seq:String(this.requestSeq),topic:String(this.topicSerial)}}});
     clearTimeout(this.watchdog);this.watchdog=setTimeout(()=>this.fail('response_timeout'),28000);
   }
   changeTopic(plan:ChatPlan){if(this.closed)return;this.teacher.cancel();this.lastTeacher=null;this.plannedTeacher=null;clearTimeout(this.voiceLimit);this.support.clear();this.hooks.metric?.('shuffle');this.plan=plan;this.topicSerial++;this.history=[];this.committed.clear();this.mic(false);this.waiting=false;this.talking=false;this.output='';this.hooks.assistant('');this.hooks.hint('换个轻松的话头。一个词也可以。');clearTimeout(this.idle);clearTimeout(this.shuffleTimer);
