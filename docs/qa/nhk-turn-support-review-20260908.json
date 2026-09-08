@@ -1,0 +1,40 @@
+{
+  "reviewer": "ChatGPT Sol",
+  "decision": "PASS_FOR_PERSONAL_MOBILE_PILOT",
+  "runtimeSourceCommit": "0311c830091f504a0a662e857658ca29449bad6d",
+  "productionBaseCommit": "fed90704207012d4f5700301f89df6fc7184c3e8",
+  "scope": "Current-turn keywords/starter/optional example, less interview-like responses, opt-in local UX observations. Mobile only.",
+  "sourceGate": {"run": 34211193542, "status": "completed", "conclusion": "success", "typecheck": "PASS", "tests": 235, "testFiles": 27, "build": "PASS"},
+  "evidenceArtifact": {"id": 10049974128, "digest": "sha256:876dcb51dab997b7a47b96594c6cbd10e6e4310822833f613e5530bdecf512cb"},
+  "sourceReview": {
+    "existingRuntimeChanges": ["src/NhkSpeakingCoach.tsx", "src/nhkChatConnection.ts", "src/nhkChat.ts"],
+    "noApiProxyOrBackendChanges": true,
+    "noCredentialOrDatabaseChanges": true,
+    "noExistingLibraryOrHistorySchemaChanges": true,
+    "hintFailuresCannotControlVoicePhase": true,
+    "staleHintRejection": "purpose + peer/topic/utterance key + per-request identity; optional failures, timeout and cancellation retain current voice lifecycle",
+    "privacy": "New owned localStorage key only; default OFF; whitelisted content-free aggregates; no network telemetry; explicit clear/disable; pruning on append/reopen/export; unrelated article data preserved"
+  },
+  "phoneUi": {"scope": "390x844 PHONE EMULATION; MEDIA AND API MOCKED", "pass": true, "screenshotsReviewed": ["phone-turn-support.png", "phone-support-help.png", "phone-entry.png"], "checks": ["20 preview shuffles without mic/API", "five ASR events no forced ending", "current later-turn hints", "full example collapsed by default", "hide/show without reconnect", "help for current question", "10 topic changes same peer", "late old hints cannot overwrite current topic", "original article storage preserved", "opt-in content-free local records and isolated clearing", "distinct throttling message and mic cleanup"]},
+  "realApi": {
+    "scope": "REAL_PRODUCTION_PROXY_REAL_WEBRTC_SYNTHETIC_AUDIO_NOT_HUMAN",
+    "model": "gpt-realtime-2.1",
+    "pass": true,
+    "validModelHintFrames": 6,
+    "question": "いいですね。短い動画と長い動画、どちらが好きですか。",
+    "hintWords": ["短い動画", "長い動画"],
+    "hintStarter": "私はどちらかというと",
+    "optionalExample": "短い動画のほうが気軽に見やすいです。",
+    "observedHelperAudioTranscript": "例えば、「短い動画のほうが気軽に見やすいです。」",
+    "observedNonQuestionReaction": "猫の動画、気持ちがゆるんでいいですよね。寝る前に少しだけ見るのも楽しそうです。",
+    "topicSwitchSameConnection": true,
+    "renewalKeepsMicrophone": true,
+    "endStopsTrack": true,
+    "thirdRapidStartAllowed": true,
+    "hintJsonDidNotEnterSpokenOutput": true,
+    "runtimeErrors": []
+  },
+  "fixedBeforeAcceptance": ["TypeScript nullable pending response state", "Realtime returned parenthesized and blockquote JSON; normalized only presentation wrappers with strict field and identity validation and no evaluation", "UX expiry applied on reopen/export as well as append", "Mock helper output corrected to test a real optional example rather than repeat the mock question"],
+  "notVerified": ["Production promotion of this source; checked separately by the production gate", "Physical iPhone/Safari playback and microphone on the user's device", "Every generated hint's semantic or grammatical quality", "User-perceived latency improvement", "Human hesitation/accent robustness", "Long-term learning improvement"],
+  "limitations": ["Hints add bounded paid text generation; hiding them suppresses new requests", "Hint generation is asynchronous but no zero-latency guarantee", "Question cadence is instructed, not guaranteed for every model reply", "Local UX counts are not accuracy or pronunciation scores", "Existing personal-pilot auth and abnormal-use guards are unchanged"]
+}
