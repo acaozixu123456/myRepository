@@ -24,11 +24,13 @@ jobs:
           test '${{ github.ref_name }}' = 'nhk-turn-support-20260908'
           node scripts/apply-turn-support.mjs
           node scripts/nhk-turn-support-connection-tests.mjs
+          node scripts/nhk-turn-support-format-fix.mjs
+          node --check scripts/nhk-turn-support-production.mjs
           git config user.name 'Sol supervisor'
           git config user.email '331004814@qq.com'
-          git add src/nhkChatConnection.ts src/nhkChat.ts src/NhkSpeakingCoach.tsx src/nhkChatConnection.test.ts
+          git add src/nhkChatConnection.ts src/nhkChat.ts src/NhkSpeakingCoach.tsx src/nhkChatConnection.test.ts src/nhkTurnSupport.ts
           if ! git diff --cached --quiet; then
-            git commit -m 'Integrate current-turn hints, gentler conversation and optional local UX records'
+            git commit -m 'Integrate validated realtime hint presentation normalization'
             git push origin HEAD:${{ github.ref_name }}
           fi
           mkdir -p artifacts/turn-support
@@ -54,7 +56,7 @@ jobs:
         if: always()
         run: |
           mkdir -p artifacts/turn-support/source
-          cp src/nhkChatConnection.ts src/nhkChat.ts src/NhkSpeakingCoach.tsx src/nhkTurnSupport.ts src/nhkChatExperience.ts src/NhkChatExperience.tsx artifacts/turn-support/source/
+          cp src/nhkChatConnection.ts src/nhkChat.ts src/NhkSpeakingCoach.tsx src/nhkTurnSupport.ts src/nhkTurnSupportFormat.ts src/nhkChatExperience.ts src/NhkChatExperience.tsx artifacts/turn-support/source/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
