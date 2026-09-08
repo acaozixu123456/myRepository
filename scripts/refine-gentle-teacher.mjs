@@ -3,6 +3,7 @@ const replace=(s,a,b)=>{if(s.includes(b))return s;if(s.split(a).length!==2)throw
 let path='src/nhkChatConnection.ts';let s=readFileSync(path,'utf8');
 s=replace(s,"this.hooks.assistant('');const key=", "this.hooks.assistant('');this.hooks.metric?.('request_sent');const key=");
 s=s.replace("this.hooks.phase('coach');this.hooks.metric?.('request_sent');", "this.hooks.phase('coach');");
+s=replace(s,'heard:job.heard,previous:this.lastTeacher};','heard:job.heard,previous:job.kind===\'repeat\'?(this.plannedTeacher||this.lastTeacher):this.lastTeacher};');
 writeFileSync(path,s);
 path='src/nhkGentleTeacher.ts';s=readFileSync(path,'utf8');
 s=replace(s,"const current=teacherLastQuestion(c)+c.heard;", "const current=teacherLastQuestion(c)+c.heard;\n  const proposed=[say,...r.words,r.starter,r.example].join(' ');");
@@ -12,6 +13,9 @@ s=s.replace('No scoring, lecture, facts not in the supplied reference, or medica
 s=s.replace('No external facts should be added. When no reference is supplied, do not invent news facts.', 'Do not invent external news details. Ordinary Japanese vocabulary explanations are allowed. When no reference is supplied, do not invent news facts.');
 writeFileSync(path,s);
 path='src/nhkChatConnection.test.ts';s=readFileSync(path,'utf8');
+s=s.replaceAll("expect(event.response.instructions).toContain('猫が好きです。')","expect(event.response.instructions).toContain('例えば、「猫が好きです」。')");
+s=s.replaceAll("expect(req.response.instructions).toContain('猫が好きです。')","expect(req.response.instructions).toContain('例えば、「猫が好きです」。')");
 if(!s.includes('includes planning in service wait'))s+=`\ndescribe('teacher service timing',()=>{it('includes planning in service wait without recording learner reaction speed',async()=>{hooks.metric=vi.fn();await c.start();reply();hooks.metric.mockClear();speak('wait','猫');expect(hooks.metric.mock.calls.filter((a:any)=>a[0]==='request_sent')).toHaveLength(1);finishTeacherDraft();expect(hooks.metric.mock.calls.filter((a:any)=>a[0]==='request_sent')).toHaveLength(1);reply();});});\n`;
+if(!s.includes('slow replay preserves the helper'))s+=`\ndescribe('teacher helper replay',()=>{it('slow replay preserves the helper example rather than returning to the earlier question',async()=>{hooks.support=vi.fn();await c.start();reply();speak('helper','猫');reply();c.help();const before=JSON.parse(dc.send.mock.calls.at(-1)[0]).response.instructions;reply();c.slowDown();const after=JSON.parse(dc.send.mock.calls.at(-1)[0]).response.instructions;expect(after).toBe(before);expect(after).toContain('例えば、「猫が好きです」。');expect(starts()).toHaveLength(1);});});\n`;
 writeFileSync(path,s);
-console.log('Reviewed: include planning wait; guard hint-topic intrusion; normalize helper punctuation.');
+console.log('Reviewed: include planning wait; guard hint-topic intrusion; normalize helper punctuation; exact slow replay.');
