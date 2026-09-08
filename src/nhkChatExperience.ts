@@ -8,6 +8,7 @@ type StorageLike=Pick<Storage,'getItem'|'setItem'|'removeItem'>;
 const numberFields=['replyWaitTotalMs','replyWaitSamples','helpUses','answersAfterHelp','answerEvents','shuffles','hintsShown','hintsHidden','renewals'] as const;
 const today=()=>new Date().toISOString().slice(0,10);
 const fresh=():ExperienceRow=>({day:today(),firstAudioWaitMs:null,replyWaitTotalMs:0,replyWaitSamples:0,helpUses:0,answersAfterHelp:0,answerEvents:0,shuffles:0,hintsShown:0,hintsHidden:0,renewals:0,effort:null});
+const retain=(rows:ExperienceRow[])=>{const cutoff=new Date(Date.now()-14*86400000).toISOString().slice(0,10);return rows.filter(r=>r.day>=cutoff&&r.day<=today()).slice(-30);};
 export function cleanExperienceRow(raw:unknown):ExperienceRow|null {
   if(!raw||typeof raw!=='object')return null;const v=raw as Record<string,unknown>;
   if(typeof v.day!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v.day))return null;
@@ -19,7 +20,18 @@ export function cleanExperienceRow(raw:unknown):ExperienceRow|null {
 }
 export class ChatExperienceStore {
   private storage:StorageLike|null;private state:State={version:1,enabled:false,rows:[]};private blocked=false;private revision=0;private generation=0;private listeners=new Set<()=>void>();
-  constructor(storage?:StorageLike){this.storage=null;try{this.storage=storage||localStorage;const text=this.storage.getItem(EXPERIENCE_KEY);if(text){const raw=JSON.parse(text);if(raw?.version!==1||typeof raw.enabled!=='boolean'||!Array.isArray(raw.rows))this.blocked=true;else{const rows=raw.rows.map(cleanExperienceRow);if(rows.some((r:ExperienceRow|null)=>!r))this.blocked=true;else this.state={version:1,enabled:raw.enabled,rows:rows.slice(-30)};}}}catch{this.blocked=true;}}
+  constructor(storage?:StorageLike){
+    this.storage=null;
+    try{
+      this.storage=storage||localStorage;const text=this.storage.getItem(EXPERIENCE_KEY);if(!text)return;
+      const raw=JSON.parse(text);
+      if(raw?.version!==1||typeof raw.enabled!=='boolean'||!Array.isArray(raw.rows)){this.blocked=true;return;}
+      const rows=raw.rows.map(cleanExperienceRow) as Array<ExperienceRow|null>;
+      if(rows.some(r=>!r)){this.blocked=true;return;}
+      this.state={version:1,enabled:raw.enabled,rows:raw.enabled?retain(rows as ExperienceRow[]):[]};
+      if(rows.length!==this.state.rows.length)this.save();
+    }catch{this.blocked=true;}
+  }
   get enabled(){return this.state.enabled&&!this.blocked;}
   get count(){return this.state.rows.length;}
   get unavailable(){return this.blocked;}
@@ -28,11 +40,11 @@ export class ChatExperienceStore {
   subscribe(fn:()=>void){this.listeners.add(fn);return()=>{this.listeners.delete(fn);};}
   private notify(){this.revision++;for(const fn of this.listeners)fn();}
   private save(){try{this.storage?.setItem(EXPERIENCE_KEY,JSON.stringify(this.state));}catch{this.blocked=true;}this.notify();}
-  consent(on:boolean){if(this.blocked)return;this.generation++;this.state={version:1,enabled:on,rows:on?this.state.rows:[]};this.save();}
+  consent(on:boolean){if(this.blocked)return;this.generation++;this.state={version:1,enabled:on,rows:on?retain(this.state.rows):[]};this.save();}
   clear(){this.generation++;try{this.storage?.removeItem(EXPERIENCE_KEY);this.blocked=false;this.state={version:1,enabled:false,rows:[]};}catch{this.blocked=true;}this.notify();}
-  append(row:ExperienceRow){if(!this.enabled)return -1;const safe=cleanExperienceRow(row);if(!safe)return -1;const cutoff=new Date(Date.now()-14*86400000).toISOString().slice(0,10);this.state.rows=[...this.state.rows.filter(r=>r.day>=cutoff),safe].slice(-30);this.save();return this.revision;}
+  append(row:ExperienceRow){if(!this.enabled)return -1;const safe=cleanExperienceRow(row);if(!safe)return -1;this.state.rows=retain([...this.state.rows,safe]);this.save();return this.revision;}
   feedback(revision:number,effort:Effort){if(!this.enabled||this.revision!==revision||!this.state.rows.length||!['easy','okay','hard'].includes(effort))return;this.state.rows[this.state.rows.length-1].effort=effort;this.save();}
-  export(){return JSON.stringify({version:1,scope:'local_ux_only_not_learning_scores',timing:'server_playback_start_event_not_acoustic_or_learner_reaction_time',rows:this.state.rows.map(cleanExperienceRow).filter(Boolean)},null,2);}
+  export(){const rows=retain(this.state.rows);if(!this.blocked&&rows.length!==this.state.rows.length){this.state.rows=rows;this.save();}return JSON.stringify({version:1,scope:'local_ux_only_not_learning_scores',timing:'server_playback_start_event_not_acoustic_or_learner_reaction_time',rows:rows.map(cleanExperienceRow).filter(Boolean)},null,2);}
 }
 export class ChatExperienceSession {
   private store:ChatExperienceStore;private clock:()=>number;private row=fresh();private readyAt:number|null=null;private waitingAt:number|null=null;private helpPending=false;private ended=false;private revision=-1;private answeredFeedback=false;private generation:number;

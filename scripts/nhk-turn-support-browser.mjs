@@ -2,6 +2,7 @@ import {readFile,writeFile,unlink} from 'node:fs/promises';
 // Extend the already-established PHONE-only fixture; no live learner records or API calls.
 let source=await readFile('scripts/nhk-chat-browser.mjs','utf8');
 const once=(a,b)=>{if(source.split(a).length!==2)throw new Error(`Mobile support anchor: ${a.slice(0,70)}`);source=source.replace(a,b);};
+once("transcript:'かわいいですよね。猫は飼っていますか。'", "transcript:window.__voice.events.filter(e=>e.type==='response.create'&&e.response.output_modalities[0]==='audio').at(-1)?.response.instructions.includes('MOST RECENT question')?'例えば、今は飼っていません。':'かわいいですよね。猫は飼っていますか。'");
 once("await page.screenshot({path:'artifacts/chat/phone-entry.png',fullPage:true});",`assert.equal(await page.evaluate(()=>localStorage.getItem('nihongo-chat-experience-v1')),null);
  await page.locator('.nhk-experience-settings summary').click();await page.getByRole('checkbox',{name:'只在这台手机记录体验'}).check();await page.locator('.nhk-experience-settings summary').click();
  await page.screenshot({path:'artifacts/chat/phone-entry.png',fullPage:true});`);
@@ -17,6 +18,7 @@ once(" const d=page.getByRole('dialog');",` const finishHint=async(req,word='飼
  await page.screenshot({path:'artifacts/chat/phone-turn-support.png',fullPage:true});`);
 once("results.checks.push('help uses current question');",`results.checks.push('help uses current question');assert.ok(lastRequest.response.instructions.includes('今は飼っていません'));
  assert.equal(await page.locator('.nhk-turn-support-example').count(),1);
+ assert.ok((await page.locator('.nhk-turn-support-example').textContent()).includes('今は飼っていません'));
  await page.screenshot({path:'artifacts/chat/phone-support-help.png',fullPage:true});`);
 once("await page.screenshot({path:'artifacts/chat/phone-chat.png',fullPage:true});",`await finishHint(currentHint,'古いヒント');assert.ok(!(await page.locator('.nhk-turn-support').textContent()).includes('古いヒント'));
  const newHint=await hintRequest();await finishHint(newHint);results.checks.push('late old hint cannot overwrite new topic');
