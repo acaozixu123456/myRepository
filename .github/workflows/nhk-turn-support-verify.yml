@@ -1,0 +1,66 @@
+name: NHK turn support mobile acceptance
+on:
+  push:
+    branches: [nhk-turn-support-20260908]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply bounded reviewed integration on candidate only
+        run: |
+          test '${{ github.ref_name }}' = 'nhk-turn-support-20260908'
+          node scripts/apply-turn-support.mjs
+          node scripts/nhk-turn-support-connection-tests.mjs
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/nhkChatConnection.ts src/nhkChat.ts src/NhkSpeakingCoach.tsx src/nhkChatConnection.test.ts
+          if ! git diff --cached --quiet; then
+            git commit -m 'Integrate current-turn hints, gentler conversation and optional local UX records'
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+          mkdir -p artifacts/turn-support
+          git rev-parse HEAD | tee artifacts/turn-support/source-commit.txt
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck 2>&1 | tee artifacts/turn-support/typecheck.log
+      - run: npm test 2>&1 | tee artifacts/turn-support/tests.log
+      - run: npm run build 2>&1 | tee artifacts/turn-support/build.log
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Phone-only UI, hint freshness and local-only privacy
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/nhk-support-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/nhk-turn-support-browser.mjs
+      - name: Real existing production API with candidate client and synthetic Japanese
+        env:
+          LIVE_PROXY: '1'
+        run: |
+          node scripts/nhk-chat-live-diagnostics.mjs
+          node scripts/nhk-turn-support-live.mjs
+      - name: Export exact source and evidence, no credentials
+        if: always()
+        run: |
+          mkdir -p artifacts/turn-support/source
+          cp src/nhkChatConnection.ts src/nhkChat.ts src/NhkSpeakingCoach.tsx src/nhkTurnSupport.ts src/nhkChatExperience.ts src/NhkChatExperience.tsx artifacts/turn-support/source/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-turn-support-acceptance
+          path: |
+            artifacts/turn-support/
+            artifacts/chat/
+            artifacts/chat-live/
+          if-no-files-found: warn

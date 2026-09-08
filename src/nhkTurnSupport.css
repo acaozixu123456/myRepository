@@ -1,0 +1,21 @@
+.nhk-turn-support{margin-top:18px;padding-top:12px;border-top:1px solid #e5ebe1;text-align:left;min-height:60px}
+.nhk-turn-support-label{display:flex;gap:8px;justify-content:space-between;align-items:center;font-size:12px;line-height:1.7;color:#74836c}
+.nhk-turn-support-label button{flex:none;min-height:44px;padding:5px 8px;border:0;background:transparent;color:#56744c;font-size:13px}
+.nhk-turn-support-chips{display:flex;flex-wrap:wrap;gap:8px;margin:5px 0 2px;align-items:center;min-height:35px}
+.nhk-turn-support-chips span{display:inline-block;padding:7px 11px;background:#edf3e8;border-radius:11px;font-size:17px;line-height:1.6;color:#4a6443;overflow-wrap:anywhere}
+.nhk-turn-support-example{padding:13px;margin-top:13px;background:#f6f2e5;border-radius:12px}
+.nhk-turn-support-example small{display:block;font-size:12px;line-height:1.8;color:#827e65}
+.nhk-turn-support-example p{font-size:19px;line-height:1.8;color:#46573e;margin:6px 0 0;overflow-wrap:anywhere}
+.nhk-experience-settings{grid-column:1/-1;color:#74816c;font-size:12px;line-height:1.8}
+.nhk-experience-settings summary{cursor:pointer;min-height:44px;padding:10px 0}
+.nhk-experience-settings p{font-size:13px!important;line-height:1.9!important;margin:10px 0!important}
+.nhk-experience-settings label{display:flex;align-items:center;gap:9px;font-size:14px;min-height:44px}
+.nhk-experience-settings input{width:18px;height:18px;accent-color:#355e4d}
+.nhk-experience-settings small{display:block;font-size:12px;line-height:1.9}
+.nhk-experience-settings>div{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.nhk-experience-settings button{padding:8px 10px;min-height:44px;border:1px solid #dce5d8;background:transparent;border-radius:10px;color:#586d50;font:inherit;cursor:pointer}
+.nhk-experience-settings button:disabled{opacity:.5}
+.nhk-effort-check{padding:12px 0 16px;font-size:14px;line-height:1.8;color:#65765b}
+.nhk-effort-check>span small{margin-left:10px;font-size:12px;color:#839078}
+.nhk-effort-check>div{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.nhk-effort-check button{border:1px solid #dce5d8;background:#f1f5ec;border-radius:12px;padding:8px 11px;min-height:44px;color:#4d6945}
