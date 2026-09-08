@@ -25,7 +25,7 @@ export class NhkChatConnection{
     const frame=this.plannedTeacher&&teacherFrame(key,this.plannedTeacher,this.output);
     if(frame&&(frame.words.length||frame.starter))this.support.adopt(frame);else this.support.begin(key,this.output,{learner:this.activeJob.heard,source:[]});
   }
-  private teacherContext(job:Job):TeacherContext{return {kind:job.kind,plan:this.plan,history:this.history,heard:job.heard,previous:this.lastTeacher};}
+  private teacherContext(job:Job):TeacherContext{return {kind:job.kind,plan:this.plan,history:this.history,heard:job.heard,previous:job.kind==='repeat'?(this.plannedTeacher||this.lastTeacher):this.lastTeacher};}
   slowDown(){if(this.closed)return;this.speed=TEACHER_SLOW_SPEED;this.hooks.pace?.(this.speed);this.hooks.hint('慢一点，还是刚才这一句。');this.repeat();}
   simplify(){if(this.closed)return;this.hooks.hint('不换话题，只把刚才那句变简单。');this.request({kind:'simplify',heard:''});}
   private stopLongVoice(){
