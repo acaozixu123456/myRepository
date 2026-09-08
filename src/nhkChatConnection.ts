@@ -1,11 +1,12 @@
+import {TeacherTurnChannel,TEACHER_SPEED,TEACHER_SLOW_SPEED,teacherControl,teacherFrame,teacherLastQuestion,teacherVoiceInstructions,fallbackTeacherTurn,type TeacherTurn,type TeacherContext} from './nhkGentleTeacher';
 import {TurnSupportChannel,type TurnSupportFrame} from './nhkTurnSupport';
 import type {ExperienceMetric} from './nhkChatExperience';
 import {SPEAKING_CONSENT} from './nhkSpeaking';
 import {CHAT_CONTRACT, chatInstructions, chatIntent, type ChatAction, type ChatLine, type ChatPlan} from './nhkChat';
 export type ChatPhase='connecting'|'renewing'|'coach'|'listening'|'thinking'|'done'|'error';
-export type ChatHooks={phase:(p:ChatPhase)=>void;assistant:(s:string)=>void;hint:(s:string)=>void;blocked:(v:boolean)=>void;error:(reason:string,retryAfter?:number)=>void;shuffle:()=>void;heard:(text:string)=>void;support?:(frame:TurnSupportFrame|null)=>void;metric?:(event:ExperienceMetric)=>void};
+export type ChatHooks={phase:(p:ChatPhase)=>void;assistant:(s:string)=>void;hint:(s:string)=>void;blocked:(v:boolean)=>void;error:(reason:string,retryAfter?:number)=>void;shuffle:()=>void;heard:(text:string)=>void;support?:(frame:TurnSupportFrame|null)=>void;metric?:(event:ExperienceMetric)=>void;pace?:(value:number)=>void};
 type Ticket={callId:string;expiresAt:number;stopToken:string};
-type Job={kind:ChatAction;heard:string;example?:string};
+type Job={kind:ChatAction|'simplify';heard:string;example?:string};
 /** One user consent and microphone; topic changes reuse the peer. Audio never enters storage. */
 export class NhkChatConnection{
   private stream:MediaStream|null=null;private pc:RTCPeerConnection|null=null;private dc:RTCDataChannel|null=null;private audio:HTMLAudioElement|null=null;
@@ -15,9 +16,24 @@ export class NhkChatConnection{
   private committed=new Set<string>();private handled=new Set<string>();private history:ChatLine[]=[];private topicSerial=0;private responses=0;
   private deadline:ReturnType<typeof setTimeout>|undefined;private renewTimer:ReturnType<typeof setTimeout>|undefined;private watchdog:ReturnType<typeof setTimeout>|undefined;private idle:ReturnType<typeof setTimeout>|undefined;private shuffleTimer:ReturnType<typeof setTimeout>|undefined;
   private support:TurnSupportChannel;
-  constructor(private plan:ChatPlan,private hooks:ChatHooks){this.support=new TurnSupportChannel({send:e=>this.emit(e),update:f=>this.hooks.support?.(f),spend:()=>{if(!this.hooks.support||this.closed||this.busyConnecting||this.dc?.readyState!=='open'||this.responses>=22||Date.now()>this.renewAt-6000)return false;this.responses++;return true;}});}
+  private teacher:TeacherTurnChannel;private lastTeacher:TeacherTurn|null=null;private plannedTeacher:TeacherTurn|null=null;private speed=TEACHER_SPEED;private configuredSpeed=0;private voiceLimit:ReturnType<typeof setTimeout>|undefined;private clipped=false;
+  constructor(private plan:ChatPlan,private hooks:ChatHooks){this.teacher=new TeacherTurnChannel(e=>this.emit(e));this.support=new TurnSupportChannel({send:e=>this.emit(e),update:f=>this.hooks.support?.(f),spend:()=>{if(!this.hooks.support||this.closed||this.busyConnecting||this.dc?.readyState!=='open'||this.responses>=22||Date.now()>this.renewAt-6000)return false;this.responses++;return true;}});}
   setSupportEnabled(on:boolean){this.support.setEnabled(on);}
-  private prepareSupport(){if(!this.pending&&!this.shuffleTimer&&this.output&&['start','answer','resume'].includes(this.activeJob.kind))this.support.begin(`${this.serial}-${this.topicSerial}-${this.requestSeq}`,this.output,{learner:this.activeJob.heard,source:this.plan.source});}
+  private prepareSupport(){
+    if(this.pending||this.shuffleTimer||!this.output||!['start','answer','resume','simplify'].includes(this.activeJob.kind))return;
+    const key=`${this.serial}-${this.topicSerial}-${this.requestSeq}`;
+    const frame=this.plannedTeacher&&teacherFrame(key,this.plannedTeacher,this.output);
+    if(frame&&(frame.words.length||frame.starter))this.support.adopt(frame);else this.support.begin(key,this.output,{learner:this.activeJob.heard,source:[]});
+  }
+  private teacherContext(job:Job):TeacherContext{return {kind:job.kind,plan:this.plan,history:this.history,heard:job.heard,previous:this.lastTeacher};}
+  slowDown(){if(this.closed)return;this.speed=TEACHER_SLOW_SPEED;this.hooks.pace?.(this.speed);this.hooks.hint('慢一点，还是刚才这一句。');this.repeat();}
+  simplify(){if(this.closed)return;this.hooks.hint('不换话题，只把刚才那句变简单。');this.request({kind:'simplify',heard:''});}
+  private stopLongVoice(){
+    if(this.closed||this.clipped)return;this.clipped=true;clearTimeout(this.voiceLimit);clearTimeout(this.watchdog);
+    if(this.responseId)this.emit({type:'response.cancel',response_id:this.responseId});this.emit({type:'output_audio_buffer.clear'});
+    this.support.cancelPending();this.generation=false;this.responseDone=true;this.playbackDone=true;
+    this.hooks.hint('先停一下，一次只说一点。可以点“再简单点”。');this.listen();
+  }
   async start(){if(this.closed||this.stream||this.busyConnecting)return;this.busyConnecting=true;this.hooks.phase('connecting');try{
     if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia||typeof RTCPeerConnection==='undefined')throw new Error('unsupported');
     const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
@@ -27,7 +43,7 @@ export class NhkChatConnection{
   private emit(value:Record<string,unknown>){if(!this.closed&&this.dc?.readyState==='open')this.dc.send(JSON.stringify(value));}
   private mic(on:boolean){this.accepting=on&&!this.closed&&!this.blocked;this.stream?.getAudioTracks().forEach(t=>{t.enabled=this.accepting;});}
   private stopTicket(ticket:Ticket|null){if(!ticket)return;void fetch('/api/nhk-speech',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'speaking_stop',...ticket}),keepalive:true}).catch(()=>{});}
-  private closePeer(){this.support.reset();this.serial++;this.abort?.abort();clearTimeout(this.deadline);clearTimeout(this.renewTimer);clearTimeout(this.watchdog);this.mic(false);if(this.dc){this.dc.onmessage=null;this.dc.onclose=null;this.dc.onerror=null;this.dc.onopen=null;this.dc.close();this.dc=null;}if(this.pc){this.pc.onconnectionstatechange=null;this.pc.ontrack=null;this.pc.close();this.pc=null;}if(this.audio){this.audio.pause();this.audio.srcObject=null;this.audio.remove();this.audio=null;}this.stopTicket(this.ticket);this.ticket=null;this.committed.clear();this.handled.clear();this.generation=false;this.responseDone=false;this.playbackDone=false;this.waiting=false;this.talking=false;this.responseId='';}
+  private closePeer(){this.teacher.reset();this.configuredSpeed=0;clearTimeout(this.voiceLimit);this.support.reset();this.serial++;this.abort?.abort();clearTimeout(this.deadline);clearTimeout(this.renewTimer);clearTimeout(this.watchdog);this.mic(false);if(this.dc){this.dc.onmessage=null;this.dc.onclose=null;this.dc.onerror=null;this.dc.onopen=null;this.dc.close();this.dc=null;}if(this.pc){this.pc.onconnectionstatechange=null;this.pc.ontrack=null;this.pc.close();this.pc=null;}if(this.audio){this.audio.pause();this.audio.srcObject=null;this.audio.remove();this.audio=null;}this.stopTicket(this.ticket);this.ticket=null;this.committed.clear();this.handled.clear();this.generation=false;this.responseDone=false;this.playbackDone=false;this.waiting=false;this.talking=false;this.responseId='';}
   private async connect(job:Job,renew:boolean){
     if(this.closed||this.busyConnecting||!this.stream)return;
     this.busyConnecting=true;this.closePeer();const serial=this.serial;this.abort=new AbortController();this.responses=0;this.renewDue=false;this.pending=job;
@@ -55,18 +71,35 @@ export class NhkChatConnection{
   }
   private rotate(job:Job){if(this.closed||this.busyConnecting)return;this.hooks.metric?.('renew');clearTimeout(this.idle);this.pending=null;void this.connect(job,true);}
   private request(job:Job){
-    if(this.closed)return;if(job.kind==='help'||job.kind==='repeat')this.support.cancelPending();else this.support.clear();this.mic(false);this.waiting=false;this.talking=false;clearTimeout(this.idle);
+    if(this.closed)return;this.teacher.cancel();
+    if(job.kind==='help'||job.kind==='repeat')this.support.cancelPending();else this.support.clear();
+    this.mic(false);this.waiting=false;this.talking=false;clearTimeout(this.idle);clearTimeout(this.voiceLimit);
     if(this.busyConnecting){this.pending=job;return;}
     if(this.generation){this.pending=job;if(this.responseId)this.emit({type:'response.cancel',response_id:this.responseId});this.emit({type:'output_audio_buffer.clear'});return;}
-    if(this.renewDue||Date.now()>=this.renewAt||this.responses>=24){this.rotate(job);return;}
+    if(this.renewDue||Date.now()>=this.renewAt||this.responses>=22){this.rotate(job);return;}
     this.pending=null;this.committed.clear();this.emit({type:'input_audio_buffer.clear'});if(this.responses)this.emit({type:'output_audio_buffer.clear'});
-    this.responses++;this.requestSeq++;this.responseId='';this.responseDone=false;this.playbackDone=false;this.generation=true;this.output='';this.activeJob=job;
-    this.hooks.assistant('');this.hooks.phase('coach');this.hooks.metric?.('request_sent');
-    // Detached responses prevent earlier topics/audio from leaking into a new topic and bound context cost.
-    this.emit({type:'response.create',response:{conversation:'none',input:[],output_modalities:['audio'],instructions:chatInstructions(this.plan,job.kind,this.history,job.heard,job.example),metadata:{purpose:CHAT_CONTRACT,seq:String(this.requestSeq),topic:String(this.topicSerial)}}});
+    this.requestSeq++;this.responseId='';this.responseDone=false;this.playbackDone=false;this.clipped=false;this.output='';this.activeJob=job;
+    this.hooks.assistant('');const key=`${this.serial}-${this.topicSerial}-${this.requestSeq}`;
+    const context=this.teacherContext(job);
+    if(['start','repeat','resume'].includes(job.kind)||(job.kind==='help'&&job.example)){
+      if(job.kind==='help')context.previous={...(context.previous||fallbackTeacherTurn(context)),example:job.example!};
+      this.playTeacher(job,fallbackTeacherTurn(context));return;
+    }
+    this.responses++;this.hooks.phase('thinking');
+    this.teacher.begin(key,context,turn=>{
+      if(this.closed||key!==`${this.serial}-${this.topicSerial}-${this.requestSeq}`||this.pending||this.shuffleTimer)return;
+      this.playTeacher(job,turn);
+    });
+  }
+  private playTeacher(job:Job,turn:TeacherTurn){
+    if(this.closed||this.busyConnecting)return;
+    if(this.configuredSpeed!==this.speed){this.emit({type:'session.update',session:{type:'realtime',audio:{output:{speed:this.speed}}}});this.configuredSpeed=this.speed;}
+    this.plannedTeacher=turn;if(job.kind!=='help'&&job.kind!=='repeat')this.lastTeacher=turn;
+    this.responses++;this.generation=true;this.activeJob=job;this.hooks.phase('coach');this.hooks.metric?.('request_sent');
+    this.emit({type:'response.create',response:{conversation:'none',input:[],output_modalities:['audio'],max_output_tokens:256,instructions:teacherVoiceInstructions(turn),metadata:{purpose:CHAT_CONTRACT,seq:String(this.requestSeq),topic:String(this.topicSerial)}}});
     clearTimeout(this.watchdog);this.watchdog=setTimeout(()=>this.fail('response_timeout'),28000);
   }
-  changeTopic(plan:ChatPlan){if(this.closed)return;this.support.clear();this.hooks.metric?.('shuffle');this.plan=plan;this.topicSerial++;this.history=[];this.committed.clear();this.mic(false);this.waiting=false;this.talking=false;this.output='';this.hooks.assistant('');this.hooks.hint('换个轻松的话头。一个词也可以。');clearTimeout(this.idle);clearTimeout(this.shuffleTimer);
+  changeTopic(plan:ChatPlan){if(this.closed)return;this.teacher.cancel();this.lastTeacher=null;this.plannedTeacher=null;clearTimeout(this.voiceLimit);this.support.clear();this.hooks.metric?.('shuffle');this.plan=plan;this.topicSerial++;this.history=[];this.committed.clear();this.mic(false);this.waiting=false;this.talking=false;this.output='';this.hooks.assistant('');this.hooks.hint('换个轻松的话头。一个词也可以。');clearTimeout(this.idle);clearTimeout(this.shuffleTimer);
     // Coalesce rapid taps. Only the last topic speaks; browsing never reconnects the peer.
     this.pending={kind:'start',heard:''};if(this.generation&&this.responseId)this.emit({type:'response.cancel',response_id:this.responseId});this.emit({type:'output_audio_buffer.clear'});this.emit({type:'input_audio_buffer.clear'});
     this.shuffleTimer=setTimeout(()=>{this.shuffleTimer=undefined;this.request({kind:'start',heard:''});},400);
@@ -77,18 +110,18 @@ export class NhkChatConnection{
   private listen(){if(this.closed||this.blocked)return;if(this.renewDue){this.rotate({kind:'resume',heard:''});return;}this.waiting=false;this.talking=false;this.mic(true);this.hooks.phase('listening');clearTimeout(this.idle);this.idle=setTimeout(()=>{this.hooks.hint('先帮你暂停了，声音已经关闭。话题还在，想聊时再接上。');this.end();},60000);}
   private release(){if(this.closed||!this.responseDone||!this.playbackDone)return;clearTimeout(this.watchdog);if(this.shuffleTimer)return;if(this.pending){const job=this.pending;this.pending=null;this.request(job);return;}this.listen();}
   private addHistory(role:ChatLine['role'],text:string){if(text.trim())this.history=[...this.history,{role,text:text.trim().slice(0,500)}].slice(-8);}
-  private event(e:any){if(this.closed||!e||typeof e.type!=='string')return;if(this.support.handle(e))return;
+  private event(e:any){if(this.closed||!e||typeof e.type!=='string')return;if(this.teacher.handle(e)||this.support.handle(e))return;
     if(e.type==='response.created'){this.responseId=e.response?.id||'';if(e.response?.metadata?.topic&&e.response.metadata.topic!==String(this.topicSerial)){this.emit({type:'response.cancel',response_id:this.responseId});}else if(this.pending)this.emit({type:'response.cancel',response_id:this.responseId});return;}
     if(e.response_id&&this.responseId&&e.response_id!==this.responseId)return;
     switch(e.type){
-      case'response.output_audio_transcript.delta':if(!this.pending&&!this.shuffleTimer){this.output=(this.output+String(e.delta||'')).slice(0,1000);this.hooks.assistant(this.output);}break;
-      case'response.output_audio_transcript.done':if(!this.pending&&!this.shuffleTimer){this.output=String(e.transcript||this.output).slice(0,1000);this.hooks.assistant(this.output);this.prepareSupport();}break;
-      case'output_audio_buffer.started':this.hooks.metric?.('audio_started');this.playbackDone=false;this.mic(false);break;
-      case'output_audio_buffer.stopped':this.playbackDone=true;this.release();break;
+      case'response.output_audio_transcript.delta':if(!this.pending&&!this.shuffleTimer&&!this.clipped){this.output=(this.output+String(e.delta||'')).slice(0,1000);this.hooks.assistant(this.output);if(this.output.length>64)this.stopLongVoice();}break;
+      case'response.output_audio_transcript.done':if(!this.pending&&!this.shuffleTimer&&!this.clipped){this.output=String(e.transcript||this.output).slice(0,1000);this.hooks.assistant(this.output);this.prepareSupport();}break;
+      case'output_audio_buffer.started':clearTimeout(this.voiceLimit);this.voiceLimit=setTimeout(()=>this.stopLongVoice(),16000);this.hooks.metric?.('audio_started');this.playbackDone=false;this.mic(false);break;
+      case'output_audio_buffer.stopped':clearTimeout(this.voiceLimit);this.playbackDone=true;this.release();break;
       case'response.done':{
         if(e.response?.id&&this.responseId&&e.response.id!==this.responseId)break;this.generation=false;
         if(this.pending){clearTimeout(this.watchdog);if(!this.shuffleTimer){const job=this.pending;this.pending=null;this.request(job);}break;}
-        if(e.response?.status==='cancelled')break;
+        if(e.response?.status==='cancelled'){if(this.clipped)this.listen();break;}
         if(e.response?.status!=='completed'){this.fail('response_failed');break;}
         if(this.output&&this.activeJob.kind!=='repeat')this.addHistory('assistant',this.output);
         this.prepareSupport();this.responseDone=true;this.release();break;
@@ -99,6 +132,7 @@ export class NhkChatConnection{
       case'conversation.item.input_audio_transcription.completed':{
         const id=String(e.item_id||'');if(!this.committed.has(id)||this.handled.has(id)||(!this.accepting&&!this.waiting))break;this.handled.add(id);if(this.handled.size>80)this.handled.delete(this.handled.values().next().value!);
         const text=String(e.transcript||'').slice(0,500);const intent=chatIntent(text);this.mic(false);this.waiting=false;this.talking=false;
+        const control=teacherControl(text);if(control==='slow'){this.slowDown();break;}if(control==='simplify'){this.simplify();break;}
         if(intent==='end'){this.end();break;}if(intent==='shuffle'){this.hooks.shuffle();break;}if(intent==='filler'){this.hooks.hint('不用急，还在听。');this.listen();break;}
         if(intent==='help'){this.help();break;}if(intent==='repeat'){this.repeat();break;}
         this.hooks.metric?.('answer');this.hooks.heard(text);this.addHistory('user',text);this.request({kind:'answer',heard:text});break;

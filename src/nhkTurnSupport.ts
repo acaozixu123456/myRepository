@@ -51,6 +51,8 @@ export class TurnSupportChannel {
     if(this.frame?.key===key||!question.trim())return;
     this.cancelPending();this.frame=localTurnSupport(key,question);this.context=context;this.hooks.update(this.frame);this.prepare();
   }
+  /** A checked teacher plan already contains the matching scaffold; no second hint request. */
+  adopt(frame:TurnSupportFrame){this.cancelPending();this.frame=frame;this.context={learner:'',source:[]};this.hooks.update(frame);}
   setEnabled(on:boolean){this.enabled=on;if(!on)this.cancelPending();else this.prepare();}
   private prepare(){
     const frame=this.frame;

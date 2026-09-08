@@ -1,3 +1,4 @@
+import './nhkGentleTeacher.css';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {HandHelping,LoaderCircle,Mic,MicOff,Shuffle,Volume2,X} from 'lucide-react';
@@ -18,6 +19,7 @@ export default function NhkSpeakingCoach({article,preferredSentence=''}:Props){
   const selected=pool.find(t=>t.id===topicId)||pool[0];
   const [open,setOpen]=useState(false),[phase,setPhase]=useState<ChatPhase>('connecting');
   const [assistant,setAssistant]=useState(''),[hint,setHint]=useState(''),[blocked,setBlocked]=useState(false),[error,setError]=useState(''),[turns,setTurns]=useState(0),[showHelp,setShowHelp]=useState(false),[retryUntil,setRetryUntil]=useState(0),[now,setNow]=useState(Date.now());
+  const [pace,setPace]=useState(0.8);
   const [support,setSupport]=useState<TurnSupportFrame|null>(null),[supportVisible,setSupportVisible]=useState(true);
   const [experience]=useState(()=>new ChatExperienceStore());const session=useRef<ChatExperienceSession|null>(null);const shown=useRef(new Set<string>());
   const connection=useRef<NhkChatConnection|null>(null),sequence=useRef(0),dialog=useRef<HTMLDivElement>(null),closeButton=useRef<HTMLButtonElement>(null),entryButton=useRef<HTMLButtonElement>(null);
@@ -25,9 +27,9 @@ export default function NhkSpeakingCoach({article,preferredSentence=''}:Props){
   const shuffle=()=>{const next=nextChatTopic(pool,seen.current);seen.current=next.seen;setTopicId(next.topic.id);setAssistant('');setSupport(null);setShowHelp(false);setTurns(0);setHint('不喜欢这个，也可以继续换。');connection.current?.changeTopic(plan(next.topic.id));};
   const dismiss=()=>{session.current?.finish();connection.current?.dispose();connection.current=null;sequence.current++;setOpen(false);};
   const start=()=>{
-    if(Date.now()<retryUntil)return;session.current?.finish();connection.current?.dispose();session.current=new ChatExperienceSession(experience);shown.current.clear();setSupport(null);const seq=++sequence.current;setOpen(true);setPhase('connecting');setAssistant('');setError('');setBlocked(false);setShowHelp(false);setTurns(0);setHint('它先问一句，你接一点就好。');
+    if(Date.now()<retryUntil)return;session.current?.finish();connection.current?.dispose();session.current=new ChatExperienceSession(experience);shown.current.clear();setSupport(null);const seq=++sequence.current;setOpen(true);setPhase('connecting');setPace(0.8);setAssistant('');setError('');setBlocked(false);setShowHelp(false);setTurns(0);setHint('它先问一句，你接一点就好。');
     const current=()=>sequence.current===seq;
-    const next=new NhkChatConnection(plan(),{support:f=>{if(current())setSupport(f);},metric:e=>{if(current())session.current?.mark(e);},phase:p=>{if(current()){if(p==='done'||p==='error')session.current?.finish();setPhase(p);}},assistant:s=>{if(current())setAssistant(s);},hint:s=>{if(current())setHint(s);},blocked:v=>{if(current())setBlocked(v);},shuffle:()=>{if(current())shuffle();},heard:()=>{if(current()){setTurns(t=>t+1);setShowHelp(false);}},error:(reason,seconds)=>{if(current()){setError(chatError(reason,seconds));const delay=Math.max(0,Math.min(3600,seconds||0));setRetryUntil(Date.now()+delay*1000);setNow(Date.now());}}});
+    const next=new NhkChatConnection(plan(),{pace:v=>{if(current())setPace(v);},support:f=>{if(current())setSupport(f);},metric:e=>{if(current())session.current?.mark(e);},phase:p=>{if(current()){if(p==='done'||p==='error')session.current?.finish();setPhase(p);}},assistant:s=>{if(current())setAssistant(s);},hint:s=>{if(current())setHint(s);},blocked:v=>{if(current())setBlocked(v);},shuffle:()=>{if(current())shuffle();},heard:()=>{if(current()){setTurns(t=>t+1);setShowHelp(false);}},error:(reason,seconds)=>{if(current()){setError(chatError(reason,seconds));const delay=Math.max(0,Math.min(3600,seconds||0));setRetryUntil(Date.now()+delay*1000);setNow(Date.now());}}});
     connection.current=next;next.setSupportEnabled(supportVisible);void next.start();
   };
   useEffect(()=>()=>{session.current?.finish();sequence.current++;connection.current?.dispose();},[]);
@@ -38,8 +40,8 @@ export default function NhkSpeakingCoach({article,preferredSentence=''}:Props){
   const toggleSupport=()=>{const on=!supportVisible;setSupportVisible(on);connection.current?.setSupportEnabled(on);if(!on)session.current?.mark('hint_hidden');};
   const running=!['done','error'].includes(phase),connected=running&&!['connecting','renewing'].includes(phase);const retrySeconds=Math.max(0,Math.ceil((retryUntil-now)/1000));
   const status=phase==='connecting'?'正在接通，暂不传声':phase==='renewing'?'正在续接，话题保留':phase==='coach'?'先听一句，暂不收音':phase==='thinking'?'正在接住你的话':phase==='listening'?'我在听，慢慢说':'麦克风已关闭';
-  return <section className="nhk-speaking-entry nhk-chat-entry" aria-label="这篇新闻的轻松聊天" data-speaking-contract="nhk-chat-v2" data-turn-support="nhk-turn-support-v1">
-    <div className="nhk-speaking-entry-copy"><span className="nhk-speaking-eyebrow">只聊这篇，也可以聊到你的生活</span><h2>随机找个话头。</h2><p>不用准备答案。一个词也可以接下去。</p></div>
+  return <section className="nhk-speaking-entry nhk-chat-entry" aria-label="这篇新闻的轻松聊天" data-speaking-contract="nhk-chat-v2" data-turn-support="nhk-turn-support-v1" data-teacher="nhk-gentle-teacher-v1">
+    <div className="nhk-speaking-entry-copy"><span className="nhk-speaking-eyebrow">从新闻出发，顺着你的话聊</span><h2>随机找个话头。</h2><p>不用准备答案。一个词也可以接下去。</p></div>
     <div className="nhk-chat-preview"><span>{selected.titleZh}</span><strong lang="ja">{selected.questionJa}</strong><button className="nhk-chat-shuffle" onClick={shuffle} aria-label="换个话题"><Shuffle size={18}/>换个话题</button></div>
     <button ref={entryButton} className="nhk-speaking-start" onClick={start} disabled={!base.source.length||open}><Mic size={19}/>陪我说一句</button>
     <small className="nhk-speaking-consent">挑话题不需要开麦。点开始即同意将声音实时传给 OpenAI，声音由 AI 生成；App 不保存录音。</small>
@@ -59,6 +61,7 @@ export default function NhkSpeakingCoach({article,preferredSentence=''}:Props){
         <p className="nhk-speaking-hint" aria-live="polite">{hint}</p>
         {blocked&&<button className="nhk-speaking-start" onClick={()=>void connection.current?.unlockAudio()}><Volume2 size={19}/>播放声音</button>}
         <div className="nhk-chat-main-tools"><button onClick={shuffle}><Shuffle size={19}/>换个话题</button><button disabled={!connected} onClick={()=>{setShowHelp(true);connection.current?.help();}}><HandHelping size={19}/>帮我接</button></div>
+        <div className="nhk-teacher-tools"><button disabled={!connected} onClick={()=>connection.current?.slowDown()} aria-pressed={pace<0.8}><Volume2 size={16}/>{pace<0.8?'慢速重听':'慢一点'}</button><button disabled={!connected} onClick={()=>{setShowHelp(false);connection.current?.simplify();}}>再简单点</button></div>
         <div className="nhk-chat-minor-tools"><button disabled={!connected} onClick={()=>connection.current?.repeat()}><Volume2 size={16}/>再听一次</button><button disabled={phase!=='listening'&&phase!=='thinking'} onClick={()=>connection.current?.finishUtterance()}>我说完了</button></div>
         <button className="nhk-speaking-end" onClick={()=>connection.current?.end()}>今天到这里</button>
       </>}
