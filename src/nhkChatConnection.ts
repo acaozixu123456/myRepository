@@ -79,7 +79,7 @@ export class NhkChatConnection{
     if(this.renewDue||Date.now()>=this.renewAt||this.responses>=22){this.rotate(job);return;}
     this.pending=null;this.committed.clear();this.emit({type:'input_audio_buffer.clear'});if(this.responses)this.emit({type:'output_audio_buffer.clear'});
     this.requestSeq++;this.responseId='';this.responseDone=false;this.playbackDone=false;this.clipped=false;this.output='';this.activeJob=job;
-    this.hooks.assistant('');const key=`${this.serial}-${this.topicSerial}-${this.requestSeq}`;
+    this.hooks.assistant('');this.hooks.metric?.('request_sent');const key=`${this.serial}-${this.topicSerial}-${this.requestSeq}`;
     const context=this.teacherContext(job);
     if(['start','repeat','resume'].includes(job.kind)||(job.kind==='help'&&job.example)){
       if(job.kind==='help')context.previous={...(context.previous||fallbackTeacherTurn(context)),example:job.example!};
@@ -95,7 +95,7 @@ export class NhkChatConnection{
     if(this.closed||this.busyConnecting)return;
     if(this.configuredSpeed!==this.speed){this.emit({type:'session.update',session:{type:'realtime',audio:{output:{speed:this.speed}}}});this.configuredSpeed=this.speed;}
     this.plannedTeacher=turn;if(job.kind!=='help'&&job.kind!=='repeat')this.lastTeacher=turn;
-    this.responses++;this.generation=true;this.activeJob=job;this.hooks.phase('coach');this.hooks.metric?.('request_sent');
+    this.responses++;this.generation=true;this.activeJob=job;this.hooks.phase('coach');
     this.emit({type:'response.create',response:{conversation:'none',input:[],output_modalities:['audio'],max_output_tokens:384,instructions:teacherVoiceInstructions(turn),metadata:{purpose:CHAT_CONTRACT,seq:String(this.requestSeq),topic:String(this.topicSerial)}}});
     clearTimeout(this.watchdog);this.watchdog=setTimeout(()=>this.fail('response_timeout'),28000);
   }
