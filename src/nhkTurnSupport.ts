@@ -68,17 +68,19 @@ export class TurnSupportChannel {
     const isError=e.type==='error'&&(this.eventIds.has(String(e.error?.event_id||''))||this.ids.has(String(e.error?.response_id||''))||String(e.error?.event_id||'').startsWith('cancel-scaffold-'));
     if(!purpose&&!this.ids.has(responseId)&&!isError)return false;
     if(e.type==='response.created'){
+      if(!responseId){this.cancelPending();return true;}
       this.ids.add(responseId);if(this.ids.size>100)this.ids.delete(this.ids.values().next().value!);
-      if(this.pending?.key===metadata?.turnKey&&this.pending?.eventId===metadata?.requestId&&this.frame?.key===metadata?.turnKey)this.pending.responseId=responseId;
+      const pending=this.pending;
+      if(pending&&pending.key===metadata?.turnKey&&pending.eventId===metadata?.requestId&&this.frame?.key===metadata?.turnKey)pending.responseId=responseId;
       else this.hooks.send({type:'response.cancel',event_id:`cancel-scaffold-stale-${++this.serial}`,response_id:responseId});
     }
     if(e.type==='response.done'){
-      const p=this.pending;if(!p||metadata?.turnKey!==p.key||metadata?.requestId!==p.eventId||this.frame?.key!==p.key)return true;
+      const p=this.pending;const frame=this.frame;if(!p||!frame||metadata?.turnKey!==p.key||metadata?.requestId!==p.eventId||frame.key!==p.key)return true;
       if(p.responseId&&p.responseId!==responseId)return true;
       clearTimeout(p.timer);this.pending=null;
       if(e.response?.status!=='completed')return true;
       const text=(e.response.output||[]).flatMap((item:any)=>item.content||[]).filter((c:any)=>c.type==='output_text'||c.type==='text').map((c:any)=>typeof c.text==='string'?c.text:'').join('');
-      const parsed=parseTurnSupport(text,this.frame);if(parsed&&this.enabled){this.frame=parsed;this.hooks.update(parsed);}
+      const parsed=parseTurnSupport(text,frame);if(parsed&&this.enabled){this.frame=parsed;this.hooks.update(parsed);}
     }
     if(isError)this.cancelPending();
     return true;
