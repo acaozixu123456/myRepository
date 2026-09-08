@@ -1,0 +1,31 @@
+{
+  "reviewer": "ChatGPT Sol",
+  "decision": "PASS_CANDIDATE_FOR_PERSONAL_MOBILE_PILOT",
+  "productionAcceptance": "Required separately after promotion; not claimed by this pre-release review.",
+  "sourceCommit": "4803f6ba856a5c8f020c6f527879548ac81ebfb3",
+  "previousProduction": "b7b212df942fc17486ae5c941e71ed88861fe798",
+  "userFeedback": ["A reply acknowledging a ministry name led abruptly into price news", "Some replies were too long, difficult and fast; patient gradual teaching requested"],
+  "sourceGate": {"run":34239908679,"job":102107107026,"conclusion":"completed success","typecheck":"PASS","unitTests":275,"testFiles":30,"build":"PASS"},
+  "artifact": {"id":10061627338,"digest":"sha256:bf6599499b5f26536d8a9ffb664da7d4a4bcddd8c3d40d638806164e8eb7c8ca"},
+  "phoneReview": {"scope":"390x844 touch emulation with MOCK media/provider, not physical iPhone","screenshot":"chat/phone-gentle-teacher.png","reviewed":true,"mainControlsVisible":true,"localShuffleNoMicOrApi":true,"slowAndSimplifySamePeer":true,"fiveMockedAsrTurnsWithoutForcedEnd":true,"articleStoragePreserved":true},
+  "realVoice": {
+    "scope":"REAL_PRODUCTION_PROXY_REAL_WEBRTC_SYNTHETIC_JAPANESE_NOT_PHYSICAL_PHONE",
+    "ok":true,
+    "fixtureInput":"はい、知っています。",
+    "opening":"「農林水産省」という言葉、知っていましたか。",
+    "reply":"どこで聞きましたか。",
+    "simplifiedReply":"ニュースで、学校で、どちらですか。",
+    "noPricingPivotInNameTest":true,
+    "validatedModelTurns":3,
+    "acceptedSessionSpeeds":[0.8,0.7],
+    "slowReplayExactNormalizedText":true,
+    "topicSwitchSameConnection":true,
+    "renewalRetainsPaceAndMicrophone":true,
+    "endStopsMicrophoneTrack":true,
+    "errors":[]
+  },
+  "reviewedChangeScope": ["New short text-planning validator before voice; no whole-article context on ordinary replies", "Script-only audio with actual slower session settings", "Same-thread simplification and current example help/replay", "Plan-aligned optional hints and late-result cancellation", "Service-wait observation includes planning, with unchanged default-off local privacy", "No API route, edge, model, key, quota, database or existing study/TTS/game schema edits"],
+  "limitations": ["Mechanical checks are not a proof of full semantic continuity or Japanese proficiency level", "Real audio is generated, not universally preaudited; client stop is best effort", "Planning adds a bounded wait before free replies; no claim of lower perceived latency", "Human accents, hesitation, physical-iPhone playback and learning improvement remain unverified", "This pilot retains existing shared-account usage protections, not broad public-release authentication"],
+  "earlierFailedChecks": ["34238563249: strict compiler rejected two unused imports; fixed", "34239720996: exact helper assertions expected the old duplicate punctuation; assertions updated to the explicitly normalized full helper, not removed"],
+  "reviewDate":"2026-09-08"
+}
