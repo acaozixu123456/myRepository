@@ -1,3 +1,4 @@
+import {singleChoiceQuestion} from './nhkTeacherChoice';
 import {sameThreadRescue} from './nhkTeacherRescue';
 import type {ChatLine,ChatPlan} from './nhkChat';
 import {chatTopics} from './nhkChat';
@@ -32,6 +33,7 @@ export function teacherInstructions(c:TeacherContext,turnKey:string):string{
     'Prepare ONE tiny spoken turn for a patient Japanese teacher helping an ADULT learner converse. Output JSON only, not spoken audio. The goal is effortless expression, NOT covering an article or asking a sequence of quiz questions.',
     'CONTINUITY: respond to the exact CURRENT utterance and LEARNER meaning. Never jump to a new fact or subtopic after a yes/no answer. Knowing a ministry name is not permission to discuss prices, rice or policy. The article supplied the opening only. Do not steer back to news, recap it, or announce a transition. Stay with the current small thread unless the LEARNER explicitly changes it.',
     'PACE OF TEACHING: keep say to ONE short sentence, or a brief acknowledgement plus ONE small prompt, at most 48 Japanese characters total, at most 2 sentences, at most 1 question. Prefer everyday N4/N3-ish words; do not demand opinions, reasons, comparisons or abstract policy explanations. A correct short answer is real communication, not a signal to increase difficulty. Never require a full sentence or forced repetition.',
+    'For a binary choice use exactly one question, for example ニュースで、学校で、どちらですか。 NOT ニュースで？学校で？. Do not split alternatives into two question marks.',
     'Scaffold only the next small gap: an easy either/or prompt, an unfinished phrase, or a short example of what the learner is trying to say. Keep adult tone. Respond naturally to fragments and yes/no. When they are stuck, make THIS same question easier; do not ask an unrelated easier question. If they used Chinese, give ONE short Japanese expression for THEIR meaning and wait. Do not invent additional details.',
     'Do not ask on every turn. A short response can be enough. Do not repeatedly give advice, praise, directions or homework. Answer a learner question briefly. Do not fabricate personal experiences or assume learner preferences, family or work. No scoring, lecture, invented news facts, or medical/legal advice. Ordinary Japanese word meanings may be explained in one tiny phrase.',
     'EXAMPLES of continuity, not scripts: CURRENT="農林水産省という名前を知っていますか。", LEARNER="知っています" -> say="どこで聞きましたか。", words=["ニュースで","学校で"], starter="…で聞きました。". NEVER pivot from this answer to cheaper rice. CURRENT="どんな動画が好きですか。", LEARNER="猫" -> say="猫の動画ですね。", starter="特に…". CURRENT="どうして好きですか。", action=simplify -> say="かわいいから、ですか。", words=["かわいいから","おもしろいから"].',
@@ -47,7 +49,7 @@ export function validTeacherTurn(v:unknown,c:TeacherContext,turnKey?:string):Tea
   if(!v||typeof v!=='object')return null;const r=v as Record<string,unknown>;
   if(turnKey!==undefined&&r.turnKey!==turnKey)return null;
   if(!jp(r.say,TEACHER_MAX_CHARS)||!r.say.trim()||!Array.isArray(r.words)||r.words.length>2||!r.words.every(w=>jp(w,14))||!jp(r.starter,20)||!jp(r.example,32))return null;
-  const say=clean(r.say),parts=say.split(/[。！？!?]+/u).filter(s=>s.trim());
+  const say=singleChoiceQuestion(clean(r.say),r.words as string[]),parts=say.split(/[。！？!?]+/u).filter(s=>s.trim());
   if(parts.length>2||(say.match(/(?:ですか|ますか|ましたか|でしたか)[。?？]?|[?？]/gu)||[]).length>1)return null;
   if(/https?:|```|turnKey|JSON|\{\}|ニュースに戻|記事に戻|話を戻|では次|次の質問/u.test(say))return null;
   const current=teacherLastQuestion(c)+c.heard;
