@@ -1,0 +1,62 @@
+name: NHK gentle teacher mobile acceptance
+on:
+  push:
+    branches: [nhk-gentle-teacher-20260908]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Integrate reviewed changes only on the candidate branch
+        run: |
+          test '${{ github.ref_name }}' = nhk-gentle-teacher-20260908
+          node scripts/apply-gentle-teacher.mjs
+          node scripts/nhk-teacher-test-integration.mjs
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/nhkChatConnection.ts src/nhkTurnSupport.ts src/NhkSpeakingCoach.tsx src/nhkChatConnection.test.ts
+          if ! git diff --cached --quiet; then
+            git commit -m 'Integrate short checked teacher turns, topic continuity and slower speech'
+            git push origin HEAD:nhk-gentle-teacher-20260908
+          fi
+          mkdir -p artifacts/teacher
+          git rev-parse HEAD > artifacts/teacher/source-sha.txt
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck 2>&1 | tee artifacts/teacher/typecheck.log
+      - run: npm test 2>&1 | tee artifacts/teacher/tests.log
+      - run: npm run build 2>&1 | tee artifacts/teacher/build.log
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Phone-only UI and mock media lifecycle
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/teacher-vite.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/nhk-teacher-browser.mjs
+      - name: Real API with synthetic Japanese, continuity and accepted pace
+        run: node scripts/nhk-teacher-live.mjs
+      - name: Export reviewable source and evidence
+        if: always()
+        run: |
+          mkdir -p artifacts/teacher/source
+          cp src/nhkChatConnection.ts src/nhkGentleTeacher.ts src/NhkSpeakingCoach.tsx src/nhkTurnSupport.ts src/nhkChatConnection.test.ts artifacts/teacher/source/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-gentle-teacher
+          path: |
+            artifacts/teacher/
+            artifacts/chat/
+            artifacts/teacher-live/
+          if-no-files-found: warn

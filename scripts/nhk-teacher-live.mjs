@@ -1,0 +1,46 @@
+import {chromium} from 'playwright';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const production='https://nihongo-discovery-v2-20260831.vercel.app';
+const report={scope:'REAL_PRODUCTION_PROXY_REAL_WEBRTC_SYNTHETIC_JAPANESE_NOT_PHYSICAL_PHONE',replies:[],errors:[],starts:0,ok:false};
+const call=async body=>{const r=await fetch(`${production}/api/nhk-speech`,{method:'POST',headers:{Origin:production,'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(35000)});return{status:r.status,data:await r.json()};};
+await mkdir('artifacts/teacher-live',{recursive:true});
+const health=await call({action:'speaking_health'});assert.equal(health.status,200);assert.equal(health.data.modelReady,true);
+const tts=await call({action:'tts',text:'はい、知っています。'});assert.ok(tts.data.ok&&tts.data.url,'Synthetic test voice unavailable');
+const audio=Buffer.from(await fetch(tts.data.url).then(r=>r.arrayBuffer())).toString('base64');
+const browser=await chromium.launch({headless:true,args:['--autoplay-policy=no-user-gesture-required']});
+try{
+ const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));
+ await page.route('**/api/nhk-speech',async route=>{const b=route.request().postDataJSON();if(b.action==='speaking_start')report.starts++;const r=await call(b);if(!r.data.ok)report.errors.push(`${r.status}:${r.data.reason}`);await route.fulfill({status:r.status,json:r.data});});
+ await page.goto('http://127.0.0.1:4173');
+ await page.evaluate(async encoded=>{
+  const {buildChatPlan,chatTopics}=await import('/src/nhkChat.ts');const {NhkChatConnection}=await import('/src/nhkChatConnection.ts');
+  const ctx=window.__ctx=new AudioContext();await ctx.resume();const dest=window.__dest=ctx.createMediaStreamDestination();
+  const silence=ctx.createBufferSource();silence.buffer=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);silence.loop=true;silence.connect(dest);silence.start();
+  window.__sample=await ctx.decodeAudioData(Uint8Array.from(atob(encoded),c=>c.charCodeAt(0)).buffer);window.__track=dest.stream.getAudioTracks()[0];window.__micRequests=0;
+  Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{window.__micRequests++;return dest.stream;}}});
+  const sentence='農林水産省は米の値段について発表しました。';
+  const plan=window.__plan=buildChatPlan({id:'qa-teacher-continuity',title:'NHK米の価格',sentences:[sentence],coach:{recommendations:[{sentence,chunks:['農林水産省は'],vocabularyPoints:[{word:'農林水産省',reading:'のうりんすいさんしょう',meaningZh:'名称'}]}]}});plan.topicId=chatTopics(plan).find(t=>t.id.startsWith('word-')).id;
+  const state=window.__state={phase:'idle',assistant:'',heard:[],errors:[],frames:[],speeds:[],renewals:0};
+  const c=window.__chat=new NhkChatConnection(plan,{phase:p=>{state.phase=p;if(p==='renewing')state.renewals++;},assistant:s=>{state.assistant=s;},hint:()=>{},blocked:b=>{if(b)void c.unlockAudio();},error:e=>state.errors.push(e),shuffle:()=>{},heard:s=>state.heard.push(s),support:f=>{if(f)state.frames.push(f);}});
+  const original=c.event.bind(c);c.event=e=>{if(e.type==='session.updated'&&e.session?.audio?.output?.speed)state.speeds.push(e.session.audio.output.speed);original(e);};
+  await c.start();
+ },audio);
+ const wait=async()=>{await page.waitForFunction(()=>['listening','error','done'].includes(window.__state.phase),null,{timeout:35000});const r=await page.evaluate(()=>({phase:window.__state.phase,say:window.__state.assistant,planned:window.__chat.plannedTeacher,errors:window.__state.errors}));assert.equal(r.phase,'listening',JSON.stringify(r));assert.ok(r.say.length<=64,`Spoken output too long: ${r.say}`);assert.ok(r.planned.say.length<=48);report.replies.push({say:r.say,planned:r.planned});return r;};
+ const say=async()=>{const before=await page.evaluate(()=>window.__state.heard.length);await page.evaluate(async()=>{await window.__ctx.resume();const b=window.__ctx.createBufferSource();b.buffer=window.__sample;b.connect(window.__dest);b.start();});await page.waitForFunction(n=>window.__state.heard.length>n||window.__state.phase==='error',before,{timeout:25000});return wait();};
+ await wait();assert.ok(report.replies[0].say.includes('農林水産省'));
+ const firstAnswer=await say();assert.ok(!/値段|価格|値下げ|値上げ|備蓄米|政策/.test(firstAnswer.say),'Abrupt pivot to rice/pricing');assert.equal(firstAnswer.planned.origin,'model','First real answer must use validated model output, not only local fallback');report.nameContinuity=true;
+ await page.evaluate(()=>window.__chat.simplify());const simpler=await wait();assert.ok(!/値段|価格|政策/.test(simpler.say));report.sameThreadSimplification=true;
+ await page.evaluate(()=>window.__chat.slowDown());const slower=await wait();const normalize=s=>s.normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu,'');assert.equal(normalize(slower.say),normalize(simpler.say),'Slower replay changed the utterance');
+ const speeds=await page.evaluate(()=>window.__state.speeds);assert.ok(speeds.includes(.8)&&speeds.includes(.7),JSON.stringify(speeds));report.acceptedSpeeds=speeds;
+ await page.evaluate(()=>window.__chat.help());await wait();
+ const startsBefore=report.starts;
+ await page.evaluate(()=>{window.__plan={...window.__plan,topicId:'news-reading'};window.__chat.changeTopic(window.__plan);});await page.waitForTimeout(550);await wait();assert.equal(report.starts,startsBefore);report.shuffleSamePeer=true;
+ await page.waitForTimeout(18000);await say();
+ await page.waitForFunction(()=>window.__state.renewals>0||window.__state.phase==='error',null,{timeout:70000});await wait();
+ assert.equal(await page.evaluate(()=>window.__micRequests),1);assert.equal(await page.evaluate(()=>window.__chat.configuredSpeed),.7);report.renewalRetainsPaceAndMic=true;
+ report.heard=await page.evaluate(()=>window.__state.heard);report.errors.push(...await page.evaluate(()=>window.__state.errors));assert.deepEqual(report.errors,[]);
+ report.validatedModelTurns=report.replies.filter(r=>r.planned.origin==='model').length;assert.ok(report.validatedModelTurns>=2);
+ await page.evaluate(()=>window.__chat.end());assert.equal(await page.evaluate(()=>window.__track.readyState),'ended');report.closeStopsMic=true;
+ await page.evaluate(()=>window.__ctx.close());await context.close();report.ok=true;console.log(JSON.stringify(report));
+}finally{await writeFile('artifacts/teacher-live/result.json',JSON.stringify(report,null,2));await browser.close();}

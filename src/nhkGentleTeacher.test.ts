@@ -1,0 +1,32 @@
+import {describe,it,expect,vi,afterEach} from 'vitest';
+import {buildChatPlan,chatTopics} from './nhkChat';
+import {teacherInstructions,teacherControl,TeacherTurnChannel,parseTeacherTurn,fallbackTeacherTurn,teacherFrame,teacherVoiceInstructions,asksArticleFacts,TEACHER_SPEED,TEACHER_SLOW_SPEED,type TeacherContext} from './nhkGentleTeacher';
+const sentence='農林水産省は米の値段について発表しました。';
+const plan=buildChatPlan({id:'test',title:'NHK米の価格ニュース',sentences:[sentence],coach:{recommendations:[{sentence,chunks:['農林水産省は'],vocabularyPoints:[{word:'農林水産省',reading:'のうりんすいさんしょう',meaningZh:'名称'}]}]}});
+plan.topicId=chatTopics(plan).find(t=>t.id.startsWith('word-'))!.id;
+const ctx:TeacherContext={plan,kind:'answer',history:[{role:'assistant',text:'農林水産省を知っていますか。'},{role:'user',text:'はい、知っています。'}],heard:'はい、知っています。'};
+const response=(overrides:Record<string,unknown>={})=>JSON.stringify({turnKey:'one',say:'どこで聞きましたか。',words:['ニュースで','学校で'],starter:'…で聞きました。',example:'ニュースで聞きました。',...overrides});
+afterEach(()=>vi.useRealTimers());
+describe('patient teacher content policy',()=>{
+ it('keeps full article/title out of ordinary yes/no replies',()=>{const p=teacherInstructions(ctx,'one');expect(p).not.toContain(sentence);expect(p).not.toContain(plan.title);expect(p).toContain('農林水産省を知っていますか');expect(p).toContain('LEARNER');});
+ it('includes bounded source only on explicit learner request',()=>{expect(asksArticleFacts('この記事では何と言っていますか。')).toBe(true);expect(teacherInstructions({...ctx,heard:'这篇新闻说了什么？'},'one')).toContain(sentence);expect(asksArticleFacts('はい')).toBe(false);});
+ it.each(['慢一点','说慢点','太快了','もっとゆっくりお願いします','ゆっくり話してください'])('recognizes pace control without counting an answer: %s',s=>expect(teacherControl(s)).toBe('slow'));
+ it.each(['再简单点','太难了','難しいです','もっと簡単にしてください'])('recognizes one-step scaffolding request: %s',s=>expect(teacherControl(s)).toBe('simplify'));
+ it('validates a short connected follow-up',()=>expect(parseTeacherTurn(response(),ctx,'one')?.say).toBe('どこで聞きましたか。'));
+ it('handles single Japanese question mark without counting twice',()=>expect(parseTeacherTurn(response({say:'どこで聞きましたか？'}),ctx,'one')).not.toBeNull());
+ it.each(['米の値段が下がりました。','政府は値下げを進めています。','この政策をどう考えますか。','では次の質問です。'])('rejects abrupt transitions before audio: %s',say=>expect(parseTeacherTurn(response({say}),ctx,'one')).toBeNull());
+ it('does not forbid a price topic explicitly introduced by the learner',()=>expect(parseTeacherTurn(response({say:'値段が気になるんですね。'}),{...ctx,heard:'値段が気になります'},'one')).not.toBeNull());
+ it('rejects long, multi-question, abstract and invalid replies',()=>{for(const say of ['あ'.repeat(49),'好きですか。よく見ますか。','はい。いいですね。何ですか。','どのような影響があると思いますか。','<script>猫</script>'])expect(parseTeacherTurn(response({say}),ctx,'one')).toBeNull();});
+ it('checks hint bounds, turn identity and malformed JSON',()=>{expect(parseTeacherTurn(response({turnKey:'other'}),ctx,'one')).toBeNull();expect(parseTeacherTurn(response({example:'あ'.repeat(33)}),ctx,'one')).toBeNull();expect(parseTeacherTurn('garbage',ctx,'one')).toBeNull();});
+ it('fallback stays with knowing the name rather than summarizing the article',()=>{const t=fallbackTeacherTurn(ctx);expect(t.say).toBe('どこで聞きましたか。');expect(t.words).toContain('ニュースで');});
+ it('help models one short option, without a new topic',()=>{const t=fallbackTeacherTurn({...ctx,kind:'help',previous:{say:'どこで聞きましたか。',words:[],starter:'',example:'ニュースで聞きました。',origin:'model'}});expect(t.say).toContain('ニュースで聞きました');expect(t.say.length).toBeLessThanOrEqual(48);});
+ it('voice contains only checked text, not news/history',()=>{const t=parseTeacherTurn(response(),ctx,'one')!;const p=teacherVoiceInstructions(t);expect(p).toContain(t.say);expect(p).not.toContain(sentence);expect(p).not.toContain(plan.title);expect(teacherFrame('one',t,t.say)?.words).toContain('学校で');expect(teacherFrame('one',t,'値段はどうですか。')).toBeNull();});
+ it('has actual speed controls below the old 0.93',()=>{expect(TEACHER_SPEED).toBe(.8);expect(TEACHER_SLOW_SPEED).toBe(.7);});
+});
+describe('teacher draft request isolation',()=>{
+ it('uses text-only detached draft and completes once',()=>{vi.useFakeTimers();const send=vi.fn(),done=vi.fn(),c=new TeacherTurnChannel(send);c.begin('one',ctx,done);const request=send.mock.calls[0][0];expect(request.response.output_modalities).toEqual(['text']);expect(request.response.input).toEqual([]);const meta=request.response.metadata;const event={type:'response.done',response:{id:'p1',metadata:meta,status:'completed',output:[{content:[{type:'output_text',text:response()}]}]}};c.handle(event);c.handle(event);expect(done).toHaveBeenCalledTimes(1);c.reset();});
+ it('late completion from old topic never produces voice',()=>{vi.useFakeTimers();const send=vi.fn(),done=vi.fn(),c=new TeacherTurnChannel(send);c.begin('one',ctx,done);const m=send.mock.calls[0][0].response.metadata;c.cancel();c.begin('two',ctx,done);c.handle({type:'response.done',response:{id:'old',metadata:m,status:'completed',output:[{content:[{type:'output_text',text:response()}]}]}});expect(done).not.toHaveBeenCalled();c.reset();});
+ it('timeout uses same-thread fallback, not another API request',()=>{vi.useFakeTimers();const send=vi.fn(),done=vi.fn(),c=new TeacherTurnChannel(send);c.begin('one',ctx,done);vi.advanceTimersByTime(7100);expect(done.mock.calls[0][0].say).toBe('どこで聞きましたか。');expect(send).toHaveBeenCalledTimes(1);c.reset();});
+ it('cancelled old error does not complete newer request',()=>{vi.useFakeTimers();const send=vi.fn(),done=vi.fn(),c=new TeacherTurnChannel(send);c.begin('one',ctx,done);const id=send.mock.calls[0][0].event_id;c.cancel();c.begin('two',ctx,done);c.handle({type:'error',error:{event_id:id,code:'server_error'}});expect(done).not.toHaveBeenCalled();c.reset();});
+ it('invalid long draft is never passed through to audio',()=>{vi.useFakeTimers();const send=vi.fn(),done=vi.fn(),c=new TeacherTurnChannel(send);c.begin('one',ctx,done);c.handle({type:'response.done',response:{id:'p',metadata:send.mock.calls[0][0].response.metadata,status:'completed',output:[{content:[{type:'output_text',text:response({say:'あ'.repeat(100)})}]}]}});expect(done.mock.calls[0][0].origin).toBe('local');expect(done.mock.calls[0][0].say.length).toBeLessThan(48);});
+});
