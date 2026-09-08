@@ -19,18 +19,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Integrate reviewed changes only on the candidate branch
+      - name: Apply the bounded supervisor quality fix on candidate only
         run: |
           test '${{ github.ref_name }}' = nhk-gentle-teacher-20260908
-          node scripts/apply-gentle-teacher.mjs
-          node scripts/nhk-teacher-test-integration.mjs
-          node -e "const fs=require('fs');const p='src/nhkChatConnection.ts';let s=fs.readFileSync(p,'utf8');s=s.replace('teacherFrame,teacherLastQuestion,','teacherFrame,').replace('CHAT_CONTRACT, chatInstructions,','CHAT_CONTRACT,').replace('max_output_tokens:256','max_output_tokens:384');fs.writeFileSync(p,s);"
-          node scripts/refine-gentle-teacher.mjs
+          node scripts/teacher-rescue-review.mjs
           git config user.name 'Sol supervisor'
           git config user.email '331004814@qq.com'
-          git add src/nhkChatConnection.ts src/nhkTurnSupport.ts src/NhkSpeakingCoach.tsx src/nhkChatConnection.test.ts src/nhkGentleTeacher.ts
+          git add src/nhkGentleTeacher.ts scripts/nhk-teacher-live.mjs
           if ! git diff --cached --quiet; then
-            git commit -m 'Apply final teacher review for current hints and honest service timing'
+            git commit -m 'Keep concrete same-question cues when simplification draft fails'
             git push origin HEAD:nhk-gentle-teacher-20260908
           fi
           mkdir -p artifacts/teacher
@@ -46,13 +43,13 @@ jobs:
           npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/teacher-vite.log 2>&1 &
           for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
           node scripts/nhk-teacher-browser.mjs
-      - name: Real API with synthetic Japanese, continuity and accepted pace
+      - name: Real API same-question rescue and actual slower voice
         run: node scripts/nhk-teacher-live.mjs
       - name: Export reviewable source and evidence
         if: always()
         run: |
           mkdir -p artifacts/teacher/source
-          cp src/nhkChatConnection.ts src/nhkGentleTeacher.ts src/NhkSpeakingCoach.tsx src/nhkTurnSupport.ts src/nhkChatConnection.test.ts artifacts/teacher/source/
+          cp src/nhkChatConnection.ts src/nhkGentleTeacher.ts src/nhkTeacherRescue.ts src/NhkSpeakingCoach.tsx src/nhkTurnSupport.ts src/nhkChatConnection.test.ts artifacts/teacher/source/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
