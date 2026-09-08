@@ -1,3 +1,4 @@
+import {sameThreadRescue} from './nhkTeacherRescue';
 import type {ChatLine,ChatPlan} from './nhkChat';
 import {chatTopics} from './nhkChat';
 import {turnSupportJson} from './nhkTurnSupportFormat';
@@ -59,12 +60,11 @@ export function parseTeacherTurn(text:string,c:TeacherContext,turnKey:string):Te
   try{return validTeacherTurn(turnSupportJson(text),c,turnKey);}catch{return null;}
 }
 export function fallbackTeacherTurn(c:TeacherContext):TeacherTurn{
-  const previous=teacherLastQuestion(c);let say='一言で大丈夫です。';let words:string[]=[],starter='',example='';
+  const previous=teacherLastQuestion(c);if(c.kind==='simplify')return sameThreadRescue(previous,c.previous);let say='一言で大丈夫です。';let words:string[]=[],starter='',example='';
   if(c.kind==='repeat'||c.kind==='resume'||c.kind==='start')say=previous;
   else if(c.kind==='help'&&c.previous?.example)say=`例えば、「${c.previous.example.replace(/[。.!！?？]+$/u,'')}」。`;
   else if(/(?:知って|ご存じ|聞いたこと)/u.test(previous)&&/^(?:はい|ええ|知って|しって|うん|知道|听过)/u.test(c.heard.trim())){say='どこで聞きましたか。';words=['ニュースで','学校で'];starter='…で聞きました。';example='ニュースで聞きました。';}
   else if(/(?:知って|ご存じ|聞いたこと)/u.test(previous)){say='名前だけでも、大丈夫です。';words=['初めてです','名前だけ…'];example='名前だけ知っています。';}
-  else if(c.kind==='simplify'){say='一言でも大丈夫です。';const f=localTurnSupport('fallback',previous);words=f.words.slice(0,2);starter=f.starter;}
   else {say='そうなんですね。';const f=localTurnSupport('fallback',previous);words=f.words.slice(0,2);starter=f.starter;}
   if(say.length>48)say='一言で大丈夫です。';
   return {say,words,starter,example,origin:'local'};

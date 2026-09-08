@@ -30,7 +30,7 @@ try{
  const say=async()=>{const before=await page.evaluate(()=>window.__state.heard.length);await page.evaluate(async()=>{await window.__ctx.resume();const b=window.__ctx.createBufferSource();b.buffer=window.__sample;b.connect(window.__dest);b.start();});await page.waitForFunction(n=>window.__state.heard.length>n||window.__state.phase==='error',before,{timeout:25000});return wait();};
  await wait();assert.ok(report.replies[0].say.includes('農林水産省'));
  const firstAnswer=await say();assert.ok(!/値段|価格|値下げ|値上げ|備蓄米|政策/.test(firstAnswer.say),'Abrupt pivot to rice/pricing');assert.equal(firstAnswer.planned.origin,'model','First real answer must use validated model output, not only local fallback');report.nameContinuity=true;
- await page.evaluate(()=>window.__chat.simplify());const simpler=await wait();assert.ok(!/値段|価格|政策/.test(simpler.say));report.sameThreadSimplification=true;
+ await page.evaluate(()=>window.__chat.simplify());const simpler=await wait();assert.ok(!/値段|価格|政策/.test(simpler.say));assert.ok(/ニュース|学校|聞き/.test(simpler.say),'simplification must provide a same-question foothold, not generic reassurance');assert.ok(simpler.planned.words.length||simpler.planned.example,'Simplification lost usable cues');report.sameThreadSimplification=true;
  await page.evaluate(()=>window.__chat.slowDown());const slower=await wait();const normalize=s=>s.normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu,'');assert.equal(normalize(slower.say),normalize(simpler.say),'Slower replay changed the utterance');
  const speeds=await page.evaluate(()=>window.__state.speeds);assert.ok(speeds.includes(.8)&&speeds.includes(.7),JSON.stringify(speeds));report.acceptedSpeeds=speeds;
  await page.evaluate(()=>window.__chat.help());await wait();
