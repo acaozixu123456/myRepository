@@ -21,9 +21,9 @@ try{
   Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{window.__micRequests++;return dest.stream;}}});
   const sentence='農林水産省は米の値段について発表しました。';
   const plan=window.__plan=buildChatPlan({id:'qa-teacher-continuity',title:'NHK米の価格',sentences:[sentence],coach:{recommendations:[{sentence,chunks:['農林水産省は'],vocabularyPoints:[{word:'農林水産省',reading:'のうりんすいさんしょう',meaningZh:'名称'}]}]}});plan.topicId=chatTopics(plan).find(t=>t.id.startsWith('word-')).id;
-  const state=window.__state={phase:'idle',assistant:'',heard:[],errors:[],frames:[],speeds:[],renewals:0};
+  const state=window.__state={phase:'idle',assistant:'',heard:[],errors:[],frames:[],speeds:[],renewals:0,drafts:[]};
   const c=window.__chat=new NhkChatConnection(plan,{phase:p=>{state.phase=p;if(p==='renewing')state.renewals++;},assistant:s=>{state.assistant=s;},hint:()=>{},blocked:b=>{if(b)void c.unlockAudio();},error:e=>state.errors.push(e),shuffle:()=>{},heard:s=>state.heard.push(s),support:f=>{if(f)state.frames.push(f);}});
-  const original=c.event.bind(c);c.event=e=>{if(e.type==='session.updated'&&e.session?.audio?.output?.speed)state.speeds.push(e.session.audio.output.speed);original(e);};
+  const original=c.event.bind(c);c.event=e=>{if(e.type==='response.done'&&e.response?.metadata?.purpose==='nhk-gentle-teacher-v1')state.drafts.push({status:e.response.status,details:e.response.status_details,metadata:e.response.metadata,output:e.response.output});if(e.type==='session.updated'&&e.session?.audio?.output?.speed)state.speeds.push(e.session.audio.output.speed);original(e);};
   await c.start();
  },audio);
  const wait=async()=>{await page.waitForFunction(()=>['listening','error','done'].includes(window.__state.phase),null,{timeout:35000});const r=await page.evaluate(()=>({phase:window.__state.phase,say:window.__state.assistant,planned:window.__chat.plannedTeacher,errors:window.__state.errors}));assert.equal(r.phase,'listening',JSON.stringify(r));assert.ok(r.say.length<=64,`Spoken output too long: ${r.say}`);assert.ok(r.planned.say.length<=48);report.replies.push({say:r.say,planned:r.planned});return r;};
@@ -40,7 +40,7 @@ try{
  await page.waitForFunction(()=>window.__state.renewals>0||window.__state.phase==='error',null,{timeout:70000});await wait();
  assert.equal(await page.evaluate(()=>window.__micRequests),1);assert.equal(await page.evaluate(()=>window.__chat.configuredSpeed),.7);report.renewalRetainsPaceAndMic=true;
  report.heard=await page.evaluate(()=>window.__state.heard);report.errors.push(...await page.evaluate(()=>window.__state.errors));assert.deepEqual(report.errors,[]);
- report.validatedModelTurns=report.replies.filter(r=>r.planned.origin==='model').length;assert.ok(report.validatedModelTurns>=2);
+ report.plannerDiagnostics=await page.evaluate(()=>window.__state.drafts);report.validatedModelTurns=report.replies.filter(r=>r.planned.origin==='model').length;assert.ok(report.validatedModelTurns>=2);
  await page.evaluate(()=>window.__chat.end());assert.equal(await page.evaluate(()=>window.__track.readyState),'ended');report.closeStopsMic=true;
  await page.evaluate(()=>window.__ctx.close());await context.close();report.ok=true;console.log(JSON.stringify(report));
 }finally{await writeFile('artifacts/teacher-live/result.json',JSON.stringify(report,null,2));await browser.close();}
