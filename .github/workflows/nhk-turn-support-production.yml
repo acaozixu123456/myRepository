@@ -2,7 +2,7 @@ name: NHK turn support production mobile gate
 on:
   push:
     branches: [nihongo-vercel]
-    paths: [.github/workflows/nhk-turn-support-production.yml, scripts/nhk-turn-support-production.mjs]
+    paths: [.github/workflows/nhk-turn-support-production.yml, scripts/nhk-turn-support-production.mjs, 'src/nhkTurnSupport*.ts']
   workflow_dispatch:
 permissions:
   contents: read
