@@ -1,3 +1,4 @@
+import {turnSupportJson} from './nhkTurnSupportFormat';
 /** Text-only scaffolds, detached from voice. Never controls microphone or lesson progress. */
 export const TURN_SUPPORT_VERSION = 'nhk-turn-support-v1';
 export type TurnSupportFrame = {key:string; question:string; words:string[]; starter:string; example:string; origin:'local'|'model'};
@@ -19,12 +20,7 @@ export function localTurnSupport(key:string,question:string):TurnSupportFrame {
 export function parseTurnSupport(text:string,frame:TurnSupportFrame):TurnSupportFrame|null {
   if(text.length>2200)return null;
   try {
-    // Realtime sometimes encloses JSON in one pair of parentheses. Remove only this
-    // exact outer wrapper; never evaluate code or extract an object from surrounding prose.
-    let candidate=text.trim().replace(/^```(?:json)?\s*|\s*```$/g,'').trim();
-    if(candidate.startsWith('(')&&candidate.endsWith(')'))candidate=candidate.slice(1,-1).trim();
-    if(!candidate.startsWith('{')||!candidate.endsWith('}'))return null;
-    const raw=JSON.parse(candidate);
+    const raw=turnSupportJson(text) as any;
     if(!raw||raw.turnKey!==frame.key||!Array.isArray(raw.words)||raw.words.length>2)return null;
     const valid=(v:unknown,max:number)=>typeof v==='string'&&v.length<=max&&!/[<>\x00-\x1f]/u.test(v)&&(!v||/[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(v));
     if(!raw.words.every((v:unknown)=>valid(v,16))||!valid(raw.starter,24)||!valid(raw.example,48))return null;
