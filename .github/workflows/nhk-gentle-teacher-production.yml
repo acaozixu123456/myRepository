@@ -1,0 +1,41 @@
+name: NHK gentle teacher production mobile gate
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths: ['.github/workflows/nhk-gentle-teacher-production.yml','scripts/nhk-teacher-production.mjs','src/nhkGentleTeacher*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: mkdir -p artifacts/teacher-production && npm ci --no-audit --no-fund
+      - run: npm run typecheck && npm test 2>&1 | tee artifacts/teacher-production/tests.log
+      - run: npm run build
+      - name: Verify exact promoted JS CSS and the existing API route
+        run: node scripts/nhk-teacher-production.mjs
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Real production API synthetic speech and phone-sized client
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/teacher-production.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/nhk-teacher-live.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nhk-gentle-teacher-production
+          path: |
+            artifacts/teacher-production/
+            artifacts/turn-support-production/
+            artifacts/teacher-live/
+          if-no-files-found: warn

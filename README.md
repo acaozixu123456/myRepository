@@ -2,44 +2,45 @@
 
 ## Current user priority — 2026-09-08
 
-**Mobile only.** Do not add desktop layouts, desktop screenshots, mouse/keyboard refinements or desktop acceptance work unless explicitly reauthorized. Do not waste time deleting harmless existing responsive styles. The exploration prototype is retained, not expanded or tested on desktop for this NHK speaking task.
+**Mobile only.** Do not add desktop layouts, screenshots, mouse/keyboard refinements or desktop acceptance work unless explicitly reauthorized. Preserve harmless existing responsive styles and the historical exploration prototype without expanding it.
 
-The active goal is minimal effort to speak through **random article-related simple chat plus current-turn support**, not a fixed three-turn drill. Preview an easy topic, tap **换个话题** as often as desired, then **陪我说一句**. Local topic browsing does not call an API or open the microphone. In-call changes reuse the current connection. Respond to the learner's actual words, accept short/partial/Chinese attempts, and never end merely because three turns elapsed. Keep the topic connected to the current article and separate personal or hypothetical discussion from news facts.
+The goal is minimal effort to start AND continue speaking Japanese. Keep random local topic browsing, voice chat and optional per-turn support. The news provides a starting point, **not a compulsory destination**. Ordinary replies should follow the current utterance and learner meaning, not abruptly pivot from knowing an institution name to prices/policy. An explicit learner question about article contents may use its source. Do not invent missing news facts.
 
-## Current-turn support
+## Patient teacher and actual slower voice
 
-Each completed assistant utterance can show up to two short keyword options and one unfinished Japanese starter. These are optional speaking aids, not buttons the learner must choose, an answer key or proof of mastery. **帮我接** offers an optional short example for the actual current question. **收起提示 / 显示提示** controls the lightweight scaffold without reconnecting. The example is not shown as a default full answer sheet and must not become a saved learner preference.
+`nhkGentleTeacher.ts` prepares detached, bounded TEXT turns for free replies and simplification. It includes the current utterance and bounded recent conversation, but omits article title/body unless the learner explicitly requests article facts. A checked turn includes one short sentence or acknowledgement plus a tiny prompt: at most 48 Japanese characters, two sentences and one question. Reject malformed/stale, overlong or selected unsolicited pricing/policy/abstract intrusions before generating audio. The checks are mechanical, not a semantic or JLPT-level guarantee. Timeouts and invalid drafts use a short local fallback.
 
-Audio and hints are separate: the voice lifecycle never waits for a hint request. Detached realtime TEXT responses prepare bounded hint JSON; purpose, turn key and per-request identity gate every completion. Late hints are discarded on topic change, new utterance, learner speech, hiding or closing. Known hint failures must not kill the microphone. Plain/fenced/blockquote/single-parenthesis JSON presentation is normalized without evaluation; all field/type/length and turn checks remain mandatory. No provider schema-guarantee is claimed.
+Audio receives only the accepted short text to read, not the news/history. Actual session output speed is 0.80 by default; **慢一点** sets 0.70 and replays the current utterance. Pace survives explicit topic changes and transport renewal. **再简单点** simplifies the current prompt, not the subject. Spoken slow/simplify requests are also supported and do not count as learner answers. Unexpected verbose streamed audio has a best-effort client stop (64 transcript characters / 16 seconds), not an unlimited monologue. These are not guarantees that every generated audio response is exact or ideal.
 
-Conversation should not become an interview. After consecutive questions prefer a brief relevant reaction; answer the learner's own simple questions directly. At most one question is allowed, but a question is not mandatory. Keep adult tone and preserve intended meaning; do not fabricate AI personal experiences, inflate difficulty or score the learner. These are model instructions, not a guarantee that every generated utterance obeys.
+Use adult tone, accept fragments, yes/no and Chinese support, and help with one small gap at a time. No forced full sentence, repetition, grading, automatic difficulty escalation or fixed three-turn termination. A question is optional; answer learner questions and avoid repeated advice/interrogation. Ordinary word explanations can be short and direct; do not fabricate offline personal experiences.
 
-**体验记录 is optional, default OFF, local only.** Explicit opt-in stores only whitelisted UX counts and coarse service-wait estimates under `nihongo-chat-experience-v1`, at most 30 records within the rolling 14-day UTC-date window, pruned on use/reopen/export. There is no upload, recording, transcript, article identity or account identifier. Turning it off or clearing removes only this module's observations, never the NHK library. Corrupt/future records are preserved until explicit clearing. Occasional effort feedback is skippable. Service timing is not acoustic onset, learner thinking speed, pronunciation or learning evidence. See `docs/product/NHK_TURN_SUPPORT_20260908.md` and the acceptance record.
+## Current-turn support and latency
 
-The finite article-matched topic pool is exhausted before repeating. Longer chats renew bounded voice transport with recent in-memory context; a brief pause may occur. Sixty seconds without speech pauses the microphone. Ending, leaving or errors must close tracks. No new chat recordings, transcripts or proficiency scores are persisted.
+Show at most two optional words/chunks and one unfinished starter; **帮我接** reveals/models one possible answer. These are suggestions, not answer keys or saved preferences. **收起提示 / 显示提示** does not reconnect. A validated teacher plan supplies its matching scaffold when the spoken transcript matches. Otherwise the existing detached optional hint path handles the actual utterance without loading the whole article. Turn/request identity rejects stale results on user speech, next turn, topic switch, hide and exit.
 
-The overly strict two-starts-per-two-minutes limiter remains removed. Existing abnormal-use guards and differentiated App/OpenAI failures remain unchanged. Hints add paid text generation; collapsing them suppresses new hint calls. Never claim unlimited/free service or zero provider retention. Individual account authentication is still required before broad public release.
+Free replies now require a short planning stage before voice. Do not claim this adds zero delay or makes responses faster. Planning and audio waiting are included in optional service-event timing; this is not the learner's thinking time. Direct opening, repeat/resume and cached help skip planning. Hiding suggestions suppresses separate hint calls but does not disable the checked teacher plan required for a reply.
 
-Sol develops and reviews directly. Do not route this app through Windows Cursor/Codex, legacy Luna or AppDeploy. The September 7 three-turn pilot is historical, not the current specification.
+## Privacy and preservation
 
-## Entrypoints and acceptance
+**体验记录** stays optional, default OFF, local only. No upload, raw audio, transcripts, article/account identifiers or proficiency scores. Only whitelisted counts, coarse service wait and skippable feedback under `nihongo-chat-experience-v1`, at most 30 records in a rolling 14-day UTC-date window, pruned on use/reopen/export. Disabling/clearing only affects these observations. Preserve corrupt/future records until explicit clearing.
 
-- `/`: NHK study, random light chat and current-turn support.
-- `/explore.html`: historical Yanaka street prototype, retained.
-- `npm ci && npm run dev`: local development.
-- `npm run typecheck && npm test && npm run build`: platform-independent gates.
-- `scripts/nhk-turn-support-browser.mjs`: phone-only UI with explicitly mocked media/provider.
-- `scripts/nhk-turn-support-live.mjs`: actual API and synthetic, not human, speech; apply `scripts/nhk-chat-live-diagnostics.mjs` first as CI does.
-- `scripts/nhk-turn-support-production.mjs`: exact promoted asset hashes and existing voice proxy.
+Do not clear localStorage or rewrite existing NHK articles, favorites, history, sessions, backup/restore, quiet study or game saves. Topic preview never opens a microphone or calls an API. In-call shuffle reuses the current peer, coalesces taps and clears previous-thread context. Voice uses existing 110-second transport leases with renewal; a pause is possible. Sixty seconds idle closes the microphone. End/dismiss/background/error closes tracks. Microphone sending requires visible explicit consent.
 
-Deployment success is not final acceptance. Review source, phone screenshots, unit and actual API evidence separately. Do not claim physical-iPhone compatibility, perceived voice quality, latency improvement or learning benefit from mock/synthetic checks. Historical desktop game QA is not a requirement for this task.
+No new model, key, database, API proxy, edge, quota or TTS/review replacement. Keep `gpt-realtime-2.1`, existing server credentials and usage protections. App guards and provider rate/credit failures remain distinct. The old two-starts-in-two-minutes restriction stays removed. Never claim free/unlimited usage or zero provider retention. Individual account auth remains required before broad public release.
 
-## Data safety
+Sol develops/reviews directly through connected GitHub and existing services. No Windows Codex/Cursor, legacy Luna or AppDeploy for this app unless explicitly requested.
 
-Do not clear localStorage or rewrite existing NHK article, knowledge, learning-history, session, backup/restore or quiet-study schemas. Game data remains under `nihongo.explore.yanaka.v1`; corrupt/future-schema saves are preserved. Game and NHK navigation shells remain separate.
+## Acceptance and evidence
 
-No database migrations, key changes or server speech replacements are part of this iteration. The existing `gpt-realtime-2.1`, JWT-protected edge, Vercel speech proxy, TTS/review, transport lifetime and usage guards remain in place. Long-lived OpenAI and Supabase service-role keys stay server-side and out of GitHub, frontend code, URLs and chat. Microphone transmission requires visible explicit consent.
+- `/`: NHK study and mobile guided light chat.
+- `/explore.html`: historical Yanaka prototype, retained.
+- `npm run typecheck && npm test && npm run build`: platform-independent source gates.
+- `scripts/nhk-teacher-browser.mjs`: phone-only UI with explicitly mocked media/provider.
+- `scripts/nhk-teacher-live.mjs`: real production API/WebRTC with synthetic Japanese input, not human recordings.
+- `scripts/nhk-teacher-production.mjs`: exact promoted assets and existing API checks.
 
-## Historical exploration snapshot — 2026-09-06
+Reproduce institution-name acknowledgement without a pricing jump, same-thread simplification, accepted API pace settings, short-output checks, stale cancellation, current help, random shuffle, renewal and mic cleanup. Deployment success alone is not acceptance. Inspect screenshots and actual response evidence. Mock/synthetic tests do not prove physical-iPhone behavior, natural pauses, perceived speed, semantic perfection or learning effects. See dated product/QA records.
 
-OpenStreetMap supplies the approximately 167-meter Yanaka Ginza centerline (ways 737745076 and 671851311). Attribution remains under `public/explore/`. Width, ground, buildings, shops, people and interiors are fictional adaptations. No PLATEAU or Google Street View integration. The isolated street, shop, bento purchase, hints, bookmarks, inventory and saves are retained without expanding scope. See `docs/product/EXPLORATION_SLICE_20260906.md`; historical game goals never override mobile-only speaking priorities.
+## Historical game (not the current task)
+
+OpenStreetMap supplies a roughly 167m Yanaka Ginza centerline; attribution remains in `public/explore/`. Buildings, width, ground, shops and characters are adaptations. No PLATEAU or Google Street View integration. Existing movement/shop/bento/hints/bookmarks/inventory/save slice and `nihongo.explore.yanaka.v1` data are retained. Historical desktop/game goals never override mobile speaking work.

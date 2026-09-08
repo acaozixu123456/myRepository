@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+const replace=(s,a,b)=>{if(s.includes(b))return s;if(s.split(a).length!==2)throw new Error(`Review anchor missing: ${a.slice(0,80)}`);return s.replace(a,b);};
+let path='src/nhkChatConnection.ts';let s=readFileSync(path,'utf8');
+s=replace(s,"this.hooks.assistant('');const key=", "this.hooks.assistant('');this.hooks.metric?.('request_sent');const key=");
+s=s.replace("this.hooks.phase('coach');this.hooks.metric?.('request_sent');", "this.hooks.phase('coach');");
+writeFileSync(path,s);
+path='src/nhkGentleTeacher.ts';s=readFileSync(path,'utf8');
+s=replace(s,"const current=teacherLastQuestion(c)+c.heard;", "const current=teacherLastQuestion(c)+c.heard;\n  const proposed=[say,...r.words,r.starter,r.example].join(' ');");
+s=s.replaceAll('if(say.includes(w)&&!current.includes(w))','if(proposed.includes(w)&&!current.includes(w))');
+s=s.replace('例えば、「${c.previous.example}」。','例えば、「${c.previous.example.replace(/[。.!！?？]+$/u,\'\')}」。');
+s=s.replace('No scoring, lecture, facts not in the supplied reference, or medical/legal advice.', 'No scoring, lecture, invented news facts, or medical/legal advice. Ordinary Japanese word meanings may be explained in one tiny phrase.');
+s=s.replace('No external facts should be added. When no reference is supplied, do not invent news facts.', 'Do not invent external news details. Ordinary Japanese vocabulary explanations are allowed. When no reference is supplied, do not invent news facts.');
+writeFileSync(path,s);
+path='src/nhkChatConnection.test.ts';s=readFileSync(path,'utf8');
+if(!s.includes('includes planning in service wait'))s+=`\ndescribe('teacher service timing',()=>{it('includes planning in service wait without recording learner reaction speed',async()=>{hooks.metric=vi.fn();await c.start();reply();hooks.metric.mockClear();speak('wait','猫');expect(hooks.metric.mock.calls.filter((a:any)=>a[0]==='request_sent')).toHaveLength(1);finishTeacherDraft();expect(hooks.metric.mock.calls.filter((a:any)=>a[0]==='request_sent')).toHaveLength(1);reply();});});\n`;
+writeFileSync(path,s);
+console.log('Reviewed: include planning wait; guard hint-topic intrusion; normalize helper punctuation.');

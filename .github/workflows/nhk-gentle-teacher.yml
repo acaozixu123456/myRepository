@@ -25,11 +25,12 @@ jobs:
           node scripts/apply-gentle-teacher.mjs
           node scripts/nhk-teacher-test-integration.mjs
           node -e "const fs=require('fs');const p='src/nhkChatConnection.ts';let s=fs.readFileSync(p,'utf8');s=s.replace('teacherFrame,teacherLastQuestion,','teacherFrame,').replace('CHAT_CONTRACT, chatInstructions,','CHAT_CONTRACT,').replace('max_output_tokens:256','max_output_tokens:384');fs.writeFileSync(p,s);"
+          node scripts/refine-gentle-teacher.mjs
           git config user.name 'Sol supervisor'
           git config user.email '331004814@qq.com'
-          git add src/nhkChatConnection.ts src/nhkTurnSupport.ts src/NhkSpeakingCoach.tsx src/nhkChatConnection.test.ts
+          git add src/nhkChatConnection.ts src/nhkTurnSupport.ts src/NhkSpeakingCoach.tsx src/nhkChatConnection.test.ts src/nhkGentleTeacher.ts
           if ! git diff --cached --quiet; then
-            git commit -m 'Finalize checked teacher integration and retain full short-clause audio budget'
+            git commit -m 'Apply final teacher review for current hints and honest service timing'
             git push origin HEAD:nhk-gentle-teacher-20260908
           fi
           mkdir -p artifacts/teacher
