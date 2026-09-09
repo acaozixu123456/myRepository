@@ -1,41 +1,43 @@
 # ひとこと — Japanese conversation companion / independent v3 preview
 
-## Current scope — 2026-09-09
+## Scope and current acceptance — 2026-09-09
 
-Mobile only. Sol develops and reviews directly using the connected repository and existing services. No Windows Codex/Cursor, Luna, AppDeploy, desktop UI or historical game work. This branch is an independent candidate; PR #5 remains a draft. Do not replace the production NHK app merely because a deployment or transport test is green.
+Mobile only. Sol develops/reviews directly through connected GitHub and existing services. No Windows Codex/Cursor, Luna, AppDeploy, desktop layouts or historical game work. PR #5 remains a draft; production NHK branch `nihongo-vercel` remains at313a538df99835165062ffff77bd7c6fb2a18b33. Deployment success is not conversational acceptance.
 
-The user explicitly authorized the separate `nihongo-companion` Supabase service, operational-only lease/usage table, and reuse of existing server credentials. This is not permission to store recordings, full transcripts or cloud learning profiles. Existing NHK articles/favorites/history/backups/quiet-study/TTS remain unchanged.
+The independent `/companion.html` preview is available for personal voice/help feedback. Source, mobile UI, public preview assets and two real synthetic/typed dialogue probes passed their scoped checks. Full release remains REVISE: optional real-news card generation still returns `news_unavailable`, some native replies can be too long or imply personal habits, and adaptive learning/human-phone quality is not proven. See `docs/qa/COMPANION_PREVIEW_REVIEW_20260909_0915.json` for actual replies and failures; do not erase older failed evidence.
 
-## Product and UI
+The user explicitly authorized the separate `nihongo-companion` Supabase service, operational-only lease/usage table and reuse of existing server credentials. This never authorizes storing recordings, full transcripts, employer data or cloud learning profiles. Preserve original articles, favorites, history, backups, quiet-study, TTS and historical game data.
 
-One coherent adult Japanese partner also teaches. Follow the learner's actual statement, question, correction and negation first. Start with a word if useful, then invite a small extension when there is evidence; no permanent beginner ceiling or arbitrary level-up. Explain Japanese questions briefly in Chinese when needed. Help means providing a usable short expression now, not offering to help later.
+## Product and interface
 
-`/companion.html` is the independent mobile entry, without an NHK prerequisite. Warm ivory and muted botanical green, generous whitespace, restrained type and small original decorative shapes. One topic card before chatting; one primary microphone during the conversation. Secondary controls live in a sheet. No feature/button wall, AI dashboard, compulsory grading or placement questionnaire.
+One coherent adult Japanese companion also teaches. First understand the learner's exact statement, correction, negation or question; then offer a small useful extension. A word can start a conversation, but is not a permanent ceiling. No quiz loop, forced full sentences, automatic speed escalation, scores or placement questionnaire. Brief Chinese explanations are allowed when asked. Assistance and imitation are not independent mastery.
 
-Explicit mic consent: entering chat is receive-only. Only tap-to-enable requests the mic. Tap again stops real input tracks; mute persists through help, replay, topic switch and monitor handoff. Real RMS drives each side's activity; silence stays flat, preparation is distinct from playback. End/background/error closes resources. Actual iPhone audibility and usability require human feedback, not an emulated viewport.
+Warm ivory, muted botanical green, whitespace and restrained typography. One topic card before chatting; one primary microphone while chatting; secondary controls in a sheet, not a button wall. No NHK prerequisite. Topics may lead to interests, work, everyday experience or imagination; the learner's thread takes precedence over the opening.
 
-## Conversation core
+Entering chat is receive-only. Only tap-to-enable requests microphone permission. Tapping again stops actual input tracks and transmission; mute survives help, repeat, topic changes and monitor handoff. Real RMS samples drive both sound indicators; silence stays flat and preparation is distinct from playback. End/background/error cleans up media. Physical speaker audibility and real iPhone usability need human feedback.
 
-`src/companion/connection.ts` maintains ONE native stateful Realtime conversation using `gpt-realtime-2.1`. Ordinary replies use original audio in the default conversation; no detached ASR-to-text-plan-to-SAY gate. Auxiliary transcripts never become duplicate native input. The client committed-item gate is the sole response scheduler; server VAD `create_response=false`. Late, corrected and interrupted items are handled separately.
+## Native conversation core
 
-`prompt.ts` is shared byte-for-byte between client policy updates and server initialization. Typical replies are small by instruction, not rejected solely because of a universal 48-character rule. Optional observer runs asynchronously, distinguishes assistance/imitation from independent evidence, and never substitutes a canned response. Its capability hypotheses are not validated JLPT or fluency scores.
+`src/companion/connection.ts` keeps one stateful `gpt-realtime-2.1` conversation with original user audio. Ordinary replies omit detached `conversation:none/input:[]`; auxiliary transcription is not added as duplicate native input. The client committed-item gate is the sole response scheduler; VAD `create_response=false`. Respect turn identity, corrections, late items and interrupted/unplayed speech.
 
-A signed operational lease and fencing monitor ownership keep the same voice connection alive while short backend workers hand off. Current maximum is 20 minutes, with an idle pause and usage protection; do not describe an unlimited or crash-proof connection. Permanent provider keys stay server-side. JWT/origin/signature checks remain enabled. The deployment is a bounded personal preview without individual cloud-account memory.
+`prompt.ts` is shared byte-for-byte between client and server. Usual answers are short by instruction, not rejected by a universal48-character cap. `requestedTurn.ts` gives Help/repeat/simpler/repair a focused response-specific instruction using delivered current context, without fabricating a new user message. Help supplies one usable Japanese phrase now, not an offer to help later. Do not restore the detached teacher-planner/SAY pipeline to satisfy a format test.
 
-## Topics and sources
+The optional learning observer runs asynchronously, never blocks or substitutes a chat response, and separates independent/prompted/imitated evidence. Capability updates are tentative heuristics, not validated fluency or JLPT scores. A signed operational lease and fenced monitor handoff retain the voice peer across short workers; maximum20minutes plus idle/usage guards is not unlimited or crash-proof.
 
-Local openings are instant; generated batches provide interest, work, imagination and curiosity topics. Non-news questions must not assert unsourced facts. News discovery uses search only to locate URLs. Allowed publisher pages must be fetched with restricted redirects, recent publication metadata and actual title/body material. News candidates need an exact source quote and a separate title/background alignment check. A failed source/date/check returns explicit `news_unavailable`; it cannot fabricate a fresh headline. This is stronger provenance, not a guarantee of every semantic judgment. No scraping of employer files or emails.
+## Topic sources
 
-## Preservation and learning memory
+Local openings are instant; bounded generated batches cover interests, work, imagination and curiosity. Non-news prompts must not assert unsourced trivia. News currently discovers URLs from fixed public NASA/JPL feeds, then independently fetches allowed publisher pages with redirect limits, date/body validation, exact source quotes and alignment review. Feed metadata alone is not factual proof. XML entity/DTD declarations are rejected; inert article HTML inside CDATA is not treated as an executable declaration.
 
-No raw audio or full conversation is persisted by this app. Optional local learning memory is default OFF, separate from old diagnostics. The user can inspect/clear it; schema whitelists capability metadata and excludes native message IDs. Never clear existing localStorage, alter old learning schemas, or infer interests from an example or roleplay. Provider retention is separate from app persistence.
+The public-source diagnostic now finds current publisher material, but the full deployed news action has not yet produced a verified card after the latest fix. Keep this failure explicit. Do not invent news, override source gates, use unapproved URLs, bypass a publisher403, or claim search coverage beyond implemented sources. Old optional provider-search compatibility handling is not a working news feed. News must pass a separate end-to-end acceptance before being called complete.
 
-## Acceptance
+## Privacy and preservation
 
-- `npm run typecheck && npm test && npm run build`: source and regression, not learning outcomes.
-- `scripts/companion-phone.mjs`: actual UI at 390x844 and 375x667, mocked transport/media.
-- `scripts/companion-live.mjs`: real native audio transport, synthetic Japanese plus typed questions, explicit semantic review pending.
-- `scripts/companion-quality.mjs`: word/fragment progression and direct help; mechanical assertions never replace reading the actual replies.
-- `scripts/companion-preview-access.mjs`: public preview asset/health check. It must report authentication failures, never disable or work around deployment protection.
+No raw audio or whole conversation is persisted by this app. Minimal local learning memory is separately opt-in/defaultOFF, inspectable and clearable. Do not infer interests from examples or roleplay. Do not clear existing localStorage or modify old data schemas. Provider processing/retention is separate from app non-persistence.
 
-Before promotion, review replies for continuity, negation, corrections, immediate help and appropriate scaffolding; inspect phone screenshots, resource cleanup and source provenance. Preserve failing evidence rather than claiming all workflows passed. Full architecture: `docs/architecture/ADAPTIVE_JAPANESE_COMPANION_V3_20260909.md`. Historical production README remains in `docs/history/README-before-companion-v3.md` and must not override v3.
+Provider/service credentials remain server-side. Preserve JWT, same-origin checks, signed tickets/topic integrity and usage protection. Operational table contains only call/expiry/monitor/counter metadata. No cloud profile without separate user identity and authorization. Personal preview only.
+
+## Verification
+
+`npm run typecheck && npm test && npm run build` covers source regression, not learning efficacy. `scripts/companion-phone.mjs` exercises actual UI at390x844 and375x667 with mocked media. `scripts/companion-quality.mjs` reviews original synthetic Japanese and typed help across cat/work/correction/coffee contexts. `scripts/companion-live.mjs` covers native transport/handoff; `scripts/companion-preview-access.mjs` verifies public page/asset hashes and proxy health without bypassing deployment protection. News has a separate deliberately failing gate until actual sourced cards succeed.
+
+Read actual responses and source failures, not only green checks. Full approved design remains `docs/architecture/ADAPTIVE_JAPANESE_COMPANION_V3_20260909.md`. Historical production README is in `docs/history/README-before-companion-v3.md` and must not override this scope.
