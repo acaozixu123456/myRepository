@@ -57,3 +57,5 @@ describe('manual microphone consent',()=>{
  it('muted ASR events cannot become learner answers',async()=>{await c.start();reply();speak('phantom','猫が好きです');expect(hooks.heard).not.toHaveBeenCalled();});
  it('reports output generation as preparation, not real playback',async()=>{hooks.activity=vi.fn();await c.start();expect(hooks.activity.mock.calls.at(-1)[0].output).toBe('preparing');expect(hooks.activity.mock.calls.at(-1)[0].micOn).toBe(false);});
 });
+
+it('output state resets when cancelling a speaking turn',async()=>{hooks.activity=vi.fn();await c.start();(c as any).mediaPlaying=true;emit({type:'response.created',response:{id:'speaking'}});emit({type:'output_audio_buffer.started',response_id:'speaking'});expect(hooks.activity.mock.calls.at(-1)[0].output).toBe('playing');c.repeat();expect(hooks.activity.mock.calls.at(-1)[0].output).not.toBe('playing');});

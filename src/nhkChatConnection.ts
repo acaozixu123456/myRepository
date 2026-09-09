@@ -94,7 +94,7 @@ export class NhkChatConnection{
   private request(job:Job){
     if(this.closed)return;this.teacher.cancel();
     if(job.kind==='help'||job.kind==='repeat')this.support.cancelPending();else this.support.clear();
-    this.canListen=false;this.mic(false);this.waiting=false;this.talking=false;clearTimeout(this.idle);clearTimeout(this.voiceLimit);
+    this.canListen=false;this.audioPlaying=false;this.mic(false);this.waiting=false;this.talking=false;clearTimeout(this.idle);clearTimeout(this.voiceLimit);
     if(this.busyConnecting){this.pending=job;return;}
     if(this.generation){this.pending=job;if(this.responseId)this.emit({type:'response.cancel',response_id:this.responseId});this.emit({type:'output_audio_buffer.clear'});return;}
     if(this.renewDue||Date.now()>=this.renewAt||this.responses>=22){this.rotate(job);return;}
