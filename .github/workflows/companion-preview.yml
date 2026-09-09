@@ -1,0 +1,52 @@
+name: Companion v3 mobile preview acceptance
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: companion-preview-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply explicit bounded integration
+        run: |
+          node scripts/integrate-companion.mjs
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add api/nhk-speech.ts vite.config.ts src/companion/connection.ts supabase/migrations/20260909070000_companion_operational_leases.sql
+          if ! git diff --cached --quiet; then git commit -m 'Wire isolated companion entry and reviewed native-turn fixes'; git push origin HEAD:${{ github.ref_name }}; fi
+          mkdir -p artifacts/companion-phone
+          git rev-parse HEAD > artifacts/companion-phone/source-sha.txt
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck 2>&1 | tee artifacts/companion-phone/typecheck.log
+      - run: npm test 2>&1 | tee artifacts/companion-phone/tests.log
+      - run: npm run build 2>&1 | tee artifacts/companion-phone/build.log
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Only phone-sized UI; no real microphone or paid API
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/companion-vite.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+      - name: Export reviewable source without credentials or node modules
+        if: always()
+        run: git archive HEAD src api server supabase scripts package.json package-lock.json tsconfig.json vite.config.ts index.html companion.html explore.html README.md .github/workflows/companion-preview.yml > artifacts/companion-phone/source.tar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-v3-phone-preview
+          path: artifacts/companion-phone/

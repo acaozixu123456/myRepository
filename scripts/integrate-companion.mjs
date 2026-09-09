@@ -1,0 +1,15 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+const patch=(path,from,to)=>{const text=readFileSync(path,'utf8');if(text.includes(to))return;if(text.split(from).length!==2)throw new Error(`Nonunique integration anchor: ${path}`);writeFileSync(path,text.replace(from,to));};
+patch('vite.config.ts',"main: 'index.html', explore: 'explore.html'","main: 'index.html', explore: 'explore.html', companion: 'companion.html'");
+patch('api/nhk-speech.ts',"import {handleSpeakingProxy}","import {companionProxy} from '../server/companionProxy.js';\nimport {handleSpeakingProxy}");
+patch('api/nhk-speech.ts','  const action = clean(body.action, 16);',"  if (typeof body.action === 'string' && body.action.startsWith('companion_')) return companionProxy(req, res, body, {url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, clientKey: clientKey(req)});\n  const action = clean(body.action, 16);");
+patch('src/companion/connection.ts',"private lastAssistant='';",'');
+patch('src/companion/connection.ts','private hasVoice=false;','private speakingItem=\'\';');
+patch('src/companion/connection.ts','this.lastAssistant=this.currentAssistant;','');
+patch('src/companion/connection.ts','this.userTurns++;this.hasVoice=true;','this.userTurns++;');
+patch('src/companion/connection.ts','    if(this.currentAssistant){this.ledger.upsert','    this.activeSeq=-1;\n    if(this.currentAssistant&&(!this.playbackEnded||!this.generationEnded)){this.ledger.upsert');
+patch('src/companion/connection.ts',"this.gate.speaking=true;this.queuedAction=null;", "this.gate.speaking=true;this.speakingItem=String(e.item_id||'');this.queuedAction=null;");
+patch('src/companion/connection.ts',"case'input_audio_buffer.speech_stopped':this.gate.speaking=false;if(this.gate.hasPending)this.flushSoon();break;", "case'input_audio_buffer.speech_stopped':if(!e.item_id||!this.speakingItem||e.item_id===this.speakingItem){this.gate.speaking=false;this.speakingItem='';if(this.gate.hasPending)this.flushSoon();}break;");
+patch('src/companion/connection.ts',"if(!this.gate.commit(id))break;this.gate.speaking=false;", "if(!this.gate.commit(id))break;if(!this.speakingItem||this.speakingItem===id){this.gate.speaking=false;this.speakingItem='';}");
+patch('supabase/migrations/20260909070000_companion_operational_leases.sql',"  if p_action='stop' then r.closed:=true;", "  if r.expires_at<=t or r.heartbeat_at<t-interval '65 seconds' then r.closed:=true; end if;\n  if p_action='stop' then r.closed:=true;");
+console.log('Additive companion entry/proxy and reviewed turn-race corrections applied; old app remains.');
