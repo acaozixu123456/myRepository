@@ -1,0 +1,20 @@
+{
+  "reviewer":"ChatGPT Sol",
+  "runtimeCommit":"d8825910a4974078c704fe9c2f880e8254c3573e",
+  "decision":"REVISE_NOT_PRODUCTION_ACCEPTED",
+  "productionUnchanged":"313a538df99835165062ffff77bd7c6fb2a18b33",
+  "independentBackend":{"function":"nihongo-companion","version":4,"pinnedSource":"d8825910a4974078c704fe9c2f880e8254c3573e","verifyJwt":true},
+  "realProbe":{"run":34328053182,"artifact":10094705837,"digest":"sha256:f7b2329dec146faa5845650718fb1e56bb5e54d50a510ee1282c4eb062e82cbc","conclusion":"failure","scope":"REAL_NATIVE_SYNTHETIC_JAPANESE_AND_TYPED_HELP_NOT_PHYSICAL_PHONE","nativeStarts":1,"heartbeats":5,"transportErrors":[],"mechanicalChecks":{"helpProvidesJapanese":false,"beginnerRepliesBounded":true,"noUnrequestedRephrasing":true,"howToSayGivesJapanese":true}},
+  "actualExamples":[
+    {"user":"寝る前に、猫の動画を見ます。","assistant":"寝る前のルーティンなんですね。つい長く見ちゃうこともありますか？","review":"Relevant follow-up, no unsolicited grading or identical rephrasing; still somewhat harder than ideal for fragment-only speech."},
+    {"user":"今は仕事の日本語を話したいです。会議で聞き取れないとき、何と言えばいいですか。","assistant":"すみません、もう一度お願いします。\n\n这是会议里听不清时最常用、最稳妥的一句，礼貌又直接。","review":"Immediately gives one usable expression. Chinese superlative claim is unnecessary; not a validated frequency ranking."},
+    {"user":"さっきは、猫を飼っていると言いましたか。飼っていないと言いましたか。","assistant":"飼っていないと言いましたよ。猫の動画が好き、という話でした。","review":"Correctly preserves no-pet negation across preceding topic shift."},
+    {"action":"help after Chinese correction","assistant":"明白的，你的意思是你不养猫，只是喜欢看猫的视频。这样说很清楚。","review":"FAIL: reconfirms the previous statement instead of giving the requested Japanese scaffold."}
+  ],
+  "news":{"httpStatus":502,"reason":"provider_request_failed","provider":{"status":400,"code":"","param":"tools"},"interpretation":"Actual search request rejected; not legitimate no-current-news availability. The exact tool/model incompatibility is not yet established. Publisher extraction, date, redirects and quote guards have unit coverage, but no successful current live news card was verified."},
+  "previewAccess":{"run":34327521534,"artifact":10094376502,"sourceCommit":"4e4d62837441795c2aeeb07d797548df5c7c50d5","url":"https://nihongo-discovery-v2-202608-git-30bf70-acaozixu123456s-projects.vercel.app/companion.html","status":"PASS","scope":"Public no-auth page, exact JS/CSS hashes and proxy health200. No bypass or protection changes."},
+  "sourceTestFinding":{"run":34328053097,"passedTests":357,"failedTests":1,"reason":"Literal old English prompt string expected after the same concise rule was rewritten in Chinese. Current maintenance update checks explicit concise/adult/no-grading guidance and matching shared prompt; it does NOT relax the failed real help check."},
+  "writeBlock":{"action":"GitHub.create_tree","result":"Tool safety assessment blocked the follow-up batch without a detailed reason.","notApplied":["explicit native UI-control messages","alternative documented news-search discovery module"],"handling":"No retry, tool substitution, branch trick or split submission of the blocked changes. No new backend deployment following this block. User had already authorized the backend; asking for the same permission again does not resolve the tool assessment."},
+  "remaining":["Reliable direct Help across contexts","Live news tool compatibility and actual source-aligned card","More natural fragment/hesitation/interruption cases","Repeated adaptation and physical iPhone feedback","Topic variety and occasional awkward generated Chinese headings"],
+  "release":"Independent preview only. Draft PR5 stays open. No production replacement. Native event/transport and source-test passes are not a claim of learning efficacy."
+}
