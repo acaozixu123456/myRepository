@@ -1,13 +1,17 @@
 import {approvedNewsUrl,excludedNews,readVerifiedNews,recentPublication,type VerifiedNews} from './newsGuard.ts';
-/** Fixed public publisher feeds: no user-provided fetch URL, search API, token or model switch.
- * Feed entries discover candidates only; independently fetched publisher pages remain required. */
+/** Fixed public publisher feeds. Feed entries discover URLs; publisher pages verify facts. */
 export const PUBLISHER_FEEDS=['https://www.nasa.gov/feed/','https://www.jpl.nasa.gov/feeds/news/'] as const;
 const MAX_BYTES=1000000;
 const decode=(s:string)=>s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").trim();
 const element=(item:string,tag:string)=>decode(item.match(new RegExp('<'+tag+'(?:\\s[^>]*)?>([\\s\\S]*?)<\\/'+tag+'>','i'))?.[1]||'');
 export function feedCandidates(xml:string,now=Date.now()):Array<{url:string;time:number}>{
- if(xml.length>MAX_BYTES||/<!DOCTYPE|<!ENTITY/i.test(xml))return [];
- const items=[...xml.matchAll(/<(item|entry)\b[^>]*>([\s\S]*?)<\/\1>/gi)].slice(0,30);const seen=new Set<string>();const result:Array<{url:string;time:number}>=[];
+ if(xml.length>MAX_BYTES)return [];
+ // Reject XML declarations; HTML quoted inside CDATA is inert content, not a feed DTD.
+ const markup=xml.replace(/<!\[CDATA\[[\s\S]*?\]\]>/g,'');
+ if(/<!DOCTYPE|<!ENTITY/i.test(markup))return [];
+ // Do not interpret tag-shaped text inside article bodies as feed metadata.
+ const listing=xml.replace(/<(content:encoded|description|content)\b[^>]*>[\s\S]*?<\/\1>/gi,'');
+ const items=[...listing.matchAll(/<(item|entry)\b[^>]*>([\s\S]*?)<\/\1>/gi)].slice(0,30);const seen=new Set<string>();const result:Array<{url:string;time:number}>=[];
  for(const item of items){const body=item[2],title=element(body,'title');if(excludedNews(title))continue;
   const date=element(body,'pubDate')||element(body,'published')||element(body,'dc:date');const time=Date.parse(date);if(!date||!Number.isFinite(time)||!recentPublication(time,now))continue;
   let raw=element(body,'link');if(!raw)for(const tag of body.match(/<link\b[^>]*\/?\s*>/gi)||[]){if(/rel=["'](?:self|enclosure)["']/i.test(tag))continue;raw=decode(tag.match(/href=["']([^"']+)["']/i)?.[1]||'');if(raw)break;}

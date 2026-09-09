@@ -1,0 +1,35 @@
+name: Companion real sourced news acceptance
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['.github/workflows/companion-news-live.yml','supabase/functions/nihongo-companion/publisherFeed.ts']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: One real news batch with source/date/quote review evidence
+        run: |
+          mkdir -p artifacts/companion-news
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';
+          import {createHash} from 'node:crypto';
+          import assert from 'node:assert/strict';
+          const source=await readFile('api/nhk-speech.ts','utf8');
+          const anon=source.match(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/)?.[0];
+          if(!anon)throw new Error('Existing public project token missing');
+          const report={scope:'REAL_PUBLISHER_AND_GENERATION_NO_HUMAN_INPUT',sourceCommit:process.env.GITHUB_SHA,ok:false};
+          try{const r=await fetch('https://kivebsjsdfdobxzaokbj.supabase.co/functions/v1/nihongo-companion',{method:'POST',headers:{Authorization:`Bearer ${anon}`,apikey:anon,'Content-Type':'application/json'},body:JSON.stringify({action:'topics',lane:'news',avoid:[],clientKey:createHash('sha256').update('news-review:'+process.env.GITHUB_RUN_ID).digest('hex').slice(0,48)}),signal:AbortSignal.timeout(60000)});const data=await r.json();report.httpStatus=r.status;report.reason=data.reason;report.topics=(data.topics||[]).map(s=>({title:s.title,opening:s.opening,context:s.context,sources:s.sources}));assert.equal(r.status,200,'No verified live news card produced');assert.ok(report.topics.length>0);assert.ok(report.topics.every(s=>s.sources.length>0&&s.context.includes('原文依据：')&&s.context.includes('发布日期：')));report.ok=true;report.semanticReview='PENDING_SUPERVISOR_SOURCE_ALIGNMENT_REVIEW';}catch(e){report.failure=e.message;process.exitCode=1;}finally{await writeFile('artifacts/companion-news/result.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));}
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-real-news
+          path: artifacts/companion-news/
