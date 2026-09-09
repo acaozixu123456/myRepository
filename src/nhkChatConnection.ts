@@ -55,7 +55,7 @@ export class NhkChatConnection{
   slowDown(){if(this.closed)return;this.speed=TEACHER_SLOW_SPEED;this.hooks.pace?.(this.speed);this.hooks.hint('慢一点，还是刚才这一句。');this.repeat();}
   simplify(){if(this.closed)return;this.hooks.hint('不换话题，只把刚才那句变简单。');this.request({kind:'simplify',heard:''});}
   private stopLongVoice(){
-    if(this.closed||this.clipped)return;this.clipped=true;clearTimeout(this.voiceLimit);clearTimeout(this.watchdog);
+    if(this.closed||this.clipped)return;this.clipped=true;this.audioPlaying=false;clearTimeout(this.voiceLimit);clearTimeout(this.watchdog);
     if(this.responseId)this.emit({type:'response.cancel',response_id:this.responseId});this.emit({type:'output_audio_buffer.clear'});
     this.support.cancelPending();this.generation=false;this.responseDone=true;this.playbackDone=true;
     this.hooks.hint('先停一下，一次只说一点。可以点“再简单点”。');this.listen();

@@ -49,7 +49,7 @@ Deno.serve(async(request:Request)=>{
     if(body.action!=='start')return json({ok:false,reason:'invalid_action'},400);
     if(body.consent!==SPEAKING_CONSENT)return json({ok:false,reason:'explicit_audio_consent_required'},400);
     const plan=validateSpeakingPlan(body.plan);
-    if(body.plan?.generated&&(!plan||!await verifyTopic(plan,body.plan.generated,serviceKey())))return json({ok:false,reason:'invalid_topic_signature'},400);
+    if(body.plan?.generated&&(!plan||body.plan.topicId!==body.plan.generated.topic?.id||!await verifyTopic(plan,body.plan.generated,serviceKey())))return json({ok:false,reason:'invalid_topic_signature'},400);
     const chat=body.plan?.chatMode===true?validateChatPlan(body.plan):null;
     if(body.plan?.chatMode===true&&!chat)return json({ok:false,reason:'invalid_chat_topic'},400);
     if(!plan||typeof body.sdp!=='string'||body.sdp.length>64000||!body.sdp.startsWith('v=0')||!body.sdp.includes('m=audio')||typeof body.clientRequestId!=='string'||!/^[A-Za-z0-9-]{16,80}$/.test(body.clientRequestId)||!/^[a-f0-9]{48}$/.test(body.clientKey||''))return json({ok:false,reason:'invalid_speaking_input'},400);

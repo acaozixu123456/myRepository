@@ -6,6 +6,7 @@ const cache=new Map<string,Cache>();
 /** Per-tab cache only; never stores an article or learner transcript in localStorage. */
 export class TopicDeck {
   private data:Cache;private flight:Promise<void>|null=null;private retryAt=0;private abort:AbortController|null=null;
+  private lastId='';
   status='';
   constructor(private base:SpeakingPlan,private fallback:CatalogTopic[]){
     const key=JSON.stringify([base.articleId,base.source]);this.data=cache.get(key)||{tickets:[],seen:[],touched:Date.now()};this.data.touched=Date.now();cache.set(key,this.data);
@@ -15,12 +16,12 @@ export class TopicDeck {
   find(id:string){return this.topics().find(t=>t.id===id);}
   plan(id:string):ChatPlan {const ticket=this.data.tickets.find(t=>t.topic.id===id);return {...this.base,chatMode:true,topicId:id,...(ticket?{generated:ticket}:{})};}
   choose(currentId:string,random=Math.random):CatalogTopic {
-    const topics=this.topics();const current=topics.find(t=>t.id===currentId);if(current&&!this.data.seen.includes(current.questionJa))this.data.seen.push(current.questionJa);
+    currentId=this.lastId||currentId;const topics=this.topics();const current=topics.find(t=>t.id===currentId);if(current&&!this.data.seen.includes(current.questionJa))this.data.seen.push(current.questionJa);
     let next=topics.filter(t=>t.id!==currentId&&!this.data.seen.some(s=>similarTopic(s,t.questionJa)));
     const fresh=next.filter(t=>t.id.startsWith('gen-'));if(fresh.length)next=fresh;
     if(!next.length){next=topics.filter(t=>t.id!==currentId);this.data.seen=this.data.seen.slice(-40);this.status=this.flight?'新话题还在准备，先换一个已有话头':'这批话题已经看过，可以再聊一个';}
     const choice=next[Math.min(next.length-1,Math.floor(random()*next.length))]||topics[0];
-    if(choice){this.data.seen.push(choice.questionJa);this.data.seen=this.data.seen.slice(-60);}return choice;
+    if(choice){this.lastId=choice.id;this.data.seen.push(choice.questionJa);this.data.seen=this.data.seen.slice(-60);}return choice;
   }
   async replenish(changed:()=>void,force=false):Promise<void>{
     if(this.flight)return this.flight;

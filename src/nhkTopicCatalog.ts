@@ -7,7 +7,7 @@ const clean=(s:string)=>s.normalize('NFKC').replace(/\s+/gu,' ').trim();
 export const topicKey=(s:string)=>clean(s).replace(/[\s\p{P}\p{S}]/gu,'');
 export function similarTopic(a:string,b:string):boolean {
   a=topicKey(a);b=topicKey(b);if(a===b)return true;if(!a||!b)return false;
-  const grams=(s:string)=>new Set(Array.from({length:Math.max(0,s.length-1)},(_,i)=>s.slice(i,i+2));
+  const grams=(s:string)=>new Set(Array.from({length:Math.max(0,s.length-1)},(_,i)=>s.slice(i,i+2)));
   const x=grams(a),y=grams(b);let intersection=0;for(const g of x)if(y.has(g))intersection++;
   return intersection/(x.size+y.size-intersection)>.72;
 }
