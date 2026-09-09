@@ -25,11 +25,12 @@ jobs:
           test '${{ github.ref_name }}' = 'nhk-mic-topics-20260909'
           node scripts/apply-mic-topics.mjs
           node scripts/adapt-mic-tests.mjs
+          node scripts/finalize-mic-topics.mjs
           git config user.name 'Sol supervisor'
           git config user.email '331004814@qq.com'
           git add src server api supabase
           if ! git diff --cached --quiet; then
-            git commit -m 'Integrate signed generated topics, manual microphone and actual sound state'
+            git commit -m 'Apply reviewed microphone and topic validation repairs'
             git push origin HEAD:nhk-mic-topics-20260909
           fi
           mkdir -p artifacts/mic-topics
@@ -38,10 +39,16 @@ jobs:
       - run: npm run typecheck 2>&1 | tee artifacts/mic-topics/typecheck.log
       - run: npm test 2>&1 | tee artifacts/mic-topics/tests.log
       - run: npm run build 2>&1 | tee artifacts/mic-topics/build.log
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Phone-only microphone consent and generated-topic UI
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/mic-vite.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/nhk-mic-topics-browser.mjs
       - name: Export exact source for supervisor review
         if: always()
         run: |
-          git diff 6c834319640d2ad2f94bf2ad84d02ecf69cf31f8 HEAD > artifacts/mic-topics/changes.patch || true
           git archive HEAD src server api scripts supabase package.json package-lock.json tsconfig.json vite.config.ts README.md > artifacts/mic-topics/source.tar
       - uses: actions/upload-artifact@v4
         if: always()

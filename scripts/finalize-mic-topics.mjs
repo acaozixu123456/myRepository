@@ -1,0 +1,11 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+const patch=(p,a,b)=>{let s=readFileSync(p,'utf8');if(s.includes(b))return;if(!s.includes(a))throw new Error(`Missing reviewed repair: ${p}`);writeFileSync(p,s.replace(a,b));};
+patch('src/nhkTopicCatalog.ts','(_,i)=>s.slice(i,i+2));','(_,i)=>s.slice(i,i+2)));');
+writeFileSync('supabase/functions/nihongo-speaking-session/topicCatalog.ts',readFileSync('src/nhkTopicCatalog.ts','utf8'));
+patch('src/nhkChatConnection.ts','this.canListen=false;this.mic(false);this.waiting=false;','this.canListen=false;this.audioPlaying=false;this.mic(false);this.waiting=false;');
+patch('src/nhkChatConnection.ts','this.clipped=true;clearTimeout(this.voiceLimit);','this.clipped=true;this.audioPlaying=false;clearTimeout(this.voiceLimit);');
+patch('src/NhkVoiceControls.tsx',":'对方在听';",":'对方等待中';");
+patch('src/nhkTopicDeck.ts',"  status='';","  private lastId='';\n  status='';");
+patch('src/nhkTopicDeck.ts','    const topics=this.topics();const current=','    currentId=this.lastId||currentId;const topics=this.topics();const current=');
+patch('src/nhkTopicDeck.ts','    if(choice){this.data.seen.push','    if(choice){this.lastId=choice.id;this.data.seen.push');
+patch('supabase/functions/nihongo-speaking-session/index.ts','if(body.plan?.generated&&(!plan||!await verifyTopic','if(body.plan?.generated&&(!plan||body.plan.topicId!==body.plan.generated.topic?.id||!await verifyTopic');
