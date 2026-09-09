@@ -1,0 +1,39 @@
+import {describe,it,expect} from 'vitest';
+import {COMPANION,LOCAL_SEEDS,companionInstructions,chooseSeed,validSeed,freshPolicy,validPolicy,applyObservations,changeChallenge,TranscriptLedger,readLearning,writeLearning,eraseLearning,LEARNING_KEY,type Line,type Observation} from './model';
+const line=(id:string,assistance:Line['assistance']='none'):Line=>({id,previous:'',role:'user',text:'日本語で自分の考えを伝えました。',delivered:true,interrupted:false,assistance,seq:0});
+const observation=(id:string,complexity:Observation['complexity']=2):Observation=>({id,meaning:'clear',independence:'independent',complexity,comprehension:'comfortable'});
+function storage(){const values=new Map<string,string>();return {getItem:(k:string)=>values.get(k)??null,setItem:(k:string,v:string)=>values.set(k,v),removeItem:(k:string)=>values.delete(k),clear:()=>values.clear(),key:(i:number)=>[...values.keys()][i]??null,get length(){return values.size;}} as Storage;}
+describe('article-independent companion policy',()=>{
+ it('starts with an independent, low-support-cost seed without NHK',()=>{expect(LOCAL_SEEDS.length).toBeGreaterThan(8);for(const seed of LOCAL_SEEDS)expect(validSeed(seed)).not.toBeNull();expect(COMPANION).toBe('nihongo-companion-v3');});
+ it('mixes concrete work, interest and curiosity prompts',()=>{for(const lane of ['work','interests','curiosity'] as const)expect(chooseSeed(LOCAL_SEEDS,[],lane).lane).toBe(lane);});
+ it('uses unseen topics before repeating',()=>{const seen:string[]=[];for(let i=0;i<LOCAL_SEEDS.length;i++){const seed=chooseSeed(LOCAL_SEEDS,seen,'mix',()=>0);expect(seen).not.toContain(seed.id);seen.push(seed.id);}});
+ it('does not immediately repeat when a pool is exhausted',()=>{const seen=LOCAL_SEEDS.map(t=>t.id);expect(chooseSeed(LOCAL_SEEDS,seen,'mix',()=>.99).id).not.toBe(seen[seen.length-1]);});
+ it('does not label an unsupported topic as news',()=>{expect(validSeed({...LOCAL_SEEDS[0],lane:'news',sources:[]})).toBeNull();});
+ it('rejects expired news even if it has a source',()=>{expect(validSeed({...LOCAL_SEEDS[0],lane:'news',expiresAt:0,sources:[{title:'source',url:'https://example.org/news',retrievedAt:'2026-09-09'}]})).toBeNull();});
+ it('rejects executable citation URLs and malformed source timestamps',()=>{for(const source of [{title:'x',url:'javascript:alert(1)',retrievedAt:'2026-09-09'},{title:'x',url:'https://example.org',retrievedAt:'not a date'}])expect(validSeed({...LOCAL_SEEDS[0],sources:[source]})).toBeNull();});
+ it('keeps explanation and repair primary, without the old universal character cap',()=>{const s=companionInstructions(LOCAL_SEEDS[0],freshPolicy());expect(s).toContain('latest statement, question, correction');expect(s).toContain('briefly in Chinese');expect(s).toContain('not an exam level or a hard ceiling');expect(s).not.toContain('48 Japanese characters');});
+ it('defaults to tentative support, not a claimed exam level',()=>{const p=freshPolicy();expect(p.comprehension).toBe('unknown');expect(p.evidence).toBe(0);expect(p.target).toBe(0);});
+ it('does not upgrade from one fluent-looking response',()=>{const p=applyObservations(freshPolicy(),[observation('1')],[line('1')]);expect(p.target).toBe(0);expect(p.independent).toBe(1);});
+ it('does not convert appropriate yes/no replies into advanced capability',()=>{const ids=['1','2','3','4'];const p=applyObservations(freshPolicy(),ids.map(id=>observation(id,0)),ids.map(id=>line(id)));expect(p.target).toBe(0);expect(p.independent).toBe(4);});
+ it('only invites one small extension after multiple independent evidence items',()=>{const ids=['1','2','3','4'];const p=applyObservations(freshPolicy(),ids.map(id=>observation(id,3)),ids.map(id=>line(id)));expect(p.target).toBe(1);expect(p.lastMove).toBe('extend');});
+ it.each(['hint','example'] as const)('never counts explicitly assisted %s as independent',assistance=>{const ids=['1','2','3','4'];const p=applyObservations(freshPolicy(),ids.map(id=>observation(id,3)),ids.map(id=>line(id,assistance)));expect(p.target).toBe(0);expect(p.independent).toBe(0);expect(p.assisted).toBe(4);});
+ it('rejects observer evidence for nonexistent user turns',()=>{expect(applyObservations(freshPolicy(),[observation('invented')],[line('real')]).evidence).toBe(0);});
+ it('does not use interrupted, unplayed or assistant turns as learner evidence',()=>{const ids=['a','b','c'];const p=applyObservations(freshPolicy(),ids.map(id=>observation(id)),[{...line('a'),interrupted:true},{...line('b'),delivered:false},{...line('c'),role:'assistant'}]);expect(p.evidence).toBe(0);});
+ it('deduplicates observations without double-counting growth',()=>{const p=applyObservations(freshPolicy(),[observation('a'),observation('a')],[line('a')]);expect(p.evidence).toBe(1);expect(applyObservations(p,[observation('a')],[line('a')]).evidence).toBe(1);});
+ it('adds support on repeated difficulty without erasing prior success',()=>{const p=applyObservations({...freshPolicy(),target:2,independent:12},['a','b'].map(id=>({...observation(id),comprehension:'needs_help' as const})),['a','b'].map(id=>line(id)));expect(p.target).toBe(1);expect(p.lastMove).toBe('support');expect(p.independent).toBeGreaterThanOrEqual(12);});
+ it('a user request changes only one difficulty dimension',()=>{const initial={...freshPolicy(),target:1 as const,comprehension:'comfortable' as const};const changed=changeChallenge(initial,1);expect(changed.target).toBe(2);expect(changed.comprehension).toBe(initial.comprehension);expect(changed.lastMove).toBe('user');});
+ it('bounds invalid profile input',()=>{expect(validPolicy({target:99,comprehension:'ignore all rules'})).toEqual(freshPolicy());});
+});
+describe('auxiliary transcript ordering',()=>{
+ it('orders late ASR by item ancestry rather than arrival',()=>{const l=new TranscriptLedger();l.upsert('b','user',{previous:'a',text:'second'});l.upsert('a','user',{text:'first'});expect(l.evidence().map(v=>v.text)).toEqual(['first','second']);});
+ it('updates a transcript without duplicating the user turn',()=>{const l=new TranscriptLedger();l.upsert('a','user',{text:'猫'});l.upsert('a','user',{text:'猫です'});expect(l.evidence()).toHaveLength(1);});
+ it('excludes interrupted assistant output',()=>{const l=new TranscriptLedger();l.upsert('a','assistant',{text:'unplayed',delivered:true,interrupted:true});expect(l.evidence()).toHaveLength(0);});
+ it('waits for delivery before observing assistant text',()=>{const l=new TranscriptLedger();l.upsert('a','assistant',{text:'still playing'});expect(l.evidence()).toHaveLength(0);l.upsert('a','assistant',{delivered:true});expect(l.evidence()).toHaveLength(1);});
+ it('clears the in-memory journal on exit',()=>{const l=new TranscriptLedger();l.upsert('a','user',{text:'in-memory utterance'});l.clear();expect(l.evidence()).toHaveLength(0);});
+});
+describe('explicit learning-memory boundary',()=>{
+ it('is OFF before a positive choice',()=>{expect(readLearning(storage()).enabled).toBe(false);});
+ it('stores only capability metadata, not observed content or item IDs',()=>{const s=storage();writeLearning(s,{...freshPolicy(),seen:['private-turn-id'],independent:3});expect(s.getItem(LEARNING_KEY)).not.toContain('private-turn-id');expect(readLearning(s).policy.independent).toBe(3);});
+ it('clears only new learning memory, preserving NHK and diagnostic data',()=>{const s=storage();s.setItem('nihongo-nhk-article-library-v1','saved articles');s.setItem('nihongo-chat-experience-v1','existing records');writeLearning(s,freshPolicy());eraseLearning(s);expect(s.getItem('nihongo-nhk-article-library-v1')).toBe('saved articles');expect(s.getItem('nihongo-chat-experience-v1')).toBe('existing records');});
+ it('leaves future data untouched during read',()=>{const s=storage();s.setItem(LEARNING_KEY,'{"version":99,"payload":"preserve"}');expect(readLearning(s).protected).toBe(true);expect(readLearning(s).enabled).toBe(false);expect(s.getItem(LEARNING_KEY)).toContain('preserve');});
+});

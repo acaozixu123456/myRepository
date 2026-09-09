@@ -1,0 +1,28 @@
+name: Adaptive companion foundation, no deployment or live API
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: mkdir -p artifacts/companion-foundation && npm ci --no-audit --no-fund
+      - run: npm run typecheck 2>&1 | tee artifacts/companion-foundation/typecheck.log
+      - run: npm test 2>&1 | tee artifacts/companion-foundation/tests.log
+      - run: npm run build 2>&1 | tee artifacts/companion-foundation/build.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-foundation
+          path: artifacts/companion-foundation/
