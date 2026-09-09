@@ -1,0 +1,2 @@
+/* Keep secondary controls quiet but readable on an actual small phone. */
+.kc-root .kc-dock-side{color:#697c5f!important}.kc-dock-side span{font-size:11px}.kc-mic-label{color:#718264;font-size:12px}.kc-audio-status>p{font-size:11px;color:#758469}.kc-person-meter small{font-size:10px;color:#839176}.kc-line-label{color:#7d8971}.kc-home-footer a,.kc-home-footer button{font-size:12px;min-height:40px}.kc-card-bottom>span{color:#78856b}.kc-start-area p{color:#808970;font-size:12px}.kc-sheet-footnote{color:#7b886d}.kc-option-list small{color:#7c876f}.kc-topic-note{color:#778365}
