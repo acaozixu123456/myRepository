@@ -15,4 +15,15 @@ patch('src/companion/connection.ts',"const id=`typed_${crypto.randomUUID().repla
 patch('supabase/migrations/20260909070000_companion_operational_leases.sql',"  if p_action='stop' then r.closed:=true;", "  if r.expires_at<=t or r.heartbeat_at<t-interval '65 seconds' then r.closed:=true; end if;\n  if p_action='stop' then r.closed:=true;");
 const style="   '# Speaking style — highest conversational priority\\nKeep the turn SMALL, not merely polite. At support target 0 or 1, usually say one short reaction OR one short question, sometimes a tiny reaction plus one question. No multi-paragraph answer, list of three options, extra follow-up, long praise, or verbose repetition of everything the learner said. Short examples of STYLE (never a script): user=猫の動画は好きですが、飼っていません -> 猫の動画ですね。寝ている猫が好きですか。; correction=犬ではなく猫 -> あ、猫ですね。; user=寝る前によく見ます -> 寝る前なんですね。つい長く見ますか。. With stronger independent evidence you may gently expand content, never a permanent low ceiling. Direct meaning/grammar questions can use one or two brief Chinese sentences plus one Japanese example. Do not announce how you will teach, catalogue alternative phrases, or finish with several questions. First answer their actual intent, then STOP and let them speak.',\n";
 const model='src/companion/model.ts';let s=readFileSync(model,'utf8');if(!s.includes('# Speaking style — highest conversational priority')){const anchor="   `SEED_DATA=";if(s.split(anchor).length!==2)throw new Error('Unique style insertion required');s=s.replace(anchor,style+anchor);writeFileSync(model,s);}writeFileSync('supabase/functions/nihongo-companion/model.ts',s);
-console.log('Additive companion integration, native-turn fixes and review-driven concise style ready.');
+const ui='src/companion/CompanionApp.tsx';
+patch(ui,'useState<Seed>(()=>LOCAL_SEEDS[0])','useState<Seed>(()=>chooseSeed(LOCAL_SEEDS,[]))');
+patch(ui,'useRef<string[]>([LOCAL_SEEDS[0].id])','useRef<string[]>([seed.id])');
+patch(ui,'useRef<string[]>([LOCAL_SEEDS[0].title])','useRef<string[]>([seed.title])');
+patch(ui,'lastFetch=useRef(0);','lastFetch=useRef(0),topicBusy=useRef(false);');
+patch(ui,'if(busyTopics)return;if(Date.now()','if(topicBusy.current)return;if(Date.now()');
+patch(ui,'lastFetch.current=Date.now();const seq=','topicBusy.current=true;const sessionGeneration=generation.current;lastFetch.current=Date.now();const seq=');
+patch(ui,'if(selectWhenReady&&fresh[0])useSeed(fresh[0]);','if(selectWhenReady&&fresh[0]&&sessionGeneration===generation.current)useSeed(fresh[0]);');
+patch(ui,'finally{if(seq===topicSeq.current)setBusyTopics(false);}','finally{if(seq===topicSeq.current){topicBusy.current=false;setBusyTopics(false);}}');
+patch(ui,"const chooseLane=(next:Lane)=>{setLane(next);","const chooseLane=(next:Lane)=>{topicSeq.current++;topicAbort.current?.abort();topicBusy.current=false;setBusyTopics(false);setLane(next);");
+patch(ui,"const liveState=phase==='connecting'?", "const liveState=phase==='error'?'声音暂时没有接上':phase==='connecting'?");
+console.log('Exact native-turn, topic-race and restrained phone interface refinements applied.');
