@@ -24,6 +24,7 @@ jobs:
           npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/mic-live-vite.log 2>&1 &
           for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
           LIVE_PROXY=0 node scripts/nhk-mic-topics-live.mjs
+          node scripts/nhk-mic-topics-audit.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

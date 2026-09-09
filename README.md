@@ -1,46 +1,42 @@
 # 日本散步日记 / Nihongo Discovery
 
-## Current user priority — 2026-09-08
+## Current user priority — 2026-09-09
 
-**Mobile only.** Do not add desktop layouts, screenshots, mouse/keyboard refinements or desktop acceptance work unless explicitly reauthorized. Preserve harmless existing responsive styles and the historical exploration prototype without expanding it.
+**Mobile only.** No desktop layouts/screenshots, keyboard/mouse work or historical game QA. Sol implements/reviews directly through connected GitHub and the app's existing services, not Windows Codex/Cursor, Luna or AppDeploy unless the user explicitly changes that.
 
-The goal is minimal effort to start AND continue speaking Japanese. Keep random local topic browsing, voice chat and optional per-turn support. The news provides a starting point, **not a compulsory destination**. Ordinary replies should follow the current utterance and learner meaning, not abruptly pivot from knowing an institution name to prices/policy. An explicit learner question about article contents may use its source. Do not invent missing news facts.
+Make it easy to start AND continue Japanese speaking: article-based fresh topic openings, gentle adult conversation, optional current-turn help, and explicit microphone control. News supplies an opening, not a compulsory destination. Ordinary replies follow the learner's current thread; article facts enter only when explicitly requested. Never invent missing news facts or turn an institution-name acknowledgement into an unsolicited pricing/policy lesson.
 
-## Patient teacher and actual slower voice
+## Explicit microphone and honest activity
 
-`nhkGentleTeacher.ts` prepares detached, bounded TEXT turns for free replies and simplification. It includes the current utterance and bounded recent conversation, but omits article title/body unless the learner explicitly requests article facts. A checked turn includes one short sentence or acknowledgement plus a tiny prompt: at most 48 Japanese characters, two sentences and one question. Reject malformed/stale, overlong or selected unsolicited pricing/policy/abstract intrusions before generating audio. The checks are mechanical, not a semantic or JLPT-level guarantee. Timeouts and invalid drafts use a short local fallback.
+Entering 陪我说一句 is receive-only. **No microphone request until 开启麦克风 is tapped.** Tap 关闭麦克风 to stop real input tracks and transmission, not just change an icon. Keep this mute through replay, help, shuffle and renewal. An already-spoken pending utterance may be answered after mute. While enabled, sending temporarily pauses during AI output/planning to avoid echo, then resumes unless manually muted. Permission denial leaves playback usable; late permission after mute/close immediately stops the returned tracks. End/background/error disposes input, peer, audio analyser and timers.
 
-Audio receives only the accepted short text to read, not the news/history. Actual session output speed is 0.80 by default; **慢一点** sets 0.70 and replays the current utterance. Pace survives explicit topic changes and transport renewal. **再简单点** simplifies the current prompt, not the subject. Spoken slow/simplify requests are also supported and do not count as learner answers. Unexpected verbose streamed audio has a best-effort client stop (64 transcript characters / 16 seconds), not an unlimited monologue. These are not guarantees that every generated audio response is exact or ideal.
+Separate self/opponent indicators distinguish muted, requesting, receiving/ready, preparing and actual playing. Waveform amplitude comes from actual RMS samples. Silent/unavailable audio does not get an invented waveform; state text remains. Stream playback events are not proof of a physical speaker's audibility. Physical-iPhone certification requires real device feedback.
 
-Use adult tone, accept fragments, yes/no and Chinese support, and help with one small gap at a time. No forced full sentence, repetition, grading, automatic difficulty escalation or fixed three-turn termination. A question is optional; answer learner questions and avoid repeated advice/interrogation. Ordinary word explanations can be short and direct; do not fabricate offline personal experiences.
+## Replenishable topic pool
 
-## Current-turn support and latency
+Initial curated preview is local and instant. Explicit 换个话题 now requests a batch only when needed, generating up to six short, concrete article-linked openings through the existing backend (Responses API, gpt-4.1-mini, store:false). Prefer unseen generated candidates, exclude recent near-text duplicates and refill in bounded batches. Do not silently auto-switch the current topic when new candidates arrive. Failures leave cached/curated topics and chat usable; in-call changes reuse the peer. Preview cycling now MAY trigger a billable text request, but never a microphone request. This intentionally replaces the prior fixed-only/offline-every-shuffle rule.
 
-Show at most two optional words/chunks and one unfinished starter; **帮我接** reveals/models one possible answer. These are suggestions, not answer keys or saved preferences. **收起提示 / 显示提示** does not reconnect. A validated teacher plan supplies its matching scaffold when the spoken transcript matches. Otherwise the existing detached optional hint path handles the actual utterance without loading the whole article. Turn/request identity rejects stale results on user speech, next turn, topic switch, hide and exit.
+Server validates lengths, simple-question shape and exact article-source quote, then HMAC-signs the entire topic/source/expiry. Verify signatures before starting a voice call. Node proxy must remain independent of Deno/client imports; the edge owns signature/canonical validation. Tab cache only, no new localStorage transcript/article persistence. Not an infinite uniqueness or perfect semantic relevance guarantee. New topic quotas and bounded retries are documented in docs/product/NHK_MIC_TOPICS_20260909.md; existing voice quotas and distinct app/provider error messages remain.
 
-Free replies now require a short planning stage before voice. Do not claim this adds zero delay or makes responses faster. Planning and audio waiting are included in optional service-event timing; this is not the learner's thinking time. Direct opening, repeat/resume and cached help skip planning. Hiding suggestions suppresses separate hint calls but does not disable the checked teacher plan required for a reply.
+## Patient short teacher and support (preserved)
+
+Voice remains gpt-realtime-2.1. nhkGentleTeacher.ts prepares detached bounded text plans for free replies/simplification before audio: <=48 Japanese characters,two sentences,one optional question. Ordinary plans omit the full article/title; explicit article requests may include source. Invalid/stale/overlong or selected unsolicited abstract/policy drafts use a small concrete fallback. These checks are not semantic/JLPT guarantees. Audio receives only checked text to read. Default actual output speed0.80; 慢一点 sets0.70 and replays. 再简单点 simplifies the same prompt. Pace survives topic changes/renewal. Best-effort client stop for unexpected verbose audio remains.
+
+Keep adult tone, fragments, yes/no, Chinese support, no required reasons/full sentences/repetition/grading/automatic difficulty escalation/fixed three turns. At most two optional words plus one starter follow the current utterance; 帮我接 reveals/models one possible reply, never a saved belief. Show/hide does not reconnect. Turn/request identity prevents stale help overwrites. Planning adds waiting; never claim zero latency. Current transport leases are110seconds with renewal and possible pauses;60seconds idle closes the session.
 
 ## Privacy and preservation
 
-**体验记录** stays optional, default OFF, local only. No upload, raw audio, transcripts, article/account identifiers or proficiency scores. Only whitelisted counts, coarse service wait and skippable feedback under `nihongo-chat-experience-v1`, at most 30 records in a rolling 14-day UTC-date window, pruned on use/reopen/export. Disabling/clearing only affects these observations. Preserve corrupt/future records until explicit clearing.
+体验记录 remains optional, default OFF, local only, no upload/audio/transcripts/article/account identifiers/proficiency scores. Whitelisted coarse service waiting, support counts and skippable feedback only; at most30 rows within14-day UTC date window, pruned on use/reopen/export. Preserve corrupt/future records until explicit clearing.
 
-Do not clear localStorage or rewrite existing NHK articles, favorites, history, sessions, backup/restore, quiet study or game saves. Topic preview never opens a microphone or calls an API. In-call shuffle reuses the current peer, coalesces taps and clears previous-thread context. Voice uses existing 110-second transport leases with renewal; a pause is possible. Sixty seconds idle closes the microphone. End/dismiss/background/error closes tracks. Microphone sending requires visible explicit consent.
+Never clear localStorage or rewrite existing NHK article/favorite/history/session/backup/restore/quiet-study/game schemas. Do not remove old TTS/review or historical exploration data. No database migrations or new secret setup in this slice. Permanent OpenAI/Supabase credentials remain server-side; keep JWT and origin validation. API provider retention is separate from app non-persistence. Individual account authentication is still absent: bounded personal pilot, not broad public release. No free/unlimited API claims.
 
-No new model, key, database, API proxy, edge, quota or TTS/review replacement. Keep `gpt-realtime-2.1`, existing server credentials and usage protections. App guards and provider rate/credit failures remain distinct. The old two-starts-in-two-minutes restriction stays removed. Never claim free/unlimited usage or zero provider retention. Individual account auth remains required before broad public release.
+## Acceptance
 
-Sol develops/reviews directly through connected GitHub and existing services. No Windows Codex/Cursor, legacy Luna or AppDeploy for this app unless explicitly requested.
+- `/`: NHK study and mobile voice chat.
+- `/explore.html`: retained historical prototype, no new desktop effort.
+- `npm run typecheck && npm test && npm run build`: platform-independent regression.
+- `scripts/nhk-mic-topics-browser.mjs`:390x844 touch UI, MOCK media/provider, actual mocked track lifecycle.
+- `scripts/nhk-mic-topics-live.mjs`:real topic/API/WebRTC with SYNTHETIC Japanese input and measured RMS, not human microphone or physical phone certification.
+- `scripts/nhk-mic-topics-production.mjs`:exact promoted assets, preserved teacher/TTS, origin/validation gates.
 
-## Acceptance and evidence
-
-- `/`: NHK study and mobile guided light chat.
-- `/explore.html`: historical Yanaka prototype, retained.
-- `npm run typecheck && npm test && npm run build`: platform-independent source gates.
-- `scripts/nhk-teacher-browser.mjs`: phone-only UI with explicitly mocked media/provider.
-- `scripts/nhk-teacher-live.mjs`: real production API/WebRTC with synthetic Japanese input, not human recordings.
-- `scripts/nhk-teacher-production.mjs`: exact promoted assets and existing API checks.
-
-Reproduce institution-name acknowledgement without a pricing jump, same-thread simplification, accepted API pace settings, short-output checks, stale cancellation, current help, random shuffle, renewal and mic cleanup. Deployment success alone is not acceptance. Inspect screenshots and actual response evidence. Mock/synthetic tests do not prove physical-iPhone behavior, natural pauses, perceived speed, semantic perfection or learning effects. See dated product/QA records.
-
-## Historical game (not the current task)
-
-OpenStreetMap supplies a roughly 167m Yanaka Ginza centerline; attribution remains in `public/explore/`. Buildings, width, ground, shops and characters are adaptations. No PLATEAU or Google Street View integration. Existing movement/shop/bento/hints/bookmarks/inventory/save slice and `nihongo.explore.yanaka.v1` data are retained. Historical desktop/game goals never override mobile speaking work.
+Deployment success is not final acceptance. Review the actual generated topics, short replies, screenshots, input/output meter evidence and remaining risks. Preserve prior failure evidence. See dated product/QA records and durable supervisor state.

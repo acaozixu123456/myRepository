@@ -1,0 +1,21 @@
+{
+  "reviewer": "ChatGPT Sol",
+  "phase": "candidate review; production acceptance still required",
+  "sourceBase": "6c834319640d2ad2f94bf2ad84d02ecf69cf31f8",
+  "testedRuntime": "9b3607ce15602fb61aa36b65736649180e1629b7",
+  "sourceAndPhoneRun": 34300477297,
+  "unitTests": 304,
+  "testFiles": 33,
+  "typecheck": "PASS",
+  "build": "PASS",
+  "phoneScope": "390x844 touch emulation, media/provider MOCKED, screenshots reviewed",
+  "realRun": 34300786553,
+  "realScope": "Real edge and WebRTC with synthetic Japanese, NOT physical phone or human voice",
+  "realChecks": ["two source-anchored generated topic batches", "tampered topic signature rejected", "receive-only start without microphone request", "actual synthetic input recognized", "both input and output RMS measured", "toggle off ends actual track", "replay/shuffle/forced lease renewal preserve mute", "explicit re-enable and exit cleanup"],
+  "realInputPeak": 1,
+  "realOutputPeak": 1,
+  "decision": "REVISE_TOPIC_PRESENTATION_BEFORE_RELEASE",
+  "qualityFinding": "Transport passed but generation repeated the article label for different topic cards, with some awkward casual wording. Add explicit unique per-topic labels, natural polite-question examples, and reject duplicate labels/implicit hypotheticals. Make the mic-on color immediate for clarity.",
+  "unchanged": ["voice model and slow pace", "checked short teacher replies", "current-turn hint identity", "legacy TTS/review", "stored learning data", "existing voice quotas", "JWT/origin protections", "permanent provider credentials"],
+  "limits": ["topic near-repeat/relevance rules are not semantic guarantees", "new topic text generation is billable", "app remains bounded personal pilot without individual account auth", "mock and synthetic checks do not certify iPhone audio/autoplay, perceived quality or learning effects"]
+}
