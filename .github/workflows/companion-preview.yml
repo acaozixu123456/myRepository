@@ -24,10 +24,11 @@ jobs:
           node-version: '22'
       - name: Apply explicit bounded integration
         run: |
+          node --check scripts/companion-phone.mjs
           node scripts/integrate-companion.mjs
           git config user.name 'Sol supervisor'
           git config user.email '331004814@qq.com'
-          git add api/nhk-speech.ts vite.config.ts src/companion/connection.ts supabase/migrations/20260909070000_companion_operational_leases.sql
+          git add api/nhk-speech.ts vite.config.ts src/companion/connection.ts src/companion/model.ts supabase/functions/nihongo-companion/model.ts supabase/migrations/20260909070000_companion_operational_leases.sql
           if ! git diff --cached --quiet; then git commit -m 'Wire isolated companion entry and reviewed native-turn fixes'; git push origin HEAD:${{ github.ref_name }}; fi
           mkdir -p artifacts/companion-phone
           git rev-parse HEAD > artifacts/companion-phone/source-sha.txt
