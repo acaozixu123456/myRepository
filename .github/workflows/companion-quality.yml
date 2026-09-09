@@ -1,0 +1,35 @@
+name: Companion beginner speech and teacher quality review
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['.github/workflows/companion-quality.yml','scripts/companion-quality.mjs']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Beginner fragments, direct examples and source-filtered news
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/companion-quality.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node --check scripts/companion-quality.mjs && node scripts/companion-quality.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-v3-beginner-quality
+          path: artifacts/companion-live/
+          if-no-files-found: warn
