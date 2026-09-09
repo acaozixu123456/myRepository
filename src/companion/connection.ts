@@ -61,7 +61,7 @@ export class CompanionConnection {
     this.bufferPlaying=false;this.playbackEnded=true;this.generationEnded=true;this.gate.finish();this.currentAssistant='';this.publishActivity();
   }
   action(action:Action){if(this.ended||!this.linked)return;if(action==='help')this.pendingAssistance='example';this.interrupt();this.queuedAction=action;this.flushSoon();}
-  sendText(value:string){const text=value.trim().slice(0,700);if(!text||this.ended||!this.linked)return;this.interrupt();this.queuedAction=null;const id=`typed_${crypto.randomUUID().replace(/-/g,'')}`;this.ledger.upsert(id,'user',{text,assistance:this.pendingAssistance});this.pendingAssistance='none';this.emit({type:'conversation.item.create',item:{id,type:'message',role:'user',content:[{type:'input_text',text}]}});this.gate.commit(id);this.changed();this.flushSoon();}
+  sendText(value:string){const text=value.trim().slice(0,700);if(!text||this.ended||!this.linked)return;this.interrupt();this.queuedAction=null;const id=`typed_${crypto.randomUUID().replace(/-/g,'').slice(0,24)}`;this.ledger.upsert(id,'user',{text,assistance:this.pendingAssistance});this.pendingAssistance='none';this.emit({type:'conversation.item.create',item:{id,type:'message',role:'user',content:[{type:'input_text',text}]}});this.gate.commit(id);this.changed();this.flushSoon();}
   setTopic(seed:Seed){if(this.ended)return;this.seed=seed;this.topicEpoch++;this.observerAbort?.abort();this.nextPolicy=null;this.interrupt();this.gate.clear();this.action('topic');}
   setPace(value:number){this.speed=Math.max(.65,Math.min(1.05,value));if(!this.gate.active)this.configure();}
   changeDifficulty(delta:number){this.policy=changeChallenge(this.policy,delta);this.hooks.policy(this.policy);if(!this.gate.active)this.configure();}
