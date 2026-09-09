@@ -1,5 +1,5 @@
 import {readFileSync,writeFileSync} from 'node:fs';
-const patch=(path,from,to)=>{const text=readFileSync(path,'utf8');if(text.includes(to))return;if(text.split(from).length!==2)throw new Error(`Nonunique integration anchor: ${path}`);writeFileSync(path,text.replace(from,to));};
+const patch=(path,from,to)=>{const text=readFileSync(path,'utf8');if(to&&to.includes(from)&&text.includes(to))return;if(!text.includes(from)){if(!to||text.includes(to))return;throw new Error(`Missing integration anchor: ${path}`);}if(text.split(from).length!==2)throw new Error(`Nonunique integration anchor: ${path}`);writeFileSync(path,text.replace(from,to));};
 patch('vite.config.ts',"main: 'index.html', explore: 'explore.html'","main: 'index.html', explore: 'explore.html', companion: 'companion.html'");
 patch('api/nhk-speech.ts',"import {handleSpeakingProxy}","import {companionProxy} from '../server/companionProxy.js';\nimport {handleSpeakingProxy}");
 patch('api/nhk-speech.ts','  const action = clean(body.action, 16);',"  if (typeof body.action === 'string' && body.action.startsWith('companion_')) return companionProxy(req, res, body, {url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, clientKey: clientKey(req)});\n  const action = clean(body.action, 16);");
