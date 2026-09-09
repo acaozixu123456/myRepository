@@ -9,7 +9,8 @@ export function proxySpeakingPlan(raw:unknown){
   const record=raw as Record<string,unknown>;
   if(record.chatMode!==true)return base;
   if(typeof record.topicId!=='string'||!/^[a-z0-9-]{1,80}$/.test(record.topicId))return null;
-  return {...base,chatMode:true,topicId:record.topicId};
+  if(record.generated&&JSON.stringify(record.generated).length>2500)return null;
+  return {...base,chatMode:true,topicId:record.topicId,...(record.generated?{generated:record.generated}:{})};
 }
 export async function handleSpeakingProxy(req:VercelRequest,res:VercelResponse,body:Record<string,unknown>,config:Config){
   res.setHeader('Cache-Control','no-store');
@@ -18,7 +19,11 @@ export async function handleSpeakingProxy(req:VercelRequest,res:VercelResponse,b
   else{
     const origin=String(req.headers.origin||''),host=String(req.headers.host||'');
     if(!origin||origin!==`https://${host}`||req.headers['sec-fetch-site']==='cross-site')return res.status(403).json({ok:false,reason:'same_origin_required'});
-    if(action==='speaking_start'){
+    if(action==='speaking_topics'){
+      const plan=validateSpeakingPlan(body.plan);
+      if(!plan||!Array.isArray(body.exclude)||body.exclude.length>48||!body.exclude.every(s=>typeof s==='string'&&s.length<=80))return res.status(400).json({ok:false,reason:'invalid_topic_input'});
+      payload={action:'topics',plan,exclude:body.exclude,clientKey:config.clientKey};
+    }else if(action==='speaking_start'){
       const plan=proxySpeakingPlan(body.plan),sdp=typeof body.sdp==='string'?body.sdp:'',clientRequestId=typeof body.clientRequestId==='string'?body.clientRequestId:'';
       if(body.consent!==SPEAKING_CONSENT)return res.status(400).json({ok:false,reason:'explicit_audio_consent_required'});
       if(!plan||!sdp.startsWith('v=0')||!sdp.includes('m=audio')||sdp.length>64000||!/^[a-zA-Z0-9-]{16,80}$/.test(clientRequestId))return res.status(400).json({ok:false,reason:'invalid_speaking_input'});
@@ -29,7 +34,7 @@ export async function handleSpeakingProxy(req:VercelRequest,res:VercelResponse,b
     }else return res.status(400).json({ok:false,reason:'invalid_action'});
   }
   try{
-    const upstream=await fetch(`${config.url}/functions/v1/nihongo-speaking-session`,{method:'POST',headers:{Authorization:`Bearer ${config.anonKey}`,apikey:config.anonKey,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(action==='speaking_start'?26000:12000)});
+    const upstream=await fetch(`${config.url}/functions/v1/nihongo-speaking-session`,{method:'POST',headers:{Authorization:`Bearer ${config.anonKey}`,apikey:config.anonKey,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(['speaking_start','speaking_topics'].includes(action)?26000:12000)});
     const result=await upstream.json().catch(()=>({ok:false,reason:'speaking_service_unavailable'}));
     return res.status(upstream.status).json(result);
   }catch{return res.status(502).json({ok:false,reason:'speaking_timeout'});}

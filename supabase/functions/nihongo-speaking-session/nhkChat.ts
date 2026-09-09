@@ -1,7 +1,8 @@
 import {buildSpeakingPlan, speechKey, validateSpeakingPlan, type SpeakingArticle, type SpeakingPlan} from './nhkSpeaking.ts';
+import {readTopicTicket,type TopicTicket} from './topicCatalog.ts';
 export const CHAT_CONTRACT='nhk-chat-v2';
 export type ChatTopic={id:string;titleZh:string;questionJa:string;answersJa:string[];kind:'personal'|'hypothetical'|'article';sourceQuote:string};
-export type ChatPlan=SpeakingPlan&{chatMode:true;topicId:string};
+export type ChatPlan=SpeakingPlan&{chatMode:true;topicId:string;generated?:TopicTicket};
 export type ChatLine={role:'user'|'assistant';text:string};
 export type ChatAction='start'|'answer'|'help'|'repeat'|'resume';
 const hash=(s:string)=>{let n=2166136261;for(const c of s)n=Math.imul(n^c.charCodeAt(0),16777619);return(n>>>0).toString(36);};
@@ -20,7 +21,7 @@ export function chatTopics(plan:SpeakingPlan):ChatTopic[]{
     add('sns-notice','消息来了怎么办','通知が来たら、すぐ見ますか。','すぐ見ます。','あとで見ます。');
     add('sns-break','小小休息','スマホを見ると、リラックスできますか。','できます。','少し疲れます。');
   }
-  if(/食|料理|レストラン|弁当|野菜|果物|米|魚/u.test(text)){
+  if(/食べ|食品|食事|料理|レストラン|弁当|野菜|果物|お米|白米|米飯|魚/u.test(text)){
     add('food-like','聊聊喜欢吃的','好きな食べ物は何ですか。','カレーが好きです。','魚が好きです。');
     add('food-cook','在家还是外面','家で料理をしますか。','ときどき作ります。','あまり作りません。');
     add('food-try','尝试新味道','食べたことがない料理を試したいですか。','試したいです。','少し迷います。');
@@ -53,6 +54,7 @@ export function chatTopics(plan:SpeakingPlan):ChatTopic[]{
   // Exact-source keywords offer more article-specific entry points without inventing facts.
   const anchor=plan.steps[0]?.targetJa||'';
   if(anchor&&anchor!=='ニュース'&&anchor.length<=14&&plan.source.some(s=>s.includes(anchor)))list.push(topic(`word-${hash(anchor)}`,`从「${anchor}」聊起`,`「${anchor}」という言葉、知っていましたか。`,['知っていました。','初めて見ました。'],'article',plan.source.find(s=>s.includes(anchor))||''));
+  const generated=readTopicTicket((plan as ChatPlan).generated,plan.source);if(generated)list.unshift(generated.topic);
   return list;
 }
 export function nextChatTopic(pool:ChatTopic[],seen:string[],random= Math.random):{topic:ChatTopic;seen:string[]}{
@@ -69,8 +71,8 @@ export function buildChatPlan(article:SpeakingArticle,preferred=''):ChatPlan{
 export function validateChatPlan(raw:unknown):ChatPlan|null{
   const base=validateSpeakingPlan(raw);if(!base||!raw||typeof raw!=='object')return null;
   const r=raw as Record<string,unknown>;
-  if(r.chatMode!==true||typeof r.topicId!=='string'||!chatTopics(base).some(t=>t.id===r.topicId))return null;
-  return{...base,chatMode:true,topicId:r.topicId};
+  if(r.chatMode!==true||typeof r.topicId!=='string'||!chatTopics({...base,generated:r.generated} as ChatPlan).some(t=>t.id===r.topicId))return null;
+  const generated=readTopicTicket(r.generated,base.source);return{...base,chatMode:true,topicId:r.topicId,...(generated?{generated}:{})};
 }
 export type ChatIntent='answer'|'filler'|'help'|'repeat'|'shuffle'|'end';
 export function chatIntent(raw:string):ChatIntent{

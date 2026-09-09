@@ -2,6 +2,7 @@ import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import WebSocket from 'npm:ws@8.18.0';
 import {CHAT_CONTRACT,chatInstructions,validateChatPlan} from './nhkChat.ts';
 import {SPEAKING_CONSENT,SPEAKING_CONTRACT,SPEAKING_SECONDS,speakingInstructions,validateSpeakingPlan} from './contract.ts';
+import {generateTopics,verifyTopic} from './topics.ts';
 const MODEL='gpt-realtime-2.1',OPENAI='https://api.openai.com/v1';
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
 const serviceKey=()=>Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
@@ -32,7 +33,13 @@ Deno.serve(async(request:Request)=>{
       const key=await apiKey();if(!key)return json({ok:false,reason:'missing_openai_key',contractVersion:SPEAKING_CONTRACT},503);
       if(!await quota('speaking-health',60,60))return json({ok:false,reason:'health_quota'},429);
       const probe=await fetch(`${OPENAI}/models/${MODEL}`,{headers:{Authorization:`Bearer ${key}`},signal:AbortSignal.timeout(7000)});
-      return json({ok:probe.ok,model:MODEL,modelReady:probe.ok,contractVersion:SPEAKING_CONTRACT,audioPersistedByApp:false,maxSeconds:SPEAKING_SECONDS,maxResponses:32,globalStartsPerDay:120,chatContract:CHAT_CONTRACT,topicShuffleReconnects:false,individualAccountAuth:false},probe.ok?200:503);
+      return json({ok:probe.ok,model:MODEL,modelReady:probe.ok,contractVersion:SPEAKING_CONTRACT,audioPersistedByApp:false,maxSeconds:SPEAKING_SECONDS,maxResponses:32,globalStartsPerDay:120,chatContract:CHAT_CONTRACT,topicShuffleReconnects:false,topicCatalog:'nhk-topic-catalog-v1',topicModel:'gpt-4.1-mini',individualAccountAuth:false},probe.ok?200:503);
+    }
+    if(body.action==='topics'){
+      const plan=validateSpeakingPlan(body.plan);
+      if(!plan||!Array.isArray(body.exclude)||body.exclude.length>48||!body.exclude.every((s:unknown)=>typeof s==='string'&&s.length<=80)||!/^[a-f0-9]{48}$/.test(body.clientKey||''))return json({ok:false,reason:'invalid_topic_input'},400);
+      const key=await apiKey();if(!key)return json({ok:false,reason:'missing_openai_key'},503);
+      const result=await generateTopics(plan,body.exclude,body.clientKey,key,serviceKey(),quota);return json(result,result.ok?200:503);
     }
     if(body.action==='stop'){
       if(typeof body.callId!=='string'||!/^rtc_[A-Za-z0-9_-]{4,200}$/.test(body.callId)||typeof body.stopToken!=='string'||!/^[a-f0-9]{64}$/.test(body.stopToken)||!Number.isFinite(body.expiresAt)||body.expiresAt<Date.now()-120000||body.expiresAt>Date.now()+180000)return json({ok:false,reason:'invalid_stop_ticket'},400);
@@ -42,6 +49,7 @@ Deno.serve(async(request:Request)=>{
     if(body.action!=='start')return json({ok:false,reason:'invalid_action'},400);
     if(body.consent!==SPEAKING_CONSENT)return json({ok:false,reason:'explicit_audio_consent_required'},400);
     const plan=validateSpeakingPlan(body.plan);
+    if(body.plan?.generated&&(!plan||!await verifyTopic(plan,body.plan.generated,serviceKey())))return json({ok:false,reason:'invalid_topic_signature'},400);
     const chat=body.plan?.chatMode===true?validateChatPlan(body.plan):null;
     if(body.plan?.chatMode===true&&!chat)return json({ok:false,reason:'invalid_chat_topic'},400);
     if(!plan||typeof body.sdp!=='string'||body.sdp.length>64000||!body.sdp.startsWith('v=0')||!body.sdp.includes('m=audio')||typeof body.clientRequestId!=='string'||!/^[A-Za-z0-9-]{16,80}$/.test(body.clientRequestId)||!/^[a-f0-9]{48}$/.test(body.clientKey||''))return json({ok:false,reason:'invalid_speaking_input'},400);
