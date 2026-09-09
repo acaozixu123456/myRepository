@@ -1,0 +1,33 @@
+name: Companion public publisher provenance diagnostic
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['.github/workflows/companion-publisher-diagnostic.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Read only the fixed public feeds and approved publisher pages
+        run: |
+          mkdir -p artifacts/companion-sources
+          node --experimental-strip-types --input-type=module <<'JS'
+          import {PUBLISHER_FEEDS,feedCandidates} from './supabase/functions/nihongo-companion/publisherFeed.ts';
+          import {readVerifiedNews,publicationTime} from './supabase/functions/nihongo-companion/newsGuard.ts';
+          import {writeFile} from 'node:fs/promises';
+          const now=Date.now(),report={scope:'PUBLIC_FEEDS_ONLY_NO_PROVIDER_KEY_OR_LEARNER_DATA',now:new Date(now).toISOString(),feeds:[],pages:[]};
+          for(const url of PUBLISHER_FEEDS){try{const r=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(9000)});const xml=await r.text();const candidates=feedCandidates(xml,now);report.feeds.push({url,status:r.status,type:r.headers.get('content-type'),bytes:Buffer.byteLength(xml),firstPublishedDates:[...xml.matchAll(/<(?:pubDate|published)>([^<]+)</g)].slice(0,5).map(m=>m[1]),candidateCount:candidates.length});for(const {url:articleUrl} of candidates.slice(0,2)){const verified=await readVerifiedNews(articleUrl,now);report.pages.push({url:articleUrl,accepted:!!verified,title:verified?.title,date:verified?.publishedAt,excerptLength:verified?.excerpt.length});}}catch(e){report.feeds.push({url,error:e.message});}}
+          await writeFile('artifacts/companion-sources/result.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-public-sources
+          path: artifacts/companion-sources/
