@@ -11,7 +11,7 @@ export class CompanionConnection {
   private ticket:Ticket|null=null;private abort=new AbortController();private observerAbort:AbortController|null=null;
   private gate=new NativeTurnGate();private ledger=new TranscriptLedger();private meter:AudioActivityMeter;
   private ended=false;private launched=false;private linked=false;private wantsMic=false;private micRequest=0;private acquiring=false;private blocked=false;private nativePlaying=false;private bufferPlaying=false;private inputLevel=0;private outputLevel=0;private meterReady=false;
-  private responseId='';private responseSeq=0;private activeSeq=0;private currentAssistant='';private lastAssistant='';private playbackEnded=true;private generationEnded=true;private discarded=new Set<string>();private topicEpoch=0;private hasVoice=false;
+  private responseId='';private responseSeq=0;private activeSeq=0;private currentAssistant='';private lastAssistant='';private playbackEnded=true;private generationEnded=true;private discarded=new Set<string>();private topicEpoch=0;private speakingItem='';
   private queuedAction:Action|null=null;private speed=0.8;private nextPolicy:Policy|null=null;private pendingAssistance:Line['assistance']='none';private userTurns=0;private observedAt=0;private observing=false;
   private replyTimer:ReturnType<typeof setTimeout>|undefined;private deadline:ReturnType<typeof setTimeout>|undefined;private watchdog:ReturnType<typeof setTimeout>|undefined;private idle:ReturnType<typeof setTimeout>|undefined;private heartbeat:ReturnType<typeof setInterval>|undefined;private heartbeatBusy=false;
   constructor(private seed:Seed,private policy:Policy,private hooks:Hooks){this.policy=validPolicy(policy);this.meter=new AudioActivityMeter((input,output,ready)=>{this.inputLevel=input;this.outputLevel=output;this.meterReady=ready;this.publishActivity();});}
@@ -53,7 +53,8 @@ export class CompanionConnection {
   async unlock(){if(this.ended||!this.audio)return;try{this.meter.unlock();await this.audio.play();this.blocked=false;this.publishActivity();this.action('repeat');}catch{this.hooks.notice('浏览器还没有允许声音，请再点一下播放。');}}
   private interrupt(){
     clearTimeout(this.replyTimer);clearTimeout(this.watchdog);
-    if(this.currentAssistant){this.ledger.upsert(this.currentAssistant,'assistant',{interrupted:true,delivered:false});this.changed();}
+    this.activeSeq=-1;
+    if(this.currentAssistant&&(!this.playbackEnded||!this.generationEnded)){this.ledger.upsert(this.currentAssistant,'assistant',{interrupted:true,delivered:false});this.changed();}
     if(this.gate.active&&this.responseId){this.discarded.add(this.responseId);this.emit({type:'response.cancel',response_id:this.responseId});}
     // For WebRTC this also synchronizes/truncates the unplayed part in the native conversation.
     if(this.bufferPlaying||this.gate.active)this.emit({type:'output_audio_buffer.clear'});
@@ -96,9 +97,9 @@ export class CompanionConnection {
     if(responseId&&this.responseId&&responseId!==this.responseId)return;
     switch(e.type){
       case'conversation.item.added':case'conversation.item.created':{const item=e.item;if(item?.type==='message'&&['user','assistant'].includes(item.role)){this.ledger.upsert(item.id,item.role,{previous:String(e.previous_item_id||'')});}break;}
-      case'input_audio_buffer.speech_started':if(this.wantsMic&&this.stream){this.gate.speaking=true;this.queuedAction=null;clearTimeout(this.idle);this.interrupt();this.hooks.phase('ready');this.publishActivity();}break;
-      case'input_audio_buffer.speech_stopped':this.gate.speaking=false;if(this.gate.hasPending)this.flushSoon();break;
-      case'input_audio_buffer.committed':{const id=String(e.item_id||'');if(!this.gate.commit(id))break;this.gate.speaking=false;this.ledger.upsert(id,'user',{previous:String(e.previous_item_id||''),assistance:this.pendingAssistance});this.pendingAssistance='none';this.userTurns++;this.hasVoice=true;this.flushSoon();break;}
+      case'input_audio_buffer.speech_started':if(this.wantsMic&&this.stream){this.gate.speaking=true;this.speakingItem=String(e.item_id||'');this.queuedAction=null;clearTimeout(this.idle);this.interrupt();this.hooks.phase('ready');this.publishActivity();}break;
+      case'input_audio_buffer.speech_stopped':if(!e.item_id||!this.speakingItem||e.item_id===this.speakingItem){this.gate.speaking=false;this.speakingItem='';if(this.gate.hasPending)this.flushSoon();}break;
+      case'input_audio_buffer.committed':{const id=String(e.item_id||'');if(!this.gate.commit(id))break;if(!this.speakingItem||this.speakingItem===id){this.gate.speaking=false;this.speakingItem='';}this.ledger.upsert(id,'user',{previous:String(e.previous_item_id||''),assistance:this.pendingAssistance});this.pendingAssistance='none';this.userTurns++;this.hasVoice=true;this.flushSoon();break;}
       case'conversation.item.input_audio_transcription.completed':{const id=String(e.item_id||'');if(!id)break;this.ledger.upsert(id,'user',{text:String(e.transcript||'').slice(0,700)});this.changed();break;}
       case'conversation.item.input_audio_transcription.failed':this.hooks.notice('这句话的字幕没有识别出来，语音对话仍会继续。');break;
       case'response.output_item.added':case'response.output_item.created':if(e.item?.role==='assistant'){this.currentAssistant=String(e.item.id);this.ledger.upsert(this.currentAssistant,'assistant');}break;

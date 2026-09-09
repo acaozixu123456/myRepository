@@ -1,3 +1,4 @@
+import {companionProxy} from '../server/companionProxy.js';
 import {handleSpeakingProxy} from '../server/nhkSpeakingProxy.js';
 import {createHash} from 'node:crypto';
 import type {VercelRequest, VercelResponse} from '@vercel/node';
@@ -30,6 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ok: false, reason: 'method_not_allowed'});
 
   const body = requestBody(req);
+  if (typeof body.action === 'string' && body.action.startsWith('companion_')) return companionProxy(req, res, body, {url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, clientKey: clientKey(req)});
   const action = clean(body.action, 16);
   if (['speaking_start', 'speaking_stop', 'speaking_health', 'speaking_topics'].includes(action)) {
     return handleSpeakingProxy(req, res, body, {url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, clientKey: clientKey(req)});

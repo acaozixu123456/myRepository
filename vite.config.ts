@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   base: '/',
-  build: { outDir: 'dist', rollupOptions: { input: { main: 'index.html', explore: 'explore.html' } } },
+  build: { outDir: 'dist', rollupOptions: { input: { main: 'index.html', explore: 'explore.html', companion: 'companion.html' } } },
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts'],

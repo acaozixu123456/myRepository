@@ -31,6 +31,7 @@ begin
   end if;
   select * into r from public.nihongo_companion_leases where call_id=p_call_id for update;
   if not found then return null; end if;
+  if r.expires_at<=t or r.heartbeat_at<t-interval '65 seconds' then r.closed:=true; end if;
   if p_action='stop' then r.closed:=true;
   elsif not r.closed and r.expires_at>t then
     if p_action='touch' then r.heartbeat_at:=t;
