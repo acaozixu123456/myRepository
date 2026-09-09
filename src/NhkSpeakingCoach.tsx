@@ -4,7 +4,7 @@ import {silentActivity,type VoiceActivity} from './nhkAudioActivity';
 import NhkVoiceControls from './NhkVoiceControls';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {HandHelping,LoaderCircle,Mic,MicOff,Shuffle,Volume2,X} from 'lucide-react';
+import {HandHelping,Mic,Shuffle,Volume2,X} from 'lucide-react';
 import {buildSpeakingPlan,type SpeakingArticle} from './nhkSpeaking';
 import {chatError,chatTopics,nextChatTopic,type ChatPlan} from './nhkChat';
 import {NhkChatConnection,type ChatPhase} from './nhkChatConnection';
@@ -18,7 +18,7 @@ type Props={article:SpeakingArticle;preferredSentence?:string};
 export default function NhkSpeakingCoach({article,preferredSentence=''}:Props){
   const base=useMemo(()=>buildSpeakingPlan(article,preferredSentence),[article,preferredSentence]);
   const pool=useMemo(()=>chatTopics(base),[base]);
-  const [topicId,setTopicId]=useState(()=>nextChatTopic(pool,[]).topic.id);const seen=useRef<string[]>([topicId]);
+  const [topicId,setTopicId]=useState(()=>nextChatTopic(pool,[]).topic.id);/* topic history is owned by the per-article deck */
   const deck=useMemo(()=>new TopicDeck(base,pool),[base,pool]);const [,refreshTopics]=useState(0);
   const selected=deck.find(topicId)||pool[0];
   const [activity,setActivity]=useState<VoiceActivity>(silentActivity);

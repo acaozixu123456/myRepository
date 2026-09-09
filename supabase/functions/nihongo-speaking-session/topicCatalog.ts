@@ -18,7 +18,7 @@ export function readCatalogTopic(raw:unknown,source:string[]):CatalogTopic|null 
   if(!['personal','hypothetical','article'].includes(String(r.kind))||!text(r.sourceQuote,240)||!source.some(s=>s.includes(String(r.sourceQuote)))||String(r.sourceQuote).length<2)return null;
   if(!Array.isArray(r.answersJa)||r.answersJa.length!==2||!r.answersJa.every(a=>text(a,26)))return null;
   const q=String(r.questionJa);
-  if((q.match(/[?？]|(?:ですか|ますか|でしたか|ましたか)[。]?/gu)||[]).length>1||q.split(/[。！？?]/u).filter(Boolean).length>1)return null;
+  if((q.match(/(?:ですか|ますか|でしたか|ましたか)[。?？]?|[?？]/gu)||[]).length>1||q.split(/[。！？?]/u).filter(Boolean).length>1)return null;
   if(/なぜ|どうして|政策|経済的|どう思いますか|どのような影響|理由を|説明して/u.test(q))return null;
   return {id:String(r.id),titleZh:clean(String(r.titleZh)),questionJa:clean(q),answersJa:r.answersJa.map(a=>clean(String(a))),kind:r.kind as CatalogTopic['kind'],sourceQuote:String(r.sourceQuote),...(typeof r.angle==='string'&&r.angle.length<=20?{angle:clean(r.angle)}:{})};
 }
