@@ -2,7 +2,7 @@ name: Companion beginner speech and teacher quality review
 on:
   push:
     branches: [nihongo-adaptive-companion-v3-20260909]
-    paths: ['.github/workflows/companion-quality.yml','scripts/companion-quality.mjs']
+    paths: ['.github/workflows/companion-quality.yml','scripts/companion-quality.mjs','src/companion/requestedTurn.ts']
   workflow_dispatch:
 permissions:
   contents: read

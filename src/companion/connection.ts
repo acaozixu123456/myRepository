@@ -1,3 +1,4 @@
+import {requestedTurnInstructions} from './requestedTurn';
 import {AudioActivityMeter,type VoiceActivity} from '../nhkAudioActivity';
 import {COMPANION,CONSENT,TranscriptLedger,companionInstructions,validPolicy,applyObservations,changeChallenge,type Seed,type Policy,type Line} from './model';
 import {companionApi,sessionTicket,stopSession,fetchObservations,type Ticket} from './api';
@@ -72,8 +73,8 @@ export class CompanionConnection {
     const action=this.queuedAction||(this.gate.ready?'answer':null);if(!action)return;this.queuedAction=null;this.gate.consume();clearTimeout(this.idle);
     if(this.nextPolicy){this.policy=this.nextPolicy;this.nextPolicy=null;this.hooks.policy(this.policy);}this.configure();
     const request:Record<string,unknown>={output_modalities:['audio'],metadata:{purpose:COMPANION,seq:String(++this.responseSeq),topic:String(this.topicEpoch)}};this.activeSeq=this.responseSeq;
-    const extra:Partial<Record<Action,string>>={opening:'Begin with one easy, concrete opening from the seed. No introduction, agenda or explanation of the app. Wait for the learner.',help:'The learner tapped Help. Address the LAST unresolved question. Give one optional phrase that preserves their actual intended meaning. You may briefly explain in Chinese. Do not invent a preference or ask an unrelated new question.',repeat:'The learner asks you to repeat your last audible utterance, a little patiently. Do not answer it as a new question and do not change the subject.',simpler:'The learner asks for this SAME utterance/question to be easier. Give one simpler version or two tiny options, preserving the topic and their meaning.',repair:'The learner says your last response missed their meaning. Briefly apologize and ask one concise clarification about their last actual utterance; do not defend or fabricate their intention.',topic:'The learner explicitly selected a NEW topic. Do not carry opinions/examples from the former topic into this one. Start from the new seed with a short easy opening, then follow the learner.'};
-    if(extra[action])request.instructions=companionInstructions(this.seed,this.policy)+'\n# For this turn only\n'+extra[action];
+    const override=requestedTurnInstructions(action,this.ledger.ordered(),this.seed,this.policy);
+    if(override)request.instructions=override;
     this.currentAssistant='';this.responseId='';this.playbackEnded=false;this.generationEnded=false;this.hooks.phase('thinking');this.publishActivity();
     // Omit conversation/input: use real default conversation including the original user audio.
     this.emit({type:'response.create',response:request});this.watchdog=setTimeout(()=>this.fail('response_timeout'),45000);
