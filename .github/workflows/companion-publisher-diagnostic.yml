@@ -15,23 +15,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Read only the fixed public feeds and approved publisher pages
+      - name: Trace fixed public feeds and independently validated pages
         run: |
           mkdir -p artifacts/companion-sources
           node --experimental-strip-types --input-type=module <<'JS'
-          import {PUBLISHER_FEEDS,feedCandidates} from './supabase/functions/nihongo-companion/publisherFeed.ts';
-          import {readVerifiedNews} from './supabase/functions/nihongo-companion/newsGuard.ts';
+          import {PUBLISHER_FEEDS,feedCandidates,publisherNews} from './supabase/functions/nihongo-companion/publisherFeed.ts';
+          import {readVerifiedNews,publicationTime,newsMaterial} from './supabase/functions/nihongo-companion/newsGuard.ts';
           import {writeFile} from 'node:fs/promises';
-          const now=Date.now(),report={scope:'PUBLIC_FEEDS_ONLY_NO_PROVIDER_KEY_OR_LEARNER_DATA',now:new Date(now).toISOString(),feeds:[],pages:[]};
-          for(const [index,url] of PUBLISHER_FEEDS.entries()){
+          const now=Date.now(),report={scope:'PUBLIC_SOURCE_READS_ONLY_NO_PROVIDER_KEY_OR_LEARNER_DATA',now:new Date(now).toISOString(),feeds:[],pages:[]};
+          for(const url of PUBLISHER_FEEDS){
             try{
               const r=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(9000)});const xml=await r.text();const candidates=feedCandidates(xml,now);
-              const items=[...xml.matchAll(/<(item|entry)\b[^>]*>([\s\S]*?)<\/\1>/gi)];
-              report.feeds.push({url,status:r.status,type:r.headers.get('content-type'),bytes:Buffer.byteLength(xml),itemCount:items.length,declarations:[...xml.matchAll(/<!DOCTYPE|<!ENTITY/gi)].slice(0,5).map(m=>xml.slice(Math.max(0,m.index-40),m.index+100)),firstItems:items.slice(0,2).map(m=>m[2].slice(0,1600)),firstPublishedDates:[...xml.matchAll(/<(?:pubDate|published)>([^<]+)</g)].slice(0,5).map(m=>m[1]),candidateCount:candidates.length});
-              if(r.status===200&&Buffer.byteLength(xml)<1000000)await writeFile('artifacts/companion-sources/public-feed-'+index+'.xml',xml);
-              for(const {url:articleUrl} of candidates.slice(0,2)){const verified=await readVerifiedNews(articleUrl,now);report.pages.push({url:articleUrl,accepted:!!verified,title:verified?.title,date:verified?.publishedAt,excerptLength:verified?.excerpt.length});}
+              report.feeds.push({url,status:r.status,bytes:Buffer.byteLength(xml),candidateCount:candidates.length});
+              for(const {url:articleUrl} of candidates.slice(0,4)){
+                const attempts=[];
+                const verified=await readVerifiedNews(articleUrl,now,async(input,init)=>{const response=await fetch(input,init);const copy=response.clone();const html=await copy.text();attempts.push({url:input,status:response.status,type:response.headers.get('content-type'),location:response.headers.get('location'),bytes:Buffer.byteLength(html),publicationTime:publicationTime(html),hasArticle:/<article\b/i.test(html),hasMain:/<main\b/i.test(html),title:html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.slice(0,200),material:newsMaterial(html,input,now)});return response;});
+                report.pages.push({url:articleUrl,accepted:!!verified,attempts});
+              }
             }catch(e){report.feeds.push({url,error:e.message});}
           }
+          report.combined=await publisherNews(now);
           await writeFile('artifacts/companion-sources/result.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
           JS
       - uses: actions/upload-artifact@v4
