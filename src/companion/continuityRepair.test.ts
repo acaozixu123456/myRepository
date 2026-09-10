@@ -34,3 +34,17 @@ describe('reviewed native voice and touch contracts',()=>{
  it('keeps audio native while extending only the learner end-of-turn grace',()=>{const s=readFileSync('src/companion/connection.ts','utf8');expect(s).toContain('this.flushSoon(950)');expect(s).toContain('private flushSoon(delay=400)');expect(s).not.toContain("conversation:'none'");expect(s).not.toContain('TeacherTurnChannel');});
  it('mirrors request validation between frontend and backend',()=>expect(readFileSync('src/companion/writtenFeedback.ts','utf8')).toBe(readFileSync('supabase/functions/nihongo-companion/writtenContract.ts','utf8')));
 });
+
+describe('pre-transcript ownership',()=>{
+ it('a new audio item invalidates help even before ASR',async()=>{
+  vi.useFakeTimers();let resolve!:(v:unknown)=>void;let input!:NoteRequest;
+  const request=vi.fn((r:NoteRequest,_signal:AbortSignal)=>{input=r;return new Promise(v=>{resolve=v;});});
+  const publish=vi.fn(),lane=new WrittenLane(request,publish);
+  const opening=line('opening','assistant','何が好きですか？');
+  lane.update([opening],0);lane.help();await vi.advanceTimersByTimeAsync(250);
+  lane.update([opening,line('new-audio','user','')],0);
+  expect(request.mock.calls[0][1].aborted).toBe(true);
+  resolve(raw(input));await vi.advanceTimersByTimeAsync(1);
+  expect(publish).not.toHaveBeenCalled();lane.dispose();
+ });
+});

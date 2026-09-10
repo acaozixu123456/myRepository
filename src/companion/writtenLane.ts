@@ -25,7 +25,7 @@ export class WrittenLane {
   if(this.lastLearner&&newest!==this.lastLearner)this.reading=false;
   this.lastLearner=newest;this.lines=lines;this.target=target;
   // Streaming assistant subtitles cannot cancel explicit help or an actual language question.
-  if(this.explicit&&this.unchanged(this.explicit)){this.deliver();return;}
+  if(this.explicit){if(this.unchanged(this.explicit)){this.deliver();return;}this.invalidate();this.failed=null;this.error('');}
   const r=this.automatic(),fingerprint=r?JSON.stringify([r.anchorId,r.source,r.context.map(l=>[l.id,l.text])]):'';
   if(fingerprint===this.fingerprint)return;this.fingerprint=fingerprint;this.invalidate();this.failed=null;this.error('');
   if(!r||(!this.enabled&&r.mode!=='question'))return;
