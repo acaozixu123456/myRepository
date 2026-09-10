@@ -6,6 +6,11 @@ let source=await readFile('scripts/companion-continuity-phone.mjs','utf8');
 const replace=(from,to)=>{assert.equal(source.split(from).length,2,`Unique fixture anchor: ${from.slice(0,90)}`);source=source.replace(from,to);};
 replace("const output='artifacts/companion-continuity';", "const output='artifacts/hitokoto-neon';");
 replace('[{width:390,height:844},{width:375,height:667}]','[{width:390,height:844},{width:375,height:667},{width:320,height:568},{width:430,height:932},{width:1280,height:900}]');
+// IntersectionObserver intentionally removes this cue once the card has been seen.
+// If that happens during a click, require that it really disappeared; never ignore a broken present button.
+replace('if(await available.count())await available.click();',`if(await available.count()){
+   try{await available.click({timeout:1200});}catch(e){if(await available.count())throw e;}
+  }`);
 replace(" await page.getByRole('button',{name:'聊一会儿'}).click();",` await page.locator('[data-ui-release="neon-20260911"]').waitFor();
  await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0));
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'Home horizontal overflow');
