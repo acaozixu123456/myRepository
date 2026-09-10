@@ -1,8 +1,1 @@
-{
-  "purpose":"Release acceptance requested by user; no production promotion until reviewed",
-  "runtimeSource":"fea221b0ddba115f75301f76ba76b415823f4681",
-  "backendVersion":12,
-  "scope":"Existing public preview, synthetic audio and typed test fixtures only; preserve all real user data",
-  "gates":["actual word/phrase/sentence voice continuity","silent contextual correction and requested help","no spurious errors for natural short answers","text failure isolation","one native voice connection","real dated source-linked news","manual microphone and no recording persistence"],
-  "attempt":1
-}
+{"purpose":"Real public release acceptance after reviewed backend12","runtimeSource":"fea221b0ddba115f75301f76ba76b415823f4681","attempt":2,"priorFailure":"343... first run stopped before any voice call because an uncached synthetic TTS fixture was unavailable; no product pass claimed","testChange":"Reuse exact previously generated synthetic test sentences and record safe TTS status/reason; all native voice, text semantics, privacy and news assertions retained"}

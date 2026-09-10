@@ -3,13 +3,13 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const base=process.env.TEST_BASE_URL||'https://nihongo-discovery-v2-202608-git-30bf70-acaozixu123456s-projects.vercel.app';
 assert.ok(['https://nihongo-discovery-v2-202608-git-30bf70-acaozixu123456s-projects.vercel.app','https://nihongo-discovery-v2-20260831.vercel.app'].includes(base));
-const report={scope:'REAL_PUBLIC_UI_NATIVE_AUDIO_AND_SILENT_TEXT_WITH_SYNTHETIC_AUDIO_NOT_HUMAN_IPHONE',source:process.env.GITHUB_SHA,base,ok:false,turns:[],notes:[],checks:[],errors:[],news:null};
+const report={scope:'REAL_PUBLIC_UI_NATIVE_AUDIO_AND_SILENT_TEXT_WITH_SYNTHETIC_AUDIO_NOT_HUMAN_IPHONE',source:process.env.GITHUB_SHA,base,ok:false,turns:[],notes:[],checks:[],errors:[],news:null,syntheticFixtures:[]};
 const out='artifacts/companion-release-live';await mkdir(out,{recursive:true});
-let browser,page;const clips=[];
+let browser,page;const clips=[],texts=['猫。','寝ている猫。','寝る前に、猫の動画を見ます。','猫は飼っていません。'];
 try{
- for(const text of ['猫。','寝ている猫。','寝る前に猫の動画を見ます。','猫は飼っていません。見るだけです。']){
+ for(const text of texts){
   const origin='https://nihongo-discovery-v2-20260831.vercel.app';
-  const r=await fetch(origin+'/api/nhk-speech',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({action:'tts',text}),signal:AbortSignal.timeout(45000)});const j=await r.json();assert.ok(r.ok&&j.ok&&j.url,'Synthetic speech fixture unavailable');const bytes=await fetch(j.url);assert.ok(bytes.ok);clips.push(Buffer.from(await bytes.arrayBuffer()).toString('base64'));
+  const r=await fetch(origin+'/api/nhk-speech',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({action:'tts',text}),signal:AbortSignal.timeout(45000)});const j=await r.json();report.syntheticFixtures.push({text,status:r.status,reason:j.reason,cached:j.cached});assert.ok(r.ok&&j.ok&&j.url,`Synthetic fixture unavailable: ${r.status} ${j.reason||'no_audio'} ${text}`);const bytes=await fetch(j.url);assert.ok(bytes.ok);clips.push(Buffer.from(await bytes.arrayBuffer()).toString('base64'));
  }
  browser=await chromium.launch({headless:true,args:['--autoplay-policy=no-user-gesture-required']});
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));
@@ -30,7 +30,7 @@ try{
  await typed('猫の動画の話をしたいです。寝る前に何を見るか、簡単に聞いてください。');
  await page.getByRole('button',{name:'打开麦克风',exact:true}).click();await page.waitForFunction(()=>!!window.__destination);
  for(const [i,b64] of clips.entries()){
-  const n=await count();await page.evaluate(async b64=>{const ctx=window.__context;const buf=await ctx.decodeAudioData(Uint8Array.from(atob(b64),c=>c.charCodeAt(0)).buffer);const source=ctx.createBufferSource();source.buffer=buf;source.connect(window.__destination);source.start();},b64);const a=await settled(n);report.turns.push({kind:'synthetic_audio',index:i,assistant:a});
+  const n=await count();await page.evaluate(async b64=>{const ctx=window.__context;const buf=await ctx.decodeAudioData(Uint8Array.from(atob(b64),c=>c.charCodeAt(0)).buffer);const source=ctx.createBufferSource();source.buffer=buf;source.connect(window.__destination);source.start();},b64);const a=await settled(n);report.turns.push({kind:'synthetic_audio',user:texts[i],assistant:a});
  }
  await page.getByRole('button',{name:'关闭麦克风',exact:true}).click();assert.equal(await page.evaluate(()=>window.__release.inputTracks.every(t=>t.readyState==='ended')),true);report.checks.push('native conversation accepts four short synthetic word/phrase/sentence inputs; manual mute stops actual test tracks');
  await typed('昨日は忙しいでした。');
@@ -62,5 +62,5 @@ try{
  await page.getByRole('button',{name:'回去看看',exact:true}).click();await page.locator('.kc-lane').click();await page.getByRole('button',{name:/世界的新鲜事/}).click();for(let i=0;i<60&&!report.news;i++)await page.waitForTimeout(1000);
  assert.equal(report.news?.status,200,'Public sourced news generation must succeed');assert.ok(report.news.topics.length>0);assert.ok(report.news.topics.every(t=>t.sources?.length&&t.context.includes('发布日期：')&&t.context.includes('原文依据：')));await page.screenshot({path:out+'/news-390.png',fullPage:true});
  report.checks.push('separate news action returns dated publisher-linked context; factual claims reviewed separately');assert.deepEqual(report.errors,[]);report.nativeErrors=await page.evaluate(()=>window.__release.errors);assert.deepEqual(report.nativeErrors,[]);report.ok=true;await context.close();
-}catch(e){report.failure=e.message;process.exitCode=1;}
+}catch(e){report.failure=e.message;if(page&&!page.isClosed()){report.runtime=await page.evaluate(()=>({connectivity:window.__release?.connectivity,errors:window.__release?.errors,creates:window.__release?.creates,completed:window.__release?.completed,status:document.querySelector('.kc-inline-error')?.textContent})).catch(()=>null);await page.screenshot({path:out+'/failure.png',fullPage:true}).catch(()=>{});}process.exitCode=1;}
 finally{if(page&&!page.isClosed())await page.getByRole('button',{name:'结束聊天',exact:true}).click({timeout:1500}).catch(()=>{});await writeFile(out+'/result.json',JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks,failure:report.failure,fixtureResults:report.fixtures?.map(f=>({name:f.name,pass:f.pass})),news:report.news?.status}));await browser?.close();}
