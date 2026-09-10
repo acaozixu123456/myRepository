@@ -6,15 +6,25 @@ export type NoteRequest={requestId:string;mode:NoteMode;anchorId:string;source:s
 export type WrittenNote={id:string;anchorId:string;source:string;kind:NoteKind;suggestion:string;reasonZh:string;detailZh:string;mode:NoteMode};
 export const NOTE_LABELS:Record<NoteKind,string>={correction:'换一个小地方',extension:'也可以接成一句',wording:'借用这个说法',explanation:'这个表达，原来如此'};
 const safe=(v:unknown,n:number):v is string=>typeof v==='string'&&v.length<=n&&!/[\u0000-\u0008\u000b\u000c\u000e-\u001f<>]/u.test(v);
-export const languageQuestion=(s:string)=>/什么意思|什么含义|怎么说|怎么表达|如何表达|怎么读|语法|助词|自然吗|说得对吗|区别|どういう意味|という意味|って何|とは何|何と言|どう言|文法|自然ですか|意味を教/u.test(s);
+export const languageQuestion=(s:string)=>/什么意思|什么含义|怎么说|怎么表达|如何表达|怎么读|语法|助词|自然吗|说得对吗|区别|どういう意味|という意味ですか|って何|とは何|何と言|どう言|文法|自然ですか|意味を教|意味が(?:分か|わか)(?:らない|りません)|の意味は|(?:中文|中国語).*(?:解释|説明)/u.test(s);
+export function confirmedLanguageQuestion(context:NoteLine[]):boolean{
+ const answer=context.at(-1),previous=context.at(-2);
+ if(answer?.role!=='user'||previous?.role!=='assistant')return false;
+ const normalized=answer.text.replace(/[\s\p{P}]/gu,'');
+ if(!/^(?:はい|はいそうです|はいお願いします|うん|ええ|そうです|そうですね|お願いします|是的|对|对的|嗯|是|好的|好|请解释)$/u.test(normalized))return false;
+ const clarifying=/(?:意味|言い方|文法|词义|含义|意思|怎么说|解释)/u.test(previous.text)&&/(?:ですか|ますか|でしょうか|吗|[？?])/u.test(previous.text);
+ const pendingPromise=/文字で説明|文字で解説|用文字解释/u.test(previous.text)&&context.slice(0,-2).some(l=>l.role==='user'&&languageQuestion(l.text));
+ return clarifying||pendingPromise;
+}
 /** Reference is stable text associated with actual conversation items, never audio or invented user input. */
 export function noteRequest(lines:Line[],mode:NoteMode,target=0):NoteRequest|null{
  const usable=lines.filter(l=>l.text&&l.delivered&&!l.interrupted).slice(-10);
  const anchor=mode==='help'?usable.at(-1):[...usable].reverse().find(l=>l.role==='user');
  if(!anchor)return null;
  const end=usable.findIndex(l=>l.id===anchor.id);const context=usable.slice(Math.max(0,end-7),end+1).map(l=>({id:l.id,role:l.role,text:l.text.slice(0,700),delivered:true,interrupted:false,assistance:l.assistance}));
- if(mode==='auto'&&/^(?:はい|うん|いいえ|えっと|えーと|あの|嗯|呃|ありがとう|そうです)[。！!\s]*$/u.test(anchor.text))return null;
- return {requestId:crypto.randomUUID(),mode:mode==='auto'&&languageQuestion(anchor.text)?'question':mode,anchorId:anchor.id,source:anchor.text.slice(0,700),context,target:Math.min(3,Math.max(0,target))};
+ const question=languageQuestion(anchor.text)||confirmedLanguageQuestion(context);
+ if(mode==='auto'&&!question&&/^(?:はい|うん|いいえ|えっと|えーと|あの|嗯|呃|ありがとう|そうです)[。！!\s]*$/u.test(anchor.text))return null;
+ return {requestId:crypto.randomUUID(),mode:mode==='auto'&&question?'question':mode,anchorId:anchor.id,source:anchor.text.slice(0,700),context,target:Math.min(3,Math.max(0,target))};
 }
 export function validateNoteRequest(value:unknown):NoteRequest|null{
  if(!value||typeof value!=='object')return null;const r=value as NoteRequest;
