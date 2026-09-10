@@ -1,5 +1,5 @@
 export const OPENAI='https://api.openai.com/v1';
-type ProviderFault={status:number;code:string;param:string};
+import {classifyProviderError,type ProviderFault} from './providerError.ts';
 export class ServiceError extends Error {constructor(public reason:string,public status=503,public providerFault?:ProviderFault){super(reason);}}
 export const reply=(value:unknown,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
 const serviceRole=()=>Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
@@ -12,10 +12,9 @@ export async function credential(){const env=Deno.env.get('OPENAI_API_KEY');if(e
 export async function quota(bucket:string,limit:number,minutes:number){if(await rpc('consume_nihongo_coach_quota',{p_bucket:bucket,p_limit:limit,p_window_minutes:minutes})!==true)throw new ServiceError('app_usage_protection',429);}
 export async function provider(key:string,path:string,init:RequestInit,timeout=23000){
  const r=await fetch(`${OPENAI}${path}`,{...init,headers:{...init.headers,Authorization:`Bearer ${key}`},signal:AbortSignal.timeout(timeout)});
- if(!r.ok){const body=await r.json().catch(()=>({}));const raw=body?.error;const safe=(v:unknown)=>typeof v==='string'&&/^[a-zA-Z0-9_.\[\]-]{1,100}$/.test(v)?v:'';const code=safe(raw?.code),param=safe(raw?.param);
-  // Never log provider messages, request content, headers, transcripts, or credentials.
-  const fault={status:r.status,code,param};console.warn(JSON.stringify({event:'companion_provider_error',...fault}));
-  throw new ServiceError(code==='insufficient_quota'?'provider_credit':r.status===429?'provider_busy':r.status===404?'model_unavailable':'provider_request_failed',r.status===429?429:502,fault);
+ if(!r.ok){const body=await r.json().catch(()=>({}));const result=classifyProviderError(r.status,body?.error,r.headers.get('retry-after'));
+  console.warn(JSON.stringify({event:'companion_provider_error',...result.fault}));
+  throw new ServiceError(result.reason,result.status,result.fault);
  }return r;
 }
 export async function sign(value:unknown){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(serviceRole()),{name:'HMAC',hash:'SHA-256'},false,['sign']);const bytes=await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(JSON.stringify(value)));return Array.from(new Uint8Array(bytes),n=>n.toString(16).padStart(2,'0')).join('');}

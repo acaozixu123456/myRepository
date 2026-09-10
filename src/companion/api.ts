@@ -12,7 +12,9 @@ export function sessionTicket(data:any):Ticket{if(data?.contract!==COMPANION||da
 export function friendlyError(reason:string){
   if(/NotAllowed|Permission/u.test(reason))return '麦克风还没有获准使用。你仍然可以听，允许后再点一次开麦。';
   if(/NotFound|NotReadable/u.test(reason))return '暂时没有可用的麦克风。检查连接后再试，仍然可以听。';
-  if(/provider_credit/u.test(reason))return 'OpenAI API 账户的可用额度不足，暂时无法继续语音。';
+  if(/provider_credit/u.test(reason))return 'OpenAI API 预付余额已用完，语音和文字服务暂时不可用。需要在 API 账单页充值，反复重试不会恢复。';
+  if(/provider_spend_limit/u.test(reason))return 'OpenAI API 项目或组织的费用上限已达到。需要由账户管理者检查费用上限，不是临时繁忙。';
+  if(/provider_usage_limit/u.test(reason))return 'OpenAI API 账户的用量上限已达到，需要在平台检查限制。反复重试不会恢复。';
   if(/provider_busy/u.test(reason))return '语音服务现在有点忙，稍等片刻再试。';
   if(/app_usage/u.test(reason))return '这段时间的用量保护已触发，稍后再接着聊。不是你说得不好。';
   if(/news_unavailable/u.test(reason))return '暂时没有查到可靠的新消息，先换个日常话题吧。';
