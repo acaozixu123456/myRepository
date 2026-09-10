@@ -1,0 +1,36 @@
+name: Companion release real public voice and written teacher
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909, nihongo-vercel]
+    paths: ['docs/qa/RELEASE_LIVE_20260910.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: companion-release-live-${{ github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      TEST_BASE_URL: ${{ github.ref_name == 'nihongo-vercel' && 'https://nihongo-discovery-v2-20260831.vercel.app' || 'https://nihongo-discovery-v2-202608-git-30bf70-acaozixu123456s-projects.vercel.app' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck && npm test && npm run build
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright && npx playwright install --with-deps chromium
+      - name: Exact deployed artifact check
+        run: node scripts/companion-preview-access.mjs
+      - name: Actual public UI, native voice and separate text teacher
+        run: node scripts/companion-release-live.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-release-public-result
+          path: |
+            artifacts/companion-access/
+            artifacts/companion-release-live/

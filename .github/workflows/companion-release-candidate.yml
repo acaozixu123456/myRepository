@@ -1,0 +1,56 @@
+name: Companion quiet release candidate
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['scripts/release-companion-source.py', '.github/workflows/companion-release-candidate.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: companion-quiet-release-candidate
+  cancel-in-progress: false
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-adaptive-companion-v3-20260909
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python scripts/release-companion-source.py
+      - run: npm ci --no-audit --no-fund
+      - name: Source gate before committing runtime edits
+        run: |
+          set -o pipefail
+          mkdir -p artifacts/release-source
+          npm run typecheck 2>&1 | tee artifacts/release-source/typecheck.log
+          npm test 2>&1 | tee artifacts/release-source/tests.log
+          npm run build 2>&1 | tee artifacts/release-source/build.log
+      - name: Commit only reviewed generated companion edits
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/companion/connection.ts src/companion/writtenFeedback.ts src/companion/CompanionApp.tsx supabase/functions/nihongo-companion/writtenContract.ts supabase/functions/nihongo-companion/writtenFeedback.ts scripts/companion-preview-access.mjs
+          if ! git diff --cached --quiet; then git commit -m 'Complete silent teacher integration and tolerate transient connection loss'; git push origin HEAD:nihongo-adaptive-companion-v3-20260909; fi
+          git rev-parse HEAD > artifacts/release-source/source-sha.txt
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright && npx playwright install --with-deps chromium
+      - name: Phone-only lifecycle and actual public preview assets
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/release-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+          node scripts/companion-preview-access.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-release-source-phone
+          path: |
+            artifacts/release-source/
+            artifacts/companion-phone/
+            artifacts/companion-access/

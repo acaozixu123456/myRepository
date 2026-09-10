@@ -1,0 +1,20 @@
+import {describe,it,expect,vi,afterEach} from 'vitest';
+import {WrittenLane,noteStillApplies} from './writtenLane';
+import {noteRequest,languageQuestion} from './writtenFeedback';
+import {changeChallenge,freshPolicy,applyObservations,type Line} from './model';
+const line=(id:string,role:Line['role'],text:string):Line=>({id,role,text,previous:'',delivered:true,interrupted:false,assistance:'none',seq:0});
+const q=line('a','assistant','昨日はどうでしたか。'),u=line('u','user','昨日は忙しいでした。');
+const candidate=(source=u.text)=>({source,kind:'correction',certainty:'clear',meaningPreserved:true,suggestion:'昨日は忙しかったです。',reasonZh:'这里用过去式。',detailZh:''});
+afterEach(()=>vi.useRealTimers());
+describe('requested silent help has stable ownership',()=>{
+ it('does not cancel requested help when an assistant subtitle changes',async()=>{vi.useFakeTimers();let resolve!:(v:unknown)=>void;const request=vi.fn((_r:unknown,_s:AbortSignal)=>new Promise(r=>{resolve=r;}));const publish=vi.fn();const lane=new WrittenLane(request,publish);lane.update([q,u],0);lane.help();await vi.advanceTimersByTimeAsync(250);lane.update([q,u,line('b','assistant','何で忙しかったんですか。')],0);expect(request.mock.calls[0][1].aborted).toBe(false);resolve({...candidate(),kind:'wording'});await vi.advanceTimersByTimeAsync(1);expect(publish).toHaveBeenCalledTimes(1);lane.dispose();});
+ it('a new learner turn cancels the previous requested hint',async()=>{vi.useFakeTimers();const request=vi.fn((_r:unknown,_s:AbortSignal)=>new Promise(()=>{}));const lane=new WrittenLane(request,vi.fn());lane.update([q,u],0);lane.help();await vi.advanceTimersByTimeAsync(250);lane.update([q,u,line('new','user','あ、忙しかったです。')],0);expect(request.mock.calls[0][1].aborted).toBe(true);lane.dispose();});
+ it('explicit help still works with automatic suggestions off',async()=>{vi.useFakeTimers();const request=vi.fn().mockResolvedValue({...candidate(),kind:'wording'}),publish=vi.fn();const lane=new WrittenLane(request,publish);lane.setEnabled(false);lane.update([q,u],0);await vi.advanceTimersByTimeAsync(2000);expect(request).not.toHaveBeenCalled();lane.help();await vi.advanceTimersByTimeAsync(250);expect(publish).toHaveBeenCalledTimes(1);lane.dispose();});
+ it('opening the mic to speak does not erase requested help; reveal waits',async()=>{vi.useFakeTimers();const request=vi.fn().mockResolvedValue({...candidate(),kind:'wording'}),publish=vi.fn();const lane=new WrittenLane(request,publish);lane.update([q,u],0);lane.help();lane.setSpeaking(true);await vi.advanceTimersByTimeAsync(400);expect(request).not.toHaveBeenCalled();lane.setSpeaking(false);await vi.advanceTimersByTimeAsync(250);expect(publish).toHaveBeenCalledTimes(1);lane.dispose();});
+ it('self-repair before a delivered reply retires the old note',()=>{const note={...candidate(),id:'n',anchorId:'u',kind:'correction' as const,mode:'auto' as const};expect(noteStillApplies(note,[q,u,line('u2','user','忙しかったです。')])).toBe(false);});
+ it.each(['这个怎么表达？','如何表达“谢谢”？','ついって何？','それはどういう意味？'])('recognizes a language question: %s',s=>expect(languageQuestion(s)).toBe(true));
+ it('ordinary Chinese remains conversation not automatically a lesson',()=>expect(languageQuestion('今天工作很忙。')).toBe(false));
+ it('notes retain the actual previous question',()=>{const r=noteRequest([q,u,line('b','assistant','今日は？')],'auto')!;expect(r.context.at(-1)?.id).toBe('u');expect(r.context[0].text).toBe(q.text);});
+ it('viewing a prompt never counts as independent mastery',()=>{const user={...u,assistance:'hint' as const};const p=applyObservations(freshPolicy(),[{id:u.id,meaning:'clear',independence:'independent',complexity:2,comprehension:'comfortable'}],[user]);expect(p.independent).toBe(0);expect(p.assisted).toBe(1);});
+ it('manual challenge remains bounded and versioned',()=>{const p=changeChallenge(freshPolicy(),1);expect(p.target).toBe(1);expect(p.lastMove).toBe('user');expect(p.revision).toBe(1);expect(changeChallenge(p,-9).target).toBe(0);});
+});
