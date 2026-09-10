@@ -1,0 +1,114 @@
+name: Companion continuity production verification 20260911
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths:
+      - src/companion/**
+      - supabase/functions/nihongo-companion/**
+      - scripts/companion-continuity-live.mjs
+      - .github/workflows/companion-continuity-publication-20260911.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: companion-continuity-publication-20260911
+  cancel-in-progress: false
+jobs:
+  publication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - name: Verify committed production source
+        id: source
+        run: |
+          mkdir -p artifacts/companion-publication
+          npm run typecheck 2>&1 | tee artifacts/companion-publication/typecheck.log
+          npm test 2>&1 | tee artifacts/companion-publication/tests.log
+          npm run build 2>&1 | tee artifacts/companion-publication/build.log
+      - name: Verify exact public HTML, JavaScript, styles and unchanged authorization guards
+        id: assets
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFile,writeFile} from 'node:fs/promises';
+          import {createHash} from 'node:crypto';
+          import assert from 'node:assert/strict';
+          const base='https://nihongo-discovery-v2-20260831.vercel.app';
+          const digest=b=>createHash('sha256').update(b).digest('hex');
+          const report={source:process.env.GITHUB_SHA,release:'repair-20260911',base,verifiedAt:null,assets:[],guards:[]};
+          for(const page of ['companion.html','index.html']){
+            const html=await readFile('dist/'+page,'utf8');
+            const paths=[...new Set([...html.matchAll(/(?:src|href)="(\/assets\/[^"<>]+\.(?:js|css))"/g)].map(m=>m[1]))];
+            assert.ok(paths.length>=2,'Built app must include script and style assets');
+            const expected=await Promise.all(paths.map(async path=>({path,sha256:digest(await readFile('dist'+path))})));
+            let matched=false,last='';
+            for(let attempt=0;attempt<35;attempt++){
+              try{
+                const r=await fetch(`${base}/${page}?release_check=${process.env.GITHUB_RUN_ID}-${attempt}`,{signal:AbortSignal.timeout(12000)});
+                assert.equal(r.status,200);const live=await r.text();
+                assert.ok(expected.every(a=>live.includes(a.path)),'Public HTML still points to an earlier build');
+                for(const a of expected){const asset=await fetch(base+a.path,{signal:AbortSignal.timeout(15000)});assert.equal(asset.status,200);assert.equal(digest(Buffer.from(await asset.arrayBuffer())),a.sha256);}
+                matched=true;break;
+              }catch(e){last=e.message;await new Promise(r=>setTimeout(r,5000));}
+            }
+            assert.ok(matched,`${page}: ${last}`);report.assets.push({page,matched:true,files:expected});
+          }
+          for(const fixture of [{action:'companion_start',status:400,reason:'audio_consent_required'},{action:'companion_feedback',status:403,reason:'invalid_session_ticket'}]){
+            const r=await fetch(base+'/api/nhk-speech',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify({action:fixture.action}),signal:AbortSignal.timeout(20000)});
+            const body=await r.json();assert.equal(r.status,fixture.status);assert.equal(body.reason,fixture.reason);report.guards.push({action:fixture.action,status:r.status,reason:body.reason});
+          }
+          report.verifiedAt=new Date().toISOString();await writeFile('artifacts/companion-publication/public-assets.json',JSON.stringify(report,null,2));console.log('EXACT_PUBLIC_ASSETS',JSON.stringify(report));
+          NODE
+      - name: Install bounded browser verification
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/companion-publication-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+      - name: Repeat mobile continuity checks against the released source
+        id: phone
+        run: node scripts/companion-continuity-phone.mjs
+      - name: Bounded actual provider check, no physical microphone
+        id: live
+        continue-on-error: true
+        timeout-minutes: 5
+        run: node scripts/companion-continuity-live.mjs
+      - name: Record evidence without conflating mocks and actual provider results
+        if: always() && steps.assets.outcome == 'success'
+        env:
+          SOURCE_OUTCOME: ${{ steps.source.outcome }}
+          PHONE_OUTCOME: ${{ steps.phone.outcome }}
+          LIVE_OUTCOME: ${{ steps.live.outcome }}
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFile,writeFile,mkdir} from 'node:fs/promises';
+          const read=async p=>JSON.parse(await readFile(p,'utf8'));
+          const tests=(await readFile('artifacts/companion-publication/tests.log','utf8')).replace(/\u001b\[[0-9;]*m/g,'');
+          const report={source:process.env.GITHUB_SHA,release:'repair-20260911',run:`https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`,sourceGate:process.env.SOURCE_OUTCOME,testsPassed:Number(tests.match(/Tests\s+(\d+) passed/)?.[1]||0),public:await read('artifacts/companion-publication/public-assets.json'),phoneGate:process.env.PHONE_OUTCOME,phone:await read('artifacts/companion-continuity/result.json').catch(()=>null),liveGate:process.env.LIVE_OUTCOME,live:await read('artifacts/companion-publication/real-provider.json').catch(()=>({status:'not_completed',ok:false})),physicalIPhoneTested:false};
+          await mkdir('docs/qa',{recursive:true});await writeFile('docs/qa/COMPANION_CONTINUITY_20260911.json',JSON.stringify(report,null,2)+'\n');await writeFile('artifacts/companion-publication/release-report.json',JSON.stringify(report,null,2));console.log('COMPANION_PUBLICATION_REPORT',JSON.stringify(report));
+          NODE
+          git fetch origin nihongo-vercel
+          if [ "$(git rev-parse origin/nihongo-vercel)" = "$GITHUB_SHA" ]; then
+            git config user.name 'Sol supervisor'
+            git config user.email '331004814@qq.com'
+            git add docs/qa/COMPANION_CONTINUITY_20260911.json
+            git commit -m 'Record verified companion continuity release and separate real-provider evidence'
+            git push origin HEAD:nihongo-vercel
+          else
+            echo 'Production branch advanced; preserve evidence as artifacts without changing newer source.'
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-continuity-publication-20260911
+          path: |
+            artifacts/companion-publication/
+            artifacts/companion-continuity/
+            docs/qa/COMPANION_CONTINUITY_20260911.json
