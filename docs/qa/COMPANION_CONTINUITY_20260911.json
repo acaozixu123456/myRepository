@@ -1,0 +1,196 @@
+{
+  "source": "deb7d0fcf9f2b98656fd22af36e50c33b77582af",
+  "release": "repair-20260911",
+  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34506303611",
+  "sourceGate": "success",
+  "testsPassed": 468,
+  "public": {
+    "source": "deb7d0fcf9f2b98656fd22af36e50c33b77582af",
+    "release": "repair-20260911",
+    "base": "https://nihongo-discovery-v2-20260831.vercel.app",
+    "verifiedAt": "2026-09-10T17:08:47.529Z",
+    "assets": [
+      {
+        "page": "companion.html",
+        "matched": true,
+        "files": [
+          {
+            "path": "/assets/companion-BbD2cxaF.js",
+            "sha256": "3c035003e3df1dec29fba2c5dca34aa751e3cdcd631ea6457e417f25bd8870e9"
+          },
+          {
+            "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
+            "sha256": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0"
+          },
+          {
+            "path": "/assets/nhkAudioActivity-CMgBDc8_.js",
+            "sha256": "fadeec6baf586204e64fb4fb0edc946a4438276e453e4f04a62693df69ba1b9c"
+          },
+          {
+            "path": "/assets/companion-QrEdX5CV.css",
+            "sha256": "2f38d8396320cdee3336da8939def4996b7ce3926434e632a4786ef4dbd30289"
+          }
+        ]
+      },
+      {
+        "page": "index.html",
+        "matched": true,
+        "files": [
+          {
+            "path": "/assets/main-HjCa46uJ.js",
+            "sha256": "5e2fe7b8946c9bb8c729da51118953842031ba0ac04176e0866ce6b94635c9c8"
+          },
+          {
+            "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
+            "sha256": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0"
+          },
+          {
+            "path": "/assets/nhkAudioActivity-CMgBDc8_.js",
+            "sha256": "fadeec6baf586204e64fb4fb0edc946a4438276e453e4f04a62693df69ba1b9c"
+          },
+          {
+            "path": "/assets/main-Dc07T_AD.css",
+            "sha256": "ad7c1cbd3d4d42861a44d0112b8a690b833b89f370e405c5fcd613710ecf87b9"
+          }
+        ]
+      }
+    ],
+    "guards": [
+      {
+        "action": "companion_start",
+        "status": 400,
+        "reason": "audio_consent_required"
+      },
+      {
+        "action": "companion_feedback",
+        "status": 403,
+        "reason": "invalid_session_ticket"
+      }
+    ]
+  },
+  "phoneGate": "success",
+  "phone": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scope": "MOCKED_PROVIDER_AND_MEDIA_REAL_UI_NOT_HUMAN_IPHONE",
+      "successiveNotes": 5,
+      "readingPointerCancel": true,
+      "openDetailsDoesNotLock": true,
+      "confirmationExplained": true,
+      "failedHelpVisibleAndRetryable": true,
+      "retryDoesNotCreateVoiceReply": true,
+      "continuationCoalesced": true,
+      "nativeResponseBeforeAsr": true,
+      "oldTopicNotesExcluded": true,
+      "startsMuted": true,
+      "micTracksStopped": true,
+      "pageErrors": []
+    },
+    {
+      "viewport": {
+        "width": 375,
+        "height": 667
+      },
+      "scope": "MOCKED_PROVIDER_AND_MEDIA_REAL_UI_NOT_HUMAN_IPHONE",
+      "successiveNotes": 5,
+      "readingPointerCancel": true,
+      "openDetailsDoesNotLock": true,
+      "confirmationExplained": true,
+      "failedHelpVisibleAndRetryable": true,
+      "retryDoesNotCreateVoiceReply": true,
+      "continuationCoalesced": true,
+      "nativeResponseBeforeAsr": true,
+      "oldTopicNotesExcluded": true,
+      "startsMuted": true,
+      "micTracksStopped": true,
+      "pageErrors": []
+    }
+  ],
+  "liveGate": "success",
+  "live": {
+    "scope": "REAL_PROVIDER_TYPED_SYNTHETIC_INPUT_NATIVE_AUDIO_OUTPUT_NOT_HUMAN_IPHONE",
+    "status": "passed",
+    "ok": true,
+    "turns": [
+      {
+        "inputType": "TYPED_SYNTHETIC",
+        "user": "アーティストとバンドは、どういう意味ですか。",
+        "assistant": "「アーティスト」と「バンド」ですね。今、どちらかの使い方を相談したいですか？"
+      },
+      {
+        "inputType": "TYPED_SYNTHETIC",
+        "user": "静かな感じが好きです。寝るためではなく、休憩中に動画を見るだけです。",
+        "assistant": "静かな雰囲気いいですね。休憩のときに見るの、ちょうど良さそうです。どんな動画が多いですか。"
+      },
+      {
+        "inputType": "TYPED_SYNTHETIC",
+        "user": "眠る話ではありません。静かな動画の雰囲気が好き、という意味です。",
+        "assistant": "うん、眠るためじゃなくて、静かな雰囲気そのものが好きなんですね。そういう動画って落ち着きますよね。最近よく見るのは、自然の映像ですか？"
+      }
+    ],
+    "notes": [
+      {
+        "id": "acc642d2-f15f-4226-a5c7-0dc0c7c667b1",
+        "anchorId": "typed_0bb210468d7d4cacb31adbb1",
+        "source": "アーティストとバンドは、どういう意味ですか。",
+        "kind": "explanation",
+        "suggestion": "アーティストは歌手や音楽家などを指し、バンドは複数人で音楽を演奏するグループです。",
+        "reasonZh": "アーティスト是“艺术家/艺人”，在音乐语境里常指歌手、音乐人等；バンド是“乐队”，指几个人组成一起演奏音乐的团体。",
+        "detailZh": "",
+        "mode": "question"
+      }
+    ],
+    "fixtures": [
+      {
+        "name": "confirmed-meaning-from-screenshot",
+        "status": 200,
+        "pass": true,
+        "note": {
+          "id": "f706e6a9-bd38-4bf5-af7e-b03c365c6464",
+          "anchorId": "qa-user",
+          "source": "はい。",
+          "kind": "explanation",
+          "suggestion": "アーティストやバンドは、音楽をする人やグループです。",
+          "reasonZh": "“アーティストやバンド”就是指艺术家或乐队；在音乐语境里，通常是“歌手、音乐人、乐队”等表演者。",
+          "detailZh": "",
+          "mode": "question",
+          "certainty": "clear",
+          "meaningPreserved": true
+        },
+        "disposition": "shown"
+      },
+      {
+        "name": "minimal-past-tense-still-works",
+        "status": 200,
+        "pass": true,
+        "note": {
+          "id": "719055a1-8c8f-415f-aab4-5d289c245775",
+          "anchorId": "qa-user",
+          "source": "昨日は忙しいでした。",
+          "kind": "correction",
+          "suggestion": "昨日は忙しかったです。",
+          "reasonZh": "形容詞“忙しい”不能直接接“でした”。",
+          "detailZh": "",
+          "mode": "auto",
+          "certainty": "clear",
+          "meaningPreserved": true
+        },
+        "disposition": "shown"
+      }
+    ],
+    "providerFailures": [],
+    "health": {
+      "status": 200,
+      "mode": "native-stateful-audio"
+    },
+    "opening": "つい何度も見てしまう動画はありますか。",
+    "noPhysicalMicrophone": true,
+    "stockPromiseNotObserved": true,
+    "connectionStayedLive": true,
+    "semanticReview": "Actual generated utterances recorded for supervisor review; not inferred solely from transport."
+  },
+  "physicalIPhoneTested": false
+}
