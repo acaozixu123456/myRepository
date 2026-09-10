@@ -1,0 +1,31 @@
+name: Inspect real signed text feedback fixtures
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['scripts/companion-notes-diagnostic.mjs','.github/workflows/companion-notes-diagnostic.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  notes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright && npx playwright install --with-deps chromium
+      - run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/notes-fixtures.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-notes-diagnostic.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-notes-direct-diagnostic
+          path: artifacts/notes-diagnostic/
