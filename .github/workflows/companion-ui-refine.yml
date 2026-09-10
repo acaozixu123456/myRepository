@@ -1,0 +1,46 @@
+name: Finalize quiet-note mobile reader behavior
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['scripts/refine-written-ui.py']
+permissions:
+  contents: write
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Commit exact reviewed UI edits before testing
+        run: |
+          python scripts/refine-written-ui.py
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/companion/CompanionApp.tsx
+          git commit -m 'Preserve reading position and hide superseded or disabled automatic notes'
+          git push origin HEAD:nihongo-adaptive-companion-v3-20260909
+          mkdir -p artifacts/companion-phone
+          git rev-parse HEAD > artifacts/companion-phone/source-sha.txt
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck && npm test && npm run build
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright && npx playwright install --with-deps chromium
+      - name: Mobile UI and public preview assets
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/quiet-reader.log 2>&1 &
+          for i in $(seq 1 25); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+          GITHUB_SHA=$(git rev-parse HEAD) node scripts/companion-preview-access.mjs
+          git archive HEAD src api server supabase scripts package.json package-lock.json tsconfig.json vite.config.ts index.html companion.html explore.html README.md > artifacts/companion-phone/source.tar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-quiet-reader
+          path: |
+            artifacts/companion-phone/
+            artifacts/companion-access/
