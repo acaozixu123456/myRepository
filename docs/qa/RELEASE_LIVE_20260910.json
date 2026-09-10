@@ -1,1 +1,16 @@
-{"purpose":"Release acceptance, preserving prior failed evidence","runtimeSource":"fea221b0ddba115f75301f76ba76b415823f4681","backendVersion":12,"attempt":3,"previous":[{"run":34435000943,"failure":"Synthetic fixture unavailable before any conversation; cause not established"},{"run":34435542361,"failure":"Cached audio fixtures200, but companion start returned provider_busy. No native peer was established."}],"followup":"Read-only operational query confirms zero active leases/recent heartbeat on2026-09-10T04:06Z. Add whitelisted action/status/reason/provider-code diagnostics; do not change quota, model, access controls or assertions."}
+{
+  "purpose": "Bounded actual production acceptance after user-confirmed prepaid credit restoration",
+  "runtimeSource": "82abda991f2640af5aef1ddad907b28bc81e4f47",
+  "productionBase": "2a90e3ce51380031c48c1797908dbbd1f5af43e3",
+  "backendVersion": 13,
+  "attempt": 4,
+  "userConfirmedCreditsRestored": true,
+  "billingModifiedBySupervisor": false,
+  "previous": [
+    {"run": 34435000943, "failure": "Synthetic fixture unavailable before conversation"},
+    {"run": 34435542361, "failure": "Companion start could not establish a native peer"},
+    {"run": 34435928253, "failure": "Actual provider code credit_balance_exhausted; stopped generation retries"}
+  ],
+  "checks": ["exact production assets", "actual native synthetic word/phrase/sentence inputs", "manual microphone and exit", "written correction/help/language explanation", "normal short answers and self-repair", "delayed/failed written feedback must not block native chat", "current-intent/time/negation continuity", "no transcript/note persistence", "source-dated aligned news"],
+  "scope": "One real production session plus bounded written fixtures and one news batch; not human iPhone or measured learning efficacy. Preserve prior failed evidence. Do not rotate keys, alter limits, substitute models or bypass access controls."
+}
