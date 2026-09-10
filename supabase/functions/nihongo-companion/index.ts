@@ -3,18 +3,20 @@ import {COMPANION,CONSENT,VOICE_MODEL,LOCAL_SEEDS,validSeed,validPolicy,companio
 import {credential,reply,quota,provider,ServiceError,lease,sign,validSignature,ticketValue,verifyTicket,hangup} from './service.ts';
 import {ensureMonitor} from './monitor.ts';
 import {topics,observe} from './content.ts';
+import {writtenFeedback} from './writtenFeedback.ts';
 Deno.serve(async(req:Request)=>{
  if(req.method!=='POST')return reply({ok:false,reason:'method_not_allowed'},405);
  let body:any;try{const s=await req.text();if(s.length>100000)throw new Error();body=JSON.parse(s);if(!body||typeof body!=='object')throw new Error();}catch{return reply({ok:false,reason:'invalid_input'},400);}
  try{
   const action=String(body.action||'');
   if(action==='health'){const k=await credential();const r=await provider(k,`/models/${VOICE_MODEL}`,{method:'GET'},7000);return reply({ok:r.ok,contract:COMPANION,model:VOICE_MODEL,mode:'native-stateful-audio',scheduler:'client-committed-item',maxMinutes:20});}
-  if(['heartbeat','stop','observe'].includes(action)){
+  if(['heartbeat','stop','observe','feedback'].includes(action)){
    await verifyTicket(body);const k=await credential();
    if(action==='stop'){await lease('stop',body.callId);await hangup(k,body.callId);return reply({ok:true});}
    const row=await lease(action==='heartbeat'?'touch':'read',body.callId);if(!row||row.closed)return reply({ok:false,reason:'session_closed'},409);
    if(action==='heartbeat'){await ensureMonitor(k,body.callId);return reply({ok:true,expiresAt:row.expiresAt});}
-   return reply({ok:true,observations:await observe(k,body)});
+   if(action==='feedback')return reply({ok:true,...await writtenFeedback(k,body)});
+      return reply({ok:true,observations:await observe(k,body)});
   }
   if(!/^[a-f0-9]{48}$/.test(body.clientKey||''))throw new ServiceError('invalid_client',400);
   if(action==='topics')return reply({ok:true,topics:await topics(await credential(),body)});

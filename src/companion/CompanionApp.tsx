@@ -3,6 +3,8 @@ import {ArrowRight,ArrowUp,ChevronDown,Check,Headphones,Leaf,Mic,MicOff,MoreHori
 import {CompanionConnection,type Phase} from './connection';
 import {chooseSeed,LOCAL_SEEDS,readLearning,writeLearning,eraseLearning,freshPolicy,type Seed,type Policy,type Lane,type Line} from './model';
 import {fetchTopics,friendlyError} from './api';
+import {WrittenNoteCard} from './WrittenNoteCard';
+import type {WrittenNote} from './writtenFeedback';
 import type {VoiceActivity} from '../nhkAudioActivity';
 const LANES:Record<Lane,{name:string;note:string}>={mix:{name:'随意聊聊',note:'从日常，聊到一点小想象'},interests:{name:'兴趣与想象',note:'喜欢的事，和没试过的可能'},work:{name:'工作中的一句话',note:'把真正想说的意思说顺'},curiosity:{name:'一点好奇心',note:'换个角度，想想有趣的小问题'},news:{name:'世界的新鲜事',note:'有来源的真实新闻，轻轻聊一点'}};
 const silent:VoiceActivity={micOn:false,input:'off',output:'idle',inputLevel:0,outputLevel:0,meterReady:false};
@@ -14,18 +16,21 @@ export default function CompanionApp(){
   const [seed,setSeed]=useState<Seed>(()=>chooseSeed(LOCAL_SEEDS,[]));const [lane,setLane]=useState<Lane>('mix');const [pool,setPool]=useState(LOCAL_SEEDS);const seen=useRef<string[]>([seed.id]);const avoided=useRef<string[]>([seed.title]);
   const [view,setView]=useState<'home'|'chat'|'end'>('home'),[phase,setPhase]=useState<Phase>('ready'),[lines,setLines]=useState<Line[]>([]),[activity,setActivity]=useState<VoiceActivity>(silent),[notice,setNotice]=useState(''),[error,setError]=useState('');
   const [sheet,setSheet]=useState<Sheet>(null),[busyTopics,setBusyTopics]=useState(false),[topicNote,setTopicNote]=useState(''),[draft,setDraft]=useState(''),[speed,setSpeed]=useState(.8),[showText,setShowText]=useState(true);
+  const [notes,setNotes]=useState<WrittenNote[]>([]),[expandedNote,setExpandedNote]=useState(''),[writtenEnabled,setWrittenEnabled]=useState(true),[notePending,setNotePending]=useState(false);
+  const readingNote=useRef(false),followBottom=useRef(true);
   const [memory,setMemory]=useState(false),[protectedMemory,setProtectedMemory]=useState(false);const policy=useRef<Policy>(freshPolicy());const memoryRef=useRef(false);
   const conn=useRef<CompanionConnection|null>(null),generation=useRef(0),dialog=useRef<HTMLDialogElement>(null),scroller=useRef<HTMLDivElement>(null),topicAbort=useRef<AbortController|null>(null),topicSeq=useRef(0),lastFetch=useRef(0),topicBusy=useRef(false);
   useEffect(()=>{const stored=readLearning(localStorage);policy.current=stored.policy;setMemory(stored.enabled);memoryRef.current=stored.enabled;setProtectedMemory(stored.protected);return()=>{generation.current++;conn.current?.dispose();topicAbort.current?.abort();};},[]);
   useEffect(()=>{if(sheet){dialog.current?.showModal();}else dialog.current?.close();},[sheet]);
   useEffect(()=>{const hidden=()=>{if(document.hidden)conn.current?.end();};const pagehide=()=>conn.current?.dispose();document.addEventListener('visibilitychange',hidden);window.addEventListener('pagehide',pagehide);return()=>{document.removeEventListener('visibilitychange',hidden);window.removeEventListener('pagehide',pagehide);};},[]);
-  useEffect(()=>{if(scroller.current)scroller.current.scrollTop=scroller.current.scrollHeight;},[lines,phase]);
-  const begin=()=>{conn.current?.dispose();const id=++generation.current;setView('chat');setPhase('connecting');setLines([]);setActivity(silent);setError('');setNotice('');
-    const current=()=>generation.current===id;const c=new CompanionConnection(seed,policy.current,{phase:p=>{if(current()){setPhase(p);if(p==='closed')setView('end');}},lines:l=>{if(current())setLines(l);},activity:a=>{if(current())setActivity(a);},notice:s=>{if(current())setNotice(s);},error:s=>{if(current())setError(friendlyError(s));},policy:p=>{if(current()){policy.current=p;if(memoryRef.current)try{writeLearning(localStorage,p);}catch{setNotice('这次的练习节奏没有保存，聊天不受影响。');}}}});
-    conn.current=c;c.setPace(speed);void c.start();
+  useEffect(()=>{const el=scroller.current;if(el&&followBottom.current&&!readingNote.current)el.scrollTop=el.scrollHeight;},[lines,phase]);
+  useEffect(()=>{conn.current?.setWrittenEnabled(writtenEnabled&&showText);},[writtenEnabled,showText]);
+  const begin=()=>{conn.current?.dispose();const id=++generation.current;setView('chat');setPhase('connecting');setLines([]);setNotes([]);setExpandedNote('');setNotePending(false);readingNote.current=false;followBottom.current=true;setActivity(silent);setError('');setNotice('');
+    const current=()=>generation.current===id;const c=new CompanionConnection(seed,policy.current,{phase:p=>{if(current()){setPhase(p);if(p==='closed')setView('end');}},lines:l=>{if(current())setLines(l);},activity:a=>{if(current())setActivity(a);},notice:s=>{if(current())setNotice(s);},error:s=>{if(current())setError(friendlyError(s));},written:n=>{if(current()){setNotes(old=>[...old.filter(x=>x.anchorId!==n.anchorId),n].slice(-24));if(!readingNote.current)setExpandedNote(n.id);}},writtenPending:v=>{if(current())setNotePending(v);},policy:p=>{if(current()){policy.current=p;if(memoryRef.current)try{writeLearning(localStorage,p);}catch{setNotice('这次的练习节奏没有保存，聊天不受影响。');}}}});
+    conn.current=c;c.setPace(speed);c.setWrittenEnabled(writtenEnabled&&showText);void c.start();
   };
-  const finish=()=>{setSheet(null);conn.current?.end();setLines([]);};
-  const useSeed=(next:Seed)=>{setSeed(next);seen.current=[...seen.current,next.id].slice(-100);avoided.current=[...avoided.current,next.title].slice(-24);if(view==='chat'&&!['error','closed'].includes(phase))conn.current?.setTopic(next);};
+  const finish=()=>{setSheet(null);conn.current?.end();setLines([]);setNotes([]);setNotePending(false);};
+  const useSeed=(next:Seed)=>{setNotes([]);setExpandedNote('');readingNote.current=false;conn.current?.setReadingNote(false);setSeed(next);seen.current=[...seen.current,next.id].slice(-100);avoided.current=[...avoided.current,next.title].slice(-24);if(view==='chat'&&!['error','closed'].includes(phase))conn.current?.setTopic(next);};
   const replenish=async(wanted:Lane,selectWhenReady=false)=>{
     if(topicBusy.current)return;if(Date.now()-lastFetch.current<15000&&!selectWhenReady)return;
     topicBusy.current=true;const sessionGeneration=generation.current;lastFetch.current=Date.now();const seq=++topicSeq.current;topicAbort.current?.abort();const abort=topicAbort.current=new AbortController();setBusyTopics(true);setTopicNote('');
@@ -35,10 +40,11 @@ export default function CompanionApp(){
   const shuffle=()=>{const choices=pool.filter(s=>(lane==='mix'||s.lane===lane)&&s.expiresAt>Date.now());if(choices.length)useSeed(chooseSeed(choices,seen.current,lane));else{void replenish(lane,true);return;}if(choices.filter(s=>!seen.current.includes(s.id)).length<5||!choices.some(s=>s.signature))void replenish(lane);};
   const chooseLane=(next:Lane)=>{topicSeq.current++;topicAbort.current?.abort();topicBusy.current=false;setBusyTopics(false);setLane(next);setSheet(null);setTopicNote('');const choices=pool.filter(s=>(next==='mix'||s.lane===next)&&s.expiresAt>Date.now());if(choices.length)useSeed(chooseSeed(choices,seen.current,next));if(next==='news'||!choices.length)void replenish(next,true);else void replenish(next);};
   const toggleMemory=()=>{if(memory){eraseLearning(localStorage);memoryRef.current=false;setMemory(false);return;}if(protectedMemory)return;try{writeLearning(localStorage,policy.current);memoryRef.current=true;setMemory(true);}catch{setNotice('这个浏览器暂时无法保存，下次也可以重新认识你的节奏。');}};
-  const act=(action:'help'|'repeat'|'simpler'|'repair')=>{setSheet(null);conn.current?.action(action);};
+  const act=(action:'help'|'repeat'|'simpler'|'repair')=>{setSheet(null);if(action==='help'){setShowText(true);readingNote.current=false;conn.current?.setReadingNote(false);conn.current?.writtenHelp();return;}conn.current?.action(action);};
+  const toggleNote=(id:string)=>{const next=expandedNote===id?'':id;setExpandedNote(next);readingNote.current=!!next;followBottom.current=false;conn.current?.setReadingNote(!!next);};
   const micLabel=!activity.micOn?'点一下，开麦说':activity.input==='requesting'?'正在打开麦克风':activity.input==='device-muted'?'麦克风暂时不可用':'已开麦 · 再点闭麦';
   const liveState=phase==='error'?'声音暂时没有接上':phase==='connecting'?'正在接通声音':activity.output==='blocked'?'声音等待播放':activity.output==='playing'?'听一句，慢慢来':phase==='thinking'?'正在接你的话':activity.micOn?'我在听，你慢慢说':'先听也好，准备好再开口';
-  const visible=lines.filter(l=>l.text).slice(-5);const lastId=visible.at(-1)?.id;
+  const visible=lines.filter(l=>l.text).slice(-32);const lastId=visible.at(-1)?.id;
   return <div className="kc-root" data-companion="native-v3">
     <div className="kc-shell">
       <header className="kc-header">
@@ -52,18 +58,19 @@ export default function CompanionApp(){
         {topicNote&&<p className="kc-topic-note" role="status">{topicNote}</p>}
         {busyTopics&&<p className="kc-topic-note" role="status">在找新的话头，不耽误现在开聊。</p>}
         {seed.sources.length>0&&<button className="kc-source-link" onClick={()=>setSheet('sources')}>看看消息来源<ArrowRight size={13}/></button>}
-        <div className="kc-start-area"><button className="kc-start" onClick={begin}><span>聊一会儿</span><ArrowRight size={21}/></button><p>先听一句，点麦克风后才收音。</p></div>
+        <div className="kc-start-area"><button className="kc-start" onClick={begin}><span>聊一会儿</span><ArrowRight size={21}/></button><p>先听一句，点麦克风后才收音。<br/>文字小提示会安静出现，可以在偏好里关闭。</p></div>
         <footer className="kc-home-footer"><a href="/">我的 NHK 文章<BookOpen size={14}/></a><button onClick={()=>setSheet('settings')}>偏好<SlidersHorizontal size={14}/></button></footer><p className="kc-disclosure">AI 语音由 OpenAI 提供 · 不保存录音</p>
       </main>}
       {view==='chat'&&<>
-        <main className="kc-conversation" ref={scroller} aria-label="当前对话">
+        <main className="kc-conversation" ref={scroller} aria-label="当前对话" onScroll={e=>{const el=e.currentTarget;followBottom.current=el.scrollHeight-el.scrollTop-el.clientHeight<70;}}>
           {visible.length===0&&<div className="kc-awaiting"><span className="kc-small-sprig"><Sprig/></span><p>{phase==='connecting'?'把声音接过来…':'给你递一个话头…'}</p><span>不着急，先听一句。</span></div>}
-          {showText&&visible.map((line,index)=><article key={line.id} className={`kc-line ${line.role} ${line.id===lastId?'latest':''} ${index<visible.length-2?'earlier':''}`}><span className="kc-line-label">{line.role==='assistant'?'ひとこと':'你'}</span><p lang={line.role==='assistant'?'ja':undefined}>{line.text}</p>{line.interrupted&&<small>刚才这一句已打断</small>}</article>)}
+          {showText&&visible.map((line,index)=><article key={line.id} data-line-id={line.id} className={`kc-line ${line.role} ${line.id===lastId?'latest':''} ${index<visible.length-2?'earlier':''}`}><span className="kc-line-label">{line.role==='assistant'?'ひとこと':'你'}</span><p lang={line.role==='assistant'?'ja':undefined}>{line.text}</p>{line.interrupted&&<small>刚才这一句已打断</small>}{!line.interrupted&&notes.filter(n=>n.anchorId===line.id&&n.source===line.text.slice(0,700)).map(n=><WrittenNoteCard key={n.id} note={n} expanded={expandedNote===n.id} onToggle={()=>toggleNote(n.id)} onDismiss={()=>{conn.current?.dismissNote(n.anchorId);setNotes(old=>old.filter(x=>x.id!==n.id));readingNote.current=false;conn.current?.setReadingNote(false);}} onSeen={()=>conn.current?.exposeNote(n.id)}/>)}</article>)}
           {!showText&&visible.length>0&&<div className="kc-listen-only"><Sprig/><h2>听着聊，也很好。</h2><p>需要文字时，在「更多」里打开。</p></div>}
           {phase==='thinking'&&visible.length>0&&<p className="kc-thinking" role="status"><span/><span/><span/><em>正在接话</em></p>}
           {error&&<div className="kc-inline-error" role="alert"><p>{error}</p><button onClick={begin}>重新接上<ArrowRight size={16}/></button></div>}
         </main>
         <footer className="kc-chat-bottom">
+          {notePending&&<p className="kc-note-pending">在想一个你用得上的说法，聊天照常。</p>}
           {notice&&<p className="kc-notice" role="status">{notice}</p>}
           {activity.output==='blocked'&&<button className="kc-unlock" onClick={()=>void conn.current?.unlock()}><Volume2 size={16}/>点一下听声音</button>}
           <div className="kc-audio-status"><span className={`kc-person-meter ${activity.micOn?'on':''}`}><small>你</small><Bars level={activity.inputLevel} active={activity.micOn}/></span><p role="status">{liveState}</p><span className="kc-person-meter"><Bars level={activity.outputLevel} active={activity.output==='playing'}/><small>对方</small></span></div>
@@ -79,9 +86,10 @@ export default function CompanionApp(){
         {view==='chat'&&<div className="kc-quick-help"><button onClick={()=>act('repeat')}><RotateCcw size={18}/><span>再听一遍</span></button><button onClick={()=>{setSpeed(.7);conn.current?.setPace(.7);act('repeat');}}><Headphones size={18}/><span>慢一点</span></button><button onClick={()=>{conn.current?.changeDifficulty(-1);act('simpler');}}><Leaf size={18}/><span>简单一点</span></button><button onClick={()=>{conn.current?.changeDifficulty(1);setSheet(null);setNotice('接下来，轻轻多说一点。语速不变。');}}><ArrowUp size={18}/><span>多说一点</span></button></div>}
         <div className="kc-option-list">
           {view==='chat'&&<><button onClick={()=>setSheet('write')}><span><strong>用文字接一句</strong><small>中文、日语都可以</small></span><ChevronRight size={17}/></button><button onClick={()=>act('repair')}><span><strong>刚才没接上我的意思</strong><small>让对方停下来，重新听懂你</small></span><ChevronRight size={17}/></button><button onClick={()=>setShowText(v=>!v)} aria-pressed={showText}><span><strong>显示对话文字</strong></span><span className={`kc-switch ${showText?'checked':''}`}/></button></>}
+          <button className="kc-note-setting" onClick={()=>setWrittenEnabled(v=>!v)} aria-pressed={writtenEnabled}><span><strong>随句文字小提示</strong><small>修一点、接长一点，不插入语音。仅本次聊天。</small></span><span className={`kc-switch ${writtenEnabled?'checked':''}`}/></button>
           <button onClick={toggleMemory} disabled={protectedMemory} aria-pressed={memory}><span><strong>记住我的练习节奏</strong><small>仅本机保存引导进度，不保存聊天</small></span><span className={`kc-switch ${memory?'checked':''}`}/></button>
           {protectedMemory&&<button onClick={()=>{eraseLearning(localStorage);setProtectedMemory(false);}}><span><strong>清除无法读取的旧节奏记录</strong><small>只清除新陪聊记录，不影响文章和收藏</small></span><ChevronRight size={17}/></button>}
-        </div><p className="kc-sheet-footnote">可以随时用中文问“什么意思”或“怎么说”。<br/>语音由 AI 生成；开启麦克风后，声音会传给 OpenAI。</p>
+        </div><p className="kc-sheet-footnote">可以随时用中文问“什么意思”或“怎么说”，默认用文字说明；说“讲给我听”才语音讲解。<br/>语音由 AI 生成；开启麦克风后，声音会传给 OpenAI。</p>
       </>}
       {sheet==='write'&&<form className="kc-write" onSubmit={e=>{e.preventDefault();conn.current?.sendText(draft);setDraft('');setSheet(null);}}><textarea autoFocus value={draft} onChange={e=>setDraft(e.target.value)} maxLength={700} placeholder="我想说……" aria-label="要说的话"/><button type="submit" className="kc-start" disabled={!draft.trim()}><span>递过去</span><ArrowRight size={19}/></button></form>}
       {sheet==='sources'&&<div className="kc-option-list">{seed.sources.map(source=><a key={source.url} href={source.url} target="_blank" rel="noreferrer"><span><strong>{source.title}</strong><small>检索于 {new Date(source.retrievedAt).toLocaleDateString('zh-CN')}，不是发布日期</small></span><ArrowRight size={17}/></a>)}<p className="kc-sheet-footnote">开场经过了简化。涉及具体事实，以原报道为准。</p></div>}

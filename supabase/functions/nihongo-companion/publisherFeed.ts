@@ -21,14 +21,15 @@ export function feedCandidates(xml:string,now=Date.now()):Array<{url:string;time
 }
 async function readFeed(url:typeof PUBLISHER_FEEDS[number],fetcher:typeof fetch):Promise<string>{
  try{const r=await fetcher(url,{redirect:'error',signal:AbortSignal.timeout(6000),headers:{Accept:'application/rss+xml,application/atom+xml,application/xml,text/xml'}});
-  if(!r.ok||Number(r.headers.get('content-length'))>MAX_BYTES)return '';const type=r.headers.get('content-type')||'';if(type&&!/xml|text\/plain/i.test(type))return '';
+  console.info(JSON.stringify({event:'companion_feed',host:new URL(url).hostname,status:r.status}));if(!r.ok||Number(r.headers.get('content-length'))>MAX_BYTES)return '';const type=r.headers.get('content-type')||'';if(type&&!/xml|text\/plain/i.test(type))return '';
   const reader=r.body?.getReader();if(!reader)return '';let bytes=0,text='';const decoder=new TextDecoder();
   while(true){const part=await reader.read();if(part.done)break;bytes+=part.value.length;if(bytes>MAX_BYTES){await reader.cancel();return '';}text+=decoder.decode(part.value,{stream:true});}return text+decoder.decode();
- }catch{return '';}
+ }catch{console.info(JSON.stringify({event:'companion_feed',host:new URL(url).hostname,status:'fetch_failed'}));return '';}
 }
 export async function publisherNews(now=Date.now(),fetcher:typeof fetch=fetch):Promise<VerifiedNews[]>{
  const feeds=await Promise.all(PUBLISHER_FEEDS.map(url=>readFeed(url,fetcher)));
  const candidates=feeds.flatMap(xml=>feedCandidates(xml,now)).sort((a,b)=>b.time-a.time);const urls=[...new Set(candidates.map(c=>c.url))].slice(0,4);
+ console.info(JSON.stringify({event:'companion_feed_candidates',count:urls.length}));
  const articles=await Promise.all(urls.map(url=>readVerifiedNews(url,now,(input,init)=>fetcher(input,init))));
  return articles.filter((a):a is VerifiedNews=>a!==null).slice(0,2);
 }
