@@ -26,7 +26,7 @@ export function validateNoteRequest(value:unknown):NoteRequest|null{
 }
 export function validateWrittenNote(value:unknown,request:NoteRequest):WrittenNote|null{
  if(!value||typeof value!=='object')return null;const n=value as Record<string,unknown>;
- if(n.kind==='none'||n.certainty!=='clear'||n.meaningPreserved!==true||!Object.hasOwn(NOTE_LABELS,String(n.kind)))return null;
+ if(n.kind==='none'||n.certainty!=='clear'||n.meaningPreserved!==true||!Object.prototype.hasOwnProperty.call(NOTE_LABELS,String(n.kind)))return null;
  if(n.source!==request.source||!safe(n.suggestion,140)||!safe(n.reasonZh,130)||!safe(n.detailZh,360)||!n.reasonZh.trim())return null;
  if(n.kind!=='explanation'&&(!/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(n.suggestion)||n.suggestion.replace(/[\s\p{P}]/gu,'')===request.source.replace(/[\s\p{P}]/gu,'')))return null;
  if(request.mode==='help'&&n.kind==='correction')return null;
