@@ -1,14 +1,15 @@
 {
-  "purpose": "Actual production native voice, silent teaching and sourced news acceptance after restored credits",
-  "runtimeSource": "82abda991f2640af5aef1ddad907b28bc81e4f47",
-  "backendVersion": 13,
-  "attempt": 5,
+  "purpose": "Complete real production acceptance after restored credits and precise-meaning refinement",
+  "runtimeSource": "b4fff58fee217774d6a4b9f782875dae898e8c05",
+  "backendVersion": 14,
+  "attempt": 6,
   "userConfirmedCreditsRestored": true,
-  "generationRecoveryObserved": {"run": 34438265532, "artifact": 10137010317, "voiceReplies": 2, "writtenResponseStatus": 200, "providerBillingErrors": 0},
+  "billingModified": false,
   "previous": [
-    {"run": 34435928253, "failure": "credit_balance_exhausted; paid retries stopped until user restoration"},
-    {"run": 34438265532, "failure": "Test locator expected 打开麦克风 while unchanged app accessible name is 开启麦克风. Native generation and silent analysis already succeeded; synthetic input was not yet attempted."}
+    {"run": 34435928253, "failure": "credit_balance_exhausted; recovered after user restored credits"},
+    {"run": 34438265532, "failure": "Obsolete microphone test locator, corrected without UI or assertion changes"},
+    {"run": 34438644937, "artifact": 10137169424, "passedBeforeFailure": ["four native synthetic audio turns", "manual mic stops tracks", "automatic past-tense correction", "text-only Help", "written language explanation", "natural/choice/self-repair are not errors"], "failure": "Requested 明天上午 was narrowed to 明日の朝. Full gate remains failed; tests not relaxed."}
   ],
-  "testCorrection": "Source-checked accessible-name alignment only. No product behavior, API settings, models, quotas, source guards or acceptance assertions were relaxed.",
-  "scope": "One bounded production session with synthetic audio and typed fixtures, explicit microphone, written correction/help/explanation, normal short answers and self-repair, delayed/failed teacher isolation, negation and correction continuity, no transcript persistence, and a single news batch. Not human iPhone or learning efficacy."
+  "refinement": "Written teacher prioritizes exact time windows, dates, numbers, negation and latest correction over brevity. Unknown answers remain visibly hypothetical examples. One server instruction refinement, not a fixed dialogue or a replacement for native voice.",
+  "scope": "One bounded real production native audio session, written semantic fixtures, delayed/failed teacher isolation, cross-topic recall, privacy/mic cleanup and one sourced-news batch. Review actual responses, not only assertions. Not a physical iPhone or a learning-outcome study."
 }
