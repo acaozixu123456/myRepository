@@ -4,6 +4,7 @@ on:
     branches: [nihongo-conversation-repair-20260911]
     paths:
       - scripts/repair-companion-continuity-20260911.py
+      - scripts/refine-companion-continuity-20260911.py
       - scripts/companion-continuity-phone.mjs
       - .github/workflows/companion-continuity-repair-20260911.yml
   workflow_dispatch:
@@ -29,6 +30,7 @@ jobs:
           test "$GITHUB_REF_NAME" = nihongo-conversation-repair-20260911
           mkdir -p artifacts/companion-continuity
           python scripts/repair-companion-continuity-20260911.py
+          python scripts/refine-companion-continuity-20260911.py
           git diff --check
           git diff --stat | tee artifacts/companion-continuity/changed-files.txt
           git diff > artifacts/companion-continuity/source.patch
