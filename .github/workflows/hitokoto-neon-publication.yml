@@ -1,0 +1,70 @@
+name: HITOKOTO neon production audit
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths:
+      - src/companion/**
+      - public/art/**
+      - companion.html
+      - .github/workflows/hitokoto-neon-publication.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hitokoto-neon-production-audit
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - name: Compare production files to the tested source build
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile,mkdir} from 'node:fs/promises';
+          import {createHash} from 'node:crypto';
+          import assert from 'node:assert/strict';
+          const base='https://nihongo-discovery-v2-20260831.vercel.app';
+          const digest=b=>createHash('sha256').update(b).digest('hex');
+          const built=await readFile('dist/companion.html','utf8');
+          const assets=[...new Set([...built.matchAll(/(?:src|href)="(\/assets\/[^"<>]+\.(?:js|css))"/g)].map(m=>m[1]))];
+          assert.ok(assets.length>=2);
+          const paths=[...assets,'/art/hitokoto-partner.webp','/art/hitokoto-city.webp'];
+          const expected=await Promise.all(paths.map(async path=>({path,sha256:digest(await readFile('dist'+path))})));
+          let checked=[],last='';
+          for(let attempt=0;attempt<40;attempt++){
+            try{
+              const r=await fetch(base+'/companion.html?neon_audit='+process.env.GITHUB_RUN_ID+'-'+attempt,{signal:AbortSignal.timeout(12000)});
+              assert.equal(r.status,200);const html=await r.text();assert.ok(html.includes('HITOKOTO'));assert.ok(html.includes('#060914'));
+              assert.ok(assets.every(p=>html.includes(p)),'Old production assets');
+              checked=[];let marker=false;
+              for(const e of expected){const a=await fetch(base+e.path,{signal:AbortSignal.timeout(12000)});assert.equal(a.status,200);const b=Buffer.from(await a.arrayBuffer());assert.equal(digest(b),e.sha256,e.path);if(e.path.endsWith('.js')&&b.toString().includes('neon-20260911'))marker=true;checked.push({...e,bytes:b.length});}
+              assert.ok(marker,'Neon UI release marker missing');break;
+            }catch(e){checked=[];last=e.message;await new Promise(r=>setTimeout(r,5000));}
+          }
+          assert.equal(checked.length,expected.length,last);
+          const nhk=await fetch(base+'/',{signal:AbortSignal.timeout(12000)});assert.equal(nhk.status,200);
+          const report={release:'neon-20260911',source:process.env.GITHUB_SHA,base,entry:base+'/companion.html',productionVerified:true,checkedAt:new Date().toISOString(),assets:checked,nhkEntryStatus:nhk.status,scope:'Exact production HTML/JS/CSS/art. Voice core and backend unchanged. Physical iPhone audio not tested.',run:`https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`};
+          await mkdir('docs/qa',{recursive:true});await writeFile('docs/qa/HITOKOTO_NEON_RELEASE_20260911.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
+          JS
+      - name: Store release evidence without overwriting newer changes
+        run: |
+          git fetch origin nihongo-vercel
+          if [ "$(git rev-parse origin/nihongo-vercel)" = "$GITHUB_SHA" ]; then
+            git config user.name 'Sol supervisor'
+            git config user.email '331004814@qq.com'
+            git add docs/qa/HITOKOTO_NEON_RELEASE_20260911.json
+            git commit -m 'Record verified HITOKOTO neon production assets'
+            git push origin HEAD:nihongo-vercel
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hitokoto-neon-publication
+          path: docs/qa/HITOKOTO_NEON_RELEASE_20260911.json

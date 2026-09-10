@@ -1,0 +1,3 @@
+# HITOKOTO Neon art
+
+The two lightweight WebP decorations are cropped from the AI-generated HITOKOTO concept image supplied and approved in the current user conversation (11 September 2026). No third-party game screenshots, game logos, external image service, or stock character likeness is used. They are decorative art, not functional UI or instructional text. Interface text is rendered separately as HTML. Images have no runtime requests to third-party origins. City: 240x168, partner: 184x197. UI uses the partner at portrait-card scale, not as a full-resolution 3D character. Original concept: a_high_detail_cyberpunk_ui_mockup_composite_mobil.png.

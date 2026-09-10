@@ -1,0 +1,86 @@
+name: HITOKOTO neon UI gate
+on:
+  push:
+    branches: [hitokoto-neon-ui-20260911]
+    paths:
+      - src/companion/**
+      - companion.html
+      - public/art/**
+      - scripts/hitokoto-neon-phone.mjs
+      - .github/workflows/hitokoto-neon-ui.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hitokoto-neon-ui
+  cancel-in-progress: false
+jobs:
+  neon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Preserve microphone, learning, API and backend source exactly
+        run: |
+          mkdir -p artifacts/hitokoto-neon
+          git diff --exit-code 254a4456baace4bda86e791d8fded11700e5be14 HEAD -- src/companion/connection.ts src/companion/model.ts src/companion/prompt.ts src/companion/requestedTurn.ts src/companion/turns.ts src/companion/api.ts src/companion/writtenLane.ts src/companion/writtenFeedback.ts src/companion/WrittenNoteCard.tsx api server supabase package.json package-lock.json src/main.tsx src/App.tsx
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/companion/CompanionApp.tsx')
+          s=p.read_text()
+          old='<button onClick={toggleMemory} disabled={protectedMemory}>'
+          new='<button onClick={toggleMemory} disabled={protectedMemory} aria-pressed={memory}>'
+          if old in s:
+              assert s.count(old)==1
+              p.write_text(s.replace(old,new))
+          else:
+              assert new in s
+          PY
+          git diff --check
+      - run: npm ci --no-audit --no-fund
+      - name: Full source verification
+        run: |
+          npm run typecheck 2>&1 | tee artifacts/hitokoto-neon/typecheck.log
+          npm test 2>&1 | tee artifacts/hitokoto-neon/tests.log
+          npm run build 2>&1 | tee artifacts/hitokoto-neon/build.log
+      - name: Browser setup
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Original and neon phone regressions
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/hitokoto-neon-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+          node scripts/hitokoto-neon-phone.mjs
+      - name: Commit accessibility state after tests pass
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/companion/CompanionApp.tsx
+          if ! git diff --cached --quiet; then
+            git commit -m 'Retain accessible memory toggle state in HITOKOTO neon UI'
+            git push origin HEAD:hitokoto-neon-ui-20260911
+          fi
+          git rev-parse HEAD > artifacts/hitokoto-neon/tested-source.txt
+      - name: Export tested source and visual evidence
+        if: always()
+        run: |
+          tar --exclude='./node_modules' --exclude='./.git' --exclude='./artifacts' --exclude='./dist' -czf /tmp/hitokoto-tested-source.tgz .
+          cp /tmp/hitokoto-tested-source.tgz artifacts/hitokoto-neon/source.tgz
+          cp /tmp/hitokoto-neon-vite.log artifacts/hitokoto-neon/vite.log 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hitokoto-neon-ui
+          path: |
+            artifacts/hitokoto-neon/
+            artifacts/companion-phone/
