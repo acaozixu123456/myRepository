@@ -1,0 +1,85 @@
+{
+  "scope": "PRODUCTION_SOURCE_ASSETS_AND_MOCKED_PHONE_UI_NO_GENERATIVE_API_NO_HUMAN_MIC",
+  "productionBase": "https://nihongo-discovery-v2-20260831.vercel.app",
+  "entry": "https://nihongo-discovery-v2-20260831.vercel.app/companion.html",
+  "testedCommit": "92678c161c8a8beb2e92171449b34655670877b8",
+  "runtimeSource": "82abda991f2640af5aef1ddad907b28bc81e4f47",
+  "startedAt": "2026-09-10T04:30:24.196Z",
+  "codePublicationVerified": true,
+  "assets": [
+    {
+      "entry": "/companion.html",
+      "path": "/assets/companion-CHEINwwN.js",
+      "hash": "f736defa8f5c018a8ba44addc3487a63f4829e21a6021fd74ea3ca3c31afa0d2",
+      "actualHash": "f736defa8f5c018a8ba44addc3487a63f4829e21a6021fd74ea3ca3c31afa0d2"
+    },
+    {
+      "entry": "/companion.html",
+      "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "hash": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0",
+      "actualHash": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0"
+    },
+    {
+      "entry": "/companion.html",
+      "path": "/assets/nhkAudioActivity-CMgBDc8_.js",
+      "hash": "fadeec6baf586204e64fb4fb0edc946a4438276e453e4f04a62693df69ba1b9c",
+      "actualHash": "fadeec6baf586204e64fb4fb0edc946a4438276e453e4f04a62693df69ba1b9c"
+    },
+    {
+      "entry": "/companion.html",
+      "path": "/assets/companion-D3QSDfD-.css",
+      "hash": "d98952acdb8d3cff005d7ba01dcffd5e6f18244c604f6b7a08eb9d70f4a5d9eb",
+      "actualHash": "d98952acdb8d3cff005d7ba01dcffd5e6f18244c604f6b7a08eb9d70f4a5d9eb"
+    },
+    {
+      "entry": "/",
+      "path": "/assets/main-HjCa46uJ.js",
+      "hash": "5e2fe7b8946c9bb8c729da51118953842031ba0ac04176e0866ce6b94635c9c8",
+      "actualHash": "5e2fe7b8946c9bb8c729da51118953842031ba0ac04176e0866ce6b94635c9c8"
+    },
+    {
+      "entry": "/",
+      "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "hash": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0",
+      "actualHash": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0"
+    },
+    {
+      "entry": "/",
+      "path": "/assets/nhkAudioActivity-CMgBDc8_.js",
+      "hash": "fadeec6baf586204e64fb4fb0edc946a4438276e453e4f04a62693df69ba1b9c",
+      "actualHash": "fadeec6baf586204e64fb4fb0edc946a4438276e453e4f04a62693df69ba1b9c"
+    },
+    {
+      "entry": "/",
+      "path": "/assets/main-Dc07T_AD.css",
+      "hash": "ad7c1cbd3d4d42861a44d0112b8a690b833b89f370e405c5fcd613710ecf87b9",
+      "actualHash": "ad7c1cbd3d4d42861a44d0112b8a690b833b89f370e405c5fcd613710ecf87b9"
+    }
+  ],
+  "attempts": [],
+  "guards": {
+    "consent": {
+      "status": 400,
+      "reason": "audio_consent_required"
+    },
+    "ticket": {
+      "status": 403,
+      "reason": "invalid_session_ticket"
+    }
+  },
+  "apiReadiness": {
+    "state": "NEEDS_ATTENTION",
+    "lastObservedCode": "credit_balance_exhausted",
+    "lastObservedAt": "2026-09-10T04:09:03Z",
+    "liveGenerationRetested": false,
+    "billingModified": false
+  },
+  "humanPhoneVerified": false,
+  "learningEfficacyVerified": false,
+  "unitTestsPassed": 432,
+  "typecheck": "PASS",
+  "build": "PASS",
+  "phoneUi": "PASS_MOCKED_MEDIA_ONLY",
+  "checkedAt": "2026-09-10T04:30:25.698Z",
+  "decision": "PUBLISHED_CODE_NEEDS_ATTENTION_API_CREDITS"
+}
