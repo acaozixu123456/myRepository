@@ -25,6 +25,8 @@ jobs:
       - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright && npx playwright install --with-deps chromium
       - name: Exact deployed artifact check
         run: node scripts/companion-preview-access.mjs
+      - name: Safe diagnostics for failed public requests
+        run: python scripts/release-test-diagnostics.py
       - name: Actual public UI, native voice and separate text teacher
         run: node scripts/companion-release-live.mjs
       - uses: actions/upload-artifact@v4
