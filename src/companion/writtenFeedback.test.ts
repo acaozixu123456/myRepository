@@ -1,0 +1,33 @@
+import {describe,it,expect,vi,afterEach} from 'vitest';
+import {noteRequest,validateNoteRequest,validateWrittenNote,changedPart} from './writtenFeedback';
+import {WrittenLane} from './writtenLane';
+import type {Line} from './model';
+const line=(id:string,role:Line['role'],text:string):Line=>({id,role,text,previous:'',delivered:true,interrupted:false,assistance:'none',seq:0});
+const lines=[line('a','assistant','昨日はどうでしたか。'),line('u','user','昨日は忙しいでした。')];
+const candidate=(source=lines[1].text)=>({source,kind:'correction',certainty:'clear',meaningPreserved:true,suggestion:'昨日は忙しかったです。',reasonZh:'这里用い形容词的过去式。',detailZh:'忙しい → 忙しかったです。'});
+describe('quiet notes exact context contract',()=>{
+ it('anchors original words to a real user item',()=>{const r=noteRequest(lines,'auto')!;expect(r.source).toBe(lines[1].text);expect(r.anchorId).toBe('u');expect(validateNoteRequest(r)).toEqual(r);});
+ it('uses the preceding question, not a later answer',()=>{const r=noteRequest([...lines,line('b','assistant','今日は？')],'auto')!;expect(r.context.at(-1)?.id).toBe('u');expect(r.context.some(l=>l.id==='b')).toBe(false);});
+ it('help does not manufacture a user message',()=>{const r=noteRequest([lines[0]],'help')!;expect(r.context[0].role).toBe('assistant');expect(validateNoteRequest(r)).not.toBeNull();});
+ it.each(['はい。','いいえ','えっと','ありがとう。'])('does not flag acknowledgement %s',text=>expect(noteRequest([lines[0],line('u','user',text)],'auto')).toBeNull());
+ it('language questions take priority',()=>expect(noteRequest([line('u','user','つい是什么意思？')],'auto')?.mode).toBe('question'));
+ it('ignores unplayed and interrupted content',()=>{expect(noteRequest([{...lines[1],interrupted:true}],'auto')).toBeNull();expect(noteRequest([{...lines[0],delivered:false}],'help')).toBeNull();});
+ it('copies only bounded fields',()=>{const r=noteRequest(lines.map(l=>({...l,secret:'do not copy'})),'auto')!;expect(JSON.stringify(r)).not.toContain('secret');});
+ it('rejects invented identity, modified originals and invalid roles',()=>{const r=noteRequest(lines,'auto')!;expect(validateNoteRequest({...r,anchorId:'invented'})).toBeNull();expect(validateNoteRequest({...r,source:'changed'})).toBeNull();expect(validateNoteRequest({...r,context:[{...r.context[0],role:'system'}]})).toBeNull();});
+ it('none is normal',()=>expect(validateWrittenNote({kind:'none'},noteRequest(lines,'auto')!)).toBeNull());
+ it('rejects uncertain or meaning-changing correction',()=>{const r=noteRequest(lines,'auto')!;for(const n of [{...candidate(),certainty:'uncertain'},{...candidate(),meaningPreserved:false},{...candidate(),source:'not original'}])expect(validateWrittenNote(n,r)).toBeNull();});
+ it('rejects identical corrections, HTML and lectures',()=>{const r=noteRequest(lines,'auto')!;for(const n of [{...candidate(),suggestion:r.source},{...candidate(),detailZh:'<script>alert(1)</script>'},{...candidate(),reasonZh:'语'.repeat(131)}])expect(validateWrittenNote(n,r)).toBeNull();});
+ it('help is not an error label',()=>expect(validateWrittenNote(candidate(lines[0].text),noteRequest([lines[0]],'help')!)).toBeNull());
+ it('highlights only changed text',()=>expect(changedPart('昨日は忙しいでした。','昨日は忙しかったです。')).toEqual({prefix:'昨日は忙し',added:'かったです',suffix:'。'}));
+});
+afterEach(()=>vi.useRealTimers());
+describe('independent queue with stale guards',()=>{
+ it('does not analyse an empty transcript',async()=>{vi.useFakeTimers();const request=vi.fn();const lane=new WrittenLane(request,vi.fn());lane.update([line('u','user','')],0);await vi.advanceTimersByTimeAsync(2000);expect(request).not.toHaveBeenCalled();lane.dispose();});
+ it('debounces to newest wording',async()=>{vi.useFakeTimers();const request=vi.fn().mockResolvedValue(null);const lane=new WrittenLane(request,vi.fn());lane.update(lines,0);lane.update([lines[0],line('u','user','昨日は忙しかったです。')],0);await vi.advanceTimersByTimeAsync(1200);expect(request).toHaveBeenCalledTimes(1);expect(request.mock.calls[0][0].source).toBe('昨日は忙しかったです。');lane.dispose();});
+ it('discards a stale correction',async()=>{vi.useFakeTimers();let resolve!:(v:unknown)=>void;const request=vi.fn((_r:any,_s:AbortSignal)=>new Promise(r=>{resolve=r;}));const publish=vi.fn();const lane=new WrittenLane(request,publish);lane.update(lines,0);await vi.advanceTimersByTimeAsync(1200);lane.update([lines[0],line('u','user','昨日は忙しかったです。')],0);resolve(candidate());await Promise.resolve();expect(publish).not.toHaveBeenCalled();lane.dispose();});
+ it('waits to reveal while speaking or reading',async()=>{vi.useFakeTimers();const publish=vi.fn();const lane=new WrittenLane(vi.fn().mockResolvedValue(candidate()),publish);lane.setReading(true);lane.update(lines,0);await vi.advanceTimersByTimeAsync(1200);expect(publish).not.toHaveBeenCalled();lane.setSpeaking(true);lane.setReading(false);expect(publish).not.toHaveBeenCalled();lane.setSpeaking(false);expect(publish).toHaveBeenCalledTimes(1);lane.dispose();});
+ it('failure has no chat side effect',async()=>{vi.useFakeTimers();const publish=vi.fn();const lane=new WrittenLane(vi.fn().mockRejectedValue(new Error('timeout')),publish);lane.update(lines,0);await vi.advanceTimersByTimeAsync(1200);expect(publish).not.toHaveBeenCalled();lane.dispose();});
+ it('closing aborts and ignores callbacks',async()=>{vi.useFakeTimers();let resolve!:(v:unknown)=>void;const request=vi.fn((_r:any,_s:AbortSignal)=>new Promise(r=>{resolve=r;}));const publish=vi.fn();const lane=new WrittenLane(request,publish);lane.update(lines,0);await vi.advanceTimersByTimeAsync(1200);lane.dispose();expect(request.mock.calls[0][1].aborted).toBe(true);resolve(candidate());await Promise.resolve();expect(publish).not.toHaveBeenCalled();});
+ it('disabling cancels automatic work',async()=>{vi.useFakeTimers();const request=vi.fn();const lane=new WrittenLane(request,vi.fn());lane.update(lines,0);lane.setEnabled(false);await vi.advanceTimersByTimeAsync(2000);expect(request).not.toHaveBeenCalled();lane.dispose();});
+ it('topic reset removes queued work',async()=>{vi.useFakeTimers();const request=vi.fn();const lane=new WrittenLane(request,vi.fn());lane.update(lines,0);lane.reset();await vi.advanceTimersByTimeAsync(2000);expect(request).not.toHaveBeenCalled();lane.dispose();});
+});

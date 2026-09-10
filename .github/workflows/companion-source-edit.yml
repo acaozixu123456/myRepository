@@ -1,0 +1,47 @@
+name: Apply reviewed quiet-teacher source edit to independent preview
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['scripts/apply-silent-coach.py']
+permissions:
+  contents: write
+jobs:
+  edit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply exact bounded source replacements
+        run: |
+          test "${{ github.ref_name }}" = nihongo-adaptive-companion-v3-20260909
+          python scripts/apply-silent-coach.py
+          git diff --stat
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/companion server/companionProxy.ts supabase/functions/nihongo-companion scripts/companion-phone.mjs
+          git commit -m 'Wire independent written feedback, quiet mobile notes and stale-policy protection'
+          git push origin HEAD:nihongo-adaptive-companion-v3-20260909
+          mkdir -p artifacts/quiet-source
+          git rev-parse HEAD > artifacts/quiet-source/source-sha.txt
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck 2>&1 | tee artifacts/quiet-source/typecheck.log
+      - run: npm test 2>&1 | tee artifacts/quiet-source/tests.log
+      - run: npm run build 2>&1 | tee artifacts/quiet-source/build.log
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright && npx playwright install --with-deps chromium
+      - name: Phone-only quiet note and microphone check
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/quiet-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+          node scripts/companion-preview-access.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quiet-source-and-phone
+          path: |
+            artifacts/quiet-source/
+            artifacts/companion-phone/
+            artifacts/companion-access/
