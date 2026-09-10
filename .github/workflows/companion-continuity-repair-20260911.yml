@@ -1,0 +1,68 @@
+name: Companion continuity repair 20260911
+on:
+  push:
+    branches: [nihongo-conversation-repair-20260911]
+    paths:
+      - scripts/repair-companion-continuity-20260911.py
+      - scripts/companion-continuity-phone.mjs
+      - .github/workflows/companion-continuity-repair-20260911.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: companion-continuity-repair-20260911
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply only the inspected companion repair
+        run: |
+          test "$GITHUB_REF_NAME" = nihongo-conversation-repair-20260911
+          mkdir -p artifacts/companion-continuity
+          python scripts/repair-companion-continuity-20260911.py
+          git diff --check
+          git diff --stat | tee artifacts/companion-continuity/changed-files.txt
+          git diff > artifacts/companion-continuity/source.patch
+      - run: npm ci --no-audit --no-fund
+      - name: Full source gate
+        run: |
+          npm run typecheck 2>&1 | tee artifacts/companion-continuity/typecheck.log
+          npm test 2>&1 | tee artifacts/companion-continuity/tests.log
+          npm run build 2>&1 | tee artifacts/companion-continuity/build.log
+      - name: Install browser harness without changing dependencies
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Existing phone regressions and five successive written hints
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/companion-continuity-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+          node scripts/companion-continuity-phone.mjs
+      - name: Commit only the fully gated repair, not production
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/companion/prompt.ts src/companion/writtenFeedback.ts src/companion/writtenLane.ts src/companion/WrittenNoteCard.tsx src/companion/connection.ts src/companion/CompanionApp.tsx src/companion/writtenNotes.css src/companion/continuityRepair.test.ts supabase/functions/nihongo-companion/prompt.ts supabase/functions/nihongo-companion/writtenContract.ts supabase/functions/nihongo-companion/writtenFeedback.ts
+          if ! git diff --cached --quiet; then
+            git commit -m 'Fix contextual language confirmations and continuing written hints; preserve native audio'
+            git push origin HEAD:nihongo-conversation-repair-20260911
+          fi
+          git rev-parse HEAD | tee artifacts/companion-continuity/tested-source-sha.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-continuity-repair-20260911
+          path: |
+            artifacts/companion-continuity/
+            artifacts/companion-phone/
+          if-no-files-found: warn
