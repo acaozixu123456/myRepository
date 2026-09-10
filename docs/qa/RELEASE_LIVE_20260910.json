@@ -1,16 +1,14 @@
 {
-  "purpose": "Bounded actual production acceptance after user-confirmed prepaid credit restoration",
+  "purpose": "Actual production native voice, silent teaching and sourced news acceptance after restored credits",
   "runtimeSource": "82abda991f2640af5aef1ddad907b28bc81e4f47",
-  "productionBase": "2a90e3ce51380031c48c1797908dbbd1f5af43e3",
   "backendVersion": 13,
-  "attempt": 4,
+  "attempt": 5,
   "userConfirmedCreditsRestored": true,
-  "billingModifiedBySupervisor": false,
+  "generationRecoveryObserved": {"run": 34438265532, "artifact": 10137010317, "voiceReplies": 2, "writtenResponseStatus": 200, "providerBillingErrors": 0},
   "previous": [
-    {"run": 34435000943, "failure": "Synthetic fixture unavailable before conversation"},
-    {"run": 34435542361, "failure": "Companion start could not establish a native peer"},
-    {"run": 34435928253, "failure": "Actual provider code credit_balance_exhausted; stopped generation retries"}
+    {"run": 34435928253, "failure": "credit_balance_exhausted; paid retries stopped until user restoration"},
+    {"run": 34438265532, "failure": "Test locator expected 打开麦克风 while unchanged app accessible name is 开启麦克风. Native generation and silent analysis already succeeded; synthetic input was not yet attempted."}
   ],
-  "checks": ["exact production assets", "actual native synthetic word/phrase/sentence inputs", "manual microphone and exit", "written correction/help/language explanation", "normal short answers and self-repair", "delayed/failed written feedback must not block native chat", "current-intent/time/negation continuity", "no transcript/note persistence", "source-dated aligned news"],
-  "scope": "One real production session plus bounded written fixtures and one news batch; not human iPhone or measured learning efficacy. Preserve prior failed evidence. Do not rotate keys, alter limits, substitute models or bypass access controls."
+  "testCorrection": "Source-checked accessible-name alignment only. No product behavior, API settings, models, quotas, source guards or acceptance assertions were relaxed.",
+  "scope": "One bounded production session with synthetic audio and typed fixtures, explicit microphone, written correction/help/explanation, normal short answers and self-repair, delayed/failed teacher isolation, negation and correction continuity, no transcript persistence, and a single news batch. Not human iPhone or learning efficacy."
 }
