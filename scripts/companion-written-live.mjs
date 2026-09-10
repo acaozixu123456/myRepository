@@ -8,6 +8,7 @@ replace("scope:'REAL_OPENAI_NATIVE_CONVERSATION_SYNTHETIC_JAPANESE_AND_TYPED_HEL
 replace('let browser,page;','let browser,page;let holdFeedback=false,releaseFeedback=()=>{};');
 replace("const body=route.request().postDataJSON();if(body.action==='companion_start')","const body=route.request().postDataJSON();if(holdFeedback&&body.action==='companion_feedback'){await new Promise(r=>{releaseFeedback=r;});await route.fulfill({status:503,json:{ok:false,reason:'qa_injected_note_failure'}}).catch(()=>{});return;}if(body.action==='companion_start')");
 replace("body.action!=='companion_stop'","!['companion_stop','companion_feedback'].includes(body.action)");
+replace('const result=await call(body);if(!result.data.ok',"const result=await call(body);if(body.action==='companion_feedback'){report.feedbackRequests??=[];report.feedbackRequests.push({mode:body.input?.mode,status:result.status,reason:result.data.reason,note:result.data.note||null});}if(!result.data.ok");
 replace("phase:'idle',lines:[],errors:[]","phase:'idle',lines:[],notes:[],errors:[]");
 replace('policy:p=>state.policies.push(p)','policy:p=>state.policies.push(p),written:n=>state.notes.push(n)');
 replace("const before=await count();await page.evaluate(()=>window.__companion.action('help'));report.help=await wait(before);assert.equal(await page.evaluate(()=>window.__micRequests),1);",`const before=await count(),noteCount=await page.evaluate(()=>window.__state.notes.length);
@@ -37,11 +38,11 @@ replace('await page.evaluate(()=>window.__companion.end());',`report.writtenNote
   let pass=r.status===200;
   if(f.expect==='none')pass=pass&&!note;
   if(f.expect==='past')pass=pass&&note?.kind==='correction'&&ja.includes('忙しかった');
-  if(f.expect==='drink')pass=pass&&note?.kind!=='correction'&&/飲/.test(ja);
-  if(f.expect==='like')pass=pass&&note?.kind!=='correction'&&/好き/.test(ja);
-  if(f.expect==='not-error')pass=pass&&note?.kind!=='correction';
+  if(f.expect==='drink')pass=pass&&(!note||(note.kind==='extension'&&/飲/.test(ja)));
+  if(f.expect==='like')pass=pass&&(!note||(note.kind==='extension'&&/好き/.test(ja)));
+  if(f.expect==='not-error')pass=pass&&!note;
   if(f.expect==='explanation')pass=pass&&note?.kind==='explanation'&&!!note.reasonZh;
-  if(f.expect==='morning')pass=pass&&ja.includes('午前')&&!ja.includes('午後');
+  if(f.expect==='morning')pass=pass&&ja.includes('午前')&&(!ja.includes('午後')||/午後ではなく|午後じゃなく/.test(ja));
   if(f.expect==='not-own')pass=pass&&/(?:飼っていません|飼っていない|飼ってない)/.test(ja);
   report.noteFixtures.push({...f,status:r.status,note:note||null,reason:r.data.reason,ms:Date.now()-start,pass});
  }
