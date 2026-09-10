@@ -1,0 +1,50 @@
+name: Companion billing-safe source release
+on:
+  push:
+    branches: [nihongo-adaptive-companion-v3-20260909]
+    paths: ['scripts/release-billing-clarity.py','.github/workflows/companion-billing-release.yml']
+permissions:
+  contents: write
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nihongo-adaptive-companion-v3-20260909
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python scripts/release-billing-clarity.py
+      - run: npm ci --no-audit --no-fund
+      - name: Unit tests and build, no generative API calls
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p artifacts/billing-release
+          npm run typecheck 2>&1 | tee artifacts/billing-release/typecheck.log
+          npm test 2>&1 | tee artifacts/billing-release/tests.log
+          npm run build 2>&1 | tee artifacts/billing-release/build.log
+      - name: Commit reviewed billing classification only
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add supabase/functions/nihongo-companion/service.ts src/companion/api.ts src/companion/CompanionApp.tsx
+          if ! git diff --cached --quiet; then git commit -m 'Distinguish exhausted API credits from temporary congestion'; git push origin HEAD:nihongo-adaptive-companion-v3-20260909; fi
+          git rev-parse HEAD > artifacts/billing-release/source-sha.txt
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright && npx playwright install --with-deps chromium
+      - name: Phone UI and exact deployment assets; model availability check only
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/companion-billing-ui.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+          node scripts/companion-preview-access.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-billing-source-phone
+          path: |
+            artifacts/billing-release/
+            artifacts/companion-phone/
+            artifacts/companion-access/

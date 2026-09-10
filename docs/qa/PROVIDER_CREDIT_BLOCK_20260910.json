@@ -1,0 +1,13 @@
+{
+ "observedAt":"2026-09-10T04:09:03Z",
+ "workflowRun":34435928253,
+ "artifact":10136185691,
+ "artifactSha256":"cd142d2ba7e46b381447d16aef65b7d63feb431fcf3ae2920adc3b7d4ec06071",
+ "actualFailure":{"action":"companion_start","httpStatus":429,"providerCode":"credit_balance_exhausted","previousMisclassification":"provider_busy"},
+ "nativeCallCreated":false,
+ "decision":"Stop generative retries. Correct error mapping; deploy user-requested source/UI with a prominently documented external billing block, not a fake complete semantic PASS.",
+ "doNotDo":["purchase credits without explicit permission","increase spending limits","silently switch model or credentials","remove failed live gates","call model availability health proof of generative readiness"],
+ "priorVerifiedLiveScope":{"run":34431048601,"note":"Historical Sept10 public typed UI, actual notes and sourced news passed before this balance block. It is not a test of the final current revision or human microphone."},
+ "currentVerifiedScope":{"run":34434862126,"tests":423,"source":"fea221b0ddba115f75301f76ba76b415823f4681","note":"Source/build and phone mock lifecycle passed. Final live voice/teacher test blocked by billing."},
+ "remainingDependency":"Account owner must restore OpenAI API balance. Provider retention and ChatGPT subscription are separate; no credential values in this record."
+}
