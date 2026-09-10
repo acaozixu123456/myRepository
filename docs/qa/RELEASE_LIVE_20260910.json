@@ -1,15 +1,16 @@
 {
-  "purpose": "Complete real production acceptance after restored credits and precise-meaning refinement",
-  "runtimeSource": "b4fff58fee217774d6a4b9f782875dae898e8c05",
-  "backendVersion": 14,
-  "attempt": 6,
-  "userConfirmedCreditsRestored": true,
+  "purpose": "Final production native voice / independent written help / sourced news acceptance",
+  "runtimeSource": "f0cb874fd29da2bfe9ee85a1b0dff6f570de5a77",
+  "backendVersion": 15,
+  "attempt": 7,
+  "creditsRestoredAndGenerationVerified": true,
   "billingModified": false,
-  "previous": [
-    {"run": 34435928253, "failure": "credit_balance_exhausted; recovered after user restored credits"},
-    {"run": 34438265532, "failure": "Obsolete microphone test locator, corrected without UI or assertion changes"},
-    {"run": 34438644937, "artifact": 10137169424, "passedBeforeFailure": ["four native synthetic audio turns", "manual mic stops tracks", "automatic past-tense correction", "text-only Help", "written language explanation", "natural/choice/self-repair are not errors"], "failure": "Requested 明天上午 was narrowed to 明日の朝. Full gate remains failed; tests not relaxed."}
+  "earlierFailuresPreserved": [
+    {"run": 34435928253, "failure": "credit_balance_exhausted before user restoration"},
+    {"run": 34438265532, "failure": "Obsolete test-only microphone locator; corrected"},
+    {"run": 34438644937, "failure": "A specified 午前 interval was narrowed to 朝; meaning-fidelity instruction added"},
+    {"run": 34439149005, "artifact": 10137343148, "failure": "Help for an unknown reason was incorrectly suppressed by a known-meaning boolean. Native audio and automatic correction worked. Unknown help now has a separately labelled illustrative/open-starter basis, never a fabricated user fact."}
   ],
-  "refinement": "Written teacher prioritizes exact time windows, dates, numbers, negation and latest correction over brevity. Unknown answers remain visibly hypothetical examples. One server instruction refinement, not a fixed dialogue or a replacement for native voice.",
-  "scope": "One bounded real production native audio session, written semantic fixtures, delayed/failed teacher isolation, cross-topic recall, privacy/mic cleanup and one sourced-news batch. Review actual responses, not only assertions. Not a physical iPhone or a learning-outcome study."
+  "newTests": "Eight pure contract tests distinguish faithful intent, illustrative support, open starters, contradiction and malformed flags. Existing correctness/meaning/privacy/media assertions remain.",
+  "scope": "One bounded real production session including four synthetic Japanese clips, typed questions, written semantic fixtures, stalled/failed optional feedback, negation recall, manual microphone, cleanup and one sourced-news batch. Not human iPhone or proven learning improvement."
 }
