@@ -1,0 +1,9 @@
+/* Override the historical note typography, whose selectors are more specific than the former theme. */
+.kc-root[data-ui-release="neon-20260911"] .kc-line .kc-written-note .kc-note-japanese{font:500 16px/1.85 var(--font-sans);color:#edf9fe;margin:2px 0 9px;background:transparent;border:0;box-shadow:none;letter-spacing:0}
+.kc-root[data-ui-release="neon-20260911"] .kc-line .kc-written-note .kc-note-japanese strong{color:#e5fa4b;font-weight:650;box-shadow:none;background:transparent}
+.kc-root[data-ui-release="neon-20260911"] .kc-line .kc-written-note .kc-note-reason{font:400 13px/1.8 var(--font-sans);color:#c5e1e8;margin:0;background:transparent;border:0;box-shadow:none}
+.kc-root[data-ui-release="neon-20260911"] .kc-line .kc-note-detail p{font:400 12px/1.85 var(--font-sans);color:#c5d9e6;margin:6px 0 10px;background:transparent;border:0;box-shadow:none}
+.kc-root[data-ui-release="neon-20260911"] .kc-note-heading:focus-visible,.kc-root[data-ui-release="neon-20260911"] .kc-note-detail summary:focus-visible,.kc-root[data-ui-release="neon-20260911"] .kc-note-detail button:focus-visible{outline:2px solid #e5fa4b;outline-offset:3px}
+.kc-root .kc-shell{padding-top:env(safe-area-inset-top,0px)}
+.kc-root button,.kc-root a{touch-action:manipulation}
+.kc-root .kc-conversation{overflow-anchor:none}
