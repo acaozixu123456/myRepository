@@ -1,0 +1,111 @@
+name: Companion production publication audit (no generative API)
+on:
+  push:
+    branches: [nihongo-vercel]
+    paths: ['.github/workflows/companion-production-publication-20260910.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: companion-production-publication
+  cancel-in-progress: false
+jobs:
+  publication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm the previously reviewed implementation is present
+        run: |
+          test "$GITHUB_REF_NAME" = nihongo-vercel
+          git merge-base --is-ancestor 82abda991f2640af5aef1ddad907b28bc81e4f47 HEAD
+          test -f companion.html
+          test -f src/companion/WrittenNoteCard.tsx
+          test -f supabase/functions/nihongo-companion/providerError.ts
+          mkdir -p artifacts/companion-publication
+      - run: npm ci --no-audit --no-fund
+      - name: Source regression checks
+        run: |
+          npm run typecheck 2>&1 | tee artifacts/companion-publication/typecheck.log
+          npm test 2>&1 | tee artifacts/companion-publication/tests.log
+          npm run build 2>&1 | tee artifacts/companion-publication/build.log
+      - name: Phone interaction check with explicitly mocked provider and media
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/companion-publication-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node scripts/companion-phone.mjs
+      - name: Verify exact published files and non-generative endpoint guards
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile,mkdir} from 'node:fs/promises';
+          import {createHash} from 'node:crypto';
+          import assert from 'node:assert/strict';
+          const base='https://nihongo-discovery-v2-20260831.vercel.app';
+          const sha=b=>createHash('sha256').update(b).digest('hex');
+          const report={scope:'PRODUCTION_SOURCE_ASSETS_AND_MOCKED_PHONE_UI_NO_GENERATIVE_API_NO_HUMAN_MIC',productionBase:base,entry:base+'/companion.html',testedCommit:process.env.GITHUB_SHA,runtimeSource:'82abda991f2640af5aef1ddad907b28bc81e4f47',startedAt:new Date().toISOString(),codePublicationVerified:false,assets:[],attempts:[],guards:{},apiReadiness:{state:'NEEDS_ATTENTION',lastObservedCode:'credit_balance_exhausted',lastObservedAt:'2026-09-10T04:09:03Z',liveGenerationRetested:false,billingModified:false},humanPhoneVerified:false,learningEfficacyVerified:false};
+          try {
+            const expected=[];
+            for(const entry of ['/companion.html','/']) {
+              const html=await readFile('dist/'+(entry==='/'?'index.html':'companion.html'),'utf8');
+              const assets=[...html.matchAll(/(?:src|href)="(\/assets\/[^"?#]+\.(?:js|css))"/g)].map(m=>m[1]);
+              assert.ok(assets.length,'No built assets for '+entry);
+              for(const path of new Set(assets))expected.push({entry,path,hash:sha(await readFile('dist'+path))});
+            }
+            for(let attempt=1;attempt<=35;attempt++) {
+              try {
+                const checked=[];
+                for(const entry of ['/companion.html','/']) {
+                  const r=await fetch(base+entry+'?publication-check='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(15000)});
+                  assert.equal(r.status,200,'Published entry unavailable');const html=await r.text();
+                  for(const item of expected.filter(v=>v.entry===entry)) {
+                    assert.ok(html.includes(item.path),'Deployed page still points to other assets');
+                    const a=await fetch(base+item.path,{signal:AbortSignal.timeout(15000)});assert.equal(a.status,200);
+                    const hash=sha(Buffer.from(await a.arrayBuffer()));assert.equal(hash,item.hash,'Deployed asset mismatch');checked.push({...item,actualHash:hash});
+                  }
+                }
+                report.assets=checked;report.codePublicationVerified=true;break;
+              } catch(e) {report.attempts.push({attempt,error:String(e.message).slice(0,180)});if(attempt<35)await new Promise(r=>setTimeout(r,8000));}
+            }
+            assert.equal(report.codePublicationVerified,true,'Production has not served the reviewed build');
+            // Invalid requests exercise validation only. Never start a paid voice or text request.
+            for(const [name,body,status,reason] of [
+              ['consent',{action:'companion_start'},400,'audio_consent_required'],
+              ['ticket',{action:'companion_feedback'},403,'invalid_session_ticket']
+            ]) {
+              const r=await fetch(base+'/api/nhk-speech',{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(20000)});
+              const data=await r.json();report.guards[name]={status:r.status,reason:data.reason};assert.equal(r.status,status);assert.equal(data.reason,reason);
+            }
+            const tests=(await readFile('artifacts/companion-publication/tests.log','utf8')).replace(/\u001b\[[0-9;]*m/g,'');
+            report.unitTestsPassed=Number(tests.match(/Tests\s+(\d+) passed/)?.[1]||0);assert.ok(report.unitTestsPassed>400);
+            report.typecheck='PASS';report.build='PASS';report.phoneUi='PASS_MOCKED_MEDIA_ONLY';report.checkedAt=new Date().toISOString();
+            report.decision='PUBLISHED_CODE_NEEDS_ATTENTION_API_CREDITS';
+            await mkdir('docs/qa',{recursive:true});
+            await writeFile('docs/qa/COMPANION_PRODUCTION_RELEASE_20260910.json',JSON.stringify(report,null,2)+'\n');
+            console.log(JSON.stringify(report,null,2));
+          } catch(e) {report.failure=String(e.message);throw e;} finally {await writeFile('artifacts/companion-publication/result.json',JSON.stringify(report,null,2)+'\n');}
+          JS
+      - name: Record verified publication, not a claim of working paid API
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add docs/qa/COMPANION_PRODUCTION_RELEASE_20260910.json
+          git commit -m 'Record verified companion production files and outstanding API-credit blocker'
+          git push origin HEAD:nihongo-vercel
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: companion-production-publication-20260910
+          path: |
+            artifacts/companion-publication/
+            artifacts/companion-phone/
+          if-no-files-found: warn
