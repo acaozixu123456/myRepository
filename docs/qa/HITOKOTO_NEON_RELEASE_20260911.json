@@ -1,0 +1,43 @@
+{
+  "release": "neon-20260911",
+  "source": "cccf977e1b897ba1212b8bf0f00069126f49997b",
+  "base": "https://nihongo-discovery-v2-20260831.vercel.app",
+  "entry": "https://nihongo-discovery-v2-20260831.vercel.app/companion.html",
+  "productionVerified": true,
+  "checkedAt": "2026-09-10T23:55:53.690Z",
+  "assets": [
+    {
+      "path": "/assets/companion-BG3l1TYy.js",
+      "sha256": "9b98cc39a39548b29d4ec8f0f342ebadda9e6b72987f3fe03880ff3a1df26b11",
+      "bytes": 71710
+    },
+    {
+      "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "sha256": "d2a32840421496e872ade591618d2fa5c33797605d1aec04301717e5a90757d0",
+      "bytes": 711
+    },
+    {
+      "path": "/assets/nhkAudioActivity-Dv8lJ5ig.js",
+      "sha256": "456e5dbe7e5212162a19b35c0da1c6a54cf309e4cb903aeb4c3ca2000377e77d",
+      "bytes": 202565
+    },
+    {
+      "path": "/assets/companion-DEw9-OWs.css",
+      "sha256": "654c5adfc690c50c39eefc6f419a7ec3781eb8b714db2f9612a6ab23b8156045",
+      "bytes": 37623
+    },
+    {
+      "path": "/art/hitokoto-partner.webp",
+      "sha256": "59ef6ed296a5b6814887b877e420f521465a275bb05baa4945aa34fa9d59a22b",
+      "bytes": 5874
+    },
+    {
+      "path": "/art/hitokoto-city.webp",
+      "sha256": "035bab817d1c12f7f3adb4680628b9a46010645402ddfe2b243ab4e65235412b",
+      "bytes": 6156
+    }
+  ],
+  "nhkEntryStatus": 200,
+  "scope": "Exact production HTML/JS/CSS/art. Voice core and backend unchanged. Physical iPhone audio not tested.",
+  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34544230587"
+}
