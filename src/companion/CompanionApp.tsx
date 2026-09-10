@@ -46,7 +46,7 @@ export default function CompanionApp(){
   const micLabel=!activity.micOn?'点一下，开麦说':activity.input==='requesting'?'正在打开麦克风':activity.input==='device-muted'?'麦克风暂时不可用':'已开麦 · 再点闭麦';
   const liveState=phase==='error'?'声音暂时没有接上':phase==='connecting'?'正在接通声音':activity.output==='blocked'?'声音等待播放':activity.output==='playing'?'听一句，慢慢来':phase==='thinking'?'正在接你的话':activity.micOn?'我在听，你慢慢说':'先听也好，准备好再开口';
   const visible=lines.filter(l=>l.text).slice(-32);const lastId=visible.at(-1)?.id;
-  return <div className="kc-root" data-companion="native-v3">
+  return <div className="kc-root" data-companion="native-v3" data-release="quiet-20260910">
     <div className="kc-shell">
       <header className="kc-header">
         {view==='chat'?<button className="kc-icon" onClick={finish} aria-label="结束聊天"><X size={22}/></button>:<span className="kc-brand"><Sprig/><span>ひとこと</span></span>}

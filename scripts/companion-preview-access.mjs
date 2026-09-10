@@ -1,6 +1,6 @@
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-const base='https://nihongo-discovery-v2-202608-git-30bf70-acaozixu123456s-projects.vercel.app';
+const base=process.env.TEST_BASE_URL||'https://nihongo-discovery-v2-202608-git-30bf70-acaozixu123456s-projects.vercel.app';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const report={scope:'UNAUTHENTICATED_PREVIEW_ASSET_AND_PROXY_CHECK_NO_VOICE_CALL_NO_AUTH_BYPASS',url:base+'/companion.html',source:process.env.GITHUB_SHA,status:'NOT_RUN',attempts:[],assets:[]};
 await mkdir('artifacts/companion-access',{recursive:true});

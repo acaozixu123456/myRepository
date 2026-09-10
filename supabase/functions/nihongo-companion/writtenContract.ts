@@ -6,7 +6,7 @@ export type NoteRequest={requestId:string;mode:NoteMode;anchorId:string;source:s
 export type WrittenNote={id:string;anchorId:string;source:string;kind:NoteKind;suggestion:string;reasonZh:string;detailZh:string;mode:NoteMode};
 export const NOTE_LABELS:Record<NoteKind,string>={correction:'换一个小地方',extension:'也可以接成一句',wording:'借用这个说法',explanation:'这个表达，原来如此'};
 const safe=(v:unknown,n:number):v is string=>typeof v==='string'&&v.length<=n&&!/[\u0000-\u0008\u000b\u000c\u000e-\u001f<>]/u.test(v);
-export const languageQuestion=(s:string)=>/什么意思|怎么说|怎么读|语法|助词|自然吗|说得对吗|区别|どういう意味|という意味|何と言|どう言|文法|自然ですか|意味を教/u.test(s);
+export const languageQuestion=(s:string)=>/什么意思|什么含义|怎么说|怎么表达|如何表达|怎么读|语法|助词|自然吗|说得对吗|区别|どういう意味|という意味|って何|とは何|何と言|どう言|文法|自然ですか|意味を教/u.test(s);
 /** Reference is stable text associated with actual conversation items, never audio or invented user input. */
 export function noteRequest(lines:Line[],mode:NoteMode,target=0):NoteRequest|null{
  const usable=lines.filter(l=>l.text&&l.delivered&&!l.interrupted).slice(-10);
