@@ -3,8 +3,8 @@ export type NoteMode='auto'|'help'|'question';
 export type NoteKind='correction'|'extension'|'wording'|'explanation';
 export type NoteLine=Pick<Line,'id'|'role'|'text'|'delivered'|'interrupted'|'assistance'>;
 export type NoteRequest={requestId:string;mode:NoteMode;anchorId:string;source:string;context:NoteLine[];target:number};
-export type WrittenNote={id:string;anchorId:string;source:string;kind:NoteKind;suggestion:string;reasonZh:string;detailZh:string;mode:NoteMode};
-export const NOTE_LABELS:Record<NoteKind,string>={correction:'换一个小地方',extension:'也可以接成一句',wording:'借用这个说法',explanation:'这个表达，原来如此'};
+export type WrittenNote={id:string;anchorId:string;source:string;kind:NoteKind;suggestion:string;reasonZh:string;detailZh:string;mode:NoteMode;scaffold?:{keyword:string;starter:string}};
+export const NOTE_LABELS:Record<NoteKind,string>={correction:'需要修正 · 一个地方',extension:'可选拓展 · 原句也可以',wording:'借用这个说法',explanation:'这个表达，原来如此'};
 const safe=(v:unknown,n:number):v is string=>typeof v==='string'&&v.length<=n&&!/[\u0000-\u0008\u000b\u000c\u000e-\u001f<>]/u.test(v);
 export const languageQuestion=(s:string)=>/什么意思|什么含义|怎么说|怎么表达|如何表达|怎么读|语法|助词|自然吗|说得对吗|区别|どういう意味|という意味ですか|って何|とは何|何と言|どう言|文法|自然ですか|意味を教|意味が(?:分か|わか)(?:らない|りません)|の意味は|(?:中文|中国語).*(?:解释|説明)/u.test(s);
 export function confirmedLanguageQuestion(context:NoteLine[]):boolean{
@@ -40,7 +40,7 @@ export function validateWrittenNote(value:unknown,request:NoteRequest):WrittenNo
  if(n.source!==request.source||!safe(n.suggestion,140)||!safe(n.reasonZh,130)||!safe(n.detailZh,360)||!n.reasonZh.trim())return null;
  if(n.kind!=='explanation'&&(!/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(n.suggestion)||n.suggestion.replace(/[\s\p{P}]/gu,'')===request.source.replace(/[\s\p{P}]/gu,'')))return null;
  if(request.mode==='help'&&n.kind==='correction')return null;
- return {id:request.requestId,anchorId:request.anchorId,source:request.source,kind:n.kind as NoteKind,suggestion:n.suggestion.trim(),reasonZh:n.reasonZh.trim(),detailZh:n.detailZh.trim(),mode:request.mode};
+ return {id:request.requestId,anchorId:request.anchorId,source:request.source,kind:n.kind as NoteKind,suggestion:n.suggestion.trim(),reasonZh:n.reasonZh.trim(),detailZh:n.detailZh.trim(),mode:request.mode,...(n.scaffold&&typeof n.scaffold==='object'&&safe((n.scaffold as any).keyword,55)&&safe((n.scaffold as any).starter,90)?{scaffold:{keyword:(n.scaffold as any).keyword,starter:(n.scaffold as any).starter}}:{})};
 }
 export function changedPart(before:string,after:string):{prefix:string;added:string;suffix:string}{
  const a=Array.from(before),b=Array.from(after);let i=0,j=0;while(i<a.length&&i<b.length&&a[i]===b[i])i++;while(j<a.length-i&&j<b.length-i&&a[a.length-1-j]===b[b.length-1-j])j++;
