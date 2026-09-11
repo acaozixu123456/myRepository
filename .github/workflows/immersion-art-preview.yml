@@ -1,0 +1,45 @@
+name: IMMERSION 03 art preview
+on:
+  push:
+    branches: [hitokoto-immersion03-20260911]
+    paths: [scripts/immersion/city.ts, .github/workflows/immersion-art-preview.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --no-audit --no-fund
+      - run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          mkdir -p artifacts/immersion-art scripts/immersion
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/immersion/city.ts');s=p.read_text().replace('const height=j===0?h*.82:', 'const height=levels===1?h:j===0?h*.82:').replace('const yy=j===0?height/2:', 'const yy=j===0?height/2:');p.write_text(s)
+          Path('scripts/immersion/render.html').write_text('<!doctype html><html><head><style>html,body,canvas{margin:0;width:100%;height:100%;overflow:hidden;background:#030817}canvas{display:block}</style></head><body><canvas id="city"></canvas><script type="module" src="/scripts/immersion/city.ts"></script></body></html>')
+          PY
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/immersion-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173 >/dev/null && break; sleep 1; done
+          node --input-type=module <<'JS'
+          import {chromium} from 'playwright';
+          import {writeFile} from 'node:fs/promises';
+          const b=await chromium.launch({headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});const log=[];
+          try{for(const [orientation,width,height] of [['landscape',1600,900],['portrait',900,1600]]){
+            const page=await b.newPage({viewport:{width,height}});page.on('pageerror',e=>log.push(e.message));page.on('console',e=>{if(e.type()==='error')log.push(e.text());});
+            await page.goto('http://127.0.0.1:4173/scripts/immersion/render.html'+(orientation==='portrait'?'?portrait=1':''));
+            await page.waitForFunction(()=>window.__cityReady,{},{timeout:90000});
+            for(let i=0;i<5;i++)await page.evaluate(()=>window.__cityRender(2));
+            await page.screenshot({path:`artifacts/immersion-art/${orientation}.png`});await page.close();
+          }}finally{await b.close();await writeFile('artifacts/immersion-art/log.json',JSON.stringify(log));}
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: immersion-art-preview
+          path: artifacts/immersion-art/
