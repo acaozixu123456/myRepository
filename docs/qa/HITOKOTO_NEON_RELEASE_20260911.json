@@ -1,15 +1,15 @@
 {
   "release": "neon-20260911",
-  "source": "cd7b5c985cd5c0c18107dad9c8590d82c58adf53",
+  "source": "237347b7cc610722f10c63dfb72dbcd03c079f19",
   "base": "https://nihongo-discovery-v2-20260831.vercel.app",
   "entry": "https://nihongo-discovery-v2-20260831.vercel.app/companion.html",
   "productionVerified": true,
-  "checkedAt": "2026-09-11T00:57:28.626Z",
+  "checkedAt": "2026-09-11T02:40:07.134Z",
   "assets": [
     {
-      "path": "/assets/companion-Dw41j6Od.js",
-      "sha256": "ba676e6d3c64c3c23373c9170d8336646ed8b3e823fc71b63c317b2b0af16c6f",
-      "bytes": 71788
+      "path": "/assets/companion-BoKlqnRB.js",
+      "sha256": "fb86701d350872fa27bae05e17d286947b91f3806d41e0f5be6c2367778e1b19",
+      "bytes": 102621
     },
     {
       "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
@@ -17,14 +17,14 @@
       "bytes": 711
     },
     {
-      "path": "/assets/nhkAudioActivity-D5nRammW.js",
-      "sha256": "d1b77cd9dc2f2197fe9fa43507f7e1ed103962a82fa175b07c1904e2d06c1bf0",
-      "bytes": 203025
+      "path": "/assets/nhkAudioActivity-DZjX3sa9.js",
+      "sha256": "e03009f907a6dc8b63c1ac15c5e0f017d6e6d80f449df4146f9b2f250885b2a9",
+      "bytes": 203311
     },
     {
-      "path": "/assets/companion-DEw9-OWs.css",
-      "sha256": "654c5adfc690c50c39eefc6f419a7ec3781eb8b714db2f9612a6ab23b8156045",
-      "bytes": 37623
+      "path": "/assets/companion-Cq8GjcTS.css",
+      "sha256": "c48d0f990a2ffce489e55d4058e0165e87caff647b04318282cc3f4ad0b2747d",
+      "bytes": 44061
     },
     {
       "path": "/art/hitokoto-partner.webp",
@@ -39,5 +39,5 @@
   ],
   "nhkEntryStatus": 200,
   "scope": "Exact production HTML/JS/CSS/art. Voice core and backend unchanged. Physical iPhone audio not tested.",
-  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34548603340"
+  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34555417816"
 }
