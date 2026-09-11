@@ -1,0 +1,62 @@
+name: IMMERSION03 live preview acceptance
+on:
+  push:
+    branches: [hitokoto-immersion03-20260911]
+    paths: [scripts/immersion/live.mjs, .github/workflows/immersion-live-preview.yml]
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    defaults:
+      run: {shell: 'bash --noprofile --norc -e -o pipefail {0}'}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Require a genuinely accepted immutable source tag
+        run: |
+          for i in $(seq 1 36); do
+            if git fetch origin tag immersion03-source-verified-20260911; then break; fi
+            sleep 5
+          done
+          git rev-parse immersion03-source-verified-20260911
+          git checkout immersion03-source-verified-20260911 -- src server/companionProxy.ts supabase/functions/nihongo-companion
+      - run: npm ci --no-audit --no-fund
+      - name: Wait for the guarded preview deployment, without opening voice sessions
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile} from 'node:fs/promises';
+          const s=await readFile('api/nhk-speech.ts','utf8'),token=s.match(/const SUPABASE_ANON_KEY[^\n]*?'([^']+)'/)?.[1];if(!token)throw Error('Missing public gateway config');
+          let ok=false;
+          for(let i=0;i<50;i++){
+            try{const r=await fetch('https://kivebsjsdfdobxzaokbj.supabase.co/functions/v1/nihongo-companion-immersion-preview',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token,apikey:token},body:JSON.stringify({action:'health'}),signal:AbortSignal.timeout(12000)});const v=await r.json();if(r.ok&&v.ok&&v.immersionRelease==='immersion-20260911-v3'){ok=true;break;}}catch{}
+            await new Promise(r=>setTimeout(r,5000));
+          }
+          if(!ok)throw Error('Accepted preview not available; production remains untouched');
+          JS
+      - name: Actual model-backed study and custom-topic verification
+        id: live
+        env:
+          IMMERSION_PREVIEW: '1'
+          IMMERSION_LIVE_OUT: artifacts/immersion-preview
+        run: node scripts/immersion/live.mjs
+      - name: Record real-preview outcome with redacted credentials
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile,mkdir} from 'node:fs/promises';import {execFileSync} from 'node:child_process';
+          const report=JSON.parse(await readFile('artifacts/immersion-preview/result.json','utf8').catch(()=>JSON.stringify({ok:false,reason:'real_preview_not_completed'})));report.runId=process.env.GITHUB_RUN_ID;try{report.acceptedSource=execFileSync('git',['rev-parse','immersion03-source-verified-20260911'],{encoding:'utf8'}).trim();}catch{}
+          await mkdir('artifacts/immersion-preview',{recursive:true});await writeFile('artifacts/immersion-preview/result.json',JSON.stringify(report,null,2));
+          const url=`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/contents/docs/qa/IMMERSION03_PREVIEW_STATUS.json`,headers={Authorization:'Bearer '+process.env.GH_TOKEN,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'};const old=await fetch(url+'?ref=hitokoto-immersion03-20260911',{headers}).then(async r=>r.ok?(await r.json()).sha:null);
+          const r=await fetch(url,{method:'PUT',headers,body:JSON.stringify({branch:'hitokoto-immersion03-20260911',message:'Record actual Immersion03 preview model results, not mocked success',content:Buffer.from(JSON.stringify(report,null,2)+'\n').toString('base64'),...(old?{sha:old}:{})})});console.log('PREVIEW_EVIDENCE_WRITE',r.status);console.log('REAL_PREVIEW',JSON.stringify(report));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: immersion03-live-preview-${{ github.run_id }}
+          path: artifacts/immersion-preview/
