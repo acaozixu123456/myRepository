@@ -1,0 +1,87 @@
+{
+  "release": "city05-20260911",
+  "artwork": "Native-resolution crops of user-approved UI concepts. Not native4K; moving sprites are separate photographic cutouts.",
+  "scenes": {
+    "skyport": {
+      "nativeSize": [
+        855,
+        846
+      ],
+      "upscaled": false,
+      "path": "/city05/skyport.webp",
+      "sha256": "11efad43d8bcc3be74fa2cf21f317b2fbdd1ee1892fa7e67262f5062e300a21c",
+      "sourceSize": [
+        1672,
+        941
+      ]
+    },
+    "canyon": {
+      "nativeSize": [
+        775,
+        847
+      ],
+      "upscaled": false,
+      "path": "/city05/canyon.webp",
+      "sha256": "8c9c8e100f9258432314c437b6ba05224044b0d4255c41b03d67a460ac3c3dae",
+      "sourceSize": [
+        1672,
+        941
+      ]
+    },
+    "harbor": {
+      "nativeSize": [
+        920,
+        847
+      ],
+      "upscaled": false,
+      "path": "/city05/harbor.webp",
+      "sha256": "00feae9702d88fe6de5ab01874b3afa273ced2a405e795f3037974d13bc5d2e7",
+      "sourceSize": [
+        1672,
+        941
+      ]
+    },
+    "rail": {
+      "nativeSize": [
+        885,
+        847
+      ],
+      "upscaled": false,
+      "path": "/city05/rail.webp",
+      "sha256": "780bab1d82f1a447cca7f1040510776c53be5ab59af16f611b27c3c07ca722b1",
+      "sourceSize": [
+        1672,
+        941
+      ]
+    }
+  },
+  "animatedSprites": {
+    "av-sport": {
+      "nativeSize": [
+        164,
+        62
+      ],
+      "upscaled": false,
+      "path": "/city05/av-sport.webp",
+      "sha256": "78dc612e30af2610367520acd22a7b0b9b06bafa691c66146cfda774f404e043"
+    },
+    "av-cargo": {
+      "nativeSize": [
+        343,
+        128
+      ],
+      "upscaled": false,
+      "path": "/city05/av-cargo.webp",
+      "sha256": "5e4d0c85bcf9ba42f0432e489ca0bceb6880e93a401b45062c81a30373afed64"
+    },
+    "maglev": {
+      "nativeSize": [
+        304,
+        28
+      ],
+      "upscaled": false,
+      "path": "/city05/maglev.webp",
+      "sha256": "737be08240666fd61c1ee427e8f2dc831793a97a1e88febd3cd707574126fd73"
+    }
+  }
+}
