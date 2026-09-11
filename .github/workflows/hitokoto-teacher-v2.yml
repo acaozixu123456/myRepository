@@ -14,7 +14,7 @@ permissions:
   contents: write
 concurrency:
   group: hitokoto-teacher-v2
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   gate:
     runs-on: ubuntu-latest
@@ -36,6 +36,7 @@ jobs:
           if ! grep -q 'teacher-20260911-v2' src/companion/CompanionApp.tsx; then
             python scripts/teacher-upgrade/apply.py
           fi
+          python scripts/teacher-upgrade/refine.py
           git diff --check
           git diff --exit-code 3953c0697df97f73750c5974deb28b844ef9d60b -- api public index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/App.tsx src/NhkMorningPage.tsx src/nhkBackup.ts src/nhkLibrary.ts src/appWorker.ts src/companion/writtenLane.ts supabase/functions/nihongo-companion/service.ts supabase/functions/nihongo-companion/monitor.ts
           git diff --stat | tee artifacts/teacher-gate/changes.txt
@@ -51,14 +52,14 @@ jobs:
           npx playwright install --with-deps chromium webkit
           npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/teacher-vite.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
+      - name: Real MediaRecorder and replay of synthetic remote output
+        run: node scripts/teacher-replay-media.mjs
       - name: Existing native mic and five-width continuous note regression
         run: |
           node scripts/companion-phone.mjs
           node scripts/hitokoto-neon-phone.mjs
       - name: Teacher UI on Chromium and WebKit
         run: node scripts/teacher-v2-phone.mjs
-      - name: Real MediaRecorder and replay of synthetic remote output
-        run: node scripts/teacher-replay-media.mjs
       - name: Commit only source which passed the complete gate
         run: |
           git config user.name 'Sol supervisor'
