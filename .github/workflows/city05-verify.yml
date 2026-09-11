@@ -1,0 +1,129 @@
+name: CITY05 rendering music and publication
+on:
+  push:
+    branches: [hitokoto-city05-20260911, nihongo-vercel]
+    paths: ['src/city05/**','scripts/city05/**','.github/workflows/city05-verify.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: city05-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Apply UI integration without backend or saved-data modifications
+        id: prepare
+        run: |
+          mkdir -p artifacts/city05
+          if [ "$GITHUB_REF_NAME" = hitokoto-city05-20260911 ]; then python scripts/city05/integrate.py; fi
+          git diff --check
+          git diff --exit-code ba200ff61615db6ab31cd5df46e201e1ef2b9802 -- api server supabase public/ambient public/sw.js public/manifest.webmanifest public/app-entry.js index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/appWorker.ts src/nhkBackup.ts src/nhkLibrary.ts src/NhkMorningPage.tsx src/companion/connection.ts src/companion/writtenLane.ts src/companion/writtenFeedback.ts src/companion/model.ts src/companion/prompt.ts src/companion/expressionLearning.ts src/companion/useExpressionLibrary.ts
+          git diff > artifacts/city05/integration.patch
+      - name: Original music and media verification
+        run: |
+          python -m pip install --quiet numpy Pillow
+          command -v ffmpeg >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+          python scripts/city05/music.py
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json,hashlib,subprocess
+          root=Path('public/city05');p=json.loads((root/'provenance.json').read_text())
+          for name,v in p['scenes'].items():
+            assert list(Image.open(root/(name+'.webp')).size)==v['nativeSize']
+            assert hashlib.sha256((root/(name+'.webp')).read_bytes()).hexdigest()==v['sha256']
+            assert v['upscaled'] is False
+            a=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(root/(name+'.mp3'))]))
+            assert len(a['streams'])==1 and a['streams'][0]['codec_type']=='audio' and a['streams'][0]['channels']==2
+            assert 40<float(a['format']['duration'])<60
+            assert (root/(name+'.mp3')).stat().st_size<1500000
+          Path('artifacts/city05/media.json').write_text(json.dumps(p,indent=2))
+          print('MEDIA_NATIVE_DIMENSIONS_AND_ORIGINAL_AUDIO_VERIFIED')
+          PY
+      - run: npm ci --no-audit --no-fund
+      - name: Full source gate
+        id: source
+        run: |
+          npm run typecheck 2>&1 | tee artifacts/city05/typecheck.log
+          npm test 2>&1 | tee artifacts/city05/tests.log
+          npm run build 2>&1 | tee artifacts/city05/build.log
+      - name: Browser runtime
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium webkit
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/city05-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
+      - name: Actual scene movement and decoded music interaction
+        id: city
+        run: node scripts/city05/browser.mjs 2>&1 | tee artifacts/city05/browser.log
+      - name: Preserve existing voice, hints, teaching and selection workflows
+        id: regression
+        run: |
+          node scripts/companion-phone.mjs > artifacts/city05/native-mic.log 2>&1
+          node scripts/hitokoto-neon-phone.mjs > artifacts/city05/five-width.log 2>&1
+          node scripts/teacher-v2-phone.mjs > artifacts/city05/teacher02.log 2>&1
+          node scripts/immersion/browser.mjs > artifacts/city05/immersion.log 2>&1
+          node scripts/desktop04/acceptance.mjs > artifacts/city05/desktop04.log 2>&1
+      - name: Exact hosted entry code artwork and music
+        if: github.ref_name == 'nihongo-vercel'
+        id: published
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,readdir,writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';import assert from 'node:assert/strict';
+          const base='https://nihongo-discovery-v2-20260831.vercel.app',hash=b=>createHash('sha256').update(b).digest('hex'),expected=new Map();
+          for(const [path,file]of [['/','index.html'],['/companion.html','companion.html'],['/?view=nhk','index.html']]){const body=await readFile('dist/'+file);expected.set(path,hash(body));for(const m of body.toString().matchAll(/(?:src|href)="(\/assets\/[^"<>]+\.(?:js|css))"/g))expected.set(m[1],hash(await readFile('dist'+m[1])));}
+          let ok=false,last='';for(let i=0;i<45;i++){try{for(const [path,sha] of expected){const r=await fetch(base+path,{cache:'no-store',signal:AbortSignal.timeout(15000)});assert.equal(r.status,200);assert.equal(hash(Buffer.from(await r.arrayBuffer())),sha,path);}ok=true;break;}catch(e){last=e.message;await new Promise(r=>setTimeout(r,5000));}}assert.ok(ok,last);
+          for(const f of await readdir('dist/city05')){const path='/city05/'+f,r=await fetch(base+path,{signal:AbortSignal.timeout(20000)});assert.equal(r.status,200,path);const sha=hash(await readFile('dist'+path));assert.equal(hash(Buffer.from(await r.arrayBuffer())),sha,path);expected.set(path,sha);}
+          await writeFile('artifacts/city05/public-assets.json',JSON.stringify({ok:true,base,checkedAt:new Date().toISOString(),source:process.env.GITHUB_SHA,files:[...expected].map(([path,sha256])=>({path,sha256}))},null,2));
+          JS
+          CITY05_BASE=https://nihongo-discovery-v2-20260831.vercel.app CITY05_OUT=artifacts/city05-production node scripts/city05/browser.mjs
+      - name: Record evidence and commit application integration only when all gates pass
+        if: always()
+        env:
+          PREPARE: ${{ steps.prepare.outcome }}
+          SOURCE: ${{ steps.source.outcome }}
+          CITY: ${{ steps.city.outcome }}
+          REGRESSION: ${{ steps.regression.outcome }}
+          PUBLISHED: ${{ steps.published.outcome }}
+        run: |
+          mkdir -p docs/qa artifacts/city05
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';const read=async p=>JSON.parse(await readFile(p,'utf8'));const tail=async p=>(await readFile(p,'utf8').catch(()=>'' )).replace(/\u001b\[[0-9;]*m/g,'').slice(-6000);const tests=await tail('artifacts/city05/tests.log');
+          const stages=Object.fromEntries(['PREPARE','SOURCE','CITY','REGRESSION','PUBLISHED'].map(k=>[k,process.env[k]]));const ok=['PREPARE','SOURCE','CITY','REGRESSION'].every(k=>stages[k]==='success')&&(process.env.GITHUB_REF_NAME!=='nihongo-vercel'||stages.PUBLISHED==='success');
+          const report={ok,release:'CITY05',source:process.env.GITHUB_SHA,runId:process.env.GITHUB_RUN_ID,branch:process.env.GITHUB_REF_NAME,stages,testsPassed:Number(tests.match(/Tests\s+(\d+) passed/)?.[1]||0),artworkResolution:'Native approved concept crops, NOT four native4K background plates',browser:await read('artifacts/city05-browser/result.json').catch(()=>null),public:await read('artifacts/city05/public-assets.json').catch(()=>null),productionBrowser:await read('artifacts/city05-production/result.json').catch(()=>null),physicalDeviceTested:false,providersInUiTests:'mocked; protected backend and speech transport unchanged',diagnostics:ok?{}:{typecheck:await tail('artifacts/city05/typecheck.log'),tests,browser:await tail('artifacts/city05/browser.log'),native:await tail('artifacts/city05/native-mic.log'),fiveWidths:await tail('artifacts/city05/five-width.log'),teacher:await tail('artifacts/city05/teacher02.log'),immersion:await tail('artifacts/city05/immersion.log'),desktop:await tail('artifacts/city05/desktop04.log')},completedAt:new Date().toISOString()};await writeFile('docs/qa/CITY05_STATUS.json',JSON.stringify(report,null,2)+'\n');await writeFile('artifacts/city05/report.json',JSON.stringify(report,null,2));console.log('CITY05_OUTCOME',JSON.stringify(report));
+          JS
+          git fetch origin "$GITHUB_REF_NAME"
+          if [ "$(git rev-parse origin/$GITHUB_REF_NAME)" = "$GITHUB_SHA" ]; then
+            git config user.name 'Sol supervisor'; git config user.email '331004814@qq.com'
+            if [ "$PREPARE" = success ] && [ "$SOURCE" = success ] && [ "$CITY" = success ] && [ "$REGRESSION" = success ] && [ "$GITHUB_REF_NAME" = hitokoto-city05-20260911 ]; then git add src/companion/CompanionApp.tsx src/companion/main.tsx public/city05; fi
+            git add docs/qa/CITY05_STATUS.json
+            if ! git diff --cached --quiet; then git commit -m 'Record CITY05 acceptance; include integration and original music only after complete gate';git push origin HEAD:"$GITHUB_REF_NAME";fi
+          fi
+      - name: Export exact rendered evidence
+        if: always()
+        run: |
+          mkdir -p artifacts/city05
+          test ! -d dist || tar -czf artifacts/city05/built-app.tgz -C dist .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: city05-${{ github.run_id }}
+          path: |
+            artifacts/city05/
+            artifacts/city05-browser/
+            artifacts/city05-production/
+            artifacts/desktop04-browser/
+            artifacts/teacher-v2/
+            artifacts/immersion-browser/
+            artifacts/hitokoto-neon/
+            docs/qa/CITY05_STATUS.json
