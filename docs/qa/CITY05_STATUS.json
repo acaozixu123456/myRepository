@@ -1,0 +1,143 @@
+{
+  "ok": true,
+  "release": "CITY05",
+  "source": "ac450efd4b6987d9a72c8d469e21161a1cb3c629",
+  "runId": "34616234689",
+  "branch": "hitokoto-city05-20260911",
+  "stages": {
+    "PREPARE": "success",
+    "SOURCE": "success",
+    "CITY": "success",
+    "REGRESSION": "success",
+    "PUBLISHED": "skipped"
+  },
+  "testsPassed": 724,
+  "artworkResolution": "Native approved concept crops, NOT four native4K background plates",
+  "browser": {
+    "ok": true,
+    "base": "http://127.0.0.1:4173",
+    "scope": "REAL_HOSTED_ARTWORK_REAL_CANVAS_AND_MUSIC_DECODING_MOCKED_VOICE_AND_TEACHER_NO_PHYSICAL_DEVICE",
+    "cases": [
+      {
+        "engine": "chromium",
+        "viewport": {
+          "width": 1536,
+          "height": 960
+        },
+        "scenes": [
+          "skyport",
+          "canyon",
+          "harbor",
+          "rail"
+        ],
+        "actualMovingPixels": true,
+        "independentFlightTrainAndScreens": true,
+        "rapidSwitchLatestWins": true,
+        "musicOptInAndDecoded": true,
+        "musicDuration": 56.470583,
+        "micHardMute": true,
+        "voiceDucking": true,
+        "zeroVolumeSilent": true,
+        "oneMusicPlayer": true,
+        "teacherStillVisible": true,
+        "oneNativeVoicePeer": true,
+        "reducedMotionStopsFrames": true,
+        "normalRootEntry": true,
+        "artwork": "Native crops, not native4K",
+        "pageErrors": []
+      },
+      {
+        "engine": "chromium",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "scenes": [
+          "skyport",
+          "canyon",
+          "harbor",
+          "rail"
+        ],
+        "actualMovingPixels": true,
+        "independentFlightTrainAndScreens": true,
+        "rapidSwitchLatestWins": true,
+        "musicOptInAndDecoded": true,
+        "musicDuration": 56.470583,
+        "micHardMute": true,
+        "voiceDucking": true,
+        "zeroVolumeSilent": true,
+        "oneMusicPlayer": true,
+        "teacherStillVisible": true,
+        "oneNativeVoicePeer": true,
+        "reducedMotionStopsFrames": true,
+        "normalRootEntry": true,
+        "artwork": "Native crops, not native4K",
+        "pageErrors": []
+      },
+      {
+        "engine": "webkit",
+        "viewport": {
+          "width": 1536,
+          "height": 960
+        },
+        "scenes": [
+          "skyport",
+          "canyon",
+          "harbor",
+          "rail"
+        ],
+        "actualMovingPixels": true,
+        "independentFlightTrainAndScreens": true,
+        "rapidSwitchLatestWins": true,
+        "musicOptInAndDecoded": true,
+        "musicDuration": 56.52,
+        "micHardMute": true,
+        "voiceDucking": true,
+        "zeroVolumeSilent": true,
+        "oneMusicPlayer": true,
+        "teacherStillVisible": true,
+        "oneNativeVoicePeer": true,
+        "reducedMotionStopsFrames": true,
+        "normalRootEntry": true,
+        "artwork": "Native crops, not native4K",
+        "pageErrors": []
+      },
+      {
+        "engine": "webkit",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "scenes": [
+          "skyport",
+          "canyon",
+          "harbor",
+          "rail"
+        ],
+        "actualMovingPixels": true,
+        "independentFlightTrainAndScreens": true,
+        "rapidSwitchLatestWins": true,
+        "musicOptInAndDecoded": true,
+        "musicDuration": 56.52,
+        "micHardMute": true,
+        "voiceDucking": true,
+        "zeroVolumeSilent": true,
+        "oneMusicPlayer": true,
+        "teacherStillVisible": true,
+        "oneNativeVoicePeer": true,
+        "reducedMotionStopsFrames": true,
+        "normalRootEntry": true,
+        "artwork": "Native crops, not native4K",
+        "pageErrors": []
+      }
+    ],
+    "errors": [],
+    "stage": "complete"
+  },
+  "public": null,
+  "productionBrowser": null,
+  "physicalDeviceTested": false,
+  "providersInUiTests": "mocked; protected backend and speech transport unchanged",
+  "diagnostics": {},
+  "completedAt": "2026-09-11T15:34:17.220Z"
+}

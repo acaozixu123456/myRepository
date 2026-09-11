@@ -13,7 +13,15 @@
       "sourceSize": [
         1672,
         941
-      ]
+      ],
+      "music": {
+        "bpm": 76,
+        "seconds": 50.526315789473685,
+        "originalComposition": true,
+        "maxAmplitude": 0.21903252601623535,
+        "path": "/city05/skyport.mp3",
+        "sha256": "3694cc8817892e23f6b2ced542cfc08c0e44d0b4100b319517aa6b41003c7d24"
+      }
     },
     "canyon": {
       "nativeSize": [
@@ -26,7 +34,15 @@
       "sourceSize": [
         1672,
         941
-      ]
+      ],
+      "music": {
+        "bpm": 84,
+        "seconds": 45.714285714285715,
+        "originalComposition": true,
+        "maxAmplitude": 0.22005631029605865,
+        "path": "/city05/canyon.mp3",
+        "sha256": "9c6d62fb6cdd3fa17450ddecf87175087b9313ab1b158182adabb248d401f78c"
+      }
     },
     "harbor": {
       "nativeSize": [
@@ -39,7 +55,15 @@
       "sourceSize": [
         1672,
         941
-      ]
+      ],
+      "music": {
+        "bpm": 68,
+        "seconds": 56.470588235294116,
+        "originalComposition": true,
+        "maxAmplitude": 0.2123975306749344,
+        "path": "/city05/harbor.mp3",
+        "sha256": "fe71ba9bfb68d7b7f208036f7d33922a6f68e5b0eed44fa6fc6e7805a10cb800"
+      }
     },
     "rail": {
       "nativeSize": [
@@ -52,7 +76,15 @@
       "sourceSize": [
         1672,
         941
-      ]
+      ],
+      "music": {
+        "bpm": 88,
+        "seconds": 43.63636363636363,
+        "originalComposition": true,
+        "maxAmplitude": 0.25426483154296875,
+        "path": "/city05/rail.mp3",
+        "sha256": "6535b81e9dc96216cc579d7320518c12a210ffa31ee59ad96feccffb40af89a8"
+      }
     }
   },
   "animatedSprites": {
