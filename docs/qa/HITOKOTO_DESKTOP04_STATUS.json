@@ -1,8 +1,8 @@
 {
   "ok": true,
   "release": "DESKTOP04",
-  "source": "0c02bcfbfe402362dae8ddba013c3f01a2f0222f",
-  "runId": "34601310478",
+  "source": "b345d00b758ab2e3826687074872df69dc21974b",
+  "runId": "34602838288",
   "branch": "hitokoto-desktop-focus04-20260911",
   "stages": {
     "PREPARE": "success",
@@ -170,5 +170,5 @@
   "voiceAndTeacherProvider": "mocked in UI tests; backend and speech transport unchanged",
   "sound": "actual WebAudio offline-rendered envelopes and opt-in UI; not human listening evaluation",
   "diagnostics": {},
-  "completedAt": "2026-09-11T13:01:07.954Z"
+  "completedAt": "2026-09-11T13:17:10.833Z"
 }
