@@ -37,7 +37,8 @@ try{
   const assess=async text=>{await page.getByRole('textbox',{name:'练习回答',exact:true}).fill(text);await page.getByRole('button',{name:'看看这句表达',exact:true}).click();};
   const review=async()=>{await page.getByRole('button',{name:'更多',exact:true}).click();await page.getByRole('button',{name:'表达本与复习',exact:false}).click();await page.getByRole('button',{name:'换个场景试试',exact:false}).first().click();await page.locator('.teacher-cue').waitFor();};
   await page.goto(base+'/companion.html');await page.locator('[data-teacher-release="teacher-20260911-v2"]').waitFor();assert.equal(await store(),null);
-  await page.getByRole('button',{name:'聊一会儿',exact:true}).click();await page.waitForFunction(()=>window.__voice.events.some(e=>e.type==='response.create'));
+  await page.getByRole('button',{name:'聊一会儿',exact:true}).click();
+  if(await page.getByRole('button',{name:'对话与历史',exact:true}).count())await page.getByRole('button',{name:'对话与历史',exact:true}).click();await page.waitForFunction(()=>window.__voice.events.some(e=>e.type==='response.create'));
   assert.equal(await page.evaluate(()=>window.__voice.micRequests),0);
   assert.equal(await page.evaluate(()=>window.__voice.events.filter(e=>e.type==='session.update').at(-1).session.audio.output.speed),1);
   await reply('つい長く見てしまう動画はありますか。');

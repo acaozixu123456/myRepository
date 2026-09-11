@@ -1,0 +1,78 @@
+{
+  "release": "immersion03-city-v1",
+  "title": "雨夜 · 高层窗边的新东京",
+  "duration": 12,
+  "fps": 30,
+  "source": "Original GPT Image 2.5 Sunburst 4K outputs + authored layered cinemagraph; no camera pan, zoom or image upscaling.",
+  "layers": [
+    "moving traffic lights on the depicted expressway",
+    "glass rain and refracting beads",
+    "distant haze",
+    "selective neon illumination"
+  ],
+  "audioTracks": 0,
+  "landscape": {
+    "poster": {
+      "path": "/ambient/immersion03/abab85546a38-landscape-poster.webp",
+      "width": 3840,
+      "height": 2160,
+      "bytes": 1611882,
+      "sha256": "abab85546a381b8171894426807c3c8531959b3524d2ed0524422ac98283b4c6"
+    },
+    "video": {
+      "1080": {
+        "path": "/ambient/immersion03/4b5c85e129d1-landscape-1080.mp4",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 1166228,
+        "sha256": "4b5c85e129d169af9b591b7a3d2bb6858a962213b3d694f3570fb814ac49c665"
+      },
+      "1440": {
+        "path": "/ambient/immersion03/62d91a4fa8d7-landscape-1440.mp4",
+        "width": 2560,
+        "height": 1440,
+        "bytes": 1858795,
+        "sha256": "62d91a4fa8d73b57e3b2daab7b267c5235d3d4f435d0137fb28ac78ad6538e32"
+      },
+      "2160": {
+        "path": "/ambient/immersion03/bfd44acf3570-landscape-2160.mp4",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 4118345,
+        "sha256": "bfd44acf357079e93c69c31d3f8bdef294354aa414412adb8c43d95b9332c564"
+      }
+    }
+  },
+  "portrait": {
+    "poster": {
+      "path": "/ambient/immersion03/2e421553785b-portrait-poster.webp",
+      "width": 2160,
+      "height": 3840,
+      "bytes": 1467284,
+      "sha256": "2e421553785babf1b7620d8873aa081dec23c10aa61689efef0f871f69945d4d"
+    },
+    "video": {
+      "1080": {
+        "path": "/ambient/immersion03/e3144f44532f-portrait-1080.mp4",
+        "width": 1080,
+        "height": 1920,
+        "bytes": 1128219,
+        "sha256": "e3144f44532f34f93b1a52faa5f1b8d635c3c19fe58267de43ead677a64e6844"
+      },
+      "1440": {
+        "path": "/ambient/immersion03/810aebb9310e-portrait-1440.mp4",
+        "width": 1440,
+        "height": 2560,
+        "bytes": 1761060,
+        "sha256": "810aebb9310e2fe623e3b2bc8a40d2c85eb789da1ea5cbf5aad8c135af7ea52c"
+      },
+      "2160": {
+        "path": "/ambient/immersion03/6b3e8bd7e06a-portrait-2160.mp4",
+        "width": 2160,
+        "height": 3840,
+        "bytes": 3831113,
+        "sha256": "6b3e8bd7e06af55dddb90821564febb974cd39b895bc2dd4679f3613eab411fd"
+      }
+    }
+  }
+}

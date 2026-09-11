@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "scope": "SOURCE_TESTS_REAL_BROWSER_UI_MOCKED_PROVIDER_NO_PHYSICAL_IPHONE",
+  "automatedSourceEdits": false,
+  "checks": [
+    {
+      "name": "typecheck",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 8523
+    },
+    {
+      "name": "tests",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 9118
+    },
+    {
+      "name": "build",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 27880
+    },
+    {
+      "name": "native-mic",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 8851
+    },
+    {
+      "name": "five-width-notes",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 84708
+    },
+    {
+      "name": "teacher02",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 69549
+    },
+    {
+      "name": "selection-and-themes",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 29540
+    }
+  ],
+  "completedAt": "2026-09-11T07:12:33.630Z",
+  "acceptance": "success",
+  "source": "56e20a29ab280f6087431dce12efa26b47f8cbc1",
+  "runId": "34572895566",
+  "testedSource": "03b2acece35ab06cae244c807b7de3f7548d7e04"
+}

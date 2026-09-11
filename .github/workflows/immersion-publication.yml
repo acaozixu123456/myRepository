@@ -1,0 +1,139 @@
+name: IMMERSION03 guarded production publication
+on:
+  push:
+    branches: [hitokoto-immersion03-20260911]
+    paths: [.github/workflows/immersion-publication.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: hitokoto-immersion-production
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 42
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BRANCH: hitokoto-immersion03-20260911
+    defaults:
+      run: {shell: 'bash --noprofile --norc -e -o pipefail {0}'}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Wait for actual complete acceptance and scene artifacts
+        run: |
+          mkdir -p artifacts/immersion-publication
+          for i in $(seq 1 90); do
+            git fetch origin "$BRANCH" --tags
+            if git rev-parse --verify immersion03-source-verified-20260911 >/dev/null 2>&1 && git cat-file -e "origin/$BRANCH:public/ambient/immersion03/manifest.json" 2>/dev/null; then break; fi
+            sleep 8
+          done
+          git rev-parse --verify immersion03-source-verified-20260911
+          git checkout -B publication "origin/$BRANCH"
+          git diff --exit-code immersion03-source-verified-20260911 HEAD -- src server/companionProxy.ts supabase/functions/nihongo-companion
+          test -f public/ambient/immersion03/manifest.json
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';import assert from 'node:assert/strict';
+          const m=JSON.parse(await readFile('public/ambient/immersion03/manifest.json','utf8'));const c=JSON.parse(await readFile('public/ambient/immersion03/asset-checks.json','utf8'));assert.equal(m.duration,12);assert.equal(m.fps,30);assert.equal(m.audioTracks,0);assert.ok(c.every(x=>x.exactPeriodicBoundary&&!x.upscaled));
+          for(const o of ['landscape','portrait'])for(const a of [m[o].poster,...Object.values(m[o].video)])assert.equal(createHash('sha256').update(await readFile('public'+a.path)).digest('hex'),a.sha256);
+          await writeFile('artifacts/immersion-publication/scene-manifest.json',JSON.stringify(m,null,2));
+          JS
+      - run: npm ci --no-audit --no-fund
+      - name: Build exact release
+        run: |
+          npm run typecheck 2>&1 | tee artifacts/immersion-publication/typecheck.log
+          npm test 2>&1 | tee artifacts/immersion-publication/tests.log
+          npm run build 2>&1 | tee artifacts/immersion-publication/build.log
+      - name: Wait for accepted preview deployment
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile} from 'node:fs/promises';const s=await readFile('api/nhk-speech.ts','utf8'),t=s.match(/const SUPABASE_ANON_KEY[^\n]*?'([^']+)'/)?.[1];if(!t)throw Error('Gateway config missing');let ok=false;
+          for(let i=0;i<90;i++){try{const r=await fetch('https://kivebsjsdfdobxzaokbj.supabase.co/functions/v1/nihongo-companion-immersion-preview',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t,apikey:t},body:JSON.stringify({action:'health'}),signal:AbortSignal.timeout(10000)});const v=await r.json();if(r.ok&&v.ok&&v.immersionRelease==='immersion-20260911-v3'){ok=true;break;}}catch{}await new Promise(r=>setTimeout(r,5000));}if(!ok)throw Error('No accepted preview; no production merge');
+          JS
+      - name: Real preview model acceptance
+        env:
+          IMMERSION_PREVIEW: '1'
+          IMMERSION_LIVE_OUT: artifacts/immersion-publication/preview
+        run: |
+          node scripts/immersion/live.mjs
+          if ! git ls-remote --exit-code --tags origin immersion03-model-verified-20260911 >/dev/null 2>&1; then
+            git tag immersion03-model-verified-20260911 immersion03-source-verified-20260911
+            git push origin refs/tags/immersion03-model-verified-20260911
+          fi
+      - name: Real scene playback before release
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium webkit
+          npm run preview -- --host 127.0.0.1 --port 4173 >/tmp/immersion-production-preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          IMMERSION_SCENE_OUT=artifacts/immersion-publication/local-scene node scripts/immersion/scenery-browser.mjs
+      - name: Require the model-verified production backend
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile} from 'node:fs/promises';const s=await readFile('api/nhk-speech.ts','utf8'),t=s.match(/const SUPABASE_ANON_KEY[^\n]*?'([^']+)'/)?.[1];let ok=false;
+          for(let i=0;i<120;i++){try{const r=await fetch('https://kivebsjsdfdobxzaokbj.supabase.co/functions/v1/nihongo-companion',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+t,apikey:t},body:JSON.stringify({action:'health'}),signal:AbortSignal.timeout(10000)});const v=await r.json();if(r.ok&&v.ok&&v.immersionRelease==='immersion-20260911-v3'){ok=true;break;}}catch{}await new Promise(r=>setTimeout(r,5000));}if(!ok)throw Error('Production backend not upgraded; keep old frontend');
+          JS
+      - name: Merge only the checked source and current approved assets
+        id: merge
+        run: |
+          git fetch origin nihongo-vercel "$BRANCH"
+          git merge-base --is-ancestor origin/nihongo-vercel HEAD
+          git diff --exit-code HEAD "origin/$BRANCH" -- src server supabase public index.html companion.html vercel.json package.json package-lock.json
+          node --input-type=module <<'JS'
+          import {writeFile} from 'node:fs/promises';import {execFileSync} from 'node:child_process';import assert from 'node:assert/strict';
+          const api='https://api.github.com/repos/'+process.env.GITHUB_REPOSITORY,h={Authorization:'Bearer '+process.env.GH_TOKEN,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'};
+          const get=async p=>{const r=await fetch(api+p,{headers:h});assert.ok(r.ok);return r.json();};const old=await get('/git/ref/heads/nihongo-vercel'),head=await get('/git/ref/heads/'+process.env.BRANCH);const oldCommit=await get('/git/commits/'+old.object.sha);
+          const prs=await get('/pulls?state=open&base=nihongo-vercel&head='+encodeURIComponent(process.env.GITHUB_REPOSITORY.split('/')[0]+':'+process.env.BRANCH));assert.equal(prs.length,1);
+          const r=await fetch(api+'/pulls/'+prs[0].number+'/merge',{method:'PUT',headers:h,body:JSON.stringify({sha:head.object.sha,merge_method:'merge',commit_title:'Publish HITOKOTO IMMERSION03 after complete acceptance'})});const merged=await r.json();assert.ok(r.ok&&merged.merged,JSON.stringify(merged));
+          await writeFile('artifacts/immersion-publication/merge.json',JSON.stringify({previous:old.object.sha,previousTree:oldCommit.tree.sha,published:merged.sha,head:head.object.sha,pr:prs[0].number},null,2));
+          JS
+      - name: Exact public HTML, styles, scripts and original media
+        id: assets
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';import assert from 'node:assert/strict';
+          const base='https://nihongo-discovery-v2-20260831.vercel.app',hash=x=>createHash('sha256').update(x).digest('hex');const expected=new Map();
+          for(const [url,file] of [['/','index.html'],['/index.html','index.html'],['/companion.html','companion.html'],['/?view=nhk','index.html']]){const b=await readFile('dist/'+file);expected.set(url,hash(b));for(const m of b.toString().matchAll(/(?:src|href)="(\/assets\/[^"<>]+\.(?:js|css))"/g))expected.set(m[1],hash(await readFile('dist'+m[1])));}
+          for(const p of ['/app-entry.js','/sw.js','/manifest.webmanifest','/ambient/immersion03/manifest.json'])expected.set(p,hash(await readFile('dist'+p)));
+          let good=false,last='';for(let i=0;i<65;i++){try{for(const [path,digest]of expected){const r=await fetch(base+path,{cache:'no-store',signal:AbortSignal.timeout(12000)});assert.equal(r.status,200);assert.equal(hash(Buffer.from(await r.arrayBuffer())),digest,path);}good=true;break;}catch(e){last=e.message;await new Promise(r=>setTimeout(r,5000));}}assert.ok(good,last);
+          const manifest=JSON.parse(await readFile('dist/ambient/immersion03/manifest.json','utf8')),media=[];
+          for(const o of ['landscape','portrait'])for(const a of [manifest[o].poster,...Object.values(manifest[o].video)]){const r=await fetch(base+a.path,{signal:AbortSignal.timeout(60000)});assert.equal(r.status,200);const b=Buffer.from(await r.arrayBuffer());assert.equal(b.length,a.bytes);assert.equal(hash(b),a.sha256);media.push({path:a.path,width:a.width,height:a.height,bytes:a.bytes,sha256:a.sha256});}
+          await writeFile('artifacts/immersion-publication/public-assets.json',JSON.stringify({ok:true,base,verifiedAt:new Date().toISOString(),pagesAndCode:[...expected.keys()],media},null,2));
+          JS
+      - name: Actual production learning and topic API
+        id: live
+        env:
+          IMMERSION_PREVIEW: '0'
+          IMMERSION_LIVE_OUT: artifacts/immersion-publication/production-api
+        run: node scripts/immersion/live.mjs
+      - name: Actual hosted scenery and normal app entry
+        id: scenery
+        env:
+          IMMERSION_SCENE_BASE: https://nihongo-discovery-v2-20260831.vercel.app
+          IMMERSION_SCENE_OUT: artifacts/immersion-publication/production-scene
+        run: node scripts/immersion/scenery-browser.mjs
+      - name: Record verified publication
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';const read=async p=>JSON.parse(await readFile('artifacts/immersion-publication/'+p,'utf8'));
+          const report={ok:true,release:'IMMERSION03',runId:process.env.GITHUB_RUN_ID,source:await read('merge.json'),public:await read('public-assets.json'),realApi:await read('production-api/result.json'),scenery:await read('production-scene/result.json'),scene:await read('scene-manifest.json'),physicalIPhoneTested:false,scope:'Real deployed assets/API/desktop browser engines; no claim of physical iPhone long-press or microphone/performance verification.'};await writeFile('artifacts/immersion-publication/release.json',JSON.stringify(report,null,2));
+          const url=`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/contents/docs/qa/HITOKOTO_IMMERSION03_RELEASE.json`,h={Authorization:'Bearer '+process.env.GH_TOKEN,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'};const old=await fetch(url+'?ref=nihongo-vercel',{headers:h}).then(async r=>r.ok?(await r.json()).sha:null);const r=await fetch(url,{method:'PUT',headers:h,body:JSON.stringify({branch:'nihongo-vercel',message:'Record verified Immersion03 production, genuine 4K media and live learning evidence',content:Buffer.from(JSON.stringify(report,null,2)+'\n').toString('base64'),...(old?{sha:old}:{})})});if(!r.ok)throw Error('Evidence write '+r.status);console.log('IMMERSION03_PUBLISHED',JSON.stringify(report));
+          JS
+      - name: Restore the owned previous frontend if post-publication acceptance fails
+        if: failure() && steps.merge.outcome == 'success'
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';const state=JSON.parse(await readFile('artifacts/immersion-publication/merge.json','utf8')),api='https://api.github.com/repos/'+process.env.GITHUB_REPOSITORY,h={Authorization:'Bearer '+process.env.GH_TOKEN,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'};
+          const current=await fetch(api+'/git/ref/heads/nihongo-vercel',{headers:h}).then(r=>r.json());if(current.object.sha!==state.published)throw Error('Production advanced independently; do not overwrite newer work');
+          const created=await fetch(api+'/git/commits',{method:'POST',headers:h,body:JSON.stringify({message:'Restore previous frontend after failed Immersion03 production acceptance; preserve history and study storage',tree:state.previousTree,parents:[state.published]})}).then(r=>r.json());if(!created.sha)throw Error('Rollback commit failed');
+          const r=await fetch(api+'/git/refs/heads/nihongo-vercel',{method:'PATCH',headers:h,body:JSON.stringify({sha:created.sha,force:false})});if(!r.ok)throw Error('Rollback ref rejected');await writeFile('artifacts/immersion-publication/rollback.json',JSON.stringify({restoredTree:state.previousTree,commit:created.sha,backend:'backward-compatible accepted version retained'},null,2));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: immersion03-publication-${{ github.run_id }}
+          path: artifacts/immersion-publication/

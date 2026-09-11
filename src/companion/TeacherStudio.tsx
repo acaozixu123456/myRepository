@@ -5,7 +5,8 @@ import type {CompanionConnection} from './connection';
 import type {Line} from './model';
 import {EVIDENCE_LABELS,currentEvidence,dueExpressions,type Expression} from './expressionLearning';
 
-type PracticeProps={connection:CompanionConnection;subject:Subject;previousScene?:string;lines:Line[];onClose:()=>void;onLesson:(lesson:Lesson)=>void;onResult:(lesson:Lesson,result:Verdict,answer:string,support:SupportLevel,source:'typed'|'confirmed_speech',attemptId:string,seen:string[])=>void;onSave:()=>void};
+export type TeacherConnection=Pick<CompanionConnection,'lines'|'setPracticeMode'|'setPracticeContext'|'teacherRequest'|'setMic'|'useSupport'|'demonstrate'>;
+type PracticeProps={connection:TeacherConnection;subject:Subject;previousScene?:string;lines:Line[];onClose:()=>void;onLesson:(lesson:Lesson)=>void;onResult:(lesson:Lesson,result:Verdict,answer:string,support:SupportLevel,source:'typed'|'confirmed_speech',attemptId:string,seen:string[])=>void;onSave:()=>void};
 /** Explicit, skippable practice. Recognized speech is editable and never counted without confirmation. */
 export function TeacherStudio({connection,subject,previousScene='',lines,onClose,onLesson,onResult,onSave}:PracticeProps){
  const [lesson,setLesson]=useState<Lesson|null>(null),[answer,setAnswer]=useState(''),[support,setSupport]=useState<SupportLevel>(0),[result,setResult]=useState<Verdict|null>(null),[busy,setBusy]=useState(true),[problem,setProblem]=useState(''),[loadKey,setLoadKey]=useState(0),[speech,setSpeech]=useState(false);
@@ -41,12 +42,12 @@ export function TeacherStudio({connection,subject,previousScene='',lines,onClose
    <p className="teacher-cue">{lesson.cueZh}</p><small>假设情境 · 表达意思即可，不必逐字背答案。</small>
    {!result&&<>
     <div className="teacher-hints"><button disabled={busy||support>=1} onClick={()=>hint(1)}>给个词</button><button disabled={busy||support>=2} onClick={()=>hint(2)}>给个开头</button><button disabled={busy||support>=3} onClick={()=>hint(3)}>看完整示范</button></div>
-    {support>0&&<p className="teacher-scaffold" lang="ja">{support===1?lesson.keyword:support===2?lesson.starter:lesson.exampleJa}{support===3&&<button onClick={()=>void connection.demonstrate(lesson.exampleJa)} aria-label="听练习示范"><Volume2 size={17}/></button>}</p>}
+    {support>0&&<p className="teacher-scaffold" lang="ja" data-study-source="practice">{support===1?lesson.keyword:support===2?lesson.starter:lesson.exampleJa}{support===3&&<button onClick={()=>void connection.demonstrate(lesson.exampleJa)} aria-label="听练习示范"><Volume2 size={17}/></button>}</p>}
     <label htmlFor="teacher-answer">{speech?'识别结果，请确认或修改后提交':'先试着说，也可以打字'}</label>
     <textarea id="teacher-answer" aria-label="练习回答" value={answer} maxLength={500} disabled={busy} onChange={e=>{edited.current=true;setAnswer(e.target.value);}} placeholder="用下方麦克风说，或在这里写一句…"/>
     <button className="teacher-primary" disabled={busy||!answer.trim()} onClick={()=>void submit()}>{busy?'老师正在看这一句…':speech?'确认这句，给我反馈':'看看这句表达'}</button>
    </>}
-   {result&&<div className="teacher-result" data-verdict={result.verdict}><p>{result.feedbackZh}</p>{result.suggestionJa&&<p lang="ja">{result.suggestionJa}</p>}<small>{result.verdict==='uncertain'?'没有记录为会用；可修改识别结果再试。':'这是文字与意思的判断，不是发音评分。'}</small><div className="teacher-hints"><button onClick={retry}><RotateCcw size={14}/>再试一次</button><button onClick={onSave}><Bookmark size={14}/>收藏这个表达</button></div></div>}
+   {result&&<div className="teacher-result" data-verdict={result.verdict}><p>{result.feedbackZh}</p>{result.suggestionJa&&<p lang="ja" data-study-source="practice">{result.suggestionJa}</p>}<small>{result.verdict==='uncertain'?'没有记录为会用；可修改识别结果再试。':'这是文字与意思的判断，不是发音评分。'}</small><div className="teacher-hints"><button onClick={retry}><RotateCcw size={14}/>再试一次</button><button onClick={onSave}><Bookmark size={14}/>收藏这个表达</button></div></div>}
   </>}
   <button className="teacher-skip" onClick={onClose}>继续聊天，不用做完<ChevronRight size={15}/></button>
  </section>;
@@ -60,7 +61,7 @@ export function ExpressionShelf({items,enabled,onPractice,onRemove,onEnable,onEx
   {!enabled&&<button className="teacher-primary" onClick={onEnable}>在本机保存表达与复习进度</button>}
   <small>复习间隔是可调整的安排，不是能力分数。独立表达过也不等于完全掌握。</small>
   {!items.length&&<p className="teacher-empty">聊天后点提示卡上的「练一句」或「收藏」，你的表达就会出现在这里。</p>}
-  {sorted.map(item=><article className="expression-item" key={item.id}><header><span>{EVIDENCE_LABELS[currentEvidence(item)]}</span><small>{item.dueAt<=Date.now()?'可以复习了':`下次 ${new Date(item.dueAt).toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'})}`}</small></header><h3 lang="ja">{item.subject.phrase}</h3><p>{item.subject.meaningZh}</p><div><button onClick={()=>onPractice(item)}>换个场景试试<ChevronRight size={14}/></button><button onClick={()=>onRemove(item.id)} aria-label={`删除表达 ${item.subject.phrase}`}>删除</button></div></article>)}
+  {sorted.map(item=><article className="expression-item" key={item.id}><header><span>{EVIDENCE_LABELS[currentEvidence(item)]}</span><small>{item.dueAt<=Date.now()?'可以复习了':`下次 ${new Date(item.dueAt).toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'})}`}</small></header><h3 lang="ja" data-study-source="expression" data-study-id={item.id}>{item.subject.phrase}</h3><p>{item.subject.meaningZh}</p><div><button onClick={()=>onPractice(item)}>换个场景试试<ChevronRight size={14}/></button><button onClick={()=>onRemove(item.id)} aria-label={`删除表达 ${item.subject.phrase}`}>删除</button></div></article>)}
   {!!items.length&&<button className="teacher-skip" onClick={onExport}>导出表达记录</button>}
  </section>;
 }

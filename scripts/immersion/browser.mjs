@@ -1,0 +1,64 @@
+import {chromium,webkit} from 'playwright';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const base=process.env.TEST_BASE_URL||'http://127.0.0.1:4173',out=process.env.IMMERSION_EVIDENCE||'artifacts/immersion-browser';await mkdir(out,{recursive:true});
+const reports=[];let browser,page;
+try{for(const engine of (process.env.IMMERSION_ENGINES||'chromium,webkit').split(','))for(const viewport of [{width:390,height:844},{width:1280,height:900}]){
+ const errors=[],calls=[];let failTopic=true,slowStudy=false;
+ browser=await ({chromium,webkit})[engine].launch({headless:true});const context=await browser.newContext({viewport,isMobile:viewport.width<600,hasTouch:true,serviceWorkers:'block'});page=await context.newPage();page.setDefaultTimeout(16000);page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{
+  const state=window.__voice={micRequests:0,peers:0,tracks:[],events:[],dc:null};
+  Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{state.micRequests++;const t={enabled:true,muted:false,readyState:'live',stop(){this.readyState='ended';}};state.tracks.push(t);return{getTracks:()=>[t],getAudioTracks:()=>[t]};}}});
+  window.RTCPeerConnection=class{connectionState='connected';localDescription=null;constructor(){state.peers++;}addTransceiver(){return{sender:{replaceTrack:async()=>{}}};}createDataChannel(){return state.dc={readyState:'connecting',send:s=>state.events.push(JSON.parse(s)),close(){},onopen:null,onmessage:null};}async createOffer(){return{type:'offer',sdp:'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\n'};}async setLocalDescription(s){this.localDescription=s;}async setRemoteDescription(){state.dc.readyState='open';state.dc.onopen?.();}close(){}};
+  localStorage.setItem('immersion-preserve-probe','KEEP');
+ });
+ await page.route('**/api/nhk-speech',async route=>{
+  const b=route.request().postDataJSON();calls.push(b);const a=b.action;
+  if(a==='companion_study_session')return route.fulfill({json:{ok:true,ticket:{id:'study-ticket-fixture',token:'a'.repeat(64),expiresAt:Date.now()+900000}}});
+  if(a==='companion_custom_topic'){
+   if(failTopic){failTopic=false;return route.fulfill({status:503,json:{ok:false,reason:'temporary'}});}
+   const i=b.input;return route.fulfill({json:{ok:true,requestId:i.requestId,seed:{id:'custom_'+i.requestId,lane:'work',title:'说明仍在调查',opening:'調査は、どこまで進んでいますか。',context:'用户希望向同事说明仍在调查。',angle:'user-chosen',sources:[],expiresAt:Date.now()+600000,signature:'a'.repeat(64),origin:{kind:'user',brief:i.text,difficulty:i.difficulty,register:i.register,entryMode:i.entryMode}},subject:{phrase:'現在も調査を続けています。',meaningZh:'现在仍在继续调查。',kind:'explanation'}}});
+  }
+  if(a==='companion_study'){
+   if(slowStudy)await new Promise(r=>setTimeout(r,800));const i=b.input;
+   return route.fulfill({json:{ok:true,requestId:i.requestId,revision:i.focus.revision,result:{original:i.focus.selectedText,reading:i.focus.selectedText==='確認'?'かくにん':'',dictionaryForm:i.focus.selectedText,meaningZh:'确认、核实。',explanationZh:i.intent==='extend'?'商务表达要结合对象，不能擅自添加上下级关系。':'根据选中的原句说明这一处，不改变你的原文。',status:'usable',points:[{part:i.focus.selectedText,noteZh:'这里是本句中的用法。'}],examples:[{ja:'明日までに確認します。',zh:'我会在明天之前确认。'}],questionZh:''}}});
+  }
+  if(a==='companion_study_lesson'||a==='companion_lesson'){
+   const i=b.input;if(i.task==='prepare')return route.fulfill({json:{ok:true,lesson:{id:i.requestId,subject:i.subject,focus:i.subject.phrase.slice(0,30),scene:'提出前',cueZh:'告诉同事提交之前你会确认。',keyword:'確認',starter:'提出する前に、',exampleJa:'提出する前に確認します。',signature:'a'.repeat(64)}}});
+   return route.fulfill({json:{ok:true,requestId:i.requestId,assessment:{verdict:'communicated',focusUsed:true,feedbackZh:'确认的意思表达清楚了。',suggestionJa:''}}});
+  }
+  if(a==='companion_study_demo'||a==='companion_demo')return route.fulfill({status:503,json:{ok:false,reason:'fixture_no_audio'}});
+  if(a==='companion_start')return route.fulfill({json:{ok:true,contract:'nihongo-companion-v3',model:'gpt-realtime-2.1',sdp:'v=0',callId:'rtc_immersion_fixture',expiresAt:Date.now()+1200000,token:'a'.repeat(64)}});
+  if(a==='companion_feedback'){const i=b.input;return route.fulfill({json:{ok:true,note:{id:i.requestId,anchorId:i.anchorId,source:i.source,kind:'extension',mode:i.mode,certainty:'clear',meaningPreserved:true,suggestion:'もう一度確認します。',reasonZh:'这也是一个可选说法，不是原句错误。',detailZh:''}}});}
+  return route.fulfill({json:{ok:true,topics:[],observations:[]}});
+ });
+ const voices=()=>page.evaluate(()=>({mic:window.__voice.micRequests,peers:window.__voice.peers,responses:window.__voice.events.filter(e=>e.type==='response.create').length}));
+ const reply=async text=>page.evaluate(text=>{const v=window.__voice,req=v.events.filter(e=>e.type==='response.create').at(-1),id='r'+req.response.metadata.seq,item='a'+id,emit=e=>v.dc.onmessage({data:JSON.stringify(e)});emit({type:'response.created',response:{id,metadata:req.response.metadata}});emit({type:'response.output_item.added',response_id:id,item:{id:item,role:'assistant'}});document.querySelector('audio')?.onplaying?.();emit({type:'output_audio_buffer.started',response_id:id});emit({type:'response.output_audio_transcript.done',response_id:id,item_id:item,transcript:text});emit({type:'response.done',response:{id,status:'completed',output:[{id:item,role:'assistant',content:[{transcript:text}]}]}});emit({type:'output_audio_buffer.stopped',response_id:id});},text);
+ const select=async(selector,word)=>{
+  await page.locator(selector).first().evaluate((el,word)=>{const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),nodes=[];let n;while(n=walker.nextNode())nodes.push(n);const full=el.textContent||'',at=word?full.indexOf(word):0,len=word?word.length:full.length;let offset=0,startNode,endNode,start=0,end=0;for(const node of nodes){if(!startNode&&at>=offset&&at<offset+node.textContent.length){startNode=node;start=at-offset;}if(at+len>offset&&at+len<=offset+node.textContent.length){endNode=node;end=at+len-offset;break;}offset+=node.textContent.length;}if(!startNode||!endNode)throw Error('selection fixture mismatch');const r=document.createRange();r.setStart(startNode,start);r.setEnd(endNode,end);const s=window.getSelection();s.removeAllRanges();s.addRange(r);document.dispatchEvent(new Event('selectionchange'));},word);
+  await page.getByRole('toolbar',{name:'选中文字操作'}).waitFor();
+ };
+ await page.goto(base+'/');await page.locator('[data-immersion-release="immersion-20260911-v3"]').waitFor();assert.equal((await voices()).peers,0);assert.equal((await voices()).mic,0);
+ await page.screenshot({path:`${out}/${engine}-${viewport.width}-home.png`,fullPage:true});
+ await page.getByRole('button',{name:'我来定主题',exact:true}).click();await page.getByRole('textbox',{name:'自定练习主题'}).fill('向同事说明任务还在调查');await page.locator('.imm-custom-topic summary').click();await page.getByRole('combobox',{name:'材料难度'}).selectOption('N2');await page.getByRole('combobox',{name:'说话场合'}).selectOption('business');await page.getByRole('button',{name:'按这个主题开始',exact:true}).click();await page.waitForFunction(()=>!Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='按这个主题开始')?.disabled);await page.locator('.imm-custom-topic [role=alert],.imm-custom-topic .teacher-error,.imm-custom-topic .imm-error').first().waitFor();assert.equal(await page.getByRole('textbox',{name:'自定练习主题'}).inputValue(),'向同事说明任务还在调查');assert.equal((await voices()).peers,0);
+ await page.screenshot({path:`${out}/${engine}-${viewport.width}-custom-topic.png`,fullPage:true});
+ await page.getByRole('button',{name:'按这个主题开始',exact:true}).click();await page.waitForFunction(()=>window.__voice.events.some(e=>e.type==='response.create'));assert.equal((await voices()).peers,1);assert.equal((await voices()).mic,0);assert.equal(calls.find(c=>c.action==='companion_start').seed.origin.brief,'向同事说明任务还在调查');
+ await reply('明日までに確認します。');
+ await page.getByRole('button',{name:'开启麦克风',exact:true}).click();await page.waitForFunction(()=>window.__voice.micRequests===1);
+ const prior=calls.filter(c=>c.action==='companion_study').length;await select('.kc-line.latest p[data-study-source]','確認');await page.waitForTimeout(350);assert.equal(calls.filter(c=>c.action==='companion_study').length,prior);
+ await page.getByRole('button',{name:'学这段',exact:true}).click();await page.locator('.imm-study-scroll h3').waitFor();assert.equal(await page.locator('.imm-study-inner h2').innerText(),'確認');assert.ok((await page.locator('.imm-word-meta').innerText()).includes('かくにん'));assert.equal((await voices()).peers,1);assert.ok(await page.evaluate(()=>window.__voice.tracks.every(t=>t.readyState==='ended')));
+ await page.getByRole('button',{name:'拆解',exact:true}).click();await page.locator('.imm-study-scroll h3').waitFor();await page.getByRole('button',{name:'拓展',exact:true}).click();await page.getByRole('button',{name:'商务',exact:true}).click();await page.locator('.imm-study-scroll h3').waitFor();assert.equal(calls.filter(c=>c.action==='companion_study').at(-1).input.register,'business');
+ await page.screenshot({path:`${out}/${engine}-${viewport.width}-selection-study.png`,fullPage:true});
+ await page.getByRole('button',{name:'关闭学习面板',exact:true}).click();assert.equal((await voices()).mic,1);assert.equal((await voices()).peers,1);
+ await page.getByRole('button',{name:'对话与历史',exact:true}).click();const peers=(await voices()).peers;await page.getByRole('button',{name:'风景陪练',exact:true}).click();assert.equal((await voices()).peers,peers);
+ await page.screenshot({path:`${out}/${engine}-${viewport.width}-scenery-chat.png`,fullPage:true});
+ await select('.kc-line.latest p[data-study-source]','確認');await page.getByRole('button',{name:'更多',exact:true}).last().click();await page.getByRole('button',{name:'收藏',exact:true}).click();await page.getByRole('button',{name:'开启本机保存',exact:true}).waitFor();await page.getByRole('button',{name:'开启本机保存',exact:true}).click();await page.locator('.expression-item h3').waitFor();assert.equal(await page.locator('.expression-item h3').first().innerText(),'確認');
+ const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('hitokoto-expression-learning-v1')));assert.equal(saved.items[0].evidence.at(-1)?.kind||'seen','seen');assert.equal(saved.items[0].subject.phrase,'確認');
+ await page.getByRole('button',{name:'关闭面板',exact:true}).click();await page.getByRole('button',{name:'结束聊天',exact:true}).click();await page.getByRole('button',{name:'回去看看',exact:false}).click();
+ await page.getByRole('button',{name:'我的表达',exact:false}).click();await select('.expression-item h3','確認');const starts=calls.filter(c=>c.action==='companion_start').length;await page.getByRole('button',{name:'学这段',exact:true}).click();await page.locator('.imm-study-scroll h3').waitFor();assert.equal(calls.filter(c=>c.action==='companion_start').length,starts);
+ await page.getByRole('button',{name:'练一句',exact:true}).last().click();await page.getByRole('textbox',{name:'练习回答',exact:true}).fill('提出する前に確認します。');await page.getByRole('button',{name:'看看这句表达',exact:true}).click();await page.locator('.teacher-result').waitFor();assert.equal(calls.filter(c=>c.action==='companion_start').length,starts);assert.ok(calls.some(c=>c.action==='companion_study_lesson'));assert.equal((await voices()).mic,1);
+ await page.getByRole('button',{name:'继续聊天，不用做完',exact:true}).click();await page.reload();await page.locator('[data-immersion-release]').waitFor();assert.equal(await page.evaluate(()=>localStorage.getItem('immersion-preserve-probe')),'KEEP');
+ const videos=await page.locator('.imm-ambient video').evaluateAll(els=>els.map(v=>({muted:v.muted,loop:v.loop,inline:v.playsInline})));assert.equal(videos.length,1);assert.ok(videos.every(v=>v.muted&&v.loop&&v.inline));assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.deepEqual(errors,[]);
+ reports.push({engine,viewport,scope:'REAL_UI_REAL_DOM_RANGE_MOCKED_PROVIDER_AND_MIC_NOT_PHYSICAL_IPHONE_LONG_PRESS',customFailureRetainsInput:true,customSeedPreserved:true,selectionNoRequestUntilClick:true,pureKanjiExplainedAndSaved:true,contextualTabsAndBusiness:true,closeDoesNotReopenMic:true,oneNativePeerAcrossSceneSwitch:true,standaloneStudyAndPracticeNoVoiceCall:true,noMasteryOnBookmark:true,persistentExpressionAndUnrelatedDataPreserved:true,silentSingleBackgroundDecoder:true,errors});
+ await context.close();await browser.close();browser=null;
+} }catch(e){if(page&&!page.isClosed()){await page.screenshot({path:out+'/failure.png',fullPage:true}).catch(()=>{});await writeFile(out+'/failure.html',await page.content()).catch(()=>{});}await writeFile(out+'/failure.txt',String(e.stack||e));throw e;}finally{await browser?.close();await writeFile(out+'/result.json',JSON.stringify(reports,null,2));console.log('IMMERSION_BROWSER',JSON.stringify(reports));}

@@ -1,0 +1,64 @@
+name: IMMERSION03 bake approved scene
+on:
+  push:
+    branches: [hitokoto-immersion03-20260911]
+    paths: [scripts/immersion/bake.py, .github/workflows/immersion-bake-assets.yml]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: immersion-scene-bake
+  cancel-in-progress: false
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: immersion-original-masters
+          run-id: 34562287604
+          github-token: ${{ github.token }}
+          path: /tmp/immersion-masters
+      - name: Rendering tools
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          python -m pip install --quiet pillow numpy opencv-python-headless
+      - name: Render real silent loops and validate dimensions, periodicity and checksums
+        run: |
+          mkdir -p public/ambient/immersion03 artifacts/immersion-scene
+          python scripts/immersion/bake.py --masters /tmp/immersion-masters --output public/ambient/immersion03 2>&1 | tee artifacts/immersion-scene/render.log
+          mv public/ambient/immersion03/*-frame*.jpg artifacts/immersion-scene/
+          cp public/ambient/immersion03/manifest.json artifacts/immersion-scene/
+          cp public/ambient/immersion03/asset-checks.json artifacts/immersion-scene/
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          manifest=json.loads(Path('public/ambient/immersion03/manifest.json').read_text())
+          for orientation in ['landscape','portrait']:
+            for asset in [manifest[orientation]['poster'],*manifest[orientation]['video'].values()]:
+              p=Path('public'+asset['path']);assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==asset['sha256']
+              assert asset['bytes']<=30*1024*1024,('asset budget exceeded',p)
+          print('VERIFIED_SCENE_ASSETS',json.dumps(manifest))
+          PY
+      - name: Commit only generated release-owned scene assets
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add public/ambient/immersion03
+          git commit -m 'Add original 4K wide and vertical rain-city cinemagraphs with validated silent adaptive variants'
+          git fetch origin hitokoto-immersion03-20260911
+          git rebase origin/hitokoto-immersion03-20260911
+          git push origin HEAD:hitokoto-immersion03-20260911
+          git rev-parse HEAD > artifacts/immersion-scene/assets-commit.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: immersion03-verified-scene
+          path: |
+            artifacts/immersion-scene/
+            public/ambient/immersion03/

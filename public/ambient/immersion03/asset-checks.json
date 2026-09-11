@@ -1,0 +1,26 @@
+[
+  {
+    "orientation": "landscape",
+    "originalSize": [
+      3840,
+      2160
+    ],
+    "originalSha256": "3c96352fe75a34b43387959b2edd712a575e66f6a7435b507c93f70b4a486ed9",
+    "exactPeriodicBoundary": true,
+    "adjacentSeamMeanAbsoluteDelta": 0.04055451229214668,
+    "midpointMeanAbsoluteDelta": 0.375090092420578,
+    "upscaled": false
+  },
+  {
+    "orientation": "portrait",
+    "originalSize": [
+      2160,
+      3840
+    ],
+    "originalSha256": "48f39eff6a2aa20f75821b1470e1de6876cdce442bc6c9b96e03f426c91dc7fc",
+    "exactPeriodicBoundary": true,
+    "adjacentSeamMeanAbsoluteDelta": 0.04368879273533821,
+    "midpointMeanAbsoluteDelta": 0.284455269575119,
+    "upscaled": false
+  }
+]

@@ -1,3 +1,4 @@
+import {bounded,japanese} from './immersionContract.ts';
 /** Shared, bounded contracts. Lesson content is untrusted data, never instructions. */
 export const TEACHER_RELEASE='teacher-20260911-v2';
 export type Subject={phrase:string;meaningZh:string;kind:'correction'|'extension'|'wording'|'explanation'};
@@ -11,7 +12,7 @@ const clean=(v:unknown,max:number):v is string=>typeof v==='string'&&v.length<=m
 export const normalizePhrase=(s:string)=>s.normalize('NFKC').replace(/[\s\p{P}\p{S}]/gu,'').toLowerCase();
 export function validSubject(value:unknown):Subject|null{
  if(!value||typeof value!=='object')return null;const s=value as Subject;
- if(!clean(s.phrase,140)||!s.phrase.trim()||!/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(s.phrase)||!clean(s.meaningZh,360)||!s.meaningZh.trim()||!['correction','extension','wording','explanation'].includes(s.kind))return null;
+ if(!bounded(s.phrase,400)||!s.phrase.trim()||!japanese(s.phrase)||!clean(s.meaningZh,360)||!s.meaningZh.trim()||!['correction','extension','wording','explanation'].includes(s.kind))return null;
  return{phrase:s.phrase.trim(),meaningZh:s.meaningZh.trim(),kind:s.kind};
 }
 export function validLesson(value:unknown):Lesson|null{

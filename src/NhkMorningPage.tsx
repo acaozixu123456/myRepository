@@ -956,7 +956,7 @@ export default function NhkMorningPage() {
             {showAllSentences ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
           {showAllSentences && (
-            <ol>{activeArticle.sentences.map((sentence, index) => <li key={`${index}-${sentence}`}><span>{index + 1}</span><p lang="ja">{sentence}</p><button className="calm-text-button" onClick={() => studySavedArticle(activeArticle,false,sentence)}>精读第 {index + 1} 句</button></li>)}</ol>
+            <ol>{activeArticle.sentences.map((sentence, index) => <li key={`${index}-${sentence}`}><span>{index + 1}</span><p lang="ja" data-study-source="nhk">{sentence}</p><button className="calm-text-button" onClick={() => studySavedArticle(activeArticle,false,sentence)}>精读第 {index + 1} 句</button></li>)}</ol>
           )}
         </section>
       </section>

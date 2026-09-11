@@ -1,0 +1,91 @@
+name: IMMERSION03 guarded release candidate
+on:
+  push:
+    branches: [hitokoto-immersion03-20260911]
+    paths: [scripts/immersion/gate.mjs, scripts/immersion/finalize-ui.py, .github/workflows/immersion-release-gate.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: immersion03-release-candidate
+  cancel-in-progress: false
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    defaults:
+      run: {shell: 'bash --noprofile --norc -e -o pipefail {0}'}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Reviewed source and modal/selection refinements
+        run: |
+          mkdir -p artifacts/immersion-gate
+          if ! grep -q 'data-immersion-release' src/companion/CompanionApp.tsx; then python scripts/immersion/apply.py; fi
+          python scripts/immersion/refine.py
+          python scripts/immersion/finalize-ui.py
+          git diff --check
+          git diff --exit-code 93fdda50cf86b1f72068056adc04614301a95189 -- api public/sw.js public/app-entry.js public/manifest.webmanifest public/art index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/appWorker.ts src/nhkBackup.ts src/nhkLibrary.ts supabase/functions/nihongo-companion/service.ts supabase/functions/nihongo-companion/monitor.ts
+      - run: npm ci --no-audit --no-fund
+      - name: Browser runtime
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium webkit
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/immersion-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
+      - name: Complete tests; at most two bounded UI-only review passes
+        id: acceptance
+        run: node scripts/immersion/gate.mjs
+      - name: Preserve protected functionality and commit actual accepted source
+        run: |
+          git diff --check
+          git diff --exit-code 93fdda50cf86b1f72068056adc04614301a95189 -- api public/sw.js public/app-entry.js public/manifest.webmanifest public/art index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/appWorker.ts src/nhkBackup.ts src/nhkLibrary.ts supabase/functions/nihongo-companion/service.ts supabase/functions/nihongo-companion/monitor.ts
+          git diff > artifacts/immersion-gate/source.patch
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src server/companionProxy.ts supabase/functions/nihongo-companion scripts/companion-phone.mjs scripts/hitokoto-neon-phone.mjs scripts/teacher-v2-phone.mjs scripts/immersion/browser.mjs
+          if ! git diff --cached --quiet; then git commit -m 'Accept tested Immersion03 contextual selection, themes and native-dialog learning controls'; fi
+          git fetch origin hitokoto-immersion03-20260911
+          git rebase origin/hitokoto-immersion03-20260911
+          git push origin HEAD:hitokoto-immersion03-20260911
+          git rev-parse HEAD > artifacts/immersion-gate/tested-source.txt
+          if git ls-remote --exit-code --tags origin immersion03-source-verified-20260911 >/dev/null 2>&1; then
+            git fetch origin tag immersion03-source-verified-20260911
+            git diff --exit-code immersion03-source-verified-20260911 HEAD -- src server/companionProxy.ts supabase/functions/nihongo-companion
+          else
+            git tag immersion03-source-verified-20260911
+            git push origin refs/tags/immersion03-source-verified-20260911
+          fi
+      - name: Record current outcome without changing failed source
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACCEPTANCE: ${{ steps.acceptance.outcome }}
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile,mkdir} from 'node:fs/promises';
+          const report=JSON.parse(await readFile('artifacts/immersion-gate/status.json','utf8').catch(()=>JSON.stringify({ok:false,reason:'acceptance_not_completed'})));
+          report.acceptance=process.env.ACCEPTANCE;report.source=process.env.GITHUB_SHA;report.runId=process.env.GITHUB_RUN_ID;report.testedSource=(await readFile('artifacts/immersion-gate/tested-source.txt','utf8').catch(()=>'' )).trim();
+          await mkdir('artifacts/immersion-gate',{recursive:true});await writeFile('artifacts/immersion-gate/status.json',JSON.stringify(report,null,2));
+          const url=`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/contents/docs/qa/IMMERSION03_BUILD_STATUS.json`,headers={Authorization:'Bearer '+process.env.GH_TOKEN,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'};
+          const old=await fetch(url+'?ref=hitokoto-immersion03-20260911',{headers}).then(async r=>r.ok?(await r.json()).sha:null);
+          const response=await fetch(url,{method:'PUT',headers,body:JSON.stringify({branch:'hitokoto-immersion03-20260911',message:'Record guarded Immersion03 acceptance evidence',content:Buffer.from(JSON.stringify(report,null,2)+'\n').toString('base64'),...(old?{sha:old}:{})})});console.log('EVIDENCE_WRITE',response.status);console.log('IMMERSION_ACCEPTANCE_REPORT',JSON.stringify(report));
+          JS
+      - name: Export current source and verification evidence
+        if: always()
+        run: |
+          tar --exclude='./node_modules' --exclude='./.git' --exclude='./artifacts' --exclude='./dist' -czf /tmp/immersion-source.tgz .
+          cp /tmp/immersion-source.tgz artifacts/immersion-gate/source.tgz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: immersion03-release-candidate-${{ github.run_id }}
+          path: |
+            artifacts/immersion-gate/
+            artifacts/immersion-browser/
+            artifacts/companion-phone/
+            artifacts/hitokoto-neon/
+            artifacts/teacher-v2/
