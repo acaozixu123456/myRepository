@@ -54,6 +54,9 @@ jobs:
           npx playwright install --with-deps chromium webkit
           npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/desktop04-vite.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
+      - name: Actual desktop rail feedback sound envelopes and weather controls
+        id: desktop
+        run: node scripts/desktop04/acceptance.mjs 2>&1 | tee artifacts/desktop04/desktop-browser.log
       - name: Existing microphone phone layouts and Teacher02 regression
         id: regression
         run: |
@@ -61,9 +64,6 @@ jobs:
           node scripts/hitokoto-neon-phone.mjs > artifacts/desktop04/five-width.log 2>&1
           node scripts/teacher-v2-phone.mjs > artifacts/desktop04/teacher02.log 2>&1
           node scripts/immersion/browser.mjs > artifacts/desktop04/immersion.log 2>&1
-      - name: Actual desktop rail feedback sound envelopes and weather controls
-        id: desktop
-        run: node scripts/desktop04/acceptance.mjs 2>&1 | tee artifacts/desktop04/desktop-browser.log
       - name: Verify exact public release resources and actual hosted UI
         if: github.ref_name == 'nihongo-vercel'
         id: published
@@ -99,16 +99,17 @@ jobs:
           if [ "$(git rev-parse origin/$GITHUB_REF_NAME)" = "$GITHUB_SHA" ]; then
             git config user.name 'Sol supervisor'
             git config user.email '331004814@qq.com'
-            if [ "$PREPARE" = success ] && [ "$SOURCE" = success ] && [ "$REGRESSION" = success ] && [ "$DESKTOP" = success ] && [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then git add src scripts/companion-continuity-phone.mjs; fi
+            if [ "$PREPARE" = success ] && [ "$SOURCE" = success ] && [ "$REGRESSION" = success ] && [ "$DESKTOP" = success ] && [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then git add src scripts/companion-continuity-phone.mjs scripts/immersion/browser.mjs scripts/desktop04/acceptance.mjs; fi
             git add docs/qa/HITOKOTO_DESKTOP04_STATUS.json
             if ! git diff --cached --quiet; then git commit -m 'Record Desktop04 acceptance; include application integration only after all gates pass';git push origin HEAD:"$GITHUB_REF_NAME";fi
           fi
           git rev-parse HEAD > artifacts/desktop04/tested-source.txt
-      - name: Export inspected source without dependencies or environment files
+      - name: Export inspected source and exact compiled UI for diagnosis
         if: always()
         run: |
           tar --exclude='./node_modules' --exclude='./.git' --exclude='./artifacts' --exclude='./dist' --exclude='./.env*' -czf /tmp/desktop04-source.tgz .
           cp /tmp/desktop04-source.tgz artifacts/desktop04/source.tgz
+          if [ -f dist/companion.html ]; then tar -czf artifacts/desktop04/built-app.tgz -C dist .; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
