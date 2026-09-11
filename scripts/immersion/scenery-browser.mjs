@@ -19,7 +19,7 @@ try{
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   await page.screenshot({path:`${out}/${engine}-${viewport.width}-home.png`,fullPage:true});
   await page.getByRole('button',{name:'风景',exact:true}).click();await page.locator('.imm-scene-settings').waitFor();
-  await page.locator('.imm-scene-settings button').filter({hasText:'只看风景'}).click();
+  await page.getByRole('button',{name:'看全景 · 暂停麦克风',exact:true}).click();
   const exit=page.getByRole('button',{name:'← 返回陪练 · 麦克风已暂停',exact:true});await exit.waitFor();
   await page.waitForFunction(()=>{const v=document.querySelector('.imm-ambient video');return v&&!v.paused;});
   await page.screenshot({path:`${out}/${engine}-${viewport.width}-wallpaper.png`,fullPage:true});await exit.click();await page.getByRole('button',{name:'聊一会儿',exact:true}).waitFor();
