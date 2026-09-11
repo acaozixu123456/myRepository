@@ -1,0 +1,6 @@
+import {Check,Plane,TrainFront,Anchor,Building2} from 'lucide-react';
+import {SCENES,type SceneId} from './scenes';
+const icons=[Plane,Building2,Anchor,TrainFront];
+export function ScenePicker({value,onChange}:{value:SceneId;onChange:(id:SceneId)=>void}){
+ return <section className="c05-picker" aria-label="选择赛博城市"><div className="c05-picker-title"><small>CITY / 05</small><h3>选一座城市，继续说日语。</h3><p>换风景，不重连语音，也不重置本轮练习。</p></div><div className="c05-scene-grid">{SCENES.map((s,i)=>{const Icon=icons[i];return <button key={s.id} type="button" aria-pressed={value===s.id} data-scene-choice={s.id} onClick={()=>onChange(s.id)}><img src={'/city05/'+s.id+'-thumb.webp'} alt="" loading="lazy"/><span className="c05-scene-tint"/><span className="c05-scene-label"><strong><Icon size={15}/>{s.name}</strong><small>{s.subtitle}</small></span>{value===s.id&&<Check size={18} className="c05-selected"/>}</button>;})}</div><button className="c05-classic" onClick={()=>onChange('classic')} aria-pressed={value==='classic'}>原来的 4K 雨夜城市{value==='classic'?' ✓':''}</button><details className="c05-resolution"><summary>画面与清晰度说明</summary><p>四套新场景使用你确认的效果图中不含界面的风景裁切，底图约 775–920 × 847 像素，不是原生 4K 母图。载具、广告和粒子独立实时绘制。旧雨夜仍提供原生 4K 素材。渲染精度调整动态层，不会为底图创造额外细节。</p></details></section>;
+}
