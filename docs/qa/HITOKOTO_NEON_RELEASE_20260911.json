@@ -1,15 +1,15 @@
 {
   "release": "neon-20260911",
-  "source": "237347b7cc610722f10c63dfb72dbcd03c079f19",
+  "source": "86495dde168c09478cb410c9d8d0c2da15ef6169",
   "base": "https://nihongo-discovery-v2-20260831.vercel.app",
   "entry": "https://nihongo-discovery-v2-20260831.vercel.app/companion.html",
   "productionVerified": true,
-  "checkedAt": "2026-09-11T02:40:07.134Z",
+  "checkedAt": "2026-09-11T13:12:51.823Z",
   "assets": [
     {
-      "path": "/assets/companion-BoKlqnRB.js",
-      "sha256": "fb86701d350872fa27bae05e17d286947b91f3806d41e0f5be6c2367778e1b19",
-      "bytes": 102621
+      "path": "/assets/companion-B1B0A94y.js",
+      "sha256": "ecb3d9045e3c73e481662490f47cc6ad452224c6ad95c98a442b069d6b04e814",
+      "bytes": 91585
     },
     {
       "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
@@ -17,14 +17,19 @@
       "bytes": 711
     },
     {
-      "path": "/assets/nhkAudioActivity-DZjX3sa9.js",
-      "sha256": "e03009f907a6dc8b63c1ac15c5e0f017d6e6d80f449df4146f9b2f250885b2a9",
-      "bytes": 203311
+      "path": "/assets/immersion-BJsWjTsy.js",
+      "sha256": "e7b99e32f9691edd2587062e5fb3dbfc04fd8ff87d8592781d7c65d5903b4490",
+      "bytes": 258924
     },
     {
-      "path": "/assets/companion-Cq8GjcTS.css",
-      "sha256": "c48d0f990a2ffce489e55d4058e0165e87caff647b04318282cc3f4ad0b2747d",
-      "bytes": 44061
+      "path": "/assets/immersion-kmWwQLRe.css",
+      "sha256": "de72419af1b05396f285d2e0324e4b16384ddf81edb4e020650778d539d79eb2",
+      "bytes": 15898
+    },
+    {
+      "path": "/assets/companion-C-fUsByB.css",
+      "sha256": "396181c627da20d8b0aa385522f2cfcbca4cbe367176e0f9aa15c7c0b2c6ce31",
+      "bytes": 57694
     },
     {
       "path": "/art/hitokoto-partner.webp",
@@ -39,5 +44,5 @@
   ],
   "nhkEntryStatus": 200,
   "scope": "Exact production HTML/JS/CSS/art. Voice core and backend unchanged. Physical iPhone audio not tested.",
-  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34555417816"
+  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34602950704"
 }
