@@ -1,0 +1,439 @@
+{
+  "ok": true,
+  "release": "IMMERSION03",
+  "runId": "34565318443",
+  "source": {
+    "previous": "93fdda50cf86b1f72068056adc04614301a95189",
+    "previousTree": "7dab6cf360f868b47bb1d7cc5e0103a40ba42d9c",
+    "published": "9ee004d737054a7e5ffa77b51ab7f1ea2c02046a",
+    "head": "a26a8aa52193477af074ac4d104567e57cf24f72",
+    "pr": 10
+  },
+  "public": {
+    "ok": true,
+    "base": "https://nihongo-discovery-v2-20260831.vercel.app",
+    "verifiedAt": "2026-09-11T07:25:53.131Z",
+    "pagesAndCode": [
+      "/",
+      "/assets/main-DqxnakwU.js",
+      "/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "/assets/immersion-DgD8ujNo.js",
+      "/assets/immersion-kmWwQLRe.css",
+      "/assets/main-Dc07T_AD.css",
+      "/index.html",
+      "/companion.html",
+      "/assets/companion-C8d_FDiW.js",
+      "/assets/companion-Cq8GjcTS.css",
+      "/?view=nhk",
+      "/app-entry.js",
+      "/sw.js",
+      "/manifest.webmanifest",
+      "/ambient/immersion03/manifest.json"
+    ],
+    "media": [
+      {
+        "path": "/ambient/immersion03/abab85546a38-landscape-poster.webp",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 1611882,
+        "sha256": "abab85546a381b8171894426807c3c8531959b3524d2ed0524422ac98283b4c6"
+      },
+      {
+        "path": "/ambient/immersion03/4b5c85e129d1-landscape-1080.mp4",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 1166228,
+        "sha256": "4b5c85e129d169af9b591b7a3d2bb6858a962213b3d694f3570fb814ac49c665"
+      },
+      {
+        "path": "/ambient/immersion03/62d91a4fa8d7-landscape-1440.mp4",
+        "width": 2560,
+        "height": 1440,
+        "bytes": 1858795,
+        "sha256": "62d91a4fa8d73b57e3b2daab7b267c5235d3d4f435d0137fb28ac78ad6538e32"
+      },
+      {
+        "path": "/ambient/immersion03/bfd44acf3570-landscape-2160.mp4",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 4118345,
+        "sha256": "bfd44acf357079e93c69c31d3f8bdef294354aa414412adb8c43d95b9332c564"
+      },
+      {
+        "path": "/ambient/immersion03/2e421553785b-portrait-poster.webp",
+        "width": 2160,
+        "height": 3840,
+        "bytes": 1467284,
+        "sha256": "2e421553785babf1b7620d8873aa081dec23c10aa61689efef0f871f69945d4d"
+      },
+      {
+        "path": "/ambient/immersion03/e3144f44532f-portrait-1080.mp4",
+        "width": 1080,
+        "height": 1920,
+        "bytes": 1128219,
+        "sha256": "e3144f44532f34f93b1a52faa5f1b8d635c3c19fe58267de43ead677a64e6844"
+      },
+      {
+        "path": "/ambient/immersion03/810aebb9310e-portrait-1440.mp4",
+        "width": 1440,
+        "height": 2560,
+        "bytes": 1761060,
+        "sha256": "810aebb9310e2fe623e3b2bc8a40d2c85eb789da1ea5cbf5aad8c135af7ea52c"
+      },
+      {
+        "path": "/ambient/immersion03/6b3e8bd7e06a-portrait-2160.mp4",
+        "width": 2160,
+        "height": 3840,
+        "bytes": 3831113,
+        "sha256": "6b3e8bd7e06af55dddb90821564febb974cd39b895bc2dd4679f3613eab411fd"
+      }
+    ]
+  },
+  "realApi": {
+    "ok": true,
+    "scope": "ACTUAL_MODEL_TEXT_STUDY_NO_PHYSICAL_MICROPHONE_NO_REALTIME_START",
+    "preview": false,
+    "results": [
+      {
+        "check": "contextual_selection",
+        "selected": "確認",
+        "source": "明日までに確認します。",
+        "result": {
+          "original": "確認",
+          "reading": "かくにん",
+          "dictionaryForm": "確認",
+          "meaningZh": "确认；核实",
+          "explanationZh": "在「明日までに確認します。」里，「確認」表示把事情查清楚、核实一下。这里和「します」连用，合起来就是“会在明天前确认一下”。",
+          "status": "usable",
+          "points": [
+            {
+              "part": "確認",
+              "noteZh": "这里是名词性用法，后面接「します」变成「確認します」= 确认、核实。"
+            }
+          ],
+          "examples": [
+            {
+              "ja": "明日までに確認します。",
+              "zh": "我会在明天之前确认。"
+            },
+            {
+              "ja": "内容を確認してください。",
+              "zh": "请确认内容。"
+            }
+          ],
+          "questionZh": ""
+        }
+      },
+      {
+        "check": "contextual_selection",
+        "selected": "つもりが",
+        "source": "五分だけ見るつもりが、一時間も見てしまいました。",
+        "result": {
+          "original": "つもりが",
+          "reading": "つもりが",
+          "dictionaryForm": "つもり",
+          "meaningZh": "本来打算……却/结果……（常用于“以为会按计划，没想到后面变成了别的结果”）",
+          "explanationZh": "这里的「つもりが」是「つもり」加上助词「が」。前半「五分だけ見るつもり」表示“本来打算只看五分钟”，后面的「が」把这个“计划/预想”引到后面的实际结果「一時間も見てしまいました」上，带有“没想到却变成了……”的感觉。",
+          "status": "usable",
+          "points": [
+            {
+              "part": "つもり",
+              "noteZh": "表示打算、计划、主观上的预想。"
+            },
+            {
+              "part": "が",
+              "noteZh": "把前面的计划与后面的实际结果连接起来，常带转折感。"
+            },
+            {
+              "part": "つもりが",
+              "noteZh": "连起来就是“本来打算……却……”。"
+            }
+          ],
+          "examples": [
+            {
+              "ja": "早く寝るつもりが、つい動画を見てしまった。",
+              "zh": "本来打算早点睡，结果不知不觉看起了视频。"
+            },
+            {
+              "ja": "少し休むつもりが、寝てしまった。",
+              "zh": "本来想稍微休息一下，结果睡着了。"
+            }
+          ],
+          "questionZh": ""
+        }
+      },
+      {
+        "check": "custom_topic_preserves_user_origin",
+        "seed": {
+          "id": "custom_b46034ba-e7b7-4606-9740-db1bf3c4a71b",
+          "lane": "work",
+          "title": "向同事说明任务未完成",
+          "opening": "この件はまだ確認中です。",
+          "context": "用于日语职场聊天或对同事说明进度。说话者需要明确表达“任务尚未完成，仍在调查中”，语气礼貌、自然，适合商务场景，难度为N2。重点是不要让对方误以为已经完成，也不要暗示结论已出。",
+          "angle": "user-chosen",
+          "sources": [],
+          "expiresAt": 1789197969912,
+          "origin": {
+            "kind": "user",
+            "brief": "跟同事说明任务尚未完成，仍在调查。请不要把我说成已经完成。",
+            "difficulty": "N2",
+            "register": "business",
+            "entryMode": "chat"
+          },
+          "signature": "REDACTED"
+        },
+        "subject": {
+          "phrase": "まだ確認中です。",
+          "meaningZh": "还在确认中；尚未完成，仍在调查。",
+          "kind": "explanation"
+        }
+      },
+      {
+        "check": "standalone_signed_exercise",
+        "lesson": {
+          "id": "5ca4aecd-89f9-4436-bc5b-98beb7760606",
+          "subject": {
+            "phrase": "確認",
+            "meaningZh": "核实、确认。",
+            "kind": "explanation"
+          },
+          "focus": "〜を確認する",
+          "scene": "旅行前に予約内容を見直す場面",
+          "cueZh": "你想说：我想确认一下明天上午的预约时间。",
+          "keyword": "確認",
+          "starter": "明日の午前の予約時間を…",
+          "exampleJa": "明日の午前の予約時間を確認したいです。",
+          "signature": "REDACTED"
+        }
+      },
+      {
+        "check": "assessment_of_explicit_example_not_independent_mastery",
+        "assessment": {
+          "verdict": "communicated",
+          "focusUsed": true,
+          "feedbackZh": "意思表达准确，已经自然地用了「確認する」来表示“确认预约时间”。",
+          "suggestionJa": ""
+        }
+      },
+      {
+        "check": "forged_lesson_rejected",
+        "status": 403,
+        "reason": "invalid_lesson_signature"
+      },
+      {
+        "check": "forged_study_ticket_rejected",
+        "status": 403,
+        "reason": "invalid_study_ticket"
+      }
+    ],
+    "requests": [
+      {
+        "action": "study_session",
+        "status": 200,
+        "ok": true,
+        "reason": null
+      },
+      {
+        "action": "study",
+        "status": 200,
+        "ok": true,
+        "reason": null
+      },
+      {
+        "action": "study",
+        "status": 200,
+        "ok": true,
+        "reason": null
+      },
+      {
+        "action": "custom_topic",
+        "status": 200,
+        "ok": true,
+        "reason": null
+      },
+      {
+        "action": "study_lesson",
+        "status": 200,
+        "ok": true,
+        "reason": null
+      },
+      {
+        "action": "study_lesson",
+        "status": 200,
+        "ok": true,
+        "reason": null
+      },
+      {
+        "action": "study_lesson",
+        "status": 403,
+        "ok": false,
+        "reason": "invalid_lesson_signature"
+      },
+      {
+        "action": "study",
+        "status": 403,
+        "ok": false,
+        "reason": "invalid_study_ticket"
+      }
+    ],
+    "physicalIPhoneTested": false
+  },
+  "scenery": [
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scope": "REAL_HOSTED_MEDIA_REAL_DECODER_NO_PHYSICAL_MICROPHONE",
+      "source": "https://nihongo-discovery-v2-20260831.vercel.app/ambient/immersion03/e3144f44532f-portrait-1080.mp4",
+      "width": 1080,
+      "height": 1920,
+      "duration": 12,
+      "muted": true,
+      "decodedChangingFrames": true,
+      "brightness": 57.03395833333333,
+      "normalEntry": true,
+      "wallpaperRoundTrip": true,
+      "micRequests": 0,
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "scope": "REAL_HOSTED_MEDIA_REAL_DECODER_NO_PHYSICAL_MICROPHONE",
+      "source": "https://nihongo-discovery-v2-20260831.vercel.app/ambient/immersion03/4b5c85e129d1-landscape-1080.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 12,
+      "muted": true,
+      "decodedChangingFrames": true,
+      "brightness": 45.32175925925926,
+      "normalEntry": true,
+      "wallpaperRoundTrip": true,
+      "micRequests": 0,
+      "pageErrors": []
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scope": "REAL_HOSTED_MEDIA_REAL_DECODER_NO_PHYSICAL_MICROPHONE",
+      "source": "https://nihongo-discovery-v2-20260831.vercel.app/ambient/immersion03/e3144f44532f-portrait-1080.mp4",
+      "width": 1080,
+      "height": 1920,
+      "duration": 12,
+      "muted": true,
+      "decodedChangingFrames": true,
+      "brightness": 55.88356481481482,
+      "normalEntry": true,
+      "wallpaperRoundTrip": true,
+      "micRequests": 0,
+      "pageErrors": []
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "scope": "REAL_HOSTED_MEDIA_REAL_DECODER_NO_PHYSICAL_MICROPHONE",
+      "source": "https://nihongo-discovery-v2-20260831.vercel.app/ambient/immersion03/4b5c85e129d1-landscape-1080.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 12,
+      "muted": true,
+      "decodedChangingFrames": true,
+      "brightness": 44.68717592592593,
+      "normalEntry": true,
+      "wallpaperRoundTrip": true,
+      "micRequests": 0,
+      "pageErrors": []
+    }
+  ],
+  "scene": {
+    "release": "immersion03-city-v1",
+    "title": "雨夜 · 高层窗边的新东京",
+    "duration": 12,
+    "fps": 30,
+    "source": "Original GPT Image 2.5 Sunburst 4K outputs + authored layered cinemagraph; no camera pan, zoom or image upscaling.",
+    "layers": [
+      "moving traffic lights on the depicted expressway",
+      "glass rain and refracting beads",
+      "distant haze",
+      "selective neon illumination"
+    ],
+    "audioTracks": 0,
+    "landscape": {
+      "poster": {
+        "path": "/ambient/immersion03/abab85546a38-landscape-poster.webp",
+        "width": 3840,
+        "height": 2160,
+        "bytes": 1611882,
+        "sha256": "abab85546a381b8171894426807c3c8531959b3524d2ed0524422ac98283b4c6"
+      },
+      "video": {
+        "1080": {
+          "path": "/ambient/immersion03/4b5c85e129d1-landscape-1080.mp4",
+          "width": 1920,
+          "height": 1080,
+          "bytes": 1166228,
+          "sha256": "4b5c85e129d169af9b591b7a3d2bb6858a962213b3d694f3570fb814ac49c665"
+        },
+        "1440": {
+          "path": "/ambient/immersion03/62d91a4fa8d7-landscape-1440.mp4",
+          "width": 2560,
+          "height": 1440,
+          "bytes": 1858795,
+          "sha256": "62d91a4fa8d73b57e3b2daab7b267c5235d3d4f435d0137fb28ac78ad6538e32"
+        },
+        "2160": {
+          "path": "/ambient/immersion03/bfd44acf3570-landscape-2160.mp4",
+          "width": 3840,
+          "height": 2160,
+          "bytes": 4118345,
+          "sha256": "bfd44acf357079e93c69c31d3f8bdef294354aa414412adb8c43d95b9332c564"
+        }
+      }
+    },
+    "portrait": {
+      "poster": {
+        "path": "/ambient/immersion03/2e421553785b-portrait-poster.webp",
+        "width": 2160,
+        "height": 3840,
+        "bytes": 1467284,
+        "sha256": "2e421553785babf1b7620d8873aa081dec23c10aa61689efef0f871f69945d4d"
+      },
+      "video": {
+        "1080": {
+          "path": "/ambient/immersion03/e3144f44532f-portrait-1080.mp4",
+          "width": 1080,
+          "height": 1920,
+          "bytes": 1128219,
+          "sha256": "e3144f44532f34f93b1a52faa5f1b8d635c3c19fe58267de43ead677a64e6844"
+        },
+        "1440": {
+          "path": "/ambient/immersion03/810aebb9310e-portrait-1440.mp4",
+          "width": 1440,
+          "height": 2560,
+          "bytes": 1761060,
+          "sha256": "810aebb9310e2fe623e3b2bc8a40d2c85eb789da1ea5cbf5aad8c135af7ea52c"
+        },
+        "2160": {
+          "path": "/ambient/immersion03/6b3e8bd7e06a-portrait-2160.mp4",
+          "width": 2160,
+          "height": 3840,
+          "bytes": 3831113,
+          "sha256": "6b3e8bd7e06af55dddb90821564febb974cd39b895bc2dd4679f3613eab411fd"
+        }
+      }
+    }
+  },
+  "physicalIPhoneTested": false,
+  "scope": "Real deployed assets/API/desktop browser engines; no claim of physical iPhone long-press or microphone/performance verification."
+}
