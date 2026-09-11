@@ -1,0 +1,174 @@
+{
+  "ok": true,
+  "release": "DESKTOP04",
+  "source": "0c02bcfbfe402362dae8ddba013c3f01a2f0222f",
+  "runId": "34601310478",
+  "branch": "hitokoto-desktop-focus04-20260911",
+  "stages": {
+    "PREPARE": "success",
+    "SOURCE": "success",
+    "REGRESSION": "success",
+    "DESKTOP": "success",
+    "PUBLISHED": "skipped"
+  },
+  "testsPassed": 688,
+  "browser": [
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scope": "REAL_RENDERED_UI_AND_WEBAUDIO_MOCKED_SPEECH_AND_TEACHER_NOT_PHYSICAL_DEVICE",
+      "singleTeacherRail": false,
+      "phoneReveal": true,
+      "nativeSelectionMorePersists": true,
+      "focusedReferenceAndExactDiff": true,
+      "fullFeedbackAccessible": true,
+      "coveredRecall": true,
+      "optionalCues": true,
+      "micSuppressesCues": true,
+      "realAudioEnvelope": {
+        "duration": 0.307,
+        "peak": 0.030152583494782448,
+        "tail": 0
+      },
+      "weatherAndResponsiveChecks": false,
+      "normalRootEntry": true,
+      "noHorizontalOverflow": true,
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "scope": "REAL_RENDERED_UI_AND_WEBAUDIO_MOCKED_SPEECH_AND_TEACHER_NOT_PHYSICAL_DEVICE",
+      "singleTeacherRail": true,
+      "phoneReveal": false,
+      "nativeSelectionMorePersists": true,
+      "focusedReferenceAndExactDiff": true,
+      "fullFeedbackAccessible": true,
+      "coveredRecall": true,
+      "optionalCues": true,
+      "micSuppressesCues": true,
+      "realAudioEnvelope": {
+        "duration": 0.307,
+        "peak": 0.030152583494782448,
+        "tail": 0
+      },
+      "weatherAndResponsiveChecks": true,
+      "normalRootEntry": true,
+      "noHorizontalOverflow": true,
+      "pageErrors": []
+    },
+    {
+      "engine": "chromium",
+      "viewport": {
+        "width": 1536,
+        "height": 960
+      },
+      "scope": "REAL_RENDERED_UI_AND_WEBAUDIO_MOCKED_SPEECH_AND_TEACHER_NOT_PHYSICAL_DEVICE",
+      "singleTeacherRail": true,
+      "phoneReveal": false,
+      "nativeSelectionMorePersists": true,
+      "focusedReferenceAndExactDiff": true,
+      "fullFeedbackAccessible": true,
+      "coveredRecall": true,
+      "optionalCues": true,
+      "micSuppressesCues": true,
+      "realAudioEnvelope": {
+        "duration": 0.307,
+        "peak": 0.030152583494782448,
+        "tail": 0
+      },
+      "weatherAndResponsiveChecks": true,
+      "normalRootEntry": true,
+      "noHorizontalOverflow": true,
+      "pageErrors": []
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scope": "REAL_RENDERED_UI_AND_WEBAUDIO_MOCKED_SPEECH_AND_TEACHER_NOT_PHYSICAL_DEVICE",
+      "singleTeacherRail": false,
+      "phoneReveal": true,
+      "nativeSelectionMorePersists": true,
+      "focusedReferenceAndExactDiff": true,
+      "fullFeedbackAccessible": true,
+      "coveredRecall": true,
+      "optionalCues": true,
+      "micSuppressesCues": true,
+      "realAudioEnvelope": {
+        "duration": 0.307,
+        "peak": 0.0301525816321373,
+        "tail": 0
+      },
+      "weatherAndResponsiveChecks": false,
+      "normalRootEntry": true,
+      "noHorizontalOverflow": true,
+      "pageErrors": []
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "scope": "REAL_RENDERED_UI_AND_WEBAUDIO_MOCKED_SPEECH_AND_TEACHER_NOT_PHYSICAL_DEVICE",
+      "singleTeacherRail": true,
+      "phoneReveal": false,
+      "nativeSelectionMorePersists": true,
+      "focusedReferenceAndExactDiff": true,
+      "fullFeedbackAccessible": true,
+      "coveredRecall": true,
+      "optionalCues": true,
+      "micSuppressesCues": true,
+      "realAudioEnvelope": {
+        "duration": 0.307,
+        "peak": 0.0301525816321373,
+        "tail": 0
+      },
+      "weatherAndResponsiveChecks": true,
+      "normalRootEntry": true,
+      "noHorizontalOverflow": true,
+      "pageErrors": []
+    },
+    {
+      "engine": "webkit",
+      "viewport": {
+        "width": 1536,
+        "height": 960
+      },
+      "scope": "REAL_RENDERED_UI_AND_WEBAUDIO_MOCKED_SPEECH_AND_TEACHER_NOT_PHYSICAL_DEVICE",
+      "singleTeacherRail": true,
+      "phoneReveal": false,
+      "nativeSelectionMorePersists": true,
+      "focusedReferenceAndExactDiff": true,
+      "fullFeedbackAccessible": true,
+      "coveredRecall": true,
+      "optionalCues": true,
+      "micSuppressesCues": true,
+      "realAudioEnvelope": {
+        "duration": 0.307,
+        "peak": 0.0301525816321373,
+        "tail": 0
+      },
+      "weatherAndResponsiveChecks": true,
+      "normalRootEntry": true,
+      "noHorizontalOverflow": true,
+      "pageErrors": []
+    }
+  ],
+  "public": null,
+  "productionBrowser": null,
+  "physicalIPhoneTested": false,
+  "voiceAndTeacherProvider": "mocked in UI tests; backend and speech transport unchanged",
+  "sound": "actual WebAudio offline-rendered envelopes and opt-in UI; not human listening evaluation",
+  "diagnostics": {},
+  "completedAt": "2026-09-11T13:01:07.954Z"
+}
