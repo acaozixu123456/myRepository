@@ -1,8 +1,8 @@
 {
   "ok": false,
   "release": "DESKTOP04",
-  "source": "7f954df8f27677f3b485776ddadb6331b6e9adf7",
-  "runId": "34595611309",
+  "source": "2964e6b90207d31fc2c07c7f22e5c4c5c56b671e",
+  "runId": "34598109901",
   "branch": "hitokoto-desktop-focus04-20260911",
   "stages": {
     "PREPARE": "failure",
@@ -26,5 +26,5 @@
     "immersion": "",
     "desktop": ""
   },
-  "completedAt": "2026-09-11T11:46:19.167Z"
+  "completedAt": "2026-09-11T12:17:10.040Z"
 }
