@@ -8,7 +8,7 @@ execFileSync('node_modules/.bin/esbuild',['scripts/nhk-calm-fixture.ts','--bundl
 execFileSync('node',[`${out}/fixture.cjs`],{env:{...process.env,FIXTURE_OUT:`${out}/fixture.json`}});
 const fixture=JSON.parse(readFileSync(`${out}/fixture.json`,'utf8'));
 const keys={articles:'nihongo-nhk-article-library-v1',knowledge:'nihongo-nhk-knowledge-library-v1',probe:'hitokoto-entry-preservation-probe'};
-const report={ok:false,base,scope:'REAL_BROWSER_REAL_SERVICE_WORKER_MOCKED_AI_NOT_PHYSICAL_IPHONE',cases:[],errors:[]};let browser;
+const report={ok:false,base,scope:'REAL_BROWSER_REAL_SERVICE_WORKER_MOCKED_AI_NOT_PHYSICAL_IPHONE',cases:[],cacheBaselines:[],errors:[]};let browser;
 try{
  for(const engine of (process.env.ENTRY_ENGINES||'chromium,webkit').split(',')){
   browser=await ({chromium,webkit})[engine].launch({headless:true});
@@ -22,22 +22,29 @@ try{
    if(path==='/api/nhk-coach')return route.fulfill({json:{ok:true,coach:fixture.coach,model:'isolated-qa'}});
    return route.fulfill({json:{ok:false,reason:'qa_no_live_provider'}});
   });
-  const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>report.errors.push(`${engine}: ${e.message}`));
-  await page.goto(base+'/entry-probe-blank');
-  const before=await page.evaluate(async({fixture,keys})=>{
+  // Record the harness's private-context CacheStorage baseline without running any app code.
+  const owner=await context.newPage();await owner.goto(base+'/entry-probe-blank');
+  await owner.evaluate(async()=>{const c=await caches.open('baseline-private-cache');await c.put('/baseline',new Response('BASELINE'));});
+  await owner.reload();
+  report.cacheBaselines.push({engine,cachePersistsAcrossBlankReload:await owner.evaluate(async()=>!!(await (await caches.open('baseline-private-cache')).match('/baseline')))});
+  // Retain the existing owner's cache handles while the replacement worker takes control.
+  const before=await owner.evaluate(async({fixture,keys})=>{
    localStorage.setItem(keys.articles,JSON.stringify([fixture.article]));localStorage.setItem(keys.knowledge,JSON.stringify(fixture.knowledge));localStorage.setItem(keys.probe,'KEEP_THIS');
    const old=await caches.open('nihongo-explore-isolated-20260906-v1');await old.put('/',new Response('<html>OLD LIGHT ROOT</html>',{headers:{'Content-Type':'text/html'}}));
-   const unrelated=await caches.open('private-study-cache');await unrelated.put('/private-marker',new Response('KEEP_CACHE'));
+   const unrelated=await caches.open('private-study-cache');await unrelated.put('/private-marker',new Response('KEEP_CACHE'));window.__entryCacheOwners=[old,unrelated];
+   assertCache: {if(!(await unrelated.match('/private-marker')))throw new Error('Harness cannot seed its own CacheStorage marker');}
    await new Promise((resolve,reject)=>{const request=indexedDB.open('entry-data-preservation-qa',1);request.onupgradeneeded=()=>request.result.createObjectStore('records');request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('records','readwrite');tx.objectStore('records').put('KEEP_DATABASE','probe');tx.oncomplete=()=>{db.close();resolve();};};});
    return Object.fromEntries(Object.values(keys).map(key=>[key,localStorage.getItem(key)]));
   },{fixture,keys});
+  const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>report.errors.push(`${engine}: ${e.message}`));
   const neon=async()=>{await page.locator('[data-entry-release="entry-20260911"]').waitFor();assert.equal(new URL(page.url()).pathname,'/companion.html');assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.kc-root')).backgroundColor),'rgb(6, 9, 20)');};
-  // The important regression: open the exact installed start_url '/', not a special release URL.
   await page.goto(base+'/');await neon();
   assert.deepEqual(await page.evaluate(keys=>Object.fromEntries(Object.values(keys).map(key=>[key,localStorage.getItem(key)])),keys),before);
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   await page.waitForFunction(async()=>!(await caches.keys()).includes('nihongo-explore-isolated-20260906-v1'));
-  assert.equal(await page.evaluate(async()=>await (await (await caches.open('private-study-cache')).match('/private-marker')).text()),'KEEP_CACHE');
+  const cacheCheck=await page.evaluate(async()=>({keys:await caches.keys(),marker:await (await (await caches.open('private-study-cache')).match('/private-marker'))?.text()}));
+  assert.equal(cacheCheck.marker,'KEEP_CACHE',JSON.stringify({engine,cacheCheck}));
+  await owner.close();
   await page.reload();await neon();await page.waitForLoadState('networkidle');
   await page.screenshot({path:`${out}/${engine}-normal-launch.png`,fullPage:true});
   await page.goto(base+'/index.html');await neon();
@@ -48,7 +55,6 @@ try{
   assert.ok(await page.evaluate(({keys,id})=>JSON.parse(localStorage.getItem(keys.articles)).some(a=>a.id===id),{keys,id:fixture.article.id}));
   await page.screenshot({path:`${out}/${engine}-nhk-retained.png`,fullPage:true});
   await page.getByRole('link',{name:'← HITOKOTO 日语陪聊',exact:true}).click();await neon();
-  // Real offline requests must use distinct navigation shells, not another page's cached root.
   await context.setOffline(true);await page.goto(base+'/');await neon();
   await page.goto(base+'/?view=nhk');await page.locator('.nhk-only-app').waitFor();
   await page.goto(base+'/companion.html');await neon();await context.setOffline(false);
@@ -62,7 +68,7 @@ try{
   assert.ok(await page.evaluate(({keys,id})=>JSON.parse(localStorage.getItem(keys.articles)).some(a=>a.id===id),{keys,id:fixture.article.id}));
   await page.reload();await page.locator('.nhk-only-app').waitFor();
   assert.equal(new URL(page.url()).searchParams.get('view'),'nhk');assert.equal(micRequests,0);
-  report.cases.push({engine,normalRootLaunchNeon:true,indexBookmarkNeon:true,nhkLinkAndReload:true,legacyShareImportAndReload:true,oldArticlesRetained:true,rootAndCompanionOfflineNeon:true,nhkOfflineRetained:true,onlyOwnedLegacyCacheRemoved:true,unrelatedCacheAndIndexedDBRetained:true,physicalMicRequests:micRequests});
+  report.cases.push({engine,normalRootLaunchNeon:true,indexBookmarkNeon:true,nhkLinkAndReload:true,legacyShareImportAndReload:true,oldArticlesRetained:true,rootAndCompanionOfflineNeon:true,nhkOfflineRetained:true,onlyOwnedLegacyCacheRemoved:true,unrelatedCacheRetainedDuringUpgrade:true,indexedDBRetained:true,physicalMicRequests:micRequests});
   await context.close();await browser.close();browser=null;
  }
  assert.deepEqual(report.errors,[]);report.ok=true;
