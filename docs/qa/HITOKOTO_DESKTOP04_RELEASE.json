@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "release": "DESKTOP04",
+  "runtimeMarker": "desktop-20260911-v4",
+  "productionUrl": "https://nihongo-discovery-v2-20260831.vercel.app/",
+  "publishedCommit": "86495dde168c09478cb410c9d8d0c2da15ef6169",
+  "acceptedApplicationCommit": "6b535e04b81eb15df9c9f8224549f5ec4698b594",
+  "preproductionRun": 34601310478,
+  "productionRun": 34602950639,
+  "productionArtifact": 10264738059,
+  "productionArtifactSha256": "036a9d3712c575be1645b3dc07d3dcda2cff0f7d463939a1e60d8356c3ce0fdf",
+  "publicResourceVerificationAt": "2026-09-11T13:17:58.398Z",
+  "acceptanceCompletedAt": "2026-09-11T13:18:54.030Z",
+  "checks": {
+    "typecheck": "passed",
+    "unitTests": 688,
+    "build": "passed",
+    "protectedBackendSpeechAndStorageDiff": "unchanged",
+    "existingNativeMicRegression": "passed",
+    "fiveWidthsAndFiveConsecutiveHints": "passed",
+    "existingTeacher02Regression": "passed",
+    "existingImmersionSelectionAndCustomTopics": "passed",
+    "newLocalDesktopAndMobileInteractionMatrix": "passed",
+    "exactPublicHtmlJavascriptCssAndEntryHashes": "passed",
+    "newHostedDesktopAndMobileInteractionMatrix": "passed"
+  },
+  "browserMatrix": {
+    "engines": ["chromium", "webkit"],
+    "viewports": [{"width":390,"height":844},{"width":1280,"height":900},{"width":1536,"height":960}],
+    "normalRootEntry": true,
+    "singlePersistentDesktopTeacherRail": true,
+    "mobileNoticeRevealsMountedHistory": true,
+    "captionIndependentTeacher": true,
+    "selectionMorePersistsAndSameWordCanBeSelectedAgain": true,
+    "exactReferenceDifferences": true,
+    "originalTeacherExplanationAccessible": true,
+    "optionalCoveredRecall": true,
+    "optInSoundAndMicSuppression": true,
+    "resizeDoesNotReconnectSpeechPeer": true,
+    "weatherAndReducedMotionControls": true,
+    "micVisibleAndNoHorizontalOverflow": true,
+    "pageErrors": []
+  },
+  "sound": {
+    "defaultEnabled": false,
+    "preferencePersistence": "current page only",
+    "implementation": "local synthesized short WebAudio motifs, no network or recording",
+    "testedProgressCueDurationSeconds": 0.307,
+    "testedProgressCuePeak": 0.030152583494782448,
+    "testedTailAmplitude": 0,
+    "volumeIndependent": true,
+    "suppressedDuringMicOrSpeech": true,
+    "zeroVolumeCreatesNoOscillator": true,
+    "noClaimOfGuaranteedMemoryImprovement": true
+  },
+  "features": [
+    "Desktop >=1100 CSS pixels: broad scenery and chat on the left, persistent notes on the right, compact microphone dock.",
+    "Practice feedback: prominent reference sentence, exact changed-text emphasis, full original explanation in a disclosure, comparison and optional hide/recall.",
+    "Desktop atmosphere: off/gentle/rich layered rain, foreground glass beads and broad fog over the existing unchanged 4K scene; no additional video decoder.",
+    "Optional learning sounds yield to Japanese audio and open microphone; no constant background music or new AI model calls.",
+    "Mobile notification reachability and native selection menu lifecycle repaired."
+  ],
+  "limits": {
+    "voiceAndTeacherProvidersInUiTests": "mocked; existing backend and speech transport unchanged",
+    "actualWebAudioRendering": true,
+    "physicalIPhoneTested": false,
+    "humanListeningQualityReviewed": false,
+    "longHumanConversationWithRichMotionTested": false,
+    "memoryOutcomeStudyCompleted": false
+  },
+  "evidenceNote": "The full production report, SHA256 list, rendered screenshots and browser result matrix are in artifact 10264738059. An older audit advanced the production branch with a docs-only commit before this workflow could update its legacy STATUS file; this RELEASE record is the authoritative Desktop04 publication summary. Source comparison showed no runtime change after the published commit."
+}
