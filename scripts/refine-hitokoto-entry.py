@@ -12,3 +12,5 @@ if guard not in s:
 p=Path('src/appEntry.test.ts');s=p.read_text()
 s=s.replace("document={title:''};","document={title:'',documentElement:{dataset:{}}};")
 p.write_text(s)
+# The historical game test must exercise Cache.match, not only CacheStorage.match.
+assert "match:async(k:string)=>stored.get(k)?.clone()" in Path('src/explore/explore.test.ts').read_text()
