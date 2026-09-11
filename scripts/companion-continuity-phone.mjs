@@ -90,7 +90,7 @@ try{for(const viewport of [{width:390,height:844},{width:375,height:667}]){
   if(await heading.getAttribute('aria-expanded')==='false')await heading.click();
   await previous.locator('.kc-note-body').dispatchEvent('pointerdown');
   await previous.locator('.kc-note-body').dispatchEvent(i%2?'pointercancel':'pointerup');
-  await previous.locator('summary').click();
+  await previous.locator('.kc-note-detail > summary').click();
   before=await count();await utter('round_'+i,'猫動画好き。');
   await nextReply(before,'猫の動画なんですね。');
   const card=await reveal('round_'+i);anchors.push(await card.getAttribute('data-note-for'));

@@ -1,5 +1,7 @@
+import {FeedbackMoment} from './FeedbackMoment';
+import {playLearningCue} from './learningSound';
 import {useEffect,useRef,useState} from 'react';
-import {ChevronRight,Volume2,X,Bookmark,RotateCcw} from 'lucide-react';
+import {ChevronRight,Volume2,X} from 'lucide-react';
 import {validLesson,validVerdict,type Lesson,type Subject,type SupportLevel,type Verdict} from './teacherContract';
 import type {CompanionConnection} from './connection';
 import type {Line} from './model';
@@ -15,7 +17,7 @@ export function TeacherStudio({connection,subject,previousScene='',lines,onClose
  useEffect(()=>{
   connection.setPracticeMode(true);setBusy(true);setProblem('');const e=++epoch.current,a=abort.current=new AbortController();
   void connection.teacherRequest({task:'prepare',requestId:crypto.randomUUID(),subject,previousScene},a.signal).then(r=>{
-   if(e!==epoch.current||a.signal.aborted)return;const next=validLesson(r.lesson);if(!next)throw Error('invalid_lesson');setLesson(next);connection.setPracticeContext(next.cueZh);callbacks.current.onLesson(next);
+   if(e!==epoch.current||a.signal.aborted)return;const next=validLesson(r.lesson);if(!next)throw Error('invalid_lesson');setLesson(next);connection.setPracticeContext(next.cueZh);callbacks.current.onLesson(next);playLearningCue('ready');
   }).catch(()=>{if(e===epoch.current&&!a.signal.aborted)setProblem('这次练习没有准备好，可重试，也可以直接继续聊天。');}).finally(()=>{if(e===epoch.current)setBusy(false);});
   return()=>{epoch.current++;a.abort();abort.current?.abort();};
  },[connection,loadKey]);
@@ -23,22 +25,23 @@ export function TeacherStudio({connection,subject,previousScene='',lines,onClose
   const incoming=lines.filter(l=>l.role==='user'&&!baseline.current.has(l.id)&&!l.id.startsWith('typed_')&&l.text&&l.delivered&&!l.interrupted).map(l=>l.text).join(' ');
   if(incoming&&!edited.current&&!result){setAnswer(incoming.slice(0,500));setSpeech(true);}
  },[lines,result]);
- const hint=(level:SupportLevel)=>{if(!lesson||busy)return;setSupport(level);const text=level===1?lesson.keyword:level===2?lesson.starter:lesson.exampleJa;revealed.current.push(text);connection.useSupport(text);};
+ const hint=(level:SupportLevel)=>{if(!lesson||busy)return;setSupport(level);const text=level===1?lesson.keyword:level===2?lesson.starter:lesson.exampleJa;revealed.current.push(text);connection.useSupport(text);playLearningCue('hint');};
  const submit=async()=>{
   if(!lesson||!answer.trim()||mutex.current||result)return;mutex.current=true;setBusy(true);setProblem('');await connection.setMic(false);const e=++epoch.current,a=abort.current=new AbortController();
   const signature=JSON.stringify([lesson.id,answer,support,speech]);if(attempt.current.input!==signature)attempt.current={input:signature,id:crypto.randomUUID()};
   try{
    const r=await connection.teacherRequest({task:'assess',requestId:attempt.current.id,lesson,answer,source:speech?'confirmed_speech':'typed',support},a.signal);
-   if(e!==epoch.current||a.signal.aborted)return;const verdict=validVerdict(r.assessment);if(!verdict||r.requestId!==attempt.current.id)throw Error('invalid_verdict');setResult(verdict);callbacks.current.onResult(lesson,verdict,answer,support,speech?'confirmed_speech':'typed',attempt.current.id,revealed.current);
+   if(e!==epoch.current||a.signal.aborted)return;const verdict=validVerdict(r.assessment);if(!verdict||r.requestId!==attempt.current.id)throw Error('invalid_verdict');setResult(verdict);playLearningCue(verdict.verdict==='communicated'?'progress':'adjust');callbacks.current.onResult(lesson,verdict,answer,support,speech?'confirmed_speech':'typed',attempt.current.id,revealed.current);
   }catch{if(e===epoch.current&&!a.signal.aborted)setProblem('这次反馈没接上，答案还在。再点确认可重试，不会重复记进度。');}
   finally{mutex.current=false;if(e===epoch.current)setBusy(false);}
  };
  const retry=()=>{setResult(null);setAnswer('');edited.current=false;setSpeech(false);baseline.current=new Set(connection.lines.map(l=>l.id));if(result?.suggestionJa){revealed.current.push(result.suggestionJa);setSupport(3);}attempt.current={input:'',id:''};};
- return <section className="teacher-studio" aria-label="短练习" data-testid="teacher-studio">
+ return <section className="teacher-studio" aria-label="短练习" data-testid="teacher-studio" data-step={result?'feedback':answer?'answer':'prepare'}>
   <header><span>15 秒小练习 · 随时跳过</span><button onClick={onClose} aria-label="退出练习"><X size={18}/></button></header>
   {busy&&!lesson&&<p role="status">在准备一个你用得上的场景…</p>}
   {problem&&<p className="teacher-error" role="status">{problem}{!lesson&&<button onClick={()=>setLoadKey(v=>v+1)}>重试准备</button>}</p>}
   {lesson&&<>
+   <div className="df-lesson-steps" aria-label="练习阶段"><span className={!answer&&!result?'current':''}>01 想表达</span><span className={answer&&!result?'current':''}>02 试一句</span><span className={result?'current':''}>03 带走</span></div>
    <p className="teacher-cue">{lesson.cueZh}</p><small>假设情境 · 表达意思即可，不必逐字背答案。</small>
    {!result&&<>
     <div className="teacher-hints"><button disabled={busy||support>=1} onClick={()=>hint(1)}>给个词</button><button disabled={busy||support>=2} onClick={()=>hint(2)}>给个开头</button><button disabled={busy||support>=3} onClick={()=>hint(3)}>看完整示范</button></div>
@@ -47,7 +50,7 @@ export function TeacherStudio({connection,subject,previousScene='',lines,onClose
     <textarea id="teacher-answer" aria-label="练习回答" value={answer} maxLength={500} disabled={busy} onChange={e=>{edited.current=true;setAnswer(e.target.value);}} placeholder="用下方麦克风说，或在这里写一句…"/>
     <button className="teacher-primary" disabled={busy||!answer.trim()} onClick={()=>void submit()}>{busy?'老师正在看这一句…':speech?'确认这句，给我反馈':'看看这句表达'}</button>
    </>}
-   {result&&<div className="teacher-result" data-verdict={result.verdict}><p>{result.feedbackZh}</p>{result.suggestionJa&&<p lang="ja" data-study-source="practice">{result.suggestionJa}</p>}<small>{result.verdict==='uncertain'?'没有记录为会用；可修改识别结果再试。':'这是文字与意思的判断，不是发音评分。'}</small><div className="teacher-hints"><button onClick={retry}><RotateCcw size={14}/>再试一次</button><button onClick={onSave}><Bookmark size={14}/>收藏这个表达</button></div></div>}
+   {result&&<FeedbackMoment lesson={lesson} result={result} answer={answer} onRetry={retry} onSave={onSave} onListen={text=>void connection.demonstrate(text)}/>}
   </>}
   <button className="teacher-skip" onClick={onClose}>继续聊天，不用做完<ChevronRight size={15}/></button>
  </section>;

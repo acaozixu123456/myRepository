@@ -10,3 +10,5 @@ createRoot(document.getElementById('companion-root')!).render(<React.StrictMode>
 import './teacher.css';
 
 import '../immersion/immersion.css';
+
+import './desktopFocus.css';

@@ -1,7 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
 import {phraseChanges,resultHeading} from './FeedbackMoment';
-import {CUE_NOTES,cueAllowed,scheduleLearningCue,type LearningCue} from './learningSound';
+import {CUE_NOTES,cueAllowed,scheduleLearningCue,discreteMediaPlaying,type LearningCue} from './learningSound';
 const read=(name:string)=>readFileSync(name,'utf8');
 describe('visual feedback preserves the actual learner and reference texts',()=>{
  it.each([
@@ -29,4 +29,17 @@ describe('single source of truth for visible teaching and unchanged speech owner
  it('does not reset the selected toolbar for an unchanged native selection',()=>{const s=read('src/immersion/SelectionStudyLayer.tsx');expect(s).toContain('key!==identity.current');expect(s).toContain("event.target.closest('.imm-selection-tools')");});
  it('clears identity when the toolbar is dismissed and always restores a new selection',()=>{const s=read('src/immersion/SelectionStudyLayer.tsx');expect(s).toContain("identity.current='';setFocus(null)");expect(s).toContain('setFocus(f||null)');expect(s).toContain('dismiss();onOpen(selected,action)');});
  it('weather remains silent, bounded and reversible',()=>{const s=read('src/immersion/DesktopAtmosphere.tsx');expect(s).toContain('5000000');expect(s).toContain('reduced.matches');expect(s).toContain('connection?.saveData');expect(s).toContain('cancelAnimationFrame');expect(s).not.toMatch(/AudioContext|getUserMedia|fetch\(/);});
+});
+
+describe('live media and zero-volume boundaries',()=>{
+ it('a continuous remote stream may be silent; explicit voice activity remains authoritative',()=>{
+  const state={srcObject:{} as MediaStream,muted:false,paused:false,ended:false,volume:1};
+  expect(discreteMediaPlaying(state)).toBe(false);
+  expect(cueAllowed(true,{micOn:false,outputBusy:true,hidden:false,mediaPlaying:false})).toBe(false);
+ });
+ it('a discrete audible replay still suppresses effects',()=>expect(discreteMediaPlaying({srcObject:null,muted:false,paused:false,ended:false,volume:1})).toBe(true));
+ it.each([0,-1,NaN])('zero or invalid volume creates no oscillator: %s',volume=>{
+  const ctx={createOscillator:()=>{throw Error('Must not create sound');}} as unknown as BaseAudioContext;
+  expect(scheduleLearningCue(ctx,'progress',volume)).toBe(0);
+ });
 });

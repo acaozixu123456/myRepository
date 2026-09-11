@@ -8,20 +8,27 @@ let preferences={enabled:false,volume:.35,error:''};
 const subscribers=new Set<()=>void>();
 const subscribe=(fn:()=>void)=>{subscribers.add(fn);return()=>{subscribers.delete(fn);};};
 const snapshot=()=>preferences;
+let enableEpoch=0;
 let context:AudioContext|null=null,gate={micOn:false,outputBusy:false},lastCue=-Infinity,bound=false;
 const active=new Set<OscillatorNode>();
 const publish=()=>subscribers.forEach(fn=>fn());
 export function stopLearningCues():void{for(const oscillator of active){try{oscillator.stop();}catch{}oscillator.disconnect();}active.clear();}
 export function updateLearningSoundGate(next:{micOn:boolean;outputBusy:boolean}):void{gate=next;if(next.micOn||next.outputBusy)stopLearningCues();}
-function playingMedia():boolean{return typeof document!=='undefined'&&Array.from(document.querySelectorAll('audio,video')).some(el=>el instanceof HTMLMediaElement&&!el.muted&&!el.paused&&!el.ended&&el.volume>0);}
+export function discreteMediaPlaying(el:Pick<HTMLMediaElement,'srcObject'|'muted'|'paused'|'ended'|'volume'>):boolean{
+ // A continuous WebRTC stream remains playing during silence. Its actual voice activity is
+ // guarded separately by updateLearningSoundGate; demo/replay media still use element state.
+ return !el.srcObject&&!el.muted&&!el.paused&&!el.ended&&el.volume>0;
+}
+function playingMedia():boolean{return typeof document!=='undefined'&&Array.from(document.querySelectorAll('audio,video')).some(el=>el instanceof HTMLMediaElement&&discreteMediaPlaying(el));}
 function bindPriority():void{
  if(bound)return;bound=true;
  document.addEventListener('play',event=>{const target=event.target;if(target instanceof HTMLMediaElement&&!target.muted&&target.volume>0)stopLearningCues();},true);
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLearningCues();});
- window.addEventListener('pagehide',()=>{stopLearningCues();void context?.close().catch(()=>{});context=null;preferences={...preferences,enabled:false};publish();});
+ window.addEventListener('pagehide',()=>{enableEpoch++;stopLearningCues();void context?.close().catch(()=>{});context=null;preferences={...preferences,enabled:false};publish();});
 }
 /** Synthesized short motifs only; no network, recording, ambient music, or speech-rate changes. */
 export function scheduleLearningCue(ctx:BaseAudioContext,cue:LearningCue,volume:number,onOscillator?:(node:OscillatorNode)=>void):number{
+ if(!Number.isFinite(volume)||volume<=0)return 0;
  const start=ctx.currentTime+.012,notes=CUE_NOTES[cue],strength=Math.max(0,Math.min(1,volume));
  for(const [i,hz] of notes.entries()){
   const t=start+i*.075,osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=hz;
@@ -31,22 +38,22 @@ export function scheduleLearningCue(ctx:BaseAudioContext,cue:LearningCue,volume:
  return .012+(notes.length-1)*.075+.145;
 }
 export function playLearningCue(cue:LearningCue):boolean{
- if(typeof document==='undefined'||!context||context.state!=='running'||!cueAllowed(preferences.enabled,{...gate,hidden:document.hidden,mediaPlaying:playingMedia()}))return false;
+ if(typeof document==='undefined'||!context||preferences.volume<=0||context.state!=='running'||!cueAllowed(preferences.enabled,{...gate,hidden:document.hidden,mediaPlaying:playingMedia()}))return false;
  const now=performance.now();if(now-lastCue<420)return false;lastCue=now;stopLearningCues();
  try{scheduleLearningCue(context,cue,preferences.volume,node=>active.add(node));document.dispatchEvent(new CustomEvent('hitokoto:learning-cue',{detail:{cue}}));return true;}catch{stopLearningCues();return false;}
 }
 export async function setLearningSounds(enabled:boolean):Promise<void>{
- stopLearningCues();preferences={...preferences,enabled:false,error:''};publish();if(!enabled)return;
+ const epoch=++enableEpoch;stopLearningCues();preferences={...preferences,enabled:false,error:''};publish();if(!enabled)return;
  try{
   bindPriority();if(!context||context.state==='closed'){
    const Ctor=window.AudioContext||(window as Window&{webkitAudioContext?:typeof AudioContext}).webkitAudioContext;
    if(!Ctor)throw Error('unsupported');context=new Ctor();
   }
-  await context.resume();if(context.state!=='running')throw Error('locked');
+  await context.resume();if(epoch!==enableEpoch)return;if(context.state!=='running')throw Error('locked');
   preferences={...preferences,enabled:true};publish();playLearningCue('ready');
- }catch{preferences={...preferences,enabled:false,error:'当前浏览器暂不能播放音效，日语语音不受影响。'};publish();}
+ }catch{if(epoch!==enableEpoch)return;preferences={...preferences,enabled:false,error:'当前浏览器暂不能播放音效，日语语音不受影响。'};publish();}
 }
-export function setLearningVolume(volume:number):void{if(!Number.isFinite(volume))return;preferences={...preferences,volume:Math.max(0,Math.min(1,volume))};publish();}
+export function setLearningVolume(volume:number):void{if(!Number.isFinite(volume))return;if(volume<=0)stopLearningCues();preferences={...preferences,volume:Math.max(0,Math.min(1,volume))};publish();}
 export function LearningSoundControl({compact=false}:{compact?:boolean}){
  const settings=useSyncExternalStore(subscribe,snapshot,snapshot);
  return <section className={`df-sound ${compact?'compact':''}`} aria-label="学习音效">
