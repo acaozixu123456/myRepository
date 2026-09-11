@@ -17,12 +17,12 @@ jobs:
           mkdir -p artifacts/immersion-masters
           node --input-type=module <<'JS'
           import {readFile,writeFile} from 'node:fs/promises';
-          const source=await readFile('api/nhk-speech.ts','utf8');const token=source.match(/const SUPABASE_ANON_KEY = '([^']+)'/)?.[1];if(!token)throw Error('Public project gateway config missing');
-          const results=await Promise.all(['landscape','portrait'].map(async orientation=>{
+          const source=await readFile('api/nhk-speech.ts','utf8');const token=source.match(/const SUPABASE_ANON_KEY[^\n]*?'([^']+)'/)?.[1];if(!token)throw Error('Public project gateway config missing');
+          const settled=await Promise.allSettled(['landscape','portrait'].map(async orientation=>{
             const r=await fetch('https://kivebsjsdfdobxzaokbj.supabase.co/functions/v1/hitokoto-immersion-art-once',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token,apikey:token},body:JSON.stringify({release:'immersion03-approved-art-20260911',orientation}),signal:AbortSignal.timeout(160000)});
             const v=await r.json();if(!r.ok||!v.ok||typeof v.image!=='string'){await writeFile(`artifacts/immersion-masters/${orientation}-error.json`,JSON.stringify({status:r.status,reason:v.reason||'unknown'}));throw Error(`${orientation}: ${r.status} ${v.reason||'unknown'}`);}
             const image=Buffer.from(v.image,'base64');delete v.image;await writeFile(`artifacts/immersion-masters/${orientation}.jpg`,image);await writeFile(`artifacts/immersion-masters/${orientation}.json`,JSON.stringify(v,null,2));return{orientation,bytes:image.length,requestedSize:v.requestedSize,model:v.model};
-          }));console.log('MASTER_GENERATION',JSON.stringify(results));
+          }));console.log('MASTER_GENERATION',JSON.stringify(settled.map(r=>r.status==='fulfilled'?r.value:{error:String(r.reason)})));if(settled.some(r=>r.status!=='fulfilled'))process.exitCode=1;
           JS
       - uses: actions/upload-artifact@v4
         if: always()
