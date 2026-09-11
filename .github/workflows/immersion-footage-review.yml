@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: |
           mkdir -p artifacts/footage-review
           curl -fL --retry 1 --max-time 70 'https://videos.pexels.com/video-files/32822471/13990568_3840_2160_24fps.mp4' -o /tmp/city-a.mp4
@@ -16,6 +17,7 @@ jobs:
           for name in a b; do
             ffprobe -v error -show_format -show_streams -of json /tmp/city-$name.mp4 > artifacts/footage-review/$name.json
             ffmpeg -hide_banner -loglevel error -ss 1 -i /tmp/city-$name.mp4 -frames:v 1 -vf scale=1600:-1 artifacts/footage-review/$name.jpg
+            ffmpeg -hide_banner -loglevel error -i /tmp/city-$name.mp4 -t 13 -an -c:v copy artifacts/footage-review/$name-original.mp4
           done
       - uses: actions/upload-artifact@v4
         if: always()
