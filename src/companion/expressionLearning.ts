@@ -34,7 +34,7 @@ export function rememberSubject(items:Expression[],subject:Subject,focus=subject
  const id=expressionId(subject),existing=items.find(e=>e.id===id&&normalizePhrase(e.subject.phrase)===normalizePhrase(subject.phrase));
  if(existing)return items.map(e=>e===existing?{...e,bookmarked:e.bookmarked||bookmark}:e);
  if(items.length>=250)throw Error('library_full');
- const item:Expression={id,subject,focus:focus.slice(0,80),createdAt:now,updatedAt:now,dueAt:now+86400000,evidence:[{id:'seen_'+id,kind:'seen',at:now,scene:'',source:'view'}],bookmarked:bookmark};return[...items,item];
+ const item:Expression={id,subject,focus:Array.from(focus).slice(0,80).join(''),createdAt:now,updatedAt:now,dueAt:now+86400000,evidence:[{id:'seen_'+id,kind:'seen',at:now,scene:'',source:'view'}],bookmarked:bookmark};return[...items,item];
 }
 export function recordAttempt(items:Expression[],lesson:Lesson,verdict:Verdict,answer:string,support:SupportLevel,source:'typed'|'confirmed_speech',attemptId:string,seenExamples:string[]=[],now=Date.now()):Expression[]{
  if(verdict.verdict==='uncertain')return items;

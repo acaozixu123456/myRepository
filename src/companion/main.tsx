@@ -8,3 +8,5 @@ registerAppWorker();
 createRoot(document.getElementById('companion-root')!).render(<React.StrictMode><CompanionApp/></React.StrictMode>);
 
 import './teacher.css';
+
+import '../immersion/immersion.css';

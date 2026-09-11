@@ -1,7 +1,7 @@
 import {COMPANION,validSeed,type Seed,type Lane,type Line,type Observation} from './model';
 export type Ticket={callId:string;expiresAt:number;token:string};
 export async function companionApi(action:string,body:Record<string,unknown>={},signal?:AbortSignal){
-  const timeout=action==='topics'?55000:action==='start'?38000:22000;
+  const timeout=action==='topics'?55000:action==='start'?38000:action.startsWith('study')||action==='custom_topic'?33000:22000;
   const r=await fetch('/api/nhk-speech',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,action:`companion_${action}`}),signal:signal?AbortSignal.any([signal,AbortSignal.timeout(timeout)]):AbortSignal.timeout(timeout)});
   const data=await r.json().catch(()=>({ok:false,reason:'connection_error'}));if(!r.ok||!data.ok)throw new Error(String(data.reason||'connection_error'));return data;
 }

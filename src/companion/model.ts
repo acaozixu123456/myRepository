@@ -1,3 +1,4 @@
+import {validOrigin,type TopicOrigin} from './immersionContract.ts';
 import {nativeCompanionPrompt} from './prompt.ts';
 export const COMPANION = 'nihongo-companion-v3';
 export const CONSENT = 'companion-realtime-v3';
@@ -5,7 +6,7 @@ export const VOICE_MODEL = 'gpt-realtime-2.1';
 export const TEXT_MODEL = 'gpt-4.1-mini';
 export type Lane = 'mix'|'interests'|'work'|'curiosity'|'news';
 export type Source = {title:string;url:string;retrievedAt:string};
-export type Seed = {id:string;lane:Lane;title:string;opening:string;context:string;angle:string;sources:Source[];expiresAt:number;signature?:string};
+export type Seed = {id:string;lane:Lane;title:string;opening:string;context:string;angle:string;sources:Source[];expiresAt:number;signature?:string;origin?:TopicOrigin};
 export type Policy = {revision:number;target:0|1|2|3;comprehension:'unknown'|'supported'|'comfortable';evidence:number;independent:number;assisted:number;lastMove:'observe'|'support'|'extend'|'user';seen:string[]};
 export const freshPolicy = ():Policy => ({revision:0,target:0,comprehension:'unknown',evidence:0,independent:0,assisted:0,lastMove:'observe',seen:[]});
 export const clean = (s:string) => s.replace(/\s+/g,' ').trim();
@@ -20,10 +21,11 @@ export function validPolicy(v:unknown):Policy {
 export function validSeed(v:unknown,now=Date.now()):Seed|null {
   if(!v||typeof v!=='object')return null;const r=v as Seed;
   if(!text(r.id,100)||!r.id||!['mix','interests','work','curiosity','news'].includes(r.lane)||!text(r.title,60)||!r.title||!text(r.opening,160)||!r.opening||!text(r.context,2800)||!text(r.angle,80)||!Array.isArray(r.sources)||r.sources.length>5||!Number.isFinite(r.expiresAt)||r.expiresAt<now)return null;
+  if(r.origin&&!validOrigin(r.origin))return null;
   const sources:Source[]=[];
   for(const s of r.sources){if(!s||!text(s.title,180)||!text(s.url,1500)||!text(s.retrievedAt,40))return null;try{const u=new URL(s.url);if(u.protocol!=='https:'||u.username||u.password)return null;}catch{return null;}if(!Number.isFinite(Date.parse(s.retrievedAt)))return null;sources.push({title:s.title,url:s.url,retrievedAt:s.retrievedAt});}
   if(r.lane==='news'&&(!sources.length||!r.context))return null;
-  return {id:r.id,lane:r.lane,title:clean(r.title),opening:clean(r.opening),context:clean(r.context),angle:clean(r.angle),sources,expiresAt:r.expiresAt,...(text(r.signature,200)?{signature:r.signature}:{})};
+  return {id:r.id,lane:r.lane,title:clean(r.title),opening:clean(r.opening),context:clean(r.context),angle:clean(r.angle),sources,expiresAt:r.expiresAt,...(r.origin?{origin:validOrigin(r.origin)!}:{}),...(text(r.signature,200)?{signature:r.signature}:{})};
 }
 const local=(id:string,lane:Lane,title:string,opening:string,angle:string):Seed=>({id,lane,title,opening,angle,context:'这是一个聊天开场或想象情境，不是现实新闻报道。',sources:[],expiresAt:4102444800000});
 export const LOCAL_SEEDS:Seed[]=[

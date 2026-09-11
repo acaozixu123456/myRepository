@@ -21,7 +21,8 @@ replace(" await page.getByRole('button',{name:'聊一会儿'}).click();",` await
  assert.equal(await page.locator('.neon-topic-list [data-lane]').count(),5);
  await page.screenshot({path:output+'/topics-'+viewport.width+'.png',fullPage:true});
  await page.getByRole('button',{name:'关闭面板',exact:true}).click();
- await page.getByRole('button',{name:'聊一会儿'}).click();`);
+ await page.getByRole('button',{name:'聊一会儿'}).click();
+ if(await page.getByRole('button',{name:'对话与历史',exact:true}).count())await page.getByRole('button',{name:'对话与历史',exact:true}).click();`);
 replace(" assert.equal(await page.locator('[data-release=\"repair-20260911\"]').count(),1);",` assert.equal(await page.locator('[data-release="repair-20260911"]').count(),1);
  assert.equal(await page.locator('[data-ui-release="neon-20260911"]').count(),1);
  await page.screenshot({path:output+'/waiting-'+viewport.width+'.png',fullPage:true});`);

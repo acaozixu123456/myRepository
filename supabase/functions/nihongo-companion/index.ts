@@ -1,3 +1,4 @@
+import {studySession,immersionAction} from './immersion.ts';
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import {COMPANION,CONSENT,VOICE_MODEL,LOCAL_SEEDS,validSeed,validPolicy,companionInstructions} from './model.ts';
 import {credential,reply,quota,provider,ServiceError,lease,sign,validSignature,ticketValue,verifyTicket,hangup} from './service.ts';
@@ -10,7 +11,9 @@ Deno.serve(async(req:Request)=>{
  let body:any;try{const s=await req.text();if(s.length>100000)throw new Error();body=JSON.parse(s);if(!body||typeof body!=='object')throw new Error();}catch{return reply({ok:false,reason:'invalid_input'},400);}
  try{
   const action=String(body.action||'');
-  if(action==='health'){const k=await credential();const r=await provider(k,`/models/${VOICE_MODEL}`,{method:'GET'},7000);return reply({ok:r.ok,contract:COMPANION,model:VOICE_MODEL,mode:'native-stateful-audio',scheduler:'client-committed-item',maxMinutes:20,teacherRelease:'teacher-20260911-v2',defaultSpeed:1});}
+  if(action==='study_session')return reply({ok:true,...await studySession(body)});
+  if(['study','study_demo','study_lesson','custom_topic'].includes(action))return reply({ok:true,...(await immersionAction(action,body) as object)});
+  if(action==='health'){const k=await credential();const r=await provider(k,`/models/${VOICE_MODEL}`,{method:'GET'},7000);return reply({ok:r.ok,contract:COMPANION,model:VOICE_MODEL,mode:'native-stateful-audio',scheduler:'client-committed-item',maxMinutes:20,teacherRelease:'teacher-20260911-v2',defaultSpeed:1,immersionRelease:'immersion-20260911-v3'});}
   if(['heartbeat','stop','observe','feedback','lesson','demo'].includes(action)){
    await verifyTicket(body);const k=await credential();
    if(action==='stop'){await lease('stop',body.callId);await hangup(k,body.callId);return reply({ok:true});}
