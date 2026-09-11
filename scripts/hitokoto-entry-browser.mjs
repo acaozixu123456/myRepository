@@ -17,13 +17,21 @@ try{
   context=await ({chromium,webkit})[engine].launchPersistentContext(profile,{headless:true,viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
   let micRequests=0;await context.exposeBinding('__entryMicRequested',()=>{micRequests++;});
   await context.addInitScript(()=>{Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{await window.__entryMicRequested();throw new Error('No physical microphone permitted in entry QA');}}});});
+  // Only synthetic provider responses are mocked here. Real page/worker/static network is untouched.
+  // WebKit route() cannot reliably intercept requests from a service-worker-controlled page.
+  await context.addInitScript(fixture=>{
+   const original=window.fetch.bind(window);window.__entryFixtureCalls=[];
+   window.fetch=async(input,init)=>{
+    const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url,location.href);
+    if(url.origin!==location.origin||!url.pathname.startsWith('/api/'))return original(input,init);
+    const raw=init?.body||(input instanceof Request?await input.clone().text():'{}');
+    let body={};try{body=JSON.parse(typeof raw==='string'?raw:'{}');}catch{}
+    window.__entryFixtureCalls.push(url.pathname);
+    const data=url.pathname==='/api/moji-article'?{ok:true,title:fixture.title,sentences:fixture.sentences,sourceUrl:body.url}:url.pathname==='/api/nhk-coach'?{ok:true,coach:fixture.coach,model:'isolated-qa'}:{ok:false,reason:'qa_no_live_provider'};
+    return new Response(JSON.stringify(data),{status:200,headers:{'Content-Type':'application/json'}});
+   };
+  },fixture);
   await context.route('**/entry-probe-blank',r=>r.fulfill({contentType:'text/html',body:'<!doctype html><html><head><title>Isolated QA origin</title></head><body></body></html>'}));
-  await context.route('**/api/**',route=>{
-   const path=new URL(route.request().url()).pathname;
-   if(path==='/api/moji-article'){const {url}=route.request().postDataJSON();return route.fulfill({json:{ok:true,title:fixture.title,sentences:fixture.sentences,sourceUrl:url}});}
-   if(path==='/api/nhk-coach')return route.fulfill({json:{ok:true,coach:fixture.coach,model:'isolated-qa'}});
-   return route.fulfill({json:{ok:false,reason:'qa_no_live_provider'}});
-  });
   const page=await context.newPage();page.setDefaultTimeout(15000);page.on('pageerror',e=>report.errors.push(`${engine}: ${e.message}`));
   report.stage=engine+': seed persistent profile';
   await page.goto(base+'/entry-probe-blank');
@@ -57,9 +65,7 @@ try{
   assert.equal(new URL(page.url()).searchParams.get('view'),'nhk');
   assert.ok(await page.evaluate(({keys,id})=>JSON.parse(localStorage.getItem(keys.articles)).some(a=>a.id===id),{keys,id:fixture.article.id}));
   await page.screenshot({path:`${out}/${engine}-nhk-retained.png`,fullPage:true});
-  await page.getByRole('link',{name:'← HITOKOTO 日语陪聊',exact:true}).click();await neon();
-  await page.waitForLoadState('networkidle');
-  // Cache separation remains a required real-browser assertion in BOTH engines.
+  await page.getByRole('link',{name:'← HITOKOTO 日语陪聊',exact:true}).click();await neon();await page.waitForLoadState('networkidle');
   const shells=await page.evaluate(async()=>{
    const c=await caches.open('hitokoto-shell-20260911-entry-v1');
    const result={};for(const p of ['/','/?view=nhk','/companion.html'])result[p]=await (await c.match(p))?.text()||'';
@@ -69,35 +75,31 @@ try{
   assert.ok(shells['/companion.html'].includes('id="companion-root"'));assert.notEqual(shells['/?view=nhk'],shells['/companion.html']);
   const offline={status:'not_attempted',root:false,nhk:false,companion:false};
   try{
-   report.stage=engine+': offline default launch';
-   await context.setOffline(true);await page.goto(base+'/');await neon();offline.root=true;
-   report.stage=engine+': offline NHK';
-   await page.goto(base+'/?view=nhk');await page.locator('.nhk-only-app').waitFor();offline.nhk=true;
-   report.stage=engine+': offline companion';
-   await page.goto(base+'/companion.html');await neon();offline.companion=true;offline.status='passed';
+   report.stage=engine+': offline default launch';await context.setOffline(true);await page.goto(base+'/');await neon();offline.root=true;
+   report.stage=engine+': offline NHK';await page.goto(base+'/?view=nhk');await page.locator('.nhk-only-app').waitFor();offline.nhk=true;
+   report.stage=engine+': offline companion';await page.goto(base+'/companion.html');await neon();offline.companion=true;offline.status='passed';
   }catch(e){
-   // Retain the exact limitation in evidence rather than silently weakening or relabelling the test.
-   // Playwright's SW integration is Chromium-only; its Linux WebKit can abort the navigation internally.
-   // https://playwright.dev/docs/service-workers ; microsoft/playwright#34450.
+   // Report the precise unsupported automation path, not a successful Safari offline check.
    if(engine!=='webkit'||process.platform!=='linux'||!e.message.startsWith('page.goto: WebKit encountered an internal error'))throw e;
    offline.status='blocked';offline.reason=e.message.slice(0,450);
    report.limitations.push({engine,check:'offline_navigation',status:'NOT_VERIFIED',reason:offline.reason});
   }finally{await context.setOffline(false);}
-  report.stage=engine+': online recovery after offline probe';
-  await page.goto(base+'/');await neon();
+  report.stage=engine+': online recovery after offline probe';await page.goto(base+'/');await neon();
   assert.equal(await page.evaluate(()=>localStorage.getItem('hitokoto-entry-preservation-probe')),'KEEP_THIS');
   const dbValue=await page.evaluate(()=>new Promise((resolve,reject)=>{const r=indexedDB.open('entry-data-preservation-qa',1);r.onerror=()=>reject(r.error);r.onsuccess=()=>{const db=r.result,q=db.transaction('records','readonly').objectStore('records').get('probe');q.onsuccess=()=>{resolve(q.result);db.close();};};}));assert.equal(dbValue,'KEEP_DATABASE');
   assert.equal(await page.evaluate(async()=>await (await (await caches.open('private-study-cache')).match('/private-marker'))?.text()),'KEEP_CACHE');
-  report.stage=engine+': legacy shared article';
+  assert.equal(await page.evaluate(key=>localStorage.getItem(key),keys.knowledge),before[keys.knowledge]);
+  report.stage=engine+': legacy shared article routing';
   const shared='https://www.mojidict.com/article/entry-share-test';
-  await page.goto(base+'/?share_target=1&url='+encodeURIComponent(shared));
-  await page.locator('.nhk-only-app').waitFor();
+  await page.goto(base+'/?share_target=1&url='+encodeURIComponent(shared));await page.locator('.nhk-only-app').waitFor();
   await page.waitForFunction(()=>new URL(location.href).searchParams.get('view')==='nhk'&&!new URL(location.href).searchParams.has('url'));
+  report.stage=engine+': shared article persisted';
   await page.waitForFunction(({keys,shared})=>JSON.parse(localStorage.getItem(keys.articles)||'[]').some(a=>a.sourceUrl===shared),{keys,shared});
+  assert.ok(await page.evaluate(()=>window.__entryFixtureCalls.includes('/api/moji-article')),'Synthetic provider must be called, not a real MOJi request');
   assert.ok(await page.evaluate(({keys,id})=>JSON.parse(localStorage.getItem(keys.articles)).some(a=>a.id===id),{keys,id:fixture.article.id}));
   await page.reload();await page.locator('.nhk-only-app').waitFor();
   assert.equal(new URL(page.url()).searchParams.get('view'),'nhk');assert.equal(micRequests,0);
-  report.cases.push({engine,persistentProfile:true,normalRootLaunchNeon:true,indexBookmarkNeon:true,nhkLinkAndReload:true,legacyShareImportAndReload:true,oldArticlesRetained:true,cacheShellsSeparate:true,offline,onlyOwnedLegacyCacheRemoved:true,unrelatedCacheAndIndexedDBRetained:true,physicalMicRequests:micRequests});
+  report.cases.push({engine,persistentProfile:true,normalRootLaunchNeon:true,indexBookmarkNeon:true,nhkLinkAndReload:true,legacyShareImportAndReload:true,shareProvider:'IN_PAGE_FETCH_FIXTURE_REAL_UI_AND_WORKER',oldArticlesAndKnowledgeRetained:true,cacheShellsSeparate:true,offline,onlyOwnedLegacyCacheRemoved:true,unrelatedCacheAndIndexedDBRetained:true,physicalMicRequests:micRequests});
   await context.close();context=null;rmSync(profile,{recursive:true,force:true});profile=null;
  }
  assert.deepEqual(report.errors,[]);report.ok=true;report.stage='complete';
