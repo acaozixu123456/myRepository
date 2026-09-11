@@ -22,7 +22,16 @@ if '.imm-modal-selection-wrap{' not in s:
  s+='''\n/* Native dialogs are in the browser top layer: selection tools must be portalled INSIDE the owning dialog. */
 .imm-modal-selection-wrap{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;pointer-events:none;z-index:300}.imm-modal-selection-wrap>.imm-selection-tools{position:static!important;left:auto!important;top:auto!important;bottom:auto!important;transform:none!important;pointer-events:auto;max-width:calc(100% - 24px)!important;flex-wrap:wrap}.imm-selection-tools{color:#e8f9ff}.imm-modal-selection-wrap .imm-selection-tools button{color:inherit}
 '''
- p.write_text(s)
+if 'IMMERSION_EXPLICIT_AREAS' not in s:
+ s+='''\n/* IMMERSION_EXPLICIT_AREAS: do not inherit NEON's old stage/talk grid. */
+.kc-root[data-immersion-release][data-view=chat] .kc-shell{display:grid;grid-template-areas:"header" "switch" "talk" "dock";grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;gap:0;overflow:hidden}
+.kc-root[data-immersion-release][data-view=chat] .kc-header{grid-area:header;min-width:0;margin:0}
+.kc-root[data-immersion-release][data-view=chat] .imm-view-toggle{grid-area:switch;min-width:0}
+.kc-root[data-immersion-release][data-view=chat] .kc-conversation{grid-area:talk;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain}
+.kc-root[data-immersion-release][data-view=chat] .kc-chat-bottom{grid-area:dock;min-width:0}
+@media(min-width:900px){.kc-root[data-immersion-release][data-view=chat] .kc-shell{grid-template-areas:"header header" ". switch" ". talk" ". dock";grid-template-columns:minmax(0,1fr) minmax(410px,560px);grid-template-rows:76px auto minmax(0,1fr) auto;column-gap:24px}}
+'''
+p.write_text(s)
 p=Path('src/companion/CompanionApp.tsx');s=p.read_text().replace('原创建筑场景，横竖独立构图；预渲染静音循环，不在聊天时实时运行整座3D城市。','原创 AI 环境母图＋分层动画，横竖独立构图；静音循环，不在聊天时实时渲染整座城市。')
 if '.connection?.saveData' not in s:
  s=s.replace("!window.matchMedia('(prefers-reduced-motion: reduce)').matches", "!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&!(navigator as Navigator&{connection?:{saveData?:boolean}}).connection?.saveData")
