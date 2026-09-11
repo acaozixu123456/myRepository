@@ -17,7 +17,8 @@ replace(p," const start=ctx.currentTime+.012,notes=CUE_NOTES[cue],strength=Math.
 replace(p,"if(typeof document==='undefined'||!context||context.state!=='running'||!cueAllowed", "if(typeof document==='undefined'||!context||preferences.volume<=0||context.state!=='running'||!cueAllowed")
 replace(p,"export function setLearningVolume(volume:number):void{if(!Number.isFinite(volume))return;preferences={...preferences,volume:Math.max(0,Math.min(1,volume))};publish();}","export function setLearningVolume(volume:number):void{if(!Number.isFinite(volume))return;if(volume<=0)stopLearningCues();preferences={...preferences,volume:Math.max(0,Math.min(1,volume))};publish();}")
 p=Path('src/companion/desktopExperience.test.ts');s=p.read_text()
-s=s.replace('CUE_NOTES,cueAllowed,scheduleLearningCue,','CUE_NOTES,cueAllowed,scheduleLearningCue,discreteMediaPlaying,')
+if 'scheduleLearningCue,discreteMediaPlaying,' not in s:
+ s=s.replace('CUE_NOTES,cueAllowed,scheduleLearningCue,','CUE_NOTES,cueAllowed,scheduleLearningCue,discreteMediaPlaying,')
 if 'continuous remote stream may be silent' not in s:
  s+='''
 describe('live media and zero-volume boundaries',()=>{
