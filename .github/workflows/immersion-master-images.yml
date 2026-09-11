@@ -1,0 +1,31 @@
+name: IMMERSION original master images
+on:
+  push:
+    branches: [hitokoto-immersion03-20260911]
+    paths: [.github/workflows/immersion-master-images.yml]
+permissions: {contents: read}
+jobs:
+  plates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Exactly two fixed environment requests, no key output or user data
+        run: |
+          mkdir -p artifacts/immersion-masters
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';
+          const source=await readFile('api/nhk-speech.ts','utf8');const token=source.match(/const SUPABASE_ANON_KEY = '([^']+)'/)?.[1];if(!token)throw Error('Public project gateway config missing');
+          const results=await Promise.all(['landscape','portrait'].map(async orientation=>{
+            const r=await fetch('https://kivebsjsdfdobxzaokbj.supabase.co/functions/v1/hitokoto-immersion-art-once',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token,apikey:token},body:JSON.stringify({release:'immersion03-approved-art-20260911',orientation}),signal:AbortSignal.timeout(160000)});
+            const v=await r.json();if(!r.ok||!v.ok||typeof v.image!=='string'){await writeFile(`artifacts/immersion-masters/${orientation}-error.json`,JSON.stringify({status:r.status,reason:v.reason||'unknown'}));throw Error(`${orientation}: ${r.status} ${v.reason||'unknown'}`);}
+            const image=Buffer.from(v.image,'base64');delete v.image;await writeFile(`artifacts/immersion-masters/${orientation}.jpg`,image);await writeFile(`artifacts/immersion-masters/${orientation}.json`,JSON.stringify(v,null,2));return{orientation,bytes:image.length,requestedSize:v.requestedSize,model:v.model};
+          }));console.log('MASTER_GENERATION',JSON.stringify(results));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: immersion-original-masters
+          path: artifacts/immersion-masters/
