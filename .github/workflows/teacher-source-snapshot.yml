@@ -1,0 +1,26 @@
+name: Teacher source snapshot
+on:
+  push:
+    branches: [hitokoto-teacher-v2-20260911]
+    paths: [.github/workflows/teacher-source-snapshot.yml]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: |
+          mkdir -p /tmp/snapshot
+          git archive HEAD | gzip > /tmp/snapshot/source.tgz
+          tar -czf /tmp/snapshot/dependencies.tgz node_modules
+          git rev-parse HEAD > /tmp/snapshot/source-sha.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: teacher-source-snapshot
+          path: /tmp/snapshot/

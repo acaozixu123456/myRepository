@@ -1,0 +1,98 @@
+name: HITOKOTO teacher real-provider and production verification
+on:
+  push:
+    branches: [hitokoto-teacher-v2-20260911, nihongo-vercel]
+    paths:
+      - .github/workflows/hitokoto-teacher-publication.yml
+      - src/companion/**
+      - supabase/functions/nihongo-companion/**
+      - server/companionProxy.ts
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: teacher-publication-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - name: Verify source and build
+        run: |
+          mkdir -p artifacts/teacher-publication
+          grep -q 'teacher-20260911-v2' src/companion/CompanionApp.tsx
+          npm run typecheck > artifacts/teacher-publication/typecheck.log 2>&1
+          npm test > artifacts/teacher-publication/tests.log 2>&1
+          npm run build > artifacts/teacher-publication/build.log 2>&1
+      - name: Verify exact public documents, script and style assets
+        if: github.ref_name == 'nihongo-vercel'
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';
+          import {createHash} from 'node:crypto';
+          import assert from 'node:assert/strict';
+          const base='https://nihongo-discovery-v2-20260831.vercel.app';
+          const hash=b=>createHash('sha256').update(b).digest('hex');
+          const files=new Map([['/','index.html'],['/?view=nhk','index.html'],['/companion.html','companion.html'],['/app-entry.js','app-entry.js'],['/sw.js','sw.js']]);
+          for(const file of ['index.html','companion.html']){const html=await readFile('dist/'+file,'utf8');for(const m of html.matchAll(/(?:src|href)="(\/assets\/[^"<>]+\.(?:js|css))"/g))files.set(m[1],m[1].slice(1));}
+          const expected=await Promise.all([...files].map(async([path,file])=>({path,sha256:hash(await readFile('dist/'+file))})));
+          let pass=false,last='';for(let attempt=0;attempt<30;attempt++){
+            try{for(const item of expected){const r=await fetch(base+item.path,{cache:'no-store',signal:AbortSignal.timeout(15000)});assert.equal(r.status,200);assert.equal(hash(Buffer.from(await r.arrayBuffer())),item.sha256,item.path);}pass=true;break;}
+            catch(e){last=e.message;await new Promise(r=>setTimeout(r,5000));}
+          }
+          assert.ok(pass,last);await writeFile('artifacts/teacher-publication/assets.json',JSON.stringify({source:process.env.GITHUB_SHA,base,release:'teacher-20260911-v2',verifiedAt:new Date().toISOString(),exactPublicAssets:true,files:expected},null,2));
+          JS
+      - name: Browser setup
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/teacher-live-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
+      - name: Real preview or production model integration, no physical microphone
+        timeout-minutes: 6
+        run: |
+          if [ "$GITHUB_REF_NAME" = nihongo-vercel ]; then export TEACHER_EDGE_SLUG=nihongo-companion; else export TEACHER_EDGE_SLUG=nihongo-companion-teacher-preview; fi
+          node scripts/teacher-v2-live.mjs
+      - name: Actual default production launch and visible teacher settings
+        if: github.ref_name == 'nihongo-vercel'
+        run: |
+          node --input-type=module <<'JS'
+          import {chromium} from 'playwright';
+          import {writeFile} from 'node:fs/promises';
+          import assert from 'node:assert/strict';
+          const browser=await chromium.launch({headless:true});const errors=[];
+          try{const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});page.on('pageerror',e=>errors.push(e.message));
+            await page.goto('https://nihongo-discovery-v2-20260831.vercel.app/');await page.locator('[data-teacher-release="teacher-20260911-v2"]').waitFor();
+            assert.equal(new URL(page.url()).pathname,'/companion.html');await page.getByRole('button',{name:'我的表达',exact:false}).waitFor();
+            await page.screenshot({path:'artifacts/teacher-publication/home.png',fullPage:true});
+            await page.getByRole('button',{name:'我的表达',exact:false}).click();await page.getByRole('dialog').waitFor();
+            await page.screenshot({path:'artifacts/teacher-publication/expression-shelf.png',fullPage:true});assert.deepEqual(errors,[]);
+            await writeFile('artifacts/teacher-publication/browser.json',JSON.stringify({realProductionRoot:true,marker:'teacher-20260911-v2',expressionsVisible:true,noPhysicalMicrophone:true,errors},null,2));
+          }finally{await browser.close();}
+          JS
+      - name: Produce separated release evidence
+        if: always()
+        run: |
+          node --input-type=module <<'JS'
+          import {readFile,writeFile} from 'node:fs/promises';
+          const load=async p=>{try{return JSON.parse(await readFile(p,'utf8'));}catch{return null;}};
+          const tests=(await readFile('artifacts/teacher-publication/tests.log','utf8').catch(()=>'' )).replace(/\u001b\[[0-9;]*m/g,'');
+          const report={source:process.env.GITHUB_SHA,branch:process.env.GITHUB_REF_NAME,release:'teacher-20260911-v2',testsPassed:Number(tests.match(/Tests\s+(\d+) passed/)?.[1]||0),assets:await load('artifacts/teacher-publication/assets.json'),provider:await load('artifacts/teacher-live/result.json'),productionBrowser:await load('artifacts/teacher-publication/browser.json'),humanJapaneseListeningReview:false,physicalIPhoneTested:false,run:`https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`};
+          await writeFile('artifacts/teacher-publication/release.json',JSON.stringify(report,null,2));console.log('TEACHER_RELEASE',JSON.stringify(report));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacher-publication-${{ github.run_id }}
+          path: |
+            artifacts/teacher-publication/
+            artifacts/teacher-live/

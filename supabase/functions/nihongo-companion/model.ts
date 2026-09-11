@@ -49,19 +49,19 @@ export function chooseSeed(pool:Seed[],seen:string[],lane:Lane='mix',random=Math
 }
 export const TARGETS=['一个意思就好，单词也能接住','尝试把熟悉的词连成一个短句','有余力时，补一个时间、动作或细节','能顺畅时，自然连接两三个意思'];
 export function companionInstructions(seed:Seed,policy:Policy):string {return nativeCompanionPrompt(seed,policy,TARGETS[policy.target]);}
-export type Line={id:string;previous:string;role:'user'|'assistant';text:string;delivered:boolean;interrupted:boolean;assistance:'none'|'hint'|'example';seq:number};
+export type Line={id:string;previous:string;role:'user'|'assistant';text:string;delivered:boolean;interrupted:boolean;assistance:'none'|'hint'|'example';seq:number;exercise?:boolean;textOnly?:boolean};
 /** Fallible transcripts for UI/observation only, never duplicate native audio input. */
 export class TranscriptLedger {
   private entries=new Map<string,Line>();private seq=0;
   upsert(id:string,role:Line['role'],patch:Partial<Line>={}){if(!id)return;const old=this.entries.get(id);this.entries.set(id,{id,role,previous:'',text:'',delivered:role==='user',interrupted:false,assistance:'none',seq:++this.seq,...old,...patch});if(this.entries.size>120){const first=this.ordered()[0];if(first)this.entries.delete(first.id);}}
   ordered():Line[]{const entries=[...this.entries.values()].sort((a,b)=>a.seq-b.seq);const done=new Set<string>();const out:Line[]=[];let left=entries;for(let pass=0;left.length&&pass<entries.length+1;pass++){const next:Line[]=[];for(const item of left){if(item.previous&&this.entries.has(item.previous)&&!done.has(item.previous)){next.push(item);continue;}done.add(item.id);out.push(item);}if(next.length===left.length){out.push(...next);break;}left=next;}return out;}
-  evidence(){return this.ordered().filter(l=>l.text&&l.delivered&&!l.interrupted).slice(-18);}
+  evidence(){return this.ordered().filter(l=>l.text&&l.delivered&&!l.interrupted&&!l.exercise).slice(-18);}
   clear(){this.entries.clear();}
 }
 export type Observation={id:string;meaning:'clear'|'repair'|'uncertain';independence:'independent'|'prompted'|'imitated'|'uncertain';complexity:0|1|2|3;comprehension:'comfortable'|'needs_help'|'uncertain'};
 /** Conservative product heuristics, not a validated proficiency test. */
 export function applyObservations(previous:Policy,observations:Observation[],lines:Line[]):Policy {
-  const p=validPolicy(previous);const users=new Map(lines.filter(l=>l.role==='user'&&l.delivered&&!l.interrupted).map(l=>[l.id,l]));
+  const p=validPolicy(previous);const users=new Map(lines.filter(l=>l.role==='user'&&l.delivered&&!l.interrupted&&!l.exercise).map(l=>[l.id,l]));
   let higher=0,needsHelp=0,newCount=0,comfortable=0;
   for(const o of observations){const l=users.get(o?.id);if(!l||p.seen.includes(o.id)||!['clear','repair','uncertain'].includes(o.meaning)||!['independent','prompted','imitated','uncertain'].includes(o.independence)||![0,1,2,3].includes(o.complexity))continue;p.seen.push(o.id);newCount++;p.evidence++;
     const independent=l.assistance==='none'&&o.independence==='independent'&&o.meaning==='clear';

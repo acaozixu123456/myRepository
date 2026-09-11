@@ -1,0 +1,88 @@
+name: HITOKOTO teacher v2 source gate
+on:
+  push:
+    branches: [hitokoto-teacher-v2-20260911]
+    paths:
+      - scripts/teacher-upgrade/**
+      - scripts/teacher-*.mjs
+      - src/companion/**
+      - supabase/functions/nihongo-companion/**
+      - server/companionProxy.ts
+      - .github/workflows/hitokoto-teacher-v2.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hitokoto-teacher-v2
+  cancel-in-progress: true
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply pinned reviewed source, not production
+        run: |
+          test "$GITHUB_REF_NAME" = hitokoto-teacher-v2-20260911
+          mkdir -p artifacts/teacher-gate
+          if ! grep -q 'teacher-20260911-v2' src/companion/CompanionApp.tsx; then
+            python scripts/teacher-upgrade/apply.py
+          fi
+          python scripts/teacher-upgrade/refine.py
+          git diff --check
+          git diff --exit-code 3953c0697df97f73750c5974deb28b844ef9d60b -- api public index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/App.tsx src/NhkMorningPage.tsx src/nhkBackup.ts src/nhkLibrary.ts src/appWorker.ts src/companion/writtenLane.ts supabase/functions/nihongo-companion/service.ts supabase/functions/nihongo-companion/monitor.ts
+          git diff --stat | tee artifacts/teacher-gate/changes.txt
+      - run: npm ci --no-audit --no-fund
+      - name: All unit tests, typecheck and production build
+        run: |
+          npm run typecheck 2>&1 | tee artifacts/teacher-gate/typecheck.log
+          npm test 2>&1 | tee artifacts/teacher-gate/tests.log
+          npm run build 2>&1 | tee artifacts/teacher-gate/build.log
+      - name: Install real browser harness
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium webkit
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/teacher-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
+      - name: Real MediaRecorder and replay of synthetic remote output
+        run: node scripts/teacher-replay-media.mjs
+      - name: Existing native mic and five-width continuous note regression
+        run: |
+          node scripts/companion-phone.mjs
+          node scripts/hitokoto-neon-phone.mjs
+      - name: Teacher UI on Chromium and WebKit
+        run: node scripts/teacher-v2-phone.mjs
+      - name: Commit only source which passed the complete gate
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src/companion server/companionProxy.ts supabase/functions/nihongo-companion scripts/teacher-v2-phone.mjs scripts/teacher-v2-live.mjs scripts/teacher-replay-media.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Implement natural native speech, direct teaching, graduated practice and opt-in expression review'
+            git push origin HEAD:hitokoto-teacher-v2-20260911
+          fi
+          git rev-parse HEAD > artifacts/teacher-gate/tested-source-sha.txt
+      - name: Export source and evidence
+        if: always()
+        run: |
+          tar --exclude='./node_modules' --exclude='./.git' --exclude='./artifacts' --exclude='./dist' -czf /tmp/teacher-reviewed-source.tgz .
+          cp /tmp/teacher-reviewed-source.tgz artifacts/teacher-gate/source.tgz
+          cp /tmp/teacher-vite.log artifacts/teacher-gate/vite.log 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacher-v2-${{ github.run_id }}
+          path: |
+            artifacts/teacher-gate/
+            artifacts/teacher-v2/
+            artifacts/teacher-replay/
+            artifacts/companion-phone/
+            artifacts/hitokoto-neon/
