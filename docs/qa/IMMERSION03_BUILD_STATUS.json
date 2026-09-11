@@ -1,5 +1,5 @@
 {
-  "ok": false,
+  "ok": true,
   "scope": "SOURCE_TESTS_REAL_BROWSER_UI_MOCKED_PROVIDER_NO_PHYSICAL_IPHONE",
   "automatedSourceEdits": false,
   "checks": [
@@ -8,48 +8,54 @@
       "exitCode": 0,
       "timeout": false,
       "ok": true,
-      "milliseconds": 8762
+      "milliseconds": 8523
     },
     {
       "name": "tests",
       "exitCode": 0,
       "timeout": false,
       "ok": true,
-      "milliseconds": 9121
+      "milliseconds": 9118
     },
     {
       "name": "build",
       "exitCode": 0,
       "timeout": false,
       "ok": true,
-      "milliseconds": 27116
+      "milliseconds": 27880
     },
     {
       "name": "native-mic",
       "exitCode": 0,
       "timeout": false,
       "ok": true,
-      "milliseconds": 8620
+      "milliseconds": 8851
     },
     {
       "name": "five-width-notes",
       "exitCode": 0,
       "timeout": false,
       "ok": true,
-      "milliseconds": 82592
+      "milliseconds": 84708
     },
     {
       "name": "teacher02",
-      "exitCode": 1,
+      "exitCode": 0,
       "timeout": false,
-      "ok": false,
-      "milliseconds": 17168
+      "ok": true,
+      "milliseconds": 69549
+    },
+    {
+      "name": "selection-and-themes",
+      "exitCode": 0,
+      "timeout": false,
+      "ok": true,
+      "milliseconds": 29540
     }
   ],
-  "completedAt": "2026-09-11T07:07:13.815Z",
-  "failure": "Acceptance failed: teacher02; inspect artifacts/immersion-gate/teacher02.log and screenshots. No production change.",
-  "acceptance": "failure",
-  "source": "02b8968473924c30b806d554231076a94ef044b8",
-  "runId": "34572338870",
-  "testedSource": ""
+  "completedAt": "2026-09-11T07:12:33.630Z",
+  "acceptance": "success",
+  "source": "56e20a29ab280f6087431dce12efa26b47f8cbc1",
+  "runId": "34572895566",
+  "testedSource": "03b2acece35ab06cae244c807b7de3f7548d7e04"
 }
