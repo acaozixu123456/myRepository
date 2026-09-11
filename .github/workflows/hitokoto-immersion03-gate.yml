@@ -1,0 +1,80 @@
+name: HITOKOTO IMMERSION03 source gate
+on:
+  push:
+    branches: [hitokoto-immersion03-20260911]
+    paths:
+      - scripts/immersion/source.*.xz64
+      - scripts/immersion/apply.py
+      - scripts/immersion/refine.py
+      - scripts/immersion/browser.mjs
+      - .github/workflows/hitokoto-immersion03-gate.yml
+  workflow_dispatch:
+permissions: {contents: write}
+concurrency:
+  group: immersion03-source-gate
+  cancel-in-progress: true
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash --noprofile --norc -e -o pipefail {0}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Apply only checksum-pinned reviewed source
+        run: |
+          mkdir -p artifacts/immersion-gate
+          if ! grep -q 'data-immersion-release' src/companion/CompanionApp.tsx; then python scripts/immersion/apply.py; fi
+          if [ -f scripts/immersion/refine.py ]; then python scripts/immersion/refine.py; fi
+          git diff --check
+          git diff --exit-code 93fdda50cf86b1f72068056adc04614301a95189 -- api public index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/appWorker.ts src/nhkBackup.ts src/nhkLibrary.ts supabase/functions/nihongo-companion/service.ts supabase/functions/nihongo-companion/monitor.ts
+          git diff > artifacts/immersion-gate/source.patch
+      - run: npm ci --no-audit --no-fund
+      - name: Complete source tests and release build
+        run: |
+          npm run typecheck 2>&1 | tee artifacts/immersion-gate/typecheck.log
+          npm test 2>&1 | tee artifacts/immersion-gate/tests.log
+          npm run build 2>&1 | tee artifacts/immersion-gate/build.log
+      - name: Browser setup
+        run: |
+          npm install --no-save --package-lock=false --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium webkit
+          npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/immersion-vite.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
+      - name: Native microphone and five-width consecutive notes
+        run: |
+          node scripts/companion-phone.mjs
+          node scripts/hitokoto-neon-phone.mjs
+      - name: Existing Teacher02 acceptance
+        run: node scripts/teacher-v2-phone.mjs
+      - name: Actual DOM selection and custom topic UI on both browser engines
+        run: node scripts/immersion/browser.mjs
+      - name: Commit only tested source to the development branch
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add src server/companionProxy.ts supabase/functions/nihongo-companion scripts/companion-phone.mjs scripts/hitokoto-neon-phone.mjs scripts/teacher-v2-phone.mjs scripts/immersion/browser.mjs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Implement contextual selection learning, user-defined topics and independent scenery controls'
+            git push origin HEAD:hitokoto-immersion03-20260911
+          fi
+          git rev-parse HEAD > artifacts/immersion-gate/tested-source.txt
+      - name: Export actual source for review
+        if: always()
+        run: |
+          tar --exclude='./node_modules' --exclude='./.git' --exclude='./artifacts' --exclude='./dist' -czf /tmp/immersion-source.tgz .
+          cp /tmp/immersion-source.tgz artifacts/immersion-gate/source.tgz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: immersion03-gate-${{ github.run_id }}
+          path: |
+            artifacts/immersion-gate/
+            artifacts/immersion-browser/
+            artifacts/companion-phone/
+            artifacts/hitokoto-neon/
+            artifacts/teacher-v2/
