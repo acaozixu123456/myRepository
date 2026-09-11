@@ -7,7 +7,7 @@ const out=process.env.NHK_EVIDENCE_DIR || '/tmp/nhk-artifacts';mkdirSync(out,{re
 execFileSync('node_modules/.bin/esbuild',['scripts/nhk-calm-fixture.ts','--bundle','--platform=node','--format=cjs',`--outfile=${out}/fixture.cjs`]);
 execFileSync('node',[`${out}/fixture.cjs`],{env:{...process.env,FIXTURE_OUT:`${out}/reliable-fixture.json`}});
 const fixture=JSON.parse(readFileSync(`${out}/reliable-fixture.json`,'utf8'));
-const base=process.env.NHK_BASE_URL || 'http://127.0.0.1:5173';
+const base=(()=>{const u=new URL(process.env.NHK_BASE_URL || 'http://127.0.0.1:5173');u.searchParams.set('view','nhk');return u.href;})();
 const keys={articles:'nihongo-nhk-article-library-v1',knowledge:'nihongo-nhk-knowledge-library-v1',history:'nihongo-nhk-practice-history-v1',sessions:'nihongo-nhk-morning-v2'};
 const report={status:'RUNNING',cases:[],audits:[],errors:[]};const browsers=[];let activePage;
 const pass=name=>{report.cases.push(name);console.log(`PASS ${name}`);};

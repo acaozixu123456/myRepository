@@ -48,7 +48,7 @@ export default function CompanionApp(){
   const micLabel=!activity.micOn?'点一下，开麦说':activity.input==='requesting'?'正在打开麦克风':activity.input==='device-muted'?'麦克风暂时不可用':'已开麦 · 再点闭麦';
   const liveState=phase==='error'?'声音暂时没有接上':phase==='connecting'?'正在接通声音':activity.output==='blocked'?'声音等待播放':activity.output==='playing'?'听一句，慢慢来':phase==='thinking'?'正在接你的话':activity.micOn?'我在听，你慢慢说':'先听也好，准备好再开口';
   const visible=lines.filter(l=>l.text).slice(-32);const lastId=visible.at(-1)?.id;
-  return <div className="kc-root" data-companion="native-v3" data-release="repair-20260911" data-ui-release="neon-20260911" data-view={view} data-motion={motionOn?'full':'reduced'} data-signal={voiceVisual(phase,activity).key}>
+  return <div className="kc-root" data-companion="native-v3" data-release="repair-20260911" data-ui-release="neon-20260911" data-entry-release="entry-20260911" data-view={view} data-motion={motionOn?'full':'reduced'} data-signal={voiceVisual(phase,activity).key}>
     <div className="kc-shell">
       <header className="kc-header">
         {view==='chat'?<button className="kc-icon" onClick={finish} aria-label="结束聊天"><X size={22}/></button>:<span className="kc-brand"><NeonMark/><span>HITOKOTO<small>AI 日本語パートナー</small></span></span>}
@@ -69,10 +69,10 @@ export default function CompanionApp(){
         <section className="neon-shortcuts" aria-label="探索更多">
           <button onClick={()=>setSheet('topics')}><span className="neon-shortcut-icon"><Compass size={22}/></span><span><strong>找个话题</strong><small>日常、兴趣与一点想象</small></span><ChevronRight size={15}/></button>
           <button onClick={()=>chooseLane('work')}><span className="neon-shortcut-icon"><Briefcase size={22}/></span><span><strong>工作里的日语</strong><small>聊聊真正想说的话</small></span><ChevronRight size={15}/></button>
-          <a href="/"><span className="neon-shortcut-icon"><BookOpen size={22}/></span><span><strong>我的 NHK 文章</strong><small>从熟悉的新闻继续学</small></span><ChevronRight size={15}/></a>
+          <a href="/?view=nhk"><span className="neon-shortcut-icon"><BookOpen size={22}/></span><span><strong>我的 NHK 文章</strong><small>从熟悉的新闻继续学</small></span><ChevronRight size={15}/></a>
           <button onClick={()=>setSheet('settings')}><span className="neon-shortcut-icon"><SlidersHorizontal size={22}/></span><span><strong>聊天偏好</strong><small>提示、节奏与动态效果</small></span><ChevronRight size={15}/></button>
         </section>
-        <footer className="kc-home-footer"><span className="neon-nav-active"><Home size={18}/>陪聊</span><a href="/"><BookOpen size={18}/>NHK 学习</a><button onClick={()=>setSheet('settings')}><SlidersHorizontal size={18}/>偏好</button></footer>
+        <footer className="kc-home-footer"><span className="neon-nav-active"><Home size={18}/>陪聊</span><a href="/?view=nhk"><BookOpen size={18}/>NHK 学习</a><button onClick={()=>setSheet('settings')}><SlidersHorizontal size={18}/>偏好</button></footer>
         <p className="kc-disclosure">AI 语音由 OpenAI 提供 · 不保存录音</p>
       </main>}
       {view==='chat'&&<>
@@ -96,7 +96,7 @@ export default function CompanionApp(){
           <div className="neon-chat-tools"><button onClick={()=>setSheet('write')} disabled={phase==='connecting'||phase==='error'}><Keyboard size={16}/>用文字聊</button><button onClick={()=>setShowText(v=>!v)} aria-pressed={showText}><MessageCircle size={15}/>{showText?'字幕已开':'打开字幕'}</button><button onClick={()=>act('repeat')} disabled={phase==='connecting'||phase==='error'}><Volume2 size={16}/>再听一遍</button></div>
         </footer>
       </>}
-      {view==='end'&&<main className="kc-ending"><div className="neon-end-art" aria-hidden="true"/><span className="neon-end-check"><Check size={27}/></span><p className="kc-kicker">SESSION COMPLETE</p><h1>多说的一句，<br/><em>都是新的可能。</em></h1><p lang="ja">おつかれさまでした。</p><p>这次就到这里。<br/>下次，从你想说的那一句继续。</p><div className="neon-closed-status"><MicOff size={15}/>麦克风已关闭 · 不保存录音</div><button className="kc-start" onClick={()=>{setView('home');setLines([]);}}><span>回去看看</span><ArrowRight size={20}/></button><a href="/" className="neon-end-link">回到我的 NHK 文章<ArrowRight size={15}/></a></main>}
+      {view==='end'&&<main className="kc-ending"><div className="neon-end-art" aria-hidden="true"/><span className="neon-end-check"><Check size={27}/></span><p className="kc-kicker">SESSION COMPLETE</p><h1>多说的一句，<br/><em>都是新的可能。</em></h1><p lang="ja">おつかれさまでした。</p><p>这次就到这里。<br/>下次，从你想说的那一句继续。</p><div className="neon-closed-status"><MicOff size={15}/>麦克风已关闭 · 不保存录音</div><button className="kc-start" onClick={()=>{setView('home');setLines([]);}}><span>回去看看</span><ArrowRight size={20}/></button><a href="/?view=nhk" className="neon-end-link">回到我的 NHK 文章<ArrowRight size={15}/></a></main>}
     </div>
     <dialog className="kc-sheet" ref={dialog} onCancel={()=>setSheet(null)} onClick={e=>{if(e.target===e.currentTarget)setSheet(null);}} aria-labelledby="kc-sheet-title"><div className="kc-sheet-inner"><div className="kc-sheet-handle"/><header><h2 id="kc-sheet-title">{sheet==='topics'?'今天，想往哪儿聊？':sheet==='write'?'先用文字说也可以':sheet==='sources'?'这则消息的出处':'按你的节奏来'}</h2><button className="kc-icon" aria-label="关闭面板" onClick={()=>setSheet(null)}><X size={21}/></button></header>
       {sheet==='topics'&&<div className="kc-option-list neon-topic-list">{(Object.keys(LANES) as Lane[]).map(value=><button key={value} data-lane={value} onClick={()=>chooseLane(value)}><span className="neon-lane-symbol" aria-hidden="true">{({mix:'話',interests:'夢',work:'事',curiosity:'問',news:'新'})[value]}</span><span><strong>{LANES[value].name}</strong><small>{LANES[value].note}</small></span>{lane===value?<Check size={18}/>:<ChevronRight size={17}/>}</button>)}<p className="kc-sheet-footnote">话题只是开场。聊起来之后，跟着你走。</p></div>}

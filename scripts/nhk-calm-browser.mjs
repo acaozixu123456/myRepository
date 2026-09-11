@@ -8,7 +8,7 @@ const output = '/tmp/nhk-artifacts'; mkdirSync(output, {recursive: true});
 execFileSync('node_modules/.bin/esbuild', ['scripts/nhk-calm-fixture.ts','--bundle','--platform=node','--outfile=/tmp/nhk-calm-fixture.cjs']);
 execFileSync('node', ['/tmp/nhk-calm-fixture.cjs']);
 const fixture = JSON.parse(readFileSync('/tmp/nhk-calm-fixture.json','utf8'));
-const base = process.env.NHK_TEST_BASE || 'http://127.0.0.1:5173';
+const base = (()=>{const u=new URL(process.env.NHK_TEST_BASE || 'http://127.0.0.1:5173');u.searchParams.set('view','nhk');return u.href;})();
 for (let i=0; i<30; i++) {try {if ((await fetch(base)).ok) break;} catch {} await new Promise(r => setTimeout(r,1000));}
 const report = {syntheticData: true, realAIRequests: 0, results: [], audits: [], errors: []};
 const keys = {articles:'nihongo-nhk-article-library-v1', knowledge:'nihongo-nhk-knowledge-library-v1', gentle:'nihongo-nhk-gentle-progress-v1', sessions:'nihongo-nhk-morning-v2'};

@@ -4,7 +4,7 @@ import {runInNewContext} from 'node:vm';
 import {stripShareParameters,extractSharedMojiUrl} from './shareTarget';
 const read=(name:string)=>readFileSync(name,'utf8');
 function launch(path:string){
- const replace=vi.fn(),history=vi.fn(),document={title:''};
+ const replace=vi.fn(),history=vi.fn(),document={title:'',documentElement:{dataset:{}}};
  runInNewContext(read('public/app-entry.js'),{URL,window:{location:{href:'https://app.example'+path,replace},history:{replaceState:history}},document});
  return {replace,history,document};
 }
@@ -43,4 +43,20 @@ describe('independent app shells, never a global home-page cache fallback',()=>{
  it.each([['https://app.example/api/nhk-speech','GET'],['https://app.example/api/nhk-speech','POST'],['https://other.example/assets/clip.mp3','GET']])('does not capture API or third-party traffic %s %s',(url,method)=>{const w=worker(),respondWith=vi.fn();w.handlers.fetch({request:{url,method,mode:'cors'},respondWith});expect(respondWith).not.toHaveBeenCalled();});
  it('revalidates documents rather than reusing HTTP cache',async()=>{const w=worker();await w.navigate('/companion.html');expect(w.fetch.mock.calls[0][1]).toEqual({cache:'no-store'});});
  it('never erases study databases, storage or cookies',()=>{const source=read('public/sw.js')+read('public/app-entry.js')+read('src/appWorker.ts');expect(source).not.toMatch(/localStorage\.(clear|removeItem)|indexedDB\.deleteDatabase|document\.cookie\s*=/);});
+});
+
+describe('optional cache writes cannot break online opening',()=>{
+ it('quota failure cannot replace successful network HTML',async()=>{
+  const w=worker(),open=w.cache.open;
+  w.cache.open=async name=>({...await open(name),put:async()=>{throw new Error('quota');}});
+  const response=await w.navigate('/companion.html');
+  expect(response?.status).toBe(200);expect(await response?.text()).toBe('ONLINE');
+ });
+ it('quota failure cannot discard a successful static asset response',async()=>{
+  const w=worker(),open=w.cache.open;
+  w.cache.open=async name=>({...await open(name),put:async()=>{throw new Error('quota');}});
+  let response!:Promise<Response>;
+  w.handlers.fetch({request:{url:'https://app.example/assets/current.js',method:'GET',mode:'cors'},respondWith:(r:Promise<Response>)=>{response=r;}});
+  expect(await (await response).text()).toBe('ONLINE');
+ });
 });
