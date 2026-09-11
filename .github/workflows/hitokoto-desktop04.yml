@@ -34,7 +34,10 @@ jobs:
         id: prepare
         run: |
           mkdir -p artifacts/desktop04
-          if [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then python scripts/desktop04/finish.py; fi
+          if [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then
+            python scripts/desktop04/finish.py
+            python scripts/desktop04/tighten.py
+          fi
           git diff --check
           git diff --exit-code 22bcad6e2524fa76e77fa63eb94aa494e5a420cc -- api server supabase public index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/appWorker.ts src/nhkBackup.ts src/nhkLibrary.ts src/NhkMorningPage.tsx src/companion/connection.ts src/companion/writtenLane.ts src/companion/writtenFeedback.ts src/companion/model.ts src/companion/prompt.ts src/companion/expressionLearning.ts src/companion/useExpressionLibrary.ts
           git diff > artifacts/desktop04/source.patch
@@ -96,7 +99,7 @@ jobs:
           if [ "$(git rev-parse origin/$GITHUB_REF_NAME)" = "$GITHUB_SHA" ]; then
             git config user.name 'Sol supervisor'
             git config user.email '331004814@qq.com'
-            if [ "$PREPARE" = success ] && [ "$SOURCE" = success ] && [ "$REGRESSION" = success ] && [ "$DESKTOP" = success ] && [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then git add src; fi
+            if [ "$PREPARE" = success ] && [ "$SOURCE" = success ] && [ "$REGRESSION" = success ] && [ "$DESKTOP" = success ] && [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then git add src scripts/companion-continuity-phone.mjs; fi
             git add docs/qa/HITOKOTO_DESKTOP04_STATUS.json
             if ! git diff --cached --quiet; then git commit -m 'Record Desktop04 acceptance; include application integration only after all gates pass';git push origin HEAD:"$GITHUB_REF_NAME";fi
           fi
