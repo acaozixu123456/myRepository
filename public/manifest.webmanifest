@@ -1,16 +1,19 @@
 {
   "id": "/",
-  "name": "NHK精读",
-  "short_name": "NHK精读",
-  "description": "保存每篇 MOJi / NHK 文章，逐句拆解语法和单词，并收藏复习。",
+  "name": "HITOKOTO · 日语学习",
+  "short_name": "HITOKOTO",
+  "description": "轻松聊日语，保留你的 NHK 文章、收藏和练习记录。",
   "lang": "zh-CN",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#f4f7f3",
-  "theme_color": "#15382f",
-  "categories": ["education", "productivity"],
+  "background_color": "#060914",
+  "theme_color": "#060914",
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/icon.svg",
@@ -20,7 +23,7 @@
     }
   ],
   "share_target": {
-    "action": "/?share_target=1",
+    "action": "/?view=nhk&share_target=1",
     "method": "GET",
     "enctype": "application/x-www-form-urlencoded",
     "params": {
