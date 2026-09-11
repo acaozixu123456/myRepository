@@ -1,0 +1,30 @@
+{
+  "ok": false,
+  "release": "DESKTOP04",
+  "source": "7f954df8f27677f3b485776ddadb6331b6e9adf7",
+  "runId": "34595611309",
+  "branch": "hitokoto-desktop-focus04-20260911",
+  "stages": {
+    "PREPARE": "failure",
+    "SOURCE": "skipped",
+    "REGRESSION": "skipped",
+    "DESKTOP": "skipped",
+    "PUBLISHED": "skipped"
+  },
+  "testsPassed": 0,
+  "browser": null,
+  "public": null,
+  "productionBrowser": null,
+  "physicalIPhoneTested": false,
+  "voiceAndTeacherProvider": "mocked; transport/backend unchanged",
+  "diagnostics": {
+    "typecheck": "",
+    "tests": "",
+    "native": "",
+    "fiveWidths": "",
+    "teacher": "",
+    "immersion": "",
+    "desktop": ""
+  },
+  "completedAt": "2026-09-11T11:46:19.167Z"
+}
