@@ -4,6 +4,11 @@ on:
     branches: [hitokoto-desktop-focus04-20260911, nihongo-vercel]
     paths:
       - scripts/desktop04/**
+      - src/companion/FeedbackMoment.tsx
+      - src/companion/learningSound.tsx
+      - src/companion/desktopFocus.css
+      - src/companion/desktopExperience.test.ts
+      - src/immersion/DesktopAtmosphere.tsx
       - .github/workflows/hitokoto-desktop04.yml
   workflow_dispatch:
 permissions:
@@ -14,7 +19,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 22
     defaults:
       run:
         shell: bash --noprofile --norc -e -o pipefail {0}
@@ -25,19 +30,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Prepare bounded UI changes and preserve backend and saved-data paths
+      - name: Apply reviewed UI integration against actual baseline
         id: prepare
         run: |
           mkdir -p artifacts/desktop04
-          if [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then
-            python scripts/desktop04/apply.py
-            python scripts/desktop04/refine.py
-          fi
+          if [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then python scripts/desktop04/finish.py; fi
           git diff --check
           git diff --exit-code 22bcad6e2524fa76e77fa63eb94aa494e5a420cc -- api server supabase public index.html companion.html vercel.json package.json package-lock.json src/main.tsx src/appWorker.ts src/nhkBackup.ts src/nhkLibrary.ts src/NhkMorningPage.tsx src/companion/connection.ts src/companion/writtenLane.ts src/companion/writtenFeedback.ts src/companion/model.ts src/companion/prompt.ts src/companion/expressionLearning.ts src/companion/useExpressionLibrary.ts
           git diff > artifacts/desktop04/source.patch
       - run: npm ci --no-audit --no-fund
-      - name: Full types, tests and release build
+      - name: Full types tests and release build
         id: source
         run: |
           npm run typecheck 2>&1 | tee artifacts/desktop04/typecheck.log
@@ -49,38 +51,30 @@ jobs:
           npx playwright install --with-deps chromium webkit
           npm run dev -- --host 127.0.0.1 --port 4173 >/tmp/desktop04-vite.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4173/companion.html >/dev/null && break; sleep 1; done
-      - name: Existing microphone, phone layouts and Teacher02 regression
+      - name: Existing microphone phone layouts and Teacher02 regression
         id: regression
         run: |
           node scripts/companion-phone.mjs > artifacts/desktop04/native-mic.log 2>&1
           node scripts/hitokoto-neon-phone.mjs > artifacts/desktop04/five-width.log 2>&1
           node scripts/teacher-v2-phone.mjs > artifacts/desktop04/teacher02.log 2>&1
           node scripts/immersion/browser.mjs > artifacts/desktop04/immersion.log 2>&1
-      - name: Real desktop rail, phone notice reveal, selection and weather controls
+      - name: Actual desktop rail feedback sound envelopes and weather controls
         id: desktop
-        run: node scripts/desktop04/browser.mjs 2>&1 | tee artifacts/desktop04/desktop-browser.log
-      - name: Verify exact public release assets
+        run: node scripts/desktop04/acceptance.mjs 2>&1 | tee artifacts/desktop04/desktop-browser.log
+      - name: Verify exact public release resources and actual hosted UI
         if: github.ref_name == 'nihongo-vercel'
         id: published
         run: |
           node --input-type=module <<'JS'
-          import {readFile,writeFile} from 'node:fs/promises';
-          import {createHash} from 'node:crypto';import assert from 'node:assert/strict';
+          import {readFile,writeFile} from 'node:fs/promises';import {createHash} from 'node:crypto';import assert from 'node:assert/strict';
           const base='https://nihongo-discovery-v2-20260831.vercel.app',hash=b=>createHash('sha256').update(b).digest('hex'),expected=new Map();
-          for(const [path,file] of [['/','index.html'],['/index.html','index.html'],['/companion.html','companion.html'],['/?view=nhk','index.html']]){
-            const body=await readFile('dist/'+file);expected.set(path,hash(body));
-            for(const m of body.toString().matchAll(/(?:src|href)="(\/assets\/[^"<>]+\.(?:js|css))"/g))expected.set(m[1],hash(await readFile('dist'+m[1])));
-          }
+          for(const [path,file] of [['/','index.html'],['/index.html','index.html'],['/companion.html','companion.html'],['/?view=nhk','index.html']]){const b=await readFile('dist/'+file);expected.set(path,hash(b));for(const m of b.toString().matchAll(/(?:src|href)="(\/assets\/[^"<>]+\.(?:js|css))"/g))expected.set(m[1],hash(await readFile('dist'+m[1])));}
           for(const path of ['/app-entry.js','/sw.js','/manifest.webmanifest','/ambient/immersion03/manifest.json'])expected.set(path,hash(await readFile('dist'+path)));
-          let matched=false,last='';
-          for(let attempt=0;attempt<40;attempt++){
-            try{for(const [path,digest] of expected){const r=await fetch(base+path,{cache:'no-store',signal:AbortSignal.timeout(12000)});assert.equal(r.status,200,path);assert.equal(hash(Buffer.from(await r.arrayBuffer())),digest,path);}matched=true;break;}
-            catch(e){last=e.message;await new Promise(r=>setTimeout(r,5000));}
-          }
-          assert.ok(matched,last);await writeFile('artifacts/desktop04/production-assets.json',JSON.stringify({ok:true,source:process.env.GITHUB_SHA,base,verifiedAt:new Date().toISOString(),paths:[...expected.keys()]},null,2));
+          let matched=false,last='';for(let attempt=0;attempt<40;attempt++){try{for(const [path,digest]of expected){const r=await fetch(base+path,{cache:'no-store',signal:AbortSignal.timeout(12000)});assert.equal(r.status,200,path);assert.equal(hash(Buffer.from(await r.arrayBuffer())),digest,path);}matched=true;break;}catch(e){last=e.message;await new Promise(r=>setTimeout(r,5000));}}
+          assert.ok(matched,last);await writeFile('artifacts/desktop04/production-assets.json',JSON.stringify({ok:true,source:process.env.GITHUB_SHA,base,verifiedAt:new Date().toISOString(),files:[...expected].map(([path,sha256])=>({path,sha256}))},null,2));
           JS
-          DESKTOP04_BASE=https://nihongo-discovery-v2-20260831.vercel.app DESKTOP04_OUT=artifacts/desktop04-production node scripts/desktop04/browser.mjs
-      - name: Record exact verification outcome and commit only accepted UI source
+          DESKTOP04_BASE=https://nihongo-discovery-v2-20260831.vercel.app DESKTOP04_OUT=artifacts/desktop04-production node scripts/desktop04/acceptance.mjs
+      - name: Record outcome and commit only fully accepted application changes
         if: always()
         env:
           PREPARE: ${{ steps.prepare.outcome }}
@@ -91,28 +85,27 @@ jobs:
         run: |
           mkdir -p docs/qa artifacts/desktop04
           node --input-type=module <<'JS'
-          import {readFile,writeFile} from 'node:fs/promises';
-          const read=async p=>JSON.parse(await readFile(p,'utf8'));
+          import {readFile,writeFile} from 'node:fs/promises';const read=async p=>JSON.parse(await readFile(p,'utf8'));
           const tests=(await readFile('artifacts/desktop04/tests.log','utf8').catch(()=>'' )).replace(/\u001b\[[0-9;]*m/g,'');
-          const tail=async p=>(await readFile(p,'utf8').catch(()=>'' )).replace(/\u001b\[[0-9;]*m/g,'').slice(-7000);
-          const stages=Object.fromEntries(['PREPARE','SOURCE','REGRESSION','DESKTOP','PUBLISHED'].map(k=>[k,process.env[k]||'not_run']));
-          const ok=['PREPARE','SOURCE','REGRESSION','DESKTOP'].every(k=>stages[k]==='success')&&(process.env.GITHUB_REF_NAME!=='nihongo-vercel'||stages.PUBLISHED==='success');
-          const report={ok,release:'DESKTOP04',source:process.env.GITHUB_SHA,runId:process.env.GITHUB_RUN_ID,branch:process.env.GITHUB_REF_NAME,stages,testsPassed:Number(tests.match(/Tests\s+(\d+) passed/)?.[1]||0),browser:await read('artifacts/desktop04-browser/result.json').catch(()=>null),public:await read('artifacts/desktop04/production-assets.json').catch(()=>null),productionBrowser:await read('artifacts/desktop04-production/result.json').catch(()=>null),physicalIPhoneTested:false,voiceAndTeacherProvider:'mocked; transport/backend unchanged',diagnostics:ok?{}:{typecheck:await tail('artifacts/desktop04/typecheck.log'),tests:await tail('artifacts/desktop04/tests.log'),native:await tail('artifacts/desktop04/native-mic.log'),fiveWidths:await tail('artifacts/desktop04/five-width.log'),teacher:await tail('artifacts/desktop04/teacher02.log'),immersion:await tail('artifacts/desktop04/immersion.log'),desktop:await tail('artifacts/desktop04/desktop-browser.log')},completedAt:new Date().toISOString()};
+          const tail=async p=>(await readFile(p,'utf8').catch(()=>'' )).replace(/\u001b\[[0-9;]*m/g,'').slice(-6500);
+          const stages=Object.fromEntries(['PREPARE','SOURCE','REGRESSION','DESKTOP','PUBLISHED'].map(k=>[k,process.env[k]||'not_run']));const ok=['PREPARE','SOURCE','REGRESSION','DESKTOP'].every(k=>stages[k]==='success')&&(process.env.GITHUB_REF_NAME!=='nihongo-vercel'||stages.PUBLISHED==='success');
+          const report={ok,release:'DESKTOP04',source:process.env.GITHUB_SHA,runId:process.env.GITHUB_RUN_ID,branch:process.env.GITHUB_REF_NAME,stages,testsPassed:Number(tests.match(/Tests\s+(\d+) passed/)?.[1]||0),browser:await read('artifacts/desktop04-browser/result.json').catch(()=>null),public:await read('artifacts/desktop04/production-assets.json').catch(()=>null),productionBrowser:await read('artifacts/desktop04-production/result.json').catch(()=>null),physicalIPhoneTested:false,voiceAndTeacherProvider:'mocked in UI tests; backend and speech transport unchanged',sound:'actual WebAudio offline-rendered envelopes and opt-in UI; not human listening evaluation',diagnostics:ok?{}:{typecheck:await tail('artifacts/desktop04/typecheck.log'),tests:await tail('artifacts/desktop04/tests.log'),native:await tail('artifacts/desktop04/native-mic.log'),fiveWidths:await tail('artifacts/desktop04/five-width.log'),teacher:await tail('artifacts/desktop04/teacher02.log'),immersion:await tail('artifacts/desktop04/immersion.log'),desktop:await tail('artifacts/desktop04/desktop-browser.log')},completedAt:new Date().toISOString()};
           await writeFile('docs/qa/HITOKOTO_DESKTOP04_STATUS.json',JSON.stringify(report,null,2)+'\n');await writeFile('artifacts/desktop04/report.json',JSON.stringify(report,null,2));console.log('DESKTOP04_OUTCOME',JSON.stringify(report));
           JS
           git fetch origin "$GITHUB_REF_NAME"
           if [ "$(git rev-parse origin/$GITHUB_REF_NAME)" = "$GITHUB_SHA" ]; then
             git config user.name 'Sol supervisor'
             git config user.email '331004814@qq.com'
-            if [ "$PREPARE" = success ] && [ "$SOURCE" = success ] && [ "$REGRESSION" = success ] && [ "$DESKTOP" = success ] && [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then
-              git add src/companion/CompanionApp.tsx src/companion/WrittenNoteCard.tsx src/companion/main.tsx src/companion/desktopNotes.ts src/companion/desktopNotes.test.ts src/companion/desktopFocus.css src/immersion/DesktopAtmosphere.tsx src/immersion/SelectionStudyLayer.tsx
-            fi
+            if [ "$PREPARE" = success ] && [ "$SOURCE" = success ] && [ "$REGRESSION" = success ] && [ "$DESKTOP" = success ] && [ "$GITHUB_REF_NAME" = hitokoto-desktop-focus04-20260911 ]; then git add src; fi
             git add docs/qa/HITOKOTO_DESKTOP04_STATUS.json
-            if ! git diff --cached --quiet; then
-              git commit -m 'Record Desktop04 verification; include UI changes only after complete acceptance'
-              git push origin HEAD:"$GITHUB_REF_NAME"
-            fi
+            if ! git diff --cached --quiet; then git commit -m 'Record Desktop04 acceptance; include application integration only after all gates pass';git push origin HEAD:"$GITHUB_REF_NAME";fi
           fi
+          git rev-parse HEAD > artifacts/desktop04/tested-source.txt
+      - name: Export inspected source without dependencies or environment files
+        if: always()
+        run: |
+          tar --exclude='./node_modules' --exclude='./.git' --exclude='./artifacts' --exclude='./dist' --exclude='./.env*' -czf /tmp/desktop04-source.tgz .
+          cp /tmp/desktop04-source.tgz artifacts/desktop04/source.tgz
       - uses: actions/upload-artifact@v4
         if: always()
         with:
