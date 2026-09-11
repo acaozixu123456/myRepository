@@ -63,21 +63,22 @@ describe('real road geometry and disclosure',()=>{
 
 describe('service worker game/NHK shell separation',()=>{
   async function exercise(path:string,offline=false,code=200){
-    const handlers:Record<string,(event:any)=>void>={};const stored=new Map<string,Response>();stored.set('/',new Response('NHK'));
+    const handlers:Record<string,(event:any)=>void>={};const stored=new Map<string,Response>();stored.set('/',new Response('LAUNCH'));stored.set('/?view=nhk',new Response('NHK'));
     runInNewContext(readFileSync('public/sw.js','utf8'),{
       self:{location:{origin:'https://game.example'},addEventListener:(name:string,fn:any)=>{handlers[name]=fn;}},
       URL,Response,fetch:async()=>{if(offline)throw Error('offline');return new Response('GAME',{status:code,headers:{'Content-Type':'text/html'}});},
-      caches:{open:async()=>({put:async(k:string,v:Response)=>{stored.set(k,v);}}),match:async(k:string)=>stored.get(k)},
+      caches:{open:async()=>({put:async(k:string,v:Response)=>{stored.set(k,v);},match:async(k:string)=>stored.get(k)?.clone()}),match:async(k:string)=>stored.get(k)?.clone()},
     });
     let response:Promise<Response>|undefined;handlers.fetch({request:{url:'https://game.example'+path,method:'GET',mode:'navigate'},respondWith:(p:Promise<Response>)=>{response=p;}});
     const r=await response!;await Promise.resolve();return{stored,r};
   }
-  it('does not replace the NHK shell with game HTML',async()=>{
-    const {stored}=await exercise('/explore.html?qa=1');expect(await stored.get('/')!.text()).toBe('NHK');expect(await stored.get('/explore.html')!.text()).toBe('GAME');
+  it('does not replace the NHK shell or launcher with game HTML',async()=>{
+    const {stored}=await exercise('/explore.html?qa=1');expect(await stored.get('/')!.text()).toBe('LAUNCH');expect(await stored.get('/?view=nhk')!.text()).toBe('NHK');expect(await stored.get('/explore.html')!.text()).toBe('GAME');
   });
   it('does not return unrelated NHK HTML when game is unavailable offline',async()=>{const {r}=await exercise('/explore.html',true);expect(r.status).toBe(503);});
-  it('keeps existing NHK offline fallback and rejects error-response caching',async()=>{
-    expect(await(await exercise('/',true)).r.text()).toBe('NHK');
+  it('keeps explicit NHK offline fallback and rejects error-response caching',async()=>{
+    expect(await(await exercise('/?view=nhk',true)).r.text()).toBe('NHK');
+    expect(await(await exercise('/',true)).r.text()).toBe('LAUNCH');
     expect((await exercise('/explore.html',false,500)).stored.has('/explore.html')).toBe(false);
   });
 });
