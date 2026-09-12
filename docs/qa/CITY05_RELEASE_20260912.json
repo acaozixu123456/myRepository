@@ -1,0 +1,47 @@
+{
+  "release": "CITY05",
+  "status": "published_and_runtime_verified",
+  "fullVisualRequirementMet": false,
+  "productionUrl": "https://nihongo-discovery-v2-20260831.vercel.app/",
+  "publishedCommit": "07eb0db7d4a1059163a8ecdef987abbb0e6349cf",
+  "acceptedDevelopmentCommit": "23dcd7805aad3f145ccea396719c036e25c41fb2",
+  "pullRequest": 12,
+  "productionRun": 34662214405,
+  "productionArtifact": 10288006260,
+  "artifactSha256": "3de6d02e8bb2bdd7ecb773e06bcec5fc2b224835b6b9d42a192f6ac68f5c20c9",
+  "resourceHashesVerifiedAt": "2026-09-12T00:43:35.719Z",
+  "completedAt": "2026-09-12T00:44:34.794Z",
+  "checks": {
+    "unitTestsPassed": 724,
+    "typecheck": "passed",
+    "build": "passed",
+    "existingVoiceHintsTeacherSelectionRegression": "passed_in_CITY05_gate",
+    "productionHtmlScriptStyleImageAndMusicHashes": "passed",
+    "productionSceneSwitchingAndRealCanvasPixelChange": "passed",
+    "actualMp3DecodingAndPlayback": "passed",
+    "microphoneHardMuteAndJapaneseVoiceDucking": "passed",
+    "rapidSceneSwitchLatestWins": "passed",
+    "oneMusicPlayerAndOneVoicePeer": "passed",
+    "reducedMotion": "passed",
+    "backendModelAuthenticationAndLearningStorageImplementations": "unchanged"
+  },
+  "browserMatrix": {
+    "engines": ["chromium", "webkit"],
+    "viewports": [{"width":1536,"height":960},{"width":390,"height":844}],
+    "testedScenes": ["skyport", "canyon", "harbor", "rail"],
+    "pageErrors": []
+  },
+  "implementation": {
+    "artwork": "Unobstructed portions of the four user-approved concept images; no new generated app mockups substituted",
+    "animation": "Time-driven independent canvas billboard material/tickers, flight approach/landing/dwell/takeoff/departure, traffic/train layers and particles; not a full 3D city or frame-by-frame environment film",
+    "music": "Four original locally synthesized instrumental loops; off until clicked; independent volume; silent during mic capture; reduced under Japanese playback",
+    "classicScene": "Original native4K rain-city choice remains available"
+  },
+  "unresolved": [
+    "Four new clean native2K/4K scene masters were not obtained. Current approved crops are approximately775-920px wide; large-screen detail does not meet the user's high-resolution requirement.",
+    "Static vehicles and architecture baked into the concept art do not all become animated; independent moving objects are composited over that art.",
+    "Physical iPhone behavior, human listening quality, and long live conversations with full scene motion were not tested.",
+    "One older continuity audit run34662214365 failed waiting for a hidden historical note before switching scenery to history; this was not counted as passing. CITY05's current reachability, five-consecutive-hint and desktop/phone regressions passed."
+  ],
+  "testScope": "Real hosted assets, actual canvas rendering and actual MP3 decoding; voice/teacher providers and mic events mocked in browser UI tests. Not an artistic-quality or learning-outcome certification."
+}
