@@ -6,9 +6,9 @@ if ! command -v node >/dev/null 2>&1; then
   read -k 1
   exit 1
 fi
-cd "$DIR/../.."
+cd "$DIR"
 echo "启动 HITOKOTO Codex Pro 通道…"
-node local/codex-bridge/server.mjs &
+node "$DIR/server.mjs" &
 PID=$!
 sleep 2
 open "http://127.0.0.1:43127/"
