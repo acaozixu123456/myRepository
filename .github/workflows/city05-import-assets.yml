@@ -1,0 +1,59 @@
+name: CITY05 approved illustration assets
+on:
+  push:
+    branches: [hitokoto-city05-20260911]
+    paths: [.github/workflows/city05-import-assets.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Import the seven authorized image resources only
+        run: |
+          python -m pip install --quiet Pillow
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import urllib.request,io,json,hashlib
+          entries={
+            'skyport':([855,846],'https://lh7-rt.googleusercontent.com/docsz/AD_4nXfBQFCbUMtBPRvo8d5xaWXvEBUo_dBfCN96xdNStgIdH0linE1C20hNP4y4kptIWq4RoPzMoZY0x1F2SuPKt2VzQTWEMFUmsara0O-Lvh4Jp9FFSaaPpfFh4PiYZps_tmM4HDoL9xXsPvi-465j_SDqoxHgnSIErrNgyNs4ShFeNjK2=s2048?key=5R_RIxjP9EtMbAAHsGI6Qw'),
+            'canyon':([775,847],'https://lh7-rt.googleusercontent.com/docsz/AD_4nXdBRPsTmbth3P10gmcmlPreKOhIKn-fy3D10059JPRzj1lKNp3vLRyn3FKXWyarnFoxqgm0ZA4N-oeEZwFeq5ZwWKeS-GnuaBJ2IAS5CDf26r_QCDTlafVPjfUbajOLVayVtqrIg-sEy92NEA-PVcYBAppP8PzeobiAHOrNK11RU5o9SAY=s2048?key=5R_RIxjP9EtMbAAHsGI6Qw'),
+            'harbor':([920,847],'https://lh7-rt.googleusercontent.com/docsz/AD_4nXdzR0eBAYB1KKEuQKM13LmqEQLTXxyRLN8uLQZPQuDQxu-tk6wJLqxssCgF2-4T1PXS3AvAF0ov6fagaJybhqyz4G52Cl2ARXl7fyF_TGPsJi2EoImu_hbfevvK9bZTEtju_sk9x_iWSbbo58igG3Xy4w2c7qppdiIC3dXqb72n2rxW=s2048?key=5R_RIxjP9EtMbAAHsGI6Qw'),
+            'rail':([885,847],'https://lh7-rt.googleusercontent.com/docsz/AD_4nXehqSPjFz8H-vb7D5wYLP8m3qTlb603zsJBNnV36bmImZv_N164VA8qcxUo4yXwbN_UZTBoZkPKVmPjqgMomGTgyqD0HkuwOZ4AklvTep36hIIZQAaOAYOD9H_aquJ8PRJO6-VyUrjlgzL2O9RI9oatvWtJRELld8vsQuPF4VTs4Akl-dc=s2048?key=5R_RIxjP9EtMbAAHsGI6Qw'),
+            'av-sport':([164,62],'https://lh7-rt.googleusercontent.com/docsz/AD_4nXdT3ZtyNlEQKl8Bi4-4HzfDfNkT1WM63NLVuv6Qkxmo2CsIpOS3lqWD4QvmYYQOxEKa_M4mbpa5bryd9xMKWKXyRjnJfuTQC65DNkPXbQ4lvw84qO65Afwxc9wFgGTWswZCbkVsfHycpWl_7ry9gvSqEr8d74q7ga_85aPG-Gi0_tM1u9g=s2048?key=5R_RIxjP9EtMbAAHsGI6Qw'),
+            'av-cargo':([343,128],'https://lh7-rt.googleusercontent.com/docsz/AD_4nXfTy2Ra7AWe4-7p_o6FEWbQqsJvUMikbIjXHKYkyml7fOzzhh6J2-rfREF8FTaulT5j-lRNPczy60TT521z4DvB6Kq5q8qsnXMQDmG6-Ym6LAPtS5xh10dpJDycCSaugpNfigke98v3W5-6zyNMIJvPpjck4mcTDA5hiVAerRVJ7Xgp=s2048?key=5R_RIxjP9EtMbAAHsGI6Qw'),
+            'maglev':([304,28],'https://lh7-rt.googleusercontent.com/docsz/AD_4nXdJdIJyQSRfdJiwcmbNISQr_HX-5iFAbIOJkxjACVIjiwApverndjx45uZYDM5fffFDCX2ndunRX0u5EgMFVlCCKqX2TZMZrd0OQOVRHLiktH8baHNmPi10W5un7nb-MG1lFsD4VN__Db0cqFmdBinct4bCTtGVKgbWISN1owYe3WMswdQ=s2048?key=5R_RIxjP9EtMbAAHsGI6Qw')
+          }
+          out=Path('public/city05');out.mkdir(parents=True,exist_ok=True)
+          report={'release':'city05-20260911','artwork':'Native-resolution crops of user-approved UI concepts. Not native4K; moving sprites are separate photographic cutouts.','scenes':{},'animatedSprites':{}}
+          for name,(size,url) in entries.items():
+            data=urllib.request.urlopen(url,timeout=45).read();im=Image.open(io.BytesIO(data));assert list(im.size)==size,(name,im.size,size)
+            dst=out/(name+'.webp');im.save(dst,lossless=True,method=6)
+            value={'nativeSize':size,'upscaled':False,'path':'/city05/'+dst.name,'sha256':hashlib.sha256(dst.read_bytes()).hexdigest()}
+            if name in ['skyport','canyon','harbor','rail']:
+              value['sourceSize']=[1672,941];report['scenes'][name]=value
+              thumb=im.copy();thumb.thumbnail((360,360));thumb.save(out/(name+'-thumb.webp'),quality=88,method=6)
+            else:
+              assert 'A' in im.getbands(),name+' requires transparency';report['animatedSprites'][name]=value
+          (out/'provenance.json').write_text(json.dumps(report,indent=2)+'\n')
+          print('Verified seven images; original crop dimensions preserved, no 4K claim.')
+          PY
+      - name: Commit this release-owned artwork to the working branch only
+        run: |
+          git config user.name 'Sol supervisor'
+          git config user.email '331004814@qq.com'
+          git add public/city05
+          git commit -m 'Import four approved native illustration crops and photographic motion sprites'
+          git fetch origin hitokoto-city05-20260911
+          git rebase origin/hitokoto-city05-20260911
+          git push origin HEAD:hitokoto-city05-20260911
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: city05-approved-artwork
+          path: public/city05/

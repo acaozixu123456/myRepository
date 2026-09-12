@@ -1,0 +1,119 @@
+{
+  "release": "city05-20260911",
+  "artwork": "Native-resolution crops of user-approved UI concepts. Not native4K; moving sprites are separate photographic cutouts.",
+  "scenes": {
+    "skyport": {
+      "nativeSize": [
+        855,
+        846
+      ],
+      "upscaled": false,
+      "path": "/city05/skyport.webp",
+      "sha256": "11efad43d8bcc3be74fa2cf21f317b2fbdd1ee1892fa7e67262f5062e300a21c",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "music": {
+        "bpm": 76,
+        "seconds": 50.526315789473685,
+        "originalComposition": true,
+        "maxAmplitude": 0.21903252601623535,
+        "path": "/city05/skyport.mp3",
+        "sha256": "3694cc8817892e23f6b2ced542cfc08c0e44d0b4100b319517aa6b41003c7d24"
+      }
+    },
+    "canyon": {
+      "nativeSize": [
+        775,
+        847
+      ],
+      "upscaled": false,
+      "path": "/city05/canyon.webp",
+      "sha256": "8c9c8e100f9258432314c437b6ba05224044b0d4255c41b03d67a460ac3c3dae",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "music": {
+        "bpm": 84,
+        "seconds": 45.714285714285715,
+        "originalComposition": true,
+        "maxAmplitude": 0.22005631029605865,
+        "path": "/city05/canyon.mp3",
+        "sha256": "9c6d62fb6cdd3fa17450ddecf87175087b9313ab1b158182adabb248d401f78c"
+      }
+    },
+    "harbor": {
+      "nativeSize": [
+        920,
+        847
+      ],
+      "upscaled": false,
+      "path": "/city05/harbor.webp",
+      "sha256": "00feae9702d88fe6de5ab01874b3afa273ced2a405e795f3037974d13bc5d2e7",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "music": {
+        "bpm": 68,
+        "seconds": 56.470588235294116,
+        "originalComposition": true,
+        "maxAmplitude": 0.2123975306749344,
+        "path": "/city05/harbor.mp3",
+        "sha256": "fe71ba9bfb68d7b7f208036f7d33922a6f68e5b0eed44fa6fc6e7805a10cb800"
+      }
+    },
+    "rail": {
+      "nativeSize": [
+        885,
+        847
+      ],
+      "upscaled": false,
+      "path": "/city05/rail.webp",
+      "sha256": "780bab1d82f1a447cca7f1040510776c53be5ab59af16f611b27c3c07ca722b1",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "music": {
+        "bpm": 88,
+        "seconds": 43.63636363636363,
+        "originalComposition": true,
+        "maxAmplitude": 0.25426483154296875,
+        "path": "/city05/rail.mp3",
+        "sha256": "6535b81e9dc96216cc579d7320518c12a210ffa31ee59ad96feccffb40af89a8"
+      }
+    }
+  },
+  "animatedSprites": {
+    "av-sport": {
+      "nativeSize": [
+        164,
+        62
+      ],
+      "upscaled": false,
+      "path": "/city05/av-sport.webp",
+      "sha256": "78dc612e30af2610367520acd22a7b0b9b06bafa691c66146cfda774f404e043"
+    },
+    "av-cargo": {
+      "nativeSize": [
+        343,
+        128
+      ],
+      "upscaled": false,
+      "path": "/city05/av-cargo.webp",
+      "sha256": "5e4d0c85bcf9ba42f0432e489ca0bceb6880e93a401b45062c81a30373afed64"
+    },
+    "maglev": {
+      "nativeSize": [
+        304,
+        28
+      ],
+      "upscaled": false,
+      "path": "/city05/maglev.webp",
+      "sha256": "737be08240666fd61c1ee427e8f2dc831793a97a1e88febd3cd707574126fd73"
+    }
+  }
+}
