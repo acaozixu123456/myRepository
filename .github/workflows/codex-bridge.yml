@@ -24,3 +24,14 @@ jobs:
           ! grep -R "platform.openai.com\|api.openai.com\|OPENAI_API_KEY" local/codex-bridge
           grep -q "apiFallback:false" local/codex-bridge/server.mjs
           grep -q "127.0.0.1" local/codex-bridge/server.mjs
+      - name: Package standalone user bundle
+        run: |
+          rm -rf artifacts/hitokoto-codex-bridge
+          mkdir -p artifacts/hitokoto-codex-bridge
+          cp local/codex-bridge/server.mjs local/codex-bridge/start-mac.command local/codex-bridge/start-windows.ps1 local/codex-bridge/README.md artifacts/hitokoto-codex-bridge/
+          chmod +x artifacts/hitokoto-codex-bridge/start-mac.command
+          printf '%s\n' 'This bundle uses the local ChatGPT-authenticated Codex app-server. It contains no API key.' > artifacts/hitokoto-codex-bridge/NO_API_KEY.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HITOKOTO-Codex-Pro-Bridge
+          path: artifacts/hitokoto-codex-bridge/
