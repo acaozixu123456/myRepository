@@ -1,15 +1,15 @@
 {
   "release": "neon-20260911",
-  "source": "86495dde168c09478cb410c9d8d0c2da15ef6169",
+  "source": "07eb0db7d4a1059163a8ecdef987abbb0e6349cf",
   "base": "https://nihongo-discovery-v2-20260831.vercel.app",
   "entry": "https://nihongo-discovery-v2-20260831.vercel.app/companion.html",
   "productionVerified": true,
-  "checkedAt": "2026-09-11T13:12:51.823Z",
+  "checkedAt": "2026-09-12T00:37:32.199Z",
   "assets": [
     {
-      "path": "/assets/companion-B1B0A94y.js",
-      "sha256": "ecb3d9045e3c73e481662490f47cc6ad452224c6ad95c98a442b069d6b04e814",
-      "bytes": 91585
+      "path": "/assets/companion-B3FjawLY.js",
+      "sha256": "704f06f94b8e6844b5c07a7705a81e501ae082ae45fd4d8604c492e70a505cc4",
+      "bytes": 108947
     },
     {
       "path": "/assets/modulepreload-polyfill-B5Qt9EMX.js",
@@ -17,8 +17,8 @@
       "bytes": 711
     },
     {
-      "path": "/assets/immersion-BJsWjTsy.js",
-      "sha256": "e7b99e32f9691edd2587062e5fb3dbfc04fd8ff87d8592781d7c65d5903b4490",
+      "path": "/assets/immersion-CcCT1TtK.js",
+      "sha256": "d231a08da2f8b9ec7317f1aa6cbd924665e919e8b5074f1e2f0d2351dcef85ac",
       "bytes": 258924
     },
     {
@@ -27,9 +27,9 @@
       "bytes": 15898
     },
     {
-      "path": "/assets/companion-C-fUsByB.css",
-      "sha256": "396181c627da20d8b0aa385522f2cfcbca4cbe367176e0f9aa15c7c0b2c6ce31",
-      "bytes": 57694
+      "path": "/assets/companion-C3sv19yN.css",
+      "sha256": "e6c457fe76066c7fd36c1513ca18b1f357df5c5f12b65bfa82dbb5bb30237ab3",
+      "bytes": 62791
     },
     {
       "path": "/art/hitokoto-partner.webp",
@@ -44,5 +44,5 @@
   ],
   "nhkEntryStatus": 200,
   "scope": "Exact production HTML/JS/CSS/art. Voice core and backend unchanged. Physical iPhone audio not tested.",
-  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34602950704"
+  "run": "https://github.com/acaozixu123456/myRepository/actions/runs/34662214413"
 }
