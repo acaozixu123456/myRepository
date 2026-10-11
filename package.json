@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "shots": "node tools/shots.mjs",
-    "showcase": "node tools/build-showcase.mjs"
+    "showcase": "node tools/build-showcase.mjs",
+    "app": "node tools/build-app.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
