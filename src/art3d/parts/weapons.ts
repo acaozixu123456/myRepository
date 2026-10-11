@@ -20,6 +20,132 @@ function swordObj(c: PartCtx, len = 1.05): THREE.Group {
   g.add(at(solid(sphere(0.06), toon(c.pal.trim), 0.012), 0, -0.2));
   return g;
 }
+
+/** 双刃剑与单刃短刀都用圆钝曲线收尖，薄片正面仍朝 +z。 */
+function bladeShape(length: number, width: number, curved = false): THREE.Shape {
+  const s = new THREE.Shape();
+  s.moveTo(-width * 0.43, 0);
+  if (curved) {
+    s.quadraticCurveTo(-width * 0.66, length * 0.54, -width * 0.24, length * 0.90);
+    s.quadraticCurveTo(-width * 0.10, length * 1.04, width * 0.05, length);
+    s.quadraticCurveTo(width * 0.73, length * 0.73, width * 0.47, length * 0.10);
+    s.quadraticCurveTo(width * 0.46, 0, width * 0.35, 0);
+  } else {
+    s.lineTo(-width * 0.40, length * 0.76);
+    s.quadraticCurveTo(-width * 0.34, length * 0.90, -width * 0.025, length);
+    s.quadraticCurveTo(0, length * 1.012, width * 0.025, length);
+    s.quadraticCurveTo(width * 0.34, length * 0.90, width * 0.40, length * 0.76);
+    s.lineTo(width * 0.43, 0);
+  }
+  s.closePath();
+  return s;
+}
+
+function swordGuard(paired: boolean): THREE.Shape {
+  const s = new THREE.Shape();
+  const w = paired ? 0.22 : 0.20;
+  s.moveTo(-w, -0.015);
+  s.quadraticCurveTo(-w - 0.025, 0.05, -w * 0.75, paired ? 0.092 : 0.07);
+  s.quadraticCurveTo(-w * 0.52, 0.06, -0.065, 0.035);
+  s.lineTo(0.065, 0.035);
+  s.quadraticCurveTo(w * 0.52, 0.06, w * 0.75, paired ? 0.092 : 0.07);
+  s.quadraticCurveTo(w + 0.025, 0.05, w, -0.015);
+  s.quadraticCurveTo(0, -0.055, -w, -0.015);
+  return s;
+}
+
+function outwardNeck(c: PartCtx, side: number, x: number, y: number): THREE.Mesh {
+  const curve = new THREE.CubicBezierCurve3(
+    new THREE.Vector3(0, 0.024, 0), new THREE.Vector3(0, 0.082, 0),
+    new THREE.Vector3(-side * x * 0.74, y - 0.055, 0), new THREE.Vector3(-side * x, y, 0),
+  );
+  const neck = solid(new THREE.TubeGeometry(curve, 10, 0.024, 8, false), toon(c.pal.trim), 0.008);
+  neck.name = 'outward-neck';
+  return neck;
+}
+
+function refinedBladeObj(c: PartCtx, kind: 'sword' | 'dualSwords' | 'dualBlades', side = 1): THREE.Group {
+  const g = new THREE.Group();
+  g.name = kind;
+  const short = kind === 'dualBlades', paired = kind === 'dualSwords';
+  const length = short ? 0.61 : paired ? (side > 0 ? 1.02 : 0.90) : 1.17;
+  const width = short ? 0.25 : paired ? 0.19 : 0.17;
+  // 握段穿掌心，缠带和圆首尾端露在肉垫两侧；不平移整个根物体。
+  g.add(at(solid(cyl(0.038, 0.041, 0.19, 10), toon(c.pal.sub), 0.010), 0, -0.05));
+  for (const y of [-0.105, 0.025]) g.add(at(solid(cyl(0.044, 0.044, 0.018, 10), toon(c.pal.main), 0.007), 0, y));
+  g.add(at(solid(sphere(0.071, 1, 0.75, 0.68, 12), toon(c.pal.trim), 0.011), 0, -0.20));
+  g.add(at(solid(sphere(0.024, 1, 1, 0.45, 10), toon(c.pal.main), 0.005), 0, -0.20, 0.045));
+
+  const top = new THREE.Group();
+  top.name = 'blade-mount';
+  const reach = short ? 0.275 : 0.25;
+  top.position.set(-side * reach, 0.080, 0);
+  g.add(outwardNeck(c, side, reach, 0.080));
+  // 肩外侧拔剑；副手镜像外倾，避免两剑在刘喵备脸前交叉。
+  top.rotation.set(0, side * 0.20, side * (short ? 0.43 : 0.55));
+  g.add(top);
+  const guard = short ? leafShape(0.085, 0.34) : swordGuard(paired);
+  const guardGeo = petal(guard, 0.065);
+  // 内侧护手收短，保留肩外的圆钝护翼，不为护手再折弯剑身。
+  guardGeo.scale(0.58, 1, 1); guardGeo.translate(-side * 0.045, 0, 0);
+  top.add(solid(guardGeo, toon(c.pal.trim), 0.011));
+  top.add(at(solid(cyl(0.068, 0.057, 0.060, 10), toon(c.pal.trim), 0.008), 0, 0.075));
+  top.add(at(solid(petal(bladeShape(length, width, short), 0.058), toon(STEEL), 0.013), 0, 0.104));
+  const glint = new THREE.Shape();
+  glint.moveTo(-width * 0.18, 0.05);
+  glint.quadraticCurveTo(-width * (short ? 0.40 : 0.18), length * 0.55, -width * 0.025, length * 0.93);
+  glint.quadraticCurveTo(width * 0.07, length * 0.73, width * 0.03, length * 0.12);
+  glint.closePath();
+  top.add(at(new THREE.Mesh(petal(glint, 0.008), toon('#f5faff')), 0, 0.104, 0.036));
+  if (!short) {
+    const edge = new THREE.Shape();
+    edge.moveTo(width * 0.16, 0.03); edge.lineTo(width * 0.30, 0.03);
+    edge.lineTo(width * 0.30, length * 0.70);
+    edge.quadraticCurveTo(width * 0.20, length * 0.81, width * 0.07, length * 0.87);
+    edge.lineTo(width * 0.16, 0.03);
+    top.add(at(new THREE.Mesh(petal(edge, 0.008), toon('#a9bdd6')), 0, 0.104, 0.035));
+    top.add(at(solid(sphere(0.029, 1, 0.80, 0.45, 10), toon(c.pal.trim), 0.006), 0, 0.19, 0.043));
+  }
+  return g;
+}
+
+function throwingKnifeObj(c: PartCtx, side: number, spread = 0): THREE.Group {
+  const g = new THREE.Group();
+  g.name = 'throwing-knife';
+  g.add(at(solid(cyl(0.033, 0.036, 0.146, 8), toon(c.pal.main), 0.0075), 0, -0.047));
+  for (const y of [-0.095, 0.014]) g.add(at(solid(cyl(0.038, 0.038, 0.015, 8), toon(c.pal.sub), 0.006), 0, y));
+  const ring = solid(new THREE.TorusGeometry(0.035, 0.012, 6, 12), toon(c.pal.trim), 0.007);
+  g.add(at(ring, 0, -0.168));
+  const blade = new THREE.Group();
+  blade.name = 'knife-blade-mount';
+  blade.position.set(-side * 0.30, 0.070, 0);
+  blade.rotation.set(0, side * 0.18, side * 0.38 + spread);
+  blade.add(solid(sphere(0.082, 1, 0.27, 0.60, 12), toon(c.pal.trim), 0.008));
+  blade.add(at(solid(petal(bladeShape(0.65, 0.18), 0.048), toon(STEEL), 0.011), 0, 0.02));
+  const glint = new THREE.Shape();
+  glint.moveTo(-0.022, 0.075); glint.lineTo(-0.017, 0.40);
+  glint.quadraticCurveTo(-0.014, 0.54, 0, 0.62);
+  glint.lineTo(0.015, 0.085); glint.closePath();
+  blade.add(at(new THREE.Mesh(petal(glint, 0.006), toon('#f5faff')), 0, 0.02, 0.031));
+  g.add(outwardNeck(c, side, 0.30, 0.070));
+  g.add(blade);
+  return g;
+}
+
+function knivesObj(c: PartCtx): THREE.Object3D {
+  const main = throwingKnifeObj(c, 1);
+  main.name = 'knives';
+  const off = new THREE.Group();
+  off.name = 'knife-reserve';
+  // 两柄飞刀的握段都穿过副手掌球，不把刀片悬浮在头旁。
+  for (const side of [-1, 1]) {
+    const knife = throwingKnifeObj(c, -1, side * 0.23);
+    knife.position.set(side * 0.032, 0, side * 0.010);
+    off.add(knife);
+  }
+  main.userData.offhand = off;
+  return main;
+}
 function pole(c: PartCtx, len: number, head: THREE.Object3D, col = WOOD): THREE.Group {
   const g = new THREE.Group();
   g.add(at(solid(cyl(0.04, 0.04, len), toon(col), 0.015), 0, len * 0.3));
@@ -69,6 +195,15 @@ function petal(shape: THREE.Shape, depth = 0.032): THREE.ExtrudeGeometry {
   return geo;
 }
 
+function leafTipShape(length: number, width: number): THREE.Shape {
+  const tip = new THREE.Shape();
+  tip.moveTo(-width * 0.34925, length * 0.7646);
+  tip.quadraticCurveTo(-width * 0.22, length * 0.9065, 0, length);
+  tip.quadraticCurveTo(width * 0.22, length * 0.9065, width * 0.34925, length * 0.7646);
+  tip.quadraticCurveTo(0, length * 0.715, -width * 0.34925, length * 0.7646);
+  return tip;
+}
+
 function herbsObj(c: PartCtx): THREE.Group {
   const g = new THREE.Group();
   g.name = 'herbs';
@@ -93,6 +228,7 @@ function herbsObj(c: PartCtx): THREE.Group {
     leaf.position.set(-0.32, 0.18, z * 0.4);
     leaf.rotation.set(0.12, angle * 0.12, angle + 0.20);
     leaf.add(solid(petal(leafShape(length, width)), toon(i % 2 ? '#78b854' : '#4d9650'), 0.01));
+    leaf.add(new THREE.Mesh(petal(leafTipShape(length, width), 0.046), toon(i % 2 ? '#a5ce70' : '#327746')));
     // 一道浅叶脉既表现厚度，也让小尺寸下不再像几根锥体。
     leaf.add(at(new THREE.Mesh(cyl(0.006, 0.003, length * 0.78, 6), toon('#bed78a')), 0, length * 0.40, 0.024));
     g.add(leaf);
@@ -137,25 +273,27 @@ function fanObj(c: PartCtx): THREE.Group {
   handle.add(new THREE.LineCurve3(new THREE.Vector3(0, -0.08, 0), new THREE.Vector3(0, 0.01, 0)));
   handle.add(new THREE.QuadraticBezierCurve3(new THREE.Vector3(0, 0.01, 0), new THREE.Vector3(-0.10, 0.12, 0), new THREE.Vector3(-0.38, 0.24, 0)));
   g.add(solid(new THREE.TubeGeometry(handle, 16, 0.025, 8, false), toon(c.pal.sub), 0.008));
+  const face = new THREE.Group();
+  face.name = 'fan-face';
+  face.position.set(-0.38, 0.24, 0);
+  // z 轴只改扇面内的轮廓；叠加少量 x 倾角才使 strike 时露出羽片正面。
+  // 以扇骨汇合点为轴，保留掌心握段与弯颈原位。
+  face.rotation.set(0.28, 0, Math.PI / 12);
+  g.add(face);
   const angles = [-1.07, -0.72, -0.36, 0, 0.36, 0.72, 1.07];
   angles.forEach((angle) => {
     const length = 0.66 - Math.abs(angle) * 0.12, width = 0.20;
     const feather = new THREE.Group();
     feather.name = 'fan-feather';
-    feather.position.set(-0.38, 0.24, -Math.abs(angle) * 0.018);
+    feather.position.set(0, 0, -Math.abs(angle) * 0.018);
     feather.rotation.set(0.22, angle * 0.14, angle + 0.60);
     feather.add(solid(petal(leafShape(length, width)), toon('#f6efe0'), 0.01));
     // 取梭形上段的同一条贝塞尔曲线，羽尖色块紧贴羽片，不伸出轮廓。
-    const tip = new THREE.Shape();
-    tip.moveTo(-width * 0.34925, length * 0.7646);
-    tip.quadraticCurveTo(-width * 0.22, length * 0.9065, 0, length);
-    tip.quadraticCurveTo(width * 0.22, length * 0.9065, width * 0.34925, length * 0.7646);
-    tip.quadraticCurveTo(0, length * 0.715, -width * 0.34925, length * 0.7646);
-    feather.add(new THREE.Mesh(petal(tip, 0.046), toon(c.pal.main)));
+    feather.add(new THREE.Mesh(petal(leafTipShape(length, width), 0.046), toon(c.pal.main)));
     feather.add(at(new THREE.Mesh(cyl(0.006, 0.004, length * 0.70, 6), toon(c.pal.trim)), 0, length * 0.36, 0.024));
-    g.add(feather);
+    face.add(feather);
   });
-  g.add(at(solid(sphere(0.09, 1, 0.72, 0.45, 12), toon(c.pal.trim), 0.012), -0.38, 0.24, 0.02));
+  face.add(at(solid(sphere(0.09, 1, 0.72, 0.45, 12), toon(c.pal.trim), 0.012), 0, 0, 0.02));
   g.add(at(solid(cyl(0.045, 0.045, 0.025, 10), toon(c.pal.trim), 0.008), 0, -0.08));
   return g;
 }
@@ -164,9 +302,9 @@ const mk = (f: (c: PartCtx) => THREE.Object3D): PartBuilder => f;
 const withOff = (main: THREE.Object3D, off: THREE.Object3D): THREE.Object3D => { main.userData.offhand = off; return main; };
 
 export const WEAPON: Record<string, PartBuilder> = {
-  sword: mk((c) => swordObj(c)),
-  dualSwords: mk((c) => withOff(swordObj(c, 0.95), swordObj(c, 0.95))),
-  dualBlades: mk((c) => withOff(swordObj(c, 0.6), swordObj(c, 0.6))),
+  sword: mk((c) => refinedBladeObj(c, 'sword')),
+  dualSwords: mk((c) => withOff(refinedBladeObj(c, 'dualSwords'), refinedBladeObj(c, 'dualSwords', -1))),
+  dualBlades: mk((c) => withOff(refinedBladeObj(c, 'dualBlades'), refinedBladeObj(c, 'dualBlades', -1))),
   dagger: mk((c) => swordObj(c, 0.45)),
   glaive: mk((c) => pole(c, 2.1, bladeHead(c, 0.34, 0.8, true))),
   spear: mk((c) => pole(c, 2.2, (() => { const t = solid(new THREE.ConeGeometry(0.1, 0.5, 4), toon(STEEL), 0.015); t.position.y = 0.2; const g = new THREE.Group(); g.add(t); return g; })())),
@@ -176,7 +314,7 @@ export const WEAPON: Record<string, PartBuilder> = {
   staff: mk((c) => pole(c, 2.0, at(solid(sphere(0.14), toon(c.pal.trim), 0.02), 0, 0.1), '#7a5a3a')),
   whip: mk((c) => pole(c, 1.0, at(solid(new THREE.TorusGeometry(0.3, 0.03, 6, 16), toon('#4a3a30'), 0.012), 0.3, 0.1))),
   hooks: mk((c) => withOff(pole(c, 0.9, bladeHead(c, 0.2, 0.5, true)), pole(c, 0.9, bladeHead(c, 0.2, 0.5, true)))),
-  knives: mk((c) => swordObj(c, 0.4)),
+  knives: mk(knivesObj),
   bow: mk((c) => bowObj(c)),
   crossbow: mk((c) => { const g = simpleBowObj(c); g.scale.setScalar(0.7); return g; }),
   slingshot: mk((c) => { const g = new THREE.Group(); g.add(at(solid(cyl(0.04, 0.04, 0.4), toon(WOOD), 0.012), 0, 0.1)); for (const s of [1, -1]) { const a = solid(cyl(0.035, 0.035, 0.3), toon(WOOD), 0.012); a.position.set(s * 0.09, 0.4, 0); a.rotation.z = -s * 0.4; g.add(a); } void c; return g; }),
