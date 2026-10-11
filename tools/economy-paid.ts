@@ -11,7 +11,7 @@ import { DAILY_TRIES, DUNGEONS, TIERS, dungeonStart, dungeonSweep, dungeonWin, t
 import { COST, POOLS, pull } from '../src/game/gacha';
 import { YARN_MINUTES, useYarn } from '../src/game/inventory';
 import { DAY, NPCS, npcProgress } from '../src/game/npc';
-import { VIP_STEPS, buyCard, claimCard, claimVip, ensurePay, vipLevel } from '../src/game/premium';
+import { MOON_PER_YUAN, VIP_STEPS, buyCard, claimCard, claimVip, ensurePay, vipLevel } from '../src/game/premium';
 import { claim, isClaimable, isQuestAvailable, rollover, track } from '../src/game/quests';
 import { ARENA_FREE, ARENA_START, FRIEND_MAX, addFriend, arenaFinish, arenaStart, ensureSocial, npcRating, visitFriend } from '../src/game/social';
 import { applyGain, claimIdle, getStage, idleCapHours, idleRate, paceLevel, recommendedPowerOf, tickIdle, winReward } from '../src/game/stage';
@@ -329,6 +329,15 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
       const dungeon = valueIncome(s.averageSources.dungeon).pricedFish + exp(s.averageSources.dungeon);
       const all = s.valuation.pricedFish + exp(s.average);
       return [s.ordinal, c.level, n(price), pct(dungeon / all)];
+    })),
+    '#### 完整口径裁决（EXP 与月光珠）',
+    '裁决：①EXP 采用上面的“升级陪同鱼干”换算，计入完整收入；②月光珠是付费货币，**不折算成鱼干**，改以人民币计：10 月光珠 = 1 元（MOON_PER_YUAN），只用来回答“免费玩家每天能攒多少、相当于多少钱”。下表给出含 EXP 的完整免费收入，以及免费 / VIP12 两档的月光珠日产出和折合元。',
+    table(['快照关数', '含EXP的免费日收入（鱼干当量）', '免费月光珠/日', '折合元/日', 'VIP12 月光珠/日', '折合元/日'], free.map((s) => {
+      const c = r.costs.find((x) => x.ordinal === s.ordinal)!;
+      const price = levelUpFishCost(c.level) / expToNext(c.level);
+      const v12 = r.scenarios.find((p) => p.ordinal === s.ordinal && p.baseVip === 12 && !p.monthly)!;
+      const moon = s.average.moon ?? 0, moon12 = v12.average.moon ?? 0;
+      return [s.ordinal, n(s.valuation.pricedFish + (s.average.exp ?? 0) * price), n(moon), n(moon / MOON_PER_YUAN), n(moon12), n(moon12 / MOON_PER_YUAN)];
     })),
     '按此口径，原 120 分钟折算下秘境约占全部免费收入的 14%–20%，低于 20%–35% 目标下沿；已裁决调为 150 分钟（见下表为 150 分钟的实测占比），仍偏低的快照留待后续观察。',
     '## 任务毛奖励上限',
