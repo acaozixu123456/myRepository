@@ -853,11 +853,11 @@ class Battle {
         if (s.id === 'burn' && this.hasBond(srcSide, '火烧赤壁')) dmg = Math.round(dmg * 1.3);
         const { hpLoss } = this.absorb(u, dmg);
         u.hp = Math.max(0, u.hp - hpLoss);
-        const killed = u.hp <= 0;
+        let killed = u.hp <= 0;
+        const saved = killed && this.flag(u, 'nine'); // 九命也能挡持续伤害：先结算再汇报，事件里不会出现“已死亡”
+        if (saved) { u.statuses = u.statuses.filter((x) => !STATUS_RULES[x.id]?.flags?.includes('nine')); u.hp = Math.max(1, Math.round(u.maxHp * 0.15)); killed = false; }
         this.push({ t: 'dot', dst: u.uid, id: s.id, amount: dmg, hp: u.hp, killed });
-        if (killed && this.flag(u, 'nine')) { // 九命也能挡持续伤害
-          u.statuses = u.statuses.filter((x) => !STATUS_RULES[x.id]?.flags?.includes('nine'));
-          u.hp = Math.max(1, Math.round(u.maxHp * 0.15));
+        if (saved) {
           this.push({ t: 'status', dst: u.uid, id: 'nine', op: 'remove', stacks: 0, src: s.src });
           this.push({ t: 'text', uid: u.uid, text: '九命！' });
         } else if (killed) { const src = this.units.find((x) => x.uid === s.src) ?? u; this.kill(u, src); }
