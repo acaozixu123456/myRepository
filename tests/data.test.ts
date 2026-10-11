@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { FACTIONS } from '../src/data/factions';
-import { HEROES } from '../src/data/heroes';
+import { HEROES, PREMIUM_HEROES, STANDARD_HEROES } from '../src/data/heroes';
 import { SKILLS } from '../src/data/skills';
 
 describe('hero data integrity', () => {
@@ -11,7 +11,9 @@ describe('hero data integrity', () => {
     }
   });
   it('hero ids are unique', () => {
-    expect(HEROES).toHaveLength(38);
+    expect(HEROES).toHaveLength(41);
+    expect(STANDARD_HEROES).toHaveLength(38);
+    expect(PREMIUM_HEROES).toHaveLength(3);
     expect(new Set(HEROES.map((h) => h.id)).size).toBe(HEROES.length);
   });
 });

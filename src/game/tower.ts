@@ -1,9 +1,10 @@
 // 爬塔：100 层，每层一场 5 对 5，只有首次通关有奖励。层数据由公式生成（确定性），可直接当 StageDef 交给战斗循环。
 import type { EnemySpawn, RewardDef, StageDef } from '../content/types';
 import { FACTION_ORDER } from '../data/factions';
-import { HEROES } from '../data/heroes';
+import { STANDARD_HEROES as HEROES } from '../data/heroes';
 import { paceLevel } from './stage';
 import type { PlayerState } from './state';
+import { rollover, track } from './quests';
 
 export const TOWER_FLOORS = 100;
 /** 一层大约相当于主线 1.3 关（100 层 ≈ 130 关） */
@@ -51,6 +52,8 @@ export function towerFloor(floor: number): StageDef {
 /** 通关结算：只有刷新最高层才发奖励，返回奖励（重复通关返回 null） */
 export function towerClear(s: PlayerState, floor: number): RewardDef | null {
   if (floor !== towerBest(s) + 1) return null;
+  rollover(s, Date.now());
   s.tower = { floor };
+  track(s, 'tower_clear');
   return towerReward(floor);
 }

@@ -1,6 +1,6 @@
 # 第二批猫猫设定与外观
 
-本批按 [Issue #29](https://github.com/acaozixu123456/myRepository/issues/29) 固定表交付十四只；名单与外观取舍已经 [Claude 统一答复](https://github.com/acaozixu123456/myRepository/issues/29#issuecomment-6106422652) 确认。首批二十四只加本批十四只，合计三十八只；蜀族本批四只，其中黄忠忠、马超超、姜喵维为 SR，六族现在均有 SR。
+本批按 [Issue #29](https://github.com/acaozixu123456/myRepository/issues/29) 固定表交付十四只；名单与外观取舍已经 [Claude 统一答复](https://github.com/acaozixu123456/myRepository/issues/29#issuecomment-6106422652) 确认。首批二十四只加本批十四只，常规名册 `STANDARD_HEROES` 合计三十八只；主线另有三只至尊 SP，全量 `HEROES` 为四十一只，SP 不计入本批或常规平衡样本。蜀族本批四只，其中黄忠忠、马超超、姜喵维为 SR，六族现在均有 SR。
 
 以下设定与 `src/data/heroes.ts` 一致。截图直接读取已注册英雄，头像沿游戏现有头像视窗，全身沿设定集完整视窗，均由原 `catSvg` 输出。SSR 使用银质镶边；SR 保留朴素装束，没有光眼或金光，马超的素色披风按 Issue 明确许可采用。
 

@@ -5,6 +5,7 @@ import type { Actor } from './actor';
 import type { Choreo } from './choreo';
 import { clamp, ease, hexA, lerp, mulberry, rad } from './util';
 import { SKILL_FX2 } from './skills2';
+import { SKILL_FX3 } from './skills3';
 
 export type SkillFx = (c: Choreo) => Promise<void>;
 type Dmg = Extract<BEvent, { t: 'damage' }>;
@@ -761,6 +762,7 @@ export const SKILL_FX: Record<string, SkillFx> = {
   'ult.herbMist': ultHerbMist,
   'ult.knifeStorm': ultKnifeStorm,
   ...SKILL_FX2,
+  ...SKILL_FX3,
 };
 
 export function defaultFx(e: Extract<BEvent, { t: 'act' }>): SkillFx {

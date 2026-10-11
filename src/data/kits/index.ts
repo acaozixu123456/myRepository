@@ -5,8 +5,9 @@ import { KITS_UR } from './ur';
 import { KITS_SSR } from './ssr';
 import { KITS_SR } from './sr';
 import { KITS_B2 } from './batch2';
+import { KITS_SP } from './sp';
 
-export const KITS: Record<string, Kit> = { ...KITS_UR, ...KITS_SSR, ...KITS_SR, ...KITS_B2 };
+export const KITS: Record<string, Kit> = { ...KITS_UR, ...KITS_SSR, ...KITS_SR, ...KITS_B2, ...KITS_SP };
 
 /** 没有手工设计技能组的猫猫（以及杂兵）使用的通用技能组，保证战斗引擎可以跑任何阵容 */
 export function genericKit(heroId: string): Kit {

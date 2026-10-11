@@ -482,12 +482,12 @@ export const KITS_B2: Record<string, Kit> = {
   man_shamoke: {
     heroId: 'man_shamoke',
     basic: {
-      id: 'sm_basic', name: '骨朵引风', fx: 'ranged.teal', target: enemy('back', 1),
+      id: 'smk_basic', name: '骨朵引风', fx: 'ranged.teal', target: enemy('back', 1),
       effects: [dmg(1.1), status('poison', 3, { snapAtk: 0.18 }), { t: 'when', cond: { c: 'teamCounter', key: 'totem', atLeast: 3 }, then: [status('poison', 3, { snapAtk: 0.18 })] }],
       desc: '对后排随机 1 名敌人造成 110% 攻击的物理伤害，后排空则选择前排；叠 1 层「毒瘴」。若此时己方团队图腾至少 3 层，再给原目标叠 1 层毒瘴。本次普攻贡献的图腾在收招后才增加。毒瘴每层在目标行动开始造成施加时 18% 自身攻击的持续伤害，最多 5 层，持续 3 次其行动结束，同名刷新保留较高攻击快照。骨朵指风向，叶包记药香。',
     },
     ultimate: {
-      id: 'sm_ult', name: '五溪送瘴', fx: 'ult.arrowVolley', target: enemy('random', 2),
+      id: 'smk_ult', name: '五溪送瘴', fx: 'ult.arrowVolley', target: enemy('random', 2),
       effects: [dmg(1.35), status('poison', 3, { stacks: 2, snapAtk: 0.18 }), { t: 'when', cond: { c: 'teamCounter', key: 'totem', atLeast: 3 }, then: [dmg(0.3)] }],
       desc: '随机选至多 2 名敌人，各造成 135% 攻击的物理伤害并叠 2 层「毒瘴」（施加时 18% 自身攻击的每层持续伤害，最多 5 层，持续 3 次目标行动结束，快照取较高值）。随后若己方团队图腾至少 3 层，对原来选中的存活目标各追加 30% 攻击的物理伤害；绝技不贡献普攻图腾。山风走远些，近处还留着骨朵。',
       levelMods: [
@@ -500,7 +500,7 @@ export const KITS_B2: Record<string, Kit> = {
       ],
     },
     passive: {
-      id: 'sm_passive', name: '图腾认风',
+      id: 'smk_passive', name: '图腾认风',
       desc: '自身直接伤害命中已有至少 3 层「毒瘴」的目标后，回复 6 点元气，每整轮最多 2 次；本次攻击之后才新叠的毒瘴不提前算。普攻与绝技读取己方全队图腾，与其他蛮猫共享；图腾达到召兽门槛后会按阵营机制清零。战纹可以左右不齐，图腾计数得看准。',
       passive: [{ on: 'onHit', cond: { c: 'status', id: 'poison', atLeast: 3, who: 'target' }, limit: { per: 'round', n: 2 }, effects: [energy(6, self)] }],
     },

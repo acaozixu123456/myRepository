@@ -5,8 +5,10 @@ import type { StageDef } from '../content/types';
 import { HERO_BY_ID } from '../data/heroes';
 import type { UnitSetup } from '../engine/types';
 import { heroGear } from './gear';
+import { vipLevel, vipPerks } from './premium';
 import { heroPower, newPlayer } from './state';
 import type { PlayerState, Resources } from './state';
+import { track } from './quests';
 
 export function getStage(chapter: number, index: number): StageDef | undefined {
   return CHAPTERS[chapter - 1]?.stages[index - 1];
@@ -108,9 +110,12 @@ export function applyGain(s: PlayerState, g: Gain) {
 /** 挂机速率（每分钟）：沿用 content/progression 的口径，按“两分钟完成一次关卡”折算 */
 export function idleRate(s: PlayerState): { fish: number; exp: number } {
   const st = getStage(s.stage.chapter, s.stage.index);
-  return st ? contentIdleRate(st.id) : { fish: 0, exp: 0 };
+  if (!st) return { fish: 0, exp: 0 };
+  const r = contentIdleRate(st.id);
+  const k = 1 + vipPerks(vipLevel(s)).idleRate; // VIP 加成
+  return { fish: Math.round(r.fish * k), exp: Math.round(r.exp * k) };
 }
-export const idleCapHours = (s: PlayerState) => idleCap(Math.min(80, s.level));
+export const idleCapHours = (s: PlayerState) => idleCap(Math.min(80, s.level)) + vipPerks(vipLevel(s)).idleCapHours;
 
 export function tickIdle(s: PlayerState, now = Date.now()) {
   const dtMin = Math.max(0, (now - s.idle.last) / 60000);
@@ -126,6 +131,7 @@ export function claimIdle(s: PlayerState): { fish: number; exp: number } {
   s.res.exp += got.exp;
   s.idle.fish = 0;
   s.idle.exp = 0;
+  if (got.fish > 0 || got.exp > 0) track(s, 'claim_idle');
   return got;
 }
 export type { Resources };

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { catSvg } from '../src/art/cat';
 import { GACHA_POOL_READINESS } from '../src/content/economy';
 import { FACTION_ORDER } from '../src/data/factions';
-import { HEROES, HERO_BY_ID } from '../src/data/heroes';
+import { HEROES as ALL_HEROES, HERO_BY_ID, PREMIUM_HEROES, STANDARD_HEROES as HEROES } from '../src/data/heroes';
 import { KITS } from '../src/data/kits';
 import { KITS_B2 } from '../src/data/kits/batch2';
 import { SKILLS } from '../src/data/skills';
@@ -52,6 +52,15 @@ describe('second batch hero acceptance', () => {
     }
     expect(HEROES.filter((h) => h.faction === 'shu' && h.rarity === 'SR')).toHaveLength(3);
     expect(Object.values(GACHA_POOL_READINESS).every((entry) => entry.ready)).toBe(true);
+  });
+
+  it('keeps the three mainline SP cats separate from the 38 standard cats', () => {
+    expect(ALL_HEROES).toHaveLength(41);
+    expect(PREMIUM_HEROES.map((h) => h.id).sort()).toEqual(['shu_pangmiaotong', 'wei_simamiyi', 'xian_changmiao']);
+    expect(PREMIUM_HEROES.every((h) => h.rarity === 'SP')).toBe(true);
+    expect(HEROES.every((h) => h.rarity !== 'SP')).toBe(true);
+    expect(new Set(ALL_HEROES.map((h) => h.id)).size).toBe(41);
+    expect(new Set([...HEROES, ...PREMIUM_HEROES].map((h) => h.id))).toEqual(new Set(ALL_HEROES.map((h) => h.id)));
   });
 
   it.each(ROSTER)('%s preserves the approved identity and complete Chinese profile', (id, name, origin, faction, rarity, role) => {

@@ -112,6 +112,26 @@ const ICONS: Record<string, Maker> = {
   swap: () => S(`<path d="M8 22 L44 22 L44 12 L58 26 L44 40 L44 30 L8 30 Z" fill="#8fd0ff" stroke="#2563a8" stroke-width="3" stroke-linejoin="round"/><path d="M56 42 L20 42 L20 32 L6 46 L20 60 L20 50 L56 50 Z" fill="#ffb25c" stroke="#b95f12" stroke-width="3" stroke-linejoin="round" transform="translate(0 -4)"/>`),
   close: () => S(`<path d="M14 14 L50 50 M50 14 L14 50" stroke="#fff" stroke-width="9" stroke-linecap="round"/>`),
   check: () => S(`<path d="M12 34 L26 48 L52 16" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`),
+  moon: () => {
+    const g = grad('#f4fbff', '#8fc2f4');
+    return S(`<circle cx="32" cy="32" r="24" fill="${g.ref}" stroke="#4a78b8" stroke-width="3"/><path d="M44 18 A18 18 0 1 0 44 46 A13 13 0 1 1 44 18 Z" fill="#ffffff" opacity=".85"/><circle cx="24" cy="24" r="3.2" fill="#fff"/><path d="M48 12 L50 17 L55 19 L50 21 L48 26 L46 21 L41 19 L46 17 Z" fill="#fff3a8" stroke="#e0a82e" stroke-width="1.6" stroke-linejoin="round"/>`, g.def);
+  },
+  crown: () => {
+    const g = grad('#fff0a0', '#e8a32a');
+    return S(`<path d="M8 44 L6 18 L22 30 L32 12 L42 30 L58 18 L56 44 Z" fill="${g.ref}" stroke="#8a5a10" stroke-width="3" stroke-linejoin="round"/><rect x="8" y="44" width="48" height="10" rx="3" fill="#f0b73c" stroke="#8a5a10" stroke-width="3"/><circle cx="32" cy="30" r="4" fill="#e8486e" stroke="#7a2038" stroke-width="2"/><circle cx="18" cy="49" r="2.4" fill="#8fd0ff"/><circle cx="32" cy="49" r="2.4" fill="#ff8aa8"/><circle cx="46" cy="49" r="2.4" fill="#8fd0ff"/>`, g.def);
+  },
+  chat: () => {
+    const g = grad('#d6f0ff', '#6fb4ee');
+    return S(`<path d="M8 14 L56 14 Q60 14 60 18 L60 40 Q60 44 56 44 L30 44 L18 56 L18 44 L8 44 Q4 44 4 40 L4 18 Q4 14 8 14 Z" fill="${g.ref}" stroke="#2f6aa8" stroke-width="3" stroke-linejoin="round"/><circle cx="20" cy="29" r="3.4" fill="#2f6aa8"/><circle cx="32" cy="29" r="3.4" fill="#2f6aa8"/><circle cx="44" cy="29" r="3.4" fill="#2f6aa8"/>`, g.def);
+  },
+  calendar: () => {
+    const g = grad('#fffaf0', '#f0e0bc');
+    return S(`<rect x="8" y="12" width="48" height="46" rx="7" fill="${g.ref}" stroke="#8a5a2a" stroke-width="3"/><path d="M8 24 L8 19 Q8 12 15 12 L49 12 Q56 12 56 19 L56 24 Z" fill="#e8648c" stroke="#a22a52" stroke-width="3" stroke-linejoin="round"/><rect x="18" y="6" width="6" height="12" rx="3" fill="#8a5a2a"/><rect x="40" y="6" width="6" height="12" rx="3" fill="#8a5a2a"/><path d="M20 38 L28 46 L44 30" fill="none" stroke="#55b24b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`, g.def);
+  },
+  trophy: () => {
+    const g = grad('#fff0a0', '#e8a32a');
+    return S(`<path d="M18 8 L46 8 L44 28 Q42 40 32 42 Q22 40 20 28 Z" fill="${g.ref}" stroke="#8a5a10" stroke-width="3" stroke-linejoin="round"/><path d="M18 14 Q6 14 8 24 Q10 32 20 32 M46 14 Q58 14 56 24 Q54 32 44 32" fill="none" stroke="#8a5a10" stroke-width="3"/><rect x="28" y="42" width="8" height="8" fill="#e8a32a" stroke="#8a5a10" stroke-width="3"/><rect x="18" y="50" width="28" height="8" rx="3" fill="#f0b73c" stroke="#8a5a10" stroke-width="3"/>`, g.def);
+  },
   spark: () => S(`<path d="M32 4 L38 26 L60 32 L38 38 L32 60 L26 38 L4 32 L26 26 Z" fill="#fff6c0" stroke="#e0a82e" stroke-width="3" stroke-linejoin="round"/>`),
 };
 

@@ -51,9 +51,9 @@ export function breakthroughCost(stage: number): GrowthCost {
 // 参数为目标星级；一星是招募时的初始星级，二至五星才需要升星。
 export function starUpShards(star: number): Record<Rarity, number> {
   requireInteger(star, 1, 5, '目标星级');
-  if (star === 1) return { SR: 0, SSR: 0, UR: 0 };
+  if (star === 1) return { SR: 0, SSR: 0, UR: 0, SP: 0 };
   const scale = Math.pow(2, star - 2);
-  return { SR: 20 * scale, SSR: 30 * scale, UR: 40 * scale };
+  return { SR: 20 * scale, SSR: 30 * scale, UR: 40 * scale, SP: 60 * scale };
 }
 
 // 参数为当前技能等级，升至下一技能等级；十级已经满级。
@@ -70,6 +70,7 @@ export const awakenCost: Record<Rarity, GrowthCost> = {
   SR: { fish: 40000, items: [{ id: 'awaken_jade', count: 2 }, { id: 'awaken_dew', count: 8 }] },
   SSR: { fish: 80000, items: [{ id: 'awaken_jade', count: 4 }, { id: 'awaken_dew', count: 16 }] },
   UR: { fish: 160000, items: [{ id: 'awaken_jade', count: 8 }, { id: 'awaken_dew', count: 32 }] },
+  SP: { fish: 320000, items: [{ id: 'awaken_jade', count: 12 }, { id: 'awaken_dew', count: 48 }] },
 };
 
 // 主城一级可存八小时，每五级增加一小时，八十级上限二十四小时。
