@@ -94,6 +94,29 @@ describe('handwritten mob looks', () => {
     expect(MOB_LOOKS.mob_xian_assassin.fluffy).toBe(true);
   });
 
+  it('uses the approved plain mob equipment without reintroducing magical ornaments', () => {
+    for (const faction of FACTION_ORDER) {
+      expect(MOB_LOOKS[`mob_${faction}_guard`].outfit.weapon, faction).toBe(faction === 'wei' ? 'boxShield' : 'shield');
+      expect(MOB_LOOKS[`mob_${faction}_assassin`].outfit.weapon, faction).toBe('dagger');
+    }
+    expect(MOB_LOOKS.mob_wei_archer.outfit.weapon).toBe('crossbow');
+    expect(MOB_LOOKS.mob_man_archer.outfit.weapon).toBe('slingshot');
+    expect(MOB_LOOKS.mob_wu_guard.outfit.head).toBe('ratCap');
+    for (const id of ['mob_wei_assassin', 'mob_wu_assassin', 'mob_qun_assassin']) {
+      expect(MOB_LOOKS[id].outfit.head, id).toBe('hood');
+    }
+    for (const id of ['mob_shu_archer', 'mob_wu_healer', 'mob_man_archer', 'mob_man_healer', 'mob_man_assassin']) {
+      expect(MOB_LOOKS[id].outfit.head, id).toBe('leafHat');
+    }
+    expect(MOB_LOOKS.mob_xian_strategist.outfit.weapon).toBe('scroll');
+    expect(MOB_LOOKS.mob_xian_archer.outfit.weapon).toBe('coinsPlain');
+    const coins = catSvg(MOB_LOOKS.mob_xian_archer, { uid: 'plain-coins' });
+    expect(coins).toContain('<rect');
+    expect(coins).not.toContain('#fff6c0'); // coins 固定闪星的填充色。
+    for (const id of ['mob_wu_assassin', 'mob_xian_assassin']) expect(MOB_LOOKS[id].outfit.back, id).toBe('none');
+    for (const look of Object.values(MOB_LOOKS)) expect(look.outfit.extra ?? []).not.toContain('glowEyes');
+  });
+
   it('has valid colors and finite art dimensions, and all looks render through the original pipeline', () => {
     for (const [id, look] of Object.entries(MOB_LOOKS)) {
       const colors = [look.coat.base, look.coat.light, look.coat.accent, look.coat.stripe, look.coat.pink,
