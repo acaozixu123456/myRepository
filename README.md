@@ -9,7 +9,10 @@
 ## 开发
 ```bash
 npm install
-npm run dev                         # 本地预览（dev.html 为立绘调试页）
+npm run dev                         # 本地预览：/ 是游戏（主城 / 阵容 / 招募 / 征战），/dev.html 立绘调试页，/battle.html 战斗演示
+                                    # 调试参数：?rich=1 满资源  ?nostory=1 跳过剧情  ?at=2-10 直接到某关  ?pity=1 下一抽出 UR
+npm run build                       # 产物在 dist/（打包手游见 docs/MOBILE.md）
+npm run app                         # 生成单文件可玩版 docs/app.html
 node tools/build-showcase.mjs       # 重新生成 docs/showcase.html
 npx esbuild tools/gen.ts --bundle --platform=node --format=esm --outfile=.shots/gen.mjs && node .shots/gen.mjs   # 重新生成文档与 SVG
 node tools/export-png.mjs           # 导出立绘 PNG
