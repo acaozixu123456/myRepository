@@ -28,7 +28,7 @@
 | 张角角 | `qun_zhangjiao` | SSR | 待画 | 0 | |
 | 祝融喵 | `man_zhurong` | SSR | 待画 | 0 | |
 | 木鹿大王 | `man_mulu` | SSR | 待画 | 0 | |
-| 沙摩柯 | `man_shamoke` | SSR | 待画 | 0 | |
+| 沙摩柯 | `man_shamoke` | SSR | 待审 | 1 | 第1轮，2候选选B；双爪五趾，兽皮虎斑狼牙骨棒，已清理透明噪点 |
 | 张爪 | `xian_zhangzhua` | SSR | 待画 | 0 | |
 | 水镜喵 | `xian_shuijing` | SSR | 待画 | 0 | |
 | 于吉吉 | `xian_yuji` | SSR | 待画 | 0 | |
