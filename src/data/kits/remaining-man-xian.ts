@@ -186,13 +186,13 @@ export const KITS_MAN_XIAN: Record<string, Kit> = {
     heroId: 'xian_shuijing',
     basic: {
       id: 'sj_basic', name: '镜花', fx: 'heal.touch', target: ally('lowestHpPct', 1),
-      effects: [heal(1.2), shield(0.4, 2)],
-      desc: '治疗生命比例最低的 1 名友方，回复 120% 水镜攻击的生命，并给予 40% 水镜攻击的「护体毛」，持续 2 次持有者行动结束；若选中水镜，计入本次普攻。水里那朵花，今天替你开。',
+      effects: [heal(1.0), shield(0.3, 2)],
+      desc: '治疗生命比例最低的 1 名友方，回复 100% 水镜攻击的生命，并给予 30% 水镜攻击的「护体毛」，持续 2 次持有者行动结束；若选中水镜，计入本次普攻。水里那朵花，今天替你开。',
     },
     ultimate: {
       id: 'sj_ult', name: '水镜观势', fx: 'ult.waterMirror', target: ally('all'),
-      effects: [heal(1.2), shield(0.6, 2), energy(20)],
-      desc: '友方全体回复 120% 水镜攻击的生命，获得 60% 水镜攻击的「护体毛」（持续 2 次持有者行动结束，水镜计入本次施放），并回复 20 点元气。先生看过水面，才想起来还有茶没分。',
+      effects: [heal(1.0), shield(0.45, 2), energy(15)],
+      desc: '友方全体回复 100% 水镜攻击的生命，获得 45% 水镜攻击的「护体毛」（持续 2 次持有者行动结束，水镜计入本次施放），并回复 15 点元气。先生看过水面，才想起来还有茶没分。',
       levelMods: [
         {
           lv: 3, desc: '拂去水纹：观势后净化每名友方 1 个负面效果。',

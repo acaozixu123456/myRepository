@@ -162,7 +162,7 @@ class Battle {
       const cnt = this.factionCount[side];
       for (const u of mine) {
         const n = cnt[u.faction] ?? 0;
-        const k = n >= 5 ? 0.15 : n >= 3 ? 0.08 : 0;
+        const k = n >= 5 ? 0.1 : n >= 3 ? 0.05 : 0;
         if (k) { u.atk = Math.round(u.atk * (1 + k)); u.maxHp = Math.round(u.maxHp * (1 + k)); u.hp = u.maxHp; }
         if (u.faction === 'qun') u.critDmg += 0.1 * (Object.keys(cnt).length - 1);
       }

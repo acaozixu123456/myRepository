@@ -78,16 +78,16 @@ export const KITS_UR: Record<string, Kit> = {
     heroId: 'wu_zhoumiaoyu',
     basic: {
       id: 'zy_basic', name: '琴音', fx: 'ranged.qin', target: enemy('random', 2),
-      effects: [dmg(0.9, { elem: 'fire' }), status('burn', 2, { snapAtk: 0.25 })],
-      desc: '对随机 2 名敌人各造成 90% 攻击的火焰伤害，并施加「灼烧」（每回合 25% 攻击）。',
+      effects: [dmg(0.75, { elem: 'fire' }), status('burn', 2, { snapAtk: 0.25 })],
+      desc: '对随机 2 名敌人各造成 75% 攻击的火焰伤害，并施加「灼烧」（每回合 25% 攻击）。',
     },
     ultimate: {
       id: 'zy_ult', name: '赤壁火海', fx: 'ult.redCliff', target: enemy('all'),
       effects: [
-        dmg(2.0, { elem: 'fire', bonus: [{ cond: { c: 'status', id: 'wet', who: 'target' }, mult: 1.6 }] }),
+        dmg(1.7, { elem: 'fire', bonus: [{ cond: { c: 'status', id: 'wet', who: 'target' }, mult: 1.6 }] }),
         status('burn', 3, { snapAtk: 0.3 }),
       ],
-      desc: '火烧连营：对敌方全体造成 200% 攻击的火焰伤害并「灼烧」3 回合；对「淋湿」目标额外 +60% 伤害。',
+      desc: '火烧连营：对敌方全体造成 170% 攻击的火焰伤害并「灼烧」3 回合；对「淋湿」目标额外 +60% 伤害。',
       levelMods: [
         { lv: 3, desc: '燎原：灼烧再叠加 1 层。', patch: { skill: 'ultimate', addEffects: [status('burn', 3, { snapAtk: 0.3, stacks: 1 })] } },
         { lv: 6, desc: '东风：自身回复 25 点元气。', patch: { skill: 'ultimate', addEffects: [energy(25, self)] } },
@@ -115,23 +115,23 @@ export const KITS_UR: Record<string, Kit> = {
     heroId: 'qun_lvbuding',
     basic: {
       id: 'lv_basic', name: '画戟', fx: 'melee.halberd', melee: true, target: enemy('front'),
-      effects: [dmg(1.4), { t: 'when', cond: { c: 'crit' }, then: [dmg(0.7), text('连击')] }],
-      desc: '对敌方前排造成 140% 攻击的物理伤害；暴击时追加一次 70% 攻击的攻击。',
+      effects: [dmg(1.2), { t: 'when', cond: { c: 'crit' }, then: [dmg(0.6), text('连击')] }],
+      desc: '对敌方前排造成 120% 攻击的物理伤害；暴击时追加一次 60% 攻击的攻击。',
     },
     ultimate: {
       id: 'lv_ult', name: '天下无双', fx: 'ult.tianxia', melee: true, target: enemy('backRow'),
-      effects: [dmg(2.5, { critBonus: 0.5 }), { t: 'when', cond: { c: 'killed' }, then: [energy(50, self), text('无双')] }],
-      desc: '飞身突进：对敌方后排全体造成 250% 攻击的物理伤害，本次暴击率 +50%；击杀目标时返还 50 点元气。',
+      effects: [dmg(2.2, { critBonus: 0.5 }), { t: 'when', cond: { c: 'killed' }, then: [energy(50, self), text('无双')] }],
+      desc: '飞身突进：对敌方后排全体造成 220% 攻击的物理伤害，本次暴击率 +50%；击杀目标时返还 50 点元气。',
       levelMods: [
-        { lv: 3, desc: '破阵：无视目标 20% 防御。', patch: { skill: 'ultimate', replaceEffects: [dmg(2.5, { critBonus: 0.5, ignoreDef: 0.2 }), { t: 'when', cond: { c: 'killed' }, then: [energy(50, self), text('无双')] }] } },
+        { lv: 3, desc: '破阵：无视目标 20% 防御。', patch: { skill: 'ultimate', replaceEffects: [dmg(2.2, { critBonus: 0.5, ignoreDef: 0.2 }), { t: 'when', cond: { c: 'killed' }, then: [energy(50, self), text('无双')] }] } },
         { lv: 6, desc: '余威：自身「炸毛」20%（2 回合）。', patch: { skill: 'ultimate', addEffects: [status('fluff', 2, { power: 0.2, to: self })] } },
         { lv: 9, desc: '人中吕布：整体效果 +25%。', patch: { skill: 'ultimate', scaleMul: 1.25 } },
       ],
     },
     passive: {
       id: 'lv_passive', name: '飞将',
-      desc: '战斗开始时攻击 +20%；每次击杀回复 20 点元气。',
-      passive: [{ on: 'battleStart', effects: [status('fluff', 99, { power: 0.2 })] }, { on: 'onKill', effects: [energy(20, self)] }],
+      desc: '战斗开始时攻击 +15%；每次击杀回复 20 点元气。',
+      passive: [{ on: 'battleStart', effects: [status('fluff', 99, { power: 0.15 })] }, { on: 'onKill', effects: [energy(20, self)] }],
     },
     awaken: {
       A: { name: '赤兔（兔）', desc: '每回合行动后，50% 概率立刻额外行动一次（每回合 1 次）。',
