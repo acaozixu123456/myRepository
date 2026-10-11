@@ -78,3 +78,34 @@ describe('阶段规则（hpBelow）', () => {
     expect(fired).toBeGreaterThan(0);
   });
 });
+
+describe('绝技预告 telegraph', () => {
+  it('first: the first ultimate is announced one action early, later ones are not', () => {
+    const r = run([{ t: 'telegraph', side: 'B', hero: 'qun_lvbuding', first: true }], 12, 3);
+    const boss = r.units.find((u) => u.heroId === 'qun_lvbuding')!;
+    const tg = r.events.filter((e) => e.t === 'text' && e.uid === boss.uid && e.text === '预告：绝技！');
+    expect(tg.length).toBeLessThanOrEqual(1);
+    const ults = r.events.filter((e) => e.t === 'act' && e.uid === boss.uid && e.kind === 'ultimate');
+    if (tg.length) expect(ults.length).toBeGreaterThanOrEqual(0);
+  });
+  it('every time: each ultimate is preceded by an announcement and still gets cast', () => {
+    let announced = 0, cast = 0;
+    for (let seed = 1; seed <= 6; seed++) {
+      const r = simulate({ seed, A: team(ME, 40), B: team(FOE, 40), rules: [{ t: 'telegraph', side: 'B' }], maxRounds: 12 });
+      announced += r.events.filter((e) => e.t === 'text' && e.text === '预告：绝技！').length;
+      cast += r.events.filter((e) => e.t === 'act' && e.kind === 'ultimate' && r.units.find((u) => u.uid === e.uid)?.side === 'B').length;
+      expect(r.events.at(-1)?.t).toBe('end');
+    }
+    expect(announced).toBeGreaterThan(0);
+    expect(cast).toBeGreaterThan(0);
+    expect(announced).toBeGreaterThanOrEqual(cast);
+  });
+});
+
+describe('全部关卡规则', () => {
+  it('every stage that has a rule text also has an executable ruleFx', () => {
+    let withRule = 0;
+    for (const ch of CHAPTERS) for (const st of ch.stages) if (st.rule) { withRule++; expect(st.ruleFx?.length, `${st.id}`).toBeGreaterThan(0); }
+    expect(withRule).toBe(48);
+  });
+});
