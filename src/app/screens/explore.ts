@@ -7,7 +7,7 @@ import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
-import { bossStage, claimDaily, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../../game/explore';
+import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
@@ -139,7 +139,7 @@ function hud(ctx: AppCtx): string {
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
   ${questHtml(ctx)}
   <canvas class="xmini" id="xmini" width="184" height="184"></canvas><div class="xfps" id="xfps"></div>
-  <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
+  <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-trail">足迹</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
 }
 
 const GFX_LV = { auto: 0, high: 0, low: 3 } as const;
@@ -330,9 +330,23 @@ function onTalk(ctx: AppCtx, _sp: Spawn) {
   ctx.toast(`嫦喵：${TALKS[talkI++ % TALKS.length]}`);
 }
 
+/** 探索足迹：长期累计目标，够数后手动领奖 */
+function openTrail(ctx: AppCtx) {
+  ctx.root.querySelectorAll('.trail-mask').forEach((e) => e.remove());
+  const rows = trailRows(ctx.s);
+  const html = rows.map((r) => `<div class="row" style="margin:7px 0;gap:8px"><div class="grow" style="min-width:0"><b style="font-size:13px">${r.label}</b><div style="height:6px;border-radius:3px;background:rgba(0,0,0,.18);margin:4px 0 2px;overflow:hidden"><i style="display:block;height:100%;width:${Math.round(r.have / r.need * 100)}%;background:${r.claimed ? '#8affb0' : '#7ff0ff'}"></i></div><small class="muted" style="font-weight:700">${r.have}/${r.need} · ${gainText(r.reward)}</small></div>${r.claimed ? '<span style="font-weight:800;color:#3aa86a">已领</span>' : r.ready ? `<button class="btn sm green" data-act="x-claim" data-id="${r.id}">领取</button>` : '<span class="muted" style="font-weight:700">未达成</span>'}</div>`).join('');
+  ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center trail-mask" data-act="closedialog"><div class="dialog" style="max-height:78%;overflow:auto"><h3 class="title" style="margin:0 0 8px">探索足迹</h3>${html}<div style="text-align:center;margin-top:10px"><button class="btn" data-act="closedialog">好的</button></div></div></div>`);
+}
+
 export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
     case 'x-boss': if (rt) { rt.ex.moveTo(rt.st.level.bossSpot[0], rt.st.level.bossSpot[1] + 5); ctx.toast('出发！'); } return true;
+    case 'x-trail': openTrail(ctx); return true;
+    case 'x-claim': {
+      const g = claimTrail(ctx.s, el.dataset.id!);
+      if (g) { applyGain(ctx.s, g); ctx.save(); sfx.up(); ctx.toast(`足迹奖励：${gainText(g)}`); refreshExploreHud(ctx); openTrail(ctx); }
+      return true;
+    }
     case 'x-reset': if (rt) { rt.ex.setTeam(teamIds(ctx)); rt.wv.snapCamera(); } return true;
     case 'x-hero': ctx.openHero(el.dataset.id!); return true;
     default: return false;

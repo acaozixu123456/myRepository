@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { KILL_CAP, bossStage, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
+import { KILL_CAP, TRAIL, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
 import { LEVELS, herbsOf, levelColliders } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 
@@ -89,5 +89,39 @@ describe('猫薄荷丛', () => {
     const plan = spawnPlan(newPlayer());
     expect(plan.filter((p) => p.kind === 'herb')).toHaveLength(3);
     expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
+  });
+});
+
+describe('探索足迹（长期累计）', () => {
+  it('累计数据随击杀 / 宝箱 / 猫薄荷 / 首领增加，不受每日上限影响，隔天不清零', () => {
+    const s = newPlayer();
+    const st = farmStage(s).stage;
+    for (let i = 0; i < KILL_CAP + 5; i++) killReward(s, st);
+    expect(totals(s).kills).toBe(KILL_CAP + 5);
+    openChest(s, 'c0'); pickHerb(s, 'h0'); recordBossWin(s);
+    expect(totals(s)).toMatchObject({ chests: 1, herbs: 1, bosses: 1 });
+    openChest(s, 'c0');
+    expect(totals(s).chests).toBe(1);
+    ensureExplore(s, Date.now() + 2 * 86400_000);
+    expect(totals(s).kills).toBe(KILL_CAP + 5);
+  });
+  it('足迹奖励够数才能领，只能领一次', () => {
+    const s = newPlayer();
+    expect(claimTrail(s, 'k20')).toBeNull();
+    totals(s).kills = 25;
+    expect(trailRows(s).find((r) => r.id === 'k20')!.ready).toBe(true);
+    const g = claimTrail(s, 'k20')!;
+    expect(g.fish).toBeGreaterThan(0);
+    expect(claimTrail(s, 'k20')).toBeNull();
+    expect(trailRows(s).find((r) => r.id === 'k20')!.claimed).toBe(true);
+    expect(claimTrail(s, 'nope')).toBeNull();
+  });
+  it('里程碑 id 唯一，同类目标越来越大、奖励越来越多', () => {
+    expect(new Set(TRAIL.map((m) => m.id)).size).toBe(TRAIL.length);
+    for (const stat of ['kills', 'chests', 'herbs', 'bosses'] as const) {
+      const ms = TRAIL.filter((m) => m.stat === stat);
+      expect(ms.length).toBeGreaterThanOrEqual(3);
+      for (let i = 1; i < ms.length; i++) { expect(ms[i].need).toBeGreaterThan(ms[i - 1].need); expect(ms[i].reward.fish).toBeGreaterThan(ms[i - 1].reward.fish); }
+    }
   });
 });

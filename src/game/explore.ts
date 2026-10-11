@@ -64,6 +64,7 @@ export function spawnPlan(s: PlayerState): SpawnDef[] {
 /** 野怪胜利奖励（每天最多 KILL_CAP 场有奖励） */
 export function killReward(s: PlayerState, stage: StageDef): Gain | null {
   const e = ensureExplore(s);
+  totals(s).kills++; // 每场野怪胜利都计入足迹（不受每日奖励上限影响）
   if (e.kills >= KILL_CAP) return null;
   e.kills++;
   const g = winReward(stage);
@@ -75,6 +76,7 @@ export function openChest(s: PlayerState, id: string): Gain | null {
   const e = ensureExplore(s);
   if (e.chests.includes(id)) return null;
   e.chests.push(id);
+  totals(s).chests++;
   const farm = farmStage(s).stage;
   const base = winReward(farm);
   const rnd = mulberry(dayKey() * 31 + id.charCodeAt(1));
@@ -98,7 +100,7 @@ export function dailyProgress(s: PlayerState, now = Date.now()): GoalProgress[] 
 }
 export const dailyReady = (s: PlayerState, now = Date.now()) => dailyProgress(s, now).every((g) => g.done);
 export const dailyClaimed = (s: PlayerState, now = Date.now()) => !!ensureExplore(s, now).claimed;
-export function recordBossWin(s: PlayerState, now = Date.now()) { const e = ensureExplore(s, now); e.bossWins = (e.bossWins ?? 0) + 1; }
+export function recordBossWin(s: PlayerState, now = Date.now()) { const e = ensureExplore(s, now); e.bossWins = (e.bossWins ?? 0) + 1; totals(s).bosses++; }
 /** 三项都完成后找嫦喵领奖，每天一次：小鱼干 + 经验为主，外加猫薄荷和金铃铛 */
 export function claimDaily(s: PlayerState, now = Date.now()): Gain | null {
   if (!dailyReady(s, now) || dailyClaimed(s, now)) return null;
@@ -113,7 +115,40 @@ export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | n
   e.herbs ??= [];
   if (e.herbs.includes(id)) return null;
   e.herbs.push(id);
+  totals(s).herbs++;
   const rnd = mulberry(dayKey(now) * 17 + id.charCodeAt(1));
   const base = winReward(farmStage(s).stage);
   return { fish: Math.round(base.fish * 1.5), exp: 0, catnip: 3 + Math.floor(rnd() * 3), bells: 0 };
+}
+
+// ---------- 探索足迹（长期累计目标）----------
+export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses';
+export interface TrailMilestone { id: string; stat: TrailStat; need: number; label: string; reward: Gain }
+const G = (fish: number, catnip: number, bells: number, exp = 0): Gain => ({ fish, catnip, bells, exp });
+export const TRAIL: TrailMilestone[] = [
+  { id: 'k20', stat: 'kills', need: 20, label: '街头新手 · 击败 20 只野猫', reward: G(300, 0, 0, 100) },
+  { id: 'k60', stat: 'kills', need: 60, label: '巷口一霸 · 击败 60 只野猫', reward: G(800, 6, 0, 300) },
+  { id: 'k150', stat: 'kills', need: 150, label: '横扫街区 · 击败 150 只野猫', reward: G(2000, 12, 40, 800) },
+  { id: 'k400', stat: 'kills', need: 400, label: '喵洲传说 · 击败 400 只野猫', reward: G(5000, 30, 120, 2000) },
+  { id: 'c10', stat: 'chests', need: 10, label: '寻宝学徒 · 打开 10 个宝箱', reward: G(400, 3, 0) },
+  { id: 'c40', stat: 'chests', need: 40, label: '寻宝达人 · 打开 40 个宝箱', reward: G(1500, 10, 30) },
+  { id: 'c120', stat: 'chests', need: 120, label: '宝箱收割机 · 打开 120 个宝箱', reward: G(4000, 25, 100) },
+  { id: 'h10', stat: 'herbs', need: 10, label: '采药喵 · 采 10 丛猫薄荷', reward: G(200, 8, 0) },
+  { id: 'h40', stat: 'herbs', need: 40, label: '猫薄荷园丁 · 采 40 丛猫薄荷', reward: G(600, 20, 20) },
+  { id: 'h120', stat: 'herbs', need: 120, label: '薄荷大亨 · 采 120 丛猫薄荷', reward: G(1500, 50, 60) },
+  { id: 'b3', stat: 'bosses', need: 3, label: '首领克星 · 赢 3 场首领战', reward: G(500, 4, 10, 200) },
+  { id: 'b12', stat: 'bosses', need: 12, label: '首领终结者 · 赢 12 场首领战', reward: G(2000, 15, 50, 800) },
+  { id: 'b40', stat: 'bosses', need: 40, label: '九命天敌 · 赢 40 场首领战', reward: G(6000, 40, 150, 2500) },
+];
+export function totals(s: PlayerState) { return (s.exploreTotals ??= { kills: 0, chests: 0, herbs: 0, bosses: 0, claimed: [] }); }
+export interface TrailRow extends TrailMilestone { have: number; ready: boolean; claimed: boolean }
+export function trailRows(s: PlayerState): TrailRow[] {
+  const t = totals(s);
+  return TRAIL.map((m) => ({ ...m, have: Math.min(m.need, t[m.stat]), ready: t[m.stat] >= m.need && !t.claimed.includes(m.id), claimed: t.claimed.includes(m.id) }));
+}
+export function claimTrail(s: PlayerState, id: string): Gain | null {
+  const m = TRAIL.find((x) => x.id === id), t = totals(s);
+  if (!m || t.claimed.includes(id) || t[m.stat] < m.need) return null;
+  t.claimed.push(id);
+  return { ...m.reward };
 }
