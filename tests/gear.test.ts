@@ -60,7 +60,7 @@ describe('all twelve 四件套', () => {
     const seen = new Set<string>();
     const mine = ['wei_xiahoudun', 'wu_zhoumiaoyu', 'man_mengmiaohuo', 'xian_zuoci', 'shu_zhugemiaoliang'];
     for (let seed = 1; seed <= 40; seed++) {
-      const r = simulate({ seed, A: team(mine, 40, { set4: all, gear: { dmgReduce: 0.05 } }), B: team(FOE, 50, { set4: all }) });
+      const r = simulate({ seed, A: team(mine, 40, { set4: all, gear: { dmgReduce: 0.05 } }), B: team(FOE, 50, { set4: all }), rules: [{ t: 'startStatus', side: 'B', to: 'all', id: 'wet', turns: 3 }] });
       expect(r.events.at(-1)?.t).toBe('end');
       for (const e of r.events) if (e.t === 'text') seen.add(e.text);
     }
