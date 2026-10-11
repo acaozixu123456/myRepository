@@ -21,6 +21,8 @@ import { shopHtml, handleShop } from './screens/shop';
 import { PAY_CSS, handlePay, payHtml } from './screens/pay';
 import { grantOnce } from '../game/premium';
 import { seedDemoInventory } from '../game/inventory';
+import { rollover, track } from '../game/quests';
+import { handleQuests, questsHtml } from './screens/quests';
 import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 import { makeHomeScenery } from '../fx/bg';
@@ -40,6 +42,17 @@ if (at) { const [c, i] = at.split('-').map(Number); state.stage = { chapter: c, 
 if (params.get('pity')) { state.pity.ur = 79; state.pity.ssr = 9; }
 if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; state.res.exp = 500000; seedDemoInventory(state); }
 
+function syncQuestDay(): boolean {
+  const reset = rollover(state, Date.now());
+  const firstLogin = (state.quests.progress.daily_login ?? 0) < 1;
+  if (firstLogin) track(state, 'login');
+  return reset || firstLogin;
+}
+syncQuestDay();
+track(state, 'hero_level', Math.max(...Object.values(state.heroes).map((h) => h.lv), 0));
+track(state, 'collect_hero', Object.keys(state.heroes).length);
+const savedStage = ((state.best?.chapter ?? 1) - 1) * 24 + (state.best?.index ?? 1);
+if (savedStage > 1 || state.stage.wins > 0) track(state, 'reach_stage', savedStage);
 // 开发者发放：给本号一次性补发 20 万月光珠（等值计入累计充值 → VIP 满级）
 const granted = grantOnce(state, 'dev_grant_200k', 200000);
 if (granted) save(storage, state);
@@ -51,6 +64,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen gacha" data-screen="gacha"></div>
   <div class="screen" data-screen="campaign"></div>
   <div class="screen" data-screen="bag"></div>
+  <div class="screen qst-screen" data-screen="quests"></div>
   <div class="screen shop-screen" data-screen="shop"></div>
   <div class="screen shop-screen" data-screen="pay"></div>
   <nav class="nav" id="nav">
@@ -100,12 +114,14 @@ const ctx: AppCtx = {
       </div></div></div>`);
   },
   refresh() {
+    syncQuestDay();
     const scr = ctx.screen;
     if (scr === 'home') updateHome(ctx);
     else if (scr === 'lineup') (root.querySelector('[data-screen=lineup]') as HTMLElement).innerHTML = lineupHtml(ctx);
     else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
     else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
     else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
+    else if (scr === 'quests') (root.querySelector('[data-screen=quests]') as HTMLElement).innerHTML = questsHtml(ctx);
     else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
     else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
     updateGuide(ctx);
@@ -154,6 +170,7 @@ function openSettings() {
 
 // ---------- 事件 ----------
 root.addEventListener('click', (e) => {
+  if (syncQuestDay()) { ctx.save(); ctx.refresh(); }
   const el = (e.target as HTMLElement).closest('[data-act]') as HTMLElement | null;
   if (!el) return;
   const act = el.dataset.act!;
@@ -163,6 +180,7 @@ root.addEventListener('click', (e) => {
   if (handleCampaign(ctx, act, el)) return;
   if (handleDex(ctx, act, el)) return;
   if (handleBag(ctx, el)) return;
+  if (handleQuests(ctx, el)) return;
   if (handleShop(ctx, el)) return;
   if (handlePay(ctx, act, el)) return;
   switch (act) {
@@ -238,7 +256,10 @@ root.addEventListener('click', (e) => {
 });
 
 // 每秒刷新挂机收益
-setInterval(() => { if (ctx.screen === 'home') { updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); } }, 1000);
+setInterval(() => {
+  if (syncQuestDay()) { ctx.save(); ctx.refresh(); }
+  if (ctx.screen === 'home') { updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); }
+}, 1000);
 setInterval(() => ctx.save(), 8000);
 setInterval(() => updateGuide(ctx), 1200);
 document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.save(); });

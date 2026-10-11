@@ -8,6 +8,7 @@ import { heroGear } from './gear';
 import { vipLevel, vipPerks } from './premium';
 import { heroPower, newPlayer } from './state';
 import type { PlayerState, Resources } from './state';
+import { track } from './quests';
 
 export function getStage(chapter: number, index: number): StageDef | undefined {
   return CHAPTERS[chapter - 1]?.stages[index - 1];
@@ -130,6 +131,7 @@ export function claimIdle(s: PlayerState): { fish: number; exp: number } {
   s.res.exp += got.exp;
   s.idle.fish = 0;
   s.idle.exp = 0;
+  if (got.fish > 0 || got.exp > 0) track(s, 'claim_idle');
   return got;
 }
 export type { Resources };

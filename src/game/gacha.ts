@@ -2,6 +2,7 @@
 import { HEROES } from '../data/heroes';
 import type { HeroDef, Rarity } from '../data/heroes';
 import type { PlayerState } from './state';
+import { track } from './quests';
 
 export interface PoolDef {
   id: string;
@@ -100,5 +101,7 @@ export function pull(s: PlayerState, pool: PoolDef, n: 1 | 10, rnd: () => number
     const needSsr = n === 10 && i === 9 && !results.some((r) => r.rarity !== 'SR');
     results.push(pullOnce(s, pool, rnd, needSsr));
   }
+  track(s, 'recruit', results.length);
+  track(s, 'collect_hero', Object.keys(s.heroes).length);
   return { ok: true, results };
 }

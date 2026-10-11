@@ -9,6 +9,8 @@ import { canClaimCard, canClaimVip } from '../../game/premium';
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
+import { QUESTS } from '../../content/economy';
+import { isClaimable } from '../../game/quests';
 
 export function homeHtml(): string {
   return `
@@ -43,6 +45,7 @@ export function updateHud(ctx: AppCtx) {
 export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: string; label: string; cls?: string; dot?: boolean }[] {
   const s = ctx.s;
   return [
+    { act: 'nav', to: 'quests', ic: 'campaign', label: '任务', dot: QUESTS.some((quest) => isClaimable(s, quest)) },
     { act: 'nav', to: 'shop', ic: 'bag', label: '商店' },
     { act: 'nav', to: 'pay', ic: 'moon', label: '充值', cls: 'pay', dot: canClaimCard(s) || canClaimVip(s) },
   ];

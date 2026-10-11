@@ -7,6 +7,7 @@ import { Player } from '../fx/player';
 import { applyGain, firstClearReward, getStage, lineupSetups, nextStage, waveSetups, winReward } from '../game/stage';
 import type { Gain } from '../game/stage';
 import type { PlayerState } from '../game/state';
+import { rollover, track } from '../game/quests';
 
 
 export interface LoopHooks {
@@ -103,6 +104,10 @@ export class BattleLoop {
       if (token !== this.token) return;
       this.lastOutcome = win ? 'win' : 'lose';
       if (win) {
+        // 自动战斗可能先于界面定时器跨过 5 点，先换周期再计胜场。
+        rollover(s, Date.now());
+        track(s, 'clear_stage');
+        track(s, 'reach_stage', (target.chapter - 1) * 24 + target.index);
         const g = winReward(stage);
         applyGain(s, g);
         this.hooks.onReward(g, 'win');
