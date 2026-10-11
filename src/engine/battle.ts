@@ -565,6 +565,7 @@ class Battle {
   // ---------- 主循环 ----------
   tickStart(u: Unit) {
     for (const s of u.statuses.slice()) {
+      if (!u.statuses.includes(s)) continue; // 本轮结算中途被清除（睡着 / 被唤醒）的状态不再结算
       const r = STATUS_RULES[s.id];
       if (r?.dot && u.alive) {
         const dmg = Math.max(1, Math.round(s.snap * s.stacks * (1 - 0)));
