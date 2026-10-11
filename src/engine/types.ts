@@ -174,6 +174,7 @@ export type RuleFx = ((
   | { t: 'firstBasicEnergy'; side: RuleSide; to?: RuleTo; amount: number } // 每只猫本场第一次普攻后额外元气
   | { t: 'roundEnergyLowest'; side: RuleSide; amount: number } // 每整轮开始，该方元气最低的猫 +元气
   | { t: 'on'; ev: RuleEv; side: RuleSide; to?: RuleTo; hero?: string; hpBelow?: number; status?: string; cc?: boolean; every?: number; max?: number; per?: 'actor' | 'side' | 'round'; act: RuleAct } // 事件规则：ev 的行动者：basic/basicHit/crit = 出手者，heal = 治疗者，cleanse/statusApply = 施法者，shieldExpire/shieldBreak = 护盾持有者，hurt = 受击者
+  | { t: 'telegraph'; side: RuleSide; to?: RuleTo; hero?: string; first?: boolean } // 绝技预告：满元气时先“预告”一整轮，下一次行动才放绝技（first：只预告第一次）
   | { t: 'critAdd'; side: RuleSide; to: RuleTo; add: number }
   | { t: 'hitAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number }
   | { t: 'dodgeAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number } // rounds：只在前 N 回合有效

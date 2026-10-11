@@ -191,6 +191,19 @@ class Battle {
       case 'randomFoeFront': { const f = this.alive(this.foe(actor)); const front = f.filter((x) => x.pos <= 2); const pool = front.length ? front : f; return pool.length ? [this.rng.pick(pool)] : []; }
     }
   }
+  /** 绝技预告：第一次满元气只发出预告并改打普攻，下一次行动才放绝技 */
+  telegraphs(u: Unit): boolean {
+    for (const [i, r] of (this.cfg.rules ?? []).entries()) {
+      if (r.t !== 'telegraph' || !this.ruleSideMatch(r.side, u.side) || !this.ruleOk(r, u.side) || !this.ruleTo(r.to, u) || (r.hero && u.heroId !== r.hero)) continue;
+      const k = `tg${i}`;
+      if (u.used[k] === -2) continue; // first：已经放过，不再预告
+      if (u.used[k] === -1) { u.used[k] = r.first ? -2 : 0; continue; } // 已预告过：这次放绝技
+      u.used[k] = -1; // 标记“已预告”，下次行动放
+      this.push({ t: 'text', uid: u.uid, text: '预告：绝技！' });
+      return true;
+    }
+    return false;
+  }
   ruleCnt: Record<string, number> = {};
   /** 触发事件规则 */
   ruleEvent(ev: import('./types').RuleEv, actor: Unit, target?: Unit, info?: { status?: string; inst?: import('./types').StatusInst }) {
@@ -857,7 +870,8 @@ class Battle {
     }
     this.fire('beforeAct', { caster: u, targets: [u] }, u);
     if (!u.alive) return;
-    const ult = u.energy >= 100 && !this.flag(u, 'silence');
+    let ult = u.energy >= 100 && !this.flag(u, 'silence');
+    if (ult && this.cfg.rules && this.telegraphs(u)) ult = false;
     const skill = ult ? u.kit.ultimate : u.kit.basic;
     const ctx: Ctx = { caster: u, targets: [], isBasic: !ult, melee: !!skill.melee };
     const confused = this.flag(u, 'confuse');
