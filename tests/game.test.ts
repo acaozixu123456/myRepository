@@ -108,11 +108,14 @@ describe('player state', () => {
   });
   it('migrates an older save without the exp pool', () => {
     const s = newPlayer(1000) as any;
-    delete s.res.exp; delete s.idle.exp;
+    delete s.res.exp; delete s.idle.exp; delete s.best; delete s.stories;
+    s.stage = { chapter: 2, index: 5, wins: 0 };
     const st = { getItem: () => JSON.stringify(s), setItem: () => undefined };
     const r = load(st);
     expect(r.res.exp).toBe(0);
     expect(r.idle.exp).toBe(0);
+    expect(r.best).toEqual({ chapter: 2, index: 5 });
+    expect(r.stories).toEqual([]);
   });
 });
 

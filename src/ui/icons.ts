@@ -109,7 +109,7 @@ const ICONS: Record<string, Maker> = {
 
 export const ICON_NAMES = Object.keys(ICONS);
 export function icon(name: string, size = 24, cls = ''): string {
-  const mk = ICONS[name];
+  const mk = ICONS[name === 'bells' ? 'bell' : name];
   if (!mk) return '';
   return `<span class="ic ${cls}" style="width:${size}px;height:${size}px">${mk()}</span>`;
 }

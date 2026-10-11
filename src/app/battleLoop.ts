@@ -74,9 +74,10 @@ export class BattleLoop {
       const s = this.hooks.state();
       const push = this.pushNext;
       this.pushNext = false;
+      const best = (s.best ??= { chapter: s.stage.chapter, index: s.stage.index });
       let target = { chapter: s.stage.chapter, index: s.stage.index };
       if (push) {
-        const n = nextStage(target.chapter, target.index);
+        const n = nextStage(best.chapter, best.index);
         if (n) target = n;
       }
       const stage = getStage(target.chapter, target.index);
@@ -96,6 +97,7 @@ export class BattleLoop {
           s.stage.chapter = target.chapter;
           s.stage.index = target.index;
           s.stage.wins = 0;
+          s.best = { chapter: target.chapter, index: target.index };
           const fg = firstClearReward(stage);
           applyGain(s, fg);
           this.hooks.onReward(fg, 'first');

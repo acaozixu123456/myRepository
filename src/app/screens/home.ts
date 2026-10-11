@@ -4,7 +4,7 @@ import { HERO_BY_ID } from '../../data/heroes';
 import { artUrl } from '../../ui/art';
 import { chip, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
-import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, recommendedPowerOf, tickIdle } from '../../game/stage';
+import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, nextStage, recommendedPowerOf, tickIdle } from '../../game/stage';
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
 
@@ -52,8 +52,13 @@ export function updateHome(ctx: AppCtx) {
   $(ctx, '#badge').textContent = `${st.id} 连战 ${s.stage.wins}`;
   $(ctx, '#rule').textContent = st.rule ?? '';
   $(ctx, '#speedBtn').textContent = `${s.settings.speed}×`;
-  $(ctx, '#tip').textContent = low ? '战力不足推荐值，去阵容里给猫猫升级升星吧' : '战力足够，可以挑战下一关啦';
-  ($(ctx, '#chBtn') as HTMLButtonElement).textContent = '挑战下一关';
+  const b = s.best ?? s.stage;
+  const nx = nextStage(b.chapter, b.index);
+  const chBtn = $(ctx, '#chBtn') as HTMLButtonElement;
+  chBtn.disabled = !nx;
+  chBtn.textContent = nx ? `挑战 ${nx.chapter}-${nx.index}` : '已通关全部';
+  const nrec = nx ? recommendedPowerOf(nx.chapter, nx.index) : 0;
+  $(ctx, '#tip').textContent = !nx ? '喵洲已经太平了，等待新章节' : power < nrec * 0.9 ? `战力低于 ${nx.chapter}-${nx.index} 推荐（${fmt(nrec)}），先去阵容升级升星吧` : `战力足够，可以挑战 ${nx.chapter}-${nx.index} 啦`;
   $(ctx, '#team').innerHTML = s.lineup.map((id) => {
     const h = id ? HERO_BY_ID[id] : null;
     const st = id ? s.heroes[id] : null;

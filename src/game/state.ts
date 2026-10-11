@@ -31,7 +31,8 @@ export interface PlayerState {
   res: Resources;
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
-  stage: { chapter: number; index: number; wins: number };
+  stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
+  best?: { chapter: number; index: number }; // 已通关的最远关卡（推进进度）
   pity: { ssr: number; ur: number; upLost: boolean };
   idle: { last: number; fish: number; exp: number };
   gift: { last: number };
@@ -57,6 +58,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     heroes,
     lineup: ['wei_xiahoudun', 'wu_huanggai', 'man_wutugu', 'wei_guojia', 'qun_dongzhuo'],
     stage: { chapter: 1, index: 1, wins: 0 },
+    best: { chapter: 1, index: 1 },
     pity: { ssr: 0, ur: 0, upLost: false },
     idle: { last: now, fish: 0, exp: 0 },
     gift: { last: 0 },
@@ -80,6 +82,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
         s.res.exp ??= 0;
         s.idle.exp ??= 0;
         s.stories ??= [];
+        s.best ??= { chapter: s.stage.chapter, index: s.stage.index };
         return s;
       }
     }

@@ -3,6 +3,7 @@ import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
 import { STORY_CSS, playStoryOnce } from './story';
+import { CAMPAIGN_CSS, campaignHtml, handleCampaign } from './screens/campaign';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
 import { claim, floaty, homeHtml, updateHome, updateIdle } from './screens/home';
@@ -15,12 +16,14 @@ import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
 const state = load(storage);
 const params = new URLSearchParams(location.search);
+const at = params.get('at');
+if (at) { const [c, i] = at.split('-').map(Number); state.stage = { chapter: c, index: i, wins: 0 }; state.best = { chapter: c, index: i }; }
 if (params.get('pity')) { state.pity.ur = 79; state.pity.ssr = 9; }
 if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; state.res.exp = 500000; }
 
@@ -29,7 +32,7 @@ app.innerHTML = `<div class="app" id="root">
   ${homeHtml()}
   <div class="screen" data-screen="lineup"></div>
   <div class="screen gacha" data-screen="gacha"></div>
-  <div class="screen" data-screen="campaign"><div class="hud"><div class="title" style="color:#fff6dc">征战</div></div><div class="scroll"><div class="panel empty">章节地图、爬塔与竞技场正在建设中。<br>先去主城挑战下一关吧。</div></div></div>
+  <div class="screen" data-screen="campaign"></div>
   <div class="screen" data-screen="bag"><div class="hud"><div class="title" style="color:#fff6dc">背包</div></div><div class="scroll"><div class="panel empty">装备与道具背包正在建设中。</div></div></div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
@@ -68,6 +71,7 @@ const ctx: AppCtx = {
     if (scr === 'home') updateHome(ctx);
     else if (scr === 'lineup') (root.querySelector('[data-screen=lineup]') as HTMLElement).innerHTML = lineupHtml(ctx);
     else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
+    else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
   },
 };
 
@@ -96,6 +100,7 @@ root.addEventListener('click', (e) => {
   if (!el) return;
   const act = el.dataset.act!;
   if (handleDetail(ctx, act, el)) return;
+  if (handleCampaign(ctx, act, el)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
