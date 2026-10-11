@@ -67,7 +67,7 @@ describe('quest progress', () => {
     expect(s.quests).toEqual(before);
   });
 
-  it.each(['arena_battle', 'arena_win', 'guild_help', 'visit_friend'])('keeps unavailable %s tasks at zero and forbids forged claims', (type) => {
+  it.each(['guild_help'])('keeps unavailable %s tasks at zero and forbids forged claims', (type) => {
     const s = newPlayer(NOW);
     const entries = QUESTS.filter((entry) => entry.goal.type === type);
     expect(entries.length).toBeGreaterThan(0);
@@ -322,8 +322,8 @@ describe('quest save migration', () => {
     current.res.fish = 98765;
     const raw = { ...current, quests: {
       dailyKey: current.quests.dailyKey, weeklyKey: current.quests.weeklyKey,
-      progress: { daily_campaign: 999, weekly_recruit: -2, daily_idle: '2', newbie_growth: NaN, achievement_hero_level_6: 20, daily_arena: 3, missing: 77 },
-      claimed: { daily_login: true, newbie_arrive: true, weekly_growth: 'true', daily_arena: true, missing: true },
+      progress: { daily_campaign: 999, weekly_recruit: -2, daily_idle: '2', newbie_growth: NaN, achievement_hero_level_6: 20, daily_guild: 3, missing: 77 },
+      claimed: { daily_login: true, newbie_arrive: true, weekly_growth: 'true', daily_guild: true, missing: true },
     }, pending: { fishbone_small: 3.9, bad: -1, broken: { toString: 1 }, infinity: Infinity } };
     const result = load(storageOf(raw), NOW);
     expect(result.res).toEqual(current.res);

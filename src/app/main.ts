@@ -9,7 +9,7 @@ import { DEX_CSS, handleDex } from './screens/dex';
 import { CAMPAIGN_CSS, campaignHtml, handleCampaign } from './screens/campaign';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
-import { claim, floaty, homeHtml, updateHome, updateIdle } from './screens/home';
+import { claim, floaty, homeHtml, updateHome, updateIdle, updateQuick } from './screens/home';
 import { lineupHtml, lineupState } from './screens/lineup';
 import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
@@ -19,7 +19,11 @@ import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip }
 import { bagHtml, handleBag } from './screens/bag';
 import { shopHtml, handleShop } from './screens/shop';
 import { PAY_CSS, handlePay, payHtml } from './screens/pay';
-import { grantOnce } from '../game/premium';
+import { SOCIAL_CSS, handleSocial, refreshChatLog, socialHtml } from './screens/social';
+import { dayIndex, grantOnce } from '../game/premium';
+import { markRead } from '../game/social';
+import { DAILY_CSS, handleDaily, openSignin } from './screens/daily';
+import { canSign } from '../game/daily';
 import { seedDemoInventory } from '../game/inventory';
 import { rollover, track } from '../game/quests';
 import { handleQuests, questsHtml } from './screens/quests';
@@ -28,7 +32,7 @@ import { fmt } from '../ui/components';
 import { makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -67,6 +71,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen qst-screen" data-screen="quests"></div>
   <div class="screen shop-screen" data-screen="shop"></div>
   <div class="screen shop-screen" data-screen="pay"></div>
+  <div class="screen shop-screen" data-screen="social"></div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
     <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
@@ -122,6 +127,7 @@ const ctx: AppCtx = {
     else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
     else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
     else if (scr === 'quests') (root.querySelector('[data-screen=quests]') as HTMLElement).innerHTML = questsHtml(ctx);
+    else if (scr === 'social') { (root.querySelector('[data-screen=social]') as HTMLElement).innerHTML = socialHtml(ctx); const lg = root.querySelector('.chat-log') as HTMLElement | null; if (lg) { lg.scrollTop = lg.scrollHeight; markRead(state); } }
     else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
     else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
     updateGuide(ctx);
@@ -183,6 +189,8 @@ root.addEventListener('click', (e) => {
   if (handleQuests(ctx, el)) return;
   if (handleShop(ctx, el)) return;
   if (handlePay(ctx, act, el)) return;
+  if (handleSocial(ctx, act, el)) return;
+  if (handleDaily(ctx, act)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
@@ -196,12 +204,12 @@ root.addEventListener('click', (e) => {
     case 'challenge': ctx.loop.challenge(); ctx.toast('向下一关出发！'); break;
     case 'gift': {
       const now = Date.now();
-      if (now - state.gift.last < 300000) return;
+      if (dayIndex(state.gift.last) >= dayIndex(now) && state.gift.last > 0) return; // 每天一次
       state.gift.last = now;
-      state.res.bells += 1600;
-      state.res.tickets += 5;
+      state.res.bells += 400;
+      state.res.tickets += 2;
       ctx.save();
-      ctx.toast('领到 1600 金铃铛、5 张招福符');
+      ctx.toast('领到 400 金铃铛、2 张招福符');
       updateHome(ctx);
       break;
     }
@@ -261,6 +269,8 @@ setInterval(() => {
   if (ctx.screen === 'home') { updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); }
 }, 1000);
 setInterval(() => ctx.save(), 8000);
+setInterval(() => { refreshChatLog(ctx); if (ctx.screen === 'home') updateQuick(ctx); }, 5000);
+root.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.target as HTMLElement).id === 'chatInput') { e.preventDefault(); root.querySelector<HTMLElement>('[data-act=chat-send]')?.click(); } });
 setInterval(() => updateGuide(ctx), 1200);
 document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.save(); });
 
@@ -283,6 +293,7 @@ if (granted && !params.get('nostory')) {
     <p style="margin:0 0 8px;font-weight:700;line-height:1.7">已为本号充入 <b class="num" style="font-size:22px">200,000</b> 月光珠（等值计入累计充值，VIP 直升满级）。<br><span class="muted" style="font-size:12px">去「招募 → 至尊招募」抽至尊猫猫，或到「充值中心」看看权益。</span></p>
     <div class="row" style="justify-content:center;gap:10px"><button class="btn ghost" data-act="closedialog">先逛逛</button><button class="btn pink" data-act="nav" data-to="pay">充值中心</button></div></div></div>`);
 }
+if (!params.get('nostory') && !granted && canSign(state) && state.stories?.includes('c1_open') && !root.querySelector('.mask')) openSignin(ctx);
 ctx.loop.start();
 if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
 (window as unknown as Record<string, unknown>).__app = ctx;
