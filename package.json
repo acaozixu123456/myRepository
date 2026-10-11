@@ -6,13 +6,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "chatlines:week": "node tools/run-chatlines-week.mjs",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "balance": "node tools/run-balance.mjs",
+    "economy:paid": "node tools/run-economy-paid.mjs",
+    "balance:sp": "node tools/run-sp-balance.mjs",
+    "lint:skills": "node tools/run-skill-consistency.mjs",
     "shots": "node tools/shots.mjs",
     "showcase": "node tools/build-showcase.mjs",
-    "app": "node tools/build-app.mjs"
+    "app": "node tools/build-app.mjs",
+    "lint:content": "node tools/run-lint-content.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",

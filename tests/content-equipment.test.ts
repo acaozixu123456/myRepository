@@ -15,6 +15,7 @@ describe('装备与套装', () => {
         expect(entry.name + entry.flavor).not.toMatch(/[a-zA-Z]/);
       }
     }
+    expect(new Set(EQUIPS.map((equip) => equip.flavor.trim())).size).toBe(96);
   });
 
   it('每阵营两套传说套装，各有且仅有四个部位', () => {

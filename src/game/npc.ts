@@ -2,8 +2,8 @@
 // 关键设计：一切都是「墙上时钟」的纯函数（种子 + 时间 → 结果），不需要服务器，也不需要存档：
 // 同一时刻任何设备看到的在线名单、聊天内容都一样；玩家离线很久回来，也能立刻补出这段时间里 NPC 说过的话。
 import {
-  CAT_TALK, CONGRATS, FACTION_TALK, GACHA_BRAG, GACHA_SAD, GACHA_WANT, GREET_EVENING, GREET_MORNING, GREET_NIGHT, GREET_NOON, REPLY_ARENA, REPLY_GACHA,
-  REPLY_GENERIC, REPLY_GREET, REPLY_HELP, REPLY_LAUGH, REPLY_WHALE, STAGE_CLEAR, STAGE_STUCK, TEAM_ASK, BUILD_TIP, WORK_NIGHT, WORK_OFFICE, WORK_STUDENT,
+  ARENA_TALK, CAT_TALK, CHAPTER_TALK, CONGRATS, COUNTER_TALK, EQUIPMENT_TALK, MYSTERY_TALK, NPC_LINES, REPLY_RULES, TOWER_TALK, WEATHER_TALK, FACTION_TALK, GACHA_BRAG, GACHA_SAD, GACHA_WANT, GREET_EVENING, GREET_MORNING, GREET_NIGHT, GREET_NOON, REPLY_ARENA, REPLY_GACHA,
+  REPLY_GENERIC, REPLY_LAUGH, REPLY_WHALE, STAGE_CLEAR, STAGE_STUCK, TEAM_ASK, BUILD_TIP, WORK_NIGHT, WORK_OFFICE, WORK_STUDENT,
 } from '../data/chatlines';
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
@@ -144,16 +144,23 @@ function compose(npc: Npc, block: number, at: number): string {
   const h = new Date(at).getHours();
   const prog = npcProgress(npc, at);
   const vars = { stage: prog.stageId, hero: heroName(npc.id, 'h1', block), hero2: heroName(npc.id, 'h2', block), faction: FACTIONS[npc.faction].name, me: '' };
+  // 15%：只属于这位玩家的口头禅（独立随机域）
+  const mine = NPC_LINES[npc.id];
+  if (mine?.length && rnd(npc.id, 'personal', block) < 0.15) return fill(pick(mine, npc.id, 'pline', block), vars);
   const r = rnd(npc.id, 'cat', block);
+  const greet = h >= 5 && h < 11 ? GREET_MORNING : h >= 11 && h < 14 ? GREET_NOON : h >= 19 && h < 23 ? GREET_EVENING : WEEKDAY_NIGHT(h) ? GREET_NIGHT : CAT_TALK; // 下午没有“问候”，说日常
   let pool: string[];
-  if (r < 0.12) pool = h >= 5 && h < 11 ? GREET_MORNING : h < 14 ? GREET_NOON : h < 19 ? GREET_EVENING : WEEKDAY_NIGHT(h) ? GREET_NIGHT : GREET_EVENING;
-  else if (r < 0.30) pool = rnd(npc.id, 'sc', block) < 0.5 ? STAGE_STUCK : STAGE_CLEAR;
-  else if (r < 0.44) pool = rnd(npc.id, 'gc', block) < 0.4 ? GACHA_BRAG : rnd(npc.id, 'gd', block) < 0.5 ? GACHA_SAD : GACHA_WANT;
-  else if (r < 0.50) pool = TEAM_ASK;
-  else if (r < 0.60) pool = BUILD_TIP;
-  else if (r < 0.77) pool = CAT_TALK;
-  else if (r < 0.90) pool = npc.profile === 'office' ? WORK_OFFICE : npc.profile === 'student' ? WORK_STUDENT : npc.profile === 'night' && (h >= 22 || h < 5) ? WORK_NIGHT : CAT_TALK;
-  else pool = FACTION_TALK[npc.faction];
+  if (r < 0.10) pool = greet;
+  else if (r < 0.26) pool = rnd(npc.id, 'sc', block) < 0.5 ? STAGE_STUCK : STAGE_CLEAR;
+  else if (r < 0.38) pool = rnd(npc.id, 'gc', block) < 0.4 ? GACHA_BRAG : rnd(npc.id, 'gd', block) < 0.5 ? GACHA_SAD : GACHA_WANT;
+  else if (r < 0.43) pool = TEAM_ASK;
+  else if (r < 0.52) pool = BUILD_TIP;
+  else if (r < 0.66) pool = CAT_TALK;
+  else if (r < 0.78) pool = npc.profile === 'office' ? WORK_OFFICE : npc.profile === 'student' ? WORK_STUDENT : npc.profile === 'night' && (h >= 22 || h < 5) ? WORK_NIGHT : CAT_TALK;
+  else if (r < 0.84) pool = FACTION_TALK[npc.faction];
+  else if (r < 0.90) pool = CHAPTER_TALK[Math.max(1, rnd(npc.id, 'chap', block) < 0.5 ? prog.chapter : Math.min(prog.chapter, 1 + Math.floor(rnd(npc.id, 'chap2', block) * prog.chapter)))] ?? CAT_TALK;
+  else if (r < 0.99) pool = [EQUIPMENT_TALK, TOWER_TALK, MYSTERY_TALK, ARENA_TALK, COUNTER_TALK][Math.floor(rnd(npc.id, 'topic', block) * 5)];
+  else pool = WEATHER_TALK;
   return fill(pick(pool, npc.id, 'line', block), vars);
 }
 
@@ -193,13 +200,8 @@ export function repliesTo(msg: { id: string; t: number; text: string }, meName: 
   const k = rnd(msg.id, 'n');
   const n = k < 0.15 ? 3 : k < 0.5 ? 2 : 1;
   const text = msg.text;
-  const pool = /[?？]|怎么|求|帮|谁/.test(text) ? REPLY_HELP
-    : /抽|卡|欧|歪|保底|出货/.test(text) ? REPLY_GACHA
-    : /氪|充|SP|至尊|月光珠|土豪/.test(text) ? REPLY_WHALE
-    : /竞技|切磋|比爪|PK/i.test(text) ? REPLY_ARENA
-    : /哈|笑|233|草/.test(text) ? REPLY_LAUGH
-    : /你好|大家好|hi|hello|早|晚|嗨/i.test(text) ? REPLY_GREET
-    : REPLY_GENERIC;
+  const special = /氪|充|SP|至尊|月光珠|土豪/.test(text) ? REPLY_WHALE : /竞技|切磋|比爪|PK/i.test(text) ? REPLY_ARENA : /抽|卡|欧|歪|保底|出货/.test(text) ? REPLY_GACHA : undefined;
+  const pool = special ?? REPLY_RULES.find((r) => r.test.test(text))?.pool ?? (/哈|笑|233|草/.test(text) ? REPLY_LAUGH : REPLY_GENERIC);
   const sorted = [...online].sort((a, b) => rnd(msg.id, 'w', a.id) - rnd(msg.id, 'w', b.id)).slice(0, n);
   let t = msg.t;
   return sorted.map((npc, i) => {
