@@ -312,6 +312,41 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
           E(lx + 6, ly + 6, 5, 4, '#8a4a2a', { sw: 2 }),
       };
     }
+    case 'dualBlades': {
+      const blade = (x: number, y: number, a: number) => `<g transform="rotate(${a} ${x} ${y}) translate(${x} ${y}) scale(1.45) translate(${-x} ${-y})">${dagger(x, y, ctx)}</g>`;
+      return { svg: blade(hx, hy, 18), svgL: blade(lx, ly, -18) };
+    }
+    case 'hooks': {
+      const hook = (x: number, y: number, a: number, flip: number) =>
+        `<g transform="rotate(${a} ${x} ${y})">` +
+        P(`M ${x - 7} ${y - 8} L ${x - 7} ${y - 118} C ${x - 7} ${y - 150} ${x + flip * 30} ${y - 160} ${x + flip * 40} ${y - 136} C ${x + flip * 30} ${y - 140} ${x + 5} ${y - 134} ${x + 7} ${y - 112} L ${x + 7} ${y - 8} Z`, STEEL, { sw: 3.8 }) +
+        L(`M ${x} ${y - 14} L ${x} ${y - 112}`, '#fff', 2.2, 0.6) +
+        P(`M ${x - 18} ${y - 6} Q ${x} ${y - 18} ${x + 18} ${y - 6} L ${x + 15} ${y + 3} Q ${x} ${y - 7} ${x - 15} ${y + 3} Z`, trim, { sw: 3 }) +
+        P(`M ${x - 5} ${y} L ${x + 5} ${y} L ${x + 5} ${y + 24} L ${x - 5} ${y + 24} Z`, main, { sw: 3 }) + `</g>`;
+      return { svg: hook(hx, hy, 14, 1), svgL: hook(lx, ly, -14, -1) };
+    }
+    case 'axe': {
+      const R: [number, number] = [hx + 4, hy - 20];
+      const ax = hx + 4;
+      return {
+        pose: { R },
+        svg: `<g transform="rotate(8 ${ax} ${hy})">` +
+          L(`M ${ax} ${hy + 60} L ${ax} ${hy - 170}`, '#8a5a2a', 9) +
+          P(`M ${ax - 4} ${hy - 176} C ${ax + 40} ${hy - 220} ${ax + 84} ${hy - 190} ${ax + 76} ${hy - 126} C ${ax + 50} ${hy - 138} ${ax + 22} ${hy - 138} ${ax - 4} ${hy - 124} Z`, STEEL, { sw: 4 }) +
+          L(`M ${ax + 10} ${hy - 150} C ${ax + 34} ${hy - 172} ${ax + 58} ${hy - 168} ${ax + 64} ${hy - 146}`, '#fff', 2.6, 0.7) +
+          E(ax, hy - 178, 8, 8, trim, { sw: 3 }) + tassel(ax, hy - 118, main, 30) + `</g>`,
+      };
+    }
+    case 'whisk': {
+      const R: [number, number] = [hx - 4, hy - 30];
+      const bx = R[0], by = R[1] - 16;
+      let strands = '';
+      for (let i = -5; i <= 5; i++) strands += `<path d="M ${bx} ${by} C ${bx + i * 9} ${by - 40} ${bx + i * 16} ${by - 70} ${bx + i * 12} ${by - 108}" fill="none" stroke="${i % 2 ? '#ffffff' : '#e8eef6'}" stroke-width="5" stroke-linecap="round" opacity="0.95"/>`;
+      return {
+        pose: { R },
+        svg: L(`M ${bx} ${by + 40} L ${bx} ${by}`, '#8a5a2a', 8) + E(bx, by + 44, 7, 7, trim, { sw: 2.6 }) + strands + E(bx, by, 8, 6, trim, { sw: 2.6 }),
+      };
+    }
     case 'dagger':
       return { svg: `<g transform="rotate(14 ${hx} ${hy})">${dagger(hx, hy, ctx)}</g>` };
     case 'shield': {

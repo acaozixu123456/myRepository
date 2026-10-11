@@ -269,6 +269,15 @@ function patternHead(ctx: Ctx): string {
       const d = coat.accent ?? '#33262b';
       return `<path d="${blob(136, 146, 64, 46, -25, 2)}" fill="${coat.base}"/><path d="${blob(282, 158, 44, 58, 15, 5)}" fill="${d}"/><path d="${blob(264, 262, 26, 22, 0, 4)}" fill="${coat.base}"/>`;
     }
+    case 'tortie': {
+      const d = coat.accent ?? '#3a2a2c';
+      return `<path d="${blob(142, 150, 60, 44, -20, 11)}" fill="${d}" opacity="0.92"/><path d="${blob(290, 196, 40, 54, 15, 12)}" fill="${d}" opacity="0.92"/><path d="${blob(176, 112, 24, 18, 0, 13)}" fill="${d}" opacity="0.85"/>`;
+    }
+    case 'butterfly': {
+      const d = coat.accent ?? '#4a6fb0';
+      const wing = (sx: number) => `<g transform="translate(200 128) scale(${sx} 1)"><path d="M 4 4 C 16 -26 48 -30 52 -6 C 54 10 30 20 4 8 Z" fill="${d}" opacity="0.9"/><path d="M 4 10 C 14 20 34 34 28 48 C 18 56 6 36 4 10 Z" fill="${d}" opacity="0.8"/></g>`;
+      return wing(1) + wing(-1);
+    }
     case 'cow': {
       const d = coat.accent ?? '#2e2428';
       return `<path d="${blob(144, 166, 56, 52, -10, 3)}" fill="${d}"/><path d="${blob(280, 138, 42, 40, 20, 8)}" fill="${d}"/>`;
@@ -307,6 +316,15 @@ function patternTorso(ctx: Ctx): string {
       const d = coat.accent ?? '#33262b';
       return `<path d="${blob(x(-54), 350, 36 * W, 44, 20, 2)}" fill="${coat.base}"/><path d="${blob(x(56), 420, 30 * W, 40, -20, 6)}" fill="${d}"/><path d="${blob(x(-34), 466, 22 * W, 20, 0, 4)}" fill="${d}"/>`;
     }
+    case 'tortie': {
+      const d = coat.accent ?? '#3a2a2c';
+      return `<path d="${blob(x(-52), 346, 40 * W, 48, 20, 21)}" fill="${d}" opacity="0.92"/><path d="${blob(x(56), 410, 34 * W, 44, -20, 22)}" fill="${d}" opacity="0.92"/><path d="${blob(x(-30), 468, 24 * W, 20, 0, 23)}" fill="${d}" opacity="0.9"/>`;
+    }
+    case 'butterfly': {
+      const d = coat.accent ?? '#4a6fb0';
+      const wing = (sx: number) => `<g transform="translate(200 372) scale(${sx * W} 1)"><path d="M 6 -6 C 24 -50 74 -56 80 -18 C 82 8 40 20 6 4 Z" fill="${d}" opacity="0.85"/><path d="M 6 8 C 22 22 56 40 46 70 C 28 84 8 52 6 8 Z" fill="${d}" opacity="0.75"/></g>`;
+      return wing(1) + wing(-1);
+    }
     case 'cow': {
       const d = coat.accent ?? '#2e2428';
       return `<path d="${blob(x(-50), 372, 38 * W, 46, 10, 3)}" fill="${d}"/><path d="${blob(x(58), 430, 30 * W, 40, -10, 7)}" fill="${d}"/>`;
@@ -337,6 +355,8 @@ function limbPattern(ctx: Ctx, center: Pt[], w: number, kind: 'arm' | 'leg' | 't
     case 'tuxedo': return kind === 'tail' ? dash('0 82 18', coat.light, w + 10) : `<g filter="url(#soft2${ctx.uid})">${dash('0 70 30', coat.light, w + 14, 0.95)}</g>`;
     case 'shaded': return `<g filter="url(#soft2${ctx.uid})">${dash('0 70 30', coat.accent ?? shade(coat.base, 0.2), w + 14, 0.8)}</g>`;
     case 'calico': return `<path d="${blob(center[1][0], center[1][1], w * 0.5, w * 0.7, 20, kind.length)}" fill="${coat.base}"/>`;
+    case 'tortie': return `<path d="${blob(center[1][0], center[1][1], w * 0.55, w * 0.75, 15, kind.length + 5)}" fill="${coat.accent ?? '#3a2a2c'}" opacity="0.92"/>`;
+    case 'butterfly': return '';
     case 'cow': return `<path d="${blob(center[1][0], center[1][1], w * 0.55, w * 0.7, -10, kind.length + 3)}" fill="${coat.accent ?? '#2e2428'}"/>`;
     default: return '';
   }

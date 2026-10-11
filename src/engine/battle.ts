@@ -9,6 +9,7 @@ import type { Mods } from './statuses';
 import type { BEvent, BattleConfig, Cond, Effect, Kit, Patch, PassiveDef, Scale, SkillDef, StatusInst, TargetSel, TriggerOn, Unit, UnitSetup } from './types';
 
 interface Ctx {
+  amount?: number; // 触发本次效果的那次受伤量
   caster: Unit;
   targets: Unit[];
   source?: Unit; // 触发来源（被动）
@@ -351,7 +352,7 @@ class Battle {
   has(u: Unit, id: string): StatusInst | undefined {
     return u.statuses.find((s) => s.id === id);
   }
-  flag(u: Unit, f: 'stun' | 'silence' | 'taunt' | 'confuse' | 'dodge' | 'nine'): boolean {
+  flag(u: Unit, f: 'stun' | 'silence' | 'taunt' | 'confuse' | 'dodge' | 'nine' | 'stealth'): boolean {
     return u.statuses.some((s) => STATUS_RULES[s.id]?.flags?.includes(f));
   }
   alive(side: 'A' | 'B'): Unit[] {
@@ -384,6 +385,8 @@ class Battle {
       case 'round': return this.round >= c.atLeast;
       case 'counter': return (ctx.caster.counters[c.key] ?? 0) >= c.atLeast;
       case 'killed': return !!ctx.killed;
+      case 'allyCount': { const n = this.alive(c.side === 'enemy' ? this.foe(ctx.caster) : ctx.caster.side).length; return n >= (c.atLeast ?? 0) && n <= (c.atMost ?? 99); }
+      case 'teamCounter': return (this.teamCounter[`${ctx.caster.side}:${c.key}`] ?? 0) >= c.atLeast;
       case 'not': return !this.cond(c.cond, ctx, target);
       case 'and': return c.conds.every((x) => this.cond(x, ctx, target));
       case 'or': return c.conds.some((x) => this.cond(x, ctx, target));
@@ -402,6 +405,7 @@ class Battle {
     if (sel.role) pool = pool.filter((u) => u.role === sel.role);
     if (sel.hasStatus) pool = pool.filter((u) => this.has(u, sel.hasStatus!));
     if (sel.noStatus) pool = pool.filter((u) => !this.has(u, sel.noStatus!));
+    if (sel.side === 'enemy' && sel.pick !== 'all' && sel.pick !== 'frontRow' && sel.pick !== 'backRow') { const visible = pool.filter((u) => !this.flag(u, 'stealth')); if (visible.length) pool = visible; } // 潜行：单体技能选不中（全体不受影响）
     if (!pool.length) return [];
     const n = sel.n ?? 1;
     const byPos = (a: Unit, c: Unit) => a.pos - c.pos;
@@ -443,7 +447,7 @@ class Battle {
   }
 
   // ---------- 数值 ----------
-  scaleVal(s: Scale, caster: Unit, target?: Unit): number {
+  scaleVal(s: Scale, caster: Unit, target?: Unit, amount = 0): number {
     let v = 0;
     if (s.atk) v += s.atk * this.stat(caster, 'atk');
     if (s.def) v += s.def * this.stat(caster, 'def');
@@ -451,6 +455,7 @@ class Battle {
     if (s.curHp) v += s.curHp * caster.hp;
     if (s.missingHp) v += s.missingHp * (caster.maxHp - caster.hp);
     if (s.targetMaxHp && target) v += s.targetMaxHp * target.maxHp;
+    if (s.hurt) v += s.hurt * amount;
     return v;
   }
 
@@ -478,7 +483,7 @@ class Battle {
       this.push({ t: 'text', uid: target.uid, text: '闪避' });
       return;
     }
-    let base = this.scaleVal(e.scale, caster, target);
+    let base = this.scaleVal(e.scale, caster, target, ctx.amount);
     const cm = this.mods(caster);
     const tm = this.mods(target);
     const effDef = this.stat(target, 'def') * (1 - (e.ignoreDef ?? 0));
@@ -533,7 +538,7 @@ class Battle {
     if (this.depth < 6) {
       this.fire('onHit', { caster, targets: [target], crit, killed }, caster);
       if (crit) this.fire('onCrit', { caster, targets: [target], crit, killed }, caster);
-      if (!killed) this.fire('onHurt', { caster: target, targets: [caster], source: caster }, target);
+      if (!killed) this.fire('onHurt', { caster: target, targets: [caster], source: caster, amount: dmg }, target);
       if (!killed) this.checkLowHp(target, caster);
       if (killed) this.fire('onKill', { caster, targets: [target], killed: true }, caster);
     }
@@ -639,12 +644,12 @@ class Battle {
         break;
       }
       case 'heal':
-        for (const t of tg) this.heal(caster, t, this.scaleVal(e.scale, caster, t));
+        for (const t of tg) this.heal(caster, t, this.scaleVal(e.scale, caster, t, ctx.amount));
         break;
       case 'shield':
         for (const t of tg) {
           if (!t.alive) continue;
-          let v = Math.round(this.scaleVal(e.scale, caster, t));
+          let v = Math.round(this.scaleVal(e.scale, caster, t, ctx.amount));
           if (caster.faction === 'wei' && this.hasBond(caster.side, '魏武之道')) v = Math.round(v * 1.3);
           t.shield.push({ v, turns: e.turns });
           this.push({ t: 'shield', src: caster.uid, dst: t.uid, amount: v, total: this.shieldOf(t) });
@@ -700,6 +705,18 @@ class Battle {
           t.counters[e.key] = Math.min(e.max ?? 99, cur + e.add);
         }
         break;
+      case 'detonate': {
+        for (const t of tg) {
+          const st = this.has(t, e.id);
+          if (!st || !t.alive) continue;
+          const layers = Math.max(0, st.stacks - (e.keep ?? 0));
+          if (layers <= 0) continue;
+          st.stacks -= layers;
+          if (st.stacks <= 0) { t.statuses = t.statuses.filter((x) => x !== st); this.push({ t: 'status', dst: t.uid, id: e.id, op: 'remove', stacks: 0, src: caster.uid }); }
+          this.dealDamage(ctx, t, { t: 'damage', scale: { atk: e.per * layers }, elem: e.elem ?? 'fire', noCrit: true }, 0, 1);
+        }
+        break;
+      }
       case 'selfDamage': {
         const loss = Math.round(caster.maxHp * e.pctMaxHp);
         caster.hp = Math.max(1, caster.hp - loss);
@@ -838,7 +855,12 @@ class Battle {
         u.hp = Math.max(0, u.hp - hpLoss);
         const killed = u.hp <= 0;
         this.push({ t: 'dot', dst: u.uid, id: s.id, amount: dmg, hp: u.hp, killed });
-        if (killed) { const src = this.units.find((x) => x.uid === s.src) ?? u; this.kill(u, src); }
+        if (killed && this.flag(u, 'nine')) { // 九命也能挡持续伤害
+          u.statuses = u.statuses.filter((x) => !STATUS_RULES[x.id]?.flags?.includes('nine'));
+          u.hp = Math.max(1, Math.round(u.maxHp * 0.15));
+          this.push({ t: 'status', dst: u.uid, id: 'nine', op: 'remove', stacks: 0, src: s.src });
+          this.push({ t: 'text', uid: u.uid, text: '九命！' });
+        } else if (killed) { const src = this.units.find((x) => x.uid === s.src) ?? u; this.kill(u, src); }
       }
       if (r?.hot && u.alive) this.heal(u, u, Math.round(s.power * u.maxHp));
     }

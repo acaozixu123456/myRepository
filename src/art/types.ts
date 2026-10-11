@@ -9,7 +9,9 @@ export type Pattern =
   | 'point' // 重点色（暹罗）
   | 'spots' // 豹纹玫瑰斑
   | 'cow' // 奶牛花斑
-  | 'shaded'; // 渐层
+  | 'shaded' // 渐层
+  | 'tortie' // 二色玳瑁（底色 + 辅色斑，无白）
+  | 'butterfly'; // 蝶斑（额头与背上的蝴蝶形斑）
 
 export interface Coat {
   base: string; // 主毛色
@@ -85,7 +87,11 @@ export type WeaponKind =
   | 'crossbow' // 弩（杂兵）
   | 'slingshot' // 弹弓（杂兵）
   | 'dagger' // 单把短刀（杂兵，不带悬浮飞刀）
-  | 'coinsPlain'; // 铜钱（无闪星，杂兵）
+  | 'coinsPlain' // 铜钱（无闪星，杂兵）
+  | 'axe' // 长柄大斧
+  | 'hooks' // 双钩（甘宁）
+  | 'whisk' // 拂尘（于吉）
+  | 'dualBlades'; // 双短刀（张辽）
 
 export interface Palette {
   main: string; // 阵营主色

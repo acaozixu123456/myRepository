@@ -16,7 +16,7 @@ export interface StatusRule {
   maxStacks: number;
   /** 由 power × stacks 计算修正；返回要累加的 Mods 增量 */
   mods?: (power: number, stacks: number) => Partial<Mods>;
-  flags?: ('stun' | 'silence' | 'taunt' | 'confuse' | 'dodge' | 'nine')[];
+  flags?: ('stun' | 'silence' | 'taunt' | 'confuse' | 'dodge' | 'nine' | 'stealth')[];
   dot?: boolean; // 每回合伤害（snap × stacks）
   hot?: boolean; // 每回合治疗（power × maxHp）
   cc?: boolean; // 控制类：用于控制免疫
@@ -27,6 +27,9 @@ export const STATUS_RULES: Record<string, StatusRule> = {
   curl: { id: 'curl', kind: 'buff', maxStacks: 1, mods: (p) => ({ defPct: p }) },
   purr: { id: 'purr', kind: 'buff', maxStacks: 1, hot: true },
   step: { id: 'step', kind: 'buff', maxStacks: 1, mods: (p) => ({ spdPct: p }) },
+  ward: { id: 'ward', kind: 'buff', maxStacks: 1, mods: (p) => ({ dmgTakenPct: -p }) },
+  poison: { id: 'poison', kind: 'debuff', maxStacks: 5, dot: true },
+  stealth: { id: 'stealth', kind: 'buff', maxStacks: 1, flags: ['stealth'] },
   nine: { id: 'nine', kind: 'buff', maxStacks: 1, flags: ['nine'] },
   illusion: { id: 'illusion', kind: 'buff', maxStacks: 1, flags: ['dodge'] },
   taunt: { id: 'taunt', kind: 'buff', maxStacks: 1, flags: ['taunt'] },
