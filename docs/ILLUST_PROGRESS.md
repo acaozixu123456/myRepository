@@ -7,7 +7,7 @@
 | 司马喵懿 | `wei_simamiyi` | SP | 待画 | 0 | |
 | 庞喵统 | `shu_pangmiaotong` | SP | 待画 | 0 | |
 | 嫦喵 | `xian_changmiao` | SP | 待画 | 0 | |
-| 曹喵德 | `wei_caomiaode` | UR | 待审 | 1 | 3 个候选选 C；透明 PNG 1024×1536；首只风格锚点待审 |
+| 曹喵德 | `wei_caomiaode` | UR | 通过 | 1 | 风格锚点，已入库；后面的猫披风/下摆边饰简化一档 |
 | 刘喵备 | `shu_liumiaobei` | UR | 待画 | 0 | |
 | 周喵瑜 | `wu_zhoumiaoyu` | UR | 待画 | 0 | |
 | 吕布丁 | `qun_lvbuding` | UR | 待画 | 0 | |
