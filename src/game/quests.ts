@@ -16,11 +16,11 @@ export interface QuestState {
 export type QuestClaimResult = { ok: true; reward: RewardDef } | { ok: false; reason: string };
 
 const QUEST_BY_ID = new Map(QUESTS.map((quest) => [quest.id, quest]));
-// 尚未接入的竞技、公会与好友玩法不能通过手工进度领军需。
+// 尚未接入的玩法不能通过手工进度领军需。
 const AVAILABLE_GOALS = new Set([
   'login', 'claim_idle', 'clear_stage', 'reach_stage', 'level_up_hero',
   'hero_level', 'upgrade_skill', 'recruit', 'collect_hero', 'spend_fish',
-  'equip_upgrade', 'tower_clear', 'arena_battle', 'arena_win', 'visit_friend',
+  'equip_upgrade', 'tower_clear', 'arena_battle', 'arena_win', 'visit_friend', 'guild_help',
 ]);
 const MAX_GOALS = new Set(['reach_stage', 'hero_level', 'collect_hero']);
 const RESOURCE_REWARDS = new Map<string, { key: keyof Resources; factor: number }>([

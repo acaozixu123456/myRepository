@@ -3,6 +3,10 @@ import { FACTIONS } from '../../data/factions';
 import { HERO_BY_ID } from '../../data/heroes';
 import { NPCS, NPC_BY_ID, PROFILE_NAME, npcLastSeenMin, npcLineup, npcOnline, npcProgress } from '../../game/npc';
 import type { ChatMsg, Npc } from '../../game/npc';
+import {
+  DONATE_COST, DONATE_PER_DAY, DONATE_REWARD, GUILDS, GUILD_BY_ID, HELP_PER_DAY, HELP_REWARD, chestReward, donatesLeft, ensureGuild, guildChest, guildDonate, guildHelp, guildLevel,
+  guildMemberBoard, guildWeekBoard, helpsLeft, joinGuild, leaveGuild, myGuild,
+} from '../../game/guild';
 import { teamPower } from '../../game/state';
 import {
   ARENA_EXTRA_COST, ARENA_EXTRA_MAX, ARENA_FREE, ARENA_REWARD, CHAT_MAX_LEN, addFriend, arenaBoard, arenaBuyExtra, arenaFinish, arenaLeft, arenaRefresh, arenaStage, arenaStart,
@@ -16,8 +20,8 @@ import { sfx } from '../sfx';
 import { floaty } from './home';
 import { topbar } from './lineup';
 
-export const socialState = { tab: 'world' as 'world' | 'players' | 'arena' | 'rank' | 'friends' };
-const TABS: [typeof socialState.tab, string][] = [['world', '世界'], ['players', '玩家'], ['arena', '竞技'], ['rank', '战力榜'], ['friends', '好友']];
+export const socialState = { tab: 'world' as 'world' | 'players' | 'arena' | 'guild' | 'rank' | 'friends' };
+const TABS: [typeof socialState.tab, string][] = [['world', '世界'], ['players', '玩家'], ['arena', '竞技'], ['guild', '公会'], ['rank', '战力榜'], ['friends', '好友']];
 
 const clock = (t: number) => new Date(t).toTimeString().slice(0, 5);
 function seen(npc: Npc, now: number): string {
@@ -97,6 +101,42 @@ function arenaHtml(ctx: AppCtx): string {
   </div>`;
 }
 
+// ---------- 公会 ----------
+function guildHtml(ctx: AppCtx): string {
+  const s = ctx.s, now = Date.now();
+  const st = ensureGuild(s, now);
+  const def = myGuild(s);
+  if (!def) {
+    return `<div class="scroll soc-scroll"><div class="note">还没有公会。挑一个喜欢的纸箱钻进去：每天互助、捐献、拆纸箱，都能拿「同袍鱼牌」去商店「公会」页兑换好东西。</div>
+      ${GUILDS.map((g) => {
+        const lv = guildLevel(g, now);
+        return `<section class="panel gld" style="--c:${g.color}"><div class="row"><div class="grow"><h3>${esc(g.name)} <small>Lv.${lv.level}</small></h3><p>${esc(g.motto)}</p><small class="muted">成员 ${g.members.length + 1} 位 · 会长 ${esc(NPC_BY_ID[g.members[0]].name)}</small></div>
+        <button class="btn sm pink" data-act="g-join" data-id="${g.id}">加入</button></div></section>`;
+      }).join('')}</div>`;
+  }
+  const lv = guildLevel(def, now, st.contrib);
+  const pct = lv.to === null ? 100 : Math.min(100, Math.round(((lv.exp - lv.from) / (lv.to - lv.from)) * 100));
+  const chest = chestReward(lv.level);
+  const board = guildMemberBoard(s, now);
+  const week = guildWeekBoard(now, s);
+  const hl = helpsLeft(s, now), dl = donatesLeft(s, now);
+  return `<div class="scroll soc-scroll">
+    <section class="panel gld" style="--c:${def.color}">
+      <div class="row"><div class="grow"><h3>${esc(def.name)} <small>Lv.${lv.level}</small></h3><p>${esc(def.motto)}</p></div><button class="btn sm ghost" data-act="g-leave">退会</button></div>
+      <div class="bar"><i style="width:${pct}%"></i></div><small class="muted">公会经验 ${fmt(lv.exp)}${lv.to === null ? '（满级）' : ` / ${fmt(lv.to)}`} · 你的贡献 ${fmt(st.contrib)}</small>
+    </section>
+    <section class="panel gld-act">
+      <div class="gbtn"><div><b>每日纸箱</b><small>${fmt(chest.tokens)} 鱼牌 · ${fmt(chest.fish)} 小鱼干 · ${chest.bells} 金铃铛</small></div><button class="btn sm ${st.chest ? 'ghost' : 'green'}" data-act="g-chest" ${st.chest ? 'disabled' : ''}>${st.chest ? '已拆' : '拆纸箱'}</button></div>
+      <div class="gbtn"><div><b>同袍互助 <em>${hl}/${HELP_PER_DAY}</em></b><small>帮成员扶纸箱：${HELP_REWARD.tokens} 鱼牌 + ${HELP_REWARD.fish} 小鱼干，贡献 +${HELP_REWARD.contrib}</small></div><button class="btn sm ${hl > 0 ? 'blue' : 'ghost'}" data-act="g-help" ${hl > 0 ? '' : 'disabled'}>互助</button></div>
+      <div class="gbtn"><div><b>捐献小鱼干 <em>${dl}/${DONATE_PER_DAY}</em></b><small>${fmt(DONATE_COST)} 小鱼干：${DONATE_REWARD.tokens} 鱼牌，贡献 +${DONATE_REWARD.contrib}</small></div><button class="btn sm ${dl > 0 ? 'orange' : 'ghost'}" data-act="g-donate" ${dl > 0 ? '' : 'disabled'}>捐献</button></div>
+    </section>
+    <div class="note">本周公会榜</div>
+    ${week.map((w, i) => `<div class="arow ${w.mine ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i><div class="who"><b>${esc(w.guild.name)}</b></div><div class="rt"><em>本周贡献</em><b class="num">${fmt(w.score)}</b></div></div>`).join('')}
+    <div class="note">本周成员贡献榜</div>
+    ${board.map((r, i) => `<div class="arow ${r.me ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i>${r.avatar ? head(r.avatar) : head(s.lineup.find(Boolean) ?? 'wei_xiahoudun')}<div class="who"><b>${esc(r.name)}${r.leader ? ' <i class="vtag">会长</i>' : ''}</b></div><div class="rt"><em>贡献</em><b class="num">${fmt(r.score)}</b></div></div>`).join('')}
+  </div>`;
+}
+
 function rankHtml(ctx: AppCtx): string {
   const s = ctx.s;
   const rows = arenaBoard(s, teamPower(s), Date.now()).sort((a, b) => b.power - a.power);
@@ -106,7 +146,7 @@ function rankHtml(ctx: AppCtx): string {
 
 export function socialHtml(ctx: AppCtx): string {
   const tab = socialState.tab;
-  const body = tab === 'world' ? worldHtml(ctx) : tab === 'players' ? playersHtml() : tab === 'arena' ? arenaHtml(ctx) : tab === 'rank' ? rankHtml(ctx) : friendsHtml(ctx);
+  const body = tab === 'world' ? worldHtml(ctx) : tab === 'players' ? playersHtml() : tab === 'arena' ? arenaHtml(ctx) : tab === 'guild' ? guildHtml(ctx) : tab === 'rank' ? rankHtml(ctx) : friendsHtml(ctx);
   return `${topbar(ctx, '喵洲广场', '<button class="btn sm ghost shop-back" data-act="nav" data-to="home">返回</button>')}
     <div class="shop-tabs"><div class="seg">${TABS.map(([id, name]) => `<button class="pill" data-act="stab" data-tab="${id}" aria-pressed="${tab === id}">${name}</button>`).join('')}</div></div>
     <div class="soc-body t-${tab}">${body}</div>`;
@@ -164,6 +204,17 @@ export function handleSocial(ctx: AppCtx, act: string, el: HTMLElement): boolean
       ctx.refresh();
       return true;
     }
+    case 'g-join': { const r = joinGuild(s, el.dataset.id!); ctx.toast(r.ok ? `加入了 ${GUILD_BY_ID[el.dataset.id!].name}` : r.reason); if (r.ok) sfx.ok(); ctx.save(); ctx.refresh(); return true; }
+    case 'g-leave': { const r = leaveGuild(s); ctx.toast(r.ok ? '已退会' : r.reason); ctx.save(); ctx.refresh(); return true; }
+    case 'g-help': {
+      const r = guildHelp(s);
+      if (!r.ok) { ctx.toast(r.reason); return true; }
+      ctx.save(); sfx.coin();
+      ctx.toast(`帮 ${NPC_BY_ID[r.target].name} 扶了一把纸箱：+${r.tokens} 鱼牌，+${r.fish} 小鱼干`);
+      ctx.refresh(); return true;
+    }
+    case 'g-donate': { const r = guildDonate(s); if (!r.ok) { ctx.toast(r.reason); return true; } ctx.save(); sfx.coin(); ctx.toast(`捐献成功：+${r.tokens} 鱼牌，贡献 +${r.contrib}`); ctx.refresh(); return true; }
+    case 'g-chest': { const r = guildChest(s); if (!r.ok) { ctx.toast(r.reason); return true; } ctx.save(); sfx.ok(); ctx.toast(`拆开纸箱：${r.tokens} 鱼牌、${fmt(r.fish)} 小鱼干、${r.bells} 金铃铛`); ctx.refresh(); return true; }
     case 'arena-buy': { const r = arenaBuyExtra(s); ctx.toast(r.ok ? '加了一次切磋机会' : r.reason ?? ''); ctx.save(); ctx.refresh(); return true; }
     case 'arena-go': {
       const id = el.dataset.id!;
@@ -224,6 +275,9 @@ export const SOCIAL_CSS = `
 .arow.me{background:linear-gradient(#fff3c4,#ffe08a);box-shadow:0 3px 0 #d9a63a}
 .arow .rk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--f-d);font-size:14px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line);flex:none}
 .arow .rk.r1{background:linear-gradient(#ffe27a,#f0a62e);color:#5a2a05}.arow .rk.r2{background:linear-gradient(#f0f0f6,#b8bcc8)}.arow .rk.r3{background:linear-gradient(#f0c8a0,#c88a58)}
+.gld h3 small{font-family:var(--f-b);font-size:12px;color:var(--orange-d);font-weight:800;margin-left:6px}.gld p{margin:2px 0 4px;font-size:12.5px;font-weight:700;color:var(--ink-2)}.gld{box-shadow:0 3px 0 var(--c,var(--paper-line))}
+.gld .bar{height:10px;border-radius:999px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line);overflow:hidden;margin:6px 0 4px}.gld .bar i{display:block;height:100%;background:linear-gradient(var(--c,#f0b030),#e08a20)}
+.gld-act{display:grid;gap:8px}.gbtn{display:flex;align-items:center;justify-content:space-between;gap:8px}.gbtn b{font-family:var(--f-d);font-weight:400;font-size:15px}.gbtn b em{font-style:normal;font-family:var(--f-b);font-size:12px;color:var(--orange-d);font-weight:800;margin-left:4px}.gbtn small{display:block;font-size:11.5px;font-weight:700;color:var(--ink-2)}
 .npcd .av.lg{width:58px;height:58px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px var(--c),0 2px 0 rgba(0,0,0,.2)}
 .npcd .bio{margin:8px 0;font-size:13px;line-height:1.6;font-weight:700;color:var(--ink-2)}
 .npcd .npcstat{display:flex;justify-content:space-between;gap:6px;font-size:12px;font-weight:700;color:var(--ink-2)}.npcd .npcstat b{font-family:var(--f-d);font-weight:400;font-size:16px;color:var(--ink);margin-left:3px}

@@ -81,7 +81,7 @@ describe('paid economy audit actual resource accounting', () => {
   it('covers all required snapshots, current tiers and NPCs with deterministic finite outputs', () => {
     expect(report.scenarios).toHaveLength(32); expect(report.tiers).toHaveLength(5); expect(report.npcs).toHaveLength(NPCS.length);
     expect(report.tiers.map((t) => t.unlockOrdinal)).toEqual([1, 18, 42, 72, 110]);
-    expect(report.questCeilings.map((q) => q.available)).toEqual([11, 7]);
+    expect(report.questCeilings.map((q) => q.available)).toEqual([12, 8]);
     expect(report.costs.find((c) => c.ordinal === 144)).toMatchObject({ level: 95, referenceStar: 5, minimumStar: 4, fish: 3050800, exp: 6110300, dedicatedShards: 1650 });
     expect(report.gifts.find((g) => g.count === 7)!.valuation.pricedFish).toBe(7 * (400 * 100 + 2 * 30000));
     expect(report.gifts.find((g) => g.count === 30)!.valuation.pricedFish).toBe(30 * (400 * 100 + 2 * 30000));

@@ -67,22 +67,13 @@ describe('quest progress', () => {
     expect(s.quests).toEqual(before);
   });
 
-  it.each(['guild_help'])('keeps unavailable %s tasks at zero and forbids forged claims', (type) => {
+  it('every quest goal type is wired to a live system (guild included)', () => {
+    for (const entry of QUESTS) expect(isQuestAvailable(entry)).toBe(true);
     const s = newPlayer(NOW);
-    const entries = QUESTS.filter((entry) => entry.goal.type === type);
-    expect(entries.length).toBeGreaterThan(0);
-    const before = structuredClone(s);
-    track(s, type, 999999);
-    expect(s).toEqual(before);
-    for (const entry of entries) {
-      s.quests.progress[entry.id] = entry.goal.target;
-      expect(isQuestAvailable(entry)).toBe(false);
-      expect(questProgress(s, entry)).toBe(0);
-      expect(isClaimable(s, entry)).toBe(false);
-      const forged = structuredClone(s);
-      expect(claim(s, entry.id).ok).toBe(false);
-      expect(s).toEqual(forged);
-    }
+    track(s, 'guild_help', 999999);
+    const daily = QUESTS.find((entry) => entry.id === 'daily_guild')!;
+    expect(questProgress(s, daily)).toBe(daily.goal.target);
+    expect(isClaimable(s, daily)).toBe(true);
   });
 });
 
@@ -329,8 +320,8 @@ describe('quest save migration', () => {
     expect(result.res).toEqual(current.res);
     expect(result.heroes).toEqual(current.heroes);
     expect(result.inventory).toEqual({ ...current.inventory, items: { fishbone_small: 3 } });
-    expect(result.quests.progress).toEqual({ daily_campaign: 10, achievement_hero_level_6: 20, daily_login: 1, newbie_arrive: 1 });
-    expect(result.quests.claimed).toEqual({ daily_login: true, newbie_arrive: true });
+    expect(result.quests.progress).toEqual({ daily_campaign: 10, achievement_hero_level_6: 20, daily_login: 1, newbie_arrive: 1, daily_guild: 2 });
+    expect(result.quests.claimed).toEqual({ daily_login: true, newbie_arrive: true, daily_guild: true });
     expect(result.pending).toBeUndefined();
     track(result, 'login');
     expect(claim(result, 'daily_login').ok).toBe(false);
