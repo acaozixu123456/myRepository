@@ -11,7 +11,7 @@ import { claim, floaty, homeHtml, updateHome, updateIdle } from './screens/home'
 import { lineupHtml, lineupState } from './screens/lineup';
 import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
-import { applyGain } from '../game/stage';
+import { applyGain, idleCapHours, tickIdle } from '../game/stage';
 import { autoLineup, equip, levelUp, load, save, swapSlots, unequip } from '../game/state';
 import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
@@ -22,6 +22,7 @@ document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
 const state = load(storage);
+const awayMin = (Date.now() - state.idle.last) / 60000;
 sfxState.on = state.settings.sound !== false;
 const params = new URLSearchParams(location.search);
 const at = params.get('at');
@@ -122,6 +123,7 @@ root.addEventListener('click', (e) => {
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
     case 'claim': claim(ctx); break;
     case 'settings': openSettings(); break;
+    case 'claim2': root.querySelectorAll('.mask.center').forEach((m) => m.remove()); claim(ctx); break;
     case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; ctx.save(); openSettings(); sfx.ok(); break;
     case 'spd': state.settings.speed = Number(el.dataset.v); ctx.loop.setSpeed(state.settings.speed); ctx.save(); openSettings(); updateHome(ctx); break;
     case 'reset1': el.outerHTML = '<button class="btn pink" data-act="reset2">再点一次：清空存档</button>'; break;
@@ -194,6 +196,18 @@ setInterval(() => ctx.save(), 8000);
 document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.save(); });
 
 updateHome(ctx);
+// 离线归来：挂机收益已在存档里累积，弹窗告知并一键领取
+{
+  if (awayMin >= 5 && !params.get('nostory')) {
+    tickIdle(state);
+    const hrs = Math.min(awayMin, idleCapHours(state) * 60) / 60;
+    root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog" style="text-align:center">
+      <h3 class="title" style="margin:0 0 6px">欢迎回来！</h3>
+      <p class="muted" style="margin:0 0 10px;font-weight:700">猫猫们替你守了 ${hrs.toFixed(1)} 小时</p>
+      <div class="row" style="justify-content:center;gap:18px;font-family:var(--f-d);font-size:22px">${icon('fish', 30)}<b class="num">${fmt(state.idle.fish)}</b>${icon('spark', 30)}<b class="num">${fmt(state.idle.exp)}</b></div>
+      <div style="margin-top:14px"><button class="btn lg" data-act="claim2">收下</button></div></div></div>`);
+  }
+}
 ctx.loop.start();
 if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
 (window as unknown as Record<string, unknown>).__app = ctx;
