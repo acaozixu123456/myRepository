@@ -13,7 +13,7 @@
 | 吕布丁 | `qun_lvbuding` | UR | 待画 | 0 | |
 | 孟喵获 | `man_mengmiaohuo` | UR | 待画 | 0 | |
 | 左慈喵 | `xian_zuoci` | UR | 待画 | 0 | |
-| 夏侯墩 | `wei_xiahoudun` | SSR | 待画 | 0 | |
+| 夏侯墩 | `wei_xiahoudun` | SSR | 待审 | 1 | 2 个候选中选 B，尾巴已收拢留足边距；盔甲高光偏亮 |
 | 许虎痴 | `wei_xuhuchi` | SSR | 待画 | 0 | |
 | 张喵辽 | `wei_zhangliao` | SSR | 待画 | 0 | |
 | 关云喵 | `shu_guanyunmiao` | SSR | 待画 | 0 | |
