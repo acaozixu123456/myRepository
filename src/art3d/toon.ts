@@ -34,7 +34,18 @@ export function outlineMat(thick: number, color = '#3a2430'): THREE.ShaderMateri
   if (!m) {
     m = new THREE.ShaderMaterial({
       uniforms: { uThick: { value: thick }, uColor: { value: new THREE.Color(color) } },
-      vertexShader: 'uniform float uThick;void main(){gl_Position=projectionMatrix*modelViewMatrix*vec4(position+normalize(normal)*uThick,1.0);}',
+      vertexShader: `#include <common>
+#include <skinning_pars_vertex>
+uniform float uThick;
+void main(){
+  #include <beginnormal_vertex>
+  #include <skinbase_vertex>
+  #include <skinnormal_vertex>
+  #include <begin_vertex>
+  #include <skinning_vertex>
+  transformed += normalize(objectNormal) * uThick;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
+}`,
       fragmentShader: 'uniform vec3 uColor;void main(){gl_FragColor=vec4(uColor,1.0);}',
       side: THREE.BackSide,
     });

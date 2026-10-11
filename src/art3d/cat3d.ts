@@ -11,21 +11,21 @@ import { coatTexture } from './patterns';
 
 export interface Joints {
   root: THREE.Group; // 整猫（朝向 / 缩放）
-  hip: THREE.Group; // 髋（整体上下）
-  torso: THREE.Group; // 躯干（呼吸 / 前倾）
-  neck: THREE.Group;
-  head: THREE.Group;
-  earL: THREE.Group;
-  earR: THREE.Group;
-  shoulderL: THREE.Group;
-  shoulderR: THREE.Group;
-  elbowL: THREE.Group;
-  elbowR: THREE.Group;
-  hipL: THREE.Group;
-  hipR: THREE.Group;
-  kneeL: THREE.Group;
-  kneeR: THREE.Group;
-  tail: THREE.Group[];
+  hip: THREE.Bone; // 髋（整体上下）
+  torso: THREE.Bone; // 躯干（呼吸 / 前倾）
+  neck: THREE.Bone;
+  head: THREE.Bone;
+  earL: THREE.Bone;
+  earR: THREE.Bone;
+  shoulderL: THREE.Bone;
+  shoulderR: THREE.Bone;
+  elbowL: THREE.Bone;
+  elbowR: THREE.Bone;
+  hipL: THREE.Bone;
+  hipR: THREE.Bone;
+  kneeL: THREE.Bone;
+  kneeR: THREE.Bone;
+  tail: THREE.Bone[];
   eyes: THREE.Object3D[]; // 眨眼用
 }
 export interface Sockets {
@@ -38,7 +38,7 @@ export interface Sockets {
 }
 export interface Cat3D { look: CatLook; root: THREE.Group; j: Joints; sock: Sockets; build: number; phase: number }
 
-const grp = (name: string, x = 0, y = 0, z = 0): THREE.Group => { const g = new THREE.Group(); g.name = name; g.position.set(x, y, z); g.userData.joint = true; return g; };
+const grp = (name: string, x = 0, y = 0, z = 0): THREE.Bone => { const g = new THREE.Bone(); g.name = name; g.position.set(x, y, z); g.userData.joint = true; return g; };
 
 const EYE: Record<EyeStyle, { h: number; tilt: number; w?: number; lid?: number; arc?: boolean }> = {
   round: { h: 1.25, tilt: 0 },
@@ -53,7 +53,7 @@ const EYE: Record<EyeStyle, { h: number; tilt: number; w?: number; lid?: number;
   cool: { h: 0.75, tilt: -0.12, lid: 0.3 },
 };
 
-function buildEye(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE.Group {
+function buildEye(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE.Bone {
   const st = EYE[look.eye.style];
   const g = grp('eye', side * 0.27, 0.06, 0.5);
   const arcWink = st.arc || (look.eye.style === 'wink' && side === -1);
@@ -96,7 +96,7 @@ function buildEye(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE
   return g;
 }
 
-function buildEar(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE.Group {
+function buildEar(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE.Bone {
   const e = grp('ear', side * 0.38, 0.5, -0.02);
   const big = look.ear === 'big' ? 1.35 : 1;
   const outer = solid(new THREE.ConeGeometry(0.24 * big, 0.5 * big, 4), toon(fur), 0.02);
@@ -131,7 +131,8 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   const lightMat = toon(light);
   const sleeveMat = toon(sleeve);
 
-  const root = grp('cat');
+  const root = new THREE.Group();
+  root.name = 'cat';
   const hip = grp('hip', 0, 0.5, 0);
   root.add(hip);
   const torso = grp('torso', 0, 0, 0);
@@ -231,7 +232,7 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
 
   // ---- 尾巴（链式关节）----
   const nSeg = look.tail === 'stub' ? 2 : look.tail === 'bushy' ? 6 : 7;
-  const tail: THREE.Group[] = [];
+  const tail: THREE.Bone[] = [];
   let parent: THREE.Object3D = torso;
   for (let i = 0; i < nSeg; i++) {
     const j = grp('tail' + i, i === 0 ? 0 : 0, i === 0 ? 0.15 : 0.0, i === 0 ? -0.4 : -0.2);
@@ -283,61 +284,58 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
 }
 
 /**
- * 合批：每个关节名下、没有被更深关节隔开的静态网格，按材质合并成一个网格（把变换烘进顶点）。
- * 一只猫从 ~100 个网格降到 ~40 个，10 只同屏也只有几百次绘制。部件作者不用关心这件事。
+ * 蒙皮合批：把整只猫所有静态网格烘成几个 SkinnedMesh（按材质分组），每个顶点绑定到它原来所属的关节骨头。
+ * 一只猫只剩 ~6 次绘制调用（部件作者不用关心这件事），10 只同屏也只有几十次。
+ * 颜色走顶点色；带 userData.noBake 的网格不合并（保持独立）。
  */
 export function bakeCat(cat: Cat3D): void {
-  cat.root.updateMatrixWorld(true);
-  const joints: THREE.Object3D[] = [];
-  cat.root.traverse((o) => { if (o.userData.joint || o === cat.root) joints.push(o); });
-  for (const jt of joints) {
-    const inv = new THREE.Matrix4().copy(jt.matrixWorld).invert();
-    const byMat = new Map<THREE.Material, THREE.BufferGeometry[]>();
-    const meshes: THREE.Mesh[] = [];
-    const walk = (o: THREE.Object3D) => {
-      for (const ch of o.children) {
-        if (ch.userData.joint) continue;
-        if ((ch as THREE.Mesh).isMesh) meshes.push(ch as THREE.Mesh);
-        walk(ch);
-      }
-    };
-    walk(jt);
-    if (meshes.length < 2) continue;
-    // 带 userData.noBake 的网格（例如以后需要单独动的零件）不合并
-    const bakable = meshes.filter((m) => !m.userData.noBake && m.visible);
-    const used: THREE.Mesh[] = [];
-    for (const m of bakable) {
-      m.updateWorldMatrix(true, false);
-      const src = m.material as THREE.Material;
-      // 普通卡通材质 → 顶点色合批（一个关节最多几个网格）；描边 / 带自发光的高光点保持原材质
-      const tm = src as THREE.MeshToonMaterial;
-      const vc = tm.isMeshToonMaterial && tm.emissive.getHex() === 0;
-      const g = m.geometry.clone();
-      g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
-      if (!g.getAttribute('uv')) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 2), 2));
-      let mat = src;
-      if (vc) {
-        mat = vertexColorMat(tm.map, tm.side === THREE.DoubleSide);
-        const n = g.getAttribute('position').count;
-        const col = new Float32Array(n * 3);
-        const c = tm.map ? new THREE.Color('#ffffff') : tm.color;
-        for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; }
-        g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-      }
-      if (!byMat.has(mat)) byMat.set(mat, []);
-      byMat.get(mat)!.push(g);
-      used.push(m);
+  const { root } = cat;
+  root.updateMatrixWorld(true);
+  const bones: THREE.Bone[] = [];
+  root.traverse((o) => { if ((o as THREE.Bone).isBone) bones.push(o as THREE.Bone); });
+  const boneIndex = new Map<THREE.Object3D, number>(bones.map((b, i) => [b, i]));
+  const ownerOf = (o: THREE.Object3D): number => { let p: THREE.Object3D | null = o; while (p) { const k = boneIndex.get(p); if (k !== undefined) return k; p = p.parent; } return 0; };
+  const meshes: THREE.Mesh[] = [];
+  root.traverse((o) => { if ((o as THREE.Mesh).isMesh && !o.userData.noBake && o.visible) meshes.push(o as THREE.Mesh); });
+  const inv = new THREE.Matrix4().copy(root.matrixWorld).invert();
+  const byMat = new Map<THREE.Material, THREE.BufferGeometry[]>();
+  for (const m of meshes) {
+    const src = m.material as THREE.Material;
+    const tm = src as THREE.MeshToonMaterial;
+    const vc = tm.isMeshToonMaterial && tm.emissive.getHex() === 0;
+    const g = m.geometry.clone();
+    g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
+    if (!g.getAttribute('uv')) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 2), 2));
+    const n = g.getAttribute('position').count;
+    let mat = src;
+    if (vc) {
+      mat = vertexColorMat(tm.map, tm.side === THREE.DoubleSide);
+      const col = new Float32Array(n * 3);
+      const c = tm.map ? new THREE.Color('#ffffff') : tm.color;
+      for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; }
+      g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     }
-    const merged: THREE.Mesh[] = [];
-    for (const [mat, geos] of byMat) {
-      const idx = geos.filter((g) => g.index).length;
-      const list = idx === geos.length || idx === 0 ? geos : geos.map((g) => (g.index ? g.toNonIndexed() : g));
-      // 属性集合不同的几何体（有 / 无 color）不能混合并，这里同一材质下属性一致
-      const mg = list.length === 1 ? list[0] : mergeGeometries(list, false);
-      if (!mg) return; // 属性对不上就放弃合批（保持原样）
-      merged.push(new THREE.Mesh(mg, mat));
-    }
-    for (const m of used) m.removeFromParent();
-    for (const m of merged) jt.add(m);
+    const owner = ownerOf(m);
+    const si = new Uint16Array(n * 4), sw = new Float32Array(n * 4);
+    for (let i = 0; i < n; i++) { si[i * 4] = owner; sw[i * 4] = 1; }
+    g.setAttribute('skinIndex', new THREE.BufferAttribute(si, 4));
+    g.setAttribute('skinWeight', new THREE.BufferAttribute(sw, 4));
+    if (!byMat.has(mat)) byMat.set(mat, []);
+    byMat.get(mat)!.push(g);
   }
+  const skinned: THREE.SkinnedMesh[] = [];
+  for (const [mat, geos] of byMat) {
+    const idx = geos.filter((g) => g.index).length;
+    const list = idx === geos.length || idx === 0 ? geos : geos.map((g) => (g.index ? g.toNonIndexed() : g));
+    const mg = list.length === 1 ? list[0] : mergeGeometries(list, false);
+    if (!mg) return; // 属性对不上就放弃（保持原样）
+    const sm = new THREE.SkinnedMesh(mg, mat);
+    sm.frustumCulled = false;
+    skinned.push(sm);
+  }
+  for (const m of meshes) m.removeFromParent();
+  for (const sm of skinned) root.add(sm);
+  root.updateMatrixWorld(true);
+  const skeleton = new THREE.Skeleton(bones);
+  for (const sm of skinned) sm.bind(skeleton, root.matrixWorld);
 }
