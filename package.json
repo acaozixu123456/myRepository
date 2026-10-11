@@ -12,7 +12,8 @@
     "balance": "node tools/run-balance.mjs",
     "shots": "node tools/shots.mjs",
     "showcase": "node tools/build-showcase.mjs",
-    "app": "node tools/build-app.mjs"
+    "app": "node tools/build-app.mjs",
+    "lint:content": "node tools/run-lint-content.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
