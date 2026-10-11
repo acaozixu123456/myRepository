@@ -64,8 +64,12 @@ track(state, 'hero_level', Math.max(...Object.values(state.heroes).map((h) => h.
 track(state, 'collect_hero', Object.keys(state.heroes).length);
 const savedStage = ((state.best?.chapter ?? 1) - 1) * 24 + (state.best?.index ?? 1);
 if (savedStage > 1 || state.stage.wins > 0) track(state, 'reach_stage', savedStage);
-// 开发者发放：给本号一次性补发 20 万月光珠（等值计入累计充值 → VIP 满级）
-const granted = grantOnce(state, 'dev_grant_200k', 200000);
+// 开发者发放：给测试号一次性补发 20 万月光珠（等值计入累计充值 → VIP 满级）。
+// 只在开发服务器 / 单文件试玩版里发；Vite 正式构建默认不发（要发请在地址后加 ?dev=1），避免真实玩家白拿。
+let isProdBuild = false;
+try { isProdBuild = !!import.meta.env.PROD; } catch { /* esbuild 的单文件（iife）构建里没有 import.meta，当作试玩版 */ }
+const devGrant = !isProdBuild || new URLSearchParams(location.search).get('dev') === '1';
+const granted = devGrant && grantOnce(state, 'dev_grant_200k', 200000);
 if (granted) save(storage, state);
 
 const app = document.getElementById('app')!;
@@ -347,8 +351,6 @@ if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
 (window as unknown as Record<string, unknown>).__app = ctx;
 
 // 正式构建里注册离线缓存（开发服务器不注册，避免缓存干扰调试）
-let isProd = false;
-try { isProd = !!import.meta.env.PROD; } catch { /* esbuild 的单文件（iife）构建里没有 import.meta，当作非正式构建 */ }
-if (isProd && 'serviceWorker' in navigator) {
+if (isProdBuild && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => { void navigator.serviceWorker.register('./sw.js').catch(() => undefined); });
 }
