@@ -15,11 +15,13 @@ export function gradientMap(): THREE.DataTexture {
 
 const matCache = new Map<string, THREE.MeshToonMaterial>();
 /** 卡通材质（按颜色缓存复用，别在渲染循环里 new） */
-export function toon(color: string | number, opt: { map?: THREE.Texture | null; emissive?: string | number; key?: string } = {}): THREE.MeshToonMaterial {
-  const key = `${color}|${opt.emissive ?? ''}|${opt.key ?? ''}`;
+export function toon(color: string | number, opt: { map?: THREE.Texture | null; emissive?: string | number; key?: string; double?: boolean } = {}): THREE.MeshToonMaterial {
+  const key = `${color}|${opt.emissive ?? ''}|${opt.key ?? ''}|${opt.double ? 'd' : ''}`;
   if (!opt.map) { const c = matCache.get(key); if (c) return c; }
-  const m = new THREE.MeshToonMaterial({ color: new THREE.Color(color), gradientMap: gradientMap(), map: opt.map ?? null });
+  // 有贴图时贴图已经带着底色，材质色用白（否则颜色会被平方）
+  const m = new THREE.MeshToonMaterial({ color: new THREE.Color(opt.map ? '#ffffff' : color), gradientMap: gradientMap(), map: opt.map ?? null });
   if (opt.emissive !== undefined) m.emissive = new THREE.Color(opt.emissive);
+  if (opt.double) m.side = THREE.DoubleSide;
   if (!opt.map) matCache.set(key, m);
   return m;
 }
@@ -61,3 +63,16 @@ export const sphere = (r: number, sx = 1, sy = 1, sz = 1, seg = 20): THREE.Buffe
 };
 /** 竖直胶囊：总长 len（含两端半球），半径 r，中心在原点 */
 export const capsule = (r: number, len: number, seg = 12): THREE.BufferGeometry => new THREE.CapsuleGeometry(r, Math.max(0.001, len - 2 * r), 6, seg);
+
+const vcCache = new Map<string, THREE.MeshToonMaterial>();
+/** 合批后的顶点色材质：颜色从顶点属性来，按「贴图 × 双面」缓存 */
+export function vertexColorMat(map: THREE.Texture | null, double: boolean): THREE.MeshToonMaterial {
+  const key = `${map?.uuid ?? ''}|${double ? 'd' : ''}`;
+  let m = vcCache.get(key);
+  if (!m) {
+    m = new THREE.MeshToonMaterial({ color: new THREE.Color('#ffffff'), gradientMap: gradientMap(), map, vertexColors: true });
+    if (double) m.side = THREE.DoubleSide;
+    vcCache.set(key, m);
+  }
+  return m;
+}

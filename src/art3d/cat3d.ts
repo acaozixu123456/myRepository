@@ -1,11 +1,12 @@
 // 程序化 3D 小猫：真关节（FK 层级），手臂 = 肩 → 上臂 → 肘 → 前臂 → 爪，天然连在一起。
 // 一只猫由 CatLook 自动生成（毛色 / 五官 / 耳 / 尾 / 体型）；头饰 / 衣服 / 披挂 / 武器 / 配饰交给 parts/ 里的部件函数。
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type { CatLook, EyeStyle } from '../art/types';
 import { HERO_PARTS } from './heroes';
 import { buildPart } from './parts';
 import type { PartCtx } from './parts/types';
-import { capsule, solid, sphere, toon } from './toon';
+import { capsule, solid, sphere, toon, vertexColorMat } from './toon';
 import { coatTexture } from './patterns';
 
 export interface Joints {
@@ -37,7 +38,7 @@ export interface Sockets {
 }
 export interface Cat3D { look: CatLook; root: THREE.Group; j: Joints; sock: Sockets; build: number; phase: number }
 
-const grp = (name: string, x = 0, y = 0, z = 0): THREE.Group => { const g = new THREE.Group(); g.name = name; g.position.set(x, y, z); return g; };
+const grp = (name: string, x = 0, y = 0, z = 0): THREE.Group => { const g = new THREE.Group(); g.name = name; g.position.set(x, y, z); g.userData.joint = true; return g; };
 
 const EYE: Record<EyeStyle, { h: number; tilt: number; w?: number; lid?: number; arc?: boolean }> = {
   round: { h: 1.25, tilt: 0 },
@@ -74,6 +75,15 @@ function buildEye(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE
   const hi = new THREE.Mesh(sphere(1, w * 0.26, w * 0.26, 0.05, 8), toon('#ffffff', { emissive: '#ffffff' }));
   hi.position.set(-w * 0.28 * side, h * 0.3, 0.08);
   g.add(white, iris, pupil, hi);
+  // 上眼睑线（让眼神更有精神）
+  const lash = new THREE.Mesh(new THREE.TorusGeometry(h * 0.95, 0.02, 5, 14, Math.PI * 0.9), toon('#2a1c22'));
+  lash.scale.set(w / h, 1, 1); lash.rotation.z = Math.PI * 0.05; lash.position.set(0, 0.0, 0.06);
+  g.add(lash);
+  if (['sharp', 'fierce', 'keen', 'cool'].includes(look.eye.style)) {
+    const brow = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.035, 0.03), toon('#2a1c22'));
+    brow.position.set(0, h + 0.1, 0.05); brow.rotation.z = -side * (look.eye.style === 'fierce' ? 0.35 : 0.2) * -1;
+    g.add(brow);
+  }
   if (st.lid) {
     // 半睁：用毛色的半圆眼睑盖住上半部分
     const lid = new THREE.Mesh(sphere(1, w * 1.12, h * 1.05, 0.09, 12), toon(fur));
@@ -115,8 +125,9 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   const headK = look.head ?? 1;
   const sleeve = pal.main;
   const ctx: PartCtx = { look, pal, fur, light, pink, glyph: o.glyph };
-  const tex = coatTexture(look);
-  const furMat = toon(fur, tex ? { map: tex, key: 'tex' + fur + look.coat.pattern } : {});
+  const texB = coatTexture(look, 'body'), texH = coatTexture(look, 'head');
+  const furMat = toon(fur, texB ? { map: texB, key: 'tex' + fur + look.coat.pattern } : {});
+  const headMat = toon(fur, texH ? { map: texH, key: 'texh' + fur + look.coat.pattern } : {});
   const lightMat = toon(light);
   const sleeveMat = toon(sleeve);
 
@@ -160,7 +171,7 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   torso.add(neck);
   const head = grp('head', 0, 0.46, 0);
   neck.add(head);
-  const skull = solid(sphere(0.62 * headK, 1.16, 1, 1.02, 28), furMat);
+  const skull = solid(sphere(0.62 * headK, 1.16, 1, 1.02, 28), headMat);
   skull.position.y = 0.14;
   head.add(skull);
   // 口鼻：浅色
@@ -247,7 +258,14 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
     // 英雄专属造型优先（如关云喵的青龙偃月刀）；没有就用通用部件库
     const own = heroId ? HERO_PARTS[heroId]?.[group as keyof (typeof HERO_PARTS)[string]] : undefined;
     const obj = own ? own(ctx) : buildPart(group as never, kind, ctx);
-    if (obj) to.add(obj);
+    if (obj) {
+      to.add(obj);
+      // 衣服的下摆挂在 hip（腰以下不随上身前倾）；双持武器的副手
+      const sk = obj.userData.skirt as THREE.Object3D | undefined;
+      if (sk) hip.add(sk);
+      const off = obj.userData.offhand as THREE.Object3D | undefined;
+      if (off) handL.add(off);
+    }
   };
   attach(o.body ?? 'robeScholar', 'body', torso);
   attach(o.head, 'headgear', headTop);
@@ -259,5 +277,67 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
     root, hip, torso, neck, head, earL, earR, shoulderL: armL.sh, shoulderR: armR.sh, elbowL: armL.elbow, elbowR: armR.elbow,
     hipL: legL.h, hipR: legR.h, kneeL: legL.knee, kneeR: legR.knee, tail, eyes,
   };
-  return { look, root, j, sock, build, phase: Math.random() * 6.28 };
+  const cat: Cat3D = { look, root, j, sock, build, phase: Math.random() * 6.28 };
+  bakeCat(cat);
+  return cat;
+}
+
+/**
+ * 合批：每个关节名下、没有被更深关节隔开的静态网格，按材质合并成一个网格（把变换烘进顶点）。
+ * 一只猫从 ~100 个网格降到 ~40 个，10 只同屏也只有几百次绘制。部件作者不用关心这件事。
+ */
+export function bakeCat(cat: Cat3D): void {
+  cat.root.updateMatrixWorld(true);
+  const joints: THREE.Object3D[] = [];
+  cat.root.traverse((o) => { if (o.userData.joint || o === cat.root) joints.push(o); });
+  for (const jt of joints) {
+    const inv = new THREE.Matrix4().copy(jt.matrixWorld).invert();
+    const byMat = new Map<THREE.Material, THREE.BufferGeometry[]>();
+    const meshes: THREE.Mesh[] = [];
+    const walk = (o: THREE.Object3D) => {
+      for (const ch of o.children) {
+        if (ch.userData.joint) continue;
+        if ((ch as THREE.Mesh).isMesh) meshes.push(ch as THREE.Mesh);
+        walk(ch);
+      }
+    };
+    walk(jt);
+    if (meshes.length < 2) continue;
+    // 带 userData.noBake 的网格（例如以后需要单独动的零件）不合并
+    const bakable = meshes.filter((m) => !m.userData.noBake && m.visible);
+    const used: THREE.Mesh[] = [];
+    for (const m of bakable) {
+      m.updateWorldMatrix(true, false);
+      const src = m.material as THREE.Material;
+      // 普通卡通材质 → 顶点色合批（一个关节最多几个网格）；描边 / 带自发光的高光点保持原材质
+      const tm = src as THREE.MeshToonMaterial;
+      const vc = tm.isMeshToonMaterial && tm.emissive.getHex() === 0;
+      const g = m.geometry.clone();
+      g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
+      if (!g.getAttribute('uv')) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 2), 2));
+      let mat = src;
+      if (vc) {
+        mat = vertexColorMat(tm.map, tm.side === THREE.DoubleSide);
+        const n = g.getAttribute('position').count;
+        const col = new Float32Array(n * 3);
+        const c = tm.map ? new THREE.Color('#ffffff') : tm.color;
+        for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; }
+        g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      }
+      if (!byMat.has(mat)) byMat.set(mat, []);
+      byMat.get(mat)!.push(g);
+      used.push(m);
+    }
+    const merged: THREE.Mesh[] = [];
+    for (const [mat, geos] of byMat) {
+      const idx = geos.filter((g) => g.index).length;
+      const list = idx === geos.length || idx === 0 ? geos : geos.map((g) => (g.index ? g.toNonIndexed() : g));
+      // 属性集合不同的几何体（有 / 无 color）不能混合并，这里同一材质下属性一致
+      const mg = list.length === 1 ? list[0] : mergeGeometries(list, false);
+      if (!mg) return; // 属性对不上就放弃合批（保持原样）
+      merged.push(new THREE.Mesh(mg, mat));
+    }
+    for (const m of used) m.removeFromParent();
+    for (const m of merged) jt.add(m);
+  }
 }

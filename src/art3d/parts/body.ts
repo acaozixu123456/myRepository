@@ -4,17 +4,23 @@ import * as THREE from 'three';
 import { solid, toon } from '../toon';
 import type { PartBuilder, PartCtx } from './types';
 
-/** 车削袍身：y 从下摆(≈-0.38)到领口(≈1.3) */
+/** 车削袍身：y 从下摆(≈-0.36)到领口(≈1.32)。下摆（腰以下）挂在 hip 上，不会跟着上身前倾翻起来：放进 userData.skirt，由 cat3d 挪到 hip。 */
 function robe(c: PartCtx, o: { hem: number; waist: number; chest: number; col?: string; trimCol?: string; collar?: boolean }): THREE.Group {
   const g = new THREE.Group();
+  const skirt = new THREE.Group();
   const col = o.col ?? c.pal.main;
   const b = c.look.build ?? 1;
-  const pts = [[o.hem, -0.36], [o.hem * 0.92, 0.05], [o.waist, 0.4], [o.chest, 0.85], [0.42, 1.18], [0.24, 1.32]].map(([r, y]) => new THREE.Vector2(r * b, y));
-  const body = solid(new THREE.LatheGeometry(pts, 28), toon(col), 0.024);
-  g.add(body);
+  const P = ([[o.hem, -0.36], [o.hem * 0.92, 0.05], [o.waist, 0.42], [o.chest, 0.85], [0.42, 1.18], [0.24, 1.32]] as [number, number][]).map(([r, y]) => new THREE.Vector2(r * b, y));
+  const mat = toon(col, { double: true });
+  skirt.add(solid(new THREE.LatheGeometry(P.slice(0, 3), 28), mat, 0.024));
+  g.add(solid(new THREE.LatheGeometry(P.slice(2), 28), mat, 0.024));
+  // 下摆封底：腿分开 / 低头时不会看到袍子里面
+  const cap = new THREE.Mesh(new THREE.CircleGeometry(o.hem * b * 0.98, 24), toon('#2a2230', { double: true }));
+  cap.rotation.x = Math.PI / 2; cap.position.y = -0.3;
+  skirt.add(cap);
   const hemRing = solid(new THREE.TorusGeometry(o.hem * b * 0.99, 0.035, 6, 28), toon(o.trimCol ?? c.pal.trim), 0.01);
   hemRing.rotation.x = Math.PI / 2; hemRing.position.y = -0.34;
-  g.add(hemRing);
+  skirt.add(hemRing);
   const belt = solid(new THREE.TorusGeometry(o.waist * b * 1.02, 0.06, 6, 24), toon(c.pal.sub), 0.012);
   belt.rotation.x = Math.PI / 2; belt.position.y = 0.5;
   g.add(belt);
@@ -26,6 +32,7 @@ function robe(c: PartCtx, o: { hem: number; waist: number; chest: number; col?: 
     col2.rotation.x = Math.PI / 2; col2.position.y = 1.28;
     g.add(col2);
   }
+  g.userData.skirt = skirt;
   return g;
 }
 function pads(_c: PartCtx, col: string): THREE.Group {
