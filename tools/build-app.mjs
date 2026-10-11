@@ -3,7 +3,7 @@ import { build } from 'esbuild';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 const outDir = process.argv[2] ?? '.shots';
-const res = await build({ entryPoints: ['src/app/main.ts'], bundle: true, minify: true, format: 'iife', target: 'es2020', write: false });
+const res = await build({ entryPoints: ['src/app/main.ts'], bundle: true, minify: true, format: 'iife', target: 'es2020', write: false, loader: { '.webp': 'dataurl' } });
 const js = res.outputFiles[0].text.replace(/<\/script/g, '<\\/script');
 const fonts = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap">';
 const body = `<title>猫国志</title>\n<style>html,body{height:100%;margin:0;background:#161225}</style>\n${fonts}\n<div id="app" style="height:100%"></div>\n<script>${js}</script>\n`;
