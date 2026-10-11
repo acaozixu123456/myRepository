@@ -110,8 +110,8 @@ export const SCREEN_CSS = `
 .reveal .glowbox{position:absolute;left:50%;top:46%;width:220px;height:220px;margin:-110px 0 0 -110px;border-radius:50%;background:radial-gradient(circle,var(--glow,#ffd24a) 0%,transparent 68%);opacity:0;transition:opacity .5s}
 .reveal .glowbox.on{opacity:.9}
 .reveal .flapL,.reveal .flapR{transform-box:fill-box;transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
-.reveal .flapL{transform-origin:100% 100%}.reveal .flapR{transform-origin:0 100%}
-.reveal.open .flapL{transform:rotate(-118deg)}.reveal.open .flapR{transform:rotate(118deg)}
+.reveal .flapL{transform-origin:0 100%}.reveal .flapR{transform-origin:100% 100%}
+.reveal.open .flapL{transform:rotate(-112deg)}.reveal.open .flapR{transform:rotate(112deg)}
 @keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-4deg) translateX(-3px)}40%{transform:rotate(4deg) translateX(3px)}60%{transform:rotate(-3deg)}80%{transform:rotate(3deg)}}
 .reveal .hint{position:absolute;bottom:90px;color:#ffe9a0;font-family:var(--f-d);font-size:18px;letter-spacing:.1em;animation:blink 1.2s infinite}
 @keyframes blink{50%{opacity:.4}}
