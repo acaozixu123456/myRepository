@@ -161,7 +161,7 @@ function openSettings() {
 
 // ---------- 事件 ----------
 root.addEventListener('click', (e) => {
-  syncQuestDay();
+  if (syncQuestDay()) { ctx.save(); ctx.refresh(); }
   const el = (e.target as HTMLElement).closest('[data-act]') as HTMLElement | null;
   if (!el) return;
   const act = el.dataset.act!;

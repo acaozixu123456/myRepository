@@ -1,9 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { newPlayer, levelUp, levelUpCost, skillUp, skillUpCost } from '../src/game/state';
 import { claimIdle } from '../src/game/stage';
 import { POOLS, pull } from '../src/game/gacha';
 import { EQUIPS } from '../src/content/equipment';
 import { addEquipment, enhanceCost, enhanceEquipment } from '../src/game/inventory';
+import { towerClear } from '../src/game/tower';
+import { buy } from '../src/game/shop';
+import { track } from '../src/game/quests';
 
 describe('quest tracking at actual operation points', () => {
   it('counts only successful hero and skill upgrades, with each fish payment counted once', () => {
@@ -69,9 +72,67 @@ describe('quest tracking at actual operation points', () => {
     const cost = enhanceCost(instance);
     expect(enhanceEquipment(s, instance.uid).ok).toBe(true);
     expect(s.quests.progress.daily_spend).toBe(cost);
+    expect(s.quests.progress.daily_equipment).toBe(1);
+    expect(s.quests.progress.newbie_equipment).toBe(1);
     s.res.fish = 0;
     const before = JSON.stringify(s.quests);
     expect(enhanceEquipment(s, instance.uid).ok).toBe(false);
     expect(JSON.stringify(s.quests)).toBe(before);
+  });
+
+  it('counts only first new tower floors and keeps tower victories separate from campaign victories', () => {
+    const before = new Date(2026, 9, 12, 4, 59).getTime();
+    const after = new Date(2026, 9, 12, 5).getTime();
+    const s = newPlayer(before);
+    track(s, 'clear_stage', 3);
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(after);
+    try {
+      expect(towerClear(s, 2)).toBeNull();
+      expect(towerClear(s, 1)).not.toBeNull();
+      expect(s.quests.dailyKey).toBe('2026-10-12');
+      expect(s.quests.progress.daily_tower).toBe(1);
+      expect(s.quests.progress.weekly_tower).toBe(1);
+      const once = structuredClone(s);
+      expect(towerClear(s, 1)).toBeNull();
+      expect(towerClear(s, 3)).toBeNull();
+      expect(s).toEqual(once);
+      expect(towerClear(s, 2)).not.toBeNull();
+      expect(s.quests.progress.daily_tower).toBe(2);
+      expect(s.quests.progress.weekly_tower).toBe(2);
+      expect(s.quests.progress.daily_campaign ?? 0).toBe(0);
+      expect(s.quests.progress.weekly_campaign ?? 0).toBe(0);
+      expect(s.quests.progress.achievement_stage_clears_1).toBe(3);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('counts shop fish payments once, skips other currencies and preserves progress on failed purchases', () => {
+    const now = new Date(2026, 9, 11, 12).getTime();
+    const s = newPlayer(now);
+    s.res.fish = 10000;
+    const oldFish = s.res.fish;
+    expect(buy(s, 'general_catnip_small', 2, now).ok).toBe(true);
+    expect(s.quests.progress.daily_spend).toBe(5000); // 实付6000，日常目标封顶5000。
+    const paid = structuredClone(s.quests);
+    expect(buy(s, 'general_recruit_ticket', 1, now).ok).toBe(true);
+    expect(s.quests).toEqual(paid);
+    s.res.fish = 0;
+    const before = structuredClone(s);
+    expect(buy(s, 'general_catnip_small', 1, now).ok).toBe(false);
+    expect(s).toEqual(before);
+  });
+
+  it('assigns a first successful Monday shop payment to the new task day and week', () => {
+    const before = new Date(2026, 9, 12, 4, 59).getTime();
+    const after = new Date(2026, 9, 12, 5).getTime();
+    const s = newPlayer(before);
+    track(s, 'spend_fish', 123);
+    track(s, 'clear_stage', 3);
+    const oldFish = s.res.fish;
+    expect(buy(s, 'general_catnip_small', 1, after).ok).toBe(true);
+    expect(s.quests.dailyKey).toBe('2026-10-12');
+    expect(s.quests.weeklyKey).toBe('2026-10-12');
+    expect(s.quests.progress.daily_spend).toBe(oldFish - s.res.fish);
+    expect(s.quests.progress.achievement_stage_clears_1).toBe(3);
   });
 });

@@ -66,7 +66,7 @@ describe('quest progress', () => {
     expect(s.quests).toEqual(before);
   });
 
-  it.each(['arena_battle', 'arena_win', 'guild_help', 'tower_clear', 'equip_upgrade', 'visit_friend'])('keeps unavailable %s tasks at zero and forbids forged claims', (type) => {
+  it.each(['arena_battle', 'arena_win', 'guild_help', 'visit_friend'])('keeps unavailable %s tasks at zero and forbids forged claims', (type) => {
     const s = newPlayer(NOW);
     const entries = QUESTS.filter((entry) => entry.goal.type === type);
     expect(entries.length).toBeGreaterThan(0);
@@ -152,6 +152,85 @@ describe('quest periods', () => {
 });
 
 describe('claiming quest rewards', () => {
+  it('grants every available catalogue reward once, including material and tower currency rewards', () => {
+    for (const entry of QUESTS.filter(isQuestAvailable)) {
+      const s = newPlayer(NOW);
+      s.quests.progress[entry.id] = entry.goal.target;
+      expect(claim(s, entry.id), entry.id).toEqual({ ok: true, reward: entry.reward });
+      const granted = structuredClone(s);
+      expect(claim(s, entry.id).ok, entry.id).toBe(false);
+      expect(s, entry.id).toEqual(granted);
+    }
+  });
+
+  it('preserves yarn sizes, unopened chests and generic shards while resources keep their existing ledgers', () => {
+    const entry = quest('daily_login');
+    const original = entry.reward;
+    entry.reward = { fish: 7, exp: 11, bells: 13, items: [
+      { id: 'yarn_small', count: 2 }, { id: 'yarn_medium', count: 3 }, { id: 'yarn_large', count: 1 },
+      { id: 'fishbone_small', count: 4 }, { id: 'equip_chest_rare', count: 2 }, { id: 'hero_shard_sr', count: 5 },
+    ] };
+    try {
+      const s = newPlayer(NOW);
+      const before = structuredClone(s);
+      track(s, 'login');
+      expect(claim(s, entry.id).ok).toBe(true);
+      expect(s.res).toEqual({ ...before.res, fish: before.res.fish + 7, exp: before.res.exp + 11, bells: before.res.bells + 13, yarn: before.res.yarn + 2 });
+      expect(s.inventory.items).toEqual({ yarn_medium: 3, yarn_large: 1, fishbone_small: 4, equip_chest_rare: 2, hero_shard_sr: 5 });
+      expect(s.inventory.equipment).toEqual([]);
+      expect(s.heroes).toEqual(before.heroes);
+      expect(s.idle).toEqual(before.idle);
+    } finally { entry.reward = original; }
+  });
+
+  it('rejects a full item stack atomically and permits the complete reward after making room', () => {
+    const s = newPlayer(NOW);
+    track(s, 'level_up_hero', 3);
+    s.inventory.items.fishbone_small = 9999;
+    const before = structuredClone(s);
+    expect(claim(s, 'daily_growth').ok).toBe(false);
+    expect(s).toEqual(before);
+    s.inventory.items.fishbone_small = 9997;
+    expect(claim(s, 'daily_growth').ok).toBe(true);
+    expect(s.inventory.items.fishbone_small).toBe(9999);
+    expect(s.quests.claimed.daily_growth).toBe(true);
+  });
+
+  it.each([
+    ['catnip_small', 'catnip', 1], ['catnip_medium', 'catnip', 4], ['catnip_large', 'catnip', 16],
+    ['recruit_ticket', 'tickets', 1], ['yarn_small', 'yarn', 1],
+  ] as const)('enforces the actual resource-alias stack for %s without granting the fish portion', (id, key, factor) => {
+    const entry = quest('daily_login');
+    const original = entry.reward;
+    entry.reward = { fish: 7, items: [{ id, count: 1 }] };
+    try {
+      const s = newPlayer(NOW);
+      track(s, 'login');
+      s.res[key] = 9999;
+      const before = structuredClone(s);
+      expect(claim(s, entry.id).ok).toBe(false);
+      expect(s).toEqual(before);
+      s.res[key] = 9999 - factor;
+      expect(claim(s, entry.id).ok).toBe(true);
+      expect(s.res[key]).toBe(9999);
+      expect(s.res.fish).toBe(before.res.fish + 7);
+    } finally { entry.reward = original; }
+  });
+
+  it('does not commit earlier item rows if a later duplicate overfills the same stack', () => {
+    const entry = quest('daily_login');
+    const original = entry.reward;
+    entry.reward = { fish: 9, items: [{ id: 'fishbone_small', count: 2 }, { id: 'fishbone_small', count: 3 }] };
+    try {
+      const s = newPlayer(NOW);
+      track(s, 'login');
+      s.inventory.items.fishbone_small = 9995;
+      const before = structuredClone(s);
+      expect(claim(s, entry.id).ok).toBe(false);
+      expect(s).toEqual(before);
+    } finally { entry.reward = original; }
+  });
+
   it('rejects incomplete, unknown and duplicate claims without side effects', () => {
     const s = newPlayer(NOW);
     const fresh = structuredClone(s);

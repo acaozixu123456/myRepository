@@ -4,6 +4,9 @@ import { ITEMS } from '../content/items';
 import type { ItemDef, ShopItemDef } from '../content/types';
 import { addItem, itemCount, removeItem } from './inventory';
 import type { PlayerState, Resources } from './state';
+import { rollover, track } from './quests';
+import { weeklyKey as shopWeeklyKey } from './periods';
+export { shopWeeklyKey };
 
 export type ShopId = ShopItemDef['shop'];
 export interface ShopState {
@@ -41,14 +44,6 @@ const validCount = (n: number) => Number.isSafeInteger(n) && n > 0;
 const validTime = (now: number) => Number.isFinite(now) && Number.isFinite(new Date(now).getTime());
 const fail = (reason: string): { ok: false; reason: string } => ({ ok: false, reason });
 const object = (raw: unknown): Record<string, unknown> | null => raw !== null && typeof raw === 'object' && !Array.isArray(raw) ? raw as Record<string, unknown> : null;
-
-/** 当地周一 05:00 换周。用日历日期回退，夏令时换日也不假定一天固定 24 小时。 */
-export function shopWeeklyKey(now = Date.now()): string {
-  const day = new Date(validTime(now) ? now : 0);
-  if (day.getHours() < 5) day.setDate(day.getDate() - 1);
-  day.setDate(day.getDate() - (day.getDay() + 6) % 7);
-  return `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
-}
 
 export function createShopState(now = Date.now()): ShopState {
   return { weeklyKey: shopWeeklyKey(now), bought: {} };
@@ -147,6 +142,10 @@ export function buy(s: PlayerState, offerId: string, count = 1, now = Date.now()
   Object.assign(s.res, trial.res);
   s.inventory.items = trial.inventory.items;
   s.shop = trial.shop;
+  if (offer.price.item === 'fish') {
+    rollover(s, now);
+    track(s, 'spend_fish', cost);
+  }
   return {
     ok: true, offerId, quantity: count,
     item: { id: offer.item.id, count: amount },

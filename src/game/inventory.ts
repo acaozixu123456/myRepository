@@ -193,6 +193,7 @@ export function enhanceEquipment(s: PlayerState, uid: string): OpResult {
   s.res.fish -= cost;
   track(s, 'spend_fish', cost);
   instance.level++;
+  track(s, 'equip_upgrade');
   return { ok: true };
 }
 

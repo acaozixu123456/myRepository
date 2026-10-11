@@ -7,6 +7,7 @@ import { claim, isClaimable, isQuestAvailable, questProgress } from '../../game/
 import { esc, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import type { AppCtx, ScreenId } from '../ctx';
+import { campaignState } from './campaign';
 import { floaty } from './home';
 import { topbar } from './lineup';
 
@@ -29,13 +30,13 @@ const DESTINATIONS: Record<string, ScreenId> = {
 
 function rewardIcon(id: string): string {
   if (id.startsWith('catnip')) return 'catnip';
-  if (id.startsWith('yarn') || id === 'equip_thread') return 'yarn';
+  if (id.startsWith('yarn') || id === 'bell_thread') return 'yarn';
   if (id.includes('ticket')) return 'ticket';
   if (id.startsWith('fishbone') || id === 'fish') return 'fish';
   if (id === 'bells') return 'bells';
   if (id.includes('scroll')) return 'staff';
   if (id.endsWith('_token')) return 'campaign';
-  if (id === 'paw_seal' || id.startsWith('shard_')) return 'paw';
+  if (id === 'paw_seal' || id.startsWith('hero_shard')) return 'paw';
   return 'gift';
 }
 
@@ -142,7 +143,11 @@ export function handleQuests(ctx: AppCtx, el: HTMLElement): boolean {
     }
     case 'qst-go': {
       const quest = QUESTS.find((entry) => entry.id === el.dataset.id);
-      if (quest && isQuestAvailable(quest) && !ctx.s.quests.claimed[quest.id]) ctx.go(DESTINATIONS[quest.goal.type] ?? 'home');
+      if (quest && isQuestAvailable(quest) && !ctx.s.quests.claimed[quest.id]) {
+        const screen = DESTINATIONS[quest.goal.type] ?? 'home';
+        if (screen === 'campaign') campaignState.mode = quest.goal.type === 'tower_clear' ? 'tower' : 'main';
+        ctx.go(screen);
+      }
       return true;
     }
     case 'qst-claim': {
