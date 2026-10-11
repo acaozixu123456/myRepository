@@ -1,0 +1,561 @@
+{
+  "status": "可送Claude审核；独立QA完成，不代表Claude已通过",
+  "batch": [
+    "pheasant",
+    "helmetWei",
+    "helmetGeneral",
+    "featherHeaddress",
+    "yellowBand",
+    "tigerHood"
+  ],
+  "createdAtUTC": "2026-10-11T23:09:28.167716+00:00",
+  "worktree": "/workspace/three-worktrees/headgear-crests",
+  "provenance": {
+    "headgearSource": "/workspace/three-worktrees/headgear-crests/src/art3d/parts/headgear.ts",
+    "headgearSha256": "9c26b1093bdda9df66fd958e5e81c8033b72ff927ccb71023262813218ce130c",
+    "sourceStayedFrozen": true,
+    "baselineCommit": "2afab71",
+    "baselineSha256": "8cd1188aca84ea2c242f9f7032c451898c8b138ef8960de901b9588d33851be5",
+    "toonSha256": "03d9f550749210bd73577b360753d569005e22ea2666802b4c16d87588224c29",
+    "toonStayedFrozen": true
+  },
+  "sharedLiveRegistry": true,
+  "actualUserCount": 21,
+  "actualUsers": [
+    {
+      "id": "wei_xiahoudun",
+      "headgear": "helmetWei",
+      "eyeStyle": "fierce",
+      "earStyle": "pointy",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "wei_xuhuchi",
+      "headgear": "tigerHood",
+      "eyeStyle": "round",
+      "earStyle": "round",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "wei_zhangliao",
+      "headgear": "helmetGeneral",
+      "eyeStyle": "keen",
+      "earStyle": "pointy",
+      "headK": 0.98,
+      "isMob": false
+    },
+    {
+      "id": "wei_xuhuang",
+      "headgear": "helmetWei",
+      "eyeStyle": "calm",
+      "earStyle": "round",
+      "headK": 1.01,
+      "isMob": false
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "headgear": "helmetGeneral",
+      "eyeStyle": "fierce",
+      "earStyle": "pointy",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "shu_machao",
+      "headgear": "helmetGeneral",
+      "eyeStyle": "keen",
+      "earStyle": "round",
+      "headK": 0.98,
+      "isMob": false
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "headgear": "helmetGeneral",
+      "eyeStyle": "sharp",
+      "earStyle": "round",
+      "headK": 0.97,
+      "isMob": false
+    },
+    {
+      "id": "wu_sunxiaoba",
+      "headgear": "helmetGeneral",
+      "eyeStyle": "fierce",
+      "earStyle": "pointy",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "qun_lvbuding",
+      "headgear": "pheasant",
+      "eyeStyle": "fierce",
+      "earStyle": "pointy",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "qun_zhangjiao",
+      "headgear": "yellowBand",
+      "eyeStyle": "wide",
+      "earStyle": "tuft",
+      "headK": 1.03,
+      "isMob": false
+    },
+    {
+      "id": "qun_huaxiong",
+      "headgear": "helmetGeneral",
+      "eyeStyle": "fierce",
+      "earStyle": "big",
+      "headK": 1.01,
+      "isMob": false
+    },
+    {
+      "id": "man_zhurong",
+      "headgear": "featherHeaddress",
+      "eyeStyle": "keen",
+      "earStyle": "tuft",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "man_mulu",
+      "headgear": "featherHeaddress",
+      "eyeStyle": "wide",
+      "earStyle": "tuft",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "xian_zhangzhua",
+      "headgear": "yellowBand",
+      "eyeStyle": "keen",
+      "earStyle": "pointy",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "mob_wei_guard",
+      "headgear": "helmetWei",
+      "eyeStyle": "round",
+      "earStyle": "round",
+      "headK": 1.03,
+      "isMob": true
+    },
+    {
+      "id": "mob_wei_vanguard",
+      "headgear": "helmetWei",
+      "eyeStyle": "keen",
+      "earStyle": "pointy",
+      "headK": 0.97,
+      "isMob": true
+    },
+    {
+      "id": "mob_shu_vanguard",
+      "headgear": "helmetWei",
+      "eyeStyle": "fierce",
+      "earStyle": "pointy",
+      "headK": 0.98,
+      "isMob": true
+    },
+    {
+      "id": "mob_wu_vanguard",
+      "headgear": "helmetWei",
+      "eyeStyle": "fierce",
+      "earStyle": "pointy",
+      "headK": 0.97,
+      "isMob": true
+    },
+    {
+      "id": "mob_qun_guard",
+      "headgear": "helmetWei",
+      "eyeStyle": "cool",
+      "earStyle": "round",
+      "headK": 1.03,
+      "isMob": true
+    },
+    {
+      "id": "mob_man_strategist",
+      "headgear": "featherHeaddress",
+      "eyeStyle": "wide",
+      "earStyle": "tuft",
+      "headK": 0.97,
+      "isMob": true
+    },
+    {
+      "id": "mob_xian_strategist",
+      "headgear": "yellowBand",
+      "eyeStyle": "calm",
+      "earStyle": "big",
+      "headK": 1.02,
+      "isMob": true
+    }
+  ],
+  "budgets": [
+    {
+      "kind": "pheasant",
+      "logicalMeshes": 15,
+      "surfacesIncludingOutline": 28,
+      "triangles": 3072,
+      "maxSphereCylinderSegments": 12,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "helmetWei",
+      "logicalMeshes": 12,
+      "surfacesIncludingOutline": 23,
+      "triangles": 2612,
+      "maxSphereCylinderSegments": 12,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "helmetGeneral",
+      "logicalMeshes": 13,
+      "surfacesIncludingOutline": 26,
+      "triangles": 2356,
+      "maxSphereCylinderSegments": 12,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "featherHeaddress",
+      "logicalMeshes": 24,
+      "surfacesIncludingOutline": 43,
+      "triangles": 6156,
+      "maxSphereCylinderSegments": 12,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "yellowBand",
+      "logicalMeshes": 9,
+      "surfacesIncludingOutline": 14,
+      "triangles": 1508,
+      "maxSphereCylinderSegments": 12,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "tigerHood",
+      "logicalMeshes": 16,
+      "surfacesIncludingOutline": 24,
+      "triangles": 2964,
+      "maxSphereCylinderSegments": 14,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    }
+  ],
+  "finalRuns": [
+    {
+      "report": "candidate-03-review.json",
+      "mode": "review",
+      "cases": 63,
+      "poseNames": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "times": [
+        0.4
+      ],
+      "invalidBudgets": 0,
+      "eyeOcclusionCases": 0,
+      "eyeCoveredSamples": 0,
+      "minSamplesPerEye": 110,
+      "nonFiniteCases": 0,
+      "headgearFrameClipCases": 0,
+      "newFrameRegressions": 0,
+      "wholeCatFrameClipCasesBefore": 3,
+      "wholeCatFrameClipCasesAfter": 1,
+      "remainingMountEarSurfaceEntries": 102,
+      "maxEarHitHeadTopLocalY": -0.17865430698537565,
+      "maxGearWorldY": 3.5606084148153454,
+      "maxGearCase": {
+        "id": "qun_huaxiong",
+        "pose": "windup",
+        "t": 0.4
+      },
+      "assemblyBuilderCalls": {
+        "pheasant": 1,
+        "helmetWei": 7,
+        "helmetGeneral": 6,
+        "featherHeaddress": 3,
+        "yellowBand": 3,
+        "tigerHood": 1
+      }
+    },
+    {
+      "report": "candidate-03-wiggle.json",
+      "mode": "wiggle",
+      "cases": 63,
+      "poseNames": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "times": [
+        2.243994752564138
+      ],
+      "invalidBudgets": 0,
+      "eyeOcclusionCases": 0,
+      "eyeCoveredSamples": 0,
+      "minSamplesPerEye": 110,
+      "nonFiniteCases": 0,
+      "headgearFrameClipCases": 0,
+      "newFrameRegressions": 0,
+      "wholeCatFrameClipCasesBefore": 3,
+      "wholeCatFrameClipCasesAfter": 1,
+      "remainingMountEarSurfaceEntries": 129,
+      "maxEarHitHeadTopLocalY": -0.16837847431364716,
+      "maxGearWorldY": 3.468142976164353,
+      "maxGearCase": {
+        "id": "qun_huaxiong",
+        "pose": "windup",
+        "t": 2.243994752564138
+      },
+      "assemblyBuilderCalls": {
+        "pheasant": 1,
+        "helmetWei": 7,
+        "helmetGeneral": 6,
+        "featherHeaddress": 3,
+        "yellowBand": 3,
+        "tigerHood": 1
+      }
+    },
+    {
+      "report": "candidate-03-allposes.json",
+      "mode": "allposes",
+      "cases": 294,
+      "poseNames": [
+        "idle",
+        "ready",
+        "windup",
+        "windupLow",
+        "strike",
+        "thrust",
+        "cast",
+        "castUp",
+        "castFwd",
+        "guard",
+        "hurt",
+        "dash",
+        "victory",
+        "slump"
+      ],
+      "times": [
+        0.4
+      ],
+      "invalidBudgets": 0,
+      "eyeOcclusionCases": 0,
+      "eyeCoveredSamples": 0,
+      "minSamplesPerEye": 104,
+      "nonFiniteCases": 0,
+      "headgearFrameClipCases": 0,
+      "newFrameRegressions": 0,
+      "wholeCatFrameClipCasesBefore": 14,
+      "wholeCatFrameClipCasesAfter": 4,
+      "remainingMountEarSurfaceEntries": 476,
+      "maxEarHitHeadTopLocalY": -0.17865430698537477,
+      "maxGearWorldY": 3.5606084148153454,
+      "maxGearCase": {
+        "id": "qun_huaxiong",
+        "pose": "windup",
+        "t": 0.4
+      },
+      "assemblyBuilderCalls": {
+        "pheasant": 1,
+        "helmetWei": 7,
+        "helmetGeneral": 6,
+        "featherHeaddress": 3,
+        "yellowBand": 3,
+        "tigerHood": 1
+      }
+    },
+    {
+      "report": "candidate-03-animated.json",
+      "mode": "animated",
+      "cases": 756,
+      "poseNames": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "times": [
+        0,
+        0.4,
+        0.8,
+        1.2,
+        1.6,
+        2,
+        2.4,
+        2.8,
+        3.2,
+        4.8,
+        6.4,
+        8
+      ],
+      "invalidBudgets": 0,
+      "eyeOcclusionCases": 0,
+      "eyeCoveredSamples": 0,
+      "minSamplesPerEye": 108,
+      "nonFiniteCases": 0,
+      "headgearFrameClipCases": 0,
+      "newFrameRegressions": 0,
+      "wholeCatFrameClipCasesBefore": 36,
+      "wholeCatFrameClipCasesAfter": 12,
+      "remainingMountEarSurfaceEntries": 1296,
+      "maxEarHitHeadTopLocalY": -0.16829083608539097,
+      "maxGearWorldY": 3.5744762362084126,
+      "maxGearCase": {
+        "id": "qun_huaxiong",
+        "pose": "windup",
+        "t": 0.8
+      },
+      "assemblyBuilderCalls": {
+        "pheasant": 1,
+        "helmetWei": 7,
+        "helmetGeneral": 6,
+        "featherHeaddress": 3,
+        "yellowBand": 3,
+        "tigerHood": 1
+      }
+    }
+  ],
+  "checks": {
+    "budgets": "通过：六件逻辑网格15/12/13/24/9/16，均≤24；球/圆柱最大分段12/12/12/12/12/14，均≤24。描边与源网格合并计为一个逻辑网格。",
+    "materialsAndRoots": "通过：全部toon/solid，实际重复构建材质身份复用缓存，根position/rotation保持原点与单位旋转；造型只在构建时分配，无新增每帧逻辑。",
+    "eyes": "通过：全部21实际使用者，四套最终审核均眼部覆盖样本0；实际白眼/虹膜/瞳孔/眼弧三角的12×12采样非空（每眼最低104）。普通/耳峰190px及官方pose/small/battle实看眼睛露出，夏侯惇原眼罩仍保留。",
+    "ears": "可审：虎帽cap壳0/1表面与实际耳三角交叉归零；雉羽/五羽冠无耳交叉。其余低位额带、系带、黄巾结尾仍与耳根局部接合；最高交点gear-local y=-.16829，全部在-.12以下。实看无耳尖截断、冠体切耳或悬空羽根。不能称全部三角完全无交叉。",
+    "framing": "通过头饰本身：全部63/63/294/756案例头饰不出框、无新增整猫取景回归；采样最高华雄windup t=.8 y=3.574476，距FRAME顶3.6约.025524。",
+    "smallVisual": "可审：全部21使用者普通与精确内摆耳峰63+63张190px技术缩图已逐页实看；六种剪影可辨，雉羽有眼斑、魏盔弯单羽、将盔红缨、南蛮五羽、黄巾额带、虎帽王纹与圆饰耳。另实看根线程官方最终三姿势、原尺寸小图与真实战斗图。"
+  },
+  "legacyFrameClips": {
+    "note": "现存整猫出框均吕布丁下身/披风低于FRAME底-.25，baseline已存在；没有新头饰出框。294姿势剩4例，756动画剩12例均strike。",
+    "allPosesCases": [
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "t": 0.4,
+        "catBounds": [
+          [
+            -1.7156344404303518,
+            -0.2951290636051632,
+            -1.2233927383102243
+          ],
+          [
+            0.7733437476449858,
+            3.3359269344677243,
+            0.9237533631712214
+          ]
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "thrust",
+        "t": 0.4,
+        "catBounds": [
+          [
+            -1.5639720116444717,
+            -0.3242586103685118,
+            -1.2291907204474717
+          ],
+          [
+            0.7494016213866508,
+            3.2821536637690594,
+            0.6942014063793827
+          ]
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "hurt",
+        "t": 0.4,
+        "catBounds": [
+          [
+            -1.3333387797541199,
+            -0.3619077345062413,
+            -1.5725527299578685
+          ],
+          [
+            0.6942014063793827,
+            3.0854568115285055,
+            0.6942014063793827
+          ]
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "dash",
+        "t": 0.4,
+        "catBounds": [
+          [
+            -1.608361904392866,
+            -0.2833483507056227,
+            -1.2565961564373025
+          ],
+          [
+            0.7525003370297759,
+            3.3234462514425642,
+            0.8758230893117115
+          ]
+        ]
+      }
+    ]
+  },
+  "actualVisualReviewed": [
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/gallery-01.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/gallery-02.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/gallery-03.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/gallery-04.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/gallery-05.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/gallery-06.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/gallery-07.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/gallery-01.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/gallery-02.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/gallery-03.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/gallery-04.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/gallery-05.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/gallery-06.png",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/gallery-07.png",
+    "/workspace/three-review/headgear-crests/final-poses.png",
+    "/workspace/three-review/headgear-crests/final-small.png",
+    "/workspace/three-review/headgear-crests/final-battle.png"
+  ],
+  "visualCaptureProvenance": [
+    "/workspace/three-review/headgear-crests/qa-candidate-03-all-users/manifest.json",
+    "/workspace/three-review/headgear-crests/qa-candidate-03-peak/manifest.json",
+    "/workspace/three-review/headgear-crests/final-capture-report.json",
+    "/workspace/three-review/headgear-crests/final-small.json"
+  ],
+  "methods": {
+    "eyes": "Raster 12x12 samples from actual skinned white/iris/pupil/arc eye triangles; projected headgear triangle depths with material side and expanded outline; samples have not been filtered for eyelid/self-skull occlusion, so screenshot confirmation is required.",
+    "ears": "Triangle edge intersections with actual skinned ear outer/inner/outline surfaces; coplanar pairs are not diagnosed. Crossings around ear base can be intended mounting and require visual judgment.",
+    "bounds": "All actual skinned vertices including baked outlines; headgear raw vertices plus normal-expanded shader outlines; renderer FRAME. buildCat3D and HEADGEAR share one bundled live registry for trustworthy baseline comparisons."
+  },
+  "limitations": [
+    "眼部用实际三角在头部局部正视平面进行12×12有限采样，未过滤眼睑/自身头骨自遮挡，结合yaw32截图判断；非所有像素/视角证明。",
+    "耳部为实际蒙皮耳三角与原始头饰/法线扩张描边的非共面边相交检查，共面重叠不诊断；额带系带与耳根接合需结合截图，不能用整体bbox替代。",
+    "14姿势t=.4、三姿势12时刻及phase0精确耳内摆峰值都是有限采样，未证明任意连续时刻和任意相位。",
+    "190px联系表是从透明截图alpha bbox裁切后等比规格化的技术QA图；官方final-small是原生250×219画布的裁切联系表，人物高度仅近似190px；final-battle另作实际游戏核对。"
+  ],
+  "leastSatisfied": "张角黄色毛发与黄巾额带在190px对比仍偏弱，当前yaw32三姿势的侧后结尾不突出；黑毛使用者额带更清楚。此项供Claude判断造型，不当成几何通过后的额外改动要求。",
+  "obsoleteReportsNote": "e2a候选294/756及更早报告仅历史资料，final摘要数值全部来自9c26的candidate-03四份报告。",
+  "technicalScripts": [
+    "/workspace/three-review/headgear-crests/audit.mjs",
+    "/workspace/three-review/headgear-crests/capture-all-users.mjs"
+  ]
+}
