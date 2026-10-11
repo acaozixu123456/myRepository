@@ -17,6 +17,7 @@ import { applyGain, idleCapHours, nextStage, recommendedPowerOf, tickIdle } from
 import type { Gain } from '../game/stage';
 import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
 import { bagHtml, handleBag } from './screens/bag';
+import { shopHtml, handleShop } from './screens/shop';
 import { seedDemoInventory } from '../game/inventory';
 import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
@@ -43,6 +44,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen gacha" data-screen="gacha"></div>
   <div class="screen" data-screen="campaign"></div>
   <div class="screen" data-screen="bag"></div>
+  <div class="screen shop-screen" data-screen="shop"></div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
     <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
@@ -95,6 +97,7 @@ const ctx: AppCtx = {
     else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
     else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
     else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
+    else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
     updateGuide(ctx);
   },
 };
@@ -150,6 +153,7 @@ root.addEventListener('click', (e) => {
   if (handleCampaign(ctx, act, el)) return;
   if (handleDex(ctx, act, el)) return;
   if (handleBag(ctx, el)) return;
+  if (handleShop(ctx, el)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
