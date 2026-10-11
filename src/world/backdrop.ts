@@ -48,9 +48,9 @@ export function buildBackdrop(): Backdrop {
   if (skyTex) {
     skyTex.wrapS = THREE.RepeatWrapping; skyTex.repeat.set(1, 1); skyTex.needsUpdate = true;
     const wall = new THREE.Mesh(
-      new THREE.CylinderGeometry(150, 150, 90, 48, 1, true),
+      new THREE.CylinderGeometry(190, 190, 200, 48, 1, true),
       new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, transparent: true, toneMapped: false, fog: false, depthWrite: false, opacity: 0.92 }));
-    wall.position.y = 40;
+    wall.position.y = 60; // 底边在地面以下，纵向 −40 ~ +160：图的下半是楼群，上半是紫色天空
     wall.renderOrder = -1;
     g.add(wall);
   }
