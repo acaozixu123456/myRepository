@@ -26,8 +26,9 @@ export const EXPLORE_CSS = `
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
 .xplore .hud *{pointer-events:auto}
 .xobj{position:absolute;left:10px;right:10px;top:58px;z-index:3;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:rgba(16,10,32,.72);border:2px solid rgba(255,110,210,.55);box-shadow:0 0 18px rgba(255,80,200,.25);color:#fff;backdrop-filter:blur(4px)}
-.xhelp{position:absolute;inset:0;z-index:25;display:grid;place-items:center;background:rgba(6,3,16,.6)}
-.xhelp>div{width:min(320px,86%);padding:16px 18px;border-radius:16px;background:rgba(22,14,44,.96);border:2px solid rgba(127,240,255,.6);box-shadow:0 0 24px rgba(127,240,255,.3);color:#eae4ff;font-weight:700;font-size:13.5px;line-height:1.75}
+.xhelp{position:absolute;inset:0;z-index:25;display:grid;place-items:center;background:rgba(6,3,16,.35);pointer-events:none;animation:xhelpIn .3s ease-out both}
+@keyframes xhelpIn{from{opacity:0}to{opacity:1}}
+.xhelp>div{pointer-events:auto;width:min(320px,86%);padding:16px 18px;border-radius:16px;background:rgba(22,14,44,.96);border:2px solid rgba(127,240,255,.6);box-shadow:0 0 24px rgba(127,240,255,.3);color:#eae4ff;font-weight:700;font-size:13.5px;line-height:1.75}
 .xhelp h4{margin:0 0 6px;font-family:var(--f-d);font-size:18px;color:#ffe9a0;letter-spacing:.05em}
 .xhelp button{margin-top:10px;width:100%}
 .xquest{position:absolute;left:10px;top:122px;z-index:3;max-width:150px;padding:6px 9px;border-radius:12px;background:rgba(16,10,32,.62);border:1.5px solid rgba(127,240,255,.45);color:#cfc6e8;font-size:11px;font-weight:700;line-height:1.55;pointer-events:none}
@@ -161,7 +162,13 @@ function showHelpOnce(ctx: AppCtx) {
     · 单指拖动转镜头，双指捏合缩放<br>
     · 碰到野猫开战，首领在街区北端；打赢首领通往下一章<br>
     · 找嫦喵领每日委托，三项做完有大奖<button class="btn green">知道啦</button></div>`;
-  el.onclick = (e) => { if ((e.target as HTMLElement).closest('button') || e.target === el) el.remove(); };
+  el.onclick = (e) => { if ((e.target as HTMLElement).closest('button')) el.remove(); };
+  // 不挡操作：开始移动（摇杆 / 键盘）或 12 秒后自动收起
+  const t0 = performance.now();
+  const timer = window.setInterval(() => {
+    if (!el.isConnected) { clearInterval(timer); return; }
+    if (performance.now() - t0 > 12000 || (performance.now() - t0 > 1500 && moveDir(rt?.wv.yaw ?? 0))) { el.remove(); clearInterval(timer); }
+  }, 300);
   ctx.root.querySelector('[data-screen="explore"]')?.appendChild(el) ?? ctx.root.appendChild(el);
 }
 let miniT = 0;
