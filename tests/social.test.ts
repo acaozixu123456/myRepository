@@ -106,3 +106,14 @@ describe('竞技场', () => {
     }
   });
 });
+
+import { npcTowerFloor } from '../src/game/npc';
+describe('模拟玩家爬塔层数', () => {
+  it('确定、在 0~100 之间、随时间不降低太多，且肝度高的更高', () => {
+    const t = (d: number) => new Date(2026, 9, 1 + d, 12).getTime();
+    for (const n of NPCS) { const a = npcTowerFloor(n, t(10)); expect(a).toBe(npcTowerFloor(n, t(10))); expect(a).toBeGreaterThanOrEqual(0); expect(a).toBeLessThanOrEqual(100); }
+    const avg = (f: (n: (typeof NPCS)[number]) => boolean, d: number) => { const l = NPCS.filter(f); return l.reduce((a, n) => a + npcTowerFloor(n, t(d)), 0) / l.length; };
+    expect(avg((n) => n.grind >= 1, 30)).toBeGreaterThan(avg((n) => n.grind < 0.8, 30));
+    expect(avg(() => true, 60)).toBeGreaterThan(avg(() => true, 5));
+  });
+});

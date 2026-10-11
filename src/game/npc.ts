@@ -221,3 +221,10 @@ export function repliesTo(msg: { id: string; t: number; text: string }, meName: 
     return { id: `re:${msg.id}:${npc.id}`, t, from: npc.id, name: npc.name, text: fill(line, { me: meName }), kind: 'reply' as const };
   });
 }
+
+/** 模拟玩家当前的爬塔层数：随推图进度增长，肝度越高爬得越高（时间的纯函数，最高 100 层） */
+export function npcTowerFloor(npc: Npc, now: number): number {
+  const p = npcProgress(npc, now);
+  const day = Math.floor((now - EPOCH) / DAY);
+  return Math.max(0, Math.min(100, Math.round(p.ordinal * 0.55 * (0.85 + 0.3 * rnd(npc.id, 'tower', Math.floor(day / 3))) * (0.9 + 0.2 * npc.grind))));
+}

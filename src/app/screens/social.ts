@@ -1,7 +1,7 @@
 // 喵洲广场：世界聊天 / 玩家（20 位模拟玩家）/ 竞技场 / 好友。
 import { FACTIONS } from '../../data/factions';
 import { HERO_BY_ID } from '../../data/heroes';
-import { NPCS, NPC_BY_ID, PROFILE_NAME, npcLastSeenMin, npcLineup, npcOnline, npcProgress } from '../../game/npc';
+import { NPCS, NPC_BY_ID, PROFILE_NAME, npcTowerFloor, npcLastSeenMin, npcLineup, npcOnline, npcProgress } from '../../game/npc';
 import type { ChatMsg, Npc } from '../../game/npc';
 import {
   DONATE_COST, DONATE_PER_DAY, DONATE_REWARD, GUILDS, GUILD_BY_ID, HELP_PER_DAY, HELP_REWARD, chestReward, donatesLeft, ensureGuild, guildChest, guildDonate, guildHelp, guildLevel,
@@ -23,7 +23,7 @@ import { sfx } from '../sfx';
 import { floaty } from './home';
 import { topbar } from './lineup';
 
-export const socialState = { rankBy: 'power' as 'power' | 'stage' | 'level' | 'boss', tab: 'world' as 'world' | 'players' | 'arena' | 'guild' | 'rank' | 'friends' };
+export const socialState = { rankBy: 'power' as 'power' | 'stage' | 'level' | 'tower' | 'boss', tab: 'world' as 'world' | 'players' | 'arena' | 'guild' | 'rank' | 'friends' };
 const TABS: [typeof socialState.tab, string][] = [['world', '世界'], ['players', '玩家'], ['arena', '竞技'], ['guild', '公会'], ['rank', '排行榜'], ['friends', '好友']];
 
 const clock = (t: number) => new Date(t).toTimeString().slice(0, 5);
@@ -156,18 +156,18 @@ function gbHtml(ctx: AppCtx): string {
     ${rows}<div class="gbrows">${top}</div></section>`;
 }
 
-type RankBy = 'power' | 'stage' | 'level' | 'boss';
-const RANKS: [RankBy, string][] = [['power', '战力'], ['stage', '关卡'], ['level', '等级'], ['boss', '世界Boss']];
+type RankBy = 'power' | 'stage' | 'level' | 'tower' | 'boss';
+const RANKS: [RankBy, string][] = [['power', '战力'], ['stage', '关卡'], ['level', '等级'], ['tower', '爬塔'], ['boss', '世界Boss']];
 function rankHtml(ctx: AppCtx): string {
   const s = ctx.s, now = Date.now(), by = socialState.rankBy;
   const myBest = s.best ?? s.stage;
   const rows = [
     ...NPCS.map((n) => {
       const p = npcProgress(n, now);
-      return { id: n.id, name: n.name, avatar: n.avatar, sub: `Lv.${p.level}${npcOnline(n, now) ? ' · 在线' : ''}`, v: by === 'power' ? p.power : by === 'stage' ? p.ordinal : by === 'level' ? p.level : npcBars(n.id, now), me: false };
+      return { id: n.id, name: n.name, avatar: n.avatar, sub: `Lv.${p.level}${npcOnline(n, now) ? ' · 在线' : ''}`, v: by === 'power' ? p.power : by === 'stage' ? p.ordinal : by === 'level' ? p.level : by === 'tower' ? npcTowerFloor(n, now) : npcBars(n.id, now), me: false };
     }),
     { id: 'me', name: s.name, avatar: s.lineup.find(Boolean) ?? 'wei_xiahoudun', sub: `Lv.${s.level}`, me: true,
-      v: by === 'power' ? teamPower(s) : by === 'stage' ? (myBest.chapter - 1) * 24 + myBest.index : by === 'level' ? Math.max(0, ...Object.values(s.heroes).map((h) => h.lv)) : ensureBoss(s).bars },
+      v: by === 'power' ? teamPower(s) : by === 'stage' ? (myBest.chapter - 1) * 24 + myBest.index : by === 'level' ? Math.max(0, ...Object.values(s.heroes).map((h) => h.lv)) : by === 'tower' ? (s.tower?.floor ?? 0) : ensureBoss(s).bars },
   ].sort((a, b) => b.v - a.v);
   const me = rows.findIndex((r) => r.me) + 1;
   const val = (v: number) => (by === 'boss' ? v.toFixed(2) : fmt(v));
