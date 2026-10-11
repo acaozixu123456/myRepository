@@ -316,3 +316,23 @@ export function ship(): THREE.Group {
   for (const x of [-10, 0, 10]) { const l = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 5), glowMat('#ffd070')); l.position.set(x, 2.4, 3.1); g.add(l); const l2 = l.clone(); l2.position.z = -3.1; g.add(l2); }
   return g;
 }
+
+/** 发光巨树：粗树干 + 多层发光树冠 + 垂挂的光点 */
+export function glowTree(seed = 1, glow = '#4fe08a'): THREE.Group {
+  const g = new THREE.Group(); const rnd = mulberry(seed);
+  g.add(cyl(0.7, 9, std('#2a2030', 0.9), 0, 4.5, 0, 8));
+  const top = cyl(0.35, 4, std('#2a2030', 0.9), 0, 10.5, 0, 8); g.add(top);
+  const canopy = std(new THREE.Color(glow).multiplyScalar(0.35).getStyle(), 0.8, 0.05, glow, 0.22);
+  for (let i = 0; i < 6; i++) { const r = 2.4 + rnd() * 1.6; const c = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), canopy); c.position.set((rnd() - 0.5) * 4.5, 10 + rnd() * 4.5, (rnd() - 0.5) * 4.5); c.castShadow = true; g.add(c); }
+  for (let i = 0; i < 9; i++) { const l = new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 5), glowMat('#ffffff')); l.position.set((rnd() - 0.5) * 6, 5 + rnd() * 7, (rnd() - 0.5) * 6); g.add(l); }
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: glow, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(16, 16, 1); halo.position.y = 12; g.add(halo);
+  return g;
+}
+/** 发光蘑菇 */
+export function mushroom(color = '#ff7ad9', s = 1): THREE.Group {
+  const g = new THREE.Group();
+  g.add(cyl(0.18 * s, 0.9 * s, std('#efe6d2', 0.8), 0, 0.45 * s, 0, 8));
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.7 * s, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), std(color, 0.6, 0.05, color, 0.7)); cap.position.y = 0.9 * s; g.add(cap);
+  for (let i = 0; i < 5; i++) { const d = new THREE.Mesh(new THREE.SphereGeometry(0.08 * s, 5, 4), glowMat('#ffffff')); const a = i * 1.26; d.position.set(Math.cos(a) * 0.35 * s, 1.25 * s - (i % 2) * 0.15 * s, Math.sin(a) * 0.35 * s); g.add(d); }
+  return g;
+}

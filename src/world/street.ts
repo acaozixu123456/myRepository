@@ -1,7 +1,7 @@
 // 把 LevelDef（levels.ts 里的纯数据）搭成 3D 场景：路、人行道、楼、道具、电线、拱门、灯笼、倒影、外圈都市、蒸汽。
 import * as THREE from 'three';
 import { asphalt, glowTex, paving, waterGlint } from './tex';
-import { arch, building, container, crane, glowMat, lamp, lanternString, manekiNeko, cone, pole, ship, std, tram, wire } from './kit';
+import { arch, building, container, crane, glowMat, glowTree, lamp, mushroom, lanternString, manekiNeko, cone, pole, ship, std, tram, wire } from './kit';
 import { bakeStatic } from './bake';
 import { buildBackdrop } from './backdrop';
 import { buildSteam } from './steam';
@@ -28,17 +28,17 @@ export function buildStreet(L: LevelDef = LEVEL_1): Street {
 
   // ---- 路面 ----
   const at = asphalt(); at.wrapS = at.wrapT = THREE.RepeatWrapping; at.repeat.set(8, 1);
-  const roadMat = new THREE.MeshStandardMaterial({ map: at, roughness: 0.32, metalness: 0.25, transparent: true, opacity: 0.84 });
+  const roadMat = new THREE.MeshStandardMaterial({ map: at, color: L.ground?.road ?? 0xffffff, roughness: 0.32, metalness: 0.25, transparent: true, opacity: 0.84 });
   const roadH = new THREE.Mesh(new THREE.PlaneGeometry(HALF * 2, 9), roadMat); roadH.rotation.x = -Math.PI / 2; roadH.position.y = 0.02; roadH.receiveShadow = true; g.add(nm(roadH));
   const atv = at.clone(); atv.repeat.set(1, 8); atv.needsUpdate = true;
-  const roadV = new THREE.Mesh(new THREE.PlaneGeometry(9, HALF * 2), new THREE.MeshStandardMaterial({ map: atv, roughness: 0.32, metalness: 0.25, transparent: true, opacity: 0.84 })); roadV.rotation.x = -Math.PI / 2; roadV.position.y = 0.03; roadV.receiveShadow = true; g.add(nm(roadV));
+  const roadV = new THREE.Mesh(new THREE.PlaneGeometry(9, HALF * 2), new THREE.MeshStandardMaterial({ map: atv, color: L.ground?.road ?? 0xffffff, roughness: 0.32, metalness: 0.25, transparent: true, opacity: 0.84 })); roadV.rotation.x = -Math.PI / 2; roadV.position.y = 0.03; roadV.receiveShadow = true; g.add(nm(roadV));
   // 斑马线
   for (const [cx, cz, rot] of [[0, 6.2, 0], [0, -6.2, 0], [6.2, 0, 1], [-6.2, 0, 1]] as number[][]) {
     for (let i = -3; i <= 3; i++) { const s = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 2.4), new THREE.MeshBasicMaterial({ color: 0xe8e4f0, transparent: true, opacity: 0.8 })); s.rotation.x = -Math.PI / 2; s.rotation.z = rot ? Math.PI / 2 : 0; s.position.set(cx + (rot ? 0 : i * 1.2), 0.05, cz + (rot ? i * 1.2 : 0)); g.add(nm(s)); }
   }
   // ---- 人行道（四个街区各一块）----
-  const pv = paving('#34304a'); pv.wrapS = pv.wrapT = THREE.RepeatWrapping; pv.repeat.set(8, 8);
-  const pave = new THREE.MeshStandardMaterial({ map: pv, color: 0x77728c, roughness: 0.88, metalness: 0.05, envMapIntensity: 0.3 });
+  const pv = paving(L.ground?.pave ?? '#34304a'); pv.wrapS = pv.wrapT = THREE.RepeatWrapping; pv.repeat.set(8, 8);
+  const pave = new THREE.MeshStandardMaterial({ map: pv, color: L.ground ? 0x7a9a80 : 0x57536c, roughness: 0.9, metalness: 0.05, envMapIntensity: 0.3 });
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const w = HALF - 4.5, cx = sx * (4.5 + w / 2), cz = sz * (4.5 + w / 2);
     const slab = new THREE.Mesh(new THREE.BoxGeometry(w, 0.32, w), pave); slab.position.set(cx, 0.16, cz); slab.receiveShadow = true; g.add(nm(slab));
@@ -85,6 +85,8 @@ export function buildStreet(L: LevelDef = LEVEL_1): Street {
   for (const [x, z, ry, c] of L.containers ?? []) { const o = container(c); o.position.set(x, 0.32, z); o.rotation.y = ry; g.add(o); }
   for (const [x, z, ry] of L.cranes ?? []) { const o = crane(); o.position.set(x, 0.5, z); o.rotation.y = ry; g.add(nm(o)); }
   for (const [x, z, ry] of L.ships ?? []) { const o = ship(); o.position.set(x, 0.5, z); o.rotation.y = ry; g.add(nm(o)); }
+  for (const [x, z, sc, seed, col] of L.trees ?? []) { const o = glowTree(seed, col); o.scale.setScalar(sc); o.position.set(x, 0.32, z); g.add(o); }
+  for (const [x, z, sc, col] of L.mushrooms ?? []) { const o = mushroom(col, sc); o.position.set(x, 0.32, z); g.add(o); }
   // ---- 街边小东西 ----
   for (const p of L.props) {
     const make = PROPS[p.kind];
