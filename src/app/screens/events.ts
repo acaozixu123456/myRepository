@@ -304,6 +304,6 @@ export const EVENTS_CSS = `
 .quiz{display:flex;flex-direction:column;gap:8px}.quiz p{font-size:15px;color:var(--ink);margin:0}.quiz .btn{width:100%}
 .prow2{display:grid;grid-template-columns:26px 1fr 1fr 1fr;gap:5px;align-items:stretch;padding:3px 0}.prow2.head{font-size:11px;font-weight:800;color:var(--ink-2);text-align:center;align-items:center}
 .prow2 .lv{font-style:normal;display:grid;place-items:center;font-family:var(--f-d);font-size:13px;border-radius:50%;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line)}.prow2.on .lv{background:linear-gradient(#ffe27a,#f0a62e)}
-.pcell{position:relative;min-height:38px;border-radius:10px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line);padding:3px 4px;text-align:center;display:flex;align-items:center;justify-content:center}
+.pcell{position:relative;min-height:38px;border-radius:10px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line);padding:3px 13px 3px 4px;text-align:center;display:flex;align-items:center;justify-content:center}
 .pcell small{font-size:9.5px;font-weight:700;line-height:1.25;color:var(--ink-2)}.pcell.ok{background:linear-gradient(#d6f5c4,#9fe07a);box-shadow:0 2px 0 var(--green-d)}.pcell.done{opacity:.55}.pcell i{position:absolute;right:2px;top:0;font-style:normal;font-size:10px}.pcell.none{background:none;box-shadow:none}
 `;
