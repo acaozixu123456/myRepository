@@ -12,6 +12,9 @@ for f in glob.glob(f'{OUT}/*.webp'): os.remove(f)
 
 def trim(im):
     if im.mode != 'RGBA': im = im.convert('RGBA')
+    # 清掉 alpha 极低的杂点，避免它们撑大裁剪框
+    a = im.getchannel('A').point(lambda v: 0 if v < 8 else v)
+    im.putalpha(a)
     bb = im.getchannel('A').getbbox()
     return im.crop(bb) if bb else im
 
