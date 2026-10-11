@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "balance": "node tools/run-balance.mjs",
+    "monkey": "node tools/monkey.mjs",
     "economy:paid": "node tools/run-economy-paid.mjs",
     "balance:sp": "node tools/run-sp-balance.mjs",
     "lint:skills": "node tools/run-skill-consistency.mjs",
