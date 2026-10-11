@@ -53,4 +53,5 @@
 
 - `npm run economy:paid`：付费经济审查，生成 `docs/ECONOMY_PAID.md`；SP 强度用 `npm run balance:sp`。
 - `npm run monkey`：随机点击 + 切页，抓页面报错（先 `npm run dev`）。
+- 背景音乐 `src/app/bgm.ts` 是程序合成的五声音阶八音盒循环（无音频文件），设置里可关。
 - `python3 tools/sync-illust.py`：把 `assets/heroes/illust/` 的 AI 立绘整理进游戏（见 `docs/CODEX_ILLUSTRATION_BRIEF.md`）。

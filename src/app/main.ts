@@ -16,6 +16,7 @@ import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
 import { applyGain, idleCapHours, nextStage, recommendedPowerOf, tickIdle } from '../game/stage';
 import type { Gain } from '../game/stage';
+import { armBgm, bgmState, setBgmOn } from './bgm';
 import { exportSave, importSave } from '../game/backup';
 import { SAVE_KEY, autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
 import { bagHtml, handleBag } from './screens/bag';
@@ -43,6 +44,8 @@ const state = load(storage);
 let lastFirst: Gain | null = null;
 const awayMin = (Date.now() - state.idle.last) / 60000;
 sfxState.on = state.settings.sound !== false;
+bgmState.on = state.settings.music !== false;
+armBgm();
 spriteMode.illust = state.settings.illustSprite !== false;
 const params = new URLSearchParams(location.search);
 const at = params.get('at');
@@ -181,6 +184,7 @@ function openSettings() {
   root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog">
     <h3 class="title" style="margin:0 0 10px">设置</h3>
     <div class="row" style="margin:8px 0"><b class="grow">音效</b><button class="btn sm ${on ? 'green' : 'ghost'}" data-act="snd">${on ? '开' : '关'}</button></div>
+    <div class="row" style="margin:8px 0"><b class="grow">背景音乐</b><button class="btn sm ${state.settings.music !== false ? 'green' : 'ghost'}" data-act="bgm">${state.settings.music !== false ? '开' : '关'}</button></div>
     <div class="row" style="margin:8px 0"><b class="grow">战斗速度</b>${[1, 2, 3].map((v) => `<button class="btn sm ${state.settings.speed === v ? 'blue' : 'ghost'}" data-act="spd" data-v="${v}">${v}×</button>`).join('')}</div>
     <div class="row" style="margin:8px 0"><b class="grow">战斗用立绘小人<small class="muted" style="display:block;font-weight:700">有立绘的猫在战斗里用整张立绘（下一场生效）</small></b><button class="btn sm ${state.settings.illustSprite !== false ? 'green' : 'ghost'}" data-act="ill">${state.settings.illustSprite !== false ? '开' : '关'}</button></div>
     <div class="row" style="margin:8px 0"><b class="grow">存档备份<small class="muted" style="display:block;font-weight:700">换设备 / 清缓存前，先导出一段文本</small></b><button class="btn sm blue" data-act="bk-out">导出</button><button class="btn sm ghost" data-act="bk-in">导入</button></div>
@@ -239,6 +243,7 @@ root.addEventListener('click', (e) => {
       break;
     }
     case 'ill': state.settings.illustSprite = !(state.settings.illustSprite !== false); spriteMode.illust = state.settings.illustSprite; ctx.save(); openSettings(); sfx.ok(); break;
+    case 'bgm': state.settings.music = !(state.settings.music !== false); setBgmOn(state.settings.music); ctx.save(); openSettings(); sfx.ok(); break;
     case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; ctx.save(); openSettings(); sfx.ok(); break;
     case 'spd': state.settings.speed = Number(el.dataset.v); ctx.loop.setSpeed(state.settings.speed); ctx.save(); openSettings(); updateHome(ctx); break;
     case 'reset1': el.outerHTML = '<button class="btn pink" data-act="reset2">再点一次：清空存档</button>'; break;

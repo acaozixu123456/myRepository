@@ -72,7 +72,7 @@ export interface PlayerState {
   seen: string[];
   stories?: string[]; // 已看过的剧情 id
   tips?: string[]; // 已完成的新手引导步骤
-  settings: { speed: number; sound?: boolean; illustSprite?: boolean };
+  settings: { speed: number; sound?: boolean; music?: boolean; illustSprite?: boolean };
 }
 
 export const MAX_STAR = 5;
