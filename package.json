@@ -9,6 +9,7 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "balance": "node tools/run-balance.mjs",
     "shots": "node tools/shots.mjs",
     "showcase": "node tools/build-showcase.mjs",
     "app": "node tools/build-app.mjs"
