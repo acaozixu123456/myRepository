@@ -1,0 +1,57 @@
+{
+  "status": "可送Claude审；独立QA完成，不代表Claude已通过",
+  "asset": "/workspace/world-worktrees/skyline/assets/world/skyline/skyline_catcity_01.webp",
+  "sourceAIcandidate": 3,
+  "sourceRaw": "/workspace/generated_images/exec-6f19b7ff-883d-4b17-800d-1d5ea8cc413b.png",
+  "sourceNativeSize": [
+    1774,
+    887
+  ],
+  "sourceNativeSha256": "167bd2a75811795c6c021c24dcb328f181c654c4979a2a96873f242b8320884f",
+  "export": {
+    "size": [
+      2048,
+      1024
+    ],
+    "mode": "RGB",
+    "bytes": 131512,
+    "sha256": "dcb985c1c4be090e90a79bf171456b22724a6f47fd0b43b73ab57686ac5bcc32",
+    "iccProfile": "sRGB built-in",
+    "powerOfTwo": true,
+    "target2048x1024": true
+  },
+  "sourceOperation": "Initial AI candidate2 -> exact half-width cyclic offset887px -> image_gen AI repair -> edited offset picture retained without rolling back -> uniform Lanczos2048x1024 -> RGBsRGB WebPq90; no manual pixel seam painting.",
+  "nativeScaleNote": "约15.44%等比上采样，出处记录已如实注明，不称原生2048。",
+  "actualVisualReviewed": [
+    "/workspace/world-review/skyline/candidate-01-offset.png",
+    "/workspace/world-review/skyline/candidate-02-offset.png",
+    "/workspace/generated_images/exec-6f19b7ff-883d-4b17-800d-1d5ea8cc413b.png",
+    "/workspace/world-review/skyline/qa-candidate-03-outer-seam-strip.png",
+    "/workspace/world-review/skyline/qa-candidate-03-center-strip.png",
+    "/workspace/world-review/skyline/qa-final-repeat-preview.png",
+    "/workspace/world-review/skyline/qa-final-outer-seam-strip.png",
+    "/workspace/world-review/skyline/qa-final-center-strip.png",
+    "/workspace/world-review/skyline/skyline-a07.png"
+  ],
+  "checks": {
+    "upperSky": "通过：RGB不透明；上沿渐变到深紫。顶部10%平均RGB(22.83,14.15,39.12)，weighted sRGB display-luma17.80；实际整图没有白天亮天顶。",
+    "skylineElements": "通过：层叠巨楼、空中走廊、圆顶/天线、稀疏飞行光点与猫耳全息广告均可辨。",
+    "facesAndText": "通过：未见真人面孔、人体、真品牌或文字；广告为抽象猫耳轮廓。",
+    "horizontalJoin": "可审：AI修掉旧offset中心天空色阶竖线，原断桥现在进入楼体/雾；最终左右直接拼接与0/±120°柱面图未见明显贯穿硬缝。没有宣称严格像素周期相等。",
+    "metadataAndProvenance": "通过：2048x1024、RGB、内嵌sRGBICC、131512B(<500KB)、SHA对应出处记录；三代AI来源、半宽offset与上采样有记录。"
+  },
+  "boundaryMetricComparison": {
+    "C2offsetOuterEdgeMeanAbsRGB": 1.8650883126644118,
+    "C2offsetCenterAdjacentMeanAbsRGB": 6.091694851559564,
+    "C3offsetOuterEdgeMeanAbsRGB": 5.833897031191282,
+    "C3offsetCenterAdjacentMeanAbsRGB": 4.899285982713266,
+    "finalOuterEdgeMeanAbsRGB": 6.03515625,
+    "note": "AI改变了原先连续的外缘像素，最终外缘平均差较高；不能把原图外边误当原图中心作比较，也不能仅用MAE判视觉无缝。判断以完整层次、原生strip、最终repeat和柱面图为依据。"
+  },
+  "limitations": [
+    "观察基于原生图、编码图与有限三视角独立柱面预览，并非每个相机/游戏光效下的数学无缝证明。",
+    "像素统计只是辅助。较高边缘MAE可能来自正常建筑/窗灯轮廓，低MAE也不能证明结构连续。",
+    "原生1774x887需上采样到规格2048x1024，细窗与灯点不像原生2048那样锐利；这是目前最不满意的取舍。"
+  ],
+  "technicalMetricsFile": "assets/world/skyline/skyline-a07.metrics.json"
+}

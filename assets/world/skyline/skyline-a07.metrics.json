@@ -1,0 +1,121 @@
+{
+  "scope": "Metadata and pixel statistics only. Luma is a weighted sRGB byte proxy, not physical luminance. Repeats are exact copies, preview reduction is uniform technical resize.",
+  "source": "/workspace/world-worktrees/skyline/assets/world/skyline/skyline_catcity_01.webp",
+  "sha256": "dcb985c1c4be090e90a79bf171456b22724a6f47fd0b43b73ab57686ac5bcc32",
+  "size": [
+    2048,
+    1024
+  ],
+  "mode": "RGB",
+  "bytes": 131512,
+  "iccProfile": "sRGB built-in",
+  "powerOfTwo": true,
+  "target2048x1024": true,
+  "bands": [
+    {
+      "topFraction": 0.05,
+      "rows": 51,
+      "meanRGB": [
+        22.853,
+        14.142,
+        39.206
+      ],
+      "medianRGB": [
+        23.0,
+        14.0,
+        40.0
+      ],
+      "meanDisplayLuma": 17.804,
+      "p95DisplayLuma": 18.361,
+      "fractionDisplayLumaAbove64": 0.0,
+      "fractionFullyTransparent": 0.0
+    },
+    {
+      "topFraction": 0.1,
+      "rows": 102,
+      "meanRGB": [
+        22.828,
+        14.153,
+        39.123
+      ],
+      "medianRGB": [
+        23.0,
+        14.0,
+        40.0
+      ],
+      "meanDisplayLuma": 17.8,
+      "p95DisplayLuma": 18.361,
+      "fractionDisplayLumaAbove64": 0.0,
+      "fractionFullyTransparent": 0.0
+    },
+    {
+      "topFraction": 0.25,
+      "rows": 256,
+      "meanRGB": [
+        23.517,
+        14.804,
+        40.739
+      ],
+      "medianRGB": [
+        23.0,
+        14.0,
+        40.0
+      ],
+      "meanDisplayLuma": 18.529,
+      "p95DisplayLuma": 20.935,
+      "fractionDisplayLumaAbove64": 2e-05,
+      "fractionFullyTransparent": 0.0
+    },
+    {
+      "topFraction": 0.5,
+      "rows": 512,
+      "meanRGB": [
+        32.441,
+        21.213,
+        51.955
+      ],
+      "medianRGB": [
+        26.0,
+        17.0,
+        45.0
+      ],
+      "meanDisplayLuma": 25.82,
+      "p95DisplayLuma": 49.076,
+      "fractionDisplayLumaAbove64": 0.00262,
+      "fractionFullyTransparent": 0.0
+    }
+  ],
+  "horizontalWrap": [
+    {
+      "topFraction": 0.25,
+      "edgeMeanAbsRGB": 0.854,
+      "edgeP95AbsRGB": 2.0,
+      "interiorMedianAbsRGB": 0.0,
+      "interiorP95AbsRGB": 0.667,
+      "edgeAlphaMeanAbs": 0.0
+    },
+    {
+      "topFraction": 0.5,
+      "edgeMeanAbsRGB": 1.207,
+      "edgeP95AbsRGB": 3.0,
+      "interiorMedianAbsRGB": 0.0,
+      "interiorP95AbsRGB": 1.333,
+      "edgeAlphaMeanAbs": 0.0
+    },
+    {
+      "topFraction": 1.0,
+      "edgeMeanAbsRGB": 6.035,
+      "edgeP95AbsRGB": 31.333,
+      "interiorMedianAbsRGB": 0.0,
+      "interiorP95AbsRGB": 8.333,
+      "edgeAlphaMeanAbs": 0.0
+    }
+  ],
+  "repeatPreview": "/workspace/world-review/skyline/qa-final-repeat-preview.png",
+  "requiredVisualChecks": [
+    "Read all horizontal join bands at the center seam.",
+    "Check skyline shapes, overpasses, flying light specks and hologram glow from actual image.",
+    "Inspect advertisement/faces visually; no human face detection is inferred from numerical statistics.",
+    "Judge upper sky visually for transparent or deep-purple fade; scalar darkness alone is insufficient."
+  ]
+}
