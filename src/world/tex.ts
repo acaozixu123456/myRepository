@@ -17,7 +17,7 @@ export function preloadWorldTextures(): Promise<void> {
   }))).then(() => undefined);
 }
 export const worldImg = (k: string): HTMLImageElement | undefined => imgs.get(k);
-const WALL_IMG: Record<string, string> = { dark: 'wall_metal_riveted_01', teal: 'wall_metal_painted_02', brick: 'wall_metal_painted_02', cream: 'wall_metal_ribbed_03', pink: 'wall_metal_ribbed_03' };
+const WALL_IMG: Record<string, string> = { dark: 'wall_metal_riveted_01', teal: 'wall_tile_seafoam_01', brick: 'wall_metal_painted_02', cream: 'wall_tile_ivory_02', pink: 'wall_metal_ribbed_03' };
 const mk = (w: number, h: number, draw: (g: CanvasRenderingContext2D) => void, key?: string, srgb = true): THREE.CanvasTexture => {
   if (key && cache.has(key)) return cache.get(key)!;
   const c = document.createElement('canvas');

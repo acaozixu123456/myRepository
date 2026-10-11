@@ -2,8 +2,14 @@
 import wall_metal_painted_02 from './wall_metal_painted_02.webp';
 import wall_metal_ribbed_03 from './wall_metal_ribbed_03.webp';
 import wall_metal_riveted_01 from './wall_metal_riveted_01.webp';
+import wall_tile_ivory_02 from './wall_tile_ivory_02.webp';
+import wall_tile_seafoam_01 from './wall_tile_seafoam_01.webp';
+import wall_tile_slate_03 from './wall_tile_slate_03.webp';
 export const WORLD_TEX: Record<string, string> = {
   wall_metal_painted_02,
   wall_metal_ribbed_03,
   wall_metal_riveted_01,
+  wall_tile_ivory_02,
+  wall_tile_seafoam_01,
+  wall_tile_slate_03,
 };
