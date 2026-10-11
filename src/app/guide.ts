@@ -1,4 +1,4 @@
-// 新手引导：三步，一次只亮一个提示（猫猫气泡 + 目标按钮脉冲），完成对应操作后自动进入下一步。
+// 新手引导：五步，一次只亮一个提示（猫猫气泡 + 目标按钮脉冲），完成对应操作后自动进入下一步。
 import type { AppCtx } from './ctx';
 
 interface Step { id: string; target: string; screen: string; text: string; done: (ctx: AppCtx) => boolean }
@@ -7,6 +7,8 @@ const STEPS: Step[] = [
   { id: 'recruit', target: '#nav [data-to=gacha]', screen: '*', text: '军师！先用招福符招一位新猫吧，纸箱里说不定有惊喜。', done: (c) => (c.s.seen?.length ?? 0) > 5 },
   { id: 'levelup', target: '#nav [data-to=lineup]', screen: '*', text: '去阵容里给猫猫升级，战力上来才打得过下一关。', done: (c) => Object.values(c.s.heroes).some((h) => h.lv > 8) },
   { id: 'challenge', target: '#chBtn', screen: 'home', text: '战力不错了，点这里挑战下一关！', done: (c) => (c.s.best?.index ?? 1) > 1 || (c.s.best?.chapter ?? 1) > 1 },
+  { id: 'events', target: '#quick [data-to=events]', screen: 'home', text: '活动里每天有免费福利：猫抓机、问答、许愿池，还有七日喵程，点进去领一圈！', done: (c) => { const e = c.s.events; return !!e && (e.spinTotal > 0 || e.quizAns.length > 0 || e.wish.total > 0 || e.sprint.length > 0 || e.carn.length > 0); } },
+  { id: 'guild', target: '#quick [data-to=social]', screen: 'home', text: '广场里可以加入公会：每天互助、拆纸箱，能换好东西，还能一起打首领。', done: (c) => !!c.s.guild?.id },
 ];
 
 let bubble: HTMLElement | null = null;
