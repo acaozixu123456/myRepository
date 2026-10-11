@@ -44,11 +44,11 @@ export interface Bond {
 
 export const BONDS: Bond[] = [
   { name: '桃园结义', heroes: ['shu_liumiaobei', 'shu_guanyunmiao', 'shu_zhangmiaofei'], desc: '三猫全属性 +20%；任一阵亡，其余两只攻击 +30%。' },
-  { name: '火烧赤壁', heroes: ['shu_zhugemiaoliang', 'wu_zhoumiaoyu'], desc: '灼烧伤害 +30%；诸葛喵亮的八阵图额外「炸毛」吴势力友方。' },
-  { name: '魏武之道', heroes: ['wei_caomiaode', 'wei_xiahoudun', 'wei_xuhuchi'], desc: '魏势力「护体毛」效果 +30%，曹喵德元气获取 +20%。' },
+  { name: '火烧赤壁', heroes: ['shu_zhugemiaoliang', 'wu_zhoumiaoyu'], desc: '我方施加的「灼烧」每跳伤害 +30%。' },
+  { name: '魏武之道', heroes: ['wei_caomiaode', 'wei_xiahoudun', 'wei_xuhuchi'], desc: '魏势力给出的「护体毛」+30%；曹喵德元气获取 +20%。' },
   { name: '美人连环', heroes: ['qun_diaochan', 'qun_lvbuding', 'qun_dongzhuo'], desc: '敌人「猫薄荷醉」时长 +1 回合；吕布丁攻击 +25%。' },
-  { name: '七擒七纵', heroes: ['man_mengmiaohuo', 'man_zhurong', 'man_mulu', 'man_wutugu'], desc: '「图腾」层数上限 +3；蛮势力友方生命 +15%。' },
-  { name: '天机四象', heroes: ['xian_zuoci', 'xian_zhangzhua', 'xian_shuijing', 'xian_guanlu'], desc: '「天命」触发率 +15%；仙势力技能「毛线缠」命中 +20%。' },
-  { name: '杏林同盟', heroes: ['qun_huatuo', 'wei_guojia', 'xian_shuijing'], desc: '全队治疗效果 +20%，净化时附带「呼噜」1 回合。' },
+  { name: '七擒七纵', heroes: ['man_mengmiaohuo', 'man_zhurong', 'man_mulu', 'man_wutugu'], desc: '蛮势力友方生命 +15%；图腾猛兽所需的普攻次数 6 → 5。' },
+  { name: '天机四象', heroes: ['xian_zuoci', 'xian_zhangzhua', 'xian_shuijing', 'xian_guanlu'], desc: '「天命」触发率 +15%。' },
+  { name: '杏林同盟', heroes: ['qun_huatuo', 'wei_guojia', 'xian_shuijing'], desc: '我方治疗量 +20%；净化成功时附带「呼噜」1 回合。' },
   { name: '江东之虎', heroes: ['wu_sunxiaoba', 'wu_sunxiangxiang', 'wu_huanggai'], desc: '吴势力友方暴击率 +15%；灼烧目标受到的所有伤害 +10%。' },
 ];

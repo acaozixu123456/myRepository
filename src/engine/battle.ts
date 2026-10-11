@@ -93,6 +93,10 @@ class Battle {
     };
   }
 
+  /** 已激活的命名羁绊（按阵营） */
+  bondsOn: Record<'A' | 'B', Set<string>> = { A: new Set(), B: new Set() };
+  hasBond(side: 'A' | 'B', name: string) { return this.bondsOn[side].has(name); }
+
   applyBonds() {
     for (const side of ['A', 'B'] as const) {
       const ids = new Set(this.units.filter((u) => u.side === side).map((u) => u.heroId));
@@ -100,6 +104,7 @@ class Battle {
       for (const bond of this.cfg.noBonds ? [] : BONDS) {
         if (!bond.heroes.every((h) => ids.has(h))) continue;
         const members = mine.filter((u) => bond.heroes.includes(u.heroId));
+        this.bondsOn[side].add(bond.name);
         if (bond.name === '桃园结义') for (const u of members) { u.maxHp = Math.round(u.maxHp * 1.2); u.hp = u.maxHp; u.atk = Math.round(u.atk * 1.2); u.def = Math.round(u.def * 1.2); }
         if (bond.name === '美人连环') for (const u of mine) if (u.heroId === 'qun_lvbuding') u.atk = Math.round(u.atk * 1.25);
         if (bond.name === '七擒七纵') for (const u of mine) if (u.faction === 'man') { u.maxHp = Math.round(u.maxHp * 1.15); u.hp = u.maxHp; }
@@ -267,6 +272,7 @@ class Battle {
     let mult = (1 + cm.dmgDealtPct) * caster.dmgMul * (1 + tm.dmgTakenPct) * this.counterMult(caster.faction, target.faction);
     if (crit) mult *= caster.critDmg;
     if ((elem === 'fire' || elem === 'thunder') && this.has(target, 'wet')) mult *= 1.25;
+    if (this.hasBond(caster.side, '江东之虎') && this.has(target, 'burn')) mult *= 1.1;
     // 吴·赤壁：同阵营≥2 的火焰技能对淋湿目标额外伤害
     if (elem === 'fire' && caster.faction === 'wu' && this.has(target, 'wet')) mult *= 1 + 0.1 * (this.factionCount[caster.side].wu ?? 0);
     const cctx: Ctx = { ...ctx, targets: [target], crit };
@@ -322,7 +328,8 @@ class Battle {
   heal(src: Unit, t: Unit, amount: number) {
     if (!t.alive || amount <= 0) return;
     const tm = this.mods(t);
-    const real = Math.min(t.maxHp - t.hp, Math.round(amount * (1 + tm.healTakenPct)));
+    const bondHeal = this.hasBond(src.side, '杏林同盟') ? 1.2 : 1;
+    const real = Math.min(t.maxHp - t.hp, Math.round(amount * bondHeal * (1 + tm.healTakenPct)));
     if (real <= 0) return;
     t.hp += real;
     this.push({ t: 'heal', src: src.uid, dst: t.uid, amount: real, hp: t.hp });
@@ -332,6 +339,7 @@ class Battle {
   gainEnergy(u: Unit, n: number) {
     if (!u.alive) return;
     const before = u.energy;
+    if (n > 0 && u.heroId === 'wei_caomiaode' && this.hasBond(u.side, '魏武之道')) n = Math.round(n * 1.2);
     u.energy = Math.max(0, Math.min(150, u.energy + n));
     if (u.energy !== before) this.push({ t: 'energy', uid: u.uid, energy: u.energy });
   }
@@ -366,6 +374,7 @@ class Battle {
     if (!t.alive) return;
     const rule = STATUS_RULES[id];
     if (!rule) throw new Error(`unknown status ${id}`);
+    if (id === 'nip' && this.hasBond(src.side, '美人连环')) turns += 1;
     const old = this.has(t, id);
     if (old) {
       old.stacks = Math.min(rule.maxStacks, old.stacks + stacks);
@@ -403,7 +412,8 @@ class Battle {
       case 'shield':
         for (const t of tg) {
           if (!t.alive) continue;
-          const v = Math.round(this.scaleVal(e.scale, caster, t));
+          let v = Math.round(this.scaleVal(e.scale, caster, t));
+          if (caster.faction === 'wei' && this.hasBond(caster.side, '魏武之道')) v = Math.round(v * 1.3);
           t.shield.push({ v, turns: e.turns });
           this.push({ t: 'shield', src: caster.uid, dst: t.uid, amount: v, total: this.shieldOf(t) });
         }
@@ -431,6 +441,7 @@ class Battle {
               n--;
             }
           }
+          if (this.hasBond(caster.side, '杏林同盟') && n !== (e.n ?? 99) && t.alive) this.addStatus(caster, t, 'purr', 1, 1, 0.05);
         }
         break;
       case 'revive':
@@ -529,6 +540,11 @@ class Battle {
   }
   factionOnDeath(dead: Unit) {
     const cnt = this.factionCount[dead.side];
+    if (this.hasBond(dead.side, '桃园结义') && BONDS[0].heroes.includes(dead.heroId)) {
+      for (const u of this.alive(dead.side).filter((x) => BONDS[0].heroes.includes(x.heroId))) this.addStatus(dead, u, 'fluff', 3, 1, 0.3);
+      const any = this.alive(dead.side).find((x) => BONDS[0].heroes.includes(x.heroId));
+      if (any) this.push({ t: 'text', uid: any.uid, text: '桃园·结义' });
+    }
     if (dead.faction === 'shu' && (cnt.shu ?? 0) >= 2) {
       for (const u of this.alive(dead.side).filter((x) => x.faction === 'shu')) {
         this.addStatus(dead, u, 'fluff', 2, 1, 0.15);
@@ -542,7 +558,7 @@ class Battle {
     const cnt = this.factionCount[u.side];
     if (u.faction === 'man' && usedBasic) {
       this.teamCounter[`${u.side}:totem`] = (this.teamCounter[`${u.side}:totem`] ?? 0) + 1;
-      if (this.teamCounter[`${u.side}:totem`] >= 6 && (cnt.man ?? 0) >= 2) {
+      if (this.teamCounter[`${u.side}:totem`] >= (this.hasBond(u.side, '七擒七纵') ? 5 : 6) && (cnt.man ?? 0) >= 2) {
         this.teamCounter[`${u.side}:totem`] = 0;
         const foes = this.alive(this.foe(u));
         if (foes.length) {
@@ -552,7 +568,7 @@ class Battle {
         }
       }
     }
-    if (u.faction === 'xian' && (cnt.xian ?? 0) >= 2 && this.rng.chance(0.1 * (cnt.xian ?? 0))) {
+    if (u.faction === 'xian' && (cnt.xian ?? 0) >= 2 && this.rng.chance(0.1 * (cnt.xian ?? 0) + (this.hasBond(u.side, '天机四象') ? 0.15 : 0))) {
       const allies = this.alive(u.side);
       if (allies.length) {
         const t = this.rng.pick(allies);
@@ -568,7 +584,9 @@ class Battle {
       if (!u.statuses.includes(s)) continue; // 本轮结算中途被清除（睡着 / 被唤醒）的状态不再结算
       const r = STATUS_RULES[s.id];
       if (r?.dot && u.alive) {
-        const dmg = Math.max(1, Math.round(s.snap * s.stacks * (1 - 0)));
+        let dmg = Math.max(1, Math.round(s.snap * s.stacks));
+        const srcSide = this.units.find((x) => x.uid === s.src)?.side ?? this.foe(u);
+        if (s.id === 'burn' && this.hasBond(srcSide, '火烧赤壁')) dmg = Math.round(dmg * 1.3);
         const { hpLoss } = this.absorb(u, dmg);
         u.hp = Math.max(0, u.hp - hpLoss);
         const killed = u.hp <= 0;
