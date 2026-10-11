@@ -9,7 +9,7 @@ const stages = CHAPTERS.flatMap((chapter) => chapter.stages);
 const mobById = Object.fromEntries(MOBS.map((mob) => [mob.id, mob]));
 const optionalItems = import.meta.glob<{ ITEMS: ItemDef[] }>('../src/content/items.ts', { eager: true });
 const catalogue = Object.values(optionalItems).flatMap((module) => module.ITEMS);
-const itemIds = new Set(catalogue.length ? catalogue.map((item) => item.id) : PENDING_CAMPAIGN_ITEMS);
+const itemIds = new Set(Object.keys(optionalItems).length ? catalogue.map((item) => item.id) : PENDING_CAMPAIGN_ITEMS);
 
 describe('战役内容', () => {
   it('六章各二十四关，标识连续，精英与首领位置固定', () => {
