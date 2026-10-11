@@ -1,0 +1,413 @@
+{
+  "scope": "read-only source/final review; QA previews are format conversions only",
+  "assets": [
+    {
+      "id": "sign_ramen_horizontal_01",
+      "source": "/workspace/generated_images/exec-53ff752e-2b5d-483f-b810-ac821f7ff6d9.png",
+      "source_sha256": "a8963f5a9c94482f871efd8ef57e7bd2b78530058b8ec0d6345b1a39c39474cf",
+      "source_size": [
+        1983,
+        793
+      ],
+      "aspect_canvas": [
+        1980,
+        495
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "sourceLuminousBboxes": [
+        {
+          "thresholdMaxChannel": 16,
+          "bbox_LTRB_halfOpen": [
+            0,
+            199,
+            1983,
+            594
+          ],
+          "pixelsOutsideCrop": 258
+        },
+        {
+          "thresholdMaxChannel": 32,
+          "bbox_LTRB_halfOpen": [
+            4,
+            200,
+            1980,
+            593
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 64,
+          "bbox_LTRB_halfOpen": [
+            12,
+            200,
+            1973,
+            593
+          ],
+          "pixelsOutsideCrop": 0
+        }
+      ],
+      "encoded": {
+        "file": "/workspace/world-worktrees/neon-signs/assets/world/signs/sign_ramen_horizontal_01.webp",
+        "size": [
+          1024,
+          256
+        ],
+        "mode": "RGB",
+        "bytes": 46040,
+        "sha256": "4446ef7399a1c78f6f8914a28b4863ea90e69f2ef22e547502c46c92b851719d",
+        "icc_profile": "sRGB built-in",
+        "pow2": true,
+        "matchesProvenance": true
+      },
+      "exportCrop_LTRB_halfOpen": [
+        0,
+        144,
+        1980,
+        639
+      ]
+    },
+    {
+      "id": "sign_pawn_horizontal_02",
+      "source": "/workspace/generated_images/exec-65cbd667-c076-48a1-a414-326bebd48723.png",
+      "source_sha256": "5614a9c622c2b41531b804e6397f5bc231983e44a0959623a836d456785810eb",
+      "source_size": [
+        1983,
+        793
+      ],
+      "aspect_canvas": [
+        1980,
+        495
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "sourceLuminousBboxes": [
+        {
+          "thresholdMaxChannel": 16,
+          "bbox_LTRB_halfOpen": [
+            28,
+            217,
+            1955,
+            576
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 32,
+          "bbox_LTRB_halfOpen": [
+            28,
+            217,
+            1955,
+            576
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 64,
+          "bbox_LTRB_halfOpen": [
+            29,
+            217,
+            1955,
+            576
+          ],
+          "pixelsOutsideCrop": 0
+        }
+      ],
+      "encoded": {
+        "file": "/workspace/world-worktrees/neon-signs/assets/world/signs/sign_pawn_horizontal_02.webp",
+        "size": [
+          1024,
+          256
+        ],
+        "mode": "RGB",
+        "bytes": 59224,
+        "sha256": "4c01ff70da2ae671916b7ae415dd0708c0d653fef4e246cbf3068cf0a7fba4fb",
+        "icc_profile": "sRGB built-in",
+        "pow2": true,
+        "matchesProvenance": true
+      },
+      "exportCrop_LTRB_halfOpen": [
+        0,
+        144,
+        1980,
+        639
+      ]
+    },
+    {
+      "id": "sign_pharmacy_horizontal_03",
+      "source": "/workspace/generated_images/exec-e3ca9a6f-d53a-433d-9636-e38d93752ee4.png",
+      "source_sha256": "5564343076b83d5c0fc61c373f6b8327af7c6a556c21df6b6cbad007202cdb6f",
+      "source_size": [
+        1983,
+        793
+      ],
+      "aspect_canvas": [
+        1980,
+        495
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "sourceLuminousBboxes": [
+        {
+          "thresholdMaxChannel": 16,
+          "bbox_LTRB_halfOpen": [
+            20,
+            221,
+            1963,
+            567
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 32,
+          "bbox_LTRB_halfOpen": [
+            20,
+            221,
+            1962,
+            566
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 64,
+          "bbox_LTRB_halfOpen": [
+            21,
+            221,
+            1962,
+            566
+          ],
+          "pixelsOutsideCrop": 0
+        }
+      ],
+      "encoded": {
+        "file": "/workspace/world-worktrees/neon-signs/assets/world/signs/sign_pharmacy_horizontal_03.webp",
+        "size": [
+          1024,
+          256
+        ],
+        "mode": "RGB",
+        "bytes": 52360,
+        "sha256": "7cdbbad9634b1b1de8834ec0d2e99ab89d4808e15286f86b0326fe516c019a03",
+        "icc_profile": "sRGB built-in",
+        "pow2": true,
+        "matchesProvenance": true
+      },
+      "exportCrop_LTRB_halfOpen": [
+        0,
+        144,
+        1980,
+        639
+      ]
+    },
+    {
+      "id": "sign_netcafe_vertical_04",
+      "source": "/workspace/generated_images/exec-c8da7ad0-151a-4ad2-877e-ee686192a951.png",
+      "source_sha256": "29e87587577f4abd2e4e1902b2e600129fa5c54657b30094c2e12a74c7853049",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "aspect_canvas": [
+        344,
+        1376
+      ],
+      "offset": [
+        0,
+        61
+      ],
+      "sourceLuminousBboxes": [
+        {
+          "thresholdMaxChannel": 16,
+          "bbox_LTRB_halfOpen": [
+            481,
+            10,
+            773,
+            1241
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 32,
+          "bbox_LTRB_halfOpen": [
+            483,
+            12,
+            771,
+            1240
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 64,
+          "bbox_LTRB_halfOpen": [
+            483,
+            12,
+            771,
+            1239
+          ],
+          "pixelsOutsideCrop": 0
+        }
+      ],
+      "encoded": {
+        "file": "/workspace/world-worktrees/neon-signs/assets/world/signs/sign_netcafe_vertical_04.webp",
+        "size": [
+          256,
+          1024
+        ],
+        "mode": "RGB",
+        "bytes": 64512,
+        "sha256": "ce40590e9b4918fefa9501f29e4d9f78ff2db525d8e2e27943d65800a68d14a4",
+        "icc_profile": "sRGB built-in",
+        "pow2": true,
+        "matchesProvenance": true
+      },
+      "exportCrop_LTRB_halfOpen": [
+        455,
+        0,
+        799,
+        1254
+      ]
+    },
+    {
+      "id": "sign_bar_vertical_05",
+      "source": "/workspace/generated_images/exec-87eb65da-2ff7-4fd1-bc18-0f32149facb4.png",
+      "source_sha256": "67adff5a3e9875f83018078cf480549570026d0e4f0acd205f8e7ba6d979274d",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "aspect_canvas": [
+        344,
+        1376
+      ],
+      "offset": [
+        0,
+        61
+      ],
+      "sourceLuminousBboxes": [
+        {
+          "thresholdMaxChannel": 16,
+          "bbox_LTRB_halfOpen": [
+            476,
+            6,
+            775,
+            1239
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 32,
+          "bbox_LTRB_halfOpen": [
+            480,
+            11,
+            773,
+            1238
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 64,
+          "bbox_LTRB_halfOpen": [
+            481,
+            11,
+            772,
+            1236
+          ],
+          "pixelsOutsideCrop": 0
+        }
+      ],
+      "encoded": {
+        "file": "/workspace/world-worktrees/neon-signs/assets/world/signs/sign_bar_vertical_05.webp",
+        "size": [
+          256,
+          1024
+        ],
+        "mode": "RGB",
+        "bytes": 62276,
+        "sha256": "7b140856f707b4fe6abf19586fefe3451408b4555df9880cb00520f390c6a291",
+        "icc_profile": "sRGB built-in",
+        "pow2": true,
+        "matchesProvenance": true
+      },
+      "exportCrop_LTRB_halfOpen": [
+        455,
+        0,
+        799,
+        1254
+      ]
+    },
+    {
+      "id": "ad_ninelives_hologram_06",
+      "source": "/workspace/generated_images/exec-91aeb452-7ff1-463b-ad0e-38c4319e09b9.png",
+      "source_sha256": "fedc1ccc756a7d54f2dac75217377dc85a416736ef40d4505fe4ee53f8bbfae3",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "aspect_canvas": [
+        668,
+        1336
+      ],
+      "offset": [
+        0,
+        41
+      ],
+      "sourceLuminousBboxes": [
+        {
+          "thresholdMaxChannel": 16,
+          "bbox_LTRB_halfOpen": [
+            306,
+            6,
+            946,
+            1246
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 32,
+          "bbox_LTRB_halfOpen": [
+            309,
+            8,
+            942,
+            1243
+          ],
+          "pixelsOutsideCrop": 0
+        },
+        {
+          "thresholdMaxChannel": 64,
+          "bbox_LTRB_halfOpen": [
+            313,
+            14,
+            938,
+            1239
+          ],
+          "pixelsOutsideCrop": 0
+        }
+      ],
+      "encoded": {
+        "file": "/workspace/world-worktrees/neon-signs/assets/world/signs/ad_ninelives_hologram_06.webp",
+        "size": [
+          512,
+          1024
+        ],
+        "mode": "RGB",
+        "bytes": 154082,
+        "sha256": "f9c0dfb07e5f0b33bc182b61529fbd97e1b8cf5fa32563f4bc196c7418cb7038",
+        "icc_profile": "sRGB built-in",
+        "pow2": true,
+        "matchesProvenance": true
+      },
+      "exportCrop_LTRB_halfOpen": [
+        293,
+        0,
+        961,
+        1254
+      ]
+    }
+  ]
+}
