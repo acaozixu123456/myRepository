@@ -67,17 +67,17 @@ export function buildBackdrop(): Backdrop {
     mesh.position.set(Math.cos(ang) * r, 22 + (i % 4) * 5, Math.sin(ang) * r); mesh.lookAt(0, 22, 0);
     g.add(mesh); holos.push({ mesh, mat: m, ph: rnd() * 6 });
   }
-  // ---- 飞行器：发光小方块沿椭圆轨道飞 ----
-  const cars: { mesh: THREE.Mesh; r: number; y: number; sp: number; ph: number }[] = [];
-  for (let i = 0; i < 16; i++) {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.7, 1.1), glowMat(i % 2 ? '#ff7ad9' : '#7ff0ff'));
-    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), glowMat('#fff6c0')); tail.position.x = 1.4; m.add(tail);
-    g.add(m);
-    cars.push({ mesh: m, r: 44 + rnd() * 40, y: 16 + rnd() * 50, sp: (0.04 + rnd() * 0.06) * (rnd() < 0.5 ? 1 : -1), ph: rnd() * 6.28 });
-  }
+  // ---- 飞行器：发光小方块沿椭圆轨道飞（InstancedMesh，1 次绘制）----
+  const NC = 16;
+  const carMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(2.6, 0.7, 1.1), new THREE.MeshBasicMaterial({ toneMapped: false }), NC);
+  carMesh.frustumCulled = false;
+  const cars = Array.from({ length: NC }, (_, i) => { carMesh.setColorAt(i, new THREE.Color(i % 2 ? '#ff7ad9' : '#7ff0ff')); return { r: 44 + rnd() * 40, y: 16 + rnd() * 50, sp: (0.04 + rnd() * 0.06) * (rnd() < 0.5 ? 1 : -1), ph: rnd() * 6.28 }; });
+  g.add(carMesh);
+  const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector3(), S = new THREE.Vector3(1, 1, 1), AX = new THREE.Vector3(0, 1, 0);
   const update = (t: number) => {
     for (const h of holos) h.mat.opacity = 0.78 + 0.2 * Math.sin(t * 2.2 + h.ph) + (Math.sin(t * 17 + h.ph * 3) > 0.96 ? -0.4 : 0);
-    for (const c of cars) { const a = c.ph + t * c.sp; c.mesh.position.set(Math.cos(a) * c.r, c.y + Math.sin(t + c.ph) * 0.8, Math.sin(a) * c.r); c.mesh.rotation.y = -a + (c.sp > 0 ? 0 : Math.PI) - Math.PI / 2; }
+    cars.forEach((c, i) => { const a = c.ph + t * c.sp; V.set(Math.cos(a) * c.r, c.y + Math.sin(t + c.ph) * 0.8, Math.sin(a) * c.r); Q.setFromAxisAngle(AX, -a + (c.sp > 0 ? 0 : Math.PI) - Math.PI / 2); M.compose(V, Q, S); carMesh.setMatrixAt(i, M); });
+    carMesh.instanceMatrix.needsUpdate = true;
   };
   return { group: g, update };
 }

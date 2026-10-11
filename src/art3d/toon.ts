@@ -87,3 +87,6 @@ export function vertexColorMat(map: THREE.Texture | null, double: boolean): THRE
   }
   return m;
 }
+
+/** 烘焙后的描边材质：外扩量已经烘进顶点，这里 uThick = 0，所有描边合成一个网格 */
+export const bakedOutline = (): THREE.ShaderMaterial => outlineMat(0, '#3a2430');

@@ -104,6 +104,7 @@ export async function enterExplore(ctx: AppCtx) {
       });
       wv.onUpdate = (dt) => { ex.update(dt); st.update(wv.time, dt); };
       rt = { wv, ex, st, dead: new Map(), running: false };
+      (window as unknown as { __xp?: Rt }).__xp = rt; // 调试 / 自动化测试用
     } catch (e) {
       failed = true;
       load.innerHTML = '这台设备不支持 3D 探索<small>请换一个支持 WebGL 的浏览器</small>';

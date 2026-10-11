@@ -353,7 +353,9 @@ export class Explorer {
       a.shadow.position.set(a.cat.root.position.x, 0.36, a.cat.root.position.z);
     }
     // 敌人隐藏时，猫也要隐藏
-    for (const e of this.ents) for (const a of e.cats) { a.cat.root.visible = e.alive; a.shadow.visible = e.alive; }
+    // 敌人隐藏 / 离得太远时，猫也隐藏（省绘制）
+    const fp = this.wv.focus;
+    for (const e of this.ents) { const near = e.alive && Math.hypot(e.group.position.x - fp.x, e.group.position.z - fp.z) < 46; for (const a of e.cats) { a.cat.root.visible = near; a.shadow.visible = near; } }
     // 队长脚下的光圈
     const L = this.leader;
     this.ring.position.set(L.pos.x, 0.42, L.pos.z);

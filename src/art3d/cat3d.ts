@@ -6,7 +6,7 @@ import type { CatLook, EyeStyle } from '../art/types';
 import { HERO_PARTS } from './heroes';
 import { buildPart } from './parts';
 import type { PartCtx } from './parts/types';
-import { capsule, solid, sphere, toon, vertexColorMat } from './toon';
+import { bakedOutline, capsule, solid, sphere, toon, vertexColorMat } from './toon';
 import { coatTexture } from './patterns';
 
 export interface Joints {
@@ -304,10 +304,18 @@ export function bakeCat(cat: Cat3D): void {
     const tm = src as THREE.MeshToonMaterial;
     const vc = tm.isMeshToonMaterial && tm.emissive.getHex() === 0;
     const g = m.geometry.clone();
+    let mat = src;
+    // 描边：把外扩量烘进顶点，所有描边共用一个材质、合成一个网格
+    const sh = src as THREE.ShaderMaterial;
+    if (sh.isShaderMaterial && sh.uniforms?.uThick) {
+      const th = sh.uniforms.uThick.value as number, pa = g.getAttribute('position') as THREE.BufferAttribute, na = g.getAttribute('normal') as THREE.BufferAttribute;
+      const v = new THREE.Vector3();
+      for (let i = 0; i < pa.count; i++) { v.set(na.getX(i), na.getY(i), na.getZ(i)).normalize().multiplyScalar(th); pa.setXYZ(i, pa.getX(i) + v.x, pa.getY(i) + v.y, pa.getZ(i) + v.z); }
+      mat = bakedOutline();
+    }
     g.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld));
     if (!g.getAttribute('uv')) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.getAttribute('position').count * 2), 2));
     const n = g.getAttribute('position').count;
-    let mat = src;
     if (vc) {
       mat = vertexColorMat(tm.map, tm.side === THREE.DoubleSide);
       const col = new Float32Array(n * 3);

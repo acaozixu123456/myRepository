@@ -26,6 +26,12 @@ export class WorldView {
   private rain: THREE.LineSegments | null = null;
   private last = 0;
   private raf = 0;
+  /** 自适应画质：连续掉帧就逐级降（雨 → 阴影 → 泛光 → 分辨率） */
+  private slow = 0;
+  private fpsAcc = 0;
+  private fpsN = 0;
+  qualityLevel = 0;
+  onQuality: (level: number) => void = () => undefined;
   time = 0;
   onUpdate: (dt: number, t: number) => void = () => undefined;
   private ray = new THREE.Raycaster();
@@ -173,13 +179,34 @@ export class WorldView {
     if (this.raf) return;
     this.last = performance.now();
     const loop = (now: number) => {
-      const dt = Math.min(0.05, (now - this.last) / 1000); this.last = now;
+      const raw = (now - this.last) / 1000;
+      const dt = Math.min(0.05, raw); this.last = now;
+      this.watchFps(raw);
       this.onUpdate(dt, this.time);
       this.render(dt);
       this.raf = requestAnimationFrame(loop);
     };
     this.raf = requestAnimationFrame(loop);
   }
+  private watchFps(raw: number) {
+    if (raw > 0.5) return; // 切后台 / 战斗浮层后恢复的第一帧，不算
+    this.fpsAcc += raw; this.fpsN++;
+    if (this.fpsN < 90) return;
+    const avg = this.fpsAcc / this.fpsN; this.fpsAcc = 0; this.fpsN = 0;
+    this.slow = avg > 0.034 ? this.slow + 1 : 0; // 平均低于 ~30fps
+    if (this.slow >= 2 && this.qualityLevel < 4) { this.slow = 0; this.degrade(); }
+  }
+  private degrade() {
+    this.qualityLevel++;
+    const L = this.qualityLevel;
+    if (L === 1 && this.rain) this.rain.visible = false;
+    if (L === 2) { this.renderer.shadowMap.enabled = false; this.sun.castShadow = false; this.scene.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.Material | undefined; if (m) m.needsUpdate = true; }); }
+    if (L === 3) { this.q.bloom = false; this.composer = null; this.renderer.setPixelRatio(Math.min(this.q.pixelRatio, 1.25)); this.resize(); }
+    if (L === 4) { this.renderer.setPixelRatio(1); this.resize(); }
+    this.onQuality(L);
+  }
+  /** 当前一帧的绘制统计（调试 / 性能预算） */
+  stats() { const i = this.renderer.info; return { calls: i.render.calls, tris: i.render.triangles, geometries: i.memory.geometries, textures: i.memory.textures }; }
   stop() { cancelAnimationFrame(this.raf); this.raf = 0; }
   dispose() { this.stop(); this.renderer.dispose(); }
 }

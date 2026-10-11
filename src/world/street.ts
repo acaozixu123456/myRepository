@@ -115,6 +115,11 @@ export function buildStreet(): Street {
   // 点光（少量，控制开销）：中央品红 + 左青 + 右紫
   for (const [x, y, z, c, i, r] of [[0, 5, 0, 0xff2ea8, 90, 26], [-14, 6, -4, 0x7ff0ff, 70, 22], [14, 6, 4, 0x9a7aff, 70, 22]] as number[][]) { const l = new THREE.PointLight(c, i, r, 1.6); l.position.set(x, y, z); g.add(l); }
   for (const r of refs) { bakeStatic(r.low); bakeStatic(r.high); }
+  // 其余静态景物（道具、杆、线、电车…）也合批；建筑 / 地面（倒影要排除）保持独立
+  const keep = (o: THREE.Object3D) => o.traverse((m) => { m.userData.noBake = true; });
+  for (const r of refs) { keep(r.low); keep(r.high); }
+  g.traverse((o) => { if (o.userData.noMirror) o.userData.noBake = true; });
+  bakeStatic(g);
   // ---- 湿地面倒影：把景物沿路面翻一份（不含地面本身 / 灯），透过半透明的路面看到 ----
   refs.forEach((r, i) => { r.high.userData.mirrorKey = i; });
   const mirror = g.clone(true);

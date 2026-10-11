@@ -1,6 +1,7 @@
 // 场景部件库（程序化）：楼房、招牌、电线杆、电车、自动贩卖机、纸箱堆……
 // 每个函数返回一个 THREE.Group，原点在底部中心，+z 是「正面」（朝街）。新增部件在这里加一个函数即可，关卡里按名字摆放。
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { mulberry } from '../fx/util';
 import { facade, glowTex, neonSign, stripes } from './tex';
 import type { FacadeStyle } from './tex';
@@ -26,6 +27,17 @@ const box = (w: number, h: number, d: number, mat: THREE.Material, x = 0, y = 0,
 const cyl = (r: number, h: number, mat: THREE.Material, x = 0, y = 0, z = 0, seg = 12): THREE.Mesh => { const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, seg), mat); m.position.set(x, y, z); m.castShadow = true; return m; };
 const tiled = (t: THREE.Texture, rx: number, ry: number): THREE.Texture => { const c = t.clone(); c.repeat.set(rx, ry); c.wrapS = c.wrapT = THREE.RepeatWrapping; c.needsUpdate = true; return c; };
 
+const facadeMats = new Map<string, THREE.MeshStandardMaterial>();
+function facadeMat(style: FacadeStyle, variant: number): THREE.MeshStandardMaterial {
+  const key = `${style}|${variant}`;
+  let m = facadeMats.get(key);
+  if (!m) {
+    const [fb, fe] = facade(style, variant);
+    m = new THREE.MeshStandardMaterial({ map: fb, emissiveMap: fe, emissive: new THREE.Color('#ffffff'), emissiveIntensity: 1.1, roughness: 0.75 });
+    facadeMats.set(key, m);
+  }
+  return m;
+}
 export interface BuildingSpec {
   w: number; d: number; floors: number; style: FacadeStyle; seed: number;
   roof?: 'tile' | 'garden' | 'flat' | 'tank';
@@ -128,22 +140,28 @@ export function tram(): THREE.Group {
 
 export function building(s: BuildingSpec): THREE.Group {
   const g = new THREE.Group(); const rnd = mulberry(s.seed);
-  const [fb, fe] = facade(s.style, s.seed % 3);
   const upper = (s.floors - 1) * FLOOR_H;
   const bays = Math.max(1, Math.round(s.w / 3.2));
-  // 上层墙体：四面各自重复贴图
-  const matFront = new THREE.MeshStandardMaterial({ map: tiled(fb, bays / 2, s.floors - 1), emissiveMap: tiled(fe, bays / 2, s.floors - 1), emissive: new THREE.Color('#ffffff'), emissiveIntensity: 1.1, roughness: 0.75 });
   const dBays = Math.max(1, Math.round(s.d / 3.2));
-  const matSide = new THREE.MeshStandardMaterial({ map: tiled(fb, dBays / 2, s.floors - 1), emissiveMap: tiled(fe, dBays / 2, s.floors - 1), emissive: new THREE.Color('#ffffff'), emissiveIntensity: 1.1, roughness: 0.75 });
-  const plain = std('#8a8294', 0.9);
-  const mk = (fl: number, y0: number, hgt: number) => {
-    const mf = matFront.clone(); mf.map = tiled(fb, bays / 2, fl); mf.emissiveMap = tiled(fe, bays / 2, fl);
-    const ms = matSide.clone(); ms.map = tiled(fb, dBays / 2, fl); ms.emissiveMap = tiled(fe, dBays / 2, fl);
-    const b = new THREE.Mesh(new THREE.BoxGeometry(s.w, hgt, s.d), [ms, ms, plain, plain, mf, ms]);
-    b.position.set(0, y0 + hgt / 2, 0); b.castShadow = b.receiveShadow = true; g.add(b);
+  // 同风格的楼共用一份立面材质（贴图在 UV 上按开间 / 层数缩放），合批后每种风格只需一次绘制
+  const wallMat = facadeMat(s.style, s.seed % 3);
+  const wall = (fl: number, y0: number, hgt: number) => {
+    const faces: [number, number, number, number, number][] = [ // [宽, 旋转y, x, z, 开间数]
+      [s.w, 0, 0, s.d / 2, bays], [s.w, Math.PI, 0, -s.d / 2, bays], [s.d, Math.PI / 2, s.w / 2, 0, dBays], [s.d, -Math.PI / 2, -s.w / 2, 0, dBays],
+    ];
+    const geos: THREE.BufferGeometry[] = [];
+    for (const [fw, ry, x, z, nb] of faces) {
+      const pg = new THREE.PlaneGeometry(fw, hgt);
+      const uv = pg.getAttribute('uv') as THREE.BufferAttribute;
+      for (let k = 0; k < uv.count; k++) uv.setXY(k, uv.getX(k) * (nb / 2), uv.getY(k) * fl);
+      pg.rotateY(ry); pg.translate(x, y0 + hgt / 2, z);
+      geos.push(pg);
+    }
+    const m = new THREE.Mesh(mergeGeometries(geos, false)!, wallMat);
+    m.castShadow = m.receiveShadow = true; g.add(m);
   };
-  mk(1, SHOP_H, FLOOR_H);                                  // 二楼（始终显示）
-  if (s.floors > 2) mk(s.floors - 2, SHOP_H + FLOOR_H, upper - FLOOR_H); // 三楼以上（遮挡视线时折叠）
+  wall(1, SHOP_H, FLOOR_H);                                  // 二楼（始终显示）
+  if (s.floors > 2) wall(s.floors - 2, SHOP_H + FLOOR_H, upper - FLOOR_H); // 三楼以上（遮挡视线时折叠）
   // 一层店面
   const shopMat = std('#2a2634', 0.7, 0.1);
   g.add(box(s.w, SHOP_H, s.d, shopMat, 0, SHOP_H / 2, 0));
