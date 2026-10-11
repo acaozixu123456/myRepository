@@ -6,13 +6,15 @@ import { unitInfo } from '../../data/units';
 import { applyGain, getStage, nextStage, recommendedPowerOf, stageOrdinal } from '../../game/stage';
 import { teamPower } from '../../game/state';
 import { TOWER_FLOORS, towerBest, towerClear, towerFaction, towerFloor, towerReward } from '../../game/tower';
+import { DAILY_TRIES, DUNGEONS, DUNGEON_BY_ID, TIERS, dungeonLeft, dungeonReward, dungeonStage, dungeonStart, dungeonSweep, dungeonWin, ensureDungeon, tierUnlocked } from '../../game/dungeon';
+import type { DungeonId } from '../../game/dungeon';
 import { artUrl } from '../../ui/art';
 import { chip, esc, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
 import { topbar } from './lineup';
 
-export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' };
+export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' | 'dungeon', dtier: { fish: 1, exp: 1, catnip: 1 } as Record<DungeonId, number> };
 
 const best = (ctx: AppCtx) => ctx.s.best ?? ctx.s.stage;
 const bestOrd = (ctx: AppCtx) => stageOrdinal(best(ctx).chapter, best(ctx).index);
@@ -23,7 +25,7 @@ function nodeState(ctx: AppCtx, c: number, i: number): NodeState {
   return o <= b ? 'done' : o === b + 1 ? 'next' : 'locked';
 }
 
-const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button></div>`;
+const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button></div>`;
 
 function towerHtml(ctx: AppCtx): string {
   const best = towerBest(ctx.s);
@@ -55,7 +57,31 @@ function towerHtml(ctx: AppCtx): string {
     <div class="tcol">${rows.join('')}</div>`;
 }
 
+function dungeonHtml(ctx: AppCtx): string {
+  const s = ctx.s;
+  const st = ensureDungeon(s);
+  const cards = DUNGEONS.map((d) => {
+    const tier = campaignState.dtier[d.id];
+    const left = dungeonLeft(s, d.id);
+    const stage = dungeonStage(d.id, tier);
+    const heads = stage.waves[0].enemies.map((e) => `<div class="eh"><img src="${artUrl(e.unit, 'head')}" alt="" draggable="false"><em>Lv.${e.level}</em></div>`).join('');
+    const pills = Array.from({ length: TIERS }, (_, i) => i + 1).map((t) => `<button class="pill" data-act="dtier" data-d="${d.id}" data-t="${t}" aria-pressed="${t === tier}" ${tierUnlocked(s, t) ? '' : 'disabled'}>${tierUnlocked(s, t) ? '' : icon('lock', 13)}${t}${st.best[d.id] >= t ? icon('check', 13) : ''}</button>`).join('');
+    const can = tierUnlocked(s, tier) && left > 0;
+    const cleared = st.best[d.id] >= tier;
+    return `<section class="panel dgn">
+      <div class="row"><span class="dico">${icon(d.icon, 30)}</span><div class="grow"><b class="ttl">${d.name}</b><div class="muted" style="font-size:11.5px;font-weight:700">今日剩余 ${left} / ${DAILY_TRIES}</div></div></div>
+      <p class="intro" style="margin:6px 0">${d.desc}</p>
+      <div class="seg" style="margin:4px 0">${pills}</div>
+      <div class="heads" style="display:flex;gap:6px;margin:6px 0">${heads}</div>
+      <div class="rw"><b>通关</b>${rewardRow({ ...dungeonReward(d.id, tier), items: undefined })}</div>
+      <div class="row" style="gap:8px;margin-top:8px"><button class="btn green" style="flex:1" data-act="dgo" data-d="${d.id}" ${can ? '' : 'disabled'}>${tierUnlocked(s, tier) ? '挑战' : '未解锁'}</button><button class="btn blue" style="flex:1" data-act="dsweep" data-d="${d.id}" ${can && cleared ? '' : 'disabled'}>扫荡</button></div>
+    </section>`;
+  }).join('');
+  return `${modeTabs()}<p class="intro" style="margin:2px 4px 8px">秘境每天刷新次数；通关过的档位可以直接扫荡。档位随主线推进解锁。</p>${cards}`;
+}
+
 export function campaignHtml(ctx: AppCtx): string {
+  if (campaignState.mode === 'dungeon') return `${topbar(ctx, '征战')}<div class="scroll">${dungeonHtml(ctx)}</div>`;
   if (campaignState.mode === 'tower') return `${topbar(ctx, '征战')}<div class="scroll">${towerHtml(ctx)}</div>`;
   const s = ctx.s;
   if (!campaignState.chapter) campaignState.chapter = best(ctx).chapter;
@@ -134,7 +160,34 @@ export function stageSheetHtml(ctx: AppCtx, id: string): string {
 
 export function handleCampaign(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
-    case 'cmode': campaignState.mode = el.dataset.m as 'main' | 'tower'; ctx.refresh(); return true;
+    case 'cmode': campaignState.mode = el.dataset.m as 'main' | 'tower' | 'dungeon'; ctx.refresh(); return true;
+    case 'dtier': campaignState.dtier[el.dataset.d as DungeonId] = Number(el.dataset.t); ctx.refresh(); return true;
+    case 'dsweep': {
+      const id = el.dataset.d as DungeonId;
+      const r = dungeonSweep(ctx.s, id, campaignState.dtier[id]);
+      if (!r.ok) { ctx.toast(r.reason); return true; }
+      ctx.save(); ctx.toast(`扫荡完成：${[r.gain.fish && `${fmt(r.gain.fish)} 小鱼干`, r.gain.exp && `${fmt(r.gain.exp)} 经验`, r.gain.catnip && `${r.gain.catnip} 猫薄荷`].filter(Boolean).join('、')}`);
+      ctx.refresh();
+      return true;
+    }
+    case 'dgo': {
+      const id = el.dataset.d as DungeonId;
+      const tier = campaignState.dtier[id];
+      const r = dungeonStart(ctx.s, id, tier);
+      if (!r.ok) { ctx.toast(r.reason ?? ''); return true; }
+      ctx.save(); ctx.go('home'); ctx.toast(`进入${DUNGEON_BY_ID[id].name}`);
+      void ctx.loop.runCustom(dungeonStage(id, tier), id === 'fish' ? 4 : id === 'exp' ? 6 : 5).then((win) => {
+        if (win === null) return;
+        if (win) {
+          const g = dungeonWin(ctx.s, id, tier);
+          ctx.save();
+          ctx.result({ win: true, title: `${DUNGEON_BY_ID[id].name} · ${tier} 档`, gain: g, again: { act: 'nav', label: '回秘境', data: { to: 'campaign' } } });
+        } else ctx.result({ win: false, title: `${DUNGEON_BY_ID[id].name} · ${tier} 档`, hint: '这一档的守卫更强。升级升星，或者先挑低一档，通关过的档位还能直接扫荡。' });
+        campaignState.mode = 'dungeon';
+        ctx.refresh();
+      });
+      return true;
+    }
     case 'tgo': {
       const n = Number(el.dataset.n);
       ctx.go('home');
