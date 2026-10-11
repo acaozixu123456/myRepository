@@ -94,6 +94,8 @@ export class Explorer {
     this.path = [];
     this.wv.focus.copy(this.leader.pos);
   }
+  /** 小地图用：队长位置 + 所有活着的实体 */
+  snapshot() { return { leader: { x: this.leader.pos.x, z: this.leader.pos.z, yaw: this.leader.yaw }, ents: this.ents.filter((e) => e.alive).map((e) => ({ kind: e.spawn.kind, x: e.group.position.x, z: e.group.position.z })) }; }
   get leader(): Actor { return this.team[0]; }
   get leaderPos(): THREE.Vector3 { return this.team[0].pos; }
 

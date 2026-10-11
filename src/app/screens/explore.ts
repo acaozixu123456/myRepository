@@ -31,6 +31,7 @@ export const EXPLORE_CSS = `
 .xteam button{width:50px;height:58px;border-radius:12px;background:rgba(16,10,32,.72);border:2px solid rgba(127,240,255,.55);padding:0;overflow:hidden;position:relative}
 .xteam button.lead{border-color:#ffd24a;box-shadow:0 0 12px rgba(255,210,74,.6)}
 .xteam img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+.xmini{position:absolute;right:10px;top:122px;z-index:3;width:92px;height:92px;border-radius:12px;border:2px solid rgba(127,240,255,.6);background:rgba(10,6,24,.7);box-shadow:0 0 12px rgba(127,240,255,.25)}
 .xtools{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:8px}
 .xtools .btn{min-width:64px}
 .xload{position:absolute;inset:0;z-index:6;display:grid;place-items:center;background:#0d0818;color:#ffe9a0;font-family:var(--f-d);font-size:18px;text-align:center;line-height:1.8}
@@ -76,9 +77,26 @@ function hud(ctx: AppCtx): string {
   return `${topbar(ctx, '探索')}
   <div class="xobj"><div class="grow"><b>${b.fresh ? '目标 · ' : '重打 · '}${b.stage.id} ${b.stage.name}</b><small>首领在街区北端 · 战力 ${fmt(mine)} / 推荐 ${fmt(rec)}</small></div><button class="btn sm green" data-act="x-boss">前往</button></div>
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
+  <canvas class="xmini" id="xmini" width="184" height="184"></canvas>
   <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
 }
 
+let miniT = 0;
+function drawMini(ctx: AppCtx) {
+  const cv = ctx.root.querySelector('#xmini') as HTMLCanvasElement | null;
+  if (!cv || !rt) return;
+  const g = cv.getContext('2d')!, W = cv.width, k = W / (rt.st.half * 2);
+  const X = (x: number) => (x + rt!.st.half) * k, Z = (z: number) => (z + rt!.st.half) * k;
+  g.clearRect(0, 0, W, W);
+  g.fillStyle = '#1a1230'; g.fillRect(0, 0, W, W);
+  g.fillStyle = '#3a2a5a'; g.fillRect(0, Z(-4.5), W, 9 * k); g.fillRect(X(-4.5), 0, 9 * k, W); // 路
+  g.fillStyle = '#0b0818'; for (const c of rt.st.colliders) if (c.x1 - c.x0 > 3) g.fillRect(X(c.x0), Z(c.z0), (c.x1 - c.x0) * k, (c.z1 - c.z0) * k); // 楼
+  const sn = rt.ex.snapshot();
+  const dot = (x: number, z: number, col: string, r: number) => { g.fillStyle = col; g.beginPath(); g.arc(X(x), Z(z), r, 0, Math.PI * 2); g.fill(); };
+  for (const e of sn.ents) dot(e.x, e.z, e.kind === 'boss' ? '#ff4a6a' : e.kind === 'enemy' ? '#ff9a4a' : e.kind === 'chest' ? '#ffe27a' : '#7ff0ff', e.kind === 'boss' ? 6 : 4);
+  dot(sn.leader.x, sn.leader.z, '#ffffff', 5);
+  g.strokeStyle = '#7ff0ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(X(sn.leader.x), Z(sn.leader.z)); g.lineTo(X(sn.leader.x) + Math.sin(sn.leader.yaw) * 12, Z(sn.leader.z) + Math.cos(sn.leader.yaw) * 12); g.stroke();
+}
 export function refreshExploreHud(ctx: AppCtx) {
   const el = ctx.root.querySelector('#xui') as HTMLElement | null;
   if (el) el.innerHTML = hud(ctx);
@@ -118,9 +136,11 @@ export async function enterExplore(ctx: AppCtx) {
   rt.wv.snapCamera();
   rt.wv.start();
   rt.running = true;
+  clearInterval(miniT);
+  miniT = window.setInterval(() => drawMini(ctx), 250);
   setTimeout(() => { load.style.display = 'none'; }, 250);
 }
-export function leaveExplore() { if (rt?.running) { rt.wv.stop(); rt.running = false; } }
+export function leaveExplore() { clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
 export function resizeExplore() { rt?.wv.resize(); }
 
 // ---------- 玩法 ----------

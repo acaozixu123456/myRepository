@@ -5,15 +5,16 @@ const seed0 = Number(process.argv[2] || 1);
 const STEPS = Number(process.argv[3] || 130);
 let x = seed0 * 2654435761 % 4294967296;
 const rnd = () => { x = (x * 1664525 + 1013904223) % 4294967296; return x / 4294967296; };
-const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium', args:['--no-sandbox']});
+const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium', args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
 const p = await b.newPage({ viewport: { width: 390, height: 844 } });
 const errs = new Set();
 p.on('pageerror', e => errs.add('pageerror: ' + e.message));
 p.on('console', m => m.type()==='error' && !m.text().includes('404') && !m.text().includes('net::') && errs.add('console: ' + m.text().slice(0, 200)));
 await p.goto('http://127.0.0.1:5173/app.html?nostory=1&rich=1');
-await p.waitForTimeout(2000);
+await p.waitForFunction(() => window.__app, null, { timeout: 120000 });
+await p.waitForTimeout(800);
 await p.evaluate(() => window.__app.loop.setSpeed(16));
-const screens = ['home','lineup','gacha','campaign','bag','quests','shop','pay','social','events'];
+const screens = ['home','lineup','gacha','campaign','bag','quests','shop','pay','social','events','explore'];
 let clicks = 0;
 for (let i = 0; i < STEPS; i++) {
   if (rnd() < 0.12) { const s = screens[Math.floor(rnd() * screens.length)]; await p.evaluate((s) => { document.querySelectorAll('.mask').forEach(m => m.remove()); window.__app.go(s); }, s); await p.waitForTimeout(80); continue; }
