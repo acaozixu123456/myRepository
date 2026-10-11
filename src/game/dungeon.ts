@@ -35,13 +35,15 @@ export const bestOrdinal = (s: PlayerState) => { const b = s.best ?? s.stage; re
 export const tierUnlocked = (s: PlayerState, tier: number) => bestOrdinal(s) >= UNLOCK_ORD[tier - 1];
 export const tierLevel = (tier: number) => paceLevel(TIER_ORD[tier - 1]);
 
-/** 某档的奖励：小鱼干 / 经验按“该进度挂机 2 小时”折算，猫薄荷按档位递增 */
+/** 秘境单次奖励折算的挂机分钟数（经济审查：120 分钟时秘境仅占免费收入 14%–20%，提到 150） */
+export const DUNGEON_MINUTES = 150;
+/** 某档的奖励：小鱼干 / 经验按“该进度挂机 2.5 小时”折算，猫薄荷按档位递增 */
 export function dungeonReward(id: DungeonId, tier: number): Gain {
   const ord = TIER_ORD[tier - 1];
   const chapter = Math.min(6, Math.floor((ord - 1) / 24) + 1);
   const st = getStage(chapter, ord - (chapter - 1) * 24);
   const r = st ? contentIdleRate(st.id) : { fish: 0, exp: 0 };
-  return { fish: id === 'fish' ? Math.round(r.fish * 120) : 0, exp: id === 'exp' ? Math.round(r.exp * 120) : 0, catnip: id === 'catnip' ? CATNIP_REWARD[tier - 1] : 0, bells: 0 };
+  return { fish: id === 'fish' ? Math.round(r.fish * DUNGEON_MINUTES) : 0, exp: id === 'exp' ? Math.round(r.exp * DUNGEON_MINUTES) : 0, catnip: id === 'catnip' ? CATNIP_REWARD[tier - 1] : 0, bells: 0 };
 }
 export function dungeonStage(id: DungeonId, tier: number): StageDef {
   const def = DUNGEON_BY_ID[id];

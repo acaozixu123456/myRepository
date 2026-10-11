@@ -306,7 +306,7 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
       const dungeon = valueIncome(s.averageSources.dungeon).pricedFish;
       return [s.ordinal, s.tier, pct((s.averageSources.dungeon.fish ?? 0) / (s.averageSources.idle.fish ?? 1)), pct(dungeon / s.valuation.pricedFish), pct(dungeon / (s.valuation.pricedFish + r.gifts[0].valuation.pricedFish))];
     })),
-    '小鱼干/经验副本单次取该档强度对应关卡挂机120分钟，三次为360分钟；它不使用VIP挂机倍率。解锁门槛低于强度所用关卡，早期秘境鱼干可能接近整日挂机。EXP未计价使“20%–35%全部收入”无法严格裁定，表内占比只适用于已定价子集，不能冒充完整总收入。',
+    '小鱼干/经验副本单次取该档强度对应关卡挂机150分钟（DUNGEON_MINUTES，原120分钟），三次为450分钟；它不使用VIP挂机倍率。解锁门槛低于强度所用关卡，早期秘境鱼干可能接近整日挂机。EXP未计价使“20%–35%全部收入”无法严格裁定，表内占比只适用于已定价子集，不能冒充完整总收入。',
     '#### EXP计价口径提案（仅用于审查，不改常量）',
     '提案：1 EXP 折 “该进度单级升级的鱼干费用 ÷ 单级所需经验”，即升级时每份经验需要陪同消耗的鱼干，使“鱼干与经验”两条养成通路在同一把尺上。这是内部换算，不是可交易价。',
     table(['快照关数', '参考等级', '1 EXP≈鱼干', '秘境(含EXP)/全部免费收入(含EXP)'], free.map((s) => {
@@ -317,7 +317,7 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
       const all = s.valuation.pricedFish + exp(s.average);
       return [s.ordinal, c.level, n(price), pct(dungeon / all)];
     })),
-    '按此口径，120 分钟折算下秘境约占全部免费收入的 14%–20%，普遍低于 20%–35% 目标下沿；若要把各快照都抬到下沿，dungeonReward 约需 150–180 分钟。该值由主线裁决，本工具不改常量。',
+    '按此口径，原 120 分钟折算下秘境约占全部免费收入的 14%–20%，低于 20%–35% 目标下沿；已裁决调为 150 分钟（见下表为 150 分钟的实测占比），仍偏低的快照留待后续观察。',
     '## 任务毛奖励上限',
     table(['周期', '现已开放条数', '未开放', '全部达标毛实物', '已定价子集'], r.questCeilings.map((q) => [q.kind, q.available, q.unavailable.join('、') || '无', bundle(q.quantities), n(q.valuation.pricedFish)])),
     '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。公会尚未开放；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',

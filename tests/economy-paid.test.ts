@@ -97,7 +97,7 @@ describe('paid economy audit actual resource accounting', () => {
     const text = renderEconomyPaid(report, 'test-revision', '独立SP报告摘要：1/2/3 SP，实际样本。');
     for (const fragment of ['test-revision', '2026-10-05', '未定价', '35场24胜', '05:00', 'EXP', '月光珠', '每天一次', 'SP_BALANCE_PAID.md', '专属碎片']) expect(text).toContain(fragment);
     expect(text).toContain('独立SP报告摘要：1/2/3 SP，实际样本。');
-    expect(text).toContain('2.09'); expect(text).toContain('2.14'); expect(text).toContain('EXP计价口径提案');
+    expect(text).toContain('2.06'); expect(text).toContain('2.11'); expect(text).toContain('EXP计价口径提案');
   });
 });
 
@@ -106,7 +106,7 @@ describe('economy audit independent mechanical fixtures', () => {
     const p = newPlayer(DEFAULT_START), before = balances(p);
     expect(dungeonStart(p, 'fish', 1, DEFAULT_START).ok).toBe(true); dungeonWin(p, 'fish', 1, DEFAULT_START);
     expect(dungeonSweep(p, 'fish', 1, DEFAULT_START).ok).toBe(true); expect(dungeonSweep(p, 'fish', 1, DEFAULT_START).ok).toBe(true);
-    expect(dungeonLeft(p, 'fish', DEFAULT_START)).toBe(0); expect(p.res.fish - before.fish).toBe(21600);
+    expect(dungeonLeft(p, 'fish', DEFAULT_START)).toBe(0); expect(p.res.fish - before.fish).toBe(27000);
     const snapshot = structuredClone(p);
     expect(dungeonSweep(p, 'fish', 1, DEFAULT_START).ok).toBe(false); expect(p).toEqual(snapshot);
     expect(dungeonLeft(p, 'fish', DEFAULT_START + DAY)).toBe(3);
