@@ -31,11 +31,12 @@ export interface ExploreHooks {
   alert?(s: Spawn): void;
 }
 
-interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; shadow: THREE.Mesh }
+interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; shadow: THREE.Mesh; outlines: THREE.Object3D[] }
 interface Ent { spawn: Spawn; group: THREE.Group; cats: Actor[]; home: THREE.Vector3; target: THREE.Vector3; wait: number; alive: boolean; cooldown: number; alert: boolean; tag: THREE.Sprite; mark?: THREE.Sprite; t: number }
 
 const CELL = 1;
 const WORLD_CAT_DETAIL = 0.6;
+const OUTLINE_DIST = 26; // 超过这个距离的实体猫不画描边外壳（小得看不出来）
 const CULL_DIST = 46; // 超过这个距离（世界单位）的实体不渲染
 const SPEED = 8.2;
 
@@ -115,7 +116,17 @@ export class Explorer {
     const sh = new THREE.Mesh(new THREE.CircleGeometry(1.2 * scale, 20), new THREE.MeshBasicMaterial({ map: glowTex(), color: 0x000000, transparent: true, opacity: 0.55, depthWrite: false }));
     sh.rotation.x = -Math.PI / 2; sh.position.y = 0.36;
     this.root.add(cat.root, sh);
-    return { cat, pos: new THREE.Vector3(), yaw: 0, moving: 0, shadow: sh };
+    // 烘焙后的猫默认不做视锥裁剪；世界里开启（包围球放大一圈，动作幅度大也不会被误裁），描边外壳单独收集，远处可关
+    const outlines: THREE.Object3D[] = [];
+    cat.root.traverse((o) => {
+      const m = o as THREE.SkinnedMesh;
+      if (!m.isSkinnedMesh) return;
+      m.geometry.computeBoundingSphere();
+      if (m.geometry.boundingSphere) m.geometry.boundingSphere.radius *= 1.5;
+      m.frustumCulled = true;
+      if ((m.material as THREE.ShaderMaterial).isShaderMaterial) outlines.push(m);
+    });
+    return { cat, pos: new THREE.Vector3(), yaw: 0, moving: 0, shadow: sh, outlines };
   }
 
   // ---------- 实体 ----------
@@ -304,6 +315,7 @@ export class Explorer {
     // 远处的实体不画（镜头看不到它们；每只 3D 猫约 3 万三角面，省下来的主要是这个）
     const far = gp.distanceTo(lp) > CULL_DIST;
     if (e.alive && e.group.visible === far) e.group.visible = !far;
+    if (!far) { const lod = gp.distanceTo(lp) > OUTLINE_DIST; for (const a of e.cats) for (const o of a.outlines) if (o.visible === lod) o.visible = !lod; }
     if (s.kind === 'chest' || s.kind === 'herb') {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }
