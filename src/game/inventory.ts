@@ -5,6 +5,7 @@ import type { StatBlock } from '../content/types';
 import { HERO_BY_ID } from '../data/heroes';
 import { getStage, idleRate } from './stage';
 import type { HeroState, OpResult, PlayerState, Resources } from './state';
+import { track } from './quests';
 
 export interface EquipmentInstance {
   uid: string;
@@ -190,6 +191,7 @@ export function enhanceEquipment(s: PlayerState, uid: string): OpResult {
   const cost = enhanceCost(instance);
   if (!Number.isFinite(s.res.fish) || s.res.fish < cost) return fail('小鱼干不够，军需官捂住了盘子');
   s.res.fish -= cost;
+  track(s, 'spend_fish', cost);
   instance.level++;
   return { ok: true };
 }

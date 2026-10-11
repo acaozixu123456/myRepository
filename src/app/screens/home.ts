@@ -8,6 +8,8 @@ import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, nextStage, 
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
+import { QUESTS } from '../../content/economy';
+import { isClaimable } from '../../game/quests';
 
 export function homeHtml(): string {
   return `
@@ -22,6 +24,7 @@ export function homeHtml(): string {
       <button class="btn blue" data-act="autolevel">一键升级</button>
       <button class="btn pink" data-act="gift" id="giftBtn">每日福利</button>
     </div>
+    <div class="qst-entry-row"><button class="qst-entry" id="qstBtn" data-act="nav" data-to="quests">${icon('campaign', 22)}任务<span class="qst-red" hidden></span></button></div>
     <div class="tip" id="tip"></div>
   </div>`;
 }
@@ -73,6 +76,8 @@ export function updateHome(ctx: AppCtx) {
   const g = $(ctx, '#giftBtn') as HTMLButtonElement;
   g.disabled = left > 0;
   g.innerHTML = left > 0 ? `每日福利<small>${Math.ceil(left / 1000)} 秒后可领</small>` : `每日福利<small>+铃铛 +招福符</small>`;
+  const dot = ctx.root.querySelector('#qstBtn .qst-red') as HTMLElement | null;
+  if (dot) dot.hidden = !QUESTS.some((quest) => isClaimable(s, quest));
 }
 
 export function updateIdle(ctx: AppCtx) {

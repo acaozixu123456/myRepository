@@ -239,4 +239,47 @@ export const SCREEN_CSS = `
 .bag-hero-slot>b{font-family:var(--f-d);font-weight:400;font-size:11px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;max-width:100%}
 .bag-hero-slot>small{font-size:10px;color:var(--ink-2)}
 .bag-browse{min-height:40px}
+
+/* ---------- 任务 ---------- */
+.qst-screen{bottom:0;z-index:8;background:linear-gradient(var(--sky-1),var(--sky-2) 28%,var(--grass))}
+.qst-entry-row{display:flex;justify-content:center;margin:10px 10px 0;flex:none}
+.qst-entry{position:relative;min-width:122px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:7px 22px;border-radius:14px;background:linear-gradient(var(--paper),var(--paper-2));box-shadow:0 3px 0 var(--paper-line),inset 0 0 0 2px rgba(255,255,255,.65);font-family:var(--f-d);font-size:16px}
+.qst-entry:active{transform:translateY(2px)}
+.qst-red{position:absolute;top:4px;right:9px;width:11px;height:11px;border-radius:50%;background:var(--red);border:2px solid var(--paper)}
+.qst-red[hidden]{display:none}
+.qst-back{min-width:54px;min-height:40px!important;padding:5px 10px 7px!important;flex:none}
+.qst-tabs{padding:12px 12px 0;flex:none}
+.qst-tabs .seg{gap:7px;overflow:visible}
+.qst-tabs .pill{min-height:42px;min-width:40px;flex:1;justify-content:center;padding:6px 8px;font-size:14px}
+.qst-scroll{padding-top:7px;padding-bottom:24px}
+.qst-summary{margin:0 0 13px;padding:12px}
+.qst-summary-row{display:flex;align-items:center;gap:8px}
+.qst-summary-copy{flex:1;min-width:0}
+.qst-summary-copy h3{font-size:19px;margin-bottom:4px}
+.qst-summary-copy>div{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:11px;color:var(--ink-2)}
+.qst-summary-copy b{color:var(--green-d);font-weight:800}
+.qst-all{min-height:42px!important;min-width:96px;flex:none;padding:7px 10px 9px!important}
+.qst-summary>p{font-size:11px;line-height:1.65;color:var(--ink-2);margin:10px 0 0;overflow-wrap:anywhere}
+.qst-list{display:flex;flex-direction:column;gap:12px}
+.qst-card{padding:12px}
+.qst-card-head{display:flex;align-items:center;gap:10px}
+.qst-card-title{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 7px}
+.qst-card-title h3{margin:0;font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+.qst-card-title .tag{font-size:10px;padding:1px 7px}
+.qst-action{min-height:42px!important;min-width:78px;flex:none;padding:6px 9px 8px!important;font-size:14px!important}
+.qst-desc{margin:8px 0;font-size:12px;line-height:1.7;color:var(--ink-2);overflow-wrap:anywhere}
+.qst-progress{display:flex;align-items:center;gap:9px;margin:8px 0 9px}
+.qst-progress .bar{flex:1;min-width:0;height:8px}
+.qst-progress>span{flex:none;font-size:11px;font-weight:800;color:var(--ink-2)}
+.qst-rewards{display:flex;flex-wrap:wrap;gap:5px 9px;padding-top:8px;border-top:1px solid var(--paper-2)}
+.qst-reward{display:inline-flex;align-items:center;gap:3px;min-width:0;max-width:100%;font-size:10.5px;color:var(--ink-2)}
+.qst-reward>span:not(.ic){overflow-wrap:anywhere}
+.qst-reward>b{font-size:11px;white-space:nowrap;font-weight:800;color:var(--ink)}
+.qst-ready{border-color:#e0f5cd;outline-color:#89ba68}
+.qst-claimed{background:var(--paper-2);opacity:.68;box-shadow:0 2px 0 var(--paper-line)}
+.qst-claimed .qst-rewards{border-color:var(--paper-line)}
+.qst-unavailable .qst-progress .bar{opacity:.6}
+.qst-complete{display:flex;align-items:center;gap:11px;margin:0 0 13px;padding:14px}
+.qst-complete h3{font-size:17px;margin:0 0 4px}
+.qst-complete p{font-size:12px;line-height:1.7;margin:0;color:var(--ink-2)}
 `;
