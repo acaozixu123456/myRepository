@@ -9,7 +9,7 @@
 | 嫦喵 | `xian_changmiao` | SP | 通过 | 1 | 已入库 |
 | 曹喵德 | `wei_caomiaode` | UR | 通过 | 1 | 风格锚点，已入库；后面的猫披风/下摆边饰简化一档 |
 | 刘喵备 | `shu_liumiaobei` | UR | 通过 | 1 | 已入库；尾巴虎斑环纹偏浅 |
-| 周喵瑜 | `wu_zhoumiaoyu` | UR | 待画 | 0 | |
+| 周喵瑜 | `wu_zhoumiaoyu` | UR | 待审 | 1 | 2 个候选中选 B，双爪已补齐五趾；弹拨动势偏含蓄 |
 | 吕布丁 | `qun_lvbuding` | UR | 待画 | 0 | |
 | 孟喵获 | `man_mengmiaohuo` | UR | 待画 | 0 | |
 | 左慈喵 | `xian_zuoci` | UR | 待画 | 0 | |
