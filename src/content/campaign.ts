@@ -51,9 +51,9 @@ const PLANS: ChapterPlan[] = [
       ready('窄巷难转身，双方后排首回合速度降低百分之十。', [{ t: 'startStatus', side: 'both', to: 'back', id: 'step', turns: 1, power: -0.1 }]),
       ready('会盟鼓响，敌方先锋开局回复十五点元气。', [{ t: 'startEnergy', side: 'B', to: 'role:先锋', amount: 15 }]),
       ready('空碗传声，友方医者首次治疗效果增加百分之二十。', [{ t: 'firstHealMul', side: 'A', to: 'role:医者', mult: 1.2 }]),
-      ready('董桌的护体毛首次被击破时，敌方全体元气降低十点。', [{ t: 'on', ev: 'shieldBreak', side: 'B', hero: 'qun_dongzhuo', act: { k: 'energy', amount: -10, who: 'foes' } }]),
+      ready('董桌的护体毛首次被击破时，掀桌溅出的毛屑让挑战者全体元气降低十点。', [{ t: 'on', ev: 'shieldBreak', side: 'B', hero: 'qun_dongzhuo', act: { k: 'energy', amount: -10, who: 'foes' } }]),
     ],
-    bossNote: '开局阶段以拍桌叠护体毛；生命低于百分之七十与三十五时，各预告一回合后释放掀桌并获得百分之二十五最大生命的护盾。低生命阶段保留暴虐增攻，睡着时桌下藏鱼为同伴恢复。玩家先处理华佗喵，再集中破盾，以治疗或护盾接住群体技能；中段魏军让纯群阵容承受克制压力。',
+    bossNote: '开局以拍桌叠护体毛；受到直接伤害后仍醒着，生命首次低于百分之七十与三十五时，各立即获得百分之二十五最大生命的护盾，分别持续三次自身行动结束，每道血线每场一次。暴虐仍按原技能增攻。待落地的阶段设计：在两道血线各预告一回合后释放掀桌；睡着时桌下藏鱼为同伴恢复。玩家先处理华佗喵，再集中破盾，以治疗或护盾接住群体技能；中段魏军让纯群阵容承受克制压力。',
   },
   {
     id: 2, name: '官渡鱼市', theme: '鱼市账房、粮仓纸袋与官渡木桥',
@@ -71,7 +71,7 @@ const PLANS: ChapterPlan[] = [
       ready('账册催阵，敌方元气最低的猫每回合开始回复五点元气。', [{ t: 'roundEnergyLowest', side: 'B', amount: 5 }]),
       ready('曹喵德首次释放绝技前，先预告一整轮。', [{ t: 'telegraph', side: 'B', hero: 'wei_caomiaode', first: true }]),
     ],
-    bossNote: '开局铁壁阶段由曹喵德与郭嘉喵搭配前排；生命低于百分之六十时回复三十点元气，首次挟天子以令诸猫前预告一回合。百分之三十以下进入魏武阶段，绝技附带受惊。先压制郭嘉喵的续航，再用控制或元气削减错开全队护盾，带净化应对受惊；中段仙族克制魏队，鼓励换入吴系输出。',
+    bossNote: '开局铁壁阶段由曹喵德与郭嘉喵同阵。受到直接伤害后生命首次低于百分之六十，额外回复三十点元气，每场一次，元气最多一百五十。首次元气至少一百且可施放绝技时，先预告并改打一次普攻；下次仍满足施放条件的行动才释放挟天子以令诸猫。待落地的阶段设计：百分之三十以下进入魏武阶段，绝技附带受惊。先压制郭嘉喵的续航，再用控制或元气削减错开全队护盾，预留净化应对后续受惊；中段仙族克制魏队，鼓励换入吴系输出。',
   },
   {
     id: 3, name: '赤壁水寨', theme: '连环战船、水碗雨幕与赤红琴台',
@@ -89,7 +89,7 @@ const PLANS: ChapterPlan[] = [
       ready('东风转向，我方首次净化淋湿时，同时清除该目标的一层灼烧。', [{ t: 'on', ev: 'cleanse', side: 'A', status: 'wet', per: 'side', act: { k: 'removeStack', id: 'burn', who: 'target' } }]),
       ready('合演开场双方前排淋湿，持续到各自第二次行动结束；吴阵营的火焰伤害增加百分之二十。', [{ t: 'startStatus', side: 'both', to: 'front', id: 'wet', turns: 2 }, { t: 'dmgMul', side: 'B', to: 'faction:wu', elem: 'fire', mult: 1.2 }]),
     ],
-    bossNote: '此战为出征前的联军合演，首领仍是周喵瑜。开局水相阶段由孙小霸施加淋湿；生命低于百分之六十时转琴火阶段，预告一回合后释放赤壁火海。百分之三十以下开启燎原，灼烧叠层并在猫猫睡着后传递。玩家需及时净化淋湿和灼烧、错开绝技避免曲有误反应，用持续治疗稳住后排；中段蛮族伏击压制吴队。',
+    bossNote: '此战为出征前的联军合演，首领仍是周喵瑜。开局水相由孙小霸配合淋湿；周喵瑜每次满元气且可施放赤壁火海时，先预告并弹一次普攻，下次仍可施放时才放绝技，预告不限生命比例。待落地的阶段设计：生命低于百分之六十时转琴火阶段，预告一回合后释放赤壁火海；百分之三十以下开启燎原，灼烧叠层并在猫猫睡着后传递。现有技能的灼烧照常结算。玩家及时净化淋湿和灼烧、错开绝技避免曲有误反应，用持续治疗稳住后排；中段蛮族伏击压制吴队。',
   },
   {
     id: 4, name: '喵蛮山林', theme: '藤编猫窝、山林兽鼓与七次宴席',
@@ -107,7 +107,7 @@ const PLANS: ChapterPlan[] = [
       ready('鼓点渐急，敌方每只猫每第三次普通攻击后，下一次攻击增加百分之十。', [{ t: 'on', ev: 'basic', side: 'B', every: 3, max: 99, act: { k: 'status', id: 'fluff', turns: 1, power: 0.1, who: 'actor' } }]),
       ready('孟喵获每第七次受到攻击立即回复三十点元气，最多两次。', [{ t: 'on', ev: 'hurt', side: 'B', hero: 'man_mengmiaohuo', every: 7, max: 2, act: { k: 'energy', amount: 30, who: 'actor' } }]),
     ],
-    bossNote: '开局骨棒积累图腾，木鹿大王准备百兽朝鼓；生命低于百分之六十与三十时，分别获得两回合九命并预告下一次七擒七纵。第七次受击回复元气，低生命不服叠防御。玩家计算攻击次数，在九命结束后集中输出，先控制兽鼓并用蜀系克制或火焰破藤甲；中段蜀队专门压制纯蛮阵容。',
+    bossNote: '开局骨棒积累图腾，木鹿大王准备百兽朝鼓。直接伤害后仍醒着且生命首次低于百分之六十与三十时，各补一次九命，期限为两次自身行动结束，每道血线每场一次；已有九命保留较长剩余期限，不叠免死次数，两道血线同次跨过也只留一份九命。每第七次直接受击额外回复三十点元气，最多两次。不服仍按原技能在受击后提升攻防。待落地的阶段设计：在两道血线分别预告下一次七擒七纵。玩家计算攻击次数，在九命结束后集中输出，先控制兽鼓并用蜀系克制或火焰破藤甲；中段蜀队专门压制纯蛮阵容。',
   },
   {
     id: 5, name: '云端玄门', theme: '绒云台阶、符水池塘与真假鱼雨',
@@ -125,7 +125,7 @@ const PLANS: ChapterPlan[] = [
       ready('鱼雨微凉，双方开局获得最大生命百分之八的护体毛，持续到持有者第二次行动结束。', [{ t: 'startShield', side: 'both', to: 'all', pct: 0.08, turns: 2 }]),
       ready('左慈喵每次释放绝技前，都先预告一整轮。', [{ t: 'telegraph', side: 'B', hero: 'xian_zuoci' }]),
     ],
-    bossNote: '开局幻象阶段由水镜喵续航；生命低于百分之六十五时，千幻万象每次只为两名后排添加一次闪避。百分之三十以下每两回合预告一次天命，交替额外行动与回复元气，不随机连续无敌。玩家以多段攻击先消耗幻象，控制医者并预留净化处理毛线缠；中段吴系火焰克制仙队，提醒防御阵容需要更换输出。',
+    bossNote: '开局幻象由水镜喵续航；每次千幻万象满足施放条件时，左慈喵先预告、改打一次幻爪，下次仍可施放才释放绝技。当前保留原技能的全体幻象与随机天命。待落地的阶段设计：生命低于百分之六十五时，千幻万象每次只为两名后排添加一次闪避；百分之三十以下每两回合预告一次天命，交替额外行动与回复元气，不随机连续无敌。玩家以多段攻击先消耗幻象，控制医者并预留净化处理毛线缠；中段吴系火焰克制仙队，提醒防御阵容需要更换输出。',
   },
   {
     id: 6, name: '九命殿', theme: '六族旗帜、肉垫印阶与最后一张软席',
@@ -143,9 +143,43 @@ const PLANS: ChapterPlan[] = [
       ready('九命印亮，双方后排开局命中增加百分之十，持续两回合。', [{ t: 'hitAdd', side: 'both', to: 'back', add: 0.1, rounds: 2 }]),
       ready('吕布丁每次释放绝技前，都先预告一整轮。', [{ t: 'telegraph', side: 'B', hero: 'qun_lvbuding' }]),
     ],
-    bossNote: '开局飞将阶段与貂蝉喵组成混阵；生命低于百分之六十时开启天下无双，优先寻找后排并预告一回合。百分之二十五以下赤兔每两回合给一次额外行动，禁止连锁触发，并在连续行动后减速。玩家以前排护卫、净化和护盾保护后排，利用减速窗口集中输出；各段依克制环轮换敌军，中段魏军压制群队，收官检验混搭与羁绊。',
+    bossNote: '开局飞将与貂蝉喵组成混阵，现有天下无双本就优先攻击后排。吕布丁每次满元气且可施放绝技时先预告、改打一记画戟，下次仍可施放才突进，预告不限生命比例。待落地的阶段设计：生命低于百分之六十时开启天下无双，优先寻找后排并预告一回合；百分之二十五以下赤兔每两回合给一次额外行动，禁止连锁触发，并在连续行动后减速。玩家以前排护卫、净化和护盾保护后排，预留后续减速窗口集中输出；各段依克制环轮换敌军，中段魏军压制群队，收官检验混搭与羁绊。',
   },
 ];
+
+// 仅补已能由 RuleFx 准确表达的阶段；原第 24 关的 Boss 专属规则由下方接口复用。
+const BOSS_PHASE_RULES: Record<string, RuleFx[]> = {
+  qun_dongzhuo: [0.7, 0.35].map((hpBelow): RuleFx => ({
+    t: 'on', ev: 'hurt', side: 'B', hero: 'qun_dongzhuo', hpBelow, max: 1,
+    // 25% / 3 次行动结束均沿用原「掀桌」护盾，不新增一套盾数值。
+    act: { k: 'shield', pct: 0.25, turns: 3, who: 'actor' },
+  })),
+  wei_caomiaode: [{
+    t: 'on', ev: 'hurt', side: 'B', hero: 'wei_caomiaode', hpBelow: 0.6, max: 1,
+    act: { k: 'energy', amount: 30, who: 'actor' },
+  }],
+  wu_zhoumiaoyu: [{ t: 'telegraph', side: 'B', hero: 'wu_zhoumiaoyu' }],
+  man_mengmiaohuo: [0.6, 0.3].map((hpBelow): RuleFx => ({
+    t: 'on', ev: 'hurt', side: 'B', hero: 'man_mengmiaohuo', hpBelow, max: 1,
+    act: { k: 'status', id: 'nine', turns: 2, who: 'actor' },
+  })),
+};
+
+const cloneRuleFx = (effect: RuleFx): RuleFx => effect.t === 'on'
+  ? { ...effect, act: { ...effect.act } }
+  : { ...effect };
+
+/**
+ * 第 24 关与守塔首领共用的 Boss 专属规则。仅限定 B 方该英雄，未知英雄无规则。
+ * 返回独立对象；包含原关卡中同 hero 的事件 / 预告，不包含地利或全队词缀。
+ */
+export function bossRuleFx(heroId: string): RuleFx[] {
+  const plan = PLANS.find((chapter) => chapter.boss === heroId);
+  if (!plan) return [];
+  const existing = (plan.rules[STAGES_PER_CHAPTER / 3 - 1].fx ?? [])
+    .filter((effect) => 'hero' in effect && effect.hero === heroId);
+  return [...existing, ...(BOSS_PHASE_RULES[heroId] ?? [])].map(cloneRuleFx);
+}
 
 function factionAt(plan: ChapterPlan, index: number, wave: number): FactionId {
   // 9～16 关固定呈现克制主焦点阵营的压力，而非只写进说明。
@@ -219,6 +253,11 @@ function buildStage(plan: ChapterPlan, index: number): StageDef {
   if (index === 1) stage.storyId = `c${plan.id}_open`;
   if (index === 12) stage.storyId = `c${plan.id}_mid`;
   if (index === 24) {
+    // 同 hero 的旧规则从共用接口取一次，避免重复 telegraph 连续改打两次普攻。
+    stage.ruleFx = [
+      ...(stage.ruleFx ?? []).filter((effect) => !('hero' in effect && effect.hero === plan.boss)),
+      ...bossRuleFx(plan.boss),
+    ];
     stage.storyId = `c${plan.id}_boss_pre`;
     stage.storyPostId = `c${plan.id}_boss_post`;
   }
