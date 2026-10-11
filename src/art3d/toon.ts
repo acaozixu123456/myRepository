@@ -67,13 +67,18 @@ export function solid(geo: THREE.BufferGeometry, mat: THREE.Material, outline = 
   return m;
 }
 
+/** 几何细节倍率：战斗 / 立绘 = 1；探索世界里的小猫建模时临时调低（见 world/explore.ts），省三角面 */
+export const detail = { k: 1 };
+const dseg = (n: number, min: number) => Math.max(min, Math.round(n * detail.k));
+
 export const sphere = (r: number, sx = 1, sy = 1, sz = 1, seg = 20): THREE.BufferGeometry => {
-  const g = new THREE.SphereGeometry(r, seg, Math.round(seg * 0.75));
+  const sg = dseg(seg, 8);
+  const g = new THREE.SphereGeometry(r, sg, Math.max(6, Math.round(sg * 0.75)));
   g.scale(sx, sy, sz);
   return g;
 };
 /** 竖直胶囊：总长 len（含两端半球），半径 r，中心在原点 */
-export const capsule = (r: number, len: number, seg = 12): THREE.BufferGeometry => new THREE.CapsuleGeometry(r, Math.max(0.001, len - 2 * r), 6, seg);
+export const capsule = (r: number, len: number, seg = 12): THREE.BufferGeometry => new THREE.CapsuleGeometry(r, Math.max(0.001, len - 2 * r), dseg(6, 3), dseg(seg, 6));
 
 const vcCache = new Map<string, THREE.MeshToonMaterial>();
 /** 合批后的顶点色材质：颜色从顶点属性来，按「贴图 × 双面」缓存 */

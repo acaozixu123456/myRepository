@@ -2,6 +2,7 @@
 // 玩法层（遭遇战、奖励、剧情）通过 hooks 注入，这里只管世界里的事：移动、寻路、跟随、巡逻、触碰。
 import * as THREE from 'three';
 import { buildCat3D } from '../art3d/cat3d';
+import { detail } from '../art3d/toon';
 import type { Cat3D } from '../art3d/cat3d';
 import { applyPose } from '../art3d/pose';
 import { lookOf } from '../data/units';
@@ -34,6 +35,8 @@ interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; s
 interface Ent { spawn: Spawn; group: THREE.Group; cats: Actor[]; home: THREE.Vector3; target: THREE.Vector3; wait: number; alive: boolean; cooldown: number; alert: boolean; tag: THREE.Sprite; mark?: THREE.Sprite; t: number }
 
 const CELL = 1;
+const WORLD_CAT_DETAIL = 0.6;
+const CULL_DIST = 46; // 超过这个距离（世界单位）的实体不渲染
 const SPEED = 8.2;
 
 function labelSprite(text: string, color: string, sub = ''): THREE.Sprite {
@@ -88,7 +91,7 @@ export class Explorer {
   // ---------- 队伍 ----------
   setTeam(ids: string[]) {
     for (const a of this.team) { this.root.remove(a.cat.root); this.root.remove(a.shadow); }
-    this.team = ids.map((id) => this.mkActor(id, 1.0));
+    this.team = ids.map((id) => this.mkActor(id, 1.0, true));
     const sp = this.street.spawn;
     this.team.forEach((a, i) => a.pos.set(sp.x + (i % 2 ? 1 : -1) * 0.5, sp.y, sp.z + i * 1.5));
     this.trail = [];
@@ -102,10 +105,13 @@ export class Explorer {
   get moving(): boolean { return this.leader.moving > 0.5; }
   get leaderPos(): THREE.Vector3 { return this.team[0].pos; }
 
-  private mkActor(id: string, scale: number): Actor {
-    const cat = buildCat3D(lookOf(id), id);
+  private mkActor(id: string, scale: number, castShadow = false): Actor {
+    const prev = detail.k;
+    detail.k = WORLD_CAT_DETAIL; // 世界里的猫只有一百来像素高，降低细分
+    let cat: Cat3D;
+    try { cat = buildCat3D(lookOf(id), id); } finally { detail.k = prev; }
     cat.root.scale.setScalar(scale);
-    cat.root.traverse((o) => { if ((o as THREE.Mesh).isMesh) { o.castShadow = true; } });
+    if (castShadow) cat.root.traverse((o) => { if ((o as THREE.Mesh).isMesh) { o.castShadow = true; } });
     const sh = new THREE.Mesh(new THREE.CircleGeometry(1.2 * scale, 20), new THREE.MeshBasicMaterial({ map: glowTex(), color: 0x000000, transparent: true, opacity: 0.55, depthWrite: false }));
     sh.rotation.x = -Math.PI / 2; sh.position.y = 0.36;
     this.root.add(cat.root, sh);
@@ -295,6 +301,9 @@ export class Explorer {
     const s = e.spawn; e.t += dt; e.cooldown = Math.max(0, e.cooldown - dt);
     const lp = this.leaderPos;
     const gp = e.group.position;
+    // 远处的实体不画（镜头看不到它们；每只 3D 猫约 3 万三角面，省下来的主要是这个）
+    const far = gp.distanceTo(lp) > CULL_DIST;
+    if (e.alive && e.group.visible === far) e.group.visible = !far;
     if (s.kind === 'chest' || s.kind === 'herb') {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }
