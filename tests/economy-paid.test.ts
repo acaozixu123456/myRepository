@@ -83,8 +83,8 @@ describe('paid economy audit actual resource accounting', () => {
     expect(report.tiers.map((t) => t.unlockOrdinal)).toEqual([1, 18, 42, 72, 110]);
     expect(report.questCeilings.map((q) => q.available)).toEqual([11, 7]);
     expect(report.costs.find((c) => c.ordinal === 144)).toMatchObject({ level: 95, referenceStar: 5, minimumStar: 4, fish: 3050800, exp: 6110300, dedicatedShards: 1650 });
-    expect(report.gifts.find((g) => g.count === 3)!.valuation.pricedFish).toBe(930000);
-    expect(report.gifts.find((g) => g.count === 288)!.valuation.pricedFish).toBe(89280000);
+    expect(report.gifts.find((g) => g.count === 7)!.valuation.pricedFish).toBe(7 * (400 * 100 + 2 * 30000));
+    expect(report.gifts.find((g) => g.count === 30)!.valuation.pricedFish).toBe(30 * (400 * 100 + 2 * 30000));
     const checkFinite = (value: unknown): void => {
       if (typeof value === 'number') { expect(Number.isFinite(value)).toBe(true); expect(value).toBeGreaterThanOrEqual(0); }
       else if (value && typeof value === 'object') for (const [key, child] of Object.entries(value)) if (key !== 'gain' && key !== 'joinDay') checkFinite(child);
@@ -95,9 +95,9 @@ describe('paid economy audit actual resource accounting', () => {
 
   it('renders the partial valuation, raw materials, causal limits, reproducible baseline and supplied SP summary', () => {
     const text = renderEconomyPaid(report, 'test-revision', '独立SP报告摘要：1/2/3 SP，实际样本。');
-    for (const fragment of ['test-revision', '2026-10-05', '未定价', '35场24胜', '05:00', 'EXP', '月光珠', '300000ms', 'SP_BALANCE_PAID.md', '专属碎片']) expect(text).toContain(fragment);
+    for (const fragment of ['test-revision', '2026-10-05', '未定价', '35场24胜', '05:00', 'EXP', '月光珠', '每天一次', 'SP_BALANCE_PAID.md', '专属碎片']) expect(text).toContain(fragment);
     expect(text).toContain('独立SP报告摘要：1/2/3 SP，实际样本。');
-    expect(text).toContain('2.09'); expect(text).toContain('2.14'); expect(text).toContain('89280000');
+    expect(text).toContain('2.09'); expect(text).toContain('2.14'); expect(text).toContain('EXP计价口径提案');
   });
 });
 

@@ -45,6 +45,8 @@ export interface EconomyPaidReport {
 }
 export const DEFAULT_START = Date.UTC(2026, 9, 5);
 export const DEFAULT_SEED = 20261011;
+/** main.ts 的 gift 动作：每天一次 */
+export const GIFT_BELLS = 400, GIFT_TICKETS = 2;
 const HOUR = 3600000;
 const POINTS = [{ ordinal: 1, accountLevel: 1, star: 1 }, { ordinal: 24, accountLevel: 20, star: 2 }, { ordinal: 72, accountLevel: 45, star: 3 }, { ordinal: 144, accountLevel: 80, star: 5 }];
 const BASE_VIPS = [0, 3, 8, 12];
@@ -185,8 +187,8 @@ export function runGrowthScenario(giftsPerDay: number, seed: number, start = DEF
   for (let day = 0; day < 30; day++) {
     const now = start + day * DAY;
     const row = incomeDay(p, now, day, undefined, FRIEND_MAX);
-    // 首页 gift 无纯逻辑入口；按 main.ts 的三次相隔8小时实际数值单列敏感性。
-    p.res.bells += giftsPerDay * 1600; p.res.tickets += giftsPerDay * 5;
+    // 首页 gift 无纯逻辑入口；按 main.ts 的每日福利实际数值（每天一次：400 金铃铛 + 2 招福符）单列。
+    p.res.bells += giftsPerDay * GIFT_BELLS; p.res.tickets += giftsPerDay * GIFT_TICKETS;
     const grow = () => {
       while (p.res.tickets >= COST.single.tickets || p.res.bells >= COST.single.bells) { check(pull(p, POOLS[1], 1, () => rng.next()).ok, '常驻单抽'); pulls++; }
       const team = p.lineup.map((id) => p.heroes[id!]);
@@ -251,7 +253,7 @@ export function runEconomyPaid(options: { start?: number; seed?: number } = {}):
     return { ordinal: point.ordinal, level, referenceStar: point.star, minimumStar: Math.max(1, Math.ceil((level - 20) / 20)), fish, exp, dedicatedShards,
       recommendedPower: recommendedPowerOf(Math.floor((point.ordinal - 1) / 24) + 1, (point.ordinal - 1) % 24 + 1) };
   });
-  const gifts = [1, 3, 288].map((count) => { const quantities = { bells: count * 1600, recruit_ticket: count * 5 }; return { count, quantities, valuation: valueIncome(quantities) }; });
+  const gifts = [1, 7, 30].map((count) => { const quantities = { bells: count * GIFT_BELLS, recruit_ticket: count * GIFT_TICKETS }; return { count, quantities, valuation: valueIncome(quantities) }; });
   const yarnUses = scenarios.filter((s) => !s.monthly).map((s) => {
     const p = emptyPlayer(start); setOrdinal(p, s.ordinal); ensurePay(p).total = VIP_STEPS[s.baseVip];
     const count = Math.round((s.average.yarn_small ?? 0) * 7); p.res.yarn = count;
@@ -261,7 +263,7 @@ export function runEconomyPaid(options: { start?: number; seed?: number } = {}):
   });
   return { start: new Date(start).toISOString(), timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, seed, scenarios, offline, tiers, questCeilings,
     arena: (['weakest', 'nearest'] as const).flatMap((strategy) => [0.5, 0.7, 1].map((rate) => arenaTrajectory(strategy, rate, start))), npcs,
-    growth: [0, 3].map((gifts) => runGrowthScenario(gifts, seed, start)), costs, gifts, yarnUses };
+    growth: [0, 1].map((gifts) => runGrowthScenario(gifts, seed, start)), costs, gifts, yarnUses };
 }
 
 const names: Record<string, string> = Object.fromEntries(ITEMS.map((item) => [item.id, item.name]));
@@ -300,20 +302,31 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
     '前期低频上线者还受VIP缓存时长影响，不能用24小时在线收益的倍数替代这条曲线。主表三次领取都不触顶，因此只计算速率与免费加速次数差异。',
     '## 秘境与扫荡',
     table(['档位', '解锁最高关数', '敌方等级', '每日每类3次实物合计', '已定价子集', '未定价EXP'], r.tiers.map((t) => [t.tier, t.unlockOrdinal, t.enemyLevel, bundle(t.quantities), n(t.valuation.pricedFish), n(t.quantities.exp ?? 0)])),
-    table(['快照关数', '已通关秘境档', '秘境鱼干/24h挂机鱼干', '秘境子集/全部免费子集', '加三次首页福利后的占比'], free.map((s) => {
+    table(['快照关数', '已通关秘境档', '秘境鱼干/24h挂机鱼干', '秘境子集/全部免费子集', '加每日福利后的占比'], free.map((s) => {
       const dungeon = valueIncome(s.averageSources.dungeon).pricedFish;
-      return [s.ordinal, s.tier, pct((s.averageSources.dungeon.fish ?? 0) / (s.averageSources.idle.fish ?? 1)), pct(dungeon / s.valuation.pricedFish), pct(dungeon / (s.valuation.pricedFish + r.gifts[1].valuation.pricedFish))];
+      return [s.ordinal, s.tier, pct((s.averageSources.dungeon.fish ?? 0) / (s.averageSources.idle.fish ?? 1)), pct(dungeon / s.valuation.pricedFish), pct(dungeon / (s.valuation.pricedFish + r.gifts[0].valuation.pricedFish))];
     })),
-    '小鱼干/经验副本单次取该档强度对应关卡挂机180分钟，三次为540分钟；它不使用VIP挂机倍率。解锁门槛低于强度所用关卡，早期秘境鱼干可能接近整日挂机。EXP未计价使“20%–35%全部收入”无法严格裁定，表内占比只适用于已定价子集，不能冒充完整总收入。',
+    '小鱼干/经验副本单次取该档强度对应关卡挂机120分钟，三次为360分钟；它不使用VIP挂机倍率。解锁门槛低于强度所用关卡，早期秘境鱼干可能接近整日挂机。EXP未计价使“20%–35%全部收入”无法严格裁定，表内占比只适用于已定价子集，不能冒充完整总收入。',
+    '#### EXP计价口径提案（仅用于审查，不改常量）',
+    '提案：1 EXP 折 “该进度单级升级的鱼干费用 ÷ 单级所需经验”，即升级时每份经验需要陪同消耗的鱼干，使“鱼干与经验”两条养成通路在同一把尺上。这是内部换算，不是可交易价。',
+    table(['快照关数', '参考等级', '1 EXP≈鱼干', '秘境(含EXP)/全部免费收入(含EXP)'], free.map((s) => {
+      const c = r.costs.find((x) => x.ordinal === s.ordinal)!;
+      const price = levelUpFishCost(c.level) / expToNext(c.level);
+      const exp = (q: Quantities) => (q.exp ?? 0) * price;
+      const dungeon = valueIncome(s.averageSources.dungeon).pricedFish + exp(s.averageSources.dungeon);
+      const all = s.valuation.pricedFish + exp(s.average);
+      return [s.ordinal, c.level, n(price), pct(dungeon / all)];
+    })),
+    '按此口径，120 分钟折算下秘境约占全部免费收入的 14%–20%，普遍低于 20%–35% 目标下沿；若要把各快照都抬到下沿，dungeonReward 约需 150–180 分钟。该值由主线裁决，本工具不改常量。',
     '## 任务毛奖励上限',
     table(['周期', '现已开放条数', '未开放', '全部达标毛实物', '已定价子集'], r.questCeilings.map((q) => [q.kind, q.available, q.unavailable.join('、') || '无', bundle(q.quantities), n(q.valuation.pricedFish)])),
     '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。公会尚未开放；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',
     '## 额外首页福利：对经济结论的敏感性',
-    table(['每天点击次数', '额外实物', '额外已定价子集'], r.gifts.map((g) => [g.count, bundle(g.quantities), n(g.valuation.pricedFish)])),
+    table(['累计领取天数', '额外实物', '额外已定价子集'], r.gifts.map((g) => [g.count, bundle(g.quantities), n(g.valuation.pricedFish)])),
     '当前 home.ts 永久显示“每日福利”，main.ts 仅限制300000ms冷却，点击即发1600金铃铛+5招福符。一次310000、三次930000；每天288次是24小时持续操作的理论上限，不是典型玩法。主表按Issue指定来源列出；这个额外来源确实可重复领取，不能省略后宣称全经济已达付费快15%–40%的目标。它还改变免费招募与专属碎片获得速度。需Claude确认是否原型福利或正式每日一次；本PR不改应用行为。',
-    table(['关数', '无额外福利VIP12倍数', '双方各领3次后的VIP12倍数', '双方各领288次后的VIP12倍数'], free.map((s) => {
+    table(['关数', '无额外福利VIP12倍数', '双方每天各领1次后的VIP12倍数'], free.map((s) => {
       const paid = r.scenarios.find((p) => p.ordinal === s.ordinal && p.baseVip === 12 && !p.monthly)!;
-      return [s.ordinal, n(paid.valuation.pricedFish / s.valuation.pricedFish), n((paid.valuation.pricedFish + r.gifts[1].valuation.pricedFish) / (s.valuation.pricedFish + r.gifts[1].valuation.pricedFish)), n((paid.valuation.pricedFish + r.gifts[2].valuation.pricedFish) / (s.valuation.pricedFish + r.gifts[2].valuation.pricedFish))];
+      return [s.ordinal, n(paid.valuation.pricedFish / s.valuation.pricedFish), n((paid.valuation.pricedFish + r.gifts[0].valuation.pricedFish) / (s.valuation.pricedFish + r.gifts[0].valuation.pricedFish))];
     })),
     '## 竞技场积分与NPC成长',
     `实际Elo入口 arenaFinish 使用K=24；同积分胜/负分别+12/-12。起点${ARENA_START}，每天免费${ARENA_FREE}次，35场即使每胜都取+24，七日理论上限也仅${ARENA_START + 7 * ARENA_FREE * 24}。以下是固定胜负序列下的积分轨迹，不是假定这些NPC可被当前新号击败。50%/70%情景取35场17/24胜；100%取35胜。`,
@@ -321,7 +334,7 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
     table(['NPC', '职业画像/VIP/相对开服入服日', '第1天等级/战力/积分', '第7天等级/战力/积分', '第30天等级/战力/积分'], r.npcs.map((p) => [p.name, `${p.profile}/VIP${p.vip}/${p.joinDay}`, ...p.days.map((d) => `${d.level}/${d.power}/${d.rating}`)])),
     'NPC不是同日注册：joinDay为开服前5–25天，固定10月5日工具首日已比当日新号早入服9–29天。成长公式按墙钟、指数时间常数22天、grind与每日小噪声推等级，最高100；不支付资源或专属碎片。NPC显示战力还乘VIP最高25%加成，但 arenaStage→waveSetups 的实际战斗配置不带该VIP乘数，且英雄星级/技能等级另由敌方等级分档，因此显示战力不能直接当作同战力实战。',
     '### 无SP实际免费养成轨迹',
-    table(['每日首页福利次数', '天数', '固定初始五猫等级', '对应星级', '累计实际单抽', '队伍战力', '星级上限阻塞猫数', 'NPC中位战力', '高肝NPC最大战力'], r.growth.flatMap((g) => g.points.map((p) => [g.giftsPerDay, p.day, p.levels.join('/'), p.stars.join('/'), p.pulls, p.power, p.capBlocked, p.medianNpcPower, p.grinderMaxPower]))),
+    table(['每日福利（0=不领，1=每天一次）', '天数', '固定初始五猫等级', '对应星级', '累计实际单抽', '队伍战力', '星级上限阻塞猫数', 'NPC中位战力', '高肝NPC最大战力'], r.growth.flatMap((g) => g.points.map((p) => [g.giftsPerDay, p.day, p.levels.join('/'), p.stars.join('/'), p.pulls, p.power, p.capBlocked, p.medianNpcPower, p.grinderMaxPower]))),
     '养成轨迹固定挂机第一关，20位好友全部每日拜访、三个挂机领取节点、每类秘境最低档3胜、每日重复主线10胜、35场24胜竞技；排除初始资源、首通、新手、成就和付费。使用真实常驻单抽（招福符优先，再用160铃铛）、真实重复碎片与starUp/levelUp，将资源均衡投入原始五猫，不添SP、装备或技能升级。三次福利情景另按首页真实数值增加；种子固定。只声称此资源轨迹可执行，不声称第1关有高等级敌人、最优招募/阵容或这些战斗成功已实测。NPC比较列使用同一日23点。',
     '### 主线参考养成门槛',
     table(['关数', '参考等级', '参考星级', '仅等级上限所需最低星级', '五猫从8级升级所需鱼干', '原始EXP', '参考星级专属碎片合计', '界面推荐战力'], r.costs.map((c) => [c.ordinal, c.level, c.referenceStar, c.minimumStar, c.fish, c.exp, c.dedicatedShards, c.recommendedPower])),
