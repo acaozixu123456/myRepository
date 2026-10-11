@@ -1,7 +1,7 @@
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
 import { unitInfo } from '../data/units';
-import { BONDS, COUNTER_RING, baseStats } from '../data/systems';
+import { BONDS, COUNTER_BONUS, COUNTER_RING, baseStats } from '../data/systems';
 import { KITS, genericKit } from '../data/kits';
 import { Rng } from './rng';
 import { STATUS_RULES, ZERO_MODS } from './statuses';
@@ -435,9 +435,9 @@ class Battle {
 
   counterMult(a: FactionId, d: FactionId): number {
     const i = COUNTER_RING.indexOf(a);
-    if (COUNTER_RING[(i + 1) % 6] === d) return 1.2;
+    if (COUNTER_RING[(i + 1) % 6] === d) return 1 + COUNTER_BONUS;
     const j = COUNTER_RING.indexOf(d);
-    if (COUNTER_RING[(j + 1) % 6] === a) return 0.8;
+    if (COUNTER_RING[(j + 1) % 6] === a) return 1 - COUNTER_BONUS;
     return 1;
   }
 

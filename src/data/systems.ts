@@ -25,7 +25,8 @@ export function baseStats(role: Role, rarity: Rarity) {
   return { hp: Math.round(b.hp * m), atk: Math.round(b.atk * m), def: Math.round(b.def * m), spd: Math.round(b.spd * (0.96 + (m - 0.82) * 0.1)) };
 }
 
-/** 阵营克制环：A 克制 B，伤害 +20%；被克制 -20% */
+/** 阵营克制环：A 克制 B，伤害 +7%；被克制 -7%（用镜像对局标定：约等于对面少 1 级，克制方胜率 ≈ 62%） */
+export const COUNTER_BONUS = 0.07;
 export const COUNTER_RING: FactionId[] = ['wei', 'qun', 'shu', 'man', 'wu', 'xian'];
 export const COUNTER_REASON: Record<FactionId, string> = {
   wei: '以铁壁军纪镇压乱世群雄',
