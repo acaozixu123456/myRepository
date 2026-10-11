@@ -88,7 +88,7 @@ class Battle {
     return {
       uid: this.uidSeq++, side, pos: s.pos, heroId: s.heroId, name: h.name, faction: h.faction, role: h.role, level: s.level,
       maxHp, hp: maxHp, atk: Math.round(bs.atk * m), def: Math.round(bs.def * m), spd: bs.spd, crit: roleCrit, critDmg: 1.5,
-      energy: 0, shield: [], statuses: [], alive: true, kit, counters: {}, used: {}, acted: 0, extraTurn: false, invuln: 0, dmgMul: 1,
+      energy: typeof this.cfg.startEnergy === 'object' ? this.cfg.startEnergy[side] : (this.cfg.startEnergy ?? 0), shield: [], statuses: [], alive: true, kit, counters: {}, used: {}, acted: 0, extraTurn: false, invuln: 0, dmgMul: 1,
     };
   }
 

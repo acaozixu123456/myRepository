@@ -141,7 +141,7 @@ export interface UnitSetup {
   pos: number; // 0-2 前排，3-4 后排
   statMul?: number; // 额外属性倍率（关卡词缀）
 }
-export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number }
+export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number } }
 
 export interface StatusInst { id: string; turns: number; stacks: number; power: number; snap: number; src: number }
 
