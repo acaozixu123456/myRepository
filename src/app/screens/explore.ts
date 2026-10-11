@@ -26,6 +26,9 @@ export const EXPLORE_CSS = `
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
 .xplore .hud *{pointer-events:auto}
 .xobj{position:absolute;left:10px;right:10px;top:58px;z-index:3;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:rgba(16,10,32,.72);border:2px solid rgba(255,110,210,.55);box-shadow:0 0 18px rgba(255,80,200,.25);color:#fff;backdrop-filter:blur(4px)}
+.xpop{position:absolute;left:50%;top:46%;z-index:12;transform:translate(-50%,0);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:900;font-size:20px;color:#ffe9a0;text-shadow:0 0 10px rgba(255,200,80,.9),0 2px 0 #5a3a10;white-space:nowrap;animation:xpopUp 1.5s ease-out both}
+.xpop small{font-size:13px;color:#fff;text-shadow:0 1px 3px #000}
+@keyframes xpopUp{0%{opacity:0;transform:translate(-50%,16px) scale(.7)}18%{opacity:1;transform:translate(-50%,0) scale(1.12)}30%{transform:translate(-50%,-4px) scale(1)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
 .xhelp{position:absolute;inset:0;z-index:25;display:grid;place-items:center;background:rgba(6,3,16,.35);pointer-events:none;animation:xhelpIn .3s ease-out both}
 @keyframes xhelpIn{from{opacity:0}to{opacity:1}}
 .xhelp>div{pointer-events:auto;width:min(320px,86%);padding:16px 18px;border-radius:16px;background:rgba(22,14,44,.96);border:2px solid rgba(127,240,255,.6);box-shadow:0 0 24px rgba(127,240,255,.3);color:#eae4ff;font-weight:700;font-size:13.5px;line-height:1.75}
@@ -128,6 +131,16 @@ function teamIds(ctx: AppCtx): string[] {
   return ids.length ? ids.slice(0, 5) : Object.keys(ctx.s.heroes).slice(0, 5);
 }
 
+/** 头顶弹一下奖励（拿到什么一眼能看到），1.5 秒后自动消失 */
+function popReward(ctx: AppCtx, title: string, g: { fish?: number; exp?: number; catnip?: number; bells?: number }) {
+  const host = ctx.root.querySelector('[data-screen="explore"]');
+  if (!host) return;
+  const el = document.createElement('div');
+  el.className = 'xpop';
+  el.innerHTML = `${title}<small>${gainText({ fish: g.fish ?? 0, exp: g.exp ?? 0, catnip: g.catnip ?? 0, bells: g.bells ?? 0 })}</small>`;
+  host.appendChild(el);
+  setTimeout(() => el.remove(), 1600);
+}
 function questHtml(ctx: AppCtx): string {
   const goals = dailyProgress(ctx.s), claimed = dailyClaimed(ctx.s), ready = goals.every((g) => g.done);
   return `<div class="xquest"><b>嫦喵的委托${claimed ? ' ✔' : ready ? ' · 去领奖' : ''}</b>${goals.map((g) => `<div class="${g.done ? 'ok' : ''}">${g.done ? '✔' : '·'} ${g.label} ${g.have}/${g.need}</div>`).join('')}</div>`;
@@ -291,7 +304,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
         if (t.fresh) { ctx.loop.restart(); if (rt.st.level.id !== explorerLevel(s).id) { loadLevel(ctx, explorerLevel(s)); ctx.toast(`进入新区域：${rt.st.level.name}`); } else syncSpawns(ctx); }
       } else {
         const g = killReward(s, stage);
-        if (g) { applyGain(s, g); ctx.toast(`击败了${sp.label}！${gainText(g)}`); }
+        if (g) { applyGain(s, g); popReward(ctx, '胜利！', g); ctx.toast(`击败了${sp.label}！${gainText(g)}`); }
         else ctx.toast('今天的探索奖励拿满啦，明天 5 点再来');
         rt.dead.set(sp.id, Date.now() + 90_000);
       }
@@ -315,6 +328,7 @@ function onChest(ctx: AppCtx, sp: Spawn) {
   applyGain(ctx.s, g);
   ctx.save();
   sfx.ok();
+  popReward(ctx, sp.kind === 'herb' ? '采到猫薄荷！' : '宝箱开啦！', g);
   ctx.toast(`${sp.kind === 'herb' ? '采到猫薄荷' : '宝箱'}：${gainText(g)}`);
   refreshExploreHud(ctx);
 }
@@ -329,6 +343,7 @@ function onTalk(ctx: AppCtx, _sp: Spawn) {
   const g = claimDaily(ctx.s);
   if (g) {
     applyGain(ctx.s, g); ctx.save(); sfx.up(); refreshExploreHud(ctx);
+    popReward(ctx, '委托完成！', g);
     ctx.toast(`嫦喵：委托完成，辛苦军师啦！${gainText(g)}`);
     return;
   }
