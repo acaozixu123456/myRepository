@@ -18,10 +18,10 @@ export const KITS_SP: Record<string, Kit> = {
         dmg(2.7, { elem: 'magic', ignoreDef: 0.3 }),
         status('fright', 2, { power: 0.25, to: enemy('all') }),
         shield(0.9, 3, ally('all')),
-        energy(20, ally('all')),
+        energy(15, ally('all')),
         { t: 'when', cond: { c: 'allyFaction', faction: 'wei', atLeast: 3 }, then: [dmg(1.0, { elem: 'magic' }), status('ward', 2, { power: 0.2, to: ally('all') }), text('魏·铁壁')] },
       ],
-      desc: '忍了很久的老虎终于出笼：对敌方全体造成 270% 攻击的法术伤害（无视 30% 防御），敌方全体「受惊」（攻击 -25%，2 回合）；友方全体获得「护体毛」（90% 攻击，3 回合）并回复 20 点元气。场上魏势力≥3 时追加 100% 攻击伤害，并让友方全体「护佑」（受伤 -20%，2 回合）。',
+      desc: '忍了很久的老虎终于出笼：对敌方全体造成 270% 攻击的法术伤害（无视 30% 防御），敌方全体「受惊」（攻击 -25%，2 回合）；友方全体获得「护体毛」（90% 攻击，3 回合）并回复 15 点元气。场上魏势力≥3 时追加 100% 攻击伤害，并让友方全体「护佑」（受伤 -20%，2 回合）。',
       levelMods: [
         { lv: 3, desc: '后发制猫：敌方元气最高者再被偷走 30 点元气。', patch: { skill: 'ultimate', addEffects: [energy(-30, enemy('highestEnergy', 1))] } },
         { lv: 6, desc: '收网：敌方全体「毛线缠」1 回合（40% 概率）。', patch: { skill: 'ultimate', addEffects: [status('yarn', 1, { p: 0.4, to: enemy('all') })] } },
@@ -95,13 +95,13 @@ export const KITS_SP: Record<string, Kit> = {
     ultimate: {
       id: 'cm_ult', name: '广寒月华', fx: 'ult.moonPalace', target: ally('all'),
       effects: [
-        heal(3.0),
+        heal(2.7),
         shield(1.0, 3, ally('all')),
         { t: 'cleanse', to: ally('all') },
         status('purr', 3, { power: 0.1, to: ally('all') }),
         { t: 'when', cond: { c: 'allyCount', atMost: 4 }, then: [heal(1.0), energy(25, ally('all')), text('月满')] },
       ],
-      desc: '广寒宫开，月华如瀑：友方全体回复 300% 攻击的生命，获得「护体毛」（100% 攻击，3 回合）与「呼噜」（每回合 10% 最大生命，3 回合），并净化全部负面效果。若有友方倒下（场上不足 5 只），再追加 100% 攻击的治疗并回复 25 点元气。',
+      desc: '广寒宫开，月华如瀑：友方全体回复 270% 攻击的生命，获得「护体毛」（100% 攻击，3 回合）与「呼噜」（每回合 10% 最大生命，3 回合），并净化全部负面效果。若有友方倒下（场上不足 5 只），再追加 100% 攻击的治疗并回复 25 点元气。',
       levelMods: [
         { lv: 3, desc: '桂花雨：友方全体「护佑」（受伤 -15%，2 回合）。', patch: { skill: 'ultimate', addEffects: [status('ward', 2, { power: 0.15, to: ally('all') })] } },
         { lv: 6, desc: '玉兔捣药：友方全体「炸毛」（攻击 +25%，3 回合）。', patch: { skill: 'ultimate', addEffects: [status('fluff', 3, { power: 0.25, to: ally('all') })] } },
