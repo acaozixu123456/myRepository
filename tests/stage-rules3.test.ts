@@ -62,3 +62,19 @@ describe('campaign rules', () => {
     expect(ready).toBeGreaterThanOrEqual(40);
   });
 });
+
+describe('阶段规则（hpBelow）', () => {
+  it('a boss-style phase rule fires once when its hero drops below the threshold', () => {
+    const rule: RuleFx = { t: 'on', ev: 'hurt', side: 'B', hero: 'qun_lvbuding', hpBelow: 0.6, act: { k: 'shield', pct: 0.2, turns: 2, who: 'actor' } };
+    let fired = 0;
+    for (let seed = 1; seed <= 12; seed++) {
+      const r = run([rule], 8, seed);
+      const boss = r.units.find((u) => u.heroId === 'qun_lvbuding')!;
+      const want = Math.round(boss.maxHp * 0.2);
+      const n = count(r, (e) => e.t === 'shield' && e.src === boss.uid && e.dst === boss.uid && e.amount === want);
+      expect(n).toBeLessThanOrEqual(1);
+      fired += n;
+    }
+    expect(fired).toBeGreaterThan(0);
+  });
+});

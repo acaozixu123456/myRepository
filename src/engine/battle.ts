@@ -199,6 +199,7 @@ class Battle {
     for (const [i, r] of rules.entries()) {
       if (r.t !== 'on' || r.ev !== ev || !this.ruleSideMatch(r.side, actor.side) || !this.ruleOk(r, actor.side) || !this.ruleTo(r.to, actor)) continue;
       if (r.hero && actor.heroId !== r.hero) continue;
+      if (r.hpBelow !== undefined && actor.hp / actor.maxHp >= r.hpBelow) continue;
       if (r.status && info?.status !== r.status) continue;
       if (r.cc && !(info?.status && STATUS_RULES[info.status]?.cc)) continue;
       const per = r.per ?? 'actor';
@@ -215,6 +216,8 @@ class Battle {
       for (const t of this.ruleWho(a.who, actor, target)) {
         if (a.k === 'energy') this.gainEnergy(t, a.amount);
         else if (a.k === 'status') this.addStatus(actor, t, a.id, a.turns, a.stacks ?? 1, a.power ?? 0, a.snapAtk ? Math.round(actor.atk * a.snapAtk) : 0);
+        else if (a.k === 'shield') this.addShieldPct(actor, t, a.pct, a.turns);
+        else if (a.k === 'heal') this.heal(actor, t, Math.round(t.maxHp * a.pct));
         else if (a.k === 'cleanse') {
           let left = a.n;
           for (const s of t.statuses.slice()) { if (left <= 0) break; if (STATUS_RULES[s.id]?.kind === 'debuff') { t.statuses = t.statuses.filter((x) => x !== s); this.push({ t: 'status', dst: t.uid, id: s.id, op: 'remove', stacks: 0, src: actor.uid }); left--; } }

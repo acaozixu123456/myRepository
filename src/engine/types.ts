@@ -156,6 +156,8 @@ export type RuleAct =
   | { k: 'status'; id: string; turns: number; power?: number; stacks?: number; snapAtk?: number; who: RuleWho }
   | { k: 'cleanse'; n: number; who: RuleWho }
   | { k: 'removeStack'; id: string; who: RuleWho }
+  | { k: 'shield'; pct: number; turns: number; who: RuleWho } // 按行动者最大生命的百分比
+  | { k: 'heal'; pct: number; who: RuleWho } // 按目标最大生命的百分比
   | { k: 'extend'; turns: number } // statusApply 专用：把刚施加的状态延长
   | { k: 'totem'; amount: number };
 /** 所有规则都可以加 needFactions：只有该方（开场时）含不少于 N 个不同阵营才生效。 */
@@ -171,7 +173,7 @@ export type RuleFx = ((
   | { t: 'firstHealTakenMul'; side: RuleSide; to?: RuleTo; mult: number } // 受治疗者本场第一次受治疗 ×mult
   | { t: 'firstBasicEnergy'; side: RuleSide; to?: RuleTo; amount: number } // 每只猫本场第一次普攻后额外元气
   | { t: 'roundEnergyLowest'; side: RuleSide; amount: number } // 每整轮开始，该方元气最低的猫 +元气
-  | { t: 'on'; ev: RuleEv; side: RuleSide; to?: RuleTo; hero?: string; status?: string; cc?: boolean; every?: number; max?: number; per?: 'actor' | 'side' | 'round'; act: RuleAct } // 事件规则：ev 的行动者：basic/basicHit/crit = 出手者，heal = 治疗者，cleanse/statusApply = 施法者，shieldExpire/shieldBreak = 护盾持有者，hurt = 受击者
+  | { t: 'on'; ev: RuleEv; side: RuleSide; to?: RuleTo; hero?: string; hpBelow?: number; status?: string; cc?: boolean; every?: number; max?: number; per?: 'actor' | 'side' | 'round'; act: RuleAct } // 事件规则：ev 的行动者：basic/basicHit/crit = 出手者，heal = 治疗者，cleanse/statusApply = 施法者，shieldExpire/shieldBreak = 护盾持有者，hurt = 受击者
   | { t: 'critAdd'; side: RuleSide; to: RuleTo; add: number }
   | { t: 'hitAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number }
   | { t: 'dodgeAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number } // rounds：只在前 N 回合有效
