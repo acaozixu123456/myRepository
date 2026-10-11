@@ -1,4 +1,5 @@
 // 征战：章节页签 + 关卡地图 + 关卡详情。
+import { sfx } from '../sfx';
 import { CHAPTERS } from '../../content/campaign';
 import type { RewardDef, StageDef } from '../../content/types';
 import { FACTIONS } from '../../data/factions';
@@ -8,6 +9,7 @@ import { teamPower } from '../../game/state';
 import { TOWER_FLOORS, towerBest, towerClear, towerFaction, towerFloor, towerReward } from '../../game/tower';
 import { DAILY_TRIES, DUNGEONS, DUNGEON_BY_ID, TIERS, dungeonLeft, dungeonReward, dungeonStage, dungeonStart, dungeonSweep, dungeonWin, ensureDungeon, tierUnlocked } from '../../game/dungeon';
 import type { DungeonId } from '../../game/dungeon';
+import { BUFF_BY_ID, MAZE_EXTRA_COST, MAZE_EXTRA_MAX, MAZE_FLOORS, abandonRun, buffChoices, clearedFloors, buyRun, chooseBuff, ensureMaze, finishFloor, mazeRewardFor, mazeSetups, mazeStage, runsLeft, startRun } from '../../game/maze';
 import { ATTEMPTS_PER_DAY, MILESTONES, attemptsLeft, bossBoard, bossLevel, bossOfWeek, bossStage, claimMilestone, claimable, ensureBoss, finishAttempt, startAttempt } from '../../game/worldboss';
 import { artUrl } from '../../ui/art';
 import { chip, esc, fmt } from '../../ui/components';
@@ -15,7 +17,7 @@ import { icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
 import { topbar } from './lineup';
 
-export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' | 'dungeon' | 'boss', dtier: { fish: 1, exp: 1, catnip: 1 } as Record<DungeonId, number> };
+export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' | 'dungeon' | 'boss' | 'maze', dtier: { fish: 1, exp: 1, catnip: 1 } as Record<DungeonId, number> };
 
 const best = (ctx: AppCtx) => ctx.s.best ?? ctx.s.stage;
 const bestOrd = (ctx: AppCtx) => stageOrdinal(best(ctx).chapter, best(ctx).index);
@@ -26,7 +28,7 @@ function nodeState(ctx: AppCtx, c: number, i: number): NodeState {
   return o <= b ? 'done' : o === b + 1 ? 'next' : 'locked';
 }
 
-const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button><button class="pill" data-act="cmode" data-m="boss" aria-pressed="${campaignState.mode === 'boss'}">Boss</button></div>`;
+const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button><button class="pill" data-act="cmode" data-m="boss" aria-pressed="${campaignState.mode === 'boss'}">Boss</button><button class="pill" data-act="cmode" data-m="maze" aria-pressed="${campaignState.mode === 'maze'}">迷宫</button></div>`;
 
 function towerHtml(ctx: AppCtx): string {
   const best = towerBest(ctx.s);
@@ -81,6 +83,31 @@ function dungeonHtml(ctx: AppCtx): string {
   return `${modeTabs()}<p class="intro" style="margin:2px 4px 8px">秘境每天刷新次数；通关过的档位可以直接扫荡。档位随主线推进解锁。</p>${cards}`;
 }
 
+function mazeHtml(ctx: AppCtx): string {
+  const s = ctx.s, m = ensureMaze(s), run = m.active, left = runsLeft(s);
+  const head = (id: string) => `<img src="${artUrl(id, 'head')}" alt="" draggable="false">`;
+  if (!run) {
+    const ladder = [1, 4, MAZE_FLOORS].map((n) => { const r = mazeRewardFor(n); return `<div class="evr"><div class="grow"><b>通过 ${n} 层</b><small>${fmt(r.fish)} 小鱼干 · ${r.catnip} 猫薄荷${r.bells ? ` · ${r.bells} 金铃铛` : ''}${r.tickets ? ` · ${r.tickets} 招福符` : ''}</small></div></div>`; }).join('');
+    return `${modeTabs()}<section class="panel"><h3>纸箱迷宫 <small class="muted" style="font-size:12px">最高 ${m.best} / ${MAZE_FLOORS} 层</small></h3>
+      <p class="intro">一座会变形的纸箱迷宫：一局 ${MAZE_FLOORS} 层，每层打完从 3 个加成里选 1 个，加成会叠加；<b>血量和元气会带到下一层</b>，倒下的猫不会复活，全队睡着就结束，按通过的层数结算。战斗仍然自动打，决策在战斗之间。</p>
+      <div class="row" style="gap:8px;margin:8px 0"><div class="grow">今日剩余 <b>${left}</b> 次<br><small class="muted">VIP3 / VIP8 每天各 +1 次；可花 ${MAZE_EXTRA_COST} 金铃铛加次数（今日已买 ${m.bought}/${MAZE_EXTRA_MAX}）</small></div>
+      <button class="btn sm blue" data-act="mz-buy" ${m.bought >= MAZE_EXTRA_MAX ? 'disabled' : ''}>加次数</button><button class="btn green" data-act="mz-start" ${left > 0 ? '' : 'disabled'}>开始探险</button></div>
+      <div class="note" style="font-weight:800;margin-top:6px">奖励（逐层累计）</div>${ladder}</section>`;
+  }
+  const carryRows = Object.entries(run.carry).map(([id, c]) => `<div class="mzu ${c.hpPct <= 0 ? 'down' : ''}">${head(id)}<div class="bar"><i style="width:${Math.round(c.hpPct * 100)}%"></i></div><small>${c.hpPct <= 0 ? '睡着了' : `${Math.round(c.hpPct * 100)}%`}</small></div>`).join('');
+  const buffChips = run.buffs.length ? run.buffs.map((id) => `<span class="chip light">${esc(BUFF_BY_ID[id]?.name ?? id)}</span>`).join('') : '<span class="muted">还没有加成</span>';
+  let body: string;
+  if (run.pending === 'choose') {
+    body = `<div class="note" style="font-weight:800;margin:6px 0">第 ${run.floor} 层通过！选一个加成：</div>${buffChoices(run, m.day).map((b) => `<button class="mzbuff ${b.rarity}" data-act="mz-pick" data-id="${b.id}"><b>${esc(b.name)}</b><small>${esc(b.desc)}</small><i>${{ common: '普通', rare: '稀有', epic: '史诗' }[b.rarity]}</i></button>`).join('')}`;
+  } else {
+    const st = mazeStage(s, run, m.day), heads = st.waves[0].enemies.map((e) => `<div class="eh"><img src="${artUrl(e.unit, 'head')}" alt="" draggable="false"><em>Lv.${e.level}</em></div>`).join('');
+    body = `<div class="note" style="font-weight:800;margin:6px 0">${esc(st.name)}${st.kind === 'boss' ? '（首领）' : ''}</div><div class="heads" style="display:flex;gap:6px;margin:6px 0">${heads}</div>
+      <button class="btn green" style="width:100%" data-act="mz-go">出战</button>`;
+  }
+  return `${modeTabs()}<section class="panel"><h3>纸箱迷宫 · 第 ${run.floor} / ${MAZE_FLOORS} 层</h3><div class="mzteam">${carryRows}</div><div class="row" style="gap:6px;flex-wrap:wrap;margin:6px 0">${buffChips}</div>${body}
+    <button class="btn sm ghost" style="margin-top:8px" data-act="mz-quit">放弃本局（按已通过的 ${clearedFloors(run)} 层结算）</button></section>`;
+}
+
 function bossHtml(ctx: AppCtx): string {
   const s = ctx.s, now = Date.now();
   const def = bossOfWeek(now), b = ensureBoss(s, now), left = attemptsLeft(s, now);
@@ -101,6 +128,7 @@ function bossHtml(ctx: AppCtx): string {
 }
 
 export function campaignHtml(ctx: AppCtx): string {
+  if (campaignState.mode === 'maze') return `${topbar(ctx, '征战')}<div class="scroll">${mazeHtml(ctx)}</div>`;
   if (campaignState.mode === 'boss') return `${topbar(ctx, '征战')}<div class="scroll">${bossHtml(ctx)}</div>`;
   if (campaignState.mode === 'dungeon') return `${topbar(ctx, '征战')}<div class="scroll">${dungeonHtml(ctx)}</div>`;
   if (campaignState.mode === 'tower') return `${topbar(ctx, '征战')}<div class="scroll">${towerHtml(ctx)}</div>`;
@@ -205,6 +233,28 @@ export function handleCampaign(ctx: AppCtx, act: string, el: HTMLElement): boole
           ctx.result({ win: true, title: `${DUNGEON_BY_ID[id].name} · ${tier} 档`, gain: g, again: { act: 'nav', label: '回秘境', data: { to: 'campaign' } } });
         } else ctx.result({ win: false, title: `${DUNGEON_BY_ID[id].name} · ${tier} 档`, hint: '这一档的守卫更强。升级升星，或者先挑低一档，通关过的档位还能直接扫荡。' });
         campaignState.mode = 'dungeon';
+        ctx.refresh();
+      });
+      return true;
+    }
+    case 'mz-start': { const r = startRun(ctx.s); if (!r.ok) ctx.toast(r.reason); else { sfx.ok(); ctx.save(); } ctx.refresh(); return true; }
+    case 'mz-buy': { const r = buyRun(ctx.s); ctx.toast(r.ok ? '加了一次探险机会' : r.reason ?? ''); if (r.ok) ctx.save(); ctx.refresh(); return true; }
+    case 'mz-pick': { const r = chooseBuff(ctx.s, el.dataset.id!); if (!r.ok) { ctx.toast(r.reason); return true; } sfx.up(); ctx.save(); ctx.toast(`选了「${r.buff.name}」`); ctx.refresh(); return true; }
+    case 'mz-quit': { const done = abandonRun(ctx.s); ctx.save(); ctx.toast(done ? `本局结束，带走 ${fmt(done.fish)} 小鱼干` : '本局结束'); ctx.refresh(); return true; }
+    case 'mz-go': {
+      const m = ensureMaze(ctx.s), run = m.active;
+      if (!run || run.pending !== 'fight') return true;
+      const st = mazeStage(ctx.s, run, m.day);
+      ctx.save(); ctx.go('home'); ctx.toast(st.name);
+      void ctx.loop.runCustom(st, 1 + (run.floor % 6), mazeSetups(ctx.s, run)).then((win) => {
+        if (win === null) return;
+        const r = finishFloor(ctx.s, win === true, ctx.loop.customCarry);
+        ctx.save();
+        if (r.done) {
+          const rw = r.reward!;
+          ctx.result({ win: r.victory, banner: r.victory ? '迷宫通关！' : `止步第 ${r.cleared + 1} 层`, title: '纸箱迷宫', hint: `共通过 ${r.cleared} 层：${fmt(rw.fish)} 小鱼干、${rw.catnip} 猫薄荷${rw.bells ? `、${rw.bells} 金铃铛` : ''}${rw.tickets ? `、${rw.tickets} 招福符` : ''}。`, again: { act: 'nav', label: '回迷宫', data: { to: 'campaign' } } });
+        } else ctx.result({ win: true, banner: `通过第 ${r.cleared} 层`, title: '纸箱迷宫', hint: '回到迷宫，选一个加成再往下走。', again: { act: 'nav', label: '选加成', data: { to: 'campaign' } } });
+        campaignState.mode = 'maze';
         ctx.refresh();
       });
       return true;

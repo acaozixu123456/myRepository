@@ -2,7 +2,7 @@
 import { recordAutoResult, shouldAutoPush } from '../game/autopush';
 import type { StageDef } from '../content/types';
 import { simulate } from '../engine/battle';
-import type { BEvent } from '../engine/types';
+import type { BEvent, UnitSetup } from '../engine/types';
 import { CHAPTER_THEME } from '../fx/bg';
 import { Player } from '../fx/player';
 import { applyGain, firstClearReward, getStage, lineupSetups, nextStage, waveSetups, winReward } from '../game/stage';
@@ -31,6 +31,9 @@ export class BattleLoop {
   lastDamagePct = 0;
   /** runCustom 那一场的伤害比例：在恢复挂机之前定格，避免被紧接着的挂机战斗覆盖 */
   customDamagePct = 0;
+  /** 最近一场战斗结束时我方各猫的血量比例 / 元气（纸箱迷宫用）；输了则为 null */
+  lastCarry: Record<string, { hpPct: number; energy: number }> | null = null;
+  customCarry: Record<string, { hpPct: number; energy: number }> | null = null;
 
   constructor(canvas: HTMLCanvasElement, private hooks: LoopHooks) {
     this.player = new Player(canvas);
@@ -68,13 +71,14 @@ export class BattleLoop {
     void this.cycle(++this.token);
   }
   /** 打一场指定关卡（爬塔等），打完恢复挂机；被打断返回 null */
-  async runCustom(stage: StageDef, theme = 3): Promise<boolean | null> {
+  async runCustom(stage: StageDef, theme = 3, A?: UnitSetup[]): Promise<boolean | null> {
     this.running = false;
     const token = ++this.token;
     this.pushNext = false;
     await this.hooks.story?.(stage.storyId);
-    const win = await this.fight(stage, token, theme);
+    const win = await this.fight(stage, token, theme, A);
     this.customDamagePct = this.lastDamagePct;
+    this.customCarry = this.lastCarry;
     if (token !== this.token) return null;
     this.lastOutcome = win ? 'win' : 'lose';
     await this.player.sleep(win ? 1.2 : 1.8);
@@ -138,11 +142,11 @@ export class BattleLoop {
     }
   }
 
-  private async fight(stage: StageDef, token: number, chapter: number): Promise<boolean> {
+  private async fight(stage: StageDef, token: number, chapter: number, A?: UnitSetup[]): Promise<boolean> {
     const s = this.hooks.state();
     let carry: Record<string, { hpPct: number; energy: number }> | undefined;
     for (let w = 0; w < stage.waves.length; w++) {
-      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
+      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: A && w === 0 ? A : lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
       const foes = sim.units.filter((u) => u.side === 'B');
       this.lastDamagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
       const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
@@ -153,10 +157,11 @@ export class BattleLoop {
       const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
       await this.player.play(evs);
       if (token !== this.token) return false;
-      if (sim.winner !== 'A') return false;
+      if (sim.winner !== 'A') { this.lastCarry = null; return false; }
       carry = {};
       for (const u of sim.units) if (u.side === 'A') carry[u.heroId] = { hpPct: u.alive ? u.hp / u.maxHp : 0, energy: u.energy };
     }
+    this.lastCarry = carry ?? null;
     return true;
   }
 }

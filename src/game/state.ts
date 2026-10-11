@@ -18,6 +18,7 @@ import { affMul } from './affection';
 import type { AffState } from './affection';
 import type { EventState } from './events';
 import type { GuildBossState } from './guildboss';
+import type { MazeState } from './maze';
 import type { NestState } from './nest';
 import type { GuildState } from './guild';
 import type { BossState } from './worldboss';
@@ -59,6 +60,7 @@ export interface PlayerState {
   daily?: DailyState; // 七日签到 / 快速探索
   events?: EventState; // 活动中心
   wboss?: BossState; // 世界 Boss
+  maze?: MazeState; // 纸箱迷宫
   nest?: NestState; // 猫窝
   gboss?: GuildBossState; // 公会 Boss
   guild?: GuildState; // 公会（旧存档读取时补齐）
