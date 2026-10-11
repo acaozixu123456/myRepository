@@ -6,6 +6,7 @@ import { HERO_BY_ID } from '../src/data/heroes';
 import { Rng } from '../src/engine/rng';
 import { fastExplore, fastFree, signIn } from '../src/game/daily';
 import { HELP_PER_DAY, guildChest, guildHelp, joinGuild, myGuild } from '../src/game/guild';
+import { AFF_MAX_LEVEL, AFF_THRESHOLDS, FISH_SNACK, MOON_SNACK, PET_GAIN, PET_PER_DAY } from '../src/game/affection';
 import { FURNITURE, NEST_FISH_PER_COMFORT } from '../src/game/nest';
 import { FESTIVALS, FESTIVAL_PACK, OPEN_DAYS, OPEN_REWARDS, PULL_TIERS, RANK_REWARDS, UP_DAYS, festivalGift, wishShards } from '../src/game/events';
 import type { Reward } from '../src/game/events';
@@ -321,6 +322,8 @@ function supplement(): (string | number)[][] {
     row('UP 累抽有礼（不含送猫）', `每期 ${UP_DAYS} 天抽满 100 次，前两档`, sum([{ tickets: 3 }, { bells: 300, items: { fishbone_large: 1 } }]), UP_DAYS),
     row('开服冲榜（前 15 名下限）', `仅新号前 ${OPEN_DAYS} 天，按 ${OPEN_DAYS} 天平均`, sum(Array.from({ length: OPEN_DAYS }, () => OPEN_REWARDS[OPEN_REWARDS.length - 1].r)), OPEN_DAYS),
     ['许愿池', '每天 1 次，免费 / VIP12+月卡', 0, `升星碎片 ${wishQ.wish_shard_vip0} / ${wishQ.wish_shard_vip12} 个/天，连续 7 天另 +20`],
+    ['好感度（免费路线，每只猫）', `每天撸 ${PET_PER_DAY} 次 + ${FISH_SNACK.perDay} 次小鱼干点心`, 0, `每天好感 +${PET_PER_DAY * PET_GAIN + FISH_SNACK.perDay * FISH_SNACK.gain}，约 ${Math.ceil(AFF_THRESHOLDS[AFF_MAX_LEVEL] / (PET_PER_DAY * PET_GAIN + FISH_SNACK.perDay * FISH_SNACK.gain))} 天满级（属性 +${AFF_MAX_LEVEL}%），每天花 ${(FISH_SNACK.perDay * FISH_SNACK.cost).toLocaleString('en-US')} 小鱼干`],
+    ['好感度（付费加速，每只猫）', `每天另喂 ${MOON_SNACK.perDay} 次猫条`, 0, `每天额外好感 +${MOON_SNACK.perDay * MOON_SNACK.gain}，花 ${MOON_SNACK.perDay * MOON_SNACK.cost} 月光珠（¥${(MOON_SNACK.perDay * MOON_SNACK.cost) / 10}），约 ${Math.ceil(AFF_THRESHOLDS[AFF_MAX_LEVEL] / (PET_PER_DAY * PET_GAIN + FISH_SNACK.perDay * FISH_SNACK.gain + MOON_SNACK.perDay * MOON_SNACK.gain))} 天满级；属性加成上限不变，只是更快`],
     ['猫窝（免费家具全买）', '舒适度 75，每天领取', n(FURNITURE.filter((f) => !f.cost.moon).reduce((a, f) => a + f.comfort, 0) * NEST_FISH_PER_COMFORT), '一次性投入约 8.1 万小鱼干 + 600 金铃铛，约 18 天回本'],
     ['猫窝（高级家具全买）', '舒适度 +640，月光珠 4,800', 0, `每天额外 ${(FURNITURE.filter((f) => f.cost.moon).reduce((a, f) => a + f.comfort, 0) * NEST_FISH_PER_COMFORT).toLocaleString('en-US')} 小鱼干（按人民币计：约 ¥480）`],
     ['节日礼盒（氪金）', `¥${FESTIVAL_PACK.yuan}/届，限购 1 次`, 0, `按人民币计：${bundle(valueIncome(rewardQ(FESTIVAL_PACK.r)).unpriced)}（含已定价部分另算）`],
