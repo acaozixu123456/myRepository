@@ -4,6 +4,7 @@ import { HERO_BY_ID, HEROES, PREMIUM_HEROES } from '../data/heroes';
 import type { HeroDef } from '../data/heroes';
 import { DUP_SHARDS } from './gacha';
 import type { PullResult } from './gacha';
+import { track } from './quests';
 import type { PlayerState } from './state';
 
 export const MOON_PER_YUAN = 10;
@@ -137,7 +138,9 @@ export function buySpPack(s: PlayerState, heroId: string, now = Date.now()): Pay
   p.grants.push(SP_PACK.id);
   s.res.bells += SP_PACK.bells; s.res.tickets += SP_PACK.tickets;
   record(s, SP_PACK.id, SP_PACK.yuan, 0, now);
-  return { ok: true, moon: 0, first: true, result: giveHero(s, hero) };
+  const result = giveHero(s, hero);
+  track(s, 'collect_hero', Object.keys(s.heroes).length);
+  return { ok: true, moon: 0, first: true, result };
 }
 
 /** 开发者发放：给指定账号一次性补发月光珠，并按「等值充值」计入 VIP（每个 id 仅一次）。 */
@@ -192,5 +195,7 @@ export function pullSp(s: PlayerState, n: 1 | 10, rnd: () => number = Math.rando
     const needUr = n === 10 && i === 9 && !results.some((x) => x.rarity === 'SP' || x.rarity === 'UR');
     results.push(spOnce(s, rnd, needUr, upId));
   }
+  track(s, 'recruit', results.length);
+  track(s, 'collect_hero', Object.keys(s.heroes).length);
   return { ok: true, results };
 }

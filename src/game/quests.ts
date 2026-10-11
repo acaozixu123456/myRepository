@@ -20,7 +20,7 @@ const QUEST_BY_ID = new Map(QUESTS.map((quest) => [quest.id, quest]));
 const AVAILABLE_GOALS = new Set([
   'login', 'claim_idle', 'clear_stage', 'reach_stage', 'level_up_hero',
   'hero_level', 'upgrade_skill', 'recruit', 'collect_hero', 'spend_fish',
-  'equip_upgrade', 'tower_clear',
+  'equip_upgrade', 'tower_clear', 'arena_battle', 'arena_win', 'visit_friend',
 ]);
 const MAX_GOALS = new Set(['reach_stage', 'hero_level', 'collect_hero']);
 const RESOURCE_REWARDS = new Map<string, { key: keyof Resources; factor: number }>([
