@@ -37,12 +37,15 @@ export function buildStreet(L: LevelDef = LEVEL_1): Street {
     for (let i = -3; i <= 3; i++) { const s = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 2.4), new THREE.MeshBasicMaterial({ color: 0xe8e4f0, transparent: true, opacity: 0.8 })); s.rotation.x = -Math.PI / 2; s.rotation.z = rot ? Math.PI / 2 : 0; s.position.set(cx + (rot ? 0 : i * 1.2), 0.05, cz + (rot ? i * 1.2 : 0)); g.add(nm(s)); }
   }
   // ---- 人行道（四个街区各一块）----
-  const pv = paving(L.ground?.pave ?? '#34304a'); pv.wrapS = pv.wrapT = THREE.RepeatWrapping; pv.repeat.set(8, 8);
-  const pave = new THREE.MeshStandardMaterial({ map: pv, color: L.ground ? 0x587060 : 0x3e3b55, roughness: 0.9, metalness: 0.05, envMapIntensity: 0.3 });
+  const pv = paving(L.ground?.pave ?? '#4e4a6e'); pv.wrapS = pv.wrapT = THREE.RepeatWrapping; pv.repeat.set(8, 8);
+  const pave = new THREE.MeshStandardMaterial({ map: pv, color: 0xffffff, roughness: 0.9, metalness: 0.05, envMapIntensity: 0.3 });
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const w = HALF - 4.5, cx = sx * (4.5 + w / 2), cz = sz * (4.5 + w / 2);
     const slab = new THREE.Mesh(new THREE.BoxGeometry(w, 0.32, w), pave); slab.position.set(cx, 0.16, cz); slab.receiveShadow = true; g.add(nm(slab));
-    const curb = new THREE.Mesh(new THREE.BoxGeometry(w + 0.2, 0.06, w + 0.2), std('#8a8498', 0.7)); curb.position.set(cx, 0.34, cz); g.add(nm(curb));
+    const cm = std('#8a8498', 0.7);
+    for (const [bw, bd, ox, oz] of [[w + 0.4, 0.2, 0, w / 2 + 0.1], [w + 0.4, 0.2, 0, -w / 2 - 0.1], [0.2, w, w / 2 + 0.1, 0], [0.2, w, -w / 2 - 0.1, 0]]) {
+      const curb = new THREE.Mesh(new THREE.BoxGeometry(bw, 0.1, bd), cm); curb.position.set(cx + ox, 0.34, cz + oz); g.add(nm(curb));
+    }
   }
 
   // ---- 楼 ----
