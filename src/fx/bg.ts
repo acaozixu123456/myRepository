@@ -1,10 +1,11 @@
 // 程序化背景：绘本剪纸风的分层风景。战斗背景 960×600；主城背景是竖版全景（makeHomeScenery）。
+import { makeNeonBackground } from './bg-neon';
 import { clamp, mulberry } from './util';
 
-export type BgTheme = 'meadow' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace';
-export const BG_THEMES: BgTheme[] = ['meadow', 'street', 'market', 'redcliff', 'forest', 'mist', 'palace'];
+export type BgTheme = 'meadow' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'neon';
+export const BG_THEMES: BgTheme[] = ['meadow', 'street', 'market', 'redcliff', 'forest', 'mist', 'palace', 'neon'];
 /** 章节 → 场景 */
-export const CHAPTER_THEME: Record<number, BgTheme> = { 1: 'street', 2: 'market', 3: 'redcliff', 4: 'forest', 5: 'mist', 6: 'palace' };
+export const CHAPTER_THEME: Record<number, BgTheme> = { 1: 'neon', 2: 'market', 3: 'redcliff', 4: 'forest', 5: 'mist', 6: 'palace' };
 
 interface ThemeDef {
   sky: [string, string, string];
@@ -21,6 +22,7 @@ const THEMES: Record<BgTheme, ThemeDef> = {
   redcliff: { sky: ['#32184a', '#c4463f', '#f6a060'], sun: { x: 480, y: 250, r: 70, c: '#ffd6a0' }, far: '#6a2f50', mid: '#4a2540', near: '#2c1830', ground: ['#5a2a38', '#2e1a2c'], accent: '#ffb070', cloud: '#e8785a', haze: '#ff9a6a' },
   forest: { sky: ['#7fd0a8', '#c8eab0', '#f6f2c0'], sun: { x: 690, y: 90, r: 44, c: '#fffbd0' }, far: '#6fae8c', mid: '#4f9470', near: '#2f6c50', ground: ['#9ab868', '#6f9248'], accent: '#e8f4a8', cloud: '#f4fff0', haze: '#dff6c8' },
   mist: { sky: ['#1c2a5e', '#6a7ec0', '#d6e8f6'], sun: null, moon: true, stars: true, far: '#8aa4d4', mid: '#6a88c0', near: '#4c6aa8', ground: ['#b6d4e8', '#8cb4d0'], accent: '#ffffff', cloud: '#f4f8ff', haze: '#cfe0ff' },
+  neon: { sky: ['#07041a', '#5a1a62', '#a8307a'], sun: null, far: '#2c1a5a', mid: '#1c1042', near: '#0e0828', ground: ['#1a0f36', '#07040f'], accent: '#ff2ea8', cloud: '#5a2a7a', haze: '#a8307a' },
   palace: { sky: ['#2a1a5a', '#9a5aa8', '#ffc8b0'], sun: { x: 480, y: 250, r: 60, c: '#ffe0c0' }, stars: true, far: '#7a5a9e', mid: '#5c4282', near: '#3c2c64', ground: ['#d6b8c8', '#a88aa8'], accent: '#ffe6a0', cloud: '#ffd0e0', haze: '#ffb8c8' },
 };
 
@@ -154,6 +156,7 @@ function birds(ctx: Ctx2, rnd: () => number, w: number, y0: number, y1: number, 
 
 // ---------- 战斗背景 ----------
 export function makeBackground(theme: BgTheme, w = 960, h = 600, dpr = 2, seed = 7): HTMLCanvasElement {
+  if (theme === 'neon') return makeNeonBackground(w, h, dpr, seed);
   const T = THEMES[theme];
   const c = document.createElement('canvas');
   c.width = w * dpr; c.height = h * dpr;

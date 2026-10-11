@@ -8,7 +8,7 @@ export const FRAME = { x0: -2.2, x1: 2.2, y0: -0.25, y1: 3.6 };
 export const K = 168;
 
 /** 光色氛围：和 2D 背景的色调呼应（黄昏偏暖、赤壁偏红、雾偏冷） */
-export type Mood = 'neutral' | 'meadow' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace';
+export type Mood = 'neutral' | 'meadow' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'neon';
 const MOODS: Record<Mood, { amb: string; key: string; rim: string }> = {
   neutral: { amb: '#ffffff', key: '#ffffff', rim: '#bfd8ff' },
   meadow: { amb: '#ffffff', key: '#fff6e4', rim: '#bfe0ff' },
@@ -18,6 +18,7 @@ const MOODS: Record<Mood, { amb: string; key: string; rim: string }> = {
   forest: { amb: '#e0f4d8', key: '#f4ffd8', rim: '#80dcaa' },
   mist: { amb: '#e8eefc', key: '#ffffff', rim: '#b8c8ff' },
   palace: { amb: '#f4eaff', key: '#ffeac8', rim: '#c8a8ff' },
+  neon: { amb: '#b8a8ff', key: '#ffa8e0', rim: '#5fe8ff' },
 };
 
 export class Renderer3D {
