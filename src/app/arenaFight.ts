@@ -9,12 +9,18 @@ import type { PlayerState } from '../game/state';
 
 export interface FightResult { win: boolean; damagePct: number }
 
-export async function arenaFight(host: HTMLElement, s: PlayerState, stage: StageDef, chapter: number, speed = 2): Promise<FightResult> {
+const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** banner：开场横幅（如「首领战！」）；传入后会先做一个圆形转场 */
+export async function arenaFight(host: HTMLElement, s: PlayerState, stage: StageDef, chapter: number, speed = 2, banner = ''): Promise<FightResult> {
   const ov = document.createElement('div');
   ov.className = 'arena-ov';
-  ov.innerHTML = `<canvas></canvas><button class="skip" data-skip>快进 »</button>`;
+  ov.innerHTML = `<canvas></canvas><button class="skip" data-skip>快进 »</button>${banner ? `<div class="arena-banner">${banner}</div>` : ''}`;
+  ov.classList.add('wipe-in');
   host.appendChild(ov);
   const canvas = ov.querySelector('canvas') as HTMLCanvasElement;
+  if (banner) await wait(650);
+  ov.classList.remove('wipe-in'); ov.querySelector('.arena-banner')?.remove();
   const player = new Player(canvas);
   player.scene.baseCam = { x: 480, y: 366, zoom: 1.28 };
   player.scene.resetCam(0.01);
@@ -37,6 +43,8 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
   }
   await player.sleep(win ? 1.0 : 1.5);
   player.scene.stop();
+  ov.classList.add('wipe-out');
+  await wait(380);
   ov.remove();
   return { win, damagePct };
 }

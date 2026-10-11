@@ -39,6 +39,12 @@ export const EXPLORE_CSS = `
 .xload{position:absolute;inset:0;z-index:6;display:grid;place-items:center;background:#0d0818;color:#ffe9a0;font-family:var(--f-d);font-size:18px;text-align:center;line-height:1.8}
 .xload small{display:block;font-size:12px;color:#9a8ec0;font-family:inherit}
 .arena-ov{position:absolute;inset:0;z-index:30;background:radial-gradient(#1a1030,#05030c);display:flex;align-items:center;justify-content:center}
+.arena-ov.wipe-in{animation:arenaIn .6s cubic-bezier(.3,.7,.2,1) both}
+.arena-ov.wipe-out{animation:arenaOut .38s ease-in both}
+@keyframes arenaIn{from{clip-path:circle(0% at 50% 55%)}to{clip-path:circle(75% at 50% 55%)}}
+@keyframes arenaOut{from{clip-path:circle(75% at 50% 55%);opacity:1}to{clip-path:circle(0% at 50% 55%);opacity:.6}}
+.arena-banner{position:absolute;left:0;right:0;top:42%;text-align:center;font-size:40px;font-weight:900;color:#fff;letter-spacing:6px;text-shadow:0 0 18px #ff3d7a,0 3px 0 #7a1a3a;animation:bannerPop .65s ease-out both;pointer-events:none}
+@keyframes bannerPop{0%{transform:scale(2.2);opacity:0}35%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
 .arena-ov canvas{width:100%;aspect-ratio:960/600;display:block}
 .arena-ov .skip{position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top,0px));padding:7px 14px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font-weight:800;border:2px solid rgba(255,255,255,.4)}
 `;
@@ -174,7 +180,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
     const t = isBoss ? bossStage(s) : { ...farmStage(s), fresh: false };
     const stage = t.stage;
     if (isBoss && t.fresh) await playStoryOnce(ctx, stage.storyId);
-    const res = await arenaFight(ctx.root, s, stage, t.chapter, s.settings.speed || 2);
+    const res = await arenaFight(ctx.root, s, stage, t.chapter, s.settings.speed || 2, isBoss ? '首领战！' : '遭遇！');
     rollover(s, Date.now());
     if (res.win) {
       track(s, 'clear_stage');
