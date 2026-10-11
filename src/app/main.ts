@@ -21,6 +21,7 @@ import { shopHtml, handleShop } from './screens/shop';
 import { seedDemoInventory } from '../game/inventory';
 import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
+import { makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
 style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS;
@@ -53,6 +54,7 @@ app.innerHTML = `<div class="app" id="root">
     <button data-act="nav" data-to="bag">${icon('bag', 30)}背包</button>
   </nav></div>`;
 const root = document.getElementById('root')!;
+setTimeout(() => { try { root.style.backgroundImage = `url(${makeHomeScenery()})`; root.style.backgroundSize = 'cover'; root.style.backgroundPosition = 'center'; } catch { /* 背景失败不影响游戏 */ } }, 0);
 
 const ctx: AppCtx = {
   s: state,

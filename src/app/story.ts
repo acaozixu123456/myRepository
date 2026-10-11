@@ -2,17 +2,16 @@
 import { STORIES } from '../content/story';
 import { FACTIONS } from '../data/factions';
 import { HERO_BY_ID } from '../data/heroes';
-import { makeBackground } from '../fx/bg';
+import { makeBackground, CHAPTER_THEME } from '../fx/bg';
 import type { BgTheme } from '../fx/bg';
 import { artUrl } from '../ui/art';
 import { esc } from '../ui/components';
 import { icon } from '../ui/icons';
 import type { AppCtx } from './ctx';
 
-const CH_THEME: Record<number, BgTheme> = { 1: 'meadow', 2: 'meadow', 3: 'redcliff', 4: 'forest', 5: 'mist', 6: 'redcliff' };
 const bgCache = new Map<BgTheme, string>();
 function backdrop(storyId: string): string {
-  const theme = CH_THEME[Number(/^c(\d+)_/.exec(storyId)?.[1] ?? 1)] ?? 'meadow';
+  const theme = CHAPTER_THEME[Number(/^c(\d+)_/.exec(storyId)?.[1] ?? 1)] ?? 'meadow';
   let u = bgCache.get(theme);
   if (!u) { u = makeBackground(theme, 640, 400, 1).toDataURL('image/jpeg', 0.8); bgCache.set(theme, u); }
   return u;

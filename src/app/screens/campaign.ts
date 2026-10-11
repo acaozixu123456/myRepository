@@ -139,7 +139,7 @@ export function handleCampaign(ctx: AppCtx, act: string, el: HTMLElement): boole
       const n = Number(el.dataset.n);
       ctx.go('home');
       ctx.toast(`挑战第 ${n} 层`);
-      void ctx.loop.runCustom(towerFloor(n), 3 + (Math.floor((n - 1) / 5) % 3)).then((win) => {
+      void ctx.loop.runCustom(towerFloor(n), 1 + (Math.floor((n - 1) / 5) % 6)).then((win) => {
         if (win === null) return;
         if (win) {
           const r = towerClear(ctx.s, n);
