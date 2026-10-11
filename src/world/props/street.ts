@@ -2,6 +2,7 @@
 // 约定见 index.ts：原点在底部中心，+z 是正面；材质一律走 kit 的缓存。
 import * as THREE from 'three';
 import { glowMat, std } from '../kit';
+import { neonSign } from '../tex';
 import type { PropFactory } from './index';
 
 const box = (w: number, h: number, d: number, mat: THREE.Material, x = 0, y = 0, z = 0): THREE.Mesh => {
@@ -60,7 +61,7 @@ function busStop(): THREE.Group {
   const metal = std('#3a3a48', 0.5, 0.5);
   g.add(cyl(0.07, 3.4, metal, 0, 1.7, 0));
   g.add(box(1.0, 0.9, 0.08, std('#12121c', 0.6), 0, 2.9, 0));
-  const face = new THREE.Mesh(new THREE.PlaneGeometry(0.86, 0.74), glowMat('#7ff0ff')); face.position.set(0, 2.9, 0.05); g.add(face);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(0.86, 0.74), glowMat('#ffffff', neonSign('夜班 喵', '#7ff0ff', { w: 256, h: 220, bg: '#08141c' }))); face.position.set(0, 2.9, 0.05); g.add(face);
   const stripe = new THREE.Mesh(new THREE.PlaneGeometry(0.86, 0.16), glowMat('#ff4aa8')); stripe.position.set(0, 3.2, 0.055); g.add(stripe);
   g.add(box(1.5, 0.08, 1.0, metal, 0.45, 2.1, 0.5)); // 顶棚
   g.add(box(1.3, 0.05, 0.4, std('#5a4a3a', 0.8), 0.45, 0.5, 0.5)); // 长椅

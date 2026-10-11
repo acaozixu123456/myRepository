@@ -30,6 +30,8 @@ for (let i = 0; i < sim * 20; i++) ex.update(0.05);
 wv.focus.copy(ex.leaderPos);
 wv.snapCamera();
 for (let i = 0; i < 20; i++) { ex.update(0.1); st.update(i * 0.1, 0.1); wv.snapCamera(); }
+const fc = q.get('focus'); // ?focus=x,z：镜头对准某个点（看道具用；要放在预热循环之后，否则会被队长拉回去）
+if (fc) { const [fx, fz] = fc.split(',').map(Number); wv.focus.set(fx, 0.3, fz); wv.snapCamera(); }
 wv.render(0.1);
 (window as unknown as { done: boolean; ex: Explorer; wv: WorldView }).ex = ex;
 (window as unknown as { done: boolean }).done = true;

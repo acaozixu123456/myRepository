@@ -89,6 +89,17 @@ describe('场景道具', () => {
   });
 });
 
+describe('道路畅通', () => {
+  it('第 1~3 章的道具不会摆在马路中间车道上挡路', () => {
+    for (const L of [LEVELS[1], LEVELS[2], LEVELS[3]]) {
+      for (const p of L.props) {
+        const onRoad = Math.abs(p.x) < 3 || Math.abs(p.z) < 3; // 两条 9 宽的马路的中间车道（路边 1.5 允许摆自动贩卖机之类）
+        expect(onRoad, `${L.id}:${p.kind}(${p.x},${p.z}) 摆在马路上`).toBe(false);
+      }
+    }
+  });
+});
+
 describe('猫薄荷丛', () => {
   it('每天每丛一次，给猫薄荷，隔天刷新；不算进宝箱委托', () => {
     const s = newPlayer();

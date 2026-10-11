@@ -58,7 +58,7 @@ const L1_PROPS: PropDef[] = [
   { kind: 'cardboard', x: -6.6, z: -7.2, seed: 1 }, { kind: 'cardboard', x: 17, z: -6.6, seed: 2 }, { kind: 'cardboard', x: -18, z: 6.8, seed: 3 }, { kind: 'cardboard', x: 5.8, z: 8.2, seed: 4 },
   { kind: 'trash', x: 9.5, z: -7.0 }, { kind: 'trashB', x: -22, z: 7.0 },
   { kind: 'tree', x: -8, z: -6.6, seed: 3, arg: 3.4 }, { kind: 'tree', x: 10, z: 6.8, seed: 4, arg: 3.0 }, { kind: 'tree', x: 21, z: -6.4, seed: 5, arg: 3.6 }, { kind: 'tree', x: -21, z: 6.8, seed: 6, arg: 3.2 },
-  { kind: 'guardrail', x: -17.5, z: 5.3, arg: 3.2 }, { kind: 'guardrail', x: 15, z: -5.3, arg: 3.2 }, { kind: 'busStop', x: -11.5, z: 5.9, ry: Math.PI }, { kind: 'manhole', x: 11, z: -5.9 }, { kind: 'manhole', x: 3.2, z: 6.3 },
+  { kind: 'guardrail', x: -17.5, z: 5.3, arg: 3.2 }, { kind: 'guardrail', x: 15, z: -5.3, arg: 3.2 }, { kind: 'busStop', x: -11.5, z: 5.9, ry: Math.PI }, { kind: 'manhole', x: 11, z: -5.9 }, { kind: 'manhole', x: 13.5, z: 6.0 }, { kind: 'clothesline', x: -12.5, z: -5.6 },
   { kind: 'planter', x: -17, z: -6.9, arg: 2.4 }, { kind: 'planter', x: 20, z: 6.9, arg: 2.0 }, { kind: 'bush', x: 4.6, z: -6.8, seed: 7, arg: 0.8 }, { kind: 'bush', x: -4.8, z: 6.9, seed: 8, arg: 0.7 },
 ];
 const L1_LAMPS: [number, number, string][] = [[-2.5, -7, '#ffd8a0'], [3, 7, '#ff9ad0'], [-12, 6.8, '#7ff0ff'], [12, -6.9, '#ffd8a0'], [-6.8, 12, '#ffd8a0'], [6.8, -12, '#7ff0ff']];
