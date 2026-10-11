@@ -5,6 +5,7 @@ import { expToNext, levelUpFishCost, starUpShards } from '../src/content/progres
 import { HERO_BY_ID } from '../src/data/heroes';
 import { Rng } from '../src/engine/rng';
 import { fastExplore, fastFree, signIn } from '../src/game/daily';
+import { HELP_PER_DAY, guildChest, guildHelp, joinGuild, myGuild } from '../src/game/guild';
 import { DAILY_TRIES, DUNGEONS, TIERS, dungeonStart, dungeonSweep, dungeonWin, tierLevel, tierUnlocked } from '../src/game/dungeon';
 import { COST, POOLS, pull } from '../src/game/gacha';
 import { YARN_MINUTES, useYarn } from '../src/game/inventory';
@@ -118,6 +119,11 @@ function incomeDay(p: PlayerState, now: number, day: number, frozenLevel?: numbe
     }
   });
   record('friend', () => { for (const n of NPCS.slice(0, friends)) { addFriend(p, n.id); check(visitFriend(p, n.id, now + 10 * HOUR).ok, '拜访好友'); } });
+  record('guild', () => {
+    if (!myGuild(p)) check(joinGuild(p, 'g_box', now + 10 * HOUR).ok, '加入公会');
+    check(guildChest(p, now + 10 * HOUR).ok, '每日纸箱');
+    for (let i = 0; i < HELP_PER_DAY; i++) check(guildHelp(p, now + 10 * HOUR).ok, '公会互助');
+  });
   record('campaign', () => {
     const st = getStage(p.stage.chapter, p.stage.index)!;
     for (let i = 0; i < 10; i++) { applyGain(p, winReward(st)); track(p, 'clear_stage'); }
@@ -320,7 +326,7 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
     '按此口径，原 120 分钟折算下秘境约占全部免费收入的 14%–20%，低于 20%–35% 目标下沿；已裁决调为 150 分钟（见下表为 150 分钟的实测占比），仍偏低的快照留待后续观察。',
     '## 任务毛奖励上限',
     table(['周期', '现已开放条数', '未开放', '全部达标毛实物', '已定价子集'], r.questCeilings.map((q) => [q.kind, q.available, q.unavailable.join('、') || '无', bundle(q.quantities), n(q.valuation.pricedFish)])),
-    '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。公会尚未开放；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',
+    '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。公会已开放，其每日纸箱+5次互助已并入主表的 guild 来源（鱼牌单价取 ITEM_VALUE_FISH 锚点；捐献是小鱼干支出，不计入）；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',
     '## 额外首页福利：对经济结论的敏感性',
     table(['累计领取天数', '额外实物', '额外已定价子集'], r.gifts.map((g) => [g.count, bundle(g.quantities), n(g.valuation.pricedFish)])),
     '当前 home.ts 永久显示“每日福利”，main.ts 仅限制300000ms冷却，点击即发1600金铃铛+5招福符。一次310000、三次930000；每天288次是24小时持续操作的理论上限，不是典型玩法。主表按Issue指定来源列出；这个额外来源确实可重复领取，不能省略后宣称全经济已达付费快15%–40%的目标。它还改变免费招募与专属碎片获得速度。需Claude确认是否原型福利或正式每日一次；本PR不改应用行为。',

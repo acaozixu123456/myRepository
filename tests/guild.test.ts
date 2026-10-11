@@ -50,7 +50,7 @@ describe('公会动作', () => {
     for (let i = 0; i < HELP_PER_DAY; i++) { const r = guildHelp(s, at(0)); expect(r.ok).toBe(true); if (r.ok) targets.add(r.target); }
     expect(targets.size).toBe(HELP_PER_DAY);
     expect(guildHelp(s, at(0)).ok).toBe(false);
-    expect(itemCount(s, 'guild_token')).toBe(20 * HELP_PER_DAY);
+    expect(itemCount(s, 'guild_token')).toBe(10 * HELP_PER_DAY);
     expect(s.res.fish - fish0).toBe(500 * HELP_PER_DAY);
     const daily = QUESTS.find((q) => q.id === 'daily_guild')!;
     expect(questProgress(s, daily)).toBe(daily.goal.target);

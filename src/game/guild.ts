@@ -17,8 +17,8 @@ export const GUILD_BY_ID: Record<string, GuildDef> = Object.fromEntries(GUILDS.m
 export const HELP_PER_DAY = 5;
 export const DONATE_PER_DAY = 3;
 export const DONATE_COST = 3000; // 小鱼干
-export const HELP_REWARD = { tokens: 20, fish: 500, contrib: 10 };
-export const DONATE_REWARD = { tokens: 20, contrib: 30 };
+export const HELP_REWARD = { tokens: 10, fish: 500, contrib: 10 };
+export const DONATE_REWARD = { tokens: 10, contrib: 30 };
 export const GUILD_MAX_LEVEL = 10;
 
 export interface GuildState {
@@ -135,7 +135,7 @@ export function guildDonate(s: PlayerState, now = Date.now()): Res<{ tokens: num
   return { ok: true, tokens: DONATE_REWARD.tokens, contrib: DONATE_REWARD.contrib };
 }
 /** 每日纸箱：按公会等级发放，每天一次 */
-export function chestReward(level: number) { return { tokens: 40 + 10 * level, fish: 1500 * level, bells: 20 }; }
+export function chestReward(level: number) { return { tokens: 20 + 5 * level, fish: 1500 * level, bells: 20 }; }
 export function guildChest(s: PlayerState, now = Date.now()): Res<{ tokens: number; fish: number; bells: number }> {
   const st = ensureGuild(s, now), def = myGuild(s);
   if (!def) return { ok: false, reason: '先加入一个公会' };
