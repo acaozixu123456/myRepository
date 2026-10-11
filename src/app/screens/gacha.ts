@@ -8,6 +8,7 @@ import { artUrl } from '../../ui/art';
 import { chip, heroCard } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
+import { sfx } from '../sfx';
 import { topbar } from './lineup';
 
 export const gachaState = { pool: POOLS[0].id };
@@ -95,6 +96,7 @@ function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void
     el.style.setProperty('--glow', GLOW[best]);
     el.innerHTML = `<div class="rays"></div><div class="glowbox"></div><div class="boxwrap shake">${BOX}</div><div class="hint">点击纸箱，或稍等一下</div><div class="flash"></div><button class="btn sm ghost skip" data-r="skip">跳过</button>`;
     ctx.root.appendChild(el);
+    sfx.rumble();
     let stage = 0;
     const timers: number[] = [];
     const later = (f: () => void, ms: number) => timers.push(window.setTimeout(f, ms));
@@ -128,6 +130,8 @@ function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void
       timers.forEach(clearTimeout);
       el.querySelector('.boxwrap')?.classList.remove('shake');
       el.classList.add('open', 'burst');
+      sfx.burst();
+      later(() => sfx.reveal(best), 260);
       el.querySelector('.glowbox')?.classList.add('on');
       const fl = el.querySelector('.flash') as HTMLElement;
       fl.classList.add('go');

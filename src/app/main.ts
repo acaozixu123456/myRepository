@@ -3,6 +3,7 @@ import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
 import { STORY_CSS, playStoryOnce } from './story';
+import { sfx, sfxState } from './sfx';
 import { CAMPAIGN_CSS, campaignHtml, handleCampaign } from './screens/campaign';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
@@ -21,6 +22,7 @@ document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
 const state = load(storage);
+sfxState.on = state.settings.sound !== false;
 const params = new URLSearchParams(location.search);
 const at = params.get('at');
 if (at) { const [c, i] = at.split('-').map(Number); state.stage = { chapter: c, index: i, wins: 0 }; state.best = { chapter: c, index: i }; }
@@ -81,6 +83,7 @@ ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
   onReward(g, kind) {
     if (kind === 'win') floaty(ctx, `+${fmt(g.fish)}`, 'fish', 50, 30);
     else if (g.bells || g.fish) {
+      sfx.win();
       ctx.toast(`首通奖励：小鱼干 ${fmt(g.fish)}${g.bells ? ` · 金铃铛 ${g.bells}` : ''}`);
     }
   },
@@ -94,17 +97,35 @@ ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
 });
 ctx.loop.setSpeed(state.settings.speed);
 
+function openSettings() {
+  root.querySelectorAll('.mask.center').forEach((m) => m.remove());
+  const on = state.settings.sound !== false;
+  root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog">
+    <h3 class="title" style="margin:0 0 10px">设置</h3>
+    <div class="row" style="margin:8px 0"><b class="grow">音效</b><button class="btn sm ${on ? 'green' : 'ghost'}" data-act="snd">${on ? '开' : '关'}</button></div>
+    <div class="row" style="margin:8px 0"><b class="grow">战斗速度</b>${[1, 2, 3].map((v) => `<button class="btn sm ${state.settings.speed === v ? 'blue' : 'ghost'}" data-act="spd" data-v="${v}">${v}×</button>`).join('')}</div>
+    <div class="row" style="margin:14px 0 4px"><b class="grow">清空存档<small class="muted" style="display:block;font-weight:700">从头开始，无法恢复</small></b><button class="btn sm ghost" data-act="reset1">清空</button></div>
+    <div class="muted" style="font-size:11.5px;text-align:center;margin-top:10px;font-weight:700">猫国志 · 原型 v0.1</div>
+    <div style="text-align:center;margin-top:10px"><button class="btn" data-act="closedialog">好的</button></div></div></div>`);
+}
+
 // ---------- 事件 ----------
 root.addEventListener('click', (e) => {
   const el = (e.target as HTMLElement).closest('[data-act]') as HTMLElement | null;
   if (!el) return;
   const act = el.dataset.act!;
+  if (act !== 'sheetmask' && act !== 'closedialog') sfx.tap();
   if (handleDetail(ctx, act, el)) return;
   if (handleCampaign(ctx, act, el)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
     case 'claim': claim(ctx); break;
+    case 'settings': openSettings(); break;
+    case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; ctx.save(); openSettings(); sfx.ok(); break;
+    case 'spd': state.settings.speed = Number(el.dataset.v); ctx.loop.setSpeed(state.settings.speed); ctx.save(); openSettings(); updateHome(ctx); break;
+    case 'reset1': el.outerHTML = '<button class="btn pink" data-act="reset2">再点一次：清空存档</button>'; break;
+    case 'reset2': try { storage?.removeItem('maoguozhi.save.v1'); } catch { /* 忽略 */ } location.reload(); break;
     case 'challenge': ctx.loop.challenge(); ctx.toast('向下一关出发！'); break;
     case 'gift': {
       const now = Date.now();

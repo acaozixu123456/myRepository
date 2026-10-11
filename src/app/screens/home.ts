@@ -7,6 +7,7 @@ import { icon } from '../../ui/icons';
 import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, nextStage, recommendedPowerOf, tickIdle } from '../../game/stage';
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
+import { sfx } from '../sfx';
 
 export function homeHtml(): string {
   return `
@@ -31,7 +32,7 @@ export function updateHud(ctx: AppCtx) {
   const s = ctx.s;
   const need = EXP_PER_LEVEL(s.level);
   $(ctx, '#hud').innerHTML = `
-    <div class="avatar">${icon('team', 32)}</div>
+    <button class="avatar" data-act="settings" aria-label="设置">${icon('team', 32)}<i class="gb">${icon('gear', 14)}</i></button>
     <div class="who"><b>${s.name} · Lv.${s.level}</b><div class="xp"><i style="width:${Math.min(100, (s.exp / need) * 100)}%"></i></div></div>
     ${chip('fish', s.res.fish)}${chip('bells', s.res.bells, `<button class="plus" data-act="nav" data-to="gacha">${icon('plus', 20)}</button>`)}`;
 }
@@ -94,6 +95,7 @@ export function claim(ctx: AppCtx) {
   if (got.fish < 1) return ctx.toast('还没攒下收益，再等等');
   ctx.save();
   floaty(ctx, `+${fmt(got.fish)}`, 'fish');
+  sfx.coin();
   ctx.toast(`领取了 ${fmt(got.fish)} 小鱼干、${fmt(got.exp)} 成长经验`);
   updateHome(ctx);
 }

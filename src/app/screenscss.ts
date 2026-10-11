@@ -12,6 +12,7 @@ export const SCREEN_CSS = `
 .arena .tools button{min-width:40px;height:30px;padding:0 10px;border-radius:999px;background:rgba(43,28,16,.72);color:#fff6dc;font-weight:700;font-size:13px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}
 .arena .stagebadge{position:absolute;left:8px;top:8px;z-index:3;padding:2px 10px;border-radius:999px;background:rgba(43,28,16,.72);color:#fff6dc;font-family:var(--f-d);font-size:13px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}
 .arena .rule{position:absolute;left:8px;right:8px;bottom:6px;z-index:3;text-align:center;font-size:11px;font-weight:700;color:#fff6dc;text-shadow:0 1px 2px rgba(0,0,0,.8);pointer-events:none}
+.avatar{position:relative}.avatar .gb{position:absolute;right:-5px;bottom:-5px;width:20px;height:20px;border-radius:50%;background:#fff6dc;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--wood-3)}
 .teamstrip{margin:12px 10px 0;display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:16px;background:rgba(255,248,226,.55);box-shadow:inset 0 0 0 2px rgba(255,255,255,.6),0 3px 0 rgba(95,143,67,.35);cursor:pointer}
 .teamstrip .m{position:relative;width:48px;height:48px;border-radius:14px;overflow:hidden;background:linear-gradient(#fff3d6,#f3dcae);box-shadow:0 0 0 2.5px var(--rc,#b99a6a),0 2px 0 rgba(0,0,0,.18)}
 .teamstrip .m.ur{--rc:var(--r-ur)}.teamstrip .m.ssr{--rc:var(--r-ssr)}.teamstrip .m.sr{--rc:var(--r-sr)}

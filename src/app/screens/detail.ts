@@ -8,6 +8,7 @@ import { artImg } from '../../ui/art';
 import { esc, fmt, stars } from '../../ui/components';
 import { ROLE_ICON, icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
+import { sfx } from '../sfx';
 
 function skillsHtml(ctx: AppCtx, id: string): string {
   const h = ctx.s.heroes[id];
@@ -97,7 +98,8 @@ export function handleDetail(ctx: AppCtx, act: string, el: HTMLElement): boolean
     case 'closesheet': closeSheet(ctx); return true;
     default: return false;
   }
-  if (r && !r.ok) ctx.toast((r as { reason: string }).reason);
+  if (r && !r.ok) { ctx.toast((r as { reason: string }).reason); sfx.no(); }
+  else if (r && (act === 'levelup' || act === 'skillup' || act === 'starup')) sfx.up();
   ctx.save();
   const scroll = (ctx.root.querySelector('.sheet.detail') as HTMLElement).scrollTop;
   openHeroSheet(ctx, id);

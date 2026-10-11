@@ -38,7 +38,7 @@ export interface PlayerState {
   gift: { last: number };
   seen: string[];
   stories?: string[]; // 已看过的剧情 id
-  settings: { speed: number };
+  settings: { speed: number; sound?: boolean };
 }
 
 export const MAX_STAR = 5;
