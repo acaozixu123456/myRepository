@@ -188,8 +188,8 @@ export function building(s: BuildingSpec): THREE.Group {
   if (roof === 'tile') {
     const sh = new THREE.Shape(); sh.moveTo(-s.d / 2 - 0.4, 0); sh.lineTo(0, 2.0); sh.lineTo(s.d / 2 + 0.4, 0); sh.lineTo(-s.d / 2 - 0.4, 0);
     const geo = new THREE.ExtrudeGeometry(sh, { depth: s.w + 0.6, bevelEnabled: false });
-    const m = new THREE.Mesh(geo, std('#f0806a', 0.65)); m.rotation.y = Math.PI / 2; m.position.set(-(s.w + 0.6) / 2, top + 0.35, 0); m.castShadow = true; g.add(m);
-    for (let i = 0; i < 6; i++) g.add(box(s.w + 0.7, 0.04, 0.05, std('#c85a48', 0.7), 0, top + 0.5 + i * 0.28, (i % 2 ? 1 : -1) * (s.d / 2 - i * 0.14)));
+    const m = new THREE.Mesh(geo, std('#a8503f', 0.65)); m.rotation.y = Math.PI / 2; m.position.set(-(s.w + 0.6) / 2, top + 0.35, 0); m.castShadow = true; g.add(m);
+    for (let i = 0; i < 6; i++) g.add(box(s.w + 0.7, 0.04, 0.05, std('#7a3a30', 0.7), 0, top + 0.5 + i * 0.28, (i % 2 ? 1 : -1) * (s.d / 2 - i * 0.14)));
   } else if (roof === 'garden') {
     for (const [w, d, x, z] of [[s.w, 0.15, 0, s.d / 2], [s.w, 0.15, 0, -s.d / 2], [0.15, s.d, s.w / 2, 0], [0.15, s.d, -s.w / 2, 0]] as number[][]) g.add(box(w, 1.1, d, std('#d8c8a8', 0.8), x, top + 0.9, z));
     for (const x of [-s.w * 0.22, s.w * 0.22]) { const p = planterBox(s.w * 0.36); p.position.set(x, top + 0.35, s.d * 0.12); g.add(p); }

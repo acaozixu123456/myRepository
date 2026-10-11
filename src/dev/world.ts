@@ -24,7 +24,7 @@ const sim = +(q.get('t') ?? 0);
 for (let i = 0; i < sim * 20; i++) ex.update(0.05);
 wv.focus.copy(ex.leaderPos);
 wv.snapCamera();
-for (let i = 0; i < 20; i++) { ex.update(0.1); wv.snapCamera(); }
+for (let i = 0; i < 20; i++) { ex.update(0.1); st.update(i * 0.1, 0.1); wv.snapCamera(); }
 wv.render(0.1);
 (window as unknown as { done: boolean; ex: Explorer; wv: WorldView }).ex = ex;
 (window as unknown as { done: boolean }).done = true;

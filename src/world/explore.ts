@@ -273,6 +273,7 @@ export class Explorer {
       if (Math.abs(goal - b.t) < 0.004) b.t = goal;
       b.high.visible = b.t > 0.02;
       b.high.scale.y = Math.max(0.001, b.t);
+      if (b.mirrorHigh) { b.mirrorHigh.visible = b.high.visible; b.mirrorHigh.scale.y = b.high.scale.y; }
     }
   }
 

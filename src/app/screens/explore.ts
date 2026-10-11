@@ -102,7 +102,7 @@ export async function enterExplore(ctx: AppCtx) {
         chest: (s) => onChest(ctx, s),
         talk: (s) => onTalk(ctx, s),
       });
-      wv.onUpdate = (dt) => ex.update(dt);
+      wv.onUpdate = (dt) => { ex.update(dt); st.update(wv.time, dt); };
       rt = { wv, ex, st, dead: new Map(), running: false };
     } catch (e) {
       failed = true;

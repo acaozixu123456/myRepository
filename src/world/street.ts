@@ -4,10 +4,12 @@ import { asphalt, glowTex, paving } from './tex';
 import { bush, building, cardboardStack, cone, glowMat, lamp, manekiNeko, planterBox, pole, std, trashCan, tram, tree, vending, wire } from './kit';
 import type { BuildingSpec } from './kit';
 import { bakeStatic } from './bake';
+import { buildBackdrop } from './backdrop';
+import { buildSteam } from './steam';
 
 export interface AABB { x0: number; x1: number; z0: number; z1: number }
-export interface BuildingRef { low: THREE.Object3D; high: THREE.Object3D; x0: number; x1: number; z0: number; z1: number; top: number; t: number }
-export interface Street { group: THREE.Group; colliders: AABB[]; spawn: THREE.Vector3; half: number; buildings: BuildingRef[] }
+export interface BuildingRef { low: THREE.Object3D; high: THREE.Object3D; mirrorHigh?: THREE.Object3D; x0: number; x1: number; z0: number; z1: number; top: number; t: number }
+export interface Street { group: THREE.Group; colliders: AABB[]; spawn: THREE.Vector3; half: number; buildings: BuildingRef[]; update(t: number, dt: number): void }
 
 const HALF = 32;
 
@@ -45,29 +47,30 @@ export function buildStreet(): Street {
   const g = new THREE.Group();
   const colliders = streetColliders();
 
-  // ---- 地基：微缩景观的底座 ----
-  const base = new THREE.Mesh(new THREE.BoxGeometry(HALF * 2 + 4, 3, HALF * 2 + 4), std('#14101e', 0.6, 0.3));
-  base.position.y = -1.6; base.receiveShadow = true; g.add(base);
-  const rim = new THREE.Mesh(new THREE.BoxGeometry(HALF * 2 + 4.4, 0.25, HALF * 2 + 4.4), glowMat('#ff2ea8'));
-  rim.position.y = -0.18; g.add(rim);
+  const nm = <T extends THREE.Object3D>(o: T): T => { o.userData.noMirror = true; return o; };
+  // ---- 地基：微缩景观的底座（只做四面裙边 + 很深的暗色底；路面下面要留出空间给倒影）----
+  const skirtMat = std('#14101e', 0.6, 0.3);
+  for (const [w, d, x, z] of [[HALF * 2 + 4.6, 0.8, 0, HALF + 2.2], [HALF * 2 + 4.6, 0.8, 0, -HALF - 2.2], [0.8, HALF * 2 + 4.6, HALF + 2.2, 0], [0.8, HALF * 2 + 4.6, -HALF - 2.2, 0]] as number[][]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, 3.4, d), skirtMat); m.position.set(x, -1.4, z); g.add(nm(m)); }
+  const deep = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({ color: 0x07040f })); deep.rotation.x = -Math.PI / 2; deep.position.y = -45; g.add(nm(deep));
+  for (const [w, d, x, z] of [[HALF * 2 + 5.4, 0.35, 0, HALF + 2.5], [HALF * 2 + 5.4, 0.35, 0, -HALF - 2.5], [0.35, HALF * 2 + 5.4, HALF + 2.5, 0], [0.35, HALF * 2 + 5.4, -HALF - 2.5, 0]] as number[][]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.3, d), glowMat('#ff2ea8')); m.position.set(x, 0.1, z); g.add(nm(m)); }
 
   // ---- 路面 ----
   const at = asphalt(); at.wrapS = at.wrapT = THREE.RepeatWrapping; at.repeat.set(8, 1);
-  const roadMat = new THREE.MeshStandardMaterial({ map: at, roughness: 0.32, metalness: 0.25 });
-  const roadH = new THREE.Mesh(new THREE.PlaneGeometry(HALF * 2, 9), roadMat); roadH.rotation.x = -Math.PI / 2; roadH.position.y = 0.02; roadH.receiveShadow = true; g.add(roadH);
+  const roadMat = new THREE.MeshStandardMaterial({ map: at, roughness: 0.32, metalness: 0.25, transparent: true, opacity: 0.84 });
+  const roadH = new THREE.Mesh(new THREE.PlaneGeometry(HALF * 2, 9), roadMat); roadH.rotation.x = -Math.PI / 2; roadH.position.y = 0.02; roadH.receiveShadow = true; g.add(nm(roadH));
   const atv = at.clone(); atv.repeat.set(1, 8); atv.needsUpdate = true;
-  const roadV = new THREE.Mesh(new THREE.PlaneGeometry(9, HALF * 2), new THREE.MeshStandardMaterial({ map: atv, roughness: 0.32, metalness: 0.25 })); roadV.rotation.x = -Math.PI / 2; roadV.position.y = 0.03; roadV.receiveShadow = true; g.add(roadV);
+  const roadV = new THREE.Mesh(new THREE.PlaneGeometry(9, HALF * 2), new THREE.MeshStandardMaterial({ map: atv, roughness: 0.32, metalness: 0.25, transparent: true, opacity: 0.84 })); roadV.rotation.x = -Math.PI / 2; roadV.position.y = 0.03; roadV.receiveShadow = true; g.add(nm(roadV));
   // 斑马线
   for (const [cx, cz, rot] of [[0, 6.2, 0], [0, -6.2, 0], [6.2, 0, 1], [-6.2, 0, 1]] as number[][]) {
-    for (let i = -3; i <= 3; i++) { const s = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 2.4), new THREE.MeshBasicMaterial({ color: 0xe8e4f0, transparent: true, opacity: 0.8 })); s.rotation.x = -Math.PI / 2; s.rotation.z = rot ? Math.PI / 2 : 0; s.position.set(cx + (rot ? 0 : i * 1.2), 0.05, cz + (rot ? i * 1.2 : 0)); g.add(s); }
+    for (let i = -3; i <= 3; i++) { const s = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 2.4), new THREE.MeshBasicMaterial({ color: 0xe8e4f0, transparent: true, opacity: 0.8 })); s.rotation.x = -Math.PI / 2; s.rotation.z = rot ? Math.PI / 2 : 0; s.position.set(cx + (rot ? 0 : i * 1.2), 0.05, cz + (rot ? i * 1.2 : 0)); g.add(nm(s)); }
   }
   // ---- 人行道（四个街区各一块）----
-  const pv = paving('#5e5870'); pv.wrapS = pv.wrapT = THREE.RepeatWrapping; pv.repeat.set(8, 8);
-  const pave = new THREE.MeshStandardMaterial({ map: pv, roughness: 0.6, metalness: 0.1 });
+  const pv = paving('#34304a'); pv.wrapS = pv.wrapT = THREE.RepeatWrapping; pv.repeat.set(8, 8);
+  const pave = new THREE.MeshStandardMaterial({ map: pv, color: 0x77728c, roughness: 0.88, metalness: 0.05, envMapIntensity: 0.3 });
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const w = HALF - 4.5, cx = sx * (4.5 + w / 2), cz = sz * (4.5 + w / 2);
-    const slab = new THREE.Mesh(new THREE.BoxGeometry(w, 0.32, w), pave); slab.position.set(cx, 0.16, cz); slab.receiveShadow = true; g.add(slab);
-    const curb = new THREE.Mesh(new THREE.BoxGeometry(w + 0.2, 0.06, w + 0.2), std('#8a8498', 0.7)); curb.position.set(cx, 0.34, cz); g.add(curb);
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(w, 0.32, w), pave); slab.position.set(cx, 0.16, cz); slab.receiveShadow = true; g.add(nm(slab));
+    const curb = new THREE.Mesh(new THREE.BoxGeometry(w + 0.2, 0.06, w + 0.2), std('#8a8498', 0.7)); curb.position.set(cx, 0.34, cz); g.add(nm(curb));
   }
 
   // ---- 楼 ----
@@ -107,11 +110,22 @@ export function buildStreet(): Street {
   // 十字路口中央的霓虹地面光斑
   for (const [x, z, c, s] of [[0, 0, '#ff2ea8', 22], [-12, -6, '#7ff0ff', 14], [12, 6, '#9a7aff', 16], [-22, 6, '#ff7ad9', 12]] as [number, number, string, number][]) {
     const h = new THREE.Mesh(new THREE.PlaneGeometry(s, s), new THREE.MeshBasicMaterial({ map: glowTex(), color: c, transparent: true, opacity: 0.42, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
-    h.rotation.x = -Math.PI / 2; h.position.set(x, 0.08, z); g.add(h);
+    h.rotation.x = -Math.PI / 2; h.position.set(x, 0.08, z); g.add(nm(h));
   }
   // 点光（少量，控制开销）：中央品红 + 左青 + 右紫
   for (const [x, y, z, c, i, r] of [[0, 5, 0, 0xff2ea8, 90, 26], [-14, 6, -4, 0x7ff0ff, 70, 22], [14, 6, 4, 0x9a7aff, 70, 22]] as number[][]) { const l = new THREE.PointLight(c, i, r, 1.6); l.position.set(x, y, z); g.add(l); }
   for (const r of refs) { bakeStatic(r.low); bakeStatic(r.high); }
-  // 招财猫的 y 要跟着屋顶高度走（它不属于任何一栋的高层，所以保持独立）
-  return { group: g, colliders, spawn: new THREE.Vector3(0, 0.32, 8), half: HALF, buildings: refs };
+  // ---- 湿地面倒影：把景物沿路面翻一份（不含地面本身 / 灯），透过半透明的路面看到 ----
+  refs.forEach((r, i) => { r.high.userData.mirrorKey = i; });
+  const mirror = g.clone(true);
+  const kill: THREE.Object3D[] = [];
+  mirror.traverse((o) => { if (o.userData.noMirror || (o as THREE.Light).isLight) kill.push(o); if ((o as THREE.Mesh).isMesh) { o.castShadow = false; o.receiveShadow = false; } if (o.userData.mirrorKey !== undefined) refs[o.userData.mirrorKey as number].mirrorHigh = o; });
+  for (const o of kill) o.removeFromParent();
+  mirror.scale.y = -1; mirror.position.y = 0.06;
+  g.add(mirror);
+  // ---- 外圈都市 + 蒸汽 ----
+  const bd = buildBackdrop(); g.add(bd.group);
+  const steam = buildSteam([[-3, 0.5, -7.6], [3.4, 0.5, 7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4], [-8, 0.5, 7.7], [8.5, 0.5, -7.5]]);
+  g.add(steam.group);
+  return { group: g, colliders, spawn: new THREE.Vector3(0, 0.32, 8), half: HALF, buildings: refs, update: (t, dt) => { bd.update(t); steam.update(dt); } };
 }

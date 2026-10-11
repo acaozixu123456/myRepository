@@ -16,7 +16,7 @@ const mk = (w: number, h: number, draw: (g: CanvasRenderingContext2D) => void, k
 };
 
 export type FacadeStyle = 'cream' | 'teal' | 'brick' | 'dark' | 'pink';
-const WALL: Record<FacadeStyle, [string, string]> = { cream: ['#ead9bd', '#c9b08c'], teal: ['#5a8f8a', '#3e6a68'], brick: ['#b0603f', '#7e3f2a'], dark: ['#3a3f58', '#232640'], pink: ['#e8b0b8', '#c0808c'] };
+const WALL: Record<FacadeStyle, [string, string]> = { cream: ['#bfae92', '#8f7e66'], teal: ['#41706c', '#2c4f4c'], brick: ['#8c4a33', '#5c2e20'], dark: ['#2c3048', '#1a1c30'], pink: ['#b98890', '#8f5a66'] };
 const LIT = ['#ffd27a', '#7ff0ff', '#ff7ad9', '#ffe9b0', '#9aa8ff'];
 
 /** 一层楼的立面（一张贴图 = 一层 ×2 个开间）。返回 [颜色贴图, 自发光贴图（亮着灯的窗）] */
@@ -33,8 +33,13 @@ export function facade(style: FacadeStyle, variant: number): [THREE.CanvasTextur
     g.strokeStyle = 'rgba(0,0,0,.08)'; g.lineWidth = 1;
     if (style === 'cream' || style === 'pink') for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) g.strokeRect(x + 0.5, y + 0.5, 16, 16);
     if (style === 'brick') for (let y = 0; y < H; y += 12) for (let x = (y / 12) % 2 ? 0 : 12; x < W; x += 24) { g.fillStyle = rnd() < 0.3 ? b : a; g.fillRect(x + 1, y + 1, 22, 10); }
-    // 污渍
-    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(30,20,10,.22)'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    // 污渍：整体越往下越脏 + 竖向雨水流痕 + 斑驳
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, 'rgba(0,0,0,.05)'); gr.addColorStop(1, 'rgba(20,12,8,.42)'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    for (let i = 0; i < 26; i++) { const x = rnd() * W, y = rnd() * H * 0.6, l = 40 + rnd() * 130; const sg = g.createLinearGradient(0, y, 0, y + l); sg.addColorStop(0, 'rgba(10,8,14,0)'); sg.addColorStop(0.3, `rgba(10,8,14,${0.15 + rnd() * 0.25})`); sg.addColorStop(1, 'rgba(10,8,14,0)'); g.fillStyle = sg; g.fillRect(x, y, 2 + rnd() * 4, l); }
+    for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(${rnd() < 0.5 ? '0,0,0' : '255,255,255'},${rnd() * 0.08})`; g.fillRect(rnd() * W, rnd() * H, 3 + rnd() * 9, 3 + rnd() * 9); }
+    // 管线 + 贴纸 / 海报
+    g.strokeStyle = 'rgba(14,12,22,.8)'; g.lineWidth = 3; for (let i = 0; i < 3; i++) { const y = 14 + rnd() * 220; g.beginPath(); g.moveTo(0, y); g.lineTo(W, y + (rnd() - 0.5) * 8); g.stroke(); }
+    for (let i = 0; i < 4; i++) { const x = rnd() * (W - 40), y = 8 + rnd() * 200; g.fillStyle = ['#d9483b', '#e8c15a', '#7ff0ff', '#ff7ad9', '#f4efe6'][Math.floor(rnd() * 5)]; g.globalAlpha = 0.55; g.fillRect(x, y, 14 + rnd() * 20, 18 + rnd() * 24); g.globalAlpha = 1; }
     // 两个开间
     for (let i = 0; i < 2; i++) {
       const x = 22 + i * 120, y = 40, w = 92, h = 150;

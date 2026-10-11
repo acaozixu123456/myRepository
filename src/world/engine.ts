@@ -4,6 +4,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 export interface WorldQuality { bloom: boolean; shadows: boolean; rain: boolean; pixelRatio: number }
@@ -47,11 +48,11 @@ export class WorldView {
     // 环境反射（让湿地面、玻璃、金属有反光）
     const pm = new THREE.PMREMGenerator(this.renderer);
     this.scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
-    this.scene.environmentIntensity = 0.28;
+    this.scene.environmentIntensity = 0.2;
     pm.dispose();
     // 灯光：冷色月光 + 半球天光（霓虹点光在关卡里加）
-    this.scene.add(new THREE.HemisphereLight(0x6a78e0, 0x2a1840, 0.95));
-    this.sun = new THREE.DirectionalLight(0x9db4ff, 1.35);
+    this.scene.add(new THREE.HemisphereLight(0x5a68d0, 0x1c1030, 0.5));
+    this.sun = new THREE.DirectionalLight(0x8aa4ff, 0.6);
     this.sun.position.set(-30, 50, 24);
     if (q.shadows) {
       this.sun.castShadow = true;
@@ -87,6 +88,17 @@ export class WorldView {
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(new THREE.Vector2(w, h), 0.72, 0.55, 0.78);
         this.composer.addPass(this.bloom);
+        // 调色：暗部偏青蓝、亮部偏品红暖，边缘轻微色散 + 暗角
+        this.composer.addPass(new ShaderPass({
+          uniforms: { tDiffuse: { value: null } },
+          vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+          fragmentShader: `uniform sampler2D tDiffuse;varying vec2 vUv;
+          void main(){vec2 c=vUv-.5;float d=dot(c,c);vec2 off=c*d*0.014;
+          vec3 col=vec3(texture2D(tDiffuse,vUv+off).r,texture2D(tDiffuse,vUv).g,texture2D(tDiffuse,vUv-off).b);
+          float l=dot(col,vec3(.3,.6,.1));
+          col=mix(col*vec3(.88,.95,1.18),col*vec3(1.12,.98,1.02),smoothstep(.15,.9,l));
+          col*=1.0-d*1.25;gl_FragColor=vec4(col,1.);}`,
+        }));
         this.composer.addPass(new OutputPass());
       }
       this.composer.setPixelRatio(this.q.pixelRatio);
