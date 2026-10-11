@@ -22,7 +22,7 @@
 | 赵喵云 | `shu_zhaomiaoyun` | SSR | 待画 | 0 | |
 | 孙小霸 | `wu_sunxiaoba` | SSR | 待画 | 0 | |
 | 孙香香 | `wu_sunxiangxiang` | SSR | 待画 | 0 | |
-| 陆喵逊 | `wu_luxun` | SSR | 待画 | 0 | |
+| 陆喵逊 | `wu_luxun` | SSR | 待审 | 1 | 第1轮，2候选选B；双爪五趾，狸花红尖羽扇，已清理透明噪点 |
 | 貂蝉喵 | `qun_diaochan` | SSR | 待画 | 0 | |
 | 华佗喵 | `qun_huatuo` | SSR | 待画 | 0 | |
 | 张角角 | `qun_zhangjiao` | SSR | 待画 | 0 | |
