@@ -4,9 +4,10 @@ import type { BattleConfig, BEvent, UnitSetup } from '../src/engine/types';
 import { HEROES, HERO_BY_ID } from '../src/data/heroes';
 import { FACTION_ORDER } from '../src/data/factions';
 import { BONDS, COUNTER_RING, ROLES } from '../src/data/systems';
-import { BALANCE_MIN_SAMPLES, buildBondProbeMatch, buildCounterProbeMatch, buildLineup, runBalance, summarizeBattle } from '../src/game/balance';
+import { BALANCE_MIN_SAMPLES, buildBondProbeMatch, buildCounterProbeMatch, buildLineup, resolveBalanceOptions, runBalance, summarizeBattle } from '../src/game/balance';
 import type { BalanceReport, BattleSnapshot, WinStats } from '../src/game/balance';
 import { renderBalanceReport } from '../tools/balance-report';
+import { parseBalanceArgs } from '../tools/balance-args';
 
 const smallOptions = { games: 60, level: 60, star: 5, randomAwakening: true, seed: 20261011 } as const;
 const integer = (value: number) => { expect(Number.isSafeInteger(value)).toBe(true); expect(value).toBeGreaterThanOrEqual(0); };
@@ -70,6 +71,25 @@ function eventFixture(): BattleSnapshot {
     ],
   };
 }
+
+describe('balance CLI options', () => {
+  it('parses the valueless no-bonds flag and preserves the other options and output path', () => {
+    expect(parseBalanceArgs([])).toEqual({ options: {}, output: 'docs/BALANCE_REPORT.md' });
+    expect(resolveBalanceOptions().noBonds).toBe(false);
+    const parsed = parseBalanceArgs(['--games', '60', '--level', '40', '--star', '4', '--seed', '0', '--random-awakening', 'false', '--no-bonds', '--out', 'report with spaces.md']);
+    expect(parsed).toEqual({ options: { games: 60, level: 40, star: 4, seed: 0, randomAwakening: false, noBonds: true }, output: 'report with spaces.md' });
+    expect(resolveBalanceOptions(parsed.options).noBonds).toBe(true);
+    expect(parseBalanceArgs(['--no-bonds', '--no-random-awakening']).options).toEqual({ noBonds: true, randomAwakening: false });
+  });
+
+  it('rejects values attached to no-bonds and retains existing malformed-argument errors', () => {
+    for (const args of [['--no-bonds', 'false'], ['--no-bonds=true'], ['--unknown'], ['--games'], ['--games', '--no-bonds'], ['--seed', '1.5'], ['--random-awakening', 'maybe'], ['--out', ' ']]) {
+      expect(() => parseBalanceArgs(args)).toThrow();
+    }
+    expect(() => resolveBalanceOptions({ noBonds: 'true' as unknown as boolean })).toThrow();
+    expect(() => resolveBalanceOptions({ noBonds: 1 as unknown as boolean })).toThrow();
+  });
+});
 
 describe('balance event accounting', () => {
   it('counts shield-inclusive enemy damage once, preserves DOT ownership, and attributes actual healing by src', () => {
@@ -179,6 +199,55 @@ describe('balance sampling and complete report', () => {
     }
   });
 
+  it('always disables named bonds in counter probes while default random and member probes keep them', () => {
+    const counterStart = report.summary.randomGames;
+    const counterEnd = counterStart + report.summary.counterProbeGames;
+    expect(calls.slice(0, counterStart).every((config) => config.noBonds === false)).toBe(true);
+    expect(calls.slice(counterStart, counterEnd).every((config) => config.noBonds === true)).toBe(true);
+    expect(calls.slice(counterEnd).every((config) => config.noBonds === false)).toBe(true);
+  });
+
+  it('passes no-bonds to every sample, keeps all teams and seeds identical, and remains deterministic', () => {
+    const disabledCalls: BattleConfig[] = [];
+    const original = battleEngine.simulate;
+    const spy = vi.spyOn(battleEngine, 'simulate').mockImplementation((config) => {
+      disabledCalls.push(structuredClone(config));
+      return original(config);
+    });
+    let disabled: BalanceReport;
+    try { disabled = runBalance({ ...smallOptions, noBonds: true }); }
+    finally { spy.mockRestore(); }
+    expect(disabledCalls).toHaveLength(calls.length);
+    expect(disabledCalls.every((config) => config.noBonds === true)).toBe(true);
+    const withoutFlag = (config: BattleConfig) => { const { noBonds: _flag, ...rest } = config; return rest; };
+    expect(disabledCalls.map(withoutFlag)).toEqual(calls.map(withoutFlag));
+    expect(disabled!.counters).toEqual(report.counters);
+    expect(runBalance({ ...smallOptions, noBonds: true })).toEqual(disabled!);
+    const markdown = renderBalanceReport(disabled!, 'test');
+    expect(markdown).toContain('命名羁绊已关闭 · 成员组合观察');
+    expect(markdown).toContain('齐全/替换成员观察差不代表羁绊收益');
+    expect(markdown).toContain('保留阵营同族机制');
+    expect(markdown).not.toMatch(/随机观察提升|探针对照提升|羁绊提升/);
+    expect(markdown).not.toMatch(/\b(?:NaN|Infinity|undefined)\b/);
+  });
+
+  it('actually removes the Peach Garden bonus while retaining the same-faction bonus', () => {
+    const index = report.summary.randomGames + report.summary.counterProbeGames;
+    const full = calls[index]; // 第一个指定成员探针：桃园结义。
+    const heroId = 'shu_liumiaobei';
+    expect(full.A.some((unit) => unit.heroId === heroId)).toBe(true);
+    const initialHp = (config: BattleConfig) => {
+      const start = battleEngine.simulate(config).events.find((event) => event.t === 'start');
+      if (!start || start.t !== 'start') throw new Error('missing start event');
+      return start.units.find((unit) => unit.side === 'A' && unit.heroId === heroId)!.maxHp;
+    };
+    const enabled = initialHp(full);
+    const disabled = initialHp({ ...full, noBonds: true });
+    const solo = initialHp({ ...full, A: full.A.filter((unit) => unit.heroId === heroId), noBonds: true });
+    expect(disabled).toBeLessThan(enabled);
+    expect(disabled).toBe(Math.round(solo * 1.05)); // 三只同族仍有 5% 基础生命加成。
+  });
+
   it('repeats exactly for a fixed seed and does not mutate explicit roster input', () => {
     expect(runBalance(smallOptions)).toEqual(report);
     const ids = ['shu_guanyunmiao', 'wei_caomiaode', 'shu_zhangmiaofei', 'man_mengmiaohuo', 'shu_liumiaobei'];
@@ -227,6 +296,22 @@ describe('balance sampling and complete report', () => {
     expect(() => buildLineup(['unknown', ...HEROES.slice(0, 4).map((hero) => hero.id)], smallOptions, 1)).toThrow();
   });
 
+  it('preserves zero-appearance null statistics and low-sample markers with no-bonds enabled', () => {
+    const tiny = runBalance({ ...smallOptions, games: 2, noBonds: true });
+    const absent = tiny.heroes.find((hero) => hero.appearances === 0)!;
+    expect(absent).toBeDefined();
+    winStats(absent);
+    expect(absent).toMatchObject({
+      winRate: null, deviation: null, avgDamageShare: null, avgHealingShare: null,
+      avgUltimateCasts: null, sleepRate: null, finalSleepRate: null, lowSample: true,
+    });
+    expect(tiny.anomalies).toEqual([]);
+    const markdown = renderBalanceReport(tiny, 'zero-appearance');
+    expect(markdown).toContain('—（无样本）');
+    expect(markdown).toContain('低样本');
+    expect(markdown).not.toMatch(/\b(?:NaN|Infinity|undefined)\b/);
+  });
+
   it('renders every requested field, external generation time, missing samples and stated limitations', () => {
     const time = '2026-10-11T12:34:56.000Z';
     const markdown = renderBalanceReport(report, time);
@@ -234,6 +319,9 @@ describe('balance sampling and complete report', () => {
     for (const hero of HEROES) expect(markdown).toContain(hero.id);
     for (const bond of BONDS) expect(markdown).toContain(bond.name);
     for (const phrase of ['平均伤害占比', '平均治疗占比', '绝技总次数', '曾睡着次数', '首个绝技平均回合', '克制环探针', '羁绊探针', 'Top 5', '异常摘要', '待 Claude 裁决', 'absorbed', 'DOT', '呼噜', '复活', '混杂', '低样本']) expect(markdown).toContain(phrase);
+    expect(markdown).toContain('| 克制环探针 | 12 | 关闭（固定） |');
+    expect(markdown).toContain('| 随机主样本 | 60 | 开启 |');
+    expect(markdown).toContain('| 羁绊探针 | 32 | 开启 |');
     expect(markdown).not.toMatch(/\b(?:NaN|Infinity|undefined)\b/);
     const emptyHero = { ...report.heroes[0], samples: 0, appearances: 0, wins: 0, losses: 0, draws: 0, winRate: null, deviation: null, avgDamageShare: null, avgHealingShare: null, ultimateCasts: 0, avgUltimateCasts: null, sleepAppearances: 0, sleepRate: null, finalSleepRate: null, lowSample: true };
     expect(renderBalanceReport({ ...report, heroes: [emptyHero, ...report.heroes.slice(1)] }, time)).toContain('—（无样本）');
