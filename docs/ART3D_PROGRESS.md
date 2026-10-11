@@ -6,23 +6,25 @@
 
 ## 武器（`src/art3d/parts/weapons.ts`）
 
+本批：`codex/3d-weapon-blades`，四个新部件第 1 轮，加上 `herbs` / `fan` 按 #89 建议追加细节的第 2 轮，共 6 个部件，等待 Claude 审核。内部候选调整不增加审核轮次。
+
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `herbs` | `xian_changmiao`(SP), `qun_huatuo`(SSR) + 杂兵×6 | 待审 | 1 | 六叶药草束、叶脉与阵营束带；17 网格；codex/3d-weapon-sp-kit |
-| `bow` | `shu_pangmiaotong`(SP), `wu_sunxiangxiang`(SSR), `shu_huangzhong`(SR) + 杂兵×3 | 待审 | 1 | 双曲弓臂、独立弓弦与弦槽；10 网格；codex/3d-weapon-sp-kit |
-| `fan` | `wei_simamiyi`(SP), `shu_zhugemiaoliang`(SSR), `wu_luxun`(SSR) + 杂兵×2 | 待审 | 1 | 七羽扇、阵营羽尖与扇骨；24 网格；codex/3d-weapon-sp-kit |
+| `herbs` | `xian_changmiao`(SP), `qun_huatuo`(SSR) + 杂兵×6（`mob_wei_healer`, `mob_shu_healer`, `mob_wu_healer`, `mob_qun_healer`, `mob_man_healer`, `mob_xian_healer`） | 待审 | 2 | 首版 #89 已通过并合并；本批按建议增加叶尖深浅层次，追加细节待审；23 网格；codex/3d-weapon-blades |
+| `bow` | `shu_pangmiaotong`(SP), `wu_sunxiangxiang`(SSR), `shu_huangzhong`(SR) + 杂兵×3（`mob_shu_archer`, `mob_wu_archer`, `mob_qun_archer`） | 通过 | 1 | #89 已通过并合并；双曲弓臂、独立弓弦与弦槽；10 网格；codex/3d-weapon-sp-kit |
+| `fan` | `wei_simamiyi`(SP), `shu_zhugemiaoliang`(SSR), `wu_luxun`(SSR) + 杂兵×2（`mob_shu_strategist`, `mob_wu_strategist`） | 待审 | 2 | 首版 #89 已通过并合并；本批按建议调整扇面倾角，追加细节待审；24 网格；codex/3d-weapon-blades |
 | `mace` | `man_mengmiaohuo`(UR), `wei_xuhuchi`(SSR), `man_shamoke`(SSR) 等4只 + 杂兵×1 | 底版 | 0 | |
-| `sword` | `wei_caomiaode`(UR), `wu_sunxiaoba`(SSR) + 杂兵×3 | 底版 | 0 | |
+| `sword` | `wei_caomiaode`(UR), `wu_sunxiaoba`(SSR) + 杂兵×3（`mob_wei_vanguard`, `mob_wu_vanguard`, `mob_xian_vanguard`） | 待审 | 1 | 12 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
 | `staff` | `xian_zuoci`(UR), `qun_zhangjiao`(SSR) | 底版 | 0 | |
-| `dualSwords` | `shu_liumiaobei`(UR) | 底版 | 0 | |
+| `dualSwords` | `shu_liumiaobei`(UR) | 待审 | 1 | 主手 12 + 副手 12，共 24 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
 | `halberd` | `qun_lvbuding`(UR) | 底版 | 0 | |
 | `qin` | `wu_zhoumiaoyu`(UR) | 底版 | 0 | |
 | `spear` | `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR) 等5只 | 底版 | 0 | |
 | `glaive` | `shu_guanyunmiao`(SSR), `qun_huaxiong`(SR) + 杂兵×2 | 底版 | 0 | |
 | `drum` | `man_mulu`(SSR) + 杂兵×1 | 底版 | 0 | |
 | `brush` | `xian_shuijing`(SSR) | 底版 | 0 | |
-| `dualBlades` | `wei_zhangliao`(SSR) | 底版 | 0 | |
-| `knives` | `man_zhurong`(SSR) | 底版 | 0 | |
+| `dualBlades` | `wei_zhangliao`(SSR) | 待审 | 1 | 主手 10 + 副手 10，共 20 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
+| `knives` | `man_zhurong`(SSR) | 待审 | 1 | 主手 8 + 副手 16，共 24 网格；[185px 近看](../src/art3d/parts/reviews/weapon-blades-knives-185px.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
 | `talisman` | `xian_zhangzhua`(SSR) | 底版 | 0 | |
 | `whisk` | `xian_yuji`(SSR) | 底版 | 0 | |
 | `scroll` | `wei_guojia`(SR) + 杂兵×3 | 底版 | 0 | |
@@ -36,6 +38,28 @@
 | `coinsPlain` | 杂兵×1 | 底版 | 0 | |
 | `crossbow` | 杂兵×1 | 底版 | 0 | |
 | `slingshot` | 杂兵×1 | 底版 | 0 | |
+
+### 武器审核记录
+
+- 2026-10-11 · [#89](https://github.com/acaozixu123456/myRepository/pull/89) · 首批 `herbs` / `bow` / `fan` **通过并合并**。Claude 的 [审核评论](https://github.com/acaozixu123456/myRepository/pull/89#issuecomment-6109941469) 提出两条后续建议：扇面略向外倾，改善 `strike` 侧视时成一条线的效果；药草叶尖增加一档深浅。本批 `herbs` / `fan` 的追加细节单独待审，首版通过记录保留。
+- `codex/3d-weapon-blades` 使用者核对：四个新部件共 8 只（5 英雄 + 3 杂兵），连同追加细节的 `herbs` / `fan` 共 21 只（10 英雄 + 11 杂兵）。依据 `src/data/heroes.ts`、`src/content/mobs.ts` 与 `src/data/mob-looks.ts` 核对；本批对应行的原有数量无误，补齐杂兵 ID。
+- `dagger` 保持底版第 0 轮，本批未制作。后续按固定队列继续。
+
+### 本批检查与截图
+
+`npm run typecheck` 与 `npm test` 通过（58 个测试文件、912 个测试）。本批全部复用缓存材质；球 / 圆柱最大 12 分段，`fan` 的 TubeGeometry 使用 16 个纵向分段。双持网格数按主手加副手统计，均在单部件 24 网格预算内。
+
+静态检查覆盖 21 使用者 × 14 姿势，共 294 组，坐标均有限；审核要求的 `idle,windup,strike` 共 63 组，框内且未检出穿头。
+
+动画采样覆盖 21×3×12，共 756 组；四个新部件的 8 使用者对应 288 组均未检出穿头，新增穿头组合为 0。其余采样保留两组与底版相同的旧握段描边轻微交叠，具体记录见下文。
+
+审核截图：[idle / windup / strike](../src/art3d/parts/reviews/weapon-blades-poses.png)、[十猫同屏战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)、[祝融飞刀 185px 近看](../src/art3d/parts/reviews/weapon-blades-knives-185px.png)、[#89 建议的扇面与叶尖细节](../src/art3d/parts/reviews/weapon-blades-fan-herbs.png)。
+
+最不满意：`windup` 的主手武器大部分位于头肩后，`strike` 的金属刀面在侧视时仍显得较薄。
+
+其他姿势保留的既有卡点：21 使用者在 `cast / castUp / victory` 中掌心本身进入头部；`guard` 的 21 组武器与头部交叠，其中只有 4 组掌心进入头部，其余接近边界。该组合与底版相同，需由 Claude 的姿势 / 插槽调整处理。
+
+动画采样中的两组描边轻微交叠为 `fan` 的 `mob_shu_strategist` 与 `herbs` 的 `mob_shu_healer`，均在 `t=2.4`，与底版相同；本批保留旧握段。这两组仍列作既有卡点。
 
 ## 头饰（`src/art3d/parts/headgear.ts`）
 
