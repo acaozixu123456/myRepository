@@ -5,11 +5,23 @@ import type { PartBuilder, PartCtx } from './types';
 
 const capeMesh = (c: PartCtx, len: number, col: string): THREE.Group => {
   const g = new THREE.Group();
-  const m = solid(new THREE.CylinderGeometry(0.55, 0.85, len, 14, 1, true, Math.PI * 0.6, Math.PI * 0.8), toon(col), 0.02);
-  (m.material as THREE.Material).side = THREE.DoubleSide;
-  m.position.set(0, -len / 2 + 0.2, -0.15);
+  // 一块有弧度、下摆外扩的披风：肩部窄、下摆宽，向后微微飘
+  const geo = new THREE.PlaneGeometry(1.25, len, 10, 8);
+  const pos = geo.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), y = pos.getY(i);
+    const t = (0.5 - y / len); // 0 肩 → 1 下摆
+    const wid = 0.62 + t * 0.55;
+    pos.setX(i, x * wid);
+    pos.setZ(i, -0.12 - t * 0.38 + Math.cos((x / 0.62) * 1.2) * 0.1 * (1 - t * 0.4) + Math.sin(t * 5 + x * 3) * 0.02 * t);
+  }
+  geo.computeVertexNormals();
+  const m = solid(geo, toon(col, { double: true }), 0.02);
+  m.position.set(0, -len / 2 + 0.15, 0);
   g.add(m);
-  void c;
+  const hem = solid(new THREE.BoxGeometry(1.5, 0.07, 0.04), toon(c.pal.trim), 0.01);
+  hem.position.set(0, -len + 0.16, -0.5);
+  g.add(hem);
   return g;
 };
 export const BACK: Record<string, PartBuilder> = {
