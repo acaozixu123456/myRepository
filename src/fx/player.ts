@@ -11,6 +11,7 @@ import { Choreo } from './choreo';
 import { playCutIn } from './cutin';
 import { buildIllustRig, buildPortrait, buildRig, buildRig3D, illustPortrait } from './rig';
 import { portrait3D } from '../art3d/portrait';
+import { Renderer3D } from '../art3d/renderer';
 import { spriteMode, use3D } from '../art3d/mode';
 import { ILLUST } from '../art/illust-index';
 import type { Rig } from './rig';
@@ -74,6 +75,7 @@ export class Player {
     this.banner = null;
     this.lastPassive.clear();
     this.installOverlay();
+    if (use3D()) Renderer3D.get()!.battleMood = theme;
     if (!this.bgCache.has(theme)) this.bgCache.set(theme, makeBackground(theme, 960, 600, this.scene.dpr));
     this.scene.bg = this.bgCache.get(theme)!;
     let done = 0;

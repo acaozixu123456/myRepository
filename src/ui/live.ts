@@ -128,7 +128,7 @@ function draw3D(it: Item, now: number) {
   }
   applyPose(cat, P, { alive: true, moving: false, t, squash });
   const pw = it.cv.width, ph = it.cv.height;
-  const [sx, sy, sw, sh] = R.render(cat, pw, ph, 0.3);
+  const [sx, sy, sw, sh] = R.render(cat, pw, ph, 0.3, 'neutral');
   const ctx = it.cv.getContext('2d')!;
   ctx.clearRect(0, 0, pw, ph);
   ctx.drawImage(R.canvas, sx, sy, sw, sh, 0, 0, pw, ph);

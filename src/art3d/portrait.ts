@@ -10,7 +10,7 @@ export function portrait3D(look: CatLook, px = 520, heroId?: string): HTMLCanvas
   cat.phase = 0;
   applyPose(cat, {}, { alive: false, moving: false, t: 0 });
   const W = 1000, H = Math.round((W * (FRAME.y1 - FRAME.y0)) / (FRAME.x1 - FRAME.x0));
-  const [sx, sy, sw, sh] = R.render(cat, W, H, 0.35);
+  const [sx, sy, sw, sh] = R.render(cat, W, H, 0.35, 'neutral');
   // 上半身：横向取中间 70%，纵向取上 62%
   const cx = sx + sw * 0.15, cw = sw * 0.7, ch = sh * 0.62;
   const c = document.createElement('canvas');
@@ -32,7 +32,7 @@ export function cat3dUrl(heroId: string, look: CatLook, view: 'card' | 'head' | 
   cat.phase = 0;
   applyPose(cat, {}, { alive: false, moving: false, t: 0 });
   const W = 720, H = Math.round((W * (FRAME.y1 - FRAME.y0)) / (FRAME.x1 - FRAME.x0));
-  const [sx, sy, sw, sh] = R.render(cat, W, H, 0.3);
+  const [sx, sy, sw, sh] = R.render(cat, W, H, 0.3, 'neutral');
   // 取景（相对整张取景框的比例）：full = 整只；card = 头 + 胸；head = 头
   const box = view === 'full' ? FULL_BOX : view === 'card' ? { x: 0.16, y: 0.02, w: 0.68, h: 0.56 } : { x: 0.22, y: 0.02, w: 0.56, h: 0.36 };
   const c = document.createElement('canvas');
