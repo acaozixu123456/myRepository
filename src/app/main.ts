@@ -32,7 +32,7 @@ import { rollover, track } from '../game/quests';
 import { handleQuests, questsHtml } from './screens/quests';
 import { POOLS, syncUpPool } from '../game/gacha';
 import { fmt } from '../ui/components';
-import { makeHomeScenery } from '../fx/bg';
+import { homePeriod, makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
 style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS;
@@ -85,7 +85,13 @@ app.innerHTML = `<div class="app" id="root">
     <button data-act="nav" data-to="bag">${icon('bag', 30)}背包</button>
   </nav></div>`;
 const root = document.getElementById('root')!;
-setTimeout(() => { try { root.style.backgroundImage = `url(${makeHomeScenery()})`; root.style.backgroundSize = 'cover'; root.style.backgroundPosition = 'center'; } catch { /* 背景失败不影响游戏 */ } }, 0);
+let scenePeriod = '';
+const applyScenery = () => {
+  const p = homePeriod();
+  if (p === scenePeriod) return;
+  try { root.style.backgroundImage = `url(${makeHomeScenery(p)})`; root.style.backgroundSize = 'cover'; root.style.backgroundPosition = 'center'; scenePeriod = p; } catch { /* 背景失败不影响游戏 */ }
+};
+setTimeout(applyScenery, 0);
 
 let importing = false; // 导入存档后到页面重载前，禁止把内存里的旧进度写回去
 const ctx: AppCtx = {
@@ -302,6 +308,7 @@ root.addEventListener('click', (e) => {
 // 每秒刷新挂机收益
 setInterval(() => {
   if (syncQuestDay()) { ctx.save(); ctx.refresh(); }
+  applyScenery();
   if (ctx.screen === 'home') { updateTicker(ctx); updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); }
 }, 1000);
 setInterval(() => ctx.save(), 8000);

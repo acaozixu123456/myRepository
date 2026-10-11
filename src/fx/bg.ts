@@ -268,9 +268,38 @@ export function makeBackground(theme: BgTheme, w = 960, h = 600, dpr = 2, seed =
 }
 
 // ---------- 主城竖版全景（给 .app 当背景）----------
-let homeUrl = '';
-export function makeHomeScenery(): string {
-  if (homeUrl) return homeUrl;
+/** 黄昏 / 夜晚：整体乘一层色，夜里再点上星星、月亮和灯笼的光 */
+function tintScene(ctx: CanvasRenderingContext2D, period: Exclude<HomePeriod, 'day'>, w: number, h: number) {
+  const rnd = mulberry(period === 'night' ? 77 : 78);
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  if (period === 'dusk') { g.addColorStop(0, 'rgb(255,168,120)'); g.addColorStop(0.55, 'rgb(255,190,140)'); g.addColorStop(1, 'rgb(240,200,170)'); }
+  else { g.addColorStop(0, 'rgb(40,52,120)'); g.addColorStop(0.6, 'rgb(70,86,150)'); g.addColorStop(1, 'rgb(70,90,130)'); }
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+  ctx.save();
+  if (period === 'night') {
+    ctx.fillStyle = '#fff6d0';
+    for (let i = 0; i < 70; i++) { ctx.globalAlpha = 0.35 + rnd() * 0.6; ctx.beginPath(); ctx.arc(rnd() * w, rnd() * 460, 0.8 + rnd() * 1.4, 0, TAU); ctx.fill(); }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#fff3c0'; ctx.beginPath(); ctx.arc(420, 150, 40, 0, TAU); ctx.fill();
+    ctx.fillStyle = 'rgba(40,52,120,.9)'; ctx.beginPath(); ctx.arc(436, 142, 36, 0, TAU); ctx.fill();
+    glow(ctx, 420, 150, 160, 'rgba(255,240,180,.55)', 0.4);
+  } else {
+    glow(ctx, 420, 220, 260, 'rgba(255,200,120,.7)', 0.55);
+  }
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 6; i++) glow(ctx, 40 + i * 92, 690 + Math.sin(i) * 14, period === 'night' ? 70 : 40, i % 2 ? 'rgba(255,120,70,.8)' : 'rgba(255,190,80,.8)', period === 'night' ? 0.75 : 0.35);
+  ctx.restore();
+}
+
+export type HomePeriod = 'day' | 'dusk' | 'night';
+/** 按钟点分三档：06~17 白天，17~20 黄昏，20~06 夜晚 */
+export const homePeriod = (now = Date.now()): HomePeriod => { const h = new Date(now).getHours(); return h >= 6 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night'; };
+const homeUrls: Partial<Record<HomePeriod, string>> = {};
+export function makeHomeScenery(period: HomePeriod = 'day'): string {
+  if (homeUrls[period]) return homeUrls[period]!;
   const w = 540, h = 1170;
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   const ctx = c.getContext('2d')!;
@@ -306,7 +335,9 @@ export function makeHomeScenery(): string {
   glow(ctx, w * 0.5, 900, 480, 'rgba(255,246,220,.5)', 0.25);
   grain(ctx, rnd, w, h, 9000);
   vignette(ctx, w, h, 0.18);
-  homeUrl = c.toDataURL('image/jpeg', 0.82);
+  if (period !== 'day') tintScene(ctx, period, w, h);
+  const url = c.toDataURL('image/jpeg', 0.82);
+  homeUrls[period] = url;
   void clamp;
-  return homeUrl;
+  return url;
 }

@@ -4,11 +4,11 @@
 
 | 英雄 | id | 稀有度 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 司马喵懿 | `wei_simamiyi` | SP | 待审 | 1 | 2 个候选选 B；曹喵德风格参考；边饰简化，alpha<8 已清零 |
-| 庞喵统 | `shu_pangmiaotong` | SP | 待画 | 0 | |
-| 嫦喵 | `xian_changmiao` | SP | 待画 | 0 | |
+| 司马喵懿 | `wei_simamiyi` | SP | 通过 | 1 | 已入库；左右各留至少 3% 边距 |
+| 庞喵统 | `shu_pangmiaotong` | SP | 通过 | 1 | 已入库；左翼离边只有约 17px，后面留足边距 |
+| 嫦喵 | `xian_changmiao` | SP | 通过 | 1 | 已入库 |
 | 曹喵德 | `wei_caomiaode` | UR | 通过 | 1 | 风格锚点，已入库；后面的猫披风/下摆边饰简化一档 |
-| 刘喵备 | `shu_liumiaobei` | UR | 待画 | 0 | |
+| 刘喵备 | `shu_liumiaobei` | UR | 通过 | 1 | 已入库；尾巴虎斑环纹偏浅 |
 | 周喵瑜 | `wu_zhoumiaoyu` | UR | 待画 | 0 | |
 | 吕布丁 | `qun_lvbuding` | UR | 待画 | 0 | |
 | 孟喵获 | `man_mengmiaohuo` | UR | 待画 | 0 | |
