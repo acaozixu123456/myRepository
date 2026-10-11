@@ -11,7 +11,7 @@
 | 刘喵备 | `shu_liumiaobei` | UR | 通过 | 1 | 已入库；尾巴虎斑环纹偏浅 |
 | 周喵瑜 | `wu_zhoumiaoyu` | UR | 待画 | 0 | |
 | 吕布丁 | `qun_lvbuding` | UR | 待画 | 0 | |
-| 孟喵获 | `man_mengmiaohuo` | UR | 待画 | 0 | |
+| 孟喵获 | `man_mengmiaohuo` | UR | 待审 | 1 | 3 候选选 C；曹喵德锚点，五指握棒/开掌与肩臂自查；四周留白、alpha 噪点已清 |
 | 左慈喵 | `xian_zuoci` | UR | 待画 | 0 | |
 | 夏侯墩 | `wei_xiahoudun` | SSR | 待画 | 0 | |
 | 许虎痴 | `wei_xuhuchi` | SSR | 待画 | 0 | |
