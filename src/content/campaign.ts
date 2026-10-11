@@ -1,0 +1,223 @@
+import { FACTIONS } from '../data/factions';
+import type { FactionId } from '../data/factions';
+import { HERO_BY_ID } from '../data/heroes';
+import type { ChapterDef, EnemySpawn, RewardDef, StageDef, WaveDef } from './types';
+
+export const CHAPTER_COUNT = 6;
+export const STAGES_PER_CHAPTER = 24;
+// #14 尚未合入时使用的约定 id；合入后校验测试直接对照道具目录。
+export const PENDING_CAMPAIGN_ITEMS = ['catnip_small', 'fishbone_small'] as const;
+
+// 144 关从 300 到 30000，共 137 个普通增长间隔、6 个首领增长间隔。
+// 若每个普通间隔至少 4%，终点将约为 12.8 万，无法同时满足约 3 万。
+// 暂保留首尾锚点与首领 +12%，其余间隔约 +2.91%；待 Claude 决定最终口径。
+const REGULAR_POWER_FACTOR = Math.pow(30_000 / 300 / Math.pow(1.12, 6), 1 / 137);
+
+export function powerCurve(chapter: number, index: number): number {
+  if (!Number.isInteger(chapter) || chapter < 1 || chapter > CHAPTER_COUNT
+    || !Number.isInteger(index) || index < 1 || index > STAGES_PER_CHAPTER) {
+    throw new RangeError('章节须为一至六，关卡须为一至二十四。');
+  }
+  const ordinal = (chapter - 1) * STAGES_PER_CHAPTER + index;
+  const bosses = Math.floor(ordinal / STAGES_PER_CHAPTER);
+  return Math.round(300 * Math.pow(REGULAR_POWER_FACTOR, ordinal - 1 - bosses) * Math.pow(1.12, bosses));
+}
+
+type ChapterPlan = Omit<ChapterDef, 'stages'> & {
+  primary: FactionId;
+  secondary: FactionId;
+  boss: string;
+  support: string;
+  landmarks: string[];
+  rules: string[];
+};
+
+const PLANS: ChapterPlan[] = [
+  {
+    id: 1, name: '黄昏纸箱街', theme: '暮色巷道、纸箱营垒与歪了腿的饭桌',
+    focusFactions: ['qun', 'wei'], primary: 'qun', secondary: 'wei',
+    boss: 'qun_dongzhuo', support: 'qun_huatuo',
+    intro: '黄昏落进纸箱街，铲屎官从一只旧箱里请出了诸葛喵亮。董桌把天下的饭桌掀得东倒西歪，连九命天子的最后一碗饭也扣住了。各路猫雄带着空碗会盟，玄甲猫军却先封了街口。先替邻居扶稳纸箱，再找回散落的小鱼干；这场讨董大计，要从让每只猫坐下吃饭开始。',
+    landmarks: ['旧箱巷口', '鱼香摊前', '玄甲街垒', '会盟灯下', '倾斜饭桌', '桌王门前'],
+    rules: [
+      '纸箱挡风，双方前排首回合减伤增加百分之十。',
+      '敌方开局获得最大生命百分之十的护体毛，持续两回合。',
+      '玄甲巡街，敌方魏阵营首回合防御增加百分之十五。',
+      '街灯照出爪印，双方命中增加百分之十，持续全场。',
+      '窄巷难转身，双方后排首回合速度降低百分之十。',
+      '会盟鼓响，敌方先锋开局回复十五点元气。',
+      '空碗传声，友方医者首次治疗效果增加百分之二十。',
+      '董桌的护体毛首次被击破时，敌方全体元气降低十点。',
+    ],
+    bossNote: '开局阶段以拍桌叠护体毛；生命低于百分之七十与三十五时，各预告一回合后释放掀桌并获得百分之二十五最大生命的护盾。低生命阶段保留暴虐增攻，睡着时桌下藏鱼为同伴恢复。玩家先处理华佗喵，再集中破盾，以治疗或护盾接住群体技能；中段魏军让纯群阵容承受克制压力。',
+  },
+  {
+    id: 2, name: '官渡鱼市', theme: '鱼市账房、粮仓纸袋与官渡木桥',
+    focusFactions: ['wei', 'shu'], primary: 'wei', secondary: 'shu',
+    boss: 'wei_caomiaode', support: 'wei_guojia',
+    intro: '纸箱街的饭桌刚摆正，官渡鱼市又添了两本账。曹喵德按爪印分配鱼干，刘喵备却想让没带印章的猫也吃上饭。郭嘉喵抱着锦囊靠在粮仓边，看似打盹，耳朵一直听着算盘。鱼市半途还有仙族来校对天机，铁壁也得换个方向站；穿过账房和木桥，才能问清这批鱼究竟给谁。',
+    landmarks: ['鱼市东门', '草鞋摊边', '天机账房', '官渡木桥', '鱼干粮仓', '主公案前'],
+    rules: [
+      '粮仓飘香，双方首次普通攻击额外回复五点元气。',
+      '魏军守账，敌方守护开局获得最大生命百分之十二的护体毛。',
+      '天机校账，敌方仙阵营首次控制命中率增加十个百分点。',
+      '锦囊待拆，敌方医者首次治疗额外净化一个负面效果。',
+      '木桥排队，双方速度最高的猫首回合速度降低百分之十。',
+      '仁义分饭，友方蜀阵营首次受到治疗的效果增加百分之十五。',
+      '账册催阵，敌方元气最低的猫每回合开始回复五点元气。',
+      '曹喵德首次释放绝技前预告一回合，绝技护体毛持续多一回合。',
+    ],
+    bossNote: '开局铁壁阶段由曹喵德与郭嘉喵搭配前排；生命低于百分之六十时回复三十点元气，首次挟天子以令诸猫前预告一回合。百分之三十以下进入魏武阶段，绝技附带受惊。先压制郭嘉喵的续航，再用控制或元气削减错开全队护盾，带净化应对受惊；中段仙族克制魏队，鼓励换入吴系输出。',
+  },
+  {
+    id: 3, name: '赤壁水寨', theme: '连环战船、水碗雨幕与赤红琴台',
+    focusFactions: ['wu', 'wei'], primary: 'wu', secondary: 'wei',
+    boss: 'wu_zhoumiaoyu', support: 'wu_sunxiaoba',
+    intro: '赤壁的船用毛线连成一片，曹喵德说这样摇晃少，水碗却先摇出了浪。诸葛喵亮与周喵瑜借风合奏，黄盖盖抱着热毯子准备一封降书。山林来的猫踩着漂木混进水寨，提醒水师也有怕的地利。正式出船前，周喵瑜亲自主持联军合演；接住淋湿与灼烧的节拍，才能把火留在空船上。',
+    landmarks: ['连环船头', '魏营水碗', '漂木林口', '热毯码头', '借风琴台', '联军合演'],
+    rules: [
+      '全场开局淋湿一回合，淋湿目标受到的火焰伤害增加百分之三十。',
+      '敌方吴阵营首次普通攻击命中时附加淋湿，持续一回合。',
+      '漂木遮挡，敌方蛮阵营开局闪避增加百分之十，持续两回合。',
+      '每逢第二回合开始，双方前排获得淋湿一回合。',
+      '烘帆火星，带有灼烧的目标受到治疗的效果降低百分之十。',
+      '降书藏火，敌方前排首次护体毛到期时，为随机友方前排附加一层灼烧。',
+      '东风转向，友方首次净化淋湿时同时清除一层灼烧。',
+      '合演开场双方前排淋湿两回合，周喵瑜对淋湿目标的灼烧伤害增加百分之二十。',
+    ],
+    bossNote: '此战为出征前的联军合演，首领仍是周喵瑜。开局水相阶段由孙小霸施加淋湿；生命低于百分之六十时转琴火阶段，预告一回合后释放赤壁火海。百分之三十以下开启燎原，灼烧叠层并在猫猫睡着后传递。玩家需及时净化淋湿和灼烧、错开绝技避免曲有误反应，用持续治疗稳住后排；中段蛮族伏击压制吴队。',
+  },
+  {
+    id: 4, name: '喵蛮山林', theme: '藤编猫窝、山林兽鼓与七次宴席',
+    focusFactions: ['man', 'shu'], primary: 'man', secondary: 'shu',
+    boss: 'man_mengmiaohuo', support: 'man_mulu',
+    intro: '水寨的东风吹进南疆，山林里却已经摆好了第七张饭席。孟喵获说这回一定不服，骨头棒旁的小碗倒是先递了过来。藤甲小喵守着最舒服的路口，木鹿大王的兽鼓把林子敲得齐齐点头。蜀猫沿山道分饭劝和，让蛮族阵容也尝到被攻心的滋味；每赢一场就放一回，最后还得让盟主心服口服。',
+    landmarks: ['南疆树门', '藤窝小径', '桃园山道', '兽鼓回廊', '第六宴席', '七纵高台'],
+    rules: [
+      '藤窝遮雨，敌方守护首回合减伤增加百分之十五。',
+      '兽鼓回响，敌方蛮阵营首次普攻额外积累一层图腾。',
+      '桃园劝和，敌方蜀阵营首次治疗效果增加百分之二十。',
+      '山路绕行，双方刺客首回合速度增加百分之十。',
+      '晒暖藤甲，带护体毛的目标受到火焰伤害增加百分之十五。',
+      '饭席未散，敌方医者开局回复二十点元气。',
+      '鼓点渐急，敌方每第三次普通攻击后，下一次攻击增加百分之十。',
+      '孟喵获每第七次受到攻击立即回复三十点元气，最多两次。',
+    ],
+    bossNote: '开局骨棒积累图腾，木鹿大王准备百兽朝鼓；生命低于百分之六十与三十时，分别获得两回合九命并预告下一次七擒七纵。第七次受击回复元气，低生命不服叠防御。玩家计算攻击次数，在九命结束后集中输出，先控制兽鼓并用蜀系克制或火焰破藤甲；中段蜀队专门压制纯蛮阵容。',
+  },
+  {
+    id: 5, name: '云端玄门', theme: '绒云台阶、符水池塘与真假鱼雨',
+    focusFactions: ['xian', 'wu'], primary: 'xian', secondary: 'wu',
+    boss: 'xian_zuoci', support: 'xian_shuijing',
+    intro: '云台不收门票，只问铲屎官能不能分清真鱼和画在云上的鱼。左慈喵留下一串软软的爪印，张爪端来符水，水镜喵已经说了三声好。吴族的红帆却从半山探出头，火光让符纸的边角微微卷起。顺着星图往上走，要留意毛线缠住的是脚还是念头；九命印的线索，就藏在最后一阵小鱼雨里。',
+    landmarks: ['绒云台阶', '符水池边', '红帆云渡', '星图回廊', '真假鱼雨', '幻猫云台'],
+    rules: [
+      '云层藏影，敌方首次受到攻击时闪避增加百分之二十。',
+      '符水入阵，敌方医者首次治疗附加一回合呼噜。',
+      '红帆照云，敌方吴阵营火焰伤害增加百分之十五，持续两回合。',
+      '星图落爪，双方首次施加的毛线缠多持续一回合。',
+      '云风解结，友方首次净化控制后回复十点元气。',
+      '天机换位，敌方速度最低的猫第二回合速度增加百分之二十。',
+      '鱼雨微凉，双方开局获得最大生命百分之八的护体毛。',
+      '左慈喵的第一道幻象被消耗后，下一回合开始预告天命。',
+    ],
+    bossNote: '开局幻象阶段由水镜喵续航；生命低于百分之六十五时，千幻万象每次只为两名后排添加一次闪避。百分之三十以下每两回合预告一次天命，交替额外行动与回复元气，不随机连续无敌。玩家以多段攻击先消耗幻象，控制医者并预留净化处理毛线缠；中段吴系火焰克制仙队，提醒防御阵容需要更换输出。',
+  },
+  {
+    id: 6, name: '九命殿', theme: '六族旗帜、肉垫印阶与最后一张软席',
+    focusFactions: ['qun', 'wei', 'shu', 'man', 'wu', 'xian'], primary: 'qun', secondary: 'wei',
+    boss: 'qun_lvbuding', support: 'qun_diaochan',
+    intro: '九命殿的门口挤满六族旗帜，九命天子却只给自己留了一张小席子。吕布丁骑着胖赤兔守在台阶上，说谁能接住他的画戟，谁才配替天下端稳饭碗。各族轮番列阵，旧时的克制与羁绊都得重新盘算。铲屎官一路收来的爪印终于拼出九命印的轮廓；最后这场较量，赢的该是让大家都有座位的办法。',
+    landmarks: ['六旗殿门', '结义长廊', '玄甲印阶', '天机侧殿', '赤兔软席', '九命正殿'],
+    rules: [
+      '六旗齐举，敌方含三种以上阵营时，前排防御增加百分之十。',
+      '殿鼓催行，双方首次普通攻击额外回复十点元气。',
+      '玄甲封阶，敌方魏阵营开局获得最大生命百分之十五的护体毛。',
+      '旧盟照应，友方含三种以上阵营时，首次治疗效果增加百分之十五。',
+      '软席安神，双方首次净化猫薄荷醉时回复十点元气。',
+      '六族轮值，敌方每回合首次暴击后，为最低元气同伴回复五点元气。',
+      '九命印亮，双方后排开局命中增加百分之十，持续两回合。',
+      '吕布丁每次额外行动前预告，连续行动后下一回合速度降低百分之十五。',
+    ],
+    bossNote: '开局飞将阶段与貂蝉喵组成混阵；生命低于百分之六十时开启天下无双，优先寻找后排并预告一回合。百分之二十五以下赤兔每两回合给一次额外行动，禁止连锁触发，并在连续行动后减速。玩家以前排护卫、净化和护盾保护后排，利用减速窗口集中输出；各段依克制环轮换敌军，中段魏军压制群队，收官检验混搭与羁绊。',
+  },
+];
+
+function factionAt(plan: ChapterPlan, index: number, wave: number): FactionId {
+  // 9～16 关固定呈现克制主焦点阵营的压力，而非只写进说明。
+  if (index >= 9 && index <= 16) {
+    return Object.values(FACTIONS).find((faction) => faction.counters === plan.primary)!.id;
+  }
+  if (plan.id === 6) return ['qun', 'shu', 'man', 'wu', 'xian', 'wei'][(index + wave - 1) % 6] as FactionId;
+  return (index + wave) % 4 === 0 ? plan.secondary : plan.primary;
+}
+
+function buildWaves(plan: ChapterPlan, index: number, kind: StageDef['kind']): WaveDef[] {
+  const ordinal = (plan.id - 1) * STAGES_PER_CHAPTER + index;
+  const waveCount = kind === 'boss' ? 3 : kind === 'elite' || index >= 17 ? 2 : 1;
+  const count = kind === 'normal' ? (index <= 4 ? 3 : 4) : 5;
+  const positions = count === 3 ? [0, 1, 3] : count === 4 ? [0, 1, 3, 4] : [0, 1, 2, 3, 4];
+  return Array.from({ length: waveCount }, (_, wave) => {
+    const faction = factionAt(plan, index, wave);
+    const level = 1 + Math.floor((ordinal - 1) * 0.7) + wave;
+    const enemies: EnemySpawn[] = positions.map((pos) => {
+      const role = pos === 0 ? 'guard' : pos === 1 ? 'vanguard' : pos === 2 ? 'guard'
+        : pos === 3 ? (index % 2 === 0 ? 'strategist' : 'archer') : (index % 3 === 0 ? 'healer' : 'assassin');
+      const unitFaction = plan.id === 6 && !(index >= 9 && index <= 16)
+        ? (['wei', 'shu', 'man', 'wu', 'xian', 'qun'] as FactionId[])[(index + wave + pos) % 6] : faction;
+      return { unit: `mob_${unitFaction}_${role}`, level, pos };
+    });
+    if (kind !== 'normal' && wave === waveCount - 1) {
+      const factionHeroes = Object.values(HERO_BY_ID).filter((entry) => entry.faction === faction);
+      const hero = kind === 'boss' ? HERO_BY_ID[plan.boss] : factionHeroes[Math.floor(index / 6) % factionHeroes.length];
+      const front = hero.role === '守护' || hero.role === '先锋';
+      const pos = front ? 1 : 3;
+      enemies[enemies.findIndex((enemy) => enemy.pos === pos)] = { unit: hero.id, level: level + (kind === 'boss' ? 4 : 2), pos };
+      if (kind === 'boss') {
+        const support = HERO_BY_ID[plan.support];
+        const supportPos = support.role === '先锋' || support.role === '守护' ? 0 : 4;
+        enemies[enemies.findIndex((enemy) => enemy.pos === supportPos)] = { unit: support.id, level: level + 2, pos: supportPos };
+      }
+    }
+    return { enemies };
+  });
+}
+
+function stageRewards(ordinal: number): { rewards: RewardDef; firstClear: RewardDef } {
+  return {
+    rewards: { fish: 40 + ordinal * 8, exp: 20 + ordinal * 4, items: [{ id: 'catnip_small', count: 1 + Math.floor((ordinal - 1) / 48) }] },
+    firstClear: {
+      fish: 120 + ordinal * 32, exp: 40 + ordinal * 12, bells: 4 + Math.floor((ordinal - 1) / 3),
+      items: [
+        { id: 'catnip_small', count: 2 + Math.floor((ordinal - 1) / 12) },
+        { id: 'fishbone_small', count: 1 + Math.floor((ordinal - 1) / 24) },
+      ],
+    },
+  };
+}
+
+function buildStage(plan: ChapterPlan, index: number): StageDef {
+  const kind = index === 24 ? 'boss' : index % 6 === 0 ? 'elite' : 'normal';
+  const ordinal = (plan.id - 1) * STAGES_PER_CHAPTER + index;
+  const { rewards, firstClear } = stageRewards(ordinal);
+  if (kind === 'boss') firstClear.heroShards = [{ heroId: plan.boss, count: 5 + (plan.id - 1) * 3 }];
+  const stage: StageDef = {
+    id: `${plan.id}-${index}`,
+    name: kind === 'boss' ? `${HERO_BY_ID[plan.boss].name}的较量`
+      : `${plan.landmarks[Math.floor((index - 1) / 4)]}·${kind === 'elite' ? '守将' : ['初探', '会合', '较量', '前行'][(index - 1) % 4]}`,
+    kind, recommendedPower: powerCurve(plan.id, index), waves: buildWaves(plan, index, kind), rewards, firstClear,
+  };
+  if (index % 3 === 0) stage.rule = plan.rules[index / 3 - 1];
+  if (index === 1) stage.storyId = `c${plan.id}_open`;
+  if (index === 12) stage.storyId = `c${plan.id}_mid`;
+  if (index === 24) {
+    stage.storyId = `c${plan.id}_boss_pre`;
+    stage.storyPostId = `c${plan.id}_boss_post`;
+  }
+  return stage;
+}
+
+export const CHAPTERS: ChapterDef[] = PLANS.map(({ primary: _primary, secondary: _secondary, boss: _boss, support: _support, landmarks: _landmarks, rules: _rules, ...chapter }) => ({
+  ...chapter,
+  stages: Array.from({ length: STAGES_PER_CHAPTER }, (_, index) => buildStage(PLANS[chapter.id - 1], index + 1)),
+}));
