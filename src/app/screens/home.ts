@@ -22,6 +22,9 @@ export function homeHtml(): string {
       <button class="btn blue" data-act="autolevel">一键升级</button>
       <button class="btn pink" data-act="gift" id="giftBtn">每日福利</button>
     </div>
+    <div class="qst-entry-row shop-entry-row">
+      <button class="shop-entry" data-act="nav" data-to="shop" id="shopBtn">${icon('bag', 22)}<span>商店</span></button>
+    </div>
     <div class="tip" id="tip"></div>
   </div>`;
 }

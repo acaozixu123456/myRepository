@@ -13,6 +13,7 @@ export interface BalanceOptions {
   level?: number;
   star?: number;
   randomAwakening?: boolean;
+  noBonds?: boolean;
   seed?: number;
 }
 
@@ -21,11 +22,12 @@ export interface ResolvedBalanceOptions {
   level: number;
   star: number;
   randomAwakening: boolean;
+  noBonds: boolean;
   seed: number;
 }
 
 export const DEFAULT_BALANCE_OPTIONS: Readonly<ResolvedBalanceOptions> = {
-  games: 3000, level: 60, star: 5, randomAwakening: true, seed: 20261011,
+  games: 3000, level: 60, star: 5, randomAwakening: true, noBonds: false, seed: 20261011,
 };
 export const BALANCE_MIN_SAMPLES = 100;
 export const BALANCE_MAX_ROUNDS = 30;
@@ -82,7 +84,7 @@ export interface BondBalanceStats {
   randomLift: number | null;
   probeWithBond: WinStats;
   probeControl: WinStats;
-  /** 完整成员组与替换一成员组的胜率差；不是纯引擎羁绊因果效果。 */
+  /** 完整成员组与替换一成员组的胜率差；noBonds 时也仅描述成员组合。 */
   probeLift: number | null;
 }
 
@@ -199,13 +201,14 @@ const HERO_IDS = HEROES.map((hero) => hero.id);
 const FRONT_PRIORITY: Record<Role, number> = { 守护: 0, 先锋: 1, 神射: 2, 谋士: 3, 刺客: 4, 医者: 5 };
 
 export function resolveBalanceOptions(options: BalanceOptions = {}): ResolvedBalanceOptions {
-  const { games = 3000, level = 60, star = 5, randomAwakening = true, seed = 20261011 } = options;
+  const { games = 3000, level = 60, star = 5, randomAwakening = true, noBonds = false, seed = 20261011 } = options;
   if (!Number.isSafeInteger(games) || games <= 0 || games % 2 !== 0) throw new Error('对局数必须是正偶数，包含双方交换后的全部随机对局。');
   if (!Number.isInteger(level) || level < 1 || level > 120) throw new Error('等级须为 1 至 120 的整数。');
   if (!Number.isInteger(star) || star < 1 || star > 5) throw new Error('星级须为 1 至 5 的整数。');
   if (typeof randomAwakening !== 'boolean') throw new Error('随机觉醒开关必须是布尔值。');
+  if (typeof noBonds !== 'boolean') throw new Error('关闭命名羁绊开关必须是布尔值。');
   if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw new Error('种子须为 0 至 4294967295 的整数。');
-  return { games, level, star, randomAwakening, seed };
+  return { games, level, star, randomAwakening, noBonds, seed };
 }
 
 function mixSeed(seed: number, label: string): number {
@@ -392,7 +395,7 @@ export function runBalance(input: BalanceOptions = {}): BalanceReport {
   let excludedFriendlyDamage = 0;
 
   const observeRandom = (A: UnitSetup[], B: UnitSetup[], seed: number) => {
-    const result = summarizeBattle(simulate({ A, B, seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0 }));
+    const result = summarizeBattle(simulate({ A, B, seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0, noBonds: options.noBonds }));
     roundSum += result.rounds;
     if (result.firstUltimateRound !== null) { gamesWithUltimate++; firstUltimateSum += result.firstUltimateRound; }
     if (result.timedOut) timeoutGames++;
@@ -431,8 +434,8 @@ export function runBalance(input: BalanceOptions = {}): BalanceReport {
     const counter = newWinCounter();
     for (let pair = 0; pair < probePairs; pair++) {
       const match = buildCounterProbeMatch(faction, options, mixSeed(options.seed, `counter:${faction}:${pair}`));
-      const first = simulate({ A: match.advantagedTeam, B: match.disadvantagedTeam, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0 });
-      const second = simulate({ A: match.disadvantagedTeam, B: match.advantagedTeam, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0 });
+      const first = simulate({ A: match.advantagedTeam, B: match.disadvantagedTeam, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0, noBonds: true });
+      const second = simulate({ A: match.disadvantagedTeam, B: match.advantagedTeam, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0, noBonds: true });
       addOutcome(counter, first.winner, 'A');
       addOutcome(counter, second.winner, 'B');
     }
@@ -443,8 +446,8 @@ export function runBalance(input: BalanceOptions = {}): BalanceReport {
     for (let pair = 0; pair < probePairs; pair++) {
       const match = buildBondProbeMatch(counter.bond.name, options, mixSeed(options.seed, `bond:${counter.bond.name}:${pair}`));
       for (const [team, outcomeCounter] of [[match.withBond, counter.probeWith], [match.control, counter.probeControl]] as const) {
-        const first = simulate({ A: team, B: match.opponent, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0 });
-        const second = simulate({ A: match.opponent, B: team, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0 });
+        const first = simulate({ A: team, B: match.opponent, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0, noBonds: options.noBonds });
+        const second = simulate({ A: match.opponent, B: team, seed: match.seed, maxRounds: BALANCE_MAX_ROUNDS, startEnergy: 0, noBonds: options.noBonds });
         addOutcome(outcomeCounter, first.winner, 'A');
         addOutcome(outcomeCounter, second.winner, 'B');
       }
@@ -508,8 +511,9 @@ export function runBalance(input: BalanceOptions = {}): BalanceReport {
       '持续伤害按目标和状态追踪首次施加者，刷新保留原来源，移除或死亡后清除；无法确认来源的持续伤害单列，不分配给英雄，也不进入团队已归因伤害分母。',
       '治疗按 heal.src 归属，呼噜被引擎记为接受者自疗，因此计给自疗猫；此口径不衡量治疗状态最初施加者的全部贡献。',
       '睡着率表示一次出场中曾有 death 事件，复活后再次睡着不重复计；另列结束时仍睡着的比例。30 回合且双方仍有人清醒为超时；引擎仍按剩余生命比例判胜，超时与真正平局分别统计。',
-      '克制环探针每队 3 只不同主阵营猫，加双方相同的 2 只其他阵营支援，交叉交换双方；主阵营英雄及站位仍有差异，55%～65% 是观察目标，不是对纯伤害克制系数的因果估计。',
-      '羁绊按全体成员同队出场判定；随机完整/非完整组差值只是相关。独立探针用完整组与替换一成员组对相同敌队、相同种子及双边位置比较，保留其余成员站位和觉醒；替换仍改变英雄技能、可能改变稀有度、阵营加成及其他羁绊，不称纯羁绊因果提升。',
+      `随机主样本与成员组合探针${options.noBonds ? '关闭' : '启用'}命名羁绊；克制环探针始终关闭命名羁绊。所有样本保留阵营同族机制。`,
+      '克制环探针每队 3 只不同主阵营猫，加双方相同的 2 只其他阵营支援，交叉交换双方；命名羁绊已关闭，主阵营英雄、职业及站位仍有差异，55%～65% 是观察目标，不是对纯伤害克制系数的因果估计。',
+      `成员齐全按全体指定英雄同队出场判定；随机完整/非完整组差值只是相关。独立探针用完整组与替换一成员组对相同敌队、相同种子及双边位置比较，保留其余成员站位和觉醒；替换仍改变英雄技能、可能改变稀有度及同族机制。${options.noBonds ? '命名羁绊全部关闭，齐全/替换成员观察差不代表羁绊收益。' : '其他命名羁绊也可能变化，观察差不称纯羁绊因果提升。'}`,
       `不足 ${BALANCE_MIN_SAMPLES} 次实际样本单列，不据其胜率断言失衡；英雄观察区间 38%～62%，主阵营 42%～58%，克制方 55%～65%，所有标记仅供 Claude 复核，工具不修改任何数值。`,
     ],
   };

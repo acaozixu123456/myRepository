@@ -8,6 +8,8 @@ import { HERO_LEVEL_CAP, expToNext, levelUpFishCost, skillUpgradeCost, starUpSha
 import { heroGear } from './gear';
 import { createInventory, normalizeInventory } from './inventory';
 import type { InventoryState } from './inventory';
+import { createShopState, normalizeShopState } from './shop';
+import type { ShopState } from './shop';
 
 export interface HeroState {
   id: string;
@@ -34,6 +36,7 @@ export interface PlayerState {
   exp: number;
   res: Resources;
   inventory: InventoryState; // 追加的版本化背包；旧资源仍由 res 保存
+  shop: ShopState; // 每周限购记录；存档 v 仍为 1
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
@@ -63,6 +66,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     exp: 0,
     res: { fish: 3000, bells: 3200, catnip: 12, exp: 0, tickets: 6, yarn: 3 },
     inventory: createInventory(),
+    shop: createShopState(now),
     heroes,
     lineup: ['wei_xiahoudun', 'wu_huanggai', 'man_wutugu', 'wei_guojia', 'qun_dongzhuo'],
     stage: { chapter: 1, index: 1, wins: 0 },
@@ -96,6 +100,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
         s.tower ??= { floor: 0 };
         s.best ??= { chapter: s.stage.chapter, index: s.stage.index };
         s.inventory = normalizeInventory(s.inventory, s.heroes);
+        s.shop = normalizeShopState(s.shop, now);
         return s;
       }
     }
