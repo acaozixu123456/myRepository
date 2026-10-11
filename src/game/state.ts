@@ -10,6 +10,8 @@ import { createInventory, normalizeInventory } from './inventory';
 import type { InventoryState } from './inventory';
 import { createQuestState, normalizeQuestState, track } from './quests';
 import type { QuestState } from './quests';
+import { createShopState, normalizeShopState } from './shop';
+import type { ShopState } from './shop';
 
 export interface HeroState {
   id: string;
@@ -38,6 +40,7 @@ export interface PlayerState {
   inventory: InventoryState; // 追加的版本化背包；旧资源仍由 res 保存
   quests: QuestState;
   pending: Record<string, number>; // 尚未入库的任务道具军需
+  shop: ShopState; // 每周限购记录；存档 v 仍为 1
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
@@ -69,6 +72,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     inventory: createInventory(),
     quests: createQuestState(now),
     pending: {},
+    shop: createShopState(now),
     heroes,
     lineup: ['wei_xiahoudun', 'wu_huanggai', 'man_wutugu', 'wei_guojia', 'qun_dongzhuo'],
     stage: { chapter: 1, index: 1, wins: 0 },
@@ -109,6 +113,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
           const amount = Math.min(Number.MAX_SAFE_INTEGER, Math.floor(count));
           return amount ? [[id, amount]] : [];
         }));
+        s.shop = normalizeShopState(s.shop, now);
         return s;
       }
     }

@@ -282,4 +282,58 @@ export const SCREEN_CSS = `
 .qst-complete{display:flex;align-items:center;gap:11px;margin:0 0 13px;padding:14px}
 .qst-complete h3{font-size:17px;margin:0 0 4px}
 .qst-complete p{font-size:12px;line-height:1.7;margin:0;color:var(--ink-2)}
+/* ---------- 商店 ---------- */
+.shop-screen{bottom:0;z-index:8;background:linear-gradient(var(--sky-1),var(--sky-2) 28%,var(--grass))}
+.shop-entry-row{display:flex;justify-content:center;margin:10px 10px 0;flex:none}
+.shop-entry{position:relative;min-width:122px;min-height:40px;margin:0 5px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:7px 22px;border-radius:14px;background:linear-gradient(var(--paper),var(--paper-2));box-shadow:0 3px 0 var(--paper-line),inset 0 0 0 2px rgba(255,255,255,.65);font-family:var(--f-d);font-size:16px}
+.shop-entry:active{transform:translateY(2px)}
+.shop-back{min-height:40px!important;min-width:54px;padding:5px 10px 7px!important;flex:none}
+.shop-tabs{flex:none;padding:12px 12px 0}
+.shop-tabs .seg{gap:6px;overflow:visible}
+.shop-tabs .pill{min-height:42px;min-width:40px;flex:1;justify-content:center;padding:6px 5px;font-size:13px}
+.shop-scroll{padding-top:7px;padding-bottom:24px}
+.shop-summary{padding:12px;margin-bottom:13px}
+.shop-summary h3{font-size:19px;margin:0 0 8px}
+.shop-wallets{display:flex;flex-wrap:wrap;gap:7px}
+.shop-wallets .chip{gap:4px;font-size:11px;max-width:100%;padding:4px 7px}
+.shop-wallets .chip>b{font-size:12px}
+.shop-wallet-note{margin-top:6px;color:var(--ink-2);font-size:11px;font-weight:800}
+.shop-summary>p{font-size:12px;line-height:1.65;color:var(--ink-2);margin:8px 0}
+.shop-restock{font-size:10px;font-weight:700;color:var(--ink-2);border-top:1px solid var(--paper-2);padding-top:7px}
+.shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px}
+.shop-card{display:flex;flex-direction:column;padding:11px 9px;min-width:0}
+.shop-product-head{display:flex;align-items:center;gap:6px;min-width:0}
+.shop-product-icon{flex:none;width:48px;height:50px;display:grid;place-items:center;background:var(--paper-2)}
+.shop-product-title{flex:1;min-width:0}
+.shop-product-title h3{font-size:14px;line-height:1.35;margin:0;overflow-wrap:anywhere}
+.shop-product-title>small{display:block;font-size:10px;font-weight:800;color:var(--ink-2);margin-top:4px}
+.shop-product-desc{font-size:10.5px;line-height:1.6;margin:8px 0;min-height:34px;color:var(--ink-2);overflow-wrap:anywhere}
+.shop-price{display:flex;align-items:center;flex-wrap:wrap;gap:3px;font-size:12px;margin-top:auto}
+.shop-price>b{font-size:13px}
+.shop-price>small{font-size:10px;color:var(--ink-2)}
+.shop-limit{font-size:10px;font-weight:700;color:var(--ink-2);margin:5px 0 9px}
+.shop-buy{min-height:42px!important;min-width:40px;width:100%;padding:6px 5px 8px!important;font-size:15px!important}
+.shop-unavailable{opacity:.62;background:var(--paper-2)}
+.shop-soldout{opacity:.75}
+.shop-mask{padding:16px!important}
+.shop-dialog{max-height:90%;overflow-y:auto;overflow-x:hidden;padding:17px}
+.shop-dialog>h2{font-family:var(--f-d);font-weight:400;font-size:22px;margin:0 0 14px}
+.shop-order-product{display:flex;align-items:center;gap:10px}
+.shop-order-icon{flex:none;width:70px;height:74px;display:grid;place-items:center;background:var(--paper-2)}
+.shop-order-product>div:last-child{flex:1;min-width:0}
+.shop-order-product h3{font-family:var(--f-d);font-weight:400;font-size:18px;line-height:1.4;margin:0;overflow-wrap:anywhere}
+.shop-order-product p{font-size:11px;line-height:1.65;color:var(--ink-2);margin:5px 0 0}
+.shop-order-desc{font-size:12px;line-height:1.7;color:var(--ink-2);margin:12px 0;overflow-wrap:anywhere}
+.shop-order-label{font-size:12px;font-weight:800;margin:14px 0 7px}
+.shop-quantities{gap:8px;overflow:visible;margin-bottom:9px}
+.shop-quantities .pill{flex:1;min-width:40px;min-height:42px;justify-content:center}
+.shop-quantities .pill:disabled{opacity:.45;cursor:default}
+.shop-order-total{padding:11px;margin-top:5px}
+.shop-order-total>div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;font-size:11px}
+.shop-order-total span{color:var(--ink-2);flex:none}
+.shop-order-total b{display:flex;align-items:center;justify-content:flex-end;gap:3px;min-width:0;text-align:right;font-size:12px;overflow-wrap:anywhere}
+.shop-order-total .shop-order-balance{border-top:1px solid var(--paper-line);margin-top:4px;padding-top:9px}
+.shop-order-reason{font-size:12px;line-height:1.6;color:var(--red);font-weight:800;margin:11px 0 0;overflow-wrap:anywhere}
+.shop-order-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px;padding-bottom:5px}
+.shop-order-actions .btn{min-height:44px;padding:8px 8px 10px;font-size:17px}
 `;

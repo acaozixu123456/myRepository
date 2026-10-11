@@ -40,7 +40,10 @@ export type HeadGear =
   | 'sailorBandana' // 锦帆头巾
   | 'fortuneHat' // 算命先生帽
   | 'lotusCrown' // 莲冠
-  | 'tigerHood'; // 虎头帽
+  | 'tigerHood' // 虎头帽
+  | 'ratCap' // 圆鼠耳帽（杂兵）
+  | 'hood' // 夜行兜帽（杂兵）
+  | 'leafHat'; // 叶帽（杂兵）
 
 export type BodyGear =
   | 'none'
@@ -76,7 +79,13 @@ export type WeaponKind =
   | 'brush' // 巨笔
   | 'drum' // 兽鼓
   | 'coins' // 铜钱
-  | 'herbs'; // 药草
+  | 'herbs' // 药草
+  | 'shield' // 圆木盾（杂兵）
+  | 'boxShield' // 纸箱盾（杂兵）
+  | 'crossbow' // 弩（杂兵）
+  | 'slingshot' // 弹弓（杂兵）
+  | 'dagger' // 单把短刀（杂兵，不带悬浮飞刀）
+  | 'coinsPlain'; // 铜钱（无闪星，杂兵）
 
 export interface Palette {
   main: string; // 阵营主色

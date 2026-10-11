@@ -35,19 +35,20 @@ function proposalRows(report: BalanceReport): Cell[][] {
 /** 纯 Markdown 渲染；时间由 CLI 提供，不读取时钟、文件、环境变量或 argv。 */
 export function renderBalanceReport(report: BalanceReport, generatedAt: string): string {
   const { options, summary } = report;
+  const namedBonds = options.noBonds ? '关闭' : '开启';
   const handcrafted = report.heroes.filter((hero) => KITS[hero.heroId]).length;
   const generic = report.heroes.filter((hero) => !KITS[hero.heroId]).map((hero) => hero.name);
   const parts = [
     '# 猫国志 · 数值平衡报告',
     `生成时间：${cell(generatedAt)}`,
-    table(['随机主样本局数', '等级', '星级', '随机觉醒', '种子', '技能等级', '整轮上限'], [[options.games, options.level, options.star, options.randomAwakening ? '开启' : '关闭', options.seed, BALANCE_SKILL_LEVEL, 30]]),
+    table(['随机主样本局数', '等级', '星级', '随机觉醒', '种子', '技能等级', '整轮上限', '命名羁绊（主样本/成员探针）'], [[options.games, options.level, options.star, options.randomAwakening ? '开启' : '关闭', options.seed, BALANCE_SKILL_LEVEL, 30, namedBonds]]),
     `当前英雄目录中，${handcrafted} 只使用手工技能组，${generic.length} 只使用通用技能组${generic.length ? `：${generic.join('、')}` : ''}。本报告衡量此版本实际技能与阵容组合。`,
     '## 样本与统计口径',
-    table(['样本来源', '实际对局数', '用途'], [
-      ['随机主样本', summary.randomGames, '英雄、主阵营、随机羁绊、回合与事件统计'],
-      ['克制环探针', summary.counterProbeGames, '六个方向的定向对阵；独立统计'],
-      ['羁绊探针', summary.bondProbeGames, '完整成员与替换一成员的对照；独立统计'],
-      ['合计', summary.totalSimulations, `每个克制方向、每个羁绊对照分支各 ${summary.probePairs} 组换边配对`],
+    table(['样本来源', '实际对局数', '命名羁绊', '用途'], [
+      ['随机主样本', summary.randomGames, namedBonds, '英雄、主阵营、成员齐全/非齐全观察、回合与事件统计'],
+      ['克制环探针', summary.counterProbeGames, '关闭（固定）', '六个方向的定向对阵；独立统计'],
+      [options.noBonds ? '成员组合探针' : '羁绊探针', summary.bondProbeGames, namedBonds, '完整成员与替换一成员的对照；独立统计'],
+      ['合计', summary.totalSimulations, '按样本来源', `每个克制方向、每个成员对照分支各 ${summary.probePairs} 组换边配对`],
     ]),
     [
       '- 随机主样本按同一阵容、同一战斗种子交换 A / B 各打一局；同英雄的站位与觉醒跟随阵容。相邻配对相关，不能把它们当作完全独立观测。',
@@ -59,8 +60,10 @@ export function renderBalanceReport(report: BalanceReport, generatedAt: string):
       '- 阵亡率统计每次出场是否至少出现一次 death；复活不会抹去该次阵亡，反复睡着也只计一次。表中终局睡着率另列，便于识别复活机制。',
       '- 首个绝技回合读取 round 事件，只对出现过 ultimate 行动的主样本取均值；没有绝技的局数另列。达到30轮且双方仍有醒着的猫算超时，最终仍可由引擎按剩余生命判胜，超时不等于平局。',
       `- 无样本显示「—（无样本）」；低于 ${BALANCE_MIN_SAMPLES} 个样本标注「低样本」。排名与阈值异常是复核线索，不代表因果结论或统计显著性。`,
+      '- 所有样本保留阵营同族机制；命名羁绊的开关按上表区分，克制环探针始终关闭命名羁绊。',
       '- 克制探针保持相同的中立队友、等级与觉醒规则，目标克制方胜率为55%～65%；不同阵营的英雄、职业与技能仍会混入结果，不能单凭胜率判定伤害倍率。',
-      '- 羁绊随机提升是成员齐全队伍与未齐全队伍的观察差；探针提升是替换一名英雄后的对照差。英雄替换、职业和阵营构成变化仍有混杂，并未关闭引擎羁绊后重跑。',
+      '- 随机观察差是成员齐全队伍与未齐全队伍的差值；探针对照差是替换一名英雄后的差值。英雄替换、职业和阵营构成变化仍有混杂，不能归因为单个羁绊的效果。',
+      ...(options.noBonds ? ['- 本次随机主样本与成员组合探针全部关闭命名羁绊，齐全/替换成员观察差不代表羁绊收益。'] : []),
     ].join('\n'),
     ...(report.notes.length ? ['补充约定：\n\n' + report.notes.map((note) => `- ${cell(note)}`).join('\n')] : []),
     '## 随机主样本 · 战斗节奏',
@@ -81,12 +84,12 @@ export function renderBalanceReport(report: BalanceReport, generatedAt: string):
     ])),
     '## 随机主样本 · 主阵营',
     table(['主阵营（至少三只）', '出场样本', '胜 / 负 / 平', '胜率', '偏离50%'], report.factions.map((faction) => [faction.name, sample(faction), record(faction), pct(faction.winRate), pp(faction.deviation)])),
-    '## 克制环探针',
+    '## 克制环探针 · 命名羁绊关闭',
     table(['方向', '探针局数', '胜 / 负 / 平', '克制方胜率', '目标区间', '判读'], report.counters.map((counter) => [
       `${FACTIONS[counter.advantagedFaction].name} → ${FACTIONS[counter.disadvantagedFaction].name}`, sample(counter), record(counter), pct(counter.winRate), `${pct(counter.expectedMin)}～${pct(counter.expectedMax)}`, counter.winRate === null ? '无样本' : counter.winRate < counter.expectedMin ? '克制方偏低，待复核' : counter.winRate > counter.expectedMax ? '克制方偏高，待复核' : '落在目标区间',
     ])),
-    '## 羁绊 · 随机观察与独立探针',
-    table(['羁绊 / 成员', '随机齐全样本 / 胜率', '随机未齐全样本 / 胜率', '随机观察提升', '探针齐全样本 / 胜率', '探针替换样本 / 胜率', '探针对照提升'], report.bonds.map((bond) => [
+    options.noBonds ? '## 命名羁绊已关闭 · 成员组合观察' : '## 羁绊 · 随机观察与独立探针',
+    table(['指定组合 / 成员', '随机齐全样本 / 胜率', '随机未齐全样本 / 胜率', '随机成员观察差', '探针齐全样本 / 胜率', '探针替换样本 / 胜率', '齐全/替换成员观察差'], report.bonds.map((bond) => [
       `${bond.name}（${bond.heroes.map(heroName).join('、')}）`, `${sample(bond.randomWithBond)} / ${pct(bond.randomWithBond.winRate)}`, `${sample(bond.randomWithoutBond)} / ${pct(bond.randomWithoutBond.winRate)}`, pp(bond.randomLift), `${sample(bond.probeWithBond)} / ${pct(bond.probeWithBond.winRate)}`, `${sample(bond.probeControl)} / ${pct(bond.probeControl.winRate)}`, pp(bond.probeLift),
     ])),
     '## Top 5 · 胜率偏高与偏低',
@@ -108,7 +111,7 @@ export function renderBalanceReport(report: BalanceReport, generatedAt: string):
       '- 英雄偏高：优先检查高占比来源；可提案单独试验绝技主要伤害、治疗或护盾倍率降低10%，与原版同阵容、同种子、交换双方比较。低占比却高胜率时先复核控制、回能、复活与羁绊，不宜直接减伤害。',
       '- 英雄偏低：先检查是否仍用通用技能、首绝技能否及时出现及职业配置；机制完整后，可提案单独试验绝技主要倍率提高10%，或回能增加5点，两项分别模拟。',
       '- 主阵营 / 克制方向异常：先排查阵容职业、关键英雄及羁绊的组合强弱，再讨论克制倍率；未经配对验证，不把所有方向统一改值。',
-      '- 羁绊提升较大或接近零：先核对当前引擎实际实现与设计文本，再固定英雄成员测试羁绊开关；现有替换成员探针无法代替这一因果实验。',
+      '- 成员齐全/替换组观察差较大或接近零：先核对当前引擎实际实现与设计文本，再固定英雄成员测试命名羁绊开关；现有替换成员探针无法代替这一因果实验。',
       '以上都是候选实验，由 Claude 决定是否开新 Issue；本报告不自动给技能加减数值。',
     ].join('\n\n'),
   ];
