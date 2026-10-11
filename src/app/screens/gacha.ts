@@ -35,7 +35,7 @@ export function gachaHtml(ctx: AppCtx): string {
     <div class="pity">
       <div class="r"><span>SSR 保底</span><div class="bar"><i style="width:${(s.pity.ssr / p.ssrPity) * 100}%"></i></div><em class="num">${ssrLeft} 抽内</em></div>
       <div class="r"><span>UR 保底</span><div class="bar"><i style="width:${(s.pity.ur / p.urPity) * 100}%;background:linear-gradient(#ffe08a,#f0a62e)"></i></div><em class="num">${urLeft} 抽内</em></div>
-      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">本次 UR 概率 ${(urRate(p, s.pity.ur) * 100).toFixed(1)}%${s.pity.upLost ? ' · 下一只 UR 必为 UP' : ''} · 图鉴 ${Object.keys(s.heroes).length}/${TOTAL_HEROES}</div>
+      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">本次 UR 概率 ${(urRate(p, s.pity.ur) * 100).toFixed(1)}%${s.pity.upLost ? ' · 下一只 UR 必为 UP' : ''} · <a data-act="dex" style="color:var(--blue-d);text-decoration:underline;cursor:pointer">图鉴 ${Object.keys(s.heroes).length}/${TOTAL_HEROES}</a></div>
     </div>
     <div class="pullbar">
       <button class="btn blue" data-act="pull1">招募 ×1<span class="cost">${icon(c1.ic, 16)}${c1.v}</span></button>

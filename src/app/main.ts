@@ -5,6 +5,7 @@ import { SCREEN_CSS } from './screenscss';
 import { STORY_CSS, playStoryOnce } from './story';
 import { sfx, sfxState } from './sfx';
 import { GUIDE_CSS, updateGuide } from './guide';
+import { DEX_CSS, handleDex } from './screens/dex';
 import { CAMPAIGN_CSS, campaignHtml, handleCampaign } from './screens/campaign';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
@@ -21,7 +22,7 @@ import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -147,6 +148,7 @@ root.addEventListener('click', (e) => {
   if ((act === 'challenge' || act === 'nav' || act === 'tgo') && el.closest('.dialog')) root.querySelectorAll('.mask.center').forEach((m) => m.remove());
   if (handleDetail(ctx, act, el)) return;
   if (handleCampaign(ctx, act, el)) return;
+  if (handleDex(ctx, act, el)) return;
   if (handleBag(ctx, el)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
