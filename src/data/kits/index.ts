@@ -3,8 +3,9 @@ import type { Kit } from '../../engine/types';
 import { dmg, enemy, heal, ally } from './helpers';
 import { KITS_UR } from './ur';
 import { KITS_SSR } from './ssr';
+import { KITS_SR } from './sr';
 
-export const KITS: Record<string, Kit> = { ...KITS_UR, ...KITS_SSR };
+export const KITS: Record<string, Kit> = { ...KITS_UR, ...KITS_SSR, ...KITS_SR };
 
 /** 没有手工设计技能组的猫猫（以及杂兵）使用的通用技能组，保证战斗引擎可以跑任何阵容 */
 export function genericKit(heroId: string): Kit {
