@@ -14,6 +14,13 @@ const BOSSES = [
 ] as const;
 const SEED = 42;
 const BOSS_HP = 100_000;
+const TOWER_BOSS_CASES = Array.from({ length: TOWER_FLOORS }, (_, index) => {
+  const floor = index + 1;
+  const stage = towerFloor(floor);
+  const heroId = stage.waves[0].enemies.find((enemy) => HERO_BY_ID[enemy.unit])?.unit;
+  return { floor, heroId, stage };
+}).filter((entry): entry is { floor: number; heroId: string; stage: ReturnType<typeof towerFloor> } =>
+  entry.stage.kind === 'boss' && !!entry.heroId && !!entry.stage.ruleFx?.length);
 
 // 真实技能保持原样。厚血、厚防与无觉醒隔离阶段；快速杂兵每轮先打一次，
 // hpPct 让首次符合血线的直接伤害可重复出现，不把猫猫打睡着当成触发成功。
@@ -302,16 +309,18 @@ describe('Boss 数据复用边界', () => {
       if (expected.length) matched.push(floor);
       if (stage.kind !== 'boss') expect(stage.ruleFx).toBeUndefined();
     }
-    expect(matched).toEqual([30, 60, 90]);
+    expect(matched).toEqual([20, 60, 80]);
+    expect(TOWER_BOSS_CASES.map(({ floor, heroId }) => [floor, heroId])).toEqual([
+      [20, 'qun_lvbuding'], [60, 'xian_zuoci'], [80, 'qun_lvbuding'],
+    ]);
   });
 
-  it.each([30, 60, 90])('第 %s 层真实守塔左慈先预告并施放绝技', (floor) => {
-    const stage = towerFloor(floor);
+  it.each(TOWER_BOSS_CASES)('第 $floor 层真实守塔 $heroId 先预告并施放绝技', ({ heroId, stage }) => {
     const result = simulate({
       seed: SEED, noBonds: true, A: [attacker()], B: waveSetups(stage, 0),
       rules: stage.ruleFx, maxRounds: 18,
     });
-    const boss = getBoss(result, 'xian_zuoci');
+    const boss = getBoss(result, heroId);
     const warning = result.events.findIndex((event) => event.t === 'text' && event.uid === boss.uid && event.text === '预告：绝技！');
     const ultimate = result.events.findIndex((event) => event.t === 'act' && event.uid === boss.uid && event.kind === 'ultimate');
     expect(warning).toBeGreaterThan(0);
