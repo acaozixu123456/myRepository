@@ -211,7 +211,7 @@ const moonRibbons: SkillFx = async (c) => {
   c.pose('castUp', 0.25); c.glow(k, '#ff9ad0');
   c.vfx.custom(2.0, (ctx, p) => { const [mx, my] = [lerp(k.x, ex, 0.5), 110]; ctx.save(); ctx.globalAlpha = fade(p, 0.15, 0.8) * 0.9;
     const g = ctx.createRadialGradient(mx, my, 5, mx, my, 70); g.addColorStop(0, '#fffbe0'); g.addColorStop(1, hexA('#ffe9a0', 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(mx, my, 70, 0, 6.3); ctx.fill();
-    ctx.fillStyle = '#fff6c8'; ctx.beginPath(); ctx.arc(mx, my, 34, 0, 6.3); ctx.fill(); ctx.fillStyle = '#1a1030'; ctx.beginPath(); ctx.arc(mx + 14, my - 6, 30, 0, 6.3); ctx.globalCompositeOperation = 'destination-out'; ctx.fill(); ctx.restore(); }, 'back');
+    ctx.beginPath(); ctx.rect(mx - 80, my - 80, 160, 160); ctx.arc(mx + 14, my - 6, 30, 0, 6.3, true); ctx.clip('evenodd'); ctx.fillStyle = '#fff6c8'; ctx.beginPath(); ctx.arc(mx, my, 34, 0, 6.3); ctx.fill(); ctx.restore(); }, 'back');
   await c.sleep(0.4);
   const [sx, sy] = k.anchor('hand');
   for (let r = 0; r < 2; r++) {
@@ -234,10 +234,10 @@ const tableFeast: SkillFx = async (c) => {
   c.pose('cast', 0.25); c.glow(k, '#e0b070');
   await c.sleep(0.25);
   c.vfx.custom(2.0, (ctx, p, t) => { const w = ease.outBack ? ease.outBack(clamp(p * 2.5)) : ease.outCubic(clamp(p * 2.5)); ctx.save(); ctx.globalAlpha = fade(p, 0.1, 0.8);
-    ctx.translate(cx, cy + 60); ctx.scale(1, 0.34); ctx.rotate(t * 0.8);
-    ctx.fillStyle = '#c98a4a'; ctx.strokeStyle = '#6b3d14'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(0, 0, 230 * w, 0, 6.3); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = '#fff3d6'; ctx.beginPath(); ctx.arc(0, 0, 190 * w, 0, 6.3); ctx.fill();
-    for (let i = 0; i < 8; i++) { const a = (i / 8) * 6.283; ctx.save(); ctx.translate(Math.cos(a) * 140 * w, Math.sin(a) * 140 * w); ctx.rotate(-t * 2.4); ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#c9a070'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, 26, 0, 6.3); ctx.fill(); ctx.stroke(); ctx.fillStyle = i % 2 ? '#ff9a6a' : '#9ad06a'; ctx.beginPath(); ctx.arc(0, 0, 11, 0, 6.3); ctx.fill(); ctx.restore(); }
+    ctx.translate(cx, cy - 4); ctx.scale(1, 0.32); ctx.rotate(t * 0.8);
+    ctx.fillStyle = '#c98a4a'; ctx.strokeStyle = '#6b3d14'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(0, 0, 210 * w, 0, 6.3); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#fff3d6'; ctx.beginPath(); ctx.arc(0, 0, 172 * w, 0, 6.3); ctx.fill();
+    for (let i = 0; i < 8; i++) { const a = (i / 8) * 6.283; ctx.save(); ctx.translate(Math.cos(a) * 126 * w, Math.sin(a) * 126 * w); ctx.rotate(-t * 2.4); ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#c9a070'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, 26, 0, 6.3); ctx.fill(); ctx.stroke(); ctx.fillStyle = i % 2 ? '#ff9a6a' : '#9ad06a'; ctx.beginPath(); ctx.arc(0, 0, 11, 0, 6.3); ctx.fill(); ctx.restore(); }
     ctx.restore(); }, 'back');
   for (const a of mine) shieldBubble(c, a, '#ffd9a0', 1.6, 0.2);
   for (let i = 0; i < 3; i++) { c.uplift(mine, ['#ffe9b0', '#ff9a6a'], 'star', 4); await c.sleep(0.2); }
