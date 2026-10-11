@@ -3,25 +3,7 @@ import * as THREE from 'three';
 import { solid, sphere, toon } from '../toon';
 import type { PartBuilder, PartCtx } from './types';
 
-const R = 0.64; // 头盔内径
-/** 半球盔体：盖在头顶，下沿略低于头顶（y<0 向下包住额头） */
-function dome(_c: PartCtx, col: string, k = 1): THREE.Mesh {
-  const g = new THREE.SphereGeometry(R * k, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.52);
-  g.scale(1.16, 0.95, 1.04);
-  const m = solid(g, toon(col), 0.022);
-  m.position.y = -0.38;
-  return m;
-}
 const ring = (r: number, t: number, col: string, y = 0): THREE.Mesh => { const m = solid(new THREE.TorusGeometry(r, t, 6, 24), toon(col), 0.012); m.rotation.x = Math.PI / 2; m.position.y = y; m.scale.set(1.16, 1.04, 1); return m; };
-const plume = (col: string, len = 0.6): THREE.Mesh => { const m = solid(new THREE.ConeGeometry(0.08, len, 6), toon(col), 0.012); m.position.y = len / 2 + 0.12; return m; };
-
-function helmet(c: PartCtx, col: string, orn: (g: THREE.Group) => void): THREE.Group {
-  const g = new THREE.Group();
-  g.add(dome(c, col));
-  g.add(ring(R * 0.96, 0.04, c.pal.trim, -0.36));
-  orn(g);
-  return g;
-}
 
 // 头顶插槽随头大小移动；佩戴半径也随之缩放，额前饰物留在眼睛上方。
 function fitted(c: PartCtx, name: string): THREE.Group {
@@ -342,10 +324,132 @@ function tigerHood(c: PartCtx): THREE.Group {
   return g;
 }
 
+function capSurface(x: number, y: number, lift = 0.018): number[] {
+  return [x, y, Math.sqrt(Math.max(0.001, 0.65 ** 2 - (y + 0.60) ** 2 - (x / 1.16) ** 2)) * 1.02 + lift];
+}
+
+function sailorBandana(c: PartCtx): THREE.Group {
+  const g = fitted(c, 'sailorBandana'), crease = tint(c.pal.main, c.pal.sub, 0.70);
+  g.add(earCutCap(c.pal.main), clothBand(c.pal.main, -0.228, 0.09));
+  for (const y of [-0.195, -0.266]) {
+    const points = Array.from({ length: 9 }, (_, i) => { const a = -1.08 + i * 0.27; return [Math.sin(a) * 0.51 * 1.16, y, Math.cos(a) * 0.51 * 1.04]; });
+    g.add(cord(points, 0.007, crease, 0));
+  }
+  for (const [x, y] of [[-0.20, -0.075], [0.11, -0.04], [-0.06, -0.13], [0.24, -0.135]]) {
+    const dot = bead(0.022, tint(c.pal.trim, '#fff9ed', 0.55), 0, 0, 0); dot.position.fromArray(capSurface(x, y)); g.add(dot);
+  }
+  const knot = new THREE.Group(); knot.position.set(0.59, -0.25, 0.13); g.add(knot);
+  for (const side of [-1, 1]) {
+    const bow = panel(0.105, 0.063, 0.04, c.pal.main); bow.position.x = side * 0.045; bow.rotation.z = side * 0.40; knot.add(bow);
+  }
+  knot.add(bead(0.045, crease, 0, 0, 0.028));
+  for (let i = 0; i < 2; i++) {
+    const s = new THREE.Shape(); s.moveTo(0, 0); s.bezierCurveTo(0.045, -0.10, 0.12, -0.21, 0.25, -0.28);
+    s.lineTo(0.205, -0.30); s.lineTo(0.19, -0.235); s.lineTo(0.135, -0.275);
+    s.bezierCurveTo(0.085, -0.19, -0.025, -0.07, 0, 0); s.closePath();
+    const tail = new THREE.Group(); tail.rotation.set(0, -0.45, i * 0.48); tail.position.set(0.005, -0.015, -i * 0.025);
+    tail.add(extrusion(s, 0.028, i ? tint(c.pal.main, c.pal.sub, 0.25) : c.pal.main, 0.008));
+    tail.add(cord([[0.015, -0.045, 0.027], [0.085, -0.17, 0.027], [0.185, -0.258, 0.027]], 0.006, crease, 0)); knot.add(tail);
+  }
+  return g;
+}
+
+function fortuneHat(c: PartCtx): THREE.Group {
+  const g = fitted(c, 'fortuneHat'); g.add(earCutCap(c.pal.sub, 0.14), clothBand(c.pal.main, -0.216, 0.095));
+  const top = panel(0.30, 0.27, 0.063, c.pal.main); top.position.set(0, 0.045, -0.10); top.rotation.x = Math.PI / 2; g.add(top);
+  g.add(foreheadBand(tint(c.pal.main, c.pal.trim, 0.20), -0.18, 0.508, 1.05));
+  const coin = new THREE.Shape(); coin.absarc(0, 0, 0.096, 0, Math.PI * 2, false);
+  const hole = new THREE.Path(); hole.moveTo(-0.030, -0.030); hole.lineTo(-0.030, 0.030); hole.lineTo(0.030, 0.030); hole.lineTo(0.030, -0.030); hole.closePath(); coin.holes.push(hole);
+  const medallion = extrusion(coin, 0.029, c.pal.trim, 0.007); medallion.position.fromArray(capSurface(0, -0.11, 0.022)); g.add(medallion);
+  const rim = solid(new THREE.TorusGeometry(0.074, 0.005, 4, 16), toon(tint(c.pal.trim, '#fff5d0', 0.35)), 0); rim.position.copy(medallion.position); rim.position.z += 0.028; g.add(rim);
+  for (const side of [-1, 1]) g.add(cord([capSurface(side * 0.27, -0.16), capSurface(side * 0.23, -0.10), capSurface(side * 0.14, -0.03)], 0.008, tint(c.pal.sub, c.pal.main, 0.45), 0));
+  return g;
+}
+
+function rattanHelm(c: PartCtx): THREE.Group {
+  const g = fitted(c, 'rattanHelm'), straw = tint(c.pal.trim, '#c39755', 0.55), weave = tint(c.pal.sub, straw, 0.42), olive = tint(c.pal.sub, '#635331', 0.55);
+  g.add(earCutCap(straw, 0.14), clothBand(olive, -0.218, 0.075));
+  g.add(foreheadBand(tint(straw, c.pal.trim, 0.40), -0.184, 0.513, 1.06));
+  for (const side of [-1, 1]) for (const offset of [-0.40, -0.24, -0.08, 0.08, 0.24, 0.40]) {
+    const points: number[][] = [];
+    for (let i = 0; i <= 12; i++) {
+      const phi = -0.60 + i * 0.10, theta = 0.54 + side * phi * 0.40 + offset;
+      if (theta < 0.26 || theta > 0.81) continue;
+      points.push([Math.sin(phi) * Math.sin(theta) * 0.666 * 1.16, -0.60 + Math.cos(theta) * 0.666, Math.cos(phi) * Math.sin(theta) * 0.666 * 1.02]);
+    }
+    if (points.length >= 2) g.add(cord(points, 0.008, side < 0 ? weave : tint(weave, straw, 0.20), 0));
+  }
+  for (const side of [-1, 1]) g.add(cord([[0, 0.058, -0.03], [side * 0.10, 0.015, -0.21], [side * 0.20, -0.06, -0.35], [side * 0.27, -0.14, -0.44]], 0.011, weave, 0));
+  g.add(bead(0.042, olive, 0, 0.065, -0.03));
+  return g;
+}
+
+function leafSurface(a: number, f: number): number[] {
+  const t = Math.max(0, Math.min(1, (Math.abs(Math.cos(a)) - 0.48) / 0.34)), smooth = t * t * (3 - 2 * t);
+  const extent = 0.16 + (0.70 + Math.cos(3 * a) * 0.045 - 0.16) * smooth, r = extent * f;
+  return [Math.sin(a) * r * 1.13, 0.064 - 0.14 * f * f + Math.sin(3 * a) * 0.009 * f, Math.cos(a) * r];
+}
+
+function leafHat(c: PartCtx): THREE.Group {
+  const g = fitted(c, 'leafHat'), green = tint(c.pal.trim, '#53844b', 0.72), vein = tint(green, c.pal.sub, 0.48);
+  g.add(earCutCap(tint(green, c.pal.main, 0.15)));
+  const vertices: number[] = [], indices: number[] = [], around = 24, rows = 6;
+  for (let j = 0; j <= rows; j++) for (let i = 0; i <= around; i++) vertices.push(...leafSurface(i * Math.PI * 2 / around, j / rows));
+  for (let j = 0; j < rows; j++) for (let i = 0; i < around; i++) { const a = j * (around + 1) + i, b = a + around + 1; indices.push(a, b, b + 1, a, b + 1, a + 1); }
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); geo.setIndex(indices); geo.computeVertexNormals(); g.add(solid(geo, toon(green), 0.012));
+  const under = geo.clone(); under.translate(0, -0.023, 0);
+  const reversed = indices.slice(); for (let i = 0; i < reversed.length; i += 3) [reversed[i + 1], reversed[i + 2]] = [reversed[i + 2], reversed[i + 1]];
+  under.setIndex(reversed); under.computeVertexNormals(); g.add(solid(under, toon(tint(green, c.pal.trim, 0.24)), 0));
+  for (const a of [-0.70, -0.35, 0, 0.35, 0.70, Math.PI - 0.40, Math.PI + 0.40]) {
+    const points = Array.from({ length: 6 }, (_, i) => { const p = leafSurface(a, 0.15 + i * 0.15); p[1] += 0.010; return p; });
+    g.add(cord(points, 0.008, vein, 0));
+  }
+  for (const a of [-0.40, 0.40, Math.PI]) {
+    const points = Array.from({ length: 6 }, (_, i) => { const p = leafSurface(a, 0.16 + i * 0.15); p[1] -= 0.033; return p; });
+    g.add(cord(points, 0.008, tint(vein, c.pal.trim, 0.20), 0));
+  }
+  g.add(cord([[0, 0.065, -0.02], [0.02, 0.12, -0.04], [0.06, 0.145, -0.09]], 0.022, tint(green, c.pal.main, 0.30), 0.005));
+  return g;
+}
+
+function hood(c: PartCtx): THREE.Group {
+  const g = fitted(c, 'hood'), dark = tint(c.pal.main, c.pal.sub, 0.65), lining = tint(c.pal.trim, c.pal.main, 0.68);
+  g.add(earCutCap(dark, 0.20));
+  const vertices: number[] = [], indices: number[] = [], around = 24, rows = 5;
+  for (let j = 0; j <= rows; j++) for (let i = 0; i <= around; i++) {
+    const f = j / rows, a = Math.PI / 2 + i * Math.PI / around, r = 0.51 + Math.sin(f * Math.PI) * 0.20 - f * 0.08;
+    vertices.push(Math.sin(a) * r * 1.16, -0.22 - f * 0.96, Math.cos(a) * r * 1.04 - 0.01);
+  }
+  for (let j = 0; j < rows; j++) for (let i = 0; i < around; i++) { const a = j * (around + 1) + i, b = a + around + 1; indices.push(a, b, b + 1, a, b + 1, a + 1); }
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); geo.setIndex(indices); geo.computeVertexNormals(); g.add(solid(geo, toon(dark), 0.013));
+  for (const side of [-1, 1]) {
+    const cheek = panel(0.15, 0.80, 0.048, dark); cheek.position.set(side * 0.64, -0.615, 0.14); cheek.rotation.set(0, side * 0.28, side * 0.07); g.add(cheek);
+    g.add(cord([[side * 0.50, -0.185, 0.36], [side * 0.65, -0.38, 0.20], [side * 0.67, -0.70, 0.21], [side * 0.61, -1.005, 0.24]], 0.018, lining, 0.006));
+    g.add(cord([[side * 0.34, -0.23, -0.43], [side * 0.45, -0.64, -0.48], [side * 0.24, -1.15, -0.41]], 0.012, tint(dark, c.pal.sub, 0.25), 0));
+  }
+  g.add(cord([[-0.61, -1.005, 0.24], [-0.39, -1.11, 0.37], [0, -1.16, 0.43], [0.39, -1.11, 0.37], [0.61, -1.005, 0.24]], 0.020, lining, 0.006));
+  g.add(foreheadBand(lining, -0.185, 0.513, 0.94));
+  return g;
+}
+
+function ratCap(c: PartCtx): THREE.Group {
+  const g = fitted(c, 'ratCap'), gray = tint(c.pal.main, '#88939d', 0.43), pink = tint(c.pink, c.pal.trim, 0.22);
+  g.add(earCutCap(gray, 0.16), clothBand(tint(gray, c.pal.sub, 0.35), -0.216, 0.075));
+  for (const side of [-1, 1]) {
+    g.add(cord([[side * 0.20, -0.04, 0.20], [side * 0.27, 0.03, 0.23], [side * 0.29, 0.11, 0.23]], 0.027, gray, 0.007));
+    const outer = solid(sphere(1, 0.126, 0.134, 0.034, 14), toon(gray), 0.011); outer.position.set(side * 0.29, 0.12, 0.23); g.add(outer);
+    const inner = solid(sphere(1, 0.078, 0.086, 0.021, 12), toon(pink), 0.005); inner.position.set(side * 0.29, 0.13, 0.26); g.add(inner);
+    g.add(cord([capSurface(side * 0.055, -0.14), capSurface(side * 0.14, -0.115), capSurface(side * 0.22, -0.105)], 0.008, c.pal.sub, 0));
+    g.add(cord([capSurface(side * 0.055, -0.15), capSurface(side * 0.14, -0.17), capSurface(side * 0.21, -0.18)], 0.008, c.pal.sub, 0));
+  }
+  const nose = bead(0.028, pink, 0, 0, 0); nose.position.fromArray(capSurface(0, -0.145, 0.027)); g.add(nose);
+  return g;
+}
+
 export const HEADGEAR: Record<string, PartBuilder> = {
   helmetWei,
   helmetGeneral,
-  rattanHelm: (c) => helmet(c, '#b08a54', (g) => { g.add(plume('#7a9a4a', 0.35)); }),
+  rattanHelm,
   tigerHood,
   scholarCap,
   taoistCrown,
@@ -355,10 +459,10 @@ export const HEADGEAR: Record<string, PartBuilder> = {
   featherHeaddress,
   flowerPin,
   emperorCrown,
-  sailorBandana: (c) => { const g = new THREE.Group(); g.add(dome(c, '#d9483b', 0.98)); const k = solid(new THREE.ConeGeometry(0.12, 0.3, 4), toon('#d9483b'), 0.012); k.position.set(0.5, -0.3, -0.35); k.rotation.z = -1.2; g.add(k); return g; },
-  fortuneHat: (c) => { const g = new THREE.Group(); g.add(dome(c, '#2b2638', 0.9)); const b = solid(new THREE.CylinderGeometry(0.75, 0.75, 0.05, 20), toon('#2b2638'), 0.015); b.position.y = -0.36; b.scale.set(1.15, 1, 1); g.add(b); void c; return g; },
+  sailorBandana,
+  fortuneHat,
   lotusCrown,
-  ratCap: (c) => { const g = new THREE.Group(); g.add(dome(c, c.pal.main, 0.95)); for (const s of [1, -1]) { const e = solid(sphere(0.2, 1, 1, 0.4), toon(c.pal.main), 0.012); e.position.set(s * 0.45, 0.1, -0.05); g.add(e); } return g; },
-  hood: (c) => { const g = new THREE.Group(); g.add(dome(c, '#3a3446', 1.04)); void c; return g; },
-  leafHat: (c) => { const g = new THREE.Group(); const l = solid(new THREE.ConeGeometry(0.8, 0.35, 12), toon('#6aae58'), 0.015); l.position.y = -0.12; g.add(l); void c; return g; },
+  ratCap,
+  hood,
+  leafHat,
 };
