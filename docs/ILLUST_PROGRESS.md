@@ -14,7 +14,7 @@
 | 孟喵获 | `man_mengmiaohuo` | UR | 待画 | 0 | |
 | 左慈喵 | `xian_zuoci` | UR | 待画 | 0 | |
 | 夏侯墩 | `wei_xiahoudun` | SSR | 待画 | 0 | |
-| 许虎痴 | `wei_xuhuchi` | SSR | 待画 | 0 | |
+| 许虎痴 | `wei_xuhuchi` | SSR | 待审 | 1 | 2 候选选 B；曹喵德锚点，五指握棒/开掌与肩袖自查；虎头帽无字，留白/alpha 已清 |
 | 张喵辽 | `wei_zhangliao` | SSR | 待画 | 0 | |
 | 关云喵 | `shu_guanyunmiao` | SSR | 待画 | 0 | |
 | 张喵飞 | `shu_zhangmiaofei` | SSR | 待画 | 0 | |
