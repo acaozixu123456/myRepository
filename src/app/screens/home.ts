@@ -5,7 +5,7 @@ import { artUrl } from '../../ui/art';
 import { chip, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, nextStage, recommendedPowerOf, tickIdle } from '../../game/stage';
-import { canClaimCard, canClaimVip } from '../../game/premium';
+import { canClaimCard, canClaimVip, dayIndex } from '../../game/premium';
 import { unreadCount } from '../../game/social';
 import { canSign } from '../../game/daily';
 import { fastLabel } from './daily';
@@ -93,10 +93,10 @@ export function updateHome(ctx: AppCtx) {
   }).join('') + `<span class="go">阵容 ›</span>`;
   updateIdle(ctx);
   const now = Date.now();
-  const left = Math.max(0, 300000 - (now - s.gift.last));
+  const taken = s.gift.last > 0 && dayIndex(s.gift.last) >= dayIndex(now);
   const g = $(ctx, '#giftBtn') as HTMLButtonElement;
-  g.disabled = left > 0;
-  g.innerHTML = left > 0 ? `每日福利<small>${Math.ceil(left / 1000)} 秒后可领</small>` : `每日福利<small>+铃铛 +招福符</small>`;
+  g.disabled = taken;
+  g.innerHTML = taken ? `每日福利<small>今日已领，明天再来</small>` : `每日福利<small>+铃铛 +招福符</small>`;
 }
 
 export function updateIdle(ctx: AppCtx) {

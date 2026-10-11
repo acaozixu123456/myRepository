@@ -117,10 +117,10 @@ export const KITS_SP: Record<string, Kit> = {
       ],
     },
     awaken: {
-      A: { name: '满月', desc: '绝技治疗 +20%，护盾额外 +30% 攻击；友方暴击率提高（炸毛 2 回合）。',
+      A: { name: '满月', desc: '绝技整体效果 +20%，并让友方全体「炸毛」（攻击 +20%，2 回合）。',
         patches: [{ skill: 'ultimate', scaleMul: 1.2, addEffects: [status('fluff', 2, { power: 0.2, to: ally('all') })] }] },
-      B: { name: '玉兔归巢', desc: '月魄可触发 2 次，且起身生命提高到 50%。',
-        patches: [{ skill: 'passive', addPassive: { on: 'onAllyDeath', limit: { per: 'battle', n: 1 }, effects: [{ t: 'revive', hpPct: 0.5, to: ally('source') }] } }] },
+      B: { name: '玉兔归巢', desc: '月魄让起身的友方立刻获得「护体毛」（100% 攻击，3 回合）与 30 点元气。',
+        patches: [{ skill: 'passive', addPassive: { on: 'onAllyDeath', limit: { per: 'battle', n: 1 }, effects: [shield(1.0, 3, ally('source')), energy(30, ally('source'))] } }] },
     },
   },
 };
