@@ -11,8 +11,9 @@ import { claim, floaty, homeHtml, updateHome, updateIdle } from './screens/home'
 import { lineupHtml, lineupState } from './screens/lineup';
 import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
-import { applyGain, idleCapHours, tickIdle } from '../game/stage';
-import { autoLineup, equip, levelUp, load, save, swapSlots, unequip } from '../game/state';
+import { applyGain, idleCapHours, nextStage, recommendedPowerOf, tickIdle } from '../game/stage';
+import type { Gain } from '../game/stage';
+import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
 import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 
@@ -22,6 +23,7 @@ document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
 const state = load(storage);
+let lastFirst: Gain | null = null;
 const awayMin = (Date.now() - state.idle.last) / 60000;
 sfxState.on = state.settings.sound !== false;
 const params = new URLSearchParams(location.search);
@@ -83,13 +85,24 @@ ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
   story: (id) => (params.get('nostory') ? Promise.resolve() : playStoryOnce(ctx, id)),
   onReward(g, kind) {
     if (kind === 'win') floaty(ctx, `+${fmt(g.fish)}`, 'fish', 50, 30);
-    else if (g.bells || g.fish) {
-      sfx.win();
-      ctx.toast(`首通奖励：小鱼干 ${fmt(g.fish)}${g.bells ? ` · 金铃铛 ${g.bells}` : ''}`);
-    }
+    else lastFirst = g;
   },
   onResult(win, stage, pushed) {
-    if (pushed) ctx.toast(win ? `通关 ${stage.id}！` : `挑战 ${stage.id} 失败，战力不足，先去升级吧`);
+    if (!pushed) return;
+    const g = lastFirst;
+    lastFirst = null;
+    const next = nextStage(state.best?.chapter ?? 1, state.best?.index ?? 1);
+    const rec = recommendedPowerOf(Number(stage.id.split('-')[0]), Number(stage.id.split('-')[1]));
+    root.querySelectorAll('.mask.center').forEach((m) => m.remove());
+    if (win) sfx.win(); else sfx.no();
+    root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog result ${win ? 'win' : 'lose'}">
+      <div class="banner-r">${win ? '通关！' : '挑战失败'}</div>
+      <div class="muted" style="font-weight:800;margin:4px 0 10px">${stage.id} ${stage.name}</div>
+      ${win && g ? `<div class="row" style="justify-content:center;gap:14px;font-family:var(--f-d);font-size:20px;flex-wrap:wrap">${g.fish ? `<span>${icon('fish', 26)} ${fmt(g.fish)}</span>` : ''}${g.exp ? `<span>${icon('spark', 26)} ${fmt(g.exp)}</span>` : ''}${g.bells ? `<span>${icon('bells', 26)} ${fmt(g.bells)}</span>` : ''}${g.catnip ? `<span>${icon('catnip', 26)} ${g.catnip}</span>` : ''}</div>` : ''}
+      ${win ? '' : `<p style="font-size:13px;line-height:1.7;font-weight:700;margin:0">我方战力 <b>${fmt(teamPower(state))}</b>，这关推荐 <b>${fmt(rec)}</b>。去阵容给猫猫升级升星，或者调整前后排与羁绊再来。</p>`}
+      <div class="row" style="justify-content:center;gap:10px;margin-top:14px">
+        ${win ? `<button class="btn ghost" data-act="closedialog">继续挂机</button>${next ? '<button class="btn green" data-act="challenge">挑战下一关</button>' : ''}` : `<button class="btn blue" data-act="nav" data-to="lineup">去阵容</button><button class="btn" data-act="closedialog">好的</button>`}
+      </div></div></div>`);
   },
   onChange() {
     ctx.save();
@@ -116,6 +129,7 @@ root.addEventListener('click', (e) => {
   if (!el) return;
   const act = el.dataset.act!;
   if (act !== 'sheetmask' && act !== 'closedialog') sfx.tap();
+  if ((act === 'challenge' || act === 'nav') && el.closest('.dialog')) root.querySelectorAll('.mask.center').forEach((m) => m.remove());
   if (handleDetail(ctx, act, el)) return;
   if (handleCampaign(ctx, act, el)) return;
   switch (act) {

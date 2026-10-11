@@ -146,4 +146,9 @@ export const SCREEN_CSS = `
 .urcut .txt b{font-family:var(--f-d);font-weight:400;font-size:44px;line-height:1.05;display:block;color:#fff8d2;-webkit-text-stroke:7px rgba(60,20,70,.95);paint-order:stroke fill;text-shadow:0 4px 0 rgba(60,20,70,.5)}
 @keyframes slidein{from{transform:translateX(-90px) rotate(7deg);opacity:0}to{transform:rotate(7deg);opacity:1}}
 @keyframes slidein2{from{transform:translateX(70px) rotate(7deg);opacity:0}to{transform:rotate(7deg);opacity:1}}
+
+.dialog.result{text-align:center;padding-top:22px}
+.dialog.result .banner-r{display:inline-block;padding:4px 30px 6px;border-radius:999px;font-family:var(--f-d);font-size:30px;color:#fff;letter-spacing:.06em;text-shadow:0 3px 0 rgba(0,0,0,.28);box-shadow:0 4px 0 rgba(0,0,0,.22),inset 0 0 0 3px rgba(255,255,255,.4)}
+.dialog.result.win .banner-r{background:linear-gradient(#ffd27a,#f0a22e)}
+.dialog.result.lose .banner-r{background:linear-gradient(#b8a8d8,#7e6aa6)}
 `;
