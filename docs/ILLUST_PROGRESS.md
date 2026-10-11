@@ -30,7 +30,7 @@
 | 木鹿大王 | `man_mulu` | SSR | 待画 | 0 | |
 | 沙摩柯 | `man_shamoke` | SSR | 待画 | 0 | |
 | 张爪 | `xian_zhangzhua` | SSR | 待画 | 0 | |
-| 水镜喵 | `xian_shuijing` | SSR | 待画 | 0 | |
+| 水镜喵 | `xian_shuijing` | SSR | 待审 | 1 | |
 | 于吉吉 | `xian_yuji` | SSR | 待画 | 0 | |
 | 郭嘉喵 | `wei_guojia` | SR | 待画 | 0 | |
 | 徐晃晃 | `wei_xuhuang` | SR | 待画 | 0 | |
