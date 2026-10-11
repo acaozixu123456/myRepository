@@ -15,6 +15,8 @@ export interface LoopHooks {
   onReward: (g: Gain, kind: 'win' | 'first') => void;
   onResult: (win: boolean, stage: StageDef, pushed: boolean) => void;
   onChange: () => void; // 状态变化（需要保存 / 刷新界面）
+  /** 播放剧情（挑战首次到达的关卡前 / Boss 通关后），返回时继续 */
+  story?: (id: string | undefined) => Promise<void>;
 }
 
 export class BattleLoop {
@@ -79,6 +81,10 @@ export class BattleLoop {
       }
       const stage = getStage(target.chapter, target.index);
       if (!stage) break;
+      if (push) {
+        await this.hooks.story?.(stage.storyId);
+        if (token !== this.token) return;
+      }
       const win = await this.fight(stage, token, target.chapter);
       if (token !== this.token) return;
       this.lastOutcome = win ? 'win' : 'lose';
@@ -93,6 +99,8 @@ export class BattleLoop {
           const fg = firstClearReward(stage);
           applyGain(s, fg);
           this.hooks.onReward(fg, 'first');
+          await this.hooks.story?.(stage.storyPostId);
+          if (token !== this.token) return;
         } else s.stage.wins++;
       }
       this.hooks.onResult(win, stage, push);

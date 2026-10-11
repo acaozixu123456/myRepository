@@ -2,6 +2,7 @@
 import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
+import { STORY_CSS, playStoryOnce } from './story';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
 import { claim, floaty, homeHtml, updateHome, updateIdle } from './screens/home';
@@ -14,7 +15,7 @@ import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -72,6 +73,7 @@ const ctx: AppCtx = {
 
 ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
   state: () => state,
+  story: (id) => (params.get('nostory') ? Promise.resolve() : playStoryOnce(ctx, id)),
   onReward(g, kind) {
     if (kind === 'win') floaty(ctx, `+${fmt(g.fish)}`, 'fish', 50, 30);
     else if (g.bells || g.fish) {
@@ -167,4 +169,5 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.s
 
 updateHome(ctx);
 ctx.loop.start();
+if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
 (window as unknown as Record<string, unknown>).__app = ctx;

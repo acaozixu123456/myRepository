@@ -36,6 +36,7 @@ export interface PlayerState {
   idle: { last: number; fish: number; exp: number };
   gift: { last: number };
   seen: string[];
+  stories?: string[]; // 已看过的剧情 id
   settings: { speed: number };
 }
 
@@ -60,6 +61,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     idle: { last: now, fish: 0, exp: 0 },
     gift: { last: 0 },
     seen: start.slice(),
+    stories: [],
     settings: { speed: 2 },
   };
 }
@@ -77,6 +79,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
         s.lineup = [...s.lineup, null, null, null, null, null].slice(0, LINEUP_SIZE);
         s.res.exp ??= 0;
         s.idle.exp ??= 0;
+        s.stories ??= [];
         return s;
       }
     }
