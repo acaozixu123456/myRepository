@@ -12,7 +12,7 @@ import { glowMat, std } from './kit';
 
 export interface Spawn {
   id: string;
-  kind: 'enemy' | 'boss' | 'chest' | 'npc';
+  kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc';
   x: number; z: number;
   /** enemy / boss：这一队长什么样（单位 id，最多 3 个） */
   units?: string[];
@@ -122,6 +122,11 @@ export class Explorer {
       const lid = new THREE.Mesh(new THREE.BoxGeometry(1.56, 0.4, 1.06), std('#e8b04a', 0.4, 0.5)); lid.position.y = 1.1; group.add(lid);
       const lock = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.1), glowMat('#fff2a0')); lock.position.set(0, 0.85, 0.52); group.add(lock);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
+    } else if (s.kind === 'herb') {
+      const m = std('#3fdc8a', 0.6, 0.1);
+      for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2, c = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.1 + (i % 3) * 0.35, 5), m); c.position.set(Math.cos(a) * 0.55, 0.55, Math.sin(a) * 0.55); c.rotation.z = Math.cos(a) * 0.25; c.rotation.x = -Math.sin(a) * 0.25; group.add(c); }
+      const core = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1.6, 5), glowMat('#b6ffd0')); core.position.y = 0.8; group.add(core);
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0x6affb0, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(4.2, 4.2, 1); halo.position.y = 0.9; group.add(halo);
     } else {
       ids.slice(0, 3).forEach((id, i) => {
         const a = this.mkActor(id, s.kind === 'boss' ? 1.35 : 1.0);
@@ -129,8 +134,8 @@ export class Explorer {
         cats.push(a);
       });
     }
-    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : '#ffffff');
-    tag.position.y = s.kind === 'chest' ? 3.0 : s.kind === 'boss' ? 6.0 : 4.8;
+    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : '#ffffff');
+    tag.position.y = s.kind === 'chest' || s.kind === 'herb' ? 3.0 : s.kind === 'boss' ? 6.0 : 4.8;
     group.add(tag);
     const mark = s.kind === 'boss' ? markSprite('!', '#ff4a6a') : s.kind === 'npc' ? markSprite('…', '#7ff0ff') : undefined;
     if (mark) { mark.position.y = s.kind === 'boss' ? 7.6 : 6.3; group.add(mark); }
@@ -290,7 +295,7 @@ export class Explorer {
     const s = e.spawn; e.t += dt; e.cooldown = Math.max(0, e.cooldown - dt);
     const lp = this.leaderPos;
     const gp = e.group.position;
-    if (s.kind === 'chest') {
+    if (s.kind === 'chest' || s.kind === 'herb') {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }
       return;

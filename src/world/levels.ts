@@ -29,7 +29,7 @@ export interface LevelDef {
   containers?: [number, number, number, string][]; // x z 朝向 颜色
   cranes?: [number, number, number][];
   ships?: [number, number, number][];
-  enemySpots: [number, number][]; chestSpots: [number, number][]; bossSpot: [number, number]; npcSpot: [number, number]; spawn: [number, number];
+  enemySpots: [number, number][]; chestSpots: [number, number][]; herbSpots?: [number, number][]; bossSpot: [number, number]; npcSpot: [number, number]; spawn: [number, number];
 }
 
 const L1_BUILDINGS: Placed[] = [
@@ -49,6 +49,9 @@ const SPOTS = {
   chestSpots: [[24, 0], [-2.5, -26], [3, 26], [-26, 5.8]] as [number, number][],
   bossSpot: [0, -23] as [number, number], npcSpot: [6, 5.8] as [number, number], spawn: [0, 8] as [number, number],
 };
+/** 猫薄荷丛默认摆在马路上（所有关卡都空着）；关卡可以用 herbSpots 覆盖 */
+export const DEFAULT_HERBS: [number, number][] = [[9, -2.4], [-2.4, -9], [2.4, 12]];
+export const herbsOf = (L: LevelDef): [number, number][] => L.herbSpots ?? DEFAULT_HERBS;
 const L1_POLES: [number, number][] = [[-20, -5.2], [-6, -5.2], [6, 5.2], [20, 5.2], [-5.2, 18], [5.2, -18]];
 const L1_PROPS: PropDef[] = [
   { kind: 'vending', x: -5.0, z: -7.4, ry: 0 }, { kind: 'vendingCyan', x: -3.6, z: -7.4, ry: 0 }, { kind: 'vendingGold', x: 8, z: 7.4, ry: Math.PI },

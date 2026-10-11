@@ -7,9 +7,10 @@ import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
 import { levelOf as sceneOf } from '../world/levels';
+import { herbsOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean }
+export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[] }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +18,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; }
   return e;
 }
 
@@ -34,7 +35,7 @@ export function farmStage(s: PlayerState): { chapter: number; index: number; sta
   return { chapter: b.chapter, index: b.index, stage: getStage(b.chapter, b.index)! };
 }
 
-export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'npc'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string }
+export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string }
 
 /** 当前该进哪个场景：跟着主线章节走（首领所在的章节） */
 export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(bossStage(s).chapter);
@@ -55,6 +56,7 @@ export function spawnPlan(s: PlayerState): SpawnDef[] {
     out.push({ id: `e${i}`, kind: 'enemy', x, z, units: unitsOf(farm.stage, w, 2 + (i % 2)), label: `${farm.stage.name} Lv${levelOf(farm.stage)}`, patrol: 4 + (i % 3), stageKey: `${farm.chapter}-${farm.index}` });
   });
   L.chestSpots.forEach(([x, z], i) => out.push({ id: `c${i}`, kind: 'chest', x, z, label: '宝箱' }));
+  herbsOf(L).forEach(([x, z], i) => out.push({ id: `h${i}`, kind: 'herb', x, z, label: '猫薄荷丛' }));
   out.push({ id: 'npc', kind: 'npc', x: L.npcSpot[0], z: L.npcSpot[1], units: ['xian_changmiao'], label: '嫦喵 · 向导' });
   return out;
 }
@@ -103,4 +105,15 @@ export function claimDaily(s: PlayerState, now = Date.now()): Gain | null {
   ensureExplore(s, now).claimed = true;
   const base = winReward(farmStage(s).stage);
   return { fish: Math.round(base.fish * 10 + 300), exp: Math.round(base.exp * 8 + 200), catnip: 6, bells: 40 };
+}
+
+/** 猫薄荷丛：每天每丛一次，主要给猫薄荷（养成素材），带一点小鱼干 */
+export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | null {
+  const e = ensureExplore(s, now);
+  e.herbs ??= [];
+  if (e.herbs.includes(id)) return null;
+  e.herbs.push(id);
+  const rnd = mulberry(dayKey(now) * 17 + id.charCodeAt(1));
+  const base = winReward(farmStage(s).stage);
+  return { fish: Math.round(base.fish * 1.5), exp: 0, catnip: 3 + Math.floor(rnd() * 3), bells: 0 };
 }

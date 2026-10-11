@@ -7,7 +7,7 @@ import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
-import { bossStage, claimDaily, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, recordBossWin, spawnPlan } from '../../game/explore';
+import { bossStage, claimDaily, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
@@ -110,6 +110,7 @@ function planFor(ctx: AppCtx) {
   const now = Date.now();
   return spawnPlan(ctx.s).filter((p) => {
     if (p.kind === 'chest' && e.chests.includes(p.id)) return false;
+    if (p.kind === 'herb' && (e.herbs ?? []).includes(p.id)) return false;
     const d = rt?.dead.get(p.id);
     if (d && now < d) return false;
     return true;
@@ -176,7 +177,7 @@ function drawMini(ctx: AppCtx) {
   g.fillStyle = '#0b0818'; for (const c of rt.st.colliders) if (c.x1 - c.x0 > 3) g.fillRect(X(c.x0), Z(c.z0), (c.x1 - c.x0) * k, (c.z1 - c.z0) * k); // 楼
   const sn = rt.ex.snapshot();
   const dot = (x: number, z: number, col: string, r: number) => { g.fillStyle = col; g.beginPath(); g.arc(X(x), Z(z), r, 0, Math.PI * 2); g.fill(); };
-  for (const e of sn.ents) dot(e.x, e.z, e.kind === 'boss' ? '#ff4a6a' : e.kind === 'enemy' ? '#ff9a4a' : e.kind === 'chest' ? '#ffe27a' : '#7ff0ff', e.kind === 'boss' ? 6 : 4);
+  for (const e of sn.ents) dot(e.x, e.z, e.kind === 'boss' ? '#ff4a6a' : e.kind === 'enemy' ? '#ff9a4a' : e.kind === 'chest' ? '#ffe27a' : e.kind === 'herb' ? '#6affb0' : '#7ff0ff', e.kind === 'boss' ? 6 : 4);
   dot(sn.leader.x, sn.leader.z, '#ffffff', 5);
   g.strokeStyle = '#7ff0ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(X(sn.leader.x), Z(sn.leader.z)); g.lineTo(X(sn.leader.x) + Math.sin(sn.leader.yaw) * 12, Z(sn.leader.z) + Math.cos(sn.leader.yaw) * 12); g.stroke();
 }
@@ -302,12 +303,12 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
 }
 
 function onChest(ctx: AppCtx, sp: Spawn) {
-  const g = openChest(ctx.s, sp.id);
+  const g = sp.kind === 'herb' ? pickHerb(ctx.s, sp.id) : openChest(ctx.s, sp.id);
   if (!g) return;
   applyGain(ctx.s, g);
   ctx.save();
   sfx.ok();
-  ctx.toast(`宝箱：${gainText(g)}`);
+  ctx.toast(`${sp.kind === 'herb' ? '采到猫薄荷' : '宝箱'}：${gainText(g)}`);
   refreshExploreHud(ctx);
 }
 const TALKS = [

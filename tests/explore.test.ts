@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { KILL_CAP, bossStage, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, recordBossWin, spawnPlan } from '../src/game/explore';
-import { LEVELS, levelColliders } from '../src/world/levels';
+import { KILL_CAP, bossStage, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
+import { LEVELS, herbsOf, levelColliders } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 
 describe('探索模式规则', () => {
@@ -22,7 +22,7 @@ describe('探索模式规则', () => {
   it('每个关卡的实体都摆在可走的格子上（不在建筑 / 道具碰撞盒里），且出生点可走', () => {
     for (const L of Object.values(LEVELS)) {
       const cols = levelColliders(L);
-      const pts: [string, number, number][] = [...L.enemySpots.map((p, i) => [`e${i}`, p[0], p[1]] as [string, number, number]), ...L.chestSpots.map((p, i) => [`c${i}`, p[0], p[1]] as [string, number, number]), ['boss', L.bossSpot[0], L.bossSpot[1]], ['npc', L.npcSpot[0], L.npcSpot[1]], ['spawn', L.spawn[0], L.spawn[1]]];
+      const pts: [string, number, number][] = [...L.enemySpots.map((p, i) => [`e${i}`, p[0], p[1]] as [string, number, number]), ...L.chestSpots.map((p, i) => [`c${i}`, p[0], p[1]] as [string, number, number]), ...herbsOf(L).map((p, i) => [`h${i}`, p[0], p[1]] as [string, number, number]), ['boss', L.bossSpot[0], L.bossSpot[1]], ['npc', L.npcSpot[0], L.npcSpot[1]], ['spawn', L.spawn[0], L.spawn[1]]];
       for (const [id, x, z] of pts) {
         for (const c of cols) expect(x >= c.x0 && x <= c.x1 && z >= c.z0 && z <= c.z1, `${L.id}:${id} 在碰撞盒里`).toBe(false);
         expect(Math.abs(x)).toBeLessThan(L.half - 2); expect(Math.abs(z)).toBeLessThan(L.half - 2);
@@ -71,5 +71,23 @@ describe('嫦喵的每日委托', () => {
     const stage = farmStage(s).stage;
     for (let i = 0; i < 12; i++) killReward(s, stage);
     expect(dailyProgress(s)[0]).toMatchObject({ have: 5, need: 5, done: true });
+  });
+});
+
+describe('猫薄荷丛', () => {
+  it('每天每丛一次，给猫薄荷，隔天刷新；不算进宝箱委托', () => {
+    const s = newPlayer();
+    const t0 = Date.UTC(2026, 9, 11, 12);
+    const g = pickHerb(s, 'h0', t0)!;
+    expect(g.catnip).toBeGreaterThanOrEqual(3);
+    expect(pickHerb(s, 'h0', t0)).toBeNull();
+    expect(pickHerb(s, 'h1', t0)).not.toBeNull();
+    expect(dailyProgress(s, t0)[1].have).toBe(0);
+    expect(pickHerb(s, 'h0', t0 + 86400_000)).not.toBeNull();
+  });
+  it('地图上有 3 丛猫薄荷，id 不与别的实体重复', () => {
+    const plan = spawnPlan(newPlayer());
+    expect(plan.filter((p) => p.kind === 'herb')).toHaveLength(3);
+    expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
   });
 });
