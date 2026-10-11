@@ -27,6 +27,7 @@
 | [存档与养成](../src/game/state.ts)、[招募](../src/game/gacha.ts) | [至尊系统](../src/game/premium.ts) |
 | [关卡适配](../src/game/stage.ts)、[爬塔](../src/game/tower.ts) | [日常副本](../src/game/dungeon.ts) |
 | [模拟世界频道](../src/game/npc.ts) | [聊天语料](../src/data/chatlines.ts) |
+| [玩法系统总览：公会 / Boss / 活动中心 / 氪金活动 / 猫窝](SYSTEMS.md) | [events.ts](../src/game/events.ts)、[events 界面](../src/app/screens/events.ts) |
 | [手游打包方案与待办](MOBILE.md) | [应用入口](../src/app/main.ts)、[现有二级界面](../src/app/screens/) |
 
 ## 验证工具
