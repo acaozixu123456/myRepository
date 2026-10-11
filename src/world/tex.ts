@@ -122,8 +122,9 @@ export function paving(color = '#6b6478'): THREE.CanvasTexture {
   return mk(256, 256, (g) => {
     const rnd = mulberry(9);
     g.fillStyle = color; g.fillRect(0, 0, 256, 256);
-    g.strokeStyle = 'rgba(0,0,0,.28)'; g.lineWidth = 2;
-    for (let y = 0; y < 256; y += 32) for (let x = (y / 32) % 2 ? 0 : 16; x < 256; x += 32) { g.strokeRect(x, y, 32, 32); g.fillStyle = `rgba(255,255,255,${rnd() * 0.06})`; g.fillRect(x + 2, y + 2, 28, 28); }
+    g.strokeStyle = 'rgba(0,0,0,.5)'; g.lineWidth = 3;
+    for (let y = 0; y < 256; y += 32) for (let x = (y / 32) % 2 ? 0 : 16; x < 256; x += 32) { g.strokeRect(x, y, 32, 32); g.fillStyle = rnd() < 0.5 ? `rgba(0,0,0,${rnd() * 0.22})` : `rgba(255,255,255,${rnd() * 0.05})`; g.fillRect(x + 2, y + 2, 28, 28); }
+    for (let i = 0; i < 140; i++) { g.fillStyle = `rgba(0,0,0,${0.05 + rnd() * 0.12})`; g.beginPath(); g.ellipse(rnd() * 256, rnd() * 256, 3 + rnd() * 12, 2 + rnd() * 7, rnd() * 3, 0, 7); g.fill(); }
   }, 'paving' + color);
 }
 /** 发光点（地面光斑、灯晕）用的径向渐变 */

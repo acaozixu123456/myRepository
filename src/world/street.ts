@@ -38,7 +38,7 @@ export function buildStreet(L: LevelDef = LEVEL_1): Street {
   }
   // ---- 人行道（四个街区各一块）----
   const pv = paving(L.ground?.pave ?? '#34304a'); pv.wrapS = pv.wrapT = THREE.RepeatWrapping; pv.repeat.set(8, 8);
-  const pave = new THREE.MeshStandardMaterial({ map: pv, color: L.ground ? 0x7a9a80 : 0x57536c, roughness: 0.9, metalness: 0.05, envMapIntensity: 0.3 });
+  const pave = new THREE.MeshStandardMaterial({ map: pv, color: L.ground ? 0x587060 : 0x3e3b55, roughness: 0.9, metalness: 0.05, envMapIntensity: 0.3 });
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const w = HALF - 4.5, cx = sx * (4.5 + w / 2), cz = sz * (4.5 + w / 2);
     const slab = new THREE.Mesh(new THREE.BoxGeometry(w, 0.32, w), pave); slab.position.set(cx, 0.16, cz); slab.receiveShadow = true; g.add(nm(slab));
