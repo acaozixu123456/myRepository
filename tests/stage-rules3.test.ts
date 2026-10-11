@@ -101,3 +101,11 @@ describe('绝技预告 telegraph', () => {
     expect(announced).toBeGreaterThanOrEqual(cast);
   });
 });
+
+describe('全部关卡规则', () => {
+  it('every stage that has a rule text also has an executable ruleFx', () => {
+    let withRule = 0;
+    for (const ch of CHAPTERS) for (const st of ch.stages) if (st.rule) { withRule++; expect(st.ruleFx?.length, `${st.id}`).toBeGreaterThan(0); }
+    expect(withRule).toBe(48);
+  });
+});
