@@ -64,7 +64,7 @@ export const KITS_SP: Record<string, Kit> = {
       desc: '金凤凰展翅，火雨落满战场：对敌方全体连续两次造成 160% 攻击的火焰伤害，并叠加 2 层「灼烧」（3 回合）；随后引爆灼烧——每层再造成 30% 攻击的伤害（保留 1 层）。友方全体「炸毛」（攻击 +25%，3 回合）。',
       levelMods: [
         { lv: 3, desc: '浴火：蜀势力友方额外获得「呼噜」（每回合 8% 最大生命，3 回合）。', patch: { skill: 'ultimate', addEffects: [status('purr', 3, { power: 0.08, to: { side: 'ally', pick: 'all', faction: 'shu' } })] } },
-        { lv: 6, desc: '焦土：敌方全体「淋湿」状态被蒸干，防御 -20%（受惊 2 回合）。', patch: { skill: 'ultimate', addEffects: [status('fright', 2, { power: 0.2, to: enemy('all') })] } },
+        { lv: 6, desc: '焦土：敌方全体「受惊」（攻击 -20%，2 回合）。', patch: { skill: 'ultimate', addEffects: [status('fright', 2, { power: 0.2, to: enemy('all') })] } },
         { lv: 9, desc: '凤鸣九天：整体效果 +25%。', patch: { skill: 'ultimate', scaleMul: 1.25 } },
       ],
     },
