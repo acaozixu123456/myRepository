@@ -16,7 +16,8 @@ import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
 import { applyGain, idleCapHours, nextStage, recommendedPowerOf, tickIdle } from '../game/stage';
 import type { Gain } from '../game/stage';
-import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
+import { exportSave, importSave } from '../game/backup';
+import { SAVE_KEY, autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
 import { bagHtml, handleBag } from './screens/bag';
 import { shopHtml, handleShop } from './screens/shop';
 import { EVENTS_CSS, eventsHtml, handleEvents } from './screens/events';
@@ -86,12 +87,13 @@ app.innerHTML = `<div class="app" id="root">
 const root = document.getElementById('root')!;
 setTimeout(() => { try { root.style.backgroundImage = `url(${makeHomeScenery()})`; root.style.backgroundSize = 'cover'; root.style.backgroundPosition = 'center'; } catch { /* 背景失败不影响游戏 */ } }, 0);
 
+let importing = false; // 导入存档后到页面重载前，禁止把内存里的旧进度写回去
 const ctx: AppCtx = {
   s: state,
   root,
   loop: undefined as unknown as BattleLoop,
   screen: 'home',
-  save: () => save(storage, state),
+  save: () => { if (!importing) save(storage, state); },
   toast(msg) {
     root.querySelectorAll('.toast').forEach((e) => e.remove());
     const t = document.createElement('div');
@@ -175,6 +177,7 @@ function openSettings() {
     <div class="row" style="margin:8px 0"><b class="grow">音效</b><button class="btn sm ${on ? 'green' : 'ghost'}" data-act="snd">${on ? '开' : '关'}</button></div>
     <div class="row" style="margin:8px 0"><b class="grow">战斗速度</b>${[1, 2, 3].map((v) => `<button class="btn sm ${state.settings.speed === v ? 'blue' : 'ghost'}" data-act="spd" data-v="${v}">${v}×</button>`).join('')}</div>
     <div class="row" style="margin:8px 0"><b class="grow">战斗用立绘小人<small class="muted" style="display:block;font-weight:700">有立绘的猫在战斗里用整张立绘（下一场生效）</small></b><button class="btn sm ${state.settings.illustSprite !== false ? 'green' : 'ghost'}" data-act="ill">${state.settings.illustSprite !== false ? '开' : '关'}</button></div>
+    <div class="row" style="margin:8px 0"><b class="grow">存档备份<small class="muted" style="display:block;font-weight:700">换设备 / 清缓存前，先导出一段文本</small></b><button class="btn sm blue" data-act="bk-out">导出</button><button class="btn sm ghost" data-act="bk-in">导入</button></div>
     <div class="row" style="margin:14px 0 4px"><b class="grow">清空存档<small class="muted" style="display:block;font-weight:700">从头开始，无法恢复</small></b><button class="btn sm ghost" data-act="reset1">清空</button></div>
     <div class="muted" style="font-size:11.5px;text-align:center;margin-top:10px;font-weight:700">猫国志 · 原型 v0.1</div>
     <div style="text-align:center;margin-top:10px"><button class="btn" data-act="closedialog">好的</button></div></div></div>`);
@@ -204,6 +207,31 @@ root.addEventListener('click', (e) => {
     case 'claim': claim(ctx); break;
     case 'settings': openSettings(); break;
     case 'claim2': root.querySelectorAll('.mask.center').forEach((m) => m.remove()); claim(ctx); break;
+    case 'bk-out': {
+      const text = exportSave(state);
+      root.querySelectorAll('.mask.center').forEach((m) => m.remove());
+      root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog"><h3 class="title" style="margin:0 0 6px">导出存档</h3><p style="font-size:12.5px;font-weight:700;margin:0 0 6px">复制下面这段文字，保存到备忘录或发给自己；在新设备上用「导入」粘贴即可。</p><textarea id="bkText" readonly style="width:100%;height:120px;font-size:11px;border-radius:10px;padding:6px;box-sizing:border-box">${text}</textarea><div class="row" style="justify-content:center;gap:10px;margin-top:10px"><button class="btn blue" data-act="bk-copy">复制</button><button class="btn ghost" data-act="closedialog">关闭</button></div></div></div>`);
+      break;
+    }
+    case 'bk-copy': {
+      const ta = root.querySelector('#bkText') as HTMLTextAreaElement | null;
+      if (ta) { ta.select(); void navigator.clipboard?.writeText(ta.value).then(() => ctx.toast('已复制'), () => ctx.toast('已选中，请手动复制')); }
+      break;
+    }
+    case 'bk-in': {
+      root.querySelectorAll('.mask.center').forEach((m) => m.remove());
+      root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog"><h3 class="title" style="margin:0 0 6px">导入存档</h3><p style="font-size:12.5px;font-weight:700;margin:0 0 6px">粘贴之前导出的存档文本。<b>导入会覆盖当前进度</b>，请先确认。</p><textarea id="bkText" style="width:100%;height:120px;font-size:11px;border-radius:10px;padding:6px;box-sizing:border-box" placeholder="MGZ1.…"></textarea><div class="row" style="justify-content:center;gap:10px;margin-top:10px"><button class="btn pink" data-act="bk-do">覆盖导入</button><button class="btn ghost" data-act="closedialog">取消</button></div></div></div>`);
+      break;
+    }
+    case 'bk-do': {
+      const ta = root.querySelector('#bkText') as HTMLTextAreaElement | null;
+      const r = importSave(ta?.value ?? '');
+      if (!r.ok) { ctx.toast(r.reason); break; }
+      try { storage?.setItem(SAVE_KEY, r.raw); importing = true; } catch { ctx.toast('写入存档失败'); break; }
+      ctx.toast('导入成功，正在重新载入…');
+      setTimeout(() => location.reload(), 600);
+      break;
+    }
     case 'ill': state.settings.illustSprite = !(state.settings.illustSprite !== false); spriteMode.illust = state.settings.illustSprite; ctx.save(); openSettings(); sfx.ok(); break;
     case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; ctx.save(); openSettings(); sfx.ok(); break;
     case 'spd': state.settings.speed = Number(el.dataset.v); ctx.loop.setSpeed(state.settings.speed); ctx.save(); openSettings(); updateHome(ctx); break;
