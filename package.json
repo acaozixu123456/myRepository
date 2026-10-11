@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "balance": "node tools/run-balance.mjs",
+    "lint:skills": "node tools/run-skill-consistency.mjs",
     "shots": "node tools/shots.mjs",
     "showcase": "node tools/build-showcase.mjs",
     "app": "node tools/build-app.mjs"
