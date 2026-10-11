@@ -726,6 +726,20 @@ export function catInner(look: CatLook, uid: string): string {
   return shadow + parts.map((p) => xfWrap(p, st[p.id])).join('');
 }
 
+/** 摆好动作的一体式立绘：给每个部件指定旋转/平移，整只猫再套一圈贴纸式外轮廓（盖住接缝，像一张完整的画） */
+export function catSvgPosed(look: CatLook, pose: Stance, o: RenderOpts & { outline?: string } = {}): string {
+  const uid = o.uid ?? `c${++uidCounter}`;
+  const w = o.width ?? 400;
+  const vb = o.viewBox ?? VIEW_FULL;
+  const [, , vw, vh] = vb.split(' ').map(Number);
+  const h = o.height ?? Math.round((w * vh) / vw);
+  const { parts, shadow } = catParts(look, uid);
+  const inner = shadow + parts.map((p) => xfWrap(p, pose[p.id])).join('');
+  const oc = o.outline ?? '#3a2218';
+  const filt = `<filter id="sil${uid}" x="-10%" y="-10%" width="120%" height="120%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="${oc}"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${w}" height="${h}"><defs>${defsFor(uid)}${paintDefs()}${filt}</defs><g filter="url(#sil${uid})"><g filter="url(#paper${uid})">${inner}</g></g></svg>`;
+}
+
 export function defsFor(uid: string): string {
   return `
   <filter id="soft${uid}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>
