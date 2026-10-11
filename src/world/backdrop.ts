@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { mulberry } from '../fx/util';
 import { bakeStatic } from './bake';
-import { facade, neonSign } from './tex';
+import { aiTex, facade, neonSign } from './tex';
 import { glowMat, std } from './kit';
 
 export interface Backdrop { group: THREE.Group; update(t: number): void }
@@ -61,9 +61,10 @@ export function buildBackdrop(): Backdrop {
   for (let i = 0; i < 9; i++) {
     const [col, , lines] = HOLO[i % HOLO.length];
     const ang = (i / 9) * Math.PI * 2 + 0.3, r = 52 + (i % 3) * 6;
-    const tex = neonSign(lines.join(''), col, { vertical: true, w: 128, h: 512, bg: '#0a0618' });
+    const ad = i % 3 === 0 ? aiTex('ad_ninelives_hologram_06') : null; // 每三块里有一块用 AI 全息猫广告
+    const tex = ad ?? neonSign(lines.join(''), col, { vertical: true, w: 128, h: 512, bg: '#0a0618' });
     const m = new THREE.MeshBasicMaterial({ map: tex, color: 0xffffff, toneMapped: false, transparent: true, opacity: 0.95, side: THREE.DoubleSide });
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(8, 30), m);
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(ad ? 14 : 8, ad ? 28 : 30), m);
     mesh.position.set(Math.cos(ang) * r, 22 + (i % 4) * 5, Math.sin(ang) * r); mesh.lookAt(0, 22, 0);
     g.add(mesh); holos.push({ mesh, mat: m, ph: rnd() * 6 });
   }

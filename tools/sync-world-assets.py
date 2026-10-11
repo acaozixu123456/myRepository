@@ -5,7 +5,7 @@ import glob, os
 from PIL import Image
 
 SRC, OUT = 'assets/world', 'src/world/assets'
-MAX = {'walls': 512, 'ground': 512, 'signs': 512, 'skyline': 2048, 'decals': 256}  # 各类别最长边
+MAX = {'walls': 512, 'ground': 512, 'signs': 1024, 'skyline': 2048, 'decals': 256}  # 各类别最长边
 os.makedirs(OUT, exist_ok=True)
 for f in glob.glob(f'{OUT}/*.webp'): os.remove(f)
 names = []

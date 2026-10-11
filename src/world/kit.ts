@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { mulberry } from '../fx/util';
-import { facade, glowTex, neonSign, stripes } from './tex';
+import { aiSignFor, aiTex, facade, glowTex, neonSign, stripes } from './tex';
 import type { FacadeStyle } from './tex';
 
 const stdCache = new Map<string, THREE.MeshStandardMaterial>();
@@ -175,7 +175,7 @@ export function building(s: BuildingSpec): THREE.Group {
   awning.position.set(0, SHOP_H - 0.7, s.d / 2 + 0.7); awning.rotation.x = 0.28; awning.castShadow = true; g.add(awning);
   // 店招
   if (s.shop) {
-    const sign = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(s.w * 0.7, 5), 1.15), glowMat('#ffffff', neonSign(s.shop.name, s.shop.color)));
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(s.w * 0.7, 5), 1.15), glowMat('#ffffff', (() => { const k = aiSignFor(s.shop.name, false); return (k && aiTex(k)) || neonSign(s.shop.name, s.shop.color); })()));
     sign.position.set(0, SHOP_H + 0.65, s.d / 2 + 0.08); g.add(sign);
   }
   // 楼层檐线
@@ -195,8 +195,10 @@ export function building(s: BuildingSpec): THREE.Group {
   if (s.floors > 2) g.add(cyl(0.1, upper - FLOOR_H, std('#6a6a78', 0.5, 0.5), s.w / 2 - 0.4, SHOP_H + FLOOR_H + (upper - FLOOR_H) / 2, s.d / 2 + 0.12));
   // 竖招牌（侧挂）
   (s.signs ?? []).forEach((sg, i) => {
-    const sw = sg.vertical ? 1.1 : 3.2, sh = sg.vertical ? 4.4 : 1.1;
-    const m = new THREE.Mesh(new THREE.BoxGeometry(sw, sh, 0.3), [std('#222', 0.5), std('#222', 0.5), std('#222', 0.5), std('#222', 0.5), glowMat('#ffffff', neonSign(sg.text, sg.color, { vertical: sg.vertical })), glowMat('#ffffff', neonSign(sg.text, sg.color, { vertical: sg.vertical }))]);
+    const aiK = aiSignFor(sg.text, !!sg.vertical), ai = aiK ? aiTex(aiK) : null;
+    const sw = sg.vertical ? 1.1 : ai ? 4.4 : 3.2, sh = sg.vertical ? 4.4 : 1.1;
+    const face = glowMat('#ffffff', ai ?? neonSign(sg.text, sg.color, { vertical: sg.vertical }));
+    const m = new THREE.Mesh(new THREE.BoxGeometry(sw, sh, 0.3), [std('#222', 0.5), std('#222', 0.5), std('#222', 0.5), std('#222', 0.5), face, face]);
     m.position.set(-s.w / 2 + 0.7 + i * 1.6, SHOP_H + 2.6 + i * 0.8, s.d / 2 + 0.7); g.add(m);
   });
   // 屋顶

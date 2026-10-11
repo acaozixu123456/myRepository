@@ -17,6 +17,20 @@ export function preloadWorldTextures(): Promise<void> {
   }))).then(() => undefined);
 }
 export const worldImg = (k: string): HTMLImageElement | undefined => imgs.get(k);
+/** AI 招牌 / 广告贴图（预加载成功才有，否则返回 null 让调用方退回程序化招牌） */
+const aiTexCache = new Map<string, THREE.Texture>();
+export function aiTex(name: string): THREE.Texture | null {
+  const img = worldImg(name);
+  if (!img) return null;
+  let t = aiTexCache.get(name);
+  if (!t) { t = new THREE.Texture(img); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.needsUpdate = true; aiTexCache.set(name, t); }
+  return t;
+}
+/** 招牌文字 → 对应的 AI 招牌（只匹配文字与图案相符的几类） */
+export function aiSignFor(text: string, vertical: boolean): string | null {
+  if (vertical) return text.includes('网咖') ? 'sign_netcafe_vertical_04' : text.includes('酒') ? 'sign_bar_vertical_05' : null;
+  return text.includes('拉面') ? 'sign_ramen_horizontal_01' : text.includes('当铺') ? 'sign_pawn_horizontal_02' : text.includes('药') ? 'sign_pharmacy_horizontal_03' : null;
+}
 const WALL_IMG: Record<string, string> = { dark: 'wall_metal_riveted_01', teal: 'wall_tile_seafoam_01', brick: 'wall_metal_painted_02', cream: 'wall_tile_ivory_02', pink: 'wall_metal_ribbed_03' };
 const mk = (w: number, h: number, draw: (g: CanvasRenderingContext2D) => void, key?: string, srgb = true): THREE.CanvasTexture => {
   if (key && cache.has(key)) return cache.get(key)!;
