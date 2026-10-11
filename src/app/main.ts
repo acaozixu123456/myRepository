@@ -10,7 +10,7 @@ import { DEX_CSS, handleDex } from './screens/dex';
 import { CAMPAIGN_CSS, campaignHtml, handleCampaign } from './screens/campaign';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
-import { claim, floaty, homeHtml, updateHome, updateIdle, updateQuick } from './screens/home';
+import { claim, floaty, homeHtml, updateHome, updateIdle, updateQuick, updateTicker } from './screens/home';
 import { lineupHtml, lineupState } from './screens/lineup';
 import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
@@ -274,7 +274,7 @@ root.addEventListener('click', (e) => {
 // 每秒刷新挂机收益
 setInterval(() => {
   if (syncQuestDay()) { ctx.save(); ctx.refresh(); }
-  if (ctx.screen === 'home') { updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); }
+  if (ctx.screen === 'home') { updateTicker(ctx); updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); }
 }, 1000);
 setInterval(() => ctx.save(), 8000);
 setInterval(() => { refreshChatLog(ctx); if (ctx.screen === 'home') updateQuick(ctx); }, 5000);

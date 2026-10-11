@@ -146,6 +146,7 @@ export const SCREEN_CSS = `
 .gacha .tabs button.sp-tab{background:linear-gradient(#ffb7e6,#ff6ad0);color:#5a1038;box-shadow:0 4px 0 #b02f8a,inset 0 2px 0 rgba(255,255,255,.5)}
 .gacha .tabs button.sp-tab[aria-pressed=true]{background:linear-gradient(#ffe27a,#ffb02e);box-shadow:0 4px 0 #b9741a,inset 0 2px 0 rgba(255,255,255,.6)}
 .btn.dim{filter:saturate(.55);opacity:.9}
+.ticker{flex:none;margin:6px 14px 0;padding:3px 12px;border-radius:999px;background:rgba(43,28,16,.55);color:#fff3cc;font-size:11.5px;font-weight:800;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(50px,1fr));gap:6px;margin:8px 10px 0;flex:none}
 .quick button{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px 5px;border-radius:14px;background:linear-gradient(var(--paper),var(--paper-2));box-shadow:0 3px 0 var(--paper-line),inset 0 0 0 2px rgba(255,255,255,.65);font-family:var(--f-d);font-size:12.5px}
 .quick button:active{transform:translateY(2px)}

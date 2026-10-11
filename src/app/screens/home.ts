@@ -1,3 +1,6 @@
+import { festivalNow, upDaysLeft, upHeroOf, upPeriod } from '../../game/events';
+import { guildBossOf } from '../../game/guildboss';
+import { bossOfWeek } from '../../game/worldboss';
 import { eventsDot } from './events';
 import { ensureGuild, helpsLeft, myGuild } from '../../game/guild';
 import { CHAPTERS } from '../../content/campaign';
@@ -32,6 +35,7 @@ export function homeHtml(): string {
     </div>
     <div class="quick" id="quick"></div>
     <div class="tip" id="tip"></div>
+    <div class="ticker" id="ticker" data-act="nav" data-to="events"></div>
   </div>`;
 }
 
@@ -62,6 +66,23 @@ export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: strin
   ];
 }
 
+/** 首页底部的滚动小公告：本周首领 / 公会首领 / UP 招募 / 节日倒计时，每 5 秒换一条 */
+export function tickerLines(now = Date.now()): string[] {
+  const f = festivalNow(now), up = HERO_BY_ID[upHeroOf(upPeriod(now))];
+  return [
+    `本周世界首领：${bossOfWeek(now).title}`,
+    `本周公会首领：${guildBossOf(now).title}`,
+    `限时 UP：${up.name}，本期还剩 ${upDaysLeft(now)} 天`,
+    f.active ? `节日进行中：${f.active.f.name}，快去签到` : `下个节日：${f.next.f.name}，还有 ${f.daysToNext} 天`,
+  ];
+}
+export function updateTicker(ctx: AppCtx) {
+  const el = $(ctx, '#ticker');
+  if (!el) return;
+  const lines = tickerLines();
+  el.textContent = `${lines[Math.floor(Date.now() / 5000) % lines.length]}`;
+}
+
 export function updateQuick(ctx: AppCtx) {
   $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''}>${icon(q.ic, 30)}<span>${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
 }
@@ -70,6 +91,7 @@ export function updateHome(ctx: AppCtx) {
   const s = ctx.s;
   updateHud(ctx);
   updateQuick(ctx);
+  updateTicker(ctx);
   const st = getStage(s.stage.chapter, s.stage.index)!;
   const ch = CHAPTERS[s.stage.chapter - 1];
   const power = teamPower(s);
