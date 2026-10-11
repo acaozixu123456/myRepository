@@ -238,6 +238,13 @@ class Battle {
   bondsOn: Record<'A' | 'B', Set<string>> = { A: new Set(), B: new Set() };
   hasBond(side: 'A' | 'B', name: string) { return this.bondsOn[side].has(name); }
 
+  /** 放大最大生命时保持当前生命比例（多波战斗继承的残血不会被羁绊 / 阵营加成“回满”） */
+  scaleMaxHp(u: Unit, k: number) {
+    const r = u.hp / u.maxHp;
+    u.maxHp = Math.round(u.maxHp * k);
+    u.hp = Math.max(1, Math.round(u.maxHp * r));
+  }
+
   applyBonds() {
     for (const side of ['A', 'B'] as const) {
       const ids = new Set(this.units.filter((u) => u.side === side).map((u) => u.heroId));
@@ -246,9 +253,9 @@ class Battle {
         if (!bond.heroes.every((h) => ids.has(h))) continue;
         const members = mine.filter((u) => bond.heroes.includes(u.heroId));
         this.bondsOn[side].add(bond.name);
-        if (bond.name === '桃园结义') for (const u of members) { u.maxHp = Math.round(u.maxHp * 1.2); u.hp = u.maxHp; u.atk = Math.round(u.atk * 1.2); u.def = Math.round(u.def * 1.2); }
+        if (bond.name === '桃园结义') for (const u of members) { this.scaleMaxHp(u, 1.2); u.atk = Math.round(u.atk * 1.2); u.def = Math.round(u.def * 1.2); }
         if (bond.name === '美人连环') for (const u of mine) if (u.heroId === 'qun_lvbuding') u.atk = Math.round(u.atk * 1.25);
-        if (bond.name === '七擒七纵') for (const u of mine) if (u.faction === 'man') { u.maxHp = Math.round(u.maxHp * 1.15); u.hp = u.maxHp; }
+        if (bond.name === '七擒七纵') for (const u of mine) if (u.faction === 'man') { this.scaleMaxHp(u, 1.15); }
         if (bond.name === '江东之虎') for (const u of mine) if (u.faction === 'wu') u.crit += 0.15;
         if (bond.name === '魏武之道') for (const u of mine) if (u.faction === 'wei') u.dmgMul *= 1.05;
       }
@@ -257,8 +264,9 @@ class Battle {
       for (const u of mine) {
         const n = cnt[u.faction] ?? 0;
         const k = n >= 5 ? 0.1 : n >= 3 ? 0.05 : 0;
-        if (k) { u.atk = Math.round(u.atk * (1 + k)); u.maxHp = Math.round(u.maxHp * (1 + k)); u.hp = u.maxHp; }
+        if (k) { u.atk = Math.round(u.atk * (1 + k)); this.scaleMaxHp(u, 1 + k); }
         if (u.faction === 'qun') u.critDmg += 0.1 * (Object.keys(cnt).length - 1);
+        if (u.faction === 'shu' && n >= 2) u.crit += 0.02 * n; // 蜀·同心：蜀越多暴击越高
       }
     }
   }
@@ -467,6 +475,7 @@ class Battle {
     ctx.crit = crit;
     let mult = (1 + cm.dmgDealtPct) * caster.dmgMul * (1 + tm.dmgTakenPct) * this.counterMult(caster.faction, target.faction);
     if (crit) mult *= caster.critDmg;
+    if (caster.faction === 'man' && (this.factionCount[caster.side].man ?? 0) >= 2) mult *= 1 + 0.5 * (1 - caster.hp / caster.maxHp); // 蛮·野性：生命越低攻击越高
     if (target.dmgReduce) mult *= 1 - target.dmgReduce;
     if (this.cfg.rules) mult *= this.ruleMul('dmgMul', caster, elem) * this.ruleMul('takenMul', target, elem);
     if ((elem === 'fire' || elem === 'thunder') && this.has(target, 'wet')) mult *= 1.25;
@@ -505,7 +514,7 @@ class Battle {
     }
     cctx.killed = killed;
     ctx.killed = killed;
-    if (killed) this.kill(target, caster);
+    if (killed) { if (caster.faction === 'qun' && (this.factionCount[caster.side].qun ?? 0) >= 2) { this.gainEnergy(caster, 15); } this.kill(target, caster); }
     // 触发
     this.depth++;
     if (this.depth < 6) {
@@ -535,7 +544,8 @@ class Battle {
   heal(src: Unit, t: Unit, amount: number) {
     if (!t.alive || amount <= 0 || t.hp >= t.maxHp) return;
     const tm = this.mods(t);
-    const bondHeal = (this.hasBond(src.side, '杏林同盟') ? 1.2 : 1) * (1 + src.healBonus) * (this.cfg.rules ? this.ruleHealMul(src, t) : 1);
+    const shuN = src.faction === 'shu' ? (this.factionCount[src.side].shu ?? 0) : 0;
+    const bondHeal = (this.hasBond(src.side, '杏林同盟') ? 1.2 : 1) * (1 + src.healBonus) * (shuN >= 2 ? 1 + 0.05 * shuN : 1) * (this.cfg.rules ? this.ruleHealMul(src, t) : 1);
     const real = Math.min(t.maxHp - t.hp, Math.round(amount * bondHeal * (1 + tm.healTakenPct)));
     if (real <= 0) return;
     t.hp += real;
@@ -793,7 +803,11 @@ class Battle {
       if (allies.length) {
         const t = this.rng.pick(allies);
         this.push({ t: 'text', uid: t.uid, text: '天命' });
-        this.gainEnergy(t, 15);
+        const roll = this.rng.next();
+        if (roll < 0.55) this.gainEnergy(t, 15);
+        else if (roll < 0.85) { if (!this.flag(t, 'nine')) this.addStatus(u, t, 'nine', 2); else this.gainEnergy(t, 15); } // 抵挡一次致命伤害
+        else if (this.onceBy(t, 'xian_extra', 'round')) { t.extraTurn = true; this.push({ t: 'text', uid: t.uid, text: '天命·再动' }); } // 额外行动
+        else this.gainEnergy(t, 15);
       }
     }
   }
