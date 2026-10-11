@@ -14,6 +14,8 @@ import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
 import { applyGain, idleCapHours, nextStage, recommendedPowerOf, tickIdle } from '../game/stage';
 import type { Gain } from '../game/stage';
 import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
+import { bagHtml, handleBag } from './screens/bag';
+import { seedDemoInventory } from '../game/inventory';
 import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 
@@ -30,7 +32,7 @@ const params = new URLSearchParams(location.search);
 const at = params.get('at');
 if (at) { const [c, i] = at.split('-').map(Number); state.stage = { chapter: c, index: i, wins: 0 }; state.best = { chapter: c, index: i }; }
 if (params.get('pity')) { state.pity.ur = 79; state.pity.ssr = 9; }
-if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; state.res.exp = 500000; }
+if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; state.res.exp = 500000; seedDemoInventory(state); }
 
 const app = document.getElementById('app')!;
 app.innerHTML = `<div class="app" id="root">
@@ -38,7 +40,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen" data-screen="lineup"></div>
   <div class="screen gacha" data-screen="gacha"></div>
   <div class="screen" data-screen="campaign"></div>
-  <div class="screen" data-screen="bag"><div class="hud"><div class="title" style="color:#fff6dc">背包</div></div><div class="scroll"><div class="panel empty">装备与道具背包正在建设中。</div></div></div>
+  <div class="screen" data-screen="bag"></div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
     <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
@@ -90,6 +92,7 @@ const ctx: AppCtx = {
     else if (scr === 'lineup') (root.querySelector('[data-screen=lineup]') as HTMLElement).innerHTML = lineupHtml(ctx);
     else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
     else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
+    else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
   },
 };
 
@@ -142,6 +145,7 @@ root.addEventListener('click', (e) => {
   if ((act === 'challenge' || act === 'nav' || act === 'tgo') && el.closest('.dialog')) root.querySelectorAll('.mask.center').forEach((m) => m.remove());
   if (handleDetail(ctx, act, el)) return;
   if (handleCampaign(ctx, act, el)) return;
+  if (handleBag(ctx, el)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
