@@ -6,6 +6,7 @@ import { ROLES } from '../../data/systems';
 import { EQUIPS, EQUIP_SLOTS } from '../../content/equipment';
 import type { Quality } from '../../content/types';
 import { MAX_STAR, starShards, heroLevelCap, heroPower, heroStats, isInLineup, levelUp, levelUpCost, setAwaken, skillUp, skillUpCost, starUp, equip, unequip } from '../../game/state';
+import { AFF_NAMES, FISH_SNACK, MOON_SNACK, PET_PER_DAY, affLines, affProgress, ensureAff, feedSnack, petHero, petsLeft } from '../../game/affection';
 import { heroGear } from '../../game/gear';
 import { artImg } from '../../ui/art';
 import { esc, fmt, stars } from '../../ui/components';
@@ -25,6 +26,20 @@ function equipmentHtml(ctx: AppCtx, id: string): string {
         ? `<button class="hcard bag-hero-slot" style="--rc:${colors[def.quality]}" data-act="bag-open" data-uid="${esc(instance.uid)}" aria-label="${esc(def.name)}">${icon(icons[slot], 28)}<b>${esc(def.name)}</b><small>Lv.${instance.level}</small></button>`
         : `<button class="hcard bag-hero-slot" style="--rc:var(--paper-line)" data-act="bag-browse" aria-label="选择${names[slot]}">${icon(icons[slot], 28)}<b>${names[slot]}</b><small>未穿戴</small></button>`;
     }).join('')}</div>`;
+}
+
+function affectionHtml(ctx: AppCtx, id: string): string {
+  const d = HERO_BY_ID[id], h = ctx.s.heroes[id], a = ensureAff(h), p = affProgress(h);
+  const pct = p.to === null ? 100 : Math.round(((p.xp - p.from) / (p.to - p.from)) * 100);
+  const left = petsLeft(h);
+  const lines = affLines(d.name, d.quote, d.lore, p.level);
+  return `<div class="panel" style="margin-top:12px"><h3>好感度 <small class="muted" style="font-size:12px;font-weight:700">${AFF_NAMES[p.level]} · 属性 +${p.level}%</small></h3>
+    <div class="bar" style="height:10px;margin:6px 0"><i style="width:${pct}%"></i></div><div class="muted" style="font-size:11.5px;font-weight:700">${p.xp}${p.to === null ? '（已满级）' : ` / ${p.to}`}</div>
+    <div class="row" style="gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn sm pink" data-act="pet" ${left > 0 ? '' : 'disabled'}>撸一撸 ${left}/${PET_PER_DAY}</button>
+      <button class="btn sm green" data-act="snack" data-k="fish" ${a.fish < FISH_SNACK.perDay ? '' : 'disabled'}>小鱼干点心 ${FISH_SNACK.cost}</button>
+      <button class="btn sm blue" data-act="snack" data-k="moon" ${a.moon < MOON_SNACK.perDay ? '' : 'disabled'}>猫条 ${MOON_SNACK.cost} 月光珠</button></div>
+    ${lines.length ? `<div style="margin-top:8px;font-size:12.5px;line-height:1.7;font-weight:700;color:var(--ink-2)">${lines.map((l) => `<div>${esc(l.text)}</div>`).join('')}</div>` : '<div class="muted" style="margin-top:8px;font-size:12px;font-weight:700">多陪陪它，会解锁好感语录。</div>'}</div>`;
 }
 
 function skillsHtml(ctx: AppCtx, id: string): string {
@@ -81,6 +96,7 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
     ${skillsHtml(ctx, id)}
     ${awakenHtml(ctx, id)}
     ${equipmentHtml(ctx, id)}
+    ${affectionHtml(ctx, id)}
     <div class="panel" style="margin-top:12px"><h3>养成</h3>
       <div class="row" style="margin:6px 0"><div class="grow"><b>升级</b> <span class="muted" style="font-size:12px">Lv.${h.lv} → ${h.lv + 1}</span></div><button class="btn sm" data-act="levelup" ${h.lv >= cap ? 'disabled' : ''}>${h.lv >= cap ? '已到上限' : `<span class="cost">${icon('fish', 16)}${fmt(lc.fish)} ${icon('spark', 16)}${fmt(lc.exp)}</span>`}</button></div>
       <div class="row" style="margin:8px 0"><div class="grow"><b>升星</b> <span class="muted" style="font-size:12px">碎片 ${h.shards}${h.star < MAX_STAR ? ' / ' + need : ''}</span></div><button class="btn sm green" data-act="starup" ${h.star >= MAX_STAR || h.shards < need ? 'disabled' : ''}>${h.star >= MAX_STAR ? '已满星' : '升星'}</button></div>
@@ -111,6 +127,8 @@ export function handleDetail(ctx: AppCtx, act: string, el: HTMLElement): boolean
     case 'skillup': r = skillUp(ctx.s, id); break;
     case 'starup': r = starUp(ctx.s, id); if (r.ok) ctx.toast('升星成功！等级上限提高'); break;
     case 'awaken': r = setAwaken(ctx.s, id, el.dataset.b as 'A' | 'B'); if (r.ok) ctx.toast('已切换觉醒路线'); break;
+    case 'pet': { const x = petHero(ctx.s, id); r = x.ok ? { ok: true } : x; if (x.ok) { ctx.toast(`呼噜呼噜～ 好感 +${x.gain}${x.leveled ? '，好感升级了！' : ''}`); sfx.ok(); } break; }
+    case 'snack': { const x = feedSnack(ctx.s, id, el.dataset.k as 'fish' | 'moon'); r = x.ok ? { ok: true } : x; if (x.ok) { ctx.toast(`吃得很开心！好感 +${x.gain}${x.leveled ? '，好感升级了！' : ''}`); sfx.coin(); } break; }
     case 'toggleteam': r = isInLineup(ctx.s, id) ? unequip(ctx.s, id) : equip(ctx.s, id); break;
     case 'closesheet': closeSheet(ctx); return true;
     default: return false;

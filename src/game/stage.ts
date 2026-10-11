@@ -1,4 +1,5 @@
 // 关卡与战斗配置：把阵容、关卡数据转成引擎的 BattleConfig；结算奖励；挂机收益。
+import { affMul } from './affection';
 import { CHAPTERS } from '../content/campaign';
 import { idleCap, idleRate as contentIdleRate } from '../content/progression';
 import type { StageDef } from '../content/types';
@@ -59,7 +60,7 @@ export function lineupSetups(s: PlayerState, carry?: Record<string, { hpPct: num
     if (!h) return;
     const c = carry?.[id];
     const g = heroGear(s, id);
-    out.push({ heroId: id, level: h.lv, star: h.star, awaken: h.awaken, skillLv: h.skillLv, pos, hpPct: c?.hpPct, energy: c?.energy, gear: g.stats, set4: g.set4 });
+    out.push({ heroId: id, level: h.lv, star: h.star, awaken: h.awaken, skillLv: h.skillLv, statMul: affMul(h), pos, hpPct: c?.hpPct, energy: c?.energy, gear: g.stats, set4: g.set4 });
   });
   return out;
 }

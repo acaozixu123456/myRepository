@@ -15,6 +15,7 @@
 | 七日签到 / 快速探索 | `game/daily.ts` | `screens/daily.ts` | `daily` | `tests/daily.test.ts` |
 | 日常秘境 | `game/dungeon.ts` | `screens/campaign.ts` | `dungeon` | `tests/dungeon.test.ts` |
 | **活动中心**（见下） | `game/events.ts` | `screens/events.ts` | `events` | `tests/events.test.ts` |
+| 好感度（撸毛 / 点心，属性最高 +5%） | `game/affection.ts` | `screens/detail.ts` 英雄详情页 | `heroes[id].aff` | `tests/affection.test.ts` |
 | 猫窝（家具 → 每日小鱼干） | `game/nest.ts` | `screens/events.ts` 的「猫窝」页 | `nest` | `tests/nest.test.ts` |
 
 ## 活动中心（`game/events.ts`）
