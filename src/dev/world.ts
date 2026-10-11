@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 // 3D 世界调试页：?yaw=0.6&pitch=0.9&dist=44  shadow=0 / bloom=0  team=a,b,c  go=x,z（走到某点）  t=秒
 import { Explorer } from '../world/explore';
 import { WorldView, defaultQuality } from '../world/engine';
@@ -32,6 +33,10 @@ wv.snapCamera();
 for (let i = 0; i < 20; i++) { ex.update(0.1); st.update(i * 0.1, 0.1); wv.snapCamera(); }
 const fc = q.get('focus'); // ?focus=x,z：镜头对准某个点（看道具用；要放在预热循环之后，否则会被队长拉回去）
 if (fc) { const [fx, fz] = fc.split(',').map(Number); wv.focus.set(fx, 0.3, fz); wv.snapCamera(); }
+if (q.get('sun')) wv.sun.intensity = +q.get('sun')!;
+if (q.get('lights') === '0') st.group.traverse((o) => { if ((o as THREE.Light).isLight) o.visible = false; });
+if (q.get('hemi') === '0') wv.scene.traverse((o) => { if ((o as THREE.HemisphereLight).isHemisphereLight) o.visible = false; });
+if (q.get('nomirror') === '1') st.group.traverse((o) => { if (o.scale.y === -1) o.visible = false; });
 wv.render(0.1);
 (window as unknown as { done: boolean; ex: Explorer; wv: WorldView }).ex = ex;
 (window as unknown as { done: boolean }).done = true;
