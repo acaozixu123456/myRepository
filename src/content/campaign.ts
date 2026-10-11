@@ -51,7 +51,7 @@ const PLANS: ChapterPlan[] = [
       ready('窄巷难转身，双方后排首回合速度降低百分之十。', [{ t: 'startStatus', side: 'both', to: 'back', id: 'step', turns: 1, power: -0.1 }]),
       ready('会盟鼓响，敌方先锋开局回复十五点元气。', [{ t: 'startEnergy', side: 'B', to: 'role:先锋', amount: 15 }]),
       ready('空碗传声，友方医者首次治疗效果增加百分之二十。', [{ t: 'firstHealMul', side: 'A', to: 'role:医者', mult: 1.2 }]),
-      ready('董桌的护体毛首次被击破时，敌方全体元气降低十点。', [{ t: 'on', ev: 'shieldBreak', side: 'B', hero: 'qun_dongzhuo', act: { k: 'energy', amount: -10, who: 'foes' } }]),
+      ready('董桌的护体毛首次被击破时，掀桌溅出的毛屑让挑战者全体元气降低十点。', [{ t: 'on', ev: 'shieldBreak', side: 'B', hero: 'qun_dongzhuo', act: { k: 'energy', amount: -10, who: 'foes' } }]),
     ],
     bossNote: '开局以拍桌叠护体毛；受到直接伤害后仍醒着，生命首次低于百分之七十与三十五时，各立即获得百分之二十五最大生命的护盾，分别持续三次自身行动结束，每道血线每场一次。暴虐仍按原技能增攻。待落地的阶段设计：在两道血线各预告一回合后释放掀桌；睡着时桌下藏鱼为同伴恢复。玩家先处理华佗喵，再集中破盾，以治疗或护盾接住群体技能；中段魏军让纯群阵容承受克制压力。',
   },
