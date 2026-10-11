@@ -1,0 +1,494 @@
+{
+  "category": "A06",
+  "round": 1,
+  "base": "4b9d0ef3f060f83bd3517560b484c13a37d09606",
+  "generator": "image_gen.imagegen",
+  "date": "2026-10-11",
+  "generations": [
+    {
+      "id": "sign_ramen_horizontal_01",
+      "title": "九命拉面",
+      "english": "RAMEN",
+      "target": [
+        1024,
+        256
+      ],
+      "prompt": "Create an AI-painted production game emissive/base-color SIGN TEXTURE for a rainy dark cyberpunk CAT city. Flat straight-on orthographic graphic only: no street scene, wall, building, perspective, hardware outside the panel, human face, photograph, watermark, signature or other writing. Use one near-black rectangular sign panel with controlled luminous neon letter strokes, faint colored halo, tiny tasteful weathering; keep the black negative space dark, not a flooded white glow. Text accuracy and legibility at small game scale are the priority. Square working canvas, containing ONE wide 4:1 horizontal sign panel centered across the middle quarter of the canvas height. The entire panel, border and glow must fit inside that middle horizontal strip with safe margins, almost full canvas width. Above and below the strip is uniformly near-black empty canvas, so it can be cropped to a 1024x256 delivery texture without changing the graphic. No montage. The panel itself has four-to-one width/height, straight aligned edges, no skew. The only text is the exact Chinese title stated below and one small exact English word. Chinese title is a single large clean horizontal line. No extra pseudo-characters, numerals or punctuation.\nCONTENT: exact four Chinese characters 九命拉面. Exact English word RAMEN, much smaller beneath the title. Hot coral-red / magenta Chinese neon with warm ivory cores, small warm-yellow accent. At the far left, a simple little neon cat-ear ramen bowl icon with two curved steam lines; no cat face. Composition: small icon occupies at most one fifth of panel, four Chinese characters occupy the broad center/right. A thin broken amber/magenta perimeter line, dark navy-black interior. A friendly old noodle shop, readable rather than fussy.",
+      "candidate": 1,
+      "operation": "generation",
+      "references": [],
+      "native": {
+        "file": "exec-53ff752e-2b5d-483f-b810-ac821f7ff6d9.png",
+        "size": [
+          1983,
+          793
+        ],
+        "mode": "RGB",
+        "bytes": 1636986,
+        "sha256": "a8963f5a9c94482f871efd8ef57e7bd2b78530058b8ec0d6345b1a39c39474cf"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "none"
+      }
+    },
+    {
+      "id": "sign_pawn_horizontal_02",
+      "title": "小鱼干当铺",
+      "english": "PAWN",
+      "target": [
+        1024,
+        256
+      ],
+      "prompt": "Create an AI-painted production game emissive/base-color SIGN TEXTURE for a rainy dark cyberpunk CAT city. Flat straight-on orthographic graphic only: no street scene, wall, building, perspective, hardware outside the panel, human face, photograph, watermark, signature or other writing. Use one near-black rectangular sign panel with controlled luminous neon letter strokes, faint colored halo, tiny tasteful weathering; keep the black negative space dark, not a flooded white glow. Text accuracy and legibility at small game scale are the priority. Square working canvas, containing ONE wide 4:1 horizontal sign panel centered across the middle quarter of the canvas height. The entire panel, border and glow must fit inside that middle horizontal strip with safe margins, almost full canvas width. Above and below the strip is uniformly near-black empty canvas, so it can be cropped to a 1024x256 delivery texture without changing the graphic. No montage. The panel itself has four-to-one width/height, straight aligned edges, no skew. The only text is the exact Chinese title stated below and one small exact English word. Chinese title is a single large clean horizontal line. No extra pseudo-characters, numerals or punctuation.\nCONTENT: exact five Chinese characters 小鱼干当铺. Exact English word PAWN, much smaller beneath the title. Clear turquoise/cyan Chinese neon with pale luminous cores and restrained muted-gold detailing. One tiny dried-fish / coin outline at far left, no fish carcass realism or face. Five characters occupy the broad center/right. Thin restrained cyan perimeter and dark petrol-black interior. An old cat-world pawn shop, refined compact typography, slight irregular tube joins but no distorted glyphs.",
+      "candidate": 1,
+      "operation": "generation",
+      "references": [],
+      "native": {
+        "file": "exec-9f5b4ead-c239-4c87-8073-c0833e9b183c.png",
+        "size": [
+          1983,
+          793
+        ],
+        "mode": "RGB",
+        "bytes": 1406008,
+        "sha256": "519e2e094213c11f0d34056ce35db2325921708c70a585f8f569539d66dad61d"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "none"
+      }
+    },
+    {
+      "id": "sign_pharmacy_horizontal_03",
+      "title": "猫薄荷药局",
+      "english": "HERBS",
+      "target": [
+        1024,
+        256
+      ],
+      "prompt": "Create an AI-painted production game emissive/base-color SIGN TEXTURE for a rainy dark cyberpunk CAT city. Flat straight-on orthographic graphic only: no street scene, wall, building, perspective, hardware outside the panel, human face, photograph, watermark, signature or other writing. Use one near-black rectangular sign panel with controlled luminous neon letter strokes, faint colored halo, tiny tasteful weathering; keep the black negative space dark, not a flooded white glow. Text accuracy and legibility at small game scale are the priority. Square working canvas, containing ONE wide 4:1 horizontal sign panel centered across the middle quarter of the canvas height. The entire panel, border and glow must fit inside that middle horizontal strip with safe margins, almost full canvas width. Above and below the strip is uniformly near-black empty canvas, so it can be cropped to a 1024x256 delivery texture without changing the graphic. No montage. The panel itself has four-to-one width/height, straight aligned edges, no skew. The only text is the exact Chinese title stated below and one small exact English word. Chinese title is a single large clean horizontal line. No extra pseudo-characters, numerals or punctuation.\nCONTENT: exact five Chinese characters 猫薄荷药局. Exact English word HERBS, much smaller beneath the title. Jade-green and soft cyan Chinese neon with warm ivory cores. At far left a simple cat-paw-shaped leaf outline, small and recognizable. Five characters occupy the broad center/right. A subtle jade-green double corner bracket frame rather than a heavy full border, very dark green-black interior. A quiet catnip herbal pharmacy. No medical cross, human face, bottle labels or other text.",
+      "candidate": 1,
+      "operation": "generation",
+      "references": [],
+      "native": {
+        "file": "exec-e3ca9a6f-d53a-433d-9636-e38d93752ee4.png",
+        "size": [
+          1983,
+          793
+        ],
+        "mode": "RGB",
+        "bytes": 1645218,
+        "sha256": "5564343076b83d5c0fc61c373f6b8327af7c6a556c21df6b6cbad007202cdb6f"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "none"
+      }
+    },
+    {
+      "id": "sign_netcafe_vertical_04",
+      "title": "夜猫网咖",
+      "english": "NETCAFE",
+      "target": [
+        256,
+        1024
+      ],
+      "prompt": "Create one production-ready AI-painted flat neon shop SIGN TEXTURE for a rainy cyberpunk city of cats. One clean straight-on orthographic vertical panel, no street, building, room, perspective, 3D sign mockup, human face, signature, watermark or other writing. Very dark near-black panel, restrained neon light strokes with pale cores and a narrow colored halo, small weathering and neat corner brackets. The entire panel has a 1:4 width-to-height proportion. Square working canvas with ONE vertical sign centered in the middle quarter of the canvas width, nearly full canvas height, all border/glow inside with safe margins; outside is empty near-black canvas so the panel can be cropped to a 256x1024 delivery texture without warping. EXACTLY four large upright SIMPLIFIED CHINESE characters in ONE vertical column top-to-bottom; each must be correct, clearly separated, not rotated, not mixed with other characters. Exactly one much smaller English word at the bottom. No decorative pseudo-text. Optimize clear shapes for small game scale.\nExact Chinese characters from top to bottom: 夜 then 猫 then 网 then 咖. Exact English word NETCAFE below them. Cyan and deep violet neon, slight magenta highlights. Small geometric CAT paw / cursor icon at the very top above the characters, at most a modest header. Chinese characters bright cyan with pale cores. Thin cool-violet side border, worn blue-black backing. Night cat internet cafe, quiet and graphic. Keep 网 in its SIMPLIFIED form, not 網.",
+      "candidate": 1,
+      "operation": "generation",
+      "references": [],
+      "native": {
+        "file": "exec-c8da7ad0-151a-4ad2-877e-ee686192a951.png",
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGB",
+        "bytes": 1067492,
+        "sha256": "29e87587577f4abd2e4e1902b2e600129fa5c54657b30094c2e12a74c7853049"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "none"
+      }
+    },
+    {
+      "id": "sign_bar_vertical_05",
+      "title": "毛线酒吧",
+      "english": "BAR",
+      "target": [
+        256,
+        1024
+      ],
+      "prompt": "Create one production-ready AI-painted flat neon shop SIGN TEXTURE for a rainy cyberpunk city of cats. One clean straight-on orthographic vertical panel, no street, building, room, perspective, 3D sign mockup, human face, signature, watermark or other writing. Very dark near-black panel, restrained neon light strokes with pale cores and a narrow colored halo, small weathering and neat corner brackets. The entire panel has a 1:4 width-to-height proportion. Square working canvas with ONE vertical sign centered in the middle quarter of the canvas width, nearly full canvas height, all border/glow inside with safe margins; outside is empty near-black canvas so the panel can be cropped to a 256x1024 delivery texture without warping. EXACTLY four large upright SIMPLIFIED CHINESE characters in ONE vertical column top-to-bottom; each must be correct, clearly separated, not rotated, not mixed with other characters. Exactly one much smaller English word at the bottom. No decorative pseudo-text. Optimize clear shapes for small game scale.\nExact Chinese characters from top to bottom: 毛 then 线 then 酒 then 吧. Exact English word BAR below them. Magenta / warm red-pink neon with pale pink cores, tiny amber accents. Small simple yarn ball with a short curled tail at the very top, no cat or human face. Thin interrupted warm-magenta border, plum-black backing. Cozy yarn-themed cat bar in a neon alley. Keep 线 in its SIMPLIFIED form, not 線.",
+      "candidate": 1,
+      "operation": "generation",
+      "references": [],
+      "native": {
+        "file": "exec-87eb65da-2ff7-4fd1-bc18-0f32149facb4.png",
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGB",
+        "bytes": 1512898,
+        "sha256": "67adff5a3e9875f83018078cf480549570026d0e4f0acd205f8e7ba6d979274d"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "none"
+      }
+    },
+    {
+      "id": "ad_ninelives_hologram_06",
+      "title": "九命有价",
+      "secondary": "好梦不赊",
+      "english": "NINE LIVES",
+      "target": [
+        512,
+        1024
+      ],
+      "prompt": "Create one AI-painted finished emissive advertising TEXTURE for a rainy dark cyberpunk CAT city. Only a flat straight-on complete billboard graphic, no street scene, building, room, perspective mockup, human face, person, real brand, watermark, signature or extra writing. The advertising panel is a tall 1:2 rectangle centered on a square near-black working canvas, occupying the central half of its width and nearly full height with safe margins for crop to 512x1024. Keep all art, thin border and halo completely inside that rectangle; outside is empty near-black. Dominant deep plum-black with restrained cyan and magenta holographic lines, luminous pale text cores, clear hierarchy, dark negative space. Main headline at TOP: exact four SIMPLIFIED CHINESE characters 九命有价 in one horizontal line, large, neat and fully readable. Use 价, NOT 價. At bottom: exact four SIMPLIFIED CHINESE characters 好梦不赊 in one readable horizontal line, smaller than title but still bold; use 梦 and 赊, NOT 夢 or 賒. Below that exact small English NINE LIVES. Those three lines are the ONLY writing. In the center, a striking stylized holographic CAT head and upper chest, physically feline: big triangular cat ears, short round muzzle, small triangular cat nose, unmistakable whiskers, luminous round feline eyes, soft neck fur. No human lips, human nose, human skin or human body. A dark simple futuristic collar with a small glowing paw emblem, no lettering. Graphic retro-futurist corporate advertising: selling 'extra lives' to cats, a slightly unsettling polished commercial smile rather than scary. A few fine scanlines and clipped magenta/cyan glitches along the outer cat silhouette, NEVER through or distorting the text. No photo realism, no overly intricate tiny text, no bright full-canvas glow.",
+      "candidate": 1,
+      "operation": "generation",
+      "references": [],
+      "native": {
+        "file": "exec-91aeb452-7ff1-463b-ad0e-38c4319e09b9.png",
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGB",
+        "bytes": 1832684,
+        "sha256": "fedc1ccc756a7d54f2dac75217377dc85a416736ef40d4505fe4ee53f8bbfae3"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "none"
+      }
+    },
+    {
+      "id": "sign_pawn_horizontal_02",
+      "candidate": 2,
+      "operation": "image_gen_edit",
+      "references": [
+        {
+          "file": "exec-9f5b4ead-c239-4c87-8073-c0833e9b183c.png",
+          "sha256": "519e2e094213c11f0d34056ce35db2325921708c70a585f8f569539d66dad61d"
+        }
+      ],
+      "prompt": "Edit this sign texture very narrowly: preserve the entire panel layout, fish/coin icon, framing, cyan and gold palette, wear, black background, letter size, spacing, neon brightness and the small English word PAWN. Replace ONLY the incorrect traditional Chinese glyphs with exact SIMPLIFIED CHINESE. The large title must be exactly 小鱼干当铺, five characters in this order. In particular use 鱼 (with its single horizontal bottom, NOT 魚), 当 (NOT 當), and 铺 (the three-stroke simplified metal radical 钅, NOT 鋪). Keep 小 and 干 and all other graphic elements unchanged. The final title is 小鱼干当铺; do not add any other text. Keep the sign and source canvas dimensions/layout unchanged, straight-on and complete.",
+      "native": {
+        "file": "exec-a924622f-8474-45b1-84d2-8b9f715ed0a9.png",
+        "size": [
+          1983,
+          793
+        ],
+        "mode": "RGB",
+        "bytes": 1518172,
+        "sha256": "5415e8a28855dd17d539b9ab1376ffbc4d96bb2ccd64a949bba32fd70fd2ec6f"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "referenced_image_paths"
+      }
+    },
+    {
+      "id": "sign_pawn_horizontal_02",
+      "candidate": 3,
+      "operation": "image_gen_edit",
+      "references": [
+        {
+          "file": "exec-a924622f-8474-45b1-84d2-8b9f715ed0a9.png",
+          "sha256": "5415e8a28855dd17d539b9ab1376ffbc4d96bb2ccd64a949bba32fd70fd2ec6f"
+        }
+      ],
+      "prompt": "Edit this existing completed neon pawnshop sign texture. Make ONE local text correction and preserve all other pixels and design choices as closely as possible: the LAST large Chinese character is currently the traditional 鋪, with the 金 left radical. Replace ONLY that last character with the SIMPLIFIED character 铺 (Unicode U+94FA), with the compact simplified metal radical 钅 on its LEFT and 甫 on its RIGHT. The left radical must be 钅, never 金: no triangular roof, no 八 below it. The finished five-character headline reads exactly 小鱼干当铺. Keep the first four headline characters, PAWN English subtitle, fish-and-coin icon, cyan/yellow neon tubes and halos, dark frame, weathering, layout, character sizes, spacing, stroke thickness, light intensity, canvas dimensions and framing unchanged. Use the same existing yellow-white neon lettering style for the corrected glyph. No extra text, no human face, no scene or mockup.",
+      "native": {
+        "file": "exec-65cbd667-c076-48a1-a414-326bebd48723.png",
+        "size": [
+          1983,
+          793
+        ],
+        "mode": "RGB",
+        "bytes": 1518067,
+        "sha256": "5614a9c622c2b41531b804e6397f5bc231983e44a0959623a836d456785810eb"
+      },
+      "tool_parameters": {
+        "transparent_background": false,
+        "reference_mode": "referenced_image_paths"
+      }
+    }
+  ],
+  "external_image_references": [],
+  "selection": "Initial ramen, pharmacy, netcafe, bar and hologram; pawn candidate 3 after simplified-character corrections.",
+  "color_note": "Generated RGB pixels are treated as sRGB and the standard sRGB ICC profile is embedded on export; no recoloring, tone adjustment or sharpening.",
+  "exports": [
+    {
+      "id": "sign_ramen_horizontal_01",
+      "title": "九命拉面",
+      "english": "RAMEN",
+      "candidate": 1,
+      "source": "exec-53ff752e-2b5d-483f-b810-ac821f7ff6d9.png",
+      "source_sha256": "a8963f5a9c94482f871efd8ef57e7bd2b78530058b8ec0d6345b1a39c39474cf",
+      "crop_box_xyxy": [
+        0,
+        144,
+        1980,
+        639
+      ],
+      "aspect_canvas": [
+        1980,
+        495
+      ],
+      "paste_offset_xy": [
+        0,
+        0
+      ],
+      "padding_rgb": [
+        0,
+        0,
+        0
+      ],
+      "transform": "crop; optional black letterbox; uniform Lanczos downsample; WebP export",
+      "creative_postprocessing": "none; all illustration and glyph corrections from image_gen",
+      "output": {
+        "file": "sign_ramen_horizontal_01.webp",
+        "size": [
+          1024,
+          256
+        ],
+        "mode": "RGB",
+        "colorspace": "sRGB",
+        "encoding": {
+          "quality": 90,
+          "method": 6
+        },
+        "bytes": 46040,
+        "sha256": "4446ef7399a1c78f6f8914a28b4863ea90e69f2ef22e547502c46c92b851719d"
+      }
+    },
+    {
+      "id": "sign_pawn_horizontal_02",
+      "title": "小鱼干当铺",
+      "english": "PAWN",
+      "candidate": 3,
+      "source": "exec-65cbd667-c076-48a1-a414-326bebd48723.png",
+      "source_sha256": "5614a9c622c2b41531b804e6397f5bc231983e44a0959623a836d456785810eb",
+      "crop_box_xyxy": [
+        0,
+        144,
+        1980,
+        639
+      ],
+      "aspect_canvas": [
+        1980,
+        495
+      ],
+      "paste_offset_xy": [
+        0,
+        0
+      ],
+      "padding_rgb": [
+        0,
+        0,
+        0
+      ],
+      "transform": "crop; optional black letterbox; uniform Lanczos downsample; WebP export",
+      "creative_postprocessing": "none; all illustration and glyph corrections from image_gen",
+      "output": {
+        "file": "sign_pawn_horizontal_02.webp",
+        "size": [
+          1024,
+          256
+        ],
+        "mode": "RGB",
+        "colorspace": "sRGB",
+        "encoding": {
+          "quality": 90,
+          "method": 6
+        },
+        "bytes": 59224,
+        "sha256": "4c01ff70da2ae671916b7ae415dd0708c0d653fef4e246cbf3068cf0a7fba4fb"
+      }
+    },
+    {
+      "id": "sign_pharmacy_horizontal_03",
+      "title": "猫薄荷药局",
+      "english": "HERBS",
+      "candidate": 1,
+      "source": "exec-e3ca9a6f-d53a-433d-9636-e38d93752ee4.png",
+      "source_sha256": "5564343076b83d5c0fc61c373f6b8327af7c6a556c21df6b6cbad007202cdb6f",
+      "crop_box_xyxy": [
+        0,
+        144,
+        1980,
+        639
+      ],
+      "aspect_canvas": [
+        1980,
+        495
+      ],
+      "paste_offset_xy": [
+        0,
+        0
+      ],
+      "padding_rgb": [
+        0,
+        0,
+        0
+      ],
+      "transform": "crop; optional black letterbox; uniform Lanczos downsample; WebP export",
+      "creative_postprocessing": "none; all illustration and glyph corrections from image_gen",
+      "output": {
+        "file": "sign_pharmacy_horizontal_03.webp",
+        "size": [
+          1024,
+          256
+        ],
+        "mode": "RGB",
+        "colorspace": "sRGB",
+        "encoding": {
+          "quality": 90,
+          "method": 6
+        },
+        "bytes": 52360,
+        "sha256": "7cdbbad9634b1b1de8834ec0d2e99ab89d4808e15286f86b0326fe516c019a03"
+      }
+    },
+    {
+      "id": "sign_netcafe_vertical_04",
+      "title": "夜猫网咖",
+      "english": "NETCAFE",
+      "candidate": 1,
+      "source": "exec-c8da7ad0-151a-4ad2-877e-ee686192a951.png",
+      "source_sha256": "29e87587577f4abd2e4e1902b2e600129fa5c54657b30094c2e12a74c7853049",
+      "crop_box_xyxy": [
+        455,
+        0,
+        799,
+        1254
+      ],
+      "aspect_canvas": [
+        344,
+        1376
+      ],
+      "paste_offset_xy": [
+        0,
+        61
+      ],
+      "padding_rgb": [
+        0,
+        0,
+        0
+      ],
+      "transform": "crop; optional black letterbox; uniform Lanczos downsample; WebP export",
+      "creative_postprocessing": "none; all illustration and glyph corrections from image_gen",
+      "output": {
+        "file": "sign_netcafe_vertical_04.webp",
+        "size": [
+          256,
+          1024
+        ],
+        "mode": "RGB",
+        "colorspace": "sRGB",
+        "encoding": {
+          "quality": 90,
+          "method": 6
+        },
+        "bytes": 64512,
+        "sha256": "ce40590e9b4918fefa9501f29e4d9f78ff2db525d8e2e27943d65800a68d14a4"
+      }
+    },
+    {
+      "id": "sign_bar_vertical_05",
+      "title": "毛线酒吧",
+      "english": "BAR",
+      "candidate": 1,
+      "source": "exec-87eb65da-2ff7-4fd1-bc18-0f32149facb4.png",
+      "source_sha256": "67adff5a3e9875f83018078cf480549570026d0e4f0acd205f8e7ba6d979274d",
+      "crop_box_xyxy": [
+        455,
+        0,
+        799,
+        1254
+      ],
+      "aspect_canvas": [
+        344,
+        1376
+      ],
+      "paste_offset_xy": [
+        0,
+        61
+      ],
+      "padding_rgb": [
+        0,
+        0,
+        0
+      ],
+      "transform": "crop; optional black letterbox; uniform Lanczos downsample; WebP export",
+      "creative_postprocessing": "none; all illustration and glyph corrections from image_gen",
+      "output": {
+        "file": "sign_bar_vertical_05.webp",
+        "size": [
+          256,
+          1024
+        ],
+        "mode": "RGB",
+        "colorspace": "sRGB",
+        "encoding": {
+          "quality": 90,
+          "method": 6
+        },
+        "bytes": 62276,
+        "sha256": "7b140856f707b4fe6abf19586fefe3451408b4555df9880cb00520f390c6a291"
+      }
+    },
+    {
+      "id": "ad_ninelives_hologram_06",
+      "title": "九命有价",
+      "english": "NINE LIVES",
+      "candidate": 1,
+      "secondary": "好梦不赊",
+      "source": "exec-91aeb452-7ff1-463b-ad0e-38c4319e09b9.png",
+      "source_sha256": "fedc1ccc756a7d54f2dac75217377dc85a416736ef40d4505fe4ee53f8bbfae3",
+      "crop_box_xyxy": [
+        293,
+        0,
+        961,
+        1254
+      ],
+      "aspect_canvas": [
+        668,
+        1336
+      ],
+      "paste_offset_xy": [
+        0,
+        41
+      ],
+      "padding_rgb": [
+        0,
+        0,
+        0
+      ],
+      "transform": "crop; optional black letterbox; uniform Lanczos downsample; WebP export",
+      "creative_postprocessing": "none; all illustration and glyph corrections from image_gen",
+      "output": {
+        "file": "ad_ninelives_hologram_06.webp",
+        "size": [
+          512,
+          1024
+        ],
+        "mode": "RGB",
+        "colorspace": "sRGB",
+        "encoding": {
+          "quality": 90,
+          "method": 6
+        },
+        "bytes": 154082,
+        "sha256": "f9c0dfb07e5f0b33bc182b61529fbd97e1b8cf5fa32563f4bc196c7418cb7038"
+      }
+    }
+  ]
+}
