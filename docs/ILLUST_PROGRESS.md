@@ -23,7 +23,7 @@
 | 孙小霸 | `wu_sunxiaoba` | SSR | 待画 | 0 | |
 | 孙香香 | `wu_sunxiangxiang` | SSR | 待画 | 0 | |
 | 陆喵逊 | `wu_luxun` | SSR | 待画 | 0 | |
-| 貂蝉喵 | `qun_diaochan` | SSR | 待画 | 0 | |
+| 貂蝉喵 | `qun_diaochan` | SSR | 待审 | 1 | 2 候选选 B；双空爪肩袖自查；裙摆金边已收窄 |
 | 华佗喵 | `qun_huatuo` | SSR | 待画 | 0 | |
 | 张角角 | `qun_zhangjiao` | SSR | 待画 | 0 | |
 | 祝融喵 | `man_zhurong` | SSR | 待画 | 0 | |
