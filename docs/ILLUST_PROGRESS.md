@@ -20,7 +20,7 @@
 | 张喵飞 | `shu_zhangmiaofei` | SSR | 待画 | 0 | |
 | 诸葛喵亮 | `shu_zhugemiaoliang` | SSR | 待画 | 0 | |
 | 赵喵云 | `shu_zhaomiaoyun` | SSR | 待画 | 0 | |
-| 孙小霸 | `wu_sunxiaoba` | SSR | 待画 | 0 | |
+| 孙小霸 | `wu_sunxiaoba` | SSR | 待审 | 1 | 2 候选选 B；双爪肩臂自查；保留疤与尾环、补玫瑰环斑 |
 | 孙香香 | `wu_sunxiangxiang` | SSR | 待画 | 0 | |
 | 陆喵逊 | `wu_luxun` | SSR | 待画 | 0 | |
 | 貂蝉喵 | `qun_diaochan` | SSR | 待画 | 0 | |
