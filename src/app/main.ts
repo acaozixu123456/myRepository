@@ -20,6 +20,7 @@ document.head.appendChild(style);
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
 const state = load(storage);
 const params = new URLSearchParams(location.search);
+if (params.get('pity')) { state.pity.ur = 79; state.pity.ssr = 9; }
 if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; state.res.exp = 500000; }
 
 const app = document.getElementById('app')!;
@@ -111,9 +112,13 @@ root.addEventListener('click', (e) => {
     }
     case 'autolevel': {
       let n = 0;
-      for (const id of state.lineup) {
-        if (!id) continue;
-        while (n < 40 && levelUp(state, id).ok) n++;
+      // 每次给等级最低的上阵猫升一级，资源不够或到上限就停
+      const pool = state.lineup.filter((x): x is string => !!x);
+      while (n < 60) {
+        const order = pool.map((id) => state.heroes[id]).sort((x, y) => x.lv - y.lv);
+        const target = order.find((h) => levelUp(state, h.id).ok);
+        if (!target) break;
+        n++;
       }
       ctx.toast(n ? `给阵容猫猫升了 ${n} 级` : '资源不够，升不动了');
       ctx.save();

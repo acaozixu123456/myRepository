@@ -138,11 +138,11 @@ export const SCREEN_CSS = `
 .ten .cell[data-r=SSR] .hcard{box-shadow:0 0 12px 2px rgba(165,106,216,.7)}
 .reveal .okbar{position:absolute;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;gap:12px;z-index:6}
 .urcut{position:absolute;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;background:rgba(10,4,20,.82);animation:fadein .15s}
-.urcut .band{position:relative;width:140%;height:210px;background:linear-gradient(90deg,transparent,var(--c) 14%,var(--c) 86%,transparent);transform:rotate(-7deg);display:flex;align-items:center;box-shadow:0 0 0 4px rgba(255,255,255,.85) inset}
-.urcut .band img{position:absolute;left:12%;bottom:-6px;height:130%;filter:drop-shadow(0 10px 10px rgba(0,0,0,.5));transform:rotate(7deg);animation:slidein .5s cubic-bezier(.2,1.2,.4,1)}
-.urcut .txt{margin-left:42%;transform:rotate(7deg);color:#fff;animation:slidein2 .5s .1s both}
+.urcut .band{position:relative;width:118%;height:200px;flex:none;background:linear-gradient(90deg,transparent,var(--c) 14%,var(--c) 86%,transparent);transform:rotate(-7deg);display:flex;align-items:center;box-shadow:0 0 0 4px rgba(255,255,255,.85) inset}
+.urcut .band img{position:absolute;left:9%;bottom:-2px;height:150%;filter:drop-shadow(0 10px 10px rgba(0,0,0,.5));transform:rotate(7deg);animation:slidein .5s cubic-bezier(.2,1.2,.4,1)}
+.urcut .txt{margin-left:47%;max-width:48%;transform:rotate(7deg);color:#fff;animation:slidein2 .5s .1s both}
 .urcut .txt small{font-size:13px;font-weight:700;display:block;opacity:.9}
-.urcut .txt b{font-family:var(--f-d);font-weight:400;font-size:44px;line-height:1.05;display:block;text-shadow:-2px -2px 0 rgba(30,10,50,.9),2px -2px 0 rgba(30,10,50,.9),-2px 2px 0 rgba(30,10,50,.9),2px 2px 0 rgba(30,10,50,.9);background:linear-gradient(#fffbe0,#ffd46a);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:2px rgba(30,10,50,.9)}
+.urcut .txt b{font-family:var(--f-d);font-weight:400;font-size:44px;line-height:1.05;display:block;color:#fff8d2;-webkit-text-stroke:7px rgba(60,20,70,.95);paint-order:stroke fill;text-shadow:0 4px 0 rgba(60,20,70,.5)}
 @keyframes slidein{from{transform:translateX(-90px) rotate(7deg);opacity:0}to{transform:rotate(7deg);opacity:1}}
 @keyframes slidein2{from{transform:translateX(70px) rotate(7deg);opacity:0}to{transform:rotate(7deg);opacity:1}}
 `;
