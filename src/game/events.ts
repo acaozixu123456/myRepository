@@ -1,6 +1,7 @@
 // 活动中心：免费活动（七日喵程 / 嘉年华 / 幸运猫抓机 / 每日问答）与氪金活动（首充豪礼 / 周累充 / 成长基金 / 喵喵通行证 / 限时礼包）。
 // 纯逻辑：时间与随机数可注入；「充值」同 premium.ts 一样是模拟下单，由 premium.record 回调 onPay 记账。
 import { addItem } from './inventory';
+import { FACTION_ORDER, FACTIONS } from '../data/factions';
 import { HEROES, HERO_BY_ID } from '../data/heroes';
 import { DAY, EPOCH, NPCS, npcProgress, rnd } from './npc';
 import { recordOrder } from './premium';
@@ -52,6 +53,7 @@ export interface EventState {
   fest: { id: string; claimed: number[]; pack: boolean }; // 节日活动：当前节日的签到与礼包记录
   openClaimed?: number[]; // 开服冲榜已领的天
   mailClaimed?: string[]; // 已领附件的邮件 id
+  dexClaimed?: number[]; dexFaction?: string[]; // 图鉴收集奖励
   up: { period: number; pulls: number; claimed: number[] }; // UP 池累抽有礼（每期重置）
   rank: { power: number; last?: { week: number; rank: number; power: number; claimed: boolean } }; // 周冲榜：本周最高战力 / 上周结果
 }
@@ -67,7 +69,7 @@ export function ensureEvents(s: PlayerState, now = Date.now()): EventState {
   e.carn ??= []; e.sprint ??= []; e.quizAns ??= []; e.passFree ??= []; e.passPrem ??= []; e.passLux ??= []; e.cum ??= []; e.packs ??= {}; e.growth ??= { bought: false, claimed: [] };
   e.start ??= d;
   e.wish ??= { hero: '', last: -9, streak: 0, total: 0 }; e.pulls ??= 0; e.pullClaimed ??= []; e.fest ??= { id: '', claimed: [], pack: false }; e.rank ??= { power: 0 }; e.up ??= { period: -1, pulls: 0, claimed: [] };
-  e.openClaimed ??= []; e.mailClaimed ??= [];
+  e.openClaimed ??= []; e.mailClaimed ??= []; e.dexClaimed ??= []; e.dexFaction ??= [];
   if (e.up.period !== upPeriod(now)) e.up = { period: upPeriod(now), pulls: 0, claimed: [] };
   if (e.day !== d) { e.day = d; e.spinUsed = 0; e.spinBought = 0; e.dayPts = 0; }
   const wk = weekStart(d);
@@ -589,4 +591,34 @@ export function claimAllMail(s: PlayerState, now = Date.now()): Res<{ n: number 
   if (!list.length) return { ok: false, reason: '没有可领的附件' };
   for (const m of list) claimMail(s, m.id, now);
   return { ok: true, n: list.length };
+}
+
+// ---------- 图鉴收集奖励（免费，一次性）：收集数里程碑 + 六族集齐奖 ----------
+export const DEX_TIERS: { n: number; r: Reward }[] = [
+  { n: 6, r: { tickets: 1, bells: 50 } }, { n: 12, r: { tickets: 2, bells: 100 } }, { n: 20, r: { tickets: 3, bells: 200, items: { fishbone_medium: 2 } } },
+  { n: 30, r: { tickets: 5, bells: 400, items: { fishbone_large: 1 } } }, { n: 41, r: { tickets: 10, bells: 800, moon: 100, items: { fishbone_large: 3 } } },
+];
+export const FACTION_SET_REWARD: Reward = { tickets: 3, bells: 300, items: { fishbone_large: 1 } };
+/** 玩家曾拥有过的猫（s.seen 含历史）；常规 + 至尊都算 */
+export const dexCount = (s: PlayerState) => new Set([...(s.seen ?? []), ...Object.keys(s.heroes)].filter((id) => HERO_BY_ID[id])).size;
+export const factionOwned = (s: PlayerState, f: string) => {
+  const all = HEROES.filter((h) => h.faction === f), have = new Set([...(s.seen ?? []), ...Object.keys(s.heroes)]);
+  return { have: all.filter((h) => have.has(h.id)).length, total: all.length };
+};
+export function claimDex(s: PlayerState, i: number, now = Date.now()): Res<{ r: Reward }> {
+  const e = ensureEvents(s, now), t = DEX_TIERS[i]; e.dexClaimed ??= [];
+  if (!t) return { ok: false, reason: '没有这一档' };
+  if (e.dexClaimed.includes(i)) return { ok: false, reason: '已经领过了' };
+  if (dexCount(s) < t.n) return { ok: false, reason: '收集数还不够' };
+  e.dexClaimed.push(i); grant(s, t.r);
+  return { ok: true, r: t.r };
+}
+export function claimFactionSet(s: PlayerState, faction: string, now = Date.now()): Res<{ r: Reward; name: string }> {
+  const e = ensureEvents(s, now); e.dexFaction ??= [];
+  if (!(FACTION_ORDER as string[]).includes(faction)) return { ok: false, reason: '没有这个阵营' };
+  if (e.dexFaction.includes(faction)) return { ok: false, reason: '已经领过了' };
+  const o = factionOwned(s, faction);
+  if (o.have < o.total) return { ok: false, reason: `还差 ${o.total - o.have} 只才集齐` };
+  e.dexFaction.push(faction); grant(s, FACTION_SET_REWARD);
+  return { ok: true, r: FACTION_SET_REWARD, name: FACTIONS[faction as keyof typeof FACTIONS].full };
 }

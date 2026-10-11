@@ -4,7 +4,7 @@ import {
   answerQuiz, buyGrowth, buyPack, buyPass, canClaimFirstPay, carnivalOf, claimCarnival, claimCum, claimFirstPay, claimGrowth, claimPass, claimSprint, claimSprintChest, ensureEvents, packAvailable,
   passFree, passLevel, passLux, passPrem, quizState, quizToday, rewardText, seasonDaysLeft, spin, spinsLeft, sprintActive, sprintDay, sprintDone, sprintUnlocked,
   carnivalReady as claimable, DAY_PTS_CAP,
-  FESTIVAL_PACK, claimAllMail, claimMail, mailClaimed, mailbox, unclaimedMail, OPEN_DAYS, OPEN_REWARDS, claimOpen, openActive, openRankOf, PULL_TIERS, UP_TIERS, claimUp, upDaysLeft, upHeroOf, RANK_REWARDS, WISH_STREAK_BONUS, buyFestivalPack, canWish, claimFestival, claimPull, claimRank, ensureEvents as ensureEv, festivalGift, festivalView, rankNow, rankRewardOf, setWishHero, wish, wishShards, dayOf,
+  DEX_TIERS, FACTION_SET_REWARD, claimDex, claimFactionSet, dexCount, factionOwned, FESTIVAL_PACK, claimAllMail, claimMail, mailClaimed, mailbox, unclaimedMail, OPEN_DAYS, OPEN_REWARDS, claimOpen, openActive, openRankOf, PULL_TIERS, UP_TIERS, claimUp, upDaysLeft, upHeroOf, RANK_REWARDS, WISH_STREAK_BONUS, buyFestivalPack, canWish, claimFestival, claimPull, claimRank, ensureEvents as ensureEv, festivalGift, festivalView, rankNow, rankRewardOf, setWishHero, wish, wishShards, dayOf,
 } from '../../game/events';
 import type { Reward } from '../../game/events';
 import { HERO_BY_ID } from '../../data/heroes';
@@ -12,14 +12,15 @@ import { FURNITURE, NEST_MAX_DAYS, buyFurniture, collectNest, comfortOf, ensureN
 import { canClaimCard, vipLevel } from '../../game/premium';
 import { artUrl } from '../../ui/art';
 import { fmt } from '../../ui/components';
+import { FACTIONS, FACTION_ORDER } from '../../data/factions';
 import { esc } from '../../ui/components';
 import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
 import { topbar } from './lineup';
 
-type Tab = 'nest' | 'mail' | 'sprint' | 'carnival' | 'spin' | 'quiz' | 'wish' | 'pulls' | 'rank' | 'open' | 'festival' | 'first' | 'cum' | 'growth' | 'pass' | 'packs';
+type Tab = 'dex' | 'nest' | 'mail' | 'sprint' | 'carnival' | 'spin' | 'quiz' | 'wish' | 'pulls' | 'rank' | 'open' | 'festival' | 'first' | 'cum' | 'growth' | 'pass' | 'packs';
 export const eventsState = { tab: 'sprint' as Tab, spinning: false, hit: -1 };
-const TABS: [Tab, string, boolean][] = [['nest', '猫窝', false], ['mail', '邮件', false], ['sprint', '七日喵程', false], ['carnival', '嘉年华', false], ['spin', '猫抓机', false], ['quiz', '问答', false], ['wish', '许愿池', false], ['pulls', '招募盛典', false], ['rank', '周冲榜', false], ['open', '开服冲榜', false], ['festival', '节日', false], ['first', '首充豪礼', true], ['cum', '周累充', true], ['growth', '成长基金', true], ['pass', '通行证', true], ['packs', '礼包', true]];
+const TABS: [Tab, string, boolean][] = [['dex', '图鉴奖励', false], ['nest', '猫窝', false], ['mail', '邮件', false], ['sprint', '七日喵程', false], ['carnival', '嘉年华', false], ['spin', '猫抓机', false], ['quiz', '问答', false], ['wish', '许愿池', false], ['pulls', '招募盛典', false], ['rank', '周冲榜', false], ['open', '开服冲榜', false], ['festival', '节日', false], ['first', '首充豪礼', true], ['cum', '周累充', true], ['growth', '成长基金', true], ['pass', '通行证', true], ['packs', '礼包', true]];
 
 const ordinal = (ctx: AppCtx) => { const b = ctx.s.best ?? ctx.s.stage; return (b.chapter - 1) * 24 + b.index; };
 function rbtn(act: string, data: Record<string, string | number>, state: 'ok' | 'done' | 'lock', label = '领取'): string {
@@ -89,6 +90,12 @@ function rankHtml(ctx: AppCtx): string {
   return `<section class="panel"><h3>周战力冲榜 <small>周一 05:00 结算</small></h3><p>本周你的最高战力和 20 位模拟玩家比：下周一按名次发奖。养成、升星、换装备都能抬高战力。</p>${last}
     <p class="muted">你现在第 <b>${r.rank}</b> 名 · 本周最高战力 ${fmt(r.power)}</p>${RANK_REWARDS.map((x) => `<div class="evr"><div class="grow"><b>${x.label}</b><small>${rewardText(x.r)}</small></div></div>`).join('')}
     <div class="note" style="font-weight:800;margin:8px 0 4px">实时榜</div>${top}${r.rank > 8 ? `<div class="arow me"><i class="rk">${r.rank}</i><div class="who"><b>${esc(me.name)}</b></div><div class="rt"><em>战力</em><b class="num">${fmt(me.power)}</b></div></div>` : ''}</section>`;
+}
+function dexHtml(ctx: AppCtx): string {
+  const s = ctx.s, e = ensureEv(s), n = dexCount(s);
+  const rows = DEX_TIERS.map((t, i) => row(`收集 ${t.n} 只猫猫`, t.r, rbtn('ev-dex', { i }, (e.dexClaimed ?? []).includes(i) ? 'done' : n >= t.n ? 'ok' : 'lock'), `${Math.min(n, t.n)} / ${t.n}`)).join('');
+  const fac = FACTION_ORDER.map((f) => { const o = factionOwned(s, f), got = (e.dexFaction ?? []).includes(f); return row(`${FACTIONS[f].full} 集齐`, FACTION_SET_REWARD, rbtn('ev-dexf', { f }, got ? 'done' : o.have >= o.total ? 'ok' : 'lock'), `${o.have} / ${o.total}`); }).join('');
+  return `<section class="panel"><h3>图鉴收集奖励 <small>已收集 ${n} 只</small></h3><p>每收集到一个新阶段，或集齐一个阵营的全部猫猫，都有一次性奖励。抽到过就算收集到，不用一直留在队伍里。</p>${rows}</section><section class="panel"><h3>六族集齐奖</h3>${fac}</section>`;
 }
 function costText(c: { fish?: number; bells?: number; moon?: number }) { return [c.fish && `${c.fish.toLocaleString('en-US')} 小鱼干`, c.bells && `${c.bells} 金铃铛`, c.moon && `${c.moon} 月光珠`].filter(Boolean).join(' + '); }
 function nestHtml(ctx: AppCtx): string {
@@ -174,7 +181,7 @@ function packsHtml(ctx: AppCtx): string {
 
 export function eventsHtml(ctx: AppCtx): string {
   const t = eventsState.tab;
-  const body = { nest: nestHtml, mail: mailHtml, sprint: sprintHtml, carnival: carnivalHtml, spin: spinHtml, quiz: quizHtml, wish: wishHtml, pulls: pullsHtml, rank: rankHtml, open: openHtml, festival: festivalHtml, first: firstHtml, cum: cumHtml, growth: growthHtml, pass: passHtml, packs: packsHtml }[t](ctx);
+  const body = { dex: dexHtml, nest: nestHtml, mail: mailHtml, sprint: sprintHtml, carnival: carnivalHtml, spin: spinHtml, quiz: quizHtml, wish: wishHtml, pulls: pullsHtml, rank: rankHtml, open: openHtml, festival: festivalHtml, first: firstHtml, cum: cumHtml, growth: growthHtml, pass: passHtml, packs: packsHtml }[t](ctx);
   return `${topbar(ctx, '活动', '<button class="btn sm ghost shop-back" data-act="nav" data-to="home">返回</button>')}
     <div class="shop-tabs ev-tabs"><div class="seg">${TABS.map(([id, name, paid]) => `<button class="pill ${paid ? 'paid' : ''}" data-act="ev-tab" data-tab="${id}" aria-pressed="${t === id}">${name}${paid ? '<i>氪</i>' : ''}</button>`).join('')}</div></div>
     <div class="scroll ev-scroll">${body}</div>`;
@@ -195,6 +202,8 @@ export function handleEvents(ctx: AppCtx, act: string, el: HTMLElement): boolean
   switch (act) {
     case 'ev-nest-buy': { const r = buyFurniture(s, el.dataset.id!); if (r.ok) { sfx.coin(); ctx.save(); ctx.toast(`摆好了「${r.f.name}」，舒适度 +${r.f.comfort}`); } else ctx.toast(r.reason); ctx.refresh(); return true; }
     case 'ev-nest-collect': { const r = collectNest(s); if (r.ok) { sfx.coin(); ctx.save(); ctx.toast(`领到 ${r.fish.toLocaleString('en-US')} 小鱼干（攒了 ${r.days} 天）`); } else ctx.toast(r.reason); ctx.refresh(); return true; }
+    case 'ev-dex': say(ctx, claimDex(s, i)); return true;
+    case 'ev-dexf': { const r = claimFactionSet(s, el.dataset.f!); say(ctx, r.ok ? { ok: true, r: r.r } : r, `${r.ok ? r.name : ''}集齐奖`); return true; }
     case 'ev-mail': say(ctx, claimMail(s, el.dataset.id!)); return true;
     case 'ev-mail-all': { const r = claimAllMail(s); ctx.toast(r.ok ? `领取了 ${r.n} 封邮件的附件` : r.reason); if (r.ok) { sfx.ok(); ctx.save(); } ctx.refresh(); return true; }
     case 'ev-tab': eventsState.tab = el.dataset.tab as Tab; ctx.refresh(); return true;
@@ -267,6 +276,7 @@ export function handleEvents(ctx: AppCtx, act: string, el: HTMLElement): boolean
 export function eventsDot(ctx: AppCtx): boolean {
   const s = ctx.s, e = ensureEvents(s), vip = vipLevel(s), card = !!s.pay?.card && s.pay.card.until > Date.now();
   if (unclaimedMail(s).length) return true;
+  if (DEX_TIERS.some((t, i) => dexCount(s) >= t.n && !(e.dexClaimed ?? []).includes(i))) return true;
   if (comfortOf(s) > 0 && nestDaysReady(s) > 0) return true;
   if (spinsLeft(s, vip, card).free > 0) return true;
   if (quizState(s).quizAns.length < QUIZ_PER_DAY) return true;

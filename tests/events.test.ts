@@ -391,3 +391,34 @@ describe('首页小公告', () => {
     expect(tickerLines(new Date(2026, 9, 30, 12).getTime())[3]).toContain('节日进行中');
   });
 });
+
+import { DEX_TIERS, FACTION_SET_REWARD, claimDex, claimFactionSet, dexCount, factionOwned } from '../src/game/events';
+import { FACTION_ORDER } from '../src/data/factions';
+
+describe('图鉴收集奖励', () => {
+  it('档位单调递增且最高档不超过名册总数；六族总数之和等于名册', () => {
+    for (let i = 1; i < DEX_TIERS.length; i++) expect(DEX_TIERS[i].n).toBeGreaterThan(DEX_TIERS[i - 1].n);
+    expect(DEX_TIERS[DEX_TIERS.length - 1].n).toBeLessThanOrEqual(HEROES.length);
+    const s = newPlayer(0);
+    expect(FACTION_ORDER.reduce((a, f) => a + factionOwned(s, f).total, 0)).toBe(HEROES.length);
+    expect(rewardText(FACTION_SET_REWARD)).not.toBe('');
+  });
+  it('收集数够了才能领，每档一次；曾经拥有过也算（seen）', () => {
+    const s = newPlayer(0);
+    expect(dexCount(s)).toBe(5);
+    expect(claimDex(s, 0, at(0)).ok).toBe(false);
+    s.seen.push(...HEROES.map((h) => h.id).filter((id) => !s.seen.includes(id)).slice(0, 7));
+    expect(dexCount(s)).toBe(12);
+    expect(claimDex(s, 0, at(0)).ok).toBe(true); expect(claimDex(s, 1, at(0)).ok).toBe(true);
+    expect(claimDex(s, 0, at(0)).ok).toBe(false); expect(claimDex(s, 2, at(0)).ok).toBe(false);
+  });
+  it('集齐一个阵营才能领集齐奖，每族一次', () => {
+    const s = newPlayer(0);
+    expect(claimFactionSet(s, 'shu', at(0)).ok).toBe(false);
+    expect(claimFactionSet(s, 'nope', at(0)).ok).toBe(false);
+    for (const h of HEROES.filter((h) => h.faction === 'shu')) if (!s.seen.includes(h.id)) s.seen.push(h.id);
+    const r = claimFactionSet(s, 'shu', at(0));
+    expect(r.ok).toBe(true);
+    expect(claimFactionSet(s, 'shu', at(0)).ok).toBe(false);
+  });
+});
