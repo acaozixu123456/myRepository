@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
 import { LEVELS, herbsOf, levelColliders } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
+import { PROPS } from '../src/world/props';
 
 describe('探索模式规则', () => {
   it('首领是下一关，野怪是当前关', () => {
@@ -71,6 +72,20 @@ describe('嫦喵的每日委托', () => {
     const stage = farmStage(s).stage;
     for (let i = 0; i < 12; i++) killReward(s, stage);
     expect(dailyProgress(s)[0]).toMatchObject({ have: 5, need: 5, done: true });
+  });
+});
+
+describe('场景道具', () => {
+  it('道具不在建筑里，种类都已注册', () => {
+    for (const L of Object.values(LEVELS)) {
+      for (const p of L.props) {
+        expect(Object.keys(PROPS), `${L.id}:${p.kind} 未注册`).toContain(p.kind);
+        for (const b of L.buildings) {
+          const inside = Math.abs(p.x - b.x) < b.spec.w / 2 && Math.abs(p.z - b.z) < b.spec.d / 2;
+          expect(inside, `${L.id}:${p.kind}(${p.x},${p.z}) 在楼 (${b.x},${b.z}) 里`).toBe(false);
+        }
+      }
+    }
   });
 });
 

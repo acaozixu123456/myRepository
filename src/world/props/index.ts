@@ -26,4 +26,5 @@ export const CORE_PROPS: Record<string, PropFactory> = {
   trash: () => trashCan(),
   cone: () => cone(),
 };
-export const PROPS: Record<string, PropFactory> = { ...CORE_PROPS };
+import { STREET_PROPS } from './street';
+export const PROPS: Record<string, PropFactory> = { ...CORE_PROPS, ...STREET_PROPS };
