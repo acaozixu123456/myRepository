@@ -1,6 +1,6 @@
 // 战斗回放器：把引擎产出的事件时间线，变成会动的战斗。
 import { FACTIONS } from '../data/factions';
-import { HERO_BY_ID } from '../data/heroes';
+import { lookOf, unitInfo } from '../data/units';
 import { STATUSES } from '../data/statuses';
 import type { BEvent } from '../engine/types';
 import { Actor, POSES } from './actor';
@@ -55,8 +55,7 @@ export class Player {
     let done = 0;
     const rigs = await Promise.all(
       start.units.map(async (u) => {
-        const h = HERO_BY_ID[u.heroId];
-        const rig = await buildRig(h.look, 0.62 * this.scene.dpr);
+        const rig = await buildRig(lookOf(u.heroId), 0.62 * this.scene.dpr);
         progress?.(++done / start.units.length);
         return [u, rig] as [StartEv['units'][number], Rig];
       }),
@@ -73,7 +72,7 @@ export class Player {
   async portrait(heroId: string): Promise<HTMLCanvasElement> {
     let p = this.portraits.get(heroId);
     if (!p) {
-      p = await buildPortrait(HERO_BY_ID[heroId].look, '0 40 400 400', 520);
+      p = await buildPortrait(lookOf(heroId), '0 40 400 400', 520);
       this.portraits.set(heroId, p);
     }
     return p;
@@ -148,7 +147,7 @@ export class Player {
     caster.hudAlpha = 1;
     if (ult) {
       caster.energy = 0;
-      const hero = HERO_BY_ID[caster.heroId];
+      const hero = unitInfo(caster.heroId);
       const portrait = await this.portrait(caster.heroId);
       await playCutIn(this.scene, { portrait, faction: caster.faction, skill: e.skill, title: hero.title, name: caster.name, side: caster.side, duration: this.skipping ? 0.01 : 1.25 });
     }

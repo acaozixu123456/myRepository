@@ -1,6 +1,6 @@
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
-import { HERO_BY_ID } from '../data/heroes';
+import { unitInfo } from '../data/units';
 import { BONDS, COUNTER_RING, baseStats } from '../data/systems';
 import { KITS, genericKit } from '../data/kits';
 import { Rng } from './rng';
@@ -74,9 +74,10 @@ class Battle {
   }
 
   makeUnit(s: UnitSetup, side: 'A' | 'B'): Unit {
-    const h = HERO_BY_ID[s.heroId];
-    if (!h) throw new Error(`unknown hero ${s.heroId}`);
+    const h = unitInfo(s.heroId);
     const bs = baseStats(h.role, h.rarity);
+    bs.hp = Math.round(bs.hp * h.hpMul);
+    bs.atk = Math.round(bs.atk * h.atkMul);
     const m = lvMul(s.level) * (1 + ((s.star ?? 1) - 1) * 0.08) * (s.statMul ?? 1);
     const kit = clone(KITS[s.heroId] ?? genericKit(s.heroId));
     const skillLv = s.skillLv ?? 1;

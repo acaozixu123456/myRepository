@@ -44,6 +44,11 @@ describe('battle engine', () => {
     const r = simulate({ seed: 5, A: team(ids.slice(0, 5)), B: team(ids.slice(5, 10)) });
     expect(r.events.at(-1)?.t).toBe('end');
   });
+  it('supports mob units from the campaign', () => {
+    const r = simulate({ seed: 4, A: team(A, 40), B: team(['mob_wei_guard', 'mob_wei_vanguard', 'mob_wei_archer', 'mob_wei_strategist', 'mob_wei_healer'], 30) });
+    expect(r.events.at(-1)?.t).toBe('end');
+    expect(r.winner).toBe('A');
+  });
   it('mirror matches are roughly balanced across seeds', () => {
     let a = 0;
     const n = 60;

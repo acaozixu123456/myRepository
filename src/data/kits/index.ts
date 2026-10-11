@@ -1,4 +1,4 @@
-import { HERO_BY_ID } from '../heroes';
+import { unitInfo } from '../units';
 import type { Kit } from '../../engine/types';
 import { dmg, enemy, heal, ally } from './helpers';
 import { KITS_UR } from './ur';
@@ -8,8 +8,7 @@ export const KITS: Record<string, Kit> = { ...KITS_UR, ...KITS_SSR };
 
 /** 没有手工设计技能组的猫猫（以及杂兵）使用的通用技能组，保证战斗引擎可以跑任何阵容 */
 export function genericKit(heroId: string): Kit {
-  const h = HERO_BY_ID[heroId];
-  const role = h?.role ?? '先锋';
+  const role = unitInfo(heroId).role;
   const melee = role === '守护' || role === '先锋' || role === '刺客';
   const healer = role === '医者';
   return {
