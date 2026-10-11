@@ -26,7 +26,6 @@ export function powerCurve(chapter: number, index: number): number {
 
 type RulePlan = { text: string; fx?: RuleFx[]; todo?: string };
 const ready = (text: string, fx: RuleFx[]): RulePlan => ({ text, fx });
-const pendingRule = (text: string, todo: string): RulePlan => ({ text, todo });
 
 type ChapterPlan = Omit<ChapterDef, 'stages'> & {
   primary: FactionId;
@@ -65,12 +64,12 @@ const PLANS: ChapterPlan[] = [
     rules: [
       ready('粮仓飘香，双方每只猫的首次普通攻击额外回复五点元气。', [{ t: 'firstBasicEnergy', side: 'both', amount: 5 }]),
       ready('魏军守账，敌方守护开局获得最大生命百分之十二的护体毛，持续到持有者第二次行动结束。', [{ t: 'startShield', side: 'B', to: 'role:守护', pct: 0.12, turns: 2 }]),
-      pendingRule('天机校账，敌方仙阵营首次控制命中率增加十个百分点。', 'controlHitAdd：限定敌方仙阵营，本场第一次控制命中 +10 个百分点。'),
+      ready('天机校账，敌方仙阵营命中增加百分之十，持续全场。', [{ t: 'hitAdd', side: 'B', to: 'faction:xian', add: 0.1 }]),
       ready('锦囊待拆，敌方每名医者的首次治疗额外净化目标一个负面效果。', [{ t: 'on', ev: 'heal', side: 'B', to: 'role:医者', act: { k: 'cleanse', n: 1, who: 'target' } }]),
       ready('木桥排队，双方速度最高的猫首回合速度降低百分之十。', [{ t: 'startStatus', side: 'both', to: 'all', pick: 'highestSpd', id: 'step', turns: 1, power: -0.1 }]),
       ready('仁义分饭，友方蜀阵营首次受到治疗的效果增加百分之十五。', [{ t: 'firstHealTakenMul', side: 'A', to: 'faction:shu', mult: 1.15 }]),
       ready('账册催阵，敌方元气最低的猫每回合开始回复五点元气。', [{ t: 'roundEnergyLowest', side: 'B', amount: 5 }]),
-      pendingRule('曹喵德首次释放绝技前预告一回合，绝技护体毛持续多一回合。', 'onBeforeFirstUlt / telegraph / extendShieldDuration：限定曹喵德、预告整轮及护盾期限。'),
+      ready('曹喵德首次释放绝技前，先预告一整轮。', [{ t: 'telegraph', side: 'B', hero: 'wei_caomiaode', first: true }]),
     ],
     bossNote: '开局铁壁阶段由曹喵德与郭嘉喵搭配前排；生命低于百分之六十时回复三十点元气，首次挟天子以令诸猫前预告一回合。百分之三十以下进入魏武阶段，绝技附带受惊。先压制郭嘉喵的续航，再用控制或元气削减错开全队护盾，带净化应对受惊；中段仙族克制魏队，鼓励换入吴系输出。',
   },
@@ -88,7 +87,7 @@ const PLANS: ChapterPlan[] = [
       ready('烘帆火星，带有灼烧的目标受到治疗的效果降低百分之十。', [{ t: 'healMul', side: 'both', mult: 0.9, needStatus: 'burn' }]),
       ready('降书藏火，敌方前排首次护体毛到期时，为我方随机前排附加一层灼烧（两次行动结束，每回合二成攻击）。', [{ t: 'on', ev: 'shieldExpire', side: 'B', to: 'front', per: 'side', act: { k: 'status', id: 'burn', turns: 2, snapAtk: 0.2, who: 'randomFoeFront' } }]),
       ready('东风转向，我方首次净化淋湿时，同时清除该目标的一层灼烧。', [{ t: 'on', ev: 'cleanse', side: 'A', status: 'wet', per: 'side', act: { k: 'removeStack', id: 'burn', who: 'target' } }]),
-      pendingRule('合演开场双方前排淋湿两回合，周喵瑜对淋湿目标的灼烧伤害增加百分之二十。', 'DOT 增幅按来源英雄/目标状态筛选：双方前排开场wet2次行动，周喵瑜对wet目标的burn ×1.20；整条规则需一起落地。'),
+      ready('合演开场双方前排淋湿，持续到各自第二次行动结束；吴阵营的火焰伤害增加百分之二十。', [{ t: 'startStatus', side: 'both', to: 'front', id: 'wet', turns: 2 }, { t: 'dmgMul', side: 'B', to: 'faction:wu', elem: 'fire', mult: 1.2 }]),
     ],
     bossNote: '此战为出征前的联军合演，首领仍是周喵瑜。开局水相阶段由孙小霸施加淋湿；生命低于百分之六十时转琴火阶段，预告一回合后释放赤壁火海。百分之三十以下开启燎原，灼烧叠层并在猫猫睡着后传递。玩家需及时净化淋湿和灼烧、错开绝技避免曲有误反应，用持续治疗稳住后排；中段蛮族伏击压制吴队。',
   },
@@ -117,14 +116,14 @@ const PLANS: ChapterPlan[] = [
     intro: '云台不收门票，只问铲屎官能不能分清真鱼和画在云上的鱼。左慈喵留下一串软软的爪印，张爪端来符水，水镜喵已经说了三声好。吴族的红帆却从半山探出头，火光让符纸的边角微微卷起。顺着星图往上走，要留意毛线缠住的是脚还是念头；九命印的线索，就藏在最后一阵小鱼雨里。',
     landmarks: ['绒云台阶', '符水池边', '红帆云渡', '星图回廊', '真假鱼雨', '幻猫云台'],
     rules: [
-      pendingRule('云层藏影，敌方首次受到攻击时闪避增加百分之二十。', 'onFirstHurtBeforeHit：敌方首次受攻击前闪避 +20 个百分点；持续时间待明确。'),
+      ready('云层藏影，敌方前两个整轮闪避增加百分之二十。', [{ t: 'dodgeAdd', side: 'B', to: 'all', add: 0.2, rounds: 2 }]),
       ready('符水入阵，敌方每名医者的首次治疗，使目标获得呼噜（每次行动前回复百分之五最大生命），持续一次行动结束。', [{ t: 'on', ev: 'heal', side: 'B', to: 'role:医者', act: { k: 'status', id: 'purr', turns: 1, power: 0.05, who: 'target' } }]),
       ready('红帆照云，敌方吴阵营火焰伤害增加百分之十五，持续两回合。', [{ t: 'dmgMul', side: 'B', to: 'faction:wu', elem: 'fire', mult: 1.15, rounds: 2 }]),
       ready('星图落爪，每一方首次施加的毛线缠多持续一次行动结束。', [{ t: 'on', ev: 'statusApply', side: 'both', status: 'yarn', per: 'side', act: { k: 'extend', turns: 1 } }]),
       ready('云风解结，我方首次净化控制后，被净化者回复十点元气。', [{ t: 'on', ev: 'cleanse', side: 'A', cc: true, per: 'side', act: { k: 'energy', amount: 10, who: 'target' } }]),
       ready('天机换位，敌方速度最低的猫第二回合速度增加百分之二十。', [{ t: 'roundStatus', side: 'B', to: 'all', pick: 'lowestSpd', id: 'step', every: 1, at: 2, turns: 1, power: 0.2 }]),
       ready('鱼雨微凉，双方开局获得最大生命百分之八的护体毛，持续到持有者第二次行动结束。', [{ t: 'startShield', side: 'both', to: 'all', pct: 0.08, turns: 2 }]),
-      pendingRule('左慈喵的第一道幻象被消耗后，下一回合开始预告天命。', 'onFirstStatusConsume：左慈喵首个illusion消耗，下一轮开始telegraph天命。'),
+      ready('左慈喵每次释放绝技前，都先预告一整轮。', [{ t: 'telegraph', side: 'B', hero: 'xian_zuoci' }]),
     ],
     bossNote: '开局幻象阶段由水镜喵续航；生命低于百分之六十五时，千幻万象每次只为两名后排添加一次闪避。百分之三十以下每两回合预告一次天命，交替额外行动与回复元气，不随机连续无敌。玩家以多段攻击先消耗幻象，控制医者并预留净化处理毛线缠；中段吴系火焰克制仙队，提醒防御阵容需要更换输出。',
   },
@@ -142,7 +141,7 @@ const PLANS: ChapterPlan[] = [
       ready('软席安神，每一方首次净化猫薄荷醉时，被净化者回复十点元气。', [{ t: 'on', ev: 'cleanse', side: 'both', status: 'nip', per: 'side', act: { k: 'energy', amount: 10, who: 'target' } }]),
       ready('六族轮值，敌方每回合首次暴击后，为最低元气同伴回复五点元气。', [{ t: 'on', ev: 'crit', side: 'B', per: 'round', act: { k: 'energy', amount: 5, who: 'lowestAlly' } }]),
       ready('九命印亮，双方后排开局命中增加百分之十，持续两回合。', [{ t: 'hitAdd', side: 'both', to: 'back', add: 0.1, rounds: 2 }]),
-      pendingRule('吕布丁每次额外行动前预告，连续行动后下一回合速度降低百分之十五。', 'onBeforeExtraTurn / onAfterConsecutiveActs / telegraph：吕布丁每次再动预告，次轮速度 -15%。'),
+      ready('吕布丁每次释放绝技前，都先预告一整轮。', [{ t: 'telegraph', side: 'B', hero: 'qun_lvbuding' }]),
     ],
     bossNote: '开局飞将阶段与貂蝉喵组成混阵；生命低于百分之六十时开启天下无双，优先寻找后排并预告一回合。百分之二十五以下赤兔每两回合给一次额外行动，禁止连锁触发，并在连续行动后减速。玩家以前排护卫、净化和护盾保护后排，利用减速窗口集中输出；各段依克制环轮换敌军，中段魏军压制群队，收官检验混搭与羁绊。',
   },
