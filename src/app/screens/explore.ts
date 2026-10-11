@@ -214,6 +214,7 @@ function advance(ctx: AppCtx, chapter: number, index: number) {
 async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
   if (!rt || busyFight) return false;
   busyFight = true;
+  const backdrop = rt.wv.backdrop();
   rt.wv.stop();
   const s = ctx.s;
   try {
@@ -221,7 +222,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
     const t = isBoss ? bossStage(s) : { ...farmStage(s), fresh: false };
     const stage = t.stage;
     if (isBoss && t.fresh) await playStoryOnce(ctx, stage.storyId);
-    const res = await arenaFight(ctx.root, s, stage, t.chapter, s.settings.speed || 2, isBoss ? '首领战！' : '遭遇！');
+    const res = await arenaFight(ctx.root, s, stage, t.chapter, s.settings.speed || 2, isBoss ? '首领战！' : '遭遇！', backdrop);
     rollover(s, Date.now());
     if (res.win) {
       track(s, 'clear_stage');

@@ -170,6 +170,38 @@ export class WorldView {
     this.camera.lookAt(this.focus.x, this.focus.y + 1.5, this.focus.z);
   }
 
+
+  /** 战斗背景：从街面高度拍一张当前街景（隐藏所有小猫），给 2D 战斗当底图。失败返回 null。 */
+  backdrop(w = 960, h = 600): HTMLCanvasElement | null {
+    try {
+      const hidden: THREE.Object3D[] = [];
+      this.scene.traverse((o) => { if (o.visible && (o.name === 'cat' || ((o as THREE.Sprite).isSprite && ((o as THREE.Sprite).material as THREE.SpriteMaterial).depthTest === false))) { o.visible = false; hidden.push(o); } });
+      const keep = { pos: this.camera.position.clone(), aspect: this.camera.aspect, fov: this.camera.fov, rain: this.rain?.visible };
+      const cw = this.canvas.width, ch = this.canvas.height;
+      this.renderer.setSize(w, h, false);
+      this.composer?.setSize(w, h);
+      this.camera.aspect = w / h; this.camera.fov = 34; this.camera.updateProjectionMatrix();
+      // 沿最近的一条马路方向（yaw 取 π/2 的整数倍），低机位看出去，地面落在画面下三分之一
+      const yaw = Math.round(this.yaw / (Math.PI / 2)) * (Math.PI / 2) + 0.12;
+      const cp = Math.cos(0.2), sp = Math.sin(0.2), d = 26, f = this.focus;
+      this.camera.position.set(f.x + Math.sin(yaw) * cp * d, f.y + 1.6 + sp * d * 0.5, f.z + Math.cos(yaw) * cp * d);
+      this.camera.lookAt(f.x, f.y + 3.4, f.z);
+      if (this.composer) this.composer.render(0); else this.renderer.render(this.scene, this.camera);
+      const out = document.createElement('canvas'); out.width = w; out.height = h;
+      const g = out.getContext('2d')!;
+      g.drawImage(this.canvas, 0, 0, w, h);
+      // 还原
+      for (const o of hidden) o.visible = true;
+      this.renderer.setSize(cw / this.renderer.getPixelRatio(), ch / this.renderer.getPixelRatio(), false);
+      this.camera.position.copy(keep.pos); this.camera.aspect = keep.aspect; this.camera.fov = keep.fov; this.camera.updateProjectionMatrix();
+      this.resize();
+      // 压暗：让上面的小猫和血条更清楚
+      const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, 'rgba(8,4,20,.25)'); gr.addColorStop(0.55, 'rgba(8,4,20,.35)'); gr.addColorStop(1, 'rgba(8,4,20,.55)');
+      g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      return out;
+    } catch { return null; }
+  }
+
   /** 相机立刻到位（切换场景 / 截图用） */
   snapCamera() { this.camera.position.set(1e6, 1e6, 1e6); this.placeCamera(1); }
 

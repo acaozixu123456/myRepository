@@ -12,7 +12,7 @@ export interface FightResult { win: boolean; damagePct: number }
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /** banner：开场横幅（如「首领战！」）；传入后会先做一个圆形转场 */
-export async function arenaFight(host: HTMLElement, s: PlayerState, stage: StageDef, chapter: number, speed = 2, banner = ''): Promise<FightResult> {
+export async function arenaFight(host: HTMLElement, s: PlayerState, stage: StageDef, chapter: number, speed = 2, banner = '', backdrop: HTMLCanvasElement | null = null): Promise<FightResult> {
   const ov = document.createElement('div');
   ov.className = 'arena-ov';
   ov.innerHTML = `<canvas></canvas><button class="skip" data-skip>快进 »</button>${banner ? `<div class="arena-banner">${banner}</div>` : ''}`;
@@ -35,6 +35,7 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
     damagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
     const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
     await player.setup(start, CHAPTER_THEME[chapter] ?? 'street');
+    if (backdrop) player.scene.bg = backdrop;
     const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
     await player.play(evs);
     if (sim.winner !== 'A') { win = false; break; }
