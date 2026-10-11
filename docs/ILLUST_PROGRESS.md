@@ -8,7 +8,7 @@
 | 庞喵统 | `shu_pangmiaotong` | SP | 待画 | 0 | |
 | 嫦喵 | `xian_changmiao` | SP | 待画 | 0 | |
 | 曹喵德 | `wei_caomiaode` | UR | 通过 | 1 | 风格锚点，已入库；后面的猫披风/下摆边饰简化一档 |
-| 刘喵备 | `shu_liumiaobei` | UR | 待画 | 0 | |
+| 刘喵备 | `shu_liumiaobei` | UR | 待审 | 1 | 3 个候选选 C；曹喵德风格锚点，双手/肩袖自查，边饰简化；alpha 噪点已清 |
 | 周喵瑜 | `wu_zhoumiaoyu` | UR | 待画 | 0 | |
 | 吕布丁 | `qun_lvbuding` | UR | 待画 | 0 | |
 | 孟喵获 | `man_mengmiaohuo` | UR | 待画 | 0 | |
