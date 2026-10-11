@@ -6,6 +6,7 @@ import { chip, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, nextStage, recommendedPowerOf, tickIdle } from '../../game/stage';
 import { canClaimCard, canClaimVip } from '../../game/premium';
+import { unreadCount } from '../../game/social';
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
@@ -46,15 +47,20 @@ export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: strin
   const s = ctx.s;
   return [
     { act: 'nav', to: 'quests', ic: 'campaign', label: '任务', dot: QUESTS.some((quest) => isClaimable(s, quest)) },
+    { act: 'nav', to: 'social', ic: 'chat', label: '广场', dot: unreadCount(s) > 0 },
     { act: 'nav', to: 'shop', ic: 'bag', label: '商店' },
     { act: 'nav', to: 'pay', ic: 'moon', label: '充值', cls: 'pay', dot: canClaimCard(s) || canClaimVip(s) },
   ];
 }
 
+export function updateQuick(ctx: AppCtx) {
+  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''}>${icon(q.ic, 30)}<span>${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
+}
+
 export function updateHome(ctx: AppCtx) {
   const s = ctx.s;
   updateHud(ctx);
-  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''}>${icon(q.ic, 30)}<span>${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
+  updateQuick(ctx);
   const st = getStage(s.stage.chapter, s.stage.index)!;
   const ch = CHAPTERS[s.stage.chapter - 1];
   const power = teamPower(s);

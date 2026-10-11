@@ -14,6 +14,7 @@ import type { QuestState } from './quests';
 import { createShopState, normalizeShopState } from './shop';
 import type { ShopState } from './shop';
 import type { PayState } from './premium';
+import type { SocialState } from './social';
 
 export interface HeroState {
   id: string;
@@ -44,6 +45,7 @@ export interface PlayerState {
   quests: QuestState;
   pending?: Record<string, number>; // 仅旧档满叠未迁军需；新奖励不写入
   shop: ShopState; // 每周限购记录；存档 v 仍为 1
+  social?: SocialState; // 世界聊天 / 好友 / 竞技场（旧存档读取时补齐）
   pay?: PayState; // 氪金：累计充值 / 月卡 / VIP / 至尊保底（旧存档读取时补齐）
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排

@@ -9,7 +9,7 @@ import { DEX_CSS, handleDex } from './screens/dex';
 import { CAMPAIGN_CSS, campaignHtml, handleCampaign } from './screens/campaign';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
-import { claim, floaty, homeHtml, updateHome, updateIdle } from './screens/home';
+import { claim, floaty, homeHtml, updateHome, updateIdle, updateQuick } from './screens/home';
 import { lineupHtml, lineupState } from './screens/lineup';
 import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
@@ -19,7 +19,9 @@ import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip }
 import { bagHtml, handleBag } from './screens/bag';
 import { shopHtml, handleShop } from './screens/shop';
 import { PAY_CSS, handlePay, payHtml } from './screens/pay';
+import { SOCIAL_CSS, handleSocial, refreshChatLog, socialHtml } from './screens/social';
 import { grantOnce } from '../game/premium';
+import { markRead } from '../game/social';
 import { seedDemoInventory } from '../game/inventory';
 import { rollover, track } from '../game/quests';
 import { handleQuests, questsHtml } from './screens/quests';
@@ -28,7 +30,7 @@ import { fmt } from '../ui/components';
 import { makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -67,6 +69,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen qst-screen" data-screen="quests"></div>
   <div class="screen shop-screen" data-screen="shop"></div>
   <div class="screen shop-screen" data-screen="pay"></div>
+  <div class="screen shop-screen" data-screen="social"></div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
     <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
@@ -122,6 +125,7 @@ const ctx: AppCtx = {
     else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
     else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
     else if (scr === 'quests') (root.querySelector('[data-screen=quests]') as HTMLElement).innerHTML = questsHtml(ctx);
+    else if (scr === 'social') { (root.querySelector('[data-screen=social]') as HTMLElement).innerHTML = socialHtml(ctx); const lg = root.querySelector('.chat-log') as HTMLElement | null; if (lg) { lg.scrollTop = lg.scrollHeight; markRead(state); } }
     else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
     else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
     updateGuide(ctx);
@@ -183,6 +187,7 @@ root.addEventListener('click', (e) => {
   if (handleQuests(ctx, el)) return;
   if (handleShop(ctx, el)) return;
   if (handlePay(ctx, act, el)) return;
+  if (handleSocial(ctx, act, el)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
@@ -261,6 +266,8 @@ setInterval(() => {
   if (ctx.screen === 'home') { updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); }
 }, 1000);
 setInterval(() => ctx.save(), 8000);
+setInterval(() => { refreshChatLog(ctx); if (ctx.screen === 'home') updateQuick(ctx); }, 5000);
+root.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.target as HTMLElement).id === 'chatInput') { e.preventDefault(); root.querySelector<HTMLElement>('[data-act=chat-send]')?.click(); } });
 setInterval(() => updateGuide(ctx), 1200);
 document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.save(); });
 
