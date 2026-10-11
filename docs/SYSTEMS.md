@@ -14,6 +14,7 @@
 | 世界 Boss（每周轮换） | `game/worldboss.ts` | `screens/campaign.ts` 的「Boss」页 | `wboss` | `tests/worldboss.test.ts` |
 | 七日签到 / 快速探索 | `game/daily.ts` | `screens/daily.ts` | `daily` | `tests/daily.test.ts` |
 | 纸箱迷宫（肉鸽：8 层、三选一加成、血量元气带到下一层） | `game/maze.ts` | `screens/campaign.ts` 的「迷宫」页 | `maze` | `tests/maze.test.ts` |
+| 猫猫远征（派遣：3 条路线、按人数 / 职业 / 阵营 / 等级凑条件，真实时间结算） | `game/expedition.ts` | `screens/campaign.ts` 的「远征」页 | `expedition` | `tests/expedition.test.ts` |
 | 自动闯关（挂机时战力够了自动推下一关，失败有冷却） | `game/autopush.ts` | 主城战斗区右上角开关 | `settings.autoPush` | `tests/autopush.test.ts` |
 | 日常秘境 | `game/dungeon.ts` | `screens/campaign.ts` | `dungeon` | `tests/dungeon.test.ts` |
 | **活动中心**（见下） | `game/events.ts` | `screens/events.ts` | `events` | `tests/events.test.ts` |
