@@ -7,7 +7,7 @@ import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
-import { bossStage, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, spawnPlan } from '../../game/explore';
+import { bossStage, claimDaily, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, recordBossWin, spawnPlan } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
@@ -26,6 +26,8 @@ export const EXPLORE_CSS = `
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
 .xplore .hud *{pointer-events:auto}
 .xobj{position:absolute;left:10px;right:10px;top:58px;z-index:3;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:rgba(16,10,32,.72);border:2px solid rgba(255,110,210,.55);box-shadow:0 0 18px rgba(255,80,200,.25);color:#fff;backdrop-filter:blur(4px)}
+.xquest{position:absolute;left:10px;top:122px;z-index:3;max-width:150px;padding:6px 9px;border-radius:12px;background:rgba(16,10,32,.62);border:1.5px solid rgba(127,240,255,.45);color:#cfc6e8;font-size:11px;font-weight:700;line-height:1.55;pointer-events:none}
+.xquest b{color:#7ff0ff;font-size:11.5px}.xquest .ok{color:#8affb0}
 .xobj b{display:block;font-family:var(--f-d);font-size:15px;letter-spacing:.04em;color:#ffe9a0}
 .xobj small{display:block;font-size:11.5px;font-weight:700;color:#cfc6e8;margin-top:1px}
 .xobj .btn{flex:none}
@@ -120,12 +122,17 @@ function teamIds(ctx: AppCtx): string[] {
   return ids.length ? ids.slice(0, 5) : Object.keys(ctx.s.heroes).slice(0, 5);
 }
 
+function questHtml(ctx: AppCtx): string {
+  const goals = dailyProgress(ctx.s), claimed = dailyClaimed(ctx.s), ready = goals.every((g) => g.done);
+  return `<div class="xquest"><b>嫦喵的委托${claimed ? ' ✔' : ready ? ' · 去领奖' : ''}</b>${goals.map((g) => `<div class="${g.done ? 'ok' : ''}">${g.done ? '✔' : '·'} ${g.label} ${g.have}/${g.need}</div>`).join('')}</div>`;
+}
 function hud(ctx: AppCtx): string {
   const b = bossStage(ctx.s), rec = recommendedPowerOf(b.chapter, b.index), mine = teamPower(ctx.s);
   const ids = teamIds(ctx);
   return `${topbar(ctx, '探索')}
   <div class="xobj"><div class="grow"><b>${b.fresh ? '目标 · ' : '重打 · '}${b.stage.id} ${b.stage.name}</b><small>首领在街区北端 · 战力 ${fmt(mine)} / 推荐 ${fmt(rec)}</small></div><button class="btn sm green" data-act="x-boss">前往</button></div>
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
+  ${questHtml(ctx)}
   <canvas class="xmini" id="xmini" width="184" height="184"></canvas><div class="xfps" id="xfps"></div>
   <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
 }
@@ -248,6 +255,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
         const g = winReward(stage);
         applyGain(s, g);
         let fg = null as ReturnType<typeof firstClearReward> | null;
+        recordBossWin(s);
         if (t.fresh) { advance(ctx, t.chapter, t.index); fg = firstClearReward(stage); applyGain(s, fg); track(s, 'reach_stage', (t.chapter - 1) * 24 + t.index); await playStoryOnce(ctx, stage.storyPostId); }
         ctx.result({ win: true, banner: t.fresh ? '通关！' : '胜利', title: `${stage.id} ${stage.name}`, gain: { fish: g.fish + (fg?.fish ?? 0), exp: g.exp + (fg?.exp ?? 0), bells: fg?.bells ?? 0, catnip: fg?.catnip ?? 0 } });
         rt.dead.set(sp.id, 0);
@@ -288,7 +296,17 @@ const TALKS = [
   '雨天的纸箱街最适合打盹……不过今天先打架。',
 ];
 let talkI = 0;
-function onTalk(ctx: AppCtx, _sp: Spawn) { ctx.toast(`嫦喵：${TALKS[talkI++ % TALKS.length]}`); }
+function onTalk(ctx: AppCtx, _sp: Spawn) {
+  const g = claimDaily(ctx.s);
+  if (g) {
+    applyGain(ctx.s, g); ctx.save(); sfx.up(); refreshExploreHud(ctx);
+    ctx.toast(`嫦喵：委托完成，辛苦军师啦！${gainText(g)}`);
+    return;
+  }
+  const goals = dailyProgress(ctx.s);
+  if (!dailyClaimed(ctx.s) && !goals.every((x) => x.done)) { ctx.toast(`嫦喵：今天的委托——${goals.filter((x) => !x.done).map((x) => `${x.label}（${x.have}/${x.need}）`).join('、')}`); return; }
+  ctx.toast(`嫦喵：${TALKS[talkI++ % TALKS.length]}`);
+}
 
 export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {

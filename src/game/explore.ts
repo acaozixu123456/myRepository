@@ -9,7 +9,7 @@ import { mulberry } from '../fx/util';
 import { levelOf as sceneOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[] }
+export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; }
   return e;
 }
 
@@ -81,3 +81,26 @@ export function openChest(s: PlayerState, id: string): Gain | null {
 
 export const gainText = (g: Gain) => [g.fish ? `${g.fish} 小鱼干` : '', g.exp ? `${g.exp} 经验` : '', g.catnip ? `${g.catnip} 猫薄荷` : '', g.bells ? `${g.bells} 金铃铛` : ''].filter(Boolean).join(' · ');
 export const chapterCount = () => CHAPTERS.length;
+
+// ---------- 嫦喵的每日委托 ----------
+export const DAILY_GOALS = [
+  { key: 'kills', need: 5, label: '击败 5 只野猫' },
+  { key: 'chests', need: 3, label: '打开 3 个宝箱' },
+  { key: 'boss', need: 1, label: '赢下 1 场首领战' },
+] as const;
+export interface GoalProgress { label: string; have: number; need: number; done: boolean }
+export function dailyProgress(s: PlayerState, now = Date.now()): GoalProgress[] {
+  const e = ensureExplore(s, now);
+  const have = { kills: e.kills, chests: e.chests.length, boss: e.bossWins ?? 0 };
+  return DAILY_GOALS.map((g) => ({ label: g.label, have: Math.min(g.need, have[g.key]), need: g.need, done: have[g.key] >= g.need }));
+}
+export const dailyReady = (s: PlayerState, now = Date.now()) => dailyProgress(s, now).every((g) => g.done);
+export const dailyClaimed = (s: PlayerState, now = Date.now()) => !!ensureExplore(s, now).claimed;
+export function recordBossWin(s: PlayerState, now = Date.now()) { const e = ensureExplore(s, now); e.bossWins = (e.bossWins ?? 0) + 1; }
+/** 三项都完成后找嫦喵领奖，每天一次：小鱼干 + 经验为主，外加猫薄荷和金铃铛 */
+export function claimDaily(s: PlayerState, now = Date.now()): Gain | null {
+  if (!dailyReady(s, now) || dailyClaimed(s, now)) return null;
+  ensureExplore(s, now).claimed = true;
+  const base = winReward(farmStage(s).stage);
+  return { fish: Math.round(base.fish * 10 + 300), exp: Math.round(base.exp * 8 + 200), catnip: 6, bells: 40 };
+}

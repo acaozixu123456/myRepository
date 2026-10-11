@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { KILL_CAP, bossStage, ensureExplore, farmStage, killReward, openChest, spawnPlan } from '../src/game/explore';
+import { KILL_CAP, bossStage, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, recordBossWin, spawnPlan } from '../src/game/explore';
 import { LEVELS, levelColliders } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 
@@ -42,5 +42,34 @@ describe('探索模式规则', () => {
     expect(openChest(s, 'c0')).toBeNull();
     const e = ensureExplore(s, Date.now() + 86400_000 * 1.2);
     expect(e.kills).toBe(0); expect(e.chests).toEqual([]);
+  });
+});
+
+describe('嫦喵的每日委托', () => {
+  it('三项都完成后才能领奖，每天只能领一次，隔天重置', () => {
+    const s = newPlayer();
+    const t0 = Date.UTC(2026, 9, 11, 12);
+    expect(dailyReady(s, t0)).toBe(false);
+    expect(claimDaily(s, t0)).toBeNull();
+    const stage = farmStage(s).stage;
+    for (let i = 0; i < 5; i++) { ensureExplore(s, t0); killReward(s, stage); }
+    for (const id of ['c0', 'c1', 'c2']) openChest(s, id);
+    expect(dailyProgress(s, t0).map((g) => g.done)).toEqual([true, true, false]);
+    expect(claimDaily(s, t0)).toBeNull();
+    recordBossWin(s, t0);
+    expect(dailyReady(s, t0)).toBe(true);
+    const g = claimDaily(s, t0)!;
+    expect(g.fish).toBeGreaterThan(300);
+    expect(g.bells).toBeGreaterThan(0);
+    expect(claimDaily(s, t0)).toBeNull();
+    const next = t0 + 86400_000;
+    expect(dailyProgress(s, next).every((x) => x.have === 0)).toBe(true);
+    expect(claimDaily(s, next)).toBeNull();
+  });
+  it('进度不会超过目标数', () => {
+    const s = newPlayer();
+    const stage = farmStage(s).stage;
+    for (let i = 0; i < 12; i++) killReward(s, stage);
+    expect(dailyProgress(s)[0]).toMatchObject({ have: 5, need: 5, done: true });
   });
 });
