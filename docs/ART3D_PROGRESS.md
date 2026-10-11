@@ -6,25 +6,25 @@
 
 ## 武器（`src/art3d/parts/weapons.ts`）
 
-本批：`codex/3d-weapon-blades`，四个新部件第 1 轮，加上 `herbs` / `fan` 按 #89 建议追加细节的第 2 轮，共 6 个部件，等待 Claude 审核。内部候选调整不增加审核轮次。
+武器第 2 批：`codex/3d-weapon-blades`，四个新部件第 1 轮，加上 `herbs` / `fan` 按 #89 建议追加细节的第 2 轮，共 6 个部件，已在 #91 通过并合并。内部候选调整不增加审核轮次。
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `herbs` | `xian_changmiao`(SP), `qun_huatuo`(SSR) + 杂兵×6（`mob_wei_healer`, `mob_shu_healer`, `mob_wu_healer`, `mob_qun_healer`, `mob_man_healer`, `mob_xian_healer`） | 待审 | 2 | 首版 #89 已通过并合并；本批按建议增加叶尖深浅层次，追加细节待审；23 网格；codex/3d-weapon-blades |
+| `herbs` | `xian_changmiao`(SP), `qun_huatuo`(SSR) + 杂兵×6（`mob_wei_healer`, `mob_shu_healer`, `mob_wu_healer`, `mob_qun_healer`, `mob_man_healer`, `mob_xian_healer`） | 通过 | 2 | 首版 #89 已通过；追加叶尖深浅细节在 #91 通过并合并；23 网格；codex/3d-weapon-blades |
 | `bow` | `shu_pangmiaotong`(SP), `wu_sunxiangxiang`(SSR), `shu_huangzhong`(SR) + 杂兵×3（`mob_shu_archer`, `mob_wu_archer`, `mob_qun_archer`） | 通过 | 1 | #89 已通过并合并；双曲弓臂、独立弓弦与弦槽；10 网格；codex/3d-weapon-sp-kit |
-| `fan` | `wei_simamiyi`(SP), `shu_zhugemiaoliang`(SSR), `wu_luxun`(SSR) + 杂兵×2（`mob_shu_strategist`, `mob_wu_strategist`） | 待审 | 2 | 首版 #89 已通过并合并；本批按建议调整扇面倾角，追加细节待审；24 网格；codex/3d-weapon-blades |
+| `fan` | `wei_simamiyi`(SP), `shu_zhugemiaoliang`(SSR), `wu_luxun`(SSR) + 杂兵×2（`mob_shu_strategist`, `mob_wu_strategist`） | 通过 | 2 | 首版 #89 已通过；追加扇面倾角调整在 #91 通过并合并；24 网格；codex/3d-weapon-blades |
 | `mace` | `man_mengmiaohuo`(UR), `wei_xuhuchi`(SSR), `man_shamoke`(SSR) 等4只 + 杂兵×1 | 底版 | 0 | |
-| `sword` | `wei_caomiaode`(UR), `wu_sunxiaoba`(SSR) + 杂兵×3（`mob_wei_vanguard`, `mob_wu_vanguard`, `mob_xian_vanguard`） | 待审 | 1 | 12 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
+| `sword` | `wei_caomiaode`(UR), `wu_sunxiaoba`(SSR) + 杂兵×3（`mob_wei_vanguard`, `mob_wu_vanguard`, `mob_xian_vanguard`） | 通过 | 1 | #91 已通过并合并；12 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
 | `staff` | `xian_zuoci`(UR), `qun_zhangjiao`(SSR) | 底版 | 0 | |
-| `dualSwords` | `shu_liumiaobei`(UR) | 待审 | 1 | 主手 12 + 副手 12，共 24 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
+| `dualSwords` | `shu_liumiaobei`(UR) | 通过 | 1 | #91 已通过并合并；主手 12 + 副手 12，共 24 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
 | `halberd` | `qun_lvbuding`(UR) | 底版 | 0 | |
 | `qin` | `wu_zhoumiaoyu`(UR) | 底版 | 0 | |
 | `spear` | `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR) 等5只 | 底版 | 0 | |
 | `glaive` | `shu_guanyunmiao`(SSR), `qun_huaxiong`(SR) + 杂兵×2 | 底版 | 0 | |
 | `drum` | `man_mulu`(SSR) + 杂兵×1 | 底版 | 0 | |
 | `brush` | `xian_shuijing`(SSR) | 底版 | 0 | |
-| `dualBlades` | `wei_zhangliao`(SSR) | 待审 | 1 | 主手 10 + 副手 10，共 20 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
-| `knives` | `man_zhurong`(SSR) | 待审 | 1 | 主手 8 + 副手 16，共 24 网格；[185px 近看](../src/art3d/parts/reviews/weapon-blades-knives-185px.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
+| `dualBlades` | `wei_zhangliao`(SSR) | 通过 | 1 | #91 已通过并合并；主手 10 + 副手 10，共 20 网格；[姿势](../src/art3d/parts/reviews/weapon-blades-poses.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
+| `knives` | `man_zhurong`(SSR) | 通过 | 1 | #91 已通过并合并；主手 8 + 副手 16，共 24 网格；[185px 近看](../src/art3d/parts/reviews/weapon-blades-knives-185px.png) / [战斗](../src/art3d/parts/reviews/weapon-blades-battle.png)；codex/3d-weapon-blades |
 | `talisman` | `xian_zhangzhua`(SSR) | 底版 | 0 | |
 | `whisk` | `xian_yuji`(SSR) | 底版 | 0 | |
 | `scroll` | `wei_guojia`(SR) + 杂兵×3 | 底版 | 0 | |
@@ -41,11 +41,12 @@
 
 ### 武器审核记录
 
-- 2026-10-11 · [#89](https://github.com/acaozixu123456/myRepository/pull/89) · 首批 `herbs` / `bow` / `fan` **通过并合并**。Claude 的 [审核评论](https://github.com/acaozixu123456/myRepository/pull/89#issuecomment-6109941469) 提出两条后续建议：扇面略向外倾，改善 `strike` 侧视时成一条线的效果；药草叶尖增加一档深浅。本批 `herbs` / `fan` 的追加细节单独待审，首版通过记录保留。
+- 2026-10-11 · [#89](https://github.com/acaozixu123456/myRepository/pull/89) · 首批 `herbs` / `bow` / `fan` **通过并合并**。Claude 的 [审核评论](https://github.com/acaozixu123456/myRepository/pull/89#issuecomment-6109941469) 提出两条后续建议：扇面略向外倾，改善 `strike` 侧视时成一条线的效果；药草叶尖增加一档深浅。两条建议随后在 #91 落实并通过，首版通过记录保留。
+- 2026-10-11 · [#91](https://github.com/acaozixu123456/myRepository/pull/91) · 武器第 2 批 **通过并合并**，按 [固定队列](CODEX_QUEUE.md) 同步状态。四个新部件为 `sword` / `dualSwords` / `dualBlades` / `knives`，另含 `herbs` / `fan` 的建议调整；已有姿势卡点由 Claude 在 `pose.ts` 处理。
 - `codex/3d-weapon-blades` 使用者核对：四个新部件共 8 只（5 英雄 + 3 杂兵），连同追加细节的 `herbs` / `fan` 共 21 只（10 英雄 + 11 杂兵）。依据 `src/data/heroes.ts`、`src/content/mobs.ts` 与 `src/data/mob-looks.ts` 核对；本批对应行的原有数量无误，补齐杂兵 ID。
 - `dagger` 保持底版第 0 轮，本批未制作。后续按固定队列继续。
 
-### 本批检查与截图
+### 武器第 2 批检查与截图（#91）
 
 `npm run typecheck` 与 `npm test` 通过（58 个测试文件、912 个测试）。本批全部复用缓存材质；球 / 圆柱最大 12 分段，`fan` 的 TubeGeometry 使用 16 个纵向分段。双持网格数按主手加副手统计，均在单部件 24 网格预算内。
 
@@ -63,14 +64,16 @@
 
 ## 头饰（`src/art3d/parts/headgear.ts`）
 
+当前批次：`codex/3d-headgear-crowns`，前六种头饰，第 1 轮待审。已按 `src/data/heroes.ts`、`src/data/mob-looks.ts` 和 `src/content/mobs.ts` 核对使用者，共 27 只（18 英雄 + 9 杂兵）；原表数量无误，补齐使用者 ID。
+
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `scholarCap` | `wei_simamiyi`(SP), `shu_guanyunmiao`(SSR), `shu_zhugemiaoliang`(SSR) 等8只 + 杂兵×4 | 底版 | 0 | |
-| `flowerPin` | `shu_pangmiaotong`(SP), `wu_sunxiangxiang`(SSR), `qun_diaochan`(SSR) | 底版 | 0 | |
-| `lotusCrown` | `xian_changmiao`(SP), `xian_zuoci`(UR) + 杂兵×1 | 底版 | 0 | |
-| `taoistCrown` | `wu_zhoumiaoyu`(UR), `xian_yuji`(SSR) + 杂兵×4 | 底版 | 0 | |
-| `emperorCrown` | `wei_caomiaode`(UR), `qun_dongzhuo`(SR) | 底版 | 0 | |
-| `boneCrown` | `man_mengmiaohuo`(UR) | 底版 | 0 | |
+| `scholarCap` | `wei_simamiyi`(SP), `shu_guanyunmiao`(SSR), `shu_zhugemiaoliang`(SSR), `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR), `wei_guojia`(SR), `shu_jiangwei`(SR) + 杂兵×4（`mob_wei_archer`, `mob_wei_strategist`, `mob_qun_archer`, `mob_qun_strategist`） | 待审 | 1 | 12 网格；短翼与额带，190px 下布折较弱；codex/3d-headgear-crowns |
+| `flowerPin` | `shu_pangmiaotong`(SP), `wu_sunxiangxiang`(SSR), `qun_diaochan`(SSR) | 待审 | 1 | 19 网格；配色参考已批准立绘及 ref；codex/3d-headgear-crowns |
+| `lotusCrown` | `xian_changmiao`(SP), `xian_zuoci`(UR) + 杂兵×1（`mob_xian_guard`） | 待审 | 1 | 19 网格；金莲冠配色参考已批准立绘及 ref；codex/3d-headgear-crowns |
+| `taoistCrown` | `wu_zhoumiaoyu`(UR), `xian_yuji`(SSR) + 杂兵×4（`mob_shu_strategist`, `mob_wu_strategist`, `mob_xian_vanguard`, `mob_xian_healer`） | 待审 | 1 | 10 网格；道簪留出折耳活动间隙；codex/3d-headgear-crowns |
+| `emperorCrown` | `wei_caomiaode`(UR), `qun_dongzhuo`(SR) | 待审 | 1 | 24 网格；冕板抬高以避开耳抖；codex/3d-headgear-crowns |
+| `boneCrown` | `man_mengmiaohuo`(UR) | 待审 | 1 | 20 网格；codex/3d-headgear-crowns |
 | `pheasant` | `qun_lvbuding`(UR) | 底版 | 0 | |
 | `helmetWei` | `wei_xiahoudun`(SSR), `wei_xuhuang`(SR) + 杂兵×5 | 底版 | 0 | |
 | `helmetGeneral` | `wei_zhangliao`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR) 等6只 | 底版 | 0 | |
@@ -83,6 +86,18 @@
 | `leafHat` | 杂兵×5 | 底版 | 0 | |
 | `hood` | 杂兵×3 | 底版 | 0 | |
 | `ratCap` | 杂兵×1 | 底版 | 0 | |
+
+### 头饰第 1 批检查
+
+`npm run typecheck && npm test` 已通过（退出码 0；58 个测试文件、912 个测试）。六种头饰分别为 12 / 19 / 19 / 10 / 24 / 20 网格，均在单部件预算内；球 / 圆柱最大 20 分段，全部使用缓存材质和 `toon` / `solid` 描边，根变换与坐标有限性检查通过。
+
+独立 QA 覆盖 27 使用者：静态三姿势 81 组、精确耳抖峰值 81 组、全部 14 姿势 378 组，以及三姿势 × 12 动画时刻 972 组。所有检查中，头饰自身裁切、眼部样本遮挡、非有限坐标和新增整猫越框回归均为 0。眼部检查使用真实眼三角投影采样，每眼至少 71 个有效样本，并结合原尺寸与 190px 截图核对。
+
+整猫旧越框在底版 / 最终版保持一致：静态 2 / 2、全姿势 8 / 8、动画 24 / 24。全姿势案例为 `wei_caomiaode`、`wei_simamiyi` 各在 `strike / thrust / hurt / dash` 的底部越框；本批头饰自身在这些姿势中均通过框内检查。
+
+审核截图：[idle / windup / strike](../src/art3d/parts/reviews/headgear-crowns/poses.png)、[十猫同屏战斗](../src/art3d/parts/reviews/headgear-crowns/battle.png)、[190px 剪影](../src/art3d/parts/reviews/headgear-crowns/small-190px.png)、[190px 三姿势](../src/art3d/parts/reviews/headgear-crowns/poses-190px.png)、[底版 / 最终版对照](../src/art3d/parts/reviews/headgear-crowns/before-after.png)。拍摄命令、基线与冻结源码信息见 [截图说明](../src/art3d/parts/reviews/headgear-crowns/README.md)，独立审核依据见 [QA 摘要](../src/art3d/parts/reviews/headgear-crowns/qa-summary.md) 与 [方法说明](../src/art3d/parts/reviews/headgear-crowns/qa-method-notes.json)。页面运行错误为 0，交付图片均 ≤500KB。
+
+最不满意：官帽在 190px 下布折较弱，浅色 `pal` 的圆顶接近圆帽，短翼与额带仍可辨认。
 
 ## 衣服（`src/art3d/parts/body.ts`）
 

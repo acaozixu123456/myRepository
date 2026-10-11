@@ -1,0 +1,17 @@
+{
+  "sourceSha256": "8cd1188aca84ea2c242f9f7032c451898c8b138ef8960de901b9588d33851be5",
+  "loader": "Current buildCat3D, HEADGEAR and REGISTRY are bundled together from unmodified worktree source. Baseline headgear comes from git show 4b9d0ef and replaces the same live REGISTRY before baseline cats are assembled. Shared registry identity is asserted.",
+  "baselineSanity": {
+    "reviewCatBoundsChanged": 64
+  },
+  "eyes": "Raster 12x12 samples from actual skinned white/iris/pupil/arc eye triangles; projected headgear triangle depths with material side and expanded outline; samples have not been filtered for eyelid/self-skull occlusion, so screenshot confirmation is required.",
+  "ears": "Triangle edge intersections with actual skinned ear outer/inner/outline surfaces; coplanar pairs are not diagnosed. Crossings around ear base can be intended mounting and require visual judgment.",
+  "frame": "All actual skinned vertices including baked outlines; headgear raw vertices plus normal-expanded shader outlines; renderer FRAME. buildCat3D and HEADGEAR share one bundled live registry for trustworthy baseline comparisons.",
+  "visualScope": "81 actual users/poses at uniform alpha height190px, plus exact inward-ear-wiggle peak for both emperor users, folded fairy healer and big-ear Wei strategist; candidate04 official representative and folded sheets also viewed.",
+  "limitations": [
+    "12x12 projection samples cover actual skinned eye triangles; this is finite sampling, combined with rendered screenshot review, not a proof for every pixel and continuous animation time.",
+    "Ear surface test checks triangle edges and does not diagnose coplanar pairs. Low cap/band intersections were reviewed visually as intended ear-root mounting.",
+    "Out-of-frame legacy whole-cat poses are retained in before and after; accessory frame is checked independently.",
+    "Independent QA is evidence for Claude review, not Claude approval."
+  ]
+}
