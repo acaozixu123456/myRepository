@@ -216,9 +216,9 @@ export function handleCampaign(ctx: AppCtx, act: string, el: HTMLElement): boole
       ctx.save(); ctx.go('home'); ctx.toast(`挑战 ${def.title}`);
       void ctx.loop.runCustom(bossStage(ctx.s), def.theme).then((win) => {
         if (win === null) return;
-        const res = finishAttempt(ctx.s, ctx.loop.lastDamagePct);
+        const res = finishAttempt(ctx.s, ctx.loop.customDamagePct);
         ctx.save();
-        ctx.result({ win: res.pct >= 0.4, title: `${def.title}`, hint: `打掉了 ${Math.round(res.pct * 100)}% 生命：+${fmt(res.fish)} 小鱼干、${res.catnip} 猫薄荷、${res.paw} 猫爪印。累计达到里程碑记得回来领周奖。`, again: { act: 'nav', label: '回 Boss', data: { to: 'campaign' } } });
+        ctx.result({ win: true, banner: `打掉 ${Math.round(res.pct * 100)}%`, title: `${def.title}`, hint: `累计伤害已计入周榜：+${fmt(res.fish)} 小鱼干、${res.catnip} 猫薄荷、${res.paw} 猫爪印。累计达到里程碑记得回来领周奖。`, again: { act: 'nav', label: '回 Boss', data: { to: 'campaign' } } });
         campaignState.mode = 'boss';
         ctx.refresh();
       });

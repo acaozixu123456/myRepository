@@ -110,7 +110,7 @@ const ctx: AppCtx = {
     root.querySelectorAll('.mask.center').forEach((m) => m.remove());
     if (o.win) sfx.win(); else sfx.no();
     root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog result ${o.win ? 'win' : 'lose'}">
-      <div class="banner-r">${o.win ? '通关！' : '挑战失败'}</div>
+      <div class="banner-r">${o.banner ?? (o.win ? '通关！' : '挑战失败')}</div>
       <div class="muted" style="font-weight:800;margin:4px 0 10px">${o.title}</div>
       ${g ? `<div class="row" style="justify-content:center;gap:14px;font-family:var(--f-d);font-size:20px;flex-wrap:wrap">${g.fish ? `<span>${icon('fish', 26)} ${fmt(g.fish)}</span>` : ''}${g.exp ? `<span>${icon('spark', 26)} ${fmt(g.exp)}</span>` : ''}${g.bells ? `<span>${icon('bells', 26)} ${fmt(g.bells)}</span>` : ''}${g.catnip ? `<span>${icon('catnip', 26)} ${g.catnip}</span>` : ''}</div>` : ''}
       ${o.hint ? `<p style="font-size:13px;line-height:1.7;font-weight:700;margin:0">${o.hint}</p>` : ''}

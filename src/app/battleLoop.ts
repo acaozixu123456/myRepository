@@ -28,6 +28,8 @@ export class BattleLoop {
   lastOutcome: 'win' | 'lose' | null = null;
   /** 最近一场战斗打掉敌方生命的比例（0~1），世界 Boss 用 */
   lastDamagePct = 0;
+  /** runCustom 那一场的伤害比例：在恢复挂机之前定格，避免被紧接着的挂机战斗覆盖 */
+  customDamagePct = 0;
 
   constructor(canvas: HTMLCanvasElement, private hooks: LoopHooks) {
     this.player = new Player(canvas);
@@ -71,6 +73,7 @@ export class BattleLoop {
     this.pushNext = false;
     await this.hooks.story?.(stage.storyId);
     const win = await this.fight(stage, token, theme);
+    this.customDamagePct = this.lastDamagePct;
     if (token !== this.token) return null;
     this.lastOutcome = win ? 'win' : 'lose';
     await this.player.sleep(win ? 1.2 : 1.8);
