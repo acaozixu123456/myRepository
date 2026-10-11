@@ -111,3 +111,12 @@ export async function buildIllustRig(look: CatLook, url: string, scale = 0.8): P
   });
   return { parts, look, stance: {}, foot, height: H, scale };
 }
+
+/** 立绘版半身像（出招插入图）：直接用卡牌裁切图 */
+export async function illustPortrait(url: string, px = 520): Promise<HTMLCanvasElement> {
+  const img = await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('illust load failed')); i.src = url; });
+  const c = document.createElement('canvas');
+  c.width = px; c.height = Math.round((px * img.height) / img.width);
+  c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}

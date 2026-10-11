@@ -9,7 +9,7 @@ import { makeBackground } from './bg';
 import type { BgTheme } from './bg';
 import { Choreo } from './choreo';
 import { playCutIn } from './cutin';
-import { buildIllustRig, buildPortrait, buildRig } from './rig';
+import { buildIllustRig, buildPortrait, buildRig, illustPortrait } from './rig';
 import { ILLUST } from '../art/illust-index';
 import type { Rig } from './rig';
 import { Scene } from './scene';
@@ -94,7 +94,8 @@ export class Player {
   async portrait(heroId: string): Promise<HTMLCanvasElement> {
     let p = this.portraits.get(heroId);
     if (!p) {
-      p = await buildPortrait(lookOf(heroId), '20 50 360 340', 520);
+      const il = spriteMode.illust ? ILLUST[heroId] : undefined;
+      p = il ? await illustPortrait(il.card).catch(() => buildPortrait(lookOf(heroId), '20 50 360 340', 520)) : await buildPortrait(lookOf(heroId), '20 50 360 340', 520);
       this.portraits.set(heroId, p);
     }
     return p;
