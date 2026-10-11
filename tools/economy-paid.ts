@@ -6,6 +6,7 @@ import { HERO_BY_ID } from '../src/data/heroes';
 import { Rng } from '../src/engine/rng';
 import { fastExplore, fastFree, signIn } from '../src/game/daily';
 import { HELP_PER_DAY, guildChest, guildHelp, joinGuild, myGuild } from '../src/game/guild';
+import { ATTEMPTS_PER_DAY, claimMilestone, claimable, finishAttempt, startAttempt } from '../src/game/worldboss';
 import { DAILY_TRIES, DUNGEONS, TIERS, dungeonStart, dungeonSweep, dungeonWin, tierLevel, tierUnlocked } from '../src/game/dungeon';
 import { COST, POOLS, pull } from '../src/game/gacha';
 import { YARN_MINUTES, useYarn } from '../src/game/inventory';
@@ -47,6 +48,7 @@ export interface EconomyPaidReport {
 export const DEFAULT_START = Date.UTC(2026, 9, 5);
 export const DEFAULT_SEED = 20261011;
 /** main.ts 的 gift 动作：每天一次 */
+export const BOSS_PCT = 0.4;
 export const GIFT_BELLS = 400, GIFT_TICKETS = 2;
 const HOUR = 3600000;
 const POINTS = [{ ordinal: 1, accountLevel: 1, star: 1 }, { ordinal: 24, accountLevel: 20, star: 2 }, { ordinal: 72, accountLevel: 45, star: 3 }, { ordinal: 144, accountLevel: 80, star: 5 }];
@@ -123,6 +125,11 @@ function incomeDay(p: PlayerState, now: number, day: number, frozenLevel?: numbe
     if (!myGuild(p)) check(joinGuild(p, 'g_box', now + 10 * HOUR).ok, '加入公会');
     check(guildChest(p, now + 10 * HOUR).ok, '每日纸箱');
     for (let i = 0; i < HELP_PER_DAY; i++) check(guildHelp(p, now + 10 * HOUR).ok, '公会互助');
+  });
+  record('boss', () => {
+    // 假设每次稳定打掉 BOSS_PCT 的生命（校准基线：默认五猫约 40%）；这是显式输入，不是战斗实测
+    for (let i = 0; i < ATTEMPTS_PER_DAY; i++) { check(startAttempt(p, now + 10 * HOUR).ok, '世界Boss挑战'); finishAttempt(p, BOSS_PCT, now + 10 * HOUR); }
+    claimable(p, now + 10 * HOUR).forEach((ok, i) => { if (ok) check(claimMilestone(p, i, now + 10 * HOUR).ok, 'Boss里程碑'); });
   });
   record('campaign', () => {
     const st = getStage(p.stage.chapter, p.stage.index)!;
@@ -326,7 +333,7 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
     '按此口径，原 120 分钟折算下秘境约占全部免费收入的 14%–20%，低于 20%–35% 目标下沿；已裁决调为 150 分钟（见下表为 150 分钟的实测占比），仍偏低的快照留待后续观察。',
     '## 任务毛奖励上限',
     table(['周期', '现已开放条数', '未开放', '全部达标毛实物', '已定价子集'], r.questCeilings.map((q) => [q.kind, q.available, q.unavailable.join('、') || '无', bundle(q.quantities), n(q.valuation.pricedFish)])),
-    '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。公会已开放，其每日纸箱+5次互助已并入主表的 guild 来源（鱼牌单价取 ITEM_VALUE_FISH 锚点；捐献是小鱼干支出，不计入）；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',
+    '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。世界 Boss 按每次稳定打掉 40% 生命（默认五猫校准值）、每天 3 次、周内累计里程碑自动领取并入主表的 boss 来源，这是显式假设而非战斗实测；公会已开放，其每日纸箱+5次互助已并入主表的 guild 来源（鱼牌单价取 ITEM_VALUE_FISH 锚点；捐献是小鱼干支出，不计入）；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',
     '## 额外首页福利：对经济结论的敏感性',
     table(['累计领取天数', '额外实物', '额外已定价子集'], r.gifts.map((g) => [g.count, bundle(g.quantities), n(g.valuation.pricedFish)])),
     '当前 home.ts 永久显示“每日福利”，main.ts 仅限制300000ms冷却，点击即发1600金铃铛+5招福符。一次310000、三次930000；每天288次是24小时持续操作的理论上限，不是典型玩法。主表按Issue指定来源列出；这个额外来源确实可重复领取，不能省略后宣称全经济已达付费快15%–40%的目标。它还改变免费招募与专属碎片获得速度。需Claude确认是否原型福利或正式每日一次；本PR不改应用行为。',

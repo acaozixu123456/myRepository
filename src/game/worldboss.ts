@@ -21,11 +21,11 @@ export const BOSSES: BossDef[] = [
 ];
 export const ATTEMPTS_PER_DAY = 3;
 export const MILESTONES: { bars: number; bells: number; paw: number; tickets: number }[] = [
-  { bars: 1, bells: 20, paw: 100, tickets: 0 },
-  { bars: 2, bells: 30, paw: 150, tickets: 0 },
-  { bars: 4, bells: 50, paw: 250, tickets: 0 },
-  { bars: 7, bells: 80, paw: 400, tickets: 1 },
-  { bars: 10, bells: 100, paw: 600, tickets: 2 },
+  { bars: 1, bells: 20, paw: 50, tickets: 0 },
+  { bars: 2, bells: 30, paw: 75, tickets: 0 },
+  { bars: 4, bells: 50, paw: 125, tickets: 0 },
+  { bars: 7, bells: 80, paw: 200, tickets: 1 },
+  { bars: 10, bells: 100, paw: 300, tickets: 2 },
 ];
 
 export interface BossState {
@@ -63,7 +63,7 @@ export function startAttempt(s: PlayerState, now = Date.now()): { ok: boolean; r
 /** 单次挑战的奖励：保底 + 随伤害增长 */
 export function attemptReward(s: PlayerState, pct: number) {
   const fish = Math.round(idleRate(s).fish * 60 * (0.5 + pct));
-  return { fish, catnip: 5 + Math.round(10 * pct), paw: 20 + Math.round(30 * pct) };
+  return { fish, catnip: 5 + Math.round(10 * pct), paw: 10 + Math.round(15 * pct) };
 }
 export function finishAttempt(s: PlayerState, pct: number, now = Date.now()) {
   const b = ensureBoss(s, now);
