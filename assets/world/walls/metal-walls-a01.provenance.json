@@ -1,0 +1,557 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A01",
+  "title": "脏污金属板外墙",
+  "created_date_utc": "2026-10-11",
+  "branch": "codex/3d-world-metal-walls",
+  "base_branch": "claude/awesome-babbage-ygba4h",
+  "base_commit": "6e07699c08534ff0da65f58e54ccad738459094c",
+  "brief": "docs/CODEX_WORLD_BRIEF.md",
+  "generator": {
+    "tool": "image_gen.imagegen",
+    "provider": "OpenAI",
+    "model_version": null,
+    "seed": null,
+    "metadata_note": "图像生成接口没有返回模型版本和随机种子。",
+    "external_reference_images": [],
+    "reference_note": "修图只使用本批已生成候选；全新细肋版本未输入参考图。"
+  },
+  "review": {
+    "round": 1,
+    "status": "awaiting_claude",
+    "approved_count": 0
+  },
+  "assets": [
+    {
+      "id": "wall_metal_riveted_01",
+      "category": "walls/metal",
+      "role": "base_color",
+      "path": "assets/world/walls/wall_metal_riveted_01.webp",
+      "selected_candidate": 3,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create a production-ready square 1024 x 1024 seamless tileable ALBEDO / BASE COLOR wall material for a cat-world cyberpunk rainy-night miniature city game. This is a FLAT orthographic texture image filling the complete square, not a perspective view of a building, not a photograph of a room, and not a material sphere. Mid-value desaturated dark steel and dirty muted colors, believable fine surface wear for an old exterior, controlled contrast readable at game scale. Truly periodic on BOTH axes: every shape cut at an edge must continue in the exact corresponding position on the opposite edge; matching edge colors, no border or frame. Avoid unique large stains at the tile center and keep the same statistical color and detail distribution across the entire square. Only base color: absolutely uniform diffuse illumination, no directional highlights, no drop shadows, no vignette, no bright center, no gradient, no baked neon reflection, no specular reflections or glossy glare. The engine will provide all lighting. No words, no logos, no signage, no UI, no characters, no human faces. Detailed restrained environment art, not a cartoon drawing. Render one texture only, edge to edge, at 1024 x 1024.\nVARIANT 1 — old charcoal-gray riveted steel panel facade. Shallow rectangular panel joints in a clean orthogonal repeating grid, rows of small flush rivets, delicate scratched galvanized grain, a few understated rust freckles and grime at joins. Mostly dark warm gunmetal, subtle cool gray zinc mottling and muted brown corrosion. Panels have thin understated seams, without harsh black outlines. A consistent panel module must continue at all four edges. Do not put a frame around the image.",
+          "references": [],
+          "raw_output": {
+            "filename": "exec-bbca6a0a-f4f7-4447-a981-deb6c1ddd03f.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3456023,
+            "sha256": "62328bde3daa8031fd999a888a03f338d03d8cee4afedfd3c6c45e025b5b0b66"
+          },
+          "selection_note": "未采用；继续检查局部明暗与板缝周期。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Edit the supplied wall texture into a true flat PBR BASE COLOR / ALBEDO map. Output one full square texture, edge to edge, no mockup. Keep its old metal, muted palette, fine rust and dirt identity. REMOVE ALL BAKED LIGHTING: eliminate single-sided bright bevel strokes, directional shading, glossy rivet highlights, drop shadows around flakes, vignette and any large illumination gradient. Rust and scratches are color variations only. The apparent surface relief will be supplied separately by a game engine, so this base-color image must not paint relief lighting. Uniform ambient color only. Fix periodic boundaries on BOTH axes: left and right edge pixels and their nearby texture features must match and continue seamlessly, and the same for top and bottom. A 2 by 2 repetition must not reveal any seam, sudden truncated paint flake, discontinuous panel or fastening row, or edge border. Arrange panel module spacing to be a precise whole-number period across the square. No words, objects, signage, neon, characters, perspective, background, frame, or sphere. Intended output 1024x1024.\n\nRiveted charcoal steel: retain the understated 4 by 4 sheet grid and small fastening dots. Replace shaded spherical rivets with small matte flat circular metal marks, no white speck or dark shadow side. Thin dirty joints are subdued material discoloration, not dark crevices with a shiny ledge. Keep zinc grain and distributed small rust freckles. All four boundary seams must connect consistently.",
+          "references": [
+            "62328bde3daa8031fd999a888a03f338d03d8cee4afedfd3c6c45e025b5b0b66"
+          ],
+          "raw_output": {
+            "filename": "exec-0042a46d-f664-4691-a34e-651bf6cc97e2.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3214216,
+            "sha256": "bf3b63e77498b653ad807a5e56103c03cc1be8e3a6bb0ef542d0a92869403bec"
+          },
+          "selection_note": "未采用；继续修正周期板缝。"
+        },
+        {
+          "candidate": 3,
+          "operation": "image_gen_edit",
+          "prompt": "Rebuild the supplied material as a strictly SEAMLESS PERIODIC game albedo tile. Retain the same material family and palette, but rearrange the sheet pattern to solve the seam problem. Flat base color only, no light baked in.\n\nCRITICAL LAYOUT: Each of the FOUR texture edges cuts THROUGH THE CENTER OF A VERY THIN DARK METAL PANEL JOINT. There must be only HALF a thin joint at each edge, so when identical tiles touch they form ONE normal joint the same thickness as an internal joint. There is NO short extra strip of metal at the top or bottom. Internal horizontal joints are at exactly 25%, 50%, and 75% of image height. For the plate variants, vertical joints are at exactly 25%, 50%, and 75% of width. The outer joints are at exactly 0% and 100%. A texture repeated 2x2 produces uniformly spaced full sheets, not a double seam near the repetition boundary. Edge joint color is a consistent matte dark neutral metal gray on all four edges, with no broken flakes crossing it, so opposing edges match. Physical panel joints are subtle, narrow, and the same contrast as inner joints. Do not add an image frame, broad black border or vignette.\n\nMATERIAL: charcoal-gray flat riveted steel with zinc mottling and tiny muted rust speckles. Exactly 4 columns and 4 rows of equally sized full metal sheets. Small flat matte circle fasteners near each seam, no sphere lighting.\n\nAll surfaces are ABSOLUTELY UNLIT. Remove every specular shine, directional bevel, spherical rivet highlight, relief shadow and directional broad gradient. Thin joints represent dirt color, not a lit crevice. Avoid strong scratches at the very edge. Fine color wear distributed across all panels with balanced brightness. Nothing but the flat square surface, completely filling the image. No perspective, building, material ball, background, writing or neon. 1024x1024 base-color texture.",
+          "references": [
+            "bf3b63e77498b653ad807a5e56103c03cc1be8e3a6bb0ef542d0a92869403bec"
+          ],
+          "raw_output": {
+            "filename": "exec-4997ebfe-b795-422a-9a92-9564979062c0.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3402869,
+            "sha256": "5a4d3e11fb28bbef9e8625df3ae791efcfed88ece33da29c409734ec2b49c1f0"
+          },
+          "selection_note": "采用；从物理板缝中心提取一个完整周期用于规格化导出。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "5a4d3e11fb28bbef9e8625df3ae791efcfed88ece33da29c409734ec2b49c1f0",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          4,
+          38,
+          1251,
+          1248
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          1247,
+          1210
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "extract complete panel-joint period",
+          "Lanczos resize to 1024x1024",
+          "encode RGB sRGB WebP"
+        ],
+        "encoder": "ImageMagick magick / libwebp",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "color_space": "sRGB",
+        "alpha": false,
+        "note": "完整周期缩小并规格化为正方形。"
+      },
+      "file_audit": {
+        "id": "wall_metal_riveted_01",
+        "path": "assets/world/walls/wall_metal_riveted_01.webp",
+        "width": 1024,
+        "height": 1024,
+        "bytes": 383878,
+        "sha256": "caf57d8b6ca9784c14a865e39738a43b0802b8946ced23c96b4978063852d147",
+        "boundary_mae_rgb_0_255": {
+          "left_right": 7.406,
+          "top_bottom": 7.132
+        },
+        "interior_line_mae_p95": {
+          "x": 11.36,
+          "y": 10.625
+        },
+        "interior_adjacent_mae": {
+          "x": 9.492,
+          "y": 9.187
+        },
+        "quadrant_mean_rgb": [
+          76.766,
+          76.242,
+          76.704,
+          77.374
+        ]
+      },
+      "visual_self_check": {
+        "status": "passed_internal_review",
+        "views": [
+          "native-size WebP",
+          "2x2 repeated file",
+          "4x4 repeated file",
+          "neutral / local magenta-cyan Three.js material swatches"
+        ],
+        "inspected": [
+          "panel-joint continuity on both axes",
+          "no extra double joint or missing joint",
+          "no abrupt color block at the tile boundary",
+          "no obvious WebP blocks",
+          "no directional rib-edge highlight from rejected candidates"
+        ],
+        "claude_review": "pending_round_1"
+      }
+    },
+    {
+      "id": "wall_metal_painted_02",
+      "category": "walls/metal",
+      "role": "base_color",
+      "path": "assets/world/walls/wall_metal_painted_02.webp",
+      "selected_candidate": 3,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create a production-ready square 1024 x 1024 seamless tileable ALBEDO / BASE COLOR wall material for a cat-world cyberpunk rainy-night miniature city game. This is a FLAT orthographic texture image filling the complete square, not a perspective view of a building, not a photograph of a room, and not a material sphere. Mid-value desaturated dark steel and dirty muted colors, believable fine surface wear for an old exterior, controlled contrast readable at game scale. Truly periodic on BOTH axes: every shape cut at an edge must continue in the exact corresponding position on the opposite edge; matching edge colors, no border or frame. Avoid unique large stains at the tile center and keep the same statistical color and detail distribution across the entire square. Only base color: absolutely uniform diffuse illumination, no directional highlights, no drop shadows, no vignette, no bright center, no gradient, no baked neon reflection, no specular reflections or glossy glare. The engine will provide all lighting. No words, no logos, no signage, no UI, no characters, no human faces. Detailed restrained environment art, not a cartoon drawing. Render one texture only, edge to edge, at 1024 x 1024.\nVARIANT 2 — old exterior metal plates under worn, muted petrol-gray / dusty teal paint. Broad flat metal sheets with subdued square joints, irregular small flakes exposing dull warm gray metal, fine rust freckles and soot speckles. Paint wear is distributed evenly, with softly broken shapes rather than a huge central peeling patch. Avoid any recognizable graffiti or letters. Restrained, muted, softly mottled colors; no saturation or neon color. The underlying repeating sheet pattern and all flakes crossing an edge continue exactly on the opposite edge.",
+          "references": [],
+          "raw_output": {
+            "filename": "exec-aa345e35-bc57-4697-bc6f-9816e2c26d57.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3370305,
+            "sha256": "adcde61fe93806cdc92b15af09513bcc0d1a8272a13fa99ee16ae2ee3209c09b"
+          },
+          "selection_note": "未采用；继续检查局部明暗与板缝周期。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Edit the supplied wall texture into a true flat PBR BASE COLOR / ALBEDO map. Output one full square texture, edge to edge, no mockup. Keep its old metal, muted palette, fine rust and dirt identity. REMOVE ALL BAKED LIGHTING: eliminate single-sided bright bevel strokes, directional shading, glossy rivet highlights, drop shadows around flakes, vignette and any large illumination gradient. Rust and scratches are color variations only. The apparent surface relief will be supplied separately by a game engine, so this base-color image must not paint relief lighting. Uniform ambient color only. Fix periodic boundaries on BOTH axes: left and right edge pixels and their nearby texture features must match and continue seamlessly, and the same for top and bottom. A 2 by 2 repetition must not reveal any seam, sudden truncated paint flake, discontinuous panel or fastening row, or edge border. Arrange panel module spacing to be a precise whole-number period across the square. No words, objects, signage, neon, characters, perspective, background, frame, or sphere. Intended output 1024x1024.\n\nWorn muted petrol-gray / dusty teal coating: retain distributed peeling paint and muted rust patches, but soften dark outlines and shadows around every flake. Make the exterior edge regions contain fine matching matte mottling, with no half-flake abruptly cut by a texture boundary. Keep patch sizes smaller near texture edges so opposing sides match. Make the sheet grid periodic, with repeat joins aligned and uniformly dirty, not raised or lit.",
+          "references": [
+            "adcde61fe93806cdc92b15af09513bcc0d1a8272a13fa99ee16ae2ee3209c09b"
+          ],
+          "raw_output": {
+            "filename": "exec-91a5d4e2-e607-4c0e-97c3-256ad24a2963.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3607248,
+            "sha256": "e52bcbfd778e6a1fcc4d4eb3412ac537a3abb513d9a6eb8305a1287a64db5486"
+          },
+          "selection_note": "未采用；继续修正周期板缝。"
+        },
+        {
+          "candidate": 3,
+          "operation": "image_gen_edit",
+          "prompt": "Rebuild the supplied material as a strictly SEAMLESS PERIODIC game albedo tile. Retain the same material family and palette, but rearrange the sheet pattern to solve the seam problem. Flat base color only, no light baked in.\n\nCRITICAL LAYOUT: Each of the FOUR texture edges cuts THROUGH THE CENTER OF A VERY THIN DARK METAL PANEL JOINT. There must be only HALF a thin joint at each edge, so when identical tiles touch they form ONE normal joint the same thickness as an internal joint. There is NO short extra strip of metal at the top or bottom. Internal horizontal joints are at exactly 25%, 50%, and 75% of image height. For the plate variants, vertical joints are at exactly 25%, 50%, and 75% of width. The outer joints are at exactly 0% and 100%. A texture repeated 2x2 produces uniformly spaced full sheets, not a double seam near the repetition boundary. Edge joint color is a consistent matte dark neutral metal gray on all four edges, with no broken flakes crossing it, so opposing edges match. Physical panel joints are subtle, narrow, and the same contrast as inner joints. Do not add an image frame, broad black border or vignette.\n\nMATERIAL: flat dusty teal coated steel with small paint flakes and restrained rust speckles. Exactly 4 columns and 4 rows of equally sized full metal sheets. The peeling is color mottling only, no raised edge, shadow or highlight.\n\nAll surfaces are ABSOLUTELY UNLIT. Remove every specular shine, directional bevel, spherical rivet highlight, relief shadow and directional broad gradient. Thin joints represent dirt color, not a lit crevice. Avoid strong scratches at the very edge. Fine color wear distributed across all panels with balanced brightness. Nothing but the flat square surface, completely filling the image. No perspective, building, material ball, background, writing or neon. 1024x1024 base-color texture.",
+          "references": [
+            "e52bcbfd778e6a1fcc4d4eb3412ac537a3abb513d9a6eb8305a1287a64db5486"
+          ],
+          "raw_output": {
+            "filename": "exec-0bc6bd20-dd1a-4d08-b341-b9668922416e.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3814635,
+            "sha256": "fc4283b0594e166359930be9db4793f355ec3223e315f99f6df9c9c861dbd0df"
+          },
+          "selection_note": "采用；从物理板缝中心提取一个完整周期用于规格化导出。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "fc4283b0594e166359930be9db4793f355ec3223e315f99f6df9c9c861dbd0df",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          314,
+          313,
+          940,
+          942
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          626,
+          629
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "extract complete panel-joint period",
+          "Lanczos resize to 1024x1024",
+          "encode RGB sRGB WebP"
+        ],
+        "encoder": "ImageMagick magick / libwebp",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "color_space": "sRGB",
+        "alpha": false,
+        "note": "约627像素原生周期上采样至1024；上采样不增加细节，需Claude评估近看清晰度。"
+      },
+      "file_audit": {
+        "id": "wall_metal_painted_02",
+        "path": "assets/world/walls/wall_metal_painted_02.webp",
+        "width": 1024,
+        "height": 1024,
+        "bytes": 310354,
+        "sha256": "171bf691bba9729a55bd9a5aa40c92e105ff4e94c9e9db78253bf7a1712b04dc",
+        "boundary_mae_rgb_0_255": {
+          "left_right": 14.529,
+          "top_bottom": 9.125
+        },
+        "interior_line_mae_p95": {
+          "x": 10.566,
+          "y": 8.986
+        },
+        "interior_adjacent_mae": {
+          "x": 8.676,
+          "y": 7.584
+        },
+        "quadrant_mean_rgb": [
+          93.596,
+          94.326,
+          94.432,
+          95.045
+        ]
+      },
+      "visual_self_check": {
+        "status": "passed_internal_review",
+        "views": [
+          "native-size WebP",
+          "2x2 repeated file",
+          "4x4 repeated file",
+          "neutral / local magenta-cyan Three.js material swatches"
+        ],
+        "inspected": [
+          "panel-joint continuity on both axes",
+          "no extra double joint or missing joint",
+          "no abrupt color block at the tile boundary",
+          "no obvious WebP blocks",
+          "no directional rib-edge highlight from rejected candidates"
+        ],
+        "claude_review": "pending_round_1"
+      }
+    },
+    {
+      "id": "wall_metal_ribbed_03",
+      "category": "walls/metal",
+      "role": "base_color",
+      "path": "assets/world/walls/wall_metal_ribbed_03.webp",
+      "selected_candidate": 4,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create a production-ready square 1024 x 1024 seamless tileable ALBEDO / BASE COLOR wall material for a cat-world cyberpunk rainy-night miniature city game. This is a FLAT orthographic texture image filling the complete square, not a perspective view of a building, not a photograph of a room, and not a material sphere. Mid-value desaturated dark steel and dirty muted colors, believable fine surface wear for an old exterior, controlled contrast readable at game scale. Truly periodic on BOTH axes: every shape cut at an edge must continue in the exact corresponding position on the opposite edge; matching edge colors, no border or frame. Avoid unique large stains at the tile center and keep the same statistical color and detail distribution across the entire square. Only base color: absolutely uniform diffuse illumination, no directional highlights, no drop shadows, no vignette, no bright center, no gradient, no baked neon reflection, no specular reflections or glossy glare. The engine will provide all lighting. No words, no logos, no signage, no UI, no characters, no human faces. Detailed restrained environment art, not a cartoon drawing. Render one texture only, edge to edge, at 1024 x 1024.\nVARIANT 3 — dark aged pressed-steel cladding with narrow vertical shallow ribs, little fastening points and subtle horizontal overlap joins. The ribs and overlap joins repeat with an exact period so all four edges match. Soft desaturated charcoal and warm zinc-gray base color with small muted rust / oil dirt flecks distributed evenly. Show surface color and fine scratches, but DO NOT shade one side of each rib as if light comes from a direction; no directional shadow stripe. No corrugated panel photographed in perspective. A full square seamless flat material map.",
+          "references": [],
+          "raw_output": {
+            "filename": "exec-6229c232-2e5a-4c15-843f-38f387f3d731.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3284018,
+            "sha256": "e30574857bb93ffd66df5d4512b0a24cb3cf6c575f0841eea1a582aaf26596d3"
+          },
+          "selection_note": "未采用：局部竖肋含同方向亮边与暗侧，不能作为本批无方向光照的颜色贴图。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Edit the supplied wall texture into a true flat PBR BASE COLOR / ALBEDO map. Output one full square texture, edge to edge, no mockup. Keep its old metal, muted palette, fine rust and dirt identity. REMOVE ALL BAKED LIGHTING: eliminate single-sided bright bevel strokes, directional shading, glossy rivet highlights, drop shadows around flakes, vignette and any large illumination gradient. Rust and scratches are color variations only. The apparent surface relief will be supplied separately by a game engine, so this base-color image must not paint relief lighting. Uniform ambient color only. Fix periodic boundaries on BOTH axes: left and right edge pixels and their nearby texture features must match and continue seamlessly, and the same for top and bottom. A 2 by 2 repetition must not reveal any seam, sudden truncated paint flake, discontinuous panel or fastening row, or edge border. Arrange panel module spacing to be a precise whole-number period across the square. No words, objects, signage, neon, characters, perspective, background, frame, or sphere. Intended output 1024x1024.\n\nAged pressed-steel fine vertical rib cladding: retain the dense vertical color pattern and small dark fastening marks. REMOVE THE BRIGHT SINGLE-SIDED VERTICAL HIGHLIGHT STRIPES and corresponding shadow stripes. Instead represent the ribs only with subtle symmetric low-contrast bands of dirt / oxidized steel color of similar brightness. Uniform charcoal warm-zinc base tone over the complete square. Exactly 16 evenly spaced rib modules across the square, and 4 evenly spaced horizontal sheet modules down it, so both axes repeat perfectly. The first and last ribs must join at matching phase. No directional lighting whatsoever.",
+          "references": [
+            "e30574857bb93ffd66df5d4512b0a24cb3cf6c575f0841eea1a582aaf26596d3"
+          ],
+          "raw_output": {
+            "filename": "exec-94943b26-239c-491d-a12a-6aa524a4d2f5.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 2646580,
+            "sha256": "78acfef77dccb9e83e45d762aa4f14b636d630a866f1a07695701b0a78944310"
+          },
+          "selection_note": "未采用：局部竖肋含同方向亮边与暗侧，不能作为本批无方向光照的颜色贴图。"
+        },
+        {
+          "candidate": 3,
+          "operation": "image_gen_edit",
+          "prompt": "Rebuild the supplied material as a strictly SEAMLESS PERIODIC game albedo tile. Retain the same material family and palette, but rearrange the sheet pattern to solve the seam problem. Flat base color only, no light baked in.\n\nCRITICAL LAYOUT: Each of the FOUR texture edges cuts THROUGH THE CENTER OF A VERY THIN DARK METAL PANEL JOINT. There must be only HALF a thin joint at each edge, so when identical tiles touch they form ONE normal joint the same thickness as an internal joint. There is NO short extra strip of metal at the top or bottom. Internal horizontal joints are at exactly 25%, 50%, and 75% of image height. For the plate variants, vertical joints are at exactly 25%, 50%, and 75% of width. The outer joints are at exactly 0% and 100%. A texture repeated 2x2 produces uniformly spaced full sheets, not a double seam near the repetition boundary. Edge joint color is a consistent matte dark neutral metal gray on all four edges, with no broken flakes crossing it, so opposing edges match. Physical panel joints are subtle, narrow, and the same contrast as inner joints. Do not add an image frame, broad black border or vignette.\n\nMATERIAL: flat unlit charcoal pressed-metal cladding. Exactly 16 fine vertical rib modules and exactly 4 equal horizontal sheet modules. Ribs are indicated by symmetric subtle bands of oxidized color, not by alternating bright-and-dark light/shadow. Flat fastening marks.\n\nAll surfaces are ABSOLUTELY UNLIT. Remove every specular shine, directional bevel, spherical rivet highlight, relief shadow and directional broad gradient. Thin joints represent dirt color, not a lit crevice. Avoid strong scratches at the very edge. Fine color wear distributed across all panels with balanced brightness. Nothing but the flat square surface, completely filling the image. No perspective, building, material ball, background, writing or neon. 1024x1024 base-color texture.",
+          "references": [
+            "78acfef77dccb9e83e45d762aa4f14b636d630a866f1a07695701b0a78944310"
+          ],
+          "raw_output": {
+            "filename": "exec-5d4c3598-1f29-4d6f-9cd8-0de84932489d.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 2589833,
+            "sha256": "13684bfb5af68cf3f0e80e7ced2e79973c465512b4f94605f947320c72d98017"
+          },
+          "selection_note": "未采用：局部竖肋含同方向亮边与暗侧，不能作为本批无方向光照的颜色贴图。"
+        },
+        {
+          "candidate": 4,
+          "operation": "generate",
+          "prompt": "A square tileable material ALBEDO texture map, perfectly flat, unlit, matte. One 1024x1024 edge-to-edge texture image. Subject: aged charcoal-gray exterior pressed-steel cladding for a rainy cyberpunk city. IMPORTANT: this is NOT a picture of raised corrugated metal or any three-dimensional object. It is the COLOR-ONLY layer before any bump, normal, shape or lighting. Imagine all surface relief removed and photographed perfectly straight under totally uniform shadowless diffuse light. Sixteen evenly spaced barely visible vertical stripes of dark rust / slightly different gray paint pigment, symmetrical and very low contrast, suggest a narrow rib pattern WITHOUT any bright edge or dark shadow. Four equal subtle horizontal panel rows. Very fine scattered muted warm-brown corrosion and dull gray zinc dust, small soft broken color speckles, restrained even fine grain. The finest details are color only; no raised rivets, no cast shadows, no metallic shine, no highlights, no bevel shading, no glossy effects, no embossed edges, no directional illumination, no vignette. Absolutely no bright single-sided vertical line anywhere. Dark steel mid-gray color stays uniform from top to bottom and left to right. Seamless on both axes with opposing texture edges continuing smoothly. A whole-number stripe count fits within the square; opposing borders share identical flat dark-gray color and phase. Small discontinuous wear marks avoid all outer edge lines. No frame, lettering, signage, neon reflections, material sphere, perspective, buildings, sky, floor, props or people. Surface only.",
+          "references": [],
+          "raw_output": {
+            "filename": "exec-caa193ab-04a7-4b64-915d-1637eed15fe2.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 2554200,
+            "sha256": "c08c2508fe5470b31a393edd9c70b49e9dd185c50ce7a280ab990bd73cddd104"
+          },
+          "selection_note": "采用全新扁平版本；竖条为材质色差，去除了旧候选的单侧高光。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "c08c2508fe5470b31a393edd9c70b49e9dd185c50ce7a280ab990bd73cddd104",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          591,
+          311,
+          1218,
+          940
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          627,
+          629
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "extract complete panel-joint period",
+          "Lanczos resize to 1024x1024",
+          "encode RGB sRGB WebP"
+        ],
+        "encoder": "ImageMagick magick / libwebp",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "color_space": "sRGB",
+        "alpha": false,
+        "note": "约627像素原生周期上采样至1024；上采样不增加细节，需Claude评估近看清晰度。"
+      },
+      "file_audit": {
+        "id": "wall_metal_ribbed_03",
+        "path": "assets/world/walls/wall_metal_ribbed_03.webp",
+        "width": 1024,
+        "height": 1024,
+        "bytes": 120440,
+        "sha256": "fc2b5324b934b4ffbd44dd1427ade89dac5cffe72b80190dbce8525ce7c59196",
+        "boundary_mae_rgb_0_255": {
+          "left_right": 5.195,
+          "top_bottom": 7.068
+        },
+        "interior_line_mae_p95": {
+          "x": 3.425,
+          "y": 3.149
+        },
+        "interior_adjacent_mae": {
+          "x": 2.277,
+          "y": 2.275
+        },
+        "quadrant_mean_rgb": [
+          75.171,
+          75.147,
+          75.369,
+          75.299
+        ]
+      },
+      "visual_self_check": {
+        "status": "passed_internal_review",
+        "views": [
+          "native-size WebP",
+          "2x2 repeated file",
+          "4x4 repeated file",
+          "neutral / local magenta-cyan Three.js material swatches"
+        ],
+        "inspected": [
+          "panel-joint continuity on both axes",
+          "no extra double joint or missing joint",
+          "no abrupt color block at the tile boundary",
+          "no obvious WebP blocks",
+          "no directional rib-edge highlight from rejected candidates"
+        ],
+        "claude_review": "pending_round_1"
+      }
+    }
+  ],
+  "qa_note": "边缘 MAE 为 RGB 0–255 值上的相邻边差，只用于定位问题；无缝自查同时依据原尺寸与 2×2/4×4 平铺中板缝、色差和纹理连续性。",
+  "previews": {
+    "overview": {
+      "path": "assets/world/reviews/metal-walls-a01.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 187708,
+      "content": "单张缩略图与直接重复最终素材的2×2平铺；浏览器截图，无接缝遮罩与后期调色。"
+    },
+    "lighting": {
+      "path": "assets/world/reviews/metal-walls-a01-lighting.webp",
+      "readiness": {
+        "threeRevision": "169",
+        "worldViewAvailable": true,
+        "renderer": "WebKit WebGL",
+        "acesExposure": 1.05
+      },
+      "size": [
+        2048,
+        1024
+      ],
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "renderer": "WorldView WebGLRenderer",
+      "colorSpace": "sRGB",
+      "repeat": [
+        2,
+        2
+      ],
+      "color": "ffffff",
+      "roughness": 0.75,
+      "metalness": 0.12,
+      "toneMapping": "ACESFilmic",
+      "exposure": 1.05,
+      "cells": [
+        {
+          "id": "wall_metal_riveted_01",
+          "lighting": "neutral",
+          "repeats": [
+            2,
+            2
+          ],
+          "renderCalls": 1,
+          "triangles": 2
+        },
+        {
+          "id": "wall_metal_painted_02",
+          "lighting": "neutral",
+          "repeats": [
+            2,
+            2
+          ],
+          "renderCalls": 1,
+          "triangles": 2
+        },
+        {
+          "id": "wall_metal_ribbed_03",
+          "lighting": "neutral",
+          "repeats": [
+            2,
+            2
+          ],
+          "renderCalls": 1,
+          "triangles": 2
+        },
+        {
+          "id": "wall_metal_riveted_01",
+          "lighting": "neutral + local magenta/cyan",
+          "repeats": [
+            2,
+            2
+          ],
+          "renderCalls": 1,
+          "triangles": 2
+        },
+        {
+          "id": "wall_metal_painted_02",
+          "lighting": "neutral + local magenta/cyan",
+          "repeats": [
+            2,
+            2
+          ],
+          "renderCalls": 1,
+          "triangles": 2
+        },
+        {
+          "id": "wall_metal_ribbed_03",
+          "lighting": "neutral + local magenta/cyan",
+          "repeats": [
+            2,
+            2
+          ],
+          "renderCalls": 1,
+          "triangles": 2
+        }
+      ],
+      "bytes": 121322,
+      "pageErrors": [],
+      "scope_note": "独立材质样板；不是游戏接入截图。"
+    }
+  },
+  "verification": {
+    "typecheck": "passed",
+    "vitest": {
+      "files": 58,
+      "tests": 912
+    },
+    "size_budget_bytes_per_file": 500000
+  },
+  "raw_outputs_note": "原始AI PNG保留在生成工作区；交付库内素材为上述周期导出文件。原始文件身份通过文件名、尺寸与SHA-256记录。"
+}
