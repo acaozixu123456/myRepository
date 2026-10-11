@@ -1,7 +1,7 @@
 // 爬塔：100 层，每层一场 5 对 5，只有首次通关有奖励。层数据由公式生成（确定性），可直接当 StageDef 交给战斗循环。
 import type { EnemySpawn, RewardDef, StageDef } from '../content/types';
 import { FACTION_ORDER } from '../data/factions';
-import { HEROES } from '../data/heroes';
+import { STANDARD_HEROES as HEROES } from '../data/heroes';
 import { paceLevel } from './stage';
 import type { PlayerState } from './state';
 import { rollover, track } from './quests';
