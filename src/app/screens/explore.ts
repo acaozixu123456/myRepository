@@ -139,7 +139,7 @@ function hud(ctx: AppCtx): string {
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
   ${questHtml(ctx)}
   <canvas class="xmini" id="xmini" width="184" height="184"></canvas><div class="xfps" id="xfps"></div>
-  <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-trail">足迹</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
+  <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-trail">足迹${trailRows(ctx.s).some((r) => r.ready) ? ' <span style="color:#ff3d7a">●</span>' : ''}</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
 }
 
 const GFX_LV = { auto: 0, high: 0, low: 3 } as const;
