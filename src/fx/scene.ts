@@ -19,6 +19,8 @@ export class Scene {
   vfx: VFX;
   bg: HTMLCanvasElement | null = null;
   cam = { x: 480, y: 300, zoom: 1, shakeMag: 0, shakeT: 0 };
+  /** 默认镜头（战斗结束后回到这里），移动端主界面会放大一点 */
+  baseCam = { x: 480, y: 300, zoom: 1 };
   dim = 0; // 全屏压暗
   dimColor = '#0a0614';
   flashA = 0;
@@ -42,6 +44,22 @@ export class Scene {
     this.dpr = Math.min(2, window.devicePixelRatio || 1);
     this.canvas.width = Math.round(this.w * this.dpr);
     this.canvas.height = Math.round(this.h * this.dpr);
+  }
+
+  /** 清空场上演员、特效与排队中的补间 / 定时器（切换到下一波战斗时使用） */
+  clearAll() {
+    this.actors = [];
+    this.vfx.clear();
+    this.timers = [];
+    this.tweens = [];
+    this.overlays = [];
+    this.dim = 0;
+    this.tint.a = 0;
+    this.flashA = 0;
+    this.slow = 1;
+    this.cam.x = this.baseCam.x;
+    this.cam.y = this.baseCam.y;
+    this.cam.zoom = this.baseCam.zoom;
   }
 
   sleep(sec: number): Promise<void> {
@@ -68,7 +86,7 @@ export class Scene {
     return Promise.all([this.tween(this.cam, { x, y, zoom }, dur, 'inOut')]).then(() => undefined);
   }
   resetCam(dur = 0.5) {
-    return this.focus(this.w / 2, this.h / 2, 1, dur);
+    return this.focus(this.baseCam.x, this.baseCam.y, this.baseCam.zoom, dur);
   }
 
   /** 推进 dt 秒（已乘 timeScale） */

@@ -1,0 +1,165 @@
+// 《猫国志》应用入口：外壳、导航、存档、三个核心界面（主城 / 阵容 / 招募）。
+import { KIT_CSS } from '../ui/kitcss';
+import { icon } from '../ui/icons';
+import { SCREEN_CSS } from './screenscss';
+import { BattleLoop } from './battleLoop';
+import type { AppCtx, ScreenId } from './ctx';
+import { claim, floaty, homeHtml, updateHome, updateIdle } from './screens/home';
+import { lineupHtml, lineupState } from './screens/lineup';
+import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
+import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
+import { applyGain } from '../game/stage';
+import { autoLineup, equip, levelUp, load, save, swapSlots, unequip } from '../game/state';
+import { POOLS } from '../game/gacha';
+import { fmt } from '../ui/components';
+
+const style = document.createElement('style');
+style.textContent = KIT_CSS + SCREEN_CSS;
+document.head.appendChild(style);
+
+const storage = (() => { try { return window.localStorage; } catch { return null; } })();
+const state = load(storage);
+const params = new URLSearchParams(location.search);
+if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; }
+
+const app = document.getElementById('app')!;
+app.innerHTML = `<div class="app" id="root">
+  ${homeHtml()}
+  <div class="screen" data-screen="lineup"></div>
+  <div class="screen gacha" data-screen="gacha"></div>
+  <div class="screen" data-screen="campaign"><div class="hud"><div class="title" style="color:#fff6dc">征战</div></div><div class="scroll"><div class="panel empty">章节地图、爬塔与竞技场正在建设中。<br>先去主城挑战下一关吧。</div></div></div>
+  <div class="screen" data-screen="bag"><div class="hud"><div class="title" style="color:#fff6dc">背包</div></div><div class="scroll"><div class="panel empty">装备与道具背包正在建设中。</div></div></div>
+  <nav class="nav" id="nav">
+    <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
+    <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
+    <button data-act="nav" data-to="gacha">${icon('recruit', 30)}招募</button>
+    <button data-act="nav" data-to="campaign">${icon('campaign', 30)}征战</button>
+    <button data-act="nav" data-to="bag">${icon('bag', 30)}背包</button>
+  </nav></div>`;
+const root = document.getElementById('root')!;
+
+const ctx: AppCtx = {
+  s: state,
+  root,
+  loop: undefined as unknown as BattleLoop,
+  screen: 'home',
+  save: () => save(storage, state),
+  toast(msg) {
+    root.querySelectorAll('.toast').forEach((e) => e.remove());
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    root.appendChild(t);
+    setTimeout(() => t.remove(), 1950);
+  },
+  go(screen: ScreenId) {
+    ctx.screen = screen;
+    root.querySelectorAll('.screen').forEach((e) => e.classList.toggle('on', (e as HTMLElement).dataset.screen === screen));
+    root.querySelectorAll('#nav button').forEach((b) => b.classList.toggle('on', (b as HTMLElement).dataset.to === screen));
+    if (screen === 'home') ctx.loop.resume();
+    else ctx.loop.pause();
+    ctx.refresh();
+  },
+  openHero: (id) => openHeroSheet(ctx, id),
+  refresh() {
+    const scr = ctx.screen;
+    if (scr === 'home') updateHome(ctx);
+    else if (scr === 'lineup') (root.querySelector('[data-screen=lineup]') as HTMLElement).innerHTML = lineupHtml(ctx);
+    else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
+  },
+};
+
+ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
+  state: () => state,
+  onReward(g, kind) {
+    if (kind === 'win') floaty(ctx, `+${fmt(g.fish)}`, 'fish', 50, 30);
+    else if (g.bells || g.fish) {
+      ctx.toast(`首通奖励：小鱼干 ${fmt(g.fish)}${g.bells ? ` · 金铃铛 ${g.bells}` : ''}`);
+    }
+  },
+  onResult(win, stage, pushed) {
+    if (pushed) ctx.toast(win ? `通关 ${stage.id}！` : `挑战 ${stage.id} 失败，战力不足，先去升级吧`);
+  },
+  onChange() {
+    ctx.save();
+    if (ctx.screen === 'home') updateHome(ctx);
+  },
+});
+ctx.loop.setSpeed(state.settings.speed);
+
+// ---------- 事件 ----------
+root.addEventListener('click', (e) => {
+  const el = (e.target as HTMLElement).closest('[data-act]') as HTMLElement | null;
+  if (!el) return;
+  const act = el.dataset.act!;
+  if (handleDetail(ctx, act, el)) return;
+  switch (act) {
+    case 'nav': ctx.go(el.dataset.to as ScreenId); break;
+    case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
+    case 'claim': claim(ctx); break;
+    case 'challenge': ctx.loop.challenge(); ctx.toast('向下一关出发！'); break;
+    case 'gift': {
+      const now = Date.now();
+      if (now - state.gift.last < 300000) return;
+      state.gift.last = now;
+      state.res.bells += 1600;
+      state.res.tickets += 5;
+      ctx.save();
+      ctx.toast('领到 1600 金铃铛、5 张招福符');
+      updateHome(ctx);
+      break;
+    }
+    case 'autolevel': {
+      let n = 0;
+      for (const id of state.lineup) {
+        if (!id) continue;
+        while (n < 40 && levelUp(state, id).ok) n++;
+      }
+      ctx.toast(n ? `给阵容猫猫升了 ${n} 级` : '资源不够，升不动了');
+      ctx.save();
+      updateHome(ctx);
+      break;
+    }
+    case 'hero': {
+      if (lineupState.pickSlot !== null) {
+        const r = equip(state, el.dataset.id!, lineupState.pickSlot);
+        lineupState.pickSlot = null;
+        if (!r.ok) ctx.toast(r.reason);
+        ctx.save();
+        ctx.loop.restart();
+        ctx.refresh();
+      } else openHeroSheet(ctx, el.dataset.id!);
+      break;
+    }
+    case 'slot': {
+      const i = +el.dataset.i!;
+      const id = state.lineup[i];
+      if (id) {
+        if (lineupState.pickSlot !== null && lineupState.pickSlot !== i) { swapSlots(state, lineupState.pickSlot, i); lineupState.pickSlot = null; ctx.save(); ctx.loop.restart(); ctx.refresh(); }
+        else openHeroSheet(ctx, id);
+      } else {
+        lineupState.pickSlot = lineupState.pickSlot === i ? null : i;
+        ctx.refresh();
+      }
+      break;
+    }
+    case 'lf': lineupState.faction = el.dataset.f as never; ctx.refresh(); break;
+    case 'autolineup': autoLineup(state); ctx.save(); ctx.loop.restart(); ctx.toast('已按战力排好阵容'); ctx.refresh(); break;
+    case 'pool': gachaState.pool = el.dataset.id!; ctx.refresh(); break;
+    case 'pull1': void doPull(ctx, 1); break;
+    case 'pull10': void doPull(ctx, 10); break;
+    case 'rates': ratesDialog(ctx); break;
+    case 'closedialog': if ((e.target as HTMLElement) === el || el.tagName === 'BUTTON') root.querySelectorAll('.mask.center').forEach((m) => m.remove()); break;
+    case 'sheetmask': if (e.target === el) closeSheet(ctx); break;
+  }
+  void unequip; void POOLS; void applyGain;
+});
+
+// 每秒刷新挂机收益
+setInterval(() => { if (ctx.screen === 'home') { updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); } }, 1000);
+setInterval(() => ctx.save(), 8000);
+document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.save(); });
+
+updateHome(ctx);
+ctx.loop.start();
+(window as unknown as Record<string, unknown>).__app = ctx;

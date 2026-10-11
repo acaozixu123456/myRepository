@@ -20,6 +20,17 @@ const ELEM_COLOR: Record<string, [string, string]> = {
   phys: ['#fff4e0', '#c0392b'], magic: ['#e6ccff', '#5a2a9a'], fire: ['#ffd08a', '#b0301a'], water: ['#bfeaff', '#1f5f9a'], thunder: ['#fff4a0', '#8a6a10'], true: ['#ffffff', '#555566'],
 };
 
+const RIG_CACHE = new Map<string, Promise<Rig>>();
+function cachedRig(id: string, scale: number): Promise<Rig> {
+  const k = `${id}@${scale}`;
+  let p = RIG_CACHE.get(k);
+  if (!p) {
+    p = buildRig(lookOf(id), scale);
+    RIG_CACHE.set(k, p);
+  }
+  return p;
+}
+
 export class Player {
   scene: Scene;
   actors = new Map<number, Actor>();
@@ -27,6 +38,7 @@ export class Player {
   skipping = false;
   onLog: (s: string) => void = () => undefined;
   private lastPassive = new Map<number, number>();
+  private bgCache = new Map<string, HTMLCanvasElement>();
   private portraits = new Map<string, HTMLCanvasElement>();
 
   constructor(canvas: HTMLCanvasElement) {
@@ -51,11 +63,17 @@ export class Player {
   }
 
   async setup(start: StartEv, theme: BgTheme = 'meadow', progress?: (p: number) => void) {
-    this.scene.bg = makeBackground(theme, 960, 600, this.scene.dpr);
+    this.actors.clear();
+    this.scene.clearAll();
+    this.banner = null;
+    this.lastPassive.clear();
+    this.installOverlay();
+    if (!this.bgCache.has(theme)) this.bgCache.set(theme, makeBackground(theme, 960, 600, this.scene.dpr));
+    this.scene.bg = this.bgCache.get(theme)!;
     let done = 0;
     const rigs = await Promise.all(
       start.units.map(async (u) => {
-        const rig = await buildRig(lookOf(u.heroId), 0.62 * this.scene.dpr);
+        const rig = await cachedRig(u.heroId, 0.62 * this.scene.dpr);
         progress?.(++done / start.units.length);
         return [u, rig] as [StartEv['units'][number], Rig];
       }),

@@ -65,8 +65,8 @@ class Battle {
   constructor(public cfg: BattleConfig) {
     this.rng = new Rng(cfg.seed);
     this.maxRounds = cfg.maxRounds ?? 30;
-    for (const s of cfg.A) this.units.push(this.makeUnit(s, 'A'));
-    for (const s of cfg.B) this.units.push(this.makeUnit(s, 'B'));
+    for (const s of cfg.A) if ((s.hpPct ?? 1) > 0) this.units.push(this.makeUnit(s, 'A'));
+    for (const s of cfg.B) if ((s.hpPct ?? 1) > 0) this.units.push(this.makeUnit(s, 'B'));
     for (const side of ['A', 'B'] as const) {
       for (const u of this.units.filter((x) => x.side === side)) this.factionCount[side][u.faction] = (this.factionCount[side][u.faction] ?? 0) + 1;
     }
@@ -88,8 +88,8 @@ class Battle {
     const maxHp = Math.round(bs.hp * m);
     return {
       uid: this.uidSeq++, side, pos: s.pos, heroId: s.heroId, name: h.name, faction: h.faction, role: h.role, level: s.level,
-      maxHp, hp: maxHp, atk: Math.round(bs.atk * m), def: Math.round(bs.def * m), spd: bs.spd, crit: roleCrit, critDmg: 1.5,
-      energy: typeof this.cfg.startEnergy === 'object' ? this.cfg.startEnergy[side] : (this.cfg.startEnergy ?? 0), shield: [], statuses: [], alive: true, kit, counters: {}, used: {}, acted: 0, extraTurn: false, invuln: 0, dmgMul: 1,
+      maxHp, hp: Math.max(1, Math.round(maxHp * (s.hpPct ?? 1))), atk: Math.round(bs.atk * m), def: Math.round(bs.def * m), spd: bs.spd, crit: roleCrit, critDmg: 1.5,
+      energy: s.energy ?? (typeof this.cfg.startEnergy === 'object' ? this.cfg.startEnergy[side] : (this.cfg.startEnergy ?? 0)), shield: [], statuses: [], alive: true, kit, counters: {}, used: {}, acted: 0, extraTurn: false, invuln: 0, dmgMul: 1,
     };
   }
 

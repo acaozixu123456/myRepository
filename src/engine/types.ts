@@ -140,6 +140,8 @@ export interface UnitSetup {
   skillLv?: number; // 绝技等级 1~10
   pos: number; // 0-2 前排，3-4 后排
   statMul?: number; // 额外属性倍率（关卡词缀）
+  hpPct?: number; // 开局生命比例（多波战斗时继承；0 表示已倒下，不上场）
+  energy?: number; // 开局元气（多波战斗继承）
 }
 export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number } }
 
