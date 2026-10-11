@@ -336,3 +336,44 @@ export function mushroom(color = '#ff7ad9', s = 1): THREE.Group {
   for (let i = 0; i < 5; i++) { const d = new THREE.Mesh(new THREE.SphereGeometry(0.08 * s, 5, 4), glowMat('#ffffff')); const a = i * 1.26; d.position.set(Math.cos(a) * 0.35 * s, 1.25 * s - (i % 2) * 0.15 * s, Math.sin(a) * 0.35 * s); g.add(d); }
   return g;
 }
+
+/** 发光水晶簇（云端雾岛）*/
+export function crystal(color = '#9ab8ff', s = 1): THREE.Group {
+  const g = new THREE.Group(); const m = std(color, 0.2, 0.3, color, 0.6);
+  for (let i = 0; i < 5; i++) { const c = new THREE.Mesh(new THREE.ConeGeometry(0.35 * s * (1 - i * 0.1), (2.2 - i * 0.3) * s, 5), m); c.position.set(Math.cos(i * 1.3) * 0.5 * s, (1.1 - i * 0.15) * s, Math.sin(i * 1.3) * 0.5 * s); c.rotation.set(Math.sin(i) * 0.25, 0, Math.cos(i * 2) * 0.25); g.add(c); }
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5 * s, 5 * s, 1); halo.position.y = 1.2 * s; g.add(halo);
+  return g;
+}
+/** 石灯笼（日式）*/
+export function stoneLantern(): THREE.Group {
+  const g = new THREE.Group(); const st = std('#8a8a98', 0.9);
+  g.add(box(0.9, 0.25, 0.9, st, 0, 0.12, 0)); g.add(cyl(0.18, 1.1, st, 0, 0.8, 0, 8)); g.add(box(0.8, 0.7, 0.8, st, 0, 1.6, 0));
+  const f = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.4, 0.46), glowMat('#ffd28a')); f.position.y = 1.6; g.add(f);
+  g.add(box(1.3, 0.22, 1.3, st, 0, 2.1, 0)); const t = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.45, 4), st); t.position.y = 2.45; t.rotation.y = Math.PI / 4; g.add(t);
+  return g;
+}
+/** 朱红宫柱（金色柱头 + 柱础）*/
+export function pillar(h = 6): THREE.Group {
+  const g = new THREE.Group();
+  g.add(cyl(0.7, 0.5, std('#c9b89a', 0.8), 0, 0.25, 0, 12)); g.add(cyl(0.45, h, std('#b02a2a', 0.6, 0.1), 0, h / 2 + 0.4, 0, 12)); g.add(cyl(0.65, 0.5, std('#e8b04a', 0.4, 0.6), 0, h + 0.6, 0, 12));
+  return g;
+}
+/** 石猫（宫门口的镇宅「石狮」）*/
+export function stoneCat(): THREE.Group {
+  const g = new THREE.Group(); const st = std('#9a98a8', 0.85);
+  g.add(box(1.6, 0.6, 1.6, std('#7a788a', 0.9), 0, 0.3, 0));
+  const body = new THREE.Mesh(new THREE.SphereGeometry(0.7, 12, 10), st); body.scale.set(1, 1.1, 0.9); body.position.y = 1.2; g.add(body);
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 10), st); head.position.y = 2.15; g.add(head);
+  for (const x of [-1, 1]) { const e = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.4, 4), st); e.position.set(x * 0.32, 2.7, 0); e.rotation.y = Math.PI / 4; g.add(e); }
+  const e1 = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 5), glowMat('#ffe27a')); e1.position.set(-0.2, 2.2, 0.48); g.add(e1); const e2 = e1.clone(); e2.position.x = 0.2; g.add(e2);
+  return g;
+}
+/** 悬浮岩石 */
+export function floatRock(seed = 1, s = 1): THREE.Group {
+  const g = new THREE.Group(); const rnd = mulberry(seed);
+  const m = std('#6a708a', 0.9);
+  const top = new THREE.Mesh(new THREE.IcosahedronGeometry(1.4 * s, 0), m); top.scale.y = 0.6; g.add(top);
+  const bot = new THREE.Mesh(new THREE.ConeGeometry(1.2 * s, 2.2 * s, 5), m); bot.rotation.x = Math.PI; bot.position.y = -1.4 * s; bot.rotation.z = (rnd() - 0.5) * 0.3; g.add(bot);
+  g.position.y = 1.2 * s;
+  const wrap = new THREE.Group(); wrap.add(g); return wrap;
+}
