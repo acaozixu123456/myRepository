@@ -15,6 +15,7 @@ import { createShopState, normalizeShopState } from './shop';
 import type { ShopState } from './shop';
 import type { PayState } from './premium';
 import type { EventState } from './events';
+import type { GuildBossState } from './guildboss';
 import type { GuildState } from './guild';
 import type { BossState } from './worldboss';
 import type { SocialState } from './social';
@@ -54,6 +55,7 @@ export interface PlayerState {
   daily?: DailyState; // 七日签到 / 快速探索
   events?: EventState; // 活动中心
   wboss?: BossState; // 世界 Boss
+  gboss?: GuildBossState; // 公会 Boss
   guild?: GuildState; // 公会（旧存档读取时补齐）
   social?: SocialState; // 世界聊天 / 好友 / 竞技场（旧存档读取时补齐）
   pay?: PayState; // 氪金：累计充值 / 月卡 / VIP / 至尊保底（旧存档读取时补齐）

@@ -7,6 +7,8 @@ import {
   DONATE_COST, DONATE_PER_DAY, DONATE_REWARD, GUILDS, GUILD_BY_ID, HELP_PER_DAY, HELP_REWARD, chestReward, donatesLeft, ensureGuild, guildChest, guildDonate, guildHelp, guildLevel,
   guildMemberBoard, guildWeekBoard, helpsLeft, joinGuild, leaveGuild, myGuild,
 } from '../../game/guild';
+import { GB_ATTEMPTS, GB_KILL, GB_PERSONAL, gbAttemptsLeft, gbClaimKill, gbClaimPersonal, gbFinish, gbProgress, gbStage, gbStart, ensureGB } from '../../game/guildboss';
+import { rewardText } from '../../game/events';
 import { teamPower } from '../../game/state';
 import {
   ARENA_EXTRA_COST, ARENA_EXTRA_MAX, ARENA_FREE, ARENA_REWARD, CHAT_MAX_LEN, addFriend, arenaBoard, arenaBuyExtra, arenaFinish, arenaLeft, arenaRefresh, arenaStage, arenaStart,
@@ -130,11 +132,27 @@ function guildHtml(ctx: AppCtx): string {
       <div class="gbtn"><div><b>同袍互助 <em>${hl}/${HELP_PER_DAY}</em></b><small>帮成员扶纸箱：${HELP_REWARD.tokens} 鱼牌 + ${HELP_REWARD.fish} 小鱼干，贡献 +${HELP_REWARD.contrib}</small></div><button class="btn sm ${hl > 0 ? 'blue' : 'ghost'}" data-act="g-help" ${hl > 0 ? '' : 'disabled'}>互助</button></div>
       <div class="gbtn"><div><b>捐献小鱼干 <em>${dl}/${DONATE_PER_DAY}</em></b><small>${fmt(DONATE_COST)} 小鱼干：${DONATE_REWARD.tokens} 鱼牌，贡献 +${DONATE_REWARD.contrib}</small></div><button class="btn sm ${dl > 0 ? 'orange' : 'ghost'}" data-act="g-donate" ${dl > 0 ? '' : 'disabled'}>捐献</button></div>
     </section>
+    ${gbHtml(ctx)}
     <div class="note">本周公会榜</div>
     ${week.map((w, i) => `<div class="arow ${w.mine ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i><div class="who"><b>${esc(w.guild.name)}</b></div><div class="rt"><em>本周贡献</em><b class="num">${fmt(w.score)}</b></div></div>`).join('')}
     <div class="note">本周成员贡献榜</div>
     ${board.map((r, i) => `<div class="arow ${r.me ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i>${r.avatar ? head(r.avatar) : head(s.lineup.find(Boolean) ?? 'wei_xiahoudun')}<div class="who"><b>${esc(r.name)}${r.leader ? ' <i class="vtag">会长</i>' : ''}</b></div><div class="rt"><em>贡献</em><b class="num">${fmt(r.score)}</b></div></div>`).join('')}
   </div>`;
+}
+
+function gbHtml(ctx: AppCtx): string {
+  const s = ctx.s, pr = gbProgress(s);
+  if (!pr) return '';
+  const st = ensureGB(s), left = gbAttemptsLeft(s);
+  const pct = Math.min(100, Math.round((pr.total / pr.hp) * 100));
+  const rows = GB_PERSONAL.map((t, i) => `<div class="gbtn"><div><b>个人伤害 ${t.bars} 条</b><small>${rewardText(t.r)}</small></div><button class="btn sm ${st.claimed.includes(i) ? 'ghost' : st.bars >= t.bars ? 'green' : 'ghost'}" data-act="g-boss-p" data-i="${i}" ${!st.claimed.includes(i) && st.bars >= t.bars ? '' : 'disabled'}>${st.claimed.includes(i) ? '已领' : st.bars >= t.bars ? '领取' : '未达'}</button></div>`).join('');
+  const top = pr.board.slice(0, 4).map((r, i) => `<span class="gbrow ${r.me ? 'me' : ''}">${i + 1}. ${esc(r.name)} ${r.bars.toFixed(1)}</span>`).join('');
+  return `<section class="panel gld-act" style="--c:${pr.guild.color}"><h3 style="margin:0;display:flex;gap:6px;align-items:baseline">公会 Boss <small class="muted" style="font-size:12px">${esc(pr.boss.title)}</small></h3>
+    <div class="bar" style="height:12px"><i style="width:${pct}%;background:linear-gradient(#e86a5a,#c0392b)"></i></div>
+    <small class="muted">全公会累计 ${pr.total.toFixed(1)} / ${pr.hp} 条${pr.defeated ? ' · 已讨伐！' : ''} · 你打出 ${st.bars.toFixed(2)} 条</small>
+    <div class="gbtn"><div><b>挑战 <em>${left}/${GB_ATTEMPTS}</em></b><small>每天 ${GB_ATTEMPTS} 次，按打掉的生命比例累计到公会进度</small></div><button class="btn sm ${left > 0 ? 'orange' : 'ghost'}" data-act="g-boss-go" ${left > 0 ? '' : 'disabled'}>挑战</button></div>
+    <div class="gbtn"><div><b>讨伐奖励</b><small>${rewardText(GB_KILL)}（公会打倒 Boss 且你出过手）</small></div><button class="btn sm ${pr.defeated && !st.killClaimed && st.bars > 0 ? 'green' : 'ghost'}" data-act="g-boss-k" ${pr.defeated && !st.killClaimed && st.bars > 0 ? '' : 'disabled'}>${st.killClaimed ? '已领' : pr.defeated ? '领取' : '未讨伐'}</button></div>
+    ${rows}<div class="gbrows">${top}</div></section>`;
 }
 
 function rankHtml(ctx: AppCtx): string {
@@ -205,6 +223,23 @@ export function handleSocial(ctx: AppCtx, act: string, el: HTMLElement): boolean
       return true;
     }
     case 'g-join': { const r = joinGuild(s, el.dataset.id!); ctx.toast(r.ok ? `加入了 ${GUILD_BY_ID[el.dataset.id!].name}` : r.reason); if (r.ok) sfx.ok(); ctx.save(); ctx.refresh(); return true; }
+    case 'g-boss-go': {
+      const r = gbStart(s);
+      if (!r.ok) { ctx.toast(r.reason ?? ''); return true; }
+      const pr = gbProgress(s)!;
+      ctx.save(); ctx.go('home'); ctx.toast(`挑战 ${pr.boss.title}`);
+      void ctx.loop.runCustom(gbStage(s), pr.boss.theme).then((win) => {
+        if (win === null) return;
+        const res = gbFinish(s, ctx.loop.customDamagePct);
+        ctx.save();
+        ctx.result({ win: true, banner: `打掉 ${Math.round(res.pct * 100)}%`, title: pr.boss.title, hint: `伤害已计入公会进度，另得 ${fmt(res.fish)} 小鱼干和同袍鱼牌。`, again: { act: 'nav', label: '回广场', data: { to: 'social' } } });
+        socialState.tab = 'guild';
+        ctx.refresh();
+      });
+      return true;
+    }
+    case 'g-boss-p': { const r = gbClaimPersonal(s, Number(el.dataset.i)); if (!r.ok) { ctx.toast(r.reason); return true; } ctx.save(); sfx.ok(); ctx.toast(`领到：${rewardText(r.r)}`); ctx.refresh(); return true; }
+    case 'g-boss-k': { const r = gbClaimKill(s); if (!r.ok) { ctx.toast(r.reason); return true; } ctx.save(); sfx.win(); ctx.toast(`讨伐成功！${rewardText(r.r)}`); ctx.refresh(); return true; }
     case 'g-leave': { const r = leaveGuild(s); ctx.toast(r.ok ? '已退会' : r.reason); ctx.save(); ctx.refresh(); return true; }
     case 'g-help': {
       const r = guildHelp(s);
@@ -277,6 +312,7 @@ export const SOCIAL_CSS = `
 .arow .rk.r1{background:linear-gradient(#ffe27a,#f0a62e);color:#5a2a05}.arow .rk.r2{background:linear-gradient(#f0f0f6,#b8bcc8)}.arow .rk.r3{background:linear-gradient(#f0c8a0,#c88a58)}
 .wbs .bimg{width:56px;height:56px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #c0392b,0 2px 0 rgba(0,0,0,.2)}
 .ms{display:grid;grid-template-columns:54px 1fr auto;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--paper-line)}.ms:last-child{border:0}.ms b{font-family:var(--f-d);font-weight:400;font-size:15px}.ms small{font-size:11.5px;font-weight:700;color:var(--ink-2)}.ms.done b{color:var(--ink-3)}
+.gbrows{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px}.gbrow{font-size:11px;font-weight:700;color:var(--ink-2)}.gbrow.me{color:var(--orange-d);font-weight:800}
 .gld h3 small{font-family:var(--f-b);font-size:12px;color:var(--orange-d);font-weight:800;margin-left:6px}.gld p{margin:2px 0 4px;font-size:12.5px;font-weight:700;color:var(--ink-2)}.gld{box-shadow:0 3px 0 var(--c,var(--paper-line))}
 .gld .bar{height:10px;border-radius:999px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line);overflow:hidden;margin:6px 0 4px}.gld .bar i{display:block;height:100%;background:linear-gradient(var(--c,#f0b030),#e08a20)}
 .gld-act{display:grid;gap:8px}.gbtn{display:flex;align-items:center;justify-content:space-between;gap:8px}.gbtn b{font-family:var(--f-d);font-weight:400;font-size:15px}.gbtn b em{font-style:normal;font-family:var(--f-b);font-size:12px;color:var(--orange-d);font-weight:800;margin-left:4px}.gbtn small{display:block;font-size:11.5px;font-weight:700;color:var(--ink-2)}

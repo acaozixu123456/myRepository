@@ -48,8 +48,7 @@ export const bossOfWeek = (now = Date.now()): BossDef => BOSSES[(weekStart(dayIn
 export const attemptsLeft = (s: PlayerState, now = Date.now()) => ATTEMPTS_PER_DAY - ensureBoss(s, now).used;
 export const bossLevel = (s: PlayerState) => Math.max(1, paceLevel(bestOrdinal(s)));
 
-export function bossStage(s: PlayerState, now = Date.now()): StageDef {
-  const def = bossOfWeek(now);
+export function bossStage(s: PlayerState, now = Date.now(), def: BossDef = bossOfWeek(now)): StageDef {
   const enemy: EnemySpawn = { unit: def.hero, level: bossLevel(s), pos: 2, hpMul: def.hpMul };
   return { id: `WB-${def.id}`, name: def.title, kind: 'boss', recommendedPower: 0, waves: [{ enemies: [enemy] }], rewards: { fish: 0 }, firstClear: { fish: 0 } };
 }
