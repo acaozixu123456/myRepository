@@ -15,7 +15,7 @@
 | 左慈喵 | `xian_zuoci` | UR | 待画 | 0 | |
 | 夏侯墩 | `wei_xiahoudun` | SSR | 待画 | 0 | |
 | 许虎痴 | `wei_xuhuchi` | SSR | 待画 | 0 | |
-| 张喵辽 | `wei_zhangliao` | SSR | 待画 | 0 | |
+| 张喵辽 | `wei_zhangliao` | SSR | 待审 | 1 | 2 候选选 B；曹喵德锚点，双刀五指/肩肘自查；红缨按提示词，留白/alpha 已清 |
 | 关云喵 | `shu_guanyunmiao` | SSR | 待画 | 0 | |
 | 张喵飞 | `shu_zhangmiaofei` | SSR | 待画 | 0 | |
 | 诸葛喵亮 | `shu_zhugemiaoliang` | SSR | 待画 | 0 | |
