@@ -1,21 +1,10 @@
 // 装束：头饰 / 身体服饰 / 背饰。坐标均与 cat.ts 同一画布（400×500）。
 import { E, L, P, blob, mirror } from './cat';
 import type { Ctx, Pose } from './cat';
-import { ink, mix, shade, tint } from './color';
-import type { BackGear, BodyGear, HeadGear } from './types';
+import { ink, shade, tint } from './color';
+import type { BackGear, HeadGear } from './types';
 import { renderWeaponImpl } from './weapons';
 
-export interface GearOut {
-  svg: string; // 躯干部件内（旧坐标，会被整体拉伸到新体型）
-  overL?: string; // 左臂部件内（肩甲等，旧坐标）
-  overR?: string; // 右臂部件内
-  overC?: string; // 躯干部件内、盖在身体与颈饰之上（项链等）
-  skirt?: string; // 躯干部件内、新坐标：下摆 / 战裙，盖在腿上
-  sleeve?: string; // 袖子颜色（会让手臂变成布料袖子）
-  cuff?: string; // 袖口颜色
-  legCloth?: string; // 裤腿颜色
-  boots?: string; // 靴子颜色
-}
 export interface HeadOut {
   behind?: string; // 画在头后面（羽毛、发髻、飘带）
   svg: string; // 画在头上
@@ -36,7 +25,7 @@ const NONE: HeadOut = { svg: '' };
 
 // ---------- 小工具 ----------
 /** 鳞甲纹：规则排布的小弧线 */
-function scales(x0: number, x1: number, y0: number, y1: number, col: string, step = 14): string {
+export function scales(x0: number, x1: number, y0: number, y1: number, col: string, step = 14): string {
   let s = '';
   let row = 0;
   for (let y = y0; y < y1; y += step * 0.72, row++) {
@@ -51,7 +40,6 @@ function rivets(pts: [number, number][], col: string, r = 3): string {
   return pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${col}" stroke="${ink(col)}" stroke-width="1.5"/>`).join('');
 }
 
-const clipBody = (ctx: Ctx, inner: string) => `<g clip-path="url(#bc${ctx.uid})">${inner}</g>`;
 
 function feather(cx: number, cy: number, ang: number, len: number, wid: number, col: string, tip?: string): string {
   const d = `M 0 0 C ${wid} ${-len * 0.25} ${wid * 0.9} ${-len * 0.75} 0 ${-len} C ${-wid * 0.9} ${-len * 0.75} ${-wid} ${-len * 0.25} 0 0 Z`;
@@ -274,208 +262,6 @@ export function renderHeadGear(ctx: Ctx): HeadOut {
   }
 }
 
-
-/** 战裙：腰下三片，盖住大腿（新坐标） */
-function tassets(col: string, trim: string, len = 1): string {
-  const panel = (cx: number, w: number, flip = 1) => {
-    const bot = 470 + 62 * len;
-    return P(`M ${cx - w} 462 L ${cx + w} 462 L ${cx + w - 4 * flip} ${bot} L ${cx - w + 4 * flip} ${bot} Z`, col, { sw: 4 }) + L(`M ${cx - w + 5} ${bot - 8} L ${cx + w - 5} ${bot - 8}`, trim, 4, 0.9);
-  };
-  return panel(168, 26) + panel(232, 26) + panel(200, 28);
-}
-
-/** 长袍下摆：从腰跨垂到小腿，中间开衩露腿（新坐标） */
-function longSkirt(col: string, edge: string, trim?: string): string {
-  const d = 'M 134 452 C 126 500 118 540 112 572 Q 200 590 288 572 C 282 540 274 500 266 452 Z';
-  return (
-    P(d, col, { sw: 4.5 }) +
-    `<path d="M 200 470 L 192 578 L 208 578 Z" fill="${shade(col, 0.16)}" opacity="0.55"/>` +
-    L('M 150 480 C 144 520 140 548 136 568 M 250 480 C 256 520 260 548 264 568', ink(col), 2.6, 0.35) +
-    `<path d="M 113 560 Q 200 578 287 560 L 288 574 Q 200 592 112 574 Z" fill="${edge}" stroke="${ink(edge)}" stroke-width="3.5" stroke-linejoin="round"/>` +
-    (trim ? L('M 120 567 Q 200 584 280 567', trim, 2.6, 0.9) : '')
-  );
-}
-
-// ---------- 身体服饰 ----------
-export function renderBodyGear(ctx: Ctx): GearOut {
-  const kind: BodyGear = ctx.look.outfit.body ?? 'none';
-  const { main, sub, trim } = ctx.pal;
-  const cloth = ctx.pal.cloth ?? '#f3efe4';
-  const W = ctx.W;
-  const x = (dx: number) => 200 + dx * W;
-  const pauldron = (side: -1 | 1, col: string, spike = false) => {
-    const cx = x(side * 60);
-    return (
-      (spike ? P(`M ${cx - 12} 312 L ${cx + side * 8} 286 L ${cx + 12} 312 Z`, tint(trim, 0.05), { sw: 3 }) : '') +
-      E(cx, 328, 29, 22, col, { sw: 4.5 }) +
-      `<path d="M ${cx - 24} 328 Q ${cx} 340 ${cx + 24} 328" fill="none" stroke="${trim}" stroke-width="5" stroke-linecap="round"/>` +
-      L(`M ${cx - 14} 318 Q ${cx} 312 ${cx + 14} 318`, '#fff', 3, 0.28)
-    );
-  };
-  switch (kind) {
-    case 'armorWei':
-    case 'armorHeavy': {
-      const heavy = kind === 'armorHeavy';
-      const plate = heavy ? main : sub;
-      const skirt = (dx: number, w: number) => P(`M ${x(dx)} 414 L ${x(dx + w)} 414 L ${x(dx + w - 3)} 458 L ${x(dx + 3)} 458 Z`, heavy ? sub : main, { sw: 3.5 });
-      return {
-        svg: clipBody(
-          ctx,
-          `<rect x="60" y="300" width="280" height="112" fill="${plate}"/>` +
-            (heavy ? '' : scales(x(-76), x(76), 312, 404, tint(plate, 0.22), 15)) +
-            (heavy ? `<path d="M ${x(-60)} 322 Q 200 350 ${x(60)} 322 L ${x(52)} 396 Q 200 410 ${x(-52)} 396 Z" fill="${shade(plate, 0.06)}" stroke="${ink(plate)}" stroke-width="4"/>${E(200, 352, 17, 17, trim, { sw: 3.5 })}${E(200, 352, 8, 8, main, { sw: 2.5 })}` : '') +
-            `<path d="M ${x(-72)} 300 Q 200 330 ${x(72)} 300" fill="none" stroke="${trim}" stroke-width="9"/>` +
-            `<rect x="60" y="402" width="280" height="18" fill="${trim}" stroke="${ink(trim)}" stroke-width="3.5"/>` +
-            E(200, 411, 15, 11, tint(trim, 0.12), { sw: 3.5 }) +
-            skirt(-64, 42) + skirt(-20, 40) + skirt(22, 42) +
-            rivets([[x(-36), 411], [x(36), 411]], tint(trim, 0.2)),
-        ),
-        overL: pauldron(-1, plate, heavy),
-        overR: pauldron(1, plate, heavy),
-        skirt: tassets(heavy ? sub : main, trim),
-        legCloth: shade(sub, 0.08),
-        boots: shade(sub, 0.1),
-      };
-    }
-    case 'armorLight': {
-      const leather = mix('#8a5a30', sub, 0.25);
-      return {
-        svg: clipBody(
-          ctx,
-          `<rect x="60" y="300" width="280" height="130" fill="${leather}"/>` +
-            L(`M ${x(-60)} 300 L ${x(50)} 410 M ${x(60)} 300 L ${x(-50)} 410`, trim, 7, 0.95) +
-            rivets([[x(-34), 330], [x(34), 330], [200, 356], [x(-30), 384], [x(30), 384]], tint(trim, 0.15)) +
-            `<rect x="60" y="404" width="280" height="16" fill="${shade(leather, 0.1)}" stroke="${ink(leather)}" stroke-width="3.5"/>` +
-            E(200, 412, 12, 9, trim, { sw: 3 }) +
-            `<path d="M ${x(-70)} 424 L ${x(70)} 424 L ${x(70)} 462 L ${x(-70)} 462 Z" fill="${main}"/>` +
-            L(`M ${x(-50)} 428 L ${x(-50)} 458 M ${x(-16)} 428 L ${x(-16)} 458 M ${x(16)} 428 L ${x(16)} 458 M ${x(50)} 428 L ${x(50)} 458`, ink(main), 2.4, 0.5),
-        ),
-        overL: pauldron(-1, main),
-        overR: pauldron(1, main),
-        legCloth: shade(leather, 0.1),
-        boots: shade(leather, 0.2),
-        skirt: tassets(main, trim, 0.7),
-      };
-    }
-    case 'robeScholar':
-    case 'robeSilk': {
-      const silk = kind === 'robeSilk';
-      const col = silk ? main : cloth;
-      const edge = silk ? trim : main;
-      let pat = '';
-      if (silk) {
-        for (const [px, py] of [[-44, 350], [44, 350], [0, 372], [-48, 410], [48, 410], [0, 432]] as [number, number][]) {
-          pat += `<circle cx="${x(px)}" cy="${py}" r="9" fill="none" stroke="${trim}" stroke-width="3" opacity="0.85"/><circle cx="${x(px)}" cy="${py}" r="3" fill="${trim}" opacity="0.85"/>`;
-        }
-      }
-      return {
-        svg: clipBody(
-          ctx,
-          `<rect x="60" y="290" width="280" height="180" fill="${col}"/>` +
-            pat +
-            P(`M ${x(-40)} 290 L 200 392 L 200 408 L ${x(-52)} 296 Z`, edge, { sw: 3.5 }) +
-            P(`M ${x(40)} 290 L 200 392 L 200 408 L ${x(52)} 296 Z`, shade(edge, 0.06), { sw: 3.5 }) +
-            P(`M ${x(-80)} 388 Q 200 408 ${x(80)} 388 L ${x(80)} 410 Q 200 430 ${x(-80)} 410 Z`, silk ? sub : main, { sw: 3.5 }) +
-            E(200, 408, 12, 12, trim, { sw: 3 }) +
-            `<rect x="60" y="440" width="280" height="22" fill="${edge}" stroke="${ink(edge)}" stroke-width="3.5"/>`,
-        ),
-        sleeve: col,
-        cuff: edge,
-        skirt: longSkirt(col, edge, silk ? trim : undefined),
-        legCloth: shade(silk ? sub : main, 0.1),
-        boots: shade(silk ? sub : main, 0.12),
-      };
-    }
-    case 'robeTaoist': {
-      return {
-        svg: clipBody(
-          ctx,
-          `<rect x="60" y="290" width="280" height="180" fill="${cloth}"/>` +
-            P(`M ${x(-44)} 290 L 200 396 L 200 410 L ${x(-56)} 296 Z`, main, { sw: 3.5 }) +
-            P(`M ${x(44)} 290 L 200 396 L 200 410 L ${x(56)} 296 Z`, shade(main, 0.06), { sw: 3.5 }) +
-            // 太极
-            E(200, 350, 15, 15, '#fff', { sw: 3, stroke: ink(main) }) +
-            `<path d="M 200 335 A 15 15 0 0 1 200 365 A 7.5 7.5 0 0 1 200 350 A 7.5 7.5 0 0 0 200 335 Z" fill="${main}"/>` +
-            `<circle cx="200" cy="343" r="2.4" fill="#fff"/><circle cx="200" cy="357" r="2.4" fill="${main}"/>` +
-            P(`M ${x(-80)} 392 Q 200 410 ${x(80)} 392 L ${x(80)} 408 Q 200 426 ${x(-80)} 408 Z`, trim, { sw: 3.5 }) +
-            // 云纹下摆
-            `<path d="M ${x(-80)} 446 q 14 -16 28 0 q 14 -16 28 0 q 14 -16 28 0 q 14 -16 28 0 q 14 -16 28 0 q 14 -16 28 0" fill="${tint(main, 0.18)}" stroke="${ink(main)}" stroke-width="3"/>` +
-            `<rect x="60" y="450" width="280" height="14" fill="${main}"/>`,
-        ),
-        sleeve: cloth,
-        cuff: main,
-        skirt: longSkirt(cloth, main, trim),
-        legCloth: shade(main, 0.1),
-        boots: shade(main, 0.15),
-      };
-    }
-    case 'dress': {
-      const skirtD = `M ${x(-52)} 384 C ${x(-84)} 410 ${x(-100)} 436 ${x(-96)} 462 q ${12 * W} 12 ${24 * W} 0 q ${12 * W} 12 ${24 * W} 0 q ${12 * W} 12 ${24 * W} 0 q ${12 * W} 12 ${24 * W} 0 q ${12 * W} 12 ${24 * W} 0 q ${12 * W} 12 ${24 * W} 0 q ${12 * W} 12 ${24 * W} 0 q ${12 * W} 12 ${24 * W} 0 C ${x(100)} 436 ${x(84)} 410 ${x(52)} 384 Z`;
-      return {
-        svg:
-          P(skirtD, main) +
-          L(`M ${x(-40)} 396 Q ${x(-60)} 430 ${x(-72)} 458 M ${x(0)} 396 L ${x(0)} 460 M ${x(40)} 396 Q ${x(60)} 430 ${x(72)} 458`, ink(main), 2.6, 0.35) +
-          clipBody(ctx, `<rect x="60" y="300" width="280" height="88" fill="${sub}"/>${scales(x(-72), x(72), 318, 380, tint(sub, 0.2), 16)}`) +
-          P(`M ${x(-64)} 382 Q 200 402 ${x(64)} 382 L ${x(64)} 398 Q 200 418 ${x(-64)} 398 Z`, trim, { sw: 3.5 }) +
-          // 领口花边
-          `<path d="M ${x(-44)} 298 q 8 12 16 0 q 8 12 16 0 q 8 12 16 0 q 8 12 16 0 q 8 12 16 0 q 8 12 16 0 q 8 12 16 0" fill="#fff6f0" stroke="${ink('#fff6f0')}" stroke-width="2.6"/>` +
-          // 腰间蝴蝶结
-          P(`M 200 396 C 170 372 160 410 190 412 Z`, tint(main, 0.1), { sw: 3 }) +
-          P(`M 200 396 C 230 372 240 410 210 412 Z`, tint(main, 0.1), { sw: 3 }) +
-          E(200, 402, 7, 7, trim, { sw: 2.6 }),
-      };
-    }
-    case 'tribal': {
-      const fur = '#8a6338';
-      const furShoulder = (sd: -1 | 1) => P(`M ${x(sd * 38)} 306 C ${x(sd * 72)} 296 ${x(sd * 92)} 322 ${x(sd * 84)} 346 l ${-sd * 12 * W} -4 l ${-sd * 4 * W} 14 l ${-sd * 12 * W} -10 l ${-sd * 4 * W} 12 Z`, fur, { sw: 4 });
-      const tooth = (px: number, py: number) => P(`M ${px - 5} ${py} L ${px + 5} ${py} L ${px} ${py + 15} Z`, '#f7efd8', { sw: 2.2 });
-      return {
-        svg: clipBody(
-          ctx,
-          `<rect x="60" y="412" width="280" height="60" fill="${mix(sub, '#8a5a30', 0.4)}"/>` +
-            [-64, -38, -12, 14, 40].map((dx) => P(`M ${x(dx)} 422 L ${x(dx + 22)} 422 L ${x(dx + 11)} 450 Z`, trim, { sw: 2.6 })).join('') +
-            `<rect x="60" y="402" width="280" height="14" fill="${fur}" stroke="${ink(fur)}" stroke-width="3"/>` +
-            L(`M ${x(-66)} 304 L ${x(50)} 410`, '#7a4f2a', 11) + L(`M ${x(-66)} 304 L ${x(50)} 410`, main, 6) +
-            rivets([[x(-30), 352], [x(0), 381]], trim),
-        ),
-        overC:
-          // 兽牙项链
-          L(`M ${x(-44)} 300 Q 200 340 ${x(44)} 300`, '#6a4a2a', 3.4) +
-          [-34, -22, -10, 0, 10, 22, 34].map((dx) => tooth(x(dx), 300 + 38 * (1 - (dx / 38) ** 2) * 0.55 + 4)).join(''),
-        overL: furShoulder(-1),
-        overR: furShoulder(1),
-      };
-    }
-    case 'rattan': {
-      const tan = '#c79a58';
-      let weave = '';
-      for (let i = -2; i < 14; i++) weave += `M ${60 + i * 22} 296 l 90 150 M ${60 + i * 22 + 90} 296 l -90 150 `;
-      return {
-        svg: clipBody(
-          ctx,
-          `<rect x="60" y="296" width="280" height="170" fill="${tan}"/>${L(weave, shade(tan, 0.22), 3, 0.65)}` +
-            `<rect x="60" y="396" width="280" height="18" fill="#8a6a3a" stroke="${ink('#8a6a3a')}" stroke-width="3.5"/>` +
-            E(200, 405, 12, 9, trim, { sw: 3 }) +
-            `<rect x="60" y="440" width="280" height="22" fill="#8a6a3a" stroke="${ink('#8a6a3a')}" stroke-width="3.5"/>`,
-        ),
-        overL: pauldron(-1, tan),
-        overR: pauldron(1, tan),
-      };
-    }
-    case 'vest': {
-      const half = (sd: -1 | 1) =>
-        P(`M ${x(sd * 10)} 296 L ${x(sd * 62)} 304 L ${x(sd * 68)} 410 L ${x(sd * 16)} 412 Z`, main, { sw: 4 }) +
-        L(`M ${x(sd * 12)} 300 L ${x(sd * 18)} 410`, trim, 4);
-      return {
-        svg: clipBody(ctx, half(-1) + half(1) + `<rect x="60" y="400" width="280" height="14" fill="${sub}" stroke="${ink(sub)}" stroke-width="3.5"/>${E(200, 407, 11, 9, trim, { sw: 3 })}`),
-        legCloth: shade(sub, 0.05),
-        boots: shade(sub, 0.15),
-      };
-    }
-    default:
-      return { svg: '' };
-  }
-}
 
 // ---------- 背饰（画在身体后面） ----------
 export function renderBackGear(ctx: Ctx): string {

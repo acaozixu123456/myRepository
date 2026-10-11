@@ -1,8 +1,11 @@
-// 猫猫基础绘制：身体 / 头 / 五官 / 花色 / 尾巴。
-// 画布 400×500，猫猫脚底在 y≈460，居中 x=200。Q版2头身，圆润、软萌。
+// 猫猫基础绘制 v3：有机锥形肢体、渐变光影、毛发笔触、手绘质感。
+// 画布 520×700（viewBox -60 -50），猫猫居中 x=200，脚底 y≈604，约 3.3 头身。
 import { ink, mix, shade, tint } from './color';
 import type { CatLook, Coat, EarStyle, EyeStyle, Palette } from './types';
-import { renderBackGear, renderBodyGear, renderHeadGear, renderWeapon } from './gear';
+import { renderBackGear, renderHeadGear, renderWeapon } from './gear';
+import { renderBodyGear } from './garments';
+import { furTicks, limbPath, paintDefs, paintFill, resetPaintDefs, sampleSpline, smooth } from './paint';
+import type { Pt } from './paint';
 
 export interface Ctx {
   uid: string;
@@ -25,11 +28,15 @@ export interface PathOpts {
   op?: number;
   extra?: string;
   noStroke?: boolean;
+  flat?: boolean; // 不用渐变
+  mode?: 'soft' | 'cel' | 'metal' | 'cloth';
 }
 
+const isPaintable = (c: string) => /^#[0-9a-fA-F]{6}$/.test(c);
 export function P(d: string, fill: string, o: PathOpts = {}): string {
-  const stroke = o.noStroke ? 'none' : (o.stroke ?? ink(fill));
-  return `<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="${o.sw ?? 4.5}" stroke-linejoin="round" stroke-linecap="round"${o.op !== undefined ? ` opacity="${o.op}"` : ''} ${o.extra ?? ''}/>`;
+  const stroke = o.noStroke ? 'none' : (o.stroke ?? ink(fill, 0.46));
+  const f = isPaintable(fill) && !o.flat ? paintFill(fill, o.mode ?? 'soft') : fill;
+  return `<path d="${d}" fill="${f}" stroke="${stroke}" stroke-width="${((o.sw ?? 4.5) * 0.72).toFixed(2)}" stroke-linejoin="round" stroke-linecap="round"${o.op !== undefined ? ` opacity="${o.op}"` : ''} ${o.extra ?? ''}/>`;
 }
 
 export function L(d: string, color: string, sw = 4, op = 1, extra = ''): string {
@@ -37,8 +44,9 @@ export function L(d: string, color: string, sw = 4, op = 1, extra = ''): string 
 }
 
 export function E(cx: number, cy: number, rx: number, ry: number, fill: string, o: PathOpts & { rot?: number } = {}): string {
-  const stroke = o.noStroke ? 'none' : (o.stroke ?? ink(fill));
-  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" stroke="${stroke}" stroke-width="${o.sw ?? 4.5}"${o.rot ? ` transform="rotate(${o.rot} ${cx} ${cy})"` : ''}${o.op !== undefined ? ` opacity="${o.op}"` : ''} ${o.extra ?? ''}/>`;
+  const stroke = o.noStroke ? 'none' : (o.stroke ?? ink(fill, 0.46));
+  const f = isPaintable(fill) && !o.flat ? paintFill(fill, o.mode ?? 'soft') : fill;
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${f}" stroke="${stroke}" stroke-width="${((o.sw ?? 4.5) * 0.72).toFixed(2)}"${o.rot ? ` transform="rotate(${o.rot} ${cx} ${cy})"` : ''}${o.op !== undefined ? ` opacity="${o.op}"` : ''} ${o.extra ?? ''}/>`;
 }
 
 /** 带手绘抖动感的“团”形斑块 */
@@ -69,17 +77,6 @@ export function blob(cx: number, cy: number, rx: number, ry: number, rot = 0, se
 
 export const mirror = (inner: string) => `<g transform="translate(400 0) scale(-1 1)">${inner}</g>`;
 
-// ---------- 形状 ----------
-export const HEAD_D =
-  'M 96 214 C 94 150 138 110 200 110 C 262 110 306 150 304 214 C 303 264 258 294 200 294 C 142 294 97 264 96 214 Z';
-
-export function bodyD(W: number): string {
-  const n = 46 * W;
-  const sh = 72 * W;
-  const wa = 56 * W;
-  const hp = 64 * W;
-  return `M ${200 - n} 286 C ${200 - sh * 0.96} 296 ${200 - sh} 314 ${200 - sh} 338 C ${200 - sh} 374 ${200 - wa} 398 ${200 - wa} 424 C ${200 - wa} 440 ${200 - hp} 448 ${200 - hp + 4} 458 L ${200 + hp - 4} 458 C ${200 + hp} 448 ${200 + wa} 440 ${200 + wa} 424 C ${200 + wa} 398 ${200 + sh} 374 ${200 + sh} 338 C ${200 + sh} 314 ${200 + sh * 0.96} 296 ${200 + n} 286 Z`;
-}
 
 interface EarShape { outer: string; inner: string }
 function earShape(style: EarStyle): EarShape {
@@ -111,6 +108,7 @@ function earShape(style: EarStyle): EarShape {
       };
   }
 }
+
 
 // ---------- 眼睛 ----------
 function eyeSvg(style: EyeStyle, color: string, side: 'L' | 'R', ctx: Ctx): string {
@@ -164,185 +162,6 @@ function eyeSvg(style: EyeStyle, color: string, side: 'L' | 'R', ctx: Ctx): stri
   }
 }
 
-// ---------- 花色 ----------
-function patternHead(ctx: Ctx): string {
-  const { coat, uid } = ctx;
-  switch (coat.pattern) {
-    case 'tabby': {
-      const s = coat.stripe ?? shade(coat.base, 0.22);
-      return (
-        L('M 200 112 L 200 148', s, 9, 0.85) +
-        L('M 177 117 Q 180 138 188 152', s, 8, 0.85) +
-        L('M 223 117 Q 220 138 212 152', s, 8, 0.85) +
-        L('M 97 220 Q 115 218 130 228', s, 8, 0.8) +
-        L('M 100 244 Q 115 240 128 248', s, 7, 0.8) +
-        L('M 303 220 Q 285 218 270 228', s, 8, 0.8) +
-        L('M 300 244 Q 285 240 272 248', s, 7, 0.8)
-      );
-    }
-    case 'tuxedo':
-      return `<path d="M 200 164 C 180 188 138 214 138 258 C 158 296 242 296 262 258 C 262 214 220 188 200 164 Z" fill="${coat.light}"/>`;
-    case 'calico': {
-      const o = coat.base;
-      const d = coat.accent ?? '#33262b';
-      return (
-        `<path d="${blob(138, 150, 62, 46, -25, 2)}" fill="${o}"/>` +
-        `<path d="${blob(280, 160, 44, 58, 15, 5)}" fill="${d}"/>` +
-        `<path d="${blob(262, 262, 26, 22, 0, 4)}" fill="${o}"/>`
-      );
-    }
-    case 'cow': {
-      const d = coat.accent ?? '#2e2428';
-      return `<path d="${blob(142, 168, 56, 52, -10, 3)}" fill="${d}"/><path d="${blob(278, 140, 42, 40, 20, 8)}" fill="${d}"/>`;
-    }
-    case 'point': {
-      const d = coat.accent ?? '#5a4136';
-      return (
-        `<g filter="url(#soft${uid})">` +
-        `<path d="${blob(200, 256, 66, 50, 0, 2)}" fill="${d}" opacity="0.9"/>` +
-        `<path d="${blob(200, 206, 36, 44, 0, 4)}" fill="${d}" opacity="0.75"/>` +
-        `</g>`
-      );
-    }
-    case 'spots': {
-      const a = coat.accent ?? shade(coat.base, 0.3);
-      const r = (x: number, y: number, s: number) =>
-        `<circle cx="${x}" cy="${y}" r="${s}" fill="${mix(coat.base, a, 0.3)}" stroke="${a}" stroke-width="${s * 0.45}"/>`;
-      return r(150, 150, 9) + r(250, 148, 9) + r(118, 205, 7) + r(284, 205, 7) + r(200, 130, 6) + r(172, 134, 5) + r(228, 134, 5);
-    }
-    case 'shaded': {
-      const a = coat.accent ?? shade(coat.base, 0.2);
-      return `<g filter="url(#soft${uid})"><ellipse cx="200" cy="128" rx="112" ry="46" fill="${a}" opacity="0.75"/></g>`;
-    }
-    default:
-      return '';
-  }
-}
-
-function patternBody(ctx: Ctx): string {
-  const { coat, W, uid } = ctx;
-  const x = (dx: number) => 200 + dx * W;
-  switch (coat.pattern) {
-    case 'tabby': {
-      const s = coat.stripe ?? shade(coat.base, 0.22);
-      const band = (y: number) =>
-        L(`M ${x(-72)} ${y} Q ${x(-56)} ${y + 8} ${x(-38)} ${y - 2}`, s, 8, 0.8) +
-        L(`M ${x(72)} ${y} Q ${x(56)} ${y + 8} ${x(38)} ${y - 2}`, s, 8, 0.8);
-      return band(338) + band(368) + band(398) + band(426);
-    }
-    case 'tuxedo':
-      return `<path d="${blob(200, 392, 46 * W, 68, 0, 3)}" fill="${coat.light}"/>`;
-    case 'calico': {
-      const o = coat.base;
-      const d = coat.accent ?? '#33262b';
-      return (
-        `<path d="${blob(x(-48), 360, 36 * W, 40, 20, 2)}" fill="${o}"/>` +
-        `<path d="${blob(x(52), 400, 30 * W, 36, -20, 6)}" fill="${d}"/>` +
-        `<path d="${blob(x(-30), 432, 22 * W, 18, 0, 4)}" fill="${d}"/>`
-      );
-    }
-    case 'cow': {
-      const d = coat.accent ?? '#2e2428';
-      return `<path d="${blob(x(-44), 370, 36 * W, 42, 10, 3)}" fill="${d}"/><path d="${blob(x(54), 410, 30 * W, 36, -10, 7)}" fill="${d}"/>`;
-    }
-    case 'point': {
-      const d = coat.accent ?? '#5a4136';
-      return `<g filter="url(#soft${uid})"><path d="${blob(200, 330, 80 * W, 40, 0, 1)}" fill="${d}" opacity="0.18"/></g>`;
-    }
-    case 'spots': {
-      const a = coat.accent ?? shade(coat.base, 0.3);
-      const r = (dx: number, y: number, s: number) =>
-        `<circle cx="${x(dx)}" cy="${y}" r="${s}" fill="${mix(coat.base, a, 0.3)}" stroke="${a}" stroke-width="${s * 0.45}"/>`;
-      return r(-48, 345, 11) + r(46, 352, 10) + r(-56, 395, 12) + r(54, 402, 11) + r(-38, 432, 9) + r(40, 436, 9) + r(0, 330, 8);
-    }
-    case 'shaded': {
-      const a = coat.accent ?? shade(coat.base, 0.2);
-      return `<g filter="url(#soft${uid})"><ellipse cx="200" cy="300" rx="${90 * W}" ry="40" fill="${a}" opacity="0.7"/></g>`;
-    }
-    default:
-      return '';
-  }
-}
-
-// ---------- 尾巴 ----------
-function tailPath(style: CatLook['tail']): { d: string; w: number } {
-  switch (style) {
-    case 'bushy':
-      return { d: 'M 248 440 C 330 452 372 396 352 322 C 348 304 336 292 326 288', w: 46 };
-    case 'curl':
-      return { d: 'M 250 440 C 340 456 358 392 322 368 C 298 352 306 330 328 340', w: 30 };
-    case 'stub':
-      return { d: 'M 252 440 C 290 446 304 430 300 414', w: 34 };
-    case 'ring':
-      return { d: 'M 250 440 C 338 456 372 396 346 330 C 336 304 320 296 312 300', w: 34 };
-    default:
-      return { d: 'M 250 440 C 336 452 372 392 348 322 C 342 304 330 294 322 292', w: 30 };
-  }
-}
-
-function renderTail(ctx: Ctx): string {
-  const { coat, fur } = ctx;
-  const { d, w } = tailPath(ctx.look.tail);
-  const line = ctx.line;
-  let tipColor = fur;
-  if (coat.pattern === 'point') tipColor = coat.accent ?? '#5a4136';
-  else if (coat.pattern === 'shaded') tipColor = coat.accent ?? shade(fur, 0.2);
-  else if (coat.pattern === 'tuxedo') tipColor = coat.light;
-  else if (coat.pattern === 'tabby') tipColor = shade(fur, 0.22);
-  let s = `<path d="${d}" fill="none" stroke="${line}" stroke-width="${w + 9}" stroke-linecap="round"/>`;
-  s += `<path d="${d}" fill="none" stroke="${fur}" stroke-width="${w}" stroke-linecap="round"/>`;
-  // 阴影侧
-  s += `<path d="${d}" fill="none" stroke="${shade(fur, 0.14)}" stroke-width="${w * 0.4}" stroke-linecap="round" opacity="0.45" transform="translate(${w * 0.22} ${w * 0.1})"/>`;
-  if (coat.pattern === 'tabby' || ctx.look.tail === 'ring') {
-    const sc = coat.stripe ?? shade(coat.base, 0.22);
-    s += `<path d="${d}" pathLength="100" fill="none" stroke="${sc}" stroke-width="${w}" stroke-dasharray="5 8" stroke-dashoffset="-6" opacity="0.8"/>`;
-  }
-  if (coat.pattern === 'spots') {
-    const sc = coat.accent ?? shade(coat.base, 0.3);
-    s += `<path d="${d}" pathLength="100" fill="none" stroke="${sc}" stroke-width="${w * 0.3}" stroke-dasharray="0 10" stroke-linecap="round" opacity="0.9"/>`;
-  }
-  if (tipColor !== fur) {
-    s += `<path d="${d}" pathLength="100" fill="none" stroke="${tipColor}" stroke-width="${w}" stroke-dasharray="0 82 18" stroke-linecap="round"/>`;
-  }
-  return s;
-}
-
-// ---------- 手臂 / 爪 ----------
-export interface Pose { R: [number, number]; L: [number, number] }
-
-export function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: string, cuff?: string): string {
-  const sx = side === 'R' ? 200 + 58 * ctx.W : 200 - 58 * ctx.W;
-  const sy = 322;
-  const [hx, hy] = hand;
-  const cx = side === 'R' ? Math.max(sx, hx) + 10 : Math.min(sx, hx) - 10;
-  const cy = (sy + hy) / 2 - 2;
-  const d = `M ${sx} ${sy} Q ${cx} ${cy} ${hx} ${hy}`;
-  const col = sleeve ?? ctx.fur;
-  const o = sleeve ? ink(sleeve) : ctx.line;
-  let cuffSvg = '';
-  if (cuff) {
-    const q = (t: number): [number, number] => [(1 - t) ** 2 * sx + 2 * (1 - t) * t * cx + t * t * hx, (1 - t) ** 2 * sy + 2 * (1 - t) * t * cy + t * t * hy];
-    const a = q(0.74);
-    const b = q(0.9);
-    const seg = `M ${a[0].toFixed(1)} ${a[1].toFixed(1)} L ${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
-    cuffSvg = `<path d="${seg}" stroke="${ink(cuff)}" stroke-width="41" stroke-linecap="round" fill="none"/><path d="${seg}" stroke="${cuff}" stroke-width="33" stroke-linecap="round" fill="none"/>`;
-  }
-  return (
-    `<path d="${d}" fill="none" stroke="${o}" stroke-width="35" stroke-linecap="round"/>` +
-    `<path d="${d}" fill="none" stroke="${col}" stroke-width="27" stroke-linecap="round"/>` +
-    `<path d="${d}" fill="none" stroke="${shade(col, 0.14)}" stroke-width="12" stroke-linecap="round" opacity="0.35" transform="translate(${side === 'R' ? 6 : -6} 3)"/>` +
-    cuffSvg
-  );
-}
-
-export function mitt(ctx: Ctx, hand: [number, number]): string {
-  const [x, y] = hand;
-  return (
-    E(x, y, 17, 16, ctx.paw, { stroke: ctx.line, sw: 4 }) +
-    L(`M ${x - 5} ${y + 5} L ${x - 5} ${y + 12}`, ctx.line, 2.5, 0.6) +
-    L(`M ${x + 5} ${y + 5} L ${x + 5} ${y + 12}`, ctx.line, 2.5, 0.6)
-  );
-}
 
 // ---------- 脸部附加 ----------
 function renderFaceExtras(ctx: Ctx): string {
@@ -390,29 +209,274 @@ function renderBeard(ctx: Ctx): string {
   return '';
 }
 
+
+// ---------- 几何：头 / 身体 / 肢体（均为手工控制点 + Catmull-Rom 平滑） ----------
+const mirrorPts = (r: Pt[]): Pt[] => [...r, ...r.slice(1, -1).reverse().map(([x, y]) => [400 - x, y] as Pt)];
+const HEAD_R: Pt[] = [[200, 104], [240, 108], [278, 128], [299, 164], [304, 204], [295, 240], [273, 270], [240, 292], [200, 301]];
+export const HEAD_D = smooth(mirrorPts(HEAD_R), true);
+
+export function torsoD(W: number): string {
+  const R: [number, number][] = [[22, 270], [50, 280], [78, 296], [92, 318], [86, 348], [74, 380], [64, 414], [62, 446], [68, 472], [48, 490], [0, 496]];
+  const right: Pt[] = R.map(([dx, y]) => [200 + dx * W, y]);
+  const left: Pt[] = R.slice(1, -1).reverse().map(([dx, y]) => [200 - dx * W, y] as Pt);
+  return smooth([...right, ...left], true);
+}
+export const bodyD = torsoD;
+
+const ARM_PTS = (W: number, side: 'L' | 'R'): Pt[] => {
+  const d = side === 'R' ? 1 : -1;
+  return [[200 + d * 70 * W, 312], [200 + d * 92 * W, 372], [200 + d * 82 * W, 436]];
+};
+const HAND = (W: number, side: 'L' | 'R'): Pt => [200 + (side === 'R' ? 1 : -1) * 82 * W, 446];
+const LEG_PTS = (W: number, side: 'L' | 'R'): Pt[] => {
+  const d = side === 'R' ? 1 : -1;
+  return [[200 + d * 32 * W, 478], [200 + d * 38 * W, 536], [200 + d * 42 * W, 588]];
+};
+
+// 形体渲染：基础渐变 + 赛璐璐暗部（新月） + 边缘光 + 内部装饰 + 细轮廓
+interface VolOpts { sw?: number; shadow?: number; lit?: Pt; rim?: number; inner?: string; mode?: 'soft' | 'cel' | 'metal' | 'cloth'; outline?: string }
+export function volume(ctx: Ctx, key: string, d: string, base: string, o: VolOpts = {}): string {
+  const id = `v${ctx.uid}${key}`;
+  const [lx, ly] = o.lit ?? [-9, -10];
+  const line = o.outline ?? ctx.line;
+  return (
+    `<clipPath id="${id}"><path d="${d}"/></clipPath>` +
+    `<path d="${d}" fill="${paintFill(base, o.mode ?? 'soft')}" stroke="none"/>` +
+    `<g clip-path="url(#${id})">` +
+    `<path d="${d}" fill="${shade(base, 0.26)}" opacity="${o.shadow ?? 0.55}"/>` +
+    `<path d="${d}" fill="${paintFill(base, o.mode ?? 'soft')}" transform="translate(${lx} ${ly})" filter="url(#soft2${ctx.uid})"/>` +
+    `<path d="${d}" fill="none" stroke="${tint(base, 0.3)}" stroke-width="8" transform="translate(${-lx * 0.6} ${-ly * 0.6})" opacity="${o.rim ?? 0.28}"/>` +
+    (o.inner ?? '') +
+    `</g>` +
+    `<path d="${d}" fill="none" stroke="${line}" stroke-width="${o.sw ?? 3.2}" stroke-linejoin="round"/>`
+  );
+}
+
+// ---------- 花色 ----------
+function patternHead(ctx: Ctx): string {
+  const { coat, uid } = ctx;
+  switch (coat.pattern) {
+    case 'tabby': {
+      const s = coat.stripe ?? shade(coat.base, 0.22);
+      return (
+        L('M 200 106 L 200 142', s, 9, 0.8) + L('M 176 110 Q 180 132 188 148', s, 8, 0.8) + L('M 224 110 Q 220 132 212 148', s, 8, 0.8) +
+        L('M 100 202 Q 120 200 138 212', s, 7, 0.75) + L('M 104 226 Q 122 224 138 232', s, 6, 0.75) + L('M 300 202 Q 280 200 262 212', s, 7, 0.75) + L('M 296 226 Q 278 224 262 232', s, 6, 0.75)
+      );
+    }
+    case 'tuxedo':
+      return `<path d="M 200 156 C 182 182 140 210 140 252 C 150 292 250 292 260 252 C 260 210 218 182 200 156 Z" fill="${coat.light}"/>`;
+    case 'calico': {
+      const d = coat.accent ?? '#33262b';
+      return `<path d="${blob(136, 146, 64, 46, -25, 2)}" fill="${coat.base}"/><path d="${blob(282, 158, 44, 58, 15, 5)}" fill="${d}"/><path d="${blob(264, 262, 26, 22, 0, 4)}" fill="${coat.base}"/>`;
+    }
+    case 'cow': {
+      const d = coat.accent ?? '#2e2428';
+      return `<path d="${blob(144, 166, 56, 52, -10, 3)}" fill="${d}"/><path d="${blob(280, 138, 42, 40, 20, 8)}" fill="${d}"/>`;
+    }
+    case 'point': {
+      const d = coat.accent ?? '#5a4136';
+      return `<g filter="url(#soft${uid})"><path d="${blob(200, 252, 68, 52, 0, 2)}" fill="${d}" opacity="0.9"/><path d="${blob(200, 200, 34, 46, 0, 4)}" fill="${d}" opacity="0.75"/></g>`;
+    }
+    case 'spots': {
+      const a = coat.accent ?? shade(coat.base, 0.3);
+      const r = (x: number, y: number, s: number) => `<circle cx="${x}" cy="${y}" r="${s}" fill="${mix(coat.base, a, 0.3)}" stroke="${a}" stroke-width="${s * 0.45}"/>`;
+      return r(150, 144, 9) + r(250, 142, 9) + r(116, 200, 7) + r(286, 200, 7) + r(200, 124, 6) + r(172, 128, 5) + r(228, 128, 5);
+    }
+    case 'shaded': {
+      const a = coat.accent ?? shade(coat.base, 0.2);
+      return `<g filter="url(#soft${uid})"><ellipse cx="200" cy="124" rx="112" ry="46" fill="${a}" opacity="0.75"/></g>`;
+    }
+    default:
+      return '';
+  }
+}
+
+function patternTorso(ctx: Ctx): string {
+  const { coat, W, uid } = ctx;
+  const x = (dx: number) => 200 + dx * W;
+  switch (coat.pattern) {
+    case 'tabby': {
+      const s = coat.stripe ?? shade(coat.base, 0.22);
+      let d = '';
+      for (const y of [316, 346, 376, 406, 436, 466]) d += `M ${x(-96)} ${y} Q ${x(-72)} ${y + 10} ${x(-44)} ${y - 2} M ${x(96)} ${y} Q ${x(72)} ${y + 10} ${x(44)} ${y - 2} `;
+      return L(d, s, 8, 0.7);
+    }
+    case 'tuxedo':
+      return `<path d="${blob(200, 400, 52 * W, 96, 0, 3)}" fill="${coat.light}"/>`;
+    case 'calico': {
+      const d = coat.accent ?? '#33262b';
+      return `<path d="${blob(x(-54), 350, 36 * W, 44, 20, 2)}" fill="${coat.base}"/><path d="${blob(x(56), 420, 30 * W, 40, -20, 6)}" fill="${d}"/><path d="${blob(x(-34), 466, 22 * W, 20, 0, 4)}" fill="${d}"/>`;
+    }
+    case 'cow': {
+      const d = coat.accent ?? '#2e2428';
+      return `<path d="${blob(x(-50), 372, 38 * W, 46, 10, 3)}" fill="${d}"/><path d="${blob(x(58), 430, 30 * W, 40, -10, 7)}" fill="${d}"/>`;
+    }
+    case 'spots': {
+      const a = coat.accent ?? shade(coat.base, 0.3);
+      const r = (dx: number, y: number, s: number) => `<circle cx="${x(dx)}" cy="${y}" r="${s}" fill="${mix(coat.base, a, 0.3)}" stroke="${a}" stroke-width="${s * 0.45}"/>`;
+      return r(-54, 332, 11) + r(52, 340, 10) + r(-62, 392, 12) + r(60, 402, 11) + r(-44, 446, 9) + r(46, 452, 9) + r(0, 318, 8);
+    }
+    case 'shaded': {
+      const a = coat.accent ?? shade(coat.base, 0.2);
+      return `<g filter="url(#soft${uid})"><ellipse cx="200" cy="296" rx="${100 * W}" ry="44" fill="${a}" opacity="0.7"/></g>`;
+    }
+    default:
+      return '';
+  }
+}
+
+/** 四肢 / 尾巴上的花色：沿中心线取样 */
+function limbPattern(ctx: Ctx, center: Pt[], w: number, kind: 'arm' | 'leg' | 'tail'): string {
+  const { coat } = ctx;
+  const d = smooth(center);
+  const dash = (da: string, col: string, sw: number, op = 1, extra = '') => `<path d="${d}" pathLength="100" fill="none" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${da}" opacity="${op}" ${extra}/>`;
+  switch (coat.pattern) {
+    case 'tabby': return dash('5 9', coat.stripe ?? shade(coat.base, 0.22), w + 10, 0.75, 'stroke-dashoffset="-4"');
+    case 'spots': return dash('0 11', coat.accent ?? shade(coat.base, 0.3), w * 0.28, 0.9, 'stroke-linecap="round"');
+    case 'point': return `<g filter="url(#soft2${ctx.uid})">${dash('0 62 38', coat.accent ?? '#5a4136', w + 14, 0.95)}</g>`;
+    case 'tuxedo': return kind === 'tail' ? dash('0 82 18', coat.light, w + 10) : `<g filter="url(#soft2${ctx.uid})">${dash('0 70 30', coat.light, w + 14, 0.95)}</g>`;
+    case 'shaded': return `<g filter="url(#soft2${ctx.uid})">${dash('0 70 30', coat.accent ?? shade(coat.base, 0.2), w + 14, 0.8)}</g>`;
+    case 'calico': return `<path d="${blob(center[1][0], center[1][1], w * 0.5, w * 0.7, 20, kind.length)}" fill="${coat.base}"/>`;
+    case 'cow': return `<path d="${blob(center[1][0], center[1][1], w * 0.55, w * 0.7, -10, kind.length + 3)}" fill="${coat.accent ?? '#2e2428'}"/>`;
+    default: return '';
+  }
+}
+
+// ---------- 尾巴 ----------
+function tailGeom(style: CatLook['tail'], W: number): { c: Pt[]; w: number[] } {
+  const o = 200 + 34 * W;
+  switch (style) {
+    case 'bushy': return { c: [[o, 480], [o + 62, 520], [o + 120, 480], [o + 128, 410], [o + 100, 352]], w: [34, 40, 50, 54, 46] };
+    case 'curl': return { c: [[o, 480], [o + 70, 530], [o + 124, 480], [o + 104, 424], [o + 66, 436], [o + 62, 462]], w: [30, 30, 28, 26, 24, 22] };
+    case 'stub': return { c: [[o, 482], [o + 40, 496], [o + 56, 474]], w: [36, 36, 32] };
+    case 'ring': return { c: [[o, 480], [o + 64, 522], [o + 122, 478], [o + 128, 408], [o + 98, 356]], w: [30, 30, 30, 30, 28] };
+    default: return { c: [[o, 480], [o + 64, 522], [o + 122, 480], [o + 130, 410], [o + 104, 356]], w: [30, 28, 26, 26, 24] };
+  }
+}
+
+export function tuft(x: number, y: number, ang: number, len: number, w: number, fill: string, line: string): string {
+  const c = Math.cos(ang), s = Math.sin(ang);
+  const p = (a: number, b: number) => `${(x + c * a - s * b).toFixed(1)} ${(y + s * a + c * b).toFixed(1)}`;
+  return `<path d="M ${p(0, -w)} Q ${p(len * 0.5, -w * 0.7)} ${p(len, 0)} Q ${p(len * 0.5, w * 0.7)} ${p(0, w)} Z" fill="${fill}" stroke="${line}" stroke-width="2.2" stroke-linejoin="round"/>`;
+}
+
+function renderTail(ctx: Ctx): string {
+  const { coat, fur, W } = ctx;
+  const { c, w } = tailGeom(ctx.look.tail, W);
+  const d = limbPath(c, w);
+  const s = sampleSpline(c, 6);
+  const end = s[s.length - 1];
+  const prev = s[s.length - 4];
+  const ang = Math.atan2(end[1] - prev[1], end[0] - prev[0]);
+  const avgW = w.reduce((a, b) => a + b, 0) / w.length;
+  const tufts = ctx.look.tail === 'bushy' || ctx.look.fluffy
+    ? tuft(end[0], end[1], ang + 0.35, 24, 9, fur, ctx.line) + tuft(end[0], end[1], ang - 0.35, 24, 9, fur, ctx.line) + tuft(end[0], end[1], ang, 30, 10, fur, ctx.line)
+    : '';
+  let ring = '';
+  if (ctx.look.tail === 'ring') ring = `<path d="${smooth(c)}" pathLength="100" fill="none" stroke="${coat.stripe ?? coat.accent ?? shade(fur, 0.3)}" stroke-width="${avgW + 14}" stroke-dasharray="7 9" opacity="0.8"/>`;
+  return (
+    volume(ctx, 'tail', d, fur, { inner: furTicks(0, 340, 480, 560, 70, shade(fur, 0.2), ang, 11) + limbPattern(ctx, c, avgW, 'tail') + ring }) +
+    tufts
+  );
+}
+
+// ---------- 爪子（手） ----------
+function pawShape(ctx: Ctx, cx: number, cy: number, s = 1, down = true): string {
+  // 掌心 + 三个指节凸起 + 趾缝
+  const palm = smooth([[cx - 15 * s, cy - 8 * s], [cx - 12 * s, cy + 10 * s], [cx, cy + 16 * s], [cx + 12 * s, cy + 10 * s], [cx + 15 * s, cy - 8 * s], [cx, cy - 14 * s]], true);
+  const toes = [-9, 0, 9].map((dx) => E(cx + dx * s, cy + (down ? 16 : -14) * s, 6.4 * s, 6.4 * s, ctx.paw, { stroke: ctx.line, sw: 3.2 })).join('');
+  return (
+    volume(ctx, `paw${Math.round(cx)}${Math.round(cy)}`, palm, ctx.paw, { sw: 3.2, shadow: 0.4 }) +
+    toes +
+    L(`M ${cx - 4.5 * s} ${cy + 12 * s} L ${cx - 4.5 * s} ${cy + 20 * s} M ${cx + 4.5 * s} ${cy + 12 * s} L ${cx + 4.5 * s} ${cy + 20 * s}`, ctx.line, 1.8, 0.6)
+  );
+}
+
+// ---------- 手臂 ----------
+export interface Pose { R: [number, number]; L: [number, number] }
+export function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: string, cuff?: string, wide = false): string {
+  const W = ctx.W;
+  const pts = ARM_PTS(W, side);
+  // 手的位置由 pose 决定：把手端点拖到 hand，肘部按比例过渡
+  const sh = pts[0];
+  const base = HAND(W, side);
+  const dxh = hand[0] - base[0];
+  const dyh = hand[1] - base[1];
+  const c: Pt[] = [sh, [pts[1][0] + dxh * 0.45, pts[1][1] + dyh * 0.45], [hand[0], hand[1]]];
+  const col = sleeve ?? ctx.fur;
+  const line = sleeve ? ink(sleeve, 0.46) : ctx.line;
+  const body = limbPath(c, wide ? [42, 40, 46] : [40, 32, sleeve ? 30 : 24]);
+  const flow = Math.atan2(c[2][1] - c[0][1], c[2][0] - c[0][0]);
+  const inner = (sleeve ? '' : furTicks(80, 300, 330, 460, 40, shade(col, 0.22), flow, side === 'L' ? 4 : 5, 9, 0.32) + limbPattern(ctx, c, 28, 'arm')) +
+    (sleeve ? `<path d="${smooth(c)}" fill="none" stroke="${shade(col, 0.16)}" stroke-width="3" opacity="0.4" transform="translate(${side === 'R' ? 8 : -8} 4)"/>` : '');
+  let s = volume(ctx, `arm${side}`, body, col, { outline: line, inner, mode: sleeve ? 'cloth' : 'soft' });
+  // 腕口毛边 / 袖口
+  const wrist = c[2];
+  const prev = sampleSpline(c, 6).slice(-4)[0];
+  const a = Math.atan2(wrist[1] - prev[1], wrist[0] - prev[0]);
+  if (cuff) {
+    const q = sampleSpline(c, 6);
+    const p1 = q[Math.floor(q.length * 0.78)];
+    const hl = wide ? 26 : 15;
+    const seg = `M ${p1[0] - Math.sin(a) * hl} ${p1[1] + Math.cos(a) * hl} L ${p1[0] + Math.sin(a) * hl} ${p1[1] - Math.cos(a) * hl}`;
+    s += `<path d="${seg}" stroke="${ink(cuff, 0.5)}" stroke-width="15" stroke-linecap="butt"/><path d="${seg}" stroke="${paintFill(cuff, 'metal')}" stroke-width="10.5" stroke-linecap="butt"/>`;
+  } else if (!sleeve) {
+    s += tuft(wrist[0], wrist[1] - 6, a + 1.9, 14, 5, ctx.fur, ctx.line) + tuft(wrist[0], wrist[1] - 6, a - 1.9, 14, 5, ctx.fur, ctx.line);
+  }
+  return s;
+}
+export function mitt(ctx: Ctx, hand: [number, number]): string {
+  return pawShape(ctx, hand[0], hand[1] + 8, 1.05, true);
+}
+
+// ---------- 腿与靴 ----------
+function legSvg(ctx: Ctx, side: 'L' | 'R', pants: string | undefined, boots: string | undefined): string {
+  const W = ctx.W;
+  const dir = side === 'R' ? 1 : -1;
+  const c = LEG_PTS(W, side);
+  const col = pants ?? ctx.fur;
+  const body = limbPath(c, [54, 42, 33]);
+  const flow = Math.PI / 2;
+  const inner = pants ? `<path d="${smooth(c)}" fill="none" stroke="${shade(col, 0.16)}" stroke-width="3" opacity="0.4" transform="translate(${dir * 9} 3)"/>` : furTicks(120, 470, 300, 596, 40, shade(col, 0.22), flow, side === 'L' ? 7 : 8, 9, 0.3) + limbPattern(ctx, c, 36, 'leg');
+  let s = volume(ctx, `leg${side}`, body, col, { outline: pants ? ink(pants, 0.46) : ctx.line, inner, mode: pants ? 'cloth' : 'soft' });
+  const ax = c[2][0];
+  if (boots) {
+    const shaft = smooth([[ax - 22, 548], [ax + 22, 548], [ax + 24, 588], [ax - 24, 588]], true);
+    const foot = smooth([[ax - 28 + dir * 4, 584], [ax - 12 + dir * 6, 574], [ax + 18 + dir * 10, 578], [ax + 32 + dir * 16, 592], [ax + 30 + dir * 14, 604], [ax - 24 + dir * 2, 606], [ax - 30, 598]], true);
+    s += volume(ctx, `boot${side}`, foot, boots, { mode: 'cel' });
+    s += volume(ctx, `shaft${side}`, shaft, boots, { mode: 'cel' });
+    s += `<path d="M ${ax - 23} 552 L ${ax + 23} 552 L ${ax + 23} 562 L ${ax - 23} 562 Z" fill="${paintFill(ctx.pal.trim, 'metal')}" stroke="${ink(ctx.pal.trim, 0.46)}" stroke-width="2"/>`;
+  } else {
+    const foot = smooth([[ax - 24, 586], [ax - 14, 574], [ax + 14, 574], [ax + 26, 586], [ax + 26 + dir * 8, 600], [ax - 26 + dir * 8, 602]], true);
+    s += volume(ctx, `foot${side}`, foot, ctx.paw, { shadow: 0.4 });
+    s += [-12, 0, 12].map((dx) => E(ax + dx + dir * 6, 600, 7, 6, ctx.paw, { stroke: ctx.line, sw: 3 })).join('');
+    s += L(`M ${ax - 6 + dir * 6} 596 L ${ax - 6 + dir * 6} 606 M ${ax + 6 + dir * 6} 596 L ${ax + 6 + dir * 6} 606`, ctx.line, 1.8, 0.5);
+  }
+  return s;
+}
+
+// ---------- 颈饰 ----------
 function renderNeck(ctx: Ctx): string {
   const ex = ctx.look.outfit.extra ?? [];
   let s = '';
   if (ex.includes('scarf')) {
     const c = ctx.look.outfit.pal.main;
-    s += P('M 128 292 C 160 320 240 320 272 292 L 266 310 C 236 336 164 336 134 310 Z', c) + P('M 230 318 L 262 372 L 238 380 L 214 326 Z', shade(c, 0.1));
+    s += P('M 126 286 C 160 316 240 316 274 286 L 268 308 C 238 332 162 332 132 308 Z', c, { mode: 'cloth' }) + P('M 232 316 L 266 372 L 240 382 L 214 324 Z', shade(c, 0.1), { mode: 'cloth' });
   }
   if (ex.includes('bell')) {
-    s += L('M 134 296 C 164 322 236 322 266 296', '#c0445a', 9) + E(200, 326, 11, 11, '#f0c75a', { sw: 3.5 }) + L('M 193 328 L 207 328', '#8a6a1c', 2.5);
+    s += L('M 140 290 C 168 316 232 316 260 290', '#c0445a', 9) + E(200, 318, 11, 11, '#f0c75a', { sw: 3.5, mode: 'metal' }) + L('M 193 320 L 207 320', '#8a6a1c', 2.5);
   }
   if (ex.includes('tassel')) {
     const c = ctx.look.outfit.pal.trim;
-    s += L('M 200 316 L 200 350', c, 6) + P('M 192 346 L 208 346 L 212 380 L 188 380 Z', ctx.look.outfit.pal.main, { sw: 3 });
+    s += L('M 200 312 L 200 346', c, 6) + P('M 192 342 L 208 342 L 212 376 L 188 376 Z', ctx.look.outfit.pal.main, { sw: 3, mode: 'cloth' });
   }
   return s;
 }
 
-
 // ---------- 主渲染：拆成可绑骨骼的部件 ----------
 export interface RenderOpts { uid?: string; width?: number; height?: number; viewBox?: string }
 export const VIEW_FULL = '-60 -50 520 700';
-export const DY = 48; // 武器/手的整体下移量（旧坐标 -> 新体型）
-export const TORSO_T = 'translate(0 270) scale(1 1.235) translate(0 -286)';
+export const DY = 48; // 武器整体下移量（武器按旧坐标绘制）
 export const BACK_T = 'translate(0 270) scale(1 1.55) translate(0 -286)';
 export const HEAD_BASE = 0.86;
 const headT = (hs: number) => `translate(200 221) scale(${hs}) translate(-200 -210)`;
@@ -432,51 +496,25 @@ export function buildCtx(look: CatLook, uid: string): Ctx {
   if (coat.pattern === 'point') paw = coat.accent ?? '#5a4136';
   else if (coat.pattern === 'solid' || coat.pattern === 'tabby' || coat.pattern === 'spots' || coat.pattern === 'shaded') paw = mix(fur, belly, 0.55);
   return {
-    uid,
-    look,
-    W: look.build ?? 1,
-    coat,
-    pal: look.outfit.pal,
-    fur,
-    belly,
-    paw,
+    uid, look, W: look.build ?? 1, coat, pal: look.outfit.pal, fur, belly, paw,
     pink: coat.pink ?? '#ec8e9e',
-    line: lightFur ? ink(mix(fur, coat.accent ?? coat.base, 0.55), 0.38) : ink(fur, 0.42),
+    line: lightFur ? ink(mix(fur, coat.accent ?? coat.base, 0.55), 0.42) : ink(fur, 0.5),
     eyeInk: '#2b1d22',
   };
 }
 
-function legSvg(ctx: Ctx, side: 'L' | 'R', pants: string | undefined, boots: string | undefined): string {
-  const W = ctx.W;
-  const dir = side === 'L' ? -1 : 1;
-  const hx = 200 + dir * 30 * W;
-  const kx = 200 + dir * 36 * W;
-  const ax = 200 + dir * 42 * W;
-  const d = `M ${hx} 462 Q ${kx + dir * 4} 520 ${ax} 574`;
-  const col = pants ?? ctx.fur;
-  const o = pants ? ink(pants) : ctx.line;
-  const bootCol = boots;
-  let s = `<path d="${d}" fill="none" stroke="${o}" stroke-width="45" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="37" stroke-linecap="round"/>`;
-  s += `<path d="${d}" fill="none" stroke="${shade(col, 0.14)}" stroke-width="14" stroke-linecap="round" opacity="0.3" transform="translate(${dir * 7} 2)"/>`;
-  if (pants) s += `<path d="M ${kx - 20} 520 Q ${kx} 530 ${kx + 20} 520" fill="none" stroke="${ctx.pal.trim}" stroke-width="5" opacity="0.8" stroke-linecap="round"/>`;
-  if (bootCol) {
-    s += P(`M ${ax - 23} 548 L ${ax + 23} 548 L ${ax + 25} 584 C ${ax + 25} 590 ${ax + 26} 596 ${ax + 30} 598 L ${ax - 30} 598 C ${ax - 26} 596 ${ax - 24} 590 ${ax - 24} 584 Z`, bootCol, { sw: 4 });
-    s += E(ax + dir * 12, 596, 32, 11, shade(bootCol, 0.1), { sw: 4 });
-    s += P(`M ${ax - 25} 552 L ${ax + 25} 552 L ${ax + 25} 562 L ${ax - 25} 562 Z`, ctx.pal.trim, { sw: 3, op: 0.9 });
-  } else {
-    s += E(ax + dir * 12, 592, 32, 15, ctx.paw, { stroke: ctx.line, sw: 4.5 });
-    s += L(`M ${ax + dir * 12 - 8} 590 L ${ax + dir * 12 - 8} 600 M ${ax + dir * 12 + 8} 590 L ${ax + dir * 12 + 8} 600`, ctx.line, 2.5, 0.5);
-  }
-  return s;
-}
+const lum = (hex: string) => {
+  const n = parseInt(hex.slice(1), 16);
+  return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+};
 
 export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: string; defs: string } {
+  resetPaintDefs();
   const ctx = buildCtx(look, uid);
   const { W, fur, line, coat } = ctx;
-  const bodyPath = bodyD(W);
   const hs = (look.head ?? 1) * HEAD_BASE;
   const ear = earShape(look.ear);
-  const poseBase: Pose = { R: [200 + 96 * W, 392], L: [200 - 96 * W, 392] };
+  const poseBase: Pose = { R: [200 + 82 * W, 446 - DY], L: [200 - 82 * W, 446 - DY] };
   const weapon = renderWeapon(ctx, poseBase);
   const poseOld: Pose = { R: weapon.pose?.R ?? poseBase.R, L: weapon.pose?.L ?? poseBase.L };
   const pose: Pose = { R: [poseOld.R[0], poseOld.R[1] + DY], L: [poseOld.L[0], poseOld.L[1] + DY] };
@@ -484,50 +522,51 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
   const noBoots = look.outfit.body === 'tribal' || look.outfit.body === 'none' || look.outfit.body === 'rattan';
   const bootCol = noBoots ? undefined : (bodyGear.boots ?? shade(ctx.pal.sub, 0.05));
 
-  // 耳朵
+  // ---- 头 ----
   const earColor = coat.pattern === 'point' ? (coat.accent ?? '#5a4136') : coat.pattern === 'calico' ? coat.base : fur;
   const earOne = () =>
-    P(ear.outer, earColor, { noStroke: true }) +
-    L(ear.outer.replace(' Z', ''), line, 4.5) +
-    P(ear.inner, ctx.pink, { noStroke: true, op: 0.85 }) +
-    (look.ear === 'tuft' ? L('M 112 66 L 108 44', line, 4) + L('M 118 70 L 120 46', line, 4) + L('M 106 74 L 98 54', line, 4) : '') +
+    `<path d="${ear.outer}" fill="${paintFill(earColor)}" stroke="none"/>` +
+    L(ear.outer.replace(' Z', ''), line, 3.4) +
+    `<path d="${ear.inner}" fill="${paintFill(shade(ctx.pink, 0.04))}" stroke="none" opacity="0.95"/>` +
+    L('M 124 150 Q 126 126 132 108 M 136 150 Q 140 130 148 116 M 148 150 Q 154 136 160 126', tint(earColor, 0.35), 2, 0.7) +
+    (look.ear === 'tuft' ? L('M 112 66 L 108 44', line, 3.4) + L('M 118 70 L 120 46', line, 3.4) + L('M 106 74 L 98 54', line, 3.4) : '') +
     (coat.pattern === 'shaded' ? `<path d="${ear.outer}" fill="${coat.accent ?? shade(fur, 0.2)}" opacity="0.5" stroke="none"/>` : '');
-  const cheekFluff = look.fluffy
-    ? `<path d="M 104 232 L 80 244 L 102 250 L 86 268 L 112 264 L 106 284 L 128 270 Z" fill="${fur}" stroke="${line}" stroke-width="4.5" stroke-linejoin="round"/>` +
-      mirror(`<path d="M 104 232 L 80 244 L 102 250 L 86 268 L 112 264 L 106 284 L 128 270 Z" fill="${fur}" stroke="${line}" stroke-width="4.5" stroke-linejoin="round"/>`)
-    : '';
+  const ruff = (big: boolean) => {
+    const k = big ? 1.3 : 1;
+    const f = (v: number) => (292 + (v - 292) * k).toFixed(1);
+    const R = `M 290 190 Q ${f(318)} 190 ${f(324)} 206 Q ${f(304)} 210 ${f(316)} 226 Q ${f(298)} 230 ${f(310)} 248 Q ${f(290)} 248 ${f(298)} 266 L 266 262 Z`;
+    const one = `<path d="${R}" fill="${paintFill(fur)}" stroke="${line}" stroke-width="2.6" stroke-linejoin="round"/>`;
+    return one + mirror(one);
+  };
   const eyeC = look.eye.color;
   const eyes =
-    `<g transform="translate(155 218) scale(1.02)">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
-    `<g transform="translate(245 218) scale(1.02)">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
+    `<g transform="translate(155 216) scale(1.1)">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
+    `<g transform="translate(245 216) scale(1.1)">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
   const muzzleCol = coat.pattern === 'tuxedo' ? coat.light : coat.pattern === 'point' ? mix(coat.accent ?? '#5a4136', fur, 0.25) : ctx.belly;
-  const muzzle = `<ellipse cx="200" cy="258" rx="35" ry="24" fill="${muzzleCol}" opacity="${coat.pattern === 'point' ? 0.55 : 0.92}"/>`;
-  const nose = P('M 191 240 Q 200 235 209 240 Q 205 249 200 252 Q 195 249 191 240 Z', ctx.pink, { stroke: ink(ctx.pink, 0.45), sw: 3 });
-  const mouth = L('M 200 252 L 200 258 M 200 258 Q 191 266 182 259 M 200 258 Q 209 266 218 259', ctx.eyeInk, 3.4);
+  const muzzle = `<g filter="url(#soft2${uid})" opacity="${coat.pattern === 'point' ? 0.6 : 0.95}"><ellipse cx="180" cy="254" rx="28" ry="20" fill="${muzzleCol}"/><ellipse cx="220" cy="254" rx="28" ry="20" fill="${muzzleCol}"/><ellipse cx="200" cy="276" rx="21" ry="13" fill="${muzzleCol}"/></g>`;
+  const nose = `<path d="M 191 241 Q 200 235 209 241 Q 205 252 200 255 Q 195 252 191 241 Z" fill="${paintFill(ctx.pink, 'cel')}" stroke="${ink(ctx.pink, 0.5)}" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="197" cy="241" rx="3" ry="1.6" fill="#fff" opacity="0.6"/>`;
+  const fang = look.eye.style === 'fierce' || look.eye.style === 'keen' ? `<path d="M 187 264 L 191 273 L 195 264 Z M 205 264 L 209 273 L 213 264 Z" fill="#fff" stroke="${ctx.eyeInk}" stroke-width="1.4" opacity="0.95"/>` : '';
+  const mouth = L('M 200 255 L 200 262 M 200 262 Q 190 270 180 263 M 200 262 Q 210 270 220 263', ctx.eyeInk, 3) + fang;
+  const wcol = lum(fur) < 0.5 ? '#f4efe4' : '#5a4646';
   const whiskers =
-    L('M 152 254 L 106 244 M 152 261 L 102 263 M 154 268 L 110 282', ink(fur, 0.3), 2.4, 0.55) +
-    L('M 248 254 L 294 244 M 248 261 L 298 263 M 246 268 L 290 282', ink(fur, 0.3), 2.4, 0.55);
-  const blush = look.blush ? E(130, 254, 17, 9, '#ff8a9b', { noStroke: true, op: 0.4 }) + E(270, 254, 17, 9, '#ff8a9b', { noStroke: true, op: 0.4 }) : '';
-  // 颧骨阴影：让脸更有骨相、更“帅”
-  const cheekShade = `<path d="M 104 236 Q 128 262 150 268" fill="none" stroke="${shade(fur, 0.22)}" stroke-width="7" stroke-linecap="round" opacity="0.28"/><path d="M 296 236 Q 272 262 250 268" fill="none" stroke="${shade(fur, 0.22)}" stroke-width="7" stroke-linecap="round" opacity="0.28"/>`;
-  const rim = (d: string, col: string) => `<path d="${d}" fill="none" stroke="${tint(col, 0.28)}" stroke-width="9" opacity="0.42" transform="translate(7 7)"/>`;
-
+    L('M 154 258 Q 128 246 96 248 M 152 266 Q 122 262 92 270 M 156 274 Q 130 280 104 292', wcol, 1.8, 0.85) +
+    L('M 246 258 Q 272 246 304 248 M 248 266 Q 278 262 308 270 M 244 274 Q 270 280 296 292', wcol, 1.8, 0.85);
+  const blush = look.blush ? E(130, 256, 17, 9, '#ff8a9b', { noStroke: true, op: 0.38, flat: true }) + E(270, 256, 17, 9, '#ff8a9b', { noStroke: true, op: 0.38, flat: true }) : '';
+  const cheekShade = `<path d="M 104 238 Q 128 266 152 272" fill="none" stroke="${shade(fur, 0.24)}" stroke-width="7" stroke-linecap="round" opacity="0.26"/><path d="M 296 238 Q 272 266 248 272" fill="none" stroke="${shade(fur, 0.24)}" stroke-width="7" stroke-linecap="round" opacity="0.26"/>`;
   const hg = renderHeadGear(ctx);
   const earsBoth = earOne() + mirror(earOne());
+  const redFace = (look.outfit.extra ?? []).includes('redFace') ? `<g filter="url(#soft${uid})"><path d="${blob(200, 232, 84, 62, 0, 3)}" fill="#cf3f36" opacity="0.88"/></g>` : '';
+  const headInner =
+    patternHead(ctx) + redFace +
+    furTicks(96, 110, 306, 300, 70, shade(fur, 0.22), Math.PI / 2, 21, 12, 0.3) +
+    furTicks(96, 110, 306, 300, 40, tint(fur, 0.25), Math.PI / 2, 22, 10, 0.3) +
+    `<ellipse cx="206" cy="308" rx="150" ry="90" fill="${shade(fur, 0.24)}" opacity="0.18"/>`;
   const headSvg =
     `<g transform="${headT(hs)}">` +
-    cheekFluff +
+    ruff(!!look.fluffy) +
     (hg.behind ?? '') +
     (hg.hideEars ? '' : earsBoth) +
-    `<clipPath id="hc${uid}"><path d="${HEAD_D}"/></clipPath>` +
-    P(HEAD_D, fur, { stroke: line, sw: 5.5 }) +
-    `<g clip-path="url(#hc${uid})">` +
-    patternHead(ctx) +
-    ((look.outfit.extra ?? []).includes('redFace') ? `<g filter="url(#soft${uid})"><path d="${blob(200, 232, 82, 60, 0, 3)}" fill="#cf3f36" opacity="0.88"/></g>` : '') +
-    `<ellipse cx="214" cy="326" rx="150" ry="98" fill="${shade(fur, 0.22)}" opacity="0.3"/>` +
-    rim(HEAD_D, fur) +
-    `<g filter="url(#soft${uid})"><ellipse cx="156" cy="146" rx="44" ry="17" fill="#fff" opacity="0.24" transform="rotate(-18 156 146)"/></g>` +
-    `</g>` +
+    volume(ctx, 'head', HEAD_D, fur, { inner: headInner, sw: 3.6, lit: [-12, -12] }) +
     cheekShade + muzzle + blush + eyes + nose + mouth + whiskers +
     renderFaceExtras(ctx) +
     renderBeard(ctx) +
@@ -536,53 +575,39 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
     (hg.over ?? '') +
     `</g>`;
 
-  const belt = coat.pattern === 'solid' || coat.pattern === 'tabby' || coat.pattern === 'spots' || coat.pattern === 'shaded';
+  // ---- 躯干 ----
+  const belt = ['solid', 'tabby', 'spots', 'shaded'].includes(coat.pattern);
+  const bellyShape = `<path d="${blob(200, 408, 44 * W, 74, 0, 6)}" fill="${ctx.belly}" opacity="0.92" filter="url(#soft2${uid})"/>`;
+  const torsoInner = (belt ? bellyShape : '') + patternTorso(ctx) +
+    furTicks(100, 280, 300, 490, 90, shade(fur, 0.22), Math.PI / 2, 31, 12, 0.28) +
+    `<ellipse cx="200" cy="288" rx="${54 * W}" ry="20" fill="#000" opacity="0.22" filter="url(#soft${uid})"/>`;
+  const chestFur = bodyGear.noChestFur ? '' : tuft(176, 288, 2.2, 22, 8, ctx.belly, line) + tuft(224, 288, 0.94, 22, 8, ctx.belly, line) + tuft(200, 296, Math.PI / 2, 24, 8, ctx.belly, line);
   const bodySvg =
-    `<g transform="${TORSO_T}">` +
-    `<clipPath id="bc${uid}"><path d="${bodyPath}"/></clipPath>` +
-    P(bodyPath, fur, { stroke: line, sw: 5 }) +
-    `<g clip-path="url(#bc${uid})">` +
-    patternBody(ctx) +
-    (belt ? `<ellipse cx="200" cy="404" rx="${36 * W}" ry="50" fill="${ctx.belly}" opacity="0.9"/>` : '') +
-    `<ellipse cx="${232 + 20 * W}" cy="430" rx="${70 * W}" ry="90" fill="${shade(fur, 0.22)}" opacity="0.24"/>` +
-    rim(bodyPath, fur) +
-    `<g filter="url(#soft${uid})"><ellipse cx="${160 - 10 * W}" cy="334" rx="22" ry="12" fill="#fff" opacity="0.22" transform="rotate(-24 ${160 - 10 * W} 334)"/></g>` +
-    `</g>` +
+    volume(ctx, 'torso', torsoD(W), fur, { inner: torsoInner, sw: 3.6 }) +
+    chestFur +
     bodyGear.svg +
     renderNeck(ctx) +
     (bodyGear.overC ?? '') +
-    `</g>` +
     (bodyGear.skirt ?? '');
 
   const legs = (side: 'L' | 'R') => legSvg(ctx, side, bodyGear.legCloth, bootCol);
-  const handL = pose.L;
-  const handR = pose.R;
   const wrapW = (svg: string) => (svg ? `<g transform="translate(0 ${DY})">${svg}</g>` : '');
-  const armLsvg =
-    arm(ctx, 'L', handL, bodyGear.sleeve, bodyGear.cuff) +
-    (bodyGear.overL ? `<g transform="${TORSO_T}">${bodyGear.overL}</g>` : '') +
-    wrapW(weapon.svgL ?? '') +
-    (weapon.noMitt ? '' : mitt(ctx, handL));
-  const armRsvg =
-    arm(ctx, 'R', handR, bodyGear.sleeve, bodyGear.cuff) +
-    (bodyGear.overR ? `<g transform="${TORSO_T}">${bodyGear.overR}</g>` : '') +
-    wrapW(weapon.svg) +
-    (weapon.noMitt ? '' : mitt(ctx, handR)) +
-    (weapon.front ? wrapW(weapon.front) : '');
+  const armLsvg = arm(ctx, 'L', pose.L, bodyGear.sleeve, bodyGear.cuff, bodyGear.sleeveWide) + (bodyGear.overL ?? '') + wrapW(weapon.svgL ?? '') + (weapon.noMitt ? '' : mitt(ctx, pose.L));
+  const armRsvg = arm(ctx, 'R', pose.R, bodyGear.sleeve, bodyGear.cuff, bodyGear.sleeveWide) + (bodyGear.overR ?? '') + wrapW(weapon.svg) + (weapon.noMitt ? '' : mitt(ctx, pose.R)) + (weapon.front ? wrapW(weapon.front) : '');
 
-  const tailT = 'translate(250 480) scale(1.12) translate(-250 -440)';
-  const sh = 200 - 58 * W;
+  const shL = ARM_PTS(W, 'L')[0];
+  const shR = ARM_PTS(W, 'R')[0];
   const parts: Part[] = [
     { id: 'back', svg: `<g transform="${BACK_T}">${renderBackGear(ctx)}</g>`, pivot: [200, 300] },
-    { id: 'tail', svg: `<g transform="${tailT}">${renderTail(ctx)}</g>`, pivot: [250, 480] },
-    { id: 'legL', svg: legs('L'), pivot: [200 - 30 * W, 466] },
-    { id: 'legR', svg: legs('R'), pivot: [200 + 30 * W, 466] },
+    { id: 'tail', svg: renderTail(ctx), pivot: [200 + 34 * W, 480] },
+    { id: 'legL', svg: legs('L'), pivot: [200 - 32 * W, 478] },
+    { id: 'legR', svg: legs('R'), pivot: [200 + 32 * W, 478] },
     { id: 'torso', svg: bodySvg, pivot: [200, 470] },
-    { id: 'armL', svg: armLsvg, pivot: [sh, 322] },
+    { id: 'armL', svg: armLsvg, pivot: shL },
     { id: 'head', svg: headSvg, pivot: [200, 288] },
-    { id: 'armR', svg: armRsvg, pivot: [200 + 58 * W, 322] },
+    { id: 'armR', svg: armRsvg, pivot: shR },
   ];
-  return { parts, shadow: `<ellipse cx="200" cy="604" rx="${130 * W}" ry="15" fill="#3a2830" opacity="0.2"/>`, defs: defsFor(uid) };
+  return { parts, shadow: `<ellipse cx="200" cy="604" rx="${136 * W}" ry="15" fill="#3a2830" opacity="0.2"/>`, defs: defsFor(uid) + paintDefs() };
 }
 
 /** 站姿：每个部件相对静止姿势的 [旋转°, 平移x, 平移y]。持长兵器时手臂外摆，让轮廓更有型。 */
@@ -616,11 +641,12 @@ export function catInner(look: CatLook, uid: string): string {
 export function defsFor(uid: string): string {
   return `
   <filter id="soft${uid}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="7"/></filter>
+  <filter id="soft2${uid}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.4"/></filter>
   <filter id="paper${uid}" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
     <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="4" result="warp"/>
-    <feDisplacementMap in="SourceGraphic" in2="warp" scale="3.4" xChannelSelector="R" yChannelSelector="G" result="wob"/>
+    <feDisplacementMap in="SourceGraphic" in2="warp" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="wob"/>
     <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="11" result="grain"/>
-    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0.2  0 0 0 0 0.12  0 0 0 0 0.12  2.4 0 0 0 -1.68" result="speck"/>
+    <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0.2  0 0 0 0 0.12  0 0 0 0 0.12  2.4 0 0 0 -1.7" result="speck"/>
     <feComposite in="speck" in2="wob" operator="in" result="speckIn"/>
     <feMerge><feMergeNode in="wob"/><feMergeNode in="speckIn"/></feMerge>
   </filter>`;
@@ -633,5 +659,7 @@ export function catSvg(look: CatLook, o: RenderOpts = {}): string {
   const [, , vw, vh] = vb.split(' ').map(Number);
   const h = o.height ?? Math.round((w * vh) / vw);
   const flip = look.flip ? ' transform="translate(400 0) scale(-1 1)"' : '';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${w}" height="${h}"><defs>${defsFor(uid)}</defs><g filter="url(#paper${uid})"><g${flip}>${catInner(look, uid)}</g></g></svg>`;
+  // 先生成内容（会登记渐变），再输出 defs
+  const inner = catInner(look, uid);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${w}" height="${h}"><defs>${defsFor(uid)}${paintDefs()}</defs><g filter="url(#paper${uid})"><g${flip}>${inner}</g></g></svg>`;
 }

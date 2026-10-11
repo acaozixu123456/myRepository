@@ -1,5 +1,5 @@
 // 骨骼绑定：把 catParts() 的每个部件栅格化成位图，供 Canvas 做关节动画。
-import { PART_ORDER, VIEW_FULL, catParts, defsFor, stanceFor } from '../art/cat';
+import { PART_ORDER, VIEW_FULL, catParts, stanceFor } from '../art/cat';
 import type { Part, PartId } from '../art/cat';
 import type { CatLook } from '../art/types';
 
@@ -73,7 +73,7 @@ export async function buildRig(look: CatLook, scale = 0.8): Promise<Rig> {
       rigParts.push({ id: p, img: c, x: 0, y: 0, w: 0, h: 0, pivot: part.pivot });
       continue;
     }
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${w} ${h}" width="${Math.ceil(w * scale)}" height="${Math.ceil(h * scale)}"><defs>${defsFor(uid)}</defs><g filter="url(#paper${uid})">${part.svg}</g></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${w} ${h}" width="${Math.ceil(w * scale)}" height="${Math.ceil(h * scale)}"><defs>${defs}</defs><g filter="url(#paper${uid})">${part.svg}</g></svg>`;
     const img = await loadImage(svg);
     const c = document.createElement('canvas');
     c.width = Math.ceil(w * scale);
