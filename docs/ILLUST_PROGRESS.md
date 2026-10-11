@@ -16,7 +16,7 @@
 | 夏侯墩 | `wei_xiahoudun` | SSR | 待画 | 0 | |
 | 许虎痴 | `wei_xuhuchi` | SSR | 待画 | 0 | |
 | 张喵辽 | `wei_zhangliao` | SSR | 待画 | 0 | |
-| 关云喵 | `shu_guanyunmiao` | SSR | 待画 | 0 | |
+| 关云喵 | `shu_guanyunmiao` | SSR | 待审 | 1 | 第1轮，2候选选B；双爪五趾，鱼骨刀全入框，已清理透明噪点 |
 | 张喵飞 | `shu_zhangmiaofei` | SSR | 待画 | 0 | |
 | 诸葛喵亮 | `shu_zhugemiaoliang` | SSR | 待画 | 0 | |
 | 赵喵云 | `shu_zhaomiaoyun` | SSR | 待画 | 0 | |
