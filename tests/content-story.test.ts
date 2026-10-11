@@ -3,14 +3,14 @@ import { STORIES } from '../src/content/story';
 import { CHAPTERS } from '../src/content/campaign';
 import { HEROES } from '../src/data/heroes';
 
-const expectedIds = [1, 2, 3].flatMap((chapter) => ['open', 'mid', 'boss_pre', 'boss_post'].map((part) => `c${chapter}_${part}`));
+const expectedIds = [1, 2, 3, 4, 5, 6].flatMap((chapter) => ['open', 'mid', 'boss_pre', 'boss_post'].map((part) => `c${chapter}_${part}`));
 const speakers = new Set(['narrator', 'player', ...HEROES.map((hero) => hero.id)]);
 const moods = new Set(['normal', 'happy', 'angry', 'sad', 'surprised', 'sly']);
 
-describe('前三章剧情对白', () => {
-  it('十二段标识唯一且完整，标题是非空中文', () => {
-    expect(STORIES).toHaveLength(12);
-    expect(new Set(STORIES.map((story) => story.id)).size).toBe(12);
+describe('六章剧情对白', () => {
+  it('二十四段标识唯一且完整，标题是非空中文', () => {
+    expect(STORIES).toHaveLength(24);
+    expect(new Set(STORIES.map((story) => story.id)).size).toBe(24);
     expect(STORIES.map((story) => story.id).sort()).toEqual([...expectedIds].sort());
     for (const story of STORIES) {
       expect(story.title.trim()).not.toBe('');
@@ -33,11 +33,14 @@ describe('前三章剧情对白', () => {
     }
   });
 
-  it('三章出场角色覆盖剧情要求，铲屎官的台词保持少量', () => {
+  it('六章出场角色覆盖剧情要求，铲屎官的台词保持少量', () => {
     const required = [
       ['shu_zhugemiaoliang', 'qun_dongzhuo'],
       ['wei_caomiaode', 'wei_guojia', 'shu_liumiaobei', 'shu_guanyunmiao', 'shu_zhangmiaofei'],
       ['wu_zhoumiaoyu', 'shu_zhugemiaoliang', 'wu_huanggai', 'wei_caomiaode'],
+      ['man_mengmiaohuo', 'man_zhurong', 'man_mulu', 'man_wutugu', 'shu_zhugemiaoliang'],
+      ['xian_zuoci', 'xian_zhangzhua', 'xian_shuijing', 'xian_guanlu'],
+      ['qun_lvbuding', 'qun_dongzhuo', 'wei_caomiaode', 'shu_liumiaobei', 'player'],
     ];
     required.forEach((ids, chapter) => {
       const who = new Set(STORIES.filter((story) => story.id.startsWith(`c${chapter + 1}_`)).flatMap((story) => story.lines.map((line) => line.who)));
@@ -48,8 +51,8 @@ describe('前三章剧情对白', () => {
     expect(lines.filter((line) => line.who === 'player').length / lines.length).toBeLessThanOrEqual(0.15);
   });
 
-  it('前三章全部关卡前后剧情引用均能解析，无未挂接的对白', () => {
-    const hookedIds = CHAPTERS.slice(0, 3).flatMap((chapter) => chapter.stages.flatMap((stage) =>
+  it('全部关卡前后剧情引用均能解析，无未挂接的对白', () => {
+    const hookedIds = CHAPTERS.flatMap((chapter) => chapter.stages.flatMap((stage) =>
       [stage.storyId, stage.storyPostId].filter((id): id is string => id !== undefined)));
     expect(hookedIds.sort()).toEqual([...expectedIds].sort());
     const byId = new Map(STORIES.map((story) => [story.id, story]));
