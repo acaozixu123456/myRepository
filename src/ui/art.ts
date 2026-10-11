@@ -2,6 +2,8 @@
 import { catSvg } from '../art/cat';
 import { lookOf } from '../data/units';
 import { ILLUST } from '../art/illust-index';
+import { use3D } from '../art3d/mode';
+import { cat3dUrl } from '../art3d/portrait';
 
 export const VIEW = {
   card: '30 40 340 350', // 头 + 胸像（卡牌）
@@ -12,6 +14,8 @@ export const VIEW = {
 const cache = new Map<string, string>();
 let n = 0;
 export function artUrl(id: string, view: keyof typeof VIEW | string = 'card', flip = false): string {
+  // 3D 模式：全员用 3D 小猫渲染出的立绘图
+  if (use3D() && !flip && (view === 'full' || view === 'card' || view === 'head')) return cat3dUrl(id, lookOf(id), view);
   // 有 AI 立绘的猫优先用立绘（full / card / head 三种视图，见 tools/sync-illust.py）；其余退回程序化造型
   const il = ILLUST[id];
   if (il && (view === 'full' || view === 'card' || view === 'head')) return il[view];

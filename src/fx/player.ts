@@ -9,8 +9,9 @@ import { makeBackground } from './bg';
 import type { BgTheme } from './bg';
 import { Choreo } from './choreo';
 import { playCutIn } from './cutin';
-import { buildIllustRig, buildPortrait, buildRig, buildRig3D, has3D, illustPortrait } from './rig';
+import { buildIllustRig, buildPortrait, buildRig, buildRig3D, illustPortrait } from './rig';
 import { portrait3D } from '../art3d/portrait';
+import { spriteMode, use3D } from '../art3d/mode';
 import { ILLUST } from '../art/illust-index';
 import type { Rig } from './rig';
 import { Scene } from './scene';
@@ -24,9 +25,7 @@ const ELEM_COLOR: Record<string, [string, string]> = {
 
 const RIG_CACHE = new Map<string, Promise<Rig>>();
 /** 战斗里是否用 AI 立绘当小人（有立绘的猫才生效）；设置里可切换 */
-export const spriteMode = { illust: true, cat3d: false };
-/** 当前是否用 3D 小猫（需要开关打开且 WebGL 可用） */
-export const use3D = () => spriteMode.cat3d && has3D();
+export { spriteMode, use3D };
 function cachedRig(id: string, scale: number): Promise<Rig> {
   const il = spriteMode.illust ? ILLUST[id] : undefined;
   const k = `${id}@${scale}${il ? '@illust' : ''}`;

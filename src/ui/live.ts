@@ -8,15 +8,21 @@ import { MeshGL } from '../fx/mesh';
 import { buildIllustRig } from '../fx/rig';
 import type { Rig } from '../fx/rig';
 import { puppetPose } from '../fx/puppet';
+import { buildCat3D } from '../art3d/cat3d';
+import type { Cat3D } from '../art3d/cat3d';
+import { use3D } from '../art3d/mode';
+import { FULL_BOX } from '../art3d/portrait';
+import { FRAME, Renderer3D } from '../art3d/renderer';
+import { applyPose } from '../art3d/pose';
 
 export const liveSettings = { on: true };
 
 export function liveImg(id: string, view: 'full' | 'card' = 'full', alt = ''): string {
-  const live = view === 'full' && ILLUST[id] ? ` data-live="${id}"` : '';
+  const live = view === 'full' && (ILLUST[id] || use3D()) ? ` data-live="${id}"` : '';
   return `<img src="${artUrl(id, view)}" alt="${alt}" draggable="false"${live}>`;
 }
 
-interface Item { img: HTMLImageElement; cv: HTMLCanvasElement; rig: Rig; t0: number; phase: number; react: number; reactT: number; n: number }
+interface Item { img: HTMLImageElement; cv: HTMLCanvasElement; rig: Rig | null; cat?: Cat3D; t0: number; phase: number; react: number; reactT: number; n: number }
 const items = new Set<Item>();
 const rigs = new Map<string, Promise<Rig | null>>();
 let raf = 0;
@@ -33,16 +39,25 @@ function liveRig(id: string): Promise<Rig | null> {
 
 function place(it: Item) {
   const { img, cv } = it;
-  const pp = it.rig.puppet!;
   const bw = img.offsetWidth, bh = img.offsetHeight;
   let dw = bw, dh = bh, ox = 0, oy = 0;
   const cs = getComputedStyle(img);
   if (cs.objectFit === 'contain') {
     // 图片在盒子里按 contain 摆放：画布要对准真正显示出来的那块
-    const k = Math.min(bw / pp.w, bh / pp.h);
-    dw = pp.w * k; dh = pp.h * k;
+    const aw = it.cat ? img.naturalWidth : it.rig!.puppet!.w, ah = it.cat ? img.naturalHeight : it.rig!.puppet!.h;
+    const k = Math.min(bw / (aw || bw), bh / (ah || bh));
+    dw = (aw || bw) * k; dh = (ah || bh) * k;
     const [px, py] = cs.objectPosition.split(' ').map((v) => (parseFloat(v) || 50) / 100);
     ox = (bw - dw) * px; oy = (bh - dh) * (py ?? 0.5);
+  }
+  if (it.cat) {
+    // 3D：静态图是取景框的 FULL_BOX 一块；画布盖住整个取景框，对齐这一块
+    const fw = dw / FULL_BOX.w, fh = dh / FULL_BOX.h;
+    cv.style.left = `${img.offsetLeft + ox - FULL_BOX.x * fw}px`;
+    cv.style.top = `${img.offsetTop + oy - FULL_BOX.y * fh}px`;
+    cv.style.width = `${fw}px`;
+    cv.style.height = `${fh}px`;
+    return;
   }
   cv.style.left = `${img.offsetLeft + ox - 0.3 * dw}px`;
   cv.style.top = `${img.offsetTop + oy - 0.2 * dh}px`;
@@ -54,6 +69,7 @@ async function activate(img: HTMLImageElement) {
   if (img.dataset.on || !liveSettings.on || !MeshGL.ok) return;
   if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   img.dataset.on = '1';
+  if (use3D()) { activate3D(img); return; }
   const rig = await liveRig(img.dataset.live!);
   if (!rig || !rig.puppet || !img.isConnected) return;
   const pp = rig.puppet;
@@ -74,8 +90,53 @@ async function activate(img: HTMLImageElement) {
   if (!raf) raf = requestAnimationFrame(tick);
 }
 
+function activate3D(img: HTMLImageElement) {
+  const R = Renderer3D.get();
+  if (!R || !img.isConnected) return;
+  const cat = buildCat3D(lookOf(img.dataset.live!), img.dataset.live!);
+  const cv = document.createElement('canvas');
+  cv.width = 560;
+  cv.height = Math.round((560 * (FRAME.y1 - FRAME.y0)) / (FRAME.x1 - FRAME.x0));
+  cv.className = 'live-cv';
+  cv.style.cssText = 'position:absolute;pointer-events:auto;cursor:pointer;touch-action:manipulation';
+  img.insertAdjacentElement('afterend', cv);
+  img.style.visibility = 'hidden';
+  const it: Item = { img, cv, rig: null, cat, t0: performance.now(), phase: Math.random() * 6, react: 0, reactT: 0, n: 0 };
+  const go = () => { place(it); };
+  if (img.complete) go(); else img.addEventListener('load', go, { once: true });
+  go();
+  cv.addEventListener('pointerdown', () => { it.react = 1; it.reactT = performance.now(); });
+  items.add(it);
+  if (!raf) raf = requestAnimationFrame(tick);
+}
+
+function draw3D(it: Item, now: number) {
+  const R = Renderer3D.get()!;
+  const cat = it.cat!;
+  const t = (now - it.t0) / 1000;
+  const P: Record<string, number> = {};
+  let squash = 0;
+  if (it.react > 0) {
+    // 点一下：举手挥一挥 + 歪头 + 蹦一下，约 1 秒内衰减
+    const k = Math.max(0, 1 - (now - it.reactT) / 1100);
+    it.react = k;
+    const e = k * k;
+    P['armR.0'] = -150 * e * (0.75 + 0.25 * Math.sin(t * 22));
+    P['head.0'] = 10 * e;
+    P['torso.2'] = -22 * e * Math.abs(Math.sin((1 - k) * 9));
+    squash = 0.25 * e * Math.sin((1 - k) * 14);
+  }
+  applyPose(cat, P, { alive: true, moving: false, t, squash });
+  const pw = it.cv.width, ph = it.cv.height;
+  const [sx, sy, sw, sh] = R.render(cat, pw, ph, 0.3);
+  const ctx = it.cv.getContext('2d')!;
+  ctx.clearRect(0, 0, pw, ph);
+  ctx.drawImage(R.canvas, sx, sy, sw, sh, 0, 0, pw, ph);
+}
+
 function draw(it: Item, now: number) {
-  const pp = it.rig.puppet!;
+  if (it.cat) { draw3D(it, now); return; }
+  const pp = it.rig!.puppet!;
   const gl = MeshGL.get()!;
   const t = (now - it.t0) / 1000;
   const pose = puppetPose({}, t, it.phase, { alive: true, moving: false });
@@ -91,7 +152,7 @@ function draw(it: Item, now: number) {
     pose.squash += 0.25 * e * Math.sin((1 - k) * 14);
   }
   const pos = pp.mesh.deform(pose);
-  const ps = it.rig.scale * 0.75;
+  const ps = it.rig!.scale * 0.75;
   const rw = 1.6 * pp.w, rh = 1.4 * pp.h;
   const pw = it.cv.width, ph = it.cv.height;
   const [sx, sy, sw, sh] = gl.render(pp.mesh, pp.tex, pos, [-0.3 * pp.w, -0.2 * pp.h, rw, rh], pw, ph);
