@@ -3,6 +3,7 @@ import { HEROES, HERO_BY_ID } from '../../data/heroes';
 import type { Rarity } from '../../data/heroes';
 import { COST, DUP_SHARDS, POOLS, pull, urRate } from '../../game/gacha';
 import type { PoolDef, PullResult } from '../../game/gacha';
+import { SP_COST, SP_POOL, ensurePay, pullSp, spCost, spRate, spUpHero } from '../../game/premium';
 import { TOTAL_HEROES } from '../../game/state';
 import { artUrl } from '../../ui/art';
 import { chip, heroCard } from '../../ui/components';
@@ -12,10 +13,37 @@ import { sfx } from '../sfx';
 import { topbar } from './lineup';
 
 export const gachaState = { pool: POOLS[0].id };
+const isSp = () => gachaState.pool === 'sp';
+const poolTabs = (activeId: string) => `<div class="tabs">${POOLS.map((x) => `<button data-act="pool" data-id="${x.id}" aria-pressed="${x.id === activeId}">${x.name}</button>`).join('')}<button class="sp-tab" data-act="pool" data-id="sp" aria-pressed="${activeId === 'sp'}">至尊招募</button></div>`;
 const pool = (): PoolDef => POOLS.find((p) => p.id === gachaState.pool) ?? POOLS[0];
 const GLOW: Record<Rarity, string> = { SP: '#ff9ad8', UR: '#ffd24a', SSR: '#c08aff', SR: '#9bc4ff' };
 
+function spHtml(ctx: AppCtx): string {
+  const s = ctx.s;
+  const p = ensurePay(s);
+  const up = spUpHero();
+  const left = SP_POOL.pity - p.pity.sp;
+  const rate = spRate(p.pity.sp);
+  const ok1 = s.res.moon >= spCost(s, 1), ok10 = s.res.moon >= spCost(s, 10);
+  return `
+  ${topbar(ctx, '招募', `<span class="chip">${icon('moon', 20)}<b class="num">${s.res.moon.toLocaleString('en-US')}</b><button class="plus" data-act="nav" data-to="pay">${icon('plus', 20)}</button></span>`)}
+  <div class="scroll" style="padding:0 0 18px">
+    <div class="banner sp"><div class="rays"></div><img src="${artImgUrl(up.id)}" alt="${up.name}"><span class="up" style="background:linear-gradient(90deg,#ffe27a,#ff9ad8);color:#5a1038">至尊 SP 概率 UP</span><div class="nm"><span>${up.name} · ${up.title}</span></div></div>
+    ${poolTabs('sp')}
+    <div class="pity">
+      <div class="r"><span>SP 保底</span><div class="bar"><i style="width:${(p.pity.sp / SP_POOL.pity) * 100}%;background:linear-gradient(#ffe27a,#ff6ad0)"></i></div><em class="num">${left} 抽内</em></div>
+      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">本次 SP 概率 ${(rate * 100).toFixed(1)}%${p.pity.upLost ? ' · 下一只 SP 必为 UP' : ''} · 累计 ${p.pulls} 抽 · <a data-act="nav" data-to="pay" style="color:var(--blue-d);text-decoration:underline;cursor:pointer">充值中心</a></div>
+    </div>
+    <div class="pullbar">
+      <button class="btn blue ${ok1 ? '' : 'dim'}" data-act="pull1">招募 ×1<span class="cost">${icon('moon', 16)}${spCost(s, 1)}</span></button>
+      <button class="btn lg ${ok10 ? '' : 'dim'}" data-act="pull10">招募 ×10<span class="cost">${icon('moon', 16)}${spCost(s, 10)} · 必出 UR+</span></button>
+    </div>
+    <div class="note">仅消耗月光珠。至尊猫猫只能在这里获得。<br>SP ${(SP_POOL.rateSp * 100).toFixed(0)}% · UR ${(SP_POOL.rateUr * 100).toFixed(0)}% · SSR ${((1 - SP_POOL.rateSp - SP_POOL.rateUr) * 100).toFixed(0)}% · <a data-act="rates">查看概率与保底说明</a></div>
+  </div>`;
+}
+
 export function gachaHtml(ctx: AppCtx): string {
+  if (isSp()) return spHtml(ctx);
   const s = ctx.s;
   const p = pool();
   const up = p.upHero ? HERO_BY_ID[p.upHero] : null;
@@ -31,7 +59,7 @@ export function gachaHtml(ctx: AppCtx): string {
   ${topbar(ctx, '招募', chip('ticket', s.res.tickets))}
   <div class="scroll" style="padding:0 0 18px">
     <div class="banner"><div class="rays"></div>${imgs}${up ? `<span class="up">UR 概率 UP</span>` : `<span class="up" style="background:var(--r-ssr);color:#fff">全员可出</span>`}<div class="nm"><span>${up ? `${up.name} · ${up.title}` : '常驻招募'}</span></div></div>
-    <div class="tabs">${POOLS.map((x) => `<button data-act="pool" data-id="${x.id}" aria-pressed="${x.id === p.id}">${x.name}</button>`).join('')}</div>
+    ${poolTabs(p.id)}
     <div class="pity">
       <div class="r"><span>SSR 保底</span><div class="bar"><i style="width:${(s.pity.ssr / p.ssrPity) * 100}%"></i></div><em class="num">${ssrLeft} 抽内</em></div>
       <div class="r"><span>UR 保底</span><div class="bar"><i style="width:${(s.pity.ur / p.urPity) * 100}%;background:linear-gradient(#ffe08a,#f0a62e)"></i></div><em class="num">${urLeft} 抽内</em></div>
@@ -48,6 +76,15 @@ export function gachaHtml(ctx: AppCtx): string {
 const artImgUrl = (id: string) => artUrl(id, 'full');
 
 export function ratesDialog(ctx: AppCtx) {
+  if (isSp()) {
+    ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog" style="max-height:86%;overflow:auto"><h3 class="title" style="margin:0 0 8px">至尊招募说明</h3>
+    <p style="font-size:13px;line-height:1.7;margin:0 0 6px"><b>SP ${(SP_POOL.rateSp * 100).toFixed(0)}%</b>：${SP_POOL.pity} 抽内必出，第 ${SP_POOL.softFrom + 1} 抽起概率逐抽提高；出 SP 时 50% 为 UP「${spUpHero().name}」，没出则下次必出 UP。</p>
+    <p style="font-size:13px;line-height:1.7;margin:0 0 6px"><b>UR ${(SP_POOL.rateUr * 100).toFixed(0)}%</b>、<b>SSR ${((1 - SP_POOL.rateSp - SP_POOL.rateUr) * 100).toFixed(0)}%</b>；十连至少 1 个 UR 及以上。本池没有 SR。</p>
+    <p style="font-size:13px;line-height:1.7;margin:0 0 6px"><b>重复获得</b>：SP 转化为 ${DUP_SHARDS.SP} 碎片，用于升星。单抽 ${SP_COST.single} / 十连 ${SP_COST.ten} 月光珠（VIP 8 起 95 折）。</p>
+    <div style="line-height:2"><b>SP</b> ${HEROES.filter((h) => h.rarity === 'SP').map((h) => `<span class="tag f" style="--c:${FACTIONS[h.faction].color}">${h.name}</span>`).join(' ')}</div>
+    <div style="text-align:center;margin-top:12px"><button class="btn" data-act="closedialog">知道了</button></div></div></div>`);
+    return;
+  }
   const p = pool();
   const list = (r: Rarity) => HEROES.filter((h) => h.rarity === r).map((h) => `<span class="tag f" style="--c:${FACTIONS[h.faction].color}">${h.name}</span>`).join(' ');
   ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog" style="max-height:86%;overflow:auto"><h3 class="title" style="margin:0 0 8px">概率说明</h3>
@@ -81,7 +118,7 @@ function resultCard(ctx: AppCtx, r: PullResult, size = 'big') {
 }
 
 export async function doPull(ctx: AppCtx, n: 1 | 10) {
-  const res = pull(ctx.s, pool(), n);
+  const res = isSp() ? pullSp(ctx.s, n) : pull(ctx.s, pool(), n);
   if (!res.ok) return ctx.toast(res.reason);
   ctx.save();
   ctx.refresh();
@@ -90,7 +127,7 @@ export async function doPull(ctx: AppCtx, n: 1 | 10) {
 
 function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void> {
   return new Promise((done) => {
-    const best: Rarity = results.some((r) => r.rarity === 'UR') ? 'UR' : results.some((r) => r.rarity === 'SSR') ? 'SSR' : 'SR';
+    const best: Rarity = results.some((r) => r.rarity === 'SP') ? 'SP' : results.some((r) => r.rarity === 'UR') ? 'UR' : results.some((r) => r.rarity === 'SSR') ? 'SSR' : 'SR';
     const el = document.createElement('div');
     el.className = 'reveal';
     el.style.setProperty('--glow', GLOW[best]);
@@ -106,7 +143,7 @@ function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void
       timers.forEach(clearTimeout);
       el.querySelector('.hint')?.remove();
       // UR 先来一段插入图
-      for (const r of results.filter((x) => x.rarity === 'UR')) await urCut(ctx, el, r);
+      for (const r of results.filter((x) => x.rarity === 'UR' || x.rarity === 'SP')) await urCut(ctx, el, r);
       el.querySelector('.boxwrap')?.remove();
       el.querySelector('.glowbox')?.remove();
       const body = document.createElement('div');
@@ -153,13 +190,13 @@ function urCut(ctx: AppCtx, host: HTMLElement, r: PullResult): Promise<void> {
   return new Promise((res) => {
     const f = FACTIONS[r.hero.faction];
     const el = document.createElement('div');
-    el.className = 'urcut';
+    el.className = r.rarity === 'SP' ? 'urcut sp' : 'urcut';
     el.style.setProperty('--c', f.color);
-    el.innerHTML = `<div class="band"><img src="${artImgUrl(r.hero.id)}" alt=""><div class="txt"><small>${r.hero.title}</small><b>${r.hero.name}</b><small>${f.full} · UR${r.isUp ? ' · UP' : ''}</small></div></div>`;
+    el.innerHTML = `<div class="band"><img src="${artImgUrl(r.hero.id)}" alt=""><div class="txt"><small>${r.hero.title}</small><b>${r.hero.name}</b><small>${f.full} · ${r.rarity}${r.isUp ? ' · UP' : ''}</small></div></div>`;
     host.appendChild(el);
     ctx.root.querySelector('.flash')?.classList.remove('go');
     const end = () => { el.remove(); res(); };
     el.addEventListener('click', end);
-    setTimeout(end, 2200);
+    setTimeout(end, r.rarity === 'SP' ? 3000 : 2200);
   });
 }

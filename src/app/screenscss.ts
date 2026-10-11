@@ -135,9 +135,22 @@ export const SCREEN_CSS = `
 .ten .cell .hcard .stars{bottom:5px}
 .ten .cell .tagn{position:absolute;left:50%;top:-6px;transform:translateX(-50%);z-index:6;font-size:10px;font-weight:700;padding:0 7px;border-radius:999px;background:var(--red);color:#fff;white-space:nowrap}
 .ten .cell .tagd{position:absolute;left:0;right:0;bottom:-2px;z-index:6;text-align:center;font-size:10px;font-weight:700;color:#fff6dc;text-shadow:0 1px 2px #000}
+.ten .cell[data-r=SP] .hcard{box-shadow:0 0 22px 5px rgba(255,106,208,.9)}
 .ten .cell[data-r=UR] .hcard{box-shadow:0 0 18px 3px rgba(255,210,74,.8)}
 .ten .cell[data-r=SSR] .hcard{box-shadow:0 0 12px 2px rgba(165,106,216,.7)}
 .reveal .okbar{position:absolute;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;gap:12px;z-index:6}
+.urcut.sp .band{background:linear-gradient(90deg,transparent,#ffb83a 12%,#ff6ad0 50%,#ffb83a 88%,transparent);box-shadow:0 0 40px 8px rgba(255,200,80,.6)}
+.urcut.sp .txt b{-webkit-text-stroke:7px rgba(90,16,56,.95)}
+.urcut.sp::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,236,160,.5),transparent 60%);animation:fadein .6s}
+.gacha .banner.sp{background:radial-gradient(circle at 50% 62%,#fff7d0 0%,#ffd0ee 28%,#c77ee8 62%,#3a2370 100%)}
+.gacha .tabs button.sp-tab{background:linear-gradient(#ffb7e6,#ff6ad0);color:#5a1038;box-shadow:0 4px 0 #b02f8a,inset 0 2px 0 rgba(255,255,255,.5)}
+.gacha .tabs button.sp-tab[aria-pressed=true]{background:linear-gradient(#ffe27a,#ffb02e);box-shadow:0 4px 0 #b9741a,inset 0 2px 0 rgba(255,255,255,.6)}
+.btn.dim{filter:saturate(.55);opacity:.9}
+.quick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 10px 0;flex:none}
+.quick button{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px 5px;border-radius:14px;background:linear-gradient(var(--paper),var(--paper-2));box-shadow:0 3px 0 var(--paper-line),inset 0 0 0 2px rgba(255,255,255,.65);font-family:var(--f-d);font-size:12.5px}
+.quick button:active{transform:translateY(2px)}
+.quick button .rd{position:absolute;right:6px;top:3px;width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px #fff}
+.quick button.pay{background:linear-gradient(#ffe9a0,#ffc84a)}
 .urcut{position:absolute;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;background:rgba(10,4,20,.82);animation:fadein .15s}
 .urcut .band{position:relative;width:118%;height:200px;flex:none;background:linear-gradient(90deg,transparent,var(--c) 14%,var(--c) 86%,transparent);transform:rotate(-7deg);display:flex;align-items:center;box-shadow:0 0 0 4px rgba(255,255,255,.85) inset}
 .urcut .band img{position:absolute;left:9%;bottom:-2px;height:150%;filter:drop-shadow(0 10px 10px rgba(0,0,0,.5));transform:rotate(7deg);animation:slidein .5s cubic-bezier(.2,1.2,.4,1)}

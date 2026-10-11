@@ -51,9 +51,9 @@ export const sfx = {
   up: () => play([0, 4, 7, 12].map((s, i) => ({ f: N(s + 7), t: i * 0.07, d: 0.18, type: 'triangle' as const, v: 0.18 }))),
   rumble: () => play([{ f: 90, d: 1.3, type: 'sawtooth', v: 0.1, slide: 1.8 }, { f: 130, d: 1.3, type: 'triangle', v: 0.08, slide: 1.5 }]),
   burst: () => play([{ f: 300, d: 0.5, type: 'sawtooth', v: 0.1, slide: 4 }, { f: N(12), d: 0.35, type: 'triangle', v: 0.2 }]),
-  reveal(r: 'SR' | 'SSR' | 'UR') {
-    const seq = r === 'UR' ? [0, 4, 7, 12, 16, 19, 24] : r === 'SSR' ? [0, 4, 7, 12, 16] : [0, 4, 7];
-    play(seq.map((s, i) => ({ f: N(s + 5), t: i * 0.09, d: r === 'UR' ? 0.5 : 0.3, type: 'triangle' as const, v: r === 'UR' ? 0.2 : 0.16 })));
+  reveal(r: 'SR' | 'SSR' | 'UR' | 'SP') {
+    const seq = r === 'SP' ? [0, 4, 7, 12, 16, 19, 24, 28, 31] : r === 'UR' ? [0, 4, 7, 12, 16, 19, 24] : r === 'SSR' ? [0, 4, 7, 12, 16] : [0, 4, 7];
+    play(seq.map((s, i) => ({ f: N(s + 5), t: i * 0.09, d: r === 'UR' || r === 'SP' ? 0.5 : 0.3, type: 'triangle' as const, v: r === 'UR' || r === 'SP' ? 0.2 : 0.16 })));
   },
   win: () => play([0, 4, 7, 12].map((s, i) => ({ f: N(s), t: i * 0.1, d: 0.25, type: 'triangle' as const, v: 0.16 }))),
   story: () => play([{ f: N(14), d: 0.05, type: 'sine', v: 0.06 }]),

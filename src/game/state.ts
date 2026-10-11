@@ -10,6 +10,7 @@ import { createInventory, normalizeInventory } from './inventory';
 import type { InventoryState } from './inventory';
 import { createShopState, normalizeShopState } from './shop';
 import type { ShopState } from './shop';
+import type { PayState } from './premium';
 
 export interface HeroState {
   id: string;
@@ -27,6 +28,7 @@ export interface Resources {
   exp: number; // 成长经验池（关卡 / 挂机获得）
   tickets: number; // 招福符
   yarn: number; // 毛线球
+  moon: number; // 月光珠（付费货币，见 game/premium.ts）
 }
 
 export interface PlayerState {
@@ -37,6 +39,7 @@ export interface PlayerState {
   res: Resources;
   inventory: InventoryState; // 追加的版本化背包；旧资源仍由 res 保存
   shop: ShopState; // 每周限购记录；存档 v 仍为 1
+  pay?: PayState; // 氪金：累计充值 / 月卡 / VIP / 至尊保底（旧存档读取时补齐）
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
@@ -64,7 +67,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     name: '铲屎官',
     level: 1,
     exp: 0,
-    res: { fish: 3000, bells: 3200, catnip: 12, exp: 0, tickets: 6, yarn: 3 },
+    res: { fish: 3000, bells: 3200, catnip: 12, exp: 0, tickets: 6, yarn: 3, moon: 0 },
     inventory: createInventory(),
     shop: createShopState(now),
     heroes,
@@ -94,6 +97,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
       if (s && s.v === 1 && s.heroes && s.res) {
         s.lineup = [...s.lineup, null, null, null, null, null].slice(0, LINEUP_SIZE);
         s.res.exp ??= 0;
+        s.res.moon ??= 0;
         s.idle.exp ??= 0;
         s.stories ??= [];
         s.tips ??= [];

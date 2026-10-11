@@ -18,13 +18,15 @@ import type { Gain } from '../game/stage';
 import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
 import { bagHtml, handleBag } from './screens/bag';
 import { shopHtml, handleShop } from './screens/shop';
+import { PAY_CSS, handlePay, payHtml } from './screens/pay';
+import { grantOnce } from '../game/premium';
 import { seedDemoInventory } from '../game/inventory';
 import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 import { makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -38,6 +40,10 @@ if (at) { const [c, i] = at.split('-').map(Number); state.stage = { chapter: c, 
 if (params.get('pity')) { state.pity.ur = 79; state.pity.ssr = 9; }
 if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; state.res.exp = 500000; seedDemoInventory(state); }
 
+// 开发者发放：给本号一次性补发 20 万月光珠（等值计入累计充值 → VIP 满级）
+const granted = grantOnce(state, 'dev_grant_200k', 200000);
+if (granted) save(storage, state);
+
 const app = document.getElementById('app')!;
 app.innerHTML = `<div class="app" id="root">
   ${homeHtml()}
@@ -46,6 +52,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen" data-screen="campaign"></div>
   <div class="screen" data-screen="bag"></div>
   <div class="screen shop-screen" data-screen="shop"></div>
+  <div class="screen shop-screen" data-screen="pay"></div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
     <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
@@ -99,6 +106,7 @@ const ctx: AppCtx = {
     else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
     else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
     else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
+    else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
     else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
     updateGuide(ctx);
   },
@@ -156,6 +164,7 @@ root.addEventListener('click', (e) => {
   if (handleDex(ctx, act, el)) return;
   if (handleBag(ctx, el)) return;
   if (handleShop(ctx, el)) return;
+  if (handlePay(ctx, act, el)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
@@ -246,6 +255,12 @@ updateHome(ctx);
       <div class="row" style="justify-content:center;gap:18px;font-family:var(--f-d);font-size:22px">${icon('fish', 30)}<b class="num">${fmt(state.idle.fish)}</b>${icon('spark', 30)}<b class="num">${fmt(state.idle.exp)}</b></div>
       <div style="margin-top:14px"><button class="btn lg" data-act="claim2">收下</button></div></div></div>`);
   }
+}
+if (granted && !params.get('nostory')) {
+  root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog" style="text-align:center">
+    <h3 class="title" style="margin:0 0 6px">${icon('moon', 28)} 开发者礼包</h3>
+    <p style="margin:0 0 8px;font-weight:700;line-height:1.7">已为本号充入 <b class="num" style="font-size:22px">200,000</b> 月光珠（等值计入累计充值，VIP 直升满级）。<br><span class="muted" style="font-size:12px">去「招募 → 至尊招募」抽至尊猫猫，或到「充值中心」看看权益。</span></p>
+    <div class="row" style="justify-content:center;gap:10px"><button class="btn ghost" data-act="closedialog">先逛逛</button><button class="btn pink" data-act="nav" data-to="pay">充值中心</button></div></div></div>`);
 }
 ctx.loop.start();
 if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
