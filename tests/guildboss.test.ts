@@ -61,3 +61,17 @@ describe('公会 Boss', () => {
     expect(guildLevel(GUILDS[0], at(0)).level).toBeGreaterThan(0);
   });
 });
+
+import { worldFeed } from '../src/game/npc';
+import { BOSS_TALK, EVENT_TALK, GUILD_TALK } from '../src/data/chatlines';
+
+describe('聊天里的 Boss / 公会 / 活动话题', () => {
+  it('每周一 05:00 有新一周首领公告，周中没有；新话题池可被 NPC 抽到', () => {
+    const mon = worldFeed(at(0, 0), at(0, 23)).filter((m) => m.id.startsWith('sys:wb:'));
+    expect(mon).toHaveLength(1);
+    expect(mon[0].text).toContain(bossOfWeek(at(0)).title); expect(mon[0].text).toContain(guildBossOf(at(0)).title);
+    expect(worldFeed(at(2, 0), at(2, 23)).filter((m) => m.id.startsWith('sys:wb:'))).toHaveLength(0);
+    const texts = new Set(worldFeed(at(0, 0), at(30, 23)).map((m) => m.text));
+    for (const pool of [BOSS_TALK, GUILD_TALK, EVENT_TALK]) expect(pool.some((l) => texts.has(l)), pool[0]).toBe(true);
+  });
+});

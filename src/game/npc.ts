@@ -2,13 +2,16 @@
 // 关键设计：一切都是「墙上时钟」的纯函数（种子 + 时间 → 结果），不需要服务器，也不需要存档：
 // 同一时刻任何设备看到的在线名单、聊天内容都一样；玩家离线很久回来，也能立刻补出这段时间里 NPC 说过的话。
 import {
-  ARENA_TALK, CAT_TALK, CHAPTER_TALK, CONGRATS, COUNTER_TALK, EQUIPMENT_TALK, MYSTERY_TALK, NPC_LINES, REPLY_RULES, TOWER_TALK, WEATHER_TALK, FACTION_TALK, GACHA_BRAG, GACHA_SAD, GACHA_WANT, GREET_EVENING, GREET_MORNING, GREET_NIGHT, GREET_NOON, REPLY_ARENA, REPLY_GACHA,
+  ARENA_TALK, BOSS_TALK, CAT_TALK, EVENT_TALK, FESTIVAL_TALK, GUILD_TALK, CHAPTER_TALK, CONGRATS, COUNTER_TALK, EQUIPMENT_TALK, MYSTERY_TALK, NPC_LINES, REPLY_RULES, TOWER_TALK, WEATHER_TALK, FACTION_TALK, GACHA_BRAG, GACHA_SAD, GACHA_WANT, GREET_EVENING, GREET_MORNING, GREET_NIGHT, GREET_NOON, REPLY_ARENA, REPLY_GACHA,
   REPLY_GENERIC, REPLY_LAUGH, REPLY_WHALE, STAGE_CLEAR, STAGE_STUCK, TEAM_ASK, BUILD_TIP, WORK_NIGHT, WORK_OFFICE, WORK_STUDENT,
 } from '../data/chatlines';
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
 import { HERO_BY_ID, PREMIUM_HEROES, STANDARD_HEROES } from '../data/heroes';
 import type { HeroDef } from '../data/heroes';
+import { festivalNow } from './events';
+import { guildBossOf } from './guildboss';
+import { bossOfWeek } from './worldboss';
 import { heroPower } from './state';
 import { paceLevel } from './stage';
 
@@ -150,7 +153,8 @@ function compose(npc: Npc, block: number, at: number): string {
   const r = rnd(npc.id, 'cat', block);
   const greet = h >= 5 && h < 11 ? GREET_MORNING : h >= 11 && h < 14 ? GREET_NOON : h >= 19 && h < 23 ? GREET_EVENING : WEEKDAY_NIGHT(h) ? GREET_NIGHT : CAT_TALK; // 下午没有“问候”，说日常
   let pool: string[];
-  if (r < 0.10) pool = greet;
+  if (festivalNow(at).active && rnd(npc.id, 'fest', block) < 0.3) pool = FESTIVAL_TALK;
+  else if (r < 0.10) pool = greet;
   else if (r < 0.26) pool = rnd(npc.id, 'sc', block) < 0.5 ? STAGE_STUCK : STAGE_CLEAR;
   else if (r < 0.38) pool = rnd(npc.id, 'gc', block) < 0.4 ? GACHA_BRAG : rnd(npc.id, 'gd', block) < 0.5 ? GACHA_SAD : GACHA_WANT;
   else if (r < 0.43) pool = TEAM_ASK;
@@ -159,7 +163,7 @@ function compose(npc: Npc, block: number, at: number): string {
   else if (r < 0.78) pool = npc.profile === 'office' ? WORK_OFFICE : npc.profile === 'student' ? WORK_STUDENT : npc.profile === 'night' && (h >= 22 || h < 5) ? WORK_NIGHT : CAT_TALK;
   else if (r < 0.84) pool = FACTION_TALK[npc.faction];
   else if (r < 0.90) pool = CHAPTER_TALK[Math.max(1, rnd(npc.id, 'chap', block) < 0.5 ? prog.chapter : Math.min(prog.chapter, 1 + Math.floor(rnd(npc.id, 'chap2', block) * prog.chapter)))] ?? CAT_TALK;
-  else if (r < 0.99) pool = [EQUIPMENT_TALK, TOWER_TALK, MYSTERY_TALK, ARENA_TALK, COUNTER_TALK][Math.floor(rnd(npc.id, 'topic', block) * 5)];
+  else if (r < 0.99) pool = [EQUIPMENT_TALK, TOWER_TALK, MYSTERY_TALK, ARENA_TALK, COUNTER_TALK, BOSS_TALK, GUILD_TALK, EVENT_TALK][Math.floor(rnd(npc.id, 'topic', block) * 8)];
   else pool = WEATHER_TALK;
   return fill(pick(pool, npc.id, 'line', block), vars);
 }
@@ -185,6 +189,13 @@ export function worldFeed(from: number, to: number): ChatMsg[] {
   // 每日定点系统提醒
   for (let d = Math.floor((from - EPOCH) / DAY); d <= Math.floor((to - EPOCH) / DAY); d++) {
     const base = EPOCH + d * DAY;
+    // 每周一 05:00 的 Boss 公告
+    if (new Date(base + 12 * 3600000).getDay() === 1) {
+      const t0 = base + 5 * 3600000;
+      if (t0 >= from && t0 <= to) {
+        out.push({ id: `sys:wb:${d}`, t: t0, from: 'sys', name: '公告', text: `【新一周】世界 Boss：${bossOfWeek(t0).title}已就位，每天 3 次挑战；公会 Boss：${guildBossOf(t0).title}，大家一起上。`, kind: 'sys' });
+      }
+    }
     for (const [hh, text] of [[12, '【提醒】午间福利时间到，别忘了领「每日福利」和挂机收益。'], [20, '【提醒】晚间爬塔时间，今日首通有额外猫薄荷。']] as [number, string][]) {
       const t = base + hh * 3600000;
       if (t >= from && t <= to) out.push({ id: `sys:daily:${d}:${hh}`, t, from: 'sys', name: '公告', text, kind: 'sys' });
