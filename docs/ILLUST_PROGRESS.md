@@ -19,7 +19,7 @@
 | 关云喵 | `shu_guanyunmiao` | SSR | 待画 | 0 | |
 | 张喵飞 | `shu_zhangmiaofei` | SSR | 待画 | 0 | |
 | 诸葛喵亮 | `shu_zhugemiaoliang` | SSR | 待画 | 0 | |
-| 赵喵云 | `shu_zhaomiaoyun` | SSR | 待画 | 0 | |
+| 赵喵云 | `shu_zhaomiaoyun` | SSR | 待审 | 1 | 第1轮，2候选选B；双爪五趾，红缨银甲长矛，已清理透明噪点 |
 | 孙小霸 | `wu_sunxiaoba` | SSR | 待画 | 0 | |
 | 孙香香 | `wu_sunxiangxiang` | SSR | 待画 | 0 | |
 | 陆喵逊 | `wu_luxun` | SSR | 待画 | 0 | |
