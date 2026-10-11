@@ -18,6 +18,8 @@ export class Scene {
   actors: Actor[] = [];
   vfx: VFX;
   bg: HTMLCanvasElement | null = null;
+  /** 背景缓慢左右漂移（街景快照做背景时开，让静态图有一点镜头感） */
+  bgDrift = false;
   cam = { x: 480, y: 300, zoom: 1, shakeMag: 0, shakeT: 0 };
   /** 默认镜头（战斗结束后回到这里），移动端主界面会放大一点 */
   baseCam = { x: 480, y: 300, zoom: 1 };
@@ -124,7 +126,10 @@ export class Scene {
     ctx.translate(w / 2 + sx, h / 2 + sy);
     ctx.scale(this.cam.zoom, this.cam.zoom);
     ctx.translate(-this.cam.x, -this.cam.y);
-    if (this.bg) ctx.drawImage(this.bg, 0, 0, w, h);
+    if (this.bg) {
+      if (this.bgDrift) { const k = 1.07, ox = Math.sin(this.time * 0.22) * w * 0.03, oy = Math.sin(this.time * 0.17 + 1) * h * 0.012; ctx.drawImage(this.bg, -(k - 1) * w / 2 + ox, -(k - 1) * h / 2 + oy, w * k, h * k); }
+      else ctx.drawImage(this.bg, 0, 0, w, h);
+    }
     this.vfx.drawBack(ctx);
     const sorted = this.actors.slice().sort((a, b) => a.y - b.y);
     for (const a of sorted) a.drawShadow(ctx);
