@@ -14,6 +14,9 @@ import {
 } from '../src/game/events';
 import { POOLS, pull } from '../src/game/gacha';
 import { buyCard, claimCard, claimVip, topUp, TOPUPS } from '../src/game/premium';
+import { FURNITURE, buyFurniture, collectNest } from '../src/game/nest';
+import { buyMoon, MOON_OFFERS } from '../src/game/moonshop';
+import { claimAllMail } from '../src/game/events';
 import { track } from '../src/game/quests';
 import { load, newPlayer, save } from '../src/game/state';
 import type { PlayerState } from '../src/game/state';
@@ -72,6 +75,9 @@ describe('长程浸泡：90 天、全部玩法', () => {
       for (let i = 0; i < CUM_TIERS.length; i++) claimCum(s, i, t(22));
       for (let i = 0; i < GROWTH_TIERS.length; i++) claimGrowth(s, i, t(22));
       for (let l = 1; l <= PASS_MAX; l++) { claimPass(s, 'prem', l, t(22)); claimPass(s, 'lux', l, t(22)); }
+      if (p(0.3)) buyFurniture(s, FURNITURE[Math.floor(rng.next() * FURNITURE.length)].id, t(15)); collectNest(s, t(15));
+      if (p(0.2)) buyMoon(s, MOON_OFFERS[Math.floor(rng.next() * MOON_OFFERS.length)].id, t(15));
+      claimAllMail(s, t(15));
       sane(s);
       if (day % 10 === 0) {
         save(storage, s);
