@@ -4,6 +4,9 @@ import type { Part, PartId } from '../art/cat';
 import type { CatLook } from '../art/types';
 import { anchorsOf } from '../art/illust-rig';
 import { MeshGL } from './mesh';
+import { buildCat3D } from '../art3d/cat3d';
+import type { Cat3D } from '../art3d/cat3d';
+import { Renderer3D } from '../art3d/renderer';
 import { PuppetMesh } from './puppet';
 
 export interface RigPart {
@@ -24,6 +27,8 @@ export interface Rig {
   height: number; // 角色大约像素高（骨骼坐标）
   scale: number; // 位图像素 / 骨骼单位
   /** 立绘木偶（有 WebGL 时）：整张立绘按网格形变，手臂 / 头 / 尾巴 / 衣摆单独动 */
+  /** 3D 小猫（Three.js）：真关节，战斗里按姿势实时渲染 */
+  cat3d?: Cat3D;
   puppet?: { mesh: PuppetMesh; tex: HTMLCanvasElement; x0: number; y0: number; w: number; h: number; kHand: number };
 }
 
@@ -137,3 +142,11 @@ export async function illustPortrait(url: string, px = 520): Promise<HTMLCanvasE
   c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
   return c;
 }
+
+/** 3D 小猫骨架：每个上场的单位各建一只（姿势是可变状态，不能共享）。 */
+export function buildRig3D(look: CatLook, scale = 0.8, heroId?: string): Rig {
+  const c = document.createElement('canvas'); c.width = c.height = 1;
+  const parts: RigPart[] = PART_ORDER.map((id) => ({ id, img: c, x: 0, y: 0, w: 0, h: 0, pivot: [200, 300] as [number, number] }));
+  return { parts, look, stance: {}, foot: [200, 604], height: 560, scale, cat3d: buildCat3D(look, heroId) };
+}
+export const has3D = () => Renderer3D.ok;

@@ -49,6 +49,7 @@ bgmState.on = state.settings.music !== false;
 armBgm();
 spriteMode.illust = state.settings.illustSprite !== false;
 liveSettings.on = state.settings.illustSprite !== false;
+spriteMode.cat3d = state.settings.cat3d === true || /[?&]r3d=1/.test(location.search);
 initLive();
 const params = new URLSearchParams(location.search);
 const at = params.get('at');
@@ -198,6 +199,7 @@ function openSettings() {
     <div class="row" style="margin:8px 0"><b class="grow">背景音乐</b><button class="btn sm ${state.settings.music !== false ? 'green' : 'ghost'}" data-act="bgm">${state.settings.music !== false ? '开' : '关'}</button></div>
     <div class="row" style="margin:8px 0"><b class="grow">战斗速度</b>${[1, 2, 3].map((v) => `<button class="btn sm ${state.settings.speed === v ? 'blue' : 'ghost'}" data-act="spd" data-v="${v}">${v}×</button>`).join('')}</div>
     <div class="row" style="margin:8px 0"><b class="grow">战斗用立绘小人<small class="muted" style="display:block;font-weight:700">有立绘的猫在战斗里用整张立绘（下一场生效）</small></b><button class="btn sm ${state.settings.illustSprite !== false ? 'green' : 'ghost'}" data-act="ill">${state.settings.illustSprite !== false ? '开' : '关'}</button></div>
+    <div class="row" style="margin:8px 0"><b class="grow">3D 猫猫（实验）<small class="muted" style="display:block;font-weight:700">战斗里所有猫猫换成 3D 卡通小猫，真关节动作（下一场生效）</small></b><button class="btn sm ${state.settings.cat3d ? 'green' : 'ghost'}" data-act="c3d">${state.settings.cat3d ? '开' : '关'}</button></div>
     <div class="row" style="margin:8px 0"><b class="grow">存档备份<small class="muted" style="display:block;font-weight:700">换设备 / 清缓存前，先导出一段文本</small></b><button class="btn sm blue" data-act="bk-out">导出</button><button class="btn sm ghost" data-act="bk-in">导入</button></div>
     <div class="row" style="margin:14px 0 4px"><b class="grow">清空存档<small class="muted" style="display:block;font-weight:700">从头开始，无法恢复</small></b><button class="btn sm ghost" data-act="reset1">清空</button></div>
     <div class="muted" style="font-size:11.5px;text-align:center;margin-top:10px;font-weight:700">猫国志 · 原型 v0.1</div>
@@ -254,6 +256,7 @@ root.addEventListener('click', (e) => {
       setTimeout(() => location.reload(), 600);
       break;
     }
+    case 'c3d': state.settings.cat3d = !state.settings.cat3d; spriteMode.cat3d = state.settings.cat3d; ctx.save(); openSettings(); sfx.ok(); break;
     case 'ill': state.settings.illustSprite = !(state.settings.illustSprite !== false); spriteMode.illust = state.settings.illustSprite; liveSettings.on = state.settings.illustSprite; ctx.save(); openSettings(); sfx.ok(); break;
     case 'bgm': state.settings.music = !(state.settings.music !== false); setBgmOn(state.settings.music); ctx.save(); openSettings(); sfx.ok(); break;
     case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; ctx.save(); openSettings(); sfx.ok(); break;

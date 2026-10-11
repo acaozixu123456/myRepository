@@ -4,6 +4,9 @@ import type { PartId } from '../art/cat';
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
 import { STATUSES } from '../data/statuses';
+import * as THREE from 'three';
+import { applyPose } from '../art3d/pose';
+import { FRAME, K, Renderer3D } from '../art3d/renderer';
 import { MeshGL } from './mesh';
 import { puppetPose } from './puppet';
 import type { Rig } from './rig';
@@ -11,6 +14,8 @@ import type { Scene } from './scene';
 import { clamp, hexA, rad } from './util';
 import type { Ease } from './util';
 
+/** 3D 小猫朝向：面朝对手方向偏转的角度（弧度） */
+export const YAW3D = 0.6;
 export type Xf = [number, number, number, number, number]; // rot(°), tx, ty, sx, sy
 export type PoseDelta = Partial<Record<PartId | 'root', Partial<Xf> | number[]>>;
 
@@ -104,6 +109,20 @@ export class Actor {
     const s = this.scale * this.facing;
     const f = this.rig.foot;
     const pt = (rx: number, ry: number): [number, number] => [this.x + (rx - f[0]) * s, this.y + (ry - f[1]) * this.scale];
+    const c3 = this.rig.cat3d;
+    if (c3 && kind !== 'foot') {
+      applyPose(c3, this.p, { alive: this.alive, moving: this.moving, t: this.t });
+      c3.root.rotation.y = this.facing * YAW3D;
+      c3.root.updateMatrixWorld(true);
+      const v = new THREE.Vector3();
+      switch (kind) {
+        case 'head': c3.j.head.localToWorld(v.set(0, 0.15, 0)); break;
+        case 'top': c3.sock.headTop.localToWorld(v.set(0, 0.3, 0)); break;
+        case 'chest': c3.sock.torso.localToWorld(v.set(0, 0.85, 0)); break;
+        default: c3.sock.handR.localToWorld(v.set(0, 0, 0)); break;
+      }
+      return [this.x + v.x * K * this.scale, this.y - v.y * K * this.scale];
+    }
     const pp = this.rig.puppet;
     if (pp && kind !== 'foot') {
       const { mesh, x0, y0, w, h } = pp;
@@ -224,9 +243,23 @@ export class Actor {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rad(rot) * this.facing);
-    ctx.scale(this.scale * this.facing * rsx, this.scale * rsy);
+    const c3 = this.rig.cat3d;
+    const R3 = c3 ? Renderer3D.get() : null;
+    // 3D 猫靠朝向（yaw）区分左右，不能整体镜像（会把光照也镜像）
+    ctx.scale(this.scale * (c3 && R3 ? 1 : this.facing) * rsx, this.scale * rsy);
     ctx.translate(-f[0], -f[1]);
     const sc = this.rig.scale;
+    if (c3 && R3) {
+      const live = this.alive && !snap;
+      applyPose(c3, P, { alive: live, moving: live && this.moving, t: snap ? snap.t : this.t });
+      const w = (FRAME.x1 - FRAME.x0) * K, h = (FRAME.y1 - FRAME.y0) * K;
+      const ps = sc * 0.55;
+      const pw = Math.ceil(w * ps), ph = Math.ceil(h * ps);
+      const [sx0, sy0, sw0, sh0] = R3.render(c3, pw, ph, this.facing * YAW3D);
+      ctx.drawImage(R3.canvas, sx0, sy0, sw0, sh0, f[0] + FRAME.x0 * K, f[1] - FRAME.y1 * K, w, h);
+      ctx.restore();
+      return;
+    }
     const pp = this.rig.puppet;
     const gl = pp ? MeshGL.get() : null;
     if (pp && gl) {

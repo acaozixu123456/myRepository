@@ -1,6 +1,6 @@
 // 战斗演示页：选阵容 → 引擎模拟 → 播放器回放。
 import { simulate } from '../engine/battle';
-import { Player } from '../fx/player';
+import { Player, spriteMode } from '../fx/player';
 import { HERO_BY_ID } from '../data/heroes';
 import { KITS } from '../data/kits';
 import { FACTIONS } from '../data/factions';
@@ -13,6 +13,8 @@ const PRESETS: Record<string, { name: string; a: string; b: string }> = {
   ur: { name: 'UR 大乱斗', a: 'man_mengmiaohuo,wei_caomiaode,wu_zhoumiaoyu,shu_liumiaobei,wu_sunxiangxiang', b: 'qun_lvbuding,shu_zhangmiaofei,xian_zuoci,qun_huatuo,man_zhurong' },
   wei: { name: '魏 vs 蜀', a: 'wei_xuhuchi,wei_xiahoudun,wei_caomiaode,wei_guojia,qun_huatuo', b: 'shu_zhangmiaofei,shu_guanyunmiao,shu_liumiaobei,shu_zhugemiaoliang,wu_sunxiangxiang' },
 };
+spriteMode.cat3d = !!q.get('r3d');
+spriteMode.illust = !q.get('flat');
 let preset = q.get('p') ?? 'classic';
 const teams = () => ({ a: (q.get('a') ?? PRESETS[preset].a).split(','), b: (q.get('b') ?? PRESETS[preset].b).split(',') });
 const SEED = +(q.get('seed') ?? 2);

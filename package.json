@@ -16,16 +16,21 @@
     "balance:sp": "node tools/run-sp-balance.mjs",
     "lint:skills": "node tools/run-skill-consistency.mjs",
     "shots": "node tools/shots.mjs",
+    "shots3d": "node tools/cat3d-shots.mjs",
     "showcase": "node tools/build-showcase.mjs",
     "app": "node tools/build-app.mjs",
     "lint:content": "node tools/run-lint-content.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
+    "@types/three": "^0.169.0",
     "esbuild": "^0.21.5",
     "playwright-core": "^1.48.0",
     "typescript": "^5.6.0",
     "vite": "^5.4.0",
     "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "three": "^0.169.0"
   }
 }

@@ -9,7 +9,8 @@ import { makeBackground } from './bg';
 import type { BgTheme } from './bg';
 import { Choreo } from './choreo';
 import { playCutIn } from './cutin';
-import { buildIllustRig, buildPortrait, buildRig, illustPortrait } from './rig';
+import { buildIllustRig, buildPortrait, buildRig, buildRig3D, has3D, illustPortrait } from './rig';
+import { portrait3D } from '../art3d/portrait';
 import { ILLUST } from '../art/illust-index';
 import type { Rig } from './rig';
 import { Scene } from './scene';
@@ -23,7 +24,9 @@ const ELEM_COLOR: Record<string, [string, string]> = {
 
 const RIG_CACHE = new Map<string, Promise<Rig>>();
 /** 战斗里是否用 AI 立绘当小人（有立绘的猫才生效）；设置里可切换 */
-export const spriteMode = { illust: true };
+export const spriteMode = { illust: true, cat3d: false };
+/** 当前是否用 3D 小猫（需要开关打开且 WebGL 可用） */
+export const use3D = () => spriteMode.cat3d && has3D();
 function cachedRig(id: string, scale: number): Promise<Rig> {
   const il = spriteMode.illust ? ILLUST[id] : undefined;
   const k = `${id}@${scale}${il ? '@illust' : ''}`;
@@ -77,7 +80,7 @@ export class Player {
     let done = 0;
     const rigs = await Promise.all(
       start.units.map(async (u) => {
-        const rig = await cachedRig(u.heroId, 0.62 * this.scene.dpr);
+        const rig = use3D() ? buildRig3D(lookOf(u.heroId), 0.62 * this.scene.dpr, u.heroId) : await cachedRig(u.heroId, 0.62 * this.scene.dpr);
         progress?.(++done / start.units.length);
         return [u, rig] as [StartEv['units'][number], Rig];
       }),
@@ -92,11 +95,11 @@ export class Player {
   }
 
   async portrait(heroId: string): Promise<HTMLCanvasElement> {
-    let p = this.portraits.get(heroId);
+    let p = this.portraits.get(`${use3D() ? '3d:' : ''}${heroId}`);
     if (!p) {
       const il = spriteMode.illust ? ILLUST[heroId] : undefined;
-      p = il ? await illustPortrait(il.card).catch(() => buildPortrait(lookOf(heroId), '20 50 360 340', 520)) : await buildPortrait(lookOf(heroId), '20 50 360 340', 520);
-      this.portraits.set(heroId, p);
+      p = use3D() ? portrait3D(lookOf(heroId), 520, heroId) : il ? await illustPortrait(il.card).catch(() => buildPortrait(lookOf(heroId), '20 50 360 340', 520)) : await buildPortrait(lookOf(heroId), '20 50 360 340', 520);
+      this.portraits.set(`${use3D() ? '3d:' : ''}${heroId}`, p);
     }
     return p;
   }
