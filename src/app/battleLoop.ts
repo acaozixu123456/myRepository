@@ -29,7 +29,7 @@ export class BattleLoop {
 
   constructor(canvas: HTMLCanvasElement, private hooks: LoopHooks) {
     this.player = new Player(canvas);
-    this.player.scene.baseCam = { x: 480, y: 316, zoom: 1.16 };
+    this.player.scene.baseCam = { x: 480, y: 366, zoom: 1.28 };
     this.player.scene.resetCam(0.01);
   }
 
