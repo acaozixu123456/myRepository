@@ -6,8 +6,7 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
-import { levelOf as sceneOf } from '../world/levels';
-import { herbsOf } from '../world/levels';
+import { herbsOf, levelOf as sceneOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
 export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[] }
@@ -161,12 +160,13 @@ export interface AutoEnt { kind: SpawnDef['kind']; x: number; z: number }
  * 自动探索下一个去哪：先捡离得最近的猫薄荷丛 / 宝箱（不用打架），再去找最近的野猫；
  * 首领和嫦喵永远不自动去。每日野怪奖励拿满（killsLeft = false）后就不再主动找野猫，没有目标返回 null。
  */
-export function pickAutoTarget(from: { x: number; z: number }, ents: AutoEnt[], killsLeft: boolean): AutoEnt | null {
+export const autoKey = (e: { x: number; z: number }) => `${Math.round(e.x)},${Math.round(e.z)}`;
+export function pickAutoTarget(from: { x: number; z: number }, ents: AutoEnt[], killsLeft: boolean, skip?: ReadonlySet<string>): AutoEnt | null {
   const d2 = (e: AutoEnt) => (e.x - from.x) ** 2 + (e.z - from.z) ** 2;
   // 首领会在 4.2 以内触发战斗：靠近首领的宝箱 / 野猫不自动去，免得自动探索误打首领
   const bosses = ents.filter((e) => e.kind === 'boss');
   const safe = (e: AutoEnt) => bosses.every((b) => (b.x - e.x) ** 2 + (b.z - e.z) ** 2 > BOSS_SAFE ** 2);
-  ents = ents.filter(safe);
+  ents = ents.filter((e) => safe(e) && !skip?.has(autoKey(e))); // skip：走不到的点（卡住几次后由调用方放进来）
   const nearest = (list: AutoEnt[]) => list.reduce<AutoEnt | null>((b, e) => (!b || d2(e) < d2(b) ? e : b), null);
   return nearest(ents.filter((e) => e.kind === 'herb' || e.kind === 'chest')) ?? (killsLeft ? nearest(ents.filter((e) => e.kind === 'enemy')) : null);
 }

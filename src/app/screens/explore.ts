@@ -7,7 +7,7 @@ import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
-import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
+import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, autoKey, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
@@ -69,6 +69,8 @@ export function exploreHtml(): string {
 // ---------- 摇杆 / 键盘移动（相对镜头朝向）----------
 let autoOn = false;
 let autoT = 0;
+const autoSkip = new Map<string, number>(); // 走不到的点 → 解封时间
+let autoLast = { key: '', tries: 0 };
 const keys = new Set<string>();
 let joy = { x: 0, y: 0 }; // x 右、y 上，-1..1
 let inputBound = false;
@@ -137,6 +139,7 @@ function teamIds(ctx: AppCtx): string[] {
 function popReward(ctx: AppCtx, title: string, g: { fish?: number; exp?: number; catnip?: number; bells?: number }) {
   const host = ctx.root.querySelector('[data-screen="explore"]');
   if (!host) return;
+  host.querySelectorAll('.xpop').forEach((x) => x.remove()); // 连续拾取时只留最新一条，免得叠成一团
   const el = document.createElement('div');
   el.className = 'xpop';
   el.innerHTML = `${title}<small>${gainText({ fish: g.fish ?? 0, exp: g.exp ?? 0, catnip: g.catnip ?? 0, bells: g.bells ?? 0 })}</small>`;
@@ -178,7 +181,8 @@ function showHelpOnce(ctx: AppCtx) {
     · 碰到野猫开战，首领在街区北端；打赢首领通往下一章<br>
     · 找嫦喵领每日委托，三项做完有大奖<button class="btn green">知道啦</button></div>`;
   el.onclick = (e) => { if ((e.target as HTMLElement).closest('button')) el.remove(); };
-  // 不挡操作：开始移动（摇杆 / 键盘）或 12 秒后自动收起
+  // 不挡操作：开始移动（摇杆 / 键盘）、点一下场景，或 12 秒后自动收起
+  rt?.wv.canvas.addEventListener('pointerdown', () => el.remove(), { once: true });
   const t0 = performance.now();
   const timer = window.setInterval(() => {
     if (!el.isConnected) { clearInterval(timer); return; }
@@ -230,8 +234,16 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     else if (autoOn && ex.idle && (autoT -= dt) <= 0) {
       autoT = 0.6;
       const lp = ex.leaderPos;
-      const t = pickAutoTarget({ x: lp.x, z: lp.z }, ex.snapshot().ents, killsLeft(ctx.s));
-      if (t) ex.moveTo(t.x, t.z);
+      const nowMs = Date.now();
+      for (const [k, until] of autoSkip) if (until < nowMs) autoSkip.delete(k);
+      const t = pickAutoTarget({ x: lp.x, z: lp.z }, ex.snapshot().ents, killsLeft(ctx.s), new Set(autoSkip.keys()));
+      if (t) {
+        // 连续几次空闲时目标还是同一个，说明路走不通（被挡 / 到不了）：封 2 分钟换下一个，免得原地空转
+        const key = autoKey(t);
+        autoLast = autoLast.key === key ? { key, tries: autoLast.tries + 1 } : { key, tries: 1 };
+        if (autoLast.tries >= 4) { autoSkip.set(key, nowMs + 120_000); autoLast = { key: '', tries: 0 }; }
+        else ex.moveTo(t.x, t.z);
+      }
       else { autoOn = false; refreshExploreHud(ctx); ctx.toast('这一带清完啦，自动探索结束'); }
     }
     ex.update(dt); st.update(wv.time, dt);
@@ -278,7 +290,7 @@ export async function enterExplore(ctx: AppCtx) {
   miniT = window.setInterval(() => drawMini(ctx), 250);
   setTimeout(() => { load.style.display = 'none'; }, 250);
 }
-export function leaveExplore() { autoOn = false; rainAmbience(false); clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
+export function leaveExplore() { autoOn = false; autoSkip.clear(); autoLast = { key: '', tries: 0 }; rainAmbience(false); clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
 export function resizeExplore() { rt?.wv.resize(); }
 
 // ---------- 玩法 ----------
@@ -375,7 +387,7 @@ function openTrail(ctx: AppCtx) {
 export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
     case 'x-boss': if (rt) { rt.ex.moveTo(rt.st.level.bossSpot[0], rt.st.level.bossSpot[1] + 5); ctx.toast('出发！'); } return true;
-    case 'x-auto': autoOn = !autoOn; autoT = 0; refreshExploreHud(ctx); ctx.toast(autoOn ? '自动探索开始：先采药 / 开箱，再找野猫（首领要你亲自去）' : '自动探索已关闭'); return true;
+    case 'x-auto': autoOn = !autoOn; autoT = 0; autoSkip.clear(); autoLast = { key: '', tries: 0 }; refreshExploreHud(ctx); ctx.toast(autoOn ? '自动探索开始：先采药 / 开箱，再找野猫（首领要你亲自去）' : '自动探索已关闭'); return true;
     case 'x-trail': openTrail(ctx); return true;
     case 'x-claim': {
       const g = claimTrail(ctx.s, el.dataset.id!);

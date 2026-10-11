@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { KILL_CAP, TRAIL, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
+import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
 import { LEVELS, herbsOf, levelColliders } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 
@@ -145,6 +145,11 @@ describe('自动探索选目标', () => {
     const near = [{ kind: 'boss' as const, x: 0, z: -23 }, { kind: 'chest' as const, x: -2.5, z: -26 }, { kind: 'enemy' as const, x: 4, z: -20 }];
     expect(pickAutoTarget({ x: 0, z: 0 }, near, true)).toBeNull();
     expect(pickAutoTarget({ x: 0, z: 0 }, [...near, { kind: 'herb' as const, x: -2.4, z: -9 }], true)).toMatchObject({ kind: 'herb' });
+  });
+  it('走不到的点（skip 里的）会被跳过，转去下一个目标', () => {
+    const list = [{ kind: 'herb' as const, x: 5, z: 0 }, { kind: 'chest' as const, x: 20, z: 0 }];
+    expect(pickAutoTarget({ x: 0, z: 0 }, list, true, new Set([autoKey(list[0])]))).toMatchObject({ kind: 'chest' });
+    expect(pickAutoTarget({ x: 0, z: 0 }, list, true, new Set(list.map(autoKey)))).toBeNull();
   });
   it('killsLeft 跟着每日上限走', () => {
     const s = newPlayer();

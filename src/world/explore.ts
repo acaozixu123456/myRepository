@@ -123,8 +123,9 @@ export class Explorer {
     cat.root.traverse((o) => {
       const m = o as THREE.SkinnedMesh;
       if (!m.isSkinnedMesh) return;
-      m.geometry.computeBoundingSphere();
-      if (m.geometry.boundingSphere) m.geometry.boundingSphere.radius *= 1.5;
+      // three 的视锥裁剪读的是 SkinnedMesh 自己的 boundingSphere（不是 geometry 的），所以要放大这一个
+      m.computeBoundingSphere();
+      if (m.boundingSphere) m.boundingSphere.radius *= 1.6;
       m.frustumCulled = true;
       if ((m.material as THREE.ShaderMaterial).isShaderMaterial) outlines.push(m);
     });
@@ -315,9 +316,10 @@ export class Explorer {
     const lp = this.leaderPos;
     const gp = e.group.position;
     // 远处的实体不画（镜头看不到它们；每只 3D 猫约 3 万三角面，省下来的主要是这个）
-    const far = gp.distanceTo(lp) > CULL_DIST;
+    const dLeader = gp.distanceTo(lp);
+    const far = dLeader > CULL_DIST;
     if (e.alive && e.group.visible === far) e.group.visible = !far;
-    if (!far) { const lod = gp.distanceTo(lp) > OUTLINE_DIST; for (const a of e.cats) for (const o of a.outlines) if (o.visible === lod) o.visible = !lod; }
+    if (!far) { const lod = dLeader > OUTLINE_DIST; for (const a of e.cats) for (const o of a.outlines) if (o.visible === lod) o.visible = !lod; }
     if (s.kind === 'chest' || s.kind === 'herb') {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }

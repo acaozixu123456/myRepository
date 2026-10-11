@@ -14,13 +14,16 @@ function startRain(ov: HTMLElement, canvas: HTMLCanvasElement): () => void {
   ov.appendChild(c);
   const g = c.getContext('2d')!;
   const drops = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), v: 0.9 + Math.random() * 0.8, l: 10 + Math.random() * 16 }));
-  let raf = 0, last = performance.now();
+  let raf = 0, last = performance.now(), frame = 0, w = 0, h = 0;
   const loop = (now: number) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    const r = canvas.getBoundingClientRect(), o = ov.getBoundingClientRect();
-    const w = Math.round(r.width), h = Math.round(r.height);
-    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
-    c.style.cssText = `position:absolute;left:${r.left - o.left}px;top:${r.top - o.top}px;width:${w}px;height:${h}px;pointer-events:none`;
+    // 量位置会强制排版：只在开头和之后每 30 帧量一次（旋转屏幕 / 缩放窗口足够及时）
+    if (frame++ % 30 === 0) {
+      const r = canvas.getBoundingClientRect(), o = ov.getBoundingClientRect();
+      w = Math.round(r.width); h = Math.round(r.height);
+      if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+      c.style.cssText = `position:absolute;left:${r.left - o.left}px;top:${r.top - o.top}px;width:${w}px;height:${h}px;pointer-events:none`;
+    }
     g.clearRect(0, 0, w, h);
     g.strokeStyle = 'rgba(170,200,255,.38)'; g.lineWidth = 1.2; g.beginPath();
     for (const d of drops) {
@@ -59,20 +62,26 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
   (ov.querySelector('[data-skip]') as HTMLElement).onclick = () => { player.skipping = true; player.setSpeed(8); };
   let carry: Record<string, { hpPct: number; energy: number }> | undefined;
   let win = true, damagePct = 0;
-  for (let w = 0; w < stage.waves.length; w++) {
-    const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
-    const foes = sim.units.filter((u) => u.side === 'B');
-    damagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
-    const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
-    await player.setup(start, CHAPTER_THEME[chapter] ?? 'street');
-    if (backdrop) { player.scene.bg = backdrop; player.scene.bgDrift = true; }
-    const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
-    await player.play(evs);
-    if (sim.winner !== 'A') { win = false; break; }
-    carry = {};
-    for (const u of sim.units) if (u.side === 'A') carry[u.heroId] = { hpPct: u.alive ? u.hp / u.maxHp : 0, energy: u.energy };
+  try {
+    for (let w = 0; w < stage.waves.length; w++) {
+      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
+      const foes = sim.units.filter((u) => u.side === 'B');
+      damagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
+      const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
+      await player.setup(start, CHAPTER_THEME[chapter] ?? 'street');
+      if (backdrop) { player.scene.bg = backdrop; player.scene.bgDrift = true; }
+      const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
+      await player.play(evs);
+      if (sim.winner !== 'A') { win = false; break; }
+      carry = {};
+      for (const u of sim.units) if (u.side === 'A') carry[u.heroId] = { hpPct: u.alive ? u.hp / u.maxHp : 0, energy: u.energy };
+    }
+    await player.sleep(win ? 1.0 : 1.5);
+  } catch (e) {
+    // 战斗中途出错也要收拾干净：停时钟 / 雨层、拆浮层，否则雨的动画循环会一直跑
+    player.scene.stop(); stopRain(); ov.remove();
+    throw e;
   }
-  await player.sleep(win ? 1.0 : 1.5);
   player.scene.stop();
   stopRain();
   ov.classList.add('wipe-out');
