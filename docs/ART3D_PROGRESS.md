@@ -8,9 +8,9 @@
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `herbs` | `xian_changmiao`(SP), `qun_huatuo`(SSR) + 杂兵×6 | 底版 | 0 | |
-| `bow` | `shu_pangmiaotong`(SP), `wu_sunxiangxiang`(SSR), `shu_huangzhong`(SR) + 杂兵×3 | 底版 | 0 | |
-| `fan` | `wei_simamiyi`(SP), `shu_zhugemiaoliang`(SSR), `wu_luxun`(SSR) + 杂兵×2 | 底版 | 0 | |
+| `herbs` | `xian_changmiao`(SP), `qun_huatuo`(SSR) + 杂兵×6 | 待审 | 1 | 六叶药草束、叶脉与阵营束带；17 网格；codex/3d-weapon-sp-kit |
+| `bow` | `shu_pangmiaotong`(SP), `wu_sunxiangxiang`(SSR), `shu_huangzhong`(SR) + 杂兵×3 | 待审 | 1 | 双曲弓臂、独立弓弦与弦槽；10 网格；codex/3d-weapon-sp-kit |
+| `fan` | `wei_simamiyi`(SP), `shu_zhugemiaoliang`(SSR), `wu_luxun`(SSR) + 杂兵×2 | 待审 | 1 | 七羽扇、阵营羽尖与扇骨；24 网格；codex/3d-weapon-sp-kit |
 | `mace` | `man_mengmiaohuo`(UR), `wei_xuhuchi`(SSR), `man_shamoke`(SSR) 等4只 + 杂兵×1 | 底版 | 0 | |
 | `sword` | `wei_caomiaode`(UR), `wu_sunxiaoba`(SSR) + 杂兵×3 | 底版 | 0 | |
 | `staff` | `xian_zuoci`(UR), `qun_zhangjiao`(SSR) | 底版 | 0 | |
