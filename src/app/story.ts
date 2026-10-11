@@ -2,11 +2,21 @@
 import { STORIES } from '../content/story';
 import { FACTIONS } from '../data/factions';
 import { HERO_BY_ID } from '../data/heroes';
+import { makeBackground } from '../fx/bg';
+import type { BgTheme } from '../fx/bg';
 import { artUrl } from '../ui/art';
 import { esc } from '../ui/components';
 import { icon } from '../ui/icons';
 import type { AppCtx } from './ctx';
 
+const CH_THEME: Record<number, BgTheme> = { 1: 'meadow', 2: 'meadow', 3: 'redcliff', 4: 'forest', 5: 'mist', 6: 'redcliff' };
+const bgCache = new Map<BgTheme, string>();
+function backdrop(storyId: string): string {
+  const theme = CH_THEME[Number(/^c(\d+)_/.exec(storyId)?.[1] ?? 1)] ?? 'meadow';
+  let u = bgCache.get(theme);
+  if (!u) { u = makeBackground(theme, 640, 400, 1).toDataURL('image/jpeg', 0.8); bgCache.set(theme, u); }
+  return u;
+}
 const STORY_BY_ID = new Map(STORIES.map((s) => [s.id, s]));
 export const hasStory = (id: string | undefined): id is string => !!id && STORY_BY_ID.has(id);
 
@@ -79,6 +89,7 @@ export function playStory(ctx: AppCtx, id: string): Promise<void> {
       if (t.closest('[data-story=skip]')) return finish();
       next();
     });
+    ($('.stage-bg') as HTMLElement).style.backgroundImage = `linear-gradient(rgba(24,12,38,.55),rgba(24,12,38,.82)), url(${backdrop(id)})`;
     setTimeout(() => $('.chapter-title').classList.add('gone'), 1500);
     next();
   });
@@ -87,7 +98,7 @@ export function playStory(ctx: AppCtx, id: string): Promise<void> {
 export const STORY_CSS = `
 .story{position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;justify-content:flex-end;animation:fadein .25s;user-select:none}
 .story.out{opacity:0;transition:opacity .2s}
-.story .stage-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(255,226,170,.55),rgba(32,18,48,.94) 72%),linear-gradient(#2a1b3d,#120a1c)}
+.story .stage-bg{position:absolute;inset:-12px;background:linear-gradient(#2a1b3d,#120a1c) center/cover;filter:blur(3px)}
 .story .stage-bg::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 22px,transparent 22px 54px)}
 .story .portraits{position:absolute;left:0;right:0;bottom:150px;height:56%;pointer-events:none}
 .story .pt{position:absolute;bottom:0;height:100%;width:68%;opacity:0;transform:translateY(24px);transition:opacity .25s,transform .3s cubic-bezier(.2,1.3,.4,1),filter .25s}
