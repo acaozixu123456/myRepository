@@ -20,7 +20,7 @@ document.head.appendChild(style);
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
 const state = load(storage);
 const params = new URLSearchParams(location.search);
-if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; }
+if (params.get('rich')) { state.res.bells = 99999; state.res.tickets = 99; state.res.fish = 99999; state.res.catnip = 999; state.res.exp = 500000; }
 
 const app = document.getElementById('app')!;
 app.innerHTML = `<div class="app" id="root">

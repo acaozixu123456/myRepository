@@ -1,8 +1,10 @@
 // 关卡与战斗配置：把阵容、关卡数据转成引擎的 BattleConfig；结算奖励；挂机收益。
 import { CHAPTERS } from '../content/campaign';
+import { idleCap, idleRate as contentIdleRate } from '../content/progression';
 import type { StageDef } from '../content/types';
 import { HERO_BY_ID } from '../data/heroes';
 import type { UnitSetup } from '../engine/types';
+import { heroPower, newPlayer } from './state';
 import type { PlayerState, Resources } from './state';
 
 export function getStage(chapter: number, index: number): StageDef | undefined {
@@ -16,6 +18,34 @@ export function nextStage(chapter: number, index: number): { chapter: number; in
   return null;
 }
 export const stageOrdinal = (chapter: number, index: number) => (chapter - 1) * 24 + index;
+
+/**
+ * 界面显示的推荐战力。content 里的 recommendedPower 是按“关卡增幅 4%~8%”设计的曲线，
+ * 与实际战力公式量纲不同；这里用“按节奏应有的参考阵容”重新标定（经战斗模拟验证：
+ * 第 1 / 7 / 30 天的参考等级 20 / 45 / 95 对应推进到第 1 / 3 / 6 章末）。
+ */
+const PACE: [number, number][] = [[1, 8], [24, 20], [72, 45], [144, 95]];
+export function paceLevel(ordinal: number): number {
+  for (let i = 1; i < PACE.length; i++) {
+    const [o0, l0] = PACE[i - 1], [o1, l1] = PACE[i];
+    if (ordinal <= o1) return Math.round(l0 + ((l1 - l0) * (Math.max(o0, ordinal) - o0)) / (o1 - o0));
+  }
+  return PACE[PACE.length - 1][1];
+}
+const paceStar = (lv: number) => (lv < 20 ? 1 : lv < 40 ? 2 : lv < 65 ? 3 : lv < 90 ? 4 : 5);
+let refCache: Map<number, number> | undefined;
+export function recommendedPowerOf(chapter: number, index: number): number {
+  const o = stageOrdinal(chapter, index);
+  refCache ??= new Map();
+  let v = refCache.get(o);
+  if (v === undefined) {
+    const lv = paceLevel(o);
+    const p = newPlayer(0);
+    v = Object.values(p.heroes).reduce((a, h) => a + heroPower({ ...h, lv, star: paceStar(lv) }), 0);
+    refCache.set(o, v);
+  }
+  return v;
+}
 
 /** 我方 UnitSetup（可带继承状态） */
 export function lineupSetups(s: PlayerState, carry?: Record<string, { hpPct: number; energy: number }>): UnitSetup[] {
@@ -49,9 +79,10 @@ const catnipOf = (r: { items?: { id: string; count: number }[] }) => (r.items ??
 
 // ---------- 奖励与挂机 ----------
 export interface Gain { fish: number; catnip: number; exp: number; bells: number }
+export const WIN_SHARE = 0.1; // 画面里每场胜利拿到整关奖励的 10%
 
 export function winReward(stage: StageDef): Gain {
-  return { fish: Math.round((stage.rewards.fish ?? 0) * 0.3), catnip: Math.round(catnipOf(stage.rewards) * 0.3 * 10) / 10, exp: stage.rewards.exp ?? 0, bells: 0 };
+  return { fish: Math.round((stage.rewards.fish ?? 0) * WIN_SHARE), catnip: 0, exp: Math.round((stage.rewards.exp ?? 0) * WIN_SHARE), bells: 0 };
 }
 export function firstClearReward(stage: StageDef): Gain {
   const fc = stage.firstClear;
@@ -63,6 +94,7 @@ export function applyGain(s: PlayerState, g: Gain) {
   s.res.fish += g.fish;
   s.res.catnip = Math.round((s.res.catnip + g.catnip) * 10) / 10;
   s.res.bells += g.bells;
+  s.res.exp += g.exp;
   s.exp += g.exp;
   while (s.exp >= EXP_PER_LEVEL(s.level)) {
     s.exp -= EXP_PER_LEVEL(s.level);
@@ -71,28 +103,27 @@ export function applyGain(s: PlayerState, g: Gain) {
 }
 
 
-/** 挂机速率（每分钟）：约等于每分钟 4 场胜利的完整关卡奖励 */
-export function idleRate(s: PlayerState): { fish: number; catnip: number } {
+/** 挂机速率（每分钟）：沿用 content/progression 的口径，按“两分钟完成一次关卡”折算 */
+export function idleRate(s: PlayerState): { fish: number; exp: number } {
   const st = getStage(s.stage.chapter, s.stage.index);
-  if (!st) return { fish: 0, catnip: 0 };
-  return { fish: (st.rewards.fish ?? 0) * 4, catnip: catnipOf(st.rewards) * 4 * 0.5 };
+  return st ? contentIdleRate(st.id) : { fish: 0, exp: 0 };
 }
-export const idleCapHours = (s: PlayerState) => 8 + Math.floor(s.level / 5);
+export const idleCapHours = (s: PlayerState) => idleCap(Math.min(80, s.level));
 
 export function tickIdle(s: PlayerState, now = Date.now()) {
   const dtMin = Math.max(0, (now - s.idle.last) / 60000);
   const capMin = idleCapHours(s) * 60;
   const r = idleRate(s);
   s.idle.fish = Math.min(r.fish * capMin, s.idle.fish + r.fish * dtMin);
-  s.idle.catnip = Math.min(r.catnip * capMin, s.idle.catnip + r.catnip * dtMin);
+  s.idle.exp = Math.min(r.exp * capMin, s.idle.exp + r.exp * dtMin);
   s.idle.last = now;
 }
-export function claimIdle(s: PlayerState): { fish: number; catnip: number } {
-  const got = { fish: Math.floor(s.idle.fish), catnip: Math.floor(s.idle.catnip * 10) / 10 };
+export function claimIdle(s: PlayerState): { fish: number; exp: number } {
+  const got = { fish: Math.floor(s.idle.fish), exp: Math.floor(s.idle.exp) };
   s.res.fish += got.fish;
-  s.res.catnip = Math.round((s.res.catnip + got.catnip) * 10) / 10;
+  s.res.exp += got.exp;
   s.idle.fish = 0;
-  s.idle.catnip = 0;
+  s.idle.exp = 0;
   return got;
 }
 export type { Resources };

@@ -4,7 +4,7 @@ import { HERO_BY_ID } from '../../data/heroes';
 import { artUrl } from '../../ui/art';
 import { chip, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
-import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, tickIdle } from '../../game/stage';
+import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, recommendedPowerOf, tickIdle } from '../../game/stage';
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
 
@@ -42,12 +42,13 @@ export function updateHome(ctx: AppCtx) {
   const st = getStage(s.stage.chapter, s.stage.index)!;
   const ch = CHAPTERS[s.stage.chapter - 1];
   const power = teamPower(s);
-  const low = power < st.recommendedPower * 0.9;
+  const rec = recommendedPowerOf(s.stage.chapter, s.stage.index);
+  const low = power < rec * 0.9;
   const kind = st.kind === 'boss' ? '首领' : st.kind === 'elite' ? '精英' : '';
   $(ctx, '#stagebar').innerHTML = `
     <span class="tag f" style="--c:${FACTIONS[ch.focusFactions[0]].color}">${FACTIONS[ch.focusFactions[0]].glyph}</span>
     <div class="nm">第 ${s.stage.chapter} 章 · ${ch.name}<small>${st.id} ${st.name}${kind ? ' · ' + kind : ''}</small></div>
-    <div class="pw ${low ? 'low' : ''}">战力<br><b class="num">${fmt(power)}</b> / ${fmt(st.recommendedPower)}</div>`;
+    <div class="pw ${low ? 'low' : ''}">战力<br><b class="num">${fmt(power)}</b> / ${fmt(rec)}</div>`;
   $(ctx, '#badge').textContent = `${st.id} 连战 ${s.stage.wins}`;
   $(ctx, '#rule').textContent = st.rule ?? '';
   $(ctx, '#speedBtn').textContent = `${s.settings.speed}×`;
@@ -76,9 +77,9 @@ export function updateIdle(ctx: AppCtx) {
   const pct = Math.min(100, (s.idle.fish / Math.max(1, r.fish * cap)) * 100);
   $(ctx, '#idle').innerHTML = `
     <div class="figs">
-      <div class="big"><span>${icon('fish', 26)}<b class="num">${fmt(s.idle.fish)}</b></span><span>${icon('catnip', 26)}<b class="num">${s.idle.catnip.toFixed(1)}</b></span></div>
+      <div class="big"><span>${icon('fish', 26)}<b class="num">${fmt(s.idle.fish)}</b></span><span>${icon('spark', 26)}<b class="num">${fmt(s.idle.exp)}</b></span></div>
       <div class="bar" style="margin-top:6px"><i style="width:${pct}%"></i></div>
-      <div class="sub">挂机收益 ${fmt(r.fish)}小鱼干/分钟 · 上限 ${idleCapHours(s)} 小时</div>
+      <div class="sub">每分钟 +${fmt(r.fish)}鱼干 +${fmt(r.exp)}经验 · 上限${idleCapHours(s)}小时</div>
     </div>
     <button class="btn lg" data-act="claim">领取</button>`;
 }
@@ -88,7 +89,7 @@ export function claim(ctx: AppCtx) {
   if (got.fish < 1) return ctx.toast('还没攒下收益，再等等');
   ctx.save();
   floaty(ctx, `+${fmt(got.fish)}`, 'fish');
-  ctx.toast(`领取了 ${fmt(got.fish)} 小鱼干、${got.catnip.toFixed(1)} 猫薄荷`);
+  ctx.toast(`领取了 ${fmt(got.fish)} 小鱼干、${fmt(got.exp)} 成长经验`);
   updateHome(ctx);
 }
 

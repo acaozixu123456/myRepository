@@ -1,8 +1,9 @@
 // 玩家状态与存档。纯逻辑，不依赖 DOM（存档读写通过 Storage 接口注入，便于测试）。
-// 注意：本文件里的数值（初始资源、升级公式等）是原型阶段的临时口径，后续由 content/progression 与 economy 数据接管。
+// 养成成本取自 content/progression；初始资源与装备/商店接入仍是原型口径。
 import { HERO_BY_ID, HEROES } from '../data/heroes';
 import type { Rarity } from '../data/heroes';
 import { baseStats } from '../data/systems';
+import { HERO_LEVEL_CAP, expToNext, levelUpFishCost, skillUpgradeCost, starUpShards } from '../content/progression';
 
 export interface HeroState {
   id: string;
@@ -16,7 +17,8 @@ export interface HeroState {
 export interface Resources {
   fish: number; // 小鱼干
   bells: number; // 金铃铛
-  catnip: number; // 猫薄荷
+  catnip: number; // 猫薄荷（每份 500 点成长经验，经验池不足时自动折算）
+  exp: number; // 成长经验池（关卡 / 挂机获得）
   tickets: number; // 招福符
   yarn: number; // 毛线球
 }
@@ -31,14 +33,14 @@ export interface PlayerState {
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number };
   pity: { ssr: number; ur: number; upLost: boolean };
-  idle: { last: number; fish: number; catnip: number };
+  idle: { last: number; fish: number; exp: number };
   gift: { last: number };
   seen: string[];
   settings: { speed: number };
 }
 
 export const MAX_STAR = 5;
-export const STAR_COST = [0, 10, 25, 50, 100]; // 升到 ★(n+1) 需要的碎片：STAR_COST[n]
+export const CATNIP_EXP = 500;
 export const LINEUP_SIZE = 5;
 
 export function newPlayer(now = Date.now()): PlayerState {
@@ -50,12 +52,12 @@ export function newPlayer(now = Date.now()): PlayerState {
     name: '铲屎官',
     level: 1,
     exp: 0,
-    res: { fish: 3000, bells: 3200, catnip: 30, tickets: 6, yarn: 3 },
+    res: { fish: 3000, bells: 3200, catnip: 12, exp: 0, tickets: 6, yarn: 3 },
     heroes,
     lineup: ['wei_xiahoudun', 'wu_huanggai', 'man_wutugu', 'wei_guojia', 'qun_dongzhuo'],
     stage: { chapter: 1, index: 1, wins: 0 },
     pity: { ssr: 0, ur: 0, upLost: false },
-    idle: { last: now, fish: 0, catnip: 0 },
+    idle: { last: now, fish: 0, exp: 0 },
     gift: { last: 0 },
     seen: start.slice(),
     settings: { speed: 2 },
@@ -73,6 +75,8 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
       const s = JSON.parse(raw) as PlayerState;
       if (s && s.v === 1 && s.heroes && s.res) {
         s.lineup = [...s.lineup, null, null, null, null, null].slice(0, LINEUP_SIZE);
+        s.res.exp ??= 0;
+        s.idle.exp ??= 0;
         return s;
       }
     }
@@ -102,9 +106,11 @@ export function teamPower(s: PlayerState): number {
 }
 
 // ---------- 养成（原型口径） ----------
-export const heroLevelCap = (star: number) => 20 + star * 12;
-export const levelUpCost = (lv: number) => ({ fish: 60 + lv * lv * 9, catnip: Math.floor(lv / 6) });
-export const skillUpCost = (lv: number) => ({ fish: 200 * lv, catnip: 2 * lv });
+// 成本口径来自 src/content/progression.ts（Codex 数据，docs/ECONOMY.md）
+export const heroLevelCap = (star: number) => Math.min(HERO_LEVEL_CAP, 20 + star * 20);
+export const levelUpCost = (lv: number) => ({ fish: levelUpFishCost(lv), exp: expToNext(lv) });
+export const skillUpCost = (lv: number) => ({ fish: skillUpgradeCost(lv).fish, catnip: lv });
+export const starShards = (star: number, rarity: Rarity) => starUpShards(star + 1)[rarity];
 
 export type OpResult = { ok: true } | { ok: false; reason: string };
 
@@ -120,8 +126,13 @@ export function levelUp(s: PlayerState, id: string): OpResult {
   if (!h) return { ok: false, reason: '还没有这只猫' };
   if (h.lv >= heroLevelCap(h.star)) return { ok: false, reason: '已达当前星级的等级上限，升星可提高上限' };
   const c = levelUpCost(h.lv);
-  if (!canAfford(s, c)) return { ok: false, reason: c.catnip > s.res.catnip ? '猫薄荷不够' : '小鱼干不够' };
-  spend(s, c);
+  if (s.res.fish < c.fish) return { ok: false, reason: '小鱼干不够' };
+  const lack = Math.max(0, c.exp - s.res.exp);
+  const nip = Math.ceil(lack / CATNIP_EXP);
+  if (nip > s.res.catnip) return { ok: false, reason: '成长经验不够（猫薄荷也用完了）' };
+  s.res.fish -= c.fish;
+  s.res.catnip -= nip;
+  s.res.exp = s.res.exp + nip * CATNIP_EXP - c.exp;
   h.lv++;
   return { ok: true };
 }
@@ -139,7 +150,7 @@ export function starUp(s: PlayerState, id: string): OpResult {
   const h = s.heroes[id];
   if (!h) return { ok: false, reason: '还没有这只猫' };
   if (h.star >= MAX_STAR) return { ok: false, reason: '已满星' };
-  const need = STAR_COST[h.star];
+  const need = starShards(h.star, HERO_BY_ID[h.id].rarity);
   if (h.shards < need) return { ok: false, reason: `碎片不够（${h.shards}/${need}）` };
   h.shards -= need;
   h.star++;

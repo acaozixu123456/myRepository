@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { POOLS, pull, pullOnce, urRate } from '../src/game/gacha';
-import { autoLineup, equip, heroPower, levelUp, load, newPlayer, save, starUp, teamPower, unequip } from '../src/game/state';
-import { claimIdle, getStage, idleRate, lineupSetups, tickIdle, waveSetups } from '../src/game/stage';
+import { autoLineup, equip, heroPower, levelUp, levelUpCost, load, newPlayer, save, starShards, starUp, teamPower, unequip } from '../src/game/state';
+import { claimIdle, getStage, paceLevel, recommendedPowerOf, idleRate, lineupSetups, tickIdle, waveSetups } from '../src/game/stage';
 import { simulate } from '../src/engine/battle';
 import { Rng } from '../src/engine/rng';
 
@@ -56,8 +56,11 @@ describe('gacha', () => {
   it('duplicates turn into shards and star up works', () => {
     const s = newPlayer();
     s.heroes['wu_zhoumiaoyu'] = { id: 'wu_zhoumiaoyu', lv: 1, star: 1, shards: 0, skillLv: 1 };
-    s.heroes['wu_zhoumiaoyu'].shards = 10;
+    s.heroes['wu_zhoumiaoyu'].shards = starShards(1, 'UR') - 1;
+    expect(starUp(s, 'wu_zhoumiaoyu').ok).toBe(false);
+    s.heroes['wu_zhoumiaoyu'].shards = starShards(1, 'UR');
     expect(starUp(s, 'wu_zhoumiaoyu').ok).toBe(true);
+    expect(s.heroes['wu_zhoumiaoyu'].shards).toBe(0);
     expect(s.heroes['wu_zhoumiaoyu'].star).toBe(2);
   });
 });
@@ -90,6 +93,27 @@ describe('player state', () => {
     s.res.fish = 0;
     expect(levelUp(s, 'wei_guojia').ok).toBe(false);
   });
+  it('level up draws the exp pool first, then converts catnip (500 exp each)', () => {
+    const s = newPlayer();
+    const h = s.heroes['wei_guojia'];
+    const c = levelUpCost(h.lv);
+    s.res.fish = c.fish;
+    s.res.exp = c.exp - 600;
+    s.res.catnip = 2;
+    expect(levelUp(s, 'wei_guojia').ok).toBe(true);
+    expect(s.res.catnip).toBe(0); // 缺 600 → 2 份猫薄荷
+    expect(s.res.exp).toBe(400); // 找零留在经验池
+    s.res.fish = 1e9; s.res.exp = 0; s.res.catnip = 0;
+    expect(levelUp(s, 'wei_guojia').ok).toBe(false);
+  });
+  it('migrates an older save without the exp pool', () => {
+    const s = newPlayer(1000) as any;
+    delete s.res.exp; delete s.idle.exp;
+    const st = { getItem: () => JSON.stringify(s), setItem: () => undefined };
+    const r = load(st);
+    expect(r.res.exp).toBe(0);
+    expect(r.idle.exp).toBe(0);
+  });
 });
 
 describe('stage & idle', () => {
@@ -102,5 +126,21 @@ describe('stage & idle', () => {
     expect(idleRate(s).fish).toBeGreaterThan(0);
     const got = claimIdle(s);
     expect(got.fish).toBeGreaterThan(0);
+    expect(got.exp).toBeGreaterThan(0);
+    expect(s.res.exp).toBe(got.exp);
+  });
+});
+
+describe('pacing', () => {
+  it('recommended power rises monotonically through the campaign', () => {
+    let prev = 0;
+    for (let o = 1; o <= 144; o++) {
+      const p = recommendedPowerOf(Math.ceil(o / 24), ((o - 1) % 24) + 1);
+      expect(p).toBeGreaterThanOrEqual(prev);
+      prev = p;
+    }
+    expect(paceLevel(24)).toBe(20);
+    expect(paceLevel(72)).toBe(45);
+    expect(paceLevel(144)).toBe(95);
   });
 });

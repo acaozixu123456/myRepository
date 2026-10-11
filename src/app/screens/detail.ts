@@ -3,7 +3,7 @@ import { HERO_BY_ID } from '../../data/heroes';
 import { KITS } from '../../data/kits';
 import { SKILLS } from '../../data/skills';
 import { ROLES } from '../../data/systems';
-import { MAX_STAR, STAR_COST, heroLevelCap, heroPower, heroStats, isInLineup, levelUp, levelUpCost, setAwaken, skillUp, skillUpCost, starUp, equip, unequip } from '../../game/state';
+import { MAX_STAR, starShards, heroLevelCap, heroPower, heroStats, isInLineup, levelUp, levelUpCost, setAwaken, skillUp, skillUpCost, starUp, equip, unequip } from '../../game/state';
 import { artImg } from '../../ui/art';
 import { esc, fmt, stars } from '../../ui/components';
 import { ROLE_ICON, icon } from '../../ui/icons';
@@ -39,7 +39,7 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
   const cap = heroLevelCap(h.star);
   const lc = levelUpCost(h.lv);
   const sc = skillUpCost(h.skillLv);
-  const need = h.star < MAX_STAR ? STAR_COST[h.star] : 0;
+  const need = h.star < MAX_STAR ? starShards(h.star, d.rarity) : 0;
   const inTeam = isInLineup(ctx.s, id);
   const bar = (label: string, v: number, max: number) => `<div class="stat"><span>${label}</span><div class="bar"><i style="width:${Math.min(100, (v / max) * 100)}%"></i></div><em class="num">${fmt(v)}</em></div>`;
   const R = ROLES[d.role];
@@ -64,7 +64,7 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
     <h3 style="margin:14px 0 0;font-family:var(--f-d);font-weight:400;font-size:17px">装备 <span class="tag">即将开放</span></h3>
     <div class="slots4"><div>${icon('sword', 30)}武器</div><div>${icon('shield', 30)}铠甲</div><div>${icon('star', 30)}头饰</div><div>${icon('bell', 30)}铃铛</div></div>
     <div class="panel" style="margin-top:12px"><h3>养成</h3>
-      <div class="row" style="margin:6px 0"><div class="grow"><b>升级</b> <span class="muted" style="font-size:12px">Lv.${h.lv} → ${h.lv + 1}</span></div><button class="btn sm" data-act="levelup" ${h.lv >= cap ? 'disabled' : ''}>${h.lv >= cap ? '已到上限' : `<span class="cost">${icon('fish', 16)}${fmt(lc.fish)} ${lc.catnip ? icon('catnip', 16) + lc.catnip : ''}</span>`}</button></div>
+      <div class="row" style="margin:6px 0"><div class="grow"><b>升级</b> <span class="muted" style="font-size:12px">Lv.${h.lv} → ${h.lv + 1}</span></div><button class="btn sm" data-act="levelup" ${h.lv >= cap ? 'disabled' : ''}>${h.lv >= cap ? '已到上限' : `<span class="cost">${icon('fish', 16)}${fmt(lc.fish)} ${icon('spark', 16)}${fmt(lc.exp)}</span>`}</button></div>
       <div class="row" style="margin:8px 0"><div class="grow"><b>升星</b> <span class="muted" style="font-size:12px">碎片 ${h.shards}${h.star < MAX_STAR ? ' / ' + need : ''}</span></div><button class="btn sm green" data-act="starup" ${h.star >= MAX_STAR || h.shards < need ? 'disabled' : ''}>${h.star >= MAX_STAR ? '已满星' : '升星'}</button></div>
       <div class="row" style="margin:8px 0 0"><div class="grow"><b>绝技</b> <span class="muted" style="font-size:12px">Lv.${h.skillLv} / 10</span></div><button class="btn sm blue" data-act="skillup" ${h.skillLv >= 10 ? 'disabled' : ''}>${h.skillLv >= 10 ? '已满级' : `<span class="cost">${icon('fish', 16)}${fmt(sc.fish)} ${icon('catnip', 16)}${sc.catnip}</span>`}</button></div>
     </div>
