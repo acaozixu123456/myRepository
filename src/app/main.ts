@@ -323,6 +323,7 @@ root.addEventListener('click', (e) => {
 setInterval(() => {
   if (syncQuestDay()) { ctx.save(); ctx.refresh(); }
   applyScenery();
+  if (ctx.screen === 'campaign' && Date.now() % 30000 < 1000 && (ctx.s.expedition?.teams.length ?? 0) > 0) ctx.refresh();
   if (ctx.screen === 'home') { updateTicker(ctx); updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); }
 }, 1000);
 setInterval(() => ctx.save(), 8000);

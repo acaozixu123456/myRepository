@@ -1,4 +1,5 @@
 // 征战：章节页签 + 关卡地图 + 关卡详情。
+import { HERO_BY_ID } from '../../data/heroes';
 import { sfx } from '../sfx';
 import { CHAPTERS } from '../../content/campaign';
 import type { RewardDef, StageDef } from '../../content/types';
@@ -9,6 +10,7 @@ import { teamPower } from '../../game/state';
 import { TOWER_FLOORS, towerBest, towerClear, towerFaction, towerFloor, towerReward } from '../../game/tower';
 import { DAILY_TRIES, DUNGEONS, DUNGEON_BY_ID, TIERS, dungeonLeft, dungeonReward, dungeonStage, dungeonStart, dungeonSweep, dungeonWin, ensureDungeon, tierUnlocked } from '../../game/dungeon';
 import type { DungeonId } from '../../game/dungeon';
+import { MULTS, ROUTES, ROUTE_BY_ID, availableHeroes, claimTeam, dispatch, ensureExpedition, minutesLeft, needMet, needText, needsMet, rewardFor, slotsOf, teamDone } from '../../game/expedition';
 import { BUFF_BY_ID, MAZE_EXTRA_COST, MAZE_EXTRA_MAX, MAZE_FLOORS, abandonRun, buffChoices, clearedFloors, buyRun, chooseBuff, ensureMaze, finishFloor, mazeRewardFor, mazeSetups, mazeStage, runsLeft, startRun } from '../../game/maze';
 import { ATTEMPTS_PER_DAY, MILESTONES, attemptsLeft, bossBoard, bossLevel, bossOfWeek, bossStage, claimMilestone, claimable, ensureBoss, finishAttempt, startAttempt } from '../../game/worldboss';
 import { artUrl } from '../../ui/art';
@@ -17,7 +19,7 @@ import { icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
 import { topbar } from './lineup';
 
-export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' | 'dungeon' | 'boss' | 'maze', dtier: { fish: 1, exp: 1, catnip: 1 } as Record<DungeonId, number> };
+export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' | 'dungeon' | 'boss' | 'maze' | 'trip', dtier: { fish: 1, exp: 1, catnip: 1 } as Record<DungeonId, number> };
 
 const best = (ctx: AppCtx) => ctx.s.best ?? ctx.s.stage;
 const bestOrd = (ctx: AppCtx) => stageOrdinal(best(ctx).chapter, best(ctx).index);
@@ -28,7 +30,7 @@ function nodeState(ctx: AppCtx, c: number, i: number): NodeState {
   return o <= b ? 'done' : o === b + 1 ? 'next' : 'locked';
 }
 
-const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button><button class="pill" data-act="cmode" data-m="boss" aria-pressed="${campaignState.mode === 'boss'}">Boss</button><button class="pill" data-act="cmode" data-m="maze" aria-pressed="${campaignState.mode === 'maze'}">迷宫</button></div>`;
+const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button><button class="pill" data-act="cmode" data-m="boss" aria-pressed="${campaignState.mode === 'boss'}">Boss</button><button class="pill" data-act="cmode" data-m="maze" aria-pressed="${campaignState.mode === 'maze'}">迷宫</button><button class="pill" data-act="cmode" data-m="trip" aria-pressed="${campaignState.mode === 'trip'}">远征</button></div>`;
 
 function towerHtml(ctx: AppCtx): string {
   const best = towerBest(ctx.s);
@@ -83,6 +85,24 @@ function dungeonHtml(ctx: AppCtx): string {
   return `${modeTabs()}<p class="intro" style="margin:2px 4px 8px">秘境每天刷新次数；通关过的档位可以直接扫荡。档位随主线推进解锁。</p>${cards}`;
 }
 
+export const tripState = { route: 'patrol', sel: [] as string[] };
+function tripHtml(ctx: AppCtx): string {
+  const s = ctx.s, ex = ensureExpedition(s), now = Date.now(), slots = slotsOf(s, now);
+  const route = ROUTE_BY_ID[tripState.route] ?? ROUTES[0];
+  tripState.sel = tripState.sel.filter((id) => availableHeroes(s).includes(id)).slice(0, route.max);
+  const met = needsMet(s, route, tripState.sel), rw = rewardFor(s, route, met);
+  const running = ex.teams.map((t) => { const r = ROUTE_BY_ID[t.route], done = teamDone(t, now); return `<div class="evr big"><div class="grow"><b>${esc(r.name)}${t.met === r.needs.length ? ' · 大成功' : ''}</b><small>${t.heroes.map((id) => esc(HERO_BY_ID[id].name)).join('、')}</small><em>${done ? '已回营，可以领取' : `还有 ${minutesLeft(t, now)} 分钟（收益 ×${t.mult}）`}</em></div><button class="btn sm ${done ? 'green' : 'ghost'}" data-act="tr-claim" data-id="${t.id}" ${done ? '' : 'disabled'}>${done ? '领取' : '远征中'}</button></div>`; }).join('');
+  const picker = availableHeroes(s).map((id) => `<button class="pick ${tripState.sel.includes(id) ? 'on' : ''}" data-act="tr-pick" data-id="${id}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"><small>${esc(HERO_BY_ID[id].name)}</small></button>`).join('') || '<div class="muted">没有空闲的猫：阵容里的猫不能派出去，先多招几只吧。</div>';
+  const needs = route.needs.map((n) => `<span class="chip light ${needMet(s, n, tripState.sel) ? 'ok' : ''}">${needMet(s, n, tripState.sel) ? '✓ ' : ''}${needText(n)}</span>`).join('');
+  const full = ex.teams.length >= slots;
+  return `${modeTabs()}<section class="panel"><h3>猫猫远征 <small class="muted" style="font-size:12px">队伍位 ${ex.teams.length}/${slots}</small></h3>
+    <p class="intro">把没上阵的猫派出去，按真实时间结算，<b>下线也在跑</b>。每条路线有 3 个需要，满足得越多收益越高（最高 ×${MULTS[3]}）；出门的猫不能上阵。VIP3 / VIP8 / 月卡各多一个队伍位。</p>${running || '<div class="muted" style="font-size:12px">还没有队伍出门。</div>'}</section>
+    <section class="panel"><div class="seg" style="margin-bottom:6px">${ROUTES.map((r) => `<button class="pill" data-act="tr-route" data-id="${r.id}" aria-pressed="${r.id === route.id}">${esc(r.name)}</button>`).join('')}</div>
+    <p class="intro" style="margin:2px 0 6px">${esc(route.desc)}（${route.minutes >= 60 ? `${route.minutes / 60} 小时` : `${route.minutes} 分钟`}，最多 ${route.max} 只）</p><div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:6px">${needs}</div>
+    <div class="wishpick">${picker}</div>
+    <div class="evr big" style="margin-top:6px"><div class="grow"><b>预计收益（满足 ${met}/3，×${rw.mult}）</b><small>${fmt(rw.fish)} 小鱼干 · ${fmt(rw.exp)} 经验 · ${rw.catnip} 猫薄荷${met === 3 && (route.tokens || route.tickets) ? ` · ${route.tokens} 同袍鱼牌${route.tickets ? ` · ${route.tickets} 招福符` : ''}` : ''}</small>${route.tokens || route.tickets ? '<em>全部需要都满足才有鱼牌 / 招福符</em>' : ''}</div><button class="btn ${full || !tripState.sel.length ? 'ghost' : 'green'}" data-act="tr-go" ${full || !tripState.sel.length ? 'disabled' : ''}>${full ? '队伍位已满' : '出发'}</button></div></section>`;
+}
+
 function mazeHtml(ctx: AppCtx): string {
   const s = ctx.s, m = ensureMaze(s), run = m.active, left = runsLeft(s);
   const head = (id: string) => `<img src="${artUrl(id, 'head')}" alt="" draggable="false">`;
@@ -128,6 +148,7 @@ function bossHtml(ctx: AppCtx): string {
 }
 
 export function campaignHtml(ctx: AppCtx): string {
+  if (campaignState.mode === 'trip') return `${topbar(ctx, '征战')}<div class="scroll">${tripHtml(ctx)}</div>`;
   if (campaignState.mode === 'maze') return `${topbar(ctx, '征战')}<div class="scroll">${mazeHtml(ctx)}</div>`;
   if (campaignState.mode === 'boss') return `${topbar(ctx, '征战')}<div class="scroll">${bossHtml(ctx)}</div>`;
   if (campaignState.mode === 'dungeon') return `${topbar(ctx, '征战')}<div class="scroll">${dungeonHtml(ctx)}</div>`;
@@ -237,6 +258,10 @@ export function handleCampaign(ctx: AppCtx, act: string, el: HTMLElement): boole
       });
       return true;
     }
+    case 'tr-route': tripState.route = el.dataset.id!; tripState.sel = []; ctx.refresh(); return true;
+    case 'tr-pick': { const id = el.dataset.id!, route = ROUTE_BY_ID[tripState.route]; tripState.sel = tripState.sel.includes(id) ? tripState.sel.filter((x) => x !== id) : tripState.sel.length < route.max ? [...tripState.sel, id] : tripState.sel; ctx.refresh(); return true; }
+    case 'tr-go': { const r = dispatch(ctx.s, tripState.route, tripState.sel); if (!r.ok) { ctx.toast(r.reason); return true; } tripState.sel = []; sfx.ok(); ctx.save(); ctx.toast(`出发啦！收益 ×${r.team.mult}`); ctx.refresh(); if (ctx.loop) ctx.loop.restart(); return true; }
+    case 'tr-claim': { const r = claimTeam(ctx.s, Number(el.dataset.id)); if (!r.ok) { ctx.toast(r.reason); return true; } sfx.coin(); ctx.save(); ctx.toast(`${r.perfect ? '大成功！' : ''}带回 ${fmt(r.reward.fish)} 小鱼干、${r.reward.catnip} 猫薄荷${r.reward.tickets ? `、${r.reward.tickets} 招福符` : ''}`); ctx.refresh(); return true; }
     case 'mz-start': { const r = startRun(ctx.s); if (!r.ok) ctx.toast(r.reason); else { sfx.ok(); ctx.save(); } ctx.refresh(); return true; }
     case 'mz-buy': { const r = buyRun(ctx.s); ctx.toast(r.ok ? '加了一次探险机会' : r.reason ?? ''); if (r.ok) ctx.save(); ctx.refresh(); return true; }
     case 'mz-pick': { const r = chooseBuff(ctx.s, el.dataset.id!); if (!r.ok) { ctx.toast(r.reason); return true; } sfx.up(); ctx.save(); ctx.toast(`选了「${r.buff.name}」`); ctx.refresh(); return true; }

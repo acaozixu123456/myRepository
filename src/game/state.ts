@@ -18,6 +18,7 @@ import { affMul } from './affection';
 import type { AffState } from './affection';
 import type { EventState } from './events';
 import type { GuildBossState } from './guildboss';
+import type { ExpeditionState } from './expedition';
 import type { MazeState } from './maze';
 import type { NestState } from './nest';
 import type { GuildState } from './guild';
@@ -60,6 +61,7 @@ export interface PlayerState {
   daily?: DailyState; // 七日签到 / 快速探索
   events?: EventState; // 活动中心
   wboss?: BossState; // 世界 Boss
+  expedition?: ExpeditionState; // 猫猫远征
   maze?: MazeState; // 纸箱迷宫
   nest?: NestState; // 猫窝
   gboss?: GuildBossState; // 公会 Boss
@@ -245,6 +247,7 @@ export function isInLineup(s: PlayerState, id: string) {
 export function equip(s: PlayerState, id: string, slot?: number): OpResult {
   if (!s.heroes[id]) return { ok: false, reason: '还没有这只猫' };
   if (isInLineup(s, id)) return { ok: false, reason: '已经在阵容里了' };
+  if (s.expedition?.teams.some((t) => t.heroes.includes(id))) return { ok: false, reason: '这只猫正在远征，等它回来' };
   let target = slot;
   if (target === undefined) {
     const front = FRONT_ROLES.has(HERO_BY_ID[id].role);
@@ -267,7 +270,8 @@ export function swapSlots(s: PlayerState, a: number, b: number) {
 }
 /** 一键上阵：战力最高的 5 只，前排优先守护 / 先锋 */
 export function autoLineup(s: PlayerState) {
-  const owned = Object.values(s.heroes).sort((a, b) => heroPower(b) - heroPower(a));
+  const away = new Set((s.expedition?.teams ?? []).flatMap((t) => t.heroes)); // 正在远征的猫不上阵
+  const owned = Object.values(s.heroes).filter((h) => !away.has(h.id)).sort((a, b) => heroPower(b) - heroPower(a));
   const front = owned.filter((h) => FRONT_ROLES.has(HERO_BY_ID[h.id].role));
   const back = owned.filter((h) => !FRONT_ROLES.has(HERO_BY_ID[h.id].role));
   const lineup: (string | null)[] = [null, null, null, null, null];

@@ -324,6 +324,7 @@ export const SOCIAL_CSS = `
 .arow.me{background:linear-gradient(#fff3c4,#ffe08a);box-shadow:0 3px 0 #d9a63a}
 .arow .rk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--f-d);font-size:14px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line);flex:none}
 .arow .rk.r1{background:linear-gradient(#ffe27a,#f0a62e);color:#5a2a05}.arow .rk.r2{background:linear-gradient(#f0f0f6,#b8bcc8)}.arow .rk.r3{background:linear-gradient(#f0c8a0,#c88a58)}
+.chip.ok{background:#dff5c9;color:#2a6a1a}
 .mzteam{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.mzu{display:flex;flex-direction:column;align-items:center;gap:2px}.mzu img{width:46px;height:46px;border-radius:50%;object-fit:cover}.mzu .bar{width:100%;height:6px}.mzu small{font-size:10px;font-weight:800;color:var(--ink-2)}.mzu.down img{filter:grayscale(1);opacity:.6}
 .mzbuff{position:relative;display:block;width:100%;text-align:left;padding:10px 12px;margin:6px 0;border-radius:14px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line)}.mzbuff b{font-family:var(--f-d);font-weight:400;font-size:15px;display:block}.mzbuff small{display:block;font-size:12px;font-weight:700;color:var(--ink-2)}.mzbuff i{position:absolute;right:10px;top:8px;font-style:normal;font-size:11px;font-weight:800;color:var(--ink-3)}
 .mzbuff.rare{background:linear-gradient(#e6f2ff,#cfe3fb);box-shadow:inset 0 0 0 2px #6a9fd8}.mzbuff.epic{background:linear-gradient(#f6e6ff,#e2c6fb);box-shadow:inset 0 0 0 2px #a46ad8}

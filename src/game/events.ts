@@ -84,7 +84,7 @@ export function ensureEvents(s: PlayerState, now = Date.now()): EventState {
 
 // ---------- 活动点（嘉年华与通行证共用） ----------
 export const DAY_PTS_CAP = 400;
-const POINTS: Record<string, number> = { login: 10, clear_stage: 1, tower_clear: 6, arena_battle: 4, visit_friend: 2, guild_help: 3, recruit: 8, level_up_hero: 1, upgrade_skill: 2, equip_upgrade: 2, claim_idle: 5, dungeon: 8, boss: 15 };
+const POINTS: Record<string, number> = { login: 10, clear_stage: 1, tower_clear: 6, arena_battle: 4, visit_friend: 2, guild_help: 3, recruit: 8, level_up_hero: 1, upgrade_skill: 2, equip_upgrade: 2, claim_idle: 5, dungeon: 8, boss: 15, dispatch: 6 };
 export function addPoints(s: PlayerState, kind: string, amount = 1, now = Date.now()): number {
   const per = POINTS[kind]; if (!per) return 0;
   const e = ensureEvents(s, now);
