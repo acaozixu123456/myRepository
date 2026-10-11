@@ -17,7 +17,7 @@ export const ROLES: Record<Role, RoleDef> = {
   刺客: { role: '刺客', row: '后排', desc: '绕后飞刀，专杀后排脆皮。', base: { hp: 700, atk: 150, def: 38, spd: 125 } },
 };
 
-export const RARITY_MULT: Record<Rarity, number> = { SR: 0.88, SSR: 1.0, UR: 1.15, SP: 1.55 };
+export const RARITY_MULT: Record<Rarity, number> = { SR: 0.88, SSR: 1.0, UR: 1.15, SP: 1.45 };
 
 export function baseStats(role: Role, rarity: Rarity) {
   const b = ROLES[role].base;

@@ -5,7 +5,10 @@ import { artUrl } from '../../ui/art';
 import { chip, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, nextStage, recommendedPowerOf, tickIdle } from '../../game/stage';
-import { canClaimCard, canClaimVip } from '../../game/premium';
+import { canClaimCard, canClaimVip, dayIndex } from '../../game/premium';
+import { unreadCount } from '../../game/social';
+import { canSign } from '../../game/daily';
+import { fastLabel } from './daily';
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
@@ -46,15 +49,21 @@ export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: strin
   const s = ctx.s;
   return [
     { act: 'nav', to: 'quests', ic: 'campaign', label: '任务', dot: QUESTS.some((quest) => isClaimable(s, quest)) },
+    { act: 'signin', ic: 'calendar', label: '签到', dot: canSign(s) },
+    { act: 'nav', to: 'social', ic: 'chat', label: '广场', dot: unreadCount(s) > 0 },
     { act: 'nav', to: 'shop', ic: 'bag', label: '商店' },
     { act: 'nav', to: 'pay', ic: 'moon', label: '充值', cls: 'pay', dot: canClaimCard(s) || canClaimVip(s) },
   ];
 }
 
+export function updateQuick(ctx: AppCtx) {
+  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''}>${icon(q.ic, 30)}<span>${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
+}
+
 export function updateHome(ctx: AppCtx) {
   const s = ctx.s;
   updateHud(ctx);
-  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''}>${icon(q.ic, 30)}<span>${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
+  updateQuick(ctx);
   const st = getStage(s.stage.chapter, s.stage.index)!;
   const ch = CHAPTERS[s.stage.chapter - 1];
   const power = teamPower(s);
@@ -84,10 +93,10 @@ export function updateHome(ctx: AppCtx) {
   }).join('') + `<span class="go">阵容 ›</span>`;
   updateIdle(ctx);
   const now = Date.now();
-  const left = Math.max(0, 300000 - (now - s.gift.last));
+  const taken = s.gift.last > 0 && dayIndex(s.gift.last) >= dayIndex(now);
   const g = $(ctx, '#giftBtn') as HTMLButtonElement;
-  g.disabled = left > 0;
-  g.innerHTML = left > 0 ? `每日福利<small>${Math.ceil(left / 1000)} 秒后可领</small>` : `每日福利<small>+铃铛 +招福符</small>`;
+  g.disabled = taken;
+  g.innerHTML = taken ? `每日福利<small>今日已领，明天再来</small>` : `每日福利<small>+铃铛 +招福符</small>`;
 }
 
 export function updateIdle(ctx: AppCtx) {
@@ -102,7 +111,7 @@ export function updateIdle(ctx: AppCtx) {
       <div class="bar" style="margin-top:6px"><i style="width:${pct}%"></i></div>
       <div class="sub">每分钟 +${fmt(r.fish)}鱼干 +${fmt(r.exp)}经验 · 上限${idleCapHours(s)}小时</div>
     </div>
-    <button class="btn lg" data-act="claim">领取</button>`;
+    <div class="idlebtns"><button class="btn lg" data-act="claim">领取</button><button class="btn sm blue" data-act="fast">${fastLabel(ctx)}</button></div>`;
 }
 
 export function claim(ctx: AppCtx) {
