@@ -239,3 +239,43 @@ export function building(s: BuildingSpec): THREE.Group {
   out.userData = { low, high, top: SHOP_H + upper + 3, hy };
   return out;
 }
+
+const STALLS: [string, string, string, string][] = [ // [篷色A, 篷色B, 招牌色, 招牌字]
+  ['#fff0d8', '#ff7a3a', '#ff9a4a', '烧'], ['#fff0f8', '#ff5aa8', '#ff7ad9', '糖'], ['#e8fff8', '#2aa8c8', '#7ff0ff', '鱼'],
+  ['#fff8d8', '#d9483b', '#ffe27a', '面'], ['#f0fff4', '#3aa86a', '#4fe08a', '茶'], ['#f0e8ff', '#7a5aff', '#9a7aff', '酒'],
+];
+/** 夜市小摊：条纹篷 + 灯笼 + 发光小招牌 + 台面上的食物（朝 +z） */
+export function stall(variant = 0): THREE.Group {
+  const [a, b, sc, ch] = STALLS[variant % STALLS.length];
+  const g = new THREE.Group();
+  g.add(box(2.4, 0.9, 1.3, std('#3a2a30', 0.8), 0, 0.45, 0));
+  g.add(box(2.5, 0.12, 1.4, std('#8a5a3a', 0.8), 0, 0.95, 0));
+  for (const dx of [-1.15, 1.15]) for (const dz of [-0.6, 0.6]) g.add(cyl(0.05, 2.6, std('#5a4a3a', 0.8), dx, 1.5, dz, 6));
+  const awn = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.1, 1.9), new THREE.MeshStandardMaterial({ map: tiled(stripes(a, b, 8), 1, 1), roughness: 0.8 }));
+  awn.position.set(0, 2.85, 0.15); awn.rotation.x = 0.18; g.add(awn);
+  const sign = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.9), glowMat('#ffffff', neonSign(ch, sc, { w: 128, h: 128 })));
+  sign.position.set(0, 2.2, 0.72); g.add(sign);
+  for (const dx of [-1.0, 1.0]) { const l = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), glowMat(sc)); l.position.set(dx, 2.55, 0.8); g.add(l); }
+  const foodCols = ['#e8a23a', '#d9483b', '#f4efe6', '#8a5a3a'];
+  for (let i = 0; i < 6; i++) { const f = new THREE.Mesh(new THREE.SphereGeometry(0.14, 6, 5), std(foodCols[i % 4], 0.8)); f.position.set(-0.8 + i * 0.32, 1.12, 0.1); g.add(f); }
+  const steam = new THREE.Mesh(new THREE.CylinderGeometry(0.0, 0.0, 0.01), std('#fff', 1)); g.add(steam);
+  return g;
+}
+/** 横跨街道的霓虹拱门：两根立柱 + 横梁 + 发光大字（拱门平面沿 x，朝 +z；放置时旋转） */
+export function arch(text: string, color: string, span = 10): THREE.Group {
+  const g = new THREE.Group();
+  for (const s of [-1, 1]) g.add(box(0.7, 7, 0.7, std('#2a2a3a', 0.5, 0.5), s * span / 2, 3.5, 0));
+  g.add(box(span + 1.4, 0.7, 0.8, std('#2a2a3a', 0.5, 0.5), 0, 7.2, 0));
+  const sg = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 1.6), glowMat('#ffffff', neonSign(text, color, { w: 256, h: 96 }))); sg.position.set(0, 8.4, 0.45); g.add(sg);
+  const sg2 = sg.clone(); sg2.rotation.y = Math.PI; sg2.position.z = -0.45; g.add(sg2);
+  const strip = new THREE.Mesh(new THREE.BoxGeometry(span, 0.12, 0.12), glowMat(color)); strip.position.set(0, 6.8, 0.42); g.add(strip);
+  return g;
+}
+/** 一串灯笼（沿悬链线挂在两点之间） */
+export function lanternString(a: THREE.Vector3, b: THREE.Vector3, color: string, n = 7): THREE.Group {
+  const g = new THREE.Group(); g.add(wire(a, b, 1.1));
+  const mid = a.clone().add(b).multiplyScalar(0.5); mid.y -= 1.1;
+  const curve = new THREE.QuadraticBezierCurve3(a, mid, b);
+  for (let i = 1; i < n; i++) { const p = curve.getPoint(i / n); const l = new THREE.Mesh(new THREE.SphereGeometry(0.34, 8, 6), glowMat(color)); l.scale.y = 1.25; l.position.set(p.x, p.y - 0.4, p.z); g.add(l); }
+  return g;
+}

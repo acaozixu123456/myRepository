@@ -1,51 +1,23 @@
-// 关卡 1：纸箱街·霓虹巷口 —— 一块微缩景观：十字路口、四个街区、电车、招财猫、电线杆。
+// 把 LevelDef（levels.ts 里的纯数据）搭成 3D 场景：路、人行道、楼、道具、电线、拱门、灯笼、倒影、外圈都市、蒸汽。
 import * as THREE from 'three';
 import { asphalt, glowTex, paving } from './tex';
-import { bush, building, cardboardStack, cone, glowMat, lamp, manekiNeko, planterBox, pole, std, trashCan, tram, tree, vending, wire } from './kit';
-import type { BuildingSpec } from './kit';
+import { arch, building, glowMat, lamp, lanternString, manekiNeko, cone, pole, std, tram, wire } from './kit';
 import { bakeStatic } from './bake';
 import { buildBackdrop } from './backdrop';
 import { buildSteam } from './steam';
+import { LEVEL_1, levelColliders } from './levels';
+import type { AABB, LevelDef } from './levels';
+import { PROPS } from './props';
 
-export interface AABB { x0: number; x1: number; z0: number; z1: number }
+export type { AABB };
 export interface BuildingRef { low: THREE.Object3D; high: THREE.Object3D; mirrorHigh?: THREE.Object3D; x0: number; x1: number; z0: number; z1: number; top: number; t: number }
-export interface Street { group: THREE.Group; colliders: AABB[]; spawn: THREE.Vector3; half: number; buildings: BuildingRef[]; update(t: number, dt: number): void }
+export interface Street { level: LevelDef; group: THREE.Group; colliders: AABB[]; spawn: THREE.Vector3; half: number; buildings: BuildingRef[]; update(t: number, dt: number): void }
+export const streetColliders = (L: LevelDef = LEVEL_1): AABB[] => levelColliders(L);
 
-const HALF = 32;
-
-interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
-
-const POLE_XZ: [number, number][] = [[-20, -5.2], [-6, -5.2], [6, 5.2], [20, 5.2], [-5.2, 18], [5.2, -18]];
-const PROP_XZ: [number, number][] = [[-5.0, -7.4], [-3.6, -7.4], [8, 7.4], [-6.6, -7.2], [17, -6.6], [-18, 6.8], [5.8, 8.2], [9.5, -7.0], [-22, 7.0], [-8, -6.6], [10, 6.8], [21, -6.4], [-21, 6.8], [-17, -6.9], [20, 6.9], [4.6, -6.8], [-4.8, 6.9]];
-
-/** 碰撞盒（纯数据，不需要 DOM；寻路与「实体摆放合法性」测试都用它） */
-export function streetColliders(): AABB[] {
-  const out: AABB[] = [];
-  for (const p of BUILDINGS) out.push({ x0: p.x - p.spec.w / 2 - 0.3, x1: p.x + p.spec.w / 2 + 0.3, z0: p.z - p.spec.d / 2 - 0.3, z1: p.z + p.spec.d / 2 + 0.3 });
-  out.push({ x0: -14, x1: -4.2, z0: 0.8, z1: 4.4 }); // 电车
-  for (const [x, z] of POLE_XZ) out.push({ x0: x - 0.4, x1: x + 0.4, z0: z - 0.4, z1: z + 0.4 });
-  for (const [x, z] of PROP_XZ) out.push({ x0: x - 0.7, x1: x + 0.7, z0: z - 0.7, z1: z + 0.7 });
-  return out;
-}
-
-export const BUILDINGS: Placed[] = [
-  // 北侧（面朝南 +z）
-  { x: -14, z: -12, face: 1, spec: { w: 10, d: 9, floors: 5, style: 'cream', seed: 1, roof: 'garden', shop: { name: '海洋寿司', color: '#7ff0ff', awning: ['#e8f4ee', '#4a9a82'] }, signs: [{ text: '永喵拉面', color: '#ff7ad9', vertical: true }, { text: '熊猫当铺', color: '#7ff0ff' }], neon: '#7ff0ff' } },
-  { x: -25, z: -11.5, face: 1, spec: { w: 8, d: 8, floors: 4, style: 'teal', seed: 2, roof: 'tank', shop: { name: '九命电器', color: '#ffe27a', awning: ['#fff', '#d9483b'] }, signs: [{ text: '电', color: '#ffe27a', vertical: true }], neon: '#ffe27a' } },
-  { x: 13, z: -12, face: 1, spec: { w: 11, d: 10, floors: 4, style: 'pink', seed: 3, roof: 'tile', shop: { name: '山之男居酒屋', color: '#ff9a4a', awning: ['#3a2a30', '#ff7a4a'] }, signs: [{ text: '酒', color: '#ff4aa8', vertical: true }], neon: '#ff4aa8' } },
-  { x: 25, z: -11.5, face: 1, spec: { w: 8, d: 8, floors: 6, style: 'dark', seed: 4, roof: 'flat', shop: { name: '赛博猫网咖', color: '#9a7aff', awning: ['#2a2a4a', '#7a5aff'] }, signs: [{ text: '网咖', color: '#7ff0ff', vertical: true }, { text: '24H', color: '#ff4aa8' }], neon: '#9a7aff' } },
-  // 南侧（面朝北 -z，旋转 π）
-  { x: -14, z: 12, face: -1, spec: { w: 10, d: 9, floors: 4, style: 'brick', seed: 5, roof: 'tank', shop: { name: '猫抓板药局', color: '#4fe08a', awning: ['#f4fff4', '#3aa86a'] }, signs: [{ text: '药', color: '#4fe08a', vertical: true }], neon: '#4fe08a' } },
-  { x: -25, z: 11.5, face: -1, spec: { w: 8, d: 8, floors: 5, style: 'cream', seed: 6, roof: 'garden', shop: { name: '小鱼干酒场', color: '#ff7ad9', awning: ['#ffe9f4', '#ff5aa8'] }, signs: [{ text: '鱼', color: '#7ff0ff', vertical: true }], neon: '#ff7ad9' } },
-  { x: 14, z: 12, face: -1, spec: { w: 10, d: 9, floors: 5, style: 'teal', seed: 7, roof: 'tile', shop: { name: '喵喵便利店', color: '#7ff0ff', awning: ['#fff', '#2aa8c8'] }, signs: [{ text: '24H', color: '#ffe27a' }], neon: '#7ff0ff' } },
-  { x: 25, z: 11.5, face: -1, spec: { w: 8, d: 8, floors: 4, style: 'dark', seed: 8, roof: 'flat', shop: { name: '夜猫当铺', color: '#ff4a6a', awning: ['#2a1a2a', '#c8284a'] }, signs: [{ text: '当', color: '#ff4a6a', vertical: true }], neon: '#ff4a6a' } },
-];
-
-
-
-export function buildStreet(): Street {
+export function buildStreet(L: LevelDef = LEVEL_1): Street {
+  const HALF = L.half;
   const g = new THREE.Group();
-  const colliders = streetColliders();
+  const colliders = levelColliders(L);
 
   const nm = <T extends THREE.Object3D>(o: T): T => { o.userData.noMirror = true; return o; };
   // ---- 地基：微缩景观的底座（只做四面裙边 + 很深的暗色底；路面下面要留出空间给倒影）----
@@ -75,7 +47,7 @@ export function buildStreet(): Street {
 
   // ---- 楼 ----
   const refs: BuildingRef[] = [];
-  for (const p of BUILDINGS) {
+  for (const p of L.buildings) {
     const b = building(p.spec);
     b.position.set(p.x, 0.32, p.z);
     if (p.face < 0) b.rotation.y = Math.PI;
@@ -84,36 +56,38 @@ export function buildStreet(): Street {
     refs.push({ low: ud.low, high: ud.high, x0: p.x - p.spec.w / 2, x1: p.x + p.spec.w / 2, z0: p.z - p.spec.d / 2, z1: p.z + p.spec.d / 2, top: 0.32 + ud.top, t: 1 });
   }
   // 屋顶上的招财猫（东北角那栋）
-  const mk = manekiNeko(1.25); mk.position.set(2, 3 * 3.4 + 0.4 - 3.4, 0.5); mk.rotation.y = -0.35; refs[2].high.add(mk);
+  if (L.chapter === 1) { const mk = manekiNeko(1.25); mk.position.set(2, 3 * 3.4 + 0.4 - 3.4, 0.5); mk.rotation.y = -0.35; refs[2].high.add(mk); }
 
   // ---- 电车（停在南侧路沿，朝东）----
-  const tr = tram(); tr.position.set(-9, 0.35, 2.6); tr.rotation.y = Math.PI / 2; g.add(tr);
-  // 轨道
-  for (const dz of [1.2, 4.0]) { const rail = new THREE.Mesh(new THREE.BoxGeometry(HALF * 2, 0.06, 0.12), std('#8a8a98', 0.4, 0.8)); rail.position.set(0, 0.06, dz); g.add(rail); }
+  if (L.tram) {
+    const tr = tram(); tr.position.set(-9, 0.35, 2.6); tr.rotation.y = Math.PI / 2; g.add(tr);
+    for (const dz of [1.2, 4.0]) { const rail = new THREE.Mesh(new THREE.BoxGeometry(HALF * 2, 0.06, 0.12), std('#8a8a98', 0.4, 0.8)); rail.position.set(0, 0.06, dz); g.add(rail); }
+  }
+  for (const [x, z, ry, text, color] of L.arches) { const a = arch(text, color); a.position.set(x, 0.32, z); a.rotation.y = ry; g.add(a); }
+  for (const [x0, z0, x1, z1, y, color] of L.lanterns) g.add(lanternString(new THREE.Vector3(x0, y, z0), new THREE.Vector3(x1, y, z1), color));
 
   // ---- 电线杆 + 电线 ----
   const poles: THREE.Vector3[] = [];
-  for (const [x, z] of POLE_XZ) { const p = pole(11.5); p.position.set(x, 0.32, z); p.rotation.y = z === 5.2 || z === -5.2 ? 0 : Math.PI / 2; g.add(p); poles.push(new THREE.Vector3(x, 11.5, z)); }
+  for (const [x, z] of L.poles) { const p = pole(11.5); p.position.set(x, 0.32, z); p.rotation.y = z === 5.2 || z === -5.2 ? 0 : Math.PI / 2; g.add(p); poles.push(new THREE.Vector3(x, 11.5, z)); }
   for (let i = 0; i + 1 < poles.length; i++) for (const dy of [0, -1.1]) for (const dz of [-1.0, 0, 1.0]) g.add(wire(poles[i].clone().add(new THREE.Vector3(0, dy - 0.2, dz * 0.3)), poles[i + 1].clone().add(new THREE.Vector3(0, dy - 0.2, dz * 0.3)), 0.9 + Math.abs(dz) * 0.2));
 
   // ---- 街边小东西 ----
-  const props: [THREE.Object3D, number, number, number?][] = [
-    [vending('#ff4aa8'), -5.0, -7.4, 0], [vending('#7ff0ff'), -3.6, -7.4, 0], [vending('#ffe27a'), 8, 7.4, Math.PI],
-    [cardboardStack(1), -6.6, -7.2], [cardboardStack(2), 17, -6.6], [cardboardStack(3), -18, 6.8], [cardboardStack(4), 5.8, 8.2],
-    [trashCan(), 9.5, -7.0], [trashCan('#4a3a5a'), -22, 7.0],
-    [tree(3.4, 3), -8, -6.6], [tree(3.0, 4), 10, 6.8], [tree(3.6, 5), 21, -6.4], [tree(3.2, 6), -21, 6.8],
-    [planterBox(2.4), -17, -6.9], [planterBox(2.0), 20, 6.9], [bush(0.8, 7), 4.6, -6.8], [bush(0.7, 8), -4.8, 6.9],
-  ];
-  for (const [o, x, z, ry] of props) { o.position.set(x, 0.32, z); if (ry !== undefined) o.rotation.y = ry; g.add(o); }
-  for (const [x, z, c] of [[-2.5, -7, '#ffd8a0'], [3, 7, '#ff9ad0'], [-12, 6.8, '#7ff0ff'], [12, -6.9, '#ffd8a0'], [-6.8, 12, '#ffd8a0'], [6.8, -12, '#7ff0ff']] as [number, number, string][]) { const l = lamp(c); l.position.set(x, 0.32, z); g.add(l); }
-  for (const [x, z] of [[1.5, 4.8], [-1.5, 4.8], [14, 4.8], [-14, -4.8], [4.8, 14], [-4.8, -14]] as number[][]) { const c = cone(); c.position.set(x, 0.05, z); g.add(c); }
+  for (const p of L.props) {
+    const make = PROPS[p.kind];
+    if (!make) continue;
+    const o = make(p.seed, p.arg);
+    o.position.set(p.x, 0.32, p.z); if (p.ry !== undefined) o.rotation.y = p.ry;
+    g.add(o);
+  }
+  for (const [x, z, c] of L.lamps) { const l = lamp(c); l.position.set(x, 0.32, z); g.add(l); }
+  for (const [x, z] of L.cones) { const c = cone(); c.position.set(x, 0.05, z); g.add(c); }
   // 十字路口中央的霓虹地面光斑
-  for (const [x, z, c, s] of [[0, 0, '#ff2ea8', 22], [-12, -6, '#7ff0ff', 14], [12, 6, '#9a7aff', 16], [-22, 6, '#ff7ad9', 12]] as [number, number, string, number][]) {
+  for (const [x, z, c, s] of L.glows) {
     const h = new THREE.Mesh(new THREE.PlaneGeometry(s, s), new THREE.MeshBasicMaterial({ map: glowTex(), color: c, transparent: true, opacity: 0.42, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
     h.rotation.x = -Math.PI / 2; h.position.set(x, 0.08, z); g.add(nm(h));
   }
   // 点光（少量，控制开销）：中央品红 + 左青 + 右紫
-  for (const [x, y, z, c, i, r] of [[0, 5, 0, 0xff2ea8, 90, 26], [-14, 6, -4, 0x7ff0ff, 70, 22], [14, 6, 4, 0x9a7aff, 70, 22]] as number[][]) { const l = new THREE.PointLight(c, i, r, 1.6); l.position.set(x, y, z); g.add(l); }
+  for (const [x, y, z, c, i, r] of L.lights) { const l = new THREE.PointLight(c, i, r, 1.6); l.position.set(x, y, z); g.add(l); }
   for (const r of refs) { bakeStatic(r.low); bakeStatic(r.high); }
   // 其余静态景物（道具、杆、线、电车…）也合批；建筑 / 地面（倒影要排除）保持独立
   const keep = (o: THREE.Object3D) => o.traverse((m) => { m.userData.noBake = true; });
@@ -130,7 +104,7 @@ export function buildStreet(): Street {
   g.add(mirror);
   // ---- 外圈都市 + 蒸汽 ----
   const bd = buildBackdrop(); g.add(bd.group);
-  const steam = buildSteam([[-3, 0.5, -7.6], [3.4, 0.5, 7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4], [-8, 0.5, 7.7], [8.5, 0.5, -7.5]]);
+  const steam = buildSteam(L.vents);
   g.add(steam.group);
-  return { group: g, colliders, spawn: new THREE.Vector3(0, 0.32, 8), half: HALF, buildings: refs, update: (t, dt) => { bd.update(t); steam.update(dt); } };
+  return { level: L, group: g, colliders, spawn: new THREE.Vector3(L.spawn[0], 0.32, L.spawn[1]), half: HALF, buildings: refs, update: (t, dt) => { bd.update(t); steam.update(dt); } };
 }

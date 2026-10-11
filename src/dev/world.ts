@@ -2,6 +2,7 @@
 import { Explorer } from '../world/explore';
 import { WorldView, defaultQuality } from '../world/engine';
 import { buildStreet } from '../world/street';
+import { levelOf } from '../world/levels';
 
 const q = new URLSearchParams(location.search);
 const quality = defaultQuality();
@@ -9,7 +10,9 @@ if (q.get('bloom') === '0') quality.bloom = false;
 if (q.get('shadow') === '0') quality.shadows = false;
 if (q.get('rain') === '0') quality.rain = false;
 const wv = new WorldView(document.getElementById('cv') as HTMLCanvasElement, quality);
-const st = buildStreet();
+const L = levelOf(+(q.get('ch') ?? 1));
+const st = buildStreet(L);
+wv.setMood(L.mood);
 wv.scene.add(st.group);
 wv.yaw = +(q.get('yaw') ?? 0.5); wv.pitch = +(q.get('pitch') ?? 1.0); wv.dist = +(q.get('dist') ?? 44);
 const team = (q.get('team') ?? 'wei_caomiaode,shu_liumiaobei,xian_changmiao,wei_simamiyi,shu_pangmiaotong').split(',');

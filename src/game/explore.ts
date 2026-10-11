@@ -6,6 +6,8 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
+import { levelOf as sceneOf } from '../world/levels';
+import type { LevelDef } from '../world/levels';
 
 export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[] }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
@@ -34,10 +36,8 @@ export function farmStage(s: PlayerState): { chapter: number; index: number; sta
 
 export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'npc'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string }
 
-const ENEMY_SPOTS: [number, number][] = [[12, 0], [-14, -2], [0, -13], [-2, 15], [18, 5.8], [-22, 5.8]];
-const CHEST_SPOTS: [number, number][] = [[24, 0], [-2.5, -26], [3, 26], [-26, 5.8]];
-export const BOSS_SPOT: [number, number] = [0, -23];
-export const NPC_SPOT: [number, number] = [6, 5.8];
+/** 当前该进哪个场景：跟着主线章节走（首领所在的章节） */
+export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(bossStage(s).chapter);
 
 const unitsOf = (st: StageDef, wave = 0, n = 3): string[] => st.waves[Math.min(wave, st.waves.length - 1)].enemies.slice(0, n).map((e) => e.unit);
 const levelOf = (st: StageDef) => st.waves[0].enemies[0]?.level ?? 1;
@@ -45,16 +45,17 @@ const levelOf = (st: StageDef) => st.waves[0].enemies[0]?.level ?? 1;
 /** 当前地图上的所有实体（死掉的野怪 / 开过的箱子由调用方过滤） */
 export function spawnPlan(s: PlayerState): SpawnDef[] {
   const out: SpawnDef[] = [];
+  const L = explorerLevel(s);
   const boss = bossStage(s), farm = farmStage(s);
   const lastWave = boss.stage.waves[boss.stage.waves.length - 1];
-  out.push({ id: 'boss', kind: 'boss', x: BOSS_SPOT[0], z: BOSS_SPOT[1], units: [lastWave.enemies[0].unit], label: `${boss.stage.id} ${boss.stage.name}`, stageKey: `${boss.chapter}-${boss.index}` });
+  out.push({ id: 'boss', kind: 'boss', x: L.bossSpot[0], z: L.bossSpot[1], units: [lastWave.enemies[0].unit], label: `${boss.stage.id} ${boss.stage.name}`, stageKey: `${boss.chapter}-${boss.index}` });
   const rnd = mulberry(farm.chapter * 100 + farm.index);
-  ENEMY_SPOTS.forEach(([x, z], i) => {
+  L.enemySpots.forEach(([x, z], i) => {
     const w = Math.floor(rnd() * farm.stage.waves.length);
     out.push({ id: `e${i}`, kind: 'enemy', x, z, units: unitsOf(farm.stage, w, 2 + (i % 2)), label: `${farm.stage.name} Lv${levelOf(farm.stage)}`, patrol: 4 + (i % 3), stageKey: `${farm.chapter}-${farm.index}` });
   });
-  CHEST_SPOTS.forEach(([x, z], i) => out.push({ id: `c${i}`, kind: 'chest', x, z, label: '宝箱' }));
-  out.push({ id: 'npc', kind: 'npc', x: NPC_SPOT[0], z: NPC_SPOT[1], units: ['xian_changmiao'], label: '嫦喵 · 向导' });
+  L.chestSpots.forEach(([x, z], i) => out.push({ id: `c${i}`, kind: 'chest', x, z, label: '宝箱' }));
+  out.push({ id: 'npc', kind: 'npc', x: L.npcSpot[0], z: L.npcSpot[1], units: ['xian_changmiao'], label: '嫦喵 · 向导' });
   return out;
 }
 

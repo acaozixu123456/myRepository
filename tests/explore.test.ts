@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { KILL_CAP, bossStage, ensureExplore, farmStage, killReward, openChest, spawnPlan } from '../src/game/explore';
-import { streetColliders } from '../src/world/street';
+import { LEVELS, levelColliders } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 
 describe('探索模式规则', () => {
@@ -19,12 +19,18 @@ describe('探索模式规则', () => {
     expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
     for (const p of plan) if (p.kind === 'enemy' || p.kind === 'boss') expect(p.units?.length).toBeGreaterThan(0);
   });
-  it('所有实体都摆在可走的格子上（不在建筑 / 道具碰撞盒里）', () => {
-    const st = { colliders: streetColliders(), half: 32 };
-    for (const p of spawnPlan(newPlayer(1))) {
-      for (const c of st.colliders) expect(p.x >= c.x0 && p.x <= c.x1 && p.z >= c.z0 && p.z <= c.z1, `${p.id} 在碰撞盒里`).toBe(false);
-      expect(Math.abs(p.x)).toBeLessThan(st.half - 2); expect(Math.abs(p.z)).toBeLessThan(st.half - 2);
+  it('每个关卡的实体都摆在可走的格子上（不在建筑 / 道具碰撞盒里），且出生点可走', () => {
+    for (const L of Object.values(LEVELS)) {
+      const cols = levelColliders(L);
+      const pts: [string, number, number][] = [...L.enemySpots.map((p, i) => [`e${i}`, p[0], p[1]] as [string, number, number]), ...L.chestSpots.map((p, i) => [`c${i}`, p[0], p[1]] as [string, number, number]), ['boss', L.bossSpot[0], L.bossSpot[1]], ['npc', L.npcSpot[0], L.npcSpot[1]], ['spawn', L.spawn[0], L.spawn[1]]];
+      for (const [id, x, z] of pts) {
+        for (const c of cols) expect(x >= c.x0 && x <= c.x1 && z >= c.z0 && z <= c.z1, `${L.id}:${id} 在碰撞盒里`).toBe(false);
+        expect(Math.abs(x)).toBeLessThan(L.half - 2); expect(Math.abs(z)).toBeLessThan(L.half - 2);
+      }
     }
+  });
+  it('六章都有关卡，章节与名字对得上', () => {
+    for (let c = 1; c <= 6; c++) { expect(LEVELS[c]).toBeTruthy(); expect(LEVELS[c].chapter).toBe(c); expect(LEVELS[c].name.length).toBeGreaterThan(1); }
   });
   it('野怪奖励每天有上限，宝箱每天每个一次，隔天刷新', () => {
     const s = newPlayer(1);

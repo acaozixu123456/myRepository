@@ -5,7 +5,8 @@ import type { Spawn } from '../../world/explore';
 import { WorldView, defaultQuality } from '../../world/engine';
 import { buildStreet } from '../../world/street';
 import type { Street } from '../../world/street';
-import { BOSS_SPOT, bossStage, ensureExplore, farmStage, gainText, killReward, openChest, spawnPlan } from '../../game/explore';
+import type { LevelDef } from '../../world/levels';
+import { bossStage, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, spawnPlan } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
@@ -45,7 +46,7 @@ export function exploreHtml(): string {
   return `<canvas id="wcv"></canvas><div class="xload" id="xload">霓虹街区加载中…<small>第一次进入要生成场景，请稍等</small></div><div id="xui"></div>`;
 }
 
-interface Rt { wv: WorldView; ex: Explorer; st: Street; dead: Map<string, number>; running: boolean }
+export interface Rt { wv: WorldView; ex: Explorer; st: Street; dead: Map<string, number>; running: boolean }
 let rt: Rt | null = null;
 let failed = false;
 let busyFight = false;
@@ -102,6 +103,24 @@ export function refreshExploreHud(ctx: AppCtx) {
   if (el) el.innerHTML = hud(ctx);
 }
 
+/** 搭一个关卡（首次进入 / 通关换章节时调用；旧场景拆掉） */
+function loadLevel(ctx: AppCtx, L: LevelDef) {
+  if (!rt) return;
+  if (rt.ex) { rt.ex.dispose(); rt.wv.scene.remove(rt.st.group); }
+  const st = buildStreet(L);
+  rt.wv.scene.add(st.group);
+  rt.wv.setMood(L.mood);
+  const wv = rt.wv;
+  const ex = new Explorer(wv, st, teamIds(ctx), {
+    encounter: (s) => onEncounter(ctx, s),
+    chest: (s) => onChest(ctx, s),
+    talk: (s) => onTalk(ctx, s),
+  });
+  wv.onUpdate = (dt) => { ex.update(dt); st.update(wv.time, dt); };
+  rt.ex = ex; rt.st = st; rt.dead.clear();
+  syncSpawns(ctx);
+}
+
 export async function enterExplore(ctx: AppCtx) {
   const scr = ctx.root.querySelector('[data-screen=explore]') as HTMLElement;
   const load = scr.querySelector('#xload') as HTMLElement;
@@ -113,15 +132,8 @@ export async function enterExplore(ctx: AppCtx) {
     try {
       const canvas = scr.querySelector('#wcv') as HTMLCanvasElement;
       const wv = new WorldView(canvas, defaultQuality());
-      const st = buildStreet();
-      wv.scene.add(st.group);
-      const ex = new Explorer(wv, st, teamIds(ctx), {
-        encounter: (s) => onEncounter(ctx, s),
-        chest: (s) => onChest(ctx, s),
-        talk: (s) => onTalk(ctx, s),
-      });
-      wv.onUpdate = (dt) => { ex.update(dt); st.update(wv.time, dt); };
-      rt = { wv, ex, st, dead: new Map(), running: false };
+      rt = { wv, ex: undefined as unknown as Explorer, st: undefined as unknown as Street, dead: new Map(), running: false };
+      loadLevel(ctx, explorerLevel(ctx.s));
       (window as unknown as { __xp?: Rt }).__xp = rt; // 调试 / 自动化测试用
     } catch (e) {
       failed = true;
@@ -131,7 +143,7 @@ export async function enterExplore(ctx: AppCtx) {
     }
   }
   rt.wv.resize();
-  syncSpawns(ctx);
+  if (rt.st.level.id !== explorerLevel(ctx.s).id) loadLevel(ctx, explorerLevel(ctx.s)); else syncSpawns(ctx);
   rt.ex.setTeam(teamIds(ctx));
   rt.wv.snapCamera();
   rt.wv.start();
@@ -171,7 +183,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
         if (t.fresh) { advance(ctx, t.chapter, t.index); fg = firstClearReward(stage); applyGain(s, fg); track(s, 'reach_stage', (t.chapter - 1) * 24 + t.index); await playStoryOnce(ctx, stage.storyPostId); }
         ctx.result({ win: true, banner: t.fresh ? '通关！' : '胜利', title: `${stage.id} ${stage.name}`, gain: { fish: g.fish + (fg?.fish ?? 0), exp: g.exp + (fg?.exp ?? 0), bells: fg?.bells ?? 0, catnip: fg?.catnip ?? 0 } });
         rt.dead.set(sp.id, 0);
-        if (t.fresh) { ctx.loop.restart(); syncSpawns(ctx); }
+        if (t.fresh) { ctx.loop.restart(); if (rt.st.level.id !== explorerLevel(s).id) { loadLevel(ctx, explorerLevel(s)); ctx.toast(`进入新区域：${rt.st.level.name}`); } else syncSpawns(ctx); }
       } else {
         const g = killReward(s, stage);
         if (g) { applyGain(s, g); ctx.toast(`击败了${sp.label}！${gainText(g)}`); }
@@ -211,7 +223,7 @@ function onTalk(ctx: AppCtx, _sp: Spawn) { ctx.toast(`嫦喵：${TALKS[talkI++ %
 
 export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
-    case 'x-boss': if (rt) { rt.ex.moveTo(BOSS_SPOT[0], BOSS_SPOT[1] + 5); ctx.toast('出发！'); } return true;
+    case 'x-boss': if (rt) { rt.ex.moveTo(rt.st.level.bossSpot[0], rt.st.level.bossSpot[1] + 5); ctx.toast('出发！'); } return true;
     case 'x-reset': if (rt) { rt.ex.setTeam(teamIds(ctx)); rt.wv.snapCamera(); } return true;
     case 'x-hero': ctx.openHero(el.dataset.id!); return true;
     default: return false;

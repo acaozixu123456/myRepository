@@ -20,6 +20,7 @@ export class WorldView {
   private composer: EffectComposer | null = null;
   private bloom: UnrealBloomPass | null = null;
   readonly sun: THREE.DirectionalLight;
+  private hemi!: THREE.HemisphereLight;
   /** 相机跟随点 / 视角 */
   focus = new THREE.Vector3();
   yaw = 0.5; pitch = 1.0; dist = 44;
@@ -57,7 +58,8 @@ export class WorldView {
     this.scene.environmentIntensity = 0.2;
     pm.dispose();
     // 灯光：冷色月光 + 半球天光（霓虹点光在关卡里加）
-    this.scene.add(new THREE.HemisphereLight(0x5a68d0, 0x1c1030, 0.5));
+    this.hemi = new THREE.HemisphereLight(0x5a68d0, 0x1c1030, 0.5);
+    this.scene.add(this.hemi);
     this.sun = new THREE.DirectionalLight(0x8aa4ff, 0.6);
     this.sun.position.set(-30, 50, 24);
     if (q.shadows) {
@@ -70,6 +72,19 @@ export class WorldView {
     if (q.rain) this.makeRain();
     this.bindInput();
     this.resize();
+  }
+
+  /** 按关卡氛围换天光 / 雾色 / 背景色 */
+  setMood(m: string) {
+    const T: Record<string, [number, number, number, number]> = { // [天光, 地光, 雾/背景, 月光]
+      neon: [0x5a68d0, 0x1c1030, 0x1a1030, 0x8aa4ff], street: [0x5a68d0, 0x1c1030, 0x1a1030, 0x8aa4ff], meadow: [0x5a68d0, 0x1c1030, 0x1a1030, 0x8aa4ff],
+      market: [0x7a5a60, 0x2a1418, 0x2a1018, 0xffb080], redcliff: [0x8a4a40, 0x2a1010, 0x2a0e12, 0xff8a60],
+      forest: [0x3a8a70, 0x0e2018, 0x0c2018, 0x9affc8], mist: [0x6a82c8, 0x1c2440, 0x1a2444, 0xc8d8ff], palace: [0x8a62c0, 0x241038, 0x241038, 0xffd8f0],
+    };
+    const [sky, gnd, fog, sun] = T[m] ?? T.neon;
+    this.hemi.color.set(sky); this.hemi.groundColor.set(gnd);
+    (this.scene.fog as THREE.FogExp2).color.set(fog); (this.scene.background as THREE.Color).set(new THREE.Color(fog).multiplyScalar(0.75));
+    this.sun.color.set(sun);
   }
 
   private makeRain() {
