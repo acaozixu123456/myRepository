@@ -17,7 +17,7 @@
 | 许虎痴 | `wei_xuhuchi` | SSR | 待画 | 0 | |
 | 张喵辽 | `wei_zhangliao` | SSR | 待画 | 0 | |
 | 关云喵 | `shu_guanyunmiao` | SSR | 待画 | 0 | |
-| 张喵飞 | `shu_zhangmiaofei` | SSR | 待画 | 0 | |
+| 张喵飞 | `shu_zhangmiaofei` | SSR | 待审 | 1 | 2 候选选 B；双爪肩臂自查；红缨按 ART，ref 为绿缨 |
 | 诸葛喵亮 | `shu_zhugemiaoliang` | SSR | 待画 | 0 | |
 | 赵喵云 | `shu_zhaomiaoyun` | SSR | 待画 | 0 | |
 | 孙小霸 | `wu_sunxiaoba` | SSR | 待画 | 0 | |
