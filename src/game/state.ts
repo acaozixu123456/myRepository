@@ -62,6 +62,7 @@ export interface PlayerState {
   events?: EventState; // 活动中心
   wboss?: BossState; // 世界 Boss
   expedition?: ExpeditionState; // 猫猫远征
+  explore?: { day: number; kills: number; chests: string[]; talked: string[] }; // 3D 探索：当天击杀数 / 开过的箱子
   maze?: MazeState; // 纸箱迷宫
   nest?: NestState; // 猫窝
   gboss?: GuildBossState; // 公会 Boss

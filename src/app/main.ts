@@ -23,6 +23,7 @@ import { SAVE_KEY, autoLineup, equip, levelUp, load, save, swapSlots, teamPower,
 import { bagHtml, handleBag } from './screens/bag';
 import { shopHtml, handleShop } from './screens/shop';
 import { EVENTS_CSS, eventsHtml, handleEvents } from './screens/events';
+import { EXPLORE_CSS, enterExplore, exploreHtml, handleExplore, leaveExplore, refreshExploreHud, resizeExplore } from './screens/explore';
 import { PAY_CSS, handlePay, payHtml } from './screens/pay';
 import { SOCIAL_CSS, handleSocial, refreshChatLog, socialHtml } from './screens/social';
 import { dayIndex, grantOnce } from '../game/premium';
@@ -37,7 +38,7 @@ import { fmt } from '../ui/components';
 import { homePeriod, makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS + EXPLORE_CSS + '.nav{grid-template-columns:repeat(6,1fr)}.nav button{font-size:12px}';
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -88,7 +89,9 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen shop-screen" data-screen="pay"></div>
   <div class="screen shop-screen" data-screen="social"></div>
   <div class="screen shop-screen" data-screen="events"></div>
+  <div class="screen xplore" data-screen="explore">${exploreHtml()}</div>
   <nav class="nav" id="nav">
+    <button data-act="nav" data-to="explore">${icon('paw', 30)}探索</button>
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
     <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
     <button data-act="nav" data-to="gacha">${icon('recruit', 30)}招募</button>
@@ -125,6 +128,7 @@ const ctx: AppCtx = {
     root.querySelectorAll('#nav button').forEach((b) => b.classList.toggle('on', (b as HTMLElement).dataset.to === screen));
     if (screen === 'home') ctx.loop.resume();
     else ctx.loop.pause();
+    if (screen === 'explore') void enterExplore(ctx); else leaveExplore();
     ctx.refresh();
   },
   openHero: (id) => openHeroSheet(ctx, id),
@@ -154,6 +158,7 @@ const ctx: AppCtx = {
     else if (scr === 'events') (root.querySelector('[data-screen=events]') as HTMLElement).innerHTML = eventsHtml(ctx);
     else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
     else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
+    else if (scr === 'explore') refreshExploreHud(ctx);
     updateGuide(ctx);
   },
 };
@@ -221,6 +226,7 @@ root.addEventListener('click', (e) => {
   if (handleQuests(ctx, el)) return;
   if (handleShop(ctx, el)) return;
   if (handlePay(ctx, act, el)) return;
+  if (handleExplore(ctx, act, el)) return;
   if (handleEvents(ctx, act, el)) return;
   if (handleSocial(ctx, act, el)) return;
   if (handleDaily(ctx, act)) return;
@@ -366,3 +372,5 @@ if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
 if (isProdBuild && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => { void navigator.serviceWorker.register('./sw.js').catch(() => undefined); });
 }
+
+window.addEventListener('resize', () => resizeExplore());

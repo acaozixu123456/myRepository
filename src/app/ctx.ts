@@ -1,7 +1,7 @@
 import type { BattleLoop } from './battleLoop';
 import type { PlayerState } from '../game/state';
 
-export type ScreenId = 'home' | 'lineup' | 'gacha' | 'campaign' | 'bag' | 'quests' | 'shop' | 'pay' | 'social' | 'events';
+export type ScreenId = 'home' | 'lineup' | 'gacha' | 'campaign' | 'bag' | 'quests' | 'shop' | 'pay' | 'social' | 'events' | 'explore';
 
 export interface AppCtx {
   s: PlayerState;
