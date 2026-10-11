@@ -97,7 +97,7 @@ class Battle {
     for (const side of ['A', 'B'] as const) {
       const ids = new Set(this.units.filter((u) => u.side === side).map((u) => u.heroId));
       const mine = this.units.filter((u) => u.side === side);
-      for (const bond of BONDS) {
+      for (const bond of this.cfg.noBonds ? [] : BONDS) {
         if (!bond.heroes.every((h) => ids.has(h))) continue;
         const members = mine.filter((u) => bond.heroes.includes(u.heroId));
         if (bond.name === '桃园结义') for (const u of members) { u.maxHp = Math.round(u.maxHp * 1.2); u.hp = u.maxHp; u.atk = Math.round(u.atk * 1.2); u.def = Math.round(u.def * 1.2); }

@@ -143,7 +143,7 @@ export interface UnitSetup {
   hpPct?: number; // 开局生命比例（多波战斗时继承；0 表示已倒下，不上场）
   energy?: number; // 开局元气（多波战斗继承）
 }
-export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number } }
+export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number }; noBonds?: boolean /* 平衡实验用：关闭命名羁绊（阵营同族加成保留） */ }
 
 export interface StatusInst { id: string; turns: number; stacks: number; power: number; snap: number; src: number }
 
