@@ -6,6 +6,8 @@ import { HERO_BY_ID } from '../src/data/heroes';
 import { Rng } from '../src/engine/rng';
 import { fastExplore, fastFree, signIn } from '../src/game/daily';
 import { HELP_PER_DAY, guildChest, guildHelp, joinGuild, myGuild } from '../src/game/guild';
+import { FESTIVALS, FESTIVAL_PACK, OPEN_DAYS, OPEN_REWARDS, PULL_TIERS, RANK_REWARDS, UP_DAYS, festivalGift, wishShards } from '../src/game/events';
+import type { Reward } from '../src/game/events';
 import { answerQuiz, carnivalReady, claimCarnival, claimPass, ensureEvents, passLevel, quizToday, spin, spinsLeft } from '../src/game/events';
 import { ATTEMPTS_PER_DAY, claimMilestone, claimable, finishAttempt, startAttempt } from '../src/game/worldboss';
 import { DAILY_TRIES, DUNGEONS, TIERS, dungeonStart, dungeonSweep, dungeonWin, tierLevel, tierUnlocked } from '../src/game/dungeon';
@@ -297,6 +299,31 @@ const pct = (ratio: number) => `${(ratio * 100).toFixed(2)}%`;
 const bundle = (quantities: Quantities) => Object.entries(quantities).filter(([, value]) => value).map(([id, value]) => `${names[id] ?? id} ${n(value)}`).join('；') || '0';
 const table = (headers: string[], rows: (string | number)[][]) => `| ${headers.join(' | ')} |\n| ${headers.map(() => '---').join(' | ')} |\n${rows.map((row) => `| ${row.join(' | ')} |`).join('\n')}\n`;
 
+const rewardQ = (r: Reward): Quantities => ({ fish: r.fish ?? 0, bells: r.bells ?? 0, recruit_ticket: r.tickets ?? 0, catnip_small: r.catnip ?? 0, yarn_small: r.yarn ?? 0, moon: r.moon ?? 0, ...(r.items ?? {}) });
+function supplement(): (string | number)[][] {
+  const row = (name: string, scope: string, q: Quantities, days: number) => {
+    const v = valueIncome(q), per: Quantities = {};
+    addQuantities(per, v.unpriced, 1 / days);
+    return [name, scope, n(v.pricedFish / days), bundle(per) || '无'];
+  };
+  const sum = (list: Reward[]) => { const q: Quantities = {}; for (const r of list) addQuantities(q, rewardQ(r)); return q; };
+  const festTotal: Quantities = {}; let fdays = 0;
+  for (const f of FESTIVALS) {
+    const days = f.to[0] === f.from[0] ? f.to[1] - f.from[1] + 1 : f.to[0] < f.from[0] ? (31 - f.from[1] + 1) + f.to[1] : (30 - f.from[1] + 1) + f.to[1];
+    fdays += days; for (let i = 0; i < days; i++) addQuantities(festTotal, rewardQ(festivalGift(i, days)));
+  }
+  const wishQ = { [`wish_shard_vip0`]: wishShards(0, false), [`wish_shard_vip12`]: wishShards(12, true) };
+  return [
+    row('节日签到（全年 7 个节日）', `全年约 ${fdays} 天，按 365 天平均`, festTotal, 365),
+    row('周战力冲榜（参与奖）', '每周 1 次，按 7 天平均', rewardQ(RANK_REWARDS[RANK_REWARDS.length - 1].r), 7),
+    row('招募盛典（周累计 100 抽）', '每周拿满全部 5 档', sum(PULL_TIERS.map((t) => t.r)), 7),
+    row('UP 累抽有礼（不含送猫）', `每期 ${UP_DAYS} 天抽满 100 次，前两档`, sum([{ tickets: 3 }, { bells: 300, items: { fishbone_large: 1 } }]), UP_DAYS),
+    row('开服冲榜（前 15 名下限）', `仅新号前 ${OPEN_DAYS} 天，按 ${OPEN_DAYS} 天平均`, sum(Array.from({ length: OPEN_DAYS }, () => OPEN_REWARDS[OPEN_REWARDS.length - 1].r)), OPEN_DAYS),
+    ['许愿池', '每天 1 次，免费 / VIP12+月卡', 0, `升星碎片 ${wishQ.wish_shard_vip0} / ${wishQ.wish_shard_vip12} 个/天，连续 7 天另 +20`],
+    ['节日礼盒（氪金）', `¥${FESTIVAL_PACK.yuan}/届，限购 1 次`, 0, `按人民币计：${bundle(valueIncome(rewardQ(FESTIVAL_PACK.r)).unpriced)}（含已定价部分另算）`],
+  ];
+}
+
 export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, spSummary?: string): string {
   const free = r.scenarios.filter((s) => s.baseVip === 0 && !s.monthly);
   const row = (s: IncomeScenario) => {
@@ -361,6 +388,9 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
       const paid = r.scenarios.find((p) => p.ordinal === s.ordinal && p.baseVip === 12 && !p.monthly)!;
       return [s.ordinal, n(paid.valuation.pricedFish / s.valuation.pricedFish), n((paid.valuation.pricedFish + r.gifts[0].valuation.pricedFish) / (s.valuation.pricedFish + r.gifts[0].valuation.pricedFish))];
     })),
+    '## 活动中心补充估算（不并入主表）',
+    '以下活动不是每天稳定发放，按“长期平均每天”单列已定价子集，月光珠/碎片等未定价项另列。假设玩家参与并拿满；周冲榜按“只拿参与奖”的保守下限，UP 累抽按“每期抽满 100 次且拿完全部档位”的上限。',
+    table(['活动', '口径', '日均已定价子集', '未定价'], supplement()),
     '## 竞技场积分与NPC成长',
     `实际Elo入口 arenaFinish 使用K=24；同积分胜/负分别+12/-12。起点${ARENA_START}，每天免费${ARENA_FREE}次，35场即使每胜都取+24，七日理论上限也仅${ARENA_START + 7 * ARENA_FREE * 24}。以下是固定胜负序列下的积分轨迹，不是假定这些NPC可被当前新号击败。50%/70%情景取35场17/24胜；100%取35胜。`,
     table(['对手策略', '假定胜率', '7天实际胜/负', '末日积分', '净增长', '各日末积分'], r.arena.map((a) => [a.strategy, pct(a.assumedWinRate), `${sum(a.days.map((d) => d.wins))}/${sum(a.days.map((d) => d.losses))}`, a.finalRating, a.finalRating - ARENA_START, a.days.map((d) => d.rating).join('→')])),
