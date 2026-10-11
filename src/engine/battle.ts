@@ -114,9 +114,10 @@ class Battle {
   }
   applyRuleStart() {
     for (const r of this.cfg.rules ?? []) {
+      const picked = 'pick' in r && r.pick ? new Set((['A', 'B'] as const).map((sd) => this.alive(sd)[0] && this.pickBySpd(r.pick!, this.alive(sd)[0], r, 'start'))) : null;
       for (const u of this.units) {
         if (!u.alive || !('side' in r) || !this.ruleSideMatch(r.side, u.side) || !this.ruleOk(r, u.side) || !('to' in r) || !this.ruleTo(r.to, u)) continue;
-        if (r.t === 'startStatus') this.addStatus(u, u, r.id, r.turns, r.stacks ?? 1, r.power ?? 0);
+        if (r.t === 'startStatus') { if (picked && !picked.has(u)) continue; this.addStatus(u, u, r.id, r.turns, r.stacks ?? 1, r.power ?? 0); }
         else if (r.t === 'startShield') this.addShieldPct(u, u, r.pct, r.turns);
         else if (r.t === 'startEnergy') this.gainEnergy(u, r.amount);
         else if (r.t === 'critAdd') u.crit += r.add;
@@ -127,8 +128,9 @@ class Battle {
   }
   applyRuleRound() {
     for (const r of this.cfg.rules ?? []) {
-      if (r.t === 'roundStatus' && this.round % r.every === 0) {
-        for (const u of this.units) if (u.alive && this.ruleSideMatch(r.side, u.side) && this.ruleOk(r, u.side) && this.ruleTo(r.to, u)) this.addStatus(u, u, r.id, r.turns, 1, r.power ?? 0);
+      if (r.t === 'roundStatus' && (r.at ? this.round === r.at : this.round % r.every === 0)) {
+        const picked = r.pick ? new Set((['A', 'B'] as const).map((sd) => this.alive(sd)[0] && this.pickBySpd(r.pick!, this.alive(sd)[0], r, 'round'))) : null;
+        for (const u of this.units) if (u.alive && this.ruleSideMatch(r.side, u.side) && this.ruleOk(r, u.side) && this.ruleTo(r.to, u) && (!picked || picked.has(u))) this.addStatus(u, u, r.id, r.turns, 1, r.power ?? 0);
       }
       if (r.t === 'roundEnergyLowest') {
         for (const side of ['A', 'B'] as const) {
@@ -158,7 +160,7 @@ class Battle {
   ruleHealMul(src: Unit, t: Unit): number {
     let m = 1;
     for (const r of this.cfg.rules ?? []) {
-      if (r.t === 'healMul' && this.ruleSideMatch(r.side, t.side) && this.ruleOk(r, t.side)) m *= r.mult;
+      if (r.t === 'healMul' && this.ruleSideMatch(r.side, t.side) && this.ruleOk(r, t.side) && (!r.needStatus || this.has(t, r.needStatus))) m *= r.mult;
       if (r.t === 'firstHealMul' && this.ruleSideMatch(r.side, src.side) && this.ruleOk(r, src.side) && this.ruleTo(r.to, src) && this.onceBy(src, `r_fh${this.cfg.rules!.indexOf(r)}`)) m *= r.mult;
       if (r.t === 'firstHealTakenMul' && this.ruleSideMatch(r.side, t.side) && this.ruleOk(r, t.side) && this.ruleTo(r.to, t) && this.onceBy(t, `r_ft${this.cfg.rules!.indexOf(r)}`)) m *= r.mult;
     }
@@ -173,6 +175,55 @@ class Battle {
     let d = 0;
     for (const r of this.cfg.rules ?? []) if (r.t === 'hitAdd' && r.rounds && this.round <= r.rounds && this.ruleSideMatch(r.side, u.side) && this.ruleOk(r, u.side) && this.ruleTo(r.to, u)) d += r.add;
     return d;
+  }
+  /** 同阵营里速度最高 / 最低的那只（用于 pick） */
+  pickBySpd(pick: 'highestSpd' | 'lowestSpd', u: Unit, _r: unknown, _when: string): Unit {
+    const mates = this.alive(u.side);
+    return mates.slice().sort((a, c) => (pick === 'highestSpd' ? this.stat(c, 'spd') - this.stat(a, 'spd') : this.stat(a, 'spd') - this.stat(c, 'spd')) || a.pos - c.pos)[0];
+  }
+  ruleWho(who: import('./types').RuleWho, actor: Unit, target?: Unit): Unit[] {
+    switch (who) {
+      case 'actor': return [actor];
+      case 'target': return target ? [target] : [];
+      case 'allies': return this.alive(actor.side);
+      case 'foes': return this.alive(this.foe(actor));
+      case 'lowestAlly': { const t = this.alive(actor.side).slice().sort((a, c) => a.energy - c.energy || a.pos - c.pos)[0]; return t ? [t] : []; }
+      case 'randomFoeFront': { const f = this.alive(this.foe(actor)); const front = f.filter((x) => x.pos <= 2); const pool = front.length ? front : f; return pool.length ? [this.rng.pick(pool)] : []; }
+    }
+  }
+  ruleCnt: Record<string, number> = {};
+  /** 触发事件规则 */
+  ruleEvent(ev: import('./types').RuleEv, actor: Unit, target?: Unit, info?: { status?: string; inst?: import('./types').StatusInst }) {
+    const rules = this.cfg.rules;
+    if (!rules) return;
+    for (const [i, r] of rules.entries()) {
+      if (r.t !== 'on' || r.ev !== ev || !this.ruleSideMatch(r.side, actor.side) || !this.ruleOk(r, actor.side) || !this.ruleTo(r.to, actor)) continue;
+      if (r.hero && actor.heroId !== r.hero) continue;
+      if (r.status && info?.status !== r.status) continue;
+      if (r.cc && !(info?.status && STATUS_RULES[info.status]?.cc)) continue;
+      const per = r.per ?? 'actor';
+      const scope = per === 'actor' ? `${actor.uid}` : per === 'side' ? actor.side : `${actor.side}@${this.round}`;
+      const key = `${i}|${scope}`;
+      const n = (this.ruleCnt[key + '|n'] = (this.ruleCnt[key + '|n'] ?? 0) + 1);
+      if (n % (r.every ?? 1) !== 0) continue;
+      const fired = this.ruleCnt[key + '|f'] ?? 0;
+      if (fired >= (per === 'round' ? 1 : r.max ?? 1)) continue;
+      this.ruleCnt[key + '|f'] = fired + 1;
+      const a = r.act;
+      if (a.k === 'extend') { if (info?.inst) info.inst.turns += a.turns; continue; }
+      if (a.k === 'totem') { this.teamCounter[`${actor.side}:totem`] = (this.teamCounter[`${actor.side}:totem`] ?? 0) + a.amount; continue; }
+      for (const t of this.ruleWho(a.who, actor, target)) {
+        if (a.k === 'energy') this.gainEnergy(t, a.amount);
+        else if (a.k === 'status') this.addStatus(actor, t, a.id, a.turns, a.stacks ?? 1, a.power ?? 0, a.snapAtk ? Math.round(actor.atk * a.snapAtk) : 0);
+        else if (a.k === 'cleanse') {
+          let left = a.n;
+          for (const s of t.statuses.slice()) { if (left <= 0) break; if (STATUS_RULES[s.id]?.kind === 'debuff') { t.statuses = t.statuses.filter((x) => x !== s); this.push({ t: 'status', dst: t.uid, id: s.id, op: 'remove', stacks: 0, src: actor.uid }); left--; } }
+        } else if (a.k === 'removeStack') {
+          const s = this.has(t, a.id);
+          if (s) { s.stacks -= 1; if (s.stacks <= 0) { t.statuses = t.statuses.filter((x) => x !== s); this.push({ t: 'status', dst: t.uid, id: a.id, op: 'remove', stacks: 0, src: actor.uid }); } }
+        }
+      }
+    }
   }
   ruleFirstBasic(u: Unit) {
     for (const [i, r] of (this.cfg.rules ?? []).entries()) {
@@ -423,7 +474,9 @@ class Battle {
     for (const bn of e.bonus ?? []) if (this.cond(bn.cond, cctx, target)) mult *= bn.mult;
     mult *= 0.95 + this.rng.next() * 0.1;
     const dmg = Math.max(1, Math.round(base * (1 - red) * mult));
+    const hadShield = target.shield.length;
     const { absorbed, hpLoss } = this.absorb(target, dmg);
+    const broke = hadShield > 0 && target.shield.length < hadShield;
     target.hp -= hpLoss;
     let killed = false;
     if (target.hp <= 0) {
@@ -441,6 +494,12 @@ class Battle {
     if (e.lifesteal) this.heal(caster, caster, Math.round(dmg * e.lifesteal));
     this.gainEnergy(target, 10);
     this.gearOnDamage(ctx, caster, target, crit, killed, hitIdx);
+    if (this.cfg.rules) {
+      if (ctx.isBasic && !ctx.counter) this.ruleEvent('basicHit', caster, target);
+      if (crit) this.ruleEvent('crit', caster, target);
+      this.ruleEvent('hurt', target, caster);
+      if (absorbed > 0 && broke) this.ruleEvent('shieldBreak', target, caster);
+    }
     cctx.killed = killed;
     ctx.killed = killed;
     if (killed) this.kill(target, caster);
@@ -478,6 +537,7 @@ class Battle {
     if (real <= 0) return;
     t.hp += real;
     this.push({ t: 'heal', src: src.uid, dst: t.uid, amount: real, hp: t.hp });
+    if (this.cfg.rules) this.ruleEvent('heal', src, t);
     if (this.depth < 4) { this.depth++; this.fire('onHealed', { caster: t, targets: [t], source: src }, t); this.depth--; }
   }
 
@@ -531,6 +591,7 @@ class Battle {
       t.statuses.push({ id, turns, stacks: Math.min(rule.maxStacks, stacks), power, snap, src: src.uid });
       this.push({ t: 'status', dst: t.uid, id, op: 'add', stacks, src: src.uid });
     }
+    if (this.cfg.rules) this.ruleEvent('statusApply', src, t, { status: id, inst: this.has(t, id) });
   }
 
   // ---------- 效果执行 ----------
@@ -590,6 +651,7 @@ class Battle {
               t.statuses = t.statuses.filter((x) => x !== s);
               this.push({ t: 'status', dst: t.uid, id: s.id, op: 'remove', stacks: 0, src: caster.uid });
               n--;
+              if (this.cfg.rules) this.ruleEvent('cleanse', caster, t, { status: s.id });
             }
           }
           if (this.hasBond(caster.side, '杏林同盟') && n !== (e.n ?? 99) && t.alive) this.addStatus(caster, t, 'purr', 1, 1, 0.05);
@@ -763,6 +825,7 @@ class Battle {
     }
     for (const s of u.shield) s.turns -= 1;
     if (u.set4.includes('man_rattan_nest')) for (const s of u.shield) if (s.turns <= 0 && s.v > 0) this.heal(u, u, Math.round(s.v * 0.2));
+    if (this.cfg.rules) for (const s of u.shield) if (s.turns <= 0 && s.v > 0) this.ruleEvent('shieldExpire', u);
     u.shield = u.shield.filter((s) => s.turns > 0 && s.v > 0);
     if (u.invuln > 0) u.invuln--;
   }
@@ -796,7 +859,7 @@ class Battle {
     this.fire(ult ? 'onUlt' : 'onBasic', ctx, u);
     if (ult) for (const e of this.alive(this.foe(u))) this.fire('onEnemyUlt', { caster: e, targets: [e], source: u }, e);
     this.exec(effects, ctx, targets);
-    if (!ult) { this.gainEnergy(u, 20); if (this.cfg.rules) this.ruleFirstBasic(u); }
+    if (!ult) { this.gainEnergy(u, 20); if (this.cfg.rules) { this.ruleFirstBasic(u); this.ruleEvent('basic', u, targets[0]); } }
     for (const a of this.alive(u.side)) if (a !== u) this.fire('onAllyAct', { caster: a, targets: [a], source: u }, a);
     this.fire('afterAct', ctx, u);
     this.factionAfterAct(u, !ult);
