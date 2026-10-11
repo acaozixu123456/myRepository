@@ -44,6 +44,7 @@ export interface PlayerState {
   gift: { last: number };
   seen: string[];
   stories?: string[]; // 已看过的剧情 id
+  tips?: string[]; // 已完成的新手引导步骤
   settings: { speed: number; sound?: boolean };
 }
 
@@ -71,6 +72,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     gift: { last: 0 },
     seen: start.slice(),
     stories: [],
+    tips: [],
     tower: { floor: 0 },
     settings: { speed: 2 },
   };
@@ -90,6 +92,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
         s.res.exp ??= 0;
         s.idle.exp ??= 0;
         s.stories ??= [];
+        s.tips ??= [];
         s.tower ??= { floor: 0 };
         s.best ??= { chapter: s.stage.chapter, index: s.stage.index };
         s.inventory = normalizeInventory(s.inventory, s.heroes);

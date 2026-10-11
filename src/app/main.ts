@@ -4,6 +4,7 @@ import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
 import { STORY_CSS, playStoryOnce } from './story';
 import { sfx, sfxState } from './sfx';
+import { GUIDE_CSS, updateGuide } from './guide';
 import { CAMPAIGN_CSS, campaignHtml, handleCampaign } from './screens/campaign';
 import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
@@ -20,7 +21,7 @@ import { POOLS } from '../game/gacha';
 import { fmt } from '../ui/components';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -93,6 +94,7 @@ const ctx: AppCtx = {
     else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
     else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
     else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
+    updateGuide(ctx);
   },
 };
 
@@ -221,6 +223,7 @@ root.addEventListener('click', (e) => {
 // 每秒刷新挂机收益
 setInterval(() => { if (ctx.screen === 'home') { updateIdle(ctx); const g = root.querySelector('#giftBtn') as HTMLButtonElement; if (g && g.disabled) updateHome(ctx); } }, 1000);
 setInterval(() => ctx.save(), 8000);
+setInterval(() => updateGuide(ctx), 1200);
 document.addEventListener('visibilitychange', () => { if (document.hidden) ctx.save(); });
 
 updateHome(ctx);
