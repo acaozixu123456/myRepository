@@ -44,7 +44,7 @@ export function facade(style: FacadeStyle, variant: number): [THREE.CanvasTextur
   const base = mk(W, H, (g) => {
     const [a, b] = WALL[style];
     g.fillStyle = a; g.fillRect(0, 0, W, H);
-    const aiWall = worldImg(WALL_IMG[style]);
+    const aiWall = worldImg(style === 'dark' && variant % 3 === 2 ? 'wall_tile_slate_03' : WALL_IMG[style]);
     if (aiWall) {
       // 用 AI 金属板当底（可无缝平铺），再按风格色相叠一层，窗户 / 污渍仍然程序化画在上面
       g.save(); if (variant % 2) { g.translate(W, 0); g.scale(-1, 1); } g.drawImage(aiWall, 0, 0, W, H); g.restore();
