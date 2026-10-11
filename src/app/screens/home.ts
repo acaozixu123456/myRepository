@@ -1,3 +1,4 @@
+import { ensureGuild, helpsLeft, myGuild } from '../../game/guild';
 import { CHAPTERS } from '../../content/campaign';
 import { FACTIONS } from '../../data/factions';
 import { HERO_BY_ID } from '../../data/heroes';
@@ -44,13 +45,16 @@ export function updateHud(ctx: AppCtx) {
     ${chip('fish', s.res.fish)}${chip('bells', s.res.bells, `<button class="plus" data-act="nav" data-to="gacha">${icon('plus', 20)}</button>`)}`;
 }
 
+/** 已入会且今天的纸箱或互助还没做完 */
+const guildTodo = (s: AppCtx['s']) => !!myGuild(s) && (!ensureGuild(s).chest || helpsLeft(s) > 0);
+
 /** 主城快捷入口：data-act 直接复用 nav / 对话框动作；dot = 红点 */
 export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: string; label: string; cls?: string; dot?: boolean }[] {
   const s = ctx.s;
   return [
     { act: 'nav', to: 'quests', ic: 'campaign', label: '任务', dot: QUESTS.some((quest) => isClaimable(s, quest)) },
     { act: 'signin', ic: 'calendar', label: '签到', dot: canSign(s) },
-    { act: 'nav', to: 'social', ic: 'chat', label: '广场', dot: unreadCount(s) > 0 },
+    { act: 'nav', to: 'social', ic: 'chat', label: '广场', dot: unreadCount(s) > 0 || guildTodo(s) },
     { act: 'nav', to: 'shop', ic: 'bag', label: '商店' },
     { act: 'nav', to: 'pay', ic: 'moon', label: '充值', cls: 'pay', dot: canClaimCard(s) || canClaimVip(s) },
   ];
