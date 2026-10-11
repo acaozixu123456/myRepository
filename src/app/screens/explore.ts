@@ -4,6 +4,7 @@ import { Explorer } from '../../world/explore';
 import type { Spawn } from '../../world/explore';
 import { WorldView, defaultQuality } from '../../world/engine';
 import { buildStreet } from '../../world/street';
+import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
 import { bossStage, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, spawnPlan } from '../../game/explore';
@@ -131,6 +132,7 @@ export async function enterExplore(ctx: AppCtx) {
     await new Promise((r) => setTimeout(r, 60)); // 让「加载中」先画出来
     try {
       const canvas = scr.querySelector('#wcv') as HTMLCanvasElement;
+      await preloadWorldTextures();
       const wv = new WorldView(canvas, defaultQuality());
       rt = { wv, ex: undefined as unknown as Explorer, st: undefined as unknown as Street, dead: new Map(), running: false };
       loadLevel(ctx, explorerLevel(ctx.s));

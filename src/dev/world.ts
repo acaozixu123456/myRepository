@@ -2,6 +2,7 @@
 import { Explorer } from '../world/explore';
 import { WorldView, defaultQuality } from '../world/engine';
 import { buildStreet } from '../world/street';
+import { preloadWorldTextures } from '../world/tex';
 import { levelOf } from '../world/levels';
 
 const q = new URLSearchParams(location.search);
@@ -9,6 +10,7 @@ const quality = defaultQuality();
 if (q.get('bloom') === '0') quality.bloom = false;
 if (q.get('shadow') === '0') quality.shadows = false;
 if (q.get('rain') === '0') quality.rain = false;
+await preloadWorldTextures();
 const wv = new WorldView(document.getElementById('cv') as HTMLCanvasElement, quality);
 const L = levelOf(+(q.get('ch') ?? 1));
 const st = buildStreet(L);

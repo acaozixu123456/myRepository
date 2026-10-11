@@ -1,8 +1,23 @@
 // 程序化贴图：窗户立面、霓虹招牌、路面。全部用 Canvas 画，不引入图片文件。
 import * as THREE from 'three';
 import { mulberry } from '../fx/util';
+import { WORLD_TEX } from './assets';
 
 const cache = new Map<string, THREE.CanvasTexture>();
+
+/** AI 素材（assets/world → src/world/assets）：先预加载，facade() 等同步函数才能直接 drawImage */
+const imgs = new Map<string, HTMLImageElement>();
+export function preloadWorldTextures(): Promise<void> {
+  return Promise.all(Object.entries(WORLD_TEX).map(([k, url]) => new Promise<void>((res) => {
+    if (imgs.has(k)) return res();
+    const i = new Image();
+    i.onload = () => { imgs.set(k, i); res(); };
+    i.onerror = () => res(); // 素材加载失败就退回程序化画法
+    i.src = url;
+  }))).then(() => undefined);
+}
+export const worldImg = (k: string): HTMLImageElement | undefined => imgs.get(k);
+const WALL_IMG: Record<string, string> = { dark: 'wall_metal_riveted_01', teal: 'wall_metal_painted_02', brick: 'wall_metal_painted_02', cream: 'wall_metal_ribbed_03', pink: 'wall_metal_ribbed_03' };
 const mk = (w: number, h: number, draw: (g: CanvasRenderingContext2D) => void, key?: string, srgb = true): THREE.CanvasTexture => {
   if (key && cache.has(key)) return cache.get(key)!;
   const c = document.createElement('canvas');
@@ -29,10 +44,17 @@ export function facade(style: FacadeStyle, variant: number): [THREE.CanvasTextur
   const base = mk(W, H, (g) => {
     const [a, b] = WALL[style];
     g.fillStyle = a; g.fillRect(0, 0, W, H);
+    const aiWall = worldImg(WALL_IMG[style]);
+    if (aiWall) {
+      // 用 AI 金属板当底（可无缝平铺），再按风格色相叠一层，窗户 / 污渍仍然程序化画在上面
+      g.save(); if (variant % 2) { g.translate(W, 0); g.scale(-1, 1); } g.drawImage(aiWall, 0, 0, W, H); g.restore();
+      g.globalCompositeOperation = 'multiply'; g.globalAlpha = 0.7; g.fillStyle = a; g.fillRect(0, 0, W, H);
+      g.globalCompositeOperation = 'source-over'; g.globalAlpha = 1;
+    }
     // 瓷砖 / 灰泥纹理
     g.strokeStyle = 'rgba(0,0,0,.08)'; g.lineWidth = 1;
-    if (style === 'cream' || style === 'pink') for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) g.strokeRect(x + 0.5, y + 0.5, 16, 16);
-    if (style === 'brick') for (let y = 0; y < H; y += 12) for (let x = (y / 12) % 2 ? 0 : 12; x < W; x += 24) { g.fillStyle = rnd() < 0.3 ? b : a; g.fillRect(x + 1, y + 1, 22, 10); }
+    if (!aiWall && (style === 'cream' || style === 'pink')) for (let y = 0; y < H; y += 16) for (let x = 0; x < W; x += 16) g.strokeRect(x + 0.5, y + 0.5, 16, 16);
+    if (!aiWall && style === 'brick') for (let y = 0; y < H; y += 12) for (let x = (y / 12) % 2 ? 0 : 12; x < W; x += 24) { g.fillStyle = rnd() < 0.3 ? b : a; g.fillRect(x + 1, y + 1, 22, 10); }
     // 污渍：整体越往下越脏 + 竖向雨水流痕 + 斑驳
     const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, 'rgba(0,0,0,.05)'); gr.addColorStop(1, 'rgba(20,12,8,.42)'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
     for (let i = 0; i < 26; i++) { const x = rnd() * W, y = rnd() * H * 0.6, l = 40 + rnd() * 130; const sg = g.createLinearGradient(0, y, 0, y + l); sg.addColorStop(0, 'rgba(10,8,14,0)'); sg.addColorStop(0.3, `rgba(10,8,14,${0.15 + rnd() * 0.25})`); sg.addColorStop(1, 'rgba(10,8,14,0)'); g.fillStyle = sg; g.fillRect(x, y, 2 + rnd() * 4, l); }
