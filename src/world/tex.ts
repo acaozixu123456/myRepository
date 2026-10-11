@@ -16,6 +16,8 @@ export function preloadWorldTextures(): Promise<void> {
     i.src = url;
   }))).then(() => undefined);
 }
+/** 已加载的 AI 素材名里，以某个前缀开头的（如 skyline_ → 天际线） */
+export const worldTexNames = (prefix: string): string[] => [...imgs.keys()].filter((k) => k.startsWith(prefix)).sort();
 export const worldImg = (k: string): HTMLImageElement | undefined => imgs.get(k);
 /** AI 招牌 / 广告贴图（预加载成功才有，否则返回 null 让调用方退回程序化招牌） */
 const aiTexCache = new Map<string, THREE.Texture>();

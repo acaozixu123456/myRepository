@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { mulberry } from '../fx/util';
 import { bakeStatic } from './bake';
-import { aiTex, facade, neonSign } from './tex';
+import { aiTex, facade, neonSign, worldTexNames } from './tex';
 import { glowMat, std } from './kit';
 
 export interface Backdrop { group: THREE.Group; update(t: number): void }
@@ -42,6 +42,18 @@ export function buildBackdrop(): Backdrop {
     const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.5, 6, 5), glowMat('#ff3a3a')); beacon.position.set(x, h + 6.5, z); towers.add(beacon);
   }
   g.add(towers);
+  // 远景天际线（Codex 的 A07 素材，文件名以 skyline 开头；没有就跳过）：贴在最外圈的柱面内侧，越远越暗
+  const sky = worldTexNames('skyline')[0];
+  const skyTex = sky ? aiTex(sky) : null;
+  if (skyTex) {
+    skyTex.wrapS = THREE.RepeatWrapping; skyTex.repeat.set(1, 1); skyTex.needsUpdate = true;
+    const wall = new THREE.Mesh(
+      new THREE.CylinderGeometry(150, 150, 90, 48, 1, true),
+      new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, transparent: true, toneMapped: false, fog: false, depthWrite: false, opacity: 0.92 }));
+    wall.position.y = 40;
+    wall.renderOrder = -1;
+    g.add(wall);
+  }
   // ---- 空中走廊（连接相邻塔楼）----
   const skyways = new THREE.Group();
   for (let i = 0; i < N; i += 3) {
