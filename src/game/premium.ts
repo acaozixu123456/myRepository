@@ -4,6 +4,7 @@ import { HERO_BY_ID, HEROES, PREMIUM_HEROES } from '../data/heroes';
 import type { HeroDef } from '../data/heroes';
 import { DUP_SHARDS } from './gacha';
 import type { PullResult } from './gacha';
+import { onPay } from './events';
 import { track } from './quests';
 import type { PlayerState } from './state';
 
@@ -67,9 +68,10 @@ export function vipProgress(s: PlayerState): { level: number; next: number | nul
 }
 
 // ---------- 入账 ----------
-function record(s: PlayerState, id: string, yuan: number, moon: number, now: number) {
+export function recordOrder(s: PlayerState, id: string, yuan: number, moon: number, now: number) {
   const p = ensurePay(s);
   p.total += yuan;
+  onPay(s, yuan, now);
   p.orders.unshift({ t: now, id, yuan, moon });
   p.orders.length = Math.min(p.orders.length, 20);
 }
@@ -85,7 +87,7 @@ export function topUp(s: PlayerState, id: string, now = Date.now()): PayResult {
   const gain = tier.moon + tier.bonus + (first ? tier.moon : 0);
   s.res.moon += gain;
   if (first) p.first.push(id);
-  record(s, id, tier.yuan, gain, now);
+  recordOrder(s, id, tier.yuan, gain, now);
   return { ok: true, moon: gain, first };
 }
 
@@ -99,7 +101,7 @@ export function buyCard(s: PlayerState, now = Date.now()): PayResult {
   const base = p.card && p.card.until > now ? p.card.until : now;
   p.card = { until: base + MONTH_CARD.days * 86400000, lastDay: p.card?.lastDay ?? -1 };
   s.res.moon += MONTH_CARD.instant;
-  record(s, MONTH_CARD.id, MONTH_CARD.yuan, MONTH_CARD.instant, now);
+  recordOrder(s, MONTH_CARD.id, MONTH_CARD.yuan, MONTH_CARD.instant, now);
   return { ok: true, moon: MONTH_CARD.instant, first: false };
 }
 export function canClaimCard(s: PlayerState, now = Date.now()): boolean {
@@ -137,7 +139,7 @@ export function buySpPack(s: PlayerState, heroId: string, now = Date.now()): Pay
   if (p.grants.includes(SP_PACK.id)) return { ok: false, reason: '至尊自选礼包每个账号限购一次' };
   p.grants.push(SP_PACK.id);
   s.res.bells += SP_PACK.bells; s.res.tickets += SP_PACK.tickets;
-  record(s, SP_PACK.id, SP_PACK.yuan, 0, now);
+  recordOrder(s, SP_PACK.id, SP_PACK.yuan, 0, now);
   const result = giveHero(s, hero);
   track(s, 'collect_hero', Object.keys(s.heroes).length);
   return { ok: true, moon: 0, first: true, result };
@@ -149,7 +151,7 @@ export function grantOnce(s: PlayerState, id: string, moon: number, now = Date.n
   if (p.grants.includes(id)) return false;
   p.grants.push(id);
   s.res.moon += moon;
-  record(s, id, moon / MOON_PER_YUAN, moon, now);
+  recordOrder(s, id, moon / MOON_PER_YUAN, moon, now);
   return true;
 }
 

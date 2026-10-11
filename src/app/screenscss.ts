@@ -128,7 +128,7 @@ export const SCREEN_CSS = `
 .one .new{position:absolute;left:50%;top:76px;margin-left:46px;z-index:5;padding:2px 12px;border-radius:999px;background:var(--red);color:#fff;font-family:var(--f-d);font-size:15px;transform:rotate(8deg);box-shadow:0 2px 0 rgba(0,0,0,.3)}
 @keyframes cardin{0%{transform:translateY(60px) scale(.4) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
 .ten{position:absolute;inset:0;z-index:4;padding:calc(56px + env(safe-area-inset-top,0px)) 12px 90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-.ten .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:8px 6px;width:100%}
+.ten .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(50px,1fr));gap:8px 6px;width:100%}
 .ten .cell{position:relative;opacity:0;animation:cardin .5s cubic-bezier(.2,1.4,.4,1) forwards}
 .ten .cell .hcard .info{display:none}
 .ten .cell .hcard .art{aspect-ratio:1/1.35}
@@ -146,10 +146,11 @@ export const SCREEN_CSS = `
 .gacha .tabs button.sp-tab{background:linear-gradient(#ffb7e6,#ff6ad0);color:#5a1038;box-shadow:0 4px 0 #b02f8a,inset 0 2px 0 rgba(255,255,255,.5)}
 .gacha .tabs button.sp-tab[aria-pressed=true]{background:linear-gradient(#ffe27a,#ffb02e);box-shadow:0 4px 0 #b9741a,inset 0 2px 0 rgba(255,255,255,.6)}
 .btn.dim{filter:saturate(.55);opacity:.9}
-.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:6px;margin:8px 10px 0;flex:none}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(50px,1fr));gap:6px;margin:8px 10px 0;flex:none}
 .quick button{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px 5px;border-radius:14px;background:linear-gradient(var(--paper),var(--paper-2));box-shadow:0 3px 0 var(--paper-line),inset 0 0 0 2px rgba(255,255,255,.65);font-family:var(--f-d);font-size:12.5px}
 .quick button:active{transform:translateY(2px)}
 .quick button .rd{position:absolute;right:6px;top:3px;width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px #fff}
+.quick button.ev{background:linear-gradient(#ffd6ec,#ffa9d6)}
 .quick button.pay{background:linear-gradient(#ffe9a0,#ffc84a)}
 .urcut{position:absolute;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;background:rgba(10,4,20,.82);animation:fadein .15s}
 .urcut .band{position:relative;width:118%;height:200px;flex:none;background:linear-gradient(90deg,transparent,var(--c) 14%,var(--c) 86%,transparent);transform:rotate(-7deg);display:flex;align-items:center;box-shadow:0 0 0 4px rgba(255,255,255,.85) inset}

@@ -14,6 +14,7 @@ import type { QuestState } from './quests';
 import { createShopState, normalizeShopState } from './shop';
 import type { ShopState } from './shop';
 import type { PayState } from './premium';
+import type { EventState } from './events';
 import type { GuildState } from './guild';
 import type { BossState } from './worldboss';
 import type { SocialState } from './social';
@@ -51,6 +52,7 @@ export interface PlayerState {
   shop: ShopState; // 每周限购记录；存档 v 仍为 1
   dungeon?: DungeonState; // 日常秘境：每日次数与已通关档位
   daily?: DailyState; // 七日签到 / 快速探索
+  events?: EventState; // 活动中心
   wboss?: BossState; // 世界 Boss
   guild?: GuildState; // 公会（旧存档读取时补齐）
   social?: SocialState; // 世界聊天 / 好友 / 竞技场（旧存档读取时补齐）

@@ -1,5 +1,6 @@
 // 世界 Boss「巨猫来袭」：每周轮换一只巨型 Boss，玩家每天 3 次挑战，按打掉的生命比例（伤害%）计奖励。
 // 周累计伤害以「条」（1 条 = 100% 生命）计，达到里程碑一次性领周奖；排行榜上的模拟玩家同样是时间的纯函数。
+import { addPoints } from './events';
 import type { EnemySpawn, StageDef } from '../content/types';
 import { HERO_BY_ID } from '../data/heroes';
 import { NPCS, npcOnline, npcProgress, rnd } from './npc';
@@ -69,6 +70,7 @@ export function finishAttempt(s: PlayerState, pct: number, now = Date.now()) {
   const b = ensureBoss(s, now);
   const p = Math.max(0, Math.min(1, pct));
   b.bars += p; b.best = Math.max(b.best, p);
+  addPoints(s, 'boss', 1, now);
   const r = attemptReward(s, p);
   s.res.fish += r.fish; s.res.catnip += r.catnip; addItem(s, 'paw_seal', r.paw);
   return { pct: p, ...r };

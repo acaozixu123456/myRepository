@@ -18,6 +18,7 @@ import type { Gain } from '../game/stage';
 import { autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
 import { bagHtml, handleBag } from './screens/bag';
 import { shopHtml, handleShop } from './screens/shop';
+import { EVENTS_CSS, eventsHtml, handleEvents } from './screens/events';
 import { PAY_CSS, handlePay, payHtml } from './screens/pay';
 import { SOCIAL_CSS, handleSocial, refreshChatLog, socialHtml } from './screens/social';
 import { dayIndex, grantOnce } from '../game/premium';
@@ -32,7 +33,7 @@ import { fmt } from '../ui/components';
 import { makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -72,6 +73,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen shop-screen" data-screen="shop"></div>
   <div class="screen shop-screen" data-screen="pay"></div>
   <div class="screen shop-screen" data-screen="social"></div>
+  <div class="screen shop-screen" data-screen="events"></div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="home" class="on">${icon('home', 30)}主城</button>
     <button data-act="nav" data-to="lineup">${icon('team', 30)}阵容</button>
@@ -128,6 +130,7 @@ const ctx: AppCtx = {
     else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
     else if (scr === 'quests') (root.querySelector('[data-screen=quests]') as HTMLElement).innerHTML = questsHtml(ctx);
     else if (scr === 'social') { (root.querySelector('[data-screen=social]') as HTMLElement).innerHTML = socialHtml(ctx); const lg = root.querySelector('.chat-log') as HTMLElement | null; if (lg) { lg.scrollTop = lg.scrollHeight; markRead(state); } }
+    else if (scr === 'events') (root.querySelector('[data-screen=events]') as HTMLElement).innerHTML = eventsHtml(ctx);
     else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
     else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
     updateGuide(ctx);
@@ -189,6 +192,7 @@ root.addEventListener('click', (e) => {
   if (handleQuests(ctx, el)) return;
   if (handleShop(ctx, el)) return;
   if (handlePay(ctx, act, el)) return;
+  if (handleEvents(ctx, act, el)) return;
   if (handleSocial(ctx, act, el)) return;
   if (handleDaily(ctx, act)) return;
   switch (act) {

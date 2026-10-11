@@ -1,6 +1,7 @@
 // 任务进度与军需领取：只处理玩家数据，不依赖 DOM。
 import { QUESTS } from '../content/economy';
 import type { QuestDef, RewardDef } from '../content/types';
+import { onTrack } from './events';
 import { addItem } from './inventory';
 import { periodKeys } from './periods';
 import type { PlayerState, Resources } from './state';
@@ -77,6 +78,7 @@ export function isClaimable(s: PlayerState, quest: QuestDef): boolean {
 /** 事件计数累加；关卡、英雄等级、不同英雄数量保存最高值。 */
 export function track(s: PlayerState, goalType: string, amount = 1): void {
   if (!AVAILABLE_GOALS.has(goalType) || !Number.isFinite(amount) || amount <= 0) return;
+  onTrack(s, goalType, amount);
   for (const quest of QUESTS) {
     if (quest.goal.type !== goalType || s.quests.claimed[quest.id] === true) continue;
     const previous = questProgress(s, quest);

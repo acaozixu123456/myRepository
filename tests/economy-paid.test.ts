@@ -97,7 +97,7 @@ describe('paid economy audit actual resource accounting', () => {
     const text = renderEconomyPaid(report, 'test-revision', '独立SP报告摘要：1/2/3 SP，实际样本。');
     for (const fragment of ['test-revision', '2026-10-05', '未定价', '35场24胜', '05:00', 'EXP', '月光珠', '每天一次', 'SP_BALANCE_PAID.md', '专属碎片']) expect(text).toContain(fragment);
     expect(text).toContain('独立SP报告摘要：1/2/3 SP，实际样本。');
-    expect(text).toContain('1.70'); expect(text).toContain('1.73'); expect(text).toContain('EXP计价口径提案');
+    expect(text).toContain('1.66'); expect(text).toContain('1.73'); expect(text).toContain('EXP计价口径提案');
   });
 });
 

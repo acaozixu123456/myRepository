@@ -6,6 +6,7 @@ import { HERO_BY_ID } from '../src/data/heroes';
 import { Rng } from '../src/engine/rng';
 import { fastExplore, fastFree, signIn } from '../src/game/daily';
 import { HELP_PER_DAY, guildChest, guildHelp, joinGuild, myGuild } from '../src/game/guild';
+import { answerQuiz, carnivalReady, claimCarnival, claimPass, ensureEvents, passLevel, quizToday, spin, spinsLeft } from '../src/game/events';
 import { ATTEMPTS_PER_DAY, claimMilestone, claimable, finishAttempt, startAttempt } from '../src/game/worldboss';
 import { DAILY_TRIES, DUNGEONS, TIERS, dungeonStart, dungeonSweep, dungeonWin, tierLevel, tierUnlocked } from '../src/game/dungeon';
 import { COST, POOLS, pull } from '../src/game/gacha';
@@ -121,6 +122,16 @@ function incomeDay(p: PlayerState, now: number, day: number, frozenLevel?: numbe
     }
   });
   record('friend', () => { for (const n of NPCS.slice(0, friends)) { addFriend(p, n.id); check(visitFriend(p, n.id, now + 10 * HOUR).ok, '拜访好友'); } });
+  record('events', () => {
+    // 免费活动：猫抓机（固定种子）、问答全对、嘉年华可领档、通行证免费轨；氪金活动是人民币购买，不在免费收入里
+    const rng = new Rng(20261011 + day);
+    const card = !!p.pay?.card && p.pay.card.until > now;
+    while (spinsLeft(p, vipLevel(p), card, now + 11 * HOUR).free > 0) check(spin(p, vipLevel(p), card, () => rng.next(), now + 11 * HOUR).ok, '猫抓机');
+    for (const q of quizToday(now + 11 * HOUR)) check(answerQuiz(p, q.a, now + 11 * HOUR).ok, '问答');
+    const ev = ensureEvents(p, now + 23 * HOUR);
+    carnivalReady(ev.pts, ev.carn).forEach((ok, i) => { if (ok) check(claimCarnival(p, i, now + 23 * HOUR).ok, '嘉年华'); });
+    for (let l = 1; l <= passLevel(p, now + 23 * HOUR); l++) if (!ev.passFree.includes(l)) check(claimPass(p, 'free', l, now + 23 * HOUR).ok, '通行证免费轨');
+  });
   record('guild', () => {
     if (!myGuild(p)) check(joinGuild(p, 'g_box', now + 10 * HOUR).ok, '加入公会');
     check(guildChest(p, now + 10 * HOUR).ok, '每日纸箱');
@@ -342,7 +353,7 @@ export function renderEconomyPaid(r: EconomyPaidReport, sourceRevision: string, 
     '按此口径，原 120 分钟折算下秘境约占全部免费收入的 14%–20%，低于 20%–35% 目标下沿；已裁决调为 150 分钟（见下表为 150 分钟的实测占比），仍偏低的快照留待后续观察。',
     '## 任务毛奖励上限',
     table(['周期', '现已开放条数', '未开放', '全部达标毛实物', '已定价子集'], r.questCeilings.map((q) => [q.kind, q.available, q.unavailable.join('、') || '无', bundle(q.quantities), n(q.valuation.pricedFish)])),
-    '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。世界 Boss 按每次稳定打掉 40% 生命（默认五猫校准值）、每天 3 次、周内累计里程碑自动领取并入主表的 boss 来源，这是显式假设而非战斗实测；公会已开放，其每日纸箱+5次互助已并入主表的 guild 来源（鱼牌单价取 ITEM_VALUE_FISH 锚点；捐献是小鱼干支出，不计入）；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',
+    '此表仅在人工完成全部目标后调用实际领奖核对账目，未包含升级、招募、强化等达标支出，绝不当成每个玩家每天稳定净收入。主表真正领取的每日任务为登录、挂机、战役、竞技、好友；每周为战役、挂机、竞技。活动中心的免费活动（猫抓机按固定种子抽、每日问答全对、嘉年华可领档、通行证免费轨）已并入主表的 events 来源；氪金活动（首充、周累充、成长基金、通行证付费轨、限时礼包）是人民币购买，不计入免费收入，其档位奖励见 src/game/events.ts；世界 Boss 按每次稳定打掉 40% 生命（默认五猫校准值）、每天 3 次、周内累计里程碑自动领取并入主表的 boss 来源，这是显式假设而非战斗实测；公会已开放，其每日纸箱+5次互助已并入主表的 guild 来源（鱼牌单价取 ITEM_VALUE_FISH 锚点；捐献是小鱼干支出，不计入）；爬塔只能首次过层计数，层数有限，不能永久把每日/每周爬塔毛额当作持续收入。',
     '## 额外首页福利：对经济结论的敏感性',
     table(['累计领取天数', '额外实物', '额外已定价子集'], r.gifts.map((g) => [g.count, bundle(g.quantities), n(g.valuation.pricedFish)])),
     '当前 home.ts 永久显示“每日福利”，main.ts 仅限制300000ms冷却，点击即发1600金铃铛+5招福符。一次310000、三次930000；每天288次是24小时持续操作的理论上限，不是典型玩法。主表按Issue指定来源列出；这个额外来源确实可重复领取，不能省略后宣称全经济已达付费快15%–40%的目标。它还改变免费招募与专属碎片获得速度。需Claude确认是否原型福利或正式每日一次；本PR不改应用行为。',

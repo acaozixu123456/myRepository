@@ -1,3 +1,4 @@
+import { eventsDot } from './events';
 import { ensureGuild, helpsLeft, myGuild } from '../../game/guild';
 import { CHAPTERS } from '../../content/campaign';
 import { FACTIONS } from '../../data/factions';
@@ -55,6 +56,7 @@ export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: strin
     { act: 'nav', to: 'quests', ic: 'campaign', label: '任务', dot: QUESTS.some((quest) => isClaimable(s, quest)) },
     { act: 'signin', ic: 'calendar', label: '签到', dot: canSign(s) },
     { act: 'nav', to: 'social', ic: 'chat', label: '广场', dot: unreadCount(s) > 0 || guildTodo(s) },
+    { act: 'nav', to: 'events', ic: 'gift', label: '活动', cls: 'ev', dot: eventsDot(ctx) },
     { act: 'nav', to: 'shop', ic: 'bag', label: '商店' },
     { act: 'nav', to: 'pay', ic: 'moon', label: '充值', cls: 'pay', dot: canClaimCard(s) || canClaimVip(s) },
   ];

@@ -1,4 +1,5 @@
 // 日常秘境：三种资源副本（小鱼干 / 经验 / 猫薄荷），五档难度，每天每种 3 次；通关过的档位可以扫荡。
+import { addPoints } from './events';
 import { idleRate as contentIdleRate } from '../content/progression';
 import type { EnemySpawn, StageDef } from '../content/types';
 import type { FactionId } from '../data/factions';
@@ -56,6 +57,7 @@ export function dungeonStart(s: PlayerState, id: DungeonId, tier: number, now = 
   if (!tierUnlocked(s, tier)) return { ok: false, reason: '主线再推进一点才能进这一档' };
   if (dungeonLeft(s, id, now) <= 0) return { ok: false, reason: '今天的次数用完了' };
   ensureDungeon(s, now).used[id]++;
+  addPoints(s, 'dungeon', 1, now);
   return { ok: true };
 }
 export function dungeonWin(s: PlayerState, id: DungeonId, tier: number, now = Date.now()): Gain {
