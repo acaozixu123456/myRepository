@@ -34,6 +34,7 @@ export const EXPLORE_CSS = `
 .xteam button.lead{border-color:#ffd24a;box-shadow:0 0 12px rgba(255,210,74,.6)}
 .xteam img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
 .xmini{position:absolute;right:10px;top:122px;z-index:3;width:92px;height:92px;border-radius:12px;border:2px solid rgba(127,240,255,.6);background:rgba(10,6,24,.7);box-shadow:0 0 12px rgba(127,240,255,.25)}
+.xfps{position:absolute;right:12px;top:216px;z-index:3;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);text-shadow:0 1px 2px #000;pointer-events:none}
 .xtools{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:8px}
 .xtools .btn{min-width:64px}
 .xjoy{position:absolute;left:14px;bottom:14px;z-index:3;width:116px;height:116px;border-radius:50%;background:rgba(10,6,24,.45);border:2px solid rgba(127,240,255,.45);touch-action:none}
@@ -125,12 +126,19 @@ function hud(ctx: AppCtx): string {
   return `${topbar(ctx, '探索')}
   <div class="xobj"><div class="grow"><b>${b.fresh ? '目标 · ' : '重打 · '}${b.stage.id} ${b.stage.name}</b><small>首领在街区北端 · 战力 ${fmt(mine)} / 推荐 ${fmt(rec)}</small></div><button class="btn sm green" data-act="x-boss">前往</button></div>
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
-  <canvas class="xmini" id="xmini" width="184" height="184"></canvas>
+  <canvas class="xmini" id="xmini" width="184" height="184"></canvas><div class="xfps" id="xfps"></div>
   <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
 }
 
+const GFX_LV = { auto: 0, high: 0, low: 3 } as const;
+function applyGfx(ctx: AppCtx, wv: WorldView) {
+  const g = ctx.s.settings.gfx ?? 'auto';
+  wv.lockQuality = g !== 'auto';
+  wv.forceLevel(GFX_LV[g]);
+}
 let miniT = 0;
 function drawMini(ctx: AppCtx) {
+  if (rt) { const f = ctx.root.querySelector('#xfps'); if (f) f.textContent = `${Math.round(rt.wv.fps)}fps · 画质${['高', '高', '中', '低', '最低'][rt.wv.level]}`; }
   const cv = ctx.root.querySelector('#xmini') as HTMLCanvasElement | null;
   if (!cv || !rt) return;
   const g = cv.getContext('2d')!, W = cv.width, k = W / (rt.st.half * 2);
@@ -181,6 +189,7 @@ export async function enterExplore(ctx: AppCtx) {
       bindInput(scr);
       await preloadWorldTextures();
       const wv = new WorldView(canvas, defaultQuality());
+      applyGfx(ctx, wv);
       rt = { wv, ex: undefined as unknown as Explorer, st: undefined as unknown as Street, dead: new Map(), running: false };
       loadLevel(ctx, explorerLevel(ctx.s));
       (window as unknown as { __xp?: Rt }).__xp = rt; // 调试 / 自动化测试用
@@ -191,6 +200,7 @@ export async function enterExplore(ctx: AppCtx) {
       return;
     }
   }
+  applyGfx(ctx, rt.wv);
   rt.wv.resize();
   if (rt.st.level.id !== explorerLevel(ctx.s).id) loadLevel(ctx, explorerLevel(ctx.s)); else syncSpawns(ctx);
   rt.ex.setTeam(teamIds(ctx));

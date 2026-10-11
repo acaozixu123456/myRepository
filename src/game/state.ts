@@ -80,7 +80,7 @@ export interface PlayerState {
   seen: string[];
   stories?: string[]; // 已看过的剧情 id
   tips?: string[]; // 已完成的新手引导步骤
-  settings: { speed: number; sound?: boolean; music?: boolean; illustSprite?: boolean; cat3d?: boolean; autoPush?: boolean; autoFail?: number };
+  settings: { speed: number; sound?: boolean; music?: boolean; illustSprite?: boolean; cat3d?: boolean; autoPush?: boolean; gfx?: 'auto' | 'high' | 'low'; autoFail?: number };
 }
 
 export const MAX_STAR = 5;

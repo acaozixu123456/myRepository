@@ -235,8 +235,17 @@ export class WorldView {
     };
     this.raf = requestAnimationFrame(loop);
   }
+  /** 平滑帧率（调试 / 设置里显示） */
+  fps = 0;
+  /** 手动画质：true 时不再自动降档 */
+  lockQuality = false;
+  get level() { return this.qualityLevel; }
+  /** 手动设定画质档位：0 全开 … 3 关光晕 / 4 最低；只能往下压（场景重载时重新套用） */
+  forceLevel(n: number) { while (this.qualityLevel < n) this.degrade(); }
   private watchFps(raw: number) {
     if (raw > 0.5) return; // 切后台 / 战斗浮层后恢复的第一帧，不算
+    this.fps = this.fps ? this.fps * 0.92 + (1 / raw) * 0.08 : 1 / raw;
+    if (this.lockQuality) return;
     this.fpsAcc += raw; this.fpsN++;
     if (this.fpsN < 90) return;
     const avg = this.fpsAcc / this.fpsN; this.fpsAcc = 0; this.fpsN = 0;
