@@ -15,6 +15,9 @@ interface Ctx {
   crit?: boolean;
   killed?: boolean;
   isBasic?: boolean;
+  melee?: boolean;
+  counter?: boolean; // 装备反击产生的伤害，不再触发反击
+  redwall?: boolean; // 本次绝技已触发赤壁琴火
 }
 
 const lvMul = (lv: number) => 1 + (lv - 1) * 0.075;
@@ -85,12 +88,56 @@ class Battle {
     for (const lm of kit.basic.levelMods ?? []) if (lm.lv <= skillLv) applyPatch(kit, lm.patch);
     if ((s.star ?? 1) >= 5 && s.awaken) for (const p of kit.awaken[s.awaken].patches) applyPatch(kit, p);
     const roleCrit = h.role === '刺客' ? 0.12 : h.role === '神射' ? 0.08 : 0.05;
-    const maxHp = Math.round(bs.hp * m);
+    const g = s.gear ?? {};
+    const maxHp = Math.round(bs.hp * m) + Math.round(g.hp ?? 0);
     return {
       uid: this.uidSeq++, side, pos: s.pos, heroId: s.heroId, name: h.name, faction: h.faction, role: h.role, level: s.level,
-      maxHp, hp: Math.max(1, Math.round(maxHp * (s.hpPct ?? 1))), atk: Math.round(bs.atk * m), def: Math.round(bs.def * m), spd: bs.spd, crit: roleCrit, critDmg: 1.5,
+      maxHp, hp: Math.max(1, Math.round(maxHp * (s.hpPct ?? 1))), atk: Math.round(bs.atk * m) + Math.round(g.atk ?? 0), def: Math.round(bs.def * m) + Math.round(g.def ?? 0), spd: bs.spd + Math.round(g.spd ?? 0), crit: roleCrit + (g.crit ?? 0), critDmg: 1.5 + (g.critDmg ?? 0),
       energy: s.energy ?? (typeof this.cfg.startEnergy === 'object' ? this.cfg.startEnergy[side] : (this.cfg.startEnergy ?? 0)), shield: [], statuses: [], alive: true, kit, counters: {}, used: {}, acted: 0, extraTurn: false, invuln: 0, dmgMul: 1,
+      hit: g.hit ?? 0, dodge: g.dodge ?? 0, dmgReduce: Math.min(0.6, g.dmgReduce ?? 0), healBonus: g.healBonus ?? 0, set4: s.set4 ?? [],
     };
+  }
+
+  // ---------- 关卡规则 ----------
+  ruleSideMatch(rs: 'A' | 'B' | 'both', side: 'A' | 'B') { return rs === 'both' || rs === side; }
+  ruleTo(to: string, u: Unit) {
+    if (to === 'all') return true;
+    if (to === 'front') return u.pos <= 2;
+    if (to === 'back') return u.pos >= 3;
+    return to.startsWith('faction:') && u.faction === to.slice(8);
+  }
+  applyRuleStart() {
+    for (const r of this.cfg.rules ?? []) {
+      for (const u of this.units) {
+        if (!u.alive || !('side' in r) || !this.ruleSideMatch(r.side, u.side) || !('to' in r) || !this.ruleTo(r.to, u)) continue;
+        if (r.t === 'startStatus') this.addStatus(u, u, r.id, r.turns, r.stacks ?? 1, r.power ?? 0);
+        else if (r.t === 'startShield') this.addShieldPct(u, u, r.pct, r.turns);
+        else if (r.t === 'startEnergy') this.gainEnergy(u, r.amount);
+        else if (r.t === 'critAdd') u.crit += r.add;
+        else if (r.t === 'dodgeAdd' && !r.rounds) u.dodge += r.add;
+      }
+    }
+  }
+  applyRuleRound() {
+    for (const r of this.cfg.rules ?? []) {
+      if (r.t === 'roundStatus' && this.round % r.every === 0) {
+        for (const u of this.units) if (u.alive && this.ruleSideMatch(r.side, u.side) && this.ruleTo(r.to, u)) this.addStatus(u, u, r.id, r.turns, 1, r.power ?? 0);
+      }
+    }
+  }
+  ruleMul(kind: 'dmgMul' | 'takenMul' | 'healMul', side: 'A' | 'B', elem?: string): number {
+    let m = 1;
+    for (const r of this.cfg.rules ?? []) {
+      if (r.t !== kind || !this.ruleSideMatch(r.side, side)) continue;
+      if ('elem' in r && r.elem && r.elem !== elem) continue;
+      m *= r.mult;
+    }
+    return m;
+  }
+  ruleDodge(u: Unit): number {
+    let d = 0;
+    for (const r of this.cfg.rules ?? []) if (r.t === 'dodgeAdd' && r.rounds && this.round <= r.rounds && this.ruleSideMatch(r.side, u.side) && this.ruleTo(r.to, u)) d += r.add;
+    return d;
   }
 
   /** 已激活的命名羁绊（按阵营） */
@@ -118,6 +165,56 @@ class Battle {
         const k = n >= 5 ? 0.15 : n >= 3 ? 0.08 : 0;
         if (k) { u.atk = Math.round(u.atk * (1 + k)); u.maxHp = Math.round(u.maxHp * (1 + k)); u.hp = u.maxHp; }
         if (u.faction === 'qun') u.critDmg += 0.1 * (Object.keys(cnt).length - 1);
+      }
+    }
+  }
+
+  // ---------- 装备四件套特效 ----------
+  has4(u: Unit, id: string) { return u.set4.includes(id); }
+  onceBy(u: Unit, key: string, per: 'battle' | 'round' = 'battle'): boolean {
+    const v = u.used[key];
+    if (per === 'round' ? v === this.round : v) return false;
+    u.used[key] = per === 'round' ? this.round : 1;
+    return true;
+  }
+  addShieldPct(src: Unit, t: Unit, pct: number, turns: number) {
+    if (!t.alive) return;
+    const v = Math.round(src.maxHp * pct);
+    t.shield.push({ v, turns });
+    this.push({ t: 'shield', src: src.uid, dst: t.uid, amount: v, total: this.shieldOf(t) });
+  }
+  gearOnDamage(ctx: Ctx, caster: Unit, target: Unit, crit: boolean, killed: boolean, hitIdx: number) {
+    // 受击方
+    if (target.set4.length && target.alive) {
+      if (this.has4(target, 'shu_peach_guard') && target.hp / target.maxHp < 0.3 && this.onceBy(target, 's_peach')) { this.addShieldPct(target, target, 0.15, 2); this.push({ t: 'text', uid: target.uid, text: '桃园守约' }); }
+      if (this.has4(target, 'qun_box_lord') && crit && this.onceBy(target, 's_box')) { this.addShieldPct(target, target, 0.18, 2); this.push({ t: 'text', uid: target.uid, text: '合上箱盖' }); }
+      if (this.has4(target, 'wu_warm_blanket') && ctx.melee && !ctx.counter && caster.alive && this.onceBy(target, 's_blanket', 'round')) {
+        this.push({ t: 'text', uid: target.uid, text: '热毯反击' });
+        this.dealDamage({ caster: target, targets: [caster], counter: true }, caster, { t: 'damage', scale: { atk: 0.4 }, elem: 'fire' }, 0, 1);
+      }
+    }
+    // 攻击方
+    if (caster.set4.length) {
+      if (this.has4(caster, 'qun_moon_bell') && crit && this.onceBy(caster, 's_bell', 'round')) this.gainEnergy(caster, 8);
+      if (this.has4(caster, 'wu_redwall') && !ctx.isBasic && !ctx.redwall && target.alive && this.has(target, 'wet')) {
+        ctx.redwall = true;
+        this.addStatus(caster, target, 'burn', 2, 1, 0, Math.round(caster.atk * 0.2));
+        this.push({ t: 'text', uid: caster.uid, text: '琴火' });
+      }
+    }
+    void killed; void hitIdx;
+  }
+  gearBattleStart() {
+    for (const u of this.units) {
+      if (!u.alive || !u.set4.length) continue;
+      const mates = this.alive(u.side);
+      if (this.has4(u, 'wei_tiger_guard')) {
+        const t = mates.slice().sort((a, c) => a.hp / a.maxHp - c.hp / c.maxHp || a.pos - c.pos)[0];
+        if (t) { this.addShieldPct(u, t, 0.12, 2); this.push({ t: 'text', uid: u.uid, text: '虎卫玄甲' }); }
+      }
+      if (this.has4(u, 'wei_sleep_strategy')) {
+        const t = mates.slice().sort((a, c) => a.energy - c.energy || a.pos - c.pos)[0];
+        if (t) { this.gainEnergy(t, 15); this.push({ t: 'text', uid: u.uid, text: '静夜锦囊' }); }
       }
     }
   }
@@ -261,6 +358,11 @@ class Battle {
       this.push({ t: 'text', uid: target.uid, text: '闪避' });
       return;
     }
+    const dodgeP = target.dodge + (this.cfg.rules ? this.ruleDodge(target) : 0) - caster.hit;
+    if (dodgeP > 0 && this.rng.chance(Math.min(0.6, dodgeP))) {
+      this.push({ t: 'text', uid: target.uid, text: '闪避' });
+      return;
+    }
     let base = this.scaleVal(e.scale, caster, target);
     const cm = this.mods(caster);
     const tm = this.mods(target);
@@ -271,6 +373,8 @@ class Battle {
     ctx.crit = crit;
     let mult = (1 + cm.dmgDealtPct) * caster.dmgMul * (1 + tm.dmgTakenPct) * this.counterMult(caster.faction, target.faction);
     if (crit) mult *= caster.critDmg;
+    if (target.dmgReduce) mult *= 1 - target.dmgReduce;
+    if (this.cfg.rules) mult *= this.ruleMul('dmgMul', caster.side, elem) * this.ruleMul('takenMul', target.side, elem);
     if ((elem === 'fire' || elem === 'thunder') && this.has(target, 'wet')) mult *= 1.25;
     if (this.hasBond(caster.side, '江东之虎') && this.has(target, 'burn')) mult *= 1.1;
     // 吴·赤壁：同阵营≥2 的火焰技能对淋湿目标额外伤害
@@ -296,6 +400,7 @@ class Battle {
     this.push({ t: 'damage', src: caster.uid, dst: target.uid, amount: dmg, crit, elem, hp: target.hp, shield: this.shieldOf(target), killed, hit: hitIdx, hits, absorbed });
     if (e.lifesteal) this.heal(caster, caster, Math.round(dmg * e.lifesteal));
     this.gainEnergy(target, 10);
+    this.gearOnDamage(ctx, caster, target, crit, killed, hitIdx);
     cctx.killed = killed;
     ctx.killed = killed;
     if (killed) this.kill(target, caster);
@@ -328,7 +433,7 @@ class Battle {
   heal(src: Unit, t: Unit, amount: number) {
     if (!t.alive || amount <= 0) return;
     const tm = this.mods(t);
-    const bondHeal = this.hasBond(src.side, '杏林同盟') ? 1.2 : 1;
+    const bondHeal = (this.hasBond(src.side, '杏林同盟') ? 1.2 : 1) * (1 + src.healBonus) * (this.cfg.rules ? this.ruleMul('healMul', t.side) : 1);
     const real = Math.min(t.maxHp - t.hp, Math.round(amount * bondHeal * (1 + tm.healTakenPct)));
     if (real <= 0) return;
     t.hp += real;
@@ -420,9 +525,15 @@ class Battle {
         break;
       case 'status':
         for (const t of tg) {
-          if (e.p !== undefined && !this.rng.chance(e.p)) continue;
           const rule = STATUS_RULES[e.id];
-          if (rule?.cc && t.alive && (t.used['ccImmune'] ?? 0) >= this.round) continue;
+          let p = e.p;
+          if (rule?.cc && p !== undefined && this.has4(caster, 'xian_star_scroll') && this.onceBy(caster, 's_scroll')) p = Math.min(1, p + 0.15);
+          if (p !== undefined && !this.rng.chance(p)) continue;
+          if (rule?.cc && t.alive && (t.used['ccImmune'] ?? 0) >= this.round) {
+            if (this.has4(caster, 'shu_eastwind') && this.onceBy(caster, 's_wind')) this.gainEnergy(caster, 20);
+            continue;
+          }
+          if (e.id === 'yarn' && this.has4(t, 'xian_cloud_mat') && this.onceBy(t, 's_cloud')) { this.push({ t: 'text', uid: t.uid, text: '云台免疫' }); continue; }
           this.addStatus(caster, t, e.id, e.turns, e.stacks ?? 1, e.power ?? 0, e.snap ? this.scaleVal(e.snap, caster, t) : 0);
         }
         break;
@@ -568,6 +679,10 @@ class Battle {
         }
       }
     }
+    if (usedBasic && this.has4(u, 'man_beast_drum') && (this.teamCounter[`${u.side}:totem`] ?? 0) >= 3 && this.onceBy(u, 's_drum', 'round')) {
+      const foes = this.alive(this.foe(u));
+      if (foes.length) { this.push({ t: 'text', uid: u.uid, text: '百兽应声' }); this.dealDamage({ caster: u, targets: [], counter: true }, this.rng.pick(foes), { t: 'damage', scale: { atk: 0.2 } }, 0, 1); }
+    }
     if (u.faction === 'xian' && (cnt.xian ?? 0) >= 2 && this.rng.chance(0.1 * (cnt.xian ?? 0) + (this.hasBond(u.side, '天机四象') ? 0.15 : 0))) {
       const allies = this.alive(u.side);
       if (allies.length) {
@@ -607,6 +722,7 @@ class Battle {
       }
     }
     for (const s of u.shield) s.turns -= 1;
+    if (u.set4.includes('man_rattan_nest')) for (const s of u.shield) if (s.turns <= 0 && s.v > 0) this.heal(u, u, Math.round(s.v * 0.2));
     u.shield = u.shield.filter((s) => s.turns > 0 && s.v > 0);
     if (u.invuln > 0) u.invuln--;
   }
@@ -623,7 +739,7 @@ class Battle {
     if (!u.alive) return;
     const ult = u.energy >= 100 && !this.flag(u, 'silence');
     const skill = ult ? u.kit.ultimate : u.kit.basic;
-    const ctx: Ctx = { caster: u, targets: [], isBasic: !ult };
+    const ctx: Ctx = { caster: u, targets: [], isBasic: !ult, melee: !!skill.melee };
     const confused = this.flag(u, 'confuse');
     let effects = skill.effects;
     let tsel: TargetSel = skill.target ?? { side: 'enemy', pick: 'front' };
@@ -657,11 +773,14 @@ class Battle {
   run(): BattleResult {
     this.push({ t: 'start', units: this.units.map((u) => ({ uid: u.uid, side: u.side, pos: u.pos, heroId: u.heroId, name: u.name, maxHp: u.maxHp, hp: u.hp, faction: u.faction })) });
     this.fireAll('battleStart');
+    this.gearBattleStart();
+    this.applyRuleStart();
     let winner: 'A' | 'B' | 'draw' | null = this.over();
     while (!winner && this.round < this.maxRounds) {
       this.round++;
       this.push({ t: 'round', n: this.round });
       this.factionRoundStart();
+      this.applyRuleRound();
       this.fireAll('roundStart');
       const order = this.units.filter((u) => u.alive).sort((a, c) => this.stat(c, 'spd') - this.stat(a, 'spd') || a.pos - c.pos);
       for (const u of order) {

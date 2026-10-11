@@ -4,6 +4,7 @@ import { idleCap, idleRate as contentIdleRate } from '../content/progression';
 import type { StageDef } from '../content/types';
 import { HERO_BY_ID } from '../data/heroes';
 import type { UnitSetup } from '../engine/types';
+import { heroGear } from './gear';
 import { heroPower, newPlayer } from './state';
 import type { PlayerState, Resources } from './state';
 
@@ -55,7 +56,8 @@ export function lineupSetups(s: PlayerState, carry?: Record<string, { hpPct: num
     const h = s.heroes[id];
     if (!h) return;
     const c = carry?.[id];
-    out.push({ heroId: id, level: h.lv, star: h.star, awaken: h.awaken, skillLv: h.skillLv, pos, hpPct: c?.hpPct, energy: c?.energy });
+    const g = heroGear(s, id);
+    out.push({ heroId: id, level: h.lv, star: h.star, awaken: h.awaken, skillLv: h.skillLv, pos, hpPct: c?.hpPct, energy: c?.energy, gear: g.stats, set4: g.set4 });
   });
   return out;
 }

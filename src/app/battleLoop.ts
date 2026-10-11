@@ -130,7 +130,7 @@ export class BattleLoop {
     const s = this.hooks.state();
     let carry: Record<string, { hpPct: number; energy: number }> | undefined;
     for (let w = 0; w < stage.waves.length; w++) {
-      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w) });
+      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
       const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
       await this.player.setup(start, THEME[chapter] ?? 'meadow');
       if (token !== this.token) return false;

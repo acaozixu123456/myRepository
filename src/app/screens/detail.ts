@@ -6,6 +6,7 @@ import { ROLES } from '../../data/systems';
 import { EQUIPS, EQUIP_SLOTS } from '../../content/equipment';
 import type { Quality } from '../../content/types';
 import { MAX_STAR, starShards, heroLevelCap, heroPower, heroStats, isInLineup, levelUp, levelUpCost, setAwaken, skillUp, skillUpCost, starUp, equip, unequip } from '../../game/state';
+import { heroGear } from '../../game/gear';
 import { artImg } from '../../ui/art';
 import { esc, fmt, stars } from '../../ui/components';
 import { ROLE_ICON, icon } from '../../ui/icons';
@@ -52,7 +53,8 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
   const d = HERO_BY_ID[id];
   const h = ctx.s.heroes[id];
   const f = FACTIONS[d.faction];
-  const st = heroStats(h);
+  const gearStats = heroGear(ctx.s, id).stats;
+  const st = heroStats(h, gearStats);
   const cap = heroLevelCap(h.star);
   const lc = levelUpCost(h.lv);
   const sc = skillUpCost(h.skillLv);
@@ -70,7 +72,7 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
         <h2>${d.name}</h2>
         <div class="row" style="gap:5px;margin:6px 0;flex-wrap:wrap"><span class="tag f" style="--c:${f.color}">${f.glyph} ${f.full}</span><span class="tag r" style="--rc:var(--r-${d.rarity.toLowerCase()})">${d.rarity}</span><span class="tag">${icon(ROLE_ICON[d.role], 14)}${d.role}</span></div>
         <div class="row" style="gap:6px">${stars(h.star, 5, 17)}</div>
-        <div class="sub" style="margin-top:4px">Lv.${h.lv} / ${cap} · 战力 <b class="num">${fmt(heroPower(h))}</b></div>
+        <div class="sub" style="margin-top:4px">Lv.${h.lv} / ${cap} · 战力 <b class="num">${fmt(heroPower(h, gearStats))}</b></div>
         ${bar('生命', st.hp, 9000)}${bar('攻击', st.atk, 1500)}${bar('防御', st.def, 700)}${bar('速度', st.spd, 140)}
       </div>
     </div>

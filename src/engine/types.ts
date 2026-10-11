@@ -140,10 +140,26 @@ export interface UnitSetup {
   skillLv?: number; // 绝技等级 1~10
   pos: number; // 0-2 前排，3-4 后排
   statMul?: number; // 额外属性倍率（关卡词缀）
+  gear?: Partial<Record<'hp' | 'atk' | 'def' | 'spd' | 'crit' | 'critDmg' | 'hit' | 'dodge' | 'healBonus' | 'dmgReduce', number>>; // 装备（含套装面板）提供的属性
+  set4?: string[]; // 已凑齐四件的套装 id，启用特殊效果
   hpPct?: number; // 开局生命比例（多波战斗时继承；0 表示已倒下，不上场）
   energy?: number; // 开局元气（多波战斗继承）
 }
-export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number }; noBonds?: boolean /* 平衡实验用：关闭命名羁绊（阵营同族加成保留） */ }
+/** 关卡规则的机器可读形式（StageDef.ruleFx）。side：A = 玩家，B = 敌方。 */
+export type RuleSide = 'A' | 'B' | 'both';
+export type RuleTo = 'all' | 'front' | 'back' | `faction:${FactionId}`;
+export type RuleFx =
+  | { t: 'startStatus'; side: RuleSide; to: RuleTo; id: string; turns: number; power?: number; stacks?: number } // 开场给状态
+  | { t: 'roundStatus'; side: RuleSide; to: RuleTo; id: string; every: number; turns: number; power?: number } // 每 N 回合开始给状态
+  | { t: 'startShield'; side: RuleSide; to: RuleTo; pct: number; turns: number } // 开场护体毛（按其最大生命百分比）
+  | { t: 'startEnergy'; side: RuleSide; to: RuleTo; amount: number }
+  | { t: 'dmgMul'; side: RuleSide; elem?: Elem; mult: number } // 该方造成的伤害倍率
+  | { t: 'takenMul'; side: RuleSide; elem?: Elem; mult: number } // 该方受到的伤害倍率
+  | { t: 'healMul'; side: RuleSide; mult: number } // 该方治疗倍率
+  | { t: 'critAdd'; side: RuleSide; to: RuleTo; add: number }
+  | { t: 'dodgeAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number }; // rounds：只在前 N 回合有效
+
+export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number }; noBonds?: boolean; rules?: RuleFx[] /* 平衡实验用：关闭命名羁绊（阵营同族加成保留） */ }
 
 export interface StatusInst { id: string; turns: number; stacks: number; power: number; snap: number; src: number }
 
@@ -174,6 +190,11 @@ export interface Unit {
   extraTurn: boolean;
   invuln: number; // 无敌回合
   dmgMul: number; // 羁绊等永久倍率
+  hit: number; // 命中（抵消对方闪避）
+  dodge: number; // 闪避
+  dmgReduce: number; // 减伤
+  healBonus: number; // 治疗加成
+  set4: string[]; // 四件套特效
 }
 
 // ---------- 事件 ----------

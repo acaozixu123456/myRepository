@@ -1,6 +1,7 @@
 // 内容数据的契约（schema）。内容文件（equipment / campaign / story / economy）都必须符合这里的类型。
 // 修改本文件需要 Claude 评审；只往 content 下的数据文件里“填内容”不需要。
 import type { FactionId } from '../data/factions';
+import type { RuleFx } from '../engine/types';
 
 export type Quality = 'common' | 'fine' | 'rare' | 'epic' | 'legend'; // 普通 精良 稀有 史诗 传说
 export type StatKey = 'hp' | 'atk' | 'def' | 'spd' | 'crit' | 'critDmg' | 'hit' | 'dodge' | 'healBonus' | 'dmgReduce';
@@ -67,6 +68,7 @@ export interface StageDef {
   storyId?: string; // 开战前剧情 id（story.ts）
   storyPostId?: string; // 通关后剧情 id
   rule?: string; // 关卡特殊规则，一句话，如「全场淋湿，火焰伤害 +30%」
+  ruleFx?: RuleFx[]; // 规则的机器可读形式（引擎实现；写不出来的规则不填，并在 docs/RULES_TODO.md 记录）
 }
 export interface ChapterDef {
   id: number;

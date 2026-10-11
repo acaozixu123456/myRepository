@@ -3,7 +3,9 @@
 import { HERO_BY_ID, HEROES } from '../data/heroes';
 import type { Rarity } from '../data/heroes';
 import { baseStats } from '../data/systems';
+import type { StatBlock } from '../content/types';
 import { HERO_LEVEL_CAP, expToNext, levelUpFishCost, skillUpgradeCost, starUpShards } from '../content/progression';
+import { heroGear } from './gear';
 import { createInventory, normalizeInventory } from './inventory';
 import type { InventoryState } from './inventory';
 
@@ -105,18 +107,18 @@ export function save(storage: StorageLike | null, s: PlayerState) {
 export const levelMul = (lv: number) => 1 + (lv - 1) * 0.075;
 export const starMul = (star: number) => 1 + (star - 1) * 0.08;
 
-export function heroStats(h: HeroState) {
+export function heroStats(h: HeroState, gear?: StatBlock) {
   const def = HERO_BY_ID[h.id];
   const b = baseStats(def.role, def.rarity);
   const m = levelMul(h.lv) * starMul(h.star);
-  return { hp: Math.round(b.hp * m), atk: Math.round(b.atk * m), def: Math.round(b.def * m), spd: b.spd };
+  return { hp: Math.round(b.hp * m) + Math.round(gear?.hp ?? 0), atk: Math.round(b.atk * m) + Math.round(gear?.atk ?? 0), def: Math.round(b.def * m) + Math.round(gear?.def ?? 0), spd: b.spd + Math.round(gear?.spd ?? 0) };
 }
-export function heroPower(h: HeroState): number {
-  const s = heroStats(h);
+export function heroPower(h: HeroState, gear?: StatBlock): number {
+  const s = heroStats(h, gear);
   return Math.round((s.hp / 10 + s.atk + s.def + s.spd * 0.6) * 0.25);
 }
 export function teamPower(s: PlayerState): number {
-  return s.lineup.reduce((a, id) => a + (id && s.heroes[id] ? heroPower(s.heroes[id]) : 0), 0);
+  return s.lineup.reduce((a, id) => a + (id && s.heroes[id] ? heroPower(s.heroes[id], heroGear(s, id).stats) : 0), 0);
 }
 
 // ---------- 养成（原型口径） ----------
