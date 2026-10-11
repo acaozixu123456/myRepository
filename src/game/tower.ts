@@ -5,6 +5,7 @@ import { HEROES } from '../data/heroes';
 import { bossRuleFx } from '../content/campaign';
 import { paceLevel } from './stage';
 import type { PlayerState } from './state';
+import { rollover, track } from './quests';
 
 export const TOWER_FLOORS = 100;
 /** 一层大约相当于主线 1.3 关（100 层 ≈ 130 关） */
@@ -56,6 +57,8 @@ export function towerFloor(floor: number): StageDef {
 /** 通关结算：只有刷新最高层才发奖励，返回奖励（重复通关返回 null） */
 export function towerClear(s: PlayerState, floor: number): RewardDef | null {
   if (floor !== towerBest(s) + 1) return null;
+  rollover(s, Date.now());
   s.tower = { floor };
+  track(s, 'tower_clear');
   return towerReward(floor);
 }

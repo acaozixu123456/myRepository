@@ -49,7 +49,7 @@ document.getElementById('app')!.innerHTML = `
   <button class="btn alt" id="skip">跳过</button>
   <select id="preset" class="btn alt">${Object.entries(PRESETS).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('')}</select>
   <label class="chk"><input type="checkbox" id="ult"> 满元气开局（直接看绝技）</label>
-  <select id="theme" class="btn alt"><option value="meadow">原野</option><option value="redcliff">赤壁</option><option value="mist">云端</option><option value="forest">山林</option></select>
+  <select id="theme" class="btn alt"><option value="meadow">原野</option><option value="street">猫街</option><option value="market">集市</option><option value="redcliff">赤壁</option><option value="forest">山林</option><option value="mist">云端</option><option value="palace">宫殿</option></select>
 </div>
 <div class="log" id="log"></div>`;
 

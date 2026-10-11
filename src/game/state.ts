@@ -4,12 +4,16 @@ import { HERO_BY_ID, HEROES } from '../data/heroes';
 import type { Rarity } from '../data/heroes';
 import { baseStats } from '../data/systems';
 import type { StatBlock } from '../content/types';
+import { ITEMS } from '../content/items';
 import { HERO_LEVEL_CAP, expToNext, levelUpFishCost, skillUpgradeCost, starUpShards } from '../content/progression';
 import { heroGear } from './gear';
-import { createInventory, normalizeInventory } from './inventory';
+import { addItem, createInventory, normalizeInventory } from './inventory';
 import type { InventoryState } from './inventory';
+import { createQuestState, normalizeQuestState, track } from './quests';
+import type { QuestState } from './quests';
 import { createShopState, normalizeShopState } from './shop';
 import type { ShopState } from './shop';
+import type { PayState } from './premium';
 
 export interface HeroState {
   id: string;
@@ -27,6 +31,7 @@ export interface Resources {
   exp: number; // 成长经验池（关卡 / 挂机获得）
   tickets: number; // 招福符
   yarn: number; // 毛线球
+  moon: number; // 月光珠（付费货币，见 game/premium.ts）
 }
 
 export interface PlayerState {
@@ -36,7 +41,10 @@ export interface PlayerState {
   exp: number;
   res: Resources;
   inventory: InventoryState; // 追加的版本化背包；旧资源仍由 res 保存
+  quests: QuestState;
+  pending?: Record<string, number>; // 仅旧档满叠未迁军需；新奖励不写入
   shop: ShopState; // 每周限购记录；存档 v 仍为 1
+  pay?: PayState; // 氪金：累计充值 / 月卡 / VIP / 至尊保底（旧存档读取时补齐）
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
@@ -64,8 +72,9 @@ export function newPlayer(now = Date.now()): PlayerState {
     name: '铲屎官',
     level: 1,
     exp: 0,
-    res: { fish: 3000, bells: 3200, catnip: 12, exp: 0, tickets: 6, yarn: 3 },
+    res: { fish: 3000, bells: 3200, catnip: 12, exp: 0, tickets: 6, yarn: 3, moon: 0 },
     inventory: createInventory(),
+    quests: createQuestState(now),
     shop: createShopState(now),
     heroes,
     lineup: ['wei_xiahoudun', 'wu_huanggai', 'man_wutugu', 'wei_guojia', 'qun_dongzhuo'],
@@ -94,12 +103,25 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
       if (s && s.v === 1 && s.heroes && s.res) {
         s.lineup = [...s.lineup, null, null, null, null, null].slice(0, LINEUP_SIZE);
         s.res.exp ??= 0;
+        s.res.moon ??= 0;
         s.idle.exp ??= 0;
         s.stories ??= [];
         s.tips ??= [];
         s.tower ??= { floor: 0 };
         s.best ??= { chapter: s.stage.chapter, index: s.stage.index };
         s.inventory = normalizeInventory(s.inventory, s.heroes);
+        s.quests = normalizeQuestState(s.quests, now);
+        const pending = s.pending && typeof s.pending === 'object' && !Array.isArray(s.pending) ? s.pending : {};
+        const remaining: Record<string, number> = {};
+        for (const [id, count] of Object.entries(pending)) {
+          if (!ITEMS.some((item) => item.id === id) || typeof count !== 'number' || !Number.isFinite(count) || count <= 0) continue;
+          const amount = Math.min(Number.MAX_SAFE_INTEGER, Math.floor(count));
+          if (!amount) continue;
+          const factor = id === 'catnip_medium' ? 4 : id === 'catnip_large' ? 16 : 1;
+          if (!addItem(s, factor > 1 ? 'catnip_small' : id, amount * factor).ok) remaining[id] = amount;
+        }
+        if (Object.keys(remaining).length) s.pending = remaining;
+        else delete s.pending;
         s.shop = normalizeShopState(s.shop, now);
         return s;
       }
@@ -143,6 +165,7 @@ export function canAfford(s: PlayerState, c: Partial<Resources>): boolean {
 }
 export function spend(s: PlayerState, c: Partial<Resources>) {
   for (const k of Object.keys(c) as (keyof Resources)[]) s.res[k] -= c[k] ?? 0;
+  if (c.fish) track(s, 'spend_fish', c.fish);
 }
 
 export function levelUp(s: PlayerState, id: string): OpResult {
@@ -158,6 +181,9 @@ export function levelUp(s: PlayerState, id: string): OpResult {
   s.res.catnip -= nip;
   s.res.exp = s.res.exp + nip * CATNIP_EXP - c.exp;
   h.lv++;
+  track(s, 'level_up_hero');
+  track(s, 'hero_level', h.lv);
+  track(s, 'spend_fish', c.fish);
   return { ok: true };
 }
 export function skillUp(s: PlayerState, id: string): OpResult {
@@ -168,6 +194,7 @@ export function skillUp(s: PlayerState, id: string): OpResult {
   if (!canAfford(s, c)) return { ok: false, reason: c.catnip > s.res.catnip ? '猫薄荷不够' : '小鱼干不够' };
   spend(s, c);
   h.skillLv++;
+  track(s, 'upgrade_skill');
   return { ok: true };
 }
 export function starUp(s: PlayerState, id: string): OpResult {
@@ -237,5 +264,5 @@ export function autoLineup(s: PlayerState) {
 }
 
 // ---------- 图鉴 ----------
-export const RARITY_ORDER: Record<Rarity, number> = { UR: 0, SSR: 1, SR: 2 };
+export const RARITY_ORDER: Record<Rarity, number> = { SP: -1, UR: 0, SSR: 1, SR: 2 };
 export const TOTAL_HEROES = HEROES.length;

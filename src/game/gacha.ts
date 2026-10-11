@@ -2,6 +2,7 @@
 import { HEROES } from '../data/heroes';
 import type { HeroDef, Rarity } from '../data/heroes';
 import type { PlayerState } from './state';
+import { track } from './quests';
 
 export interface PoolDef {
   id: string;
@@ -20,7 +21,7 @@ export const POOLS: PoolDef[] = [
 ];
 
 export const COST = { single: { tickets: 1, bells: 160 }, ten: { tickets: 10, bells: 1500 } };
-export const DUP_SHARDS: Record<Rarity, number> = { SR: 6, SSR: 12, UR: 25 };
+export const DUP_SHARDS: Record<Rarity, number> = { SR: 6, SSR: 12, UR: 25, SP: 60 };
 
 export interface PullResult {
   hero: HeroDef;
@@ -100,5 +101,7 @@ export function pull(s: PlayerState, pool: PoolDef, n: 1 | 10, rnd: () => number
     const needSsr = n === 10 && i === 9 && !results.some((r) => r.rarity !== 'SR');
     results.push(pullOnce(s, pool, rnd, needSsr));
   }
+  track(s, 'recruit', results.length);
+  track(s, 'collect_hero', Object.keys(s.heroes).length);
   return { ok: true, results };
 }

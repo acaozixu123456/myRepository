@@ -66,3 +66,4 @@ $RECYCLE.BIN/
 node_modules/
 dist/
 .shots/
+node_modules

@@ -8,7 +8,7 @@ export const KIT_CSS = `
   --ink:#3b2a1d; --ink-2:#7a6650; --ink-3:#a8977c;
   --sky-1:#bfe3f3; --sky-2:#e8f4dc; --grass:#8ec46a;
   --orange:#f08a2b; --orange-d:#b95f12; --green:#55b24b; --green-d:#2f7d29; --blue:#4a95e0; --blue-d:#2563a8; --pink:#e8648c; --pink-d:#a22a52; --red:#d6483c;
-  --r-sr:#8aa4c8; --r-ssr:#a56ad8; --r-ur:#f0b73c;
+  --r-sr:#8aa4c8; --r-ssr:#a56ad8; --r-ur:#f0b73c; --r-sp:#ff6ad0;
   --wei:#3f63ad; --shu:#4f9e5e; --wu:#d6483c; --qun:#7d5aa8; --man:#d98a24; --xian:#2a9d98;
   --f-d:'ZCOOL KuaiLe','Noto Sans SC','PingFang SC','Microsoft YaHei','WenQuanYi Zen Hei',sans-serif;
   --f-b:'Noto Sans SC','PingFang SC','Microsoft YaHei','WenQuanYi Zen Hei',sans-serif;
@@ -87,7 +87,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;paddin
 .hcard{--c:var(--wei);--rc:var(--r-ssr);position:relative;border-radius:14px;overflow:hidden;background:var(--paper);box-shadow:0 3px 0 rgba(60,36,12,.25);transition:transform .12s;text-align:left;display:block;width:100%}
 .hcard:active{transform:scale(.97)}
 .hcard::before{content:'';position:absolute;inset:0;border-radius:14px;pointer-events:none;z-index:3;box-shadow:inset 0 0 0 3px var(--rc)}
-.hcard[data-r=UR]{--rc:var(--r-ur)}.hcard[data-r=SSR]{--rc:var(--r-ssr)}.hcard[data-r=SR]{--rc:var(--r-sr)}
+.hcard[data-r=SP]{--rc:var(--r-sp)}.hcard[data-r=UR]{--rc:var(--r-ur)}.hcard[data-r=SSR]{--rc:var(--r-ssr)}.hcard[data-r=SR]{--rc:var(--r-sr)}
 .hcard .art{position:relative;aspect-ratio:1/1.06;background:radial-gradient(circle at 50% 66%,color-mix(in srgb,var(--c) 38%,#fff7e2),#efe2bf 74%);overflow:hidden}
 .hcard .art img{position:absolute;left:0;right:0;bottom:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%}
 .hcard .rar{position:absolute;left:5px;top:5px;z-index:4;font-family:var(--f-d);font-size:12px;padding:0 8px;border-radius:999px;background:var(--rc);color:#2b2833;box-shadow:0 1px 0 rgba(0,0,0,.25)}
@@ -102,6 +102,12 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;paddin
 .hcard.off .art img{filter:grayscale(1) brightness(.55) contrast(.9)}
 .hcard.off .info{opacity:.6}
 .hcard[data-r=UR]::after{content:'';position:absolute;inset:0;border-radius:14px;pointer-events:none;z-index:2;background:linear-gradient(115deg,transparent 40%,rgba(255,244,190,.5) 50%,transparent 60%);background-size:260% 100%;animation:shine 4.5s ease-in-out infinite}
+/* 至尊 SP：金粉渐变边框 + 外发光 + 更快的扫光 */
+.hcard[data-r=SP]{box-shadow:0 0 0 2px #ffe27a,0 0 14px 3px rgba(255,106,208,.65),0 3px 0 rgba(60,36,12,.25)}
+.hcard[data-r=SP]::before{box-shadow:inset 0 0 0 3px #ffd24a,inset 0 0 0 5px #ff6ad0}
+.hcard[data-r=SP] .rar{background:linear-gradient(90deg,#ffe27a,#ff9ad8);color:#5a1038}
+.hcard[data-r=SP] .art{background:radial-gradient(circle at 50% 66%,#fff3c4,#ffd0ee 60%,#d9b0ff)}
+.hcard[data-r=SP]::after{content:'';position:absolute;inset:0;border-radius:14px;pointer-events:none;z-index:2;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.7) 50%,transparent 62%);background-size:260% 100%;animation:shine 2.8s ease-in-out infinite}
 @keyframes shine{0%,55%{background-position:130% 0}100%{background-position:-40% 0}}
 
 /* ---------- 弹层 / 底部抽屉 ---------- */
@@ -124,5 +130,5 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;paddin
 .floaty{position:absolute;z-index:30;pointer-events:none;font-family:var(--f-d);font-size:20px;color:#fff;text-shadow:-1px -1px 0 #b95f12,1px -1px 0 #b95f12,-1px 1px 0 #b95f12,1px 1px 0 #b95f12;animation:floaty 1.2s ease-out forwards;display:flex;align-items:center;gap:4px}
 @keyframes floaty{from{opacity:1;transform:translateY(0) scale(.8)}20%{transform:translateY(-8px) scale(1.1)}to{opacity:0;transform:translateY(-46px) scale(1)}}
 .empty{padding:26px 12px;text-align:center;color:var(--ink-2)}
-@media (prefers-reduced-motion:reduce){.hcard[data-r=UR]::after{animation:none}.sheet,.dialog,.mask{animation:none}}
+@media (prefers-reduced-motion:reduce){.hcard[data-r=UR]::after,.hcard[data-r=SP]::after{animation:none}.sheet,.dialog,.mask{animation:none}}
 `;

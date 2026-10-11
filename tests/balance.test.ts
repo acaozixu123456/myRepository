@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import * as battleEngine from '../src/engine/battle';
 import type { BattleConfig, BEvent, UnitSetup } from '../src/engine/types';
-import { HEROES, HERO_BY_ID } from '../src/data/heroes';
+import { STANDARD_HEROES as HEROES, HERO_BY_ID } from '../src/data/heroes';
 import { FACTION_ORDER } from '../src/data/factions';
 import { BONDS, COUNTER_RING, ROLES } from '../src/data/systems';
 import { BALANCE_MIN_SAMPLES, buildBondProbeMatch, buildCounterProbeMatch, buildLineup, resolveBalanceOptions, runBalance, summarizeBattle } from '../src/game/balance';

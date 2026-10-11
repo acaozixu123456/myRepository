@@ -6,6 +6,7 @@ import { buy, createShopState, listShop, normalizeShopState, shopWeeklyKey } fro
 import type { ShopBuyResult, ShopId } from '../src/game/shop';
 import { load, newPlayer, save, SAVE_KEY } from '../src/game/state';
 import type { PlayerState, StorageLike } from '../src/game/state';
+import { createQuestState } from '../src/game/quests';
 
 const NOW = new Date(2026, 9, 7, 12).getTime();
 const SHOPS: ShopId[] = ['general', 'arena', 'guild', 'tower', 'faction'];
@@ -301,14 +302,14 @@ describe('shop weekly rollover and saved state', () => {
     expect(restored.inventory.v).toBe(1);
   });
 
-  it('persists purchased bundles on same-week reload and resets only shop counters next week', () => {
+  it('persists purchased bundles on same-week reload and resets shop and quest periods next week', () => {
     const s = richPlayer();
     expect(buy(s, 'general_recruit_ticket', 3, NOW).ok).toBe(true);
     const storage = memoryStorage();
     save(storage, s);
     expect(load(storage, NOW)).toEqual(s);
     const next = new Date(2026, 9, 12, 5).getTime();
-    expect(load(storage, next)).toEqual({ ...s, shop: createShopState(next) });
+    expect(load(storage, next)).toEqual({ ...s, shop: createShopState(next), quests: createQuestState(next) });
   });
 
   it('repairs only bad shop fields and retains valid known weekly counters', () => {

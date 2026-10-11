@@ -3,6 +3,7 @@
 import type { Kit } from '../engine/types';
 import { KITS_SR } from './kits/sr';
 import { KITS_SSR } from './kits/ssr';
+import { KITS_SP } from './kits/sp';
 export type SkillKind = 'basic' | 'ultimate' | 'passive' | 'awaken';
 
 export interface SkillDef {
@@ -94,5 +95,8 @@ export const SKILLS: Record<string, SkillDef[]> = {
   ],
   xian_zhangzhua: FROM_KIT(KITS_SR.xian_zhangzhua, ['随机敌方单体', '敌方全体', '自身'], [['法伤', '符咒'], ['群伤', '毛线缠', '仙·天机'], ['被动', '同袍接力']]),
   xian_shuijing: FROM_KIT(KITS_SR.xian_shuijing, ['生命比例最低的友方', '友方全体', '友方'], [['治疗', '护盾'], ['群疗', '回能'], ['被动', '授课']]),
+  wei_simamiyi: FROM_KIT(KITS_SP.wei_simamiyi, ['随机 2 名敌人', '敌方全体 + 友方全体', '全队 + 自身'], [['法伤', '偷元气'], ['群伤', '护盾', '受惊', '魏·铁壁'], ['被动', '护佑', '回能']]),
+  shu_pangmiaotong: FROM_KIT(KITS_SP.shu_pangmiaotong, ['随机敌方单体', '敌方全体 + 友方全体', '自身'], [['火伤', '灼烧'], ['群伤', '引爆', '增益'], ['被动', '涅槃']]),
+  xian_changmiao: FROM_KIT(KITS_SP.xian_changmiao, ['生命比例最低的 2 名友方', '友方全体', '友方'], [['治疗', '回能'], ['群疗', '护盾', '净化'], ['被动', '复活']]),
   xian_guanlu: FROM_KIT(KITS_SR.xian_guanlu, ['随机敌方单体', '敌方全体 + 友方全体', '敌方元气最高的猫'], [['法伤', '铜钱'], ['随机', '群伤', '护盾'], ['被动', '元气压制']]),
 };
