@@ -107,7 +107,7 @@ export const FACTIONS: Record<FactionId, Faction> = {
     full: '天机玄门',
     motto: '三分天命，七分爪功',
     land: '云端·喵山观',
-    role: '辅助 · 封印',
+    role: '辅助 · 控制',
     mechanic: '天机',
     mechanicDesc: '符箓体系。仙势力技能附带「毛线缠」「符咒」，并有概率触发「天命」：额外行动、回复元气或抵挡一次致命伤害。',
     counters: 'wei',
