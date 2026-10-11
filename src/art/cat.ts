@@ -4,7 +4,7 @@ import { ink, mix, shade, tint } from './color';
 import type { CatLook, Coat, EarStyle, EyeStyle, Palette } from './types';
 import { renderBackGear, renderHeadGear, renderWeapon } from './gear';
 import { renderBodyGear } from './garments';
-import { furTicks, limbEdges, limbPath, paintDefs, paintFill, resetPaintDefs, sampleSpline, smooth } from './paint';
+import { furTicks, limbEdges, limbPath, paintDefs, paintFill, resetPaintDefs, sampleSpline, setFlatPaint, smooth } from './paint';
 import type { Pt } from './paint';
 
 export interface Ctx {
@@ -34,9 +34,9 @@ export interface PathOpts {
 
 const isPaintable = (c: string) => /^#[0-9a-fA-F]{6}$/.test(c);
 export function P(d: string, fill: string, o: PathOpts = {}): string {
-  const stroke = o.noStroke ? 'none' : (o.stroke ?? ink(fill, 0.46));
+  const stroke = o.noStroke ? 'none' : (o.stroke ?? ink(fill, STYLE.flat ? 0.62 : 0.46));
   const f = isPaintable(fill) && !o.flat ? paintFill(fill, o.mode ?? 'soft') : fill;
-  return `<path d="${d}" fill="${f}" stroke="${stroke}" stroke-width="${((o.sw ?? 4.5) * 0.72).toFixed(2)}" stroke-linejoin="round" stroke-linecap="round"${o.op !== undefined ? ` opacity="${o.op}"` : ''} ${o.extra ?? ''}/>`;
+  return `<path d="${d}" fill="${f}" stroke="${stroke}" stroke-width="${((o.sw ?? 4.5) * 0.72 * (STYLE.flat ? 1.7 : 1)).toFixed(2)}" stroke-linejoin="round" stroke-linecap="round"${o.op !== undefined ? ` opacity="${o.op}"` : ''} ${o.extra ?? ''}/>`;
 }
 
 export function L(d: string, color: string, sw = 4, op = 1, extra = ''): string {
@@ -239,6 +239,15 @@ export function volume(ctx: Ctx, key: string, d: string, base: string, o: VolOpt
   const id = `v${ctx.uid}${key}`;
   const [lx, ly] = o.lit ?? [-9, -10];
   const line = o.outline ?? ctx.line;
+  if (STYLE.flat) {
+    // 贴纸风：平涂两阶色 + 内部花纹 + 粗描边（描边偏深，更像描线稿）
+    return (
+      `<clipPath id="${id}"><path d="${d}"/></clipPath>` +
+      `<path d="${d}" fill="${paintFill(base, o.mode ?? 'soft')}" stroke="none"/>` +
+      `<g clip-path="url(#${id})">${o.inner ?? ''}</g>` +
+      `<path d="${d}" fill="none" stroke="${shade(line, 0.35)}" stroke-width="${(o.sw ?? 3.2) * STYLE.outline}" stroke-linejoin="round"/>`
+    );
+  }
   return (
     `<clipPath id="${id}"><path d="${d}"/></clipPath>` +
     `<path d="${d}" fill="${paintFill(base, o.mode ?? 'soft')}" stroke="none"/>` +
@@ -248,7 +257,7 @@ export function volume(ctx: Ctx, key: string, d: string, base: string, o: VolOpt
     `<path d="${d}" fill="none" stroke="${tint(base, 0.3)}" stroke-width="8" transform="translate(${-lx * 0.6} ${-ly * 0.6})" opacity="${o.rim ?? 0.28}"/>` +
     (o.inner ?? '') +
     `</g>` +
-    `<path d="${d}" fill="none" stroke="${line}" stroke-width="${(o.sw ?? 3.2) * 1.3}" stroke-linejoin="round"/>`
+    `<path d="${d}" fill="none" stroke="${line}" stroke-width="${(o.sw ?? 3.2) * STYLE.outline}" stroke-linejoin="round"/>`
   );
 }
 
@@ -441,7 +450,7 @@ export function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: 
   const c: Pt[] = [[sh[0] - out * 6, sh[1] - 4], [pts[1][0] + dxh * 0.45 + out * 4, pts[1][1] + dyh * 0.45], [hand[0], hand[1]]];
   const col = sleeve ?? ctx.fur;
   const line = sleeve ? ink(sleeve, 0.46) : ctx.line;
-  const widths = wide ? [56, 54, 60] : sleeve ? [52, 46, 40] : [50, 42, 34];
+  const widths = (wide ? [56, 54, 60] : sleeve ? [52, 46, 40] : [50, 42, 34]).map((v) => v * STYLE.limb);
   const body = limbPath(c, widths);
   const flow = Math.atan2(c[2][1] - c[0][1], c[2][0] - c[0][0]);
   const inner = (sleeve ? '' : furTicks(80, 300, 330, 460, 40, shade(col, 0.22), flow, side === 'L' ? 4 : 5, 9, 0.32) + limbPattern(ctx, c, 28, 'arm')) +
@@ -449,7 +458,7 @@ export function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: 
   // 肩头：圆润的三角肌，与躯干无缝衔接（只描外侧轮廓，起点不封口）
   const cap = `<ellipse cx="${c[0][0] + out * 4}" cy="${c[0][1] + 8}" rx="${widths[0] * 0.5}" ry="${widths[0] * 0.46}" fill="${paintFill(col, sleeve ? 'cloth' : 'soft')}" stroke="none"/>`;
   let s = volume(ctx, `arm${side}`, body, col, { outline: line, inner, mode: sleeve ? 'cloth' : 'soft', sw: 0 }) + cap +
-    `<path d="${limbEdges(c, widths, { skipStart: true })}" fill="none" stroke="${line}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+    `<path d="${limbEdges(c, widths, { skipStart: true })}" fill="none" stroke="${line}" stroke-width="${3.6 * STYLE.outline / 1.3}" stroke-linecap="round" stroke-linejoin="round"/>`;
   // 腕口毛边 / 袖口
   const wrist = c[2];
   const prev = sampleSpline(c, 6).slice(-4)[0];
@@ -477,7 +486,7 @@ function legSvg(ctx: Ctx, side: 'L' | 'R', pants: string | undefined, boots: str
   const dir = side === 'R' ? 1 : -1;
   const c = LEG_PTS(W, side);
   const col = pants ?? ctx.fur;
-  const body = limbPath(c, [54, 42, 33]);
+  const body = limbPath(c, [54, 42, 33].map((v) => v * STYLE.limb));
   const flow = Math.PI / 2;
   const inner = pants ? `<path d="${smooth(c)}" fill="none" stroke="${shade(col, 0.16)}" stroke-width="3" opacity="0.4" transform="translate(${dir * 9} 3)"/>` : furTicks(120, 470, 300, 596, 40, shade(col, 0.22), flow, side === 'L' ? 7 : 8, 9, 0.3) + limbPattern(ctx, c, 36, 'leg');
   let s = volume(ctx, `leg${side}`, body, col, { outline: pants ? ink(pants, 0.46) : ctx.line, inner, mode: pants ? 'cloth' : 'soft' });
@@ -520,13 +529,37 @@ export interface RenderOpts { uid?: string; width?: number; height?: number; vie
 export const VIEW_FULL = '-60 -50 520 700';
 export const DY = 48; // 武器整体下移量（武器按旧坐标绘制）
 export const BACK_T = 'translate(0 270) scale(1 1.55) translate(0 -286)';
-/** v4 Q 版比例：头放大、躯干与四肢整体缩小（绕脚底），约 2.2 头身 */
-export const BODY_S = 0.86;
-export const HEAD_BASE = 1.12;
-export const HEAD_DY = 22; // 头整体下移，让下巴落在缩小后的肩线上
-const bodyT = `translate(200 604) scale(${BODY_S}) translate(-200 -604)`;
-const bodyPt = (p: [number, number]): [number, number] => [200 + (p[0] - 200) * BODY_S, 604 + (p[1] - 604) * BODY_S];
-const headT = (hs: number) => `translate(200 ${221 + HEAD_DY}) scale(${hs}) translate(-200 -210)`;
+/**
+ * 造型预设：比例、五官位置、肢体粗细、线条与上色方式。默认 A（2.2 头身 Q 版）。
+ * B 超 Q 团子（约 1.9 头身）／ C 帅气少年（约 2.7 头身，收腰长腿，身体微扭）／ D 贴纸扁平（A 的比例，粗描边 + 平涂色阶）。
+ */
+export interface CatStyle {
+  id: string;
+  name: string;
+  bodySx: number; bodySy: number; // 躯干与四肢整体缩放（绕脚底）
+  headS: number; headDy: number; // 头的缩放与下移（让下巴落在肩线上）
+  eyeS: number; eyeSy: number; eyeY: number; eyeX: number; // 眼睛缩放 / 纵向压扁（<1 更锐利）/ 纵向位置 / 横向间距的一半
+  limb: number; // 肢体粗细倍率
+  outline: number; // 描边倍率
+  weapon: number; // 武器相对原尺寸的目标倍率
+  weaponOff: number; // 长兵器握点外伸倍率
+  lean: number; // 站姿的扭身角度（°）：躯干/头反向微扭，腿一前一后
+  flat: boolean; // 平涂色阶 + 无纸纹/毛发笔触
+}
+export const STYLES: Record<string, CatStyle> = {
+  A: { id: 'A', name: 'Q 版（当前）', bodySx: 0.86, bodySy: 0.86, headS: 1.12, headDy: 22, eyeS: 1.24, eyeSy: 1, eyeY: 225, eyeX: 49, limb: 1, outline: 1.3, weapon: 1.16, weaponOff: 1, lean: 0, flat: false },
+  B: { id: 'B', name: '超 Q 团子', bodySx: 0.76, bodySy: 0.72, headS: 1.3, headDy: 44, eyeS: 1.46, eyeSy: 1.06, eyeY: 234, eyeX: 51, limb: 1.28, outline: 1.35, weapon: 1.02, weaponOff: 1.5, lean: 0, flat: false },
+  C: { id: 'C', name: '帅气少年', bodySx: 0.88, bodySy: 1.12, headS: 0.86, headDy: -41, eyeS: 1.08, eyeSy: 0.8, eyeY: 216, eyeX: 50, limb: 0.8, outline: 1.25, weapon: 1.2, weaponOff: 0.75, lean: 1, flat: false },
+  D: { id: 'D', name: '贴纸扁平', bodySx: 0.86, bodySy: 0.86, headS: 1.12, headDy: 22, eyeS: 1.24, eyeSy: 1, eyeY: 225, eyeX: 49, limb: 1, outline: 2.0, weapon: 1.16, weaponOff: 1, lean: 0, flat: true },
+};
+export let STYLE: CatStyle = STYLES.A;
+export function setCatStyle(id: string) {
+  STYLE = STYLES[id] ?? STYLES.A;
+  setFlatPaint(STYLE.flat);
+}
+const bodyT = () => `translate(200 604) scale(${STYLE.bodySx} ${STYLE.bodySy}) translate(-200 -604)`;
+const bodyPt = (p: [number, number]): [number, number] => [200 + (p[0] - 200) * STYLE.bodySx, 604 + (p[1] - 604) * STYLE.bodySy];
+const headT = (hs: number) => `translate(200 ${221 + STYLE.headDy}) scale(${hs}) translate(-200 -210)`;
 
 export type PartId = 'back' | 'tail' | 'legL' | 'legR' | 'torso' | 'armL' | 'head' | 'armR';
 export interface Part { id: PartId; svg: string; pivot: [number, number] }
@@ -559,14 +592,14 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
   resetPaintDefs();
   const ctx = buildCtx(look, uid);
   const { W, fur, line, coat } = ctx;
-  const hs = (look.head ?? 1) * HEAD_BASE;
+  const hs = (look.head ?? 1) * STYLE.headS;
   const ear = earShape(look.ear);
   const poseBase: Pose = { R: [200 + 82 * W, 446 - DY], L: [200 - 82 * W, 446 - DY] };
   const weapon = renderWeapon(ctx, poseBase);
   const poseOld: Pose = { R: weapon.pose?.R ?? poseBase.R, L: weapon.pose?.L ?? poseBase.L };
   // 长兵器握点向外挪一些：手臂斜伸出去，兵器立在身侧，不再横在脸前（Q 版大脑袋更需要留出轮廓）
   const OFF: Partial<Record<string, number>> = { glaive: 36, spear: 36, halberd: 36, staff: 30, mace: 32, whip: 28, brush: 24, axe: 30, sword: 22, bow: 16 };
-  const offR = OFF[look.outfit.weapon ?? 'none'] ?? 0;
+  const offR = (OFF[look.outfit.weapon ?? 'none'] ?? 0) * STYLE.weaponOff;
   const pose: Pose = { R: [poseOld.R[0] + offR, poseOld.R[1] + DY], L: [poseOld.L[0], poseOld.L[1] + DY] };
   const bodyGear = renderBodyGear(ctx);
   const noBoots = look.outfit.body === 'tribal' || look.outfit.body === 'none' || look.outfit.body === 'rattan';
@@ -590,8 +623,8 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
   };
   const eyeC = look.eye.color;
   const eyes =
-    `<g transform="translate(151 225) scale(1.24)">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
-    `<g transform="translate(249 225) scale(1.24)">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
+    `<g transform="translate(${200 - STYLE.eyeX} ${STYLE.eyeY}) scale(${STYLE.eyeS} ${STYLE.eyeS * STYLE.eyeSy})">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
+    `<g transform="translate(${200 + STYLE.eyeX} ${STYLE.eyeY}) scale(${STYLE.eyeS} ${STYLE.eyeS * STYLE.eyeSy})">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
   const muzzleCol = coat.pattern === 'tuxedo' ? coat.light : coat.pattern === 'point' ? mix(coat.accent ?? '#5a4136', fur, 0.25) : ctx.belly;
   const muzzle = `<g filter="url(#soft2${uid})" opacity="${coat.pattern === 'point' ? 0.6 : 0.95}"><ellipse cx="180" cy="254" rx="28" ry="20" fill="${muzzleCol}"/><ellipse cx="220" cy="254" rx="28" ry="20" fill="${muzzleCol}"/><ellipse cx="200" cy="276" rx="21" ry="13" fill="${muzzleCol}"/></g>`;
   const nose = `<path d="M 191 241 Q 200 235 209 241 Q 205 252 200 255 Q 195 252 191 241 Z" fill="${paintFill(ctx.pink, 'cel')}" stroke="${ink(ctx.pink, 0.5)}" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="197" cy="241" rx="3" ry="1.6" fill="#fff" opacity="0.6"/>`;
@@ -642,7 +675,7 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
 
   const legs = (side: 'L' | 'R') => legSvg(ctx, side, bodyGear.legCloth, bootCol);
   // 武器随身体缩小后会显得太小：以握点为中心放大回来（并随 Q 版手变大）
-  const WK = 1.16 / BODY_S;
+  const WK = STYLE.weapon / ((STYLE.bodySx + STYLE.bodySy) / 2);
   const wrapWAt = (hand: [number, number], dx = 0) => (svg: string) => (svg ? `<g transform="translate(${dx} ${DY}) translate(${hand[0]} ${hand[1]}) scale(${WK}) translate(${-hand[0]} ${-hand[1]})">${svg}</g>` : '');
   const wrapWL = wrapWAt(poseOld.L);
   const wrapW = wrapWAt(poseOld.R, offR);
@@ -651,7 +684,7 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
 
   const shL = ARM_PTS(W, 'L')[0];
   const shR = ARM_PTS(W, 'R')[0];
-  const B = (svg: string) => `<g transform="${bodyT}">${svg}</g>`;
+  const B = (svg: string) => `<g transform="${bodyT()}">${svg}</g>`;
   const parts: Part[] = [
     { id: 'back', svg: B(`<g transform="${BACK_T}">${renderBackGear(ctx)}</g>`), pivot: bodyPt([200, 300]) },
     { id: 'tail', svg: B(renderTail(ctx)), pivot: bodyPt([200 + 34 * W, 480]) },
@@ -671,7 +704,7 @@ export type Stance = Partial<Record<PartId, PartXf>>;
 
 export function stanceFor(look: CatLook): Stance {
   const w = look.outfit.weapon ?? 'none';
-  const base: Stance = { head: [2.5, 0, 0], torso: [-1, 0, 0], tail: [-3, 0, 0] };
+  const base: Stance = STYLE.lean ? { head: [-7, 0, 0], torso: [-5, 0, 0], tail: [-3, 0, 0], legL: [-4, 0, 0], legR: [5, 0, 0] } : { head: [2.5, 0, 0], torso: [-1, 0, 0], tail: [-3, 0, 0] };
   const polearm: Stance = { armR: [4, 0, 0], armL: [9, 0, 0] };
   const table: Partial<Record<string, Stance>> = {
     glaive: polearm, spear: polearm, halberd: polearm, staff: { armR: [3, 0, 0], armL: [7, 0, 0] }, mace: { armR: [3, 0, 0], armL: [9, 0, 0] }, whip: polearm, brush: { armR: [2, 0, 0], armL: [7, 0, 0] },
@@ -716,5 +749,5 @@ export function catSvg(look: CatLook, o: RenderOpts = {}): string {
   const flip = look.flip ? ' transform="translate(400 0) scale(-1 1)"' : '';
   // 先生成内容（会登记渐变），再输出 defs
   const inner = catInner(look, uid);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${w}" height="${h}"><defs>${defsFor(uid)}${paintDefs()}</defs><g filter="url(#paper${uid})"><g${flip}>${inner}</g></g></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${w}" height="${h}"><defs>${defsFor(uid)}${paintDefs()}</defs>${STYLE.flat ? `<g${flip}>${inner}</g>` : `<g filter="url(#paper${uid})"><g${flip}>${inner}</g></g>`}</svg>`;
 }

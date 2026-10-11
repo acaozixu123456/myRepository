@@ -1,6 +1,7 @@
-import { catSvg } from '../art/cat';
+import { catSvg, setCatStyle } from '../art/cat';
 import { HEROES } from '../data/heroes';
 const q = new URLSearchParams(location.search);
+setCatStyle(q.get('style') ?? 'A');
 const from = +(q.get('from') ?? 0);
 const n = +(q.get('n') ?? 12);
 const w = +(q.get('w') ?? 240);

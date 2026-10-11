@@ -8,6 +8,9 @@ export type Pt = [number, number];
 
 // ---------- 渐变注册表（每次构建一只猫前清空，输出时附到每个部件的 <defs>） ----------
 const gradDefs = new Map<string, string>();
+let FLAT = false;
+/** 平涂模式：渐变改成“亮面 + 硬边暗面”两阶，毛发笔触不画 */
+export function setFlatPaint(v: boolean) { FLAT = v; gradDefs.clear(); }
 export function resetPaintDefs() {
   gradDefs.clear();
 }
@@ -19,10 +22,11 @@ export type Fill = string; // '#rrggbb'
 
 /** 返回渐变 id（并登记定义）。cel=true 时用硬阴影分界。 */
 export function gradId(color: string, mode: 'soft' | 'cel' | 'metal' | 'cloth' = 'soft'): string {
-  const id = `g${mode[0]}${color.replace('#', '')}`;
+  const id = `g${FLAT ? 'f' : mode[0]}${color.replace('#', '')}`;
   if (!gradDefs.has(id)) {
     let stops: [number, string][];
-    if (mode === 'cel') stops = [[0, tint(color, 0.14)], [0.46, color], [0.54, shade(color, 0.12)], [1, shade(color, 0.2)]];
+    if (FLAT) stops = [[0, tint(color, 0.06)], [0.6, color], [0.61, shade(color, 0.17)], [1, shade(color, 0.22)]];
+    else if (mode === 'cel') stops = [[0, tint(color, 0.14)], [0.46, color], [0.54, shade(color, 0.12)], [1, shade(color, 0.2)]];
     else if (mode === 'metal') stops = [[0, tint(color, 0.3)], [0.22, tint(color, 0.08)], [0.5, color], [0.52, shade(color, 0.14)], [0.8, shade(color, 0.08)], [1, tint(color, 0.12)]];
     else if (mode === 'cloth') stops = [[0, tint(color, 0.1)], [0.55, color], [1, shade(color, 0.16)]];
     else stops = [[0, tint(color, 0.16)], [0.42, color], [0.78, shade(color, 0.1)], [1, shade(color, 0.2)]];
@@ -161,6 +165,7 @@ export function rng(seed: number) {
 
 /** 毛发笔触：在矩形范围内撒一批短弧线，沿 flow 方向（弧度）排布，裁剪到形状内使用 */
 export function furTicks(x0: number, y0: number, x1: number, y1: number, n: number, color: string, flow: number, seed: number, len = 11, op = 0.35, sw = 1.6): string {
+  if (FLAT) return '';
   const r = rng(seed);
   let d = '';
   for (let i = 0; i < n; i++) {
