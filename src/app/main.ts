@@ -335,6 +335,8 @@ if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
 (window as unknown as Record<string, unknown>).__app = ctx;
 
 // 正式构建里注册离线缓存（开发服务器不注册，避免缓存干扰调试）
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+let isProd = false;
+try { isProd = !!import.meta.env.PROD; } catch { /* esbuild 的单文件（iife）构建里没有 import.meta，当作非正式构建 */ }
+if (isProd && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => { void navigator.serviceWorker.register('./sw.js').catch(() => undefined); });
 }
