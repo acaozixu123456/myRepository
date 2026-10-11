@@ -1,7 +1,7 @@
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
 import { unitInfo } from '../data/units';
-import { BONDS, COUNTER_RING, baseStats } from '../data/systems';
+import { BONDS, COUNTER_BONUS, COUNTER_RING, baseStats } from '../data/systems';
 import { KITS, genericKit } from '../data/kits';
 import { Rng } from './rng';
 import { STATUS_RULES, ZERO_MODS } from './statuses';
@@ -9,6 +9,7 @@ import type { Mods } from './statuses';
 import type { BEvent, BattleConfig, Cond, Effect, Kit, Patch, PassiveDef, Scale, SkillDef, StatusInst, TargetSel, TriggerOn, Unit, UnitSetup } from './types';
 
 interface Ctx {
+  amount?: number; // 触发本次效果的那次受伤量
   caster: Unit;
   targets: Unit[];
   source?: Unit; // 触发来源（被动）
@@ -191,6 +192,19 @@ class Battle {
       case 'randomFoeFront': { const f = this.alive(this.foe(actor)); const front = f.filter((x) => x.pos <= 2); const pool = front.length ? front : f; return pool.length ? [this.rng.pick(pool)] : []; }
     }
   }
+  /** 绝技预告：第一次满元气只发出预告并改打普攻，下一次行动才放绝技 */
+  telegraphs(u: Unit): boolean {
+    for (const [i, r] of (this.cfg.rules ?? []).entries()) {
+      if (r.t !== 'telegraph' || !this.ruleSideMatch(r.side, u.side) || !this.ruleOk(r, u.side) || !this.ruleTo(r.to, u) || (r.hero && u.heroId !== r.hero)) continue;
+      const k = `tg${i}`;
+      if (u.used[k] === -2) continue; // first：已经放过，不再预告
+      if (u.used[k] === -1) { u.used[k] = r.first ? -2 : 0; continue; } // 已预告过：这次放绝技
+      u.used[k] = -1; // 标记“已预告”，下次行动放
+      this.push({ t: 'text', uid: u.uid, text: '预告：绝技！' });
+      return true;
+    }
+    return false;
+  }
   ruleCnt: Record<string, number> = {};
   /** 触发事件规则 */
   ruleEvent(ev: import('./types').RuleEv, actor: Unit, target?: Unit, info?: { status?: string; inst?: import('./types').StatusInst }) {
@@ -238,6 +252,13 @@ class Battle {
   bondsOn: Record<'A' | 'B', Set<string>> = { A: new Set(), B: new Set() };
   hasBond(side: 'A' | 'B', name: string) { return this.bondsOn[side].has(name); }
 
+  /** 放大最大生命时保持当前生命比例（多波战斗继承的残血不会被羁绊 / 阵营加成“回满”） */
+  scaleMaxHp(u: Unit, k: number) {
+    const r = u.hp / u.maxHp;
+    u.maxHp = Math.round(u.maxHp * k);
+    u.hp = Math.max(1, Math.round(u.maxHp * r));
+  }
+
   applyBonds() {
     for (const side of ['A', 'B'] as const) {
       const ids = new Set(this.units.filter((u) => u.side === side).map((u) => u.heroId));
@@ -246,9 +267,9 @@ class Battle {
         if (!bond.heroes.every((h) => ids.has(h))) continue;
         const members = mine.filter((u) => bond.heroes.includes(u.heroId));
         this.bondsOn[side].add(bond.name);
-        if (bond.name === '桃园结义') for (const u of members) { u.maxHp = Math.round(u.maxHp * 1.2); u.hp = u.maxHp; u.atk = Math.round(u.atk * 1.2); u.def = Math.round(u.def * 1.2); }
+        if (bond.name === '桃园结义') for (const u of members) { this.scaleMaxHp(u, 1.2); u.atk = Math.round(u.atk * 1.2); u.def = Math.round(u.def * 1.2); }
         if (bond.name === '美人连环') for (const u of mine) if (u.heroId === 'qun_lvbuding') u.atk = Math.round(u.atk * 1.25);
-        if (bond.name === '七擒七纵') for (const u of mine) if (u.faction === 'man') { u.maxHp = Math.round(u.maxHp * 1.15); u.hp = u.maxHp; }
+        if (bond.name === '七擒七纵') for (const u of mine) if (u.faction === 'man') { this.scaleMaxHp(u, 1.15); }
         if (bond.name === '江东之虎') for (const u of mine) if (u.faction === 'wu') u.crit += 0.15;
         if (bond.name === '魏武之道') for (const u of mine) if (u.faction === 'wei') u.dmgMul *= 1.05;
       }
@@ -257,8 +278,9 @@ class Battle {
       for (const u of mine) {
         const n = cnt[u.faction] ?? 0;
         const k = n >= 5 ? 0.1 : n >= 3 ? 0.05 : 0;
-        if (k) { u.atk = Math.round(u.atk * (1 + k)); u.maxHp = Math.round(u.maxHp * (1 + k)); u.hp = u.maxHp; }
+        if (k) { u.atk = Math.round(u.atk * (1 + k)); this.scaleMaxHp(u, 1 + k); }
         if (u.faction === 'qun') u.critDmg += 0.1 * (Object.keys(cnt).length - 1);
+        if (u.faction === 'shu' && n >= 2) u.crit += 0.02 * n; // 蜀·同心：蜀越多暴击越高
       }
     }
   }
@@ -330,7 +352,7 @@ class Battle {
   has(u: Unit, id: string): StatusInst | undefined {
     return u.statuses.find((s) => s.id === id);
   }
-  flag(u: Unit, f: 'stun' | 'silence' | 'taunt' | 'confuse' | 'dodge' | 'nine'): boolean {
+  flag(u: Unit, f: 'stun' | 'silence' | 'taunt' | 'confuse' | 'dodge' | 'nine' | 'stealth'): boolean {
     return u.statuses.some((s) => STATUS_RULES[s.id]?.flags?.includes(f));
   }
   alive(side: 'A' | 'B'): Unit[] {
@@ -363,6 +385,8 @@ class Battle {
       case 'round': return this.round >= c.atLeast;
       case 'counter': return (ctx.caster.counters[c.key] ?? 0) >= c.atLeast;
       case 'killed': return !!ctx.killed;
+      case 'allyCount': { const n = this.alive(c.side === 'enemy' ? this.foe(ctx.caster) : ctx.caster.side).length; return n >= (c.atLeast ?? 0) && n <= (c.atMost ?? 99); }
+      case 'teamCounter': return (this.teamCounter[`${ctx.caster.side}:${c.key}`] ?? 0) >= c.atLeast;
       case 'not': return !this.cond(c.cond, ctx, target);
       case 'and': return c.conds.every((x) => this.cond(x, ctx, target));
       case 'or': return c.conds.some((x) => this.cond(x, ctx, target));
@@ -381,6 +405,7 @@ class Battle {
     if (sel.role) pool = pool.filter((u) => u.role === sel.role);
     if (sel.hasStatus) pool = pool.filter((u) => this.has(u, sel.hasStatus!));
     if (sel.noStatus) pool = pool.filter((u) => !this.has(u, sel.noStatus!));
+    if (sel.side === 'enemy' && sel.pick !== 'all' && sel.pick !== 'frontRow' && sel.pick !== 'backRow') { const visible = pool.filter((u) => !this.flag(u, 'stealth')); if (visible.length) pool = visible; } // 潜行：单体技能选不中（全体不受影响）
     if (!pool.length) return [];
     const n = sel.n ?? 1;
     const byPos = (a: Unit, c: Unit) => a.pos - c.pos;
@@ -422,7 +447,7 @@ class Battle {
   }
 
   // ---------- 数值 ----------
-  scaleVal(s: Scale, caster: Unit, target?: Unit): number {
+  scaleVal(s: Scale, caster: Unit, target?: Unit, amount = 0): number {
     let v = 0;
     if (s.atk) v += s.atk * this.stat(caster, 'atk');
     if (s.def) v += s.def * this.stat(caster, 'def');
@@ -430,14 +455,15 @@ class Battle {
     if (s.curHp) v += s.curHp * caster.hp;
     if (s.missingHp) v += s.missingHp * (caster.maxHp - caster.hp);
     if (s.targetMaxHp && target) v += s.targetMaxHp * target.maxHp;
+    if (s.hurt) v += s.hurt * amount;
     return v;
   }
 
   counterMult(a: FactionId, d: FactionId): number {
     const i = COUNTER_RING.indexOf(a);
-    if (COUNTER_RING[(i + 1) % 6] === d) return 1.2;
+    if (COUNTER_RING[(i + 1) % 6] === d) return 1 + COUNTER_BONUS;
     const j = COUNTER_RING.indexOf(d);
-    if (COUNTER_RING[(j + 1) % 6] === a) return 0.8;
+    if (COUNTER_RING[(j + 1) % 6] === a) return 1 - COUNTER_BONUS;
     return 1;
   }
 
@@ -457,7 +483,7 @@ class Battle {
       this.push({ t: 'text', uid: target.uid, text: '闪避' });
       return;
     }
-    let base = this.scaleVal(e.scale, caster, target);
+    let base = this.scaleVal(e.scale, caster, target, ctx.amount);
     const cm = this.mods(caster);
     const tm = this.mods(target);
     const effDef = this.stat(target, 'def') * (1 - (e.ignoreDef ?? 0));
@@ -467,6 +493,7 @@ class Battle {
     ctx.crit = crit;
     let mult = (1 + cm.dmgDealtPct) * caster.dmgMul * (1 + tm.dmgTakenPct) * this.counterMult(caster.faction, target.faction);
     if (crit) mult *= caster.critDmg;
+    if (caster.faction === 'man' && (this.factionCount[caster.side].man ?? 0) >= 2) mult *= 1 + 0.5 * (1 - caster.hp / caster.maxHp); // 蛮·野性：生命越低攻击越高
     if (target.dmgReduce) mult *= 1 - target.dmgReduce;
     if (this.cfg.rules) mult *= this.ruleMul('dmgMul', caster, elem) * this.ruleMul('takenMul', target, elem);
     if ((elem === 'fire' || elem === 'thunder') && this.has(target, 'wet')) mult *= 1.25;
@@ -505,13 +532,13 @@ class Battle {
     }
     cctx.killed = killed;
     ctx.killed = killed;
-    if (killed) this.kill(target, caster);
+    if (killed) { if (caster.faction === 'qun' && (this.factionCount[caster.side].qun ?? 0) >= 2) { this.gainEnergy(caster, 15); } this.kill(target, caster); }
     // 触发
     this.depth++;
     if (this.depth < 6) {
       this.fire('onHit', { caster, targets: [target], crit, killed }, caster);
       if (crit) this.fire('onCrit', { caster, targets: [target], crit, killed }, caster);
-      if (!killed) this.fire('onHurt', { caster: target, targets: [caster], source: caster }, target);
+      if (!killed) this.fire('onHurt', { caster: target, targets: [caster], source: caster, amount: dmg }, target);
       if (!killed) this.checkLowHp(target, caster);
       if (killed) this.fire('onKill', { caster, targets: [target], killed: true }, caster);
     }
@@ -535,7 +562,8 @@ class Battle {
   heal(src: Unit, t: Unit, amount: number) {
     if (!t.alive || amount <= 0 || t.hp >= t.maxHp) return;
     const tm = this.mods(t);
-    const bondHeal = (this.hasBond(src.side, '杏林同盟') ? 1.2 : 1) * (1 + src.healBonus) * (this.cfg.rules ? this.ruleHealMul(src, t) : 1);
+    const shuN = src.faction === 'shu' ? (this.factionCount[src.side].shu ?? 0) : 0;
+    const bondHeal = (this.hasBond(src.side, '杏林同盟') ? 1.2 : 1) * (1 + src.healBonus) * (shuN >= 2 ? 1 + 0.05 * shuN : 1) * (this.cfg.rules ? this.ruleHealMul(src, t) : 1);
     const real = Math.min(t.maxHp - t.hp, Math.round(amount * bondHeal * (1 + tm.healTakenPct)));
     if (real <= 0) return;
     t.hp += real;
@@ -616,12 +644,12 @@ class Battle {
         break;
       }
       case 'heal':
-        for (const t of tg) this.heal(caster, t, this.scaleVal(e.scale, caster, t));
+        for (const t of tg) this.heal(caster, t, this.scaleVal(e.scale, caster, t, ctx.amount));
         break;
       case 'shield':
         for (const t of tg) {
           if (!t.alive) continue;
-          let v = Math.round(this.scaleVal(e.scale, caster, t));
+          let v = Math.round(this.scaleVal(e.scale, caster, t, ctx.amount));
           if (caster.faction === 'wei' && this.hasBond(caster.side, '魏武之道')) v = Math.round(v * 1.3);
           t.shield.push({ v, turns: e.turns });
           this.push({ t: 'shield', src: caster.uid, dst: t.uid, amount: v, total: this.shieldOf(t) });
@@ -677,6 +705,18 @@ class Battle {
           t.counters[e.key] = Math.min(e.max ?? 99, cur + e.add);
         }
         break;
+      case 'detonate': {
+        for (const t of tg) {
+          const st = this.has(t, e.id);
+          if (!st || !t.alive) continue;
+          const layers = Math.max(0, st.stacks - (e.keep ?? 0));
+          if (layers <= 0) continue;
+          st.stacks -= layers;
+          if (st.stacks <= 0) { t.statuses = t.statuses.filter((x) => x !== st); this.push({ t: 'status', dst: t.uid, id: e.id, op: 'remove', stacks: 0, src: caster.uid }); }
+          this.dealDamage(ctx, t, { t: 'damage', scale: { atk: e.per * layers }, elem: e.elem ?? 'fire', noCrit: true }, 0, 1);
+        }
+        break;
+      }
       case 'selfDamage': {
         const loss = Math.round(caster.maxHp * e.pctMaxHp);
         caster.hp = Math.max(1, caster.hp - loss);
@@ -793,7 +833,11 @@ class Battle {
       if (allies.length) {
         const t = this.rng.pick(allies);
         this.push({ t: 'text', uid: t.uid, text: '天命' });
-        this.gainEnergy(t, 15);
+        const roll = this.rng.next();
+        if (roll < 0.55) this.gainEnergy(t, 15);
+        else if (roll < 0.85) { if (!this.flag(t, 'nine')) this.addStatus(u, t, 'nine', 2); else this.gainEnergy(t, 15); } // 抵挡一次致命伤害
+        else if (this.onceBy(t, 'xian_extra', 'round')) { t.extraTurn = true; this.push({ t: 'text', uid: t.uid, text: '天命·再动' }); } // 额外行动
+        else this.gainEnergy(t, 15);
       }
     }
   }
@@ -811,7 +855,12 @@ class Battle {
         u.hp = Math.max(0, u.hp - hpLoss);
         const killed = u.hp <= 0;
         this.push({ t: 'dot', dst: u.uid, id: s.id, amount: dmg, hp: u.hp, killed });
-        if (killed) { const src = this.units.find((x) => x.uid === s.src) ?? u; this.kill(u, src); }
+        if (killed && this.flag(u, 'nine')) { // 九命也能挡持续伤害
+          u.statuses = u.statuses.filter((x) => !STATUS_RULES[x.id]?.flags?.includes('nine'));
+          u.hp = Math.max(1, Math.round(u.maxHp * 0.15));
+          this.push({ t: 'status', dst: u.uid, id: 'nine', op: 'remove', stacks: 0, src: s.src });
+          this.push({ t: 'text', uid: u.uid, text: '九命！' });
+        } else if (killed) { const src = this.units.find((x) => x.uid === s.src) ?? u; this.kill(u, src); }
       }
       if (r?.hot && u.alive) this.heal(u, u, Math.round(s.power * u.maxHp));
     }
@@ -843,7 +892,8 @@ class Battle {
     }
     this.fire('beforeAct', { caster: u, targets: [u] }, u);
     if (!u.alive) return;
-    const ult = u.energy >= 100 && !this.flag(u, 'silence');
+    let ult = u.energy >= 100 && !this.flag(u, 'silence');
+    if (ult && this.cfg.rules && this.telegraphs(u)) ult = false;
     const skill = ult ? u.kit.ultimate : u.kit.basic;
     const ctx: Ctx = { caster: u, targets: [], isBasic: !ult, melee: !!skill.melee };
     const confused = this.flag(u, 'confuse');

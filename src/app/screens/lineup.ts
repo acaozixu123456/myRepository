@@ -75,7 +75,7 @@ export function lineupHtml(ctx: AppCtx): string {
       <div class="col"><div class="lab">前排</div>${slotHtml(ctx, 0)}${slotHtml(ctx, 1)}${slotHtml(ctx, 2)}</div>
     </div></div>
     <div class="panel" style="margin-top:12px"><h3>阵营与羁绊</h3><div class="syn">${facChips || '<span class="muted">先让猫猫上阵</span>'}${bondChips}</div>
-      ${ef && counter ? `<div class="muted" style="font-size:12px;margin-top:8px;font-weight:700">本关（${ch.name}）敌方以 <span class="tag f" style="--c:${FACTIONS[ef].color}">${FACTIONS[ef].glyph}</span> 为主，<span class="tag f" style="--c:${FACTIONS[counter].color}">${FACTIONS[counter].glyph}</span> 阵营克制它（伤害 +20%）</div>` : ''}</div>
+      ${ef && counter ? `<div class="muted" style="font-size:12px;margin-top:8px;font-weight:700">本关（${ch.name}）敌方以 <span class="tag f" style="--c:${FACTIONS[ef].color}">${FACTIONS[ef].glyph}</span> 为主，<span class="tag f" style="--c:${FACTIONS[counter].color}">${FACTIONS[counter].glyph}</span> 阵营克制它（伤害 +7%）</div>` : ''}</div>
     <div class="row" style="margin:14px 2px 6px"><div class="title" style="font-size:18px">${lineupState.pickSlot !== null ? '选一只猫上阵' : '我的猫猫'} <span class="muted num" style="font-size:13px">${owned.length}/24</span></div></div>
     <div class="seg"><button class="pill" aria-pressed="${filter === 'all'}" data-act="lf" data-f="all">全部</button>${FACTION_ORDER.map((f) => `<button class="pill glyph" style="--c:${FACTIONS[f].color}" aria-pressed="${filter === f}" data-act="lf" data-f="${f}">${FACTIONS[f].glyph}</button>`).join('')}</div>
     <div class="roster">${list.length ? list.map((h) => heroCard(h.id, { state: h, act: 'hero', badge: s.lineup.includes(h.id) ? '上阵' : undefined })).join('') : '<div class="empty" style="grid-column:1/-1">这个阵营还没有猫猫，去招募看看吧</div>'}</div>

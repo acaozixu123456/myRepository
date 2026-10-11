@@ -13,6 +13,7 @@ export interface Scale {
   curHp?: number; // 当前生命倍率
   missingHp?: number; // 已损失生命倍率
   targetMaxHp?: number; // 目标最大生命倍率
+  hurt?: number; // 触发本次效果的那次受伤量倍率（用于反弹）
 }
 
 export type SelPick =
@@ -56,6 +57,8 @@ export type Cond =
   | { c: 'round'; atLeast: number }
   | { c: 'counter'; key: string; atLeast: number }
   | { c: 'killed' }
+  | { c: 'allyCount'; atMost?: number; atLeast?: number; side?: 'ally' | 'enemy' } // 场上醒着的数量（含自身）
+  | { c: 'teamCounter'; key: string; atLeast: number } // 读取全队资源（如 totem 图腾）
   | { c: 'not'; cond: Cond }
   | { c: 'and'; conds: Cond[] }
   | { c: 'or'; conds: Cond[] };
@@ -75,6 +78,7 @@ export type EffectBody =
   | { t: 'counter'; key: string; add: number; max?: number } // 阵营资源计数器（图腾 / 层数 …）
   | { t: 'selfDamage'; pctMaxHp: number }
   | { t: 'summon'; beast: string; count: number; perCounter?: string; scale: Scale; elem?: Elem; applyStatus?: { id: string; turns: number; power?: number; snap?: Scale } }
+  | { t: 'detonate'; id: string; per: number; elem?: Elem; keep?: number } // 引爆目标身上的状态：每层造成 per×攻击 的伤害，并移除（keep：保留层数）
   | { t: 'when'; cond: Cond; then: Effect[]; else?: Effect[] }
   | { t: 'repeat'; n: number; effects: Effect[] }
   | { t: 'text'; text: string }; // 仅用于表现：头顶弹出字
@@ -174,6 +178,7 @@ export type RuleFx = ((
   | { t: 'firstBasicEnergy'; side: RuleSide; to?: RuleTo; amount: number } // 每只猫本场第一次普攻后额外元气
   | { t: 'roundEnergyLowest'; side: RuleSide; amount: number } // 每整轮开始，该方元气最低的猫 +元气
   | { t: 'on'; ev: RuleEv; side: RuleSide; to?: RuleTo; hero?: string; hpBelow?: number; status?: string; cc?: boolean; every?: number; max?: number; per?: 'actor' | 'side' | 'round'; act: RuleAct } // 事件规则：ev 的行动者：basic/basicHit/crit = 出手者，heal = 治疗者，cleanse/statusApply = 施法者，shieldExpire/shieldBreak = 护盾持有者，hurt = 受击者
+  | { t: 'telegraph'; side: RuleSide; to?: RuleTo; hero?: string; first?: boolean } // 绝技预告：满元气时先“预告”一整轮，下一次行动才放绝技（first：只预告第一次）
   | { t: 'critAdd'; side: RuleSide; to: RuleTo; add: number }
   | { t: 'hitAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number }
   | { t: 'dodgeAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number } // rounds：只在前 N 回合有效

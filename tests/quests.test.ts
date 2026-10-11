@@ -5,6 +5,7 @@ import { QUESTS } from '../src/content/economy';
 import type { QuestDef, RewardDef } from '../src/content/types';
 import { createQuestState, claim, isClaimable, isQuestAvailable, normalizeQuestState, questProgress, rollover, track } from '../src/game/quests';
 import { SAVE_KEY, load, newPlayer, save } from '../src/game/state';
+import { removeItem } from '../src/game/inventory';
 
 const localTime = (year: number, month: number, day: number, hour = 12, minute = 0) => new Date(year, month - 1, day, hour, minute).getTime();
 const NOW = localTime(2026, 10, 11);
@@ -18,7 +19,7 @@ describe('quest progress', () => {
     expect(a.quests).toEqual({ progress: {}, claimed: {}, dailyKey: '2026-10-11', weeklyKey: '2026-10-05' });
     track(a, 'login');
     expect(b.quests.progress).toEqual({});
-    expect(b.pending).toEqual({});
+    expect(b.pending).toBeUndefined();
   });
 
   it('counts a ten-pull in daily, weekly, lifetime and newbie tasks, with separate caps', () => {
@@ -256,7 +257,7 @@ describe('claiming quest rewards', () => {
     expect(claim(s, 'newbie_arrive').ok).toBe(true);
     expect(s.res.tickets).toBe(before.res.tickets + 1);
     expect(s.inventory).toEqual(before.inventory);
-    expect(s.pending).toEqual({});
+    expect(s.pending).toBeUndefined();
     expect(s.exp).toBe(before.exp);
     expect(s.level).toBe(before.level);
     expect(s.idle).toEqual(before.idle);
@@ -312,7 +313,7 @@ describe('quest save migration', () => {
     const result = load(storageOf(legacy), NOW);
     expect(result).toEqual(current);
     expect(result.quests).toEqual(createQuestState(NOW));
-    expect(result.pending).toEqual({});
+    expect(result.pending).toBeUndefined();
   });
 
   it('sanitizes only broken task fields and keeps claimed bits that prevent double rewards', () => {
@@ -326,10 +327,10 @@ describe('quest save migration', () => {
     const result = load(storageOf(raw), NOW);
     expect(result.res).toEqual(current.res);
     expect(result.heroes).toEqual(current.heroes);
-    expect(result.inventory).toEqual(current.inventory);
+    expect(result.inventory).toEqual({ ...current.inventory, items: { fishbone_small: 3 } });
     expect(result.quests.progress).toEqual({ daily_campaign: 10, achievement_hero_level_6: 20, daily_login: 1, newbie_arrive: 1 });
     expect(result.quests.claimed).toEqual({ daily_login: true, newbie_arrive: true });
-    expect(result.pending).toEqual({ fishbone_small: 3 });
+    expect(result.pending).toBeUndefined();
     track(result, 'login');
     expect(claim(result, 'daily_login').ok).toBe(false);
   });
@@ -355,20 +356,45 @@ describe('quest save migration', () => {
     expect(normalizeQuestState(unkeyed, NOW)).toEqual(expected);
   });
 
-  it('round-trips progress, claimed rewards and pending items without another grant', () => {
+  it('migrates legacy items once while round-tripping progress and claimed rewards', () => {
     const s = newPlayer(NOW);
     track(s, 'login');
     track(s, 'clear_stage', 4);
     expect(claim(s, 'daily_login').ok).toBe(true);
-    s.pending.fishbone_small = 3;
+    s.pending = { fishbone_small: 3, yarn_medium: 2, catnip_medium: 2, recruit_ticket: 1 };
     const mem = new Map<string, string>();
     const storage = { getItem: (id: string) => mem.get(id) ?? null, setItem: (id: string, value: string) => void mem.set(id, value) };
     save(storage, s);
     expect(mem.has(SAVE_KEY)).toBe(true);
     const result = load(storage, NOW);
-    expect(result).toEqual(s);
+    const { pending: _pending, ...migrated } = s;
+    expect(result).toEqual({
+      ...migrated,
+      res: { ...s.res, catnip: s.res.catnip + 8, tickets: s.res.tickets + 1 },
+      inventory: { ...s.inventory, items: { fishbone_small: 3, yarn_medium: 2 } },
+    });
+    expect(Object.hasOwn(result, 'pending')).toBe(false);
+    save(storage, result);
+    expect(load(storage, NOW)).toEqual(result);
     const before = structuredClone(result);
     expect(claim(result, 'daily_login').ok).toBe(false);
     expect(result).toEqual(before);
+  });
+
+  it('retains overflowing legacy pending items and migrates them on the next load after freeing room', () => {
+    const s = newPlayer(NOW);
+    s.inventory.items.fishbone_small = 9998;
+    s.pending = { fishbone_small: 3, yarn_medium: 2 };
+    const result = load(storageOf(s), NOW);
+    expect(result.pending).toEqual({ fishbone_small: 3 });
+    expect(result.inventory.items).toEqual({ fishbone_small: 9998, yarn_medium: 2 });
+    expect(load(storageOf(result), NOW)).toEqual(result);
+    expect(removeItem(result, 'fishbone_small', 2).ok).toBe(true);
+    const retried = load(storageOf(result), NOW);
+    expect(retried.inventory.items).toEqual({ fishbone_small: 9999, yarn_medium: 2 });
+    expect(Object.hasOwn(retried, 'pending')).toBe(false);
+    expect(load(storageOf(retried), NOW)).toEqual(retried);
+    expect(retried.heroes).toEqual(s.heroes);
+    expect(retried.quests).toEqual(s.quests);
   });
 });
