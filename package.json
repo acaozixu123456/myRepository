@@ -1,0 +1,19 @@
+{
+  "name": "maoguozhi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "猫国志 - 放置挂机卡牌RPG手游（三国化猫国）",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "shots": "node tools/shots.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.5",
+    "playwright-core": "^1.48.0",
+    "typescript": "^5.6.0",
+    "vite": "^5.4.0"
+  }
+}
