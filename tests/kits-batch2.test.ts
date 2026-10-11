@@ -6,12 +6,10 @@ import { simulate } from '../src/engine/battle';
 import type { BattleResult } from '../src/engine/battle';
 import type { BEvent, BattleConfig, UnitSetup } from '../src/engine/types';
 
-// 尚未合入图鉴/索引时，以同职业旧猫作为战斗载体；执行的始终是真实 KITS_B2。
-// 图鉴一旦注册新猫即自动使用新猫，测试不承担阵营/稀有度覆盖验收。
-const carriers: Record<string, string> = {
-  wu_ganning: 'man_zhurong', qun_huaxiong: 'qun_lvbuding', xian_yuji: 'xian_zhangzhua',
-  shu_huangzhong: 'wu_sunxiangxiang', shu_machao: 'shu_guanyunmiao', shu_jiangwei: 'xian_zhangzhua',
-};
+const BATCH_TWO = [
+  'wei_zhangliao', 'wei_xuhuang', 'shu_huangzhong', 'shu_machao', 'shu_zhaomiaoyun', 'shu_jiangwei',
+  'wu_ganning', 'wu_luxun', 'qun_zhangjiao', 'qun_huaxiong', 'man_shamoke', 'man_mengyou', 'xian_yuji', 'xian_nanhua',
+];
 
 interface ProbeOptions extends Omit<BattleConfig, 'A' | 'B'> {
   setup?: Partial<UnitSetup>;
@@ -21,22 +19,16 @@ interface ProbeOptions extends Omit<BattleConfig, 'A' | 'B'> {
 
 function probe(heroId: string, options: ProbeOptions): { result: BattleResult; uid: number } {
   const { setup = {}, allies = [], B, ...cfg } = options;
-  const id = Object.hasOwn(HERO_BY_ID, heroId) ? heroId : carriers[heroId];
-  const original = KITS[id];
-  KITS[id] = KITS_B2[heroId];
-  try {
-    const result = simulate({
-      noBonds: true,
-      maxRounds: 1,
-      ...cfg,
-      A: [{ heroId: id, level: 60, star: 5, skillLv: 1, pos: 0, ...setup }, ...allies],
-      B: B ?? [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000 } }],
-    });
-    return { result, uid: result.units.find((unit) => unit.side === 'A' && unit.heroId === id)!.uid };
-  } finally {
-    if (original) KITS[id] = original;
-    else delete KITS[id];
-  }
+  expect(HERO_BY_ID[heroId]).toBeDefined();
+  expect(KITS[heroId]).toBe(KITS_B2[heroId]);
+  const result = simulate({
+    noBonds: true,
+    maxRounds: 1,
+    ...cfg,
+    A: [{ heroId, level: 60, star: 5, skillLv: 1, pos: 0, ...setup }, ...allies],
+    B: B ?? [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000 } }],
+  });
+  return { result, uid: result.units.find((unit) => unit.side === 'A' && unit.heroId === heroId)!.uid };
 }
 
 function actionWindow(events: BEvent[], actionIndex: number): BEvent[] {
@@ -45,13 +37,17 @@ function actionWindow(events: BEvent[], actionIndex: number): BEvent[] {
 }
 
 const actionsOf = (events: BEvent[], uid: number) => events.flatMap((event, index) => event.t === 'act' && event.uid === uid ? [{ event, index }] : []);
+const damageEvents = (events: BEvent[], src?: number) => events.filter((event): event is Extract<BEvent, { t: 'damage' }> => event.t === 'damage' && (src === undefined || event.src === src));
 
 describe('batch two skill behavior', () => {
-  it('keeps draft identifiers distinct from registered skills and every ultimate upgrade at levels 3, 6 and 9', () => {
-    const ids = Object.values({ ...KITS, ...KITS_B2 }).flatMap((kit) => [kit.basic.id, kit.ultimate.id, kit.passive.id]);
+  it('registers all fourteen real heroes with unique skill identifiers and mechanical upgrades at levels 3, 6 and 9', () => {
+    expect(Object.keys(KITS_B2).sort()).toEqual(BATCH_TWO.slice().sort());
+    const ids = Object.values(KITS).flatMap((kit) => [kit.basic.id, kit.ultimate.id, kit.passive.id]);
     expect(new Set(ids).size).toBe(ids.length);
     for (const [heroId, kit] of Object.entries(KITS_B2)) {
       expect(kit.heroId).toBe(heroId);
+      expect(HERO_BY_ID[heroId].faction).toBe(heroId.split('_')[0]);
+      expect(KITS[heroId]).toBe(kit);
       expect(kit.ultimate.levelMods?.map((mod) => mod.lv)).toEqual([3, 6, 9]);
       expect(kit.awaken.A.patches.length).toBeGreaterThan(0);
       expect(kit.awaken.B.patches.length).toBeGreaterThan(0);
@@ -341,7 +337,7 @@ describe('batch two skill behavior', () => {
 
   it('returns Jiang Wei level nine energy to his teacher before the base ultimate hits', () => {
     const { result, uid } = probe('shu_jiangwei', {
-      seed: 4, setup: { skillLv: 9 }, startEnergy: { A: 100, B: 0 },
+      seed: 4, setup: { skillLv: 9, gear: { spd: 50 } }, startEnergy: { A: 100, B: 0 },
       allies: [{ heroId: 'shu_zhugemiaoliang', level: 60, pos: 1, energy: 0 }],
     });
     const teacher = result.units.find((unit) => unit.heroId === 'shu_zhugemiaoliang')!;
@@ -351,5 +347,394 @@ describe('batch two skill behavior', () => {
     const hit = window.findIndex((event) => event.t === 'damage' && event.src === uid);
     expect(energy).toBeGreaterThanOrEqual(0);
     expect(hit).toBeGreaterThan(energy);
+  });
+
+  it.each(BATCH_TWO)('executes %s as its registered faction and skill kit at every upgrade tier and awakening', (heroId) => {
+    for (const skillLv of [1, 3, 6, 9]) for (const awaken of [undefined, 'A', 'B'] as const) {
+      const { result, uid } = probe(heroId, {
+        seed: 2901, startEnergy: { A: 100, B: 0 }, setup: { skillLv, awaken, hpPct: 0.5 },
+        B: [0, 1, 3].map((pos) => ({ heroId: 'mob_qun_guard', level: 60, pos, statMul: 0.03, gear: { hp: 100000 } })),
+      });
+      const actual = result.units.find((unit) => unit.uid === uid)!;
+      expect(actual.heroId).toBe(heroId);
+      expect(actual.faction).toBe(HERO_BY_ID[heroId].faction);
+      expect(actual.role).toBe(HERO_BY_ID[heroId].role);
+      const cast = actionsOf(result.events, uid).find(({ event }) => event.kind === 'ultimate');
+      expect(cast).toBeDefined();
+      expect(cast!.event.fx).toBe(KITS_B2[heroId].ultimate.fx);
+      const window = actionWindow(result.events, cast!.index);
+      expect(window.some((event) => (event.t === 'damage' || event.t === 'heal') && event.src === uid && event.amount > 0)).toBe(true);
+      expect(result.units.every((unit) => Number.isFinite(unit.hp) && unit.hp >= 0)).toBe(true);
+    }
+  });
+
+  it('raises Zhang Liao critical chance by mutually exclusive live ally counts', () => {
+    const critCounts = [0, 1, 2, 3].map((friends) => {
+      let crits = 0;
+      for (let seed = 1; seed <= 40; seed++) {
+        const { result, uid } = probe('wei_zhangliao', {
+          seed, setup: { gear: { spd: 200 } },
+          allies: ['mob_qun_guard', 'mob_shu_guard', 'mob_wu_guard'].slice(0, friends).map((heroId, i) => ({ heroId, level: 60, pos: i + 1 })),
+        });
+        const strike = damageEvents(actionWindow(result.events, actionsOf(result.events, uid)[0].index), uid)[0];
+        if (strike.crit) crits++;
+      }
+      return crits;
+    });
+    expect(critCounts[0]).toBeGreaterThan(critCounts[1]);
+    expect(critCounts[1]).toBeGreaterThan(critCounts[2]);
+    expect(critCounts[2]).toBeGreaterThan(critCounts[3]);
+  });
+
+  it('does not count Zhang Liao ally after an actual opening charge puts that ally to sleep', () => {
+    for (let seed = 1; seed <= 12; seed++) {
+      const { result, uid } = probe('wei_zhangliao', {
+        seed, setup: { pos: 3, gear: { spd: 200, crit: 0.56 } },
+        allies: [{ heroId: 'mob_qun_guard', level: 1, pos: 0, hpPct: 0.01 }],
+        B: [{ heroId: 'shu_machao', level: 60, pos: 0, gear: { hp: 100000 } }],
+      });
+      const ally = result.units.find((unit) => unit.side === 'A' && unit.uid !== uid)!;
+      const act = actionsOf(result.events, uid)[0];
+      expect(result.events.slice(0, act.index).some((event) => event.t === 'death' && event.uid === ally.uid)).toBe(true);
+      expect(damageEvents(actionWindow(result.events, act.index), uid)[0].crit).toBe(true);
+    }
+  });
+
+  it('separates Zhang Liao sparse-party extra action from the ally-loss escort shield', () => {
+    const charge = probe('wei_zhangliao', {
+      seed: 4, setup: { awaken: 'A' },
+      B: [{ heroId: 'mob_qun_guard', level: 1, pos: 0, hpPct: 0.01 }, { heroId: 'mob_wu_guard', level: 60, pos: 3, statMul: 0.05, gear: { hp: 100000 } }],
+    });
+    expect(actionsOf(charge.result.events, charge.uid)).toHaveLength(2);
+    expect(charge.result.events.filter((event) => event.t === 'text' && event.uid === charge.uid && event.text === '再动！')).toHaveLength(1);
+    const escort = probe('wei_zhangliao', {
+      seed: 4, setup: { awaken: 'B', pos: 3 },
+      allies: [{ heroId: 'mob_qun_guard', level: 1, pos: 0, hpPct: 0.01 }, { heroId: 'mob_wu_guard', level: 60, pos: 4, hpPct: 0.4 }],
+      B: [{ heroId: 'shu_machao', level: 60, pos: 0, gear: { hp: 100000 } }],
+    });
+    expect(escort.result.events.some((event) => event.t === 'shield' && event.src === escort.uid && event.dst === escort.uid)).toBe(true);
+    expect(escort.result.events.some((event) => event.t === 'heal' && event.src === escort.uid && event.dst !== escort.uid)).toBe(true);
+    expect(actionsOf(escort.result.events, escort.uid)).toHaveLength(1);
+  });
+
+  it('makes Xu Huang ward reduce his ally actual hit by 15% without adding defense', () => {
+    const options: ProbeOptions = {
+      seed: 19, setup: { pos: 3, gear: { spd: 200, crit: -1 }, energy: 100 },
+      allies: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, energy: 0 }],
+      B: [{ heroId: 'mob_xian_vanguard', level: 60, pos: 0, gear: { hp: 100000, crit: -1, spd: 20 } }],
+    };
+    const warded = probe('wei_xuhuang', options);
+    const bare = probe('wei_xuhuang', { ...options, setup: { ...options.setup, energy: 0 } });
+    const friend = warded.result.units.find((unit) => unit.side === 'A' && unit.uid !== warded.uid)!;
+    const untreated = bare.result.units.find((unit) => unit.side === 'A' && unit.uid !== bare.uid)!;
+    const hit = damageEvents(warded.result.events).find((event) => event.dst === friend.uid)!;
+    const original = damageEvents(bare.result.events).find((event) => event.dst === untreated.uid)!;
+    expect(friend.def).toBe(untreated.def);
+    expect(friend.statuses.some((status) => status.id === 'curl')).toBe(false);
+    expect(friend.statuses.find((status) => status.id === 'ward')?.power).toBe(0.15);
+    expect(hit.amount).toBeCloseTo(original.amount * 0.85, -0.2);
+  });
+
+  it('caps Xu Huang military discipline after four hits and preserves its stronger defense tier', () => {
+    const { result, uid } = probe('wei_xuhuang', {
+      seed: 5, setup: { gear: { hp: 100000 } },
+      B: [{ heroId: 'wu_sunxiangxiang', level: 60, pos: 0, energy: 100, gear: { crit: -1 } }],
+    });
+    const own = result.units.find((unit) => unit.uid === uid)!;
+    expect(damageEvents(result.events).filter((event) => event.dst === uid)).toHaveLength(5);
+    expect(own.counters.xh_steady).toBe(4);
+    expect(own.statuses.find((status) => status.id === 'curl')?.power).toBe(0.2);
+    expect(own.statuses.find((status) => status.id === 'curl')?.turns).toBe(1);
+  });
+
+  it('lets Xu Huang awakening A draw attention while awakening B shields a companion after the third hit', () => {
+    const gate = probe('wei_xuhuang', { seed: 3, setup: { awaken: 'A', energy: 100 } });
+    const cast = actionsOf(gate.result.events, gate.uid)[0];
+    const window = actionWindow(gate.result.events, cast.index);
+    const taunt = window.findIndex((event) => event.t === 'status' && event.dst === gate.uid && event.id === 'taunt' && event.op === 'add');
+    expect(taunt).toBeGreaterThanOrEqual(0);
+    expect(window.findIndex((event) => event.t === 'damage' && event.src === gate.uid)).toBeGreaterThan(taunt);
+    const support = probe('wei_xuhuang', {
+      seed: 3, maxRounds: 3, setup: { awaken: 'B', gear: { crit: -1 } },
+      allies: [{ heroId: 'mob_qun_guard', level: 60, pos: 3, hpPct: 0.4, gear: { spd: -100 } }],
+      B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000, spd: 100, crit: -1 } }],
+    });
+    const own = support.result.units.find((unit) => unit.uid === support.uid)!;
+    const shields = support.result.events.filter((event): event is Extract<BEvent, { t: 'shield' }> => event.t === 'shield' && event.src === support.uid && event.dst !== support.uid);
+    expect(own.counters.xh_steady).toBe(3);
+    expect(shields).toHaveLength(1);
+    expect(shields[0].amount).toBe(Math.round(own.def * 1.15 * 0.8));
+  });
+
+  it('detonates Lu Xun targets by their individual burn stacks, removes them and prevents their next burn tick', () => {
+    const { result, uid } = probe('wu_luxun', {
+      seed: 9, setup: { energy: 100, gear: { spd: 200, crit: -1 } },
+      B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000 } }, { heroId: 'mob_wei_guard', level: 60, pos: 3, statMul: 0.05, gear: { hp: 100000 } }],
+      rules: [
+        { t: 'startStatus', side: 'B', to: 'front', id: 'burn', turns: 4, stacks: 1 },
+        { t: 'startStatus', side: 'B', to: 'back', id: 'burn', turns: 4, stacks: 3 },
+      ],
+    });
+    const cast = actionsOf(result.events, uid)[0];
+    const window = actionWindow(result.events, cast.index);
+    const stackCounts = result.units.filter((unit) => unit.side === 'B').map((foe) => {
+      const previous = result.events.slice(0, cast.index).reverse().find((event) => event.t === 'status' && event.dst === foe.uid && event.id === 'burn' && event.op === 'add');
+      expect(previous?.t).toBe('status');
+      const stacks = previous!.t === 'status' ? previous!.stacks : 0;
+      const hits = damageEvents(window, uid).filter((event) => event.dst === foe.uid);
+      expect(hits).toHaveLength(2);
+      expect(hits[1].crit).toBe(false);
+      expect(hits[1].elem).toBe('fire');
+      expect(hits[1].amount / hits[0].amount).toBeGreaterThan(stacks / 3 * 0.89);
+      expect(hits[1].amount / hits[0].amount).toBeLessThan(stacks / 3 * 1.12);
+      const removal = window.findIndex((event) => event.t === 'status' && event.dst === foe.uid && event.id === 'burn' && event.op === 'remove');
+      expect(removal).toBeGreaterThanOrEqual(0);
+      expect(window.indexOf(hits[1])).toBeGreaterThan(removal);
+      expect(foe.statuses.some((status) => status.id === 'burn')).toBe(false);
+      return stacks;
+    });
+    expect(stackCounts[0]).not.toBe(stackCounts[1]);
+    expect(result.events.some((event) => event.t === 'dot' && event.id === 'burn')).toBe(false);
+  });
+
+  it('keeps Lu Xun awakening A pre-cast ignition separate from awakening B shield and cleansing', () => {
+    const blaze = probe('wu_luxun', { seed: 8, setup: { awaken: 'A', energy: 100 } });
+    const window = actionWindow(blaze.result.events, actionsOf(blaze.result.events, blaze.uid)[0].index);
+    const ignition = window.findIndex((event) => event.t === 'status' && event.id === 'burn' && event.op === 'add');
+    expect(ignition).toBeGreaterThanOrEqual(0);
+    expect(window.findIndex((event) => event.t === 'damage' && event.src === blaze.uid)).toBeGreaterThan(ignition);
+    expect(damageEvents(window, blaze.uid)).toHaveLength(2);
+    const retreat = probe('wu_luxun', {
+      seed: 8, setup: { awaken: 'B', energy: 100 },
+      allies: [{ heroId: 'mob_wei_guard', level: 60, pos: 1, hpPct: 0.3 }],
+      rules: [{ t: 'startStatus', side: 'A', to: 'all', id: 'fright', power: 0.1, turns: 99 }],
+    });
+    const cover = actionWindow(retreat.result.events, actionsOf(retreat.result.events, retreat.uid)[0].index);
+    expect(cover.filter((event) => event.t === 'shield' && event.src === retreat.uid)).toHaveLength(2);
+    expect(cover.filter((event) => event.t === 'status' && event.src === retreat.uid && event.id === 'fright' && event.op === 'remove')).toHaveLength(2);
+  });
+
+  it('replants Lu Xun level nine burn only after every second detonation and resets the fire counter', () => {
+    const { result, uid } = probe('wu_luxun', { seed: 10, maxRounds: 2, setup: { skillLv: 9 }, rules: [{ t: 'roundEnergyLowest', side: 'A', amount: 100 }] });
+    const casts = actionsOf(result.events, uid);
+    expect(casts.map(({ event }) => event.kind)).toEqual(['ultimate', 'ultimate']);
+    const burnCounts = casts.map(({ index }) => actionWindow(result.events, index).filter((event) => event.t === 'status' && event.src === uid && event.id === 'burn' && event.op === 'add').length);
+    expect(burnCounts).toEqual([0, 1]);
+    expect(result.units.find((unit) => unit.uid === uid)!.counters.lx_fires).toBe(0);
+  });
+
+  it('counts only other Qun ally actions for Zhang Jiao and still calls at least two instant helpers', () => {
+    const { result, uid } = probe('qun_zhangjiao', {
+      seed: 3, setup: { gear: { spd: -50 } },
+      allies: [{ heroId: 'mob_qun_vanguard', level: 60, pos: 1 }, { heroId: 'mob_wei_guard', level: 60, pos: 2 }],
+    });
+    expect(result.units.find((unit) => unit.uid === uid)!.counters.zj_helpers).toBe(2);
+    const alone = probe('qun_zhangjiao', { seed: 3, setup: { energy: 100 } });
+    const summon = alone.result.events.find((event) => event.t === 'summon' && event.uid === alone.uid);
+    expect(summon?.t === 'summon' && summon.count).toBe(2);
+    expect(summon?.t === 'summon' && summon.beast).toBe('yellowKitten');
+    expect(alone.result.units.find((unit) => unit.uid === alone.uid)!.counters.zj_helpers).toBe(0);
+    expect(alone.result.units).toHaveLength(2);
+  });
+
+  it('consumes Zhang Jiao capped helper count while awakening A adds a round-start assist without leaving units', () => {
+    const { result, uid } = probe('qun_zhangjiao', {
+      seed: 4, maxRounds: 2, setup: { awaken: 'A', energy: 70, gear: { spd: -50, hp: 100000 } },
+      allies: [{ heroId: 'mob_qun_vanguard', level: 60, pos: 3 }, { heroId: 'mob_qun_guard', level: 60, pos: 4 }],
+    });
+    const acts = actionsOf(result.events, uid);
+    expect(acts.map(({ event }) => event.kind)).toEqual(['basic', 'ultimate']);
+    const summons = result.events.filter((event): event is Extract<BEvent, { t: 'summon' }> => event.t === 'summon' && event.uid === uid && event.beast === 'yellowKitten');
+    expect(summons.map((event) => event.count)).toEqual([2, 4]);
+    expect(result.events.indexOf(summons[0])).toBeLessThan(acts[1].index);
+    expect(result.events.indexOf(summons[1])).toBeGreaterThan(acts[1].index);
+    expect(result.units.find((unit) => unit.uid === uid)!.counters.zj_helpers).toBe(0);
+    expect(result.units).toHaveLength(4);
+  });
+
+  it('applies Zhang Jiao awakening B cleansing and ward before the summon and base healing', () => {
+    const { result, uid } = probe('qun_zhangjiao', {
+      seed: 5, setup: { awaken: 'B', energy: 100, hpPct: 0.3, gear: { spd: 100 } },
+      allies: [{ heroId: 'mob_wei_guard', level: 60, pos: 1, hpPct: 0.2 }],
+      rules: [{ t: 'startStatus', side: 'A', to: 'all', id: 'fright', power: 0.1, turns: 99 }],
+    });
+    const window = actionWindow(result.events, actionsOf(result.events, uid)[0].index);
+    const summons = window.findIndex((event) => event.t === 'summon' && event.uid === uid);
+    const cover = window.flatMap((event, index) => event.t === 'status' && event.src === uid && (event.id === 'ward' || event.id === 'fright') ? [index] : []);
+    expect(cover).toHaveLength(4);
+    expect(cover.every((index) => index < summons)).toBe(true);
+  });
+
+  it('reads shared Man totems before the current basic increments them and stops the bonus after tiger summoning clears them', () => {
+    const { result, uid } = probe('man_shamoke', {
+      seed: 6, maxRounds: 4, setup: { gear: { spd: 100, crit: -1 } },
+      allies: [{ heroId: 'mob_man_guard', level: 60, pos: 1, gear: { crit: -1 } }],
+      rules: [{ t: 'startStatus', side: 'A', to: 'all', id: 'yarn', turns: 99 }],
+    });
+    const acts = actionsOf(result.events, uid);
+    const layers = acts.map(({ index }) => actionWindow(result.events, index).filter((event) => event.t === 'status' && event.src === uid && event.id === 'poison' && event.op === 'add').length);
+    expect(layers).toEqual([1, 1, 2, 1]);
+    const tigers = result.events.filter((event) => event.t === 'summon' && event.beast === 'tiger');
+    expect(tigers).toHaveLength(1);
+    expect(tigers[0].t === 'summon' && tigers[0].count).toBe(3);
+    const own = result.units.find((unit) => unit.uid === uid)!;
+    expect(own.counters.totem).toBeUndefined();
+    const poison = result.events.filter((event): event is Extract<BEvent, { t: 'dot' }> => event.t === 'dot' && event.id === 'poison');
+    expect(poison.length).toBeGreaterThan(0);
+    expect(poison[0].amount).toBe(Math.round(own.atk * 0.18));
+  });
+
+  it('lets Sha Mo Ke awakening A spread poison while awakening B returns a shield and energy through the team totem condition', () => {
+    const spread = probe('man_shamoke', {
+      seed: 2, setup: { awaken: 'A', energy: 100 },
+      B: [0, 1, 3].map((pos) => ({ heroId: 'mob_qun_guard', level: 60, pos, statMul: 0.05, gear: { hp: 100000 } })),
+    });
+    expect(spread.result.units.filter((unit) => unit.side === 'B' && unit.statuses.some((status) => status.id === 'poison'))).toHaveLength(3);
+    const returnWind = probe('man_shamoke', {
+      seed: 2, maxRounds: 3, setup: { awaken: 'B', gear: { spd: 100 } },
+      allies: [{ heroId: 'mob_man_guard', level: 60, pos: 1, hpPct: 0.4 }],
+      rules: [{ t: 'startStatus', side: 'A', to: 'all', id: 'yarn', turns: 99 }],
+    });
+    const shields = returnWind.result.events.filter((event) => event.t === 'shield' && event.src === returnWind.uid && event.dst !== returnWind.uid);
+    expect(shields).toHaveLength(1);
+    const third = actionsOf(returnWind.result.events, returnWind.uid)[2];
+    expect(actionWindow(returnWind.result.events, third.index).some((event) => event.t === 'energy' && event.uid !== returnWind.uid)).toBe(true);
+  });
+
+  it('reflects Meng You current damage amount including fully absorbed damage, with no defense reduction or critical hit', () => {
+    for (const addedAtk of [100, 600]) {
+      const { result, uid } = probe('man_mengyou', {
+        seed: 13, B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000, def: 20000, atk: addedAtk, crit: -1, spd: 100 } }],
+      });
+      const incoming = damageEvents(result.events).find((event) => event.dst === uid)!;
+      const returned = damageEvents(result.events, uid).find((event) => event.elem === 'true')!;
+      expect(incoming.absorbed).toBeGreaterThan(0);
+      if (addedAtk === 100) expect(incoming.absorbed).toBe(incoming.amount);
+      expect(returned.dst).toBe(incoming.src);
+      expect(returned.crit).toBe(false);
+      expect(returned.amount).toBeGreaterThanOrEqual(Math.floor(incoming.amount * 0.6 * 0.95) - 1);
+      expect(returned.amount).toBeLessThanOrEqual(Math.ceil(incoming.amount * 0.6 * 1.05) + 1);
+    }
+  });
+
+  it('draws front-targeted enemy basics to Meng You even when he stands behind another ally', () => {
+    const { result, uid } = probe('man_mengyou', {
+      seed: 5, setup: { pos: 3 }, allies: [{ heroId: 'mob_wei_guard', level: 60, pos: 0 }],
+      B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000, spd: 100 } }],
+    });
+    const foe = result.units.find((unit) => unit.side === 'B')!;
+    expect(actionsOf(result.events, foe.uid)[0].event.targets).toEqual([uid]);
+    expect(result.events.findIndex((event) => event.t === 'status' && event.dst === uid && event.id === 'taunt' && event.op === 'add')).toBeLessThan(result.events.findIndex((event) => event.t === 'round'));
+  });
+
+  it('marks Meng You attacker after the base reflection in awakening A and protects allies with awakening B', () => {
+    const marked = probe('man_mengyou', { seed: 7, setup: { awaken: 'A' }, B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000, spd: 100 } }] });
+    const reflection = marked.result.events.findIndex((event) => event.t === 'damage' && event.src === marked.uid && event.elem === 'true');
+    const bell = marked.result.events.findIndex((event) => event.t === 'status' && event.src === marked.uid && event.id === 'mark' && event.op === 'add');
+    expect(reflection).toBeGreaterThanOrEqual(0);
+    expect(bell).toBeGreaterThan(reflection);
+    const seated = probe('man_mengyou', {
+      seed: 7, setup: { awaken: 'B', energy: 100 }, allies: [{ heroId: 'mob_wei_guard', level: 60, pos: 1, hpPct: 0.3 }],
+      rules: [{ t: 'startStatus', side: 'A', to: 'all', id: 'fright', power: 0.1, turns: 99 }],
+    });
+    const cast = actionsOf(seated.result.events, seated.uid)[0];
+    const window = actionWindow(seated.result.events, cast.index);
+    expect(window.filter((event) => event.t === 'shield' && event.src === seated.uid && event.dst !== seated.uid)).toHaveLength(1);
+    expect(window.filter((event) => event.t === 'status' && event.src === seated.uid && event.id === 'fright' && event.op === 'remove')).toHaveLength(2);
+  });
+
+  it('lets Nan Hua consume his one granted nine-lives protection on lethal poison, then sleeps on the next lethal tick', () => {
+    const { result, uid } = probe('xian_nanhua', {
+      seed: 12, maxRounds: 3, setup: { hpPct: 0.05 },
+      allies: [{ heroId: 'mob_qun_guard', level: 60, pos: 3, gear: { hp: 100000, spd: -100 } }],
+      rules: [{ t: 'on', ev: 'basicHit', side: 'B', max: 1, act: { k: 'status', id: 'poison', turns: 5, snapAtk: 1000, who: 'target' } }],
+    });
+    const own = result.units.find((unit) => unit.uid === uid)!;
+    const poisoned = result.events.flatMap((event, index) => event.t === 'dot' && event.dst === uid && event.id === 'poison' ? [{ event, index }] : []);
+    expect(poisoned).toHaveLength(2);
+    const first = poisoned[0].index;
+    const second = poisoned[1].index;
+    const protection = result.events.findIndex((event) => event.t === 'text' && event.uid === uid && event.text === '九命！');
+    const death = result.events.findIndex((event) => event.t === 'death' && event.uid === uid);
+    expect(protection).toBeGreaterThan(first);
+    expect(protection).toBeLessThan(second);
+    expect(death).toBeGreaterThan(second);
+    expect(result.events.slice(0, second).some((event) => event.t === 'death' && event.uid === uid)).toBe(false);
+    expect(result.events.filter((event) => event.t === 'status' && event.dst === uid && event.id === 'nine' && event.op === 'add')).toHaveLength(1);
+    expect(result.events.filter((event) => event.t === 'status' && event.dst === uid && event.id === 'nine' && event.op === 'remove')).toHaveLength(1);
+    const between = result.events.slice(protection + 1, second);
+    const healed = between.find((event) => event.t === 'heal' && event.dst === uid);
+    expect(healed?.t === 'heal' && healed.hp - healed.amount).toBe(Math.round(own.maxHp * 0.15));
+    expect(own.alive).toBe(false);
+    expect(result.events.some((event) => event.t === 'revive' && event.uid === uid)).toBe(false);
+  });
+
+  it('keeps Nan Hua awakening A self recovery separate from awakening B pre-ultimate ally protection', () => {
+    const rested = probe('xian_nanhua', { seed: 5, setup: { awaken: 'A', hpPct: 0.1 } });
+    const cast = actionsOf(rested.result.events, rested.uid)[0];
+    const own = rested.result.units.find((unit) => unit.uid === rested.uid)!;
+    const heals = rested.result.events.filter((event) => event.t === 'heal' && event.src === rested.uid && event.dst === rested.uid);
+    expect(heals.some((event) => event.t === 'heal' && event.amount === Math.round(own.maxHp * 0.12))).toBe(true);
+    expect(actionWindow(rested.result.events, cast.index).filter((event) => event.t === 'shield' && event.src === rested.uid)).toHaveLength(2);
+    const door = probe('xian_nanhua', {
+      seed: 5, setup: { awaken: 'B', pos: 3 },
+      allies: [{ heroId: 'mob_wei_guard', level: 60, pos: 0, hpPct: 0.3 }],
+      B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, energy: 100, statMul: 0.05, gear: { hp: 100000, spd: 100 } }],
+    });
+    const foe = door.result.units.find((unit) => unit.side === 'B')!;
+    const window = actionWindow(door.result.events, actionsOf(door.result.events, foe.uid)[0].index);
+    const shield = window.findIndex((event) => event.t === 'shield' && event.src === door.uid && event.dst !== door.uid);
+    expect(shield).toBeGreaterThanOrEqual(0);
+    expect(window.findIndex((event) => event.t === 'damage' && event.src === foe.uid)).toBeGreaterThan(shield);
+  });
+
+  it('prevents single-target enemies from selecting Zhao Yun after a kill when another ally remains', () => {
+    const { result, uid } = probe('shu_zhaomiaoyun', {
+      seed: 3, allies: [{ heroId: 'mob_wei_guard', level: 60, pos: 3, gear: { spd: -100, hp: 100000 } }],
+      B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000 } }, { heroId: 'mob_wei_healer', level: 1, pos: 3, hpPct: 0.01 }],
+    });
+    const foe = result.units.find((unit) => unit.side === 'B' && unit.pos === 0)!;
+    const ally = result.units.find((unit) => unit.side === 'A' && unit.uid !== uid)!;
+    expect(damageEvents(result.events, uid).some((event) => event.killed)).toBe(true);
+    expect(result.units.find((unit) => unit.uid === uid)!.statuses.find((status) => status.id === 'stealth')?.turns).toBe(1);
+    expect(actionsOf(result.events, foe.uid)[0].event.targets).toEqual([ally.uid]);
+    expect(damageEvents(result.events, foe.uid).some((event) => event.dst === uid)).toBe(false);
+  });
+
+  it('allows all-target attacks and the last remaining target to include Zhao Yun despite stealth', () => {
+    for (const allTarget of [false, true]) {
+      const { result, uid } = probe('shu_zhaomiaoyun', {
+        seed: 3,
+        allies: allTarget ? [{ heroId: 'mob_wei_guard', level: 60, pos: 3, gear: { spd: -100, hp: 100000 } }] : [],
+        B: [{ heroId: allTarget ? 'mob_qun_vanguard' : 'mob_qun_guard', level: 60, pos: 0, energy: allTarget ? 100 : 0, statMul: 0.05, gear: { hp: 100000 } }, { heroId: 'mob_wei_healer', level: 1, pos: 3, hpPct: 0.01 }],
+      });
+      const foe = result.units.find((unit) => unit.side === 'B' && unit.pos === 0)!;
+      expect(result.units.find((unit) => unit.uid === uid)!.statuses.some((status) => status.id === 'stealth')).toBe(true);
+      expect(actionsOf(result.events, foe.uid)[0].event.targets).toContain(uid);
+      expect(damageEvents(result.events, foe.uid).some((event) => event.dst === uid)).toBe(true);
+    }
+  });
+
+  it('uses Zhao Yun awakening A extra action while awakening B saves its one rescue until an ally actually needs it', () => {
+    const returning = probe('shu_zhaomiaoyun', {
+      seed: 4, setup: { awaken: 'A' },
+      B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000 } }, { heroId: 'mob_wei_healer', level: 1, pos: 3, hpPct: 0.01 }],
+    });
+    expect(actionsOf(returning.result.events, returning.uid)).toHaveLength(2);
+    expect(returning.result.units.find((unit) => unit.uid === returning.uid)!.statuses.some((status) => status.id === 'stealth')).toBe(false);
+    const options: ProbeOptions = {
+      seed: 9, setup: { awaken: 'B', pos: 3 },
+      allies: [{ heroId: 'mob_wei_guard', level: 60, pos: 0, hpPct: 0.41, gear: { spd: -100 } }],
+      B: [{ heroId: 'mob_qun_guard', level: 60, pos: 0, statMul: 0.05, gear: { hp: 100000, atk: 200, crit: -1 } }],
+      rules: [{ t: 'startStatus', side: 'A', to: 'front', id: 'fright', power: 0.1, turns: 99 }],
+    };
+    const first = probe('shu_zhaomiaoyun', options);
+    expect(first.result.units.find((unit) => unit.uid === first.uid)!.counters.zy_rescue ?? 0).toBe(0);
+    expect(first.result.events.some((event) => event.t === 'heal' && event.src === first.uid)).toBe(false);
+    const later = probe('shu_zhaomiaoyun', { ...options, maxRounds: 3 });
+    expect(later.result.units.find((unit) => unit.uid === later.uid)!.counters.zy_rescue).toBe(1);
+    expect(later.result.events.filter((event) => event.t === 'heal' && event.src === later.uid)).toHaveLength(1);
+    expect(later.result.events.filter((event) => event.t === 'shield' && event.src === later.uid)).toHaveLength(1);
+    expect(later.result.events.some((event) => event.t === 'status' && event.src === later.uid && event.id === 'fright' && event.op === 'remove')).toBe(true);
   });
 });

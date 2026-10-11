@@ -149,7 +149,7 @@ describe('balance sampling and complete report', () => {
   it('covers all heroes, factions, counter directions and bonds in under five seconds', () => {
     expect(elapsedMs).toBeLessThan(5000);
     expect(report.heroes.map((hero) => hero.heroId).sort()).toEqual(HEROES.map((hero) => hero.id).sort());
-    expect(report.heroes).toHaveLength(24);
+    expect(report.heroes).toHaveLength(HEROES.length);
     expect(report.factions.map((faction) => faction.faction).sort()).toEqual([...FACTION_ORDER].sort());
     expect(report.counters.map((counter) => `${counter.advantagedFaction}:${counter.disadvantagedFaction}`).sort()).toEqual(COUNTER_RING.map((faction, index) => `${faction}:${COUNTER_RING[(index + 1) % 6]}`).sort());
     expect(report.bonds.map((bond) => bond.name).sort()).toEqual(BONDS.map((bond) => bond.name).sort());

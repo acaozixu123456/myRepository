@@ -11,6 +11,7 @@ describe('hero data integrity', () => {
     }
   });
   it('hero ids are unique', () => {
+    expect(HEROES).toHaveLength(38);
     expect(new Set(HEROES.map((h) => h.id)).size).toBe(HEROES.length);
   });
 });

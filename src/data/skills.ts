@@ -1,8 +1,9 @@
-// 24 只猫猫的技能设定。每只 4 个技能：普攻 / 绝技(元气满100释放) / 被动 / 觉醒(★5解锁)。
+// 38 只猫猫的技能设定。每只 4 个技能：普攻 / 绝技(元气满100释放) / 被动 / 觉醒(★5解锁)。
 // 新增技能组与补齐升级词条的 SSR 直接复用 DSL 说明，展示页与战斗执行保持同一口径。
 import type { Kit } from '../engine/types';
 import { KITS_SR } from './kits/sr';
 import { KITS_SSR } from './kits/ssr';
+import { KITS_B2 } from './kits/batch2';
 export type SkillKind = 'basic' | 'ultimate' | 'passive' | 'awaken';
 
 export interface SkillDef {
@@ -40,6 +41,8 @@ export const SKILLS: Record<string, SkillDef[]> = {
   wei_xiahoudun: FROM_KIT(KITS_SR.wei_xiahoudun, ['敌方前排单体', '敌方前排单体 + 自身', '自身'], [['物伤'], ['单体', '吸取', '低生命'], ['被动', '九命']]),
   wei_xuhuchi: FROM_KIT(KITS_SR.wei_xuhuchi, ['敌方前排单体', '敌方全体 + 自身', '其他魏势力友方'], [['物伤', '防御'], ['群伤', '挑衅', '护盾'], ['被动', '魏·铁壁']]),
   wei_guojia: FROM_KIT(KITS_SR.wei_guojia, ['生命比例最低的友方', '友方全体', '随机友方'], [['治疗'], ['群疗', '唤醒'], ['被动', '净化']]),
+  wei_zhangliao: FROM_KIT(KITS_B2.wei_zhangliao, ['敌方前排单体', '敌方后排单体', '自身'], [['物伤', '醒猫计数'], ['多段', '暴击', '渡桥计数'], ['被动', '回能']]),
+  wei_xuhuang: FROM_KIT(KITS_B2.wei_xuhuang, ['敌方前排单体', '敌方前排 + 友方全体 + 自身', '自身'], [['物伤', '防御'], ['排伤', '护佑', '自疗'], ['被动', '军纪计数']]),
 
   // ---------------- 蜀 ----------------
   shu_liumiaobei: [
@@ -51,6 +54,10 @@ export const SKILLS: Record<string, SkillDef[]> = {
   shu_guanyunmiao: FROM_KIT(KITS_SSR.shu_guanyunmiao, ['敌方前排单体', '敌方纵列', '自身'], [['物伤'], ['列伤', '追击'], ['被动', '暴击']]),
   shu_zhangmiaofei: FROM_KIT(KITS_SSR.shu_zhangmiaofei, ['敌方前排单体', '敌方全体', '自身'], [['物伤', '控制'], ['群伤', '受惊'], ['被动', '防御']]),
   shu_zhugemiaoliang: FROM_KIT(KITS_SSR.shu_zhugemiaoliang, ['随机敌方单体', '敌方全体 + 友方全体', '友方全体 + 自身'], [['法伤', '毛线缠'], ['群伤', '护盾', '减速'], ['被动', '回能']]),
+  shu_huangzhong: FROM_KIT(KITS_B2.shu_huangzhong, ['敌方后排单体', '敌方后排单体', '自身'], [['物伤', '低生命'], ['多段', '低生命', '指定同伴'], ['被动', '回能', '幻象']]),
+  shu_machao: FROM_KIT(KITS_B2.shu_machao, ['敌方前排单体', '敌方前排单体 + 自身', '敌方前排单体 + 自身'], [['物伤'], ['单体', '破防', '行程计数'], ['被动', '开场冲锋', '再动']]),
+  shu_zhaomiaoyun: FROM_KIT(KITS_B2.shu_zhaomiaoyun, ['敌方后排单体', '敌方后排单体 + 生命比例最低的其他友方', '自身'], [['物伤', '破防'], ['单体', '治疗', '护盾'], ['被动', '潜行', '回能']]),
+  shu_jiangwei: FROM_KIT(KITS_B2.shu_jiangwei, ['敌方前排单体', '敌方前排 + 元气最低的友方', '友方全体'], [['法伤'], ['排伤', '回能', '北伐计数'], ['被动', '防御', '回能']]),
 
   // ---------------- 吴 ----------------
   wu_zhoumiaoyu: [
@@ -62,6 +69,8 @@ export const SKILLS: Record<string, SkillDef[]> = {
   wu_sunxiaoba: FROM_KIT(KITS_SR.wu_sunxiaoba, ['敌方前排单体', '敌方前排', '自身'], [['物伤'], ['排伤', '淋湿', '吴·赤壁'], ['被动', '首攻暴击']]),
   wu_sunxiangxiang: FROM_KIT(KITS_SSR.wu_sunxiangxiang, ['敌方后排单体', '随机敌方多段', '攻击者'], [['物伤', '后排'], ['多段', '状态联动'], ['被动', '反击']]),
   wu_huanggai: FROM_KIT(KITS_SR.wu_huanggai, ['敌方前排单体', '自身 + 友方全体', '自身'], [['物伤'], ['群盾', '增益', '自损'], ['被动', '护盾']]),
+  wu_ganning: FROM_KIT(KITS_B2.wu_ganning, ['敌方后排单体', '敌方后排单体', '自身'], [['物伤', '铃声计数'], ['多段', '铃声计数', '元气压制'], ['被动', '回能', '暴击']]),
+  wu_luxun: FROM_KIT(KITS_B2.wu_luxun, ['随机至多 2 名敌人', '敌方全体', '已有灼烧的随机敌人'], [['火伤', '灼烧'], ['群伤', '引爆', '指定同伴'], ['被动', '灼烧']]),
 
   // ---------------- 群 ----------------
   qun_lvbuding: [
@@ -73,6 +82,8 @@ export const SKILLS: Record<string, SkillDef[]> = {
   qun_diaochan: FROM_KIT(KITS_SR.qun_diaochan, ['随机敌方单体', '随机 2 名敌人', '攻击者'], [['法伤', '猫薄荷醉'], ['混乱', '元气压制'], ['被动', '反制']]),
   qun_dongzhuo: FROM_KIT(KITS_SR.qun_dongzhuo, ['敌方前排单体', '敌方全体 + 自身', '自身'], [['物伤', '护盾'], ['挑衅', '群伤', '护盾'], ['被动', '低生命']]),
   qun_huatuo: FROM_KIT(KITS_SSR.qun_huatuo, ['生命比例最低的友方', '友方全体', '生命比例最低的两名友方'], [['治疗'], ['群疗', '净化'], ['被动', '持续治疗']]),
+  qun_zhangjiao: FROM_KIT(KITS_B2.qun_zhangjiao, ['随机敌方单体 + 生命比例最低的友方', '随机敌人 + 友方全体 + 敌方元气最高单体', '自身'], [['法伤', '治疗', '黄巾点名'], ['协战', '群疗', '毛线缠'], ['被动', '群族行动']]),
+  qun_huaxiong: FROM_KIT(KITS_B2.qun_huaxiong, ['敌方前排单体', '敌方前排单体 + 自身', '自身'], [['物伤', '首击暴击'], ['单体', '元气压制', '受惊'], ['被动', '猫薄荷醉', '回能']]),
 
   // ---------------- 蛮 ----------------
   man_mengmiaohuo: [
@@ -84,6 +95,8 @@ export const SKILLS: Record<string, SkillDef[]> = {
   man_zhurong: FROM_KIT(KITS_SSR.man_zhurong, ['敌方后排单体', '敌方后排', '自身'], [['物伤', '抓痕'], ['多段', '火伤', '灼烧'], ['被动', '回能']]),
   man_mulu: FROM_KIT(KITS_SR.man_mulu, ['随机敌方单体', '每只兽影随机选敌人', '其他蛮势力友方行动'], [['法伤', '图腾'], ['召兽', '抓痕', '蛮·图腾'], ['被动', '个人图腾']]),
   man_wutugu: FROM_KIT(KITS_SR.man_wutugu, ['敌方前排单体', '自身', '自身'], [['物伤', '防御'], ['自疗', '护盾'], ['被动', '受击印记']]),
+  man_shamoke: FROM_KIT(KITS_B2.man_shamoke, ['敌方后排单体', '随机至多 2 名敌人', '自身'], [['物伤', '毒瘴', '团队图腾'], ['多目标', '毒瘴', '团队图腾'], ['被动', '叠层回能']]),
+  man_mengyou: FROM_KIT(KITS_B2.man_mengyou, ['随机敌方单体 + 自身', '敌方前排 + 自身', '自身 + 攻击者'], [['法伤', '护盾'], ['排伤', '自疗', '挑衅'], ['被动', '护盾', '受伤回礼']]),
 
   // ---------------- 仙 ----------------
   xian_zuoci: [
@@ -95,4 +108,6 @@ export const SKILLS: Record<string, SkillDef[]> = {
   xian_zhangzhua: FROM_KIT(KITS_SR.xian_zhangzhua, ['随机敌方单体', '敌方全体', '自身'], [['法伤', '符咒'], ['群伤', '毛线缠', '仙·天机'], ['被动', '同袍接力']]),
   xian_shuijing: FROM_KIT(KITS_SR.xian_shuijing, ['生命比例最低的友方', '友方全体', '友方'], [['治疗', '护盾'], ['群疗', '回能'], ['被动', '授课']]),
   xian_guanlu: FROM_KIT(KITS_SR.xian_guanlu, ['随机敌方单体', '敌方全体 + 友方全体', '敌方元气最高的猫'], [['法伤', '铜钱'], ['随机', '群伤', '护盾'], ['被动', '元气压制']]),
+  xian_yuji: FROM_KIT(KITS_B2.xian_yuji, ['随机敌方单体 + 生命比例最低的友方', '友方全体', '生命比例最低的友方'], [['法伤', '治疗'], ['群疗', '净化', '呼噜'], ['被动', '治疗', '净化']]),
+  xian_nanhua: FROM_KIT(KITS_B2.xian_nanhua, ['生命比例最低的友方', '友方全体', '自身'], [['治疗', '护盾'], ['群疗', '群盾', '梦境计数'], ['被动', '九命', '回能']]),
 };

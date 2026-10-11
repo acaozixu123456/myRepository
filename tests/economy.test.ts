@@ -94,7 +94,7 @@ describe('economic catalogue integrity', () => {
     expect(GACHA_POOLS.find((pool) => pool.kind === 'newbie')!.cost.single.count).toBe(GACHA_POOLS.find((pool) => pool.kind === 'up')!.cost.single.count * GACHA_RULES.newbiePriceFactor);
   });
 
-  it('derives availability from actual hero candidates and exposes the unsupported Shu low-rarity tier', () => {
+  it('derives pool availability from actual hero candidates including the three Shu SR additions', () => {
     for (const pool of GACHA_POOLS) {
       const readiness = GACHA_POOL_READINESS[pool.id];
       for (const rarity of ['UR', 'SSR', 'SR'] as const) {
@@ -104,11 +104,11 @@ describe('economic catalogue integrity', () => {
       }
       expect(readiness.ready, pool.id).toBe(readiness.missingRarities.length === 0 && readiness.invalidUpHeroes.length === 0);
     }
-    expect(GACHA_POOL_READINESS.faction_shu.ready).toBe(false);
-    expect(GACHA_POOL_READINESS.faction_shu.missingRarities).toEqual(['SR']);
-    expect(GACHA_POOL_READINESS.faction_shu.candidates.SR).toEqual([]);
+    expect(GACHA_POOL_READINESS.faction_shu.ready).toBe(true);
+    expect(GACHA_POOL_READINESS.faction_shu.missingRarities).toEqual([]);
+    expect(GACHA_POOL_READINESS.faction_shu.candidates.SR).toEqual(['shu_huangzhong', 'shu_machao', 'shu_jiangwei']);
     expect(GACHA_POOLS.find((pool) => pool.id === 'faction_shu')!.rates.SR).toBe(0.865);
-    expect(SHOP_ITEM_READINESS.faction_recruit_shu).toBe(false);
+    expect(SHOP_ITEM_READINESS.faction_recruit_shu).toBe(true);
     for (const pool of GACHA_POOLS.filter((pool) => pool.id !== 'faction_shu')) expect(GACHA_POOL_READINESS[pool.id].ready, pool.id).toBe(true);
   });
 

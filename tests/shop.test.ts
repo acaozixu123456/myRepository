@@ -138,13 +138,15 @@ describe('shop catalogue and purchasing', () => {
     failsWithoutChange(s, () => buy(s, offer.id, 1, NOW), '暂未获得');
   });
 
-  it('rejects a funded but unready Shu ticket, retaining it visibly in the faction catalogue', () => {
+  it('opens the funded Shu ticket after the faction gains its SR candidates', () => {
     const s = richPlayer();
     const row = listShop(s, 'faction', NOW).find((entry) => entry.offer.id === 'faction_recruit_shu')!;
-    expect(row.available).toBe(false);
-    expect(row.reason).toBe('暂未开放');
-    expect(row.maxCount).toBe(0);
-    failsWithoutChange(s, () => buy(s, row.offer.id, 1, NOW), '暂未开放');
+    expect(row.available).toBe(true);
+    expect(row.reason).toBeUndefined();
+    expect(row.maxCount).toBeGreaterThan(0);
+    const before = itemCount(s, row.offer.item.id);
+    expect(buy(s, row.offer.id, 1, NOW).ok).toBe(true);
+    expect(itemCount(s, row.offer.item.id)).toBe(before + row.offer.item.count);
   });
 
   it('retains a read-only catalogue even when the returned detail objects are changed', () => {
