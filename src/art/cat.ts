@@ -4,7 +4,7 @@ import { ink, mix, shade, tint } from './color';
 import type { CatLook, Coat, EarStyle, EyeStyle, Palette } from './types';
 import { renderBackGear, renderHeadGear, renderWeapon } from './gear';
 import { renderBodyGear } from './garments';
-import { furTicks, limbPath, paintDefs, paintFill, resetPaintDefs, sampleSpline, smooth } from './paint';
+import { furTicks, limbEdges, limbPath, paintDefs, paintFill, resetPaintDefs, sampleSpline, smooth } from './paint';
 import type { Pt } from './paint';
 
 export interface Ctx {
@@ -248,7 +248,7 @@ export function volume(ctx: Ctx, key: string, d: string, base: string, o: VolOpt
     `<path d="${d}" fill="none" stroke="${tint(base, 0.3)}" stroke-width="8" transform="translate(${-lx * 0.6} ${-ly * 0.6})" opacity="${o.rim ?? 0.28}"/>` +
     (o.inner ?? '') +
     `</g>` +
-    `<path d="${d}" fill="none" stroke="${line}" stroke-width="${o.sw ?? 3.2}" stroke-linejoin="round"/>`
+    `<path d="${d}" fill="none" stroke="${line}" stroke-width="${(o.sw ?? 3.2) * 1.3}" stroke-linejoin="round"/>`
   );
 }
 
@@ -401,15 +401,29 @@ function renderTail(ctx: Ctx): string {
 }
 
 // ---------- 爪子（手） ----------
-function pawShape(ctx: Ctx, cx: number, cy: number, s = 1, down = true): string {
-  // 掌心 + 三个指节凸起 + 趾缝
-  const palm = smooth([[cx - 15 * s, cy - 8 * s], [cx - 12 * s, cy + 10 * s], [cx, cy + 16 * s], [cx + 12 * s, cy + 10 * s], [cx + 15 * s, cy - 8 * s], [cx, cy - 14 * s]], true);
-  const toes = [-9, 0, 9].map((dx) => E(cx + dx * s, cy + (down ? 16 : -14) * s, 6.4 * s, 6.4 * s, ctx.paw, { stroke: ctx.line, sw: 3.2 })).join('');
-  return (
-    volume(ctx, `paw${Math.round(cx)}${Math.round(cy)}`, palm, ctx.paw, { sw: 3.2, shadow: 0.4 }) +
-    toes +
-    L(`M ${cx - 4.5 * s} ${cy + 12 * s} L ${cx - 4.5 * s} ${cy + 20 * s} M ${cx + 4.5 * s} ${cy + 12 * s} L ${cx + 4.5 * s} ${cy + 20 * s}`, ctx.line, 1.8, 0.6)
-  );
+/** 猫爪：开掌（拇指 + 三个指节凸起 + 趾缝 + 小肉垫）或握拳（四个指节横排 + 拇指压在上面）。局部坐标：原点在腕口，y 向下指向指尖。 */
+function pawShape(ctx: Ctx, side: 'L' | 'R', grip: boolean): string {
+  const t = side === 'R' ? -1 : 1; // 拇指在内侧
+  const fill = ctx.paw;
+  const line = ctx.line;
+  const st = (sw = 3.4) => `stroke="${line}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round"`;
+  const g = (d: string, extra = '') => `<path d="${d}" fill="${paintFill(fill)}" ${st()} ${extra}/>`;
+  const shade2 = shade(fill, 0.2);
+  if (grip) {
+    const palm = smooth([[-22, -6], [-24, 8], [-17, 20], [0, 24], [17, 20], [24, 8], [22, -6], [0, -12]], true);
+    const knuckles = [-14, -4.7, 4.7, 14].map((x, i) => `<ellipse cx="${x}" cy="${20 + (i === 0 || i === 3 ? -1.5 : 0.5)}" rx="6.3" ry="7" fill="${paintFill(fill)}" ${st(2.8)}/>`).join('');
+    const thumb = `<ellipse cx="${t * 15}" cy="-1" rx="8.5" ry="11" transform="rotate(${t * -18} ${t * 15} -1)" fill="${paintFill(shade(fill, 0.04))}" ${st(3)}/>`;
+    return (
+      volume(ctx, `fist${side}`, palm, fill, { sw: 3.4, shadow: 0.35 }) + knuckles + thumb +
+      L(`M -9 15 L -9 26 M 0 16 L 0 27 M 9 15 L 9 26`, line, 1.7, 0.55) +
+      `<ellipse cx="${-t * 4}" cy="-1" rx="9" ry="5" fill="${shade2}" opacity="0.22"/>`
+    );
+  }
+  const thumb = `<ellipse cx="${t * 16}" cy="4" rx="7.5" ry="11" transform="rotate(${t * -28} ${t * 16} 4)" fill="${paintFill(shade(fill, 0.05))}" ${st(3)}/>`;
+  const palm = smooth([[-17, -8], [-19, 10], [-12, 26], [0, 31], [12, 26], [19, 10], [17, -8], [0, -14]], true);
+  const toes = [[-10.5, 26], [0, 31], [10.5, 26]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="8.2" ry="8" fill="${paintFill(fill)}" ${st(2.8)}/>`).join('');
+  const bean = `<path d="M -5 14 Q 0 9 5 14 Q 7 20 0 22 Q -7 20 -5 14 Z" fill="${ctx.pink}" opacity="0.7"/><ellipse cx="-9" cy="22" rx="2.4" ry="2.9" fill="${ctx.pink}" opacity="0.7"/><ellipse cx="0" cy="26" rx="2.4" ry="2.9" fill="${ctx.pink}" opacity="0.7"/><ellipse cx="9" cy="22" rx="2.4" ry="2.9" fill="${ctx.pink}" opacity="0.7"/>`;
+  return thumb + g(palm) + toes + L(`M -5.2 22 L -5.2 33 M 5.2 22 L 5.2 33`, line, 1.7, 0.6) + (grip ? '' : bean);
 }
 
 // ---------- 手臂 ----------
@@ -422,31 +436,39 @@ export function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: 
   const base = HAND(W, side);
   const dxh = hand[0] - base[0];
   const dyh = hand[1] - base[1];
-  const c: Pt[] = [sh, [pts[1][0] + dxh * 0.45, pts[1][1] + dyh * 0.45], [hand[0], hand[1]]];
+  const out = side === 'R' ? 1 : -1;
+  // 肘部略向外鼓，肩点略向内收进躯干里
+  const c: Pt[] = [[sh[0] - out * 6, sh[1] - 4], [pts[1][0] + dxh * 0.45 + out * 4, pts[1][1] + dyh * 0.45], [hand[0], hand[1]]];
   const col = sleeve ?? ctx.fur;
   const line = sleeve ? ink(sleeve, 0.46) : ctx.line;
-  const body = limbPath(c, wide ? [42, 40, 46] : [40, 32, sleeve ? 30 : 24]);
+  const widths = wide ? [56, 54, 60] : sleeve ? [52, 46, 40] : [50, 42, 34];
+  const body = limbPath(c, widths);
   const flow = Math.atan2(c[2][1] - c[0][1], c[2][0] - c[0][0]);
   const inner = (sleeve ? '' : furTicks(80, 300, 330, 460, 40, shade(col, 0.22), flow, side === 'L' ? 4 : 5, 9, 0.32) + limbPattern(ctx, c, 28, 'arm')) +
     (sleeve ? `<path d="${smooth(c)}" fill="none" stroke="${shade(col, 0.16)}" stroke-width="3" opacity="0.4" transform="translate(${side === 'R' ? 8 : -8} 4)"/>` : '');
-  let s = volume(ctx, `arm${side}`, body, col, { outline: line, inner, mode: sleeve ? 'cloth' : 'soft' });
+  // 肩头：圆润的三角肌，与躯干无缝衔接（只描外侧轮廓，起点不封口）
+  const cap = `<ellipse cx="${c[0][0] + out * 4}" cy="${c[0][1] + 8}" rx="${widths[0] * 0.5}" ry="${widths[0] * 0.46}" fill="${paintFill(col, sleeve ? 'cloth' : 'soft')}" stroke="none"/>`;
+  let s = volume(ctx, `arm${side}`, body, col, { outline: line, inner, mode: sleeve ? 'cloth' : 'soft', sw: 0 }) + cap +
+    `<path d="${limbEdges(c, widths, { skipStart: true })}" fill="none" stroke="${line}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
   // 腕口毛边 / 袖口
   const wrist = c[2];
   const prev = sampleSpline(c, 6).slice(-4)[0];
   const a = Math.atan2(wrist[1] - prev[1], wrist[0] - prev[0]);
   if (cuff) {
     const q = sampleSpline(c, 6);
-    const p1 = q[Math.floor(q.length * 0.78)];
-    const hl = wide ? 26 : 15;
+    const p1 = q[Math.floor(q.length * 0.8)];
+    const hl = wide ? 30 : 21;
     const seg = `M ${p1[0] - Math.sin(a) * hl} ${p1[1] + Math.cos(a) * hl} L ${p1[0] + Math.sin(a) * hl} ${p1[1] - Math.cos(a) * hl}`;
-    s += `<path d="${seg}" stroke="${ink(cuff, 0.5)}" stroke-width="15" stroke-linecap="butt"/><path d="${seg}" stroke="${paintFill(cuff, 'metal')}" stroke-width="10.5" stroke-linecap="butt"/>`;
+    s += `<path d="${seg}" stroke="${ink(cuff, 0.5)}" stroke-width="16" stroke-linecap="round"/><path d="${seg}" stroke="${paintFill(cuff, 'metal')}" stroke-width="11" stroke-linecap="round"/>`;
   } else if (!sleeve) {
     s += tuft(wrist[0], wrist[1] - 6, a + 1.9, 14, 5, ctx.fur, ctx.line) + tuft(wrist[0], wrist[1] - 6, a - 1.9, 14, 5, ctx.fur, ctx.line);
   }
   return s;
 }
-export function mitt(ctx: Ctx, hand: [number, number]): string {
-  return pawShape(ctx, hand[0], hand[1] + 8, 1.05, true);
+export function mitt(ctx: Ctx, hand: [number, number], side: 'L' | 'R' = 'R', grip = false): string {
+  const sh = ARM_PTS(ctx.W, side)[0];
+  const rot = (Math.atan2(hand[1] - sh[1], hand[0] - sh[0]) - Math.PI / 2) * (180 / Math.PI);
+  return `<g transform="translate(${hand[0]} ${hand[1] + 6}) rotate(${rot.toFixed(1)}) scale(1.28)">${pawShape(ctx, side, grip)}</g>`;
 }
 
 // ---------- 腿与靴 ----------
@@ -498,8 +520,13 @@ export interface RenderOpts { uid?: string; width?: number; height?: number; vie
 export const VIEW_FULL = '-60 -50 520 700';
 export const DY = 48; // 武器整体下移量（武器按旧坐标绘制）
 export const BACK_T = 'translate(0 270) scale(1 1.55) translate(0 -286)';
-export const HEAD_BASE = 0.86;
-const headT = (hs: number) => `translate(200 221) scale(${hs}) translate(-200 -210)`;
+/** v4 Q 版比例：头放大、躯干与四肢整体缩小（绕脚底），约 2.2 头身 */
+export const BODY_S = 0.86;
+export const HEAD_BASE = 1.12;
+export const HEAD_DY = 22; // 头整体下移，让下巴落在缩小后的肩线上
+const bodyT = `translate(200 604) scale(${BODY_S}) translate(-200 -604)`;
+const bodyPt = (p: [number, number]): [number, number] => [200 + (p[0] - 200) * BODY_S, 604 + (p[1] - 604) * BODY_S];
+const headT = (hs: number) => `translate(200 ${221 + HEAD_DY}) scale(${hs}) translate(-200 -210)`;
 
 export type PartId = 'back' | 'tail' | 'legL' | 'legR' | 'torso' | 'armL' | 'head' | 'armR';
 export interface Part { id: PartId; svg: string; pivot: [number, number] }
@@ -537,7 +564,10 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
   const poseBase: Pose = { R: [200 + 82 * W, 446 - DY], L: [200 - 82 * W, 446 - DY] };
   const weapon = renderWeapon(ctx, poseBase);
   const poseOld: Pose = { R: weapon.pose?.R ?? poseBase.R, L: weapon.pose?.L ?? poseBase.L };
-  const pose: Pose = { R: [poseOld.R[0], poseOld.R[1] + DY], L: [poseOld.L[0], poseOld.L[1] + DY] };
+  // 长兵器握点向外挪一些：手臂斜伸出去，兵器立在身侧，不再横在脸前（Q 版大脑袋更需要留出轮廓）
+  const OFF: Partial<Record<string, number>> = { glaive: 36, spear: 36, halberd: 36, staff: 30, mace: 32, whip: 28, brush: 24, axe: 30, sword: 22, bow: 16 };
+  const offR = OFF[look.outfit.weapon ?? 'none'] ?? 0;
+  const pose: Pose = { R: [poseOld.R[0] + offR, poseOld.R[1] + DY], L: [poseOld.L[0], poseOld.L[1] + DY] };
   const bodyGear = renderBodyGear(ctx);
   const noBoots = look.outfit.body === 'tribal' || look.outfit.body === 'none' || look.outfit.body === 'rattan';
   const bootCol = noBoots ? undefined : (bodyGear.boots ?? shade(ctx.pal.sub, 0.05));
@@ -560,8 +590,8 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
   };
   const eyeC = look.eye.color;
   const eyes =
-    `<g transform="translate(155 216) scale(1.1)">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
-    `<g transform="translate(245 216) scale(1.1)">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
+    `<g transform="translate(151 225) scale(1.24)">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
+    `<g transform="translate(249 225) scale(1.24)">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
   const muzzleCol = coat.pattern === 'tuxedo' ? coat.light : coat.pattern === 'point' ? mix(coat.accent ?? '#5a4136', fur, 0.25) : ctx.belly;
   const muzzle = `<g filter="url(#soft2${uid})" opacity="${coat.pattern === 'point' ? 0.6 : 0.95}"><ellipse cx="180" cy="254" rx="28" ry="20" fill="${muzzleCol}"/><ellipse cx="220" cy="254" rx="28" ry="20" fill="${muzzleCol}"/><ellipse cx="200" cy="276" rx="21" ry="13" fill="${muzzleCol}"/></g>`;
   const nose = `<path d="M 191 241 Q 200 235 209 241 Q 205 252 200 255 Q 195 252 191 241 Z" fill="${paintFill(ctx.pink, 'cel')}" stroke="${ink(ctx.pink, 0.5)}" stroke-width="2.4" stroke-linejoin="round"/><ellipse cx="197" cy="241" rx="3" ry="1.6" fill="#fff" opacity="0.6"/>`;
@@ -611,21 +641,26 @@ export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: s
     (bodyGear.skirt ?? '');
 
   const legs = (side: 'L' | 'R') => legSvg(ctx, side, bodyGear.legCloth, bootCol);
-  const wrapW = (svg: string) => (svg ? `<g transform="translate(0 ${DY})">${svg}</g>` : '');
-  const armLsvg = arm(ctx, 'L', pose.L, bodyGear.sleeve, bodyGear.cuff, bodyGear.sleeveWide) + (bodyGear.overL ?? '') + wrapW(weapon.svgL ?? '') + (weapon.noMitt ? '' : mitt(ctx, pose.L));
-  const armRsvg = arm(ctx, 'R', pose.R, bodyGear.sleeve, bodyGear.cuff, bodyGear.sleeveWide) + (bodyGear.overR ?? '') + wrapW(weapon.svg) + (weapon.noMitt ? '' : mitt(ctx, pose.R)) + (weapon.front ? wrapW(weapon.front) : '');
+  // 武器随身体缩小后会显得太小：以握点为中心放大回来（并随 Q 版手变大）
+  const WK = 1.16 / BODY_S;
+  const wrapWAt = (hand: [number, number], dx = 0) => (svg: string) => (svg ? `<g transform="translate(${dx} ${DY}) translate(${hand[0]} ${hand[1]}) scale(${WK}) translate(${-hand[0]} ${-hand[1]})">${svg}</g>` : '');
+  const wrapWL = wrapWAt(poseOld.L);
+  const wrapW = wrapWAt(poseOld.R, offR);
+  const armLsvg = arm(ctx, 'L', pose.L, bodyGear.sleeve, bodyGear.cuff, bodyGear.sleeveWide) + (bodyGear.overL ?? '') + wrapWL(weapon.svgL ?? '') + (weapon.noMitt ? '' : mitt(ctx, pose.L, 'L', !!weapon.svgL));
+  const armRsvg = arm(ctx, 'R', pose.R, bodyGear.sleeve, bodyGear.cuff, bodyGear.sleeveWide) + (bodyGear.overR ?? '') + wrapW(weapon.svg) + (weapon.noMitt ? '' : mitt(ctx, pose.R, 'R', !!weapon.svg)) + (weapon.front ? wrapW(weapon.front) : '');
 
   const shL = ARM_PTS(W, 'L')[0];
   const shR = ARM_PTS(W, 'R')[0];
+  const B = (svg: string) => `<g transform="${bodyT}">${svg}</g>`;
   const parts: Part[] = [
-    { id: 'back', svg: `<g transform="${BACK_T}">${renderBackGear(ctx)}</g>`, pivot: [200, 300] },
-    { id: 'tail', svg: renderTail(ctx), pivot: [200 + 34 * W, 480] },
-    { id: 'legL', svg: legs('L'), pivot: [200 - 32 * W, 478] },
-    { id: 'legR', svg: legs('R'), pivot: [200 + 32 * W, 478] },
-    { id: 'torso', svg: bodySvg, pivot: [200, 470] },
-    { id: 'armL', svg: armLsvg, pivot: shL },
-    { id: 'head', svg: headSvg, pivot: [200, 288] },
-    { id: 'armR', svg: armRsvg, pivot: shR },
+    { id: 'back', svg: B(`<g transform="${BACK_T}">${renderBackGear(ctx)}</g>`), pivot: bodyPt([200, 300]) },
+    { id: 'tail', svg: B(renderTail(ctx)), pivot: bodyPt([200 + 34 * W, 480]) },
+    { id: 'legL', svg: B(legs('L')), pivot: bodyPt([200 - 32 * W, 478]) },
+    { id: 'legR', svg: B(legs('R')), pivot: bodyPt([200 + 32 * W, 478]) },
+    { id: 'torso', svg: B(bodySvg), pivot: bodyPt([200, 470]) },
+    { id: 'armL', svg: B(armLsvg), pivot: bodyPt(shL) },
+    { id: 'head', svg: headSvg, pivot: bodyPt([200, 288]) },
+    { id: 'armR', svg: B(armRsvg), pivot: bodyPt(shR) },
   ];
   return { parts, shadow: `<ellipse cx="200" cy="604" rx="${136 * W}" ry="15" fill="#3a2830" opacity="0.2"/>`, defs: defsFor(uid) + paintDefs() };
 }
@@ -637,10 +672,10 @@ export type Stance = Partial<Record<PartId, PartXf>>;
 export function stanceFor(look: CatLook): Stance {
   const w = look.outfit.weapon ?? 'none';
   const base: Stance = { head: [2.5, 0, 0], torso: [-1, 0, 0], tail: [-3, 0, 0] };
-  const polearm: Stance = { armR: [-13, 0, 0], armL: [7, 0, 0] };
+  const polearm: Stance = { armR: [4, 0, 0], armL: [9, 0, 0] };
   const table: Partial<Record<string, Stance>> = {
-    glaive: polearm, spear: polearm, halberd: polearm, staff: { armR: [-9, 0, 0], armL: [6, 0, 0] }, mace: { armR: [-16, 0, 0], armL: [7, 0, 0] }, whip: polearm, brush: { armR: [-10, 0, 0], armL: [6, 0, 0] },
-    sword: { armR: [-30, 0, 0], armL: [8, 0, 0] }, dualSwords: { armR: [-26, 0, 0], armL: [26, 0, 0] }, knives: { armR: [-22, 0, 0], armL: [22, 0, 0] },
+    glaive: polearm, spear: polearm, halberd: polearm, staff: { armR: [3, 0, 0], armL: [7, 0, 0] }, mace: { armR: [3, 0, 0], armL: [9, 0, 0] }, whip: polearm, brush: { armR: [2, 0, 0], armL: [7, 0, 0] },
+    sword: { armR: [14, 0, 0], armL: [8, 0, 0] }, dualSwords: { armR: [-26, 0, 0], armL: [26, 0, 0] }, knives: { armR: [-22, 0, 0], armL: [22, 0, 0] },
     bow: { armR: [-6, 0, 0], armL: [8, 0, 0] }, fan: { armR: [-5, 0, 0], armL: [8, 0, 0] }, none: { armR: [-6, 0, 0], armL: [6, 0, 0] },
     drum: { armL: [6, 0, 0], armR: [-8, 0, 0] }, scroll: { armL: [6, 0, 0] }, talisman: { armL: [8, 0, 0] }, coins: { armL: [8, 0, 0] }, herbs: { armR: [-4, 0, 0] },
   };

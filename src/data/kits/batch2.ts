@@ -62,7 +62,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对后排随机 1 名敌人造成 105% 攻击的物理伤害；后排空则选择前排。每拍自身铃声使本次伤害提高 8%，最多 5 拍、提高 40%。钩尖收着，铃铛倒是藏不住。',
     },
     ultimate: {
-      id: 'gn_ult', name: '锦帆夜袭', fx: 'ult.knifeStorm', melee: true, target: enemy('back', 1),
+      id: 'gn_ult', name: '锦帆夜袭', fx: 'ult.silkSail', melee: true, target: enemy('back', 1),
       effects: [dmg(0.75, { hits: 3, bonus: bellBonus })],
       desc: '对后排随机 1 名敌人连续出钩 3 次，每次造成 75% 攻击的物理伤害；后排空则选择前排。每拍自身铃声使这 3 次伤害各提高 8%，最多提高 40%。船帆可以卷好，铃声先到岸上。',
       levelMods: [
@@ -105,7 +105,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对前排随机 1 名敌人造成 120% 攻击的物理伤害；前排无人时选择后排。本场首次未「猫薄荷醉」的普攻或绝技攻击，命中时必定暴击。杯子还温着，先把嗓子清好。',
     },
     ultimate: {
-      id: 'hx_ult', name: '温盏叫阵', fx: 'ult.glaiveWave', melee: true, target: enemy('front', 1),
+      id: 'hx_ult', name: '温盏叫阵', fx: 'ult.teaChallenge', melee: true, target: enemy('front', 1),
       effects: [firstCup(2.6)],
       desc: '对前排随机 1 名敌人造成 260% 攻击的物理伤害；前排无人时选择后排。若是本场首次未「猫薄荷醉」的普攻或绝技攻击，命中时必定暴击。这声叫阵，比热奶的白气更长。',
       levelMods: [
@@ -148,7 +148,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对随机 1 名敌人造成 90% 攻击的法术伤害，并为生命比例最低的 1 名友方回复 60% 自身攻击的生命。拂尘轻点，水碗先摆稳。',
     },
     ultimate: {
-      id: 'yj_ult', name: '符水济众', fx: 'ult.herbMist', target: ally('all'),
+      id: 'yj_ult', name: '符水济众', fx: 'ult.talismanWater', target: ally('all'),
       effects: [heal(1.0), { t: 'cleanse', n: 1 }, status('purr', 3, { power: 0.05 })],
       desc: '友方全体各回复于吉吉 100% 攻击的生命，净化各 1 个负面效果，并获得「呼噜」（每次持有者行动开始回复其最大生命的 5%，持续 3 次其行动结束；于吉吉计入本次施法）。同名呼噜保留较高回复比例。符水趁温喝，小鱼干汤的配方先保密。',
       levelMods: [
@@ -192,7 +192,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对后排随机 1 名敌人射出一箭，造成 110% 攻击的物理伤害；后排空则选择前排。第一箭后，若自身当前生命低于 50%，再射一箭（30% 攻击）；随后若仍低于 25%，再射一箭（30% 攻击），均追原目标。眼睛眯着，弓弦倒很清醒。',
     },
     ultimate: {
-      id: 'hz_ult', name: '百步铃箭', fx: 'ult.arrowVolley', target: enemy('back', 1),
+      id: 'hz_ult', name: '百步铃箭', fx: 'ult.bellArrow', target: enemy('back', 1),
       effects: [{ t: 'when', cond: { c: 'hpBelow', pct: 0.25 }, then: [dmg(0.6, { hits: 6 })], else: [
         { t: 'when', cond: { c: 'hpBelow', pct: 0.5 }, then: [dmg(0.6, { hits: 4 })], else: [dmg(0.6, { hits: 2 })] },
       ] }],
@@ -237,7 +237,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对前排随机 1 名敌人造成 125% 攻击的物理伤害；前排无人时选择后排。披风先收半寸，别挂上自己的枪尾。',
     },
     ultimate: {
-      id: 'mc_ult', name: '锦马破阵', fx: 'ult.glaiveWave', melee: true, target: enemy('front', 1),
+      id: 'mc_ult', name: '锦马破阵', fx: 'ult.brocadeCharge', melee: true, target: enemy('front', 1),
       effects: [dmg(2.25, { ignoreDef: 0.15 })],
       desc: '对前排随机 1 名敌人造成 225% 攻击的物理伤害，无视其 15% 防御；前排无人时选择后排。白马踏过，锦袍仍要叠齐。',
       levelMods: [
@@ -280,7 +280,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对前排随机 1 名敌人造成 95% 攻击的法术伤害；前排无人时选择后排。枪尖点阵，书页记下哪块砖适合下一回停爪。',
     },
     ultimate: {
-      id: 'jw_ult', name: '再赴祁山', fx: 'ult.eightArray', target: enemy('frontRow'),
+      id: 'jw_ult', name: '再赴祁山', fx: 'ult.qishan', target: enemy('frontRow'),
       effects: [dmg(1.35, { elem: 'magic' }), energy(8, ally('lowestEnergy', 1))],
       desc: '对敌方前排全体造成 135% 攻击的法术伤害，前排无人时作用于敌方全体；友方元气最低的 1 名猫猫回复 8 点元气。地图卷好了，末尾还夹着一张下回的路条。',
       levelMods: [
@@ -320,7 +320,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对前排随机 1 名敌人造成 120% 攻击的物理伤害；前排空则选择后排。友方醒着的猫猫（含自身）有 3 名时，本次暴击率额外提高 10 个百分点；2 名提高 25 个百分点，仅自身提高 40 个百分点，取对应一档。桥口留半步，双刃恰好并肩。',
     },
     ultimate: {
-      id: 'zl_ult', name: '八百踏津', fx: 'ult.knifeStorm', melee: true, target: enemy('back', 1),
+      id: 'zl_ult', name: '八百踏津', fx: 'ult.ford', melee: true, target: enemy('back', 1),
       effects: [narrowBridge(0.85, 3)],
       desc: '对后排随机 1 名敌人连续出刃 3 次，每次造成 85% 攻击的物理伤害；后排空则选择前排。开始这组连击时，友方醒猫（含自身）有 3 名，3 击暴击率各额外提高 10 个百分点；2 名提高 25 个百分点，仅自身提高 40 个百分点，取对应一档。人不必挤满桥，脚步先排好。',
       levelMods: [
@@ -363,7 +363,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对前排随机 1 名敌人造成 75% 攻击加 65% 防御的物理伤害；前排空则选择后排。斧柄先压住营图，阵脚也跟着稳下来。',
     },
     ultimate: {
-      id: 'xh_ult', name: '亚夫整营', fx: 'ult.tigerHoodRoar', melee: true, target: enemy('frontRow'),
+      id: 'xh_ult', name: '亚夫整营', fx: 'ult.campDrill', melee: true, target: enemy('frontRow'),
       effects: [dmg(1.05), status('ward', 2, { power: 0.15, to: ally('all') }), heal(0.5, self)],
       desc: '对敌方前排全体造成 105% 攻击的物理伤害，前排空则作用于敌方全体；友方全体获得「护佑」，受到直接伤害降低 15%，持续 2 次各自行动结束，徐晃晃计入本次施法。自身另回复 50% 攻击的生命。同名护佑保留较高减伤比例；不降低持续伤害。整营一声令，打盹也给过路猫留空。',
       levelMods: [
@@ -403,7 +403,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '随机选至多 2 名敌人，各造成 65% 攻击的火焰伤害并叠加 1 层「灼烧」：每层在持有者行动开始造成施加时 18% 自身攻击的持续伤害，最多 5 层，持续 3 次其行动结束；同名刷新保留较高攻击快照。先看风，琴搬远些再点火。',
     },
     ultimate: {
-      id: 'lx_ult', name: '夷陵收火', fx: 'ult.redCliff', target: enemy('all'),
+      id: 'lx_ult', name: '夷陵收火', fx: 'ult.gatherFire', target: enemy('all'),
       effects: [dmg(1.2, { elem: 'fire' }), { t: 'detonate', id: 'burn', per: 0.4, elem: 'fire' }],
       desc: '对敌方全体造成 120% 攻击的火焰伤害，再分别引爆每个存活目标身上的全部「灼烧」并移除：每层另造成 40% 当前自身攻击的火焰伤害，引爆不暴击，仍计算防御、阵营及受伤倍率。没有灼烧的目标不受引爆伤害。火候记在小字里，退路画得很宽。',
       levelMods: [
@@ -443,7 +443,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '随机对 1 名敌人造成 95% 攻击的法术伤害，治疗生命比例最低的 1 名友方（35% 自身攻击），并为自身累计 1 次黄巾点名，最多 4 次。头巾晾好，符水先端稳。',
     },
     ultimate: {
-      id: 'zj_ult', name: '黄巾围拢', fx: 'ult.yellowHeaven', target: enemy('all'),
+      id: 'zj_ult', name: '黄巾围拢', fx: 'ult.yellowRing', target: enemy('all'),
       effects: [
         { t: 'summon', beast: 'yellowKitten', count: 2, perCounter: 'zj_helpers', scale: { atk: 0.7 }, elem: 'magic' },
         heal(0.65, ally('all')),
@@ -487,7 +487,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对后排随机 1 名敌人造成 110% 攻击的物理伤害，后排空则选择前排；叠 1 层「毒瘴」。若此时己方团队图腾至少 3 层，再给原目标叠 1 层毒瘴。本次普攻贡献的图腾在收招后才增加。毒瘴每层在目标行动开始造成施加时 18% 自身攻击的持续伤害，最多 5 层，持续 3 次其行动结束，同名刷新保留较高攻击快照。骨朵指风向，叶包记药香。',
     },
     ultimate: {
-      id: 'smk_ult', name: '五溪送瘴', fx: 'ult.arrowVolley', target: enemy('random', 2),
+      id: 'smk_ult', name: '五溪送瘴', fx: 'ult.marshMist', target: enemy('random', 2),
       effects: [dmg(1.35), status('poison', 3, { stacks: 2, snapAtk: 0.18 }), { t: 'when', cond: { c: 'teamCounter', key: 'totem', atLeast: 3 }, then: [dmg(0.3)] }],
       desc: '随机选至多 2 名敌人，各造成 135% 攻击的物理伤害并叠 2 层「毒瘴」（施加时 18% 自身攻击的每层持续伤害，最多 5 层，持续 3 次目标行动结束，快照取较高值）。随后若己方团队图腾至少 3 层，对原来选中的存活目标各追加 30% 攻击的物理伤害；绝技不贡献普攻图腾。山风走远些，近处还留着骨朵。',
       levelMods: [
@@ -527,7 +527,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '随机对 1 名敌人造成 85% 攻击的法术伤害，自身获得最大生命 4% 的护盾，持续 2 次自身行动结束，计入本次。礼单写得很长，抓板只这一块。',
     },
     ultimate: {
-      id: 'my_ult', name: '献宝护营', fx: 'ult.tableFeast', target: enemy('frontRow'),
+      id: 'my_ult', name: '献宝护营', fx: 'ult.tribute', target: enemy('frontRow'),
       effects: [dmg(0.9, { elem: 'magic' }), heal(0.65, self), { t: 'shield', scale: { maxHp: 0.16 }, turns: 3, to: self }, status('taunt', 3, { to: self })],
       desc: '对敌方前排全体造成 90% 攻击的法术伤害，前排空则作用于敌方全体；自身回复 65% 攻击的生命，获得最大生命 16% 的护盾，并获得「挑衅」，吸引敌方前排单体或随机单体普攻。护盾与挑衅均持续 3 次自身行动结束，计入本次施法。重宝留在门口，软席藏在里头。',
       levelMods: [
@@ -570,7 +570,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '治疗生命比例最低的 1 名友方（100% 南华喵攻击），并为其提供 35% 南华喵攻击的梦境护盾，持续 2 次其行动结束；选中自身计入本次。云被掖齐，蝴蝶留在被角。',
     },
     ultimate: {
-      id: 'nh_ult', name: '梦里留门', fx: 'ult.waterMirror', target: ally('all'),
+      id: 'nh_ult', name: '梦里留门', fx: 'ult.dreamDoor', target: ally('all'),
       effects: [heal(1.3), shield(0.55, 2)],
       desc: '治疗友方全体（各为南华喵 130% 攻击），并各提供 55% 南华喵攻击的梦境护盾，持续 2 次各自行动结束，南华喵计入本次施法。梦里若走远，门缝还透着暖光。',
       levelMods: [
@@ -613,7 +613,7 @@ export const KITS_B2: Record<string, Kit> = {
       desc: '对后排随机 1 名敌人造成 120% 攻击的物理伤害，无视其 10% 防御；后排空则选择前排。枪缨收好，绳头认得回营的路。',
     },
     ultimate: {
-      id: 'zmy_ult', name: '长坂护归', fx: 'ult.glaiveWave', melee: true, target: enemy('back', 1),
+      id: 'zmy_ult', name: '长坂护归', fx: 'ult.whiteDragon', melee: true, target: enemy('back', 1),
       effects: [dmg(2.4, { ignoreDef: 0.2 }), { t: 'when', to: ally('lowestHpPct', 1, { exclSelf: true }), cond: { c: 'allyCount', atLeast: 2 }, then: [shield(0.5, 2), heal(0.7)] }],
       desc: '对后排随机 1 名敌人造成 240% 攻击的物理伤害，无视其 20% 防御，后排空则选择前排。再为生命比例最低的 1 名其他存活友方提供 50% 自身攻击的护盾，并回复 70% 自身攻击的生命；护盾持续 2 次其行动结束。纸篓抱稳，长枪替归途留空。',
       levelMods: [

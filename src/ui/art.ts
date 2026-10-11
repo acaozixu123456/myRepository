@@ -3,9 +3,9 @@ import { catSvg } from '../art/cat';
 import { lookOf } from '../data/units';
 
 export const VIEW = {
-  card: '40 54 320 330', // 头 + 胸像（卡牌）
-  full: '30 20 360 640', // 全身
-  head: '90 70 220 210', // 头像
+  card: '30 40 340 350', // 头 + 胸像（卡牌）
+  full: '10 30 420 640', // 全身（长兵器外伸，左右多留一点）
+  head: '52 52 296 290', // 头像
 };
 
 const cache = new Map<string, string>();

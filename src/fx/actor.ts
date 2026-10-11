@@ -103,10 +103,10 @@ export class Actor {
     const f = this.rig.foot;
     const pt = (rx: number, ry: number): [number, number] => [this.x + (rx - f[0]) * s, this.y + (ry - f[1]) * this.scale];
     switch (kind) {
-      case 'head': return pt(200, 190);
-      case 'top': return pt(200, 80);
-      case 'chest': return pt(200, 360);
-      case 'hand': return pt(320, 420);
+      case 'head': return pt(200, 235);
+      case 'top': return pt(200, 70);
+      case 'chest': return pt(200, 395);
+      case 'hand': return pt(310, 440);
       default: return pt(200, 604);
     }
   }

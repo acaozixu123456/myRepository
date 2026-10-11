@@ -112,6 +112,41 @@ export function limbPath(center: Pt[], widths: number[], opts: { capStart?: bool
   return smooth(pts, true, 0.5);
 }
 
+/** 肢体两侧的描边（开放折线）：可省略起点封口，让肩部与躯干自然融合，不再像“拼上去”的管子 */
+export function limbEdges(center: Pt[], widths: number[], opts: { skipStart?: boolean; skipEnd?: boolean } = {}): string {
+  const samples = sampleSpline(center, 6);
+  const n = samples.length;
+  const wAt = (idx: number) => {
+    const f = (idx / (n - 1)) * (widths.length - 1);
+    const i = Math.min(widths.length - 2, Math.floor(f));
+    const u = f - i;
+    const sm = u * u * (3 - 2 * u);
+    return widths[i] * (1 - sm) + widths[i + 1] * sm;
+  };
+  const Ls: Pt[] = [], Rs: Pt[] = [];
+  for (let i = 0; i < n; i++) {
+    const a = samples[Math.max(0, i - 1)], b = samples[Math.min(n - 1, i + 1)];
+    let tx = b[0] - a[0], ty = b[1] - a[1];
+    const m = Math.hypot(tx, ty) || 1;
+    tx /= m; ty /= m;
+    const w = wAt(i) / 2;
+    Ls.push([samples[i][0] - ty * w, samples[i][1] + tx * w]);
+    Rs.push([samples[i][0] + ty * w, samples[i][1] - tx * w]);
+  }
+  const startCut = opts.skipStart ? Math.floor(n * 0.16) : 0;
+  const line = (pts: Pt[]) => smooth(pts.slice(startCut), false, 0.5);
+  let d = line(Ls) + ' ' + line(Rs);
+  if (!opts.skipEnd) {
+    const e = samples[n - 1], w = wAt(n - 1) / 2;
+    const a = samples[n - 2];
+    const tx = e[0] - a[0], ty = e[1] - a[1];
+    const m = Math.hypot(tx, ty) || 1;
+    const nx = -ty / m, ny = tx / m;
+    d += ` M ${(e[0] + nx * w).toFixed(1)} ${(e[1] + ny * w).toFixed(1)} Q ${(e[0] + (tx / m) * w * 1.4).toFixed(1)} ${(e[1] + (ty / m) * w * 1.4).toFixed(1)} ${(e[0] - nx * w).toFixed(1)} ${(e[1] - ny * w).toFixed(1)}`;
+  }
+  return d;
+}
+
 /** 伪随机 */
 export function rng(seed: number) {
   let s = seed >>> 0 || 1;
