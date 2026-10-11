@@ -29,7 +29,7 @@
 | 祝融喵 | `man_zhurong` | SSR | 待画 | 0 | |
 | 木鹿大王 | `man_mulu` | SSR | 待画 | 0 | |
 | 沙摩柯 | `man_shamoke` | SSR | 待画 | 0 | |
-| 张爪 | `xian_zhangzhua` | SSR | 待画 | 0 | |
+| 张爪 | `xian_zhangzhua` | SSR | 待审 | 1 | 2 候选选 B；捏符双爪五指肩袖自查；符改无字几何法纹 |
 | 水镜喵 | `xian_shuijing` | SSR | 待画 | 0 | |
 | 于吉吉 | `xian_yuji` | SSR | 待画 | 0 | |
 | 郭嘉喵 | `wei_guojia` | SR | 待画 | 0 | |
