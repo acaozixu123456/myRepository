@@ -2,6 +2,7 @@
 import type { EnemySpawn, RewardDef, StageDef } from '../content/types';
 import { FACTION_ORDER } from '../data/factions';
 import { HEROES } from '../data/heroes';
+import { bossRuleFx } from '../content/campaign';
 import { paceLevel } from './stage';
 import type { PlayerState } from './state';
 
@@ -30,12 +31,15 @@ export function towerFloor(floor: number): StageDef {
   const level = paceLevel(Math.round(floor * ORDINAL_PER_FLOOR));
   const roles = ['guard', 'vanguard', 'guard', floor % 2 ? 'archer' : 'strategist', floor % 3 ? 'assassin' : 'healer'];
   const enemies: EnemySpawn[] = roles.map((role, pos) => ({ unit: `mob_${faction}_${role}`, level, pos }));
+  let bossId: string | undefined;
   if (kind !== 'normal') {
     const pool = HEROES.filter((h) => h.faction === faction && (kind === 'boss' ? h.rarity !== 'SR' : true));
     const hero = pool[Math.floor(floor / 5) % pool.length];
+    if (kind === 'boss') bossId = hero.id;
     const pos = hero.role === '守护' || hero.role === '先锋' ? 1 : 3;
     enemies[pos] = kind === 'boss' ? { unit: hero.id, level: level - 1, pos, mods: ['elite'] } : { unit: hero.id, level: level - 2, pos };
   }
+  const phases = bossId ? bossRuleFx(bossId) : [];
   return {
     id: `T-${floor}`,
     name: `第 ${floor} 层`,
@@ -45,6 +49,7 @@ export function towerFloor(floor: number): StageDef {
     rewards: { fish: 0 },
     firstClear: towerReward(floor),
     rule: kind === 'boss' ? '守塔首领：每十层一位，通关有大奖励' : undefined,
+    ...(phases.length ? { ruleFx: phases } : {}),
   };
 }
 
