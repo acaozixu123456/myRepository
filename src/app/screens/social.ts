@@ -10,6 +10,7 @@ import {
 import { GB_ATTEMPTS, GB_KILL, GB_PERSONAL, gbAttemptsLeft, gbClaimKill, gbClaimPersonal, gbFinish, gbProgress, gbStage, gbStart, ensureGB } from '../../game/guildboss';
 import { rewardText } from '../../game/events';
 import { teamPower } from '../../game/state';
+import { ensureBoss, npcBars } from '../../game/worldboss';
 import {
   ARENA_EXTRA_COST, ARENA_EXTRA_MAX, ARENA_FREE, ARENA_REWARD, CHAT_MAX_LEN, addFriend, arenaBoard, arenaBuyExtra, arenaFinish, arenaLeft, arenaRefresh, arenaStage, arenaStart,
   canVisit, chatFeed, ensureSocial, isFriend, markRead, sendChat, visitFriend,
@@ -22,8 +23,8 @@ import { sfx } from '../sfx';
 import { floaty } from './home';
 import { topbar } from './lineup';
 
-export const socialState = { tab: 'world' as 'world' | 'players' | 'arena' | 'guild' | 'rank' | 'friends' };
-const TABS: [typeof socialState.tab, string][] = [['world', '世界'], ['players', '玩家'], ['arena', '竞技'], ['guild', '公会'], ['rank', '战力榜'], ['friends', '好友']];
+export const socialState = { rankBy: 'power' as 'power' | 'stage' | 'level' | 'boss', tab: 'world' as 'world' | 'players' | 'arena' | 'guild' | 'rank' | 'friends' };
+const TABS: [typeof socialState.tab, string][] = [['world', '世界'], ['players', '玩家'], ['arena', '竞技'], ['guild', '公会'], ['rank', '排行榜'], ['friends', '好友']];
 
 const clock = (t: number) => new Date(t).toTimeString().slice(0, 5);
 function seen(npc: Npc, now: number): string {
@@ -155,11 +156,23 @@ function gbHtml(ctx: AppCtx): string {
     ${rows}<div class="gbrows">${top}</div></section>`;
 }
 
+type RankBy = 'power' | 'stage' | 'level' | 'boss';
+const RANKS: [RankBy, string][] = [['power', '战力'], ['stage', '关卡'], ['level', '等级'], ['boss', '世界Boss']];
 function rankHtml(ctx: AppCtx): string {
-  const s = ctx.s;
-  const rows = arenaBoard(s, teamPower(s), Date.now()).sort((a, b) => b.power - a.power);
+  const s = ctx.s, now = Date.now(), by = socialState.rankBy;
+  const myBest = s.best ?? s.stage;
+  const rows = [
+    ...NPCS.map((n) => {
+      const p = npcProgress(n, now);
+      return { id: n.id, name: n.name, avatar: n.avatar, sub: `Lv.${p.level}${npcOnline(n, now) ? ' · 在线' : ''}`, v: by === 'power' ? p.power : by === 'stage' ? p.ordinal : by === 'level' ? p.level : npcBars(n.id, now), me: false };
+    }),
+    { id: 'me', name: s.name, avatar: s.lineup.find(Boolean) ?? 'wei_xiahoudun', sub: `Lv.${s.level}`, me: true,
+      v: by === 'power' ? teamPower(s) : by === 'stage' ? (myBest.chapter - 1) * 24 + myBest.index : by === 'level' ? Math.max(0, ...Object.values(s.heroes).map((h) => h.lv)) : ensureBoss(s).bars },
+  ].sort((a, b) => b.v - a.v);
   const me = rows.findIndex((r) => r.me) + 1;
-  return `<div class="scroll soc-scroll"><div class="note">战力榜：你目前第 <b>${me}</b> 名（${rows.length} 位玩家）。他们每天都在成长，想上榜就要一起肝。</div>${rows.map((r, i) => `<div class="arow ${r.me ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i>${head(r.avatar)}<div class="who"><b>${esc(r.name)}</b><small>Lv.${r.level}${r.online ? ' · 在线' : ''}</small></div><div class="rt"><em>战力</em><b class="num">${fmt(r.power)}</b></div>${r.me ? '<span class="vbtn me">你</span>' : `<button class="btn sm ghost" data-act="npc" data-id="${r.id}">看看</button>`}</div>`).join('')}</div>`;
+  const val = (v: number) => (by === 'boss' ? v.toFixed(2) : fmt(v));
+  return `<div class="scroll soc-scroll"><div class="seg" style="margin-bottom:2px;flex:none">${RANKS.map(([id, name]) => `<button class="pill" data-act="rankby" data-by="${id}" aria-pressed="${by === id}">${name}榜</button>`).join('')}</div>
+    <div class="note">${RANKS.find((r) => r[0] === by)![1]}榜：你目前第 <b>${me}</b> 名（${rows.length} 位玩家）。他们每天都在成长，想上榜就要一起肝。</div>${rows.map((r, i) => `<div class="arow ${r.me ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i>${head(r.avatar)}<div class="who"><b>${esc(r.name)}</b><small>${r.sub}</small></div><div class="rt"><em>${RANKS.find((x) => x[0] === by)![1]}</em><b class="num">${val(r.v)}</b></div></div>`).join('')}</div>`;
 }
 
 export function socialHtml(ctx: AppCtx): string {
@@ -208,6 +221,7 @@ function sendFromInput(ctx: AppCtx) {
 export function handleSocial(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   const s = ctx.s;
   switch (act) {
+    case 'rankby': socialState.rankBy = el.dataset.by as typeof socialState.rankBy; ctx.refresh(); return true;
     case 'stab': socialState.tab = el.dataset.tab as typeof socialState.tab; ctx.refresh(); return true;
     case 'npc': profileDialog(ctx, el.dataset.id!); return true;
     case 'chat-send': sendFromInput(ctx); return true;
