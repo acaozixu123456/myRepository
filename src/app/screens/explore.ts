@@ -36,6 +36,8 @@ export const EXPLORE_CSS = `
 .xmini{position:absolute;right:10px;top:122px;z-index:3;width:92px;height:92px;border-radius:12px;border:2px solid rgba(127,240,255,.6);background:rgba(10,6,24,.7);box-shadow:0 0 12px rgba(127,240,255,.25)}
 .xtools{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:8px}
 .xtools .btn{min-width:64px}
+.xjoy{position:absolute;left:14px;bottom:14px;z-index:3;width:116px;height:116px;border-radius:50%;background:rgba(10,6,24,.45);border:2px solid rgba(127,240,255,.45);touch-action:none}
+.xjoy i{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:rgba(127,240,255,.55);box-shadow:0 0 14px rgba(127,240,255,.6);pointer-events:none}
 .xload{position:absolute;inset:0;z-index:6;display:grid;place-items:center;background:#0d0818;color:#ffe9a0;font-family:var(--f-d);font-size:18px;text-align:center;line-height:1.8}
 .xload small{display:block;font-size:12px;color:#9a8ec0;font-family:inherit}
 .arena-ov{position:absolute;inset:0;z-index:30;background:radial-gradient(#1a1030,#05030c);display:flex;align-items:center;justify-content:center}
@@ -50,7 +52,45 @@ export const EXPLORE_CSS = `
 `;
 
 export function exploreHtml(): string {
-  return `<canvas id="wcv"></canvas><div class="xload" id="xload">霓虹街区加载中…<small>第一次进入要生成场景，请稍等</small></div><div id="xui"></div>`;
+  return `<canvas id="wcv"></canvas><div class="xload" id="xload">霓虹街区加载中…<small>第一次进入要生成场景，请稍等</small></div><div id="xui"></div><div class="xjoy" id="xjoy"><i></i></div>`;
+}
+
+// ---------- 摇杆 / 键盘移动（相对镜头朝向）----------
+const keys = new Set<string>();
+let joy = { x: 0, y: 0 }; // x 右、y 上，-1..1
+let inputBound = false;
+function bindInput(scr: HTMLElement) {
+  if (inputBound) return;
+  inputBound = true;
+  window.addEventListener('keydown', (e) => { if (!(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) keys.add(e.key.toLowerCase()); });
+  window.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
+  window.addEventListener('blur', () => keys.clear());
+  const pad = scr.querySelector('#xjoy') as HTMLElement, knob = pad.querySelector('i') as HTMLElement;
+  const set = (e: PointerEvent) => {
+    const r = pad.getBoundingClientRect();
+    let x = (e.clientX - (r.left + r.width / 2)) / (r.width / 2), y = -(e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+    const m = Math.hypot(x, y); if (m > 1) { x /= m; y /= m; }
+    joy = m < 0.15 ? { x: 0, y: 0 } : { x, y };
+    knob.style.transform = `translate(${x * 34}px,${-y * 34}px)`;
+  };
+  pad.addEventListener('pointerdown', (e) => { pad.setPointerCapture(e.pointerId); set(e); });
+  pad.addEventListener('pointermove', (e) => { if (pad.hasPointerCapture(e.pointerId)) set(e); });
+  const end = () => { joy = { x: 0, y: 0 }; knob.style.transform = ''; };
+  pad.addEventListener('pointerup', end); pad.addEventListener('pointercancel', end);
+}
+/** 当前输入方向（世界 xz，已按镜头朝向旋转）；没有输入返回 null */
+function moveDir(yaw: number): [number, number] | null {
+  let x = joy.x, y = joy.y;
+  if (keys.has('a') || keys.has('arrowleft')) x -= 1;
+  if (keys.has('d') || keys.has('arrowright')) x += 1;
+  if (keys.has('w') || keys.has('arrowup')) y += 1;
+  if (keys.has('s') || keys.has('arrowdown')) y -= 1;
+  const m = Math.hypot(x, y);
+  if (m < 0.1) return null;
+  if (m > 1) { x /= m; y /= m; }
+  // 镜头在 (sin yaw, cos yaw) 方向，朝向原点：前 = (-sin, -cos)，右 = (cos, -sin)
+  const fx = -Math.sin(yaw), fz = -Math.cos(yaw), rx = Math.cos(yaw), rz = -Math.sin(yaw);
+  return [rx * x + fx * y, rz * x + fz * y];
 }
 
 export interface Rt { wv: WorldView; ex: Explorer; st: Street; dead: Map<string, number>; running: boolean }
@@ -123,7 +163,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     chest: (s) => onChest(ctx, s),
     talk: (s) => onTalk(ctx, s),
   });
-  wv.onUpdate = (dt) => { ex.update(dt); st.update(wv.time, dt); };
+  wv.onUpdate = (dt) => { const d = moveDir(wv.yaw); if (d) ex.push(d[0], d[1], dt); ex.update(dt); st.update(wv.time, dt); };
   rt.ex = ex; rt.st = st; rt.dead.clear();
   syncSpawns(ctx);
 }
@@ -138,6 +178,7 @@ export async function enterExplore(ctx: AppCtx) {
     await new Promise((r) => setTimeout(r, 60)); // 让「加载中」先画出来
     try {
       const canvas = scr.querySelector('#wcv') as HTMLCanvasElement;
+      bindInput(scr);
       await preloadWorldTextures();
       const wv = new WorldView(canvas, defaultQuality());
       rt = { wv, ex: undefined as unknown as Explorer, st: undefined as unknown as Street, dead: new Map(), running: false };

@@ -210,10 +210,14 @@ export class Explorer {
   push(dx: number, dz: number, dt: number) {
     if (this.paused || this.busy) return;
     this.path = [];
-    const l = this.leader, nx = l.pos.x + dx * SPEED * dt, nz = l.pos.z + dz * SPEED * dt;
-    const try1 = new THREE.Vector3(nx, 0.32, nz);
-    const [cx, cz] = this.cell(try1);
-    if (!this.grid[cz * this.N + cx]) { l.yaw = Math.atan2(dx, dz); l.pos.copy(try1); l.moving = 1; }
+    const l = this.leader, sx = dx * SPEED * dt, sz = dz * SPEED * dt;
+    // 先试斜走，被挡就沿墙滑（只走 x 或只走 z）
+    for (const [ax, az] of [[sx, sz], [sx, 0], [0, sz]]) {
+      if (!ax && !az) continue;
+      const t = new THREE.Vector3(l.pos.x + ax, 0.32, l.pos.z + az);
+      const [cx, cz] = this.cell(t);
+      if (!this.grid[cz * this.N + cx]) { l.yaw = Math.atan2(dx, dz); l.pos.copy(t); l.moving = 1; break; }
+    }
   }
 
   // ---------- 每帧 ----------
