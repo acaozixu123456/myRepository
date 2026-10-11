@@ -2,6 +2,9 @@
 import { PART_ORDER, STYLE, VIEW_FULL, catParts, stanceFor } from '../art/cat';
 import type { Part, PartId } from '../art/cat';
 import type { CatLook } from '../art/types';
+import { anchorsOf } from '../art/illust-rig';
+import { MeshGL } from './mesh';
+import { PuppetMesh } from './puppet';
 
 export interface RigPart {
   id: PartId;
@@ -20,6 +23,8 @@ export interface Rig {
   foot: [number, number];
   height: number; // 角色大约像素高（骨骼坐标）
   scale: number; // 位图像素 / 骨骼单位
+  /** 立绘木偶（有 WebGL 时）：整张立绘按网格形变，手臂 / 头 / 尾巴 / 衣摆单独动 */
+  puppet?: { mesh: PuppetMesh; tex: HTMLCanvasElement; x0: number; y0: number; w: number; h: number; kHand: number };
 }
 
 let rigUid = 0;
@@ -98,7 +103,7 @@ export async function buildPortrait(look: CatLook, viewBox = '10 40 380 420', px
 }
 
 /** 立绘小人：整张 AI 立绘当作「躯干」一块骨骼，脚底为支点；动作靠整体旋转 / 位移 / 呼吸缩放表现（没有手臂摆动）。 */
-export async function buildIllustRig(look: CatLook, url: string, scale = 0.8): Promise<Rig> {
+export async function buildIllustRig(look: CatLook, url: string, scale = 0.8, heroId = ''): Promise<Rig> {
   const img = await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('illust load failed')); i.src = url; });
   const H = 560, foot: [number, number] = [200, 604];
   const w = Math.round((img.width / img.height) * H), h = H;
@@ -109,7 +114,19 @@ export async function buildIllustRig(look: CatLook, url: string, scale = 0.8): P
     if (id !== 'torso') { const e = document.createElement('canvas'); e.width = e.height = 1; return { id, img: e, x: 0, y: 0, w: 0, h: 0, pivot: [200, 300] as [number, number] }; }
     return { id, img: c, x: foot[0] - w / 2, y: foot[1] - h, w, h, pivot: [foot[0], foot[1]] as [number, number] };
   });
-  return { parts, look, stance: {}, foot, height: H, scale };
+  const rig: Rig = { parts, look, stance: {}, foot, height: H, scale };
+  if (MeshGL.ok) {
+    const an = anchorsOf(heroId);
+    const mesh = new PuppetMesh(w, h, an);
+    // 离手最近的网格顶点：特效锚点跟着挥动的手走
+    let kHand = 0, best = 1e9;
+    for (let k = 0; k < mesh.rest.length / 2; k++) {
+      const d = Math.hypot(mesh.rest[k * 2] - mesh.A.handMain[0], mesh.rest[k * 2 + 1] - mesh.A.handMain[1]);
+      if (d < best) { best = d; kHand = k; }
+    }
+    rig.puppet = { mesh, tex: c, x0: foot[0] - w / 2, y0: foot[1] - h, w, h, kHand };
+  }
+  return rig;
 }
 
 /** 立绘版半身像（出招插入图）：直接用卡牌裁切图 */

@@ -29,7 +29,7 @@ function cachedRig(id: string, scale: number): Promise<Rig> {
   const k = `${id}@${scale}${il ? '@illust' : ''}`;
   let p = RIG_CACHE.get(k);
   if (!p) {
-    p = il ? buildIllustRig(lookOf(id), il.full, scale).catch(() => buildRig(lookOf(id), scale)) : buildRig(lookOf(id), scale);
+    p = il ? buildIllustRig(lookOf(id), il.full, scale, id).catch(() => buildRig(lookOf(id), scale)) : buildRig(lookOf(id), scale);
     RIG_CACHE.set(k, p);
   }
   return p;

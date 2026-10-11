@@ -4,6 +4,8 @@ import type { PartId } from '../art/cat';
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
 import { STATUSES } from '../data/statuses';
+import { MeshGL } from './mesh';
+import { puppetPose } from './puppet';
 import type { Rig } from './rig';
 import type { Scene } from './scene';
 import { clamp, hexA, rad } from './util';
@@ -73,7 +75,7 @@ export class Actor {
   glowColor = '#fff';
   moving = false;
   hudAlpha = 1;
-  private phase = Math.random() * 6.28;
+  phase = Math.random() * 6.28;
   private t = 0;
 
   constructor(scene: Scene, rig: Rig, info: ActorInfo, bx: number, by: number, scale: number) {
@@ -102,6 +104,21 @@ export class Actor {
     const s = this.scale * this.facing;
     const f = this.rig.foot;
     const pt = (rx: number, ry: number): [number, number] => [this.x + (rx - f[0]) * s, this.y + (ry - f[1]) * this.scale];
+    const pp = this.rig.puppet;
+    if (pp && kind !== 'foot') {
+      const { mesh, x0, y0, w, h } = pp;
+      const A = mesh.A;
+      switch (kind) {
+        case 'head': return pt(x0 + A.headC[0], y0 + A.headC[1]);
+        case 'top': return pt(x0 + w / 2, y0);
+        case 'chest': return pt(x0 + w / 2, y0 + (A.neck[1] + A.hip[1]) / 2);
+        default: {
+          const pos = mesh.deform(puppetPose(this.p, this.t, this.phase, { alive: this.alive, moving: this.moving }));
+          void h;
+          return pt(x0 + pos[pp.kHand * 2], y0 + pos[pp.kHand * 2 + 1]);
+        }
+      }
+    }
     switch (kind) {
       case 'head': return pt(200, 235);
       case 'top': return pt(200, 70);
@@ -210,6 +227,20 @@ export class Actor {
     ctx.scale(this.scale * this.facing * rsx, this.scale * rsy);
     ctx.translate(-f[0], -f[1]);
     const sc = this.rig.scale;
+    const pp = this.rig.puppet;
+    const gl = pp ? MeshGL.get() : null;
+    if (pp && gl) {
+      const live = this.alive && !snap;
+      const pose = puppetPose(P, snap ? snap.t : this.t, this.phase, { alive: live, moving: live && this.moving });
+      const pos = pp.mesh.deform(pose);
+      const rx = -0.3 * pp.w, ry = -0.2 * pp.h, rw = 1.6 * pp.w, rh = 1.4 * pp.h;
+      const ps = sc * 0.6;
+      const pw = Math.ceil(rw * ps), ph = Math.ceil(rh * ps);
+      const [sx0, sy0, sw0, sh0] = gl.render(pp.mesh, pp.tex, pos, [rx, ry, rw, rh], pw, ph);
+      ctx.drawImage(gl.canvas, sx0, sy0, sw0, sh0, pp.x0 + rx, pp.y0 + ry, rw, rh);
+      ctx.restore();
+      return;
+    }
     for (const part of this.rig.parts) {
       if (part.w === 0) continue;
       const id = part.id;

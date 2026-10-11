@@ -68,10 +68,22 @@ export class Choreo {
     const c = this.caster;
     c.moving = true;
     c.poseTo(POSES.dash, 0.08);
+    // 冲刺：身体拉长 + 残影
+    c.scene.tween(c.root, { sx: 1.13, sy: 0.92 }, 0.08, 'out');
+    const ghosts: { snap: ReturnType<Actor['snapshot']>; t: number }[] = [];
+    const live = { on: true };
+    this.vfx.custom(dur + 0.4, (ctx) => {
+      for (const g of ghosts) { const age = (this.scene.time - g.t) / 0.22; if (age < 1) c.drawGhost(ctx, g.snap, 0.38 * (1 - age), this.color); }
+    }, 'back');
+    void (async () => { while (live.on) { ghosts.push({ snap: c.snapshot(), t: this.scene.time }); if (ghosts.length > 6) ghosts.shift(); await this.sleep(0.045); } })();
     const dx = (target.bx - c.bx) * c.facing - gap;
     const dy = target.by - c.by;
     await c.moveTo(dx, dy, dur, 'inOut');
+    live.on = false;
     c.moving = false;
+    // 落地：压扁一下再弹回
+    c.root.sx = 0.9; c.root.sy = 1.1;
+    c.scene.tween(c.root, { sx: 1, sy: 1 }, 0.22, 'outBack');
   }
   async dashBack(dur = 0.28) {
     const c = this.caster;

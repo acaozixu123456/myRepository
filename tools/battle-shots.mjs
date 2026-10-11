@@ -1,7 +1,7 @@
 // 逐帧步进战斗演示并截图：node tools/battle-shots.mjs "<query>" <outPrefix> <stepSec> <count> [startAt]
 import { chromium } from 'playwright-core';
 const [query = '', out = '.shots/bt', stepSec = '0.5', count = '12', startAt = '0'] = process.argv.slice(2);
-const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--no-sandbox'] });
+const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const p = await b.newPage({ viewport: { width: 980, height: 620 }, deviceScaleFactor: 1 });
 p.on('pageerror', (e) => console.error('PAGEERROR', e.message));
 p.on('console', (m) => m.type() === 'error' && !m.text().includes('404') && console.error('CONSOLE', m.text()));
