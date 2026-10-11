@@ -3,12 +3,28 @@ import { HERO_BY_ID } from '../../data/heroes';
 import { KITS } from '../../data/kits';
 import { SKILLS } from '../../data/skills';
 import { ROLES } from '../../data/systems';
+import { EQUIPS, EQUIP_SLOTS } from '../../content/equipment';
+import type { Quality } from '../../content/types';
 import { MAX_STAR, starShards, heroLevelCap, heroPower, heroStats, isInLineup, levelUp, levelUpCost, setAwaken, skillUp, skillUpCost, starUp, equip, unequip } from '../../game/state';
 import { artImg } from '../../ui/art';
 import { esc, fmt, stars } from '../../ui/components';
 import { ROLE_ICON, icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
+
+function equipmentHtml(ctx: AppCtx, id: string): string {
+  const colors: Record<Quality, string> = { common: 'var(--paper-line)', fine: 'var(--green)', rare: 'var(--r-sr)', epic: 'var(--r-ssr)', legend: 'var(--r-ur)' };
+  const names = { weapon: '武器', armor: '铠甲', head: '头饰', charm: '铃铛' };
+  const icons = { weapon: 'sword', armor: 'armor', head: 'helmet', charm: 'bell' };
+  return `<div class="row" style="margin-top:14px"><h3 class="grow" style="margin:0;font-family:var(--f-d);font-weight:400;font-size:17px">装备</h3><button class="btn sm ghost bag-browse" data-act="bag-browse">打开背包</button></div>
+    <div class="slots4">${EQUIP_SLOTS.map((slot) => {
+      const instance = ctx.s.inventory.equipment.find((e) => e.heroId === id && EQUIPS.find((d) => d.id === e.equipId)?.slot === slot);
+      const def = instance && EQUIPS.find((d) => d.id === instance.equipId);
+      return def && instance
+        ? `<button class="hcard bag-hero-slot" style="--rc:${colors[def.quality]}" data-act="bag-open" data-uid="${esc(instance.uid)}" aria-label="${esc(def.name)}">${icon(icons[slot], 28)}<b>${esc(def.name)}</b><small>Lv.${instance.level}</small></button>`
+        : `<button class="hcard bag-hero-slot" style="--rc:var(--paper-line)" data-act="bag-browse" aria-label="选择${names[slot]}">${icon(icons[slot], 28)}<b>${names[slot]}</b><small>未穿戴</small></button>`;
+    }).join('')}</div>`;
+}
 
 function skillsHtml(ctx: AppCtx, id: string): string {
   const h = ctx.s.heroes[id];
@@ -62,8 +78,7 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
     <h3 style="margin:14px 0 0;font-family:var(--f-d);font-weight:400;font-size:17px">技能</h3>
     ${skillsHtml(ctx, id)}
     ${awakenHtml(ctx, id)}
-    <h3 style="margin:14px 0 0;font-family:var(--f-d);font-weight:400;font-size:17px">装备 <span class="tag">即将开放</span></h3>
-    <div class="slots4"><div>${icon('sword', 30)}武器</div><div>${icon('shield', 30)}铠甲</div><div>${icon('star', 30)}头饰</div><div>${icon('bell', 30)}铃铛</div></div>
+    ${equipmentHtml(ctx, id)}
     <div class="panel" style="margin-top:12px"><h3>养成</h3>
       <div class="row" style="margin:6px 0"><div class="grow"><b>升级</b> <span class="muted" style="font-size:12px">Lv.${h.lv} → ${h.lv + 1}</span></div><button class="btn sm" data-act="levelup" ${h.lv >= cap ? 'disabled' : ''}>${h.lv >= cap ? '已到上限' : `<span class="cost">${icon('fish', 16)}${fmt(lc.fish)} ${icon('spark', 16)}${fmt(lc.exp)}</span>`}</button></div>
       <div class="row" style="margin:8px 0"><div class="grow"><b>升星</b> <span class="muted" style="font-size:12px">碎片 ${h.shards}${h.star < MAX_STAR ? ' / ' + need : ''}</span></div><button class="btn sm green" data-act="starup" ${h.star >= MAX_STAR || h.shards < need ? 'disabled' : ''}>${h.star >= MAX_STAR ? '已满星' : '升星'}</button></div>

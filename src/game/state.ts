@@ -4,6 +4,8 @@ import { HERO_BY_ID, HEROES } from '../data/heroes';
 import type { Rarity } from '../data/heroes';
 import { baseStats } from '../data/systems';
 import { HERO_LEVEL_CAP, expToNext, levelUpFishCost, skillUpgradeCost, starUpShards } from '../content/progression';
+import { createInventory, normalizeInventory } from './inventory';
+import type { InventoryState } from './inventory';
 
 export interface HeroState {
   id: string;
@@ -29,6 +31,7 @@ export interface PlayerState {
   level: number;
   exp: number;
   res: Resources;
+  inventory: InventoryState; // 追加的版本化背包；旧资源仍由 res 保存
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
@@ -55,6 +58,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     level: 1,
     exp: 0,
     res: { fish: 3000, bells: 3200, catnip: 12, exp: 0, tickets: 6, yarn: 3 },
+    inventory: createInventory(),
     heroes,
     lineup: ['wei_xiahoudun', 'wu_huanggai', 'man_wutugu', 'wei_guojia', 'qun_dongzhuo'],
     stage: { chapter: 1, index: 1, wins: 0 },
@@ -83,6 +87,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
         s.idle.exp ??= 0;
         s.stories ??= [];
         s.best ??= { chapter: s.stage.chapter, index: s.stage.index };
+        s.inventory = normalizeInventory(s.inventory, s.heroes);
         return s;
       }
     }

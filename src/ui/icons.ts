@@ -78,6 +78,14 @@ const ICONS: Record<string, Maker> = {
     const g = grad('#f0f4f8', '#9aa8b8');
     return S(`<path d="M50 6 L58 6 L58 14 L28 44 L20 36 Z" fill="${g.ref}" stroke="#5a6878" stroke-width="3" stroke-linejoin="round"/><path d="M14 38 L26 50 M10 54 L20 44 L26 50 L16 60 Z" fill="#c9a24b" stroke="#6a4a14" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`, g.def);
   },
+  armor: () => {
+    const g = grad('#d6e2f0', '#8ba5c8');
+    return S(`<path d="M20 10 L26 7 Q32 19 38 7 L44 10 L55 24 L47 31 L46 56 Q32 61 18 56 L17 31 L9 24 Z" fill="${g.ref}" stroke="#4d6486" stroke-width="3" stroke-linejoin="round"/><path d="M18 34 Q32 40 46 34 M18 45 Q32 51 46 45" fill="none" stroke="#708bac" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="32" cy="29" rx="6" ry="4.5" fill="#f4d18a" stroke="#9a7334" stroke-width="2"/><circle cx="25" cy="23" r="2.3" fill="#f4d18a"/><circle cx="32" cy="21" r="2.3" fill="#f4d18a"/><circle cx="39" cy="23" r="2.3" fill="#f4d18a"/><path d="M22 14 L18 21" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity="0.7"/>`, g.def);
+  },
+  helmet: () => {
+    const g = grad('#e1e8f0', '#94a9c4');
+    return S(`<path d="M13 30 L14 8 L27 17 Q32 15 37 17 L50 8 L51 30 L54 47 Q50 55 43 56 L41 43 L23 43 L21 56 Q14 55 10 47 Z" fill="${g.ref}" stroke="#526783" stroke-width="3" stroke-linejoin="round"/><path d="M19 18 L21 29 M45 18 L43 29" stroke="#edb5b1" stroke-width="4" stroke-linecap="round"/><path d="M12 35 Q32 29 52 35 L52 42 Q32 36 12 42 Z" fill="#d6b46d" stroke="#92703a" stroke-width="2.4" stroke-linejoin="round"/><circle cx="32" cy="35" r="4.5" fill="#fff0ba" stroke="#92703a" stroke-width="2"/>`, g.def);
+  },
   bow: () => S(`<path d="M18 6 C50 14 50 50 18 58" fill="none" stroke="#8a5a2a" stroke-width="5" stroke-linecap="round"/><path d="M18 6 L18 58" stroke="#d8c9a0" stroke-width="2"/><path d="M12 32 L52 32 M46 26 L54 32 L46 38" fill="none" stroke="#6a4a2a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>`),
   staff: () => {
     const g = grad('#d9c4ff', '#8a5ad0');
