@@ -5,7 +5,7 @@
 | 英雄 | id | 稀有度 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | 司马喵懿 | `wei_simamiyi` | SP | 待画 | 0 | |
-| 庞喵统 | `shu_pangmiaotong` | SP | 待画 | 0 | |
+| 庞喵统 | `shu_pangmiaotong` | SP | 待审 | 1 | 2 个候选中选 B，已局部补齐双爪五趾；羽翼稍抢脸部层级 |
 | 嫦喵 | `xian_changmiao` | SP | 待画 | 0 | |
 | 曹喵德 | `wei_caomiaode` | UR | 通过 | 1 | 风格锚点，已入库；后面的猫披风/下摆边饰简化一档 |
 | 刘喵备 | `shu_liumiaobei` | UR | 待画 | 0 | |
