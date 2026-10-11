@@ -32,6 +32,7 @@ export interface PlayerState {
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
+  tower?: { floor: number }; // 爬塔：已通关的最高层
   best?: { chapter: number; index: number }; // 已通关的最远关卡（推进进度）
   pity: { ssr: number; ur: number; upLost: boolean };
   idle: { last: number; fish: number; exp: number };
@@ -64,6 +65,7 @@ export function newPlayer(now = Date.now()): PlayerState {
     gift: { last: 0 },
     seen: start.slice(),
     stories: [],
+    tower: { floor: 0 },
     settings: { speed: 2 },
   };
 }
@@ -82,6 +84,7 @@ export function load(storage: StorageLike | null, now = Date.now()): PlayerState
         s.res.exp ??= 0;
         s.idle.exp ??= 0;
         s.stories ??= [];
+        s.tower ??= { floor: 0 };
         s.best ??= { chapter: s.stage.chapter, index: s.stage.index };
         return s;
       }

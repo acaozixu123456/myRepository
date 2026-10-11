@@ -71,6 +71,19 @@ const ctx: AppCtx = {
     ctx.refresh();
   },
   openHero: (id) => openHeroSheet(ctx, id),
+  result(o) {
+    const g = o.gain;
+    root.querySelectorAll('.mask.center').forEach((m) => m.remove());
+    if (o.win) sfx.win(); else sfx.no();
+    root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog result ${o.win ? 'win' : 'lose'}">
+      <div class="banner-r">${o.win ? '通关！' : '挑战失败'}</div>
+      <div class="muted" style="font-weight:800;margin:4px 0 10px">${o.title}</div>
+      ${g ? `<div class="row" style="justify-content:center;gap:14px;font-family:var(--f-d);font-size:20px;flex-wrap:wrap">${g.fish ? `<span>${icon('fish', 26)} ${fmt(g.fish)}</span>` : ''}${g.exp ? `<span>${icon('spark', 26)} ${fmt(g.exp)}</span>` : ''}${g.bells ? `<span>${icon('bells', 26)} ${fmt(g.bells)}</span>` : ''}${g.catnip ? `<span>${icon('catnip', 26)} ${g.catnip}</span>` : ''}</div>` : ''}
+      ${o.hint ? `<p style="font-size:13px;line-height:1.7;font-weight:700;margin:0">${o.hint}</p>` : ''}
+      <div class="row" style="justify-content:center;gap:10px;margin-top:14px">
+        ${o.win ? `<button class="btn ghost" data-act="closedialog">继续</button>${o.again ? `<button class="btn green" data-act="${o.again.act}" ${Object.entries(o.again.data ?? {}).map(([k, v]) => `data-${k}="${v}"`).join(' ')}>${o.again.label}</button>` : ''}` : `<button class="btn blue" data-act="nav" data-to="lineup">去阵容</button><button class="btn" data-act="closedialog">好的</button>`}
+      </div></div></div>`);
+  },
   refresh() {
     const scr = ctx.screen;
     if (scr === 'home') updateHome(ctx);
@@ -93,16 +106,13 @@ ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
     lastFirst = null;
     const next = nextStage(state.best?.chapter ?? 1, state.best?.index ?? 1);
     const rec = recommendedPowerOf(Number(stage.id.split('-')[0]), Number(stage.id.split('-')[1]));
-    root.querySelectorAll('.mask.center').forEach((m) => m.remove());
-    if (win) sfx.win(); else sfx.no();
-    root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog result ${win ? 'win' : 'lose'}">
-      <div class="banner-r">${win ? '通关！' : '挑战失败'}</div>
-      <div class="muted" style="font-weight:800;margin:4px 0 10px">${stage.id} ${stage.name}</div>
-      ${win && g ? `<div class="row" style="justify-content:center;gap:14px;font-family:var(--f-d);font-size:20px;flex-wrap:wrap">${g.fish ? `<span>${icon('fish', 26)} ${fmt(g.fish)}</span>` : ''}${g.exp ? `<span>${icon('spark', 26)} ${fmt(g.exp)}</span>` : ''}${g.bells ? `<span>${icon('bells', 26)} ${fmt(g.bells)}</span>` : ''}${g.catnip ? `<span>${icon('catnip', 26)} ${g.catnip}</span>` : ''}</div>` : ''}
-      ${win ? '' : `<p style="font-size:13px;line-height:1.7;font-weight:700;margin:0">我方战力 <b>${fmt(teamPower(state))}</b>，这关推荐 <b>${fmt(rec)}</b>。去阵容给猫猫升级升星，或者调整前后排与羁绊再来。</p>`}
-      <div class="row" style="justify-content:center;gap:10px;margin-top:14px">
-        ${win ? `<button class="btn ghost" data-act="closedialog">继续挂机</button>${next ? '<button class="btn green" data-act="challenge">挑战下一关</button>' : ''}` : `<button class="btn blue" data-act="nav" data-to="lineup">去阵容</button><button class="btn" data-act="closedialog">好的</button>`}
-      </div></div></div>`);
+    ctx.result({
+      win,
+      title: `${stage.id} ${stage.name}`,
+      gain: win && g ? g : undefined,
+      hint: win ? undefined : `我方战力 ${fmt(teamPower(state))}，这关推荐 ${fmt(rec)}。去阵容给猫猫升级升星，或者调整前后排与羁绊再来。`,
+      again: win && next ? { act: 'challenge', label: '挑战下一关' } : undefined,
+    });
   },
   onChange() {
     ctx.save();
@@ -129,7 +139,7 @@ root.addEventListener('click', (e) => {
   if (!el) return;
   const act = el.dataset.act!;
   if (act !== 'sheetmask' && act !== 'closedialog') sfx.tap();
-  if ((act === 'challenge' || act === 'nav') && el.closest('.dialog')) root.querySelectorAll('.mask.center').forEach((m) => m.remove());
+  if ((act === 'challenge' || act === 'nav' || act === 'tgo') && el.closest('.dialog')) root.querySelectorAll('.mask.center').forEach((m) => m.remove());
   if (handleDetail(ctx, act, el)) return;
   if (handleCampaign(ctx, act, el)) return;
   switch (act) {

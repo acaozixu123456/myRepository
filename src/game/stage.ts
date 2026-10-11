@@ -67,9 +67,9 @@ export function waveSetups(stage: StageDef, wave: number): UnitSetup[] {
   return w.enemies.map((e) => ({
     heroId: e.unit,
     level: e.level,
-    star: HERO_BY_ID[e.unit] ? 3 : 1,
+    star: HERO_BY_ID[e.unit] ? (e.level < 20 ? 1 : e.level < 40 ? 2 : 3) : 1,
     awaken: 'A' as const,
-    skillLv: HERO_BY_ID[e.unit] ? 3 : 1,
+    skillLv: HERO_BY_ID[e.unit] ? (e.level < 20 ? 1 : e.level < 40 ? 2 : 3) : 1,
     pos: e.pos,
     statMul: eliteMul * (e.mods?.includes('elite') ? 1.15 : 1),
   }));

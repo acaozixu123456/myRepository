@@ -62,6 +62,20 @@ export class BattleLoop {
     this.running = false;
     void this.cycle(++this.token);
   }
+  /** 打一场指定关卡（爬塔等），打完恢复挂机；被打断返回 null */
+  async runCustom(stage: StageDef, theme = 3): Promise<boolean | null> {
+    this.running = false;
+    const token = ++this.token;
+    this.pushNext = false;
+    await this.hooks.story?.(stage.storyId);
+    const win = await this.fight(stage, token, theme);
+    if (token !== this.token) return null;
+    this.lastOutcome = win ? 'win' : 'lose';
+    await this.player.sleep(win ? 1.2 : 1.8);
+    if (token !== this.token) return null;
+    void this.cycle(++this.token);
+    return win;
+  }
   /** 阵容变化后，重新开一场 */
   restart() {
     this.running = false;
