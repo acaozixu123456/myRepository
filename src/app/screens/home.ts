@@ -1,6 +1,7 @@
 import { CHAPTERS } from '../../content/campaign';
 import { FACTIONS } from '../../data/factions';
 import { HERO_BY_ID } from '../../data/heroes';
+import { artUrl } from '../../ui/art';
 import { chip, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, tickIdle } from '../../game/stage';
@@ -13,6 +14,7 @@ export function homeHtml(): string {
     <div class="hud" id="hud"></div>
     <div class="stagebar" id="stagebar"></div>
     <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="speed" id="speedBtn">2×</button></div><div class="rule" id="rule"></div></div>
+    <div class="teamstrip" id="team" data-act="nav" data-to="lineup"></div>
     <div class="idle panel" id="idle"></div>
     <div class="actions">
       <button class="btn green" data-act="challenge" id="chBtn">挑战下一关</button>
@@ -51,6 +53,13 @@ export function updateHome(ctx: AppCtx) {
   $(ctx, '#speedBtn').textContent = `${s.settings.speed}×`;
   $(ctx, '#tip').textContent = low ? '战力不足推荐值，去阵容里给猫猫升级升星吧' : '战力足够，可以挑战下一关啦';
   ($(ctx, '#chBtn') as HTMLButtonElement).textContent = '挑战下一关';
+  $(ctx, '#team').innerHTML = s.lineup.map((id) => {
+    const h = id ? HERO_BY_ID[id] : null;
+    const st = id ? s.heroes[id] : null;
+    return h && st
+      ? `<div class="m ${h.rarity.toLowerCase()}"><img src="${artUrl(h.id, 'head')}" alt="${h.name}" draggable="false"><em>Lv.${st.lv}</em></div>`
+      : `<div class="m empty">${icon('plus', 18)}</div>`;
+  }).join('') + `<span class="go">阵容 ›</span>`;
   updateIdle(ctx);
   const now = Date.now();
   const left = Math.max(0, 300000 - (now - s.gift.last));
