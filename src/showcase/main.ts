@@ -11,13 +11,14 @@ const $ = <T extends HTMLElement>(sel: string, root: ParentNode = document) => r
 
 // ---------- 立绘（SVG -> data URI，避免重复滤镜 id 冲突，也减轻 DOM） ----------
 const imgCache = new Map<string, string>();
-const FULL = '-40 -40 480 540';
-const BUST = '30 20 340 330';
+const FULL = '-60 -50 520 700';
+const BUST = '40 70 320 330';
 function art(h: HeroDef, view = FULL, flip = false): string {
   const key = `${h.id}|${view}|${flip}`;
   let uri = imgCache.get(key);
   if (!uri) {
-    const svg = catSvg({ ...h.look, flip }, { width: 480, height: 540, viewBox: view, uid: `i${imgCache.size}` });
+    const [, , vw, vh] = view.split(' ').map(Number);
+    const svg = catSvg({ ...h.look, flip }, { width: 480, height: Math.round((480 * vh) / vw), viewBox: view, uid: `i${imgCache.size}` });
     uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     imgCache.set(key, uri);
   }
@@ -48,6 +49,7 @@ function renderPage(): string {
       <div class="eyebrow">放置挂机卡牌 RPG · 阶段一 · 设定集与角色美术</div>
       <h1>猫国<span>志</span></h1>
       <p class="lede">九命天子只剩最后一命。六大猫族各举旗号，争夺“九命印”。你是新上任的铲屎官军师，带着一群毛茸茸的将军，在挂机与养成里打下天下。</p>
+      <div class="stats" style="margin-bottom:6px"><a class="gbtn" style="text-decoration:none;display:inline-block" href="https://claude.ai/artifact/J7ijUYbHpERcEn6a9J2YRg" target="_blank" rel="noopener">试玩战斗演示（骨骼动画 + 绝技特效）</a></div>
       <div class="stats">
         <span class="chip"><b>6</b>大阵营</span><span class="chip"><b>${HEROES.length}</b>只猫猫（首批）</span><span class="chip"><b>${skillCount}</b>个技能</span><span class="chip"><b>${STATUSES.length}</b>种状态</span><span class="chip"><b>${BONDS.length}</b>组羁绊</span>
       </div>
@@ -140,6 +142,18 @@ function renderPage(): string {
       <div class="step"><b>长线玩法</b><p>爬塔、竞技场、公会、秘境、世界 Boss，每周轮换词缀保持新鲜。</p></div>
     </div>
 
+    <div class="panel" style="margin-top:26px">
+      <h3>技能体系（研究型）</h3>
+      <div class="loop" style="margin-top:8px">
+        <div class="step"><b>四件套</b><p>每只猫：普攻、绝技、被动、觉醒。绝技消耗 100 点元气，被动由触发器驱动（战斗开始、受击、击杀、友方阵亡、敌方放绝技……）。</p></div>
+        <div class="step"><b>绝技词条</b><p>绝技 Lv3 / Lv6 / Lv9 各解锁一个词条，改变效果而不只是加数值（比如曹喵德 Lv6 让全体敌人受惊）。</p></div>
+        <div class="step"><b>觉醒二选一</b><p>★5 觉醒要选 A / B 路线，导向不同玩法：周喵瑜 A 是灼烧蔓延，B 是加速增伤；刘喵备 A 是阵亡爆发，B 是护盾续航。</p></div>
+        <div class="step"><b>计数器与条件</b><p>孟喵获的“第七次受击满元气”、图腾满 6 层召唤猛兽、左慈喵的天命随机……技能可以读状态、读计数、读场上谁还活着。</p></div>
+        <div class="step"><b>阵营机制</b><p>魏铁壁护盾、蜀桃园同心、吴赤壁火淋、群乱世暴伤、蛮图腾召唤、仙天命回能，全部写进引擎。</p></div>
+        <div class="step"><b>羁绊与克制</b><p>8 组羁绊、6 阵营克制环，战斗结果由阵容搭配决定，而不是单纯看战力。</p></div>
+      </div>
+    </div>
+
     <div class="two" style="margin-top:26px">
       <div class="panel">
         <h3>元气与回合</h3>
@@ -207,18 +221,19 @@ function renderPage(): string {
   <section id="road">
     <div class="sec-head"><div><div class="eyebrow">推进计划</div><h2>接下来怎么做</h2></div><p>每个阶段结束都会给你看成果，确认方向后再往下走。</p></div>
     <div class="road">
-      <div class="phase now"><div class="n">阶段一<small>进行中</small></div><p>世界观、六大阵营、24 只猫猫的设定与立绘样稿、技能设定、UI 风格板。<b>你正在看的就是这一阶段的成果。</b></p></div>
-      <div class="phase"><div class="n">阶段二<small>下一步</small></div><p>可玩原型：自动战斗引擎（按本稿技能实现）、主界面、阵容、招募、挂机收益，先用现有立绘跑通核心循环。</p></div>
+      <div class="phase done"><div class="n">阶段一<small>已完成</small></div><p>世界观、六大阵营、24 只猫猫、技能设定、UI 风格板。根据你的反馈，角色美术已重做为更有型的 3 头身英雄比例（有机肢体、渐变光影、毛发笔触、完整服饰系统）。</p></div>
+      <div class="phase now"><div class="n">阶段二<small>进行中</small></div><p>战斗引擎（技能 DSL、状态、被动、阵营机制、羁绊）与骨骼动画回放器已可运行，6 个 UR 与 6 个 SSR 有专属绝技特效。接下来：主界面、阵容、招募、挂机收益。</p></div>
+      <div class="phase"><div class="n">Codex 协作<small>并行</small></div><p>装备 / 战役 / 杂兵数据已合并；剧情、经济、其余 12 只猫的技能组、数值平衡模拟器正在进行。重复性大批量工作交给 Codex，美术与引擎由我主导并评审。</p></div>
       <div class="phase"><div class="n">阶段三</div><p>养成与内容：升级突破升星觉醒、装备、羁绊、章节关卡与剧情、爬塔与竞技场；补齐第二批猫猫（每阵营 5~8 只）。</p></div>
-      <div class="phase"><div class="n">阶段四</div><p>打磨与打包：动效与音效、新手引导、数值平衡、存档与离线收益、Capacitor 打包安卓 / iOS。</p></div>
+      <div class="phase"><div class="n">阶段四</div><p>打磨与打包：新手引导、数值平衡、存档与离线收益、音效、Capacitor 打包安卓 / iOS。</p></div>
     </div>
     <div class="ask">
       <h3 style="font-size:24px">想请你看看的几件事</h3>
       <ol>
-        <li>猫猫的画风、比例（现在是约 2 头身站立）是否接近你想要的？要更萌、更帅，还是更写意？</li>
-        <li>哪些猫猫的设定你喜欢或不喜欢？可以直接说“把 X 换成…”，我来改。</li>
-        <li>六个阵营的主题和克制关系是否满意？有没有想加的三国人物（赵云、司马懿、孙权、黄忠…）？</li>
-        <li>是否要加入“战斗中猫猫有简单动作”（攻击、受击、待机呼吸），还是先保持静态立绘？</li>
+        <li>新版猫猫的形体与质感是否更接近你想要的？还有哪里像“拼出来的”，可以直接指出（头、手、衣服、尾巴……）。</li>
+        <li>战斗演示里的节奏（出手速度、绝技时长）和特效风格是否合适？想要更夸张还是更克制？</li>
+        <li>下一步先做哪块：主界面与阵容、招募抽卡，还是继续补齐其余猫猫的专属绝技特效？</li>
+        <li>有没有想加入的三国人物（赵云、司马懿、孙权、黄忠、甘宁……）？</li>
       </ol>
     </div>
   </section>

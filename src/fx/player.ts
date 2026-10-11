@@ -72,7 +72,7 @@ export class Player {
   async portrait(heroId: string): Promise<HTMLCanvasElement> {
     let p = this.portraits.get(heroId);
     if (!p) {
-      p = await buildPortrait(lookOf(heroId), '0 40 400 400', 520);
+      p = await buildPortrait(lookOf(heroId), '20 50 360 340', 520);
       this.portraits.set(heroId, p);
     }
     return p;

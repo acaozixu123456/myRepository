@@ -8,8 +8,13 @@ import type { UnitSetup } from '../engine/types';
 import type { BgTheme } from '../fx/bg';
 
 const q = new URLSearchParams(location.search);
-const TEAM_A = (q.get('a') ?? 'shu_guanyunmiao,shu_zhangmiaofei,shu_zhugemiaoliang,shu_liumiaobei,wu_zhoumiaoyu').split(',');
-const TEAM_B = (q.get('b') ?? 'qun_lvbuding,man_mengmiaohuo,xian_zuoci,wei_caomiaode,man_zhurong').split(',');
+const PRESETS: Record<string, { name: string; a: string; b: string }> = {
+  classic: { name: '蜀吴联军 vs 群雄乱斗', a: 'shu_guanyunmiao,shu_zhangmiaofei,shu_zhugemiaoliang,shu_liumiaobei,wu_zhoumiaoyu', b: 'qun_lvbuding,man_mengmiaohuo,xian_zuoci,wei_caomiaode,man_zhurong' },
+  ur: { name: 'UR 大乱斗', a: 'man_mengmiaohuo,wei_caomiaode,wu_zhoumiaoyu,shu_liumiaobei,wu_sunxiangxiang', b: 'qun_lvbuding,shu_zhangmiaofei,xian_zuoci,qun_huatuo,man_zhurong' },
+  wei: { name: '魏 vs 蜀', a: 'wei_xuhuchi,wei_xiahoudun,wei_caomiaode,wei_guojia,qun_huatuo', b: 'shu_zhangmiaofei,shu_guanyunmiao,shu_liumiaobei,shu_zhugemiaoliang,wu_sunxiangxiang' },
+};
+let preset = q.get('p') ?? 'classic';
+const teams = () => ({ a: (q.get('a') ?? PRESETS[preset].a).split(','), b: (q.get('b') ?? PRESETS[preset].b).split(',') });
 const SEED = +(q.get('seed') ?? 2);
 const THEME = (q.get('theme') ?? 'meadow') as BgTheme;
 const setups = (ids: string[]): UnitSetup[] => ids.map((heroId, i) => ({ heroId, level: 60, pos: i, star: 5, awaken: i % 2 ? 'B' : 'A', skillLv: 9 }));
@@ -25,6 +30,7 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:960/600}
 .btn.alt{background:linear-gradient(#8fd0ff,#4a95e0);color:#0f2f57;box-shadow:0 4px 0 #2563a8}
 .btn[aria-pressed=true]{outline:3px solid #fff}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #b95f12}
+.chk{font-size:13px;color:#cfc8e6;display:flex;gap:6px;align-items:center}
 .log{font-size:13px;color:#b9b3cf;min-height:20px}
 .loading{position:absolute;inset:0;display:grid;place-items:center;background:#161225;color:#ffd9a0;font-size:20px}
 h1{font:400 28px "ZCOOL KuaiLe","Noto Sans SC",sans-serif;margin:6px 0 2px}
@@ -41,6 +47,8 @@ document.getElementById('app')!.innerHTML = `
   <button class="btn" id="restart">重新开战</button>
   <button class="btn alt" data-speed="1" aria-pressed="true">1×</button><button class="btn alt" data-speed="2" aria-pressed="false">2×</button><button class="btn alt" data-speed="3" aria-pressed="false">3×</button>
   <button class="btn alt" id="skip">跳过</button>
+  <select id="preset" class="btn alt">${Object.entries(PRESETS).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('')}</select>
+  <label class="chk"><input type="checkbox" id="ult"> 满元气开局（直接看绝技）</label>
   <select id="theme" class="btn alt"><option value="meadow">原野</option><option value="redcliff">赤壁</option><option value="mist">云端</option><option value="forest">山林</option></select>
 </div>
 <div class="log" id="log"></div>`;
@@ -57,7 +65,9 @@ async function start(seed = SEED) {
   player.installOverlay();
   player.onLog = (s) => (document.getElementById('log')!.textContent = s);
   const theme = (document.getElementById('theme') as HTMLSelectElement).value as BgTheme;
-  const sim = simulate({ seed, A: setups(TEAM_A), B: setups(TEAM_B), startEnergy: { A: +(q.get('energy') ?? 0), B: +(q.get('energyB') ?? 0) } });
+  const full = (document.getElementById('ult') as HTMLInputElement).checked;
+  const t = teams();
+  const sim = simulate({ seed, A: setups(t.a), B: setups(t.b), startEnergy: full ? 100 : { A: +(q.get('energy') ?? 0), B: +(q.get('energyB') ?? 0) } });
   const startEv = sim.events[0];
   if (startEv.t !== 'start') return;
   await player.setup(startEv, theme);
@@ -71,6 +81,9 @@ async function start(seed = SEED) {
 }
 
 (document.getElementById('theme') as HTMLSelectElement).value = THEME;
+(document.getElementById('preset') as HTMLSelectElement).value = preset;
+(document.getElementById('preset') as HTMLSelectElement).onchange = (e) => { preset = (e.target as HTMLSelectElement).value; void start(SEED); };
+(document.getElementById('ult') as HTMLInputElement).onchange = () => void start(SEED);
 document.getElementById('restart')!.onclick = () => start(Math.floor(Math.random() * 1e6));
 document.querySelectorAll<HTMLElement>('[data-speed]').forEach((b) => (b.onclick = () => {
   document.querySelectorAll('[data-speed]').forEach((x) => x.setAttribute('aria-pressed', 'false'));
