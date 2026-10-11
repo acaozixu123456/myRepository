@@ -67,7 +67,7 @@ describe('成长与挂机曲线', () => {
   });
 
   it('升星按目标星级，三档碎片成本不同且逐星递增', () => {
-    expect(starUpShards(1)).toEqual({ SR: 0, SSR: 0, UR: 0 });
+    expect(starUpShards(1)).toEqual({ SR: 0, SSR: 0, UR: 0, SP: 0 });
     for (let star = 2; star <= 5; star++) {
       const cost = starUpShards(star);
       expect(cost.UR).toBeGreaterThan(cost.SSR);

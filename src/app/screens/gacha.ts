@@ -13,7 +13,7 @@ import { topbar } from './lineup';
 
 export const gachaState = { pool: POOLS[0].id };
 const pool = (): PoolDef => POOLS.find((p) => p.id === gachaState.pool) ?? POOLS[0];
-const GLOW: Record<Rarity, string> = { UR: '#ffd24a', SSR: '#c08aff', SR: '#9bc4ff' };
+const GLOW: Record<Rarity, string> = { SP: '#ff9ad8', UR: '#ffd24a', SSR: '#c08aff', SR: '#9bc4ff' };
 
 export function gachaHtml(ctx: AppCtx): string {
   const s = ctx.s;

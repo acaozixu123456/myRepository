@@ -237,5 +237,5 @@ export function autoLineup(s: PlayerState) {
 }
 
 // ---------- 图鉴 ----------
-export const RARITY_ORDER: Record<Rarity, number> = { UR: 0, SSR: 1, SR: 2 };
+export const RARITY_ORDER: Record<Rarity, number> = { SP: -1, UR: 0, SSR: 1, SR: 2 };
 export const TOTAL_HEROES = HEROES.length;

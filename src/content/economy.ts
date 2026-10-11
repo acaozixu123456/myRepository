@@ -279,6 +279,7 @@ export const GACHA_POOL_READINESS: Record<string, PoolReadiness> = Object.fromEn
     UR: heroes.filter((hero) => hero.rarity === 'UR').map((hero) => hero.id),
     SSR: heroes.filter((hero) => hero.rarity === 'SSR').map((hero) => hero.id),
     SR: heroes.filter((hero) => hero.rarity === 'SR').map((hero) => hero.id),
+    SP: heroes.filter((hero) => hero.rarity === 'SP').map((hero) => hero.id), // 至尊仅限氪金池，常规池不用
   };
   const missingRarities = (['UR', 'SSR', 'SR'] as const).filter((rarity) => pool.rates[rarity] > 0 && candidates[rarity].length === 0);
   const invalidUpHeroes = (pool.upHeroes ?? []).filter((id) => !candidates.UR.includes(id));
