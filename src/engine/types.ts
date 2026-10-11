@@ -144,6 +144,7 @@ export interface UnitSetup {
   skillLv?: number; // 绝技等级 1~10
   pos: number; // 0-2 前排，3-4 后排
   statMul?: number; // 额外属性倍率（关卡词缀）
+  hpMul?: number; // 只放大生命（世界 Boss）
   gear?: Partial<Record<'hp' | 'atk' | 'def' | 'spd' | 'crit' | 'critDmg' | 'hit' | 'dodge' | 'healBonus' | 'dmgReduce', number>>; // 装备（含套装面板）提供的属性
   set4?: string[]; // 已凑齐四件的套装 id，启用特殊效果
   hpPct?: number; // 开局生命比例（多波战斗时继承；0 表示已倒下，不上场）

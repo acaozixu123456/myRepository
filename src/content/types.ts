@@ -54,6 +54,7 @@ export interface EnemySpawn {
   level: number;
   pos: number; // 0-2 前排，3-4 后排
   mods?: string[]; // 词缀 id，如 'elite', 'thorns'
+  hpMul?: number; // 只放大生命的倍率（世界 Boss 等巨型敌人）
 }
 export interface WaveDef { enemies: EnemySpawn[] }
 export type StageKind = 'normal' | 'elite' | 'boss';

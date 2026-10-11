@@ -15,6 +15,7 @@ import { createShopState, normalizeShopState } from './shop';
 import type { ShopState } from './shop';
 import type { PayState } from './premium';
 import type { GuildState } from './guild';
+import type { BossState } from './worldboss';
 import type { SocialState } from './social';
 import type { DailyState } from './daily';
 import type { DungeonState } from './dungeon';
@@ -50,6 +51,7 @@ export interface PlayerState {
   shop: ShopState; // 每周限购记录；存档 v 仍为 1
   dungeon?: DungeonState; // 日常秘境：每日次数与已通关档位
   daily?: DailyState; // 七日签到 / 快速探索
+  wboss?: BossState; // 世界 Boss
   guild?: GuildState; // 公会（旧存档读取时补齐）
   social?: SocialState; // 世界聊天 / 好友 / 竞技场（旧存档读取时补齐）
   pay?: PayState; // 氪金：累计充值 / 月卡 / VIP / 至尊保底（旧存档读取时补齐）

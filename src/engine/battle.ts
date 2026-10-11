@@ -90,7 +90,7 @@ class Battle {
     if ((s.star ?? 1) >= 5 && s.awaken) for (const p of kit.awaken[s.awaken].patches) applyPatch(kit, p);
     const roleCrit = h.role === '刺客' ? 0.12 : h.role === '神射' ? 0.08 : 0.05;
     const g = s.gear ?? {};
-    const maxHp = Math.round(bs.hp * m) + Math.round(g.hp ?? 0);
+    const maxHp = Math.round(bs.hp * m * (s.hpMul ?? 1)) + Math.round(g.hp ?? 0);
     return {
       uid: this.uidSeq++, side, pos: s.pos, heroId: s.heroId, name: h.name, faction: h.faction, role: h.role, level: s.level,
       maxHp, hp: Math.max(1, Math.round(maxHp * (s.hpPct ?? 1))), atk: Math.round(bs.atk * m) + Math.round(g.atk ?? 0), def: Math.round(bs.def * m) + Math.round(g.def ?? 0), spd: bs.spd + Math.round(g.spd ?? 0), crit: roleCrit + (g.crit ?? 0), critDmg: 1.5 + (g.critDmg ?? 0),

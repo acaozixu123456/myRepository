@@ -76,6 +76,7 @@ export function waveSetups(stage: StageDef, wave: number): UnitSetup[] {
     skillLv: HERO_BY_ID[e.unit] ? (e.level < 20 ? 1 : e.level < 40 ? 2 : 3) : 1,
     pos: e.pos,
     statMul: eliteMul * (e.mods?.includes('elite') ? 1.15 : 1),
+    hpMul: e.hpMul,
   }));
 }
 

@@ -8,13 +8,14 @@ import { teamPower } from '../../game/state';
 import { TOWER_FLOORS, towerBest, towerClear, towerFaction, towerFloor, towerReward } from '../../game/tower';
 import { DAILY_TRIES, DUNGEONS, DUNGEON_BY_ID, TIERS, dungeonLeft, dungeonReward, dungeonStage, dungeonStart, dungeonSweep, dungeonWin, ensureDungeon, tierUnlocked } from '../../game/dungeon';
 import type { DungeonId } from '../../game/dungeon';
+import { ATTEMPTS_PER_DAY, MILESTONES, attemptsLeft, bossBoard, bossLevel, bossOfWeek, bossStage, claimMilestone, claimable, ensureBoss, finishAttempt, startAttempt } from '../../game/worldboss';
 import { artUrl } from '../../ui/art';
 import { chip, esc, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
 import { topbar } from './lineup';
 
-export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' | 'dungeon', dtier: { fish: 1, exp: 1, catnip: 1 } as Record<DungeonId, number> };
+export const campaignState = { chapter: 0, sheet: '', mode: 'main' as 'main' | 'tower' | 'dungeon' | 'boss', dtier: { fish: 1, exp: 1, catnip: 1 } as Record<DungeonId, number> };
 
 const best = (ctx: AppCtx) => ctx.s.best ?? ctx.s.stage;
 const bestOrd = (ctx: AppCtx) => stageOrdinal(best(ctx).chapter, best(ctx).index);
@@ -25,7 +26,7 @@ function nodeState(ctx: AppCtx, c: number, i: number): NodeState {
   return o <= b ? 'done' : o === b + 1 ? 'next' : 'locked';
 }
 
-const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button></div>`;
+const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button><button class="pill" data-act="cmode" data-m="boss" aria-pressed="${campaignState.mode === 'boss'}">Boss</button></div>`;
 
 function towerHtml(ctx: AppCtx): string {
   const best = towerBest(ctx.s);
@@ -80,7 +81,27 @@ function dungeonHtml(ctx: AppCtx): string {
   return `${modeTabs()}<p class="intro" style="margin:2px 4px 8px">秘境每天刷新次数；通关过的档位可以直接扫荡。档位随主线推进解锁。</p>${cards}`;
 }
 
+function bossHtml(ctx: AppCtx): string {
+  const s = ctx.s, now = Date.now();
+  const def = bossOfWeek(now), b = ensureBoss(s, now), left = attemptsLeft(s, now);
+  const ready = claimable(s, now);
+  const board = bossBoard(s, now);
+  const myRank = board.findIndex((r) => r.me) + 1;
+  const ms = MILESTONES.map((m, i) => {
+    const done = b.claimed.includes(i);
+    return `<div class="ms ${done ? 'done' : ready[i] ? 'ok' : ''}"><b>${m.bars} 条</b><small>${m.bells} 金铃铛 · ${m.paw} 猫爪印${m.tickets ? ` · ${m.tickets} 招福符` : ''}</small><button class="btn sm ${ready[i] ? 'green' : 'ghost'}" data-act="bclaim" data-i="${i}" ${ready[i] ? '' : 'disabled'}>${done ? '已领' : ready[i] ? '领取' : '未达'}</button></div>`;
+  }).join('');
+  return `${modeTabs()}<section class="panel wbs"><div class="row"><img class="bimg" src="${artUrl(def.hero, 'head')}" alt="" draggable="false"><div class="grow"><b class="ttl">${esc(def.title)}</b><div class="muted" style="font-size:11.5px;font-weight:700">本周 Boss · Lv.${bossLevel(s)} · 周一 05:00 换班</div></div></div>
+    <p class="intro" style="margin:6px 0">${esc(def.desc)}</p>
+    <p class="intro" style="margin:0 0 6px">每次挑战最多打 30 回合，按打掉的生命比例拿奖励；打满整条血也不会提前结束，快去试试。</p>
+    <div class="row" style="gap:8px"><div class="grow">今日剩余 <b>${left}</b> / ${ATTEMPTS_PER_DAY}<br><small class="muted">本周累计 <b class="num">${b.bars.toFixed(2)}</b> 条 · 单次最高 ${Math.round(b.best * 100)}% · 排名第 ${myRank}</small></div>
+    <button class="btn green" data-act="bgo" ${left > 0 ? '' : 'disabled'}>挑战</button></div></section>
+    <section class="panel"><div class="note" style="font-weight:800;margin-bottom:4px">周累计里程碑</div>${ms}</section>
+    <section class="panel"><div class="note" style="font-weight:800;margin-bottom:4px">本周伤害榜</div>${board.slice(0, 8).map((r, i) => `<div class="arow ${r.me ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i>${r.avatar ? `<img class="av" src="${artUrl(r.avatar, 'head')}" alt="" draggable="false">` : ''}<div class="who"><b>${esc(r.name)}</b></div><div class="rt"><em>累计</em><b class="num">${r.bars.toFixed(2)} 条</b></div></div>`).join('')}</section>`;
+}
+
 export function campaignHtml(ctx: AppCtx): string {
+  if (campaignState.mode === 'boss') return `${topbar(ctx, '征战')}<div class="scroll">${bossHtml(ctx)}</div>`;
   if (campaignState.mode === 'dungeon') return `${topbar(ctx, '征战')}<div class="scroll">${dungeonHtml(ctx)}</div>`;
   if (campaignState.mode === 'tower') return `${topbar(ctx, '征战')}<div class="scroll">${towerHtml(ctx)}</div>`;
   const s = ctx.s;
@@ -160,7 +181,7 @@ export function stageSheetHtml(ctx: AppCtx, id: string): string {
 
 export function handleCampaign(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
-    case 'cmode': campaignState.mode = el.dataset.m as 'main' | 'tower' | 'dungeon'; ctx.refresh(); return true;
+    case 'cmode': campaignState.mode = el.dataset.m as typeof campaignState.mode; ctx.refresh(); return true;
     case 'dtier': campaignState.dtier[el.dataset.d as DungeonId] = Number(el.dataset.t); ctx.refresh(); return true;
     case 'dsweep': {
       const id = el.dataset.d as DungeonId;
@@ -186,6 +207,27 @@ export function handleCampaign(ctx: AppCtx, act: string, el: HTMLElement): boole
         campaignState.mode = 'dungeon';
         ctx.refresh();
       });
+      return true;
+    }
+    case 'bgo': {
+      const r = startAttempt(ctx.s);
+      if (!r.ok) { ctx.toast(r.reason ?? ''); return true; }
+      const def = bossOfWeek();
+      ctx.save(); ctx.go('home'); ctx.toast(`挑战 ${def.title}`);
+      void ctx.loop.runCustom(bossStage(ctx.s), def.theme).then((win) => {
+        if (win === null) return;
+        const res = finishAttempt(ctx.s, ctx.loop.lastDamagePct);
+        ctx.save();
+        ctx.result({ win: res.pct >= 0.4, title: `${def.title}`, hint: `打掉了 ${Math.round(res.pct * 100)}% 生命：+${fmt(res.fish)} 小鱼干、${res.catnip} 猫薄荷、${res.paw} 猫爪印。累计达到里程碑记得回来领周奖。`, again: { act: 'nav', label: '回 Boss', data: { to: 'campaign' } } });
+        campaignState.mode = 'boss';
+        ctx.refresh();
+      });
+      return true;
+    }
+    case 'bclaim': {
+      const r = claimMilestone(ctx.s, Number(el.dataset.i));
+      if (!r.ok) { ctx.toast(r.reason); return true; }
+      ctx.save(); ctx.toast(`领到 ${r.m.bells} 金铃铛、${r.m.paw} 猫爪印${r.m.tickets ? `、${r.m.tickets} 招福符` : ''}`); ctx.refresh();
       return true;
     }
     case 'tgo': {
