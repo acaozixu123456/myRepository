@@ -1,6 +1,6 @@
 import { FACTIONS, FACTION_ORDER } from '../data/factions';
 import type { FactionId } from '../data/factions';
-import { HEROES } from '../data/heroes';
+import { STANDARD_HEROES as HEROES } from '../data/heroes';
 import type { Rarity, Role } from '../data/heroes';
 import { BONDS, COUNTER_RING } from '../data/systems';
 import { KITS } from '../data/kits';

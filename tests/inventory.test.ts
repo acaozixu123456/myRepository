@@ -306,7 +306,7 @@ describe('inventory save compatibility and repair', () => {
     const legacy = structuredClone(s) as unknown as Record<string, unknown>;
     delete legacy.inventory;
     const loaded = load(memoryStorage(JSON.stringify(legacy)), 9999);
-    expect(loaded).toEqual({ ...s, inventory: createInventory() });
+    expect(loaded).toEqual({ ...s, res: { ...s.res, moon: 0 }, inventory: createInventory() }); // 旧存档读取时补齐 moon
     expect(itemCount(loaded, 'catnip_small')).toBe(12.5);
     expect(itemCount(loaded, 'yarn_small')).toBe(7);
   });

@@ -19,7 +19,7 @@ export function clearGuide() {
 
 let key = '';
 export function updateGuide(ctx: AppCtx) {
-  if (ctx.root.querySelector('.story,.reveal,.mask')) { clearGuide(); key = ''; return; } // 有剧情 / 弹窗 / 抽卡时不打扰
+  if (ctx.screen === 'shop' || ctx.screen === 'pay' || (ctx.screen as string) === 'chat' || (ctx.screen as string) === 'arena' || ctx.root.querySelector('.story,.reveal,.mask')) { clearGuide(); key = ''; return; } // 有剧情 / 弹窗 / 抽卡时不打扰
   const done = (ctx.s.tips ??= []);
   let any = false;
   for (const st of STEPS) {

@@ -21,7 +21,7 @@ export const POOLS: PoolDef[] = [
 ];
 
 export const COST = { single: { tickets: 1, bells: 160 }, ten: { tickets: 10, bells: 1500 } };
-export const DUP_SHARDS: Record<Rarity, number> = { SR: 6, SSR: 12, UR: 25 };
+export const DUP_SHARDS: Record<Rarity, number> = { SR: 6, SSR: 12, UR: 25, SP: 60 };
 
 export interface PullResult {
   hero: HeroDef;

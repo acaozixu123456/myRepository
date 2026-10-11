@@ -4,16 +4,17 @@ import type { FactionId } from '../data/factions';
 import type { Scene } from './scene';
 import { clamp, ease, hexA, lerp, mulberry } from './util';
 
-export interface CutInOpts { portrait: HTMLCanvasElement; faction: FactionId; skill: string; title: string; name: string; side: 'A' | 'B'; duration?: number }
+export interface CutInOpts { portrait: HTMLCanvasElement; faction: FactionId; skill: string; premium?: boolean; title: string; name: string; side: 'A' | 'B'; duration?: number }
 
 /** 播放插入图，返回 Promise（动画结束时 resolve）。期间场景时间放慢。 */
 export function playCutIn(scene: Scene, o: CutInOpts): Promise<void> {
   const dur = o.duration ?? 1.25;
-  const color = FACTIONS[o.faction].color;
+  const color = o.premium ? '#e8a31c' : FACTIONS[o.faction].color;
   const t0 = { v: 0 };
   const rnd = mulberry(99);
   const lines = Array.from({ length: 26 }, () => ({ y: rnd(), len: 0.2 + rnd() * 0.5, sp: 0.8 + rnd() * 1.6, w: 1 + rnd() * 3, off: rnd() }));
   const dirSign = o.side === 'A' ? 1 : -1;
+  const dust = Array.from({ length: 48 }, () => ({ x: rnd(), y: rnd(), sp: 0.6 + rnd() * 1.4, s: 3 + rnd() * 6 }));
   const draw = (ctx: CanvasRenderingContext2D) => {
     const p = clamp(t0.v / dur);
     const inP = ease.outCubic(clamp(p / 0.22));
@@ -47,6 +48,13 @@ export function playCutIn(scene: Scene, o: CutInOpts): Promise<void> {
       ctx.fillRect(x, (l.y - 0.5) * bandH, l.len * W * 0.5, l.w);
     }
     ctx.restore();
+    // 至尊：金粉星屑 + 上下金边 + 「至尊」徽记
+    if (o.premium) {
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      for (const l of dust) { const x = (((l.x + t0.v * l.sp * 0.25) % 1) * W * 1.2) - W * 0.6; const y = (l.y - 0.5) * bandH * 1.2; ctx.fillStyle = `rgba(255,236,160,${0.55 * vis * (0.5 + 0.5 * Math.sin(t0.v * 9 + l.x * 40))})`; ctx.save(); ctx.translate(x, y); ctx.rotate(t0.v * 2 + l.x * 9); ctx.fillRect(-l.s, -1, l.s * 2, 2); ctx.fillRect(-1, -l.s, 2, l.s * 2); ctx.restore(); }
+      ctx.restore();
+      ctx.fillStyle = `rgba(255,214,90,${vis})`; ctx.fillRect(-W, -bandH / 2 - 14, W * 2, 5); ctx.fillRect(-W, bandH / 2 + 9, W * 2, 5);
+    }
     // 立绘
     const pw = 360;
     const ph = (o.portrait.height / o.portrait.width) * pw;
@@ -66,7 +74,7 @@ export function playCutIn(scene: Scene, o: CutInOpts): Promise<void> {
     ctx.globalAlpha = vis;
     ctx.font = '700 22px "Noto Sans SC","WenQuanYi Zen Hei",sans-serif';
     ctx.fillStyle = '#fff';
-    ctx.fillText(`${o.title}  ${o.name}`, tx + (1 - nameP) * 80 * -dirSign, -bandH * 0.22);
+    ctx.fillText(`${o.premium ? "★至尊  " : ""}${o.title}  ${o.name}`, tx + (1 - nameP) * 80 * -dirSign, -bandH * 0.22);
     ctx.save();
     ctx.translate(tx + (1 - nameP) * 120 * -dirSign, bandH * 0.18);
     ctx.scale(lerp(1.25, 1, nameP), lerp(1.25, 1, nameP));

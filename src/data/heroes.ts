@@ -2,7 +2,7 @@ import type { CatLook, Palette } from '../art/types';
 import { FACTIONS } from './factions';
 import type { FactionId } from './factions';
 
-export type Rarity = 'SR' | 'SSR' | 'UR';
+export type Rarity = 'SR' | 'SSR' | 'UR' | 'SP';
 export type Role = '守护' | '先锋' | '神射' | '谋士' | '医者' | '刺客';
 
 export interface HeroDef {
@@ -567,6 +567,79 @@ export const HEROES: HeroDef[] = [
       outfit: { pal: pal('xian', { cloth: '#5a6498' }), head: 'fortuneHat', body: 'robeScholar', back: 'none', weapon: 'coins', extra: ['monocle'] },
     },
   },
+  // ================= 至尊 SP（仅限氪金「至尊招募」/ 礼包获得）=================
+  {
+    id: 'wei_simamiyi',
+    name: '司马喵懿',
+    origin: '司马懿',
+    title: '冢虎',
+    faction: 'wei',
+    rarity: 'SP',
+    role: '谋士',
+    breed: '深紫缅因渐层',
+    age: '老练 · 回头看你的时候脖子能转很远',
+    lore: '熬死了三任主公的猫。别的猫在追老鼠，他在追时间——毛线球滚得再慢，也总有一天会滚到他爪边。回头一看，你已经被写进了他的小本本。',
+    quote: '不急，我先睡一觉。醒来的时候，天下该换猫坐了。',
+    likes: '小本本、暖炉边的位置、比别人多活一天',
+    look: {
+      coat: { pattern: 'shaded', base: '#4a3d63', light: '#c9bde0', accent: '#2a2040' },
+      eye: { color: '#ffd24a', style: 'keen' },
+      ear: 'tuft',
+      tail: 'bushy',
+      build: 1,
+      outfit: { pal: pal('wei', { main: '#33284f', sub: '#1a1230', trim: '#f2d36a', cloth: '#e6dcf7' }), head: 'scholarCap', body: 'robeSilk', back: 'capeLong', weapon: 'fan', extra: ['beardGoat', 'glowEyes'] },
+    },
+  },
+  {
+    id: 'shu_pangmiaotong',
+    name: '庞喵统',
+    origin: '庞统',
+    title: '凤雏',
+    faction: 'shu',
+    rarity: 'SP',
+    role: '神射',
+    breed: '橘白金渐层',
+    age: '青年 · 一身炭灰味',
+    lore: '卧龙有一只，凤雏也有一只。他最拿手的是“连环”——不是连环计，是连环打喷嚏。每次喷嚏都会带出一点小火星，所以他的军帐从来不用点灯。',
+    quote: '别怕，喷嚏打完，就轮到我的羽毛了。',
+    likes: '火塘、炒栗子、被叫“小凤凰”',
+    look: {
+      coat: { pattern: 'calico', base: '#f3a43a', light: '#fff1d6', accent: '#8a4a1e' },
+      eye: { color: '#d8342a', style: 'sharp' },
+      ear: 'pointy',
+      tail: 'long',
+      build: 0.92,
+      outfit: { pal: pal('shu', { main: '#d8442a', sub: '#8e1f18', trim: '#ffd24a', cloth: '#fff0d0' }), head: 'flowerPin', body: 'robeSilk', back: 'wings', weapon: 'bow', extra: ['earring', 'glowEyes'] },
+    },
+  },
+  {
+    id: 'xian_changmiao',
+    name: '嫦喵',
+    origin: '嫦娥',
+    title: '广寒月主',
+    faction: 'xian',
+    rarity: 'SP',
+    role: '医者',
+    breed: '雪白布偶',
+    age: '永远十五 · 月光里的体温',
+    lore: '住在月亮上的猫。传说她把月光揉成一颗颗小珠子，装进布袋，谁来求药就抓一把。「月光珠」是她随手撒下来的——下面的猫猫抢得头破血流，她只是在上面打了个哈欠。',
+    quote: '月亮很大，毛线球很小，但我都抱得住。',
+    likes: '桂花糕、云被、安静的夜晚',
+    look: {
+      coat: { pattern: 'point', base: '#fbfbff', light: '#ffffff', accent: '#b7c4e6' },
+      eye: { color: '#7fc4ff', style: 'calm' },
+      ear: 'round',
+      tail: 'bushy',
+      build: 0.95,
+      fluffy: true,
+      outfit: { pal: pal('xian', { main: '#8fb4ff', sub: '#5a78d0', trim: '#fff1a8', cloth: '#f4f8ff' }), head: 'lotusCrown', body: 'dress', back: 'ribbons', weapon: 'herbs', extra: ['bell', 'glowEyes'] },
+    },
+  },
 ];
+
+/** 常规可获得的猫猫（不含付费专属 SP）：平衡模拟、常规招募池、图鉴统计都以它为准 */
+export const STANDARD_HEROES: HeroDef[] = HEROES.filter((h) => h.rarity !== 'SP');
+/** 至尊 SP：仅限氪金获得 */
+export const PREMIUM_HEROES: HeroDef[] = HEROES.filter((h) => h.rarity === 'SP');
 
 export const HERO_BY_ID: Record<string, HeroDef> = Object.fromEntries(HEROES.map((h) => [h.id, h]));

@@ -5,6 +5,7 @@ import { artUrl } from '../../ui/art';
 import { chip, fmt } from '../../ui/components';
 import { icon } from '../../ui/icons';
 import { EXP_PER_LEVEL, claimIdle, getStage, idleCapHours, idleRate, nextStage, recommendedPowerOf, tickIdle } from '../../game/stage';
+import { canClaimCard, canClaimVip } from '../../game/premium';
 import { teamPower } from '../../game/state';
 import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
@@ -24,10 +25,7 @@ export function homeHtml(): string {
       <button class="btn blue" data-act="autolevel">一键升级</button>
       <button class="btn pink" data-act="gift" id="giftBtn">每日福利</button>
     </div>
-    <div class="qst-entry-row shop-entry-row">
-      <button class="qst-entry" id="qstBtn" data-act="nav" data-to="quests">${icon('campaign', 22)}任务<span class="qst-red" hidden></span></button>
-      <button class="shop-entry" data-act="nav" data-to="shop" id="shopBtn">${icon('bag', 22)}<span>商店</span></button>
-    </div>
+    <div class="quick" id="quick"></div>
     <div class="tip" id="tip"></div>
   </div>`;
 }
@@ -43,9 +41,20 @@ export function updateHud(ctx: AppCtx) {
     ${chip('fish', s.res.fish)}${chip('bells', s.res.bells, `<button class="plus" data-act="nav" data-to="gacha">${icon('plus', 20)}</button>`)}`;
 }
 
+/** 主城快捷入口：data-act 直接复用 nav / 对话框动作；dot = 红点 */
+export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: string; label: string; cls?: string; dot?: boolean }[] {
+  const s = ctx.s;
+  return [
+    { act: 'nav', to: 'quests', ic: 'campaign', label: '任务', dot: QUESTS.some((quest) => isClaimable(s, quest)) },
+    { act: 'nav', to: 'shop', ic: 'bag', label: '商店' },
+    { act: 'nav', to: 'pay', ic: 'moon', label: '充值', cls: 'pay', dot: canClaimCard(s) || canClaimVip(s) },
+  ];
+}
+
 export function updateHome(ctx: AppCtx) {
   const s = ctx.s;
   updateHud(ctx);
+  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''}>${icon(q.ic, 30)}<span>${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
   const st = getStage(s.stage.chapter, s.stage.index)!;
   const ch = CHAPTERS[s.stage.chapter - 1];
   const power = teamPower(s);
@@ -79,8 +88,6 @@ export function updateHome(ctx: AppCtx) {
   const g = $(ctx, '#giftBtn') as HTMLButtonElement;
   g.disabled = left > 0;
   g.innerHTML = left > 0 ? `每日福利<small>${Math.ceil(left / 1000)} 秒后可领</small>` : `每日福利<small>+铃铛 +招福符</small>`;
-  const dot = ctx.root.querySelector('#qstBtn .qst-red') as HTMLElement | null;
-  if (dot) dot.hidden = !QUESTS.some((quest) => isClaimable(s, quest));
 }
 
 export function updateIdle(ctx: AppCtx) {

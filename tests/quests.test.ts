@@ -140,7 +140,8 @@ describe('quest periods', () => {
       },
       bundle: true, write: false, platform: 'node', format: 'esm',
     });
-    const child = spawnSync(process.execPath, ['--input-type=module', '-e', bundle.outputFiles[0].text], {
+    const child = spawnSync(process.execPath, ['--input-type=module'], {
+      input: bundle.outputFiles[0].text, // 经 stdin 传入：打包体积超过 128KB 时 -e 会触发参数长度上限
       env: { ...process.env, TZ: 'America/New_York' }, encoding: 'utf8', timeout: 5000,
     });
     expect(child.status, child.stderr).toBe(0);

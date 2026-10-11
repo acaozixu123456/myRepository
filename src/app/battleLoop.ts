@@ -2,14 +2,13 @@
 import type { StageDef } from '../content/types';
 import { simulate } from '../engine/battle';
 import type { BEvent } from '../engine/types';
-import type { BgTheme } from '../fx/bg';
+import { CHAPTER_THEME } from '../fx/bg';
 import { Player } from '../fx/player';
 import { applyGain, firstClearReward, getStage, lineupSetups, nextStage, waveSetups, winReward } from '../game/stage';
 import type { Gain } from '../game/stage';
 import type { PlayerState } from '../game/state';
 import { rollover, track } from '../game/quests';
 
-const THEME: Record<number, BgTheme> = { 1: 'meadow', 2: 'meadow', 3: 'redcliff', 4: 'forest', 5: 'mist', 6: 'redcliff' };
 
 export interface LoopHooks {
   state: () => PlayerState;
@@ -137,7 +136,7 @@ export class BattleLoop {
     for (let w = 0; w < stage.waves.length; w++) {
       const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
       const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
-      await this.player.setup(start, THEME[chapter] ?? 'meadow');
+      await this.player.setup(start, CHAPTER_THEME[chapter] ?? 'meadow');
       if (token !== this.token) return false;
       this.player.setSpeed(this.paused ? 0 : this.speed);
       // 最后一波之外不显示“胜利”横幅

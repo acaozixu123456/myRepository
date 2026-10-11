@@ -167,7 +167,7 @@ export class Player {
       caster.energy = 0;
       const hero = unitInfo(caster.heroId);
       const portrait = await this.portrait(caster.heroId);
-      await playCutIn(this.scene, { portrait, faction: caster.faction, skill: e.skill, title: hero.title, name: caster.name, side: caster.side, duration: this.skipping ? 0.01 : 1.25 });
+      await playCutIn(this.scene, { portrait, faction: caster.faction, skill: e.skill, premium: hero.rarity === 'SP', title: hero.title, name: caster.name, side: caster.side, duration: this.skipping ? 0.01 : 1.25 });
     }
     const fx = SKILL_FX[e.fx] ?? defaultFx(e);
     try {
