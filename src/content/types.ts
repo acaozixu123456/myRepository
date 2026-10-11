@@ -64,7 +64,8 @@ export interface StageDef {
   waves: WaveDef[]; // 1~3 波
   rewards: RewardDef; // 每次挂机/战斗奖励（单次）
   firstClear: RewardDef;
-  storyId?: string; // 触发的剧情 id（story.ts）
+  storyId?: string; // 开战前剧情 id（story.ts）
+  storyPostId?: string; // 通关后剧情 id
   rule?: string; // 关卡特殊规则，一句话，如「全场淋湿，火焰伤害 +30%」
 }
 export interface ChapterDef {
