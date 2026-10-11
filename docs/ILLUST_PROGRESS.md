@@ -12,7 +12,7 @@
 | 周喵瑜 | `wu_zhoumiaoyu` | UR | 待画 | 0 | |
 | 吕布丁 | `qun_lvbuding` | UR | 待画 | 0 | |
 | 孟喵获 | `man_mengmiaohuo` | UR | 待画 | 0 | |
-| 左慈喵 | `xian_zuoci` | UR | 待画 | 0 | |
+| 左慈喵 | `xian_zuoci` | UR | 待审 | 1 | 2 候选选 B；白外袍/青绿襟带，双爪肩袖自查；右边距 36px |
 | 夏侯墩 | `wei_xiahoudun` | SSR | 待画 | 0 | |
 | 许虎痴 | `wei_xuhuchi` | SSR | 待画 | 0 | |
 | 张喵辽 | `wei_zhangliao` | SSR | 待画 | 0 | |
