@@ -7,6 +7,35 @@ import { Player } from '../fx/player';
 import { lineupSetups, waveSetups } from '../game/stage';
 import type { PlayerState } from '../game/state';
 
+/** 战斗背景上方的细雨层（只在用街景快照做背景时开）：一块覆盖 canvas 的 2D 画布，雨丝斜着落下 */
+function startRain(ov: HTMLElement, canvas: HTMLCanvasElement): () => void {
+  const c = document.createElement('canvas');
+  c.className = 'arena-rain';
+  ov.appendChild(c);
+  const g = c.getContext('2d')!;
+  const drops = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), v: 0.9 + Math.random() * 0.8, l: 10 + Math.random() * 16 }));
+  let raf = 0, last = performance.now();
+  const loop = (now: number) => {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const r = canvas.getBoundingClientRect(), o = ov.getBoundingClientRect();
+    const w = Math.round(r.width), h = Math.round(r.height);
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+    c.style.cssText = `position:absolute;left:${r.left - o.left}px;top:${r.top - o.top}px;width:${w}px;height:${h}px;pointer-events:none`;
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = 'rgba(170,200,255,.38)'; g.lineWidth = 1.2; g.beginPath();
+    for (const d of drops) {
+      d.y += dt * d.v * 1.6; d.x -= dt * d.v * 0.22;
+      if (d.y > 1.05) { d.y = -0.05; d.x = Math.random() * 1.2; }
+      const x = d.x * w, y = d.y * h;
+      g.moveTo(x, y); g.lineTo(x - d.l * 0.14, y + d.l);
+    }
+    g.stroke();
+    raf = requestAnimationFrame(loop);
+  };
+  raf = requestAnimationFrame(loop);
+  return () => cancelAnimationFrame(raf);
+}
+
 export interface FightResult { win: boolean; damagePct: number }
 
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -21,6 +50,7 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
   const canvas = ov.querySelector('canvas') as HTMLCanvasElement;
   if (banner) await wait(650);
   ov.classList.remove('wipe-in'); ov.querySelector('.arena-banner')?.remove();
+  const stopRain = backdrop ? startRain(ov, canvas) : () => undefined;
   const player = new Player(canvas);
   player.scene.baseCam = { x: 480, y: 366, zoom: 1.28 };
   player.scene.resetCam(0.01);
@@ -44,6 +74,7 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
   }
   await player.sleep(win ? 1.0 : 1.5);
   player.scene.stop();
+  stopRain();
   ov.classList.add('wipe-out');
   await wait(380);
   ov.remove();
