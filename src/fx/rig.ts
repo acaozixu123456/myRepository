@@ -96,3 +96,18 @@ export async function buildPortrait(look: CatLook, viewBox = '10 40 380 420', px
   c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
   return c;
 }
+
+/** 立绘小人：整张 AI 立绘当作「躯干」一块骨骼，脚底为支点；动作靠整体旋转 / 位移 / 呼吸缩放表现（没有手臂摆动）。 */
+export async function buildIllustRig(look: CatLook, url: string, scale = 0.8): Promise<Rig> {
+  const img = await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('illust load failed')); i.src = url; });
+  const H = 560, foot: [number, number] = [200, 604];
+  const w = Math.round((img.width / img.height) * H), h = H;
+  const c = document.createElement('canvas');
+  c.width = Math.ceil(w * scale); c.height = Math.ceil(h * scale);
+  c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+  const parts: RigPart[] = PART_ORDER.map((id) => {
+    if (id !== 'torso') { const e = document.createElement('canvas'); e.width = e.height = 1; return { id, img: e, x: 0, y: 0, w: 0, h: 0, pivot: [200, 300] as [number, number] }; }
+    return { id, img: c, x: foot[0] - w / 2, y: foot[1] - h, w, h, pivot: [foot[0], foot[1]] as [number, number] };
+  });
+  return { parts, look, stance: {}, foot, height: H, scale };
+}

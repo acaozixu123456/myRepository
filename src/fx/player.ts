@@ -9,7 +9,8 @@ import { makeBackground } from './bg';
 import type { BgTheme } from './bg';
 import { Choreo } from './choreo';
 import { playCutIn } from './cutin';
-import { buildPortrait, buildRig } from './rig';
+import { buildIllustRig, buildPortrait, buildRig } from './rig';
+import { ILLUST } from '../art/illust-index';
 import type { Rig } from './rig';
 import { Scene } from './scene';
 import { SKILL_FX, defaultFx } from './skills';
@@ -21,11 +22,14 @@ const ELEM_COLOR: Record<string, [string, string]> = {
 };
 
 const RIG_CACHE = new Map<string, Promise<Rig>>();
+/** 战斗里是否用 AI 立绘当小人（有立绘的猫才生效）；设置里可切换 */
+export const spriteMode = { illust: true };
 function cachedRig(id: string, scale: number): Promise<Rig> {
-  const k = `${id}@${scale}`;
+  const il = spriteMode.illust ? ILLUST[id] : undefined;
+  const k = `${id}@${scale}${il ? '@illust' : ''}`;
   let p = RIG_CACHE.get(k);
   if (!p) {
-    p = buildRig(lookOf(id), scale);
+    p = il ? buildIllustRig(lookOf(id), il.full, scale).catch(() => buildRig(lookOf(id), scale)) : buildRig(lookOf(id), scale);
     RIG_CACHE.set(k, p);
   }
   return p;
