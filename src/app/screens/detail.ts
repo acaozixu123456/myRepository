@@ -8,7 +8,7 @@ import type { Quality } from '../../content/types';
 import { MAX_STAR, starShards, heroLevelCap, heroPower, heroStats, isInLineup, levelUp, levelUpCost, setAwaken, skillUp, skillUpCost, starUp, equip, unequip } from '../../game/state';
 import { AFF_NAMES, FISH_SNACK, MOON_SNACK, PET_PER_DAY, affLines, affProgress, ensureAff, feedSnack, petHero, petsLeft } from '../../game/affection';
 import { heroGear } from '../../game/gear';
-import { artImg } from '../../ui/art';
+import { liveImg } from '../../ui/live';
 import { esc, fmt, stars } from '../../ui/components';
 import { ROLE_ICON, icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
@@ -81,7 +81,7 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
   <div class="mask" data-act="sheetmask"><div class="sheet detail" style="--c:${f.color};--rc:var(--r-${d.rarity.toLowerCase()})" data-id="${id}">
     <button class="close" data-act="closesheet">${icon('close', 20)}</button>
     <div class="hero">
-      <div class="portrait">${artImg(id, 'full')}</div>
+      <div class="portrait">${liveImg(id, 'full')}</div>
       <div>
         <div class="sub">${d.title} · 原型 ${d.origin}</div>
         <h2>${d.name}</h2>

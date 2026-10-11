@@ -1,5 +1,6 @@
 // 《猫国志》应用入口：外壳、导航、存档、三个核心界面（主城 / 阵容 / 招募）。
 import { spriteMode } from '../fx/player';
+import { initLive, liveSettings } from '../ui/live';
 import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
@@ -47,6 +48,8 @@ sfxState.on = state.settings.sound !== false;
 bgmState.on = state.settings.music !== false;
 armBgm();
 spriteMode.illust = state.settings.illustSprite !== false;
+liveSettings.on = state.settings.illustSprite !== false;
+initLive();
 const params = new URLSearchParams(location.search);
 const at = params.get('at');
 if (at) { const [c, i] = at.split('-').map(Number); state.stage = { chapter: c, index: i, wins: 0 }; state.best = { chapter: c, index: i }; }
@@ -251,7 +254,7 @@ root.addEventListener('click', (e) => {
       setTimeout(() => location.reload(), 600);
       break;
     }
-    case 'ill': state.settings.illustSprite = !(state.settings.illustSprite !== false); spriteMode.illust = state.settings.illustSprite; ctx.save(); openSettings(); sfx.ok(); break;
+    case 'ill': state.settings.illustSprite = !(state.settings.illustSprite !== false); spriteMode.illust = state.settings.illustSprite; liveSettings.on = state.settings.illustSprite; ctx.save(); openSettings(); sfx.ok(); break;
     case 'bgm': state.settings.music = !(state.settings.music !== false); setBgmOn(state.settings.music); ctx.save(); openSettings(); sfx.ok(); break;
     case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; ctx.save(); openSettings(); sfx.ok(); break;
     case 'spd': state.settings.speed = Number(el.dataset.v); ctx.loop.setSpeed(state.settings.speed); ctx.save(); openSettings(); updateHome(ctx); break;
