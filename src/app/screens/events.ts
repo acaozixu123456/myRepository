@@ -4,7 +4,7 @@ import {
   answerQuiz, buyGrowth, buyPack, buyPass, canClaimFirstPay, carnivalOf, claimCarnival, claimCum, claimFirstPay, claimGrowth, claimPass, claimSprint, claimSprintChest, ensureEvents, packAvailable,
   passFree, passLevel, passLux, passPrem, quizState, quizToday, rewardText, seasonDaysLeft, spin, spinsLeft, sprintActive, sprintDay, sprintDone, sprintUnlocked,
   carnivalReady as claimable, DAY_PTS_CAP,
-  FESTIVAL_PACK, PULL_TIERS, RANK_REWARDS, WISH_STREAK_BONUS, buyFestivalPack, canWish, claimFestival, claimPull, claimRank, ensureEvents as ensureEv, festivalGift, festivalView, rankNow, rankRewardOf, setWishHero, wish, wishShards, dayOf,
+  FESTIVAL_PACK, OPEN_DAYS, OPEN_REWARDS, claimOpen, openActive, openRankOf, PULL_TIERS, UP_TIERS, claimUp, upDaysLeft, upHeroOf, RANK_REWARDS, WISH_STREAK_BONUS, buyFestivalPack, canWish, claimFestival, claimPull, claimRank, ensureEvents as ensureEv, festivalGift, festivalView, rankNow, rankRewardOf, setWishHero, wish, wishShards, dayOf,
 } from '../../game/events';
 import type { Reward } from '../../game/events';
 import { HERO_BY_ID } from '../../data/heroes';
@@ -16,9 +16,9 @@ import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
 import { topbar } from './lineup';
 
-type Tab = 'sprint' | 'carnival' | 'spin' | 'quiz' | 'wish' | 'pulls' | 'rank' | 'festival' | 'first' | 'cum' | 'growth' | 'pass' | 'packs';
+type Tab = 'sprint' | 'carnival' | 'spin' | 'quiz' | 'wish' | 'pulls' | 'rank' | 'open' | 'festival' | 'first' | 'cum' | 'growth' | 'pass' | 'packs';
 export const eventsState = { tab: 'sprint' as Tab, spinning: false, hit: -1 };
-const TABS: [Tab, string, boolean][] = [['sprint', '七日喵程', false], ['carnival', '嘉年华', false], ['spin', '猫抓机', false], ['quiz', '问答', false], ['wish', '许愿池', false], ['pulls', '招募盛典', false], ['rank', '周冲榜', false], ['festival', '节日', false], ['first', '首充豪礼', true], ['cum', '周累充', true], ['growth', '成长基金', true], ['pass', '通行证', true], ['packs', '礼包', true]];
+const TABS: [Tab, string, boolean][] = [['sprint', '七日喵程', false], ['carnival', '嘉年华', false], ['spin', '猫抓机', false], ['quiz', '问答', false], ['wish', '许愿池', false], ['pulls', '招募盛典', false], ['rank', '周冲榜', false], ['open', '开服冲榜', false], ['festival', '节日', false], ['first', '首充豪礼', true], ['cum', '周累充', true], ['growth', '成长基金', true], ['pass', '通行证', true], ['packs', '礼包', true]];
 
 const ordinal = (ctx: AppCtx) => { const b = ctx.s.best ?? ctx.s.stage; return (b.chapter - 1) * 24 + b.index; };
 function rbtn(act: string, data: Record<string, string | number>, state: 'ok' | 'done' | 'lock', label = '领取'): string {
@@ -75,7 +75,10 @@ function wishHtml(ctx: AppCtx): string {
 function pullsHtml(ctx: AppCtx): string {
   const e = ensureEv(ctx.s);
   const rows = PULL_TIERS.map((t, i) => row(`本周招募 ${t.n} 次`, t.r, rbtn('ev-pull', { i }, e.pullClaimed.includes(i) ? 'done' : e.pulls >= t.n ? 'ok' : 'lock'), `${Math.min(e.pulls, t.n)} / ${t.n}`)).join('');
-  return `<section class="panel"><h3>招募盛典 <small>每周重置</small></h3><p>在「招募」里每抽一次就累计一次（常驻池、UP 池、至尊池都算）。抽得越多，周奖越丰厚。</p><div class="evbar"><i style="width:${Math.min(100, (e.pulls / PULL_TIERS[PULL_TIERS.length - 1].n) * 100)}%"></i></div>${rows}</section>`;
+  const up = e.up, upHero = HERO_BY_ID[upHeroOf(up.period)];
+  const upRows = UP_TIERS.map((t, i) => `<div class="evr"><div class="grow"><b>UP 池累计 ${t.n} 抽</b><small>${t.label}</small><em>${Math.min(up.pulls, t.n)} / ${t.n}</em></div>${rbtn('ev-up', { i }, up.claimed.includes(i) ? 'done' : up.pulls >= t.n ? 'ok' : 'lock')}</div>`).join('');
+  return `<section class="panel"><h3>限时 UP：${esc(upHero.name)} <small>本期剩 ${upDaysLeft()} 天</small></h3><p>每 14 天换一只 UP 的 UR。在「招募 → ${esc(upHero.name)}限定」池里累计抽数，到档领奖，100 抽直接送 UP 猫猫（已拥有则转碎片）。</p>${upRows}</section>
+    <section class="panel"><h3>招募盛典 <small>每周重置</small></h3><p>在「招募」里每抽一次就累计一次（常驻池、UP 池、至尊池都算）。抽得越多，周奖越丰厚。</p><div class="evbar"><i style="width:${Math.min(100, (e.pulls / PULL_TIERS[PULL_TIERS.length - 1].n) * 100)}%"></i></div>${rows}</section>`;
 }
 function rankHtml(ctx: AppCtx): string {
   const s = ctx.s, e = ensureEv(s), r = rankNow(s), l = e.rank.last;
@@ -85,6 +88,18 @@ function rankHtml(ctx: AppCtx): string {
   return `<section class="panel"><h3>周战力冲榜 <small>周一 05:00 结算</small></h3><p>本周你的最高战力和 20 位模拟玩家比：下周一按名次发奖。养成、升星、换装备都能抬高战力。</p>${last}
     <p class="muted">你现在第 <b>${r.rank}</b> 名 · 本周最高战力 ${fmt(r.power)}</p>${RANK_REWARDS.map((x) => `<div class="evr"><div class="grow"><b>${x.label}</b><small>${rewardText(x.r)}</small></div></div>`).join('')}
     <div class="note" style="font-weight:800;margin:8px 0 4px">实时榜</div>${top}${r.rank > 8 ? `<div class="arow me"><i class="rk">${r.rank}</i><div class="who"><b>${esc(me.name)}</b></div><div class="rt"><em>战力</em><b class="num">${fmt(me.power)}</b></div></div>` : ''}</section>`;
+}
+function openHtml(ctx: AppCtx): string {
+  const s = ctx.s, e = ensureEv(s), o = openRankOf(s);
+  if (!openActive(s)) return `<section class="panel"><h3>开服冲榜 <small>已结束</small></h3><p>开服冲榜只在新号的前 ${OPEN_DAYS} 天开放。之后可以去「周冲榜」继续比拼。</p></section>`;
+  const tier = OPEN_REWARDS.find((x) => o.rank <= x.upTo), got = (e.openClaimed ?? []).includes(o.day);
+  const top = o.board.slice(0, 8).map((x, i) => `<div class="arow ${x.me ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i><div class="who"><b>${esc(x.name)}</b></div><div class="rt"><em>${o.theme.unit}</em><b class="num">${fmt(x.v)}</b></div></div>`).join('');
+  const me = o.board[o.rank - 1];
+  return `<section class="panel"><h3>开服冲榜 · 第 ${o.day} / ${OPEN_DAYS} 天 <small>${o.theme.label}</small></h3><p>新来的军师和 20 位老玩家同台：每天换一个主题，当天只要排进前 15 名，就能领一次当日奖励；名次越高奖励越丰厚。榜单实时更新，老玩家也在涨，想领大奖要早点冲。</p>
+    <p class="muted">你现在第 <b>${o.rank}</b> 名 · ${tier ? `可领「${tier.label}」奖励` : '暂未进前 15 名'}</p>
+    <button class="btn ${got ? 'ghost' : tier ? 'green' : 'ghost'}" style="width:100%" data-act="ev-open" ${!got && tier ? '' : 'disabled'}>${got ? '今天已领取' : tier ? `领取 ${tier.label} 奖励` : '继续冲榜'}</button>
+    ${OPEN_REWARDS.map((x) => `<div class="evr"><div class="grow"><b>${x.label}</b><small>${rewardText(x.r)}</small></div></div>`).join('')}
+    <div class="note" style="font-weight:800;margin:8px 0 4px">实时榜</div>${top}${o.rank > 8 ? `<div class="arow me"><i class="rk">${o.rank}</i><div class="who"><b>${esc(me.name)}</b></div><div class="rt"><em>${o.theme.unit}</em><b class="num">${fmt(me.v)}</b></div></div>` : ''}</section>`;
 }
 function festivalHtml(ctx: AppCtx): string {
   const v = festivalView(ctx.s);
@@ -143,7 +158,7 @@ function packsHtml(ctx: AppCtx): string {
 
 export function eventsHtml(ctx: AppCtx): string {
   const t = eventsState.tab;
-  const body = { sprint: sprintHtml, carnival: carnivalHtml, spin: spinHtml, quiz: quizHtml, wish: wishHtml, pulls: pullsHtml, rank: rankHtml, festival: festivalHtml, first: firstHtml, cum: cumHtml, growth: growthHtml, pass: passHtml, packs: packsHtml }[t](ctx);
+  const body = { sprint: sprintHtml, carnival: carnivalHtml, spin: spinHtml, quiz: quizHtml, wish: wishHtml, pulls: pullsHtml, rank: rankHtml, open: openHtml, festival: festivalHtml, first: firstHtml, cum: cumHtml, growth: growthHtml, pass: passHtml, packs: packsHtml }[t](ctx);
   return `${topbar(ctx, '活动', '<button class="btn sm ghost shop-back" data-act="nav" data-to="home">返回</button>')}
     <div class="shop-tabs ev-tabs"><div class="seg">${TABS.map(([id, name, paid]) => `<button class="pill ${paid ? 'paid' : ''}" data-act="ev-tab" data-tab="${id}" aria-pressed="${t === id}">${name}${paid ? '<i>氪</i>' : ''}</button>`).join('')}</div></div>
     <div class="scroll ev-scroll">${body}</div>`;
@@ -177,7 +192,9 @@ export function handleEvents(ctx: AppCtx, act: string, el: HTMLElement): boolean
       ctx.save(); sfx.ok(); ctx.toast(`${HERO_BY_ID[r.hero].name} 收到 ${r.shards} 个碎片${r.bonus ? '（连续 7 天大奖！）' : ''}，连续第 ${r.streak} 天`); ctx.refresh(); return true;
     }
     case 'ev-pull': say(ctx, claimPull(s, i)); return true;
+    case 'ev-up': { const r = claimUp(s, i); ctx.toast(r.ok ? `领到了：${r.text}` : r.reason); if (r.ok) { sfx.ok(); ctx.save(); } ctx.refresh(); return true; }
     case 'ev-rank': { const r = claimRank(s); say(ctx, r.ok ? { ok: true, r: r.r } : r, `上周第 ${r.ok ? r.rank : ''} 名奖励`); return true; }
+    case 'ev-open': { const r = claimOpen(s); say(ctx, r.ok ? { ok: true, r: r.r } : r, `冲榜奖励（${r.ok ? r.label : ''}）`); return true; }
     case 'ev-fest': say(ctx, claimFestival(s, i)); return true;
     case 'ev-quiz': {
       const r = answerQuiz(s, Number(el.dataset.c));
@@ -235,8 +252,10 @@ export function eventsDot(ctx: AppCtx): boolean {
   if (sprintActive(s) && SPRINT.some((_, i) => !e.sprint.includes(i) && sprintUnlocked(s, i) && sprintDone(s, i))) return true;
   if (canClaimFirstPay(s)) return true;
   if (e.wish.hero && canWish(s)) return true;
+  if (UP_TIERS.some((t, i) => e.up.pulls >= t.n && !e.up.claimed.includes(i))) return true;
   if (e.pulls > 0 && PULL_TIERS.some((t, i) => e.pulls >= t.n && !e.pullClaimed.includes(i))) return true;
   if (e.rank.last && !e.rank.last.claimed) return true;
+  if (openActive(s) && !(e.openClaimed ?? []).includes(openRankOf(s).day) && OPEN_REWARDS.some((x) => openRankOf(s).rank <= x.upTo)) return true;
   const f = festivalView(s);
   if (f.active && Array.from({ length: f.active.days }, (_, i) => i).some((i) => f.active!.start + i <= dayOf() && !f.state!.claimed.includes(i))) return true;
   return false;

@@ -1,7 +1,8 @@
 // 活动中心：免费活动（七日喵程 / 嘉年华 / 幸运猫抓机 / 每日问答）与氪金活动（首充豪礼 / 周累充 / 成长基金 / 喵喵通行证 / 限时礼包）。
 // 纯逻辑：时间与随机数可注入；「充值」同 premium.ts 一样是模拟下单，由 premium.record 回调 onPay 记账。
 import { addItem } from './inventory';
-import { NPCS, npcProgress, rnd } from './npc';
+import { HEROES, HERO_BY_ID } from '../data/heroes';
+import { DAY, EPOCH, NPCS, npcProgress, rnd } from './npc';
 import { recordOrder } from './premium';
 import { teamPower } from './state';
 import type { PlayerState } from './state';
@@ -49,6 +50,8 @@ export interface EventState {
   wish: { hero: string; last: number; streak: number; total: number }; // 许愿池
   pulls: number; pullClaimed: number[]; // 招募盛典：本周累计抽数 / 已领档
   fest: { id: string; claimed: number[]; pack: boolean }; // 节日活动：当前节日的签到与礼包记录
+  openClaimed?: number[]; // 开服冲榜已领的天
+  up: { period: number; pulls: number; claimed: number[] }; // UP 池累抽有礼（每期重置）
   rank: { power: number; last?: { week: number; rank: number; power: number; claimed: boolean } }; // 周冲榜：本周最高战力 / 上周结果
 }
 export function ensureEvents(s: PlayerState, now = Date.now()): EventState {
@@ -57,12 +60,14 @@ export function ensureEvents(s: PlayerState, now = Date.now()): EventState {
     day: -1, spinUsed: 0, spinBought: 0, spinPity: 0, spinTotal: 0, quizDay: -1, quizAns: [], week: 0, pts: 0, carn: [], dayPts: 0,
     start: d, sprint: [], sprintChest: false, season: -1, xp: 0, passTier: 0, passFree: [], passPrem: [], passLux: [], weekYuan: 0, cum: [], firstPay: false,
     growth: { bought: false, claimed: [] }, packs: {},
-    wish: { hero: '', last: -9, streak: 0, total: 0 }, pulls: 0, pullClaimed: [], fest: { id: '', claimed: [], pack: false }, rank: { power: 0 },
+    wish: { hero: '', last: -9, streak: 0, total: 0 }, pulls: 0, pullClaimed: [], fest: { id: '', claimed: [], pack: false }, rank: { power: 0 }, up: { period: -1, pulls: 0, claimed: [] },
   };
   const e = s.events;
   e.carn ??= []; e.sprint ??= []; e.quizAns ??= []; e.passFree ??= []; e.passPrem ??= []; e.passLux ??= []; e.cum ??= []; e.packs ??= {}; e.growth ??= { bought: false, claimed: [] };
   e.start ??= d;
-  e.wish ??= { hero: '', last: -9, streak: 0, total: 0 }; e.pulls ??= 0; e.pullClaimed ??= []; e.fest ??= { id: '', claimed: [], pack: false }; e.rank ??= { power: 0 };
+  e.wish ??= { hero: '', last: -9, streak: 0, total: 0 }; e.pulls ??= 0; e.pullClaimed ??= []; e.fest ??= { id: '', claimed: [], pack: false }; e.rank ??= { power: 0 }; e.up ??= { period: -1, pulls: 0, claimed: [] };
+  e.openClaimed ??= [];
+  if (e.up.period !== upPeriod(now)) e.up = { period: upPeriod(now), pulls: 0, claimed: [] };
   if (e.day !== d) { e.day = d; e.spinUsed = 0; e.spinBought = 0; e.dayPts = 0; }
   const wk = weekStart(d);
   if (e.week !== wk) {
@@ -481,4 +486,73 @@ export function claimRank(s: PlayerState, now = Date.now()): Res<{ r: Reward; ra
   l.claimed = true;
   const r = rankRewardOf(l.rank).r; grant(s, r);
   return { ok: true, r, rank: l.rank };
+}
+
+// ---------- 限时 UP 招募：每 14 天换一只 UP 的 UR；本期累计抽数有礼 ----------
+export const UP_DAYS = 14;
+export const upPeriod = (now = Date.now()) => Math.floor((now - EPOCH) / (DAY * UP_DAYS));
+const UR_LIST = HEROES.filter((h) => h.rarity === 'UR');
+/** 第 0 期（开服前两周）固定为周喵瑜，之后按名册顺序轮换 */
+export const upHeroOf = (period: number): string => {
+  const base = Math.max(0, UR_LIST.findIndex((h) => h.id === 'wu_zhoumiaoyu'));
+  return UR_LIST[(((base + period) % UR_LIST.length) + UR_LIST.length) % UR_LIST.length].id;
+};
+export const upDaysLeft = (now = Date.now()) => UP_DAYS - Math.floor(((now - EPOCH) / DAY) % UP_DAYS);
+/** gacha.pull 在抽 UP 池时回调 */
+export function onUpPull(s: PlayerState, n: number, now = Date.now()) { ensureEvents(s, now).up.pulls += n; }
+export const UP_TIERS: { n: number; label: string }[] = [{ n: 30, label: '3 招福符' }, { n: 60, label: '300 金铃铛 + 1 金纹鱼骨' }, { n: 100, label: 'UP 猫猫（已拥有则转 60 碎片）' }];
+export function claimUp(s: PlayerState, i: number, now = Date.now()): Res<{ text: string }> {
+  const e = ensureEvents(s, now), t = UP_TIERS[i];
+  if (!t) return { ok: false, reason: '没有这一档' };
+  if (e.up.claimed.includes(i)) return { ok: false, reason: '已经领过了' };
+  if (e.up.pulls < t.n) return { ok: false, reason: '本期累计抽数还不够' };
+  e.up.claimed.push(i);
+  if (i === 0) grant(s, { tickets: 3 });
+  else if (i === 1) grant(s, { bells: 300, items: { fishbone_large: 1 } });
+  else {
+    const id = upHeroOf(e.up.period), owned = s.heroes[id];
+    if (owned) owned.shards += 60;
+    else { s.heroes[id] = { id, lv: 1, star: 1, shards: 0, skillLv: 1 }; if (!s.seen.includes(id)) s.seen.push(id); }
+    return { ok: true, text: owned ? `${HERO_BY_ID[id].name} 碎片 ×60` : `${HERO_BY_ID[id].name} 加入队伍` };
+  }
+  return { ok: true, text: t.label };
+}
+
+// ---------- 开服冲榜（新号前 7 天，免费）：每天一个主题，与模拟玩家实时比拼，进前列即可领当日奖 ----------
+export const OPEN_DAYS = 7;
+export interface OpenTheme { key: 'stage' | 'power' | 'level'; label: string; unit: string }
+export const OPEN_THEMES: OpenTheme[] = [
+  { key: 'stage', label: '关卡冲榜', unit: '关' }, { key: 'power', label: '战力冲榜', unit: '战力' }, { key: 'level', label: '等级冲榜', unit: '级' },
+  { key: 'stage', label: '关卡冲榜', unit: '关' }, { key: 'power', label: '战力冲榜', unit: '战力' }, { key: 'level', label: '等级冲榜', unit: '级' }, { key: 'power', label: '终极战力榜', unit: '战力' },
+];
+export const OPEN_REWARDS: { upTo: number; label: string; r: Reward }[] = [
+  { upTo: 1, label: '第 1 名', r: { moon: 200, tickets: 10, bells: 500, items: { fishbone_large: 2 } } },
+  { upTo: 3, label: '前 3 名', r: { tickets: 6, bells: 400, items: { fishbone_medium: 2 } } },
+  { upTo: 10, label: '前 10 名', r: { tickets: 3, bells: 200, items: { fishbone_small: 3 } } },
+  { upTo: 15, label: '前 15 名', r: { bells: 100, fish: 10000 } },
+];
+export const openDay = (s: PlayerState, now = Date.now()) => dayOf(now) - ensureEvents(s, now).start + 1; // 第几天（>7 即结束）
+export const openActive = (s: PlayerState, now = Date.now()) => { const d = openDay(s, now); return d >= 1 && d <= OPEN_DAYS; };
+export function openValue(s: PlayerState, key: OpenTheme['key']): number {
+  if (key === 'stage') return ordinalOf(s);
+  if (key === 'power') return Math.max(ensureEvents(s).rank.power, teamPower(s));
+  return Math.max(0, ...Object.values(s.heroes).map((h) => h.lv));
+}
+export function openBoard(s: PlayerState, key: OpenTheme['key'], now = Date.now()): { name: string; v: number; me: boolean }[] {
+  const val = (p: ReturnType<typeof npcProgress>) => (key === 'stage' ? p.ordinal : key === 'power' ? p.power : p.level);
+  return [...NPCS.map((n) => ({ name: n.name, v: val(npcProgress(n, now)), me: false })), { name: s.name, v: openValue(s, key), me: true }]
+    .sort((a, b) => b.v - a.v || Number(b.me) - Number(a.me));
+}
+export const openRankOf = (s: PlayerState, now = Date.now()) => {
+  const d = openDay(s, now), t = OPEN_THEMES[Math.min(OPEN_DAYS, Math.max(1, d)) - 1], board = openBoard(s, t.key, now);
+  return { day: d, theme: t, board, rank: board.findIndex((r) => r.me) + 1 };
+};
+export function claimOpen(s: PlayerState, now = Date.now()): Res<{ r: Reward; rank: number; label: string }> {
+  const e = ensureEvents(s, now), { day, rank } = openRankOf(s, now);
+  if (day < 1 || day > OPEN_DAYS) return { ok: false, reason: '开服冲榜已经结束' };
+  if ((e.openClaimed ??= []).includes(day)) return { ok: false, reason: '今天的冲榜奖励已经领过了' };
+  const tier = OPEN_REWARDS.find((x) => rank <= x.upTo);
+  if (!tier) return { ok: false, reason: `现在第 ${rank} 名，进前 15 名才有奖励` };
+  e.openClaimed.push(day); grant(s, tier.r);
+  return { ok: true, r: tier.r, rank, label: tier.label };
 }

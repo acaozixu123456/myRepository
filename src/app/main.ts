@@ -28,7 +28,7 @@ import { canSign } from '../game/daily';
 import { seedDemoInventory } from '../game/inventory';
 import { rollover, track } from '../game/quests';
 import { handleQuests, questsHtml } from './screens/quests';
-import { POOLS } from '../game/gacha';
+import { POOLS, syncUpPool } from '../game/gacha';
 import { fmt } from '../ui/components';
 import { makeHomeScenery } from '../fx/bg';
 
@@ -264,7 +264,7 @@ root.addEventListener('click', (e) => {
     case 'closedialog': if ((e.target as HTMLElement) === el || el.tagName === 'BUTTON') root.querySelectorAll('.mask.center').forEach((m) => m.remove()); break;
     case 'sheetmask': if (e.target === el) closeSheet(ctx); break;
   }
-  void unequip; void POOLS; void applyGain;
+  void unequip; void POOLS; void applyGain; syncUpPool();
 });
 
 // 每秒刷新挂机收益

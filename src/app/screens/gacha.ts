@@ -1,7 +1,7 @@
 import { FACTIONS } from '../../data/factions';
 import { HEROES, HERO_BY_ID } from '../../data/heroes';
 import type { Rarity } from '../../data/heroes';
-import { COST, DUP_SHARDS, POOLS, pull, urRate } from '../../game/gacha';
+import { COST, DUP_SHARDS, POOLS, pull, syncUpPool, urRate } from '../../game/gacha';
 import type { PoolDef, PullResult } from '../../game/gacha';
 import { SP_COST, SP_POOL, ensurePay, pullSp, spCost, spRate, spUpHero } from '../../game/premium';
 import { TOTAL_HEROES } from '../../game/state';
@@ -43,6 +43,7 @@ function spHtml(ctx: AppCtx): string {
 }
 
 export function gachaHtml(ctx: AppCtx): string {
+  syncUpPool();
   if (isSp()) return spHtml(ctx);
   const s = ctx.s;
   const p = pool();

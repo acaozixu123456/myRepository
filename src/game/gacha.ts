@@ -2,6 +2,7 @@
 import { HEROES } from '../data/heroes';
 import type { HeroDef, Rarity } from '../data/heroes';
 import type { PlayerState } from './state';
+import { onUpPull, upDaysLeft, upHeroOf, upPeriod } from './events';
 import { track } from './quests';
 
 export interface PoolDef {
@@ -16,9 +17,17 @@ export interface PoolDef {
 }
 
 export const POOLS: PoolDef[] = [
-  { id: 'up_zhouyu', name: '赤壁限定', desc: '周喵瑜概率 UP！UR 出货时有 50% 为周喵瑜，歪一次后下次必为周喵瑜。', upHero: 'wu_zhoumiaoyu', rates: { ur: 0.015, ssr: 0.12 }, ssrPity: 10, urPity: 80, urSoftFrom: 60 },
+  { id: 'up', name: '赤壁限定', desc: '周喵瑜概率 UP！UR 出货时有 50% 为周喵瑜，歪一次后下次必为周喵瑜。', upHero: 'wu_zhoumiaoyu', rates: { ur: 0.015, ssr: 0.12 }, ssrPity: 10, urPity: 80, urSoftFrom: 60 },
   { id: 'normal', name: '常驻招募', desc: '全部猫猫都有机会出现。', rates: { ur: 0.015, ssr: 0.12 }, ssrPity: 10, urPity: 80, urSoftFrom: 60 },
 ];
+
+/** UI 启动 / 打开招募页时调用：把「限定 UP 池」同步成本期的 UP 猫猫（测试不调用，保持默认的周喵瑜） */
+export function syncUpPool(now = Date.now()): PoolDef {
+  const p = POOLS[0], id = upHeroOf(upPeriod(now)), h = HEROES.find((x) => x.id === id)!;
+  p.upHero = id; p.name = `${h.name}限定`;
+  p.desc = `${h.name}概率 UP！UR 出货时有 50% 为${h.name}，歪一次后下次必为${h.name}。本期还剩 ${upDaysLeft(now)} 天，累计抽数还有额外奖励（活动页）。`;
+  return p;
+}
 
 export const COST = { single: { tickets: 1, bells: 160 }, ten: { tickets: 10, bells: 1500 } };
 export const DUP_SHARDS: Record<Rarity, number> = { SR: 6, SSR: 12, UR: 25, SP: 60 };
@@ -101,6 +110,7 @@ export function pull(s: PlayerState, pool: PoolDef, n: 1 | 10, rnd: () => number
     const needSsr = n === 10 && i === 9 && !results.some((r) => r.rarity !== 'SR');
     results.push(pullOnce(s, pool, rnd, needSsr));
   }
+  if (pool.id === 'up') onUpPull(s, results.length);
   track(s, 'recruit', results.length);
   track(s, 'collect_hero', Object.keys(s.heroes).length);
   return { ok: true, results };

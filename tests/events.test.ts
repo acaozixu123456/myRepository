@@ -283,3 +283,76 @@ describe('周冲榜', () => {
     expect(ensureEvents(s, at(7)).rank.power).toBe(0);
   });
 });
+
+import { POOLS, pull, syncUpPool } from '../src/game/gacha';
+import { UP_DAYS, UP_TIERS, claimUp, upDaysLeft, upHeroOf, upPeriod } from '../src/game/events';
+import { HEROES } from '../src/data/heroes';
+
+describe('限时 UP 招募', () => {
+  it('每 14 天轮换一只 UR，第 0 期是周喵瑜，轮完一圈回到原点，期内不变', () => {
+    const urs = HEROES.filter((h) => h.rarity === 'UR').map((h) => h.id);
+    expect(upHeroOf(0)).toBe('wu_zhoumiaoyu');
+    expect(new Set(Array.from({ length: urs.length }, (_, p) => upHeroOf(p))).size).toBe(urs.length);
+    expect(upHeroOf(urs.length)).toBe(upHeroOf(0));
+    const t = new Date(2026, 9, 1, 12).getTime();
+    expect(upPeriod(t)).toBe(0); expect(upPeriod(t + (UP_DAYS - 1) * 86400000 - 3600000 * 13)).toBe(0); expect(upPeriod(t + UP_DAYS * 86400000)).toBe(1);
+    expect(upDaysLeft(t)).toBeGreaterThan(0); expect(upDaysLeft(t)).toBeLessThanOrEqual(UP_DAYS);
+  });
+  it('syncUpPool 把限定池换成本期 UP 猫猫（名称、说明同步）', () => {
+    const saved = { ...POOLS[0] };
+    const t = new Date(2026, 9, 20, 12).getTime(); // 第 1 期
+    const p = syncUpPool(t);
+    expect(p.upHero).toBe(upHeroOf(1)); expect(p.name).toContain('限定'); expect(p.desc).toContain(HEROES.find((h) => h.id === upHeroOf(1))!.name);
+    Object.assign(POOLS[0], saved);
+  });
+  it('抽 UP 池才累计，常驻池不算；到档可领，100 抽送 UP 猫猫（已拥有转碎片），换期清零', () => {
+    const s = newPlayer(0); s.res.tickets = 999;
+    pull(s, POOLS[1], 10, () => 0.5);
+    expect(ensureEvents(s, at(0)).up.pulls).toBe(0);
+    pull(s, POOLS[0], 10, () => 0.5);
+    expect(ensureEvents(s).up.pulls).toBe(10);
+    expect(claimUp(s, 0).ok).toBe(false);
+    ensureEvents(s).up.pulls = 100;
+    const tickets = s.res.tickets;
+    expect(claimUp(s, 0).ok).toBe(true); expect(s.res.tickets - tickets).toBe(3);
+    expect(claimUp(s, 0).ok).toBe(false);
+    expect(claimUp(s, 1).ok).toBe(true);
+    const id = upHeroOf(ensureEvents(s).up.period);
+    delete s.heroes[id];
+    expect(claimUp(s, 2).ok).toBe(true); expect(s.heroes[id]).toBeTruthy();
+    const e = ensureEvents(s); e.up.claimed = []; e.up.pulls = 100;
+    expect(claimUp(s, 2).ok).toBe(true); expect(s.heroes[id].shards).toBe(60);
+    expect(UP_TIERS.map((t) => t.n)).toEqual([30, 60, 100]);
+    expect(ensureEvents(s, Date.now() + 15 * 86400000).up.pulls).toBe(0);
+  });
+});
+
+import { OPEN_DAYS, OPEN_REWARDS, OPEN_THEMES, claimOpen, openActive, openBoard, openDay, openRankOf } from '../src/game/events';
+
+describe('开服冲榜', () => {
+  it('只在新号前 7 天开放，每天一个主题，榜单含玩家与全部模拟玩家', () => {
+    const s = newPlayer(0);
+    ensureEvents(s, at(0));
+    expect(openDay(s, at(0))).toBe(1); expect(openActive(s, at(0))).toBe(true);
+    expect(openActive(s, at(OPEN_DAYS - 1))).toBe(true); expect(openActive(s, at(OPEN_DAYS))).toBe(false);
+    expect(OPEN_THEMES).toHaveLength(OPEN_DAYS);
+    const b = openBoard(s, 'power', at(2));
+    expect(b).toHaveLength(NPCS.length + 1); expect(b.filter((r) => r.me)).toHaveLength(1);
+    for (let i = 1; i < OPEN_REWARDS.length; i++) expect(OPEN_REWARDS[i].upTo).toBeGreaterThan(OPEN_REWARDS[i - 1].upTo);
+  });
+  it('名次不够进前 15 不能领；够了每天领一次；结束后不能领', () => {
+    const s = newPlayer(0);
+    ensureEvents(s, at(0));
+    const low = claimOpen(s, at(0));
+    expect(low.ok).toBe(false);
+    s.best = { chapter: 6, index: 24 }; // 关卡榜第一天：推到最远关
+    for (const h of Object.values(s.heroes)) h.lv = 100;
+    const o = openRankOf(s, at(0));
+    expect(o.rank).toBe(1);
+    const r = claimOpen(s, at(0));
+    expect(r.ok && r.rank).toBe(1);
+    expect(claimOpen(s, at(0)).ok).toBe(false);
+    expect(claimOpen(s, at(1)).ok).toBe(true); // 第二天（战力榜）：战力也要够
+    expect(claimOpen(s, at(OPEN_DAYS)).ok).toBe(false);
+  });
+});
