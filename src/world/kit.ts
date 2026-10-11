@@ -279,3 +279,40 @@ export function lanternString(a: THREE.Vector3, b: THREE.Vector3, color: string,
   for (let i = 1; i < n; i++) { const p = curve.getPoint(i / n); const l = new THREE.Mesh(new THREE.SphereGeometry(0.34, 8, 6), glowMat(color)); l.scale.y = 1.25; l.position.set(p.x, p.y - 0.4, p.z); g.add(l); }
   return g;
 }
+
+/** 集装箱（长边沿 x；朝向 ry）：波纹侧板 + 门 + 发光编号牌 */
+export function container(color = '#d9483b'): THREE.Group {
+  const g = new THREE.Group(); const m = std(color, 0.55, 0.35), dark = std('#1a1a22', 0.6, 0.4);
+  g.add(box(6, 2.6, 2.4, m, 0, 1.3, 0));
+  for (let i = -5; i <= 5; i++) { g.add(box(0.12, 2.5, 0.08, dark, i * 0.5, 1.3, 1.22)); g.add(box(0.12, 2.5, 0.08, dark, i * 0.5, 1.3, -1.22)); }
+  g.add(box(0.15, 2.6, 2.5, dark, 3.0, 1.3, 0)); g.add(box(0.15, 2.6, 2.5, dark, -3.0, 1.3, 0));
+  const tag = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.5), glowMat('#ffffff', neonSign('猫运', '#ffe27a', { w: 128, h: 48 }))); tag.position.set(1.4, 2.0, 1.27); g.add(tag);
+  return g;
+}
+/** 龙门吊：四条腿 + 横梁 + 驾驶室 + 红色警示灯 */
+export function crane(): THREE.Group {
+  const g = new THREE.Group(); const steel = std('#d9a23a', 0.55, 0.4);
+  for (const x of [-6, 6]) for (const z of [-3, 3]) g.add(box(0.7, 16, 0.7, steel, x, 8, z));
+  g.add(box(14.5, 1.2, 8, steel, 0, 16.2, 0));
+  for (const z of [-3, 3]) g.add(box(0.5, 0.5, 14, std('#8a6a2a', 0.6, 0.4), 0, 17.2, z * 0.0 + z));
+  g.add(box(2.4, 2.2, 2.4, std('#2a2a3a', 0.5, 0.5), 2, 14.6, 0));
+  const lamp1 = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 6), glowMat('#ff3a3a')); lamp1.position.set(-6, 17.4, -3); g.add(lamp1);
+  const lamp2 = lamp1.clone(); lamp2.position.set(6, 17.4, 3); g.add(lamp2);
+  const sg = new THREE.Mesh(new THREE.PlaneGeometry(5, 1.6), glowMat('#ffffff', neonSign('赤壁港', '#ff7a3a', { w: 256, h: 96 }))); sg.position.set(0, 18.4, 4.1); g.add(sg);
+  return g;
+}
+/** 货轮（船头朝 +x）：船体 + 船舱 + 烟囱 + 舷灯 + 货柜 */
+export function ship(): THREE.Group {
+  const g = new THREE.Group(); const hull = std('#2a2a3a', 0.6, 0.4);
+  const sh = new THREE.Shape(); sh.moveTo(-12, 0); sh.lineTo(10, 0); sh.lineTo(15, 2.4); sh.lineTo(10, 3); sh.lineTo(-12, 3); sh.lineTo(-12, 0);
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: 6, bevelEnabled: false }); geo.translate(0, 0, -3);
+  const h = new THREE.Mesh(geo, hull); h.position.y = -0.3; g.add(h);
+  g.add(box(24, 0.5, 6.1, std('#d9483b', 0.6), 0, 0.2, 0));
+  g.add(box(5, 5, 5, std('#e8e4dc', 0.6), -8, 5.6, 0));
+  g.add(cyl(0.9, 3, std('#d9483b', 0.6), -9.5, 9, 0));
+  const win = new THREE.Mesh(new THREE.PlaneGeometry(4, 0.8), glowMat('#ffe9b0')); win.position.set(-5.48, 6.6, 0); win.rotation.y = Math.PI / 2; g.add(win);
+  const cols = ['#d9483b', '#2a8ac8', '#e8a23a', '#4a9a62'];
+  for (let i = 0; i < 4; i++) for (let k = 0; k < 2; k++) g.add(box(4.4, 2.4, 2.6, std(cols[(i + k) % 4], 0.55, 0.3), -2 + i * 4.6, 4.4 + k * 2.5 - 1.2, 0));
+  for (const x of [-10, 0, 10]) { const l = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 5), glowMat('#ffd070')); l.position.set(x, 2.4, 3.1); g.add(l); const l2 = l.clone(); l2.position.z = -3.1; g.add(l2); }
+  return g;
+}

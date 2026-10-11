@@ -133,3 +133,14 @@ export function glowTex(): THREE.CanvasTexture {
 export function stripes(a: string, b: string, n = 8): THREE.CanvasTexture {
   return mk(128, 64, (g) => { const w = 128 / n; for (let i = 0; i < n; i++) { g.fillStyle = i % 2 ? a : b; g.fillRect(i * w, 0, w, 64); } }, `stripes${a}${b}${n}`);
 }
+
+/** 水面反光条纹（可平铺，横向亮线），做动画时滚动 offset */
+export function waterGlint(): THREE.CanvasTexture {
+  const t = mk(256, 256, (g) => {
+    const rnd = mulberry(31);
+    g.fillStyle = '#000'; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 70; i++) { const y = rnd() * 256, x = rnd() * 256, w = 20 + rnd() * 90; const gr = g.createLinearGradient(x, 0, x + w, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(0.5, `rgba(255,255,255,${0.25 + rnd() * 0.5})`); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(x, y, w, 1.5 + rnd() * 2); if (x + w > 256) g.fillRect(x - 256, y, w, 2); }
+  }, 'waterglint');
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}

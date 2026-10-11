@@ -1,7 +1,7 @@
 // 把 LevelDef（levels.ts 里的纯数据）搭成 3D 场景：路、人行道、楼、道具、电线、拱门、灯笼、倒影、外圈都市、蒸汽。
 import * as THREE from 'three';
-import { asphalt, glowTex, paving } from './tex';
-import { arch, building, glowMat, lamp, lanternString, manekiNeko, cone, pole, std, tram, wire } from './kit';
+import { asphalt, glowTex, paving, waterGlint } from './tex';
+import { arch, building, container, crane, glowMat, lamp, lanternString, manekiNeko, cone, pole, ship, std, tram, wire } from './kit';
 import { bakeStatic } from './bake';
 import { buildBackdrop } from './backdrop';
 import { buildSteam } from './steam';
@@ -71,6 +71,20 @@ export function buildStreet(L: LevelDef = LEVEL_1): Street {
   for (const [x, z] of L.poles) { const p = pole(11.5); p.position.set(x, 0.32, z); p.rotation.y = z === 5.2 || z === -5.2 ? 0 : Math.PI / 2; g.add(p); poles.push(new THREE.Vector3(x, 11.5, z)); }
   for (let i = 0; i + 1 < poles.length; i++) for (const dy of [0, -1.1]) for (const dz of [-1.0, 0, 1.0]) g.add(wire(poles[i].clone().add(new THREE.Vector3(0, dy - 0.2, dz * 0.3)), poles[i + 1].clone().add(new THREE.Vector3(0, dy - 0.2, dz * 0.3)), 0.9 + Math.abs(dz) * 0.2));
 
+  // ---- 码头：水面 + 集装箱 + 吊机 + 货轮 ----
+  let glint: THREE.Texture | null = null;
+  if (L.water) {
+    const [wx0, wz0, wx1, wz1] = L.water, ww = wx1 - wx0, wd = wz1 - wz0;
+    const water = new THREE.Mesh(new THREE.PlaneGeometry(ww, wd), new THREE.MeshStandardMaterial({ color: 0x06202e, roughness: 0.08, metalness: 0.7, emissive: 0x04121c, emissiveIntensity: 1 }));
+    water.rotation.x = -Math.PI / 2; water.position.set((wx0 + wx1) / 2, 0.5, (wz0 + wz1) / 2); g.add(nm(water));
+    glint = waterGlint(); glint.repeat.set(ww / 12, wd / 12);
+    const gl = new THREE.Mesh(new THREE.PlaneGeometry(ww, wd), new THREE.MeshBasicMaterial({ map: glint, color: L.lights[0] ? L.lights[0][3] : 0xff7a3a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+    gl.rotation.x = -Math.PI / 2; gl.position.set((wx0 + wx1) / 2, 0.56, (wz0 + wz1) / 2); g.add(nm(gl));
+    const edge = new THREE.Mesh(new THREE.BoxGeometry(ww, 0.5, 0.5), glowMat('#ff7a3a')); edge.position.set((wx0 + wx1) / 2, 0.6, wz0); g.add(nm(edge));
+  }
+  for (const [x, z, ry, c] of L.containers ?? []) { const o = container(c); o.position.set(x, 0.32, z); o.rotation.y = ry; g.add(o); }
+  for (const [x, z, ry] of L.cranes ?? []) { const o = crane(); o.position.set(x, 0.5, z); o.rotation.y = ry; g.add(nm(o)); }
+  for (const [x, z, ry] of L.ships ?? []) { const o = ship(); o.position.set(x, 0.5, z); o.rotation.y = ry; g.add(nm(o)); }
   // ---- 街边小东西 ----
   for (const p of L.props) {
     const make = PROPS[p.kind];
@@ -106,5 +120,5 @@ export function buildStreet(L: LevelDef = LEVEL_1): Street {
   const bd = buildBackdrop(); g.add(bd.group);
   const steam = buildSteam(L.vents);
   g.add(steam.group);
-  return { level: L, group: g, colliders, spawn: new THREE.Vector3(L.spawn[0], 0.32, L.spawn[1]), half: HALF, buildings: refs, update: (t, dt) => { bd.update(t); steam.update(dt); } };
+  return { level: L, group: g, colliders, spawn: new THREE.Vector3(L.spawn[0], 0.32, L.spawn[1]), half: HALF, buildings: refs, update: (t, dt) => { bd.update(t); steam.update(dt); if (glint) { glint.offset.x = t * 0.03; glint.offset.y = t * 0.012; } } };
 }

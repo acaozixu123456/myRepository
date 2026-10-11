@@ -19,6 +19,11 @@ export interface LevelDef {
   arches: [number, number, number, string, string][]; // x z 朝向(rad) 文字 颜色
   lanterns: [number, number, number, number, number, string][]; // x0 z0 x1 z1 高度 颜色
   vents: [number, number, number][];
+  /** 水面矩形 [x0,z0,x1,z1]（不可走）+ 码头景物 */
+  water?: [number, number, number, number];
+  containers?: [number, number, number, string][]; // x z 朝向 颜色
+  cranes?: [number, number, number][];
+  ships?: [number, number, number][];
   enemySpots: [number, number][]; chestSpots: [number, number][]; bossSpot: [number, number]; npcSpot: [number, number]; spawn: [number, number];
 }
 
@@ -90,6 +95,25 @@ export const LEVEL_2: LevelDef = {
   ...SPOTS,
 };
 
+// ---------- 关卡 3：赤壁霓虹港（码头：南面是水，集装箱 + 吊机 + 货轮）----------
+const L3_POLES: [number, number][] = [[-20, -5.2], [-6, -5.2], [6, 5.2], [20, 5.2], [5.2, -18]];
+export const LEVEL_3: LevelDef = {
+  id: 'redcliff-harbor', chapter: 3, name: '赤壁霓虹港', mood: 'redcliff', half: 32,
+  buildings: L1_BUILDINGS.slice(0, 4).map((b, i) => ({ ...b, spec: { ...b.spec, seed: b.spec.seed + 60, style: (['brick', 'dark', 'brick', 'dark'] as const)[i] } })),
+  poles: L3_POLES, props: L1_PROPS.filter((p) => p.z < 9 && p.kind !== 'tree'), lamps: [[-2.5, -7, '#ffb060'], [3, 7, '#ff8a60'], [12, -6.9, '#ffd070'], [-12, 6.8, '#ff6a50']], cones: [[1.5, 4.8], [-1.5, 4.8], [14, 4.8], [-14, -4.8]],
+  glows: [[0, 0, '#ff5a3a', 22], [-12, -6, '#ffb040', 14], [14, 9, '#ff2e5a', 16], [-22, 9, '#ffe27a', 12]],
+  lights: [[0, 5, 0, 0xff5a3a, 90, 26], [-14, 6, -4, 0xffb040, 70, 22], [14, 6, 9, 0xff2e5a, 70, 22]],
+  tram: false, arches: [], lanterns: [],
+  vents: [[-3, 0.5, -7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4]],
+  water: [-31, 12.5, 31, 31],
+  containers: [[-27, 10, 0, '#d9483b'], [-9, 10.2, 0, '#2a8ac8'], [22, 10, 0, '#e8a23a'], [27, 10, 0, '#4a9a62']],
+  cranes: [[-16, 18, 0], [18, 17, 0]],
+  ships: [[0, 24, 0], [-22, 27, 0.2]],
+  enemySpots: [[12, 0], [-14, -2], [0, -13], [-20, 9.5], [18, 9.5], [2, 10]],
+  chestSpots: [[24, 0], [-2.5, -26], [3, -26], [-26, 5.8]],
+  bossSpot: [0, -23], npcSpot: [6, 5.8], spawn: [0, 8],
+};
+
 // ---------- 关卡 3~6：同一套街区换色 / 换名 ----------
 const REMAP: Record<number, { name: string; mood: MoodId; pal: string[]; styles: BuildingSpec['style'][] }> = {
   3: { name: '赤壁霓虹港', mood: 'redcliff', pal: ['#ff5a3a', '#ffb040', '#ff2e5a', '#ffe27a'], styles: ['brick', 'dark', 'pink', 'brick'] },
@@ -114,7 +138,7 @@ function variant(base: LevelDef, chapter: number): LevelDef {
     lamps: base.lamps.map(([x, z, c], i) => [x, z, col(c, i)]),
   };
 }
-export const LEVELS: Record<number, LevelDef> = { 1: LEVEL_1, 2: LEVEL_2, 3: variant(LEVEL_1, 3), 4: variant(LEVEL_2, 4), 5: variant(LEVEL_1, 5), 6: variant(LEVEL_2, 6) };
+export const LEVELS: Record<number, LevelDef> = { 1: LEVEL_1, 2: LEVEL_2, 3: LEVEL_3, 4: variant(LEVEL_2, 4), 5: variant(LEVEL_1, 5), 6: variant(LEVEL_2, 6) };
 export const levelOf = (chapter: number): LevelDef => LEVELS[chapter] ?? LEVEL_1;
 
 /** 碰撞盒（纯数据）：楼、电车、杆、拱门柱、道具 */
@@ -125,5 +149,7 @@ export function levelColliders(L: LevelDef): AABB[] {
   for (const [x, z] of L.poles) out.push({ x0: x - 0.4, x1: x + 0.4, z0: z - 0.4, z1: z + 0.4 });
   for (const [x, z, ry] of L.arches) for (const s of [-1, 1]) { const px = x + (Math.abs(Math.sin(ry)) > 0.5 ? 0 : s * 4.9), pz = z + (Math.abs(Math.sin(ry)) > 0.5 ? s * 4.9 : 0); out.push({ x0: px - 0.5, x1: px + 0.5, z0: pz - 0.5, z1: pz + 0.5 }); }
   for (const p of L.props) out.push({ x0: p.x - 0.7, x1: p.x + 0.7, z0: p.z - 0.7, z1: p.z + 0.7 });
+  if (L.water) out.push({ x0: L.water[0], x1: L.water[2], z0: L.water[1], z1: L.water[3] });
+  for (const [x, z, ry] of L.containers ?? []) { const w = Math.abs(Math.sin(ry)) > 0.5 ? [1.6, 3.3] : [3.3, 1.6]; out.push({ x0: x - w[0], x1: x + w[0], z0: z - w[1], z1: z + w[1] }); }
   return out;
 }
