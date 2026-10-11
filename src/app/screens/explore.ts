@@ -26,6 +26,10 @@ export const EXPLORE_CSS = `
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
 .xplore .hud *{pointer-events:auto}
 .xobj{position:absolute;left:10px;right:10px;top:58px;z-index:3;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;background:rgba(16,10,32,.72);border:2px solid rgba(255,110,210,.55);box-shadow:0 0 18px rgba(255,80,200,.25);color:#fff;backdrop-filter:blur(4px)}
+.xhelp{position:absolute;inset:0;z-index:25;display:grid;place-items:center;background:rgba(6,3,16,.6)}
+.xhelp>div{width:min(320px,86%);padding:16px 18px;border-radius:16px;background:rgba(22,14,44,.96);border:2px solid rgba(127,240,255,.6);box-shadow:0 0 24px rgba(127,240,255,.3);color:#eae4ff;font-weight:700;font-size:13.5px;line-height:1.75}
+.xhelp h4{margin:0 0 6px;font-family:var(--f-d);font-size:18px;color:#ffe9a0;letter-spacing:.05em}
+.xhelp button{margin-top:10px;width:100%}
 .xquest{position:absolute;left:10px;top:122px;z-index:3;max-width:150px;padding:6px 9px;border-radius:12px;background:rgba(16,10,32,.62);border:1.5px solid rgba(127,240,255,.45);color:#cfc6e8;font-size:11px;font-weight:700;line-height:1.55;pointer-events:none}
 .xquest b{color:#7ff0ff;font-size:11.5px}.xquest .ok{color:#8affb0}
 .xobj b{display:block;font-family:var(--f-d);font-size:15px;letter-spacing:.04em;color:#ffe9a0}
@@ -143,6 +147,22 @@ function applyGfx(ctx: AppCtx, wv: WorldView) {
   wv.lockQuality = g !== 'auto';
   wv.forceLevel(GFX_LV[g]);
 }
+function showHelpOnce(ctx: AppCtx) {
+  const s = ctx.s;
+  s.tips ??= [];
+  if (s.tips.includes('explore-help')) return;
+  s.tips.push('explore-help'); ctx.save();
+  const el = document.createElement('div');
+  el.className = 'xhelp';
+  el.innerHTML = `<div><h4>探索小贴士</h4>
+    · 点地面：队伍自动走过去；点野猫 / 宝箱 / 嫦喵：直接过去<br>
+    · 左下摇杆（电脑用 WASD）：直接控制走位<br>
+    · 单指拖动转镜头，双指捏合缩放<br>
+    · 碰到野猫开战，首领在街区北端；打赢首领通往下一章<br>
+    · 找嫦喵领每日委托，三项做完有大奖<button class="btn green">知道啦</button></div>`;
+  el.onclick = (e) => { if ((e.target as HTMLElement).closest('button') || e.target === el) el.remove(); };
+  ctx.root.querySelector('[data-screen="explore"]')?.appendChild(el) ?? ctx.root.appendChild(el);
+}
 let miniT = 0;
 function drawMini(ctx: AppCtx) {
   if (rt) { const f = ctx.root.querySelector('#xfps'); if (f) f.textContent = `${Math.round(rt.wv.fps)}fps · 画质${['高', '高', '中', '低', '最低'][rt.wv.level]}`; }
@@ -221,6 +241,7 @@ export async function enterExplore(ctx: AppCtx) {
   rt.wv.start();
   rt.running = true;
   rainAmbience(true);
+  showHelpOnce(ctx);
   clearInterval(miniT);
   miniT = window.setInterval(() => drawMini(ctx), 250);
   setTimeout(() => { load.style.display = 'none'; }, 250);
