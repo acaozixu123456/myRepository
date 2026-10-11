@@ -7,7 +7,7 @@ import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
-import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
+import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, gainText, killReward, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
@@ -67,6 +67,8 @@ export function exploreHtml(): string {
 }
 
 // ---------- 摇杆 / 键盘移动（相对镜头朝向）----------
+let autoOn = false;
+let autoT = 0;
 const keys = new Set<string>();
 let joy = { x: 0, y: 0 }; // x 右、y 上，-1..1
 let inputBound = false;
@@ -153,7 +155,7 @@ function hud(ctx: AppCtx): string {
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
   ${questHtml(ctx)}
   <canvas class="xmini" id="xmini" width="184" height="184"></canvas><div class="xfps" id="xfps"></div>
-  <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ghost" data-act="x-trail">足迹${trailRows(ctx.s).some((r) => r.ready) ? ' <span style="color:#ff3d7a">●</span>' : ''}</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
+  <div class="xtools"><button class="btn sm blue" data-act="nav" data-to="lineup">阵容</button><button class="btn sm ${autoOn ? 'green' : 'ghost'}" data-act="x-auto">自动探索${autoOn ? '中' : ''}</button><button class="btn sm ghost" data-act="x-trail">足迹${trailRows(ctx.s).some((r) => r.ready) ? ' <span style="color:#ff3d7a">●</span>' : ''}</button><button class="btn sm ghost" data-act="x-reset">回出生点</button></div>`;
 }
 
 const GFX_LV = { auto: 0, high: 0, low: 3 } as const;
@@ -222,7 +224,16 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
   });
   let stepT = 0;
   wv.onUpdate = (dt) => {
-    const d = moveDir(wv.yaw); if (d) ex.push(d[0], d[1], dt);
+    const d = moveDir(wv.yaw);
+    if (d && autoOn) { autoOn = false; refreshExploreHud(ctx); ctx.toast('自动探索已关闭（你接管了）'); }
+    if (d) ex.push(d[0], d[1], dt);
+    else if (autoOn && ex.idle && (autoT -= dt) <= 0) {
+      autoT = 0.6;
+      const lp = ex.leaderPos;
+      const t = pickAutoTarget({ x: lp.x, z: lp.z }, ex.snapshot().ents, killsLeft(ctx.s));
+      if (t) ex.moveTo(t.x, t.z);
+      else { autoOn = false; refreshExploreHud(ctx); ctx.toast('这一带清完啦，自动探索结束'); }
+    }
     ex.update(dt); st.update(wv.time, dt);
     if (ex.moving) { stepT -= dt; if (stepT <= 0) { stepSfx(); stepT = 0.26; } } else stepT = 0;
   };
@@ -267,7 +278,7 @@ export async function enterExplore(ctx: AppCtx) {
   miniT = window.setInterval(() => drawMini(ctx), 250);
   setTimeout(() => { load.style.display = 'none'; }, 250);
 }
-export function leaveExplore() { rainAmbience(false); clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
+export function leaveExplore() { autoOn = false; rainAmbience(false); clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
 export function resizeExplore() { rt?.wv.resize(); }
 
 // ---------- 玩法 ----------
@@ -310,6 +321,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
       }
       sfx.ok();
     } else {
+      if (autoOn) { autoOn = false; ctx.toast('打输了，自动探索已停止'); }
       ctx.result({ win: false, title: `${stage.id} ${stage.name}`, hint: `我方战力 ${fmt(teamPower(s))}，推荐 ${fmt(recommendedPowerOf(t.chapter, t.index))}。去阵容升级猫猫再来吧。` });
     }
     ctx.save();
@@ -363,6 +375,7 @@ function openTrail(ctx: AppCtx) {
 export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
     case 'x-boss': if (rt) { rt.ex.moveTo(rt.st.level.bossSpot[0], rt.st.level.bossSpot[1] + 5); ctx.toast('出发！'); } return true;
+    case 'x-auto': autoOn = !autoOn; autoT = 0; refreshExploreHud(ctx); ctx.toast(autoOn ? '自动探索开始：先采药 / 开箱，再找野猫（首领要你亲自去）' : '自动探索已关闭'); return true;
     case 'x-trail': openTrail(ctx); return true;
     case 'x-claim': {
       const g = claimTrail(ctx.s, el.dataset.id!);

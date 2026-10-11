@@ -103,6 +103,8 @@ export class Explorer {
   /** 小地图用：队长位置 + 所有活着的实体 */
   snapshot() { return { leader: { x: this.leader.pos.x, z: this.leader.pos.z, yaw: this.leader.yaw }, ents: this.ents.filter((e) => e.alive).map((e) => ({ kind: e.spawn.kind, x: e.group.position.x, z: e.group.position.z })) }; }
   get leader(): Actor { return this.team[0]; }
+  /** 没在走路也没在战斗：自动探索用它判断什么时候该找下一个目标 */
+  get idle(): boolean { return !this.paused && !this.busy && this.path.length === 0; }
   get moving(): boolean { return this.leader.moving > 0.5; }
   get leaderPos(): THREE.Vector3 { return this.team[0].pos; }
 

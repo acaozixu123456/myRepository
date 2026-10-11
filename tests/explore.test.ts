@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { KILL_CAP, TRAIL, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
+import { KILL_CAP, TRAIL, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
 import { LEVELS, herbsOf, levelColliders } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 
@@ -123,5 +123,34 @@ describe('探索足迹（长期累计）', () => {
       expect(ms.length).toBeGreaterThanOrEqual(3);
       for (let i = 1; i < ms.length; i++) { expect(ms[i].need).toBeGreaterThan(ms[i - 1].need); expect(ms[i].reward.fish).toBeGreaterThan(ms[i - 1].reward.fish); }
     }
+  });
+});
+
+describe('自动探索选目标', () => {
+  const ents = [
+    { kind: 'enemy' as const, x: 3, z: 0 }, { kind: 'boss' as const, x: 0, z: -100 }, { kind: 'npc' as const, x: 0.5, z: 0 },
+    { kind: 'chest' as const, x: 20, z: 0 }, { kind: 'herb' as const, x: 10, z: 0 },
+  ];
+  it('先捡最近的猫薄荷 / 宝箱，再找野猫；首领和嫦喵永远不去', () => {
+    expect(pickAutoTarget({ x: 0, z: 0 }, ents, true)).toMatchObject({ kind: 'herb' });
+    expect(pickAutoTarget({ x: 0, z: 0 }, ents.filter((e) => e.kind !== 'herb'), true)).toMatchObject({ kind: 'chest' });
+    expect(pickAutoTarget({ x: 0, z: 0 }, ents.filter((e) => e.kind === 'enemy' || e.kind === 'boss' || e.kind === 'npc'), true)).toMatchObject({ kind: 'enemy' });
+    expect(pickAutoTarget({ x: 0, z: 0 }, ents.filter((e) => e.kind === 'boss' || e.kind === 'npc'), true)).toBeNull();
+  });
+  it('每日野怪奖励拿满后不再主动找野猫，但仍会去采集', () => {
+    expect(pickAutoTarget({ x: 0, z: 0 }, ents.filter((e) => e.kind === 'enemy'), false)).toBeNull();
+    expect(pickAutoTarget({ x: 0, z: 0 }, ents, false)).toMatchObject({ kind: 'herb' });
+  });
+  it('靠近首领的宝箱 / 野猫不自动去，免得误打首领', () => {
+    const near = [{ kind: 'boss' as const, x: 0, z: -23 }, { kind: 'chest' as const, x: -2.5, z: -26 }, { kind: 'enemy' as const, x: 4, z: -20 }];
+    expect(pickAutoTarget({ x: 0, z: 0 }, near, true)).toBeNull();
+    expect(pickAutoTarget({ x: 0, z: 0 }, [...near, { kind: 'herb' as const, x: -2.4, z: -9 }], true)).toMatchObject({ kind: 'herb' });
+  });
+  it('killsLeft 跟着每日上限走', () => {
+    const s = newPlayer();
+    expect(killsLeft(s)).toBe(true);
+    const st = farmStage(s).stage;
+    for (let i = 0; i < KILL_CAP; i++) killReward(s, st);
+    expect(killsLeft(s)).toBe(false);
   });
 });

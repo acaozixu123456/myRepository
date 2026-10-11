@@ -152,3 +152,22 @@ export function claimTrail(s: PlayerState, id: string): Gain | null {
   t.claimed.push(id);
   return { ...m.reward };
 }
+
+// ---------- 自动探索（挂机与冒险的桥）----------
+/** 自动探索离首领至少这么远（首领 4.2 就触发战斗，留出路上的余量） */
+export const BOSS_SAFE = 9;
+export interface AutoEnt { kind: SpawnDef['kind']; x: number; z: number }
+/**
+ * 自动探索下一个去哪：先捡离得最近的猫薄荷丛 / 宝箱（不用打架），再去找最近的野猫；
+ * 首领和嫦喵永远不自动去。每日野怪奖励拿满（killsLeft = false）后就不再主动找野猫，没有目标返回 null。
+ */
+export function pickAutoTarget(from: { x: number; z: number }, ents: AutoEnt[], killsLeft: boolean): AutoEnt | null {
+  const d2 = (e: AutoEnt) => (e.x - from.x) ** 2 + (e.z - from.z) ** 2;
+  // 首领会在 4.2 以内触发战斗：靠近首领的宝箱 / 野猫不自动去，免得自动探索误打首领
+  const bosses = ents.filter((e) => e.kind === 'boss');
+  const safe = (e: AutoEnt) => bosses.every((b) => (b.x - e.x) ** 2 + (b.z - e.z) ** 2 > BOSS_SAFE ** 2);
+  ents = ents.filter(safe);
+  const nearest = (list: AutoEnt[]) => list.reduce<AutoEnt | null>((b, e) => (!b || d2(e) < d2(b) ? e : b), null);
+  return nearest(ents.filter((e) => e.kind === 'herb' || e.kind === 'chest')) ?? (killsLeft ? nearest(ents.filter((e) => e.kind === 'enemy')) : null);
+}
+export const killsLeft = (s: PlayerState, now = Date.now()) => ensureExplore(s, now).kills < KILL_CAP;
