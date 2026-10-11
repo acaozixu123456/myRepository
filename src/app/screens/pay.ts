@@ -4,6 +4,7 @@ import {
   MONTH_CARD, MOON_PER_YUAN, SP_PACK, TOPUPS, VIP_STEPS, buyCard, buySpPack, canClaimCard, canClaimVip, cardDaysLeft, claimCard, claimVip,
   ensurePay, topUp, vipLevel, vipPerks, vipProgress,
 } from '../../game/premium';
+import { MOON_OFFERS, buyMoon, leftOf, moonDiscount, priceOf, weeklyLimit } from '../../game/moonshop';
 import { artUrl } from '../../ui/art';
 import { gachaState } from './gacha';
 import { esc } from '../../ui/components';
@@ -64,6 +65,12 @@ export function payHtml(ctx: AppCtx): string {
         ${icon('moon', 40)}<b class="num">${full(t.moon)}</b><small>${t.bonus ? `+${full(t.bonus)} 赠送` : '基础档'}${first ? ` · 首次再送 ${full(t.moon)}` : ''}</small><em>¥${t.yuan}</em></button>`; }).join('')}</div>
     </section>
 
+    <section class="panel">
+      <h3>${icon('gift', 22)} 月光珠商铺 <small>${moonDiscount(vp.level) ? `VIP${vp.level} 享 ${Math.round(moonDiscount(vp.level) * 100)}% 折扣` : 'VIP5 起折扣，VIP3 起限购 +1'}</small></h3>
+      <p>用月光珠兑换养成大件，每周刷新限购。VIP 越高越便宜、能买得越多。</p>
+      ${MOON_OFFERS.map((o) => { const left = leftOf(s, o); const price = priceOf(o, vp.level); return `<div class="ms-row"><div class="grow"><b>${o.label}</b><small>本周剩 ${left} / ${weeklyLimit(o, vp.level)}${price !== o.price ? ` · 原价 ${o.price}` : ''}</small></div><button class="btn sm ${left > 0 && (s.res.moon ?? 0) >= price ? 'pink' : 'ghost'}" data-act="pay-moonbuy" data-id="${o.id}" ${left > 0 ? '' : 'disabled'}>${icon('moon', 14)} ${price}</button></div>`; }).join('')}
+    </section>
+
     <section class="panel pay-note">
       <b>演示版说明</b>：当前版本没有接入真实支付渠道，「充值」为模拟下单，确认后月光珠直接到账、不会产生任何实际扣费。正式上线时将替换为应用商店 / 支付平台的内购回调。
       ${p.orders.length ? `<details><summary>最近订单（${p.orders.length}）</summary>${p.orders.slice(0, 8).map((o) => `<div class="ord"><span>${new Date(o.t).toLocaleString()}</span><span>${esc(o.id)}</span><b>¥${full(o.yuan)}${o.moon ? ` → ${full(o.moon)}珠` : ''}</b></div>`).join('')}</details>` : ''}
@@ -101,6 +108,7 @@ export function handlePay(ctx: AppCtx, act: string, el: HTMLElement): boolean {
       sfx.coin(); ctx.save(); ctx.refresh(); ctx.toast(msg); floaty(ctx, '+', 'moon', 50, 20);
       return true;
     }
+    case 'pay-moonbuy': { const r = buyMoon(s, el.dataset.id!); if (r.ok) { sfx.coin(); ctx.save(); ctx.toast(`兑换了 ${r.label}，花费 ${r.paid} 月光珠`); } else ctx.toast(r.reason); ctx.refresh(); return true; }
     case 'pay-card': { const g = claimCard(s); if (g) { ctx.toast(`领取 ${g.moon} 月光珠、${g.bells} 金铃铛`); sfx.coin(); } ctx.save(); ctx.refresh(); return true; }
     case 'pay-vip': { const g = claimVip(s); if (g) { ctx.toast(`VIP ${vipLevel(s)} 福利：${g.moon} 月光珠、${g.bells} 金铃铛`); sfx.coin(); } ctx.save(); ctx.refresh(); return true; }
   }
@@ -130,6 +138,7 @@ export const PAY_CSS = `
 .tier em{font-style:normal;font-family:var(--f-d);font-size:15px;color:#fff;background:var(--pink);padding:1px 14px 2px;border-radius:999px;box-shadow:0 2px 0 var(--pink-d)}
 .tier .tg{position:absolute;right:-3px;top:-4px;background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:0 7px;border-radius:999px}
 .tier .dbl{position:absolute;left:4px;top:3px;background:linear-gradient(90deg,#ffe27a,#ff9ad8);color:#5a1038;font-size:9.5px;font-weight:800;padding:0 6px;border-radius:999px}
+.ms-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--paper-line)}.ms-row:last-child{border:0}.ms-row b{font-family:var(--f-d);font-weight:400;font-size:14px;display:block}.ms-row small{display:block;font-size:11px;font-weight:700;color:var(--ink-2)}
 .pay-note{font-size:11.5px;line-height:1.7;color:var(--ink-2);font-weight:700}
 .pay-note details{margin-top:6px}.pay-note .ord{display:flex;justify-content:space-between;gap:6px;font-size:11px;padding:2px 0;border-bottom:1px dashed var(--paper-line)}
 `;

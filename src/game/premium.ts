@@ -19,6 +19,7 @@ export interface PayState {
   grants: string[]; // 已发放过的一次性赠礼
   orders: { t: number; id: string; yuan: number; moon: number }[]; // 最近订单（保留 20 条）
   pulls: number; // 至尊招募累计抽数
+  moonShop?: { week: number; bought: Record<string, number> }; // 月光珠商铺的本周限购记录
 }
 
 export interface TopUpTier { id: string; yuan: number; moon: number; bonus: number; tag?: string }
