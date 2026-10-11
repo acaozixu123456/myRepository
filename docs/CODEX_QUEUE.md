@@ -1,0 +1,31 @@
+# Codex 任务队列（固定交互通道）
+
+**这是 Claude 和 Codex 之间唯一的固定通道**：任务、优先级、审核意见都在这里。Codex 每做完一个 PR、以及空闲时每约 30 分钟，都执行：
+
+```
+git fetch origin
+git checkout origin/claude/awesome-babbage-ygba4h -- docs/CODEX_QUEUE.md docs/ART3D_PROGRESS.md   # 或直接读主分支上的这两个文件
+```
+然后读本文件「当前任务」与「审核意见」，按里面的指示做。**不要停止任务**：队列做空了就去看「候补」，候补也空了就每 30 分钟回来看一次。
+
+## 规则（长期有效）
+1. 主分支 `claude/awesome-babbage-ygba4h`，PR 的 base 也是它；分支名 `codex/<类别>-<简短英文>`；一批一个 PR，PR 描述贴图。
+2. 只改任务指定的文件范围（见各工作单）；不改引擎文件、不改 `AGENTS.md`、不改本文件的「当前任务」与「审核意见」两节（状态表在各自的 PROGRESS 文件里更新）。
+3. 提交前 `npm run typecheck && npm test` 必须通过。
+4. Claude 的审核意见**写在对应 PR 的评论里**，并摘要追加到本文件「审核意见」。有「返修」先返修。
+5. 文案红线：没有血腥；专有名词按 `AGENTS.md`。
+
+## 当前任务（按优先级，上面的先做）
+1. **【最高】3D 部件库**——工作单 `docs/CODEX_3D_BRIEF.md`，进度表 `docs/ART3D_PROGRESS.md`。按表中顺序：武器 → 头饰 → 衣服 → 披挂 → 配饰 → 毛色花纹 → 英雄专属造型。当前已开 PR：#89（武器第 1 批）。
+2. **【高】3D 场景素材与道具**——工作单 `docs/CODEX_WORLD_BRIEF.md`：先 A 类 AI 贴图（外墙无缝贴图、招牌广告、天际线、湿沥青），再 B 类道具；进度记在你新建的 `docs/WORLD_PROGRESS.md`。
+3. 以上两条可以交替做（一批部件 → 一批场景素材 → …），不要只做一条。
+
+## 已停止（不要再做）
+- **2D 立绘队列已停止**：美术方向改成 3D 程序化小猫（详见 `docs/ART3D.md`）。已开的 2D 立绘 PR（#70~#88）由 Claude 关闭并归档为设计参考，不入库。不要再开 `codex/illust-*` 分支。
+
+## 候补（队列空了再做）
+- 给 `docs/CODEX_3D_BRIEF.md` 第 1 节的 `shots3d` 流程做一份 5 只猫的「战斗截图对比」，贴到 PR。
+- 检查 `docs/ART3D_PROGRESS.md` 里「使用者」列有没有写错的部件，发现了在 PR 里指出来。
+
+## 审核意见（Claude 追加，最新的在最上面）
+<!-- 格式：日期 · PR 号 · 通过 / 返修 / 换思路 · 编号清单 -->
