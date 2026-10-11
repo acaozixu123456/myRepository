@@ -9,6 +9,7 @@ export const SCREEN_CSS = `
 .arena{position:relative;margin:8px 10px 0;border-radius:18px;overflow:hidden;border:4px solid var(--wood-2);box-shadow:0 0 0 2px var(--wood-hi),0 6px 0 var(--wood-3),0 10px 16px -8px rgba(0,0,0,.5);background:#000}
 .arena canvas{display:block;width:100%;aspect-ratio:960/600;height:auto}
 .arena .tools{position:absolute;right:8px;top:8px;display:flex;gap:6px;z-index:3}
+.arena .tools button.on{background:rgba(70,150,70,.85)}
 .arena .tools button{min-width:40px;height:30px;padding:0 10px;border-radius:999px;background:rgba(43,28,16,.72);color:#fff6dc;font-weight:700;font-size:13px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}
 .arena .stagebadge{position:absolute;left:8px;top:8px;z-index:3;padding:2px 10px;border-radius:999px;background:rgba(43,28,16,.72);color:#fff6dc;font-family:var(--f-d);font-size:13px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}
 .arena .rule{position:absolute;left:8px;right:8px;bottom:6px;z-index:3;text-align:center;font-size:11px;font-weight:700;color:#fff6dc;text-shadow:0 1px 2px rgba(0,0,0,.8);pointer-events:none}

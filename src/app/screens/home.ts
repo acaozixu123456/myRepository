@@ -1,3 +1,4 @@
+import { autoPushOn } from '../../game/autopush';
 import { festivalNow, upDaysLeft, upHeroOf, upPeriod } from '../../game/events';
 import { guildBossOf } from '../../game/guildboss';
 import { bossOfWeek } from '../../game/worldboss';
@@ -25,7 +26,7 @@ export function homeHtml(): string {
   <div class="screen home on" data-screen="home">
     <div class="hud" id="hud"></div>
     <div class="stagebar" id="stagebar"></div>
-    <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="speed" id="speedBtn">2×</button></div><div class="rule" id="rule"></div></div>
+    <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="autopush" id="autoBtn">自动闯关</button><button data-act="speed" id="speedBtn">2×</button></div><div class="rule" id="rule"></div></div>
     <div class="teamstrip" id="team" data-act="nav" data-to="lineup"></div>
     <div class="idle panel" id="idle"></div>
     <div class="actions">
@@ -105,6 +106,7 @@ export function updateHome(ctx: AppCtx) {
   $(ctx, '#badge').textContent = `${st.id} 连战 ${s.stage.wins}`;
   $(ctx, '#rule').textContent = st.rule ?? '';
   $(ctx, '#speedBtn').textContent = `${s.settings.speed}×`;
+  const ab = $(ctx, '#autoBtn'); ab.textContent = autoPushOn(s) ? '自动闯关·开' : '自动闯关·关'; ab.classList.toggle('on', autoPushOn(s));
   const b = s.best ?? s.stage;
   const nx = nextStage(b.chapter, b.index);
   const chBtn = $(ctx, '#chBtn') as HTMLButtonElement;

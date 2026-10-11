@@ -161,10 +161,14 @@ ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
     if (kind === 'win') floaty(ctx, `+${fmt(g.fish)}`, 'fish', 50, 30);
     else lastFirst = g;
   },
-  onResult(win, stage, pushed) {
+  onResult(win, stage, pushed, auto) {
     if (!pushed) return;
     const g = lastFirst;
     lastFirst = null;
+    if (auto) { // 自动闯关不弹窗打断挂机，只给一条提示
+      ctx.toast(win ? `自动闯关成功：${stage.id} ${stage.name}${g?.fish ? `，首通 +${fmt(g.fish)} 小鱼干` : ''}` : `自动闯关没打过 ${stage.id}，先继续刷，战力涨一点再试`);
+      return;
+    }
     const next = nextStage(state.best?.chapter ?? 1, state.best?.index ?? 1);
     const rec = recommendedPowerOf(Number(stage.id.split('-')[0]), Number(stage.id.split('-')[1]));
     ctx.result({
@@ -217,6 +221,7 @@ root.addEventListener('click', (e) => {
   if (handleDaily(ctx, act)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
+    case 'autopush': state.settings.autoPush = !(state.settings.autoPush !== false); delete state.settings.autoFail; ctx.save(); updateHome(ctx); ctx.toast(state.settings.autoPush ? '自动闯关已开：战力够了会自己去挑战下一关' : '自动闯关已关'); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
     case 'claim': claim(ctx); break;
     case 'settings': openSettings(); break;

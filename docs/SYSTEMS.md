@@ -13,6 +13,7 @@
 | 公会 Boss | `game/guildboss.ts` | 同上 | `gboss` | `tests/guildboss.test.ts` |
 | 世界 Boss（每周轮换） | `game/worldboss.ts` | `screens/campaign.ts` 的「Boss」页 | `wboss` | `tests/worldboss.test.ts` |
 | 七日签到 / 快速探索 | `game/daily.ts` | `screens/daily.ts` | `daily` | `tests/daily.test.ts` |
+| 自动闯关（挂机时战力够了自动推下一关，失败有冷却） | `game/autopush.ts` | 主城战斗区右上角开关 | `settings.autoPush` | `tests/autopush.test.ts` |
 | 日常秘境 | `game/dungeon.ts` | `screens/campaign.ts` | `dungeon` | `tests/dungeon.test.ts` |
 | **活动中心**（见下） | `game/events.ts` | `screens/events.ts` | `events` | `tests/events.test.ts` |
 | 好感度（撸毛 / 点心，属性最高 +5%） | `game/affection.ts` | `screens/detail.ts` 英雄详情页 | `heroes[id].aff` | `tests/affection.test.ts` |

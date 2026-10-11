@@ -1,4 +1,5 @@
 // 主界面里的“挂机战斗”循环：反复打当前关卡，结算奖励；可主动挑战下一关。
+import { recordAutoResult, shouldAutoPush } from '../game/autopush';
 import type { StageDef } from '../content/types';
 import { simulate } from '../engine/battle';
 import type { BEvent } from '../engine/types';
@@ -13,7 +14,7 @@ import { rollover, track } from '../game/quests';
 export interface LoopHooks {
   state: () => PlayerState;
   onReward: (g: Gain, kind: 'win' | 'first') => void;
-  onResult: (win: boolean, stage: StageDef, pushed: boolean) => void;
+  onResult: (win: boolean, stage: StageDef, pushed: boolean, auto?: boolean) => void;
   onChange: () => void; // 状态变化（需要保存 / 刷新界面）
   /** 播放剧情（挑战首次到达的关卡前 / Boss 通关后），返回时继续 */
   story?: (id: string | undefined) => Promise<void>;
@@ -91,7 +92,8 @@ export class BattleLoop {
     this.running = true;
     while (token === this.token) {
       const s = this.hooks.state();
-      const push = this.pushNext;
+      const auto = !this.pushNext && shouldAutoPush(s);
+      const push = this.pushNext || auto;
       this.pushNext = false;
       const best = (s.best ??= { chapter: s.stage.chapter, index: s.stage.index });
       let target = { chapter: s.stage.chapter, index: s.stage.index };
@@ -108,6 +110,7 @@ export class BattleLoop {
       const win = await this.fight(stage, token, target.chapter);
       if (token !== this.token) return;
       this.lastOutcome = win ? 'win' : 'lose';
+      if (auto) recordAutoResult(s, win);
       if (win) {
         // 自动战斗可能先于界面定时器跨过 5 点，先换周期再计胜场。
         rollover(s, Date.now());
@@ -128,7 +131,7 @@ export class BattleLoop {
           if (token !== this.token) return;
         } else s.stage.wins++;
       }
-      this.hooks.onResult(win, stage, push);
+      this.hooks.onResult(win, stage, push, auto);
       this.hooks.onChange();
       await this.player.sleep(win ? 1.4 : 2.2);
       if (!win && push) await this.player.sleep(0.4);
