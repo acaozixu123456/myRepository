@@ -25,11 +25,14 @@ export function applyPose(cat: Cat3D, P: Record<string, number>, o: PoseOpts): v
   j.head.position.set(0, 0.46 + live * 0.012 * b + g('head.2') * -UNIT * 0.5, g('head.1') * UNIT * 0.5);
   // 手臂：负角度 = 向前上方抬起；R 臂 = 持武器手
   const armR = g('armR.0'), armL = g('armL.0');
-  j.shoulderR.rotation.set(armR * D * 1.15, 0, 0.12 + Math.max(0, -armR) * 0.0016 + live * Math.sin(tt + 0.3) * 0.02);
-  j.shoulderL.rotation.set(armL * D * 1.15, 0, -0.12 - Math.max(0, -armL) * 0.0016 + live * Math.sin(tt + 0.6) * 0.02);
+  // 举过头顶时随抬高向外张开，手不会穿进脑袋
+  const lift = (a: number) => Math.max(a * D * 1.15, -2.55);
+  const splay = (a: number) => 0.12 + Math.max(0, -a) * 0.0042;
+  j.shoulderR.rotation.set(lift(armR), 0, splay(armR) + live * Math.sin(tt + 0.3) * 0.02);
+  j.shoulderL.rotation.set(lift(armL), 0, -splay(armL) + live * Math.sin(tt + 0.6) * 0.02);
   // 手臂举过肩时，肘部自然弯一点
-  j.elbowR.rotation.set(-0.15 - Math.min(0, armR) * D * -0.0 - Math.max(0, -armR - 40) * D * 0.35, 0, 0);
-  j.elbowL.rotation.set(-0.15 - Math.max(0, -armL - 40) * D * 0.35, 0, 0);
+  j.elbowR.rotation.set(-0.15 - Math.min(0.45, Math.max(0, -armR - 40) * D * 0.35), 0, 0);
+  j.elbowL.rotation.set(-0.15 - Math.min(0.45, Math.max(0, -armL - 40) * D * 0.35), 0, 0);
   // 腿
   const lg = (side: 'L' | 'R', sgn: number) => {
     const h = side === 'L' ? j.hipL : j.hipR, k = side === 'L' ? j.kneeL : j.kneeR;
