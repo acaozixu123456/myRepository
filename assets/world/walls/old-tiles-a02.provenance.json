@@ -1,0 +1,356 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A02",
+  "title": "老旧瓷砖外墙",
+  "created_date_utc": "2026-10-11",
+  "branch": "codex/3d-world-old-tiles",
+  "base_branch": "claude/awesome-babbage-ygba4h",
+  "base_commit": "a39faab60eea41b2de3374507559901be5cc95a9",
+  "branch_creation_base_commit": "4d1ceb3ad65fca9233aeb773ba6efacfe76d040c",
+  "brief": "docs/CODEX_WORLD_BRIEF.md",
+  "generator": {
+    "tool": "image_gen.imagegen",
+    "provider": "OpenAI",
+    "model_version": null,
+    "seed": null,
+    "metadata_note": "接口没有返回模型版本和随机种子。",
+    "external_reference_images": [],
+    "reference_note": "初稿未使用外部图片；修订仅参考本批自己的AI初稿。"
+  },
+  "review": {
+    "round": 1,
+    "status": "awaiting_claude",
+    "approved_count": 0
+  },
+  "assets": [
+    {
+      "id": "wall_tile_seafoam_01",
+      "title": "灰绿瓷砖",
+      "category": "walls/old_tiles",
+      "role": "base_color",
+      "path": "assets/world/walls/wall_tile_seafoam_01.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready square seamless TILEABLE game ALBEDO / BASE COLOR texture of an aged ceramic tile exterior facade in a cat-world rainy cyberpunk miniature city. Completely flat orthographic front view, square image filled edge to edge by only the ceramic surface. Detailed environmental surface art. All lighting will be computed by the game engine: absolutely even diffuse color, no directional bevel highlights, no specular glaze glare, no shadows around chips, no vignette, no broad brightness gradient, no baked neon color or light. Dirt and chips are material-color details only. Grid periodicity is critical: exactly 8 columns and 8 rows of complete equally sized square tiles. All four image boundaries cut through the CENTER of the same very thin neutral gray grout joint; each boundary contains only half of a grout line, so two copies meet to make one normal interior line. All internal grout lines evenly spaced at 12.5%, 25%, 37.5%, 50%, 62.5%, 75%, 87.5%, with edges at 0% and 100%. Outer and inner grout joints have identical narrow width and flat color. NO doubled seam or extra sliver of a tile. Keep grout subdued, without a painted illuminated lip or black outline. All surface wear stays inside tiles; avoid cracks or stains crossing image boundaries. Distribute tiny stains and wear evenly without one recognizable hero patch. The entire texture must repeat naturally on both axes, without a frame. No perspective, room, building, object, text, graffiti, logo, people, cats, faces, material sphere, border, panel labels or preview montage. Deliver one full-resolution 1024x1024 square albedo texture, not a 2x2 preview.\nVARIANT: old muted seafoam-green ceramic facade. Pale desaturated blue-green matte glaze, occasional slightly grayer replacement tiles, fine crazing, sparse little glaze chips that expose warm gray ceramic, smoke dust concentrated subtly along grout. Cool dirty gray grout, controlled mid-light values. A restrained clean grid with believable age. No pooled wet reflections.",
+          "references": [],
+          "raw_output": {
+            "filename": "exec-a1639977-9a86-49d9-9ec0-2be69ea09318.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3181461,
+            "sha256": "24a47bc02c2ea0f9f043004c72a98049dbb213004af726200a84d54ddce21cfd"
+          },
+          "selection_note": "未采用；AI 修订连续亮边、灰缝边界后再检查平铺。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Refine the supplied ceramic facade image into a completely UNLIT, seamless, periodic ALBEDO / BASE COLOR texture for a game. Keep its same material, palette, 8 by 8 equal-size square tile layout, naturally varied replacement tile colors, tiny ceramic glaze chips, fine crazing and distributed grime. Preserve crisp original texture detail. Correct two technical issues: (1) remove the continuous white top/left rim streaks and dark bottom/right bevel shading that look like relief lighting. Tile chips and mortar should have flat material colors, without a bright edge or a shadow side. No specular shine, rim lighting, drop shadows, ambient occlusion painted around tile edges, vignette, or global illumination gradient. The engine will light the tiles. (2) the FOUR image boundaries must lie through the CENTER of a thin flat mortar joint, each showing only HALF a normal interior joint width. These boundary joints must have the same uniform neutral-gray color as each other and the internal mortar joints; no extra frame or tile sliver. Exactly eight complete square tile columns and rows fit the full square, with all inner mortar lines evenly spaced at 12.5% intervals. The left/right and top/bottom edge features must continue when repeated, with one normal joint at each repetition seam. Avoid unique big wear marks, and keep micro-wear away from outer mortar joints. Fill the full square edge to edge, orthographic front view of only a flat surface. No perspective, objects, words, logos, faces, neon, preview montage or border. One 1024x1024 game albedo texture.",
+          "references": [
+            "24a47bc02c2ea0f9f043004c72a98049dbb213004af726200a84d54ddce21cfd"
+          ],
+          "raw_output": {
+            "filename": "exec-2b2c0bba-2b11-41cf-9a8b-c333684e07da.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 2884092,
+            "sha256": "394c01fd5c8a7f2f6f86f22c6863137bfe061b1b4aa7d214eb4eaadc832c0c30"
+          },
+          "selection_note": "采用；去除连续亮边并修正物理灰缝边界，完整周期降采样。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "394c01fd5c8a7f2f6f86f22c6863137bfe061b1b4aa7d214eb4eaadc832c0c30",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          2,
+          2,
+          1252,
+          1252
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          1250,
+          1250
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "extract complete 8x8 ceramic tile / grout period",
+          "Lanczos downsample to 1024x1024",
+          "encode RGB sRGB WebP"
+        ],
+        "upsampling": false,
+        "encoder": "ImageMagick / libwebp",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "color_space": "sRGB",
+        "alpha": false,
+        "bytes": 265528,
+        "sha256": "d979656cf580d6fee02df099ab4ce1d347e31e435a42ca870754ab61b54d3a19"
+      },
+      "self_check": {
+        "status": "internal_period_and_encoded_visual_review_complete",
+        "claude_approved": false,
+        "raw_crop_repeats": [
+          2,
+          4
+        ],
+        "boundary_mae_rgb_0_255": {
+          "left_right": 10.363,
+          "top_bottom": 10.553
+        },
+        "note": "边界MAE是非零诊断值，不表示像素完全相同；已结合2x2/4x4目視复核。Claude审核尚未通过。",
+        "encoded_repeat_checks": [
+          2,
+          4
+        ],
+        "visual_findings": "完整8x8砖域，原生与最终编码平铺未见明显接缝、双灰缝或边界亮条；未见明显全局方向性强高光。"
+      }
+    },
+    {
+      "id": "wall_tile_ivory_02",
+      "title": "暖白瓷砖",
+      "category": "walls/old_tiles",
+      "role": "base_color",
+      "path": "assets/world/walls/wall_tile_ivory_02.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready square seamless TILEABLE game ALBEDO / BASE COLOR texture of an aged ceramic tile exterior facade in a cat-world rainy cyberpunk miniature city. Completely flat orthographic front view, square image filled edge to edge by only the ceramic surface. Detailed environmental surface art. All lighting will be computed by the game engine: absolutely even diffuse color, no directional bevel highlights, no specular glaze glare, no shadows around chips, no vignette, no broad brightness gradient, no baked neon color or light. Dirt and chips are material-color details only. Grid periodicity is critical: exactly 8 columns and 8 rows of complete equally sized square tiles. All four image boundaries cut through the CENTER of the same very thin neutral gray grout joint; each boundary contains only half of a grout line, so two copies meet to make one normal interior line. All internal grout lines evenly spaced at 12.5%, 25%, 37.5%, 50%, 62.5%, 75%, 87.5%, with edges at 0% and 100%. Outer and inner grout joints have identical narrow width and flat color. NO doubled seam or extra sliver of a tile. Keep grout subdued, without a painted illuminated lip or black outline. All surface wear stays inside tiles; avoid cracks or stains crossing image boundaries. Distribute tiny stains and wear evenly without one recognizable hero patch. The entire texture must repeat naturally on both axes, without a frame. No perspective, room, building, object, text, graffiti, logo, people, cats, faces, material sphere, border, panel labels or preview montage. Deliver one full-resolution 1024x1024 square albedo texture, not a 2x2 preview.\nVARIANT: weathered warm ivory ceramic facade. Desaturated cream / warm pale stone tiles, small naturally variable aged tile tones, thin soft gray mortar, subtle brownish rain discoloration and smoke grime inside tile interiors, occasional very small chips and fine cracks. No huge stain and no dark border around every tile. Mid-light value suitable for a miniature old shop facade. No wet reflections.",
+          "references": [],
+          "raw_output": {
+            "filename": "exec-8e8a800f-740f-43bc-97a0-e887f7de4bb3.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3017327,
+            "sha256": "4b8354232b1e2bf4285e9bd83ea26728d4a96bea8731428589232a7923b83067"
+          },
+          "selection_note": "未采用；AI 修订连续亮边、灰缝边界后再检查平铺。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Refine the supplied ceramic facade image into a completely UNLIT, seamless, periodic ALBEDO / BASE COLOR texture for a game. Keep its same material, palette, 8 by 8 equal-size square tile layout, naturally varied replacement tile colors, tiny ceramic glaze chips, fine crazing and distributed grime. Preserve crisp original texture detail. Correct two technical issues: (1) remove the continuous white top/left rim streaks and dark bottom/right bevel shading that look like relief lighting. Tile chips and mortar should have flat material colors, without a bright edge or a shadow side. No specular shine, rim lighting, drop shadows, ambient occlusion painted around tile edges, vignette, or global illumination gradient. The engine will light the tiles. (2) the FOUR image boundaries must lie through the CENTER of a thin flat mortar joint, each showing only HALF a normal interior joint width. These boundary joints must have the same uniform neutral-gray color as each other and the internal mortar joints; no extra frame or tile sliver. Exactly eight complete square tile columns and rows fit the full square, with all inner mortar lines evenly spaced at 12.5% intervals. The left/right and top/bottom edge features must continue when repeated, with one normal joint at each repetition seam. Avoid unique big wear marks, and keep micro-wear away from outer mortar joints. Fill the full square edge to edge, orthographic front view of only a flat surface. No perspective, objects, words, logos, faces, neon, preview montage or border. One 1024x1024 game albedo texture.",
+          "references": [
+            "4b8354232b1e2bf4285e9bd83ea26728d4a96bea8731428589232a7923b83067"
+          ],
+          "raw_output": {
+            "filename": "exec-a81dc9b5-36a8-4bf4-aa52-fe33592e4878.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 2811794,
+            "sha256": "4a9a1417c565406d1a1db907fba9bd4aa940608dec8fa7270b1986419b9a7f21"
+          },
+          "selection_note": "采用；去除连续亮边并修正物理灰缝边界，完整周期降采样。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "4a9a1417c565406d1a1db907fba9bd4aa940608dec8fa7270b1986419b9a7f21",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          1,
+          1,
+          1253,
+          1253
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          1252,
+          1252
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "extract complete 8x8 ceramic tile / grout period",
+          "Lanczos downsample to 1024x1024",
+          "encode RGB sRGB WebP"
+        ],
+        "upsampling": false,
+        "encoder": "ImageMagick / libwebp",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "color_space": "sRGB",
+        "alpha": false,
+        "bytes": 275070,
+        "sha256": "2431ebaf815e3b6c1f44e05eb7d65caec07ca95a1ddb2dbf83e32cc85b1a00f1"
+      },
+      "self_check": {
+        "status": "internal_period_and_encoded_visual_review_complete",
+        "claude_approved": false,
+        "raw_crop_repeats": [
+          2,
+          4
+        ],
+        "boundary_mae_rgb_0_255": {
+          "left_right": 11.001,
+          "top_bottom": 11.778
+        },
+        "note": "边界MAE是非零诊断值，不表示像素完全相同；已结合2x2/4x4目視复核。Claude审核尚未通过。",
+        "encoded_repeat_checks": [
+          2,
+          4
+        ],
+        "visual_findings": "完整8x8砖域，原生与最终编码平铺未见明显接缝、双灰缝或边界亮条；未见明显全局方向性强高光。"
+      }
+    },
+    {
+      "id": "wall_tile_slate_03",
+      "title": "深灰青瓷砖",
+      "category": "walls/old_tiles",
+      "role": "base_color",
+      "path": "assets/world/walls/wall_tile_slate_03.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready square seamless TILEABLE game ALBEDO / BASE COLOR texture of an aged ceramic tile exterior facade in a cat-world rainy cyberpunk miniature city. Completely flat orthographic front view, square image filled edge to edge by only the ceramic surface. Detailed environmental surface art. All lighting will be computed by the game engine: absolutely even diffuse color, no directional bevel highlights, no specular glaze glare, no shadows around chips, no vignette, no broad brightness gradient, no baked neon color or light. Dirt and chips are material-color details only. Grid periodicity is critical: exactly 8 columns and 8 rows of complete equally sized square tiles. All four image boundaries cut through the CENTER of the same very thin neutral gray grout joint; each boundary contains only half of a grout line, so two copies meet to make one normal interior line. All internal grout lines evenly spaced at 12.5%, 25%, 37.5%, 50%, 62.5%, 75%, 87.5%, with edges at 0% and 100%. Outer and inner grout joints have identical narrow width and flat color. NO doubled seam or extra sliver of a tile. Keep grout subdued, without a painted illuminated lip or black outline. All surface wear stays inside tiles; avoid cracks or stains crossing image boundaries. Distribute tiny stains and wear evenly without one recognizable hero patch. The entire texture must repeat naturally on both axes, without a frame. No perspective, room, building, object, text, graffiti, logo, people, cats, faces, material sphere, border, panel labels or preview montage. Deliver one full-resolution 1024x1024 square albedo texture, not a 2x2 preview.\nVARIANT: aged dark slate-teal glazed ceramic facade. Desaturated blue charcoal / slate green square tiles, a few dull gray-blue replacement tiles, fine micro-crazing and sparse pale chips, tiny muted pale mineral flecks and soot near grout. Mid-dark values with enough tile color variation to read under neon lights, narrow muted gray grout. No bright glaze reflection.",
+          "references": [],
+          "raw_output": {
+            "filename": "exec-f4c9d440-7a64-41cf-89e6-26ebc2d2a1ba.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3179272,
+            "sha256": "b6ac1c085d791d876ee7b7c83c07c6e29fa6cf6d31f2c12e24d0564eb59826fe"
+          },
+          "selection_note": "未采用；AI 修订连续亮边、灰缝边界后再检查平铺。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Refine the supplied ceramic facade image into a completely UNLIT, seamless, periodic ALBEDO / BASE COLOR texture for a game. Keep its same material, palette, 8 by 8 equal-size square tile layout, naturally varied replacement tile colors, tiny ceramic glaze chips, fine crazing and distributed grime. Preserve crisp original texture detail. Correct two technical issues: (1) remove the continuous white top/left rim streaks and dark bottom/right bevel shading that look like relief lighting. Tile chips and mortar should have flat material colors, without a bright edge or a shadow side. No specular shine, rim lighting, drop shadows, ambient occlusion painted around tile edges, vignette, or global illumination gradient. The engine will light the tiles. (2) the FOUR image boundaries must lie through the CENTER of a thin flat mortar joint, each showing only HALF a normal interior joint width. These boundary joints must have the same uniform neutral-gray color as each other and the internal mortar joints; no extra frame or tile sliver. Exactly eight complete square tile columns and rows fit the full square, with all inner mortar lines evenly spaced at 12.5% intervals. The left/right and top/bottom edge features must continue when repeated, with one normal joint at each repetition seam. Avoid unique big wear marks, and keep micro-wear away from outer mortar joints. Fill the full square edge to edge, orthographic front view of only a flat surface. No perspective, objects, words, logos, faces, neon, preview montage or border. One 1024x1024 game albedo texture.",
+          "references": [
+            "b6ac1c085d791d876ee7b7c83c07c6e29fa6cf6d31f2c12e24d0564eb59826fe"
+          ],
+          "raw_output": {
+            "filename": "exec-5a0927ef-876f-49cf-8980-6af4a031eae8.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3118199,
+            "sha256": "87587481f6a8c99a692d61c6b27eabc68f072754321ddd61096589bc72464636"
+          },
+          "selection_note": "采用；去除连续亮边并修正物理灰缝边界，完整周期降采样。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "87587481f6a8c99a692d61c6b27eabc68f072754321ddd61096589bc72464636",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          1,
+          1,
+          1253,
+          1253
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          1252,
+          1252
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "extract complete 8x8 ceramic tile / grout period",
+          "Lanczos downsample to 1024x1024",
+          "encode RGB sRGB WebP"
+        ],
+        "upsampling": false,
+        "encoder": "ImageMagick / libwebp",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "color_space": "sRGB",
+        "alpha": false,
+        "bytes": 298122,
+        "sha256": "e2e970bef7e74c67c5fac6591250ec4493323756537c5933e541cf75becfd1b5"
+      },
+      "self_check": {
+        "status": "internal_period_and_encoded_visual_review_complete",
+        "claude_approved": false,
+        "raw_crop_repeats": [
+          2,
+          4
+        ],
+        "boundary_mae_rgb_0_255": {
+          "left_right": 13.834,
+          "top_bottom": 17.326
+        },
+        "note": "边界MAE是非零诊断值，不表示像素完全相同；已结合2x2/4x4目視复核。Claude审核尚未通过。",
+        "encoded_repeat_checks": [
+          2,
+          4
+        ],
+        "visual_findings": "完整8x8砖域，原生与最终编码平铺未见明显接缝、双灰缝或边界亮条；未见明显全局方向性强高光。",
+        "review_focus": "浅灰物理砖缝对比偏强；近看存在细微砖边明暗起伏，需在游戏墙面密度评估。"
+      }
+    }
+  ],
+  "preview_paths": [
+    "assets/world/reviews/old-tiles-a02.webp",
+    "assets/world/reviews/old-tiles-a02-lighting.webp"
+  ],
+  "limitations": [
+    "颜色贴图不包含法线、位移或粗糙度贴图。",
+    "本批交付素材与出处；游戏接入由Claude负责。"
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/old-tiles-a02.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 152228,
+      "method": "direct single view and CSS 2x2 repetition of final WebP"
+    },
+    {
+      "path": "assets/world/reviews/old-tiles-a02-lighting.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 105204,
+      "method": "independent Three.js material comparison using final WebP; not game integration",
+      "parameters": {
+        "color_space": "sRGB",
+        "repeat": [
+          2,
+          2
+        ],
+        "roughness": 0.78,
+        "metalness": 0,
+        "environment_intensity": 0.2,
+        "exposure": 1.05,
+        "tone_mapping": "ACESFilmic",
+        "neutral_light": "front white directional + hemisphere",
+        "neon_light": "same neutral lighting plus magenta/cyan point lights",
+        "page_errors": []
+      }
+    }
+  ]
+}
