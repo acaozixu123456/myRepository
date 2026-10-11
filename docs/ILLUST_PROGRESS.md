@@ -26,7 +26,7 @@
 | 貂蝉喵 | `qun_diaochan` | SSR | 待画 | 0 | |
 | 华佗喵 | `qun_huatuo` | SSR | 待画 | 0 | |
 | 张角角 | `qun_zhangjiao` | SSR | 待画 | 0 | |
-| 祝融喵 | `man_zhurong` | SSR | 待画 | 0 | |
+| 祝融喵 | `man_zhurong` | SSR | 待审 | 1 | 2 候选选 B；双握刀爪五指肩袖自查；补小指并收中 |
 | 木鹿大王 | `man_mulu` | SSR | 待画 | 0 | |
 | 沙摩柯 | `man_shamoke` | SSR | 待画 | 0 | |
 | 张爪 | `xian_zhangzhua` | SSR | 待画 | 0 | |
