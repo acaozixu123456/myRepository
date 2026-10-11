@@ -280,7 +280,9 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
           `<g transform="rotate(26 ${hx} ${hy})">` + P(`M ${hx - 4} ${hy - 80} L ${hx + 4} ${hy - 80} L ${hx + 4} ${hy + 10} L ${hx - 4} ${hy + 10} Z`, '#c9a063', { sw: 3 }) + E(hx, hy - 86, 11, 11, main, { sw: 3 }) + `</g>`,
       };
     }
+    case 'coinsPlain':
     case 'coins': {
+      const plain = kind === 'coinsPlain';
       const R: [number, number] = [hx - 6, hy - 52];
       const coin = (x: number, y: number, r = 20) =>
         `<g transform="translate(${x} ${y})">` + E(0, 0, r, r, trim, { sw: 3.4 }) + E(0, 0, r * 0.7, r * 0.7, 'none', { sw: 1.8, stroke: ink(trim) }) +
@@ -292,7 +294,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
         svg:
           L(`M ${R[0]} ${R[1]} Q ${R[0] - 10} ${R[1] - 30} ${R[0] - 4} ${R[1] - 60}`, main, 3.4) +
           coin(R[0] - 4, R[1] - 76, 24) + coin(R[0] - 56, R[1] - 36, 18) + coin(R[0] + 48, R[1] - 46, 19) +
-          spark(R[0] - 34, R[1] - 90) + spark(R[0] + 40, R[1] - 90) + spark(R[0] - 68, R[1] - 74),
+          (plain ? '' : spark(R[0] - 34, R[1] - 90) + spark(R[0] + 40, R[1] - 90) + spark(R[0] - 68, R[1] - 74)),
       };
     }
     case 'herbs': {
@@ -308,6 +310,52 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
           L(`M ${lx + 6} ${ly - 16} Q ${lx - 10} ${ly + 6} ${lx + 6} ${ly + 22}`, '#8a4a2a', 3) +
           P(`M ${lx + 6} ${ly + 8} C ${lx - 14} ${ly + 6} ${lx - 14} ${ly + 28} ${lx - 2} ${ly + 34} C ${lx - 20} ${ly + 44} ${lx - 14} ${ly + 70} ${lx + 6} ${ly + 70} C ${lx + 26} ${ly + 70} ${lx + 32} ${ly + 44} ${lx + 14} ${ly + 34} C ${lx + 26} ${ly + 28} ${lx + 26} ${ly + 6} ${lx + 6} ${ly + 8} Z`, tint(main, 0.1), { sw: 3.4 }) +
           E(lx + 6, ly + 6, 5, 4, '#8a4a2a', { sw: 2 }),
+      };
+    }
+    case 'dagger':
+      return { svg: `<g transform="rotate(14 ${hx} ${hy})">${dagger(hx, hy, ctx)}</g>` };
+    case 'shield': {
+      const cx = lx - 10, cy = ly - 6;
+      return {
+        svgL:
+          E(cx, cy, 46, 46, '#b9824a', { sw: 5 }) + E(cx, cy, 36, 36, 'none', { sw: 3, stroke: ink('#b9824a') }) +
+          E(cx, cy, 30, 30, tint(main, 0.1), { sw: 2.4 }) + E(cx, cy, 9, 9, trim, { sw: 2.6 }) +
+          L(`M ${cx - 30} ${cy} L ${cx + 30} ${cy} M ${cx} ${cy - 30} L ${cx} ${cy + 30}`, '#fff', 2, 0.28) +
+          E(cx - 36, cy - 4, 3.2, 3.2, trim, { sw: 1.6 }) + E(cx + 36, cy - 4, 3.2, 3.2, trim, { sw: 1.6 }),
+        svg: '',
+      };
+    }
+    case 'boxShield': {
+      const x = lx - 54, y = ly - 54;
+      return {
+        svgL:
+          P(`M ${x} ${y} L ${x + 84} ${y + 4} L ${x + 80} ${y + 92} L ${x + 4} ${y + 88} Z`, '#d9b57c', { sw: 4.4 }) +
+          P(`M ${x + 30} ${y + 2} L ${x + 52} ${y + 3} L ${x + 50} ${y + 90} L ${x + 28} ${y + 89} Z`, '#f3e2b4', { sw: 0, op: 0.8 }) +
+          L(`M ${x + 6} ${y + 46} L ${x + 82} ${y + 48}`, '#b98a4a', 2.4, 0.6) +
+          `<g fill="${ink(main)}" opacity="0.85" transform="translate(${x + 56} ${y + 66}) scale(0.62)"><ellipse cx="0" cy="5" rx="9" ry="7"/><ellipse cx="-10" cy="-6" rx="3.6" ry="4.6"/><ellipse cx="-4" cy="-12" rx="3.6" ry="4.6"/><ellipse cx="4" cy="-12" rx="3.6" ry="4.6"/><ellipse cx="10" cy="-6" rx="3.6" ry="4.6"/></g>`,
+        svg: '',
+      };
+    }
+    case 'crossbow': {
+      const R: [number, number] = [hx - 10, 376];
+      const x = hx - 46;
+      return {
+        pose: { R },
+        svg:
+          P(`M ${x} 366 L ${x + 112} 368 L ${x + 112} 382 L ${x} 384 Z`, '#8a5a2a', { sw: 3.6 }) +
+          `<path d="M ${x + 98} 318 Q ${x + 142} 376 ${x + 98} 434" fill="none" stroke="${ink('#a8683a')}" stroke-width="14" stroke-linecap="round"/><path d="M ${x + 98} 318 Q ${x + 142} 376 ${x + 98} 434" fill="none" stroke="#b9824a" stroke-width="8" stroke-linecap="round"/>` +
+          L(`M ${x + 98} 318 L ${x + 70} 376 L ${x + 98} 434`, '#efe3c0', 2.4) +
+          P(`M ${x + 20} 364 L ${x + 112} 372 L ${x + 20} 380 Z`, '#c9a063', { sw: 2.4 }) + P(`M ${x + 108} 364 L ${x + 126} 372 L ${x + 108} 380 Z`, STEEL, { sw: 2.4 }) +
+          P(`M ${x + 30} 384 L ${x + 42} 384 L ${x + 38} 402 L ${x + 28} 402 Z`, main, { sw: 3 }),
+      };
+    }
+    case 'slingshot': {
+      const R: [number, number] = [hx, hy - 20];
+      return {
+        pose: { R },
+        svg:
+          L(`M ${R[0]} ${R[1] + 26} L ${R[0]} ${R[1] - 40}`, '#8a5a2a', 9) + L(`M ${R[0]} ${R[1] - 40} L ${R[0] - 24} ${R[1] - 90}`, '#8a5a2a', 8) + L(`M ${R[0]} ${R[1] - 40} L ${R[0] + 24} ${R[1] - 90}`, '#8a5a2a', 8) +
+          L(`M ${R[0] - 24} ${R[1] - 90} Q ${R[0]} ${R[1] - 62} ${R[0] + 24} ${R[1] - 90}`, main, 3.4) + E(R[0], R[1] - 66, 7, 6, '#9aa2ab', { sw: 2.4 }),
       };
     }
     default:

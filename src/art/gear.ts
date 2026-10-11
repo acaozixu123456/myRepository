@@ -91,6 +91,42 @@ export function renderHeadGear(ctx: Ctx): HeadOut {
         earsOver: true,
       };
     }
+    case 'ratCap': {
+      const capC = cloth;
+      const ear = (x: number) => E(x, 112, 24, 24, tint(capC, 0.05), { sw: 3.6 }) + E(x, 114, 13, 13, ctx.fur === '#000' ? '#e8a0a8' : '#f0b0b8', { sw: 0, op: 0.9 });
+      return {
+        svg:
+          ear(146) + ear(254) +
+          P('M 124 176 C 118 124 156 104 200 104 C 244 104 282 124 276 176 Q 200 158 124 176 Z', capC) +
+          L('M 160 118 C 156 132 156 146 160 160 M 240 118 C 244 132 244 146 240 160', ink(capC), 2.6, 0.4) +
+          P('M 122 170 Q 200 154 278 170 L 278 184 Q 200 168 122 184 Z', main) +
+          E(200, 166, 6, 6, trim, { sw: 2.6 }),
+        hideEars: true,
+      };
+    }
+    case 'hood': {
+      const c = shade(main, 0.25);
+      return {
+        behind: P('M 262 178 C 296 200 300 250 286 292 C 276 262 262 226 252 196 Z', c) + P('M 138 178 C 104 200 100 250 114 292 C 124 262 138 226 148 196 Z', c),
+        svg:
+          P('M 114 186 C 104 118 146 88 200 88 C 254 88 296 118 286 186 Q 262 158 200 154 Q 138 158 114 186 Z', c) +
+          `<path d="M 130 124 C 150 102 176 96 196 96" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity="0.16"/>` +
+          P('M 118 182 Q 200 158 282 182 L 282 192 Q 200 168 118 192 Z', shade(c, 0.15)) +
+          E(200, 172, 5, 5, trim, { sw: 2.4 }),
+        earsOver: true,
+      };
+    }
+    case 'leafHat': {
+      const g = '#6fb25a';
+      return {
+        svg:
+          P('M 150 132 C 152 98 248 98 250 132 Z', tint(g, 0.08)) +
+          P('M 66 138 C 100 112 300 112 334 138 C 300 160 100 160 66 138 Z', g) +
+          L('M 90 138 L 200 126 L 310 138 M 120 146 L 200 130 M 280 146 L 200 130', ink(g), 2.4, 0.5) +
+          L('M 150 150 Q 200 162 250 150', main, 3.4, 0.9),
+        earsOver: true,
+      };
+    }
     case 'scholarCap': {
       const capC = cloth;
       return {
