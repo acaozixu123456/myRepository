@@ -20,7 +20,7 @@ export interface Coat {
   pink?: string; // 鼻头/耳内颜色
 }
 
-export type EyeStyle = 'round' | 'sharp' | 'sleepy' | 'happy' | 'fierce' | 'calm' | 'wink' | 'wide';
+export type EyeStyle = 'round' | 'sharp' | 'sleepy' | 'happy' | 'fierce' | 'calm' | 'wink' | 'wide' | 'keen' | 'cool';
 export type EarStyle = 'pointy' | 'fold' | 'tuft' | 'round' | 'big';
 export type TailStyle = 'long' | 'bushy' | 'curl' | 'stub' | 'ring';
 
@@ -122,7 +122,11 @@ export interface CatLook {
   head?: number;
   /** 毛茸茸（脸颊绒毛） */
   fluffy?: boolean;
+  /** 腮红（默认无，更帅气；年轻/萌系角色可开） */
+  blush?: boolean;
   outfit: Outfit;
+  /** 关闭默认站姿（动画里自行控制）*/
+  stance?: boolean;
   /** 是否水平翻转 */
   flip?: boolean;
 }

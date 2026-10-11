@@ -86,6 +86,7 @@ export const HEROES: HeroDef[] = [
       eye: { color: '#6a4a22', style: 'round' },
       ear: 'round',
       tail: 'bushy',
+      blush: true,
       build: 1.28,
       outfit: { pal: pal('wei'), head: 'tigerHood', body: 'armorLight', back: 'none', weapon: 'mace', extra: [] },
     },
@@ -105,7 +106,7 @@ export const HEROES: HeroDef[] = [
     likes: '猫薄荷奶、午睡、给人出主意',
     look: {
       coat: { pattern: 'solid', base: '#f4efe6', light: '#fffaf2' },
-      eye: { color: '#5aa0d8', style: 'sleepy' },
+      eye: { color: '#5aa0d8', style: 'cool' },
       ear: 'pointy',
       tail: 'long',
       build: 0.92,
@@ -151,7 +152,7 @@ export const HEROES: HeroDef[] = [
     likes: '春秋话本、梳胡须、鱼骨刀保养',
     look: {
       coat: { pattern: 'solid', base: '#3b2f35', light: '#6b5a62' },
-      eye: { color: '#e8c24a', style: 'sharp' },
+      eye: { color: '#e8c24a', style: 'keen' },
       ear: 'pointy',
       tail: 'long',
       build: 1.1,
@@ -220,7 +221,7 @@ export const HEROES: HeroDef[] = [
     likes: '古琴、赤红色、被夸好看',
     look: {
       coat: { pattern: 'point', base: '#f1e1c4', light: '#f5ead2', accent: '#5b4337' },
-      eye: { color: '#4a8fd8', style: 'sharp' },
+      eye: { color: '#4a8fd8', style: 'keen' },
       ear: 'pointy',
       tail: 'long',
       build: 0.94,
@@ -263,9 +264,10 @@ export const HEROES: HeroDef[] = [
     likes: '小铃铛、花、拉弓',
     look: {
       coat: { pattern: 'solid', base: '#f4d9c8', light: '#fff0e6' },
-      eye: { color: '#7a5ac8', style: 'round' },
+      eye: { color: '#7a5ac8', style: 'keen' },
       ear: 'round',
       tail: 'curl',
+      blush: true,
       build: 0.9,
       outfit: { pal: pal('wu'), head: 'flowerPin', body: 'armorLight', back: 'ribbons', weapon: 'bow', extra: ['bell'] },
     },
@@ -285,7 +287,7 @@ export const HEROES: HeroDef[] = [
     likes: '热毯子、晒肚皮、年轻猫的崇拜',
     look: {
       coat: { pattern: 'tabby', base: '#e8b040', light: '#fbe9b8', stripe: '#b07a20' },
-      eye: { color: '#a07a30', style: 'sleepy' },
+      eye: { color: '#a07a30', style: 'cool' },
       ear: 'round',
       tail: 'bushy',
       build: 1.2,
@@ -335,6 +337,7 @@ export const HEROES: HeroDef[] = [
       eye: { color: '#5cb0a0', style: 'wink' },
       ear: 'round',
       tail: 'curl',
+      blush: true,
       build: 0.9,
       outfit: { pal: pal('qun'), head: 'flowerPin', body: 'dress', back: 'ribbons', weapon: 'none', extra: [] },
     },
@@ -354,7 +357,7 @@ export const HEROES: HeroDef[] = [
     likes: '吃、更多的吃、让别的猫端盘子',
     look: {
       coat: { pattern: 'solid', base: '#8a6a52', light: '#d8c2a0' },
-      eye: { color: '#c9a23a', style: 'sleepy' },
+      eye: { color: '#c9a23a', style: 'cool' },
       ear: 'round',
       tail: 'stub',
       build: 1.3,
@@ -422,7 +425,7 @@ export const HEROES: HeroDef[] = [
     likes: '飞刀、烤鱼、火堆边跳舞',
     look: {
       coat: { pattern: 'spots', base: '#e0884a', light: '#f8e4c4', accent: '#9a4a1e' },
-      eye: { color: '#e04a3a', style: 'sharp' },
+      eye: { color: '#e04a3a', style: 'keen' },
       ear: 'tuft',
       tail: 'ring',
       build: 0.9,
@@ -466,7 +469,7 @@ export const HEROES: HeroDef[] = [
     likes: '藤编猫窝、睡觉、纸箱',
     look: {
       coat: { pattern: 'solid', base: '#9a6a44', light: '#d4b088' },
-      eye: { color: '#7a4a22', style: 'sleepy' },
+      eye: { color: '#7a4a22', style: 'cool' },
       ear: 'round',
       tail: 'stub',
       build: 1.34,
@@ -513,7 +516,7 @@ export const HEROES: HeroDef[] = [
     likes: '黄符、符水、集体活动',
     look: {
       coat: { pattern: 'tuxedo', base: '#38303a', light: '#f4efe6' },
-      eye: { color: '#e8c24a', style: 'sharp' },
+      eye: { color: '#e8c24a', style: 'keen' },
       ear: 'pointy',
       tail: 'long',
       build: 0.96,

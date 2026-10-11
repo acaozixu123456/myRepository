@@ -54,7 +54,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
     case 'dualSwords': {
       const left = `<g transform="rotate(-16 ${lx} ${ly})">${sword(lx, ly, ctx, 120)}</g>`;
       const right = `<g transform="rotate(16 ${hx} ${hy})">${sword(hx, hy, ctx, 120)}</g>`;
-      return { svg: left + right };
+      return { svg: right, svgL: left };
     }
     case 'glaive': {
       const px = hx + 4;
@@ -68,7 +68,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       for (let i = 0; i < 4; i++) teeth += P(`M ${px - 6} ${70 + i * 28} L ${px - 22} ${82 + i * 28} L ${px - 6} ${90 + i * 28} Z`, '#aab9c6', { sw: 3 });
       return {
         svg:
-          pole(px, 40, 478) +
+          pole(px, 40, 556) +
           P(`M ${px - 8} 462 L ${px - 18} 486 L ${px} 476 L ${px + 18} 486 L ${px + 8} 462 Z`, trim, { sw: 3.5 }) +
           teeth +
           P(blade, '#e4edf3', { sw: 4.5 }) +
@@ -83,7 +83,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       const px = hx + 2;
       return {
         svg:
-          pole(px, 60, 478, '#6a4a30', 10) +
+          pole(px, 60, 556, '#6a4a30', 10) +
           P(`M ${px} 26 C ${px + 18} 52 ${px + 8} 70 ${px + 16} 100 C ${px + 24} 128 ${px + 8} 150 ${px + 10} 178 L ${px - 10} 178 C ${px - 8} 150 ${px - 24} 128 ${px - 16} 100 C ${px - 8} 70 ${px - 18} 52 ${px} 26 Z`, STEEL, { sw: 4.5 }) +
           L(`M ${px} 36 C ${px + 8} 62 ${px - 4} 84 ${px + 2} 110 C ${px + 6} 134 ${px} 150 ${px} 172`, '#a9b8c8', 3) +
           P(`M ${px - 12} 178 L ${px + 12} 178 L ${px + 12} 192 L ${px - 12} 192 Z`, trim, { sw: 3.4 }) +
@@ -95,7 +95,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       const crescent = (sd: 1 | -1) => P(`M ${px + sd * 6} 130 C ${px + sd * 56} 128 ${px + sd * 66} 84 ${px + sd * 52} 60 C ${px + sd * 48} 90 ${px + sd * 32} 104 ${px + sd * 6} 106 Z`, STEEL, { sw: 4 });
       return {
         svg:
-          pole(px, 60, 478, '#5a3a28', 11) +
+          pole(px, 60, 556, '#5a3a28', 11) +
           crescent(1) + crescent(-1) +
           P(`M ${px} 20 L ${px + 12} 100 L ${px + 8} 150 L ${px - 8} 150 L ${px - 12} 100 Z`, STEEL, { sw: 4.5 }) +
           L(`M ${px} 32 L ${px} 140`, '#a9b8c8', 3) +
@@ -168,7 +168,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       const px = hx + 2;
       return {
         svg:
-          pole(px, 80, 478, '#8a5a30', 12) +
+          pole(px, 80, 556, '#8a5a30', 12) +
           `<circle cx="${px}" cy="62" r="26" fill="none" stroke="${ink(trim)}" stroke-width="13"/><circle cx="${px}" cy="62" r="26" fill="none" stroke="${trim}" stroke-width="8"/>` +
           E(px, 62, 11, 11, main, { sw: 3 }) + L(`M ${px - 4} 58 L ${px} 54`, '#fff', 2.6, 0.7) +
           P(`M ${px - 5} 28 L ${px + 5} 28 L ${px} 14 Z`, trim, { sw: 2.6 }) +
@@ -183,7 +183,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       return {
         svg:
           `<g transform="rotate(-8 ${hx} ${hy})">` +
-          pole(px, 180, 470, '#7a5230', 15) +
+          pole(px, 180, 548, '#7a5230', 15) +
           P(club, '#8a5a34', { sw: 4.5 }) +
           L(`M ${px - 14} 70 Q ${px - 22} 110 ${px - 12} 160`, '#fff', 4, 0.22) +
           P(`M ${px - 33} 84 Q ${px} 94 ${px + 33} 84 L ${px + 34} 98 Q ${px} 108 ${px - 34} 98 Z`, ctx.pal.trim, { sw: 3 }) +
@@ -213,7 +213,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       const right = `<g transform="rotate(24 ${hx} ${hy})">${dagger(hx, hy, ctx)}</g>`;
       // 空中飞刀
       const fly = (x: number, y: number, a: number) => `<g transform="translate(${x} ${y}) rotate(${a}) scale(0.62)">${dagger(0, 0, ctx)}</g>`;
-      return { svg: left + right + fly(352, 300, 48) + fly(54, 292, -48) + fly(366, 360, 70) };
+      return { svg: right + fly(352, 300, 48) + fly(366, 360, 70), svgL: left + fly(54, 292, -48) };
     }
     case 'scroll': {
       const R: [number, number] = [hx - 28, hy - 70];
@@ -247,7 +247,7 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       return {
         svg:
           `<g transform="rotate(-8 ${hx} ${hy})">` +
-          pole(px, 118, 470, '#c9a063', 11) +
+          pole(px, 118, 548, '#c9a063', 11) +
           L(`M ${px} 118 L ${px} 470`, '#8a6a3a', 2, 0.35) +
           P(`M ${px - 12} 120 C ${px - 18} 80 ${px - 8} 50 ${px} 20 C ${px + 8} 50 ${px + 18} 80 ${px + 12} 120 Z`, '#2a2230', { sw: 4 }) +
           L(`M ${px - 4} 112 C ${px - 8} 80 ${px - 2} 56 ${px} 42`, '#fff', 2.6, 0.3) +
@@ -266,17 +266,18 @@ export function renderWeaponImpl(ctx: Ctx, pose: Pose): WeaponOut {
       }).join(' ');
       return {
         pose: { L: [dx - 40, dy + 4] },
-        svg:
+        svgL:
           E(dx, dy, 48, 48, '#8a5a30', { sw: 5 }) +
           E(dx, dy, 38, 38, '#f1dcb0', { sw: 3.5 }) +
           L(`M ${dx - 24} ${dy - 12} Q ${dx} ${dy - 24} ${dx + 24} ${dy - 12}`, '#fff', 3, 0.5) +
           // 鼓面兽爪印
           E(dx, dy + 6, 11, 9, main, { noStroke: true, op: 0.9 }) + [-14, -5, 5, 14].map((o) => E(dx + o, dy - 10 - Math.abs(o) * 0.2, 4, 5, main, { noStroke: true, op: 0.9 })).join('') +
           L(rope, trim, 3, 0.9) +
-          // 鼓槌
-          `<g transform="rotate(26 ${hx} ${hy})">` + P(`M ${hx - 4} ${hy - 80} L ${hx + 4} ${hy - 80} L ${hx + 4} ${hy + 10} L ${hx - 4} ${hy + 10} Z`, '#c9a063', { sw: 3 }) + E(hx, hy - 86, 11, 11, main, { sw: 3 }) + `</g>` +
           // 羽毛挂饰
           L(`M ${dx + 30} ${dy - 36} Q ${dx + 50} ${dy - 56} ${dx + 44} ${dy - 80}`, '#3aa7a0', 5),
+        svg:
+          // 鼓槌
+          `<g transform="rotate(26 ${hx} ${hy})">` + P(`M ${hx - 4} ${hy - 80} L ${hx + 4} ${hy - 80} L ${hx + 4} ${hy + 10} L ${hx - 4} ${hy + 10} Z`, '#c9a063', { sw: 3 }) + E(hx, hy - 86, 11, 11, main, { sw: 3 }) + `</g>`,
       };
     }
     case 'coins': {

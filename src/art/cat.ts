@@ -74,10 +74,11 @@ export const HEAD_D =
   'M 96 214 C 94 150 138 110 200 110 C 262 110 306 150 304 214 C 303 264 258 294 200 294 C 142 294 97 264 96 214 Z';
 
 export function bodyD(W: number): string {
-  const a = 46 * W;
-  const b = 70 * W;
-  const c = 58 * W;
-  return `M ${200 - a} 286 C ${200 - b * 0.92} 304 ${200 - b} 350 ${200 - b} 394 C ${200 - b} 428 ${200 - c} 448 ${200 - c + 8} 456 L ${200 + c - 8} 456 C ${200 + c} 448 ${200 + b} 428 ${200 + b} 394 C ${200 + b} 350 ${200 + b * 0.92} 304 ${200 + a} 286 Z`;
+  const n = 46 * W;
+  const sh = 72 * W;
+  const wa = 56 * W;
+  const hp = 64 * W;
+  return `M ${200 - n} 286 C ${200 - sh * 0.96} 296 ${200 - sh} 314 ${200 - sh} 338 C ${200 - sh} 374 ${200 - wa} 398 ${200 - wa} 424 C ${200 - wa} 440 ${200 - hp} 448 ${200 - hp + 4} 458 L ${200 + hp - 4} 458 C ${200 + hp} 448 ${200 + wa} 440 ${200 + wa} 424 C ${200 + wa} 398 ${200 + sh} 374 ${200 + sh} 338 C ${200 + sh} 314 ${200 + sh * 0.96} 296 ${200 + n} 286 Z`;
 }
 
 interface EarShape { outer: string; inner: string }
@@ -128,32 +129,32 @@ function eyeSvg(style: EyeStyle, color: string, side: 'L' | 'R', ctx: Ctx): stri
       <circle cx="${-rx * 0.32}" cy="${-ry * 0.36}" r="${rx * 0.36}" fill="#fff"/>
       <circle cx="${rx * 0.34}" cy="${ry * 0.42}" r="${rx * 0.17}" fill="#fff" opacity="0.9"/>`;
   };
+  const flipR = (inner: string) => (side === 'R' ? `<g transform="scale(-1 1)">${inner}</g>` : inner);
+  const almond = (d: string, tag: string, slitRot: number, slitRy: number) =>
+    flipR(`
+      <path d="${d}" fill="${irisDark}" stroke="${dark}" stroke-width="3.2"/>
+      <clipPath id="ec${ctx.uid}${side}${tag}"><path d="${d}"/></clipPath>
+      <g clip-path="url(#ec${ctx.uid}${side}${tag})"><ellipse cx="0" cy="8" rx="24" ry="9" fill="${irisLight}"/></g>
+      <ellipse cx="0" cy="0" rx="4.4" ry="${slitRy}" fill="${dark}" transform="rotate(${slitRot})"/>
+      <circle cx="-8" cy="-3" r="4.6" fill="#fff"/><circle cx="7" cy="5" r="2" fill="#fff" opacity="0.85"/>`);
   switch (style) {
     case 'happy':
       return L('M -17 5 Q 0 -16 17 5', dark, 5.5);
     case 'sleepy':
       return `${open(16, 19)}<path d="M -19 -2 Q 0 -10 19 -2 L 19 -22 L -19 -22 Z" fill="${ctx.fur}" stroke="none"/>${L('M -18 -2 Q 0 -9 18 -2', dark, 4.5)}`;
+    case 'cool':
+      return (
+        flipR(`${open(16, 19)}<path d="M -20 -1 Q 0 -8 20 -4 L 20 -26 L -20 -26 Z" fill="${ctx.fur}" stroke="none"/>${L('M -19 -1 Q 0 -8 19 -4', dark, 5)}`) +
+        flipR(L('M -24 -17 L 22 -22', dark, 4.6))
+      );
     case 'calm':
-      return `${open(15, 18)}<path d="M -18 -4 Q 0 -13 18 -4 L 18 -24 L -18 -24 Z" fill="${ctx.fur}" stroke="none"/>${L('M -17 -4 Q 0 -12 17 -4', dark, 4.2)}`;
-    case 'sharp': {
-      const almond = 'M -21 3 Q -4 -20 22 -6 Q 4 17 -21 3 Z';
-      return `
-        <path d="${almond}" fill="${irisDark}" stroke="${dark}" stroke-width="3.2"/>
-        <clipPath id="ec${ctx.uid}${side}s"><path d="${almond}"/></clipPath>
-        <g clip-path="url(#ec${ctx.uid}${side}s)"><ellipse cx="0" cy="8" rx="22" ry="9" fill="${irisLight}"/></g>
-        <ellipse cx="0" cy="0" rx="4.4" ry="11" fill="${dark}" transform="rotate(8)"/>
-        <circle cx="-8" cy="-4" r="4.6" fill="#fff"/>`;
-    }
-    case 'fierce': {
-      const almond = 'M -21 5 Q -2 -17 22 -9 Q 6 16 -21 5 Z';
-      return `
-        <path d="${almond}" fill="${irisDark}" stroke="${dark}" stroke-width="3.2"/>
-        <clipPath id="ec${ctx.uid}${side}f"><path d="${almond}"/></clipPath>
-        <g clip-path="url(#ec${ctx.uid}${side}f)"><ellipse cx="0" cy="9" rx="22" ry="9" fill="${irisLight}"/></g>
-        <ellipse cx="0" cy="0" rx="4.4" ry="10" fill="${dark}" transform="rotate(10)"/>
-        <circle cx="-8" cy="-3" r="4.2" fill="#fff"/>
-        ${L('M -26 -12 L 24 -24', dark, 7.5)}`;
-    }
+      return `${open(15, 18)}<path d="M -18 -4 Q 0 -13 18 -4 L 18 -24 L -18 -24 Z" fill="${ctx.fur}" stroke="none"/>${L('M -17 -4 Q 0 -12 17 -4', dark, 4.2)}${L('M -20 -22 Q 0 -29 20 -22', dark, 3.4, 0.8)}`;
+    case 'sharp':
+      return almond('M -21 3 Q -4 -20 22 -6 Q 4 17 -21 3 Z', 's', 8, 11) + flipR(L('M -25 -14 Q -2 -26 24 -14', dark, 4, 0.9));
+    case 'keen':
+      return almond('M -23 4 Q -4 -22 24 -8 Q 6 16 -23 4 Z', 'k', 10, 12) + flipR(L('M -27 -12 Q -2 -28 26 -17', dark, 5));
+    case 'fierce':
+      return almond('M -21 5 Q -2 -17 22 -9 Q 6 16 -21 5 Z', 'f', 10, 10) + flipR(L('M -27 -10 L 24 -25', dark, 7.5));
     case 'wide':
       return open(19, 25);
     case 'wink':
@@ -308,14 +309,13 @@ function renderTail(ctx: Ctx): string {
 
 // ---------- 手臂 / 爪 ----------
 export interface Pose { R: [number, number]; L: [number, number] }
-const DEFAULT_POSE: Pose = { R: [296, 392], L: [104, 392] };
 
-function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: string, cuff?: string): string {
-  const sx = side === 'R' ? 258 : 142;
-  const sy = 326;
+export function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: string, cuff?: string): string {
+  const sx = side === 'R' ? 200 + 58 * ctx.W : 200 - 58 * ctx.W;
+  const sy = 322;
   const [hx, hy] = hand;
-  const cx = side === 'R' ? Math.max(sx, hx) + 12 : Math.min(sx, hx) - 12;
-  const cy = (sy + hy) / 2 - 4;
+  const cx = side === 'R' ? Math.max(sx, hx) + 10 : Math.min(sx, hx) - 10;
+  const cy = (sy + hy) / 2 - 2;
   const d = `M ${sx} ${sy} Q ${cx} ${cy} ${hx} ${hy}`;
   const col = sleeve ?? ctx.fur;
   const o = sleeve ? ink(sleeve) : ctx.line;
@@ -325,22 +325,22 @@ function arm(ctx: Ctx, side: 'L' | 'R', hand: [number, number], sleeve?: string,
     const a = q(0.74);
     const b = q(0.9);
     const seg = `M ${a[0].toFixed(1)} ${a[1].toFixed(1)} L ${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
-    cuffSvg = `<path d="${seg}" stroke="${ink(cuff)}" stroke-width="47" stroke-linecap="round" fill="none"/><path d="${seg}" stroke="${cuff}" stroke-width="39" stroke-linecap="round" fill="none"/>`;
+    cuffSvg = `<path d="${seg}" stroke="${ink(cuff)}" stroke-width="41" stroke-linecap="round" fill="none"/><path d="${seg}" stroke="${cuff}" stroke-width="33" stroke-linecap="round" fill="none"/>`;
   }
   return (
-    `<path d="${d}" fill="none" stroke="${o}" stroke-width="41" stroke-linecap="round"/>` +
-    `<path d="${d}" fill="none" stroke="${col}" stroke-width="32" stroke-linecap="round"/>` +
+    `<path d="${d}" fill="none" stroke="${o}" stroke-width="35" stroke-linecap="round"/>` +
+    `<path d="${d}" fill="none" stroke="${col}" stroke-width="27" stroke-linecap="round"/>` +
     `<path d="${d}" fill="none" stroke="${shade(col, 0.14)}" stroke-width="12" stroke-linecap="round" opacity="0.35" transform="translate(${side === 'R' ? 6 : -6} 3)"/>` +
     cuffSvg
   );
 }
 
-function mitt(ctx: Ctx, hand: [number, number]): string {
+export function mitt(ctx: Ctx, hand: [number, number]): string {
   const [x, y] = hand;
   return (
-    E(x, y, 20, 18, ctx.paw, { stroke: ctx.line, sw: 4 }) +
-    L(`M ${x - 6} ${y + 6} L ${x - 6} ${y + 14}`, ctx.line, 2.5, 0.6) +
-    L(`M ${x + 6} ${y + 6} L ${x + 6} ${y + 14}`, ctx.line, 2.5, 0.6)
+    E(x, y, 17, 16, ctx.paw, { stroke: ctx.line, sw: 4 }) +
+    L(`M ${x - 5} ${y + 5} L ${x - 5} ${y + 12}`, ctx.line, 2.5, 0.6) +
+    L(`M ${x + 5} ${y + 5} L ${x + 5} ${y + 12}`, ctx.line, 2.5, 0.6)
   );
 }
 
@@ -407,8 +407,19 @@ function renderNeck(ctx: Ctx): string {
   return s;
 }
 
-// ---------- 主渲染 ----------
+
+// ---------- 主渲染：拆成可绑骨骼的部件 ----------
 export interface RenderOpts { uid?: string; width?: number; height?: number; viewBox?: string }
+export const VIEW_FULL = '-60 -50 520 700';
+export const DY = 48; // 武器/手的整体下移量（旧坐标 -> 新体型）
+export const TORSO_T = 'translate(0 270) scale(1 1.235) translate(0 -286)';
+export const BACK_T = 'translate(0 270) scale(1 1.55) translate(0 -286)';
+export const HEAD_BASE = 0.86;
+const headT = (hs: number) => `translate(200 221) scale(${hs}) translate(-200 -210)`;
+
+export type PartId = 'back' | 'tail' | 'legL' | 'legR' | 'torso' | 'armL' | 'head' | 'armR';
+export interface Part { id: PartId; svg: string; pivot: [number, number] }
+export const PART_ORDER: PartId[] = ['back', 'tail', 'legL', 'legR', 'torso', 'armL', 'head', 'armR'];
 
 let uidCounter = 0;
 
@@ -435,16 +446,43 @@ export function buildCtx(look: CatLook, uid: string): Ctx {
   };
 }
 
-export function catInner(look: CatLook, uid: string): string {
+function legSvg(ctx: Ctx, side: 'L' | 'R', pants: string | undefined, boots: string | undefined): string {
+  const W = ctx.W;
+  const dir = side === 'L' ? -1 : 1;
+  const hx = 200 + dir * 30 * W;
+  const kx = 200 + dir * 36 * W;
+  const ax = 200 + dir * 42 * W;
+  const d = `M ${hx} 462 Q ${kx + dir * 4} 520 ${ax} 574`;
+  const col = pants ?? ctx.fur;
+  const o = pants ? ink(pants) : ctx.line;
+  const bootCol = boots;
+  let s = `<path d="${d}" fill="none" stroke="${o}" stroke-width="45" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="37" stroke-linecap="round"/>`;
+  s += `<path d="${d}" fill="none" stroke="${shade(col, 0.14)}" stroke-width="14" stroke-linecap="round" opacity="0.3" transform="translate(${dir * 7} 2)"/>`;
+  if (pants) s += `<path d="M ${kx - 20} 520 Q ${kx} 530 ${kx + 20} 520" fill="none" stroke="${ctx.pal.trim}" stroke-width="5" opacity="0.8" stroke-linecap="round"/>`;
+  if (bootCol) {
+    s += P(`M ${ax - 23} 548 L ${ax + 23} 548 L ${ax + 25} 584 C ${ax + 25} 590 ${ax + 26} 596 ${ax + 30} 598 L ${ax - 30} 598 C ${ax - 26} 596 ${ax - 24} 590 ${ax - 24} 584 Z`, bootCol, { sw: 4 });
+    s += E(ax + dir * 12, 596, 32, 11, shade(bootCol, 0.1), { sw: 4 });
+    s += P(`M ${ax - 25} 552 L ${ax + 25} 552 L ${ax + 25} 562 L ${ax - 25} 562 Z`, ctx.pal.trim, { sw: 3, op: 0.9 });
+  } else {
+    s += E(ax + dir * 12, 592, 32, 15, ctx.paw, { stroke: ctx.line, sw: 4.5 });
+    s += L(`M ${ax + dir * 12 - 8} 590 L ${ax + dir * 12 - 8} 600 M ${ax + dir * 12 + 8} 590 L ${ax + dir * 12 + 8} 600`, ctx.line, 2.5, 0.5);
+  }
+  return s;
+}
+
+export function catParts(look: CatLook, uid: string): { parts: Part[]; shadow: string; defs: string } {
   const ctx = buildCtx(look, uid);
   const { W, fur, line, coat } = ctx;
   const bodyPath = bodyD(W);
-  const hs = look.head ?? 1;
+  const hs = (look.head ?? 1) * HEAD_BASE;
   const ear = earShape(look.ear);
-  const poseBase: Pose = { ...DEFAULT_POSE, R: [200 + 96 * W, 392], L: [200 - 96 * W, 392] };
+  const poseBase: Pose = { R: [200 + 96 * W, 392], L: [200 - 96 * W, 392] };
   const weapon = renderWeapon(ctx, poseBase);
-  const pose: Pose = { R: weapon.pose?.R ?? poseBase.R, L: weapon.pose?.L ?? poseBase.L };
+  const poseOld: Pose = { R: weapon.pose?.R ?? poseBase.R, L: weapon.pose?.L ?? poseBase.L };
+  const pose: Pose = { R: [poseOld.R[0], poseOld.R[1] + DY], L: [poseOld.L[0], poseOld.L[1] + DY] };
   const bodyGear = renderBodyGear(ctx);
+  const noBoots = look.outfit.body === 'tribal' || look.outfit.body === 'none' || look.outfit.body === 'rattan';
+  const bootCol = noBoots ? undefined : (bodyGear.boots ?? shade(ctx.pal.sub, 0.05));
 
   // 耳朵
   const earColor = coat.pattern === 'point' ? (coat.accent ?? '#5a4136') : coat.pattern === 'calico' ? coat.base : fur;
@@ -454,45 +492,43 @@ export function catInner(look: CatLook, uid: string): string {
     P(ear.inner, ctx.pink, { noStroke: true, op: 0.85 }) +
     (look.ear === 'tuft' ? L('M 112 66 L 108 44', line, 4) + L('M 118 70 L 120 46', line, 4) + L('M 106 74 L 98 54', line, 4) : '') +
     (coat.pattern === 'shaded' ? `<path d="${ear.outer}" fill="${coat.accent ?? shade(fur, 0.2)}" opacity="0.5" stroke="none"/>` : '');
-
-  // 脸颊绒毛
   const cheekFluff = look.fluffy
     ? `<path d="M 104 232 L 80 244 L 102 250 L 86 268 L 112 264 L 106 284 L 128 270 Z" fill="${fur}" stroke="${line}" stroke-width="4.5" stroke-linejoin="round"/>` +
       mirror(`<path d="M 104 232 L 80 244 L 102 250 L 86 268 L 112 264 L 106 284 L 128 270 Z" fill="${fur}" stroke="${line}" stroke-width="4.5" stroke-linejoin="round"/>`)
     : '';
-
   const eyeC = look.eye.color;
   const eyes =
-    `<g transform="translate(155 216) scale(1.1)">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
-    `<g transform="translate(245 216) scale(1.1)">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
-
+    `<g transform="translate(155 218) scale(1.02)">${eyeSvg(look.eye.style, eyeC, 'L', ctx)}</g>` +
+    `<g transform="translate(245 218) scale(1.02)">${eyeSvg(look.eye.style === 'wink' ? 'wide' : look.eye.style, eyeC, 'R', ctx)}</g>`;
   const muzzleCol = coat.pattern === 'tuxedo' ? coat.light : coat.pattern === 'point' ? mix(coat.accent ?? '#5a4136', fur, 0.25) : ctx.belly;
-  const muzzle = `<ellipse cx="200" cy="258" rx="40" ry="28" fill="${muzzleCol}" opacity="${coat.pattern === 'point' ? 0.55 : 0.92}"/>`;
-  const nose = P('M 190 238 Q 200 233 210 238 Q 206 249 200 252 Q 194 249 190 238 Z', ctx.pink, { stroke: ink(ctx.pink, 0.45), sw: 3 });
-  const mouth = L('M 200 252 L 200 259 M 200 259 Q 190 269 179 260 M 200 259 Q 210 269 221 260', ctx.eyeInk, 3.6);
+  const muzzle = `<ellipse cx="200" cy="258" rx="35" ry="24" fill="${muzzleCol}" opacity="${coat.pattern === 'point' ? 0.55 : 0.92}"/>`;
+  const nose = P('M 191 240 Q 200 235 209 240 Q 205 249 200 252 Q 195 249 191 240 Z', ctx.pink, { stroke: ink(ctx.pink, 0.45), sw: 3 });
+  const mouth = L('M 200 252 L 200 258 M 200 258 Q 191 266 182 259 M 200 258 Q 209 266 218 259', ctx.eyeInk, 3.4);
   const whiskers =
-    (L('M 150 254 L 104 244 M 150 261 L 100 263 M 152 268 L 108 282', ink(fur, 0.3), 2.4, 0.55)) +
-    (L('M 250 254 L 296 244 M 250 261 L 300 263 M 248 268 L 292 282', ink(fur, 0.3), 2.4, 0.55));
-  const blush = E(128, 252, 20, 11, '#ff8a9b', { noStroke: true, op: 0.5 }) + E(272, 252, 20, 11, '#ff8a9b', { noStroke: true, op: 0.5 });
+    L('M 152 254 L 106 244 M 152 261 L 102 263 M 154 268 L 110 282', ink(fur, 0.3), 2.4, 0.55) +
+    L('M 248 254 L 294 244 M 248 261 L 298 263 M 246 268 L 290 282', ink(fur, 0.3), 2.4, 0.55);
+  const blush = look.blush ? E(130, 254, 17, 9, '#ff8a9b', { noStroke: true, op: 0.4 }) + E(270, 254, 17, 9, '#ff8a9b', { noStroke: true, op: 0.4 }) : '';
+  // 颧骨阴影：让脸更有骨相、更“帅”
+  const cheekShade = `<path d="M 104 236 Q 128 262 150 268" fill="none" stroke="${shade(fur, 0.22)}" stroke-width="7" stroke-linecap="round" opacity="0.28"/><path d="M 296 236 Q 272 262 250 268" fill="none" stroke="${shade(fur, 0.22)}" stroke-width="7" stroke-linecap="round" opacity="0.28"/>`;
+  const rim = (d: string, col: string) => `<path d="${d}" fill="none" stroke="${tint(col, 0.28)}" stroke-width="9" opacity="0.42" transform="translate(7 7)"/>`;
 
   const hg = renderHeadGear(ctx);
   const earsBoth = earOne() + mirror(earOne());
-  const head =
-    `<g transform="translate(200 210) scale(${hs}) translate(-200 -210)">` +
+  const headSvg =
+    `<g transform="${headT(hs)}">` +
     cheekFluff +
     (hg.behind ?? '') +
     (hg.hideEars ? '' : earsBoth) +
     `<clipPath id="hc${uid}"><path d="${HEAD_D}"/></clipPath>` +
-    P(HEAD_D, fur, { stroke: line, sw: 5 }) +
+    P(HEAD_D, fur, { stroke: line, sw: 5.5 }) +
     `<g clip-path="url(#hc${uid})">` +
     patternHead(ctx) +
-    ((look.outfit.extra ?? []).includes('redFace')
-      ? `<g filter="url(#soft${uid})"><path d="${blob(200, 232, 82, 60, 0, 3)}" fill="#cf3f36" opacity="0.88"/></g>`
-      : '') +
-    `<ellipse cx="214" cy="326" rx="150" ry="98" fill="${shade(fur, 0.2)}" opacity="0.28"/>` +
-    `<g filter="url(#soft${uid})"><ellipse cx="156" cy="146" rx="44" ry="17" fill="#fff" opacity="0.28" transform="rotate(-18 156 146)"/></g>` +
+    ((look.outfit.extra ?? []).includes('redFace') ? `<g filter="url(#soft${uid})"><path d="${blob(200, 232, 82, 60, 0, 3)}" fill="#cf3f36" opacity="0.88"/></g>` : '') +
+    `<ellipse cx="214" cy="326" rx="150" ry="98" fill="${shade(fur, 0.22)}" opacity="0.3"/>` +
+    rim(HEAD_D, fur) +
+    `<g filter="url(#soft${uid})"><ellipse cx="156" cy="146" rx="44" ry="17" fill="#fff" opacity="0.24" transform="rotate(-18 156 146)"/></g>` +
     `</g>` +
-    muzzle + blush + eyes + nose + mouth + whiskers +
+    cheekShade + muzzle + blush + eyes + nose + mouth + whiskers +
     renderFaceExtras(ctx) +
     renderBeard(ctx) +
     hg.svg +
@@ -500,39 +536,81 @@ export function catInner(look: CatLook, uid: string): string {
     (hg.over ?? '') +
     `</g>`;
 
-  // 身体
-  const body =
+  const belt = coat.pattern === 'solid' || coat.pattern === 'tabby' || coat.pattern === 'spots' || coat.pattern === 'shaded';
+  const bodySvg =
+    `<g transform="${TORSO_T}">` +
     `<clipPath id="bc${uid}"><path d="${bodyPath}"/></clipPath>` +
     P(bodyPath, fur, { stroke: line, sw: 5 }) +
     `<g clip-path="url(#bc${uid})">` +
     patternBody(ctx) +
-    `<ellipse cx="200" cy="${coat.pattern === 'tuxedo' ? 395 : 404}" rx="${coat.pattern === 'tuxedo' ? 0 : 38 * W}" ry="48" fill="${ctx.belly}" opacity="${coat.pattern === 'solid' || coat.pattern === 'tabby' || coat.pattern === 'spots' || coat.pattern === 'shaded' ? 0.9 : 0}"/>` +
-    `<ellipse cx="${232 + 20 * W}" cy="430" rx="${70 * W}" ry="90" fill="${shade(fur, 0.2)}" opacity="0.2"/>` +
-    `<g filter="url(#soft${uid})"><ellipse cx="${160 - 10 * W}" cy="334" rx="22" ry="12" fill="#fff" opacity="0.24" transform="rotate(-24 ${160 - 10 * W} 334)"/></g>` +
-    `</g>`;
-
-  const feet = (dx: number) =>
-    E(200 + dx * W, 456, 30 * W, 17, ctx.paw, { stroke: line, sw: 4.5 }) +
-    L(`M ${200 + dx * W - 7} 454 L ${200 + dx * W - 7} 463 M ${200 + dx * W + 7} 454 L ${200 + dx * W + 7} 463`, line, 2.5, 0.5);
-
-  const sleeve = bodyGear.sleeve;
-  return (
-    `<ellipse cx="200" cy="466" rx="${116 * W}" ry="14" fill="#3a2830" opacity="0.18"/>` +
-    renderBackGear(ctx) +
-    renderTail(ctx) +
-    feet(-34) +
-    feet(34) +
-    body +
+    (belt ? `<ellipse cx="200" cy="404" rx="${36 * W}" ry="50" fill="${ctx.belly}" opacity="0.9"/>` : '') +
+    `<ellipse cx="${232 + 20 * W}" cy="430" rx="${70 * W}" ry="90" fill="${shade(fur, 0.22)}" opacity="0.24"/>` +
+    rim(bodyPath, fur) +
+    `<g filter="url(#soft${uid})"><ellipse cx="${160 - 10 * W}" cy="334" rx="22" ry="12" fill="#fff" opacity="0.22" transform="rotate(-24 ${160 - 10 * W} 334)"/></g>` +
+    `</g>` +
     bodyGear.svg +
     renderNeck(ctx) +
-    arm(ctx, 'L', pose.L, sleeve, bodyGear.cuff) +
-    arm(ctx, 'R', pose.R, sleeve, bodyGear.cuff) +
-    (bodyGear.over ?? '') +
-    head +
-    weapon.svg +
-    (weapon.noMitt ? '' : mitt(ctx, pose.L) + mitt(ctx, pose.R)) +
-    (weapon.front ?? '')
-  );
+    (bodyGear.overC ?? '') +
+    `</g>` +
+    (bodyGear.skirt ?? '');
+
+  const legs = (side: 'L' | 'R') => legSvg(ctx, side, bodyGear.legCloth, bootCol);
+  const handL = pose.L;
+  const handR = pose.R;
+  const wrapW = (svg: string) => (svg ? `<g transform="translate(0 ${DY})">${svg}</g>` : '');
+  const armLsvg =
+    arm(ctx, 'L', handL, bodyGear.sleeve, bodyGear.cuff) +
+    (bodyGear.overL ? `<g transform="${TORSO_T}">${bodyGear.overL}</g>` : '') +
+    wrapW(weapon.svgL ?? '') +
+    (weapon.noMitt ? '' : mitt(ctx, handL));
+  const armRsvg =
+    arm(ctx, 'R', handR, bodyGear.sleeve, bodyGear.cuff) +
+    (bodyGear.overR ? `<g transform="${TORSO_T}">${bodyGear.overR}</g>` : '') +
+    wrapW(weapon.svg) +
+    (weapon.noMitt ? '' : mitt(ctx, handR)) +
+    (weapon.front ? wrapW(weapon.front) : '');
+
+  const tailT = 'translate(250 480) scale(1.12) translate(-250 -440)';
+  const sh = 200 - 58 * W;
+  const parts: Part[] = [
+    { id: 'back', svg: `<g transform="${BACK_T}">${renderBackGear(ctx)}</g>`, pivot: [200, 300] },
+    { id: 'tail', svg: `<g transform="${tailT}">${renderTail(ctx)}</g>`, pivot: [250, 480] },
+    { id: 'legL', svg: legs('L'), pivot: [200 - 30 * W, 466] },
+    { id: 'legR', svg: legs('R'), pivot: [200 + 30 * W, 466] },
+    { id: 'torso', svg: bodySvg, pivot: [200, 470] },
+    { id: 'armL', svg: armLsvg, pivot: [sh, 322] },
+    { id: 'head', svg: headSvg, pivot: [200, 288] },
+    { id: 'armR', svg: armRsvg, pivot: [200 + 58 * W, 322] },
+  ];
+  return { parts, shadow: `<ellipse cx="200" cy="604" rx="${130 * W}" ry="15" fill="#3a2830" opacity="0.2"/>`, defs: defsFor(uid) };
+}
+
+/** 站姿：每个部件相对静止姿势的 [旋转°, 平移x, 平移y]。持长兵器时手臂外摆，让轮廓更有型。 */
+export type PartXf = [number, number, number];
+export type Stance = Partial<Record<PartId, PartXf>>;
+
+export function stanceFor(look: CatLook): Stance {
+  const w = look.outfit.weapon ?? 'none';
+  const base: Stance = { head: [2.5, 0, 0], torso: [-1, 0, 0], tail: [-3, 0, 0] };
+  const polearm: Stance = { armR: [-13, 0, 0], armL: [7, 0, 0] };
+  const table: Partial<Record<string, Stance>> = {
+    glaive: polearm, spear: polearm, halberd: polearm, staff: { armR: [-9, 0, 0], armL: [6, 0, 0] }, mace: { armR: [-16, 0, 0], armL: [7, 0, 0] }, whip: polearm, brush: { armR: [-10, 0, 0], armL: [6, 0, 0] },
+    sword: { armR: [-30, 0, 0], armL: [8, 0, 0] }, dualSwords: { armR: [-26, 0, 0], armL: [26, 0, 0] }, knives: { armR: [-22, 0, 0], armL: [22, 0, 0] },
+    bow: { armR: [-6, 0, 0], armL: [8, 0, 0] }, fan: { armR: [-5, 0, 0], armL: [8, 0, 0] }, none: { armR: [-6, 0, 0], armL: [6, 0, 0] },
+    drum: { armL: [6, 0, 0], armR: [-8, 0, 0] }, scroll: { armL: [6, 0, 0] }, talisman: { armL: [8, 0, 0] }, coins: { armL: [8, 0, 0] }, herbs: { armR: [-4, 0, 0] },
+  };
+  return { ...base, ...(table[w] ?? {}) };
+}
+
+export function xfWrap(p: Part, t?: PartXf): string {
+  if (!t) return p.svg;
+  return `<g transform="translate(${t[1]} ${t[2]}) rotate(${t[0]} ${p.pivot[0]} ${p.pivot[1]})">${p.svg}</g>`;
+}
+
+export function catInner(look: CatLook, uid: string): string {
+  const { parts, shadow } = catParts(look, uid);
+  const st = look.stance === false ? {} : stanceFor(look);
+  return shadow + parts.map((p) => xfWrap(p, st[p.id])).join('');
 }
 
 export function defsFor(uid: string): string {
@@ -551,7 +629,9 @@ export function defsFor(uid: string): string {
 export function catSvg(look: CatLook, o: RenderOpts = {}): string {
   const uid = o.uid ?? `c${++uidCounter}`;
   const w = o.width ?? 400;
-  const h = o.height ?? Math.round(w * 1.125);
+  const vb = o.viewBox ?? VIEW_FULL;
+  const [, , vw, vh] = vb.split(' ').map(Number);
+  const h = o.height ?? Math.round((w * vh) / vw);
   const flip = look.flip ? ' transform="translate(400 0) scale(-1 1)"' : '';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${o.viewBox ?? '-40 -40 480 540'}" width="${w}" height="${h}"><defs>${defsFor(uid)}</defs><g filter="url(#paper${uid})"><g${flip}>${catInner(look, uid)}</g></g></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="${w}" height="${h}"><defs>${defsFor(uid)}</defs><g filter="url(#paper${uid})"><g${flip}>${catInner(look, uid)}</g></g></svg>`;
 }
