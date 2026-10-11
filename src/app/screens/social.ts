@@ -16,8 +16,8 @@ import { sfx } from '../sfx';
 import { floaty } from './home';
 import { topbar } from './lineup';
 
-export const socialState = { tab: 'world' as 'world' | 'players' | 'arena' | 'friends' };
-const TABS: [typeof socialState.tab, string][] = [['world', '世界'], ['players', '玩家'], ['arena', '竞技'], ['friends', '好友']];
+export const socialState = { tab: 'world' as 'world' | 'players' | 'arena' | 'rank' | 'friends' };
+const TABS: [typeof socialState.tab, string][] = [['world', '世界'], ['players', '玩家'], ['arena', '竞技'], ['rank', '战力榜'], ['friends', '好友']];
 
 const clock = (t: number) => new Date(t).toTimeString().slice(0, 5);
 function seen(npc: Npc, now: number): string {
@@ -97,9 +97,16 @@ function arenaHtml(ctx: AppCtx): string {
   </div>`;
 }
 
+function rankHtml(ctx: AppCtx): string {
+  const s = ctx.s;
+  const rows = arenaBoard(s, teamPower(s), Date.now()).sort((a, b) => b.power - a.power);
+  const me = rows.findIndex((r) => r.me) + 1;
+  return `<div class="scroll soc-scroll"><div class="note">战力榜：你目前第 <b>${me}</b> 名（${rows.length} 位玩家）。他们每天都在成长，想上榜就要一起肝。</div>${rows.map((r, i) => `<div class="arow ${r.me ? 'me' : ''}"><i class="rk r${i + 1}">${i + 1}</i>${head(r.avatar)}<div class="who"><b>${esc(r.name)}</b><small>Lv.${r.level}${r.online ? ' · 在线' : ''}</small></div><div class="rt"><em>战力</em><b class="num">${fmt(r.power)}</b></div>${r.me ? '<span class="vbtn me">你</span>' : `<button class="btn sm ghost" data-act="npc" data-id="${r.id}">看看</button>`}</div>`).join('')}</div>`;
+}
+
 export function socialHtml(ctx: AppCtx): string {
   const tab = socialState.tab;
-  const body = tab === 'world' ? worldHtml(ctx) : tab === 'players' ? playersHtml() : tab === 'arena' ? arenaHtml(ctx) : friendsHtml(ctx);
+  const body = tab === 'world' ? worldHtml(ctx) : tab === 'players' ? playersHtml() : tab === 'arena' ? arenaHtml(ctx) : tab === 'rank' ? rankHtml(ctx) : friendsHtml(ctx);
   return `${topbar(ctx, '喵洲广场', '<button class="btn sm ghost shop-back" data-act="nav" data-to="home">返回</button>')}
     <div class="shop-tabs"><div class="seg">${TABS.map(([id, name]) => `<button class="pill" data-act="stab" data-tab="${id}" aria-pressed="${tab === id}">${name}</button>`).join('')}</div></div>
     <div class="soc-body t-${tab}">${body}</div>`;

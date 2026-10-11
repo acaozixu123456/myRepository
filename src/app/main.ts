@@ -22,6 +22,8 @@ import { PAY_CSS, handlePay, payHtml } from './screens/pay';
 import { SOCIAL_CSS, handleSocial, refreshChatLog, socialHtml } from './screens/social';
 import { grantOnce } from '../game/premium';
 import { markRead } from '../game/social';
+import { DAILY_CSS, handleDaily, openSignin } from './screens/daily';
+import { canSign } from '../game/daily';
 import { seedDemoInventory } from '../game/inventory';
 import { rollover, track } from '../game/quests';
 import { handleQuests, questsHtml } from './screens/quests';
@@ -30,7 +32,7 @@ import { fmt } from '../ui/components';
 import { makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -188,6 +190,7 @@ root.addEventListener('click', (e) => {
   if (handleShop(ctx, el)) return;
   if (handlePay(ctx, act, el)) return;
   if (handleSocial(ctx, act, el)) return;
+  if (handleDaily(ctx, act)) return;
   switch (act) {
     case 'nav': ctx.go(el.dataset.to as ScreenId); break;
     case 'speed': { state.settings.speed = (state.settings.speed % 3) + 1; ctx.loop.setSpeed(state.settings.speed); ctx.save(); updateHome(ctx); break; }
@@ -290,6 +293,7 @@ if (granted && !params.get('nostory')) {
     <p style="margin:0 0 8px;font-weight:700;line-height:1.7">已为本号充入 <b class="num" style="font-size:22px">200,000</b> 月光珠（等值计入累计充值，VIP 直升满级）。<br><span class="muted" style="font-size:12px">去「招募 → 至尊招募」抽至尊猫猫，或到「充值中心」看看权益。</span></p>
     <div class="row" style="justify-content:center;gap:10px"><button class="btn ghost" data-act="closedialog">先逛逛</button><button class="btn pink" data-act="nav" data-to="pay">充值中心</button></div></div></div>`);
 }
+if (!params.get('nostory') && !granted && canSign(state) && state.stories?.includes('c1_open') && !root.querySelector('.mask')) openSignin(ctx);
 ctx.loop.start();
 if (!params.get('nostory')) void playStoryOnce(ctx, 'c1_open');
 (window as unknown as Record<string, unknown>).__app = ctx;
