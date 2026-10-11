@@ -356,3 +356,27 @@ describe('开服冲榜', () => {
     expect(claimOpen(s, at(OPEN_DAYS)).ok).toBe(false);
   });
 });
+
+import { claimAllMail, claimMail, mailbox, unclaimedMail } from '../src/game/events';
+
+describe('邮件', () => {
+  it('欢迎信一直在；每周一多一封来信；节日期间有节日来信；充值后有感谢信；附件只能领一次', () => {
+    const s = newPlayer(0);
+    ensureEvents(s, at(0));
+    expect(mailbox(s, at(0)).map((m) => m.id)).toContain('welcome');
+    expect(mailbox(s, at(7)).map((m) => m.id)).toEqual(['wk:' + ensureEvents(s, at(7)).week, 'welcome']);
+    expect(mailbox(s, at(7)).map((m) => m.id)).toContain(`wk:${ensureEvents(s, at(7)).week}`);
+    expect(mailbox(s, at(14)).filter((m) => m.id.startsWith('wk:'))).toHaveLength(2);
+    const tickets = s.res.tickets;
+    expect(claimMail(s, 'welcome', at(7)).ok).toBe(true); expect(s.res.tickets - tickets).toBe(2);
+    expect(claimMail(s, 'welcome', at(7)).ok).toBe(false);
+    expect(claimMail(s, 'nope', at(0)).ok).toBe(false);
+    topUp(s, 'moon6', at(0));
+    expect(unclaimedMail(s, at(7)).map((m) => m.id)).toContain('thanks');
+    const all = claimAllMail(s, at(14));
+    expect(all.ok && all.n).toBeGreaterThanOrEqual(3);
+    expect(claimAllMail(s, at(14)).ok).toBe(false);
+    const f = new Date(2026, 9, 29, 12).getTime(); // 万圣节期间
+    expect(mailbox(s, f).some((m) => m.id.startsWith('fest:halloween'))).toBe(true);
+  });
+});

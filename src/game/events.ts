@@ -51,6 +51,7 @@ export interface EventState {
   pulls: number; pullClaimed: number[]; // 招募盛典：本周累计抽数 / 已领档
   fest: { id: string; claimed: number[]; pack: boolean }; // 节日活动：当前节日的签到与礼包记录
   openClaimed?: number[]; // 开服冲榜已领的天
+  mailClaimed?: string[]; // 已领附件的邮件 id
   up: { period: number; pulls: number; claimed: number[] }; // UP 池累抽有礼（每期重置）
   rank: { power: number; last?: { week: number; rank: number; power: number; claimed: boolean } }; // 周冲榜：本周最高战力 / 上周结果
 }
@@ -66,7 +67,7 @@ export function ensureEvents(s: PlayerState, now = Date.now()): EventState {
   e.carn ??= []; e.sprint ??= []; e.quizAns ??= []; e.passFree ??= []; e.passPrem ??= []; e.passLux ??= []; e.cum ??= []; e.packs ??= {}; e.growth ??= { bought: false, claimed: [] };
   e.start ??= d;
   e.wish ??= { hero: '', last: -9, streak: 0, total: 0 }; e.pulls ??= 0; e.pullClaimed ??= []; e.fest ??= { id: '', claimed: [], pack: false }; e.rank ??= { power: 0 }; e.up ??= { period: -1, pulls: 0, claimed: [] };
-  e.openClaimed ??= [];
+  e.openClaimed ??= []; e.mailClaimed ??= [];
   if (e.up.period !== upPeriod(now)) e.up = { period: upPeriod(now), pulls: 0, claimed: [] };
   if (e.day !== d) { e.day = d; e.spinUsed = 0; e.spinBought = 0; e.dayPts = 0; }
   const wk = weekStart(d);
@@ -555,4 +556,37 @@ export function claimOpen(s: PlayerState, now = Date.now()): Res<{ r: Reward; ra
   if (!tier) return { ok: false, reason: `现在第 ${rank} 名，进前 15 名才有奖励` };
   e.openClaimed.push(day); grant(s, tier.r);
   return { ok: true, r: tier.r, rank, label: tier.label };
+}
+
+// ---------- 邮件（免费）：欢迎信 / 周一来信 / 节日来信，附小礼物，一次领取 ----------
+export interface Mail { id: string; t: number; title: string; body: string; r: Reward }
+export function mailbox(s: PlayerState, now = Date.now()): Mail[] {
+  const e = ensureEvents(s, now), d = dayOf(now), out: Mail[] = [];
+  const startT = now - (d - e.start) * 86400000;
+  out.push({ id: 'welcome', t: startT, title: '欢迎来到喵洲', body: '军师好！我是喵洲驿站的信差猫。这是一份见面礼：招福符先抽一位新猫，金铃铛留着买点好东西。祝你每天都有睡不完的觉，也有打不完的仗。', r: { tickets: 2, bells: 100 } });
+  const firstWeek = weekStart(e.start);
+  for (let wk = firstWeek + 7; wk <= weekStart(d); wk += 7) {
+    const t = now - (d - wk) * 86400000;
+    out.push({ id: `wk:${wk}`, t, title: '新一周来信', body: '新的一周开始了：世界首领已经换班，公会首领也换了一位，活动页的周任务、嘉年华和周冲榜都已重置。随信附上一点小零嘴，祝本周顺利。', r: { fish: 5000, catnip: 5 } });
+  }
+  const f = festivalNow(now).active;
+  if (f) out.push({ id: `fest:${f.id}`, t: now - (d - f.start) * 86400000, title: `${f.f.name}开始啦`, body: `${f.f.flavor}\n节日期间每天都有签到礼，别忘了去活动页的「节日」看看。`, r: { bells: 50 } });
+  if ((s.pay?.total ?? 0) > 0) out.push({ id: 'thanks', t: startT + 1000, title: '来自驿站的感谢信', body: '谢谢你的支持！信差猫替全体喵洲居民，给你鞠了一个很低很低的躬。', r: { moon: 20 } });
+  return out.sort((a, b) => b.t - a.t);
+}
+export const mailClaimed = (s: PlayerState, id: string) => (ensureEvents(s).mailClaimed ??= []).includes(id);
+export const unclaimedMail = (s: PlayerState, now = Date.now()) => mailbox(s, now).filter((m) => !mailClaimed(s, m.id));
+export function claimMail(s: PlayerState, id: string, now = Date.now()): Res<{ r: Reward }> {
+  const m = mailbox(s, now).find((x) => x.id === id);
+  if (!m) return { ok: false, reason: '没有这封信' };
+  const e = ensureEvents(s, now); e.mailClaimed ??= [];
+  if (e.mailClaimed.includes(id)) return { ok: false, reason: '附件已经领过了' };
+  e.mailClaimed.push(id); grant(s, m.r);
+  return { ok: true, r: m.r };
+}
+export function claimAllMail(s: PlayerState, now = Date.now()): Res<{ n: number }> {
+  const list = unclaimedMail(s, now);
+  if (!list.length) return { ok: false, reason: '没有可领的附件' };
+  for (const m of list) claimMail(s, m.id, now);
+  return { ok: true, n: list.length };
 }

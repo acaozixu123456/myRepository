@@ -4,7 +4,7 @@ import {
   answerQuiz, buyGrowth, buyPack, buyPass, canClaimFirstPay, carnivalOf, claimCarnival, claimCum, claimFirstPay, claimGrowth, claimPass, claimSprint, claimSprintChest, ensureEvents, packAvailable,
   passFree, passLevel, passLux, passPrem, quizState, quizToday, rewardText, seasonDaysLeft, spin, spinsLeft, sprintActive, sprintDay, sprintDone, sprintUnlocked,
   carnivalReady as claimable, DAY_PTS_CAP,
-  FESTIVAL_PACK, OPEN_DAYS, OPEN_REWARDS, claimOpen, openActive, openRankOf, PULL_TIERS, UP_TIERS, claimUp, upDaysLeft, upHeroOf, RANK_REWARDS, WISH_STREAK_BONUS, buyFestivalPack, canWish, claimFestival, claimPull, claimRank, ensureEvents as ensureEv, festivalGift, festivalView, rankNow, rankRewardOf, setWishHero, wish, wishShards, dayOf,
+  FESTIVAL_PACK, claimAllMail, claimMail, mailClaimed, mailbox, unclaimedMail, OPEN_DAYS, OPEN_REWARDS, claimOpen, openActive, openRankOf, PULL_TIERS, UP_TIERS, claimUp, upDaysLeft, upHeroOf, RANK_REWARDS, WISH_STREAK_BONUS, buyFestivalPack, canWish, claimFestival, claimPull, claimRank, ensureEvents as ensureEv, festivalGift, festivalView, rankNow, rankRewardOf, setWishHero, wish, wishShards, dayOf,
 } from '../../game/events';
 import type { Reward } from '../../game/events';
 import { HERO_BY_ID } from '../../data/heroes';
@@ -16,9 +16,9 @@ import type { AppCtx } from '../ctx';
 import { sfx } from '../sfx';
 import { topbar } from './lineup';
 
-type Tab = 'sprint' | 'carnival' | 'spin' | 'quiz' | 'wish' | 'pulls' | 'rank' | 'open' | 'festival' | 'first' | 'cum' | 'growth' | 'pass' | 'packs';
+type Tab = 'mail' | 'sprint' | 'carnival' | 'spin' | 'quiz' | 'wish' | 'pulls' | 'rank' | 'open' | 'festival' | 'first' | 'cum' | 'growth' | 'pass' | 'packs';
 export const eventsState = { tab: 'sprint' as Tab, spinning: false, hit: -1 };
-const TABS: [Tab, string, boolean][] = [['sprint', '七日喵程', false], ['carnival', '嘉年华', false], ['spin', '猫抓机', false], ['quiz', '问答', false], ['wish', '许愿池', false], ['pulls', '招募盛典', false], ['rank', '周冲榜', false], ['open', '开服冲榜', false], ['festival', '节日', false], ['first', '首充豪礼', true], ['cum', '周累充', true], ['growth', '成长基金', true], ['pass', '通行证', true], ['packs', '礼包', true]];
+const TABS: [Tab, string, boolean][] = [['mail', '邮件', false], ['sprint', '七日喵程', false], ['carnival', '嘉年华', false], ['spin', '猫抓机', false], ['quiz', '问答', false], ['wish', '许愿池', false], ['pulls', '招募盛典', false], ['rank', '周冲榜', false], ['open', '开服冲榜', false], ['festival', '节日', false], ['first', '首充豪礼', true], ['cum', '周累充', true], ['growth', '成长基金', true], ['pass', '通行证', true], ['packs', '礼包', true]];
 
 const ordinal = (ctx: AppCtx) => { const b = ctx.s.best ?? ctx.s.stage; return (b.chapter - 1) * 24 + b.index; };
 function rbtn(act: string, data: Record<string, string | number>, state: 'ok' | 'done' | 'lock', label = '领取'): string {
@@ -89,6 +89,11 @@ function rankHtml(ctx: AppCtx): string {
     <p class="muted">你现在第 <b>${r.rank}</b> 名 · 本周最高战力 ${fmt(r.power)}</p>${RANK_REWARDS.map((x) => `<div class="evr"><div class="grow"><b>${x.label}</b><small>${rewardText(x.r)}</small></div></div>`).join('')}
     <div class="note" style="font-weight:800;margin:8px 0 4px">实时榜</div>${top}${r.rank > 8 ? `<div class="arow me"><i class="rk">${r.rank}</i><div class="who"><b>${esc(me.name)}</b></div><div class="rt"><em>战力</em><b class="num">${fmt(me.power)}</b></div></div>` : ''}</section>`;
 }
+function mailHtml(ctx: AppCtx): string {
+  const list = mailbox(ctx.s), un = unclaimedMail(ctx.s).length;
+  const rows = list.map((m) => { const got = mailClaimed(ctx.s, m.id); return `<div class="evr big ${got ? '' : 'unread'}"><div class="grow"><b>${esc(m.title)}</b><small style="white-space:pre-line">${esc(m.body.replace(/\\n/g, '\n'))}</small><em>附件：${rewardText(m.r)}</em></div>${rbtn('ev-mail', { id: m.id }, got ? 'done' : 'ok')}</div>`; }).join('');
+  return `<section class="panel"><h3>邮件 <small>${un ? `${un} 封有附件` : '都看过啦'}</small></h3><button class="btn sm ${un ? 'green' : 'ghost'}" data-act="ev-mail-all" ${un ? '' : 'disabled'}>一键领取全部</button>${rows}</section>`;
+}
 function openHtml(ctx: AppCtx): string {
   const s = ctx.s, e = ensureEv(s), o = openRankOf(s);
   if (!openActive(s)) return `<section class="panel"><h3>开服冲榜 <small>已结束</small></h3><p>开服冲榜只在新号的前 ${OPEN_DAYS} 天开放。之后可以去「周冲榜」继续比拼。</p></section>`;
@@ -158,7 +163,7 @@ function packsHtml(ctx: AppCtx): string {
 
 export function eventsHtml(ctx: AppCtx): string {
   const t = eventsState.tab;
-  const body = { sprint: sprintHtml, carnival: carnivalHtml, spin: spinHtml, quiz: quizHtml, wish: wishHtml, pulls: pullsHtml, rank: rankHtml, open: openHtml, festival: festivalHtml, first: firstHtml, cum: cumHtml, growth: growthHtml, pass: passHtml, packs: packsHtml }[t](ctx);
+  const body = { mail: mailHtml, sprint: sprintHtml, carnival: carnivalHtml, spin: spinHtml, quiz: quizHtml, wish: wishHtml, pulls: pullsHtml, rank: rankHtml, open: openHtml, festival: festivalHtml, first: firstHtml, cum: cumHtml, growth: growthHtml, pass: passHtml, packs: packsHtml }[t](ctx);
   return `${topbar(ctx, '活动', '<button class="btn sm ghost shop-back" data-act="nav" data-to="home">返回</button>')}
     <div class="shop-tabs ev-tabs"><div class="seg">${TABS.map(([id, name, paid]) => `<button class="pill ${paid ? 'paid' : ''}" data-act="ev-tab" data-tab="${id}" aria-pressed="${t === id}">${name}${paid ? '<i>氪</i>' : ''}</button>`).join('')}</div></div>
     <div class="scroll ev-scroll">${body}</div>`;
@@ -177,6 +182,8 @@ export function handleEvents(ctx: AppCtx, act: string, el: HTMLElement): boolean
   const s = ctx.s;
   const i = Number(el.dataset.i);
   switch (act) {
+    case 'ev-mail': say(ctx, claimMail(s, el.dataset.id!)); return true;
+    case 'ev-mail-all': { const r = claimAllMail(s); ctx.toast(r.ok ? `领取了 ${r.n} 封邮件的附件` : r.reason); if (r.ok) { sfx.ok(); ctx.save(); } ctx.refresh(); return true; }
     case 'ev-tab': eventsState.tab = el.dataset.tab as Tab; ctx.refresh(); return true;
     case 'ev-sprint': say(ctx, claimSprint(s, i)); return true;
     case 'ev-sprint-chest': say(ctx, claimSprintChest(s)); return true;
@@ -246,6 +253,7 @@ export function handleEvents(ctx: AppCtx, act: string, el: HTMLElement): boolean
 
 export function eventsDot(ctx: AppCtx): boolean {
   const s = ctx.s, e = ensureEvents(s), vip = vipLevel(s), card = !!s.pay?.card && s.pay.card.until > Date.now();
+  if (unclaimedMail(s).length) return true;
   if (spinsLeft(s, vip, card).free > 0) return true;
   if (quizState(s).quizAns.length < QUIZ_PER_DAY) return true;
   if (claimable(e.pts, e.carn).some(Boolean)) return true;
@@ -278,6 +286,7 @@ export const EVENTS_CSS = `
 .spin-go{grid-column:1/-1;margin-top:6px;height:46px}.spin-go small{display:block;font-size:10px;opacity:.85}
 .wishpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-height:210px;overflow-y:auto}
 .wishpick .pick{display:flex;flex-direction:column;align-items:center;padding:4px 1px;border-radius:12px;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line)}.wishpick .pick img{width:44px;height:44px;border-radius:50%;object-fit:cover}.wishpick .pick small{font-size:9.5px;font-weight:800;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.wishpick .pick.on{background:linear-gradient(#fff3c4,#ffd0ee);box-shadow:inset 0 0 0 3px #ff6ad0}
+.evr.unread b::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:5px}
 .quiz{display:flex;flex-direction:column;gap:8px}.quiz p{font-size:15px;color:var(--ink);margin:0}.quiz .btn{width:100%}
 .prow2{display:grid;grid-template-columns:26px 1fr 1fr 1fr;gap:5px;align-items:stretch;padding:3px 0}.prow2.head{font-size:11px;font-weight:800;color:var(--ink-2);text-align:center;align-items:center}
 .prow2 .lv{font-style:normal;display:grid;place-items:center;font-family:var(--f-d);font-size:13px;border-radius:50%;background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--paper-line)}.prow2.on .lv{background:linear-gradient(#ffe27a,#f0a62e)}
