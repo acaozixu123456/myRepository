@@ -26,6 +26,8 @@ export interface ExploreHooks {
   encounter(s: Spawn): Promise<boolean>;
   chest(s: Spawn): void;
   talk(s: Spawn): void;
+  /** 野怪刚发现队伍（音效用，可选） */
+  alert?(s: Spawn): void;
 }
 
 interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; shadow: THREE.Mesh }
@@ -97,6 +99,7 @@ export class Explorer {
   /** 小地图用：队长位置 + 所有活着的实体 */
   snapshot() { return { leader: { x: this.leader.pos.x, z: this.leader.pos.z, yaw: this.leader.yaw }, ents: this.ents.filter((e) => e.alive).map((e) => ({ kind: e.spawn.kind, x: e.group.position.x, z: e.group.position.z })) }; }
   get leader(): Actor { return this.team[0]; }
+  get moving(): boolean { return this.leader.moving > 0.5; }
   get leaderPos(): THREE.Vector3 { return this.team[0].pos; }
 
   private mkActor(id: string, scale: number): Actor {
@@ -302,7 +305,9 @@ export class Explorer {
     // 敌人：巡逻 / 追击
     const dist = gp.distanceTo(lp);
     const sight = s.kind === 'boss' ? 0 : 9;
+    const was = e.alert;
     e.alert = sight > 0 && dist < sight && e.cooldown <= 0;
+    if (e.alert && !was) this.hooks.alert?.(s);
     let speed = 0;
     if (e.alert) { e.target.copy(lp); speed = 4.4; }
     else if ((e.wait -= dt) <= 0 && (s.patrol ?? 0) > 0) { const r = s.patrol!; e.target.set(e.home.x + (Math.random() - 0.5) * 2 * r, 0.32, e.home.z + (Math.random() - 0.5) * 2 * r); e.wait = 2 + Math.random() * 3; }

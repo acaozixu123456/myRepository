@@ -16,7 +16,7 @@ import { fmt } from '../../ui/components';
 import { HERO_BY_ID } from '../../data/heroes';
 import { arenaFight } from '../arenaFight';
 import type { AppCtx } from '../ctx';
-import { sfx } from '../sfx';
+import { sfx, rainAmbience, stepSfx, alertSfx } from '../sfx';
 import { topbar } from './lineup';
 import { playStoryOnce } from '../story';
 
@@ -170,8 +170,14 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     encounter: (s) => onEncounter(ctx, s),
     chest: (s) => onChest(ctx, s),
     talk: (s) => onTalk(ctx, s),
+    alert: () => alertSfx(),
   });
-  wv.onUpdate = (dt) => { const d = moveDir(wv.yaw); if (d) ex.push(d[0], d[1], dt); ex.update(dt); st.update(wv.time, dt); };
+  let stepT = 0;
+  wv.onUpdate = (dt) => {
+    const d = moveDir(wv.yaw); if (d) ex.push(d[0], d[1], dt);
+    ex.update(dt); st.update(wv.time, dt);
+    if (ex.moving) { stepT -= dt; if (stepT <= 0) { stepSfx(); stepT = 0.26; } } else stepT = 0;
+  };
   rt.ex = ex; rt.st = st; rt.dead.clear();
   syncSpawns(ctx);
 }
@@ -207,11 +213,12 @@ export async function enterExplore(ctx: AppCtx) {
   rt.wv.snapCamera();
   rt.wv.start();
   rt.running = true;
+  rainAmbience(true);
   clearInterval(miniT);
   miniT = window.setInterval(() => drawMini(ctx), 250);
   setTimeout(() => { load.style.display = 'none'; }, 250);
 }
-export function leaveExplore() { clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
+export function leaveExplore() { rainAmbience(false); clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
 export function resizeExplore() { rt?.wv.resize(); }
 
 // ---------- 玩法 ----------
@@ -226,6 +233,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
   busyFight = true;
   const backdrop = rt.wv.backdrop();
   rt.wv.stop();
+  rainAmbience(false);
   const s = ctx.s;
   try {
     const isBoss = sp.kind === 'boss';
@@ -260,6 +268,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
   } finally {
     busyFight = false;
     rt.wv.start();
+    rainAmbience(true);
   }
 }
 

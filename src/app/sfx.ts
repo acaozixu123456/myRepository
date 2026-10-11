@@ -58,3 +58,33 @@ export const sfx = {
   win: () => play([0, 4, 7, 12].map((s, i) => ({ f: N(s), t: i * 0.1, d: 0.25, type: 'triangle' as const, v: 0.16 }))),
   story: () => play([{ f: N(14), d: 0.05, type: 'sine', v: 0.06 }]),
 };
+
+// ---- 探索环境音：雨声（滤波噪声循环）+ 脚步 ----
+let rain: { src: AudioBufferSourceNode; g: GainNode } | null = null;
+function noiseBuf(a: AudioContext, secs: number): AudioBuffer {
+  const b = a.createBuffer(1, Math.floor(a.sampleRate * secs), a.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  return b;
+}
+/** 开 / 关雨声。第一次用户操作之前浏览器不会出声，调用无副作用。 */
+export function rainAmbience(on: boolean) {
+  if (!on) {
+    if (rain) { const r = rain; rain = null; r.g.gain.setTargetAtTime(0.0001, r.g.context.currentTime, 0.15); setTimeout(() => { try { r.src.stop(); } catch { /* 已停止 */ } }, 700); }
+    return;
+  }
+  if (rain) return;
+  const a = ctx();
+  if (!a || !master) return;
+  const src = a.createBufferSource(); src.buffer = noiseBuf(a, 2); src.loop = true;
+  const hp = a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
+  const lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 7000;
+  const g = a.createGain(); g.gain.setValueAtTime(0.0001, a.currentTime); g.gain.setTargetAtTime(0.06, a.currentTime, 0.4);
+  src.connect(hp).connect(lp).connect(g).connect(master);
+  src.start();
+  rain = { src, g };
+}
+const stepTick = (f: number, v: number) => { const a = ctx(); if (!a || !master) return; const o = a.createOscillator(), g = a.createGain(), t = a.currentTime; o.type = 'triangle'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * 0.5, t + 0.05); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07); o.connect(g).connect(master); o.start(t); o.stop(t + 0.09); };
+/** 猫爪脚步：轻轻的「噗」，音高略有随机 */
+export const stepSfx = () => stepTick(150 + Math.random() * 50, 0.05);
+/** 野怪发现你：短促警示音 */
+export const alertSfx = () => play([{ f: N(7), d: 0.07, type: 'square', v: 0.07 }, { f: N(14), t: 0.08, d: 0.12, type: 'square', v: 0.07 }]);
