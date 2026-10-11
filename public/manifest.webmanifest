@@ -1,0 +1,17 @@
+{
+  "name": "猫国志",
+  "short_name": "猫国志",
+  "description": "放置挂机卡牌 RPG：六大阵营猫猫，一起守住喵洲大陆。",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#161225",
+  "theme_color": "#3a2517",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
