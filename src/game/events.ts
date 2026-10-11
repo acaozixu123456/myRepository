@@ -1,7 +1,7 @@
 // 活动中心：免费活动（七日喵程 / 嘉年华 / 幸运猫抓机 / 每日问答）与氪金活动（首充豪礼 / 周累充 / 成长基金 / 喵喵通行证 / 限时礼包）。
 // 纯逻辑：时间与随机数可注入；「充值」同 premium.ts 一样是模拟下单，由 premium.record 回调 onPay 记账。
 import { addItem } from './inventory';
-import { rnd } from './npc';
+import { NPCS, npcProgress, rnd } from './npc';
 import { recordOrder } from './premium';
 import { teamPower } from './state';
 import type { PlayerState } from './state';
@@ -46,6 +46,10 @@ export interface EventState {
   firstPay: boolean; // 首充豪礼已领
   growth: { bought: boolean; claimed: number[] };
   packs: Record<string, number>; // 礼包 id → 上次购买的周期序号
+  wish: { hero: string; last: number; streak: number; total: number }; // 许愿池
+  pulls: number; pullClaimed: number[]; // 招募盛典：本周累计抽数 / 已领档
+  fest: { id: string; claimed: number[]; pack: boolean }; // 节日活动：当前节日的签到与礼包记录
+  rank: { power: number; last?: { week: number; rank: number; power: number; claimed: boolean } }; // 周冲榜：本周最高战力 / 上周结果
 }
 export function ensureEvents(s: PlayerState, now = Date.now()): EventState {
   const d = dayOf(now);
@@ -53,13 +57,18 @@ export function ensureEvents(s: PlayerState, now = Date.now()): EventState {
     day: -1, spinUsed: 0, spinBought: 0, spinPity: 0, spinTotal: 0, quizDay: -1, quizAns: [], week: 0, pts: 0, carn: [], dayPts: 0,
     start: d, sprint: [], sprintChest: false, season: -1, xp: 0, passTier: 0, passFree: [], passPrem: [], passLux: [], weekYuan: 0, cum: [], firstPay: false,
     growth: { bought: false, claimed: [] }, packs: {},
+    wish: { hero: '', last: -9, streak: 0, total: 0 }, pulls: 0, pullClaimed: [], fest: { id: '', claimed: [], pack: false }, rank: { power: 0 },
   };
   const e = s.events;
   e.carn ??= []; e.sprint ??= []; e.quizAns ??= []; e.passFree ??= []; e.passPrem ??= []; e.passLux ??= []; e.cum ??= []; e.packs ??= {}; e.growth ??= { bought: false, claimed: [] };
   e.start ??= d;
+  e.wish ??= { hero: '', last: -9, streak: 0, total: 0 }; e.pulls ??= 0; e.pullClaimed ??= []; e.fest ??= { id: '', claimed: [], pack: false }; e.rank ??= { power: 0 };
   if (e.day !== d) { e.day = d; e.spinUsed = 0; e.spinBought = 0; e.dayPts = 0; }
   const wk = weekStart(d);
-  if (e.week !== wk) { e.week = wk; e.pts = 0; e.carn = []; e.weekYuan = 0; e.cum = []; }
+  if (e.week !== wk) {
+    if (e.week > 0) settleRank(e, e.week);
+    e.week = wk; e.pts = 0; e.carn = []; e.weekYuan = 0; e.cum = []; e.pulls = 0; e.pullClaimed = []; e.rank.power = 0;
+  }
   const season = Math.floor(d / SEASON_DAYS);
   if (e.season !== season) { e.season = season; e.xp = 0; e.passTier = 0; e.passFree = []; e.passPrem = []; e.passLux = []; }
   return e;
@@ -76,7 +85,11 @@ export function addPoints(s: PlayerState, kind: string, amount = 1, now = Date.n
   return gain;
 }
 /** quests.track 的回调 */
-export const onTrack = (s: PlayerState, goal: string, amount: number) => { addPoints(s, goal, amount); };
+export const onTrack = (s: PlayerState, goal: string, amount: number) => {
+  addPoints(s, goal, amount);
+  if (goal === 'recruit') ensureEvents(s).pulls += amount;
+  if (goal === 'login' || goal === 'level_up_hero' || goal === 'upgrade_skill' || goal === 'equip_upgrade' || goal === 'recruit') { const e = ensureEvents(s); e.rank.power = Math.max(e.rank.power, teamPower(s)); }
+};
 
 // ---------- 嘉年华（每周轮换主题，免费） ----------
 export const CARNIVALS = [
@@ -350,4 +363,122 @@ export function buyPack(s: PlayerState, id: string, now = Date.now()): Res<{ r: 
   if (!packAvailable(s, p, now)) return { ok: false, reason: '本期已购买' };
   e.packs[id] = packPeriod(p, now); grant(s, p.r); payRecord(s, id, p.yuan, p.r.moon ?? 0, now);
   return { ok: true, r: p.r };
+}
+
+// ---------- 许愿池（免费；VIP / 月卡加成）：每天给指定猫猫碎片，连续 7 天额外大奖 ----------
+export const WISH_BASE = 3, WISH_STREAK_BONUS = 20;
+export const wishShards = (vip: number, cardActive: boolean) => WISH_BASE + (vip >= 3 ? 1 : 0) + (vip >= 8 ? 1 : 0) + (cardActive ? 1 : 0);
+export const canWish = (s: PlayerState, now = Date.now()) => ensureEvents(s, now).wish.last !== dayOf(now);
+export function setWishHero(s: PlayerState, id: string, now = Date.now()): Res {
+  if (!s.heroes[id]) return { ok: false, reason: '只能为已拥有的猫猫许愿' };
+  ensureEvents(s, now).wish.hero = id; return { ok: true };
+}
+export function wish(s: PlayerState, vip: number, cardActive: boolean, now = Date.now()): Res<{ shards: number; streak: number; bonus: boolean; hero: string }> {
+  const e = ensureEvents(s, now), w = e.wish, d = dayOf(now);
+  if (!w.hero || !s.heroes[w.hero]) return { ok: false, reason: '先选一只想许愿的猫猫' };
+  if (w.last === d) return { ok: false, reason: '今天已经许过愿了' };
+  w.streak = w.last === d - 1 ? w.streak + 1 : 1; w.last = d; w.total++;
+  const bonus = w.streak % 7 === 0;
+  const shards = wishShards(vip, cardActive) + (bonus ? WISH_STREAK_BONUS : 0);
+  s.heroes[w.hero].shards += shards;
+  return { ok: true, shards, streak: w.streak, bonus, hero: w.hero };
+}
+
+// ---------- 招募盛典（免费）：本周累计招募次数领奖励 ----------
+export const PULL_TIERS: { n: number; r: Reward }[] = [
+  { n: 5, r: { fish: 6000, catnip: 5 } }, { n: 15, r: { bells: 80, items: { fishbone_small: 3 } } }, { n: 30, r: { tickets: 2, fish: 10000 } },
+  { n: 60, r: { bells: 200, items: { fishbone_medium: 2 } } }, { n: 100, r: { tickets: 5, bells: 300, items: { fishbone_large: 1 } } },
+];
+export function claimPull(s: PlayerState, i: number, now = Date.now()): Res<{ r: Reward }> {
+  const e = ensureEvents(s, now), t = PULL_TIERS[i];
+  if (!t) return { ok: false, reason: '没有这一档' };
+  if (e.pullClaimed.includes(i)) return { ok: false, reason: '已经领过了' };
+  if (e.pulls < t.n) return { ok: false, reason: '本周招募次数还不够' };
+  e.pullClaimed.push(i); grant(s, t.r);
+  return { ok: true, r: t.r };
+}
+
+// ---------- 节日活动：按公历日期轮换，签到 + 限定礼包 ----------
+export interface Festival { key: string; name: string; flavor: string; from: [number, number]; to: [number, number] }
+export const FESTIVALS: Festival[] = [
+  { key: 'guoqing', name: '国庆喵喵游园', flavor: '全城挂起了小旗子，纸箱城门口排起了长队，所有猫都想进去逛一圈。', from: [10, 1], to: [10, 7] },
+  { key: 'halloween', name: '南瓜纸箱夜', flavor: '纸箱戴上了南瓜头，黑猫们终于有了正当理由躲在门后吓人。', from: [10, 28], to: [11, 3] },
+  { key: 'double11', name: '猫粮狂欢节', flavor: '货架一夜之间堆满了鱼罐头，据说每一罐都“只此一天”。', from: [11, 9], to: [11, 13] },
+  { key: 'xmas', name: '毛线球圣诞', flavor: '圣诞树是用毛线球堆的，夜里总有一只猫忍不住去拆。', from: [12, 22], to: [12, 28] },
+  { key: 'newyear', name: '新岁第一爪', flavor: '新年的第一个愿望：今年也要睡到自然醒。', from: [12, 30], to: [1, 3] },
+  { key: 'spring', name: '红包猫节', flavor: '红包里没有钱，只有一条小鱼干——但猫猫们依然抢得很开心。', from: [2, 4], to: [2, 10] },
+  { key: 'valentine', name: '喵喵告白日', flavor: '谁给谁蹭了脑门，谁给谁让了半个纸箱，今天都算数。', from: [2, 12], to: [2, 15] },
+];
+const mdDay = (year: number, m: number, d: number) => dayOf(new Date(year, m - 1, d, 12).getTime());
+export interface FestivalWindow { f: Festival; id: string; start: number; end: number; days: number }
+function windowOf(f: Festival, year: number): FestivalWindow {
+  const start = mdDay(year, f.from[0], f.from[1]);
+  const endYear = f.to[0] < f.from[0] ? year + 1 : year;
+  const end = mdDay(endYear, f.to[0], f.to[1]);
+  return { f, id: `${f.key}-${year}`, start, end, days: end - start + 1 };
+}
+/** 现在进行中的节日（没有则 null）与下一个节日 */
+export function festivalNow(now = Date.now()): { active: FestivalWindow | null; next: FestivalWindow; daysToNext: number } {
+  const d = dayOf(now), y = new Date(now).getFullYear();
+  const all = [y - 1, y, y + 1].flatMap((yy) => FESTIVALS.map((f) => windowOf(f, yy))).sort((a, b) => a.start - b.start);
+  const active = all.find((w) => d >= w.start && d <= w.end) ?? null;
+  const next = all.find((w) => w.start > d)!;
+  return { active, next, daysToNext: next.start - d };
+}
+export function festivalGift(i: number, days: number): Reward {
+  if (i === days - 1) return { tickets: 3, bells: 150, items: { fishbone_medium: 2 } };
+  return i % 2 ? { bells: 40, catnip: 6 + i } : { fish: 4000 + 1000 * i, catnip: 4 + i };
+}
+export const FESTIVAL_PACK = { yuan: 30, name: '节日限定礼盒', r: { tickets: 12, bells: 800, moon: 150, items: { fishbone_large: 2, paw_seal: 300 } } as Reward };
+function festState(s: PlayerState, w: FestivalWindow, now: number) { const e = ensureEvents(s, now); if (e.fest.id !== w.id) e.fest = { id: w.id, claimed: [], pack: false }; return e.fest; }
+export function claimFestival(s: PlayerState, i: number, now = Date.now()): Res<{ r: Reward }> {
+  const { active } = festivalNow(now);
+  if (!active) return { ok: false, reason: '现在没有进行中的节日' };
+  const st = festState(s, active, now), d = dayOf(now);
+  if (i < 0 || i >= active.days) return { ok: false, reason: '没有这一天' };
+  if (active.start + i > d) return { ok: false, reason: '这一天还没到' };
+  if (st.claimed.includes(i)) return { ok: false, reason: '已经领过了' };
+  const r = festivalGift(i, active.days);
+  st.claimed.push(i); grant(s, r);
+  return { ok: true, r };
+}
+export function buyFestivalPack(s: PlayerState, now = Date.now()): Res<{ r: Reward }> {
+  const { active } = festivalNow(now);
+  if (!active) return { ok: false, reason: '现在没有进行中的节日' };
+  const st = festState(s, active, now);
+  if (st.pack) return { ok: false, reason: '本届节日已购买' };
+  st.pack = true; grant(s, FESTIVAL_PACK.r); payRecord(s, `fest_${active.id}`, FESTIVAL_PACK.yuan, FESTIVAL_PACK.r.moon ?? 0, now);
+  return { ok: true, r: FESTIVAL_PACK.r };
+}
+export const festivalView = (s: PlayerState, now = Date.now()) => { const f = festivalNow(now); return { ...f, state: f.active ? festState(s, f.active, now) : null }; };
+
+// ---------- 周冲榜：本周最高战力与模拟玩家比，下周一结算发奖（免费；名次越高越丰厚） ----------
+export const RANK_REWARDS: { upTo: number; label: string; r: Reward }[] = [
+  { upTo: 1, label: '第 1 名', r: { moon: 300, tickets: 15, bells: 800, items: { fishbone_large: 3 } } },
+  { upTo: 3, label: '第 2~3 名', r: { moon: 150, tickets: 8, bells: 500, items: { fishbone_large: 2 } } },
+  { upTo: 10, label: '第 4~10 名', r: { tickets: 4, bells: 300, items: { fishbone_medium: 3 } } },
+  { upTo: 99, label: '参与奖', r: { tickets: 1, bells: 100, items: { fishbone_small: 3 } } },
+];
+export const rankRewardOf = (rank: number) => RANK_REWARDS.find((x) => rank <= x.upTo)!;
+const weekEndTime = (week: number) => (week + 7) * 86400000 + new Date().getTimezoneOffset() * 60000; // 周末次周一 00:00（本地）
+/** 本周实时名次（与当前时刻的模拟玩家比） */
+export function rankNow(s: PlayerState, now = Date.now()): { rank: number; power: number; board: { name: string; power: number; me: boolean }[] } {
+  const e = ensureEvents(s, now), mine = Math.max(e.rank.power, teamPower(s));
+  const board = [...NPCS.map((n) => ({ name: n.name, power: npcProgress(n, now).power, me: false })), { name: s.name, power: mine, me: true }].sort((a, b) => b.power - a.power);
+  return { rank: board.findIndex((r) => r.me) + 1, power: mine, board };
+}
+function settleRank(e: EventState, week: number) {
+  const end = weekEndTime(week) - 1;
+  const mine = e.rank.power;
+  if (mine <= 0) return;
+  const better = NPCS.filter((n) => npcProgress(n, end).power > mine).length;
+  e.rank.last = { week, rank: better + 1, power: mine, claimed: false };
+}
+export function claimRank(s: PlayerState, now = Date.now()): Res<{ r: Reward; rank: number }> {
+  const e = ensureEvents(s, now), l = e.rank.last;
+  if (!l) return { ok: false, reason: '上周没有参赛记录' };
+  if (l.claimed) return { ok: false, reason: '已经领过了' };
+  l.claimed = true;
+  const r = rankRewardOf(l.rank).r; grant(s, r);
+  return { ok: true, r, rank: l.rank };
 }

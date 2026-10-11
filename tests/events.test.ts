@@ -194,3 +194,92 @@ describe('氪金活动', () => {
     for (let i = 1; i < PACKS.length; i++) expect((PACKS[i].r.tickets ?? 0) / PACKS[i].yuan).toBeGreaterThanOrEqual((PACKS[i - 1].r.tickets ?? 0) / PACKS[i - 1].yuan );
   });
 });
+
+import { FESTIVALS, PULL_TIERS, RANK_REWARDS, buyFestivalPack, canWish, claimFestival, claimPull, claimRank, festivalGift, festivalNow, rankNow, rankRewardOf, setWishHero, wish, wishShards } from '../src/game/events';
+import { NPCS } from '../src/game/npc';
+
+const atDate = (y: number, m: number, d: number, h = 12) => new Date(y, m - 1, d, h).getTime();
+
+describe('许愿池', () => {
+  it('只能为已拥有的猫猫许愿，每天一次，连续满 7 天有额外大奖，断签从头', () => {
+    const s = newPlayer(0);
+    expect(wish(s, 0, false, at(0)).ok).toBe(false);
+    expect(setWishHero(s, 'nobody', at(0)).ok).toBe(false);
+    expect(setWishHero(s, 'wei_guojia', at(0)).ok).toBe(true);
+    const before = s.heroes.wei_guojia.shards;
+    const r = wish(s, 0, false, at(0));
+    expect(r.ok && r.shards).toBe(3); expect(s.heroes.wei_guojia.shards - before).toBe(3);
+    expect(canWish(s, at(0))).toBe(false);
+    expect(wish(s, 0, false, at(0)).ok).toBe(false);
+    let last = r;
+    for (let d = 1; d < 7; d++) last = wish(s, 0, false, at(d)) as typeof r;
+    expect(last.ok && last.streak).toBe(7); expect(last.ok && last.bonus).toBe(true); expect(last.ok && last.shards).toBe(23);
+    const gap = wish(s, 0, false, at(9));
+    expect(gap.ok && gap.streak).toBe(1);
+    expect(wishShards(8, true)).toBe(6);
+  });
+});
+
+describe('招募盛典', () => {
+  it('track(recruit) 累计本周招募次数，到档可领，周一清零', () => {
+    const s = newPlayer(0);
+    expect(claimPull(s, 0, at(0)).ok).toBe(false);
+    ensureEvents(s, at(0));
+    track(s, 'recruit', 10);
+    expect(ensureEvents(s).pulls).toBeGreaterThanOrEqual(10);
+    const e = ensureEvents(s, at(0)); e.pulls = 20;
+    expect(claimPull(s, 0, at(0)).ok).toBe(true); expect(claimPull(s, 1, at(0)).ok).toBe(true);
+    expect(claimPull(s, 0, at(0)).ok).toBe(false); expect(claimPull(s, 2, at(0)).ok).toBe(false);
+    expect(ensureEvents(s, at(7)).pulls).toBe(0);
+    for (let i = 1; i < PULL_TIERS.length; i++) expect(PULL_TIERS[i].n).toBeGreaterThan(PULL_TIERS[i - 1].n);
+  });
+});
+
+describe('节日活动', () => {
+  it('按公历日期判断进行中的节日，能跨年，没有节日时给出下一个', () => {
+    expect(festivalNow(atDate(2026, 10, 3)).active?.f.key).toBe('guoqing');
+    expect(festivalNow(atDate(2026, 10, 11)).active).toBeNull();
+    expect(festivalNow(atDate(2026, 10, 11)).next.f.key).toBe('halloween');
+    expect(festivalNow(atDate(2026, 10, 11)).daysToNext).toBe(17);
+    expect(festivalNow(atDate(2027, 1, 2)).active?.f.key).toBe('newyear');
+    expect(festivalNow(atDate(2026, 12, 31)).active?.f.key).toBe('newyear');
+    expect(new Set(FESTIVALS.map((f) => f.key)).size).toBe(FESTIVALS.length);
+  });
+  it('节日签到按天领取，未到的天不能领，礼盒每届限购 1 次', () => {
+    const s = newPlayer(0);
+    expect(claimFestival(s, 0, atDate(2026, 10, 11)).ok).toBe(false);
+    expect(claimFestival(s, 0, atDate(2026, 10, 28)).ok).toBe(true);
+    expect(claimFestival(s, 0, atDate(2026, 10, 28)).ok).toBe(false);
+    expect(claimFestival(s, 2, atDate(2026, 10, 28)).ok).toBe(false);
+    expect(claimFestival(s, 2, atDate(2026, 10, 30)).ok).toBe(true); // 补领此前日子也行
+    expect(claimFestival(s, 1, atDate(2026, 10, 30)).ok).toBe(true);
+    expect(claimFestival(s, 99, atDate(2026, 10, 30)).ok).toBe(false);
+    expect(buyFestivalPack(s, atDate(2026, 10, 11)).ok).toBe(false);
+    expect(buyFestivalPack(s, atDate(2026, 10, 29)).ok).toBe(true);
+    expect(buyFestivalPack(s, atDate(2026, 10, 30)).ok).toBe(false);
+    expect(s.pay!.total).toBe(30);
+    expect(buyFestivalPack(s, atDate(2026, 12, 23)).ok).toBe(true); // 下一届可再买
+    expect(rewardText(festivalGift(6, 7))).toContain('招福符');
+  });
+});
+
+describe('周冲榜', () => {
+  it('奖励按名次递减，上周名次结算后可领一次', () => {
+    for (let i = 1; i < RANK_REWARDS.length; i++) expect(RANK_REWARDS[i].upTo).toBeGreaterThan(RANK_REWARDS[i - 1].upTo);
+    expect(rankRewardOf(1).r.moon!).toBeGreaterThan(rankRewardOf(2).r.moon!);
+    expect(rankRewardOf(20).label).toBe('参与奖');
+    const s = newPlayer(0);
+    const e = ensureEvents(s, at(0));
+    e.rank.power = 5000;
+    const now = rankNow(s, at(0));
+    expect(now.board).toHaveLength(NPCS.length + 1);
+    expect(now.rank).toBeGreaterThanOrEqual(1);
+    expect(claimRank(s, at(0)).ok).toBe(false);
+    ensureEvents(s, at(7)); // 跨周结算
+    const l = ensureEvents(s, at(7)).rank.last!;
+    expect(l.rank).toBeGreaterThanOrEqual(1); expect(l.claimed).toBe(false);
+    const r = claimRank(s, at(7));
+    expect(r.ok).toBe(true); expect(claimRank(s, at(7)).ok).toBe(false);
+    expect(ensureEvents(s, at(7)).rank.power).toBe(0);
+  });
+});
