@@ -1,5 +1,6 @@
 // 探索：3D 赛博朋克街区。操控一队猫猫走动，碰到野怪 / 首领就开战（用现有战斗引擎），开宝箱、找向导。
 // 世界渲染在 src/world，规则在 src/game/explore.ts，这里把两者和界面连起来。
+import { activePet } from '../../game/pets';
 import type * as THREE from 'three';
 import { Explorer } from '../../world/explore';
 import type { Spawn } from '../../world/explore';
@@ -304,6 +305,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     near: (sp) => showFight(sp),
     poi: (sp) => onPoi(ctx, sp),
   });
+  ex.setPet(activePet(ctx.s)?.id);
   let stepT = 0;
   wv.onUpdate = (dt) => {
     const d = moveDir(wv.yaw);
@@ -361,6 +363,7 @@ export async function enterExplore(ctx: AppCtx) {
   rt.wv.resize();
   if (rt.st.level.id !== explorerLevel(ctx.s).id) loadLevel(ctx, explorerLevel(ctx.s)); else syncSpawns(ctx);
   rt.ex.setTeam(teamIds(ctx));
+  rt.ex.setPet(activePet(ctx.s)?.id);
   rt.wv.snapCamera();
   rt.wv.start();
   rt.running = true;
@@ -505,7 +508,7 @@ export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolea
       if (g) { applyGain(ctx.s, g); ctx.save(); sfx.up(); popReward(ctx, '🏆🎁', g); refreshExploreHud(ctx); openTrail(ctx); }
       return true;
     }
-    case 'x-reset': if (rt) { rt.ex.setTeam(teamIds(ctx)); rt.wv.snapCamera(); } return true;
+    case 'x-reset': if (rt) { rt.ex.setTeam(teamIds(ctx)); rt.ex.setPet(activePet(ctx.s)?.id); rt.wv.snapCamera(); } return true;
     case 'x-hero': ctx.openHero(el.dataset.id!); return true;
     default: return false;
   }

@@ -213,9 +213,9 @@ export class Player {
     let pet = this.petActors.get(e.side);
     if (!pet) {
       const rig = use3D() ? buildRig3D(lookOf(e.id), 0.62 * this.scene.dpr, e.id) : await cachedRig(e.id, 0.62 * this.scene.dpr);
-      const x = e.side === 'A' ? 112 : 848;
+      const x = e.side === 'A' ? 124 : 836;
       const info: ActorInfo = { uid: e.side === 'A' ? -1 : -2, side: e.side, name: PET_BY_ID[e.id]?.name ?? '宠物', faction: 'xian', heroId: e.id, maxHp: 1, hp: 1 };
-      pet = new Actor(this.scene, rig, info, x, 548, 0.34);
+      pet = new Actor(this.scene, rig, info, x, 556, 0.25);
       pet.hudAlpha = 0;
       pet.alpha = 0;
       this.petActors.set(e.side, pet);

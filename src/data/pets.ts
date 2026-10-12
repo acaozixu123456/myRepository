@@ -10,7 +10,7 @@ export interface PetDef { id: string; name: string; rarity: PetRarity; tagline: 
 
 const pal = (main: string, sub: string, trim = '#e8c15a') => ({ main, sub, trim });
 /** 宠物统一小一号：头大、身子圆；没有衣服（body: none），只有颈圈 / 围巾 / 披风 / 翅膀 / 小冠这类配饰 */
-const kit = (look: Omit<CatLook, 'build' | 'head'> & { build?: number; head?: number }): CatLook => ({ build: 0.82, head: 1.3, blush: true, ...look } as CatLook);
+const kit = (look: Omit<CatLook, 'build' | 'head'> & { build?: number; head?: number }): CatLook => ({ build: 0.7, head: 1.12, blush: true, ...look } as CatLook);
 
 export const PETS: PetDef[] = [
   { id: 'pet_tuanzi', name: '团子', rarity: 'R', tagline: '圆滚滚的橘白小奶猫，一呼噜全队都暖和。',

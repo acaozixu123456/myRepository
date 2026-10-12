@@ -182,9 +182,9 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   const neck = grp('neck', 0, 1.2, 0);
   torso.add(neck);
   const head = grp('head', 0, 0.46, 0);
-  head.scale.setScalar(1.14); // Q 版：脑袋再大一圈
+  head.scale.setScalar(1.14 * headK); // Q 版：脑袋再大一圈；整颗头（五官 / 耳 / 头饰）一起按 look.head 缩放，不会让五官陷进头里
   neck.add(head);
-  const skull = solid(sphere(0.62 * headK, 1.16, 1, 1.02, 28), headMat);
+  const skull = solid(sphere(0.62, 1.16, 1, 1.02, 28), headMat);
   skull.position.y = 0.14;
   head.add(skull);
   // 口鼻：浅色
@@ -221,7 +221,7 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   }
   const earL = buildEar(look, 1, fur, pink), earR = buildEar(look, -1, fur, pink);
   head.add(earL, earR);
-  const headTop = grp('headTop', 0, 0.14 + 0.6 * headK, 0);
+  const headTop = grp('headTop', 0, 0.14 + 0.6, 0);
   const face = grp('face', 0, -0.04, 0.63);
   head.add(headTop, face);
 
