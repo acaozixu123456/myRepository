@@ -9,7 +9,7 @@ import { mulberry } from '../fx/util';
 import { ALL_SCENES, BONUS_LEVELS, BONUS_UNLOCK, LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number; ringRuns?: number; arrowRuns?: number; fireflyRuns?: number; kiteRuns?: number; kitchenRuns?: number; sledRuns?: number; snowcatRuns?: number; surfRuns?: number; clamRuns?: number; skipRuns?: number; sushiRuns?: number }
+export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number; ringRuns?: number; arrowRuns?: number; fireflyRuns?: number; kiteRuns?: number; kitchenRuns?: number; sledRuns?: number; snowcatRuns?: number; surfRuns?: number; clamRuns?: number; skipRuns?: number; sushiRuns?: number; featureUsed?: boolean }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; e.ringRuns = 0; e.arrowRuns = 0; e.fireflyRuns = 0; e.kiteRuns = 0; e.kitchenRuns = 0; e.sledRuns = 0; e.snowcatRuns = 0; e.surfRuns = 0; e.clamRuns = 0; e.skipRuns = 0; e.sushiRuns = 0; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; e.ringRuns = 0; e.arrowRuns = 0; e.fireflyRuns = 0; e.kiteRuns = 0; e.kitchenRuns = 0; e.sledRuns = 0; e.snowcatRuns = 0; e.surfRuns = 0; e.clamRuns = 0; e.skipRuns = 0; e.sushiRuns = 0; e.featureUsed = false; }
   return e;
 }
 

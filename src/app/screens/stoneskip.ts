@@ -7,6 +7,7 @@ import type { Throw } from '../../game/stoneskip';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -132,7 +133,7 @@ export function openStoneSkip(ctx: AppCtx, host: Element): Promise<void> {
     const finish = () => {
       phase = 'result';
       const score = totalScore(throws), tier = tierOf(score), gain = skipGain(ctx.s, tier);
-      if (tier > 0) { applyGain(ctx.s, gain); sfx.win(); } else sfx.no();
+      if (tier > 0) { applyGain(ctx.s, boostGain(ctx.s, gain, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); sfx.win(); } else sfx.no();
       recordSkips(ctx.s, throws.reduce((a, t) => a + t.skips, 0)); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       const best = Math.max(...throws.map((t) => t.skips));

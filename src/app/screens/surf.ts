@@ -6,6 +6,7 @@ import type { Lip, Ride } from '../../game/surf';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -113,7 +114,7 @@ export function openSurf(ctx: AppCtx, host: Element): Promise<void> {
       if (phase !== 'play') return;
       phase = 'result';
       const tier = tierOf(r.score), gain = surfGain(ctx.s, tier);
-      if (tier > 0) { applyGain(ctx.s, gain); sfx.win(); } else sfx.no();
+      if (tier > 0) { applyGain(ctx.s, boostGain(ctx.s, gain, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); sfx.win(); } else sfx.no();
       recordTricks(ctx.s, r.perfect + r.good); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再冲一次';
       note.innerHTML = `${r.wobbles >= WOBBLES ? '💦 落水了！' : '🏁 上岸！'} ${starsHtml(tier)} ⭐ ${r.score} &nbsp; ✨ 完美 ${r.perfect} · 不错 ${r.good} · 最高连击 ${r.best} &nbsp; ${tier > 0 ? gainIcons(gain, 18) : ''}`;

@@ -6,6 +6,7 @@ import type { Puzzle } from '../../game/lanterns';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -64,7 +65,7 @@ export function openLanterns(ctx: AppCtx, host: Element): Promise<void> {
     let alive = true;
     const finish = () => {
       const st = stars(true, extra), g = lanternGain(ctx.s, st);
-      applyGain(ctx.s, g); recordSolved(ctx.s, solvedN); if (st === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save(); sfx.up();
+      applyGain(ctx.s, boostGain(ctx.s, g, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); recordSolved(ctx.s, solvedN); if (st === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save(); sfx.up();
       phase = 'result'; reset.style.display = 'none'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       status.innerHTML = `${starsHtml(st)}<div class="mg-sub" style="margin-top:6px">${gainIcons(g, 20)}</div>`;
       state = 0b111111111; draw(); movesEl.innerHTML = extra === 0 ? '🏆' : `➕ ${extra}`; refresh();

@@ -6,6 +6,7 @@ import type { Beach } from '../../game/clams';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -66,7 +67,7 @@ export function openClams(ctx: AppCtx, host: Element): Promise<void> {
     const finish = () => {
       phase = 'result';
       const score = scoreOf(b), tier = tierOf(score), gain = clamsGain(ctx.s, tier);
-      if (tier > 0) { applyGain(ctx.s, gain); sfx.win(); } else sfx.no();
+      if (tier > 0) { applyGain(ctx.s, boostGain(ctx.s, gain, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); sfx.win(); } else sfx.no();
       recordClams(ctx.s, b.found); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再赶一次海';
       note.innerHTML = `${b.found >= CLAMS ? '🎉 一只不落！' : '🌊 涨潮了'} ${starsHtml(tier)} ⭐ ${score} &nbsp; 🦪 ${b.found} 只${b.pinched ? ` · 被夹 ${b.pinched} 次` : ''} &nbsp; ${tier > 0 ? gainIcons(gain, 18) : ''}`;

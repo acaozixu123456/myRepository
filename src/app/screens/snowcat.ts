@@ -6,6 +6,7 @@ import type { Tower } from '../../game/snowcat';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -108,7 +109,7 @@ export function openSnowCat(ctx: AppCtx, host: Element): Promise<void> {
     const finish = () => {
       phase = 'result';
       const tier = tierOf(tw.score), gain = snowcatGain(ctx.s, tier);
-      if (tier > 0) { applyGain(ctx.s, gain); sfx.win(); } else sfx.no();
+      if (tier > 0) { applyGain(ctx.s, boostGain(ctx.s, gain, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); sfx.win(); } else sfx.no();
       recordLayers(ctx.s, tw.xs.length - 1); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再堆一个';
       const why = tw.xs.length > LAYERS ? '🐱 雪猫完成！' : tw.toppled ? '💥 叠歪塌了…' : '☃️ 雪球用完了';

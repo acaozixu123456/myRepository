@@ -7,6 +7,7 @@ import type { Belt, Dish } from '../../game/sushi';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -146,7 +147,7 @@ export function openSushi(ctx: AppCtx, host: Element): Promise<void> {
       if (phase !== 'play') return;
       phase = 'result';
       const tier = tierOf(b.score), gain = sushiGain(ctx.s, tier);
-      if (tier > 0) { applyGain(ctx.s, gain); sfx.win(); } else sfx.no();
+      if (tier > 0) { applyGain(ctx.s, boostGain(ctx.s, gain, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); sfx.win(); } else sfx.no();
       recordSushi(ctx.s, b.served); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再开一轮';
       note.innerHTML = `🏮 打烊啦 ${starsHtml(tier)} ⭐ ${b.score} &nbsp; 🍣 上菜 ${b.served}（快 ${b.fast}）${b.angry ? ` · 气走 ${b.angry} 位` : ''} &nbsp; ${tier > 0 ? gainIcons(gain, 18) : ''}`;
