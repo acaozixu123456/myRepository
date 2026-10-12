@@ -1,6 +1,6 @@
 import { HERO_BY_ID } from '../src/data/heroes';
 import { simulate } from '../src/engine/battle';
-import type { UnitSetup } from '../src/engine/types';
+import type { BattleConfig, UnitSetup } from '../src/engine/types';
 import { getStage, paceLevel, stageOrdinal, waveSetups } from '../src/game/stage';
 
 // 每章选三名克制阵营成员，再补前排与医者，固定0→4站位。
@@ -25,7 +25,7 @@ export interface BossProbe {
   draws: number;
 }
 
-export function probeBosses(games = 100, seed = 20261011): BossProbe[] {
+export function probeBosses(games = 100, seed = 20261011, extra: Partial<BattleConfig> = {}): BossProbe[] {
   return REFERENCES.map((ids, i) => {
     const chapter = i + 1;
     const stage = getStage(chapter, 24)!;
@@ -42,7 +42,7 @@ export function probeBosses(games = 100, seed = 20261011): BossProbe[] {
       for (let wave = 0; wave < stage.waves.length; wave++) {
         const battle = simulate({
           seed: seed + game * 17 + wave * 997,
-          A, B: waveSetups(stage, wave), rules: stage.ruleFx, maxRounds: 40,
+          A, B: waveSetups(stage, wave), rules: stage.ruleFx, maxRounds: 40, ...extra,
         });
         result = battle.winner;
         if (result !== 'A') break;
