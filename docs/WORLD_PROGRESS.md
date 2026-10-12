@@ -1,5 +1,40 @@
 # 世界美术进度
 
+## 主题素材 · A09-HB 赤壁港旧木地面
+
+当前主题批次：**A09-HB**，分支 `codex/3d-world-harbor-ground`，晚霞老海港纵纹木栈板三张，**第1轮待审，通过数量0**。按最新 [固定队列](CODEX_QUEUE.md) 与 [WORLD3D 场景主题](WORLD3D.md)；旧暗紫赛博工作单不覆盖新主题。已做夜市批次与赛博成果保留，各批独立提交，有返修先返修，不等审核再开下一批。
+
+| 批次 | 场景地面 | 规格 / 数量 | 状态 | 已通过 |
+| --- | --- | --- | --- | --- |
+| A09-NM | 夜市暖砖 / 青石 / 篮织砂石 | 1024²，无缝，3张 | 已交付，另批第1轮待审 | 0 |
+| A09-HB | 赤壁港宽旧褐 / 浅漂洗 / 窄板木栈板 | 1024²，无缝，3张 | 第1轮待审 | 0 |
+| A09-MR | 宫阙汉白玉淡金纹 | 1024²，无缝，3变体 | 未开始 | 0 |
+| A09-FR | 森林草地 / 落叶 | 1024²，无缝，3变体 | 未开始 | 0 |
+| A09-CL | 云岛粉绿草地 / 小花 | 1024²，无缝，3变体 | 未开始 | 0 |
+
+新方向后续仍包括天空全景（2048×512横向无缝，仅天空与云）、瓦面（512²无缝俯视瓦垄）和透明云朵精灵图，按queue顺序，不继续旧涂鸦批次。
+
+| 名称 / ID | 素材 | 状态 / 轮次 | 审图 | 字节 |
+| --- | --- | --- | --- | ---: |
+| 宽暖旧褐 `ground_harbor_oldwood_01` | [WebP](../assets/world/ground/ground_harbor_oldwood_01.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_harbor_oldwood_01-2x2.webp) / [4×4](../assets/world/reviews/ground_harbor_oldwood_01-4x4.webp) | 226,494 |
+| 浅漂洗 `ground_harbor_washed_02` | [WebP](../assets/world/ground/ground_harbor_washed_02.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_harbor_washed_02-2x2.webp) / [4×4](../assets/world/reviews/ground_harbor_washed_02-4x4.webp) | 217,848 |
+| 浅褐窄板 `ground_harbor_narrowwood_03` | [WebP](../assets/world/ground/ground_harbor_narrowwood_03.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_harbor_narrowwood_03-2x2.webp) / [4×4](../assets/world/reviews/ground_harbor_narrowwood_03-4x4.webp) | 236,820 |
+
+2026-10-12 · 制作基线 `fecef9e`。实读当前queue / harbor.ts / atmos.ts，并实看主分支第3章码头作为只读材质色板参考，不改引擎/注册表。三个真实独立image_gen call，无引用、无编辑、无复制旋转。原生1254² RGB PNG（2,653,085～2,777,991 B）留工作空间，完整画布等比Lanczos降到1024² RGB sRGB ICC WebP，quality90/method6；无裁切、上采样、调色、补木纹或程序修缝。
+
+源材质三图合计681,162 B，单文件≤500,000 B。宽/漂洗/窄三种分别约6/8/12列纵板，细纤维与长板走向图像纵轴，没有大钉子/节疤/横梁或中心物件。[素材说明](../assets/world/ground/harbor-ground-a09-hb.README.md)、[真实出处与hash](../assets/world/ground/harbor-ground-a09-hb.provenance.json)。
+
+[总览](../assets/world/reviews/harbor-ground-a09-hb.webp)（2048×1024，140,204 B），每图独立2×2 / 4×4以及9张无损RGB全边/四角PNG（1:1最终解码像素）；[方法](../assets/world/reviews/harbor-ground-a09-hb.README.md)。自查没有额外粗横断/宽边框，正常窄板缝可辨；4×4可见板色和低频纤维周期、板宽略变，不声称木纹数学连续或边界逐像素相等。
+
+[真实 Three 中性/港口晚霞样板](../assets/world/reviews/harbor-ground-a09-hb-lighting.webp)（2048×1024，144,650 B），白MeshStandardMaterial roughness0.9/metalness0，repeat[3,1]；左右仅换白↔ATMOS.redcliff光色，强度/位置/相机/曝光一致，无bloom/雾/阴影/完整场景调色。3/3加载、HTTP200×3、page/console errors0、failed0，六renderer各1drawcall，三sourceSHA拍前后相同；[参数](../assets/world/reviews/harbor-ground-a09-hb-lighting.README.md)。晚霞对基色的橘红偏色明显，漂洗木仍较亮，如实保留。最不满意：细木纹在小足迹下会趋平，单板色差重复可辨；实际UV尺度由接入方控制。
+
+独立QA见 [摘要](../assets/world/ground/harbor-ground-a09-hb.qa.md) 与 [机器报告](../assets/world/ground/harbor-ground-a09-hb.qa.json)。本HB worktree在最新 `e777d58` 实际执行 `npm run typecheck && npm test` 全过（退出码0；68个测试文件、1,019个测试），日志 `/workspace/harbor-ground-raw/tests-latest.log`；默认沙箱首次CLI spawnSync EPERM失败另留日志，启用工具网络/IPC权限同代码重跑通过，未改源码。当前第1轮待审，通过0。
+
+## 旧方向基线文字与历史（保留）
+
+以下保留原基线的旧计划/批次文字，不覆盖上方新主题优先级；审核现状以最新queue与各批PR记录为准，其他批的既有记录未被本批重写。
+
+
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
 当前批次：**WORLD-A10 · 裂缝透明贴花首批**，分支 `codex/3d-world-crack-decals`，交付 512² RGBA 十张，第 1 轮待审。A08 [#98](https://github.com/acaozixu123456/myRepository/pull/98) 已通过 / 接入；A09 地砖 [#100](https://github.com/acaozixu123456/myRepository/pull/100) 与 A10 污渍 [#103](https://github.com/acaozixu123456/myRepository/pull/103) 已提交待审，继续推进 A10 裂缝。
