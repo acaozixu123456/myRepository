@@ -6,10 +6,10 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
-import { LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
+import { ALL_SCENES, BONUS_LEVELS, BONUS_UNLOCK, LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number }
+export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; }
   return e;
 }
 
@@ -39,24 +39,25 @@ export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb
 /** 当前该进哪个场景：跟着主线章节走（首领所在的章节） */
 export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(sceneChapter(s));
 
-/** 已解锁的场景（章节号）：打到哪一章，1..该章的场景都能进 */
+/** 已解锁的场景：主线场景（打到哪一章，1..该章都能进）+ 附加场景（打到指定章节后解锁，编号 > 100） */
 export const unlockedScenes = (s: PlayerState): number[] => {
-  const top = Math.min(bossStage(s).chapter, Object.keys(LEVELS).length);
-  return Array.from({ length: top }, (_, i) => i + 1);
+  const boss = bossStage(s).chapter, top = Math.min(boss, Object.keys(LEVELS).length);
+  return [...Array.from({ length: top }, (_, i) => i + 1), ...Object.keys(BONUS_LEVELS).map(Number).filter((id) => boss >= (BONUS_UNLOCK[id] ?? 99))];
 };
-/** 现在待的场景：玩家选过且已解锁就用选的，否则跟着主线进度 */
+/** 现在待的场景：玩家选过且已解锁就用选的，否则跟着主线进度（附加场景只能手动切过去，永远不会是默认） */
 export const sceneChapter = (s: PlayerState): number => {
-  const top = bossStage(s).chapter, pick = (s as unknown as { explore?: ExploreState }).explore?.scene;
-  return pick && pick >= 1 && pick <= top && LEVELS[pick] ? pick : top;
+  const top = Math.min(bossStage(s).chapter, Object.keys(LEVELS).length), pick = (s as unknown as { explore?: ExploreState }).explore?.scene;
+  return pick && ALL_SCENES[pick] && unlockedScenes(s).includes(pick) ? pick : top;
 };
 /** 切换场景；返回是否成功（未解锁 / 不存在的场景不行） */
 export function setScene(s: PlayerState, chapter: number): boolean {
-  if (!unlockedScenes(s).includes(chapter) || !LEVELS[chapter]) return false;
+  if (!unlockedScenes(s).includes(chapter) || !ALL_SCENES[chapter]) return false;
   ensureExplore(s).scene = chapter;
   return true;
 }
-/** 该场景里的玩法入口（图标用） */
-export const sceneGame = (chapter: number): string | undefined => poisOf(sceneOf(chapter))[0]?.game;
+/** 该场景里的所有玩法入口（图标用） */
+export const sceneGames = (chapter: number): string[] => poisOf(sceneOf(chapter)).map((p) => p.game);
+export const sceneGame = (chapter: number): string | undefined => sceneGames(chapter)[0];
 
 const unitsOf = (st: StageDef, wave = 0, n = 3): string[] => st.waves[Math.min(wave, st.waves.length - 1)].enemies.slice(0, n).map((e) => e.unit);
 const levelOf = (st: StageDef) => st.waves[0].enemies[0]?.level ?? 1;
@@ -155,7 +156,7 @@ export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | n
 }
 
 // ---------- 探索足迹（长期累计目标）----------
-export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern';
+export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern' | 'kart' | 'claw' | 'whack';
 export interface TrailMilestone { id: string; stat: TrailStat; need: number; label: string; reward: Gain }
 const G = (fish: number, catnip: number, bells: number, exp = 0): Gain => ({ fish, catnip, bells, exp });
 export const TRAIL: TrailMilestone[] = [
@@ -187,6 +188,9 @@ export const TRAIL: TrailMilestone[] = [
   { id: 'l10', stat: 'lantern', need: 10, label: '掌灯学徒 · 点亮 10 盏宫灯阵', reward: G(400, 3, 0) },
   { id: 'l50', stat: 'lantern', need: 50, label: '宫灯师 · 点亮 50 盏宫灯阵', reward: G(1500, 10, 30) },
   { id: 'l150', stat: 'lantern', need: 150, label: '九重掌灯官 · 点亮 150 盏宫灯阵', reward: G(4200, 25, 100) },
+  { id: 'kt5', stat: 'kart', need: 5, label: '卡丁车新手 · 跑完 5 场比赛', reward: G(400, 3, 0) },
+  { id: 'kt25', stat: 'kart', need: 25, label: '沙漠车手 · 跑完 25 场比赛', reward: G(1500, 10, 30) },
+  { id: 'kt80', stat: 'kart', need: 80, label: '日落绿洲车王 · 跑完 80 场比赛', reward: G(4200, 25, 100) },
   { id: 'b3', stat: 'bosses', need: 3, label: '首领克星 · 赢 3 场首领战', reward: G(500, 4, 10, 200) },
   { id: 'b12', stat: 'bosses', need: 12, label: '首领终结者 · 赢 12 场首领战', reward: G(2000, 15, 50, 800) },
   { id: 'b40', stat: 'bosses', need: 40, label: '九命天敌 · 赢 40 场首领战', reward: G(6000, 40, 150, 2500) },

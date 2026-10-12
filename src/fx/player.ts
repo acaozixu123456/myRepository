@@ -11,6 +11,7 @@ import type { BgTheme } from './bg';
 import { Choreo } from './choreo';
 import { playComboCutIn, playCutIn } from './cutin';
 import { buildIllustRig, buildPortrait, buildRig, buildRig3D, illustPortrait } from './rig';
+import { disposeCat3D } from '../art3d/cat3d';
 import { portrait3D } from '../art3d/portrait';
 import { Renderer3D } from '../art3d/renderer';
 import { spriteMode, use3D } from '../art3d/mode';
@@ -76,6 +77,7 @@ export class Player {
   }
 
   async setup(start: StartEv, theme: BgTheme = 'meadow', progress?: (p: number) => void) {
+    for (const a of [...this.actors.values(), ...this.petActors.values()]) disposeCat3D(a.rig.cat3d); // 上一场的猫释放显存
     this.actors.clear();
     this.petActors.clear();
     this.scene.clearAll();
@@ -106,7 +108,9 @@ export class Player {
     let p = this.portraits.get(`${use3D() ? '3d:' : ''}${heroId}`);
     if (!p) {
       const il = spriteMode.illust ? ILLUST[heroId] : undefined;
-      p = use3D() ? portrait3D(lookOf(heroId), 520, heroId) : il ? await illustPortrait(il.card).catch(() => buildPortrait(lookOf(heroId), '20 50 360 340', 520)) : await buildPortrait(lookOf(heroId), '20 50 360 340', 520);
+      let p3: HTMLCanvasElement | null = null;
+      if (use3D()) { try { p3 = portrait3D(lookOf(heroId), 520, heroId); } catch { /* 3D 不可用：退回 2D 半身像 */ } }
+      p = p3 ? p3 : il ? await illustPortrait(il.card).catch(() => buildPortrait(lookOf(heroId), '20 50 360 340', 520)) : await buildPortrait(lookOf(heroId), '20 50 360 340', 520);
       this.portraits.set(`${use3D() ? '3d:' : ''}${heroId}`, p);
     }
     return p;

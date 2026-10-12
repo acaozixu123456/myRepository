@@ -2,6 +2,7 @@
 import type { LevelDef } from '../levels';
 import type { Street } from '../street';
 import { buildCloud } from './cloud';
+import { buildDesert } from './desert';
 import { buildForest } from './forest';
 import { buildHarbor } from './harbor';
 import { buildMarket } from './market';
@@ -14,6 +15,7 @@ export function buildTheme(L: LevelDef): Street {
     case 'harbor': return buildHarbor(L);
     case 'market': return buildMarket(L);
     case 'forest': return buildForest(L);
+    case 'desert': return buildDesert(L);
     default: throw new Error(`未实现的场景主题：${L.theme}`);
   }
 }

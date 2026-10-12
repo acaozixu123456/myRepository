@@ -1,0 +1,2564 @@
+{
+  "baseCommit": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+  "sourceBefore": {
+    "src/art3d/parts/body.ts": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+    "src/art3d/parts/body-field-armor.ts": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+    "src/art3d/cat3d.ts": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/rig.ts": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+    "src/fx/player.ts": "cd8327161fc99bc207175a53ab88a91f76e3b407a8cba6c7b8426ca8d025da0f",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/parts/back.ts": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0",
+    "src/art3d/parts/extras.ts": "de4e380baa3b7c41958c89b965a8b48bd2f016af3e2e9474dd5cdc760e77c65e",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/demo/battle.ts": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+    "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5"
+  },
+  "sourceAfter": {
+    "src/art3d/parts/body.ts": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+    "src/art3d/parts/body-field-armor.ts": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+    "src/art3d/cat3d.ts": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/rig.ts": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+    "src/fx/player.ts": "cd8327161fc99bc207175a53ab88a91f76e3b407a8cba6c7b8426ca8d025da0f",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/parts/back.ts": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0",
+    "src/art3d/parts/extras.ts": "de4e380baa3b7c41958c89b965a8b48bd2f016af3e2e9474dd5cdc760e77c65e",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/demo/battle.ts": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+    "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5"
+  },
+  "battleSourceAfter": {
+    "src/art3d/parts/body.ts": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+    "src/art3d/parts/body-field-armor.ts": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+    "src/art3d/cat3d.ts": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/rig.ts": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+    "src/fx/player.ts": "cd8327161fc99bc207175a53ab88a91f76e3b407a8cba6c7b8426ca8d025da0f",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/parts/back.ts": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0",
+    "src/art3d/parts/extras.ts": "de4e380baa3b7c41958c89b965a8b48bd2f016af3e2e9474dd5cdc760e77c65e",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/demo/battle.ts": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+    "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5"
+  },
+  "sourceSHA256Unchanged": true,
+  "sourceSnapshots": {
+    "poses": "/.shots/body-field-official/source-1791781815053-129284",
+    "battle": "/.shots/body-field-official/source-1791782326405-141600"
+  },
+  "officialEntry": "Unmodified src/dev/cat3d.ts and src/demo/battle.ts copied with their full relative source tree; normal bake, original markup and screenshot parameters.",
+  "sentinelOnlyUnusedExports": true,
+  "figures": [
+    {
+      "name": "heroes-1",
+      "ids": [
+        "wei_zhangliao",
+        "wei_xuhuchi",
+        "shu_huangzhong",
+        "shu_machao",
+        "wu_sunxiaoba"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "heroes-1.png",
+      "rawBytes": 395113,
+      "rawSHA256": "b869bbe85c3c39ae9352062d987dbfa2ffb421c1e976e57c40e37ebfdd0509fe",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-1",
+        "file": "heroes-1.png",
+        "width": 1000,
+        "height": 1312,
+        "mode": "RGB",
+        "rawBytes": 395113,
+        "finalBytes": 390970,
+        "rawSHA256": "b869bbe85c3c39ae9352062d987dbfa2ffb421c1e976e57c40e37ebfdd0509fe",
+        "finalSHA256": "6d8b4fc4e878f6d1791d1a78f79870809ab57f11ff6aee904c6b5f1835ac1c70",
+        "decodedRGBA_SHA256": "1e16acdb804007625c07fa4b9a86c55c11f006084fb7ffa6f8a3df650b2c046c",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-1-small",
+      "ids": [
+        "wei_zhangliao",
+        "wei_xuhuchi",
+        "shu_huangzhong",
+        "shu_machao",
+        "wu_sunxiaoba"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "heroes-1-small.png",
+      "rawBytes": 322521,
+      "rawSHA256": "562c318de82a013bf01f24462361ab2d1764177c1e5c06c13b1da091b22927a5",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-1-small",
+        "file": "heroes-1-small.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 322521,
+        "finalBytes": 319854,
+        "rawSHA256": "562c318de82a013bf01f24462361ab2d1764177c1e5c06c13b1da091b22927a5",
+        "finalSHA256": "a0d0cdaba75e5a93df440f3288091e3a75cf7dfd149bcaf17b2bec9a31670afb",
+        "decodedRGBA_SHA256": "933b078c457ccaf4a9d6486169bfcbcf46c13fbc7c50d0af7bd6bc9b9db42ad3",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-2",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "man_mengyou",
+        "man_wutugu"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "heroes-2.png",
+      "rawBytes": 307408,
+      "rawSHA256": "7719d2dc59ddcb3036b9978abac641dee8b3f7b6b4849fddd4d50494231fe706",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-2",
+        "file": "heroes-2.png",
+        "width": 1000,
+        "height": 1054,
+        "mode": "RGB",
+        "rawBytes": 307408,
+        "finalBytes": 303162,
+        "rawSHA256": "7719d2dc59ddcb3036b9978abac641dee8b3f7b6b4849fddd4d50494231fe706",
+        "finalSHA256": "7d5242497bf5bd167124ca587b1e77f1ba4642836ce8450cfec389c24b831cbf",
+        "decodedRGBA_SHA256": "1921171d56e7b79f5a183e1b17f010505d28698d2f48eff1f341ac943fdc94d7",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-2-small",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "man_mengyou",
+        "man_wutugu"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "heroes-2-small.png",
+      "rawBytes": 249975,
+      "rawSHA256": "c2255e74e7d84ec32bd8d00de4ea258db0c7314630c3a64c412c741d1ae7a9eb",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-2-small",
+        "file": "heroes-2-small.png",
+        "width": 1000,
+        "height": 914,
+        "mode": "RGB",
+        "rawBytes": 249975,
+        "finalBytes": 247211,
+        "rawSHA256": "c2255e74e7d84ec32bd8d00de4ea258db0c7314630c3a64c412c741d1ae7a9eb",
+        "finalSHA256": "ad0e70513c445c6bf5e11d544cc91f50ed5dca597d1f76b2e4796b1e91b0042f",
+        "decodedRGBA_SHA256": "6d928a1ea9b15b10ce1711ad2476b059fec1302120082b0553d43c2c21824beb",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-1",
+      "ids": [
+        "mob_wei_guard",
+        "mob_wei_vanguard",
+        "mob_wei_archer",
+        "mob_wei_assassin",
+        "mob_shu_guard"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=mob_wei_guard%2Cmob_wei_vanguard%2Cmob_wei_archer%2Cmob_wei_assassin%2Cmob_shu_guard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_wei_guard%2Cmob_wei_vanguard%2Cmob_wei_archer%2Cmob_wei_assassin%2Cmob_shu_guard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "mobs-1.png",
+      "rawBytes": 373228,
+      "rawSHA256": "7c33b2168df557e4999005617f602aff0a102d70e330fbe5e20d2d3d7b228dcc",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-1",
+        "file": "mobs-1.png",
+        "width": 1000,
+        "height": 1312,
+        "mode": "RGB",
+        "rawBytes": 373228,
+        "finalBytes": 371252,
+        "rawSHA256": "7c33b2168df557e4999005617f602aff0a102d70e330fbe5e20d2d3d7b228dcc",
+        "finalSHA256": "fc66ae4564ebfdd1bb58d0360f2ca6fe0971f68903d9a40c4ac51fa640cb3018",
+        "decodedRGBA_SHA256": "0a4c47c2133a61b0596d35339b434f6c7da6ac81e1b90bd726a6b43349745acb",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-1-small",
+      "ids": [
+        "mob_wei_guard",
+        "mob_wei_vanguard",
+        "mob_wei_archer",
+        "mob_wei_assassin",
+        "mob_shu_guard"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=mob_wei_guard%2Cmob_wei_vanguard%2Cmob_wei_archer%2Cmob_wei_assassin%2Cmob_shu_guard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_wei_guard%2Cmob_wei_vanguard%2Cmob_wei_archer%2Cmob_wei_assassin%2Cmob_shu_guard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "mobs-1-small.png",
+      "rawBytes": 304083,
+      "rawSHA256": "d3e52c2545d14116be6ca96e142a285b21e8e2d90adfe2348c6ee62e24414915",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-1-small",
+        "file": "mobs-1-small.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 304083,
+        "finalBytes": 302604,
+        "rawSHA256": "d3e52c2545d14116be6ca96e142a285b21e8e2d90adfe2348c6ee62e24414915",
+        "finalSHA256": "ac75e633742b834fd2b4ff885f093fd6e1dc8d3072378665ee950d0ff95e9dae",
+        "decodedRGBA_SHA256": "f1e42886aa28de559d67b36def3a25a08ee81d8a1c4f9cffe6dd37bad8f12fb4",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-2",
+      "ids": [
+        "mob_shu_vanguard",
+        "mob_shu_archer",
+        "mob_shu_assassin",
+        "mob_wu_guard",
+        "mob_wu_vanguard"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=mob_shu_vanguard%2Cmob_shu_archer%2Cmob_shu_assassin%2Cmob_wu_guard%2Cmob_wu_vanguard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_shu_vanguard%2Cmob_shu_archer%2Cmob_shu_assassin%2Cmob_wu_guard%2Cmob_wu_vanguard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "mobs-2.png",
+      "rawBytes": 385467,
+      "rawSHA256": "cdd911762ed1fafc01630f0b4f00219f54a88a215a37802116d191279cf7aae3",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-2",
+        "file": "mobs-2.png",
+        "width": 1000,
+        "height": 1312,
+        "mode": "RGB",
+        "rawBytes": 385467,
+        "finalBytes": 380949,
+        "rawSHA256": "cdd911762ed1fafc01630f0b4f00219f54a88a215a37802116d191279cf7aae3",
+        "finalSHA256": "ed34b8ae33a6abd847c1f2a5bcddc1c989fb284a0e2554be6dea986f0ba14a43",
+        "decodedRGBA_SHA256": "a08e9dc75a3807661ab9603d47fafc4c29852fa86210808070da102a99c81b7b",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-2-small",
+      "ids": [
+        "mob_shu_vanguard",
+        "mob_shu_archer",
+        "mob_shu_assassin",
+        "mob_wu_guard",
+        "mob_wu_vanguard"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=mob_shu_vanguard%2Cmob_shu_archer%2Cmob_shu_assassin%2Cmob_wu_guard%2Cmob_wu_vanguard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_shu_vanguard%2Cmob_shu_archer%2Cmob_shu_assassin%2Cmob_wu_guard%2Cmob_wu_vanguard&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "mobs-2-small.png",
+      "rawBytes": 312389,
+      "rawSHA256": "497bcdf4e785273364df9aa2bd26e92f549297bd76778b06241f6a3abf70c862",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-2-small",
+        "file": "mobs-2-small.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 312389,
+        "finalBytes": 309305,
+        "rawSHA256": "497bcdf4e785273364df9aa2bd26e92f549297bd76778b06241f6a3abf70c862",
+        "finalSHA256": "2ac0810f160e01c5fb59ece0d20afa4cba664b6bcd22a692d66cddb2f14a1b7b",
+        "decodedRGBA_SHA256": "114d94e23c504a0992c494de6523a8ffb0fbe5eac7631deb2b0f538289d47bc0",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-3",
+      "ids": [
+        "mob_wu_archer",
+        "mob_wu_assassin",
+        "mob_qun_guard",
+        "mob_qun_vanguard",
+        "mob_qun_archer"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=mob_wu_archer%2Cmob_wu_assassin%2Cmob_qun_guard%2Cmob_qun_vanguard%2Cmob_qun_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_wu_archer%2Cmob_wu_assassin%2Cmob_qun_guard%2Cmob_qun_vanguard%2Cmob_qun_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "mobs-3.png",
+      "rawBytes": 382965,
+      "rawSHA256": "3bd7362ef88f6d6f2c01e2f6b7d2e668638f5c8bfba11802f202297239bf6651",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-3",
+        "file": "mobs-3.png",
+        "width": 1000,
+        "height": 1312,
+        "mode": "RGB",
+        "rawBytes": 382965,
+        "finalBytes": 379030,
+        "rawSHA256": "3bd7362ef88f6d6f2c01e2f6b7d2e668638f5c8bfba11802f202297239bf6651",
+        "finalSHA256": "709a51c66758e30c85897199c45b858e477d9182154568558bf36c2f07314f7e",
+        "decodedRGBA_SHA256": "7dd777dd8327dca33b4402814afc27e75c607dc02fd74a490337b973a52e51ef",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-3-small",
+      "ids": [
+        "mob_wu_archer",
+        "mob_wu_assassin",
+        "mob_qun_guard",
+        "mob_qun_vanguard",
+        "mob_qun_archer"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=mob_wu_archer%2Cmob_wu_assassin%2Cmob_qun_guard%2Cmob_qun_vanguard%2Cmob_qun_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_wu_archer%2Cmob_wu_assassin%2Cmob_qun_guard%2Cmob_qun_vanguard%2Cmob_qun_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "mobs-3-small.png",
+      "rawBytes": 311694,
+      "rawSHA256": "f56f5acd605b0ba096f8a51e6a05eb9ade351409544a8fb72eb759d960d98f41",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-3-small",
+        "file": "mobs-3-small.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 311694,
+        "finalBytes": 308809,
+        "rawSHA256": "f56f5acd605b0ba096f8a51e6a05eb9ade351409544a8fb72eb759d960d98f41",
+        "finalSHA256": "48c2a78ec4571a928ea58fc867c9cabe0085a18032191912b9c8971d5160e941",
+        "decodedRGBA_SHA256": "4aa0cc29eb7d5a8106031e98ecb98f64263009b308bba46979d88466416ebe83",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-4",
+      "ids": [
+        "mob_qun_assassin",
+        "mob_man_guard",
+        "mob_man_archer",
+        "mob_man_assassin",
+        "mob_xian_archer"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=mob_qun_assassin%2Cmob_man_guard%2Cmob_man_archer%2Cmob_man_assassin%2Cmob_xian_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_qun_assassin%2Cmob_man_guard%2Cmob_man_archer%2Cmob_man_assassin%2Cmob_xian_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "mobs-4.png",
+      "rawBytes": 366144,
+      "rawSHA256": "6d60065028bb056268f9e2f0df4fd08f7a7208e2a8ba014daabb0d275f4a61e9",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-4",
+        "file": "mobs-4.png",
+        "width": 1000,
+        "height": 1312,
+        "mode": "RGB",
+        "rawBytes": 366144,
+        "finalBytes": 361790,
+        "rawSHA256": "6d60065028bb056268f9e2f0df4fd08f7a7208e2a8ba014daabb0d275f4a61e9",
+        "finalSHA256": "9354b4008d089abdc6d4ffda7aab799382a022d00c242ab58d61319206f81b05",
+        "decodedRGBA_SHA256": "2a0ea5ad4a56c1d1456c417dfb97d7097dd9f4de58640fc5f1d8b9aa5dae938e",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "mobs-4-small",
+      "ids": [
+        "mob_qun_assassin",
+        "mob_man_guard",
+        "mob_man_archer",
+        "mob_man_assassin",
+        "mob_xian_archer"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=mob_qun_assassin%2Cmob_man_guard%2Cmob_man_archer%2Cmob_man_assassin%2Cmob_xian_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_qun_assassin%2Cmob_man_guard%2Cmob_man_archer%2Cmob_man_assassin%2Cmob_xian_archer&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "mobs-4-small.png",
+      "rawBytes": 296676,
+      "rawSHA256": "9d0429f93abf04ff772b001e7f6b8f7876d47c6e753b3dadbb3459a0893442b4",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "mobs-4-small",
+        "file": "mobs-4-small.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 296676,
+        "finalBytes": 293442,
+        "rawSHA256": "9d0429f93abf04ff772b001e7f6b8f7876d47c6e753b3dadbb3459a0893442b4",
+        "finalSHA256": "33224ec57deea431642790c6418780b45e30143ec207fd462d1eb85d5e0f48bc",
+        "decodedRGBA_SHA256": "0252274a45941771bb9c331a5e90f2aa03703dc772dbb8a981c483b94b73ad5a",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-1-front",
+      "ids": [
+        "wei_zhangliao",
+        "wei_xuhuchi",
+        "shu_huangzhong",
+        "shu_machao",
+        "wu_sunxiaoba"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 250,
+      "query": "ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "rawPNG": "heroes-1-front.png",
+      "rawBytes": 318714,
+      "rawSHA256": "368c19460aa9d82e70c67acf22d5bfecb21e521a520cf729ae9ae2a8498dc12d",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-1-front",
+        "file": "heroes-1-front.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 318714,
+        "finalBytes": 316082,
+        "rawSHA256": "368c19460aa9d82e70c67acf22d5bfecb21e521a520cf729ae9ae2a8498dc12d",
+        "finalSHA256": "ab84004d20c02409460ebc25897709e23fff5418b00f0345be22f336e5eb3059",
+        "decodedRGBA_SHA256": "6ffaa7952d55a7330e3aaf11e7db43bdfd25b04c561537f3307e8946d323843e",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-2-front",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "man_mengyou",
+        "man_wutugu"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "rawPNG": "heroes-2-front.png",
+      "rawBytes": 247227,
+      "rawSHA256": "ed123af184af5cff879003e3a3858a9a1fbb0125c6a7d304573a2c0f48386ace",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-2-front",
+        "file": "heroes-2-front.png",
+        "width": 1000,
+        "height": 914,
+        "mode": "RGB",
+        "rawBytes": 247227,
+        "finalBytes": 244408,
+        "rawSHA256": "ed123af184af5cff879003e3a3858a9a1fbb0125c6a7d304573a2c0f48386ace",
+        "finalSHA256": "69fa61b8ca6401d8dfc8554559706ac6c6086c51ef551159ee257577c47b1776",
+        "decodedRGBA_SHA256": "b4578208954efc7cdf56e04bbfcce644e441c925877656b10848e54ba68ad0a1",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-1-reverse",
+      "ids": [
+        "wei_zhangliao",
+        "wei_xuhuchi",
+        "shu_huangzhong",
+        "shu_machao",
+        "wu_sunxiaoba"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": -32,
+      "width": 250,
+      "query": "ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "rawPNG": "heroes-1-reverse.png",
+      "rawBytes": 321066,
+      "rawSHA256": "43326d70f39df9293eb0ce84157fa29461beb85a2a348ea64fba1541a7ebbeac",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-1-reverse",
+        "file": "heroes-1-reverse.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 321066,
+        "finalBytes": 317917,
+        "rawSHA256": "43326d70f39df9293eb0ce84157fa29461beb85a2a348ea64fba1541a7ebbeac",
+        "finalSHA256": "0f4901ea32359386f65a8fe951d88e199727c827e19fd21bea6d85f3c62fc75b",
+        "decodedRGBA_SHA256": "9dd80aae79ff5490edb174f9de87b9e755cedbbffb294b8900160098aafba9fb",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-2-reverse",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "man_mengyou",
+        "man_wutugu"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": -32,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "rawPNG": "heroes-2-reverse.png",
+      "rawBytes": 248019,
+      "rawSHA256": "42ed2b4c895af70e3ea097d8f5edc909b036462d4288e86d633a48db19f01b6e",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-2-reverse",
+        "file": "heroes-2-reverse.png",
+        "width": 1000,
+        "height": 914,
+        "mode": "RGB",
+        "rawBytes": 248019,
+        "finalBytes": 244632,
+        "rawSHA256": "42ed2b4c895af70e3ea097d8f5edc909b036462d4288e86d633a48db19f01b6e",
+        "finalSHA256": "686ca85e836dab88703169c0f245c24379757983248210b8a0f90934c1ee600a",
+        "decodedRGBA_SHA256": "29a5c5504961735ce9a5142164799f9d5ce0c4eef297cbf65512943f852313e5",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-1-back",
+      "ids": [
+        "wei_zhangliao",
+        "wei_xuhuchi",
+        "shu_huangzhong",
+        "shu_machao",
+        "wu_sunxiaoba"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 148,
+      "width": 250,
+      "query": "ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wei_zhangliao%2Cwei_xuhuchi%2Cshu_huangzhong%2Cshu_machao%2Cwu_sunxiaoba&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "rawPNG": "heroes-1-back.png",
+      "rawBytes": 259293,
+      "rawSHA256": "0420390894061819b54d1d1d2ad1aeb679bfcb116b453423e4f2a39ccbaafe8e",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-1-back",
+        "file": "heroes-1-back.png",
+        "width": 1000,
+        "height": 1137,
+        "mode": "RGB",
+        "rawBytes": 259293,
+        "finalBytes": 256108,
+        "rawSHA256": "0420390894061819b54d1d1d2ad1aeb679bfcb116b453423e4f2a39ccbaafe8e",
+        "finalSHA256": "3991a9d3a80148a014840e3fde949a93e003f29d74e6464ffb42b937f0fea27f",
+        "decodedRGBA_SHA256": "586a443dd28b85ee0ce3b048b07d7037cdfea4d5d1048836d8b81e8e82e970e3",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "heroes-2-back",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "man_mengyou",
+        "man_wutugu"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 148,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cman_mengyou%2Cman_wutugu&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "rawPNG": "heroes-2-back.png",
+      "rawBytes": 197344,
+      "rawSHA256": "ad6db08936a6b10549785b7bcf786e4de59c59781664db031b1771986a7a11db",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "heroes-2-back",
+        "file": "heroes-2-back.png",
+        "width": 1000,
+        "height": 914,
+        "mode": "RGB",
+        "rawBytes": 197344,
+        "finalBytes": 193927,
+        "rawSHA256": "ad6db08936a6b10549785b7bcf786e4de59c59781664db031b1771986a7a11db",
+        "finalSHA256": "33c363f9d10828bb6faa8f695adbf71ee4bdd4c9d95ec740856ef9ad716653da",
+        "decodedRGBA_SHA256": "3ae40b4ddeb0b13c8bccd858e7388a4c9702d4e7fb5f1d06b3d2a2ee94997d7d",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "neckroom-large-heads",
+      "ids": [
+        "mob_shu_archer",
+        "mob_wu_guard",
+        "mob_man_guard",
+        "mob_man_archer"
+      ],
+      "poses": [
+        "idle",
+        "slump",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 290,
+      "query": "ids=mob_shu_archer%2Cmob_wu_guard%2Cmob_man_guard%2Cmob_man_archer&poses=idle%2Cslump%2Cstrike&yaw=0&w=290",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=mob_shu_archer%2Cmob_wu_guard%2Cmob_man_guard%2Cmob_man_archer&poses=idle%2Cslump%2Cstrike&yaw=0&w=290",
+      "rawPNG": "neckroom-large-heads.png",
+      "rawBytes": 297621,
+      "rawSHA256": "354a8be304c10f44091a0bd7fadc254ac1bf2ebb687df0d79a5dfa9545069206",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "neckroom-large-heads",
+        "file": "neckroom-large-heads.png",
+        "width": 1000,
+        "height": 1054,
+        "mode": "RGB",
+        "rawBytes": 297621,
+        "finalBytes": 293064,
+        "rawSHA256": "354a8be304c10f44091a0bd7fadc254ac1bf2ebb687df0d79a5dfa9545069206",
+        "finalSHA256": "615511e03ccb55397c4d369715fcd6765f16a5059836a7b29b50ddf576bca944",
+        "decodedRGBA_SHA256": "e27ada4d3307b1a6dc61e5b2d189a0c410ce939e867e2aaf6ff991a8f9bd3c57",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    },
+    {
+      "name": "rattan-front-detail",
+      "ids": [
+        "man_wutugu",
+        "mob_shu_guard",
+        "mob_man_guard"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 360,
+      "query": "ids=man_wutugu%2Cmob_shu_guard%2Cmob_man_guard&poses=idle%2Cwindup%2Cstrike&yaw=0&w=360",
+      "url": "http://127.0.0.1:5181/.shots/body-field-official/cat-1791781815053-129284.html?ids=man_wutugu%2Cmob_shu_guard%2Cmob_man_guard&poses=idle%2Cwindup%2Cstrike&yaw=0&w=360",
+      "rawPNG": "rattan-front-detail.png",
+      "rawBytes": 334636,
+      "rawSHA256": "3a37e1c63fbd2e52fd76cb1122da3caaae27ed77af72b46f98bcfd26b0067730",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "bodySHA": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+        "helperSHA": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ],
+          [
+            360,
+            315
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": [],
+      "exportProof": {
+        "name": "rattan-front-detail",
+        "file": "rattan-front-detail.png",
+        "width": 1100,
+        "height": 979,
+        "mode": "RGB",
+        "rawBytes": 334636,
+        "finalBytes": 331129,
+        "rawSHA256": "3a37e1c63fbd2e52fd76cb1122da3caaae27ed77af72b46f98bcfd26b0067730",
+        "finalSHA256": "e13f330c15fc38be48e920fc6eba010e4ef780d122c6f306c1364114826e3e9a",
+        "decodedRGBA_SHA256": "a9ac153a2aeb7bb0ad711650d0ef7e0104b3fc0a5b435a05d421250714e15cc7",
+        "changedPixels": 0,
+        "resizeOrCrop": false,
+        "method": "PNG optimize=True compress_level=9; original image mode and dimensions retained; complete per-channel RGBA array equality."
+      }
+    }
+  ],
+  "poseFigureCount": 20,
+  "battle": {
+    "file": "battle.webp",
+    "selectedFrameIndex": 4,
+    "requestedT": 4.25,
+    "actualSceneTime": 4.24999999999999,
+    "rawPNG": "battle-final-04.png",
+    "rawBytes": 548976,
+    "finalBytes": 394890,
+    "width": 948,
+    "height": 592,
+    "rawSHA256": "71872f31d0509427848171d870cec4be6c0a42b4dcef2b998cba8da8668ddf3c",
+    "finalSHA256": "e155ce18dea16201af757a93ab3ce049d178bd3852f9e45a12fc246ff16858f6",
+    "decodedRGBA_SHA256": "4ec7848568e10b53baaf710b85ed908d633c604005c6e6b2ad4be4fb56601f08",
+    "changedPixels": 0,
+    "imagePostCropOrResize": false,
+    "captureMethod": "Page screenshot of complete #cv boundingClientRect inside 980x800 viewport (full canvas fits). Exact 60Hz scene.step with queueMicrotask between each tick, scheduling equivalent to original advance; draw once after 180+15*i ticks. Actual scene.time recorded.",
+    "captureRectangle": {
+      "x": 16,
+      "y": 85,
+      "width": 948,
+      "height": 592.5
+    },
+    "exportMethod": "WebP lossless=True quality=100 method=6 exact=True",
+    "actors": {
+      "actors": [
+        {
+          "heroId": "wei_zhangliao",
+          "kind": "armorWei",
+          "cat3d": true,
+          "bodyPartGroup": "field-wei-armor",
+          "skirtPartGroup": "field-wei-armor-skirt"
+        },
+        {
+          "heroId": "wei_xuhuchi",
+          "kind": "armorLight",
+          "cat3d": true,
+          "bodyPartGroup": "field-light-armor",
+          "skirtPartGroup": "field-light-armor-skirt"
+        },
+        {
+          "heroId": "wu_ganning",
+          "kind": "vest",
+          "cat3d": true,
+          "bodyPartGroup": "field-open-vest",
+          "skirtPartGroup": "field-open-vest-skirt"
+        },
+        {
+          "heroId": "man_wutugu",
+          "kind": "rattan",
+          "cat3d": true,
+          "bodyPartGroup": "field-woven-armor",
+          "skirtPartGroup": "field-woven-armor-skirt"
+        },
+        {
+          "heroId": "wu_sunxiangxiang",
+          "kind": "armorLight",
+          "cat3d": true,
+          "bodyPartGroup": "field-light-armor",
+          "skirtPartGroup": "field-light-armor-skirt"
+        },
+        {
+          "heroId": "mob_wei_guard",
+          "kind": "armorWei",
+          "cat3d": true,
+          "bodyPartGroup": "field-wei-armor",
+          "skirtPartGroup": "field-wei-armor-skirt"
+        },
+        {
+          "heroId": "mob_wu_guard",
+          "kind": "armorLight",
+          "cat3d": true,
+          "bodyPartGroup": "field-light-armor",
+          "skirtPartGroup": "field-light-armor-skirt"
+        },
+        {
+          "heroId": "mob_man_archer",
+          "kind": "vest",
+          "cat3d": true,
+          "bodyPartGroup": "field-open-vest",
+          "skirtPartGroup": "field-open-vest-skirt"
+        },
+        {
+          "heroId": "mob_man_guard",
+          "kind": "rattan",
+          "cat3d": true,
+          "bodyPartGroup": "field-woven-armor",
+          "skirtPartGroup": "field-woven-armor-skirt"
+        },
+        {
+          "heroId": "mob_shu_archer",
+          "kind": "vest",
+          "cat3d": true,
+          "bodyPartGroup": "field-open-vest",
+          "skirtPartGroup": "field-open-vest-skirt"
+        }
+      ],
+      "actual3DCats": 10,
+      "bodyKinds": [
+        "armorWei",
+        "armorLight",
+        "vest",
+        "rattan"
+      ],
+      "spriteMode": {
+        "illust": true,
+        "cat3d": true
+      }
+    },
+    "query": "test=1&r3d=1&a=wei_zhangliao%2Cwei_xuhuchi%2Cwu_ganning%2Cman_wutugu%2Cwu_sunxiangxiang&b=mob_wei_guard%2Cmob_wu_guard%2Cmob_man_archer%2Cmob_man_guard%2Cmob_shu_archer&theme=meadow&seed=2",
+    "rawFrames": [
+      {
+        "index": 0,
+        "requestedT": 3.25,
+        "actualSceneTime": 3.2499999999999933,
+        "all10Alive": true,
+        "rawPNG": "battle-final-00.png",
+        "rawBytes": 545251,
+        "rawSHA256": "7f734608034e9d67ee1b35eca29e0f67e1f978684bd29aa6877ee94c79940301",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 1,
+        "requestedT": 3.5,
+        "actualSceneTime": 3.4999999999999925,
+        "all10Alive": true,
+        "rawPNG": "battle-final-01.png",
+        "rawBytes": 545068,
+        "rawSHA256": "e631a3c05550a40ea155212e6e7821e4f3075d290a90105046f2800f9150f908",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 2,
+        "requestedT": 3.75,
+        "actualSceneTime": 3.7499999999999916,
+        "all10Alive": true,
+        "rawPNG": "battle-final-02.png",
+        "rawBytes": 544688,
+        "rawSHA256": "3fc4ac45d165176dec8e90d46b9a9d5b5396bd4e3ec24afcee575d04023515c2",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 3,
+        "requestedT": 4,
+        "actualSceneTime": 3.9999999999999907,
+        "all10Alive": true,
+        "rawPNG": "battle-final-03.png",
+        "rawBytes": 548118,
+        "rawSHA256": "12593694a66ed916e8eb80adaaac75937131363e86acbe8028e985f653db04cc",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 4,
+        "requestedT": 4.25,
+        "actualSceneTime": 4.24999999999999,
+        "all10Alive": true,
+        "rawPNG": "battle-final-04.png",
+        "rawBytes": 548976,
+        "rawSHA256": "71872f31d0509427848171d870cec4be6c0a42b4dcef2b998cba8da8668ddf3c",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 5,
+        "requestedT": 4.5,
+        "actualSceneTime": 4.499999999999989,
+        "all10Alive": true,
+        "rawPNG": "battle-final-05.png",
+        "rawBytes": 548072,
+        "rawSHA256": "b8e351fd7cef9dc4c0bc26e1551ec38a54fa31cdd944d4a5c142ee3d212490ca",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 6,
+        "requestedT": 4.75,
+        "actualSceneTime": 4.7499999999999885,
+        "all10Alive": true,
+        "rawPNG": "battle-final-06.png",
+        "rawBytes": 537014,
+        "rawSHA256": "43afeb5825e9d3bce1543847619587e21f1ad274f08c60f8885130e19d461dbb",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 7,
+        "requestedT": 5,
+        "actualSceneTime": 4.999999999999988,
+        "all10Alive": true,
+        "rawPNG": "battle-final-07.png",
+        "rawBytes": 548261,
+        "rawSHA256": "d0f22dac93748f59aa340a9a6223d8964de76dc4f4936eb47cd5382e1a3ca56c",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 8,
+        "requestedT": 5.25,
+        "actualSceneTime": 5.249999999999987,
+        "all10Alive": true,
+        "rawPNG": "battle-final-08.png",
+        "rawBytes": 548884,
+        "rawSHA256": "d7dda2ffd425ae6aeb754720af2fd74f7eb66b91078be9a91055c1335cea436d",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 9,
+        "requestedT": 5.5,
+        "actualSceneTime": 5.499999999999986,
+        "all10Alive": true,
+        "rawPNG": "battle-final-09.png",
+        "rawBytes": 550914,
+        "rawSHA256": "af664629cfe4b1399142bd9645c08d6d56c3fe948649cfce36cc5b8488376ffb",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 10,
+        "requestedT": 5.75,
+        "actualSceneTime": 5.749999999999985,
+        "all10Alive": true,
+        "rawPNG": "battle-final-10.png",
+        "rawBytes": 549702,
+        "rawSHA256": "0fd25f243a7c1447386bf6b21bd33add3139a188c0ea5a1e8bae221c586a7944",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      },
+      {
+        "index": 11,
+        "requestedT": 6,
+        "actualSceneTime": 5.999999999999984,
+        "all10Alive": true,
+        "rawPNG": "battle-final-11.png",
+        "rawBytes": 502039,
+        "rawSHA256": "a3ea105a19a4aeaf1a7cce2c5851b1615b1aea306a92a5155fd53805180e1146",
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        }
+      }
+    ],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+        "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+      }
+    ],
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
+  },
+  "totalNewImageCount": 21,
+  "totalImageCountIncludingIndependentBeforeAfter": 22,
+  "allExportRGBAChangedPixels": 0,
+  "pixelMethod": "Compare complete uint8 RGBA arrays at original screenshot dimensions after lossless export; no post-crop, resize, alpha mask, grade, blur or sharpening.",
+  "references": [
+    {
+      "path": "assets/heroes/ref/wei_zhangliao.jpg",
+      "sha256": "ad7444af56c5c103097869007b0d13912905fddcda25b1142752cb0453d9cd0f"
+    },
+    {
+      "path": "assets/heroes/ref/wei_xuhuchi.jpg",
+      "sha256": "5ebc14d718e34f20c67b41c2e9ca1c5ddf4938c25f4908ad7d83d2c7da0eb181"
+    },
+    {
+      "path": "assets/heroes/ref/wu_sunxiaoba.jpg",
+      "sha256": "75de0c64f6106f74db97c188d133ae15e78ee2d96c8e832e6bfb1b969a8d7d86"
+    },
+    {
+      "path": "assets/heroes/ref/wu_sunxiangxiang.jpg",
+      "sha256": "e90b4b388f93524a8000cdb0324f82f9fa28a0f277ed714c39b35988e26d8b84"
+    },
+    {
+      "path": "assets/heroes/ref/shu_huangzhong.jpg",
+      "sha256": "1a2e8e47eb95c4289935696045b875b7f40f9f136246d109fff4d22fcd5524e0"
+    },
+    {
+      "path": "assets/heroes/ref/shu_machao.jpg",
+      "sha256": "88325cb041340cca55348ad3f9d352620e0f8c7c537b7a1be15c3ec060932e9b"
+    },
+    {
+      "path": "assets/heroes/ref/wu_ganning.jpg",
+      "sha256": "f6499d6d0904c62342f5cbd2381f765ec00920b16c40f42af8d843d32f4aa6f4"
+    },
+    {
+      "path": "assets/heroes/ref/man_wutugu.jpg",
+      "sha256": "1e8e72907403ae56ab8be85b86b1fd41b038524e67f922852989c669ea17dfb1"
+    },
+    {
+      "path": "assets/heroes/ref/man_mengyou.jpg",
+      "sha256": "efcbaef7352ed004851a374f1918f547fb23f8fe0559b0ce93ca49d24a4d9584"
+    }
+  ],
+  "referenceTextSHA256": "6b01dda36171698ad98ee8ab2870c9ecd73711e1a3286aa28a0cbc21d3c61f28",
+  "independentFilesUntouched": {
+    "qa-summary.md": {
+      "bytes": 6557,
+      "sha256": "77ff697442044357df7277104655bf55967fe61fdb7dc474b0383a4a2d3dfdb9"
+    },
+    "qa-summary.json": {
+      "bytes": 366015,
+      "sha256": "942e01d32602dc95dca5a8d2a1a35ca2cf4681b8bd12409639627a8bf0b847a4"
+    },
+    "before-after.png": {
+      "bytes": 201565,
+      "sha256": "7507a248c589f7b7f9c6d7b188153a7146a10159dacc6ad373e3bb99ff7390d0"
+    }
+  },
+  "independentBeforeAfterPixelProof": {
+    "capture": {
+      "baselineFixture": {
+        "sha256": "36552abd5d042fa806302e2072164e059cbbe1d63ec8daf95d4e3952f88116ca",
+        "commit": "e777d58f3b0e9965f7af25ded73948a84e68d219"
+      },
+      "ids": [
+        "wei_zhangliao",
+        "wei_xuhuchi",
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "man_mengyou",
+        "man_wutugu"
+      ],
+      "dimensions": [
+        250,
+        219
+      ],
+      "normalBake": true,
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "yaw": 32
+    },
+    "originalSHA256": "4f2e7075e3f0f5527f2a11b36c3cd288972fd8750c6818db61869d400800b109",
+    "exportSHA256": "7507a248c589f7b7f9c6d7b188153a7146a10159dacc6ad373e3bb99ff7390d0",
+    "originalBytes": 204542,
+    "exportBytes": 201565,
+    "losslessPNGPixelDifferences": 0,
+    "width": 1050,
+    "height": 850
+  },
+  "bodyPartNames": {
+    "armorWei": "field-wei-armor",
+    "armorLight": "field-light-armor",
+    "vest": "field-open-vest",
+    "rattan": "field-woven-armor"
+  },
+  "tests": {
+    "typecheckExit": 0,
+    "vitestExit": 0,
+    "testFiles": 68,
+    "tests": 1019
+  },
+  "rawCaptureManifests": {
+    "posesSHA256": "99c88074739b5ea06dea5d9698b0ed632089ed5bcf92ebd0b0002b7506a361ec",
+    "battleSHA256": "d84e64082de0fc2f8248bfd2dabb44054d950158d58347b9e21b960a91668315",
+    "keptTemporary": "Raw screenshots, full source snapshots and all 12 battle frames remain under .shots/body-field-official; only selected lossless exports are committed."
+  }
+}

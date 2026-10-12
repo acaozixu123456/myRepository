@@ -19,8 +19,16 @@ import decal_stain_rain_dust_08 from './decal_stain_rain_dust_08.webp';
 import decal_stain_rust_run_05 from './decal_stain_rust_run_05.webp';
 import decal_stain_soot_01 from './decal_stain_soot_01.webp';
 import decal_stain_tire_scuff_07 from './decal_stain_tire_scuff_07.webp';
+import cc0_grass_005 from './cc0_grass_005.webp';
+import cc0_sand_080 from './cc0_sand_080.webp';
 import ground_asphalt_wet_01 from './ground_asphalt_wet_01.webp';
 import ground_drain_slate_02 from './ground_drain_slate_02.webp';
+import ground_forest_grass_light_03 from './ground_forest_grass_light_03.webp';
+import ground_forest_grass_sparse_01 from './ground_forest_grass_sparse_01.webp';
+import ground_forest_moss_leaves_02 from './ground_forest_moss_leaves_02.webp';
+import ground_harbor_narrowwood_03 from './ground_harbor_narrowwood_03.webp';
+import ground_harbor_oldwood_01 from './ground_harbor_oldwood_01.webp';
+import ground_harbor_washed_02 from './ground_harbor_washed_02.webp';
 import ground_tile_slate_01 from './ground_tile_slate_01.webp';
 import ad_ninelives_hologram_06 from './ad_ninelives_hologram_06.webp';
 import sign_bar_vertical_05 from './sign_bar_vertical_05.webp';
@@ -56,8 +64,16 @@ export const WORLD_TEX: Record<string, string> = {
   decal_stain_rust_run_05,
   decal_stain_soot_01,
   decal_stain_tire_scuff_07,
+  cc0_grass_005,
+  cc0_sand_080,
   ground_asphalt_wet_01,
   ground_drain_slate_02,
+  ground_forest_grass_light_03,
+  ground_forest_grass_sparse_01,
+  ground_forest_moss_leaves_02,
+  ground_harbor_narrowwood_03,
+  ground_harbor_oldwood_01,
+  ground_harbor_washed_02,
   ground_tile_slate_01,
   ad_ninelives_hologram_06,
   sign_bar_vertical_05,
