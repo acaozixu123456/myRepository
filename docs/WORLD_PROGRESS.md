@@ -36,11 +36,46 @@
 
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
-当前批次：**WORLD-A10 · 裂缝透明贴花首批**，分支 `codex/3d-world-crack-decals`，交付 512² RGBA 十张，第 1 轮待审。A08 [#98](https://github.com/acaozixu123456/myRepository/pull/98) 已通过 / 接入；A09 地砖 [#100](https://github.com/acaozixu123456/myRepository/pull/100) 与 A10 污渍 [#103](https://github.com/acaozixu123456/myRepository/pull/103) 已提交待审，继续推进 A10 裂缝。
+以最新 [固定队列](CODEX_QUEUE.md) 和 [WORLD3D 场景主题](WORLD3D.md) 为当前方向；旧 [WORLD 工作单](CODEX_WORLD_BRIEF.md) 仅保留已做赛博素材的历史说明。每批独立 PR，有返修先返修，完成一批继续下批，不等 Claude 审核才开工。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记历史队列已实现的道具。
 
-## A 类队列
+当前批次：**WORLD-A09-NM · 喵洲夜市地面**，分支 `codex/3d-world-nightmarket-ground`，1024² RGB 三张，第 1 轮待审，通过数量为 0。夜市按新场景黄昏庙会主题制作；旧赛博 A08 [#98](https://github.com/acaozixu123456/myRepository/pull/98) 已通过 / 接入，旧 A09 [#100](https://github.com/acaozixu123456/myRepository/pull/100)、污渍 [#103](https://github.com/acaozixu123456/myRepository/pull/103)、裂缝 [#106](https://github.com/acaozixu123456/myRepository/pull/106) 已通过合并，保留出处 / 审核历史（尚未接入）。
 
-按 [固定队列](CODEX_QUEUE.md) 的最新审核意见：A08 已通过并接入；A09 地砖和 A10 污渍已提交，继续 A10 裂缝等地面贴花，其余类别保留。与 3D 部件交替推进，完成一批就继续下批，有返修先返修。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
+## 主题素材 · 2026-10-12 新方向
+
+场景已各自独立，颜色明亮清爽：夜市黄昏 / 码头晚霞 / 森林清晨 / 云岛正午 / 宫阙午后金光。按新固定队列推进，后续不继续旧暗紫霓虹街贴花计划；已交付赛博批次保留在历史记录。地面每个场景一批三张独立变体，命名带场景前缀防止覆盖旧 A09。
+
+| 批次 | 场景素材 | 规格 / 数量 | 状态 | 已通过 |
+| --- | --- | --- | --- | --- |
+| A09-NM | 喵洲夜市 · 暖砖 / 青石 / 篮织砂石 | 1024² 无缝，3张 | 待审，第1轮 | 0 |
+| A09-HB | 赤壁港 · 旧木栈板（竖纹） | 1024² 无缝，3变体 | 未开始 | 0 |
+| A09-MR | 九重宫阙 · 汉白玉淡金纹 | 1024² 无缝，3变体 | 未开始 | 0 |
+| A09-FR | 光之森 · 草地与落叶 | 1024² 无缝，3变体 | 未开始 | 0 |
+| A09-CL | 云端雾岛 · 粉绿草地与小花 | 1024² 无缝，3变体 | 未开始 | 0 |
+| A10-SKY | 天空全景（只有天空与云） | 2048×512 横向无缝，五种时段 | 未开始 | 0 |
+| A11 | 青瓦 / 金琉璃 / 朱红瓦 | 512²，无缝俯视瓦垄 | 未开始 | 0 |
+| A12 | 柔边多朵云朵精灵图 | 透明底 | 未开始 | 0 |
+
+### A09-NM 明细与本轮记录
+
+| 名称 / ID | 素材 | 状态 | 审核轮次 | 审图 | 字节 |
+| --- | --- | --- | --- | --- | ---: |
+| 暖陶砖 `ground_market_terracotta_01` | [WebP](../assets/world/ground/ground_market_terracotta_01.webp) | 待审 | 1 | [2×2](../assets/world/reviews/ground_market_terracotta_01-2x2.webp) / [4×4](../assets/world/reviews/ground_market_terracotta_01-4x4.webp) | 252,934 |
+| 暖青灰大板 `ground_market_slate_02` | [WebP](../assets/world/ground/ground_market_slate_02.webp) | 待审 | 1 | [2×2](../assets/world/reviews/ground_market_slate_02-2x2.webp) / [4×4](../assets/world/reviews/ground_market_slate_02-4x4.webp) | 322,152 |
+| 浅砂石篮织 `ground_market_sandstone_weave_03` | [WebP](../assets/world/ground/ground_market_sandstone_weave_03.webp) | 待审 | 1 | [2×2](../assets/world/reviews/ground_market_sandstone_weave_03-2x2.webp) / [4×4](../assets/world/reviews/ground_market_sandstone_weave_03-4x4.webp) | 213,164 |
+
+2026-10-12 · 新主题首批，第1轮待审，通过数量0。基线 `e6e89a9`，实读最新 queue / WORLD3D / market.ts / atmos.ts，并实际看主分支第2章夜市场景作为色板参考；不改引擎或接入注册表。每图独立 image_gen，另两次真实 AI 陶砖编辑：第一修订未纠正末行，弃选；第二参考原图双轴各627px精确循环位移，由AI修复中部旧外缘错误，采用该输出整图。程序未画缝、补色或艺术补造。
+
+五原稿均1254² RGB，保留真实工具提示词、实参、raw标识/路径/SHA与选弃。三交付完整画布等比 Lanczos 降至1024² RGB sRGB ICC WebP（quality90/method6），没有裁切、回移、上采样、调色或补边。素材总788,250 B，单张均≤500,000 B。[素材说明](../assets/world/ground/market-ground-a09-nm.README.md)、[完整出处](../assets/world/ground/market-ground-a09-nm.provenance.json)。
+
+[三图总览](../assets/world/reviews/market-ground-a09-nm.webp)（2048×1024，188,266 B），另各2×2/4×4直接平铺与9张无损PNG全边/四角，覆盖最终解码RGB精确1:1像素；[方法](../assets/world/reviews/market-ground-a09-nm.README.md)。陶砖包裹处为正常单缝，少许行高差仍可见；青石上下边差含正常石缝；篮织两轴接续。提示词精确8行/4块未全数实现，篮织约6×6块；4×4低频色块周期可辨，不声称数学逐像素相等。
+
+[真实 Three 白光/夜市暖光样板](../assets/world/reviews/market-ground-a09-nm-lighting.webp)（2048×1024，171,564 B），同白材质 roughness.85/metalness0、相机/强度/位置/曝光，仅换 ATMOS.market 光色；repeat[3,1]，无bloom/阴影，3/3加载、HTTP200×3、page/console errors0、failed0，六renderer各1drawcall，三sourceSHA拍前后恒定。[固定参数](../assets/world/reviews/market-ground-a09-nm-lighting.README.md)。暖光明显将石材推橘褐；此独立样板未模拟整场景天空/雾/调色。
+
+独立QA见 [摘要](../assets/world/ground/market-ground-a09-nm.qa.md) 与 [机器报告](../assets/world/ground/market-ground-a09-nm.qa.json)。主线程先在 `fecef9e`、再同步 `153de998` 后执行 `npm run typecheck && npm test`，两次全过（68个测试文件 / 1019测试），日志 `.tmp-nm/tests-latest.log / tests-main153.log`；三素材、17审图、出处、QA hash与制作 / 拍摄时一致。两主分支版本的 `src/world` 无变更，已合入旧批完整历史并按新queue标记 #100 / #103 / #106通过，新夜市未自行标通过。批后继续码头木栈板，有返修先返修。
+
+## A 类旧赛博队列与历史
+
+2026-10-12 最新固定队列已确认 #100 地砖 / 排水盖、#103 污迹与 #106 裂缝通过并合并，暂未接入游戏。以下保留原有素材与制作审核记录；后续使用上方明亮主题任务，不继续旧暗紫街区贴花计划。
 
 | 批次 | 类别 | 规格 / 数量 | 状态 | 已通过 |
 | --- | --- | --- | --- | --- |
@@ -49,8 +84,8 @@
 | A06 | 招牌 / 广告 | 横版 1024×256；竖版 256×1024；全息 512×1024 | 通过（本批 6 张） | 6 |
 | A07 | 远景天际线 | 2048×1024，上方透明或渐变深紫，1 张 | 通过 | 1 |
 | A08 | 地面 · 湿沥青 | 1024²，无缝，1 张 | 已通过并接入 | 1 |
-| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝 | 待审（#100） | 0 |
-| A10 | 贴花（地面贴花优先） | 512² 透明；污渍 / 裂缝各10张，其他三类仍各 ≥10 张 | 待审（污渍#103 / 本批裂缝） | 0 |
+| 旧 A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝，2张 | 通过并合并（#100，未接入） | 2 |
+| 旧 A10 | 污迹 / 裂缝贴花 | 512² 透明，10+10张；其余旧类暂停 | 通过并合并（#103 / #106，未接入） | 20 |
 | A03 | 外墙 · 水渍混凝土 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A04 | 外墙 · 贴纸墙 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A05 | 外墙 · 管线 / 空调外机浮雕 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
@@ -169,16 +204,16 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 | 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 细分叉裂 `decal_crack_branch_fine_01` | [WebP](../assets/world/decals/decal_crack_branch_fine_01.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp) | 512² RGBA；18,416 B；原生 1254² |
-| 浅横断裂 `decal_crack_transverse_02` | [WebP](../assets/world/decals/decal_crack_transverse_02.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_transverse_02-native-alpha.webp) | 512² RGBA；8,084 B；原生 1254² |
-| 旧修补口边裂 `decal_crack_repair_edge_03` | [WebP](../assets/world/decals/decal_crack_repair_edge_03.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp) | 512² RGBA；26,260 B；原生 1254² |
-| 石材短斜裂 `decal_crack_stone_diagonal_04` | [WebP](../assets/world/decals/decal_crack_stone_diagonal_04.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp) | 512² RGBA；8,362 B；原生 1254² |
-| 网状细龟裂 `decal_crack_crazing_05` | [WebP](../assets/world/decals/decal_crack_crazing_05.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_crazing_05-native-alpha.webp) | 512² RGBA；34,734 B；原生 1254² |
-| 坑缘碎裂 `decal_crack_pit_rim_06` | [WebP](../assets/world/decals/decal_crack_pit_rim_06.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp) | 512² RGBA；27,918 B；原生 1254² |
-| 伸缩缝端枝裂 `decal_crack_joint_ends_07` | [WebP](../assets/world/decals/decal_crack_joint_ends_07.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp) | 512² RGBA；18,652 B；原生 1254² |
-| 砖缝发丝裂 `decal_crack_grout_hair_08` | [WebP](../assets/world/decals/decal_crack_grout_hair_08.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp) | 512² RGBA；13,530 B；原生 1254² |
-| 沥青长走向裂 `decal_crack_asphalt_long_09` | [WebP](../assets/world/decals/decal_crack_asphalt_long_09.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp) | 512² RGBA；16,332 B；原生 1254² |
-| 三叉断裂 `decal_crack_threeway_10` | [WebP](../assets/world/decals/decal_crack_threeway_10.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_threeway_10-native-alpha.webp) | 512² RGBA；15,462 B；原生 1254² |
+| 细分叉裂 `decal_crack_branch_fine_01` | [WebP](../assets/world/decals/decal_crack_branch_fine_01.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp) | 512² RGBA；18,416 B；原生 1254² |
+| 浅横断裂 `decal_crack_transverse_02` | [WebP](../assets/world/decals/decal_crack_transverse_02.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_transverse_02-native-alpha.webp) | 512² RGBA；8,084 B；原生 1254² |
+| 旧修补口边裂 `decal_crack_repair_edge_03` | [WebP](../assets/world/decals/decal_crack_repair_edge_03.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp) | 512² RGBA；26,260 B；原生 1254² |
+| 石材短斜裂 `decal_crack_stone_diagonal_04` | [WebP](../assets/world/decals/decal_crack_stone_diagonal_04.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp) | 512² RGBA；8,362 B；原生 1254² |
+| 网状细龟裂 `decal_crack_crazing_05` | [WebP](../assets/world/decals/decal_crack_crazing_05.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_crazing_05-native-alpha.webp) | 512² RGBA；34,734 B；原生 1254² |
+| 坑缘碎裂 `decal_crack_pit_rim_06` | [WebP](../assets/world/decals/decal_crack_pit_rim_06.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp) | 512² RGBA；27,918 B；原生 1254² |
+| 伸缩缝端枝裂 `decal_crack_joint_ends_07` | [WebP](../assets/world/decals/decal_crack_joint_ends_07.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp) | 512² RGBA；18,652 B；原生 1254² |
+| 砖缝发丝裂 `decal_crack_grout_hair_08` | [WebP](../assets/world/decals/decal_crack_grout_hair_08.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp) | 512² RGBA；13,530 B；原生 1254² |
+| 沥青长走向裂 `decal_crack_asphalt_long_09` | [WebP](../assets/world/decals/decal_crack_asphalt_long_09.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp) | 512² RGBA；16,332 B；原生 1254² |
+| 三叉断裂 `decal_crack_threeway_10` | [WebP](../assets/world/decals/decal_crack_threeway_10.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_threeway_10-native-alpha.webp) | 512² RGBA；15,462 B；原生 1254² |
 
 ### A10 裂缝制作与审核记录
 
@@ -223,3 +258,5 @@ A10 污渍和裂缝各 10 张已交付 / 待审，涂鸦、海报、告示仍各
 | 纸箱 / 垃圾袋堆 | 未开始 | — |
 | 横幅 / 旗帜 | 未开始 | — |
 | 无人机 / 飞行器 / 悬浮车 | 未开始 | — |
+
+2026-10-12 · #100 / #103 / #106 通过并合并；以最新 CODEX_QUEUE.md 的审核记录为准，历史制作记录中的“待审”描述对应当时提交阶段，图与来源未改。
