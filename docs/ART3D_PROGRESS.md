@@ -253,10 +253,9 @@
 | `shu_pangmiaotong` / `weapon` | 待审 | 1 | 凤羽金梢弓；暖木与红金小羽，前举侧卷钩贴弓收短；16 逻辑网格 |
 | `xian_changmiao` / `weapon` | 待审 | 1 | 月桂三枝；Y 形空隙、两片宽主叶、两颗节点月珠；23 逻辑网格 |
 
-- 分支 `codex/3d-heroes-sp-weapons`。仅登记三个英雄武器，不改变同类泛用部件；参考三张原 JPG、三张批准立绘和英雄 lore，完整记录见 [README](../src/art3d/parts/reviews/heroes-sp-weapons/README.md)。
-- [三姿势](../src/art3d/parts/reviews/heroes-sp-weapons/poses.png)、[约 190px 检查](../src/art3d/parts/reviews/heroes-sp-weapons/poses-190px.png)、[正常烘焙前后](../src/art3d/parts/reviews/heroes-sp-weapons/before-after.png)、[最新真实十猫战斗](../src/art3d/parts/reviews/heroes-sp-weapons/battle-latest.webp)；另有正面、反向、背面、弓动作探针与泛用家族图，全部原尺寸无损、单文件 <500000 B。
-- 独立 [QA](../src/art3d/parts/reviews/heroes-sp-weapons/qa-summary.md) 检查 42 个全姿势例和 108 个时间样本；实际烘焙眼芯网格、鼻口按具体采样 ID 比较，新增遮挡均 0。三主要姿势 108 例眼 / 鼻口遮挡均 0；庞统原有 thrust / castFwd / guard 的眼采样 25 / 19 / 29 与基线同 ID，thrust 原有鼻采样 1 相同，保守深度计数不等于可见像素数。
-- 全 77 位英雄 / 杂兵显式传 heroId 构建：三目标实际命中，其余 74 位几何属性和索引逐数组相同；正常战斗 10/10 cat3d、三个命名武器组命中。三根保持掌心原点、正缩放、缓存材质，最大分段 20，无每帧新增对象。
-- 150 例非有限坐标、武器出框、新增整猫裁切与四边裁幅增加均 0。完整模型继承静态 5 / 动画 12 例裁切（司马披风下沿、嫦喵 victory 冠顶）；windup 的右爪落入后颅和武器交叠也有旧基线，不把顶点数当可见穿模证明，未改姿势或镜头。
-- 图 / QA 使用 `aa9afd3` 基线，最新主分支 `e6e89a9` 的相关 art3d / data / fx 文件逐字节相同，合入最新主分支后 typecheck 与 67 文件 / 1011 测试通过。最不满意：strike 羽扇仍呈窄斜面；月桂叶脉 / 月珠在战斗尺度较小，前举侧弓饰细节偏少。
-- 随后同步 `fecef9e` 的宠物 / 头缩放更新：三位 SP head=1，实际正常 bake 属性与索引字节、idle 世界矩阵和完整 150 例目标审核记录与旧引擎相同；最新同引擎 74 非目标字节一致。家族与十猫战斗另拍最新图，原独立图 / 报告保留。[复核](../src/art3d/parts/reviews/heroes-sp-weapons/latest-engine-check.md) 由维护者重新运行冻结夹具，68 文件 / 1019 测试通过。
+- 分支 `codex/3d-heroes-sp-weapons`。仅登记三个英雄武器，参考三张原 JPG、三张批准立绘和英雄 lore；当前固定 `e777d58` 引擎，武器源码仍为 `7656746361b4…`，完整记录见 [README](../src/art3d/parts/reviews/heroes-sp-weapons/README.md)。
+- 当前九图全部重拍：[三姿势](../src/art3d/parts/reviews/heroes-sp-weapons/current-e777/poses.png)、[约190px检查](../src/art3d/parts/reviews/heroes-sp-weapons/current-e777/poses-190px.png)、[正常烘焙前后](../src/art3d/parts/reviews/heroes-sp-weapons/current-e777/before-after.png)、[真实十猫战斗](../src/art3d/parts/reviews/heroes-sp-weapons/current-e777/battle.webp)；另有四方向、弓动作探针与泛用家族图，全部原尺寸无损、单文件小于500000 B。战斗12帧中取frame00 / t=3.25s，10/10 cat3d、三个实际命名武器组命中，页面脚本错误0。
+- 当前 [QA](../src/art3d/parts/reviews/heroes-sp-weapons/current-e777/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/heroes-sp-weapons/current-e777/qa-summary.json) 由维护者重新运行原独立方法，核对18个相关源文件SHA前后相同。42静态与108动画共150例，实际baked眼芯12×12采样按具体ID比较：新增眼ID0、有效格点不一致0，最低有效样本静态68 / 动画104；庞统thrust/castFwd旧/新各30个同ID保守眼深度命中，guard为0，深度命中不等于可见像素。
+- 原5个固定鼻口点新增ID0；另外150例实际baked活跃smile/mouthO表面3×3采样，新ID与有效ID不一致均0，每例至少4个有效点。全89位显式heroId/look包含12宠物，三个目标旧/新各命中1次，86位非目标所有geometry属性与index原始字节完全一致；三根保持掌心原点、正尺度、缓存材质，最大分段20。
+- 150例非有限顶点、武器及描边出框、新增整猫裁切与四侧裁幅增加均0。整猫旧裁切静态5 / 动画12例不变：司马披风下沿最大下裁 .1119077、嫦喵victory冠顶上裁 .014626。windup右掌与后颅、武器持握仍有旧交叠；实际1120颅骨面及壳内顶点检测不代表所有三角无交叉，也不把不同网格的点数当作可见严重程度；未改姿势或镜头。
+- 固定e777的typecheck与68文件 / 1019测试通过；主线随后日期修订的同步和提交前复检由维护者另记。原aa9/e6和fece图与报告完整保留为历史，当前交付使用current-e777，历史数据不充当当前复核。最不满意：strike羽扇仍呈窄斜面；月桂叶脉/月珠及前举侧弓饰在战斗尺度较小。

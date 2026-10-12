@@ -22,81 +22,88 @@
 
 弓的 local -y 梢在前举时会翻到脸前，因此该卷钩与小羽以半尺寸顺着木弓外弧贴附；另一梢保留完整卷形。木弓、弦槽和握点不变，两件实际贴弓，没有透明材质或姿势条件隐藏。月桂只有两片主叶加宽，其余四片短叶留出分叉空隙，月珠承担节点点缀。
 
-## 冻结源码
+## 冻结源码与当前引擎
 
-基线为 `claude/awesome-babbage-ygba4h` 的 `aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93`。所有正式图拍摄前后都核对同一组源码；旧候选图只保留在未提交的 `.shots/sp-weapons/obsolete-d0`，不作为交付图。
+当前交付固定在 `claude/awesome-babbage-ygba4h` 的 `e777d58f3b0e9965f7af25ded73948a84e68d219`，使用当前整颗头缩放、张嘴/眯眼表情和前举持握姿势。武器源码仍为同一 `7656746361b4…` 候选；当前九图全部重新捕获，不沿用旧引擎图作为本轮结果。
 
 | 文件 | SHA-256 |
 | --- | --- |
 | `heroes.ts` | `7656746361b4bc97b70d28b4d7f2d256a5afaa5040e21057620cb58612c71e46` |
-| 未改的 `cat3d.ts` | `06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56` |
-| 未改的 `pose.ts` | `4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265` |
-| 未改的 `toon.ts` | `bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837` |
+| 当前 `cat3d.ts` | `39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4` |
+| 当前 `pose.ts` | `3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c` |
+| 当前 `actor.ts` / POSES | `268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f` |
+| `toon.ts` | `bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837` |
+| 真实 e777 基线 `weapons.ts` | `513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a` |
 
-## 正式截图与真实装配
+维护者使用唯一临时模块路径和浏览器 SHA 哨兵重新运行独立审核方法。18 个相关源文件的前后 SHA 核对一致，完整列表见 [当前机器报告](current-e777/qa-summary.json) 的 `sourceSHAs`；正式拍图另有 `.shots/sp-weapons/current-e777/source-before.json / source-after.json`，两份相同。临时引用真实 skull / paw 几何用于只读检测，没有改几何、关节变换、材质或产品渲染。
 
-前三只的行序始终为司马喵懿、庞喵统、嫦喵；每行三姿势从左到右为 `idle / windup / strike`。调试页实际调用 `buildCat3D(lookOf(id), id)`，使用正常产品烘焙、共享渲染器和材质；冻结 `phase=0 / t=.4`。单格 `w=290` 为 290×254；紧凑检查 `w=250` 为 250×219，角色约 190px，图片没有缩放。
+## 当前交付图与真实装配
+
+三 SP 行序为司马喵懿、庞喵统、嫦喵，每行 `idle / windup / strike` 从左到右。当前调试页显式调用 `buildCat3D(lookOf(id), id)`，正常 bake 与共享 Renderer3D；phase=0、t=.4。w=290 的原生单格为290×254，w=250 为250×219；没有以图片缩放模拟190px检查。
 
 | 文件 | 内容 | 原生尺寸 | 字节数 |
-| --- | --- | --- | --- |
-| [poses.png](poses.png) | 三 SP 三姿势，yaw=32°，w=290 | 1000×796 | 238345 |
-| [poses-190px.png](poses-190px.png) | 同上，w=250 | 1000×700 | 193115 |
-| [front.png](front.png) | 三 SP 三姿势，yaw=0° | 1000×700 | 190594 |
-| [reverse.png](reverse.png) | 三 SP 三姿势，yaw=-32° | 1000×700 | 194323 |
-| [back.png](back.png) | 三 SP 三姿势，yaw=148° | 1000×700 | 162268 |
-| [bow-probes.png](bow-probes.png) | 庞统 `thrust / castFwd / guard`，yaw=32° | 1000×700 | 69544 |
-| [family.png](family.png) | 同类别使用者 idle，yaw=-32° | 1000×1360 | 146962 |
-| [battle.webp](battle.webp) | 真实十猫战斗，frame00 / t=3.25s | 948×593 | 387378 |
+| --- | --- | --- | ---: |
+| [poses.png](current-e777/poses.png) | 三 SP 三姿势，yaw=32°，w=290 | 1000×796 | 267861 |
+| [poses-190px.png](current-e777/poses-190px.png) | 同上，w=250，角色约190px | 1000×700 | 217507 |
+| [front.png](current-e777/front.png) | 三 SP 三姿势，yaw=0°，w=250 | 1000×700 | 216230 |
+| [reverse.png](current-e777/reverse.png) | 三 SP 三姿势，yaw=-32°，w=250 | 1000×700 | 218694 |
+| [back.png](current-e777/back.png) | 三 SP 三姿势，yaw=148°，w=250 | 1000×700 | 177528 |
+| [bow-probes.png](current-e777/bow-probes.png) | 庞统 thrust / castFwd / guard，yaw=32° | 1000×700 | 78833 |
+| [family.png](current-e777/family.png) | 三专属及三位泛用使用者 idle，yaw=-32° | 1000×1360 | 168852 |
+| [battle.webp](current-e777/battle.webp) | 真实十猫战斗，frame00 / t=3.25s | 948×593 | 405420 |
+| [before-after.png](current-e777/before-after.png) | 同英雄左旧右新，正常 bake，idle / yaw32° | 530×836 | 112278 |
 
-上述原始审图与独立 QA 保留原文件，源自 `aa9afd3 / e6e89a9` 引擎。随后主分支 `fecef9e` 修正 `look.head` 的整颗头缩放，本 PR 已同步，并另拍 [family-latest.png](family-latest.png)（1000×1360、162033 B）与 [battle-latest.webp](battle-latest.webp)（948×593、388032 B）。这两张包含其他头部比例的英雄，使用最新引擎；没有用旧图冒充更新后的完整阵容。两图均原尺寸无损、RGBA 差 0，最新战斗仍为 12 帧中的 frame00 / t=3.25s，真实 10/10 cat3d 与 3/3 SP 专属组命中、运行错误 0。
+`family.png` 六行是 `wei_simamiyi / shu_zhugemiaoliang / shu_pangmiaotong / wu_sunxiangxiang / xian_changmiao / qun_huatuo`，展示三个专属和三个泛用 fan / bow / herbs 的真实装配。不同英雄的家族图不作为同英雄前后比较；[before-after.png](current-e777/before-after.png) 才是同英雄左真实基线 / 右候选，单格250×219、idle t=.4 / phase0 / yaw32°，正常 bake，没有 noBake 或材质替换。
 
-三位 SP 的 `look.head` 都为 1。维护者以独立审核的冻结夹具重新检查最新引擎，三位正常 bake 的全部 geometry 属性 / 索引字节与 idle 世界矩阵逐值相同，完整 150 个目标审核记录也与原独立记录相同，因此三位的原三姿势 / 四方向 / 对照图仍适用；这项相等结论不延伸到其他英雄。最新同引擎下重查 77 位英雄 / 杂兵，74 非目标字节不变，详见 [最新引擎复核](latest-engine-check.md) / [机器报告](latest-engine-check.json)。
+七次 shots3d 与真实战斗十二帧已完成，页面脚本错误0。战斗从 `window.__demo.player.actors` 读取实际装配，10/10 actor 都有 `rig.cat3d`，三个 SP 各命中 `sp-simayi-seven-feather-fan / sp-pangtong-phoenix-bow / sp-changmiao-moon-laurel`。没有用省略 heroId 的 stock 构建代替专属验证。
 
-`family.png` 六行依次是 `wei_simamiyi / shu_zhugemiaoliang / shu_pangmiaotong / wu_sunxiangxiang / xian_changmiao / qun_huatuo`：展示三套专属与三位泛用 fan / bow / herbs 使用者的真实造型。它比较不同英雄，不作同一英雄的前后对照。
+战斗 A 阵容为三 SP、曹喵德、刘喵备；B 为诸葛喵亮、孙香香、华佗喵、吕布丁、沙摩柯。取十二帧中的 frame00，t=3+.25=3.25s，保留真实 HUD 与日志。实际装配见 [机器报告](current-e777/qa-summary.json) 的 `currentBattleRuntime`，原始截图和装配日志保留在 `.shots/sp-weapons/current-e777/`。外部 Google Fonts 请求失败后回退系统中文字体，产品名称和状态文字实际正常显示。
 
-独立审核见 [qa-summary.md](qa-summary.md) 与保留逐样本 ID 的 [qa-summary.json](qa-summary.json)；[before-after.png](before-after.png) 是同一英雄左基线 / 右候选的正常烘焙对照，由独立审核者拍摄。
+九张图都原尺寸无损、单文件小于500000 B：PNG重编码与 battle lossless WebP 对原图完整解码 RGBA 字节一致，差0，无裁切或缩放。各图 SHA、尺寸与字节数见机器报告的 `currentFigures`；临时 `figure-manifest.json` 同步记录。正常前后图也包含在九图中。
 
-七次 `shots3d` 与真实战斗十二帧全部完成，页面运行错误为 0。战斗页原有 Google Fonts 请求失败一次，采用系统中文字体；英雄名称和状态文字实际显示正常。
+### 当前拍摄命令
 
-战斗通过 `window.__demo.player.actors` 核实 **10/10 个 actor 都有 `rig.cat3d`**，三个 SP 的实际 root 分别存在 `sp-simayi-seven-feather-fan / sp-pangtong-phoenix-bow / sp-changmiao-moon-laurel`。证据留在未提交的 `.shots/sp-weapons/battle-audit.json`，没有用不带 heroId 的 stock 构建假定专属已命中。战斗阵容 A 是三 SP、曹喵德、刘喵备；B 是诸葛喵亮、孙香香、华佗喵、吕布丁、沙摩柯。
-
-所有 PNG 以 Pillow `optimize=True, compress_level=9` 无损重编码，编码前后完整解码 RGBA 字节相同。战斗 frame00 用 `lossless=True, quality=100, method=6` 转 WebP，与原 PNG 完整 RGBA 字节相同。八张交付图均 <500000 字节，没有裁切或缩放；原始战斗十二帧保留在 `.shots/sp-weapons/battle_00.png`～`battle_11.png`。
-
-### 实际命令
-
-临时 `.shots/sp-weapons/stable-vite.mjs` 在 5178 启动现有工程，`hmr:false`，忽略 `.shots/**` 与 `parts/reviews/**`；写审核文件不会刷新拍摄页面。所有脚本和夹具未提交，不改产品文件。
+临时 `.shots/sp-weapons/stable-vite.mjs` 使用5178端口、`hmr:false`，忽略 `.shots/**` 与 `parts/reviews/**`，不改产品文件。原图先输出到当前临时目录，再无损重编码到 `current-e777/`。
 
 ```bash
-CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- src/art3d/parts/reviews/heroes-sp-weapons/poses.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=32&w=290'
-CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- src/art3d/parts/reviews/heroes-sp-weapons/poses-190px.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=32&w=250'
-CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- src/art3d/parts/reviews/heroes-sp-weapons/front.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=0&w=250'
-CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- src/art3d/parts/reviews/heroes-sp-weapons/reverse.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=-32&w=250'
-CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- src/art3d/parts/reviews/heroes-sp-weapons/back.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=148&w=250'
-CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- src/art3d/parts/reviews/heroes-sp-weapons/bow-probes.png 'ids=shu_pangmiaotong&poses=thrust,castFwd,guard&yaw=32&w=250'
-CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- src/art3d/parts/reviews/heroes-sp-weapons/family.png 'ids=wei_simamiyi,shu_zhugemiaoliang,shu_pangmiaotong,wu_sunxiangxiang,xian_changmiao,qun_huatuo&poses=idle&yaw=-32&w=250'
-node .shots/sp-weapons/battle-stable.mjs 'r3d=1&seed=2&theme=meadow&a=wei_simamiyi,shu_pangmiaotong,xian_changmiao,wei_caomiaode,shu_liumiaobei&b=shu_zhugemiaoliang,wu_sunxiangxiang,qun_huatuo,qun_lvbuding,man_shamoke' .shots/sp-weapons/battle 0.25 12 3
+CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- .shots/sp-weapons/current-e777/poses.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=32&w=290'
+CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- .shots/sp-weapons/current-e777/poses-190px.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=32&w=250'
+CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- .shots/sp-weapons/current-e777/front.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=0&w=250'
+CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- .shots/sp-weapons/current-e777/reverse.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=-32&w=250'
+CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- .shots/sp-weapons/current-e777/back.png 'ids=wei_simamiyi,shu_pangmiaotong,xian_changmiao&poses=idle,windup,strike&yaw=148&w=250'
+CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- .shots/sp-weapons/current-e777/bow-probes.png 'ids=shu_pangmiaotong&poses=thrust,castFwd,guard&yaw=32&w=250'
+CHROME=/usr/bin/chromium PORT=5178 npm run shots3d -- .shots/sp-weapons/current-e777/family.png 'ids=wei_simamiyi,shu_zhugemiaoliang,shu_pangmiaotong,wu_sunxiangxiang,xian_changmiao,qun_huatuo&poses=idle&yaw=-32&w=250'
+node .shots/sp-weapons/current-e777/battle-stable.mjs 'r3d=1&seed=2&theme=meadow&a=wei_simamiyi,shu_pangmiaotong,xian_changmiao,wei_caomiaode,shu_liumiaobei&b=shu_zhugemiaoliang,wu_sunxiangxiang,qun_huatuo,qun_lvbuding,man_shamoke' .shots/sp-weapons/current-e777/battle 0.25 12 3
 ```
 
-`battle-stable.mjs` 沿用现有战斗步进拍摄流程，仅将 Chromium 路径设为 `/usr/bin/chromium`、端口设为 5178，并读取现有 actor 的实际装配名称；没有替换产品材质或姿势。所选第 00 帧时刻为 `3 + .25 = 3.25s`。
+`battle-stable.mjs` 沿用逐帧步进流程，仅设置 Chromium路径、端口并核对现有 actor 命名组。当前测试和实际命令的运行证据分别保留于 `.shots/sp-weapons/current-e777/tests.log / battle.log`；正常前后图由同引擎审核夹具拍摄。
 
-## 验证与实际边界
+## 当前验证与实际边界
 
-`aa9afd3` 上的 `npm run typecheck && npm test` 退出 0，**66 文件 / 987 测试通过**；同步 `e6e89a9` 后通过 **67 文件 / 1011 测试**，该次场景更新的相关角色引擎无变更。再同步宠物及头缩放更新 `fecef9e` 后通过 **68 文件 / 1019 测试**，对应最新复核与新战斗 / 家族图。专属源码 SHA 始终为 `7656746361b4…`；旧 / 新 cat3d SHA 分别 `06e44bc8… / ac0843cf…`，不声称引擎源码未变。`git diff --check` 通过。
+固定 e777 下 `npm run typecheck && npm test` 退出0，**68文件 / 1019测试通过**。这是 e777 的实测记录；主分支随后日期修订的同步与合并后提交前复检由维护者另行记录，不把本次结果记成尚未运行的检查。源码候选 SHA 未变，没有新增依赖或产品测试。
 
-| 武器 | 逻辑网格 | 描边子 Mesh | 烘焙前实际 Mesh | 最大分段 |
-| --- | --- | --- | --- | --- |
-| 七羽扇 | 24 | 10 | 34 | sphere12×9 / cylinder10 / Tube16×8 |
-| 凤羽弓 | 16 | 11 | 27 | cylinder12 / Tube20×8 |
-| 月桂药枝 | 23 | 13 | 36 | sphere12×9 / cylinder10 / Tube10×8 |
+| 武器 | 逻辑 Mesh（描边随父计1） | 含描边实际 Mesh | 最大分段 |
+| --- | ---: | ---: | ---: |
+| 七羽扇 | 24 | 34 | 16 |
+| 凤羽弓 | 16 | 27 | 20 |
+| 月桂药枝 | 23 | 36 | 12 |
 
-预算按 BRIEF 的“带描边算 1 个”。每套直接构建三次，独立 root、零根变换、单位 scale，材质实例全部复用。负行列式 Mesh / 反向绕序均为 0；没有新增依赖、每帧对象分配或独立动画。
+每套独立构建三次，root不共享，position/rotation为0，scale为1，内部尺度均为正。Toon/outline材质复用缓存，没有每帧新对象或独立动画。
 
-作者 CPU 自查显式三个 heroId 命中，14 姿势 × yaw0/-32/32/148，旧新各 168 组合全部有限；真实蒙皮顶点 FRAME 没有新增或加重越界。74 个非目标英雄 / 杂兵签名、77 个 stock 装配签名全部相同。完整临时报告为 `/tmp/sp-selfcheck-7656746361b4/sp-source-selfcheck-summary.json`。
+显式 id/look 覆盖当前全 **89位**，含77英雄/杂兵与12宠物：三个目标旧/新各命中1次，共6次；其余 **86位** 正常 bake 的属性名、TypedArray类型、itemSize、normalized、原始数组字节及index字节完全一致。不能把历史仅77位的范围当作当前全员结论。
 
-独立 fresh 源码快照检查三 SP ×（14 静态姿势 + 三姿势各 12 个动画时刻，t=0～8s），共 150 例：新增眼部样本 ID、鼻口样本 ID、裁切增幅、非有限坐标均为 0；每眼至少 110 个真实眼芯三角有效样本。基线的庞统 `thrust / castFwd / guard` 仍分别有 25 / 19 / 29 个旧眼样本遮挡，`thrust` 的一个旧鼻样本也保持一致。另按显式 heroId 覆盖全部 77 单位，三个 SP 命中、74 非目标几何属性和索引字节相同。这些结论对应有限姿势、时刻、方向与采样。
+[当前审核](current-e777/qa-summary.md) 和 [机器报告](current-e777/qa-summary.json) 保留三目标 ×〔14静态姿势 + idle/windup/strike各12时刻〕，共150例，yaw32° / phase0，静态t=.4，动画t=i×8/11。
 
-现有 `tests/art3d.test.ts:36` 调用 `buildCat3D(lookOf(id))`，没有传 heroId，普通测试通过不能代替上述专属装配与实际战斗核验。
+- 实际 baked eye 核心三角12×12投影格点按具体sample ID差集比较：新增眼ID0，有效格点不一致0，最低有效数静态68 / 动画104。庞统 thrust 与 castFwd 各有30个原有保守眼深度命中，旧/新ID相同；当前guard为0。这些深度命中不直接等于可见像素。
+- 原方法5个固定鼻口/口鼻点新增ID0；另对正常 bake 当前活跃 smile/mouthO骨所属真实表面三角做3×3投影depth采样，全部150例新增ID0、有效ID不一致0，每例至少4个有效点。动态嘴表面补充当前张嘴/微笑，未用固定旧嘴位置代替。
+- 武器实体及展开描边出FRAME、新增整猫裁切、四侧裁幅增加、非有限顶点均0。FRAME为x=[-2.2,2.2]、y=[-.25,3.6]；整猫既有静态5 / 动画12例裁切保持旧/新相同。司马披风下沿最大下裁 .1119077，嫦喵victory冠顶上裁 .014626。
 
-既有空间边界：windup 的掌心及握段进入后颅体积，正常截图主要是头后遮挡；既有 cast 类、guard、victory 也有持握交叠。司马 `strike / thrust / hurt / dash` 的下身旧裁切四方向共 16 组保持原幅度；嫦喵 `victory` 冠顶四方向共 4 组旧裁切也保持原幅度。未通过修改姿势或 FRAME 掩盖这些旧问题。
+windup t=.4 下真实颅骨1120三角半空间和顶点检查，三目标旧/新右掌均336/336点位于后颅内部、左掌0。武器壳内顶点旧/新为司马5183/5477、庞统1446/4228、嫦喵4746/3964。不同网格密度的点数不代表穿插体积、严重程度或可见像素，更不能证明完整三角没有交叉。当前正常图片与面部采样没有新增眼鼻口遮挡，但不声称所有持握动作或武器与头完全无交叉。根、握段和既有姿势契约未改，细节见当前审核说明。
 
-最不满意：七羽扇在 strike 的斜侧方向仍偏薄，190px 下扇骨细节较弱；低梢小金羽贴弓后细节较小，主识别由完整金卷梢承担。月桂的节点珠在 190px 下只有少量像素，实际识别主要靠宽叶、连枝与 Y 形留白。
+现有 `tests/art3d.test.ts` 调用 `buildCat3D(lookOf(id))`，没有传heroId，普通测试通过不能替代专属装配和真实战斗核验。以上均为有限姿势/时刻/采样结果，不是连续动画或逐像素光栅证明。
+
+最不满意：strike七羽扇仍是窄斜面，190px下扇骨细节较弱；前举侧弓饰和月桂叶脉/月珠较小，主要识别仍靠金卷梢、宽叶、连枝和Y形留白。
+
+## 历史记录
+
+父目录原 [八张交付图说明与独立审核](qa-summary.md)、[原机器报告](qa-summary.json)、[原前后图](before-after.png) 及原三姿势/方向/家族/战斗图，来自 `aa9afd3 / e6e89a9`。随后 `fecef9e` 的 [复核](latest-engine-check.md)、[机器报告](latest-engine-check.json)、[家族图](family-latest.png) 与 [战斗图](battle-latest.webp) 也保留。这些文件均为历史，不删除、不作为当前 e777 引擎的交付证据；旧眼格点和装配覆盖数字只在对应历史报告中适用。当前交付统一使用上面的 `current-e777/` 链接。
