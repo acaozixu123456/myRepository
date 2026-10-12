@@ -8,7 +8,7 @@ import { MeshGL } from '../fx/mesh';
 import { buildIllustRig } from '../fx/rig';
 import type { Rig } from '../fx/rig';
 import { puppetPose } from '../fx/puppet';
-import { buildCat3D } from '../art3d/cat3d';
+import { buildCat3D, disposeCat3D } from '../art3d/cat3d';
 import type { Cat3D } from '../art3d/cat3d';
 import { use3D } from '../art3d/mode';
 import { FULL_BOX } from '../art3d/portrait';
@@ -165,7 +165,7 @@ function draw(it: Item, now: number) {
 function tick(now: number) {
   raf = 0;
   for (const it of items) {
-    if (!it.img.isConnected) { it.cv.remove(); items.delete(it); continue; }
+    if (!it.img.isConnected) { it.cv.remove(); disposeCat3D(it.cat); items.delete(it); continue; }
     if (it.n++ % 20 === 0) place(it);
     // 不在视口 / 被隐藏的不画
     if (it.cv.offsetParent === null) continue;

@@ -47,11 +47,15 @@ export class Renderer3D {
   /** 战斗场景的光色氛围（Player.setup 按场景主题设置）；UI 立绘用 neutral */
   battleMood: Mood = 'neutral';
   private curMood: Mood | '' = '';
+  /** WebGL 上下文被系统回收（手机内存吃紧时常见）：期间不渲染，调用方退回 2D 立绘；系统恢复后自动可用 */
+  lost = false;
 
   private constructor() {
     const c = document.createElement('canvas');
     c.width = 512; c.height = 512;
     this.r = new THREE.WebGLRenderer({ canvas: c, alpha: true, antialias: true, premultipliedAlpha: true, preserveDrawingBuffer: false });
+    c.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.lost = true; });
+    c.addEventListener('webglcontextrestored', () => { this.lost = false; this.curMood = ''; });
     this.r.setPixelRatio(1);
     this.r.setClearColor(0x000000, 0);
     this.r.outputColorSpace = THREE.SRGBColorSpace;
@@ -75,6 +79,7 @@ export class Renderer3D {
    */
   render(cat: Cat3D, pw: number, ph: number, yaw: number, mood: Mood = this.battleMood): [number, number, number, number] {
     const c = this.canvas;
+    if (this.lost) return [0, 0, pw, ph];
     if (this.curMood !== mood) {
       const m = MOODS[mood];
       this.amb.color.set(m.amb); this.key.color.set(m.key); this.rim.color.set(m.rim);

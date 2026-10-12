@@ -5,6 +5,7 @@ import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
 import { LAND_CSS } from '../ui/landcss';
+import { EMOJIFY_CSS, startEmojify } from '../ui/emojify';
 import { infoDialogHtml } from '../ui/info';
 import { STORY_CSS, playStoryOnce } from './story';
 import { sfx, sfxState } from './sfx';
@@ -41,7 +42,7 @@ import { fmt } from '../ui/components';
 import { homePeriod, makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS + EXPLORE_CSS + '.nav{grid-template-columns:repeat(6,1fr)}.nav button{font-size:12px}' + LAND_CSS;
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS + EXPLORE_CSS + '.nav{grid-template-columns:repeat(6,1fr)}.nav button{font-size:12px}' + LAND_CSS + EMOJIFY_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -109,6 +110,7 @@ const applyLayout = () => { root.classList.toggle('land', innerWidth >= 640 && i
 applyLayout();
 window.addEventListener('resize', applyLayout);
 window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
+startEmojify(root);
 let scenePeriod = '';
 const applyScenery = () => {
   const p = homePeriod();
@@ -183,6 +185,7 @@ const ctx: AppCtx = {
   },
 };
 
+if (devGrant) (window as unknown as { __ctx: AppCtx }).__ctx = ctx; // 仅开发 / 试玩版：截图脚本用它直接打开小游戏等弹层
 ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
   state: () => state,
   story: (id) => (params.get('nostory') ? Promise.resolve() : playStoryOnce(ctx, id)),

@@ -3,5 +3,15 @@
 // 例：关云喵的青龙偃月刀、曹喵德的冕旒、诸葛喵亮的羽扇与纶巾。
 import type { PartGroup } from './parts';
 import type { PartBuilder } from './parts/types';
+import { caomaoCrown, zhouyuCrown } from './parts/hero-ur-regalia';
+import { liubeiDualSwords } from './parts/hero-ur-liu-swords';
+import { lvbuHalberd, menghuoMace, zuociStaff } from './parts/hero-ur-weapons';
 
-export const HERO_PARTS: Record<string, Partial<Record<PartGroup, PartBuilder>>> = {};
+export const HERO_PARTS: Record<string, Partial<Record<PartGroup, PartBuilder>>> = {
+  wei_caomiaode: { headgear: caomaoCrown },
+  shu_liumiaobei: { weapon: liubeiDualSwords },
+  wu_zhoumiaoyu: { headgear: zhouyuCrown },
+  qun_lvbuding: { weapon: lvbuHalberd },
+  man_mengmiaohuo: { weapon: menghuoMace },
+  xian_zuoci: { weapon: zuociStaff },
+};

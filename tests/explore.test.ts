@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { relocateOutOfSafe } from '../src/game/explore';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
-import { COVER_R, LEVELS, PORTAL_R, portalSpotsOf, zonesOf, SAFE_R, coverSpotsOf, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
+import { ALL_SCENES, COVER_R, LEVELS, PORTAL_R, portalSpotsOf, zonesOf, SAFE_R, coverSpotsOf, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 import { PROPS } from '../src/world/props';
 
@@ -23,7 +23,7 @@ describe('探索模式规则', () => {
     for (const p of plan) if (p.kind === 'enemy' || p.kind === 'boss') expect(p.units?.length).toBeGreaterThan(0);
   });
   it('每个关卡的实体都摆在可走的格子上（不在建筑 / 道具碰撞盒里），且出生点可走', () => {
-    for (const L of Object.values(LEVELS)) {
+    for (const L of Object.values(ALL_SCENES)) {
       const cols = levelColliders(L);
       const pts: [string, number, number][] = [...L.enemySpots.map((p, i) => [`e${i}`, p[0], p[1]] as [string, number, number]), ...L.chestSpots.map((p, i) => [`c${i}`, p[0], p[1]] as [string, number, number]), ...herbsOf(L).map((p, i) => [`h${i}`, p[0], p[1]] as [string, number, number]), ...poisOf(L).map((p) => [`poi-${p.id}`, p.x, p.z] as [string, number, number]), ['boss', L.bossSpot[0], L.bossSpot[1]], ['npc', L.npcSpot[0], L.npcSpot[1]], ['spawn', L.spawn[0], L.spawn[1]]];
       for (const [id, x, z] of pts) {
@@ -79,7 +79,7 @@ describe('嫦喵的每日委托', () => {
 
 describe('场景道具', () => {
   it('道具不在建筑里，种类都已注册', () => {
-    for (const L of Object.values(LEVELS)) {
+    for (const L of Object.values(ALL_SCENES)) {
       for (const p of L.props) {
         expect(Object.keys(PROPS), `${L.id}:${p.kind} 未注册`).toContain(p.kind);
         for (const b of L.buildings) {
@@ -191,7 +191,7 @@ describe('自动探索选目标', () => {
 describe('场景玩法入口（POI）', () => {
   it('赤壁港有钓鱼点，会出现在刷新计划里；没有水的场景没有钓鱼点', () => {
     expect(poisOf(LEVELS[3]).map((p) => p.game)).toContain('fish');
-    for (const L of Object.values(LEVELS)) if (!L.water) expect(poisOf(L).some((p) => p.game === 'fish'), `${L.id} 没水却有钓鱼点`).toBe(false);
+    for (const L of Object.values(ALL_SCENES)) if (!L.water) expect(poisOf(L).some((p) => p.game === 'fish'), `${L.id} 没水却有钓鱼点`).toBe(false);
     const s = newPlayer(); s.best = { chapter: 3, index: 1 };
     const plan = spawnPlan(s);
     expect(plan.filter((p) => p.kind === 'poi' && p.game === 'fish')).toHaveLength(1);
@@ -208,7 +208,7 @@ describe('场景玩法入口（POI）', () => {
   it('云端雾岛有风铃架入口', () => { expect(poisOf(LEVELS[5]).map((p) => p.game)).toContain('windchime'); });
   it('九重宫阙有宫灯阵入口，六章都有各自的玩法', () => { expect(poisOf(LEVELS[6]).map((p) => p.game)).toContain('lanterns'); for (let c = 1; c <= 6; c++) expect(poisOf(LEVELS[c]).length, `第 ${c} 章没有玩法入口`).toBeGreaterThan(0); });
   it('钓鱼点贴着水边，离水不超过 3 个单位', () => {
-    for (const L of Object.values(LEVELS)) for (const p of poisOf(L)) if (p.game === 'fish' && L.water) {
+    for (const L of Object.values(ALL_SCENES)) for (const p of poisOf(L)) if (p.game === 'fish' && L.water) {
       const [x0, z0, x1, z1] = L.water;
       const dz = Math.max(z0 - p.z, 0, p.z - z1), dx = Math.max(x0 - p.x, 0, p.x - x1);
       expect(Math.hypot(dx, dz), `${L.id} 钓鱼点离水太远`).toBeLessThanOrEqual(3);
@@ -218,9 +218,10 @@ describe('场景玩法入口（POI）', () => {
 
 describe('玩法入口安全区', () => {
   it('每章的野猫刷新点都在安全区外、不在建筑里、在地图内', () => {
-    for (let ch = 1; ch <= 6; ch++) {
-      const s = newPlayer(); s.best = { chapter: ch, index: 1 }; s.stage = { chapter: ch, index: 1, wins: 0 };
-      const L = LEVELS[ch], cols = levelColliders(L);
+    for (const ch of [1, 2, 3, 4, 5, 6, 101]) {
+      const s = newPlayer(); s.best = { chapter: Math.min(ch, 6), index: 1 }; s.stage = { chapter: Math.min(ch, 6), index: 1, wins: 0 };
+      if (ch > 100) (s as unknown as { explore: object }).explore = { day: Math.floor((Date.now() - 5 * 3600_000) / 86400_000), kills: 0, chests: [], talked: [], scene: ch };
+      const L = ALL_SCENES[ch], cols = levelColliders(L);
       for (const p of spawnPlan(s).filter((q) => q.kind === 'enemy')) {
         expect(inSafeZone(L, p.x, p.z), `${L.id}:${p.id} 在安全区里`).toBe(false);
         expect(cols.some((c) => p.x >= c.x0 && p.x <= c.x1 && p.z >= c.z0 && p.z <= c.z1), `${L.id}:${p.id} 在建筑里`).toBe(false);
@@ -236,7 +237,7 @@ describe('玩法入口安全区', () => {
     expect(Math.hypot(x - poi.x, z - poi.z)).toBeLessThan(SAFE_R + 8);
   });
   it('入口本身、猫薄荷丛、宝箱都不会被野猫的刷新点占位（入口在安全区中心）', () => {
-    for (const L of Object.values(LEVELS)) for (const p of poisOf(L)) expect(inSafeZone(L, p.x, p.z)).toBe(true);
+    for (const L of Object.values(ALL_SCENES)) for (const p of poisOf(L)) expect(inSafeZone(L, p.x, p.z)).toBe(true);
   });
 });
 
@@ -249,7 +250,7 @@ describe('场景切换', () => {
     expect(unlockedScenes(s)).toEqual([1]);
     expect(setScene(s, 3)).toBe(false);
     s.best = { chapter: 3, index: 5 }; s.stage.chapter = 3;
-    expect(unlockedScenes(s)).toEqual([1, 2, 3]);
+    expect(unlockedScenes(s)).toEqual([1, 2, 3, 101]);
     expect(sceneChapter(s)).toBe(3);
     expect(setScene(s, 1)).toBe(true);
     expect(sceneChapter(s)).toBe(1);
@@ -264,7 +265,7 @@ describe('场景切换', () => {
 
 describe('隐藏宝箱（灵视 / 死角）', () => {
   it('每个场景 3 个：走得到、不在碰撞盒里、不在安全区、彼此相隔 > 16；位置固定', () => {
-    for (const L of Object.values(LEVELS)) {
+    for (const L of Object.values(ALL_SCENES)) {
       const spots = hiddenSpotsOf(L);
       expect(spots, L.id).toHaveLength(3);
       expect(hiddenSpotsOf(L)).toBe(spots);
@@ -289,7 +290,7 @@ describe('隐藏宝箱（灵视 / 死角）', () => {
 
 describe('掩体（草丛 / 纸箱堆…）', () => {
   it('每个场景每只野怪附近一个：5.5~9.5 米、走得到、不在碰撞盒 / 安全区里，位置固定', () => {
-    for (const L of Object.values(LEVELS)) {
+    for (const L of Object.values(ALL_SCENES)) {
       const spots = coverSpotsOf(L);
       expect(coverSpotsOf(L)).toBe(spots);
       expect(spots.length, L.id).toBeGreaterThanOrEqual(Math.floor(L.enemySpots.length * 0.6));
@@ -308,7 +309,7 @@ describe('掩体（草丛 / 纸箱堆…）', () => {
 
 describe('传送门', () => {
   it('每个场景一对：走得到、不在碰撞盒 / 安全区里、相距足够远，位置固定', () => {
-    for (const L of Object.values(LEVELS)) {
+    for (const L of Object.values(ALL_SCENES)) {
       const spots = portalSpotsOf(L);
       expect(portalSpotsOf(L)).toBe(spots);
       expect(spots, L.id).toHaveLength(2);
@@ -327,8 +328,8 @@ describe('传送门', () => {
 
 describe('场景机关（风口 / 潮汐滩 / 琉璃滑地）', () => {
   it('云岛 = 风口、码头 = 潮汐滩、宫阙 = 滑地，各至少 3 处；其他场景没有；都走得到、不在碰撞盒 / 安全区里', () => {
-    const want: Record<string, string | undefined> = { cloud: 'wind', harbor: 'tide', palace: 'slide' };
-    for (const L of Object.values(LEVELS)) {
+    const want: Record<string, string | undefined> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand' };
+    for (const L of Object.values(ALL_SCENES)) {
       const zs = zonesOf(L), kind = want[L.theme ?? 'street'];
       expect(zonesOf(L)).toBe(zs);
       if (!kind) { expect(zs, L.id).toHaveLength(0); continue; }
@@ -343,5 +344,30 @@ describe('场景机关（风口 / 潮汐滩 / 琉璃滑地）', () => {
         expect(inSafeZone(L, z.x, z.z)).toBe(false);
       }
     }
+  });
+});
+
+describe('附加场景：沙漠绿洲', () => {
+  it('通关第 2 章（首领到第 3 章）才解锁；不会成为默认场景，没有首领；有卡丁车和钓鱼两个玩法', async () => {
+    const { newPlayer } = await import('../src/game/state');
+    const { sceneChapter, setScene, unlockedScenes, explorerLevel, spawnPlan, sceneGames } = await import('../src/game/explore');
+    const s = newPlayer(Date.now());
+    expect(unlockedScenes(s)).not.toContain(101);
+    expect(setScene(s, 101)).toBe(false);
+    s.best = { chapter: 6, index: 24 }; s.stage.chapter = 6;
+    expect(sceneChapter(s)).toBe(6); // 即使解锁了也不会自动待在沙漠
+    expect(setScene(s, 101)).toBe(true);
+    expect(sceneChapter(s)).toBe(101);
+    expect(explorerLevel(s).id).toBe('sun-oasis');
+    const plan = spawnPlan(s);
+    expect(plan.some((p) => p.kind === 'boss')).toBe(false);
+    expect(plan.filter((p) => p.kind === 'poi').map((p) => p.game).sort()).toEqual(['fish', 'kart']);
+    expect(sceneGames(101).sort()).toEqual(['fish', 'kart']);
+    expect(plan.filter((p) => p.kind === 'enemy').length).toBeGreaterThanOrEqual(5);
+    expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
+  });
+  it('卡丁车入口在发车门外侧、离赛道很近', () => {
+    const L = ALL_SCENES[101], k = poisOf(L).find((p) => p.game === 'kart')!;
+    expect(Math.hypot(k.x - 20, k.z + 2.5)).toBeLessThan(5);
   });
 });

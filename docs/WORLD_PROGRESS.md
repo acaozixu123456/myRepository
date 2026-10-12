@@ -20,7 +20,7 @@
 
 总览实际捕获于 05:54:08.709 UTC，最终灯光图实际捕获于 05:58:49.813 UTC；两次均实际加载 3/3 素材，WebGL 成功，页面 / 请求 / console 错误为空，最终 anisotropy 为 `[4,4,4]`。拍摄和独立 QA 基线保留为 `67d7bef7b1ad8155b92420daf5f6083289bd97a8`（当时工作树 HEAD `051c7d06ec72de337dabd3066bf64270bb4f40cb`）。样板使用独立 Plane8×8 / repeat2×2（每周期 4 世界单位），两侧同用白色 MeshStandard、roughness .95 / metalness 0、ACES 曝光 .92、Room 环境 .3，仅更换白光和 ATMOS.mist 正午灯色；没有游戏对象、雾、阴影、bloom 或附加材质图。这是实际 Three 材质样板，不是接入后的游戏截图。
 
-最新主干 `6fdb7eefe166877b9cb874cb3a8c27f821206519` 已由 Claude 接入 ambientCG Grass005：云岛草地加载成功时 repeat4×4，半径 29.2、直径 58.4，每周期约 14.6 世界单位；旧程序草地 repeat5×5、约 11.68 单位仅为 fallback。材质与正午光参数保持原值，独立样板尺度不同。67→6f 所跟踪 16 项输入中，`WORLD3D.md`、`CODEX_QUEUE.md`、`cloud.ts` 三项已变，另有素材注册 / CC0 资源及其他主题变化；未将冻结审图或 QA 重标成 6f，也不声称所有依赖未变。本批保留候选，不修改引擎或替换当前 CC0 草地。
+主干 `6fdb7eefe166877b9cb874cb3a8c27f821206519` 已由 Claude 接入 ambientCG Grass005：云岛草地加载成功时 repeat4×4，半径 29.2、直径 58.4，每周期约 14.6 世界单位；旧程序草地 repeat5×5、约 11.68 单位仅为 fallback。材质与正午光参数保持原值，独立样板尺度不同。67→6f 所跟踪 16 项输入中，`WORLD3D.md`、`CODEX_QUEUE.md`、`cloud.ts` 三项已变，另有素材注册 / CC0 资源及其他主题变化；未将冻结审图或 QA 重标成 6f，也不声称所有依赖未变。本批保留候选，不修改引擎或替换当前 CC0 草地。
 
 最不满意：第二款三叶草与花球较密，斜俯或缩小时细花成为色点；4×4 大形草簇和花点仍有周期重复。请 Claude 按实际相机与 UV 尺度评估花朵密度、风格和采用范围。
 
@@ -30,7 +30,9 @@
 
 ### 本批必要检查
 
-根线程同步 6f 后，在本工作树 HEAD `1d461545d9425c2d326ead28bdb3910675afc7e9` 实际执行 `npm run typecheck && npm test`，退出码 0：68 文件 / 1024 测试全部通过。完整命令于 06:18:54 UTC 开始，Vitest 于 06:19:02 UTC 开始，耗时 42.32 秒；完整日志 `/workspace/world-review/island-ground/required-checks-main6f.log`。该检查是最新代码基线的结果；审图 / QA 仍按上文 67 基线记录。认领时 5e 的 68 文件 / 1023 测试（05:40:06 UTC，27.63 秒）保留为历史。
+根线程同步 6f 后，在本工作树 HEAD `1d461545d9425c2d326ead28bdb3910675afc7e9` 实际执行 `npm run typecheck && npm test`，退出码 0：68 文件 / 1024 测试全部通过。完整命令于 06:18:54 UTC 开始，Vitest 于 06:19:02 UTC 开始，耗时 42.32 秒；完整日志 `/workspace/world-review/island-ground/required-checks-main6f.log`。该检查对应 6f 代码基线；审图 / QA 仍按上文 67 基线记录。认领时 5e 的 68 文件 / 1023 测试（05:40:06 UTC，27.63 秒）保留为历史。
+
+2026-10-12 · 同步最新主干 `0cbd676f1de4ee768ce06566f2992ec20e6f47a8` 后，再次实际执行 `npm run typecheck && npm test` 全过，退出码 0，69 个文件 / 1035 个测试。命令开始 06:53:43 UTC，Vitest 06:53:51 开始、76.68 秒。执行时 HEAD 为 `b39251923e7232377bfd60d1ef4fa6e42f423994`，工作树已应用 0cbd 合并并仅解决进度文档冲突；最终合并代码与此次检查相同。完整 [日志](../assets/world/reviews/island-ground-a09.required-checks-main0cbd.log)。没有修改引擎、测试或固定队列。冻结 67 审图 / QA 与 6f 检查均保留为各自实际时点记录。
 
 ## 当前主题队列与协作范围
 
@@ -39,15 +41,53 @@
 | 主题批次 | 范围 / 正式 PR | 状态 | 审核轮次 | 已通过 |
 | --- | --- | --- | --- | --- |
 | A09 夜市 | 外部 [#108](https://github.com/acaozixu123456/myRepository/pull/108) | 待审 | 1 | 0 |
-| A09 港口 | 外部 [#110](https://github.com/acaozixu123456/myRepository/pull/110) | 待审 | 1 | 0 |
+| A09 港口 | 外部 [#110](https://github.com/acaozixu123456/myRepository/pull/110)，已接入旧木栈板01 | 通过并合并 | 1 | 3 |
 | A09 宫阙 | 正式 [#109](https://github.com/acaozixu123456/myRepository/pull/109)；候补 #112 已关闭 | 待审 | 1 | 0 |
-| A09 森林 | 外部 [#115](https://github.com/acaozixu123456/myRepository/pull/115)，三款 | 待审 | 1 | 0 |
+| A09 森林 | 外部 [#115](https://github.com/acaozixu123456/myRepository/pull/115)，已接入浅鲜草03 | 通过并合并 | 1 | 3 |
 | A09 云岛 | 本批 [#114](https://github.com/acaozixu123456/myRepository/pull/114)，三款 | 待审 | 1 | 0 |
 | A10 天空前三款 | 外部草稿 [#116](https://github.com/acaozixu123456/myRepository/pull/116)：黄昏橘粉 / 晚霞赤红云 / 清晨蓝绿雾 | 制作中 | 0 | 0 |
 | A10 天空后两款 | 根线程草稿 [#117](https://github.com/acaozixu123456/myRepository/pull/117)：正午白云蓝天 / 午后金光 | 制作中 | 0 | 0 |
 | A11 / A12 | 瓦面 / 柔边云精灵 | 未开始 | 0 | 0 |
 
-四底版衣服由外部 [#113](https://github.com/acaozixu123456/myRepository/pull/113) 送审；披挂 / 配饰按外部 owner 认领推进。本批不重复制作其源文件，不将已关闭候补 PR 当成已通过或已合并。
+最新队列已确认四底版衣服 #113、披挂 #111 / #119、配饰 #120 与六位 UR 专属 #118 通过并合并。剩余披挂 / 配饰跟随各 owner 认领，周喵瑜古琴契约按审核要求暂不做。本批不重复制作其源文件，不将已关闭候补 PR 当成已通过或已合并。
+
+## 已通过主题批次的原始提交记录
+
+2026-10-12 · 按最新固定队列同步：#110 港口三款与 #115 森林三款已通过、合并并接入选定款。以下森林段落保留其提交时的状态、测试和审图记录，当前裁决以上方表为准。
+
+## 主题素材 · A09-FR 光之森草地与落叶
+
+当前主题批次：**A09-FR**，分支 `codex/3d-world-forest-ground`，清晨森林草地 / 落叶三变体，**第1轮待审，通过数量0**。依据最新 [固定队列](CODEX_QUEUE.md) 与 [WORLD3D 场景主题](WORLD3D.md)，明亮清爽主题优先于旧暗紫赛博计划；既有素材保留，各批独立提交，有返修先返修，不等待Claude审核开下一批。
+
+| 批次 | 场景地面 | 规格 / 数量 | 状态 | 已通过 |
+| --- | --- | --- | --- | --- |
+| A09-NM | 夜市暖砖 / 青石 / 篮织砂石 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-HB | 赤壁港旧褐 / 漂洗 / 窄木板 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-MR | 宫阙奶白细晶 / 浅金矿纹 / 象牙云脉 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-FR | 光之森青绿稀叶 / 苔绿暖叶 / 浅鲜小叶 | 1024²，无缝，3张 | 第1轮待审 | 0 |
+| A09-CL | 云岛粉绿草地 / 小花 | 1024²，无缝，3变体 | 未开始 | 0 |
+
+旧批审核现状以queue / 主线为准：A08 #98已通过 / 接入；A09 #100、A10污渍 #103与裂缝 #106已通过 / 合并，29f6主线已有Claude贴花接入文件。下方旧基线文字保留，不覆盖新方向或这一审核现状。后续天空全景、瓦面、透明云朵按queue顺序；旧涂鸦批次不继续。
+
+| 名称 / ID | 素材 | 状态 / 轮次 | 审图 | 字节 |
+| --- | --- | --- | --- | ---: |
+| 青绿稀叶 `ground_forest_grass_sparse_01` | [WebP](../assets/world/ground/ground_forest_grass_sparse_01.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_forest_grass_sparse_01-2x2.webp) / [4×4](../assets/world/reviews/ground_forest_grass_sparse_01-4x4.webp) | 495,756 |
+| 苔绿暖叶 `ground_forest_moss_leaves_02` | [WebP](../assets/world/ground/ground_forest_moss_leaves_02.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_forest_moss_leaves_02-2x2.webp) / [4×4](../assets/world/reviews/ground_forest_moss_leaves_02-4x4.webp) | 402,274 |
+| 浅鲜小叶 `ground_forest_grass_light_03` | [WebP](../assets/world/ground/ground_forest_grass_light_03.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_forest_grass_light_03-2x2.webp) / [4×4](../assets/world/reviews/ground_forest_grass_light_03-4x4.webp) | 367,326 |
+
+2026-10-12 · 制作基线 `29f6a8b`，提交基线正常快进至 `a7a41e9`，森林材质 / common地面 / 氛围与queue文件不变，WORLD3D仅新增探索玩法。开工fetch并实读当前queue / forest.ts / common.ts / atmos.ts，实看既有第4章清晨森林，只读色板参考，不改引擎 / 注册表。3次独立真实image_gen生成＋5次真实编辑，各原稿链独立。首稿草丝太密，q90导出均超500,000 B；AI简化后稀叶采用候选2，苔绿 / 浅鲜草候选2仍超限，进一步AI编辑采用候选3。8张原1254² RGB PNG（3,271,586～4,633,629 B）和试导出全保留工作空间。[完整候选出处](../assets/world/ground/forest-ground-a09-fr.provenance.json)。
+
+最终3张完整画布等比Lanczos降到1024² RGB sRGB ICC WebP，quality90 / method6，总1,265,356 B，单文件≤500,000 B。没有裁切 / 上采样 / 程序修缝、补纹、融合、模糊、调色或Alpha处理；[素材说明](../assets/world/ground/forest-ground-a09-fr.README.md)。
+
+[总览](../assets/world/reviews/forest-ground-a09-fr.webp)（2048×1024，356,302 B），6张2×2 / 4×4、9张无损原尺度全边 / 四角PNG；[方法](../assets/world/reviews/forest-ground-a09-fr.README.md)。无明显粗暗框或大跳色；仍有边沿叶端 / 草丝相位差，4×4叶位 / 草簇重复可辨，MAE非零，不声称数学无缝。最不满意：稀叶草丝仍较密，简化后的局部草斑趋平，小足迹下暖叶先于草纤维可辨。
+
+[真实Three白光 / 清晨灯色样板](../assets/world/reviews/forest-ground-a09-fr-lighting.webp)（2048×1024，405,744 B），白MeshStandardMaterial roughness0.95 / metalness0.02与森林groundPlane默认一致、repeat[3,1]。仅换白↔ATMOS.forest灯色，其余相机 / 材质 / 强度 / 位置 / 曝光相同，无bloom / 雾 / 阴影或完整场景调色；3/3加载、HTTP200×3、page / console errors0、failed0、6renderer各1drawcall，三sourceSHA拍前后相同；[参数](../assets/world/reviews/forest-ground-a09-fr-lighting.README.md)。
+
+独立QA见 [摘要](../assets/world/ground/forest-ground-a09-fr.qa.md) / [机器报告](../assets/world/ground/forest-ground-a09-fr.qa.json)。本FR worktree在29f6实际执行 `npm run typecheck && npm test` 全过（整体退出0；68个测试文件、1,019个测试），完整test日志 `/workspace/forest-ground-raw/tests-latest.log`，typecheck输出由工具捕获。正常同步a7a主线后实际重跑全过（整体退出0；68文件 / 1,021测试），完整test日志 `/workspace/forest-ground-raw/tests-a7a41e9.log`，两次实际记录保留；当前第1轮待审，通过0。
+
+## 旧方向基线文字与历史（保留）
+
+以下旧基线计划 / 批次原文未被本批重写，真实审核现状与优先级以上方最新queue / 主线记录为准。
 
 ## 旧赛博素材与提交历史
 

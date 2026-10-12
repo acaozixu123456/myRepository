@@ -46,7 +46,7 @@ const grassTex = () => mk(256, 256, (c) => {
 export function buildForest(L: LevelDef): Street {
   const g = new THREE.Group(); const half = L.half; const A = atmosOf(L.mood);
   plinth(g, half, '#5a4430', undefined, A.fog);
-  const cc0 = aiTex('cc0_grass_005'); // ambientCG Grass005（CC0）
+  const cc0 = aiTex('ground_forest_grass_light_03'); // ambientCG Grass005（CC0）
   groundPlane(g, half, cc0 ? (cc0.wrapS = cc0.wrapT = THREE.RepeatWrapping, cc0) : grassTex(), cc0 ? 9 : 12, cc0 ? { color: 0xe4f6c8 } : {});
   ribbon(g, FOREST_PATH, 3.9, pathTex('forest-dirt', '#caa672', ['#e0c08a', '#a88458', '#f0d8a8', '#8a6a44']));
   ribbon(g, FOREST_PATH, 4.6, pathTex('forest-dirt-rim', '#7aa850', ['#9acc68', '#5a8a3a'], 0.45), 0.33);

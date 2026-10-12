@@ -138,7 +138,7 @@ function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void
     let stage = 0;
     const timers: number[] = [];
     const later = (f: () => void, ms: number) => timers.push(window.setTimeout(f, ms));
-    const showResults = async () => {
+    const showResultsInner = async () => {
       if (stage >= 2) return;
       stage = 2;
       timers.forEach(clearTimeout);
@@ -161,6 +161,10 @@ function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void
       bar.className = 'okbar';
       bar.innerHTML = `<button class="btn blue" data-r="again">🔁 ×${n}</button><button class="btn lg" data-r="ok">${icon('check', 26)}</button>`;
       el.appendChild(bar);
+    };
+    // 展示出任何错（立绘渲染失败等）都不能把界面卡在黑色遮罩上：结果已经入账，直接收起动画
+    const showResults = async () => {
+      try { await showResultsInner(); } catch { el.remove(); ctx.refresh(); ctx.toast('已入账，查看「阵容」里的新猫猫'); done(); }
     };
     const openBox = () => {
       if (stage >= 1) return;

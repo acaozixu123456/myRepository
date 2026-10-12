@@ -42,9 +42,16 @@ export function updateGuide(ctx: AppCtx) {
     // ✕：关掉整个新手引导，之后不再出现
     (bubble.querySelector('[data-gx]') as HTMLElement).onclick = (e) => { e.stopPropagation(); const t = (ctx.s.tips ??= []); for (const x of STEPS) if (!t.includes(x.id)) t.push(x.id); ctx.save(); clearGuide(); key = ''; };
     const cx = r.left - host.left + r.width / 2;
-    bubble.style.left = `${Math.max(12, Math.min(host.width - 232, cx - 110))}px`;
-    bubble.style.bottom = `${host.bottom - r.top + 12}px`;
-    bubble.style.setProperty('--ax', `${cx - Math.max(12, Math.min(host.width - 232, cx - 110))}px`);
+    if (ctx.root.classList.contains('land') && r.left - host.left < 140) {
+      // 横屏：目标在左侧竖栏里，气泡放到它右边，箭头朝左
+      bubble.classList.add('side');
+      bubble.style.left = `${r.right - host.left + 14}px`;
+      bubble.style.top = `${r.top - host.top + r.height / 2}px`;
+    } else {
+      bubble.style.left = `${Math.max(12, Math.min(host.width - 232, cx - 110))}px`;
+      bubble.style.bottom = `${host.bottom - r.top + 12}px`;
+      bubble.style.setProperty('--ax', `${cx - Math.max(12, Math.min(host.width - 232, cx - 110))}px`);
+    }
     ctx.root.appendChild(bubble);
     return;
   }
@@ -58,5 +65,7 @@ export const GUIDE_CSS = `
 .guide-bubble .gx{flex:none;margin:-4px -6px 0 0;width:26px;height:26px;border:0;border-radius:50%;background:rgba(0,0,0,.12);color:#5a3a20;font-size:14px;font-weight:900;cursor:pointer;line-height:1}
 .guide-bubble .gskip{display:block;margin-top:3px;font-size:11px;font-style:normal;color:#8a6a4a;text-decoration:underline;cursor:pointer}
 .guide-bubble b{flex:none;width:26px;height:26px;border-radius:50%;background:linear-gradient(#ffd27a,#f0a22e);color:#5a2a05;font-family:var(--f-d);font-weight:400;display:flex;align-items:center;justify-content:center}
+.guide-bubble.side{transform:translateY(-50%)}
+.guide-bubble.side::after{bottom:auto;left:-9px;top:50%;margin:-8px 0 0 0;border:8px solid transparent;border-right-color:var(--paper);border-left:0}
 .guide-bubble::after{content:'';position:absolute;bottom:-9px;left:var(--ax,50%);margin-left:-8px;border:8px solid transparent;border-top-color:var(--paper);border-bottom:0}
 `;
