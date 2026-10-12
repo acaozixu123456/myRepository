@@ -186,7 +186,7 @@
 | `point` | 待审 | 1 | 5 使用者（4 英雄 + 1 杂兵）；前脸渐深面罩，保留嫦喵浅冷蓝；codex/3d-patterns-coat-special |
 | `spots` | 待审 | 1 | 7 使用者（3 英雄 + 4 杂兵）；开口玫瑰环，脸侧留眼周空间；codex/3d-patterns-coat-special |
 | `cow` | 待审 | 1 | 5 使用者（2 英雄 + 3 杂兵）；浅底、不对称大斑，解决 accent=base 时底版斑纹不可见；codex/3d-patterns-coat-special |
-| `tortie` | 待审 | 1 | 孟喵优；深棕底与橙金大斑，不引入白色；codex/3d-patterns-coat-special |
+| `tortie` | 待审 | 1 | 孟优优（`man_mengyou`）；深棕底与橙金大斑，不引入白色；codex/3d-patterns-coat-special |
 | `butterfly` | 待审 | 1 | 南华喵；前脸额头四瓣镜像毛色，中央负空间；codex/3d-patterns-coat-special |
 
 ### 毛色花纹第 2 批检查
