@@ -364,7 +364,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
       sfx.ok();
     } else {
       if (autoOn) autoOn = false;
-      ctx.result({ win: false, title: `${stage.id} ${stage.name}`, hint: `我方战力 ${fmt(teamPower(s))}，推荐 ${fmt(recommendedPowerOf(t.chapter, t.index))}。去阵容升级猫猫再来吧。` });
+      ctx.result({ win: false, title: `${stage.id} ${stage.name}`, power: { mine: teamPower(s), rec: recommendedPowerOf(t.chapter, t.index) } });
     }
     ctx.save();
     refreshExploreHud(ctx);
