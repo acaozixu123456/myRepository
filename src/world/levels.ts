@@ -166,6 +166,7 @@ export const LEVEL_4: LevelDef = {
   vents: [[-9, 0.5, -7.6], [9, 0.5, 7.6]],
   ground: { pave: '#1f3a2a', road: 0x5a7a60 },
   trees: forestTrees(), mushrooms: forestMushrooms(),
+  pois: [{ id: 'mushroom', game: 'mushroom', x: -12.5, z: -5.6, label: '蘑菇地' }],
   ...SPOTS,
 };
 
