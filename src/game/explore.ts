@@ -6,10 +6,10 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
-import { LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
+import { ALL_SCENES, BONUS_LEVELS, BONUS_UNLOCK, LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number }
+export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; }
   return e;
 }
 
@@ -39,24 +39,25 @@ export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb
 /** 当前该进哪个场景：跟着主线章节走（首领所在的章节） */
 export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(sceneChapter(s));
 
-/** 已解锁的场景（章节号）：打到哪一章，1..该章的场景都能进 */
+/** 已解锁的场景：主线场景（打到哪一章，1..该章都能进）+ 附加场景（打到指定章节后解锁，编号 > 100） */
 export const unlockedScenes = (s: PlayerState): number[] => {
-  const top = Math.min(bossStage(s).chapter, Object.keys(LEVELS).length);
-  return Array.from({ length: top }, (_, i) => i + 1);
+  const boss = bossStage(s).chapter, top = Math.min(boss, Object.keys(LEVELS).length);
+  return [...Array.from({ length: top }, (_, i) => i + 1), ...Object.keys(BONUS_LEVELS).map(Number).filter((id) => boss >= (BONUS_UNLOCK[id] ?? 99))];
 };
-/** 现在待的场景：玩家选过且已解锁就用选的，否则跟着主线进度 */
+/** 现在待的场景：玩家选过且已解锁就用选的，否则跟着主线进度（附加场景只能手动切过去，永远不会是默认） */
 export const sceneChapter = (s: PlayerState): number => {
-  const top = bossStage(s).chapter, pick = (s as unknown as { explore?: ExploreState }).explore?.scene;
-  return pick && pick >= 1 && pick <= top && LEVELS[pick] ? pick : top;
+  const top = Math.min(bossStage(s).chapter, Object.keys(LEVELS).length), pick = (s as unknown as { explore?: ExploreState }).explore?.scene;
+  return pick && ALL_SCENES[pick] && unlockedScenes(s).includes(pick) ? pick : top;
 };
 /** 切换场景；返回是否成功（未解锁 / 不存在的场景不行） */
 export function setScene(s: PlayerState, chapter: number): boolean {
-  if (!unlockedScenes(s).includes(chapter) || !LEVELS[chapter]) return false;
+  if (!unlockedScenes(s).includes(chapter) || !ALL_SCENES[chapter]) return false;
   ensureExplore(s).scene = chapter;
   return true;
 }
-/** 该场景里的玩法入口（图标用） */
-export const sceneGame = (chapter: number): string | undefined => poisOf(sceneOf(chapter))[0]?.game;
+/** 该场景里的所有玩法入口（图标用） */
+export const sceneGames = (chapter: number): string[] => poisOf(sceneOf(chapter)).map((p) => p.game);
+export const sceneGame = (chapter: number): string | undefined => sceneGames(chapter)[0];
 
 const unitsOf = (st: StageDef, wave = 0, n = 3): string[] => st.waves[Math.min(wave, st.waves.length - 1)].enemies.slice(0, n).map((e) => e.unit);
 const levelOf = (st: StageDef) => st.waves[0].enemies[0]?.level ?? 1;
