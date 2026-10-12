@@ -156,8 +156,8 @@ function zoneMesh(z: Zone): THREE.Group {
 }
 
 /** 各玩法入口的主色（脚下光环 / 光晕）与头顶标签色 */
-const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff' };
-const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff' };
+const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff', ring: '#ffb04a' };
+const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff', ring: '#ffd8a0' };
 
 export class Explorer {
   readonly root = new THREE.Group();
@@ -372,7 +372,7 @@ export class Explorer {
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'poi') {
       // 钓鱼点：木桩 + 一圈发光的橙色标记 + 立着的小鱼旗
-      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack';
+      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack', ringT = s.data === 'ring';
       const col = POI_COL[String(s.data ?? '')] ?? '#ffb04a';
       const wood = std('#6a4a2a', 0.8, 0.1);
       for (const dx of [-0.7, 0.7]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.3, 6), wood); post.position.set(dx, 0.65, 0); group.add(post); }
@@ -436,6 +436,16 @@ export class Explorer {
         for (const dx of [-0.35, 0, 0.35]) { const hole = new THREE.Mesh(new THREE.CircleGeometry(0.13, 10), new THREE.MeshBasicMaterial({ color: '#10101a' })); hole.position.set(dx, 0.95, 0.51); group.add(hole); }
         const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.3, 6), std('#ff4a6a', 0.5)); stick.position.set(-0.35, 0.65, 0.58); group.add(stick);
         flag.visible = false;
+      }
+      if (ringT) { // 套圈摊：一块木台 + 三排小木桩，桩上摆着奖品，台前斜放着几个粉色圈
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 1.6), std('#a0703a', 0.8)); deck.position.y = 0.1; group.add(deck);
+        const pegM = std('#e8c890', 0.8);
+        [-0.55, 0, 0.55].forEach((dz, r) => [-0.75, -0.25, 0.25, 0.75].forEach((dx, i) => {
+          const peg = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.35, 5), pegM); peg.position.set(dx + (r % 2) * 0.12, 0.37, dz); group.add(peg);
+          const prize = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), std(['#ff7ab8', '#ffd24a', '#e8a04a', '#fff4e0'][(i + r) % 4], 0.7)); prize.position.set(dx + (r % 2) * 0.12, 0.6, dz); group.add(prize);
+        }));
+        for (let i = 0; i < 3; i++) { const hoop = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.04, 6, 16), glowMat('#ff5aa0')); hoop.position.set(-0.5 + i * 0.5, 0.35, 1.0); hoop.rotation.x = 1.2; group.add(hoop); }
+        flag.position.set(0, 2.1, 0);
       }
       const zone = new THREE.Mesh(new THREE.RingGeometry(SAFE_R - 0.12, SAFE_R, 64), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false })); zone.rotation.x = -Math.PI / 2; zone.position.y = 0.05; group.add(zone);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: new THREE.Color(col), transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);

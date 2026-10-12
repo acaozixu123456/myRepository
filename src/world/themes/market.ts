@@ -5,7 +5,7 @@ import { mulberry } from '../../fx/util';
 import { atmosOf } from '../atmos';
 import { lanternString, manekiNeko, stall, std } from '../kit';
 import { buildSteam } from '../steam';
-import { glowTex, mk } from '../tex';
+import { aiTex, glowTex, mk } from '../tex';
 import type { LevelDef } from '../levels';
 import type { Street } from '../street';
 import { banner, eaveRoof, hall, lantern, paifang, pagoda, redPillar } from './arch';
@@ -32,7 +32,8 @@ const plazaTex = () => mk(256, 256, (c) => {
 export function buildMarket(L: LevelDef): Street {
   const g = new THREE.Group(); const half = L.half; const A = atmosOf(L.mood); const rnd = mulberry(202);
   plinth(g, half, '#6a3a2a', undefined, A.fog);
-  groundPlane(g, half, brickTex(), 10, { rough: 0.85 });
+  const ai = aiTex('ground_market_terracotta_01'); // Codex A09-NM 暖色陶砖；加载不到时退回程序化砖地
+  groundPlane(g, half, ai ?? brickTex(), ai ? 7 : 10, { rough: 0.85 });
   // 主街中线的红色地毯 / 广场圆盘
   const lane = new THREE.Mesh(new THREE.PlaneGeometry(4.2, half * 2), new THREE.MeshStandardMaterial({ color: 0xc8483a, roughness: 0.9 })); lane.rotation.x = -Math.PI / 2; lane.position.set(0, 0.33, 0); lane.receiveShadow = true; g.add(nm(lane));
   const laneEdge = new THREE.Mesh(new THREE.PlaneGeometry(4.8, half * 2), new THREE.MeshStandardMaterial({ color: 0xe8b04a, roughness: 0.8 })); laneEdge.rotation.x = -Math.PI / 2; laneEdge.position.set(0, 0.32, 0); g.add(nm(laneEdge));

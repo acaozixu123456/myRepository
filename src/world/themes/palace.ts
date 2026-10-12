@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { mulberry } from '../../fx/util';
 import { atmosOf } from '../atmos';
 import { glowMat, stoneCat, std } from '../kit';
-import { glowTex, mk, waterGlint } from '../tex';
+import { aiTex, glowTex, mk, waterGlint } from '../tex';
 import type { LevelDef } from '../levels';
 import type { Street } from '../street';
 import { balustrade, banner, eaveRoof, hall, lantern, pagoda, redPillar } from './arch';
@@ -48,7 +48,8 @@ function burner(): THREE.Group {
 export function buildPalace(L: LevelDef): Street {
   const g = new THREE.Group(); const half = L.half; const A = atmosOf(L.mood); const rnd = mulberry(606);
   plinth(g, half, '#d8d0c0', undefined, A.fog);
-  groundPlane(g, half, (() => { const t = marbleTex(); return t; })(), 14, { rough: 0.5, metal: 0.05 });
+  const ai = aiTex('ground_palace_white_marble_03'); // Codex A09-PAL 汉白玉淡金纹；加载不到时退回程序化大理石
+  groundPlane(g, half, ai ?? marbleTex(), ai ? 8 : 14, { rough: 0.5, metal: 0.05 });
   const rt = roadTex(); rt.wrapS = rt.wrapT = THREE.RepeatWrapping; rt.repeat.set(1, 10);
   const road = new THREE.Mesh(new THREE.PlaneGeometry(7.5, GATE_Z + 24), new THREE.MeshStandardMaterial({ map: rt, roughness: 0.6 })); road.rotation.x = -Math.PI / 2; road.position.set(0, 0.34, (GATE_Z - 24) / 2 - 0.5); road.receiveShadow = true; g.add(nm(road));
   const redM = std('#b83228', 0.55, 0.1), goldM = std('#e8b04a', 0.4, 0.5), marble = std('#f2ede2', 0.55), wallM = std('#c43a30', 0.7);

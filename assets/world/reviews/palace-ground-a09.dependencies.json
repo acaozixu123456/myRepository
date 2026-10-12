@@ -1,0 +1,162 @@
+{
+  "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc",
+  "submissionBase": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+  "checkedAt": "2026-10-12T04:49:35.507550+00:00",
+  "allComparedSourcesSame": true,
+  "changedFiles": [],
+  "files": [
+    {
+      "file": "src/world/themes/market.ts",
+      "parameterSHA256": "d20f5ddfd3e53e0b43c9674383d70becbb7f0b838b3fc612ff640cc224143927",
+      "submissionSHA256": "d20f5ddfd3e53e0b43c9674383d70becbb7f0b838b3fc612ff640cc224143927",
+      "sameBytes": true,
+      "parameterGitBlob": "b6139d364bb888e783abda21ad41fe3b68871d88",
+      "submissionGitBlob": "b6139d364bb888e783abda21ad41fe3b68871d88"
+    },
+    {
+      "file": "src/world/themes/harbor.ts",
+      "parameterSHA256": "351a6329eabebc161b9e94cfac1de0b92bdac6afef0792b7c4528ef6611b3e19",
+      "submissionSHA256": "351a6329eabebc161b9e94cfac1de0b92bdac6afef0792b7c4528ef6611b3e19",
+      "sameBytes": true,
+      "parameterGitBlob": "a6373ad7c4f2cffdd3a11a55828781e3f4a0a49e",
+      "submissionGitBlob": "a6373ad7c4f2cffdd3a11a55828781e3f4a0a49e"
+    },
+    {
+      "file": "src/world/themes/forest.ts",
+      "parameterSHA256": "ae898a3eb5817f1187f9fbfaf5d0485b31c1b901968c2173ea5bc7d8bc6d8ac3",
+      "submissionSHA256": "ae898a3eb5817f1187f9fbfaf5d0485b31c1b901968c2173ea5bc7d8bc6d8ac3",
+      "sameBytes": true,
+      "parameterGitBlob": "4335faf199a9dc4d01345e62fbda8b972f7e1f08",
+      "submissionGitBlob": "4335faf199a9dc4d01345e62fbda8b972f7e1f08"
+    },
+    {
+      "file": "src/world/themes/cloud.ts",
+      "parameterSHA256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+      "submissionSHA256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+      "sameBytes": true,
+      "parameterGitBlob": "bd179af8158e4f30e6815cac78dc2f83c3672507",
+      "submissionGitBlob": "bd179af8158e4f30e6815cac78dc2f83c3672507"
+    },
+    {
+      "file": "src/world/themes/palace.ts",
+      "parameterSHA256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+      "submissionSHA256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+      "sameBytes": true,
+      "parameterGitBlob": "07ac962653787468279f7cf9118e5d0351235d50",
+      "submissionGitBlob": "07ac962653787468279f7cf9118e5d0351235d50"
+    },
+    {
+      "file": "src/world/themes/common.ts",
+      "parameterSHA256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+      "submissionSHA256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+      "sameBytes": true,
+      "parameterGitBlob": "cf67bf1c99e842694b18b3ada07ecd871bb95878",
+      "submissionGitBlob": "cf67bf1c99e842694b18b3ada07ecd871bb95878"
+    },
+    {
+      "file": "src/world/themes/arch.ts",
+      "parameterSHA256": "82220bd3dc833947b197d1f0f3dfd9184151f68f7c1274ea34a64362d2ad00e7",
+      "submissionSHA256": "82220bd3dc833947b197d1f0f3dfd9184151f68f7c1274ea34a64362d2ad00e7",
+      "sameBytes": true,
+      "parameterGitBlob": "1fa435aa3dc87003f95c70187717d5ca9adae59f",
+      "submissionGitBlob": "1fa435aa3dc87003f95c70187717d5ca9adae59f"
+    },
+    {
+      "file": "src/world/themes/index.ts",
+      "parameterSHA256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73",
+      "submissionSHA256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73",
+      "sameBytes": true,
+      "parameterGitBlob": "395359768cea9cd49060ab8e9b691643778d3ad6",
+      "submissionGitBlob": "395359768cea9cd49060ab8e9b691643778d3ad6"
+    },
+    {
+      "file": "src/world/themes/market.data.ts",
+      "parameterSHA256": "893925bdb108ee0f7eef2e752e911898b25b559723c274957c5b95ec2fc1a46e",
+      "submissionSHA256": "893925bdb108ee0f7eef2e752e911898b25b559723c274957c5b95ec2fc1a46e",
+      "sameBytes": true,
+      "parameterGitBlob": "5ced9f4022882c9ca616bdb926d10fceae747ec3",
+      "submissionGitBlob": "5ced9f4022882c9ca616bdb926d10fceae747ec3"
+    },
+    {
+      "file": "src/world/themes/harbor.data.ts",
+      "parameterSHA256": "ffd4445ee276d14a67c85f80c1628f56031d32cc5ac356d7428376e70b2e37cc",
+      "submissionSHA256": "ffd4445ee276d14a67c85f80c1628f56031d32cc5ac356d7428376e70b2e37cc",
+      "sameBytes": true,
+      "parameterGitBlob": "ebed6ec26847dfbb37c96d282096379e415571d4",
+      "submissionGitBlob": "ebed6ec26847dfbb37c96d282096379e415571d4"
+    },
+    {
+      "file": "src/world/themes/forest.data.ts",
+      "parameterSHA256": "9d25e9e9a957f07bce1296b50c39d7df3b8f459cde18d7e1d2d794ac7044ba43",
+      "submissionSHA256": "9d25e9e9a957f07bce1296b50c39d7df3b8f459cde18d7e1d2d794ac7044ba43",
+      "sameBytes": true,
+      "parameterGitBlob": "36de07a94bb2421dd95a98eb432399e7914be4d9",
+      "submissionGitBlob": "36de07a94bb2421dd95a98eb432399e7914be4d9"
+    },
+    {
+      "file": "src/world/themes/cloud.data.ts",
+      "parameterSHA256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af",
+      "submissionSHA256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af",
+      "sameBytes": true,
+      "parameterGitBlob": "2cfe339feb1c0781116d9b1cb744b06c6b6432d7",
+      "submissionGitBlob": "2cfe339feb1c0781116d9b1cb744b06c6b6432d7"
+    },
+    {
+      "file": "src/world/themes/palace.data.ts",
+      "parameterSHA256": "684d032ad4604c363bfdec33048d1c3e006821daa520a33d5ed972ef88998c96",
+      "submissionSHA256": "684d032ad4604c363bfdec33048d1c3e006821daa520a33d5ed972ef88998c96",
+      "sameBytes": true,
+      "parameterGitBlob": "80e15731bd2a9c6a8478302074654e168d9afd6b",
+      "submissionGitBlob": "80e15731bd2a9c6a8478302074654e168d9afd6b"
+    },
+    {
+      "file": "src/world/atmos.ts",
+      "parameterSHA256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+      "submissionSHA256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+      "sameBytes": true,
+      "parameterGitBlob": "261ba7bfa7e7a28138f4cd13bfe331c813d9dac3",
+      "submissionGitBlob": "261ba7bfa7e7a28138f4cd13bfe331c813d9dac3"
+    },
+    {
+      "file": "src/world/tex.ts",
+      "parameterSHA256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+      "submissionSHA256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+      "sameBytes": true,
+      "parameterGitBlob": "d62da42637c0600fade617057072ed2a82cb29d1",
+      "submissionGitBlob": "d62da42637c0600fade617057072ed2a82cb29d1"
+    },
+    {
+      "file": "src/world/kit.ts",
+      "parameterSHA256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+      "submissionSHA256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+      "sameBytes": true,
+      "parameterGitBlob": "169b31ff8bd60ebd65c6a787dbb16ae573c48711",
+      "submissionGitBlob": "169b31ff8bd60ebd65c6a787dbb16ae573c48711"
+    },
+    {
+      "file": "src/world/engine.ts",
+      "parameterSHA256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a",
+      "submissionSHA256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a",
+      "sameBytes": true,
+      "parameterGitBlob": "8dc1ebb9ccdae78a82007b401db458d7b5e9695f",
+      "submissionGitBlob": "8dc1ebb9ccdae78a82007b401db458d7b5e9695f"
+    },
+    {
+      "file": "package.json",
+      "parameterSHA256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "submissionSHA256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "sameBytes": true,
+      "parameterGitBlob": "4b7d95b3beb4ed4ed40228ba44d1962db0b56f49",
+      "submissionGitBlob": "4b7d95b3beb4ed4ed40228ba44d1962db0b56f49"
+    },
+    {
+      "file": "package-lock.json",
+      "parameterSHA256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "submissionSHA256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "sameBytes": true,
+      "parameterGitBlob": "f559759cc43ab7a2f555ca1d6cc7d7bb860eb42c",
+      "submissionGitBlob": "f559759cc43ab7a2f555ca1d6cc7d7bb860eb42c"
+    }
+  ],
+  "scope": "Read-only Git SHA comparison; standalone material preview imports installedThree/Room and scratch parameters, not World engine or cat models."
+}

@@ -198,7 +198,7 @@ describe('场景玩法入口（POI）', () => {
     expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
   });
   it('喵洲夜市有拉面屋台（在主街西侧摊位排的空档里，离招财猫广场不远）', () => {
-    expect(poisOf(LEVELS[2]).map((p) => p.game)).toContain('ramen');
+    expect(poisOf(LEVELS[2]).map((p) => p.game)).toEqual(expect.arrayContaining(['ramen', 'ring']));
     const p = poisOf(LEVELS[2]).find((q) => q.game === 'ramen')!;
     expect(Math.abs(Math.abs(p.x) - 9.6)).toBeLessThan(1.5); // 摊位排上
     expect(Math.hypot(p.x, p.z)).toBeLessThan(14);

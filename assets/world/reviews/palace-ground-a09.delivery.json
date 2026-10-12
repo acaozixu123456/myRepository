@@ -1,0 +1,252 @@
+{
+  "createdAtUTC": "2026-10-12T04:56:18.334700+00:00",
+  "status": "Frozen scratch delivery; not copied, committed, submitted, or Claude-approved by this helper.",
+  "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+  "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc",
+  "actualCaptureReports": [
+    "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-overview.json",
+    "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.json"
+  ],
+  "sourceRecheck": "/workspace/world-review/palace-ground/preview-final/source-recheck.json",
+  "sourceImagesLoadedPerCapture": 3,
+  "sourceStayedFrozen": true,
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleMessages": [],
+  "independentMaterialSample": true,
+  "gameScreenshot": false,
+  "worldEngineImported": false,
+  "sourceSHA256": {
+    "ground_palace_white_marble_03": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+    "ground_palace_cloud_marble_04": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+    "ground_palace_gold_thread_05": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc"
+  },
+  "nativeProofCount": 9,
+  "nativeProofPixelsChecked": 589824,
+  "allDeliveryImagesPOTAndUnder500000Bytes": true,
+  "outputs": [
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09.webp",
+      "name": "palace-ground-a09.webp",
+      "dimensions": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 253880,
+      "sha256": "6e1b9cf6a0cd393b2ebd73c6e6786d2128238192735e65f10ce0db266673bd93",
+      "role": "overview",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09.webp",
+      "sourceReport": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-overview.json",
+      "encoding": {
+        "format": "WebP",
+        "quality": 92,
+        "method": 6,
+        "lossless": false
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.webp",
+      "name": "palace-ground-a09-lighting.webp",
+      "dimensions": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 90946,
+      "sha256": "e792290d5743aa6ee8ac5a600e7b6d9d955822a7e2a0b96c3b168bcff6b2b7d9",
+      "role": "lighting",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-lighting.webp",
+      "sourceReport": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.json",
+      "encoding": {
+        "format": "WebP",
+        "quality": 92,
+        "method": 6,
+        "lossless": false
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-lr.png",
+      "name": "palace-ground-a09-ground_palace_white_marble_03-native-lr.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 95698,
+      "sha256": "2a8749f84ab0476227167ea5181c9624ced94aa9059c5c6dec6128a8bd65b7d8",
+      "role": "native-lr",
+      "id": "ground_palace_white_marble_03",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_white_marble_03-native-lr.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-tb.png",
+      "name": "palace-ground-a09-ground_palace_white_marble_03-native-tb.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 94671,
+      "sha256": "076827ee1e52f74ee0766a3904587fccb4ae08053b97d23a613a43d596e62994",
+      "role": "native-tb",
+      "id": "ground_palace_white_marble_03",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_white_marble_03-native-tb.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-corners.png",
+      "name": "palace-ground-a09-ground_palace_white_marble_03-native-corners.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 100673,
+      "sha256": "a999bd7b4025d191b37cea299e31eb3f67383b825fe5031d2f114d09a3b0585f",
+      "role": "native-corners",
+      "id": "ground_palace_white_marble_03",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_white_marble_03-native-corners.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-lr.png",
+      "name": "palace-ground-a09-ground_palace_cloud_marble_04-native-lr.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 87325,
+      "sha256": "50511d26a274b030d1a0c4e88f21829ec9b0ca4ceea7e17cc1ce2e66ffddf90e",
+      "role": "native-lr",
+      "id": "ground_palace_cloud_marble_04",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_cloud_marble_04-native-lr.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-tb.png",
+      "name": "palace-ground-a09-ground_palace_cloud_marble_04-native-tb.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 83814,
+      "sha256": "bc707107fa3a0ab87d0b52640ea8feca37d415d372f81c64eb67dd3df95b0a66",
+      "role": "native-tb",
+      "id": "ground_palace_cloud_marble_04",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_cloud_marble_04-native-tb.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-corners.png",
+      "name": "palace-ground-a09-ground_palace_cloud_marble_04-native-corners.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 87348,
+      "sha256": "67b070fd31131fea2c681bf68e571c3d017c545c0cb70db0479114fccd4bb122",
+      "role": "native-corners",
+      "id": "ground_palace_cloud_marble_04",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_cloud_marble_04-native-corners.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-lr.png",
+      "name": "palace-ground-a09-ground_palace_gold_thread_05-native-lr.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 87071,
+      "sha256": "06feed506b1f33de5c530876047763ef249e7ac9f78589f689bd5499fac5b2c5",
+      "role": "native-lr",
+      "id": "ground_palace_gold_thread_05",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_gold_thread_05-native-lr.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-tb.png",
+      "name": "palace-ground-a09-ground_palace_gold_thread_05-native-tb.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 81342,
+      "sha256": "9bf737c2cc81cb089481a0b77510df325866636063ee318d730be64ba63f2213",
+      "role": "native-tb",
+      "id": "ground_palace_gold_thread_05",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_gold_thread_05-native-tb.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-corners.png",
+      "name": "palace-ground-a09-ground_palace_gold_thread_05-native-corners.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "bytes": 86408,
+      "sha256": "0327419267032babb1b61c4a3b09c86916756766eb05bf9b844697f6141c18fa",
+      "role": "native-corners",
+      "id": "ground_palace_gold_thread_05",
+      "suggestedRepositoryPath": "assets/world/reviews/palace-ground-a09-ground_palace_gold_thread_05-native-corners.png",
+      "nativeScale": 1,
+      "sourceRGBPixelsEqual": true,
+      "encoding": {
+        "format": "PNG",
+        "lossless": true
+      }
+    }
+  ],
+  "rawScreenshotPolicy": "Raw PNG screenshots are scratch capture evidence; only the two compressed WebPs and nine native PNGs above are suggested review deliveries.",
+  "visualObservation": "All three source images, both new review sheets, and nine native edge/corner PNGs were actually viewed. Gray grout aligns at the inspected native joins; this is not a strict pixel-perfect seamlessness guarantee. White03 has faint gold/gray veins, Cloud04 broader cool-gray patches, Gold05 more branching gold veins. Fixed white/gold Room/ACES material samples keep these subtle: fine gold veins have low contrast on the white base, especially at thumbnail scale.",
+  "oldThreeThemePack": "Unsubmitted history only; no old three-theme screenshot reused or edited for this palace batch."
+}
