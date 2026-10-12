@@ -177,13 +177,27 @@
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `capeLong` | `wei_simamiyi`(SP), `wei_caomiaode`(UR), `qun_lvbuding`(UR) | 底版 | 0 | |
-| `ribbons` | `xian_changmiao`(SP), `wu_sunxiangxiang`(SSR), `qun_diaochan`(SSR) | 底版 | 0 | |
-| `wings` | `shu_pangmiaotong`(SP) | 底版 | 0 | |
+| `capeLong` | `wei_simamiyi`(SP), `wei_caomiaode`(UR), `qun_lvbuding`(UR), `pet_jinjin`(SR) | 待审 | 1 | 圆润肩折、分片软弧下摆；12 逻辑网格 |
+| `ribbons` | `xian_changmiao`(SP), `wu_sunxiangxiang`(SSR), `qun_diaochan`(SSR), `pet_diandian`(SR), `pet_jiuwei`(SSR) | 待审 | 1 | 双条厚弧布、背面衬色与金边；10 逻辑网格 |
+| `wings` | `shu_pangmiaotong`(SP), `pet_longmao`(SSR), `pet_xingxing`(SSR) | 待审 | 1 | 分层圆钝凤羽、小体型内部收窄；22 逻辑网格 |
 | `cape` | `shu_liumiaobei`(UR), `wei_xiahoudun`(SSR), `shu_guanyunmiao`(SSR) 等6只 | 底版 | 0 | |
 | `gourd` | `xian_zuoci`(UR), `wei_guojia`(SR) + 杂兵×2 | 底版 | 0 | |
 | `furCloak` | `man_mengmiaohuo`(UR), `man_mulu`(SSR), `qun_dongzhuo`(SR) | 底版 | 0 | |
 | `scrollBack` | `xian_zhangzhua`(SSR) + 杂兵×1 | 底版 | 0 | |
+
+### 披挂第 1 批检查（第 1 轮待审）
+
+`codex/3d-back-sp-regalia` 交付 `capeLong / ribbons / wings`，共 12 位实际使用者（7 英雄 + 5 宠物，无杂兵），全员均以真实 ID 装配并命中 BACK 注册函数。基线固定为 `e777d58`；注册表源码冻结 `1f7074104ea1`，helper 冻结 `b356c5152e96`，仅改这三个条目及 `parts/back-sp-regalia.ts`，没有改宠物数据。完整参考、命令、源码哈希与十五张正式图见 [README](../src/art3d/parts/reviews/back-sp-regalia/README.md)，独立检查见 [QA 摘要](../src/art3d/parts/reviews/back-sp-regalia/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/back-sp-regalia/qa-summary.json)。当前待 Claude 评审。
+
+三件逻辑网格为 12 / 10 / 22（描边计入原件），分段最大 20；三次装配复用缓存 Toon 材质，根变换保持单位、子节点尺度为正，无每帧更新分配。`npm run typecheck && npm test` 通过：68 个测试文件、1019 项测试，退出码 0。其余 77 个非目标的正常 bake 几何属性、布局和索引逐字节一致。
+
+独立 QA 的 2400 个新/旧配对姿势、时刻与朝向样本中，新增眼点 ID 为 0、新增可见鼻口遮挡为 0，部件自身出框、新增或增大的整猫四侧裁切及非有限坐标均为 0。600 个实际相对形位使用真实 skull 的 1120 个三角平面对本体与描边整三角裁剪，12 位候选内部顶点与内部三角均为 0。保守鼻口深度新增 48 个 ID，全在 148° 背视，其中 46 点先被 head 骨表面遮住、2 点先被 shoulder 骨表面遮住；保留的 62 个旧眼深度 ID 也只在两只羽翼宠物背视，不宣称所有 raw 深度计数为 0。
+
+整猫出框样本 760 → 568，无新增或增大；余下为相同的既有 `headTop / ear` 上裁切。正常背视保留尾根可读，中心距检查不代替整条摆动尾巴的碰撞求解。真实十猫战斗记录 10/10 cat3d、7/7 本批英雄背饰；另单独观察 `pet_xingxing` 的真实 `petActors` 出场，12 帧裁切为 0，实际左缘最小 10.64 逻辑 px，扣除最坏震屏 4 px 后仍为 6.64 > 5 px。修复只收窄两只小体型宠物的内部羽组，没有移动根、舞台或镜头。
+
+正式十五张图均 <500000 B，PNG / 无损 WebP 与浏览器原始 PNG 的完整 RGBA 差异为 0；四张宠物图及宠物战斗已按最终 b356 重拍，九张英雄图及主战斗图的保留依据与拍摄版本如实记录在 README。最不满意：飘带在 190px 正面仍略像两条圆弧，浅色内羽从背面部分被外羽盖住；既有冠顶、耳部裁切保留。
+
+提交前另同步主线 `29f6a8b` 的日期测试修复；相关 art3d / look / actor / player 源码与拍摄基线 e777 没有变化，本批两源与十九个审图字节保持原记录。维护者再次实际 typecheck + test 退出0，68文件 / 1019测试全部通过。
 
 ## 配饰（`src/art3d/parts/extras.ts`）
 
