@@ -86,7 +86,7 @@ class Battle {
     bs.atk = Math.round(bs.atk * h.atkMul);
     const m = lvMul(s.level) * (1 + ((s.star ?? 1) - 1) * 0.08) * (s.statMul ?? 1);
     const kit = clone(KITS[s.heroId] ?? genericKit(s.heroId));
-    if (this.cfg.tactics && !h.isMob && !kit.tactic) kit.tactic = clone(tacticFor(s.heroId)); // 杂兵没有战技
+    if (this.cfg.tactics && !kit.tactic) kit.tactic = clone(tacticFor(s.heroId));
     const skillLv = s.skillLv ?? 1;
     for (const lm of kit.ultimate.levelMods ?? []) if (lm.lv <= skillLv) applyPatch(kit, lm.patch);
     for (const lm of kit.basic.levelMods ?? []) if (lm.lv <= skillLv) applyPatch(kit, lm.patch);
@@ -896,10 +896,11 @@ class Battle {
     this.fire('beforeAct', { caster: u, targets: [u] }, u);
     if (!u.alive) return;
     let ult = u.energy >= 100 && !this.flag(u, 'silence');
-    if (ult && this.cfg.rules && this.telegraphs(u)) ult = false;
+    let warn = false; // 绝技预告回合：本回合只许普攻，不能顺手放战技
+    if (ult && this.cfg.rules && this.telegraphs(u)) { ult = false; warn = true; }
     // 战技：不放绝技时，冷却好了就放战技（每 3 次行动一次）；没放就 -1
     if (!ult && u.tacticCd > 0) u.tacticCd--;
-    const tac = !ult && !!u.kit.tactic && u.tacticCd <= 0 && !this.flag(u, 'silence') && !this.flag(u, 'confuse');
+    const tac = !ult && !warn && !!u.kit.tactic && u.tacticCd <= 0 && !this.flag(u, 'silence') && !this.flag(u, 'confuse');
     const skill = ult ? u.kit.ultimate : tac ? u.kit.tactic! : u.kit.basic;
     if (tac) u.tacticCd = TACTIC_CD;
     const ctx: Ctx = { caster: u, targets: [], isBasic: !ult, melee: !!skill.melee };

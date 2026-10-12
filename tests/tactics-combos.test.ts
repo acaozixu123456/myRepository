@@ -34,10 +34,10 @@ describe('战技', () => {
     expect(kinds.length).toBeGreaterThanOrEqual(4);
     kinds.forEach((k, i) => expect(k === 'tactic').toBe(i % TACTIC_CD === 1));
   });
-  it('杂兵没有战技；同种子结果可复现', () => {
+  it('杂兵也有战技（双方对称，不偏向玩家）；同种子结果可复现', () => {
     const mobs = team(['mob_wei_guard', 'mob_wei_archer'], 20);
-    const r = simulate({ seed: 3, A: mobs, B: team(['mob_shu_guard'], 20), tactics: true });
-    expect(r.events.some((e) => e.t === 'act' && e.kind === 'tactic')).toBe(false);
+    const r = simulate({ seed: 3, A: mobs, B: team(['mob_shu_guard'], 60, 5), tactics: true });
+    expect(r.events.some((e) => e.t === 'act' && e.kind === 'tactic' && r.units.find((u) => u.uid === e.uid)!.side === 'B')).toBe(true);
     const a = simulate({ seed: 11, A: team(['shu_liumiaobei']), B: team(FOES, 30), tactics: true, combos: true });
     const b = simulate({ seed: 11, A: team(['shu_liumiaobei']), B: team(FOES, 30), tactics: true, combos: true });
     expect(JSON.stringify(a.events)).toBe(JSON.stringify(b.events));
@@ -73,5 +73,20 @@ describe('合击技', () => {
     const after = r.events.slice(i + 1, i + 40);
     expect(after.some((e) => e.t === 'damage')).toBe(true);
     expect(after.some((e) => e.t === 'heal')).toBe(true);
+  });
+});
+
+describe('战技与绝技预告回合', () => {
+  it('预告回合只许普攻：开着战技也不会在预告回合放战技', () => {
+    const boss: UnitSetup = { heroId: 'qun_lvbuding', level: 60, pos: 0, star: 1, skillLv: 1, hpMul: 30, energy: 100 };
+    const A = team(['shu_guanyunmiao', 'shu_zhangmiaofei', 'shu_huangzhong', 'shu_zhugemiaoliang', 'wei_guojia'], 90);
+    const r = simulate({ seed: 4, A, B: [boss], tactics: true, maxRounds: 8, rules: [{ t: 'telegraph', side: 'B', hero: 'qun_lvbuding' }] });
+    const b = r.units.find((u) => u.side === 'B')!;
+    const acts = r.events.filter((e) => e.t === 'act' && e.uid === b.uid) as { kind: string; skill: string }[];
+    expect(acts[0].kind).toBe('basic'); // 满元气 → 先预告（普攻）
+    expect(acts[1].kind).toBe('ultimate'); // 下一次行动真放绝技
+    // 战技冷却是「每 3 次行动」：预告那次不吃掉战技
+    const kinds = acts.map((a) => a.kind).filter((k) => k !== 'ultimate');
+    expect(kinds.includes('tactic')).toBe(true);
   });
 });
