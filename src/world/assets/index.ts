@@ -1,4 +1,7 @@
 // 自动生成：python3 tools/sync-world-assets.py（素材来自 assets/world/**，已缩到游戏内尺寸）。
+import cloud_sprite_cumulus_atlas_01 from './cloud_sprite_cumulus_atlas_01.webp';
+import cloud_sprite_scattered_atlas_03 from './cloud_sprite_scattered_atlas_03.webp';
+import cloud_sprite_wisps_atlas_02 from './cloud_sprite_wisps_atlas_02.webp';
 import decal_crack_asphalt_long_09 from './decal_crack_asphalt_long_09.webp';
 import decal_crack_branch_fine_01 from './decal_crack_branch_fine_01.webp';
 import decal_crack_crazing_05 from './decal_crack_crazing_05.webp';
@@ -61,6 +64,9 @@ import wall_tile_ivory_02 from './wall_tile_ivory_02.webp';
 import wall_tile_seafoam_01 from './wall_tile_seafoam_01.webp';
 import wall_tile_slate_03 from './wall_tile_slate_03.webp';
 export const WORLD_TEX: Record<string, string> = {
+  cloud_sprite_cumulus_atlas_01,
+  cloud_sprite_scattered_atlas_03,
+  cloud_sprite_wisps_atlas_02,
   decal_crack_asphalt_long_09,
   decal_crack_branch_fine_01,
   decal_crack_crazing_05,

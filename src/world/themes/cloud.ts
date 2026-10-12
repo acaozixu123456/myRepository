@@ -110,6 +110,24 @@ export function buildCloud(L: LevelDef): Street {
   const sea = new THREE.Mesh(new THREE.PlaneGeometry(700, 700), new THREE.MeshBasicMaterial({ map: cs, fog: true, toneMapped: false })); sea.rotation.x = -Math.PI / 2; sea.position.y = -16; g.add(nm(sea));
   const puffs: { m: THREE.Group; r: number; a: number; sp: number; y: number }[] = [];
   for (let i = 0; i < 34; i++) { const m = puff(0.8 + rnd() * 1.7, rnd); const a = rnd() * 6.28, r = 40 + rnd() * 90; const y = -9 + rnd() * 10; m.position.set(Math.cos(a) * r, y, Math.sin(a) * r); nm(m); m.userData.noBake = true; g.add(m); puffs.push({ m, r, a, sp: (rnd() - 0.5) * 0.004, y }); }
+  // Codex A12 柔边透明云朵 atlas：每张 2×2 四朵云（01 的左右列宽是 280 / 232），远处一圈 billboard 云，比球体云柔和
+  const atlas = [['cloud_sprite_cumulus_atlas_01', 280], ['cloud_sprite_wisps_atlas_02', 256], ['cloud_sprite_scattered_atlas_03', 256]] as const;
+  const softClouds: { s: THREE.Sprite; r: number; a: number; sp: number }[] = [];
+  atlas.forEach(([name, split], ai) => {
+    const base = aiTex(name);
+    if (!base) return;
+    for (let k = 0; k < 4; k++) {
+      const x0 = k % 2 ? split : 0, x1 = k % 2 ? 512 : split, y0 = k < 2 ? 0 : 256, y1 = y0 + 256;
+      const t = base.clone(); t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; t.generateMipmaps = false; t.minFilter = THREE.LinearFilter;
+      t.offset.set(x0 / 512, 1 - y1 / 512); t.repeat.set((x1 - x0) / 512, (y1 - y0) / 512); t.needsUpdate = true;
+      for (let n = 0; n < 2; n++) {
+        const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false, opacity: ai === 1 ? 0.75 : 0.92, fog: false }));
+        const h = (ai === 1 ? 14 : 20) + rnd() * 14; sp.scale.set(h * (x1 - x0) / 256, h, 1);
+        const a = rnd() * 6.28, r = 70 + rnd() * 70; sp.position.set(Math.cos(a) * r, -6 + rnd() * 16, Math.sin(a) * r);
+        nm(sp); sp.userData.noBake = true; g.add(sp); softClouds.push({ s: sp, r, a, sp: (rnd() - 0.5) * 0.0015 });
+      }
+    }
+  });
   const isles: { m: THREE.Group; y: number; ph: number }[] = [];
   for (let i = 0; i < 9; i++) { const m = islet(rnd, 0.7 + rnd() * 0.9); const a = (i / 9) * 6.28 + rnd() * 0.3, r = 50 + rnd() * 50, y = -3 + rnd() * 14; m.position.set(Math.cos(a) * r, y, Math.sin(a) * r); nm(m); m.userData.noBake = true; g.add(m); isles.push({ m, y, ph: rnd() * 6 }); }
   ['#ff6a6a', '#ffa84a', '#ffe85a', '#6adc7a', '#5ab8ff', '#7a7aff', '#c07aff'].forEach((c, i) => { const arc = new THREE.Mesh(new THREE.TorusGeometry(88 - i * 1.7, 0.9, 6, 64, Math.PI), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.4, depthWrite: false, toneMapped: false, fog: false })); arc.position.set(-30, -14, -150); nm(arc); arc.userData.noBake = true; g.add(arc); });
@@ -124,6 +142,7 @@ export function buildCloud(L: LevelDef): Street {
     update: (t) => {
       spark(t); blades.rotation.z = -t * 0.9; heart.position.y = 6.5 + Math.sin(t * 1.4) * 0.5; heart.rotation.y = t * 0.8;
       wg.offset.x = t * 0.03; wg.offset.y = t * 0.02; cs.offset.x = t * 0.004; cs.offset.y = t * 0.002; ft.offset.y = -t * 0.6;
+      for (const c of softClouds) { c.a += c.sp; c.s.position.x = Math.cos(c.a) * c.r; c.s.position.z = Math.sin(c.a) * c.r; }
       for (const p of puffs) { p.a += p.sp; p.m.position.set(Math.cos(p.a) * p.r, p.y, Math.sin(p.a) * p.r); }
       for (const s of isles) s.m.position.y = s.y + Math.sin(t * 0.5 + s.ph) * 0.6;
       for (const b of birds) { const a = t * b.sp + b.ph; b.m.position.set(Math.cos(a) * b.r, b.y + Math.sin(a * 2) * 0.8, Math.sin(a) * b.r); b.m.rotation.set(-Math.PI / 2 + Math.sin(t * 9 + b.ph) * 0.5, 0, a + Math.PI / 2); }
