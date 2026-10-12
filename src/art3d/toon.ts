@@ -13,6 +13,38 @@ export function gradientMap(): THREE.DataTexture {
   return grad;
 }
 
+/**
+ * 光色中性化强度（0 = 原样，1 = 光只决定明暗、不染色）。
+ * 探索世界满是霓虹彩光，会把猫猫整只染成品红 / 紫色（颜色全丢）：世界渲染时置 0.7，战斗 / 立绘渲染时置 0。
+ * 同时叠一圈冷色轮廓光，让猫猫从背景里「立」出来。
+ */
+export const litK = { value: 0 };
+function patchLit(m: THREE.MeshToonMaterial) {
+  m.onBeforeCompile = (sh) => {
+    sh.uniforms.uLitK = litK;
+    sh.vertexShader = sh.vertexShader.replace('void main() {', 'varying float vCatY;\nvoid main() {').replace('#include <begin_vertex>', '#include <begin_vertex>\nvCatY = position.y;');
+    sh.fragmentShader = sh.fragmentShader.replace('void main() {', 'uniform float uLitK;\nvarying float vCatY;\nvoid main() {').replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
+{
+  vec3 tot = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse;
+  float lum = dot(tot, vec3(0.299, 0.587, 0.114));
+  float alb = max(dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114)), 0.02);
+  vec3 neutral = diffuseColor.rgb * (lum / alb) * (1.0 + 0.3 * uLitK);
+  vec3 nrm = normalize(normal);
+  float rimK = pow(1.0 - clamp(dot(nrm, normalize(vViewPosition)), 0.0, 1.0), 2.4);
+  // 自下而上的柔和渐变：脚 / 下摆略暗、头最亮，立体感更足
+  float ao = mix(0.8, 1.0, smoothstep(-0.2, 2.2, vCatY));
+  // 卡通高光：左上前方一块硬边亮斑，像上过釉的玩偶
+  float sp = smoothstep(0.95, 0.97, dot(nrm, normalize(vec3(-0.35, 0.7, 0.62))));
+  vec3 lit = mix(tot, neutral, uLitK) * ao;
+  lit += vec3(0.55, 0.82, 1.0) * rimK * (0.16 + 0.34 * uLitK);
+  lit += vec3(1.0, 0.97, 0.9) * sp * (0.04 + 0.1 * alb);
+  reflectedLight.directDiffuse = lit;
+  reflectedLight.indirectDiffuse = vec3(0.0);
+}`);
+  };
+  m.customProgramCacheKey = () => 'litk2';
+}
+
 const matCache = new Map<string, THREE.MeshToonMaterial>();
 /** 卡通材质（按颜色缓存复用，别在渲染循环里 new） */
 export function toon(color: string | number, opt: { map?: THREE.Texture | null; emissive?: string | number; key?: string; double?: boolean } = {}): THREE.MeshToonMaterial {
@@ -22,6 +54,7 @@ export function toon(color: string | number, opt: { map?: THREE.Texture | null; 
   const m = new THREE.MeshToonMaterial({ color: new THREE.Color(opt.map ? '#ffffff' : color), gradientMap: gradientMap(), map: opt.map ?? null });
   if (opt.emissive !== undefined) m.emissive = new THREE.Color(opt.emissive);
   if (opt.double) m.side = THREE.DoubleSide;
+  patchLit(m);
   if (!opt.map) matCache.set(key, m);
   return m;
 }
@@ -88,6 +121,7 @@ export function vertexColorMat(map: THREE.Texture | null, double: boolean): THRE
   if (!m) {
     m = new THREE.MeshToonMaterial({ color: new THREE.Color('#ffffff'), gradientMap: gradientMap(), map, vertexColors: true });
     if (double) m.side = THREE.DoubleSide;
+    patchLit(m);
     vcCache.set(key, m);
   }
   return m;

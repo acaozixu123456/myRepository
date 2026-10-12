@@ -80,6 +80,8 @@ export class Explorer {
   private markerT = 0;
   paused = false;
   private busy = false;
+  /** 跟着队伍的柔光：一圈暖白的光，让猫猫在霓虹夜景里亮起来、颜色看得清 */
+  private keyLight = new THREE.PointLight(0xfff1e0, 2.3, 13, 1.7);
   private nearEnt: Ent | null = null;
   private frameNear: Ent | null = null;
   private frameNearD = 1e9;
@@ -90,6 +92,7 @@ export class Explorer {
     this.grid = new Uint8Array(this.N * this.N);
     this.buildGrid(street.colliders);
     wv.scene.add(this.root);
+    this.root.add(this.keyLight);
     this.ring = new THREE.Mesh(new THREE.RingGeometry(1.2, 1.5, 32), new THREE.MeshBasicMaterial({ color: 0x7ff0ff, transparent: true, opacity: 0.9, toneMapped: false, depthWrite: false }));
     this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = 0.4; this.root.add(this.ring);
     this.marker = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.7, 24), new THREE.MeshBasicMaterial({ color: 0xff7ad9, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }));
@@ -115,6 +118,12 @@ export class Explorer {
   /** 没在走路也没在战斗：自动探索用它判断什么时候该找下一个目标 */
   get idle(): boolean { return !this.paused && !this.busy && this.path.length === 0; }
   get moving(): boolean { return this.leader.moving > 0.5; }
+  private updateKeyLight() {
+    const lp = this.leaderPos, cam = this.wv.camera.position;
+    const d = new THREE.Vector3(cam.x - lp.x, 0, cam.z - lp.z);
+    if (d.lengthSq() > 1e-4) d.normalize();
+    this.keyLight.position.set(lp.x + d.x * 3.2, lp.y + 4.2, lp.z + d.z * 3.2);
+  }
   get leaderPos(): THREE.Vector3 { return this.team[0].pos; }
 
   private mkActor(id: string, scale: number, castShadow = false): Actor {
@@ -307,7 +316,7 @@ export class Explorer {
   // ---------- 每帧 ----------
   update(dt: number) {
     this.t += dt;
-    if (this.paused) { this.syncAll(dt, true); return; }
+    if (this.paused) { this.updateKeyLight(); this.syncAll(dt, true); return; }
     const L = this.leader;
     let moving = false;
     if (this.path.length) {
@@ -344,6 +353,7 @@ export class Explorer {
     this.markerT = Math.max(0, this.markerT - dt * 1.6);
     (this.marker.material as THREE.MeshBasicMaterial).opacity = this.markerT;
     this.marker.scale.setScalar(1 + (1 - this.markerT) * 0.8);
+    this.updateKeyLight();
     this.syncAll(dt, false);
   }
 
