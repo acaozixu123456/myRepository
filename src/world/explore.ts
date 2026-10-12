@@ -13,7 +13,7 @@ import { glowMat, std } from './kit';
 
 export interface Spawn {
   id: string;
-  kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc';
+  kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc' | 'poi';
   x: number; z: number;
   /** enemy / boss：这一队长什么样（单位 id，最多 3 个） */
   units?: string[];
@@ -27,6 +27,8 @@ export interface ExploreHooks {
   encounter(s: Spawn): Promise<boolean>;
   chest(s: Spawn): void;
   talk(s: Spawn): void;
+  /** 走进玩法入口：返回的 Promise 结束前世界暂停（小游戏在 app 层） */
+  poi?(s: Spawn): Promise<void>;
   /** 野怪刚发现队伍（音效用，可选） */
   alert?(s: Spawn): void;
 }
@@ -142,6 +144,13 @@ export class Explorer {
       const lid = new THREE.Mesh(new THREE.BoxGeometry(1.56, 0.4, 1.06), std('#e8b04a', 0.4, 0.5)); lid.position.y = 1.1; group.add(lid);
       const lock = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.1), glowMat('#fff2a0')); lock.position.set(0, 0.85, 0.52); group.add(lock);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
+    } else if (s.kind === 'poi') {
+      // 钓鱼点：木桩 + 一圈发光的橙色标记 + 立着的小鱼旗
+      const wood = std('#6a4a2a', 0.8, 0.1);
+      for (const dx of [-0.7, 0.7]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.3, 6), wood); post.position.set(dx, 0.65, 0); group.add(post); }
+      const ring = new THREE.Mesh(new THREE.RingGeometry(1.4, 1.7, 28), glowMat('#ffb04a')); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.06; group.add(ring);
+      const flag = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.7), new THREE.MeshStandardMaterial({ color: '#ff7a3a', roughness: 0.8, side: THREE.DoubleSide })); flag.position.set(0, 1.55, 0); group.add(flag);
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffb04a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'herb') {
       const m = std('#3fdc8a', 0.6, 0.1);
       for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2, c = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.1 + (i % 3) * 0.35, 5), m); c.position.set(Math.cos(a) * 0.55, 0.55, Math.sin(a) * 0.55); c.rotation.z = Math.cos(a) * 0.25; c.rotation.x = -Math.sin(a) * 0.25; group.add(c); }
@@ -154,8 +163,8 @@ export class Explorer {
         cats.push(a);
       });
     }
-    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : '#ffffff');
-    tag.position.y = s.kind === 'chest' || s.kind === 'herb' ? 3.0 : s.kind === 'boss' ? 6.0 : 4.8;
+    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : s.kind === 'poi' ? '#ffcf8a' : '#ffffff');
+    tag.position.y = s.kind === 'chest' || s.kind === 'herb' || s.kind === 'poi' ? 3.0 : s.kind === 'boss' ? 6.0 : 4.8;
     group.add(tag);
     const mark = s.kind === 'boss' ? markSprite('!', '#ff4a6a') : s.kind === 'npc' ? markSprite('…', '#7ff0ff') : undefined;
     if (mark) { mark.position.y = s.kind === 'boss' ? 7.6 : 6.3; group.add(mark); }
@@ -320,6 +329,11 @@ export class Explorer {
     const far = dLeader > CULL_DIST;
     if (e.alive && e.group.visible === far) e.group.visible = !far;
     if (!far) { const lod = dLeader > OUTLINE_DIST; for (const a of e.cats) for (const o of a.outlines) if (o.visible === lod) o.visible = !lod; }
+    if (s.kind === 'poi') {
+      e.tag.position.y = 3.2 + Math.sin(e.t * 3) * 0.12;
+      if (gp.distanceTo(lp) < 2.6 && e.cooldown <= 0 && !this.busy && this.hooks.poi) void this.startPoi(e);
+      return;
+    }
     if (s.kind === 'chest' || s.kind === 'herb') {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }
@@ -357,6 +371,12 @@ export class Explorer {
     if (e.mark) e.mark.position.y = (s.kind === 'boss' ? 7.6 : 6.3) + Math.sin(e.t * 4) * 0.25;
     // 触碰 → 战斗
     if (dist < (s.kind === 'boss' ? 4.2 : 2.9) && e.cooldown <= 0 && !this.busy) void this.startEncounter(e);
+  }
+
+  /** 走进玩法入口：世界暂停，等小游戏结束；之后冷却一会儿，免得一出来又被触发 */
+  private async startPoi(e: Ent) {
+    this.busy = true; this.paused = true; this.path = [];
+    try { await this.hooks.poi!(e.spawn); } finally { this.busy = false; this.paused = false; e.cooldown = 5; }
   }
 
   private async startEncounter(e: Ent) {

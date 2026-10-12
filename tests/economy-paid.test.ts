@@ -1,6 +1,6 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { QUESTS } from '../src/content/economy';
 import { dungeonLeft, dungeonStart, dungeonSweep, dungeonWin } from '../src/game/dungeon';
 import { DAY, NPCS } from '../src/game/npc';
@@ -21,7 +21,9 @@ const project = fileURLToPath(new URL('..', import.meta.url));
 
 describe('paid economy audit actual resource accounting', () => {
   let report: EconomyPaidReport;
-  beforeAll(() => { report = runEconomyPaid(); });
+  // 审计里有读真实时钟的游戏逻辑，不钉住时钟的话数字会随日期漂（比如 10/11 → 10/12 就让 1.73 变了）
+  beforeAll(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(Date.UTC(2026, 9, 11, 12)); report = runEconomyPaid(); });
+  afterAll(() => { vi.useRealTimers(); });
 
   it('prices only explicit anchors and keeps EXP, moon, unknown values and variable yarn visible', () => {
     expect(valueIncome({ fish: 100, bells: 2, catnip_small: 4, paw_seal: 3, exp: 999, moon: 25, yarn_small: 2, unknown: 7 })).toEqual({

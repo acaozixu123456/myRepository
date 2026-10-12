@@ -17,10 +17,11 @@ import { HERO_BY_ID } from '../../data/heroes';
 import { arenaFight } from '../arenaFight';
 import type { AppCtx } from '../ctx';
 import { sfx, rainAmbience, stepSfx, alertSfx } from '../sfx';
+import { FISHING_CSS, openFishing } from './fishing';
 import { topbar } from './lineup';
 import { playStoryOnce } from '../story';
 
-export const EXPLORE_CSS = `
+export const EXPLORE_CSS = FISHING_CSS + `
 .screen.xplore{background:#0d0818}
 .xplore canvas#wcv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
@@ -127,7 +128,7 @@ function planFor(ctx: AppCtx) {
 function syncSpawns(ctx: AppCtx) {
   if (!rt) return;
   rt.ex.clearSpawns();
-  for (const p of planFor(ctx)) rt.ex.addSpawn({ id: p.id, kind: p.kind, x: p.x, z: p.z, units: p.units, label: p.label, patrol: p.patrol, data: p.stageKey });
+  for (const p of planFor(ctx)) rt.ex.addSpawn({ id: p.id, kind: p.kind, x: p.x, z: p.z, units: p.units, label: p.label, patrol: p.patrol, data: p.kind === 'poi' ? p.game : p.stageKey });
 }
 
 function teamIds(ctx: AppCtx): string[] {
@@ -203,7 +204,7 @@ function drawMini(ctx: AppCtx) {
   g.fillStyle = '#0b0818'; for (const c of rt.st.colliders) if (c.x1 - c.x0 > 3) g.fillRect(X(c.x0), Z(c.z0), (c.x1 - c.x0) * k, (c.z1 - c.z0) * k); // 楼
   const sn = rt.ex.snapshot();
   const dot = (x: number, z: number, col: string, r: number) => { g.fillStyle = col; g.beginPath(); g.arc(X(x), Z(z), r, 0, Math.PI * 2); g.fill(); };
-  for (const e of sn.ents) dot(e.x, e.z, e.kind === 'boss' ? '#ff4a6a' : e.kind === 'enemy' ? '#ff9a4a' : e.kind === 'chest' ? '#ffe27a' : e.kind === 'herb' ? '#6affb0' : '#7ff0ff', e.kind === 'boss' ? 6 : 4);
+  for (const e of sn.ents) dot(e.x, e.z, e.kind === 'boss' ? '#ff4a6a' : e.kind === 'enemy' ? '#ff9a4a' : e.kind === 'chest' ? '#ffe27a' : e.kind === 'herb' ? '#6affb0' : e.kind === 'poi' ? '#ffb04a' : '#7ff0ff', e.kind === 'boss' ? 6 : 4);
   dot(sn.leader.x, sn.leader.z, '#ffffff', 5);
   g.strokeStyle = '#7ff0ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(X(sn.leader.x), Z(sn.leader.z)); g.lineTo(X(sn.leader.x) + Math.sin(sn.leader.yaw) * 12, Z(sn.leader.z) + Math.cos(sn.leader.yaw) * 12); g.stroke();
 }
@@ -225,6 +226,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     chest: (s) => onChest(ctx, s),
     talk: (s) => onTalk(ctx, s),
     alert: () => alertSfx(),
+    poi: (sp) => onPoi(ctx, sp),
   });
   let stepT = 0;
   wv.onUpdate = (dt) => {
@@ -346,6 +348,13 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
   }
 }
 
+/** 玩法入口：按 spawn.game 分发到各个小游戏；自动探索中不打扰（路过不会弹出来） */
+async function onPoi(ctx: AppCtx, sp: Spawn): Promise<void> {
+  if (autoOn) return;
+  const host = ctx.root.querySelector('[data-screen="explore"]');
+  if (!host) return;
+  if (sp.data === 'fish' || sp.id === 'poi-fish') { rainAmbience(false); await openFishing(ctx, host); rainAmbience(true); refreshExploreHud(ctx); }
+}
 function onChest(ctx: AppCtx, sp: Spawn) {
   const g = sp.kind === 'herb' ? pickHerb(ctx.s, sp.id) : openChest(ctx.s, sp.id);
   if (!g) return;

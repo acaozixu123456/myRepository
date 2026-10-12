@@ -6,10 +6,10 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
-import { herbsOf, levelOf as sceneOf } from '../world/levels';
+import { herbsOf, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[] }
+export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; }
   return e;
 }
 
@@ -34,7 +34,7 @@ export function farmStage(s: PlayerState): { chapter: number; index: number; sta
   return { chapter: b.chapter, index: b.index, stage: getStage(b.chapter, b.index)! };
 }
 
-export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string }
+export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc' | 'poi'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string; game?: string }
 
 /** 当前该进哪个场景：跟着主线章节走（首领所在的章节） */
 export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(bossStage(s).chapter);
@@ -56,6 +56,7 @@ export function spawnPlan(s: PlayerState): SpawnDef[] {
   });
   L.chestSpots.forEach(([x, z], i) => out.push({ id: `c${i}`, kind: 'chest', x, z, label: '宝箱' }));
   herbsOf(L).forEach(([x, z], i) => out.push({ id: `h${i}`, kind: 'herb', x, z, label: '猫薄荷丛' }));
+  poisOf(L).forEach((p) => out.push({ id: `poi-${p.id}`, kind: 'poi', x: p.x, z: p.z, label: p.label, game: p.game }));
   out.push({ id: 'npc', kind: 'npc', x: L.npcSpot[0], z: L.npcSpot[1], units: ['xian_changmiao'], label: '嫦喵 · 向导' });
   return out;
 }
@@ -121,7 +122,7 @@ export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | n
 }
 
 // ---------- 探索足迹（长期累计目标）----------
-export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses';
+export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish';
 export interface TrailMilestone { id: string; stat: TrailStat; need: number; label: string; reward: Gain }
 const G = (fish: number, catnip: number, bells: number, exp = 0): Gain => ({ fish, catnip, bells, exp });
 export const TRAIL: TrailMilestone[] = [
@@ -135,6 +136,9 @@ export const TRAIL: TrailMilestone[] = [
   { id: 'h10', stat: 'herbs', need: 10, label: '采药喵 · 采 10 丛猫薄荷', reward: G(200, 8, 0) },
   { id: 'h40', stat: 'herbs', need: 40, label: '猫薄荷园丁 · 采 40 丛猫薄荷', reward: G(600, 20, 20) },
   { id: 'h120', stat: 'herbs', need: 120, label: '薄荷大亨 · 采 120 丛猫薄荷', reward: G(1500, 50, 60) },
+  { id: 'f10', stat: 'fish', need: 10, label: '新手钓手 · 钓上 10 条鱼', reward: G(300, 3, 0) },
+  { id: 'f50', stat: 'fish', need: 50, label: '垂钓达人 · 钓上 50 条鱼', reward: G(1200, 10, 30) },
+  { id: 'f150', stat: 'fish', need: 150, label: '渔港传说 · 钓上 150 条鱼', reward: G(3500, 25, 100) },
   { id: 'b3', stat: 'bosses', need: 3, label: '首领克星 · 赢 3 场首领战', reward: G(500, 4, 10, 200) },
   { id: 'b12', stat: 'bosses', need: 12, label: '首领终结者 · 赢 12 场首领战', reward: G(2000, 15, 50, 800) },
   { id: 'b40', stat: 'bosses', need: 40, label: '九命天敌 · 赢 40 场首领战', reward: G(6000, 40, 150, 2500) },
@@ -143,11 +147,11 @@ export function totals(s: PlayerState) { return (s.exploreTotals ??= { kills: 0,
 export interface TrailRow extends TrailMilestone { have: number; ready: boolean; claimed: boolean }
 export function trailRows(s: PlayerState): TrailRow[] {
   const t = totals(s);
-  return TRAIL.map((m) => ({ ...m, have: Math.min(m.need, t[m.stat]), ready: t[m.stat] >= m.need && !t.claimed.includes(m.id), claimed: t.claimed.includes(m.id) }));
+  return TRAIL.map((m) => ({ ...m, have: Math.min(m.need, t[m.stat] ?? 0), ready: (t[m.stat] ?? 0) >= m.need && !t.claimed.includes(m.id), claimed: t.claimed.includes(m.id) }));
 }
 export function claimTrail(s: PlayerState, id: string): Gain | null {
   const m = TRAIL.find((x) => x.id === id), t = totals(s);
-  if (!m || t.claimed.includes(id) || t[m.stat] < m.need) return null;
+  if (!m || t.claimed.includes(id) || (t[m.stat] ?? 0) < m.need) return null;
   t.claimed.push(id);
   return { ...m.reward };
 }

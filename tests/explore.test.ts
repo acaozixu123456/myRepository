@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
-import { LEVELS, herbsOf, levelColliders } from '../src/world/levels';
+import { LEVELS, herbsOf, levelColliders, poisOf } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 import { PROPS } from '../src/world/props';
 
@@ -23,7 +23,7 @@ describe('探索模式规则', () => {
   it('每个关卡的实体都摆在可走的格子上（不在建筑 / 道具碰撞盒里），且出生点可走', () => {
     for (const L of Object.values(LEVELS)) {
       const cols = levelColliders(L);
-      const pts: [string, number, number][] = [...L.enemySpots.map((p, i) => [`e${i}`, p[0], p[1]] as [string, number, number]), ...L.chestSpots.map((p, i) => [`c${i}`, p[0], p[1]] as [string, number, number]), ...herbsOf(L).map((p, i) => [`h${i}`, p[0], p[1]] as [string, number, number]), ['boss', L.bossSpot[0], L.bossSpot[1]], ['npc', L.npcSpot[0], L.npcSpot[1]], ['spawn', L.spawn[0], L.spawn[1]]];
+      const pts: [string, number, number][] = [...L.enemySpots.map((p, i) => [`e${i}`, p[0], p[1]] as [string, number, number]), ...L.chestSpots.map((p, i) => [`c${i}`, p[0], p[1]] as [string, number, number]), ...herbsOf(L).map((p, i) => [`h${i}`, p[0], p[1]] as [string, number, number]), ...poisOf(L).map((p) => [`poi-${p.id}`, p.x, p.z] as [string, number, number]), ['boss', L.bossSpot[0], L.bossSpot[1]], ['npc', L.npcSpot[0], L.npcSpot[1]], ['spawn', L.spawn[0], L.spawn[1]]];
       for (const [id, x, z] of pts) {
         for (const c of cols) expect(x >= c.x0 && x <= c.x1 && z >= c.z0 && z <= c.z1, `${L.id}:${id} 在碰撞盒里`).toBe(false);
         expect(Math.abs(x)).toBeLessThan(L.half - 2); expect(Math.abs(z)).toBeLessThan(L.half - 2);
@@ -144,7 +144,7 @@ describe('探索足迹（长期累计）', () => {
   });
   it('里程碑 id 唯一，同类目标越来越大、奖励越来越多', () => {
     expect(new Set(TRAIL.map((m) => m.id)).size).toBe(TRAIL.length);
-    for (const stat of ['kills', 'chests', 'herbs', 'bosses'] as const) {
+    for (const stat of ['kills', 'chests', 'herbs', 'bosses', 'fish'] as const) {
       const ms = TRAIL.filter((m) => m.stat === stat);
       expect(ms.length).toBeGreaterThanOrEqual(3);
       for (let i = 1; i < ms.length; i++) { expect(ms[i].need).toBeGreaterThan(ms[i - 1].need); expect(ms[i].reward.fish).toBeGreaterThan(ms[i - 1].reward.fish); }
@@ -183,5 +183,23 @@ describe('自动探索选目标', () => {
     const st = farmStage(s).stage;
     for (let i = 0; i < KILL_CAP; i++) killReward(s, st);
     expect(killsLeft(s)).toBe(false);
+  });
+});
+
+describe('场景玩法入口（POI）', () => {
+  it('赤壁港有钓鱼点，会出现在刷新计划里；没有水的场景没有钓鱼点', () => {
+    expect(poisOf(LEVELS[3]).map((p) => p.game)).toContain('fish');
+    for (const L of Object.values(LEVELS)) if (!L.water) expect(poisOf(L).some((p) => p.game === 'fish'), `${L.id} 没水却有钓鱼点`).toBe(false);
+    const s = newPlayer(); s.best = { chapter: 3, index: 1 };
+    const plan = spawnPlan(s);
+    expect(plan.filter((p) => p.kind === 'poi' && p.game === 'fish')).toHaveLength(1);
+    expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
+  });
+  it('钓鱼点贴着水边，离水不超过 3 个单位', () => {
+    for (const L of Object.values(LEVELS)) for (const p of poisOf(L)) if (p.game === 'fish' && L.water) {
+      const [x0, z0, x1, z1] = L.water;
+      const dz = Math.max(z0 - p.z, 0, p.z - z1), dx = Math.max(x0 - p.x, 0, p.x - x1);
+      expect(Math.hypot(dx, dz), `${L.id} 钓鱼点离水太远`).toBeLessThanOrEqual(3);
+    }
   });
 });

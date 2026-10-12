@@ -3,6 +3,8 @@
 import type { BuildingSpec } from './kit';
 
 export interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
+/** 场景里的玩法入口：走近触发一个小游戏（game 对应 app 层注册的小游戏名） */
+export interface PoiDef { id: string; game: string; x: number; z: number; label: string }
 export interface PropDef { kind: string; x: number; z: number; ry?: number; seed?: number; arg?: number }
 export interface AABB { x0: number; x1: number; z0: number; z1: number }
 export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow';
@@ -29,7 +31,7 @@ export interface LevelDef {
   containers?: [number, number, number, string][]; // x z 朝向 颜色
   cranes?: [number, number, number][];
   ships?: [number, number, number][];
-  enemySpots: [number, number][]; chestSpots: [number, number][]; herbSpots?: [number, number][]; bossSpot: [number, number]; npcSpot: [number, number]; spawn: [number, number];
+  enemySpots: [number, number][]; chestSpots: [number, number][]; herbSpots?: [number, number][]; pois?: PoiDef[]; bossSpot: [number, number]; npcSpot: [number, number]; spawn: [number, number];
 }
 
 const L1_BUILDINGS: Placed[] = [
@@ -51,6 +53,7 @@ const SPOTS = {
 };
 /** 猫薄荷丛默认摆在马路上（所有关卡都空着）；关卡可以用 herbSpots 覆盖 */
 export const DEFAULT_HERBS: [number, number][] = [[9, -2.4], [-2.4, -9], [2.4, 12]];
+export const poisOf = (L: LevelDef): PoiDef[] => L.pois ?? [];
 export const herbsOf = (L: LevelDef): [number, number][] => L.herbSpots ?? DEFAULT_HERBS;
 const L1_POLES: [number, number][] = [[-20, -5.2], [-6, -5.2], [6, 5.2], [20, 5.2], [-5.2, 18], [5.2, -18]];
 const L1_PROPS: PropDef[] = [
@@ -115,6 +118,7 @@ export const LEVEL_3: LevelDef = {
   tram: false, arches: [], lanterns: [],
   vents: [[-3, 0.5, -7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4]],
   water: [-31, 12.5, 31, 31],
+  pois: [{ id: 'fish', game: 'fish', x: 10.5, z: 11.4, label: '钓鱼点' }],
   containers: [[-27, 10, 0, '#d9483b'], [-9, 10.2, 0, '#2a8ac8'], [22, 10, 0, '#e8a23a'], [27, 10, 0, '#4a9a62']],
   cranes: [[-16, 18, 0], [18, 17, 0]],
   ships: [[0, 24, 0], [-22, 27, 0.2]],

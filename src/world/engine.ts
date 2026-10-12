@@ -227,7 +227,8 @@ export class WorldView {
     this.last = performance.now();
     const loop = (now: number) => {
       const raw = (now - this.last) / 1000;
-      const dt = Math.min(0.05, raw); this.last = now;
+      // raw 可能是负的：rAF 的帧时间戳早于 start() 里取的 performance.now()（主线程被建场景堵住了好几秒时）；负 dt 会让冷却暴涨、角色倒退
+      const dt = Math.max(0, Math.min(0.05, raw)); this.last = now;
       this.watchFps(raw);
       this.onUpdate(dt, this.time);
       this.render(dt);
@@ -243,7 +244,7 @@ export class WorldView {
   /** 手动设定画质档位：0 全开 … 3 关光晕 / 4 最低；只能往下压（场景重载时重新套用） */
   forceLevel(n: number) { while (this.qualityLevel < n) this.degrade(); }
   private watchFps(raw: number) {
-    if (raw > 0.5) return; // 切后台 / 战斗浮层后恢复的第一帧，不算
+    if (raw <= 0 || raw > 0.5) return; // 切后台 / 战斗浮层后恢复的第一帧，不算
     this.fps = this.fps ? this.fps * 0.92 + (1 / raw) * 0.08 : 1 / raw;
     if (this.lockQuality) return;
     this.fpsAcc += raw; this.fpsN++;

@@ -23,6 +23,9 @@ git checkout origin/claude/awesome-babbage-ygba4h -- docs/CODEX_QUEUE.md docs/AR
 ## 已停止（不要再做）
 - **2D 立绘队列已停止**：美术方向改成 3D 程序化小猫（详见 `docs/ART3D.md`）。已开的 2D 立绘 PR（#70~#88）由 Claude 关闭并归档为设计参考，不入库。不要再开 `codex/illust-*` 分支。
 
+## 新方向预告（暂不用做）
+用户想要「每个场景有各自的玩法」：赛博街区进店小游戏、沙漠卡丁车、海边钓鱼……钓鱼已由 Claude 做好第一版（赤壁港）。新场景（沙漠、海边）会稍后新增，到时会在这里追加素材任务（贴图、道具、天空）。现在继续按上面的优先级做，不用提前画。
+
 ## 候补（队列空了再做）
 - 给 `docs/CODEX_3D_BRIEF.md` 第 1 节的 `shots3d` 流程做一份 5 只猫的「战斗截图对比」，贴到 PR。
 - 检查 `docs/ART3D_PROGRESS.md` 里「使用者」列有没有写错的部件，发现了在 PR 里指出来。
