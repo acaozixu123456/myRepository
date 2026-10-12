@@ -100,6 +100,9 @@ function coverMesh(theme: string | undefined): THREE.Group {
     for (let i = 0; i < 4; i++) { const r = 0.7 + rnd(i + 5) * 0.5; const m = new THREE.Mesh(new THREE.DodecahedronGeometry(r, 0), std(i % 2 ? '#c4885a' : '#a86e46', 0.95)); m.scale.y = 0.75; add(m, Math.cos(i * 1.6 + 0.5) * 1.9, r * 0.6, Math.sin(i * 1.6 + 0.5) * 1.9, i); }
   } else if (theme === 'snow') {
     for (let i = 0; i < 6; i++) { const r = 0.8 + rnd(i + 7) * 0.6; const m = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), std(i % 2 ? '#ffffff' : '#eef4ff', 0.85)); m.scale.y = 0.8; add(m, Math.cos(i * 1.05) * 1.6, r * 0.6, Math.sin(i * 1.05) * 1.6); }
+  } else if (theme === 'beach') {
+    for (let i = 0; i < 4; i++) { const r = 0.7 + rnd(i + 11) * 0.5; const m = new THREE.Mesh(new THREE.DodecahedronGeometry(r, 0), std(i % 2 ? '#a89a88' : '#8a8070', 0.95)); m.scale.y = 0.7; add(m, Math.cos(i * 1.6) * 1.7, r * 0.55, Math.sin(i * 1.6) * 1.7, i); }
+    const um = new THREE.Mesh(new THREE.ConeGeometry(1.6, 0.6, 10), std('#ff6a5a', 0.8)); add(um, 0, 2.2, 0); add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.2, 5), std('#e8e0d0', 0.6)), 0, 1.1, 0);
   } else if (theme === 'harbor') {
     for (let i = 0; i < 5; i++) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.7, 1.4, 12), std('#7a4a2a', 0.8)); add(b, Math.cos(i * 1.3) * 1.6, 0.7, Math.sin(i * 1.3) * 1.6); const ring = new THREE.Mesh(new THREE.TorusGeometry(0.67, 0.05, 6, 16), std('#3a3a44', 0.4, 0.6)); ring.rotation.x = Math.PI / 2; add(ring, Math.cos(i * 1.3) * 1.6, 0.9, Math.sin(i * 1.3) * 1.6); }
   } else if (theme === 'market') {
@@ -115,7 +118,7 @@ function coverMesh(theme: string | undefined): THREE.Group {
   return g;
 }
 
-const PORTAL_COLOR: Record<string, number> = { street: 0xff5ad8, market: 0xffb04a, harbor: 0x4ac8ff, forest: 0xb06aff, cloud: 0x9ad0ff, palace: 0xffd24a, desert: 0x7ff0ff, snow: 0x9ad8ff };
+const PORTAL_COLOR: Record<string, number> = { street: 0xff5ad8, market: 0xffb04a, harbor: 0x4ac8ff, forest: 0xb06aff, cloud: 0x9ad0ff, palace: 0xffd24a, desert: 0x7ff0ff, snow: 0x9ad8ff, beach: 0x4ae0d0 };
 /** 传送门外观：脚下转动的光环 + 一道光柱 + 光晕，一对同色 */
 function portalMesh(theme: string | undefined): THREE.Group {
   const col = PORTAL_COLOR[theme ?? 'street'] ?? 0xff5ad8;
@@ -158,8 +161,8 @@ function zoneMesh(z: Zone): THREE.Group {
 }
 
 /** 各玩法入口的主色（脚下光环 / 光晕）与头顶标签色 */
-const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff', ring: '#ffb04a', arrows: '#8ad0e8', firefly: '#b0ff6a', kite: '#ff9ab0', kitchen: '#ff8a4a', sled: '#9ad8ff', snowcat: '#ffd0e8' };
-const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff', ring: '#ffd8a0', arrows: '#c0e8f4', firefly: '#d8ffb0', kite: '#ffc8d8', kitchen: '#ffc8a0', sled: '#d0ecff', snowcat: '#ffe8f2' };
+const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff', ring: '#ffb04a', arrows: '#8ad0e8', firefly: '#b0ff6a', kite: '#ff9ab0', kitchen: '#ff8a4a', sled: '#9ad8ff', snowcat: '#ffd0e8', surf: '#4ae0d0', clams: '#ffb08a' };
+const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff', ring: '#ffd8a0', arrows: '#c0e8f4', firefly: '#d8ffb0', kite: '#ffc8d8', kitchen: '#ffc8a0', sled: '#d0ecff', snowcat: '#ffe8f2', surf: '#b8f4ec', clams: '#ffd8c0' };
 
 export class Explorer {
   readonly root = new THREE.Group();
@@ -374,7 +377,7 @@ export class Explorer {
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'poi') {
       // 钓鱼点：木桩 + 一圈发光的橙色标记 + 立着的小鱼旗
-      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack', ringT = s.data === 'ring', arrowsT = s.data === 'arrows', ffT = s.data === 'firefly', kiteT = s.data === 'kite', kitchenT = s.data === 'kitchen', sledT = s.data === 'sled', snowcatT = s.data === 'snowcat';
+      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack', ringT = s.data === 'ring', arrowsT = s.data === 'arrows', ffT = s.data === 'firefly', kiteT = s.data === 'kite', kitchenT = s.data === 'kitchen', sledT = s.data === 'sled', snowcatT = s.data === 'snowcat', surfT = s.data === 'surf', clamsT = s.data === 'clams';
       const col = POI_COL[String(s.data ?? '')] ?? '#ffb04a';
       const wood = std('#6a4a2a', 0.8, 0.1);
       for (const dx of [-0.7, 0.7]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.3, 6), wood); post.position.set(dx, 0.65, 0); group.add(post); }
@@ -506,6 +509,18 @@ export class Explorer {
         for (const s2 of [-1, 1]) { const eye = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 4), std('#2a2a2a', 0.5)); eye.position.set(s2 * 0.11, y + 0.05, 0.29); group.add(eye); }
         const scarf = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.07, 6, 14), std('#d83a30', 0.8)); scarf.rotation.x = Math.PI / 2; scarf.position.y = 1.15; group.add(scarf);
         flag.position.set(0, y + 1.0, 0);
+      }
+      if (surfT) { // 冲浪：两块插在沙里的冲浪板 + 一面小旗
+        ['#ff6a5a', '#4ac8ff'].forEach((c2, i) => { const b = new THREE.Mesh(new THREE.CapsuleGeometry(0.32, 2.0, 4, 10), std(c2, 0.5)); b.scale.z = 0.2; b.position.set(-0.45 + i * 0.9, 1.25, 0); b.rotation.z = (i ? -1 : 1) * 0.12; group.add(b); const st = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.8, 0.02), std('#ffffff', 0.5)); st.position.set(-0.45 + i * 0.9, 1.25, 0.08); st.rotation.z = b.rotation.z; group.add(st); });
+        flag.position.set(0, 2.9, 0);
+      }
+      if (clamsT) { // 赶海：一只小水桶 + 一把小铲子 + 几只贝壳
+        const pail = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.32, 0.6, 12, 1, true), new THREE.MeshStandardMaterial({ color: '#4ac8ff', roughness: 0.6, side: THREE.DoubleSide })); pail.position.y = 0.3; group.add(pail);
+        const handle = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.025, 4, 16, Math.PI), std('#ffffff', 0.5)); handle.position.y = 0.6; group.add(handle);
+        const shovel = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9, 5), std('#ffd24a', 0.5)); shovel.position.set(0.7, 0.45, 0.1); shovel.rotation.z = -0.5; group.add(shovel);
+        const blade = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.28, 0.04), std('#ff6a5a', 0.5)); blade.position.set(0.92, 0.08, 0.1); blade.rotation.z = -0.5; group.add(blade);
+        for (let i = 0; i < 5; i++) { const sh = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2), std(['#ffd0e0', '#fff4e0', '#ffb08a'][i % 3], 0.6)); sh.scale.set(1, 0.5, 1.2); sh.position.set(-0.8 + i * 0.35, 0.05, 0.6 + (i % 2) * 0.2); group.add(sh); }
+        flag.position.set(0, 1.8, 0);
       }
       const zone = new THREE.Mesh(new THREE.RingGeometry(SAFE_R - 0.12, SAFE_R, 64), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false })); zone.rotation.x = -Math.PI / 2; zone.position.y = 0.05; group.add(zone);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: new THREE.Color(col), transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);

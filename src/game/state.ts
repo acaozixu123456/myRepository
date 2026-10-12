@@ -66,7 +66,7 @@ export interface PlayerState {
   events?: EventState; // 活动中心
   wboss?: BossState; // 世界 Boss
   expedition?: ExpeditionState; // 猫猫远征
-  exploreTotals?: { kills: number; chests: number; herbs: number; bosses: number; fish?: number; ramen?: number; found?: number; mush?: number; chime?: number; lantern?: number; kart?: number; claw?: number; whack?: number; ring?: number; arrows?: number; firefly?: number; kite?: number; kitchen?: number; sled?: number; snowcat?: number; dex?: string[]; claimed: string[] }; // 探索累计数据与已领的足迹奖励
+  exploreTotals?: { kills: number; chests: number; herbs: number; bosses: number; fish?: number; ramen?: number; found?: number; mush?: number; chime?: number; lantern?: number; kart?: number; claw?: number; whack?: number; ring?: number; arrows?: number; firefly?: number; kite?: number; kitchen?: number; sled?: number; snowcat?: number; surf?: number; clams?: number; dex?: string[]; claimed: string[] }; // 探索累计数据与已领的足迹奖励
   explore?: { day: number; kills: number; chests: string[]; talked: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number }; // 3D 探索：当天击杀数 / 开过的箱子
   maze?: MazeState; // 纸箱迷宫
   nest?: NestState; // 猫窝

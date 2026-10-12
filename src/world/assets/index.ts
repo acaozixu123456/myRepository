@@ -19,9 +19,11 @@ import decal_stain_rain_dust_08 from './decal_stain_rain_dust_08.webp';
 import decal_stain_rust_run_05 from './decal_stain_rust_run_05.webp';
 import decal_stain_soot_01 from './decal_stain_soot_01.webp';
 import decal_stain_tire_scuff_07 from './decal_stain_tire_scuff_07.webp';
+import cc0_beach_093c from './cc0_beach_093c.webp';
 import cc0_grass_005 from './cc0_grass_005.webp';
 import cc0_sand_080 from './cc0_sand_080.webp';
 import cc0_snow_014 from './cc0_snow_014.webp';
+import cc0_wetsand_054 from './cc0_wetsand_054.webp';
 import ground_asphalt_wet_01 from './ground_asphalt_wet_01.webp';
 import ground_drain_slate_02 from './ground_drain_slate_02.webp';
 import ground_forest_grass_light_03 from './ground_forest_grass_light_03.webp';
@@ -76,9 +78,11 @@ export const WORLD_TEX: Record<string, string> = {
   decal_stain_rust_run_05,
   decal_stain_soot_01,
   decal_stain_tire_scuff_07,
+  cc0_beach_093c,
   cc0_grass_005,
   cc0_sand_080,
   cc0_snow_014,
+  cc0_wetsand_054,
   ground_asphalt_wet_01,
   ground_drain_slate_02,
   ground_forest_grass_light_03,

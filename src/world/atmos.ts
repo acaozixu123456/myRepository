@@ -1,6 +1,6 @@
 // 场景氛围：天空 / 雾 / 光 / 调色 / 泛光的整套参数（纯数据）。每个场景有自己的时间与天气：
 // 街区是赛博雨夜，夜市是黄昏的暖光，港口是晚霞，森林是清晨，云岛是正午，宫阙是午后金光——不再千篇一律都是暗色霓虹。
-export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow';
+export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow' | 'beach';
 export interface Atmos {
   /** 天空穹顶（false = 沿用纯色背景，街区的暗夜不用穹顶） */
   dome: boolean;
@@ -62,6 +62,13 @@ export const ATMOS: Record<MoodId, Atmos> = {
     dome: true, skyTop: 0x3a7ad8, skyMid: 0x9ac8f4, horizon: 0xeef4ff, discColor: 0xffffff, discSize: 0.045,
     fog: 0xe4ecf8, fogD: 0.0042, hemiSky: 0xeaf2ff, hemiGnd: 0x8aa0c8, hemiI: 0.7, sun: 0xfff6ec, sunI: 1.25, sunPos: [-30, 48, 26],
     exposure: 0.92, env: 0.3, bloom: [0.26, 0.5, 0.97], grade: { cool: 0, ca: 0, vig: 0.6, sat: 1.08, tint: [0.98, 1.0, 1.04] }, keyLight: 0.45, lit: 0.25,
+    skyBand: 'sky_cloud_noon_cumulus_04',
+  },
+  // 海湾：上午的海边，天高海蓝，阳光暖而不烈
+  beach: {
+    dome: true, skyTop: 0x2a8ae8, skyMid: 0x7ac8f4, horizon: 0xe8f8ff, discColor: 0xfffbe8, discSize: 0.055,
+    fog: 0xd8f0fa, fogD: 0.0034, hemiSky: 0xeaf6ff, hemiGnd: 0xc8a878, hemiI: 0.72, sun: 0xfff2d8, sunI: 1.6, sunPos: [24, 58, 30],
+    exposure: 0.95, env: 0.32, bloom: [0.3, 0.5, 0.95], grade: { cool: 0, ca: 0, vig: 0.6, sat: 1.15, tint: [1.02, 1.0, 0.98] }, keyLight: 0.5, lit: 0.28,
     skyBand: 'sky_cloud_noon_cumulus_04',
   },
   // 宫阙：午后金光，朱墙金瓦
