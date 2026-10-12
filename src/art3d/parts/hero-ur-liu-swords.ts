@@ -1,4 +1,4 @@
-// 刘喵备的双股剑：保留通用通过版的掌心握段和镜像外展刀座，新增短绿穗。
+// 刘喵备的双股剑：保留通用掌心握段和镜像外展刀座，双手共 16 个逻辑网格。
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { solid, toon } from '../toon';
@@ -38,20 +38,6 @@ function oneSword(c: PartCtx, side: 1 | -1): THREE.Group {
   const glint = new THREE.Shape(); glint.moveTo(-width * 0.18, 0.05);
   glint.quadraticCurveTo(-width * 0.18, length * 0.55, -width * 0.025, length * 0.93); glint.quadraticCurveTo(width * 0.07, length * 0.73, width * 0.03, length * 0.12); glint.closePath();
   top.add(placed(solid(extrude(glint, 0.008), toon('#f5faff'), 0), 0, 0.104, 0.036));
-  // 短绳连接圆首；布穗和小折纹用更小圆角，含描边的下端保持 y>=-.34。
-  const tx = side * 0.028;
-  const cord = new THREE.CatmullRomCurve3([new THREE.Vector3(0, -0.225, 0.025), new THREE.Vector3(side * 0.018, -0.25, 0.023), new THREE.Vector3(tx, -0.269, 0.02)]);
-  g.add(solid(new THREE.TubeGeometry(cord, 10, 0.008, 6, false), toon(c.pal.sub), 0.003));
-  const knot = new THREE.SphereGeometry(0.022, 10, 8); knot.scale(1, 0.8, 0.7);
-  g.add(placed(solid(knot, toon(c.pal.main), 0.005), tx, -0.271, 0.02));
-  const tassel = new THREE.Shape(); tassel.moveTo(-0.023, -0.285); tassel.quadraticCurveTo(-0.032, -0.307, -0.038, -0.327);
-  tassel.quadraticCurveTo(0, -0.332, 0.038, -0.327); tassel.quadraticCurveTo(0.032, -0.307, 0.023, -0.285); tassel.closePath();
-  g.add(placed(solid(extrude(tassel, 0.022, 0.003), toon(c.pal.main), 0.005), tx, 0, 0.02));
-  const folds = [-1, 1].map((s) => {
-    const shape = new THREE.Shape(); shape.moveTo(s * 0.010, -0.289); shape.lineTo(s * 0.021, -0.325); shape.lineTo(s * 0.017, -0.325); shape.lineTo(s * 0.007, -0.289); shape.closePath();
-    const geo = extrude(shape, 0.004, 0.001); geo.translate(tx, 0, 0.038); return geo;
-  });
-  g.add(combined(folds, c.pal.sub, 0));
   return g;
 }
 

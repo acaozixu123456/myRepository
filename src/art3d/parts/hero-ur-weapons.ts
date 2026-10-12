@@ -67,19 +67,20 @@ function crescentGlint(side: number): THREE.Shape {
   return shape;
 }
 
-/** 圆钝双月牙、短紫系带；12 个逻辑网格。 */
+/** 圆钝双月牙、短紫系带、连续外斜木颈；13 个逻辑网格。 */
 export function lvbuHalberd(c: PartCtx): THREE.Group {
   const root = new THREE.Group();
   root.name = 'ur-lvbu-halberd';
-  root.add(at(solid(cyl(0.035, 0.030, 1.78), toon('#654430'), 0.010), 0, 0.54));
+  // 掌心与下杆保持原锥度；仅把肩以上的杆弯向外侧接刀头。
+  root.add(at(solid(cyl(0.035, 0.035 - 0.005 * 0.975 / 1.78, 0.975), toon('#654430'), 0.010), 0, 0.1375));
   root.add(at(solid(cyl(0.046, 0.046, 0.20), toon(c.pal.sub), 0.008), 0, -0.035));
-  for (const y of [0.095, 1.325]) {
-    root.add(at(solid(cyl(0.057, 0.057, 0.055), toon(c.pal.trim), 0.008), 0, y));
-  }
+  root.add(at(solid(cyl(0.057, 0.057, 0.055), toon(c.pal.trim), 0.008), 0, 0.095));
 
   const head = new THREE.Group();
   head.name = 'halberd-head';
-  head.rotation.y = 0.12;
+  head.rotation.set(0, 0.12, 0.80);
+  const pivot = new THREE.Vector3(0, 0.50, 0);
+  head.position.copy(pivot.clone().sub(pivot.clone().applyQuaternion(head.quaternion)));
   root.add(head);
   head.add(at(solid(plate(spearShape()), toon(STEEL), 0.012), 0, 1.34));
   for (const side of [-1, 1]) head.add(solid(plate(crescentShape(side)), toon(STEEL), 0.012));
@@ -101,6 +102,7 @@ export function lvbuHalberd(c: PartCtx): THREE.Group {
   shade.lineTo(0.026, 1.416);
   shade.closePath();
   head.add(at(new THREE.Mesh(plate(shade, 0.006), toon(STEEL_SHADOW)), 0, 0, 0.034));
+  head.add(at(solid(cyl(0.057, 0.057, 0.055), toon(c.pal.trim), 0.008), 0, 1.325));
 
   const ribbon = new THREE.Shape();
   ribbon.moveTo(0.014, 1.284);
@@ -108,7 +110,16 @@ export function lvbuHalberd(c: PartCtx): THREE.Group {
   ribbon.quadraticCurveTo(0.316, 1.166, 0.242, 1.174);
   ribbon.quadraticCurveTo(0.145, 1.192, 0.014, 1.220);
   ribbon.closePath();
-  root.add(at(solid(plate(ribbon, 0.034), toon(c.pal.main), 0.009), 0, 0, -0.016));
+  head.add(at(solid(plate(ribbon, 0.034), toon(c.pal.main), 0.009), 0, 0, -0.016));
+  // 木颈两端埋入下杆和刀座；接头与曲管同材质合并，根仍在掌心。
+  const end = new THREE.Vector3(0, 1.36, 0).applyQuaternion(head.quaternion).add(head.position);
+  const neckCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0.60, 0), new THREE.Vector3(end.x * 0.5, 0.73, end.z * 0.5), end,
+  ]);
+  const joint = sphere(0.046, 1, 1, 1, 12); joint.translate(0, 0.60, 0);
+  const neck = solid(join([new THREE.TubeGeometry(neckCurve, 12, 0.034, 8, false), joint]), toon('#654430'), 0.009);
+  neck.name = 'halberd-neck';
+  root.add(neck);
   root.add(at(solid(sphere(0.051, 1, 0.60, 1, 12), toon(c.pal.trim), 0.008), 0, -0.335));
   return root;
 }
@@ -176,12 +187,12 @@ function staffTip(): THREE.Shape {
   return shape;
 }
 
-/** 镂空金环、实托青珠和短悬珠 / 青穗；16 个逻辑网格。 */
+/** 镂空金环、实托青珠、短悬珠 / 青穗与连续木颈；17 个逻辑网格。 */
 export function zuociStaff(c: PartCtx): THREE.Group {
   const root = new THREE.Group();
   root.name = 'ur-zuoci-staff';
-  // 杆止于环底，环孔内只有托座；不让木杆穿过青珠。
-  root.add(at(solid(cyl(0.034, 0.030, 1.47), toon(mix(c.pal.sub, '#765032', 0.70)), 0.009), 0, 0.415));
+  // 掌心及下杆保持原锥度，上段转向肩外的环座；孔内只有实体托座。
+  root.add(at(solid(cyl(0.034, 0.034 - 0.004 * 0.945 / 1.47, 0.945), toon(mix(c.pal.sub, '#765032', 0.70)), 0.009), 0, 0.1525));
   root.add(at(solid(cyl(0.045, 0.045, 0.19), toon(c.pal.sub), 0.008), 0, -0.01));
   for (const y of [-0.113, 0.094]) {
     root.add(at(solid(cyl(0.051, 0.051, 0.024), toon(c.pal.trim), 0.007), 0, y));
@@ -189,7 +200,9 @@ export function zuociStaff(c: PartCtx): THREE.Group {
 
   const head = new THREE.Group();
   head.name = 'staff-ring-head';
-  head.rotation.y = 0.12;
+  head.rotation.set(0, 0.12, 0.90);
+  const pivot = new THREE.Vector3(0, 0.50, 0);
+  head.position.copy(pivot.clone().sub(pivot.clone().applyQuaternion(head.quaternion)));
   root.add(head);
   head.add(at(solid(new THREE.TorusGeometry(0.22, 0.028, 6, 20), toon(c.pal.trim), 0.007), 0, 1.368));
   const support = new THREE.LatheGeometry([
@@ -212,19 +225,27 @@ export function zuociStaff(c: PartCtx): THREE.Group {
     head.add(at(solid(sphere(0.044, 1, 1, 1, 12), toon(c.pal.trim), 0.007), side * 0.268, 1.111, 0.015));
   }
 
-  root.add(at(solid(sphere(0.048, 1, 0.78, 0.72, 12), toon(c.pal.main), 0.007), 0, 1.024, 0.049));
+  head.add(at(solid(sphere(0.048, 1, 0.78, 0.72, 12), toon(c.pal.main), 0.007), 0, 1.024, 0.049));
   const tassel = new THREE.Shape();
   tassel.moveTo(-0.040, 1.010);
   tassel.quadraticCurveTo(-0.060, 0.894, -0.063, 0.736);
   tassel.quadraticCurveTo(0, 0.717, 0.065, 0.733);
   tassel.quadraticCurveTo(0.050, 0.896, 0.041, 1.010);
   tassel.closePath();
-  root.add(at(solid(plate(tassel, 0.042), toon(c.pal.main), 0.007), 0, 0, 0.058));
+  head.add(at(solid(plate(tassel, 0.042), toon(c.pal.main), 0.007), 0, 0, 0.058));
   const folds = [-1, 1].map((side) => new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(
     new THREE.Vector3(side * 0.014, 0.993, 0.087),
     new THREE.Vector3(side * 0.020, 0.864, 0.087),
     new THREE.Vector3(side * 0.025, 0.752, 0.087),
   ), 8, 0.006, 6, false));
-  root.add(new THREE.Mesh(join(folds), toon(mix(c.pal.main, c.pal.sub, 0.55))));
+  head.add(new THREE.Mesh(join(folds), toon(mix(c.pal.main, c.pal.sub, 0.55))));
+  const end = new THREE.Vector3(0, 1.145, 0).applyQuaternion(head.quaternion).add(head.position);
+  const neckCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0.60, 0), new THREE.Vector3(end.x * 0.5, 0.73, end.z * 0.5), end,
+  ]);
+  const joint = sphere(0.046, 1, 1, 1, 12); joint.translate(0, 0.60, 0);
+  const neck = solid(join([new THREE.TubeGeometry(neckCurve, 12, 0.030, 8, false), joint]), toon(mix(c.pal.sub, '#765032', 0.70)), 0.007);
+  neck.name = 'staff-neck';
+  root.add(neck);
   return root;
 }

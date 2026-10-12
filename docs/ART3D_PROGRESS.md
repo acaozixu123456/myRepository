@@ -244,3 +244,47 @@
 ## 英雄专属造型（`src/art3d/heroes.ts` 的 `HERO_PARTS`）
 
 通用部件做完之后，再给 SP / UR 英雄做「独一份」的东西（青龙偃月刀、冕旒、羽扇等）。按 `docs/ILLUST_PROGRESS.md` 的顺序：SP → UR → SSR。
+
+### UR 专属首批（第 1 轮待审）
+
+`codex/3d-heroes-ur-icons`：六位 UR 的独有冠饰 / 武器，第 1 轮待 Claude 审核，未标记为通过。仅新增三个 helper 与六条 `HERO_PARTS` 映射，通用部件和英雄数据保留；参考实际六张 JPG、`ART_PROMPTS.md` 与已认可的曹 / 刘立绘。内部候选修订不增加审核轮次。
+
+| 英雄 / 正式 ID | 覆盖组 | 状态 | 轮次 | 逻辑 / 含描边物理网格 | 备注 |
+| --- | --- | --- | ---: | ---: | --- |
+| 曹喵德 `wei_caomiaode` | headgear | 待审 | 1 | 12 / 23 | 低冕板、七列三珠帘，耳侧收腰 |
+| 刘喵备 `shu_liumiaobei` | weapon，主副两手 | 待审 | 1 | 16 / 30（每手 8） | 外展直双剑、镂空金卷护手；新增绳 / 结 / 短穗 / 折纹已删除 |
+| 周喵瑜 `wu_zhoumiaoyu` | headgear | 待审 | 1 | 10 / 20 | 仅低红吴冠；横抱 `qin` 专属未完成 |
+| 吕布丁 `qun_lvbuding` | weapon | 待审 | 1 | 13 / 24 | 双月牙、紫系带 / 上箍整体外斜，真实曲木颈接刀座 |
+| 孟喵获 `man_mengmiaohuo` | weapon | 待审 | 1 | 17 / 33 | 短木卵、双骨箍、七短圆齿与连续木颈 |
+| 左慈喵 `xian_zuoci` | weapon | 待审 | 1 | 17 / 30 | 金环青珠 / 托座 / 青穗整体外斜，真实曲木颈接上饰 |
+
+固定主线基线 `29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a`，相关 art3d / look / actor / player 与 e777 字节相同；包含最新六件衣服、八种毛色、表情嘴骨与 armed 姿态。最终四源 SHA256：
+
+```text
+src/art3d/heroes.ts
+  a52905509eda8750b950c54826b678686842a861ae920a79bd1bcd0c807b711e
+src/art3d/parts/hero-ur-regalia.ts
+  c092409c3e60b8c09f9d7e3f55ea8cd7b9bb0668b56fd2d75cb23e7c9425dbb9
+src/art3d/parts/hero-ur-liu-swords.ts
+  7e55df1b9525db50367fa8c4b9d9b9a4b13ccae0c41286e6e5913517eea91e38
+src/art3d/parts/hero-ur-weapons.ts
+  e5df9c239a404dd40fa9eee3de70de49da1a5b195e54cab94a1fa333aaabcde2
+```
+
+按上述顺序直接串接四文件 bytes 的 SHA256 为 `75b79a46c1fabae8ac82a057931013a01cc60a0330ceafa073f38aa9fa0a58ea`，不是 path-NUL 摘要。全部逻辑网格 ≤24、最高分段 20，复用缓存 Toon / outline；根零位移 / 零旋转 / 单位缩放、内部正尺度、PartCtx 不变，刘的真实 offhand 由正常插槽挂到左掌。
+
+独立冻结完整 src 339 文件，四源与 18 依赖前后 SHA 不变；基线 WEAPON / HEADGEAR 取 29f 原始 Git bytes，正常引擎与候选相同。300 个有限样本为六位 ×14 姿势 `t=.4`（84）＋每位 `idle/windup/strike` ×12 时点 `[0,8]`（216），phase=0 / yaw=32。实际 Eye 骨眼核 12×12 逐 sample ID 旧新差集新增 0（有效点 66521、单眼最低 50），五固定鼻口 ID 新增 0；真实活跃 smile / mouthO 骨三角的三个代表点新增 ID 0，210 张口 / 90 微笑例。正常 bake 的 FRAME 增幅、新所选部件越框与非有限均 0；整猫仍有 60 例旧裁切，基线 61，曹低冠消除 `castUp` 的一个原裁切。此为有限几何与可见性采样，不是全像素或连续时间证明。
+
+构建覆盖 77 位英雄 / 杂兵＋12 PET，共 89 个实际单位；六个 UR 使用真实 `buildCat3D(lookOf(id), id)` 命中，71 个非目标与另查 12 PET 的正常 bake 属性 / 索引按 Uint8Array 原字节相同。77 指 41 英雄＋36 杂兵，不泛指所有游戏单位。
+
+三杆完整新增上部 / 饰物 / 真颈分别核 199 个不同形位，合计 597：14 姿势 ×（12 均匀时点＋`.4`＋耳峰 `π/1.4`）再补 dash `.2/.8/1.2`，dash 共17个不同时间、moving=true，其余 moving=false，phase=0。保留原网格的独立 secondary 几何夹具取实际层级矩阵、实际颅骨 / 法线外扩描边，严格 ConvexHull 逐三角裁剪，吕 16 / 孟 23 / 左 22 个物理网格的本体→头本体、描边→头本体、描边→头描边均 0；scope 只含各自完整上部与曲木颈，未宣称全部武器根 / 握段 / 掌及所有连续动画接触为零。
+
+刘双剑保留旧掌 / 外展刀座在部分高举动作的真实头部接触；最终两手新增短穗全部撤除。独立对 `windup/castUp/victory t=.4` 实际两手逐面裁剪 / LP 对照，blade-mount 长宽与挂装同通用版，最大深度仍有约 `.00007/.00059` 世界单位微差。护孔内壁 / 曲面细分改变三角数与表面积，面积和面数不等于占据体积增加，不以旧新接触 case 数相同声称无差异；完整数值与有限范围写入 QA。正常 bake 原生 218×190 的六位三姿势四 yaw、耳峰、三杆低举 / 受击 / 垂头及刘高举样本已独立工具实看。
+
+审图共 19 文件：14 张官方图、README、两个 QA 文件、独立正常 bake before-after、横琴契约建议；全部 <500000 B。官方 raw→PNG / lossless WebP 保持完整尺寸、不重采样，14 图解码 RGBA 原字节差 0。链接：[全部图 / 参考 / 命令 / 冻结记录](../src/art3d/parts/reviews/heroes-ur-icons/README.md)、[独立 QA](../src/art3d/parts/reviews/heroes-ur-icons/qa-summary.md)、[机器报告](../src/art3d/parts/reviews/heroes-ur-icons/qa-summary.json)、[原生 218×190 旧新对照](../src/art3d/parts/reviews/heroes-ur-icons/before-after.png)、[官方约190px角色图](../src/art3d/parts/reviews/heroes-ur-icons/poses-small.png)、[原生190×166画布](../src/art3d/parts/reviews/heroes-ur-icons/poses-tiny.png)、[真实耳峰](../src/art3d/parts/reviews/heroes-ur-icons/ear-peak.png)、[真实十猫战斗](../src/art3d/parts/reviews/heroes-ur-icons/battle.webp) / [战技帧](../src/art3d/parts/reviews/heroes-ur-icons/battle-action.webp)。
+
+真实战斗使用 Player / HUD / 正常 bake，十个 actor 都有实际 `rig.cat3d`；曹 / 刘 / 周 / 吕 / 孟 / 左的六个专属 builder 命中次数为 2 / 2 / 1 / 2 / 2 / 1，十次全部命中，刘同时登记左右手。12 帧 nominal t=.5…6.0，每帧十猫 alive / cat3d，page errors 0，最终帧与原图 RGBA 字节相同；未用只摆模型的样板冒充游戏接入。
+
+作者在本次最终 75b 源码真实运行 `npm run typecheck && npm test`，退出 0，68 文件 / 1019 测试全部通过，无 Date shim；日志 `.shots/ur-icons/tests-all-weapons-final-29.log`。独立 QA 读取此日志，不把协调者早先 b2f 源码的检查冒充新源码测试。
+
+最不满意：刘双剑主要剪影仍接近通过版 stock，护孔 / 亮片在190px较小；周外耳描边最小间隙 `.00852802` 世界单位仍紧，保留有限耳峰采样限制。周横抱琴仍未实现，当前只完成吴冠，未计入完成的 weapon；[横琴挂点 / 手势契约建议](../src/art3d/parts/reviews/heroes-ur-icons/qin-contract-request.md) 仅供 Claude 决定后续接口，不改引擎或把建议写成实现。此批交审后继续队列其余衣服 / 披挂 / WORLD，不等待审核。
