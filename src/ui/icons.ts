@@ -1,5 +1,7 @@
 // 手绘风 SVG 图标（统一 64×64 视窗）：渐变填充 + 同色相深色细描边。不使用 emoji、不使用位图。
 // 用法：icon('fish', 28) -> 返回 <svg> 字符串。
+import { NOTO } from './noto';
+
 let uid = 0;
 const grad = (a: string, b: string) => {
   const id = `ig${++uid}`;
@@ -135,9 +137,20 @@ const ICONS: Record<string, Maker> = {
   spark: () => S(`<path d="M32 4 L38 26 L60 32 L38 38 L32 60 L26 38 L4 32 L26 26 Z" fill="#fff6c0" stroke="#e0a82e" stroke-width="3" stroke-linejoin="round"/>`),
 };
 
-export const ICON_NAMES = Object.keys(ICONS);
+/** 同一页面里有很多个内联 SVG，渐变 / 剪裁的 id 会撞车：给每个实例的 id 加唯一后缀 */
+function uniq(body: string): string {
+  const n = ++uid;
+  return body.replace(/id="([^"]+)"/g, `id="$1_${n}"`).replace(/url\(#([^)]+)\)/g, `url(#$1_${n})`).replace(/href="#([^"]+)"/g, `href="#$1_${n}"`);
+}
+/** 全套图标优先用 Noto Emoji（见 noto.ts）；下面这几个是按钮上的功能符号，保留自绘的白色粗线 */
+const OWN = new Set(['plus', 'close', 'check', 'arrowUp', 'starOff']);
+const GRAY = new Set(['starOff']);
+export const ICON_NAMES = Array.from(new Set([...Object.keys(ICONS), ...Object.keys(NOTO)]));
 export function icon(name: string, size = 24, cls = ''): string {
-  const mk = ICONS[name === 'bells' ? 'bell' : name];
+  const key = name === 'bells' ? 'bell' : name;
+  const noto = !OWN.has(key) ? NOTO[key] : GRAY.has(key) ? NOTO.star : undefined;
+  if (noto) return `<span class="ic ${cls}" style="width:${size}px;height:${size}px${GRAY.has(key) ? ';filter:grayscale(1) opacity(.45)' : ''}"><svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${uniq(noto)}</svg></span>`;
+  const mk = ICONS[key];
   if (!mk) return '';
   return `<span class="ic ${cls}" style="width:${size}px;height:${size}px">${mk()}</span>`;
 }
