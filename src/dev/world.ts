@@ -19,7 +19,7 @@ wv.setMood(L.mood); wv.setRain(L.weather !== 'none');
 wv.scene.add(st.group);
 wv.yaw = +(q.get('yaw') ?? 0.5); wv.pitch = +(q.get('pitch') ?? 1.0); wv.dist = +(q.get('dist') ?? 44);
 const team = (q.get('team') ?? 'wei_caomiaode,shu_liumiaobei,xian_changmiao,wei_simamiyi,shu_pangmiaotong').split(',');
-const ex = new Explorer(wv, st, team, { encounter: async () => true, chest: () => undefined, talk: () => undefined });
+const ex = new Explorer(wv, st, team, { encounter: async (_s, mode) => { ((window as unknown as { enc: string[] }).enc ??= []).push(mode); return true; }, chest: () => undefined, talk: () => undefined });
 if (q.get('pet')) ex.setPet(q.get('pet'));
 ex.addSpawn({ id: 'e1', kind: 'enemy', x: 8, z: -2, units: ['mob_qun_vanguard', 'mob_qun_guard'], label: '纸箱贼 Lv5', patrol: 4 });
 ex.addSpawn({ id: 'b1', kind: 'boss', x: -4, z: -16, units: ['qun_dongzhuo'], label: '董桌 · 首领', patrol: 0 });
