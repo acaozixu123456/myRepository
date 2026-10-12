@@ -55,6 +55,56 @@
 
 2026-10-12 · 按最新固定队列同步：#110 港口三款与 #115 森林三款已通过、合并并接入选定款。以下森林段落保留其提交时的状态、测试和审图记录，当前裁决以上方表为准。
 
+## 当前送审 · A10-SKY-DAY 正午 / 午后天空后两款
+
+[PR #117](https://github.com/acaozixu123456/myRepository/pull/117)，分支 `codex/3d-world-sky-daylight`，base 为 `claude/awesome-babbage-ygba4h`。本批仅制作正午白云蓝天与午后金光两张纯天空横带，**第 1 轮待审，已通过 0**。最终独立 QA 为 `readyForClaudeReview=true`、`ClaudeDecision=null`；内部候选迭代不增加 Claude 审核轮次，素材尚未接入游戏。
+
+| 名称 / ID | 素材 | 状态 | 审核轮次 | 规格 / 字节 | 截图 |
+| --- | --- | --- | --- | --- | --- |
+| 正午白云蓝天 `sky_cloud_noon_cumulus_04` | [WebP](../assets/world/sky/sky_cloud_noon_cumulus_04.webp) | 待审 | 1 | 2048×512 RGB / sRGB；83500 B；保留 C1 | [本批缩略图](../assets/world/reviews/sky-daylight-a10.webp) |
+| 午后金光 `sky_palace_afternoon_gold_05` | [WebP](../assets/world/sky/sky_palace_afternoon_gold_05.webp) | 待审 | 1 | 2048×512 RGB / sRGB；120818 B；选 AI 修缝 C2 | [本批缩略图](../assets/world/reviews/sky-daylight-a10.webp) |
+
+### A10-SKY-DAY 制作、裁切与来源
+
+2026-10-12 · 第 1 轮待审。共三次真实 `image_gen.imagegen` 调用：两张初始原稿于 06:09:36～06:10:19 UTC 生成，午后款于 06:30:21～06:30:56 UTC 完成一次真实局部修缝编辑。正午款没有重新生成或重绘，最终文件逐字节等于原 C1；午后款选 C2。完整提示词 / 参数、原稿路径、时间、参考与成品哈希见 [出处记录](../assets/world/sky/sky-daylight-a10.provenance.json)。
+
+工具请求 2048×512 / 4:1，但三次实际返回均为 **2172×724 RGB / 3:1**。最终两款采用半开中裁 `[0,90,2172,633]`，保留全宽 2172 列，去上 90 / 下 91 行，得到 2172×543 / 4:1，再用 Lanczos 等比降至 2048×512；两轴缩放比例均为 0.942909760589，没有横向拉伸、上采样或把请求尺寸冒称原生尺寸。WebP q90 / method6，嵌入同一 588 B sRGB ICC。
+
+午后 C1 原左右接缝先以精确 `roll(-1086)` 移到参考图中央，真实 AI 针对该区域修缝；输出后以 `roll(+1086)` 恢复相位，再按上文裁切 / 降采样 / 编码。参考图与恢复 PNG 的全 RGB 位移链已独立核对，恢复 PNG 是技术文件，不另算 AI 原稿或调用。没有代码绘画、边缘混合或改色。该款重新导出字节与最终 WebP 全等，正午款复用相同 C1 的已冻结重导出证据。
+
+两次初始生成早于主干 `6fdb7eefe166877b9cb874cb3a8c27f821206519` 于 06:12:57 UTC 新增的现成素材优先规则；午后真实编辑发生在实际目录补查之后。不能将补查倒写成初始生成前搜索。ambientCG、Poly Haven、Kenney、OpenGameArt 确有 CC0 地面 / 天空候选和许可线索；外部文件下载 / API 受当前网络策略返回 403，未验证全部候选像素与风格。本批未采用第三方像素文件，不宣称不存在合适现成天空。方法事实及限制见本批 [来源补查摘要](../assets/world/sky/sky-daylight-a10.source-search.md)、[来源记录](../assets/world/sky/sky-daylight-a10.source-search.json) 与出处记录，不依赖另一未合并 PR 的素材文件。
+
+### 实际 QA 与审图
+
+最终独立 QA 已实看午后 C2 工具输出、恢复相位、编码整图、原生 / 成品 2×1 与 4×1、全高左右接缝及恢复后的新中心，再看新总览、柱面三方位和额外 180° 实拍。旧云冠硬竖断面已变成连续圆云冠，恢复中心未见明显新增硬竖条；正午款在新审图中保留清蓝 / 象牙白云，午后款保持上蓝下柔金，未见城市、建筑、地面、文字或硬太阳盘。详见 [QA 摘要](../assets/world/sky/sky-daylight-a10.qa.md)、[机器记录](../assets/world/sky/sky-daylight-a10.qa.json) 与 [QA 方法](../assets/world/sky/sky-daylight-a10.qa-method.json)。
+
+正式两张审图为 [单张与横向平铺总览](../assets/world/reviews/sky-daylight-a10.webp)（2048×1024，267372 B）和 [独立柱面三个方位](../assets/world/reviews/sky-daylight-a10-cylinder.webp)（2048×1024，198194 B）。冻结证据还包含两款最终全高 1:1 接缝 PNG、两款原生全 724 行接缝证明与一张午后真实 shifted 原稿中心证明，冻结证据共 7 张，全部 POT 且 <500000 B；本 PR 交付其中 6 张，最后一张重复坐标证明留工作空间。连同两素材，实际入库待审 8 张图片。三张真实 2172×724 原稿留工作空间作为出处证据，未当作成品入库。
+
+新浏览器实际捕获于 06:35:09.895～06:35:13.786 UTC，两素材 2/2 加载成功，Three169 / Chromium SwiftShader / WebGL，页面错误、请求失败和 console 警告均为 0。正午 / 午后都重新读取成品并重拍，没有复用 C1 截图。无灯 MeshBasic 白色 BackSide，输出 sRGB，RepeatS / ClampT，NoToneMapping / exposure1；无灯、环境、雾、bloom 或后期调色。相同相机查看 0° / 120° / 240°，另对午后真实捕获 180°。方法和实际依赖见 [审图说明](../assets/world/reviews/sky-daylight-a10.README.md)。
+
+两个原尺寸 sRGB 颜色探针的 2097152 个像素、原生接缝证明的 1265664 个像素均与来源 RGB 全等；主板六 viewport 的 1474560 个像素与原始 WebGL 帧全等。正式 WebP 审图为 q92 有损压缩，不冒称压缩审图与原帧逐像素相等；RGB 输运证明也不能代替视觉接缝判断。C2 预览 33 个库存文件及 manifest 已冻结核对，旧 C1 独立 QA 的 30 份文件逐字节未变。
+
+### 已知限制与接入边界
+
+最不满意：4×1 仍能辨认主云簇周期，少量云丝边缘像素不完全相等；午后成品左右边差 MAE 5.7819 / max106，新中心 MAE 1.6204 / max43，仅作诊断，不用均值宣称严格像素无缝。上下天空渐变有意保留，只检查横向连续，不要求顶部 / 底部相等。
+
+本批为 4:1 天空横带，不是整球 2:1 经纬图或 HDRI。独立柱面有限方位不能证明全部游戏镜头、极点、地平线延续或前景遮挡。实拍资料基线为 `6fdb7eefe166877b9cb874cb3a8c27f821206519`；拍摄时工作树仍为 claim HEAD `5a0722d3bc103c681cbecfb8a1047900ee63ca50` / 原 base `7ea72216176654ba77fb4f6223d4958d5ee18c67`，并未把 6f 读取快照当成已合并工作树。该资料中的引擎 `setSky` 仍为渐变 / 太阳 Shader Sphere，没有本批贴图 sampler 或 ID 接入口。新主干后续接入由 Claude 负责，不能把这些独立样板称为最新主干的游戏截图。
+
+### 最新协作摘要
+
+依据根线程实际读取的 GitHub 主干 `0cbd676f1de4ee768ce06566f2992ec20e6f47a8` / queue `15f2`：
+
+- 港口 [#110](https://github.com/acaozixu123456/myRepository/pull/110) 与森林 [#115](https://github.com/acaozixu123456/myRepository/pull/115) 已通过并接入。
+- 外部 [#111](https://github.com/acaozixu123456/myRepository/pull/111)、[#113](https://github.com/acaozixu123456/myRepository/pull/113)、[#118](https://github.com/acaozixu123456/myRepository/pull/118)、[#119](https://github.com/acaozixu123456/myRepository/pull/119)、[#120](https://github.com/acaozixu123456/myRepository/pull/120) 已通过合并，保留其正式历史，不重复制作。
+- 前三天空继续跟外部 [#116](https://github.com/acaozixu123456/myRepository/pull/116) owner，本批仅后两款；云岛 [#114](https://github.com/acaozixu123456/myRepository/pull/114) 的生产文档与送审由根线程另行接管。
+- 周喵瑜古琴按最新队列暂不制作。后续任务以最新固定队列及实际认领为准。
+
+### 最终必要检查
+
+2026-10-12 · 在本工作树实际执行 `npm run typecheck && npm test` 全过，退出码 0，69 个测试文件 / 1035 个测试。命令开始 06:53:44 UTC；Vitest 于 06:53:53 开始，耗时 75.59 秒。执行时 HEAD `5a0722d3bc103c681cbecfb8a1047900ee63ca50`，工作树已经应用最新主干 `0cbd676f1de4ee768ce06566f2992ec20e6f47a8` 的合并并仅解决进度文档冲突；最终提交代码与该次检查一致。完整 [日志](../assets/world/reviews/sky-daylight-a10.required-checks-main0cbd.log)。冻结的 6f 独立预览未重标为最新游戏截图。
+
+旧批完整制作 / 审核历史保留在以下原进度表中；原始提交措辞不是当前裁决，当前审核以最新固定队列为准。
+
 ## 主题素材 · A09-FR 光之森草地与落叶
 
 当前主题批次：**A09-FR**，分支 `codex/3d-world-forest-ground`，清晨森林草地 / 落叶三变体，**第1轮待审，通过数量0**。依据最新 [固定队列](CODEX_QUEUE.md) 与 [WORLD3D 场景主题](WORLD3D.md)，明亮清爽主题优先于旧暗紫赛博计划；既有素材保留，各批独立提交，有返修先返修，不等待Claude审核开下一批。

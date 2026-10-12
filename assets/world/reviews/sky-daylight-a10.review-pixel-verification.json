@@ -1,0 +1,100 @@
+{
+  "candidate": 2,
+  "frames": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "yaw": 0,
+      "boardRectXYWH": [
+        32,
+        120,
+        640,
+        384
+      ],
+      "framePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-yaw-000-raw.png",
+      "frameSHA256": "17995e2b28799583e548a67c75e080e790ff051292957c2ca3b930bdb5816a05",
+      "RGBExactlyEqual": true
+    },
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "yaw": 120,
+      "boardRectXYWH": [
+        704,
+        120,
+        640,
+        384
+      ],
+      "framePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-yaw-120-raw.png",
+      "frameSHA256": "0eb0443244dc8c9052dde217fa91b3e3804f359fe97850f34e188cbf3734ba02",
+      "RGBExactlyEqual": true
+    },
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "yaw": 240,
+      "boardRectXYWH": [
+        1376,
+        120,
+        640,
+        384
+      ],
+      "framePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-yaw-240-raw.png",
+      "frameSHA256": "396b817d14421728b3a2a2a9130cb39ab96d8d8c6c2c73906b81111f4b82319a",
+      "RGBExactlyEqual": true
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 0,
+      "boardRectXYWH": [
+        32,
+        572,
+        640,
+        384
+      ],
+      "framePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-000-raw.png",
+      "frameSHA256": "48535d3dfd6858722ebaf69e6c769a6e5ff3a058cbd50e3fa430ee48ea9ae7da",
+      "RGBExactlyEqual": true
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 120,
+      "boardRectXYWH": [
+        704,
+        572,
+        640,
+        384
+      ],
+      "framePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-120-raw.png",
+      "frameSHA256": "d55bbdd8e9895c1a972c826d63e6465ae274604764af992837c69dda6dde8b64",
+      "RGBExactlyEqual": true
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 240,
+      "boardRectXYWH": [
+        1376,
+        572,
+        640,
+        384
+      ],
+      "framePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-240-raw.png",
+      "frameSHA256": "c34645eb797de31203506c175943bad32aa74f4241508917a5d12298d35faa86",
+      "RGBExactlyEqual": true
+    }
+  ],
+  "allFramePixelsEqual": true,
+  "pixelCount": 1474560,
+  "webpNotAssertedRGBExact": "final reviewWebP usesq92compression; source probes/native PNG exact",
+  "edgeAuxiliary": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "method": "final last vs first column across512rows; auxiliary only, not seam pass",
+      "meanAbsoluteChannelDifference": 2.9231770833333335,
+      "maxAbsoluteChannelDifference": 26
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "method": "final last vs first column across512rows; auxiliary only, not seam pass",
+      "meanAbsoluteChannelDifference": 5.781901041666667,
+      "maxAbsoluteChannelDifference": 106
+    }
+  ]
+}

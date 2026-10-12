@@ -1,0 +1,37 @@
+{
+  "artifact": "sky-daylight-a10.qa-method.json",
+  "created_UTC": "2026-10-12T06:45:45.420212+00:00",
+  "allowed_write_scope": "/workspace/world-review/sky-daylight/independent-qa/candidate02",
+  "prior_evidence_frozen": true,
+  "source_reads": "Exact immutable source/provenance paths; explicit Git6fdb7e and7ea7221617 objects for sky shader/palette context. No shared FETCH_HEAD.",
+  "source_call_evidence": "Compare complete UTF8 prompts, actual arguments, originals/archiveSHA and time/path records. Preserve3 actual calls:two initial images and one genuine05 reference edit;04 not regenerated.",
+  "reference_transform": "Independent np.roll(C1_native,-1086,axis1) equals reference RGB; np.roll(C2_genuine_tool_output,+1086,axis1) equals root restored-full RGB.",
+  "export": "Independent crop half-open[0,90,2172,633]→2172x543; Lanczos2048x512;q90/m6; exact frozen ICC588B. No per-row warping/pixel painting/color/seam synthesis.05 new WebP byteproof;04 C1 byteproof reused only after exact copy SHA validation.",
+  "visual": "Read native AI output and restored source, actual full-coded source, raw-restored and encoded horizontal2x1/4x1 review-reduced strips; native/coded full-height LR and new inverse-center strips at1:1; actual Three overview/cylinder/native PNG plus extra05yaw180. Source pixels never obscured by seam marks.",
+  "metric": "Adjacent-column and wrapRGB MAE/p95/max recorded for tool phase/restored/crop/coded; no scalar cutoff or zero-MAE requirement. Vertical gradient excludes TB equality.",
+  "actual_preview": "Existing helper capture only:Three169/SwiftShader, SRGBColorSpace, whiteBasic BackSide/toneMappedfalse, NoToneMapping exposure1, repeatS/clampT, no lights/PMREM/fog/grade. OpenCylinder8/8/4pi/192segments u reversed for interior reading;0/120/240 plus05extra180. Not actual game import.",
+  "pixel_proof": "Recompute2,097,152 Basic1:1 pixels and1,265,664 raw/restored/final seam-proof samples;six main PNG viewports1,474,560 pixels equal raw frames. Optional shifted-center proof additionally checked exact and byte-identical to restored-fullLR proof. LossyWebP review board does not claim PNG equality.",
+  "inventory": "Read all33 listed C2 preview files+manifest;validate7 review image SHA/dimensions/POT/<500000B and immutable sources before/after. Verify30 independent C1 files unchanged. Raw callPNG retained scratch above500KB and nonPOT;not counted as formal budgeted output.",
+  "portable_scope": "2 texture outputs+7 review evidence images(1 optional)=9 maximum;3 genuine raw outputs retained scratch,1 reference and1 technical restoredPNG not new artwork calls.",
+  "no_additional_full_tests_or_browser_capture": true,
+  "approval": "readyForClaudeReview is internal QA completion only. Claude decision=null,approved_count0;C2 internal selection remains round1.",
+  "full_source_policy_history": {
+    "rule_commit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+    "rule_commit_UTC": "2026-10-12 06:12:57 UTC",
+    "original_two_calls": "2026-10-12 06:09:36–06:10:19 UTC",
+    "repair_actual_third_call": "2026-10-12 06:30:21–06:30:56 UTC",
+    "original_pre_generation_public_search_verified": false,
+    "current_search_owner_record": "Original two calls completed06:10:19 before source-first6f06:12:57. Genuine repair06:30:21->06:30:56 after actual catalog lookups; source lookups did not verify remote downloadable pixel assets due enforced domain policy. No third-party pixel file adopted.",
+    "independent_remote_download_or_license_asset_pixel_verification": false,
+    "adopted_third_party_pixel_asset": false
+  },
+  "unresolved_limits": [
+    "Cloud wisps still have some non-equal edge pixels; coded afternoonLR MAE5.781901/max106, center MAE1.620443/max43. Means are diagnostics, not acceptance thresholds.",
+    "Main cloud clusters are visibly repeated at4x1; no claim of a nonrepeating sky.",
+    "Intentional blue-to-warm vertical gradient; horizontal wrap only; top/bottom do not need equality.",
+    "Independent Basic unlit cylinder has no game atmosphere/foreground/fog/bloom/grade. Engine at explicit6f context still uses shader sphere and its own sun; no texture integration claim.",
+    "Cylinder70deg camera and sampled yaws do not prove all camera directions or polar/zenith continuation.4:1 sky band is not entire-sphere equirectangular/HDRI.",
+    "sRGB and native RGB equality prove color/pixel transport, not cloud continuity.",
+    "AI call authenticity is supported by parent-saved actual call records/original files; this independent agent did not itself call imagegen or verify third-party candidate pixel downloads."
+  ]
+}
