@@ -1,11 +1,12 @@
 // 3D 小猫的半身像（出招插入图 / 抽卡展示 / 头像）：渲染一次，裁出上半身。
 import type { CatLook } from '../art/types';
-import { buildCat3D } from './cat3d';
+import { buildCat3D, disposeCat3D } from './cat3d';
 import { applyPose } from './pose';
 import { FRAME, Renderer3D } from './renderer';
 
 export function portrait3D(look: CatLook, px = 520, heroId?: string): HTMLCanvasElement {
-  const R = Renderer3D.get()!;
+  const R = Renderer3D.get();
+  if (!R || R.lost) throw new Error('3D 渲染不可用');
   const cat = buildCat3D(look, heroId);
   cat.phase = 0;
   applyPose(cat, {}, { alive: false, moving: false, t: 0 });
@@ -16,6 +17,7 @@ export function portrait3D(look: CatLook, px = 520, heroId?: string): HTMLCanvas
   const c = document.createElement('canvas');
   c.width = px; c.height = Math.round((px * ch) / cw);
   c.getContext('2d')!.drawImage(R.canvas, cx, sy, cw, ch, 0, 0, c.width, c.height);
+  disposeCat3D(cat);
   return c;
 }
 
@@ -27,7 +29,8 @@ export function cat3dUrl(heroId: string, look: CatLook, view: 'card' | 'head' | 
   const key = `${heroId}|${view}`;
   let u = urlCache.get(key);
   if (u) return u;
-  const R = Renderer3D.get()!;
+  const R = Renderer3D.get();
+  if (!R || R.lost) throw new Error('3D 渲染不可用');
   const cat = buildCat3D(look, heroId);
   cat.phase = 0;
   applyPose(cat, {}, { alive: false, moving: false, t: 0 });
@@ -40,6 +43,7 @@ export function cat3dUrl(heroId: string, look: CatLook, view: 'card' | 'head' | 
   c.height = outH;
   c.width = Math.round((outH * box.w * sw) / (box.h * sh));
   c.getContext('2d')!.drawImage(R.canvas, sx + box.x * sw, sy + box.y * sh, box.w * sw, box.h * sh, 0, 0, c.width, c.height);
+  disposeCat3D(cat);
   u = c.toDataURL('image/webp', 0.88);
   if (!u.startsWith('data:image/webp')) u = c.toDataURL('image/png');
   urlCache.set(key, u);

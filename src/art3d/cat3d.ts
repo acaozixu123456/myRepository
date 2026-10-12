@@ -123,6 +123,17 @@ function buildEar(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE
   return e;
 }
 
+/** 释放一只猫占的 GPU 缓冲（几何 + 蒙皮骨骼贴图）。材质 / 贴图是按 key 共享缓存的，不动它们。
+ *  不释放的话，每建一只猫（每场战斗 10 只、每张抽卡立绘 1 只）显存都只增不减，手机上跑一阵就被系统杀掉页面（黑屏重启）。 */
+export function disposeCat3D(cat: Cat3D | undefined | null) {
+  if (!cat) return;
+  cat.root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    m.geometry?.dispose();
+    (m as THREE.SkinnedMesh).skeleton?.dispose();
+  });
+}
+
 export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   const o = look.outfit;
   const pal = o.pal;

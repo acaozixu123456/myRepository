@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CELL, LEVELS, SAFE_R, herbsOf, inSafeZone, poisOf, reachableCells } from '../src/world/levels';
+import { ALL_SCENES, CELL, SAFE_R, herbsOf, inSafeZone, poisOf, reachableCells } from '../src/world/levels';
 import type { LevelDef } from '../src/world/levels';
 import { relocateOutOfSafe } from '../src/game/explore';
 
@@ -13,7 +13,7 @@ const spotsOf = (L: LevelDef): [string, number, number][] => [
 
 // 十字街区（旧布局）靠「寻路终点吸附到最近可走格」兜底，只要求落点两格内有走得到的格子；
 // 各主题场景（新布局）要求更严：落点本身就是走得到的格子。
-describe.each(Object.values(LEVELS))('关卡布局 $chapter $name', (L) => {
+describe.each(Object.values(ALL_SCENES))('关卡布局 $chapter $name', (L) => {
   const R = reachableCells(L);
   const themed = !!L.theme && L.theme !== 'street';
   const at = (x: number, z: number) => { const cx = Math.floor((x + L.half) / CELL), cz = Math.floor((z + L.half) / CELL); return cz * R.N + cx; };

@@ -1,0 +1,3845 @@
+{
+  "dateUTC": "2026-10-12T05:51:34.746Z",
+  "base": "a7a41e9ebaf4083f5cf3c0904f3850a9c81f7a07",
+  "snapshotPrefix": "/.shots/extras-regalia-official/source-1791784254262-174424",
+  "sourceHashesBefore": {
+    "src/art3d/parts/extras.ts": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+    "src/art3d/parts/extras-regalia.ts": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+    "src/art3d/cat3d.ts": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/rig.ts": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+    "src/fx/player.ts": "cd8327161fc99bc207175a53ab88a91f76e3b407a8cba6c7b8426ca8d025da0f",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/parts/back.ts": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/demo/battle.ts": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+    "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5",
+    "src/art3d/parts/body.ts": "36552abd5d042fa806302e2072164e059cbbe1d63ec8daf95d4e3952f88116ca",
+    "src/art3d/heroes.ts": "0fc83a39421690538c37ac62cc9c1e0dc2d6ed7b1ffc7f2a0baae4a12216ce07",
+    "src/art3d/parts/index.ts": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+    "src/art3d/parts/types.ts": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c"
+  },
+  "sourceHashesAfter": {
+    "src/art3d/parts/extras.ts": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+    "src/art3d/parts/extras-regalia.ts": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+    "src/art3d/cat3d.ts": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/rig.ts": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+    "src/fx/player.ts": "cd8327161fc99bc207175a53ab88a91f76e3b407a8cba6c7b8426ca8d025da0f",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/parts/back.ts": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/demo/battle.ts": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+    "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5",
+    "src/art3d/parts/body.ts": "36552abd5d042fa806302e2072164e059cbbe1d63ec8daf95d4e3952f88116ca",
+    "src/art3d/heroes.ts": "0fc83a39421690538c37ac62cc9c1e0dc2d6ed7b1ffc7f2a0baae4a12216ce07",
+    "src/art3d/parts/index.ts": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+    "src/art3d/parts/types.ts": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c"
+  },
+  "sourceSHAUnchanged": true,
+  "normalSourceEngine": true,
+  "sentinelOnlyUnusedExports": true,
+  "officialEntry": "Unmodified src/dev/cat3d.ts and src/demo/battle.ts copied with their full relative source tree; normal bake, original markup and screenshot parameters.",
+  "figures": [
+    {
+      "name": "beards-1-32-large",
+      "ids": [
+        "wei_caomiaode",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "qun_dongzhuo"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "beards-1-32-large.png",
+      "rawBytes": 329914,
+      "rawSHA256": "03a19eae7542f26a6e1ab62fd09e6806bf8af1ea8c879e5afb29ff4294b7ccb5",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-1-32-native",
+      "ids": [
+        "wei_caomiaode",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "qun_dongzhuo"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "beards-1-32-native.png",
+      "rawBytes": 268091,
+      "rawSHA256": "1fa706c0cc4088bebd3d664fab5723156f85be7476057e54594226177a01dfcc",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-1-front",
+      "ids": [
+        "wei_caomiaode",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "qun_dongzhuo"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 250,
+      "query": "ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "rawPNG": "beards-1-front.png",
+      "rawBytes": 264755,
+      "rawSHA256": "190e587b40db1d4faa17681216f565eeb8405f223288210240f3d822068aada9",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-1-reverse",
+      "ids": [
+        "wei_caomiaode",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "qun_dongzhuo"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": -32,
+      "width": 250,
+      "query": "ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "rawPNG": "beards-1-reverse.png",
+      "rawBytes": 266654,
+      "rawSHA256": "76fd2d2e4337b02526d296a10686fd2582bcb7a86f923fc09e00006126aefbf9",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-1-back",
+      "ids": [
+        "wei_caomiaode",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "qun_dongzhuo"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 148,
+      "width": 250,
+      "query": "ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wei_caomiaode%2Cshu_huangzhong%2Cwu_huanggai%2Cqun_dongzhuo&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "rawPNG": "beards-1-back.png",
+      "rawBytes": 197822,
+      "rawSHA256": "377748e479e76ae3350ecf87686d239f6d9e2d23f2292b4a0897c124058656e5",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-2-32-large",
+      "ids": [
+        "qun_huatuo",
+        "xian_shuijing",
+        "xian_yuji",
+        "wei_simamiyi"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "beards-2-32-large.png",
+      "rawBytes": 294103,
+      "rawSHA256": "7b61e323c24610e13a474dba725bae24768d4f30f0960b9b9d2d2e7cfc82f3e1",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-2-32-native",
+      "ids": [
+        "qun_huatuo",
+        "xian_shuijing",
+        "xian_yuji",
+        "wei_simamiyi"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "beards-2-32-native.png",
+      "rawBytes": 239410,
+      "rawSHA256": "70c752ea0dc28d3737400edbe9ce85f946b17b2a42eb9abc6e4d92f29cfaf726",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-2-front",
+      "ids": [
+        "qun_huatuo",
+        "xian_shuijing",
+        "xian_yuji",
+        "wei_simamiyi"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 250,
+      "query": "ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "rawPNG": "beards-2-front.png",
+      "rawBytes": 241678,
+      "rawSHA256": "e8edd3bfece733e099ee4157877b49250e3a72f5901beba90cc8b9cbf297207d",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-2-reverse",
+      "ids": [
+        "qun_huatuo",
+        "xian_shuijing",
+        "xian_yuji",
+        "wei_simamiyi"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": -32,
+      "width": 250,
+      "query": "ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "rawPNG": "beards-2-reverse.png",
+      "rawBytes": 243197,
+      "rawSHA256": "eefc4e6b44ef9909de3bf7780a78eea4d045e8ad997d1f8e38ef59af0e4c34cc",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "beards-2-back",
+      "ids": [
+        "qun_huatuo",
+        "xian_shuijing",
+        "xian_yuji",
+        "wei_simamiyi"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 148,
+      "width": 250,
+      "query": "ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=qun_huatuo%2Cxian_shuijing%2Cxian_yuji%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "rawPNG": "beards-2-back.png",
+      "rawBytes": 188716,
+      "rawSHA256": "238b192fbb752a4f87b75d7925da8d829470d1862fed38afba6e889d280dd25e",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-heroes-mob-32-large",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "xian_changmiao",
+        "mob_xian_assassin"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "bells-heroes-mob-32-large.png",
+      "rawBytes": 293010,
+      "rawSHA256": "f2b86651f2fbec8af7570bfc59dfce556218426819cd2237a93615106a588700",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-heroes-mob-32-native",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "xian_changmiao",
+        "mob_xian_assassin"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "bells-heroes-mob-32-native.png",
+      "rawBytes": 237476,
+      "rawSHA256": "391d6a239176d4c3dbc8c4b652224eb51bfb1ff2132ae1ebaa9e2e98146c5757",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-heroes-mob-front",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "xian_changmiao",
+        "mob_xian_assassin"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "rawPNG": "bells-heroes-mob-front.png",
+      "rawBytes": 232373,
+      "rawSHA256": "62ab98716538f63e0e50444ecbb4220c4c52054b90cec4fe2d65eff786a908ac",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-heroes-mob-reverse",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "xian_changmiao",
+        "mob_xian_assassin"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": -32,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "rawPNG": "bells-heroes-mob-reverse.png",
+      "rawBytes": 237117,
+      "rawSHA256": "5b59556bc40f51e4fb9e19a6c4cc3444bfafb061a6d29eff80b9d9b860db405e",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-heroes-mob-back",
+      "ids": [
+        "wu_sunxiangxiang",
+        "wu_ganning",
+        "xian_changmiao",
+        "mob_xian_assassin"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 148,
+      "width": 250,
+      "query": "ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_sunxiangxiang%2Cwu_ganning%2Cxian_changmiao%2Cmob_xian_assassin&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "rawPNG": "bells-heroes-mob-back.png",
+      "rawBytes": 190153,
+      "rawSHA256": "0e1bd37e28449f45117eff0ac31f90ff230fe8af021def028327c0ddaa3a9242",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-pets-32-large",
+      "ids": [
+        "pet_tuanzi",
+        "pet_xueqiu",
+        "pet_huihui",
+        "pet_xingxing"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "bells-pets-32-large.png",
+      "rawBytes": 294852,
+      "rawSHA256": "6b6995cec738f4e92957d09af88b2206ae1111ac4ca41264c655e846eaa12f75",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-pets-32-native",
+      "ids": [
+        "pet_tuanzi",
+        "pet_xueqiu",
+        "pet_huihui",
+        "pet_xingxing"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "bells-pets-32-native.png",
+      "rawBytes": 239253,
+      "rawSHA256": "02a2a33f82c2dea71b3434be4a2d9d44000f3554fd6b398abbba886b0bfc9739",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-pets-front",
+      "ids": [
+        "pet_tuanzi",
+        "pet_xueqiu",
+        "pet_huihui",
+        "pet_xingxing"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 250,
+      "query": "ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "rawPNG": "bells-pets-front.png",
+      "rawBytes": 230264,
+      "rawSHA256": "2e880be73b2fceae967bcb7223d0d856194ef58c950b1b61a2da1455dbb955c4",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-pets-reverse",
+      "ids": [
+        "pet_tuanzi",
+        "pet_xueqiu",
+        "pet_huihui",
+        "pet_xingxing"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": -32,
+      "width": 250,
+      "query": "ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "rawPNG": "bells-pets-reverse.png",
+      "rawBytes": 236854,
+      "rawSHA256": "7bafa6ff095aca3486dfc7d24e62251baec222fa26d53c64d7fd87c441bc541b",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bells-pets-back",
+      "ids": [
+        "pet_tuanzi",
+        "pet_xueqiu",
+        "pet_huihui",
+        "pet_xingxing"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 148,
+      "width": 250,
+      "query": "ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=pet_tuanzi%2Cpet_xueqiu%2Cpet_huihui%2Cpet_xingxing&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "rawPNG": "bells-pets-back.png",
+      "rawBytes": 191759,
+      "rawSHA256": "9a651ab9940cffbb7c3ff30e3f669ffe4007637f059fc08a4f401d586d5ebc46",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "earrings-heroes-pet-32-large",
+      "ids": [
+        "wu_zhoumiaoyu",
+        "qun_lvbuding",
+        "shu_pangmiaotong",
+        "pet_jiuwei"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 290,
+      "query": "ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "rawPNG": "earrings-heroes-pet-32-large.png",
+      "rawBytes": 336107,
+      "rawSHA256": "373308fae118595cc45816b0684b590fb986f0883c1ba12694b8b426914eb80c",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ],
+          [
+            290,
+            254
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "earrings-heroes-pet-32-native",
+      "ids": [
+        "wu_zhoumiaoyu",
+        "qun_lvbuding",
+        "shu_pangmiaotong",
+        "pet_jiuwei"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 250,
+      "query": "ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "rawPNG": "earrings-heroes-pet-32-native.png",
+      "rawBytes": 273320,
+      "rawSHA256": "187505ef2d449ebacb0ebe89e33ef5831777cc1b63e969e32ec71e2fa2ffa466",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "earrings-heroes-pet-front",
+      "ids": [
+        "wu_zhoumiaoyu",
+        "qun_lvbuding",
+        "shu_pangmiaotong",
+        "pet_jiuwei"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 250,
+      "query": "ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "rawPNG": "earrings-heroes-pet-front.png",
+      "rawBytes": 266276,
+      "rawSHA256": "987c90f854e380e07b7ddb310230aa6b64aae9b257e962c1cb0c7757c9d247f7",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "earrings-heroes-pet-reverse",
+      "ids": [
+        "wu_zhoumiaoyu",
+        "qun_lvbuding",
+        "shu_pangmiaotong",
+        "pet_jiuwei"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": -32,
+      "width": 250,
+      "query": "ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "rawPNG": "earrings-heroes-pet-reverse.png",
+      "rawBytes": 269360,
+      "rawSHA256": "5fd024e35ccf45f356b7df0bb8eb18c75ca5a394c256ec8471b6a86790c5270b",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "earrings-heroes-pet-back",
+      "ids": [
+        "wu_zhoumiaoyu",
+        "qun_lvbuding",
+        "shu_pangmiaotong",
+        "pet_jiuwei"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 148,
+      "width": 250,
+      "query": "ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_zhoumiaoyu%2Cqun_lvbuding%2Cshu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "rawPNG": "earrings-heroes-pet-back.png",
+      "rawBytes": 205347,
+      "rawSHA256": "4dc7bc496d7900d78e6633dd38e0dd66dd67e38bb80214c2ace708ca843f48d0",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ],
+          [
+            250,
+            219
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "goat-root-mouth-detail",
+      "ids": [
+        "wei_caomiaode",
+        "wei_simamiyi"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 0,
+      "width": 420,
+      "query": "ids=wei_caomiaode%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wei_caomiaode%2Cwei_simamiyi&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
+      "rawPNG": "goat-root-mouth-detail.png",
+      "rawBytes": 278789,
+      "rawSHA256": "16b1e84b901280d317c260219f4e75cb4aa9d57ba7d6deffdb2cc5aee37f6f6c",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "bell-shell-neck-detail",
+      "ids": [
+        "wu_ganning",
+        "pet_tuanzi"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 420,
+      "query": "ids=wu_ganning%2Cpet_tuanzi&poses=idle%2Cwindup%2Cstrike&yaw=32&w=420",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=wu_ganning%2Cpet_tuanzi&poses=idle%2Cwindup%2Cstrike&yaw=32&w=420",
+      "rawPNG": "bell-shell-neck-detail.png",
+      "rawBytes": 235007,
+      "rawSHA256": "cdba48c07a0e53bed42d06198b2ebc715e95e34cb4affb9cb08ec7b01e7f6a51",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "earring-mount-hoop-detail",
+      "ids": [
+        "shu_pangmiaotong",
+        "pet_jiuwei"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "width": 420,
+      "query": "ids=shu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=32&w=420",
+      "url": "http://127.0.0.1:5187/.shots/extras-regalia-official/cat-1791784254262-174424.html?ids=shu_pangmiaotong%2Cpet_jiuwei&poses=idle%2Cwindup%2Cstrike&yaw=32&w=420",
+      "rawPNG": "earring-mount-hoop-detail.png",
+      "rawBytes": 284609,
+      "rawSHA256": "151ff426deceb863d2eb17fa8ee258883efc4847fc9ca7e975939f77bc8df42e",
+      "runtime": {
+        "catSHA": "39b82bcb153baf7a1c0131fc39b1b42dccddce44d69a1724ccbcd04535a62aa4",
+        "extraSHA": "d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07",
+        "helperSHA": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+        "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+        "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+        "threeInfo": "three: true",
+        "canvases": [
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ],
+          [
+            420,
+            367
+          ]
+        ]
+      },
+      "pageErrors": [],
+      "failedRequests": []
+    }
+  ],
+  "losslessExports": [
+    {
+      "name": "beards-1-32-large",
+      "file": "beards-1-32-large.png",
+      "width": 1000,
+      "height": 1054,
+      "mode": "RGB",
+      "rawBytes": 329914,
+      "finalBytes": 325574,
+      "rawSHA256": "03a19eae7542f26a6e1ab62fd09e6806bf8af1ea8c879e5afb29ff4294b7ccb5",
+      "finalSHA256": "4ca90b4dd3594cfbf4e147e1fe6d764b1b162b7d7f63f98d8056e2eb0289d552",
+      "decodedRGBA_SHA256": "b9c9fda57ac413d204cb88f73631f0d499e23c5ce72773ef9afdfa4dfa034df5",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-1-32-native",
+      "file": "beards-1-32-native.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 268091,
+      "finalBytes": 265354,
+      "rawSHA256": "1fa706c0cc4088bebd3d664fab5723156f85be7476057e54594226177a01dfcc",
+      "finalSHA256": "56d71a1360a4a13c1543ae03cbe1edadf415b6f3fa3350faf1e37f4c1dd6602c",
+      "decodedRGBA_SHA256": "4a46161b222f3a600dc292d57f48c05064b58134c0f403c3301eb056f3f137ac",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-1-front",
+      "file": "beards-1-front.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 264755,
+      "finalBytes": 261311,
+      "rawSHA256": "190e587b40db1d4faa17681216f565eeb8405f223288210240f3d822068aada9",
+      "finalSHA256": "ab004fb8f94af6774775bf29c904da8597e63cf3fea6aeb9bd1de807118c5f4c",
+      "decodedRGBA_SHA256": "5c61ec78ce80a1c9d3381b1fa27b2437bad39f3407386c1909184f39e625c605",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-1-reverse",
+      "file": "beards-1-reverse.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 266654,
+      "finalBytes": 263173,
+      "rawSHA256": "76fd2d2e4337b02526d296a10686fd2582bcb7a86f923fc09e00006126aefbf9",
+      "finalSHA256": "d5374d3981dca796e19b04573d41fdcc44d21fcf06afd902c5c88a710788e48e",
+      "decodedRGBA_SHA256": "5e231e8adb057faca2f52ed2beeb5eda983a2d38ed3579d07020673459d471e0",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-1-back",
+      "file": "beards-1-back.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 197822,
+      "finalBytes": 194087,
+      "rawSHA256": "377748e479e76ae3350ecf87686d239f6d9e2d23f2292b4a0897c124058656e5",
+      "finalSHA256": "8bd8b6ef6c1987209a3b9642477a10fb1ff01d10491b839e934bdf67a6a07df7",
+      "decodedRGBA_SHA256": "899f1fa6eb28f33c42f8fa6bd8156100778a57f5199361fc85dadcdbfb480e20",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-2-32-large",
+      "file": "beards-2-32-large.png",
+      "width": 1000,
+      "height": 1054,
+      "mode": "RGB",
+      "rawBytes": 294103,
+      "finalBytes": 291231,
+      "rawSHA256": "7b61e323c24610e13a474dba725bae24768d4f30f0960b9b9d2d2e7cfc82f3e1",
+      "finalSHA256": "3ed9a428f965c45b45811089758597cdffe03b3a033e85f47d00b1a7643510a7",
+      "decodedRGBA_SHA256": "1ef24987e0e022673c5120a58669d4abb95a3dfde2ad961cb7d30e5b35fbb041",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-2-32-native",
+      "file": "beards-2-32-native.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 239410,
+      "finalBytes": 237443,
+      "rawSHA256": "70c752ea0dc28d3737400edbe9ce85f946b17b2a42eb9abc6e4d92f29cfaf726",
+      "finalSHA256": "17a9c5707250ff71bcc12be2cb230571306104dcd2b5656d52f38f5188a6a673",
+      "decodedRGBA_SHA256": "fe06ccbce757ac3c4c78a72e9fa628c83b5586bd9bf42057891881407085faa3",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-2-front",
+      "file": "beards-2-front.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 241678,
+      "finalBytes": 239763,
+      "rawSHA256": "e8edd3bfece733e099ee4157877b49250e3a72f5901beba90cc8b9cbf297207d",
+      "finalSHA256": "a7876774dddb283d40e981732d0c3f736e541703fae70a9f0d43773e11f96e26",
+      "decodedRGBA_SHA256": "1deab7091d2f69cbebca1b8a347f2ca18925d65ac9ebe8c00d5da7f3d1a2f3ae",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-2-reverse",
+      "file": "beards-2-reverse.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 243197,
+      "finalBytes": 240624,
+      "rawSHA256": "eefc4e6b44ef9909de3bf7780a78eea4d045e8ad997d1f8e38ef59af0e4c34cc",
+      "finalSHA256": "e7fe39561a06ccab1d11f289f90613386a05ccd12fbc6b423725613c4f707245",
+      "decodedRGBA_SHA256": "cbf80e88e30648b3b21a633b39c8818f78f74fa22c322a821c105b3a88583bc9",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "beards-2-back",
+      "file": "beards-2-back.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 188716,
+      "finalBytes": 186197,
+      "rawSHA256": "238b192fbb752a4f87b75d7925da8d829470d1862fed38afba6e889d280dd25e",
+      "finalSHA256": "87dff4fce76cab0fd1bce3e979f6ce3319c02575479c3599cc83544a22d7d0b4",
+      "decodedRGBA_SHA256": "d0dc88203d4ae26535206f00e2ee996e09de2e8a085a9381cc1725a258314483",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-heroes-mob-32-large",
+      "file": "bells-heroes-mob-32-large.png",
+      "width": 1000,
+      "height": 1054,
+      "mode": "RGB",
+      "rawBytes": 293010,
+      "finalBytes": 289550,
+      "rawSHA256": "f2b86651f2fbec8af7570bfc59dfce556218426819cd2237a93615106a588700",
+      "finalSHA256": "4288e0269b74b642091a2db6aa465b4191e8dcc40fdaf2c99e48c2c31bf73611",
+      "decodedRGBA_SHA256": "460cca91715f150109bdd1d29e1ec87d29320c4a67be57edbc1c3f2fc53cc09c",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-heroes-mob-32-native",
+      "file": "bells-heroes-mob-32-native.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 237476,
+      "finalBytes": 234853,
+      "rawSHA256": "391d6a239176d4c3dbc8c4b652224eb51bfb1ff2132ae1ebaa9e2e98146c5757",
+      "finalSHA256": "7da13ae5709b24a988d7b8e39b3decd06b15a6780a7b7b8b20501de4c858fae6",
+      "decodedRGBA_SHA256": "a21dfa8e7aebea09fb24b56cfc28659539fbf35d827fd75a909cc07e51b3d3df",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-heroes-mob-front",
+      "file": "bells-heroes-mob-front.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 232373,
+      "finalBytes": 229420,
+      "rawSHA256": "62ab98716538f63e0e50444ecbb4220c4c52054b90cec4fe2d65eff786a908ac",
+      "finalSHA256": "a04ad4f6634fd71c65246b9fe79174d76b778b39c8d216ac4b55e331520e7891",
+      "decodedRGBA_SHA256": "0f5aa40718375b7618ee13a5581940120637b22bbd8bde979bdc0765fa52abc3",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-heroes-mob-reverse",
+      "file": "bells-heroes-mob-reverse.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 237117,
+      "finalBytes": 234312,
+      "rawSHA256": "5b59556bc40f51e4fb9e19a6c4cc3444bfafb061a6d29eff80b9d9b860db405e",
+      "finalSHA256": "6bae0f385ecaae194adf8643effce9d1dd3054eee63be37253cd0a1e269cf15c",
+      "decodedRGBA_SHA256": "91673e04da6a99925d5ad6a61e5d476c74a84f443ec14ab78fcec3604c6117ce",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-heroes-mob-back",
+      "file": "bells-heroes-mob-back.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 190153,
+      "finalBytes": 188099,
+      "rawSHA256": "0e1bd37e28449f45117eff0ac31f90ff230fe8af021def028327c0ddaa3a9242",
+      "finalSHA256": "4ead651b40277c000d33762781317f936bd5e50f5fd17977cdf8362f08759453",
+      "decodedRGBA_SHA256": "180b66d687376ecd7570c43f514c4bd98b9d94d180c98a9bdc4be8f8162cbd4e",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-pets-32-large",
+      "file": "bells-pets-32-large.png",
+      "width": 1000,
+      "height": 1054,
+      "mode": "RGB",
+      "rawBytes": 294852,
+      "finalBytes": 290362,
+      "rawSHA256": "6b6995cec738f4e92957d09af88b2206ae1111ac4ca41264c655e846eaa12f75",
+      "finalSHA256": "f08e842417b658155553ed4c51800743420b8c2303593e58cbf97c0692fe9b39",
+      "decodedRGBA_SHA256": "d99ad42189e4f4644e2f6d546605e512904b40b84f7102c2c0669d4f424f4b13",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-pets-32-native",
+      "file": "bells-pets-32-native.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 239253,
+      "finalBytes": 236822,
+      "rawSHA256": "02a2a33f82c2dea71b3434be4a2d9d44000f3554fd6b398abbba886b0bfc9739",
+      "finalSHA256": "f2112661099924a414597145c8cea00c4e5a794baa8de9c1f2e444b48a0a7206",
+      "decodedRGBA_SHA256": "0d4e14873a0fd962f6f8bf5855d8d9bd00e16e3d48daee16b7713a7c023d311b",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-pets-front",
+      "file": "bells-pets-front.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 230264,
+      "finalBytes": 227166,
+      "rawSHA256": "2e880be73b2fceae967bcb7223d0d856194ef58c950b1b61a2da1455dbb955c4",
+      "finalSHA256": "50ad8f5fc9cd0eb24897e5208e4ba71fd9611b8f9b9296e40fee0e40cce6ca74",
+      "decodedRGBA_SHA256": "9d287c0e46998ef8d89722e7dbe4628a601cb8d36a3884ba32554c2eea95d5b4",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-pets-reverse",
+      "file": "bells-pets-reverse.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 236854,
+      "finalBytes": 233801,
+      "rawSHA256": "7bafa6ff095aca3486dfc7d24e62251baec222fa26d53c64d7fd87c441bc541b",
+      "finalSHA256": "2905a2fd56d81f6760cee7cc4958d5043917ec65524511c7d4be03ef7740d5e7",
+      "decodedRGBA_SHA256": "3097dad49e454e07c4d4df3e7465f6260d935b797230ec1ff75c3f2494cb3db0",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bells-pets-back",
+      "file": "bells-pets-back.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 191759,
+      "finalBytes": 188518,
+      "rawSHA256": "9a651ab9940cffbb7c3ff30e3f669ffe4007637f059fc08a4f401d586d5ebc46",
+      "finalSHA256": "70581dee28072ce03445b8dbd03bd987137641423776e3870948803068d6dee9",
+      "decodedRGBA_SHA256": "0ba414d4e1502bcb3e65532524a809bd80e802561e88413fdadf6c0b7fdef65e",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "earrings-heroes-pet-32-large",
+      "file": "earrings-heroes-pet-32-large.png",
+      "width": 1000,
+      "height": 1054,
+      "mode": "RGB",
+      "rawBytes": 336107,
+      "finalBytes": 332821,
+      "rawSHA256": "373308fae118595cc45816b0684b590fb986f0883c1ba12694b8b426914eb80c",
+      "finalSHA256": "1efa97b65ed91beff81dddbf2d0d7265d3f2bc093e20f751291f80395a9e3ec5",
+      "decodedRGBA_SHA256": "e22b49305da6655e4581490c773b9b393e75bd945604032df29465949f658268",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "earrings-heroes-pet-32-native",
+      "file": "earrings-heroes-pet-32-native.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 273320,
+      "finalBytes": 271227,
+      "rawSHA256": "187505ef2d449ebacb0ebe89e33ef5831777cc1b63e969e32ec71e2fa2ffa466",
+      "finalSHA256": "65c0d85ddc8b6e0a694af0f9d18c9069363d9adc12eeea0b944247f8e3737b18",
+      "decodedRGBA_SHA256": "93d96d958d5ece35260a52d12dceb2c270e846e77f98ddeb2a21e05e24faae60",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "earrings-heroes-pet-front",
+      "file": "earrings-heroes-pet-front.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 266276,
+      "finalBytes": 263927,
+      "rawSHA256": "987c90f854e380e07b7ddb310230aa6b64aae9b257e962c1cb0c7757c9d247f7",
+      "finalSHA256": "67dd3831f5b3d2ce03f97b5ec5f51e58c3735fcf266cfad37a490838b3a1b8b3",
+      "decodedRGBA_SHA256": "910def899fc7887027a6f2b446884c571ffe35f5ef99e0bb4653ccd9eb232df8",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "earrings-heroes-pet-reverse",
+      "file": "earrings-heroes-pet-reverse.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 269360,
+      "finalBytes": 266662,
+      "rawSHA256": "5fd024e35ccf45f356b7df0bb8eb18c75ca5a394c256ec8471b6a86790c5270b",
+      "finalSHA256": "240632eed70ed8ffc72f26c65b716ef420ddf10a9796edce10222f7e283dc4e2",
+      "decodedRGBA_SHA256": "753076398fab44b98d0f019d631fd729bc6a81fcdb974bc50493e8cac27c92cc",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "earrings-heroes-pet-back",
+      "file": "earrings-heroes-pet-back.png",
+      "width": 1000,
+      "height": 914,
+      "mode": "RGB",
+      "rawBytes": 205347,
+      "finalBytes": 202232,
+      "rawSHA256": "4dc7bc496d7900d78e6633dd38e0dd66dd67e38bb80214c2ace708ca843f48d0",
+      "finalSHA256": "9d8d0a2eba6e199b86519f107b032f39d38ff82a2b47e4ef2a928954b75077a5",
+      "decodedRGBA_SHA256": "2f887a1d3747975cb9a872441f4bd9576c2066530ed270abf89b545a0b9cb66e",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "goat-root-mouth-detail",
+      "file": "goat-root-mouth-detail.png",
+      "width": 1280,
+      "height": 764,
+      "mode": "RGB",
+      "rawBytes": 278789,
+      "finalBytes": 275314,
+      "rawSHA256": "16b1e84b901280d317c260219f4e75cb4aa9d57ba7d6deffdb2cc5aee37f6f6c",
+      "finalSHA256": "5aa2c975d9b36a9f3ce008d79be4898620188978ada1d1ee03588efa6fe21f67",
+      "decodedRGBA_SHA256": "783f0da48cbdcbdd754150eaa90c4147c02dfc7def0de5ad2aeacc8a6e42cccc",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "bell-shell-neck-detail",
+      "file": "bell-shell-neck-detail.png",
+      "width": 1280,
+      "height": 764,
+      "mode": "RGB",
+      "rawBytes": 235007,
+      "finalBytes": 230746,
+      "rawSHA256": "cdba48c07a0e53bed42d06198b2ebc715e95e34cb4affb9cb08ec7b01e7f6a51",
+      "finalSHA256": "4a11cdeb2d8a5230076cbcb4cc744cac3828d86eb1f27f83bbe7dcaf5d1b71ce",
+      "decodedRGBA_SHA256": "7473ee38995fde8d383bcbc9def173d9be1d9cde369887125c688bbdc4576b68",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    },
+    {
+      "name": "earring-mount-hoop-detail",
+      "file": "earring-mount-hoop-detail.png",
+      "width": 1280,
+      "height": 764,
+      "mode": "RGB",
+      "rawBytes": 284609,
+      "finalBytes": 280054,
+      "rawSHA256": "151ff426deceb863d2eb17fa8ee258883efc4847fc9ca7e975939f77bc8df42e",
+      "finalSHA256": "58e3491d77832d6f5ad28349b091bddac5b2d45c3fc95a871176a4692b01f030",
+      "decodedRGBA_SHA256": "f69f5a64bc6117086a85c01f404a7f2967c6f0c223647d1709fd7aba1ba4e47c",
+      "changedPixels": 0,
+      "resizeOrCrop": false,
+      "method": "PNG optimize=True compress_level=9 or whole image WebP lossless=True quality=100 method=6 exact=True; complete original dimensions and per-channel RGBA array equality."
+    }
+  ],
+  "battle": {
+    "file": "battle.webp",
+    "selectedFrameIndex": 5,
+    "requestedT": 4.5,
+    "actualSceneTime": 4.499999999999989,
+    "rawPNG": "battle-final-05.png",
+    "rawBytes": 549328,
+    "finalBytes": 397966,
+    "width": 948,
+    "height": 592,
+    "rawSHA256": "c771f0ffcacdf34b9cf52ac31a001af1bd9a6170c7ad5f0228994ce758f6704f",
+    "finalSHA256": "ad428b26f82b2fc95600fe5d84eb7a2507c399b25e458ea02365cc8e088f1d81",
+    "decodedRGBA_SHA256": "84e929f34e5d75ad811d9528aea20a709e11593aa95bb3a5c80c82ec7ae1c555",
+    "changedPixels": 0,
+    "imagePostCropOrResize": false,
+    "captureMethod": "Page screenshot of complete #cv boundingClientRect inside 980x800 viewport (full canvas fits). Exact 60Hz scene.step with queueMicrotask between each tick, scheduling equivalent to original advance; draw once after 180+15*i ticks. Actual scene.time recorded.",
+    "captureRectangle": {
+      "x": 16,
+      "y": 85,
+      "width": 948,
+      "height": 592.5
+    },
+    "exportMethod": "WebP lossless=True quality=100 method=6 exact=True",
+    "actors": {
+      "actors": [
+        {
+          "heroId": "wei_caomiaode",
+          "kind": "beardGoat",
+          "cat3d": true,
+          "extraPartGroup": "regalia-goat-beard"
+        },
+        {
+          "heroId": "wu_zhoumiaoyu",
+          "kind": "earring",
+          "cat3d": true,
+          "extraPartGroup": "regalia-ear-base-hoop"
+        },
+        {
+          "heroId": "wu_sunxiangxiang",
+          "kind": "bell",
+          "cat3d": true,
+          "extraPartGroup": "regalia-collar-bell"
+        },
+        {
+          "heroId": "shu_pangmiaotong",
+          "kind": "earring",
+          "cat3d": true,
+          "extraPartGroup": "regalia-ear-base-hoop"
+        },
+        {
+          "heroId": "xian_changmiao",
+          "kind": "bell",
+          "cat3d": true,
+          "extraPartGroup": "regalia-collar-bell"
+        },
+        {
+          "heroId": "wei_simamiyi",
+          "kind": "beardGoat",
+          "cat3d": true,
+          "extraPartGroup": "regalia-goat-beard"
+        },
+        {
+          "heroId": "qun_huatuo",
+          "kind": "beardGoat",
+          "cat3d": true,
+          "extraPartGroup": "regalia-goat-beard"
+        },
+        {
+          "heroId": "wu_ganning",
+          "kind": "bell",
+          "cat3d": true,
+          "extraPartGroup": "regalia-collar-bell"
+        },
+        {
+          "heroId": "qun_lvbuding",
+          "kind": "earring",
+          "cat3d": true,
+          "extraPartGroup": "regalia-ear-base-hoop"
+        },
+        {
+          "heroId": "mob_xian_assassin",
+          "kind": "bell",
+          "cat3d": true,
+          "extraPartGroup": "regalia-collar-bell"
+        }
+      ],
+      "actual3DCats": 10,
+      "extraKinds": [
+        "beardGoat",
+        "earring",
+        "bell"
+      ],
+      "spriteMode": {
+        "illust": true,
+        "cat3d": true
+      }
+    },
+    "query": "test=1&r3d=1&a=wei_caomiaode%2Cwu_zhoumiaoyu%2Cwu_sunxiangxiang%2Cshu_pangmiaotong%2Cxian_changmiao&b=wei_simamiyi%2Cqun_huatuo%2Cwu_ganning%2Cqun_lvbuding%2Cmob_xian_assassin&theme=meadow&seed=2",
+    "rawFrames": [
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 0,
+        "requestedT": 3.25,
+        "rawPNG": "battle-final-00.png",
+        "rawBytes": 550646,
+        "rawSHA256": "d154486fc0368c2bf87adb301a46400e8afefbb1caa25054c8ba0b568d7e876f",
+        "state": {
+          "sceneTime": 3.2499999999999933,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 4411,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "幻影拾铃喵 挥爪"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 1,
+        "requestedT": 3.5,
+        "rawPNG": "battle-final-01.png",
+        "rawBytes": 518694,
+        "rawSHA256": "d08439145b3a4d3df631a8724c69e6967bd8835585e7100f8f6d6af1bb391f1e",
+        "state": {
+          "sceneTime": 3.4999999999999925,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 4411,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "幻影拾铃喵 挥爪"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 2,
+        "requestedT": 3.75,
+        "rawPNG": "battle-final-02.png",
+        "rawBytes": 550125,
+        "rawSHA256": "934df1ace859b184ac40e7fa65ef77bf06b42bea9801d708e9e11aa69bfdadb6",
+        "state": {
+          "sceneTime": 3.7499999999999916,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 4411,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "幻影拾铃喵 挥爪"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 3,
+        "requestedT": 4,
+        "rawPNG": "battle-final-03.png",
+        "rawBytes": 549927,
+        "rawSHA256": "a4a3babbafb1b083d6809b8e1d7524a83983cd2f2135aad479e89487996a226f",
+        "state": {
+          "sceneTime": 3.9999999999999907,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 4411,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "幻影拾铃喵 挥爪"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 4,
+        "requestedT": 4.25,
+        "rawPNG": "battle-final-04.png",
+        "rawBytes": 549644,
+        "rawSHA256": "9abf5a11995b9ec0ca89b082fa81277b6a594547e05b0d39638355525540e5ed",
+        "state": {
+          "sceneTime": 4.24999999999999,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 4411,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "幻影拾铃喵 挥爪"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 5,
+        "requestedT": 4.5,
+        "rawPNG": "battle-final-05.png",
+        "rawBytes": 549328,
+        "rawSHA256": "c771f0ffcacdf34b9cf52ac31a001af1bd9a6170c7ad5f0228994ce758f6704f",
+        "state": {
+          "sceneTime": 4.499999999999989,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 4411,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "庞喵统 火羽箭"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 6,
+        "requestedT": 4.75,
+        "rawPNG": "battle-final-06.png",
+        "rawBytes": 550682,
+        "rawSHA256": "ddd4d7799501bf9d0d602b61f715b15eb8fd554c4725c30f452feb2bf85a19fb",
+        "state": {
+          "sceneTime": 4.7499999999999885,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 4411,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "庞喵统 火羽箭"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 7,
+        "requestedT": 5,
+        "rawPNG": "battle-final-07.png",
+        "rawBytes": 477795,
+        "rawSHA256": "69c755018e58ca8fbdb3c7bea9a89609813385163847f8186b875d4091233e64",
+        "state": {
+          "sceneTime": 4.999999999999988,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 1764,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "庞喵统 火羽箭"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 8,
+        "requestedT": 5.25,
+        "rawPNG": "battle-final-08.png",
+        "rawBytes": 532754,
+        "rawSHA256": "d1873d8e9880b6ac50c65e5a65ff3162ce410e617f49754c5d7019f625a61dd1",
+        "state": {
+          "sceneTime": 5.249999999999987,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 1764,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "庞喵统 火羽箭"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 9,
+        "requestedT": 5.5,
+        "rawPNG": "battle-final-09.png",
+        "rawBytes": 550147,
+        "rawSHA256": "fc582fcc1e170a6f5bd06a103851fcac6fa602c764851538255f91c2f18b6158",
+        "state": {
+          "sceneTime": 5.499999999999986,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 1764,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "庞喵统 火羽箭"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 10,
+        "requestedT": 5.75,
+        "rawPNG": "battle-final-10.png",
+        "rawBytes": 551762,
+        "rawSHA256": "5eb3a55c7393fc747aa9d284b6b59b9b58664a1f6f7ec8a11a0d1f424fc88dd1",
+        "state": {
+          "sceneTime": 5.749999999999985,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 1764,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "孙香香 铃铛箭"
+        }
+      },
+      {
+        "captureRectangle": {
+          "x": 16,
+          "y": 85,
+          "width": 948,
+          "height": 592.5
+        },
+        "index": 11,
+        "requestedT": 6,
+        "rawPNG": "battle-final-11.png",
+        "rawBytes": 549996,
+        "rawSHA256": "0ff5025852807a1b482452d10ecde8533036c56b7d93d6b44c5b20e8a4375dab",
+        "state": {
+          "sceneTime": 5.999999999999984,
+          "actors": [
+            {
+              "id": "wei_caomiaode",
+              "alive": true,
+              "hp": 5264,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_zhoumiaoyu",
+              "alive": true,
+              "hp": 5929,
+              "maxHp": 5929
+            },
+            {
+              "id": "wu_sunxiangxiang",
+              "alive": true,
+              "hp": 5442,
+              "maxHp": 5442
+            },
+            {
+              "id": "shu_pangmiaotong",
+              "alive": true,
+              "hp": 7891,
+              "maxHp": 7891
+            },
+            {
+              "id": "xian_changmiao",
+              "alive": true,
+              "hp": 7609,
+              "maxHp": 8307
+            },
+            {
+              "id": "wei_simamiyi",
+              "alive": true,
+              "hp": 7476,
+              "maxHp": 7476
+            },
+            {
+              "id": "qun_huatuo",
+              "alive": true,
+              "hp": 5729,
+              "maxHp": 5729
+            },
+            {
+              "id": "wu_ganning",
+              "alive": true,
+              "hp": 1764,
+              "maxHp": 4411
+            },
+            {
+              "id": "qun_lvbuding",
+              "alive": true,
+              "hp": 7412,
+              "maxHp": 7412
+            },
+            {
+              "id": "mob_xian_assassin",
+              "alive": true,
+              "hp": 2027,
+              "maxHp": 2027
+            }
+          ],
+          "log": "孙香香 铃铛箭"
+        }
+      }
+    ],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+        "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+      }
+    ],
+    "consoleErrors": [
+      "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+    ]
+  },
+  "actualHeroReferences": [
+    {
+      "id": "wei_caomiaode",
+      "name": "曹喵德",
+      "rarity": "UR",
+      "path": "assets/heroes/ref/wei_caomiaode.jpg",
+      "sha256": "dae95f81120bd80a48021641487a0eeebacf4e170f3ab087fe13e51a21ea08a8"
+    },
+    {
+      "id": "shu_huangzhong",
+      "name": "黄忠忠",
+      "rarity": "SR",
+      "path": "assets/heroes/ref/shu_huangzhong.jpg",
+      "sha256": "1a2e8e47eb95c4289935696045b875b7f40f9f136246d109fff4d22fcd5524e0"
+    },
+    {
+      "id": "wu_zhoumiaoyu",
+      "name": "周喵瑜",
+      "rarity": "UR",
+      "path": "assets/heroes/ref/wu_zhoumiaoyu.jpg",
+      "sha256": "3b99980df0761b6d101846e825ab149748b857803539e1268d5ac3c9a9bdad53"
+    },
+    {
+      "id": "wu_sunxiangxiang",
+      "name": "孙香香",
+      "rarity": "SSR",
+      "path": "assets/heroes/ref/wu_sunxiangxiang.jpg",
+      "sha256": "e90b4b388f93524a8000cdb0324f82f9fa28a0f277ed714c39b35988e26d8b84"
+    },
+    {
+      "id": "wu_huanggai",
+      "name": "黄盖盖",
+      "rarity": "SR",
+      "path": "assets/heroes/ref/wu_huanggai.jpg",
+      "sha256": "94fdcb29e10975b4eb72520b46566b42956e859583c38452845ce2f2911dc5ef"
+    },
+    {
+      "id": "wu_ganning",
+      "name": "甘宁宁",
+      "rarity": "SR",
+      "path": "assets/heroes/ref/wu_ganning.jpg",
+      "sha256": "f6499d6d0904c62342f5cbd2381f765ec00920b16c40f42af8d843d32f4aa6f4"
+    },
+    {
+      "id": "qun_lvbuding",
+      "name": "吕布丁",
+      "rarity": "UR",
+      "path": "assets/heroes/ref/qun_lvbuding.jpg",
+      "sha256": "d5a6a7f0fec783ebe3c45fcab5466c29b5b4857b20a0779d63ff65291aec78dc"
+    },
+    {
+      "id": "qun_dongzhuo",
+      "name": "董桌",
+      "rarity": "SR",
+      "path": "assets/heroes/ref/qun_dongzhuo.jpg",
+      "sha256": "7da6b40be621add4f843fe15aa706ba510e3c428383048d260c8f85786c5b893"
+    },
+    {
+      "id": "qun_huatuo",
+      "name": "华佗喵",
+      "rarity": "SSR",
+      "path": "assets/heroes/ref/qun_huatuo.jpg",
+      "sha256": "ae5bec3a335ba019c9bb9522ee207e35033bf0c45bf1cab585850b2e982c8f32"
+    },
+    {
+      "id": "xian_shuijing",
+      "name": "水镜喵",
+      "rarity": "SSR",
+      "path": "assets/heroes/ref/xian_shuijing.jpg",
+      "sha256": "97d10baa9ec0f9747ae211cff0c2425fe45c8796967786bdcf605e7cfb18dfd2"
+    },
+    {
+      "id": "xian_yuji",
+      "name": "于吉吉",
+      "rarity": "SSR",
+      "path": "assets/heroes/ref/xian_yuji.jpg",
+      "sha256": "b4ae8e51c8b6d900345606c05bcecaf06eccd9844e1b1c3ce42f4dab10e8cec9"
+    },
+    {
+      "id": "wei_simamiyi",
+      "name": "司马喵懿",
+      "rarity": "SP",
+      "path": "assets/heroes/ref/wei_simamiyi.jpg",
+      "sha256": "be1164a52ec68661800dd60414ee0f052a07ccbd89dde993fd12e37e298e0e83"
+    },
+    {
+      "id": "shu_pangmiaotong",
+      "name": "庞喵统",
+      "rarity": "SP",
+      "path": "assets/heroes/ref/shu_pangmiaotong.jpg",
+      "sha256": "778552ec2f5578eae2f92029321a8f3372592fc0adb34e4259681e0ba3c2a18a"
+    },
+    {
+      "id": "xian_changmiao",
+      "name": "嫦喵",
+      "rarity": "SP",
+      "path": "assets/heroes/ref/xian_changmiao.jpg",
+      "sha256": "0c4432824284f18bcf9c1e210727640904820b32896691ef53b9f2bd34dcc719"
+    }
+  ],
+  "actualPetReference": {
+    "file": "src/art/cat.ts",
+    "lookData": "src/data/pets.ts",
+    "method": "Actual original catSvg with the five target PETS.look, viewed in .shots/extras-regalia/pets-2d-reference.png; no pet or 2D code change."
+  },
+  "nativeChecks": {
+    "typecheck": "pass",
+    "npmTest": {
+      "files": 68,
+      "tests": 1021
+    },
+    "logSHA256": "0bc6e3d0cec80ac86c0a81a5132424de101b6be6c8fde4757f9ca93c42bc7db0"
+  }
+}

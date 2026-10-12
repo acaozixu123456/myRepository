@@ -1,6 +1,7 @@
 // 关卡数据（纯数据，不依赖 DOM / three：寻路、实体摆放合法性测试、玩法规则都读它）。
 // 一个关卡 = 十字路口街区；楼、道具、灯、电线杆、实体出生点都在这里摆。新增关卡：加一份 LevelDef，必要时在 kit / props 里补新道具。
 import { cloudLevel } from './themes/cloud.data';
+import { desertLevel } from './themes/desert.data';
 import { forestLevel } from './themes/forest.data';
 import { harborLevel } from './themes/harbor.data';
 import { marketLevel } from './themes/market.data';
@@ -9,11 +10,11 @@ import type { BuildingSpec } from './kit';
 
 export interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
 /** 场景里的玩法入口：走近触发一个小游戏（game 对应 app 层注册的小游戏名） */
-export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace';
+export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace' | 'desert';
 export interface PoiDef { id: string; game: string; x: number; z: number; label: string }
 export interface PropDef { kind: string; x: number; z: number; ry?: number; seed?: number; arg?: number }
 export interface AABB { x0: number; x1: number; z0: number; z1: number }
-export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow';
+export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert';
 export interface LevelDef {
   id: string; chapter: number; name: string; mood: MoodId; half: number;
   /** 场景主题：street = 十字街区（旧逻辑）；其余各有独立布局 / 地面 / 建筑 / 天空（src/world/themes/） */
@@ -109,7 +110,18 @@ export const LEVEL_5: LevelDef = cloudLevel();
 export const LEVEL_6: LevelDef = palaceLevel();
 
 export const LEVELS: Record<number, LevelDef> = { 1: LEVEL_1, 2: LEVEL_2, 3: LEVEL_3, 4: LEVEL_4, 5: LEVEL_5, 6: LEVEL_6 };
-export const levelOf = (chapter: number): LevelDef => LEVELS[chapter] ?? LEVEL_1;
+
+// ---------- 附加场景（不在主线章节里，没有首领；通关到某一章后解锁，专门用来玩各自的小游戏）----------
+export const BONUS_BASE = 100;
+/** 沙漠绿洲：卡丁车赛道 + 绿洲钓鱼（见 themes/desert.data.ts） */
+export const LEVEL_DESERT: LevelDef = desertLevel();
+export const BONUS_LEVELS: Record<number, LevelDef> = { 101: LEVEL_DESERT };
+/** 附加场景解锁条件：主线首领所在章节 ≥ 该值 */
+export const BONUS_UNLOCK: Record<number, number> = { 101: 3 };
+/** 所有场景（主线 + 附加），测试和场景选择都用它 */
+export const ALL_SCENES: Record<number, LevelDef> = { ...LEVELS, ...BONUS_LEVELS };
+export const isBonusScene = (id: number) => id > BONUS_BASE;
+export const levelOf = (chapter: number): LevelDef => ALL_SCENES[chapter] ?? LEVEL_1;
 
 /** 碰撞盒（纯数据）：楼、电车、杆、拱门柱、道具 */
 export function levelColliders(L: LevelDef): AABB[] {
@@ -248,11 +260,11 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
   return out;
 }
 
-/** 场景机关（地形区）：云岛 = 风口（顺风加速）/ 码头 = 潮汐滩（队伍和追兵都变慢）/ 宫阙 = 琉璃滑地（松手还会滑一段）；其余场景没有 */
-export type ZoneKind = 'wind' | 'tide' | 'slide';
+/** 场景机关（地形区）：云岛 = 风口（顺风加速）/ 码头 = 潮汐滩 / 沙漠 = 流沙（队伍和追兵都变慢）/ 宫阙 = 琉璃滑地（松手还会滑一段）；其余场景没有 */
+export type ZoneKind = 'wind' | 'tide' | 'slide' | 'sand';
 export interface Zone { x: number; z: number; r: number; kind: ZoneKind; dx: number; dz: number }
 const zoneCache = new Map<string, Zone[]>();
-const ZONE_BY_THEME: Partial<Record<string, ZoneKind>> = { cloud: 'wind', harbor: 'tide', palace: 'slide' };
+const ZONE_BY_THEME: Partial<Record<string, ZoneKind>> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand' };
 export function zonesOf(L: LevelDef): Zone[] {
   const hit = zoneCache.get(L.id);
   if (hit) return hit;

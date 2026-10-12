@@ -15,7 +15,7 @@ const cache = new Map<string, string>();
 let n = 0;
 export function artUrl(id: string, view: keyof typeof VIEW | string = 'card', flip = false): string {
   // 3D 模式：全员用 3D 小猫渲染出的立绘图
-  if (use3D() && !flip && (view === 'full' || view === 'card' || view === 'head')) return cat3dUrl(id, lookOf(id), view);
+  if (use3D() && !flip && (view === 'full' || view === 'card' || view === 'head')) { try { return cat3dUrl(id, lookOf(id), view); } catch { /* 3D 出错（无 WebGL / 上下文丢失）：退回 2D 立绘 */ } }
   // 有 AI 立绘的猫优先用立绘（full / card / head 三种视图，见 tools/sync-illust.py）；其余退回程序化造型
   const il = ILLUST[id];
   if (il && (view === 'full' || view === 'card' || view === 'head')) return il[view];

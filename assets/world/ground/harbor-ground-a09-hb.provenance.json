@@ -1,0 +1,857 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A09-HB",
+  "title": "赤壁港旧木栈板3变体",
+  "created_date_utc": "2026-10-12",
+  "branch": "codex/3d-world-harbor-ground",
+  "base_branch": "claude/awesome-babbage-ygba4h",
+  "base_commit": "fecef9e4d3cb95a0751aedbba588fd7415b2df8d",
+  "branch_creation_base_commit": "fecef9e4d3cb95a0751aedbba588fd7415b2df8d",
+  "brief": {
+    "priority_source": "latest docs/CODEX_QUEUE.md scene-material A09 harbor deck task",
+    "theme_source": "docs/WORLD3D.md 场景主题 ch3 赤壁港 晚霞",
+    "old_brief_note": "新QUEUE/WORLD3D主题优先于旧暗紫赛博街工作单，本批为晴朗晚霞老海港木材。",
+    "scope": "assets/world/** + docs/WORLD_PROGRESS.md; no engine/texture registry integration",
+    "reference_files": [
+      {
+        "path": "docs/CODEX_QUEUE.md",
+        "sha256": "5aa751b41b4bc76919473c251d1f26186b58af1b98da0e56aa340e325b57f7ee",
+        "snapshot_path": "/workspace/harbor-ground-raw/reference-snapshots/fecef9e/docs/CODEX_QUEUE.md"
+      },
+      {
+        "path": "docs/WORLD3D.md",
+        "sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf",
+        "snapshot_path": "/workspace/harbor-ground-raw/reference-snapshots/fecef9e/docs/WORLD3D.md"
+      },
+      {
+        "path": "src/world/themes/harbor.ts",
+        "sha256": "351a6329eabebc161b9e94cfac1de0b92bdac6afef0792b7c4528ef6611b3e19",
+        "snapshot_path": "/workspace/harbor-ground-raw/reference-snapshots/fecef9e/src/world/themes/harbor.ts"
+      },
+      {
+        "path": "src/world/atmos.ts",
+        "sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+        "snapshot_path": "/workspace/harbor-ground-raw/reference-snapshots/fecef9e/src/world/atmos.ts"
+      }
+    ],
+    "palette": {
+      "harbor_deck": "#b08258",
+      "harbor_quay": "#a87850",
+      "harbor_lane": "#c8a070",
+      "wood_cargo": [
+        "#a87850",
+        "#8a6038",
+        "#c89868"
+      ],
+      "sun": "#ff7a3a",
+      "hemi_sky": "#ffa080",
+      "hemi_ground": "#40242c"
+    },
+    "main_scene_reference": {
+      "path": "/workspace/harbor-ground-raw/harbor-scene-reference.png",
+      "sha256": "09cc456593009527658555c159bc21218a163c4b4267e67a2caa76acb03b018d",
+      "capture_report": "/workspace/harbor-ground-raw/harbor-scene-reference.json",
+      "purpose": "read-only existing procedural ch3 material palette / scene inspection; no generated texture integration"
+    },
+    "reference_files_base_commit": "fecef9e4d3cb95a0751aedbba588fd7415b2df8d",
+    "queue_refresh": {
+      "commit": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+      "path": "docs/CODEX_QUEUE.md",
+      "sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+      "finding": "new queue confirms old#100/#103/#106 approved/merged; HB old-wood harbor task unchanged, no HB repair request"
+    },
+    "palette_files_unchanged_after_sync": true
+  },
+  "generator": {
+    "tool": "image_gen.imagegen",
+    "generation_calls": 3,
+    "edit_calls": 0,
+    "independent_materials": 3,
+    "archived_call_records": "/workspace/harbor-ground-raw/calls.json",
+    "raw_storage": "all three native1254 RGB PNG originals retained at actual /workspace/generated_images paths; actual file sizes recorded, not committed as native non-POT originals",
+    "program_processing": "only conventional proportional downsample/encoding; no grain drawing, seam repair, blending, color remap, alpha modification or artistic replacement"
+  },
+  "assets": [
+    {
+      "id": "ground_harbor_oldwood_01",
+      "title": "暖旧褐宽木板",
+      "path": "assets/world/ground/ground_harbor_oldwood_01.webp",
+      "role": "opaque_base_color",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "tool": "image_gen.imagegen",
+          "prompt": "Create ONE square 1024x1024 SEAMLESS repeatable old WOODEN HARBOR DECK ground ALBEDO / DIFFUSE BASE COLOR texture. Perfectly flat orthographic top-down, no perspective, no horizon, no camera tilt, no board stack, no material sphere and no scene. The entire square is filled by level parallel long wood planks whose length and fine grain run VERTICALLY from the top to bottom of the image. This is a reusable plane material for a bright miniature old Chinese red-cliff seaport at sunset: boats and orange-red evening light are in the game, NOT in the texture. Material itself is clean, warm, medium-to-light in value and comfortably readable, no dark cyberpunk grading. Repeat continuously in BOTH directions; the same plank spacing, gap width, wood tone and grain scale must meet at opposite edges, with no frame or wide edge stripe. VERTICAL board boundaries are narrow, subdued warm gray-brown material-color lines, never jet-black chasms or bright-white bevels. Use largely uninterrupted long planks; do not draw horizontal crossbars, support beams, a deck border or large board end caps. Fine lengthwise grain and mild sun-weathered surface wear only; keep low-frequency variations subtle across the full image so repetition is unobtrusive. Flat uniform diffuse material color: no baked directional sun, shadow, bright bevel edge, ambient-occlusion trough, specular shine, wet reflection, global light gradient, glare or vignette. No nails, bolts, metal parts, big repeated knots, ring-shaped knot eyes, large fissures, splinter holes, black stains, mold, algae, puddles, burned wood, oil, dark purple, neon, fresh red material or blood. No text, symbols, faces, people, animals, buildings, boats, ropes, barrels, shells, leaves, objects or painted decoration. Output a single independently generated material tile, not a montage. Leave no transparency. VARIANT 1: SIX evenly spaced broad parallel long boards. Calm honey / warm old tan-brown heartwood, around #b08258 and #b58a62, with restrained muted tan #c29a72 areas, NOT deep mahogany or orange-red. Fine somewhat irregular vertical fibers, shallow worn pores and a few minute pale rubbed marks, still intact and level. Each board differs only softly in base reflectance, no alternating dark/light zebra stripes. No knots. Opposite sides both crop at the midpoint of an ordinary thin board joint, with all six board columns forming a complete repeat; top and bottom fine grain and tones continue cleanly.",
+          "tool_arguments": {
+            "prompt": "Create ONE square 1024x1024 SEAMLESS repeatable old WOODEN HARBOR DECK ground ALBEDO / DIFFUSE BASE COLOR texture. Perfectly flat orthographic top-down, no perspective, no horizon, no camera tilt, no board stack, no material sphere and no scene. The entire square is filled by level parallel long wood planks whose length and fine grain run VERTICALLY from the top to bottom of the image. This is a reusable plane material for a bright miniature old Chinese red-cliff seaport at sunset: boats and orange-red evening light are in the game, NOT in the texture. Material itself is clean, warm, medium-to-light in value and comfortably readable, no dark cyberpunk grading. Repeat continuously in BOTH directions; the same plank spacing, gap width, wood tone and grain scale must meet at opposite edges, with no frame or wide edge stripe. VERTICAL board boundaries are narrow, subdued warm gray-brown material-color lines, never jet-black chasms or bright-white bevels. Use largely uninterrupted long planks; do not draw horizontal crossbars, support beams, a deck border or large board end caps. Fine lengthwise grain and mild sun-weathered surface wear only; keep low-frequency variations subtle across the full image so repetition is unobtrusive. Flat uniform diffuse material color: no baked directional sun, shadow, bright bevel edge, ambient-occlusion trough, specular shine, wet reflection, global light gradient, glare or vignette. No nails, bolts, metal parts, big repeated knots, ring-shaped knot eyes, large fissures, splinter holes, black stains, mold, algae, puddles, burned wood, oil, dark purple, neon, fresh red material or blood. No text, symbols, faces, people, animals, buildings, boats, ropes, barrels, shells, leaves, objects or painted decoration. Output a single independently generated material tile, not a montage. Leave no transparency. VARIANT 1: SIX evenly spaced broad parallel long boards. Calm honey / warm old tan-brown heartwood, around #b08258 and #b58a62, with restrained muted tan #c29a72 areas, NOT deep mahogany or orange-red. Fine somewhat irregular vertical fibers, shallow worn pores and a few minute pale rubbed marks, still intact and level. Each board differs only softly in base reflectance, no alternating dark/light zebra stripes. No knots. Opposite sides both crop at the midpoint of an ordinary thin board joint, with all six board columns forming a complete repeat; top and bottom fine grain and tones continue cleanly.",
+            "transparent_background": false
+          },
+          "references": [],
+          "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-e17a0889-0ac0-4dd3-8c2e-9df3e90bfae6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-e17a0889-0ac0-4dd3-8c2e-9df3e90bfae6.png",
+            "identifier": "exec-e17a0889-0ac0-4dd3-8c2e-9df3e90bfae6.png",
+            "size": [
+              1254,
+              1254
+            ],
+            "mode": "RGB",
+            "bytes": 2727749,
+            "sha256": "bbcafdc61fbab80c843b0194d51d0d060e12591992bf076897fb3602b98587fb",
+            "native_icc_present": false
+          },
+          "selected": true,
+          "selection_note": "采用独立第1原稿：纵向长板/细纤维与暖浅木底符合晚霞老港，新图没有大钉子、节疤、横向物件或中心构图；直接平铺无明显额外横断带。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-e17a0889-0ac0-4dd3-8c2e-9df3e90bfae6.png",
+        "raw_source_sha256": "bbcafdc61fbab80c843b0194d51d0d060e12591992bf076897fb3602b98587fb",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_note": "full canvas; zero-based half-open; no crop",
+        "target_size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "alpha": false,
+        "color_space": "sRGB",
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded; timestamped original payload retained in final and reused for byte-identical reproduction",
+        "icc_bytes": 588,
+        "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "operations": [
+          "retain native RGB full canvas without material edits",
+          "proportional whole-canvas Lanczos downsample 1254x1254 to 1024x1024",
+          "encode opaque RGB WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_program_processing": false,
+        "bytes": 226494,
+        "sha256": "badd00fd601d098b54e49465408e34e41da1009ef480d7125b1f805718dfac8f"
+      },
+      "self_check": {
+        "status": "final_encoded_2x2_4x4_full_edges_corners_visually_reviewed",
+        "claude_approved": false,
+        "vertical_board_count_requested": 6,
+        "mean_rgb": [
+          179.971,
+          135.28,
+          91.928
+        ],
+        "edge_mae_rgb": {
+          "left_right": 22.175,
+          "top_bottom": 8.272
+        },
+        "metric_note": "Nonzero MAE includes actual board gaps, material tone and fiber differences. It is diagnostic and not a mathematical seamless proof.",
+        "visual_findings": "纵纹、无钉/大节疤，正常窄板接缝；1:1上下包裹未见额外硬横断或暗带，左右维持普通窄板缝，四角无宽外框。",
+        "limitations": "长板接缝自有平行重复节奏；4x4仍能辨板色/颗粒低频重复，部分接缝和板宽略变；细纤维不是逐像素贯穿的数学周期。"
+      }
+    },
+    {
+      "id": "ground_harbor_washed_02",
+      "title": "浅漂洗灰米木板",
+      "path": "assets/world/ground/ground_harbor_washed_02.webp",
+      "role": "opaque_base_color",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "tool": "image_gen.imagegen",
+          "prompt": "Create ONE square 1024x1024 SEAMLESS repeatable old WOODEN HARBOR DECK ground ALBEDO / DIFFUSE BASE COLOR texture. Perfectly flat orthographic top-down, no perspective, no horizon, no camera tilt, no board stack, no material sphere and no scene. The entire square is filled by level parallel long wood planks whose length and fine grain run VERTICALLY from the top to bottom of the image. This is a reusable plane material for a bright miniature old Chinese red-cliff seaport at sunset: boats and orange-red evening light are in the game, NOT in the texture. Material itself is clean, warm, medium-to-light in value and comfortably readable, no dark cyberpunk grading. Repeat continuously in BOTH directions; the same plank spacing, gap width, wood tone and grain scale must meet at opposite edges, with no frame or wide edge stripe. VERTICAL board boundaries are narrow, subdued warm gray-brown material-color lines, never jet-black chasms or bright-white bevels. Use largely uninterrupted long planks; do not draw horizontal crossbars, support beams, a deck border or large board end caps. Fine lengthwise grain and mild sun-weathered surface wear only; keep low-frequency variations subtle across the full image so repetition is unobtrusive. Flat uniform diffuse material color: no baked directional sun, shadow, bright bevel edge, ambient-occlusion trough, specular shine, wet reflection, global light gradient, glare or vignette. No nails, bolts, metal parts, big repeated knots, ring-shaped knot eyes, large fissures, splinter holes, black stains, mold, algae, puddles, burned wood, oil, dark purple, neon, fresh red material or blood. No text, symbols, faces, people, animals, buildings, boats, ropes, barrels, shells, leaves, objects or painted decoration. Output a single independently generated material tile, not a montage. Leave no transparency. VARIANT 2: EIGHT evenly spaced long boards, a distinctly lighter dry salt-weathered and gently bleached wood, pale warm taupe / straw-beige around #c9baa2 with subdued warm-gray #b8af9f and cream-tan #d3c4aa fibers. Bright quiet broad material areas, matte dry feel; no salt puddles or white painted coating. Soft very fine vertical pores and smooth low-contrast grain with very sparse tiny edge rubs. Warm neutral base, not blue-gray storm timber. Narrow soft beige-gray board joints. No knots or harsh streaks. All eight complete vertical board columns repeat across the square and lengthwise grain must join from bottom to top without a horizontal cutoff.",
+          "tool_arguments": {
+            "prompt": "Create ONE square 1024x1024 SEAMLESS repeatable old WOODEN HARBOR DECK ground ALBEDO / DIFFUSE BASE COLOR texture. Perfectly flat orthographic top-down, no perspective, no horizon, no camera tilt, no board stack, no material sphere and no scene. The entire square is filled by level parallel long wood planks whose length and fine grain run VERTICALLY from the top to bottom of the image. This is a reusable plane material for a bright miniature old Chinese red-cliff seaport at sunset: boats and orange-red evening light are in the game, NOT in the texture. Material itself is clean, warm, medium-to-light in value and comfortably readable, no dark cyberpunk grading. Repeat continuously in BOTH directions; the same plank spacing, gap width, wood tone and grain scale must meet at opposite edges, with no frame or wide edge stripe. VERTICAL board boundaries are narrow, subdued warm gray-brown material-color lines, never jet-black chasms or bright-white bevels. Use largely uninterrupted long planks; do not draw horizontal crossbars, support beams, a deck border or large board end caps. Fine lengthwise grain and mild sun-weathered surface wear only; keep low-frequency variations subtle across the full image so repetition is unobtrusive. Flat uniform diffuse material color: no baked directional sun, shadow, bright bevel edge, ambient-occlusion trough, specular shine, wet reflection, global light gradient, glare or vignette. No nails, bolts, metal parts, big repeated knots, ring-shaped knot eyes, large fissures, splinter holes, black stains, mold, algae, puddles, burned wood, oil, dark purple, neon, fresh red material or blood. No text, symbols, faces, people, animals, buildings, boats, ropes, barrels, shells, leaves, objects or painted decoration. Output a single independently generated material tile, not a montage. Leave no transparency. VARIANT 2: EIGHT evenly spaced long boards, a distinctly lighter dry salt-weathered and gently bleached wood, pale warm taupe / straw-beige around #c9baa2 with subdued warm-gray #b8af9f and cream-tan #d3c4aa fibers. Bright quiet broad material areas, matte dry feel; no salt puddles or white painted coating. Soft very fine vertical pores and smooth low-contrast grain with very sparse tiny edge rubs. Warm neutral base, not blue-gray storm timber. Narrow soft beige-gray board joints. No knots or harsh streaks. All eight complete vertical board columns repeat across the square and lengthwise grain must join from bottom to top without a horizontal cutoff.",
+            "transparent_background": false
+          },
+          "references": [],
+          "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-84c50dac-43d4-4061-a532-1a507587d9cc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-84c50dac-43d4-4061-a532-1a507587d9cc.png",
+            "identifier": "exec-84c50dac-43d4-4061-a532-1a507587d9cc.png",
+            "size": [
+              1254,
+              1254
+            ],
+            "mode": "RGB",
+            "bytes": 2653085,
+            "sha256": "bd1d6b3bc0e2753261e487ef0d6e6c4036b558a77178d0ae2e95b3b0bf7ff3d2",
+            "native_icc_present": false
+          },
+          "selected": true,
+          "selection_note": "采用独立第1原稿：纵向长板/细纤维与暖浅木底符合晚霞老港，新图没有大钉子、节疤、横向物件或中心构图；直接平铺无明显额外横断带。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-84c50dac-43d4-4061-a532-1a507587d9cc.png",
+        "raw_source_sha256": "bd1d6b3bc0e2753261e487ef0d6e6c4036b558a77178d0ae2e95b3b0bf7ff3d2",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_note": "full canvas; zero-based half-open; no crop",
+        "target_size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "alpha": false,
+        "color_space": "sRGB",
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded; timestamped original payload retained in final and reused for byte-identical reproduction",
+        "icc_bytes": 588,
+        "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "operations": [
+          "retain native RGB full canvas without material edits",
+          "proportional whole-canvas Lanczos downsample 1254x1254 to 1024x1024",
+          "encode opaque RGB WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_program_processing": false,
+        "bytes": 217848,
+        "sha256": "783d4c8dea1425da841967b3fe415fbb42dee08e485c40a2ed16939c0f3fda6d"
+      },
+      "self_check": {
+        "status": "final_encoded_2x2_4x4_full_edges_corners_visually_reviewed",
+        "claude_approved": false,
+        "vertical_board_count_requested": 8,
+        "mean_rgb": [
+          201.897,
+          181.133,
+          153.201
+        ],
+        "edge_mae_rgb": {
+          "left_right": 36.938,
+          "top_bottom": 10.194
+        },
+        "metric_note": "Nonzero MAE includes actual board gaps, material tone and fiber differences. It is diagnostic and not a mathematical seamless proof.",
+        "visual_findings": "纵纹、无钉/大节疤，正常窄板接缝；1:1上下包裹未见额外硬横断或暗带，左右维持普通窄板缝，四角无宽外框。",
+        "limitations": "长板接缝自有平行重复节奏；4x4仍能辨板色/颗粒低频重复，部分接缝和板宽略变；细纤维不是逐像素贯穿的数学周期。"
+      }
+    },
+    {
+      "id": "ground_harbor_narrowwood_03",
+      "title": "浅褐旧木窄板",
+      "path": "assets/world/ground/ground_harbor_narrowwood_03.webp",
+      "role": "opaque_base_color",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "tool": "image_gen.imagegen",
+          "prompt": "Create ONE square 1024x1024 SEAMLESS repeatable old WOODEN HARBOR DECK ground ALBEDO / DIFFUSE BASE COLOR texture. Perfectly flat orthographic top-down, no perspective, no horizon, no camera tilt, no board stack, no material sphere and no scene. The entire square is filled by level parallel long wood planks whose length and fine grain run VERTICALLY from the top to bottom of the image. This is a reusable plane material for a bright miniature old Chinese red-cliff seaport at sunset: boats and orange-red evening light are in the game, NOT in the texture. Material itself is clean, warm, medium-to-light in value and comfortably readable, no dark cyberpunk grading. Repeat continuously in BOTH directions; the same plank spacing, gap width, wood tone and grain scale must meet at opposite edges, with no frame or wide edge stripe. VERTICAL board boundaries are narrow, subdued warm gray-brown material-color lines, never jet-black chasms or bright-white bevels. Use largely uninterrupted long planks; do not draw horizontal crossbars, support beams, a deck border or large board end caps. Fine lengthwise grain and mild sun-weathered surface wear only; keep low-frequency variations subtle across the full image so repetition is unobtrusive. Flat uniform diffuse material color: no baked directional sun, shadow, bright bevel edge, ambient-occlusion trough, specular shine, wet reflection, global light gradient, glare or vignette. No nails, bolts, metal parts, big repeated knots, ring-shaped knot eyes, large fissures, splinter holes, black stains, mold, algae, puddles, burned wood, oil, dark purple, neon, fresh red material or blood. No text, symbols, faces, people, animals, buildings, boats, ropes, barrels, shells, leaves, objects or painted decoration. Output a single independently generated material tile, not a montage. Leave no transparency. VARIANT 3: TWELVE evenly spaced narrow long wood planks running vertically, clearly finer board spacing than the other materials. Soft muted buff / warm gray-brown wood around #b69265 and #bd9e78, with subtle sand-tan #c7ae8b variation. Fine closely spaced straight-to-gently-wavy vertical grain, slightly weathered and smoothly worn underfoot, almost no surface chips. Quiet subdued warm brown narrow joins; no high-contrast stripes, no knots or end joints. The twelve narrow columns make an exact full-width repeat, with matching gap phase at left/right and continuous grain/reflectance at top/bottom.",
+          "tool_arguments": {
+            "prompt": "Create ONE square 1024x1024 SEAMLESS repeatable old WOODEN HARBOR DECK ground ALBEDO / DIFFUSE BASE COLOR texture. Perfectly flat orthographic top-down, no perspective, no horizon, no camera tilt, no board stack, no material sphere and no scene. The entire square is filled by level parallel long wood planks whose length and fine grain run VERTICALLY from the top to bottom of the image. This is a reusable plane material for a bright miniature old Chinese red-cliff seaport at sunset: boats and orange-red evening light are in the game, NOT in the texture. Material itself is clean, warm, medium-to-light in value and comfortably readable, no dark cyberpunk grading. Repeat continuously in BOTH directions; the same plank spacing, gap width, wood tone and grain scale must meet at opposite edges, with no frame or wide edge stripe. VERTICAL board boundaries are narrow, subdued warm gray-brown material-color lines, never jet-black chasms or bright-white bevels. Use largely uninterrupted long planks; do not draw horizontal crossbars, support beams, a deck border or large board end caps. Fine lengthwise grain and mild sun-weathered surface wear only; keep low-frequency variations subtle across the full image so repetition is unobtrusive. Flat uniform diffuse material color: no baked directional sun, shadow, bright bevel edge, ambient-occlusion trough, specular shine, wet reflection, global light gradient, glare or vignette. No nails, bolts, metal parts, big repeated knots, ring-shaped knot eyes, large fissures, splinter holes, black stains, mold, algae, puddles, burned wood, oil, dark purple, neon, fresh red material or blood. No text, symbols, faces, people, animals, buildings, boats, ropes, barrels, shells, leaves, objects or painted decoration. Output a single independently generated material tile, not a montage. Leave no transparency. VARIANT 3: TWELVE evenly spaced narrow long wood planks running vertically, clearly finer board spacing than the other materials. Soft muted buff / warm gray-brown wood around #b69265 and #bd9e78, with subtle sand-tan #c7ae8b variation. Fine closely spaced straight-to-gently-wavy vertical grain, slightly weathered and smoothly worn underfoot, almost no surface chips. Quiet subdued warm brown narrow joins; no high-contrast stripes, no knots or end joints. The twelve narrow columns make an exact full-width repeat, with matching gap phase at left/right and continuous grain/reflectance at top/bottom.",
+            "transparent_background": false
+          },
+          "references": [],
+          "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-54b3b29d-d87a-4089-8f92-4dbfca53ea2d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-54b3b29d-d87a-4089-8f92-4dbfca53ea2d.png",
+            "identifier": "exec-54b3b29d-d87a-4089-8f92-4dbfca53ea2d.png",
+            "size": [
+              1254,
+              1254
+            ],
+            "mode": "RGB",
+            "bytes": 2777991,
+            "sha256": "2fc63b3f41e25bb2515defa7a38236b4d27cf8dce76ababe80c6f05731a9cfff",
+            "native_icc_present": false
+          },
+          "selected": true,
+          "selection_note": "采用独立第1原稿：纵向长板/细纤维与暖浅木底符合晚霞老港，新图没有大钉子、节疤、横向物件或中心构图；直接平铺无明显额外横断带。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-54b3b29d-d87a-4089-8f92-4dbfca53ea2d.png",
+        "raw_source_sha256": "2fc63b3f41e25bb2515defa7a38236b4d27cf8dce76ababe80c6f05731a9cfff",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_note": "full canvas; zero-based half-open; no crop",
+        "target_size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "alpha": false,
+        "color_space": "sRGB",
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded; timestamped original payload retained in final and reused for byte-identical reproduction",
+        "icc_bytes": 588,
+        "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "operations": [
+          "retain native RGB full canvas without material edits",
+          "proportional whole-canvas Lanczos downsample 1254x1254 to 1024x1024",
+          "encode opaque RGB WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_program_processing": false,
+        "bytes": 236820,
+        "sha256": "f1753733f9ac37d91bc1719e4aacf5ba4da3921d3f9af753ce685eccaa9d4b89"
+      },
+      "self_check": {
+        "status": "final_encoded_2x2_4x4_full_edges_corners_visually_reviewed",
+        "claude_approved": false,
+        "vertical_board_count_requested": 12,
+        "mean_rgb": [
+          179.119,
+          146.726,
+          107.726
+        ],
+        "edge_mae_rgb": {
+          "left_right": 10.307,
+          "top_bottom": 8.287
+        },
+        "metric_note": "Nonzero MAE includes actual board gaps, material tone and fiber differences. It is diagnostic and not a mathematical seamless proof.",
+        "visual_findings": "纵纹、无钉/大节疤，正常窄板接缝；1:1上下包裹未见额外硬横断或暗带，左右维持普通窄板缝，四角无宽外框。",
+        "limitations": "长板接缝自有平行重复节奏；4x4仍能辨板色/颗粒低频重复，部分接缝和板宽略变；细纤维不是逐像素贯穿的数学周期。"
+      }
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/ground_harbor_oldwood_01-2x2.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 134814,
+      "sha256": "e913d9ff1752c8703b54acc23f3a13dbd8f57ea3baddb8e6db8717e1ab280d45",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "direct 2x2 repeat of final encoded tile, each tile Lanczos reduced to 512; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_oldwood_01-4x4.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 108740,
+      "sha256": "65c9e781809a7b66c1f7125ad12efb13900401e8e9dda20b97e039587526f6f2",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "direct 4x4 repeat of final encoded tile, each tile Lanczos reduced to 256; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_oldwood_01-native-lr.png",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 170534,
+      "sha256": "7abf66841eb4117bf2e17767e036694e7a1a2322ebe8c9d5e7942a7659be2ec1",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless full-height right64|left64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_oldwood_01-native-tb.png",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "bytes": 167619,
+      "sha256": "51c20b9cedd245109f617bc730ac0a79704005e694c50f4a16b41383f03836fa",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless full-width bottom64/top64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_oldwood_01-native-corners.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "bytes": 84653,
+      "sha256": "b78a56846443175ddedf6d8b126426bc9ef5d0e74a14b409f4abf99c8782a9cd",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless BR128|BL128 / TR128|TL128 final decoded pixel four-corner junction, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_washed_02-2x2.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 127104,
+      "sha256": "fbb8b5eb5537a1f29bb5415803ffb1d65fbb54f737c3a07bd5cbfd57c3685f18",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "direct 2x2 repeat of final encoded tile, each tile Lanczos reduced to 512; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_washed_02-4x4.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 85712,
+      "sha256": "8bbebc1d009185befb0acd687ece63e6aefb4f2f8723a239e2edbc124802d96d",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "direct 4x4 repeat of final encoded tile, each tile Lanczos reduced to 256; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_washed_02-native-lr.png",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 168092,
+      "sha256": "ee2603cb05f12cc1def9d917216df7ffa44fc88f30c94eeeaa7d428493f5ae91",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless full-height right64|left64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_washed_02-native-tb.png",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "bytes": 158974,
+      "sha256": "c7e91cec259a1c3cac88b324d2008e401100dfc5d3456b4c6dbe5bcc34c0d6ce",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless full-width bottom64/top64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_washed_02-native-corners.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "bytes": 82511,
+      "sha256": "ae1d353d80177f225c0b1fbe81a1a0c1d50f5b2e763c74a7ed05f70927290486",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless BR128|BL128 / TR128|TL128 final decoded pixel four-corner junction, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_narrowwood_03-2x2.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 143162,
+      "sha256": "c5462c1434a9135243051a4a2b1a89ff61442500262b2a4d1151a245f9b9c4bb",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "direct 2x2 repeat of final encoded tile, each tile Lanczos reduced to 512; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_narrowwood_03-4x4.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 105510,
+      "sha256": "a6f284bf35c8bd0203fa537e96a9b5f12345ef1253d805cf38f702423ac3d8cc",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "direct 4x4 repeat of final encoded tile, each tile Lanczos reduced to 256; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_narrowwood_03-native-lr.png",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 177001,
+      "sha256": "d727ba0a3b749e1f3e35532e0c64d1d7aa965af2269340856d3cf442eb73a632",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless full-height right64|left64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_narrowwood_03-native-tb.png",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "bytes": 173732,
+      "sha256": "29a228f6079da3d8e04caf8586e57d643d690457da7437c28465ce1614b4f44b",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless full-width bottom64/top64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_harbor_narrowwood_03-native-corners.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "bytes": 87962,
+      "sha256": "d27d755a92e50e9ef509cd43be3a17bb5d645799640a968d7cb0925ecef3a642",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "lossless BR128|BL128 / TR128|TL128 final decoded pixel four-corner junction, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/harbor-ground-a09-hb.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 140204,
+      "sha256": "fe93f452f4b1b64009289aef43c2e3f28a6f81a016fb41aed079f5de56525c11",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "method": "three final tiles at 512 scale plus 2x2/4x4 direct-repeat thumbnails; layout only"
+    },
+    {
+      "path": "assets/world/reviews/harbor-ground-a09-hb-lighting.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 144650,
+      "sha256": "2af6b69d4531e92ac190bf8914f3833a169b603b2c676ce2e9c86a124cfc6934",
+      "icc_sha256": "5c799ed107f38e091b6b7b1cbb483f450d67a2efd6d7386c2d5d0a13567bb8f4",
+      "webp_quality": 85,
+      "webp_method": 6,
+      "method": "actual independent Three.js r169 material preview; only white versus ATMOS.redcliff light colors differ, all intensity/position/material/camera/exposure fixed",
+      "evidence": {
+        "ready": true,
+        "loaded": 3,
+        "expected": 3,
+        "parameters": {
+          "three_revision": "169",
+          "canvas": [
+            1024,
+            288
+          ],
+          "texture_repeat": [
+            3,
+            1
+          ],
+          "material": {
+            "color": "#ffffff",
+            "roughness": 0.9,
+            "metalness": 0
+          },
+          "camera": {
+            "type": "OrthographicCamera",
+            "left": -10,
+            "right": 10,
+            "top": 2.8125,
+            "bottom": -2.8125,
+            "near": 0.1,
+            "far": 50,
+            "position": [
+              0,
+              12,
+              0
+            ],
+            "up": [
+              0,
+              0,
+              -1
+            ],
+            "look_at": [
+              0,
+              0,
+              0
+            ]
+          },
+          "plane": {
+            "size": [
+              18,
+              6
+            ],
+            "rotation_x": -1.5707963267948966
+          },
+          "renderer": {
+            "output_color_space": "SRGBColorSpace",
+            "tone_mapping": "ACESFilmicToneMapping",
+            "exposure": 1.1,
+            "antialias": true,
+            "device_pixel_ratio": 1,
+            "bloom": false,
+            "shadows": false
+          },
+          "neutral_lights": {
+            "hemisphere": {
+              "sky": "#ffffff",
+              "ground": "#777777",
+              "intensity": 0.95
+            },
+            "directional": {
+              "color": "#ffffff",
+              "intensity": 2.3,
+              "position": [
+                10,
+                20,
+                -52
+              ]
+            }
+          },
+          "harbor_lights": {
+            "hemisphere": {
+              "sky": "#ffa080",
+              "ground": "#40242c",
+              "intensity": 0.95
+            },
+            "directional": {
+              "color": "#ff7a3a",
+              "intensity": 2.3,
+              "position": [
+                10,
+                20,
+                -52
+              ]
+            }
+          },
+          "comparison": "only light colors differ; intensities/position/camera/material/exposure fixed",
+          "omitted_harbor_effects": [
+            "sky dome",
+            "fog",
+            "bloom",
+            "color grading",
+            "lantern point lights"
+          ]
+        },
+        "assets": [
+          {
+            "path": "/assets/world/ground/ground_harbor_oldwood_01.webp",
+            "size": [
+              1024,
+              1024
+            ],
+            "repeat": [
+              3,
+              1
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          },
+          {
+            "path": "/assets/world/ground/ground_harbor_washed_02.webp",
+            "size": [
+              1024,
+              1024
+            ],
+            "repeat": [
+              3,
+              1
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          },
+          {
+            "path": "/assets/world/ground/ground_harbor_narrowwood_03.webp",
+            "size": [
+              1024,
+              1024
+            ],
+            "repeat": [
+              3,
+              1
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          }
+        ],
+        "renderers": [
+          {
+            "row": 0,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          }
+        ],
+        "page_errors": [],
+        "console_errors": [],
+        "failed_requests": [],
+        "asset_responses": [
+          {
+            "url": "http://127.0.0.1:5195/assets/world/ground/ground_harbor_oldwood_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5195/assets/world/ground/ground_harbor_washed_02.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5195/assets/world/ground/ground_harbor_narrowwood_03.webp",
+            "status": 200
+          }
+        ],
+        "source_sha256_before": [
+          "badd00fd601d098b54e49465408e34e41da1009ef480d7125b1f805718dfac8f",
+          "783d4c8dea1425da841967b3fe415fbb42dee08e485c40a2ed16939c0f3fda6d",
+          "f1753733f9ac37d91bc1719e4aacf5ba4da3921d3f9af753ce685eccaa9d4b89"
+        ],
+        "source_sha256_after": [
+          "badd00fd601d098b54e49465408e34e41da1009ef480d7125b1f805718dfac8f",
+          "783d4c8dea1425da841967b3fe415fbb42dee08e485c40a2ed16939c0f3fda6d",
+          "f1753733f9ac37d91bc1719e4aacf5ba4da3921d3f9af753ce685eccaa9d4b89"
+        ],
+        "source_hashes_unchanged": true,
+        "capture": {
+          "url": "http://127.0.0.1:5195/.tmp-harbor-ground/preview.html",
+          "operation": "initial load + actual reload, capture after ready on reload",
+          "browser": "Chromium /usr/bin/chromium",
+          "viewport": [
+            2048,
+            1024
+          ],
+          "device_scale_factor": 1,
+          "output_png": "/workspace/harbor-ground-raw/harbor-ground-a09-hb-lighting.png"
+        },
+        "lighting_difference_rgb_mae": [
+          45.523,
+          62.825,
+          50.989
+        ],
+        "lighting_difference_region": {
+          "left_x": [
+            52,
+            972
+          ],
+          "right_x": [
+            1076,
+            1996
+          ],
+          "y_formula": "row*336+48 through +288, half-open; visible material only"
+        }
+      },
+      "raw_png_path": "/workspace/harbor-ground-raw/harbor-ground-a09-hb-lighting.png",
+      "raw_png_sha256": "bf4c722a892a009bebaf095a2157625660a87e717ef6fd1e3cc6d60c618ef8a2",
+      "html_snapshot_path": "/workspace/harbor-ground-raw/harbor-ground-a09-hb-lighting.html",
+      "html_sha256": "3f884ecbf643fe070d79426f7f812a34271e86a83803d6bd2e9f6fedeb98e37d",
+      "capture_script_path": "/workspace/harbor-ground-raw/capture-lighting.mjs",
+      "capture_script_sha256": "a705b3401821cf43938d3b5efd19aae6247fdb35f12141b825abb3c48d135d60",
+      "capture_cache_note": "empty favicon and browser HTTP cache disabled before initial load and actual reload; no earlier failed capture in this batch",
+      "capture_base_commit": "fecef9e4d3cb95a0751aedbba588fd7415b2df8d"
+    }
+  ],
+  "review": {
+    "overview": "assets/world/reviews/harbor-ground-a09-hb.webp",
+    "direct_repeat": "final decoded tile -> Lanczos512 (2x2) /256 (4x4), directly repeated; no seam blending",
+    "native_edges": "exact decoded RGB: LR right64|left64 fullheight; TB bottom64/top64 fullwidth; corner BR128|BL128 / TR128|TL128",
+    "review_reencoding": "overview/repeat WebP q85m6 lossy re-encode; 9native PNG lossless exact RGB,1:1 spatial scale",
+    "lighting_status": "actual neutral/harbor-sunset colors capture complete; 3 loaded, HTTP200x3, page/console/failed errors0, same source hashes before/after; not engine integration",
+    "source_hashes_after_latest_base_sync": [
+      "badd00fd601d098b54e49465408e34e41da1009ef480d7125b1f805718dfac8f",
+      "783d4c8dea1425da841967b3fe415fbb42dee08e485c40a2ed16939c0f3fda6d",
+      "f1753733f9ac37d91bc1719e4aacf5ba4da3921d3f9af753ce685eccaa9d4b89"
+    ]
+  },
+  "limitations": [
+    "每板色差与纵向纤维会呈平行/低频重复，4x4可辨，需按实际UV尺度评估。",
+    "边界并非逐像素相等；窄缝/少量板宽/纤维相位变化保留，未见额外粗横断带或外围框。",
+    "只交基色，不含法线/深度/粗糙度/位移，纹理不烘焙晚霞方向灯。",
+    "最不满意：细木纹在小显示足迹经缩小过滤会趋平，单板细色差随周期重复；当前GPU完整纹理足迹约307px，12列窄板约26px宽，实际地面UV由接入方评估。"
+  ],
+  "validation": {
+    "base_commit": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+    "command": "npm run typecheck && npm test",
+    "performed_by": "world_a09 art agent, actual latest HB worktree execution",
+    "exit_code": 0,
+    "test_files": 68,
+    "tests": 1019,
+    "log_path": "/workspace/harbor-ground-raw/tests-latest.log",
+    "log_sha256": "3f0a3d78dcb869fd984b7d4db0fee6c747e5c836c28da2180a37856137a9c201",
+    "sandbox_permissions": "with_additional_permissions network enabled for real Node CLI subprocess IPC",
+    "requires_latest_base_recheck": false,
+    "production_base_validation": {
+      "base_commit": "fecef9e4d3cb95a0751aedbba588fd7415b2df8d",
+      "command": "npm run typecheck && npm test",
+      "performed_by": "world_a09 art agent, actual HB worktree execution",
+      "exit_code": 0,
+      "test_files": 68,
+      "tests": 1019,
+      "log_path": "/workspace/harbor-ground-raw/tests-fece.log",
+      "log_sha256": "ab493bac65a9b4dfbd38aac37bd439f09d00038f8f14e9859dbe8576810569c4",
+      "sandbox_permissions": "with_additional_permissions network enabled for Node CLI subprocess IPC",
+      "earlier_attempt": {
+        "path": "/workspace/harbor-ground-raw/tests-fece-default.log",
+        "sha256": "ba8c8362e6a1f24f49625fd392df7a9b2c1f73feaed392a91e040ee11379335d",
+        "typecheck_exit_code": 0,
+        "tests_exit_code": 1,
+        "failed_tests": 13,
+        "passed_tests": 1006,
+        "total_tests": 1019,
+        "cause": "default sandbox reported spawnSync Node EPERM / consequent empty JSON in real CLI tests; identical minimal Node child spawn reports EPERM under default sandbox and no error with granted tool network permission",
+        "resolution": "same unchanged fece base re-run with with_additional_permissions network enabled, including CLI subprocess IPC, full required checks pass; no source workaround"
+      },
+      "scope_note": "actual required checks in HB worktree; code unchanged; image QA separate and Claude approval pending; latest main sync now requires updated checks, previous pass belongs to production fece base",
+      "requires_latest_base_recheck": true
+    },
+    "scope_note": "actual latest e777d58 required checks pass; original fece default-sandbox CLI EPERM + granted retry retained as prior evidence, no engine/code changes authored"
+  },
+  "qa_paths": [
+    "assets/world/ground/harbor-ground-a09-hb.qa.md",
+    "assets/world/ground/harbor-ground-a09-hb.qa.json"
+  ],
+  "submission_base_commit": "e777d58f3b0e9965f7af25ded73948a84e68d219"
+}
