@@ -131,4 +131,3 @@ NPC week bars 0.75 6.19
       Tests  1035 passed (1035)
    Start at  06:53:53
    Duration  75.59s (transform 8.04s, setup 0ms, collect 34.34s, tests 135.34s, environment 56ms, prepare 16.21s)
-
