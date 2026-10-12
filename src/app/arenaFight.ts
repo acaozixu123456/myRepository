@@ -45,7 +45,7 @@ export interface FightResult { win: boolean; damagePct: number }
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /** banner：开场横幅（如「首领战！」）；传入后会先做一个圆形转场 */
-export async function arenaFight(host: HTMLElement, s: PlayerState, stage: StageDef, chapter: number, speed = 2, banner = '', backdrop: HTMLCanvasElement | null = null): Promise<FightResult> {
+export async function arenaFight(host: HTMLElement, s: PlayerState, stage: StageDef, chapter: number, speed = 2, banner = '', backdrop: HTMLCanvasElement | null = null, ambush: 'player' | 'enemy' | 'none' = 'none'): Promise<FightResult> {
   const ov = document.createElement('div');
   ov.className = 'arena-ov';
   ov.innerHTML = `<canvas></canvas><button class="skip" data-skip>快进 »</button><button class="skip skip2" data-skipall>跳过 ⏭</button>${banner ? `<div class="arena-banner">${banner}</div>` : ''}`;
@@ -66,7 +66,7 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
   let win = true, damagePct = 0;
   try {
     for (let w = 0; w < stage.waves.length; w++) {
-      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx, tactics: true, combos: true, pet: petCfg(s) });
+      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx, tactics: true, combos: true, pet: petCfg(s), ...(w === 0 && ambush !== 'none' ? { startEnergy: ambush === 'player' ? { A: 70, B: 0 } : { A: 0, B: 70 } } : {}) });
       const foes = sim.units.filter((u) => u.side === 'B');
       damagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
       if (!player.aborted) {

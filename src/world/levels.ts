@@ -156,3 +156,32 @@ export function reachableCells(L: LevelDef): { N: number; grid: Uint8Array; seen
   }
   return { N, grid, seen };
 }
+
+const hiddenCache = new Map<string, [number, number][]>();
+/** 隐藏宝箱的位置（每关 3 个）：走得到、离出生点 / 其他东西远、四周挡得最多的「死角」格子，种子固定，每次进来都在同一个地方 */
+export function hiddenSpotsOf(L: LevelDef): [number, number][] {
+  const hit = hiddenCache.get(L.id);
+  if (hit) return hit;
+  const { N, grid, seen } = reachableCells(L);
+  const others: [number, number][] = [L.spawn, L.bossSpot, L.npcSpot, ...L.enemySpots, ...L.chestSpots, ...herbsOf(L), ...poisOf(L).map((p): [number, number] => [p.x, p.z])];
+  const cand: { x: number; z: number; score: number }[] = [];
+  for (let cz = 3; cz < N - 3; cz++) for (let cx = 3; cx < N - 3; cx++) {
+    if (!seen[cz * N + cx]) continue;
+    const x = (cx + 0.5) - L.half, z = (cz + 0.5) - L.half;
+    if (others.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < 9) || inSafeZone(L, x, z)) continue;
+    let blocked = 0;
+    for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
+    if (blocked >= 6 && blocked <= 18) cand.push({ x, z, score: blocked });
+  }
+  let seed = 0; for (const ch of L.id) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
+  const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  cand.sort((a, b) => b.score - a.score);
+  const pool = cand.slice(0, Math.max(30, Math.floor(cand.length / 3)));
+  const out: [number, number][] = [];
+  for (let guard = 0; guard < 200 && out.length < 3 && pool.length; guard++) {
+    const c = pool[Math.floor(rnd() * pool.length)];
+    if (out.every(([ox, oz]) => Math.hypot(ox - c.x, oz - c.z) > 16)) out.push([c.x, c.z]);
+  }
+  hiddenCache.set(L.id, out);
+  return out;
+}

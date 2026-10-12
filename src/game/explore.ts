@@ -6,7 +6,7 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
-import { LEVELS, SAFE_R, herbsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
+import { LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
 export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number }
@@ -34,7 +34,7 @@ export function farmStage(s: PlayerState): { chapter: number; index: number; sta
   return { chapter: b.chapter, index: b.index, stage: getStage(b.chapter, b.index)! };
 }
 
-export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc' | 'poi'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string; game?: string }
+export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc' | 'poi'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string; game?: string; hidden?: boolean }
 
 /** 当前该进哪个场景：跟着主线章节走（首领所在的章节） */
 export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(sceneChapter(s));
@@ -87,6 +87,7 @@ export function spawnPlan(s: PlayerState): SpawnDef[] {
   });
   L.chestSpots.forEach(([x, z], i) => out.push({ id: `c${i}`, kind: 'chest', x, z, label: '宝箱' }));
   herbsOf(L).forEach(([x, z], i) => out.push({ id: `h${i}`, kind: 'herb', x, z, label: '猫薄荷丛' }));
+  hiddenSpotsOf(L).forEach(([x, z], i) => out.push({ id: `x${i}`, kind: 'chest', x, z, label: '隐藏宝箱', hidden: true }));
   poisOf(L).forEach((p) => out.push({ id: `poi-${p.id}`, kind: 'poi', x: p.x, z: p.z, label: p.label, game: p.game }));
   out.push({ id: 'npc', kind: 'npc', x: L.npcSpot[0], z: L.npcSpot[1], units: ['xian_changmiao'], label: '嫦喵 · 向导' });
   return out;
@@ -111,7 +112,8 @@ export function openChest(s: PlayerState, id: string): Gain | null {
   const farm = farmStage(s).stage;
   const base = winReward(farm);
   const rnd = mulberry(dayKey() * 31 + id.charCodeAt(1));
-  return { fish: Math.round(base.fish * 4 + 80), exp: Math.round(base.exp * 3 + 40), catnip: rnd() < 0.5 ? 2 : 0, bells: rnd() < 0.35 ? 20 : 0 };
+  const hid = id.startsWith('x'); // 隐藏宝箱：要用「灵视」或绕到死角才找得到，奖励翻倍
+  return { fish: Math.round((base.fish * 4 + 80) * (hid ? 2 : 1)), exp: Math.round((base.exp * 3 + 40) * (hid ? 2 : 1)), catnip: hid ? 3 : rnd() < 0.5 ? 2 : 0, bells: hid ? 40 : rnd() < 0.35 ? 20 : 0 };
 }
 
 export const gainText = (g: Gain) => [g.fish ? `${g.fish} 小鱼干` : '', g.exp ? `${g.exp} 经验` : '', g.catnip ? `${g.catnip} 猫薄荷` : '', g.bells ? `${g.bells} 金铃铛` : ''].filter(Boolean).join(' · ');

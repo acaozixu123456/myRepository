@@ -3,7 +3,7 @@
 import { activePet } from '../../game/pets';
 import type * as THREE from 'three';
 import { Explorer } from '../../world/explore';
-import type { Spawn } from '../../world/explore';
+import type { Ambush, ExploreSkill, Spawn } from '../../world/explore';
 import { WorldView, defaultQuality } from '../../world/engine';
 import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
@@ -90,6 +90,16 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 .scn.on{border-color:#ff7ab8;box-shadow:0 0 0 3px rgba(255,122,184,.35)}.scn.lock{opacity:.5}
 .scn .here{position:absolute;right:6px;top:4px;font-style:normal;font-size:10px;font-weight:900;background:#ff7ab8;color:#fff;border-radius:8px;padding:1px 6px}
 .xfight{position:absolute;left:50%;margin-left:-70px;bottom:104px;z-index:4;width:140px;padding:12px 8px;border-radius:999px;border:3px solid #fff;background:linear-gradient(#ff7a8a,#e0344f);color:#fff;font:900 20px var(--f-d,inherit);box-shadow:0 0 22px rgba(255,70,100,.75),0 4px 0 rgba(0,0,0,.3);animation:xfightPulse 1s ease-in-out infinite;touch-action:manipulation}
+.xskills{position:absolute;left:10px;bottom:236px;z-index:4;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.xsk{position:relative;display:flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border-radius:999px;border:2px solid rgba(255,255,255,.85);background:rgba(30,22,52,.72);color:#fff;font:800 13px var(--f-d,inherit);backdrop-filter:blur(3px);touch-action:manipulation;overflow:hidden;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.xsk .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(#ffd27a,#f0a22e);font-size:19px}
+.xsk small{display:block;font-weight:700;font-size:10.5px;opacity:.85}
+.xsk .cdm{position:absolute;inset:0;background:rgba(0,0,0,.55);transform-origin:left}
+.xsk.off{opacity:.38;filter:grayscale(1)}.xsk.on{border-color:#7ff0ff;box-shadow:0 0 14px #7ff0ff}
+.xsk kbd{font:700 10px monospace;opacity:.7;margin-left:2px}
+.xnote{position:absolute;left:50%;top:92px;transform:translateX(-50%);z-index:6;padding:6px 14px;border-radius:999px;background:rgba(30,22,52,.86);border:2px solid #ffe27a;color:#fff6d0;font:800 14px var(--f-d,inherit);white-space:nowrap;pointer-events:none;animation:xnoteIn .25s ease-out}
+@keyframes xnoteIn{from{opacity:0;transform:translate(-50%,-8px)}}
+.xfight.sneak{background:linear-gradient(#7ff0ff,#2a9ac8);box-shadow:0 0 24px rgba(127,240,255,.85),0 4px 0 rgba(0,0,0,.3)}
 .xfight.boss{background:linear-gradient(#ffd24a,#e08a10);box-shadow:0 0 26px rgba(255,200,60,.85),0 4px 0 rgba(0,0,0,.3)}
 @keyframes xfightPulse{50%{transform:scale(1.07)}}
 .xjoy{position:absolute;left:14px;bottom:14px;z-index:3;width:116px;height:116px;border-radius:50%;background:rgba(10,6,24,.45);border:2px solid rgba(127,240,255,.45);touch-action:none}
@@ -109,7 +119,7 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 `;
 
 export function exploreHtml(): string {
-  return `<canvas id="wcv"></canvas><div class="xload" id="xload">霓虹街区加载中…<small>第一次进入要生成场景，请稍等</small></div><div id="xui"></div><div class="xjoy" id="xjoy"><i></i></div><button class="xfight" id="xfight" data-act="x-fight" style="display:none"></button>`;
+  return `<canvas id="wcv"></canvas><div class="xload" id="xload">霓虹街区加载中…<small>第一次进入要生成场景，请稍等</small></div><div id="xui"></div><div class="xjoy" id="xjoy"><i></i></div><button class="xfight" id="xfight" data-act="x-fight" style="display:none"></button><div class="xskills" id="xskills"></div>`;
 }
 
 // ---------- 摇杆 / 键盘移动（相对镜头朝向）----------
@@ -127,8 +137,48 @@ function showFight(sp: Spawn | null) {
   const b = document.getElementById('xfight') as HTMLElement | null;
   if (!b) return;
   b.style.display = sp ? '' : 'none';
-  if (sp) { b.classList.toggle('boss', sp.kind === 'boss'); b.innerHTML = sp.kind === 'boss' ? '👑 挑战首领' : '⚔️ 战斗'; }
+  if (sp) fightLabel();
 }
+let lastAmb: boolean | null = null;
+/** 「战斗」按钮：能偷袭（绕到背后 / 潜行 / 敌人被撞晕）时变成「偷袭」，先手 + 开局元气 */
+function fightLabel() {
+  const b = document.getElementById('xfight') as HTMLElement | null;
+  if (!b || !nearSp || !rt) return;
+  const amb = rt.ex.ambushReady;
+  if (amb === lastAmb && b.dataset.sp === nearSp.id) return;
+  lastAmb = amb; b.dataset.sp = nearSp.id;
+  b.classList.toggle('boss', nearSp.kind === 'boss' && !amb); b.classList.toggle('sneak', amb);
+  b.innerHTML = amb ? '🗡️ 偷袭！' : nearSp.kind === 'boss' ? '👑 挑战首领' : '⚔️ 战斗';
+}
+
+// ---------- 探路技按钮 ----------
+const SK_META: Record<ExploreSkill, { ic: string; name: string; key: string; tip: string }> = {
+  dash: { ic: '💨', name: '冲撞', key: 'q', tip: '向前冲 7 米，撞晕沿途敌人' },
+  sneak: { ic: '🤫', name: '潜行', key: 'e', tip: '8 秒内敌人更难发现你' },
+  reveal: { ic: '👁️', name: '灵视', key: 'r', tip: '显出隐藏宝箱' },
+};
+let skSig = '';
+function refreshSkills() {
+  const host = document.getElementById('xskills');
+  if (!host || !rt) return;
+  const parts = (Object.keys(SK_META) as ExploreSkill[]).map((k) => { const st = rt!.ex.skillState(k); return { k, st }; });
+  const sig = parts.map(({ k, st }) => `${k}${st.owner?.id ?? '-'}${Math.ceil(st.cd * 4)}${st.on > 0 ? 1 : 0}`).join('|');
+  if (sig === skSig) return;
+  skSig = sig;
+  host.innerHTML = parts.map(({ k, st }) => { const m = SK_META[k]; const off = !st.owner; return `<button class="xsk ${off ? 'off' : ''} ${st.on > 0 ? 'on' : ''}" data-act="x-skill" data-k="${k}" title="${m.tip}"><span class="ic">${m.ic}</span><span>${m.name}<kbd>${m.key.toUpperCase()}</kbd><small>${st.owner ? esc(st.owner.name) : '队里没有' + (k === 'dash' ? '先锋 / 守护' : k === 'sneak' ? '刺客 / 神射' : '谋士 / 医者')}</small></span>${st.cd > 0 ? `<i class="cdm" style="transform:scaleX(${(st.cd / st.max).toFixed(2)})"></i>` : ''}</button>`; }).join('');
+}
+function xnote(ctx: AppCtx, text: string) {
+  const host = ctx.root.querySelector('[data-screen="explore"]');
+  if (!host) return;
+  host.querySelectorAll('.xnote').forEach((x) => x.remove());
+  const el = document.createElement('div'); el.className = 'xnote'; el.textContent = text; host.appendChild(el);
+  setTimeout(() => el.remove(), 2200);
+}
+function useSkill(k: ExploreSkill) {
+  if (!rt) return;
+  if (rt.ex.useSkill(k)) { sfx.up(); skSig = ''; refreshSkills(); } else { const st = rt.ex.skillState(k); sfx.no(); if (!st.owner) xnoteGlobal(`队伍里需要${k === 'dash' ? '先锋或守护' : k === 'sneak' ? '刺客或神射' : '谋士或医者'}`); }
+}
+let xnoteGlobal: (t: string) => void = () => undefined;
 function bindInput(scr: HTMLElement) {
   if (inputBound) return;
   inputBound = true;
@@ -136,6 +186,8 @@ function bindInput(scr: HTMLElement) {
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
     keys.add(e.key.toLowerCase());
     if ((e.code === 'Space' || e.code === 'KeyF') && rt?.running && nearSp) { e.preventDefault(); rt.ex.engage(); }
+    const sk = e.code === 'KeyQ' ? 'dash' : e.code === 'KeyE' ? 'sneak' : e.code === 'KeyR' ? 'reveal' : null;
+    if (sk && rt?.running) { e.preventDefault(); useSkill(sk); }
   });
   window.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
   window.addEventListener('blur', () => keys.clear());
@@ -186,7 +238,7 @@ function planFor(ctx: AppCtx) {
 function syncSpawns(ctx: AppCtx) {
   if (!rt) return;
   rt.ex.clearSpawns();
-  for (const p of planFor(ctx)) rt.ex.addSpawn({ id: p.id, kind: p.kind, x: p.x, z: p.z, units: p.units, label: p.label, patrol: p.patrol, data: p.kind === 'poi' ? p.game : p.stageKey });
+  for (const p of planFor(ctx)) rt.ex.addSpawn({ id: p.id, kind: p.kind, x: p.x, z: p.z, units: p.units, label: p.label, patrol: p.patrol, hidden: p.hidden, data: p.kind === 'poi' ? p.game : p.stageKey });
 }
 
 function teamIds(ctx: AppCtx): string[] {
@@ -235,7 +287,7 @@ function showHelpOnce(ctx: AppCtx) {
   const el = document.createElement('div');
   el.className = 'xhelp';
   el.innerHTML = `<div class="xh">
-    <div>👆 点地面走过去</div><div>🕹️ 摇杆 / WASD 移动</div><div>☝️ 拖动转镜头 · 🤏 缩放</div><div>🐱 走到野猫身边 ➜ 点 <b>⚔️ 战斗</b>（想打才打）</div><div>👑 首领打赢 ➜ 进下一章</div><div>📜 宝箱 / NPC / 小游戏入口 ➜ 奖励</div>
+    <div>👆 点地面走过去</div><div>🕹️ 摇杆 / WASD 移动</div><div>☝️ 拖动转镜头 · 🤏 缩放</div><div>🐱 走到野猫身边 ➜ 点 <b>⚔️ 战斗</b>（想打才打）</div><div>🟡 野猫脚下的<b>黄色扇形</b>是视野：走进去会被追，跑得比它快就能甩掉；绕到<b>背后</b>再点 <b>🗡️ 偷袭</b>，开局元气 +70、奖励 ×1.5（被追上则对方先手）</div><div>💨🤫👁️ <b>探路技</b>（左侧按钮，队里要有对应职业）：冲撞撞晕敌人 · 潜行靠近 · 灵视找隐藏宝箱（奖励翻倍）</div><div>👑 首领打赢 ➜ 进下一章</div><div>📜 宝箱 / NPC / 小游戏入口 ➜ 奖励</div>
     <button class="btn green">${icon('check', 24)}</button></div>`;
   el.onclick = (e) => { if ((e.target as HTMLElement).closest('button')) el.remove(); };
   // 不挡操作：开始移动（摇杆 / 键盘）、点一下场景，或 12 秒后自动收起
@@ -298,7 +350,8 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
   rt.wv.setRain(L.weather !== 'none');
   const wv = rt.wv;
   const ex = new Explorer(wv, st, teamIds(ctx), {
-    encounter: (s) => onEncounter(ctx, s),
+    encounter: (s, mode) => onEncounter(ctx, s, mode),
+    note: (t) => xnote(ctx, t),
     chest: (s) => onChest(ctx, s),
     talk: (s) => onTalk(ctx, s),
     alert: () => alertSfx(),
@@ -306,6 +359,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     poi: (sp) => onPoi(ctx, sp),
   });
   ex.setPet(activePet(ctx.s)?.id);
+  xnoteGlobal = (t) => xnote(ctx, t);
   let stepT = 0;
   wv.onUpdate = (dt) => {
     const d = moveDir(wv.yaw);
@@ -328,6 +382,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
       else { autoOn = false; refreshExploreHud(ctx); }
     }
     ex.update(dt); st.update(wv.time, dt);
+    refreshSkills(); if (nearSp) fightLabel();
     if (ex.moving) { stepT -= dt; if (stepT <= 0) { stepSfx(); stepT = 0.26; } } else stepT = 0;
   };
   showFight(null);
@@ -383,7 +438,7 @@ function advance(ctx: AppCtx, chapter: number, index: number) {
   s.best = { chapter, index };
 }
 
-async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
+async function onEncounter(ctx: AppCtx, sp: Spawn, mode: Ambush = 'none'): Promise<boolean> {
   if (!rt || busyFight) return false;
   busyFight = true;
   const backdrop = rt.wv.backdrop();
@@ -395,7 +450,7 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
     const t = isBoss ? bossStage(s) : { ...farmStage(s), fresh: false };
     const stage = t.stage;
     if (isBoss && t.fresh) await playStoryOnce(ctx, stage.storyId);
-    const res = await arenaFight(ctx.root, s, stage, t.chapter, s.settings.speed || 2, isBoss ? '👑' : '⚔️', backdrop);
+    const res = await arenaFight(ctx.root, s, stage, t.chapter, s.settings.speed || 2, mode === 'player' ? '🗡️ 偷袭！' : mode === 'enemy' ? '❗ 被抓住了' : isBoss ? '👑' : '⚔️', backdrop, mode);
     rollover(s, Date.now());
     if (res.win) {
       track(s, 'clear_stage');
@@ -409,8 +464,10 @@ async function onEncounter(ctx: AppCtx, sp: Spawn): Promise<boolean> {
         rt.dead.set(sp.id, 0);
         if (t.fresh) { ctx.loop.restart(); if (rt.st.level.id !== explorerLevel(s).id) { loadLevel(ctx, explorerLevel(s)); popReward(ctx, '🗺️✨', {}); } else syncSpawns(ctx); }
       } else {
-        const g = killReward(s, stage);
-        if (g) { applyGain(s, g); popReward(ctx, '⚔️✨', g); }
+        const g0 = killReward(s, stage);
+        // 偷袭得手：奖励 ×1.5
+        const g = g0 && mode === 'player' ? { ...g0, fish: Math.round(g0.fish * 1.5), exp: Math.round(g0.exp * 1.5), bells: g0.bells + 5 } : g0;
+        if (g) { applyGain(s, g); popReward(ctx, mode === 'player' ? '🗡️✨' : '⚔️✨', g); }
         else popReward(ctx, '⚔️🔒', {});
         rt.dead.set(sp.id, Date.now() + 90_000);
       }
@@ -493,6 +550,7 @@ function openTrail(ctx: AppCtx) {
 export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
     case 'x-fight': if (rt) rt.ex.engage(); return true;
+    case 'x-skill': useSkill(el.dataset.k as ExploreSkill); return true;
     case 'x-boss': if (rt) { rt.ex.moveTo(rt.st.level.bossSpot[0], rt.st.level.bossSpot[1] + 5); } return true;
     case 'x-auto': autoOn = !autoOn; autoT = 0; autoSkip.clear(); autoLast = { key: '', tries: 0 }; refreshExploreHud(ctx); return true;
     case 'x-trail': openTrail(ctx); return true;

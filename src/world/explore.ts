@@ -5,7 +5,7 @@ import { buildCat3D } from '../art3d/cat3d';
 import { detail } from '../art3d/toon';
 import type { Cat3D } from '../art3d/cat3d';
 import { applyPose } from '../art3d/pose';
-import { lookOf } from '../data/units';
+import { lookOf, unitInfo } from '../data/units';
 import type { WorldView } from './engine';
 import type { AABB, Street } from './street';
 import { CELL, SAFE_R, blockedGrid, inSafeZone } from './levels';
@@ -22,10 +22,14 @@ export interface Spawn {
   /** 巡逻半径 */
   patrol?: number;
   data?: unknown;
+  /** 隐藏宝箱：走近或用「灵视」才会显形 */
+  hidden?: boolean;
 }
+/** 开战方式：player = 我方偷袭（背后 / 潜行 / 撞晕），enemy = 被抓住（敌方先手），none = 正面开战 */
+export type Ambush = 'player' | 'enemy' | 'none';
 export interface ExploreHooks {
   /** 触碰敌人：玩法层打一场战斗，返回是否获胜 */
-  encounter(s: Spawn): Promise<boolean>;
+  encounter(s: Spawn, mode: Ambush): Promise<boolean>;
   chest(s: Spawn): void;
   talk(s: Spawn): void;
   /** 走进玩法入口：返回的 Promise 结束前世界暂停（小游戏在 app 层） */
@@ -34,11 +38,21 @@ export interface ExploreHooks {
   alert?(s: Spawn): void;
   /** 队伍走到某只野怪 / 首领身边（可以主动开战）或离开（null）；界面据此显示「战斗」按钮 */
   near?(s: Spawn | null): void;
+  /** 探索事件的提示（被发现 / 偷袭机会 / 宝箱显形…）；界面弹一句话 */
+  note?(text: string): void;
 }
+
+/** 探路技：由队伍里的职业决定谁能放。冲撞 = 先锋 / 守护，潜行 = 刺客 / 神射，灵视 = 谋士 / 医者 */
+export type ExploreSkill = 'dash' | 'sneak' | 'reveal';
+export const SKILL_ROLES: Record<ExploreSkill, string[]> = { dash: ['先锋', '守护'], sneak: ['刺客', '神射'], reveal: ['谋士', '医者'] };
+export const SKILL_CD: Record<ExploreSkill, number> = { dash: 9, sneak: 14, reveal: 16 };
+const SIGHT = 9, SIGHT_SNEAK = 3.2, HALF_FOV = 0.95, CHASE_SPEED = 3.7, CATCH_R = 1.7;
 
 interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; shadow: THREE.Mesh; outlines: THREE.Object3D[] }
 const ENGAGE_R = 5.2, ENGAGE_BOSS = 7;
-interface Ent { spawn: Spawn; group: THREE.Group; cats: Actor[]; home: THREE.Vector3; target: THREE.Vector3; wait: number; alive: boolean; cooldown: number; alert: boolean; tag: THREE.Sprite; mark?: THREE.Sprite; t: number }
+interface Ent { spawn: Spawn; group: THREE.Group; cats: Actor[]; home: THREE.Vector3; target: THREE.Vector3; wait: number; alive: boolean; cooldown: number; alert: boolean; tag: THREE.Sprite; mark?: THREE.Sprite; t: number;
+  /** 视野：朝向 / 状态（巡逻 · 追击 · 被撞晕）/ 视锥片 / 追丢计时 / 晕眩剩余 / 隐藏宝箱是否已发现 */
+  face: number; state: 'idle' | 'chase' | 'stun'; cone?: THREE.Mesh; lost: number; stun: number; found: boolean }
 
 
 const WORLD_CAT_DETAIL = 0.6;
@@ -102,6 +116,56 @@ export class Explorer {
     wv.onTap = (p) => this.tap(p);
   }
 
+  // ---------- 探路技：冲撞 / 潜行 / 灵视（谁能放由队伍里的职业决定） ----------
+  private sneakT = 0;
+  /** 刚进场景 / 被击退回出生点后的几秒宽限：敌人不会立刻发现你 */
+  private grace = 4;
+  private dashT = 0;
+  private dashDir = new THREE.Vector3();
+  private revealT = 0;
+  private cd: Record<ExploreSkill, number> = { dash: 0, sneak: 0, reveal: 0 };
+  private teamIds: string[] = [];
+  private pulses: { m: THREE.Mesh; t: number; c: number }[] = [];
+  /** 这个技能由谁放（队伍里第一个职业对得上的英雄）；没有就是 null（按钮置灰） */
+  skillOwner(k: ExploreSkill): { id: string; name: string } | null {
+    for (const id of this.teamIds) { try { const u = unitInfo(id); if (SKILL_ROLES[k].includes(u.role)) return { id, name: u.name }; } catch { /* 未知单位 */ } }
+    return null;
+  }
+  /** 技能状态：冷却剩余 / 总冷却 / 生效剩余，界面画按钮用 */
+  skillState(k: ExploreSkill) { return { owner: this.skillOwner(k), cd: this.cd[k], max: SKILL_CD[k], on: k === 'sneak' ? this.sneakT : k === 'reveal' ? this.revealT : this.dashT }; }
+  useSkill(k: ExploreSkill): boolean {
+    if (this.paused || this.busy || this.cd[k] > 0 || !this.skillOwner(k)) return false;
+    const L = this.leader;
+    this.cd[k] = SKILL_CD[k];
+    if (k === 'sneak') { this.sneakT = 8; this.hooks.note?.('🤫 潜行 8 秒：敌人更难发现你，贴近可偷袭'); this.pulse(0x7ff0ff, 4, 0.5); }
+    else if (k === 'reveal') { this.revealT = 6; this.hooks.note?.('👁️ 灵视：隐藏宝箱显形，敌人的视野一览无余'); this.pulse(0xffe27a, 26, 0.9); }
+    else { this.path = []; this.dashT = 0.26; this.dashDir.set(Math.sin(L.yaw), 0, Math.cos(L.yaw)); this.pulse(0xffa04a, 3, 0.35); }
+    return true;
+  }
+  private pulse(color: number, r: number, life: number) {
+    const m = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.0, 48), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+    m.rotation.x = -Math.PI / 2; m.position.set(this.leader.pos.x, 0.5, this.leader.pos.z);
+    this.root.add(m); this.pulses.push({ m, t: 0, c: life }); (m.userData as { r: number }).r = r;
+  }
+  private tickSkills(dt: number) {
+    for (const k of Object.keys(this.cd) as ExploreSkill[]) this.cd[k] = Math.max(0, this.cd[k] - dt);
+    this.grace = Math.max(0, this.grace - dt);
+    this.sneakT = Math.max(0, this.sneakT - dt); this.revealT = Math.max(0, this.revealT - dt);
+    // 冲撞：沿朝向冲 7 个单位，撞到的敌人晕 4 秒（我方可以偷袭）
+    if (this.dashT > 0) {
+      const L = this.leader, step = 27 * dt; this.dashT -= dt;
+      const nx = L.pos.x + this.dashDir.x * step, nz = L.pos.z + this.dashDir.z * step;
+      const [cx, cz] = this.cell(new THREE.Vector3(nx, 0, nz));
+      if (!this.grid[cz * this.N + cx]) { L.pos.x = nx; L.pos.z = nz; L.moving = 1; if (L.pos.distanceTo(this.trail[0]) > 0.35) { this.trail.unshift(L.pos.clone()); if (this.trail.length > 80) this.trail.pop(); } } else this.dashT = 0;
+      for (const e of this.ents) if (e.alive && (e.spawn.kind === 'enemy' || e.spawn.kind === 'boss') && e.stun <= 0 && e.group.position.distanceTo(L.pos) < 2.8) {
+        e.stun = e.spawn.kind === 'boss' ? 2.5 : 4; e.state = 'stun'; this.hooks.note?.('💫 撞晕了！趁现在偷袭');
+        for (const a of e.cats) a.pos.y = 0.32;
+      }
+    }
+    for (const p of this.pulses) { p.t += dt; const k = p.t / p.c, r = (p.m.userData as { r: number }).r; p.m.scale.setScalar(1 + k * r); (p.m.material as THREE.MeshBasicMaterial).opacity = 0.9 * (1 - k); p.m.position.set(this.leader.pos.x, 0.5, this.leader.pos.z); }
+    this.pulses = this.pulses.filter((p) => { if (p.t >= p.c) { this.root.remove(p.m); p.m.geometry.dispose(); return false; } return true; });
+  }
+
   // ---------- 宠物（跟在队尾，比猫小一圈，走路时一蹦一蹦） ----------
   private pet: Actor | null = null;
   setPet(id: string | null | undefined) {
@@ -115,6 +179,7 @@ export class Explorer {
   // ---------- 队伍 ----------
   setTeam(ids: string[]) {
     for (const a of this.team) { this.root.remove(a.cat.root); this.root.remove(a.shadow); }
+    this.teamIds = ids.slice(); this.grace = 4;
     this.team = ids.map((id) => this.mkActor(id, 1.0, true));
     const sp = this.street.spawn;
     this.team.forEach((a, i) => a.pos.set(sp.x + (i % 2 ? 1 : -1) * 0.5, sp.y, sp.z + i * 1.5));
@@ -235,7 +300,21 @@ export class Explorer {
     if (mark) { mark.position.y = s.kind === 'boss' ? 7.6 : 6.3; group.add(mark); }
     group.position.set(s.x, 0.32, s.z);
     this.root.add(group);
-    const ent: Ent = { spawn: s, group, cats, home: new THREE.Vector3(s.x, 0.32, s.z), target: new THREE.Vector3(s.x, 0.32, s.z), wait: Math.random() * 2, alive: true, cooldown: 0, alert: false, tag, mark, t: Math.random() * 6 };
+    const ent: Ent = { spawn: s, group, cats, home: new THREE.Vector3(s.x, 0.32, s.z), target: new THREE.Vector3(s.x, 0.32, s.z), wait: Math.random() * 2, alive: true, cooldown: 0, alert: false, tag, mark, t: Math.random() * 6,
+      face: Math.random() * Math.PI * 2, state: 'idle', lost: 0, stun: 0, found: !s.hidden };
+    if (s.kind === 'enemy' || s.kind === 'boss') {
+      // 视野锥：脚下一片扇形，黄 = 没发现你，红 = 追你，灰 = 被撞晕。队伍走进扇形里就会被发现
+      const R = SIGHT, seg = 18, pos: number[] = [0, 0, 0];
+      for (let i = 0; i <= seg; i++) { const a = -HALF_FOV + (i / seg) * HALF_FOV * 2; pos.push(Math.sin(a) * R, 0, Math.cos(a) * R); }
+      const idx: number[] = []; for (let i = 1; i <= seg; i++) idx.push(0, i + 1, i);
+      const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setIndex(idx);
+      const cone = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xffd24a, transparent: true, opacity: 0.2, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+      cone.position.y = 0.1; cone.renderOrder = 3;
+      const edge = new THREE.LineLoop(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)), new THREE.LineBasicMaterial({ color: 0xfff0a0, transparent: true, opacity: 0.8, depthWrite: false, toneMapped: false }));
+      cone.add(edge); (cone.userData as { edge: THREE.LineLoop }).edge = edge;
+      group.add(cone); ent.cone = cone;
+    }
+    if (s.hidden) group.visible = false;
     this.ents.push(ent);
     return ent;
   }
@@ -304,7 +383,7 @@ export class Explorer {
   push(dx: number, dz: number, dt: number) {
     if (this.paused || this.busy) return;
     this.path = [];
-    const l = this.leader, sx = dx * SPEED * dt, sz = dz * SPEED * dt;
+    const sp = SPEED * (this.sneakT > 0 ? 0.62 : 1), l = this.leader, sx = dx * sp * dt, sz = dz * sp * dt;
     // 先试斜走，被挡就沿墙滑（只走 x 或只走 z）
     for (const [ax, az] of [[sx, sz], [sx, 0], [0, sz]]) {
       if (!ax && !az) continue;
@@ -319,12 +398,13 @@ export class Explorer {
     this.t += dt;
     if (this.paused) { this.updateKeyLight(); this.syncAll(dt, true); return; }
     const L = this.leader;
+    this.tickSkills(dt);
     let moving = false;
     if (this.path.length) {
       const tgt = this.path[0];
       const d = new THREE.Vector3().subVectors(tgt, L.pos); d.y = 0;
       const dist = d.length();
-      const step = SPEED * dt;
+      const step = SPEED * (this.sneakT > 0 ? 0.62 : 1) * dt;
       if (dist <= step) { L.pos.copy(tgt); this.path.shift(); } else { d.multiplyScalar(1 / dist); L.pos.addScaledVector(d, step); L.yaw = Math.atan2(d.x, d.z); }
       moving = true;
     }
@@ -404,6 +484,11 @@ export class Explorer {
     }
     if (s.kind === 'chest' || s.kind === 'herb') {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
+      if (s.hidden && !e.found) {
+        // 隐藏宝箱：走到 4 米内，或者「灵视」生效时在 26 米内，就显形（之后一直在）
+        if (dLeader < 4 || (this.revealT > 0 && dLeader < 26)) { e.found = true; e.group.visible = true; this.hooks.note?.('✨ 发现了隐藏宝箱！'); }
+        else { e.group.visible = false; return; }
+      }
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }
       return;
     }
@@ -414,33 +499,92 @@ export class Explorer {
       if (gp.distanceTo(lp) < 3.2 && e.cooldown <= 0) { e.cooldown = 6; this.hooks.talk(s); }
       return;
     }
-    // 敌人：只在原地巡逻，不追人、不碰就打；队伍走到身边时可以主动开战（engage）
-    const dist = gp.distanceTo(lp);
+    // ---- 敌人：有视野。没发现你时原地巡逻、左右张望；你走进视野锥（黄色扇形）就会被发现并追你；
+    //      绕到背后 / 潜行 / 先用「冲撞」撞晕它，再开战就是我方偷袭；被追上则是敌方先手。
+    const dist = dLeader;
     const near = dist < (s.kind === 'boss' ? ENGAGE_BOSS : ENGAGE_R) && e.cooldown <= 0 && !this.busy;
     if (near && dist < this.frameNearD) { this.frameNear = e; this.frameNearD = dist; }
     e.alert = near;
-    if (!near && (e.wait -= dt) <= 0 && (s.patrol ?? 0) > 0) { const r = s.patrol!; e.target.set(e.home.x + (Math.random() - 0.5) * 2 * r, 0.32, e.home.z + (Math.random() - 0.5) * 2 * r); e.wait = 2 + Math.random() * 3; }
-    const d = new THREE.Vector3().subVectors(near ? gp : e.target, gp); d.y = 0;
-    const dd = d.length();
-    let moved = false;
-    if (dd > 0.4 && (s.patrol ?? 0) > 0) {
-      d.multiplyScalar(1 / dd);
-      const nx = gp.x + d.x * 1.6 * dt, nz = gp.z + d.z * 1.6 * dt;
-      const [cx, cz] = this.cell(new THREE.Vector3(nx, 0, nz));
-      if (!this.grid[cz * this.N + cx] && !this.inSafe(nx, nz)) { gp.x = nx; gp.z = nz; moved = true; for (const a of e.cats) a.yaw = Math.atan2(d.x, d.z); }
-      else e.target.copy(gp);
+    const toL = Math.atan2(lp.x - gp.x, lp.z - gp.z);
+    const angTo = Math.abs(Math.atan2(Math.sin(toL - e.face), Math.cos(toL - e.face)));
+    if (e.stun > 0) { e.stun -= dt; if (e.stun <= 0) { e.state = 'idle'; e.lost = 0; } }
+    const sneaking = this.sneakT > 0;
+    if (e.state === 'idle' && !this.busy && e.cooldown <= 0 && this.grace <= 0) {
+      const range = sneaking ? SIGHT_SNEAK : SIGHT;
+      const seen = dist < range && angTo < HALF_FOV && this.clear(gp, lp);
+      const bumped = dist < 2.0 && !sneaking; // 贴脸也会发现
+      if (seen || bumped) {
+        e.state = 'chase'; e.lost = 0;
+        this.hooks.alert?.(s);
+        if (s.kind !== 'boss') this.hooks.note?.('❗ 被发现了！跑开，或者正面开战');
+      }
     }
-    for (const a of e.cats) a.moving = moved ? 1 : 0;
-    if (near) for (const a of e.cats) a.yaw = Math.atan2(lp.x - gp.x, lp.z - gp.z); // 看向队伍
-    if (e.mark) e.mark.position.y = (s.kind === 'boss' ? 7.6 : 6.3) + Math.sin(e.t * (near ? 7 : 4)) * (near ? 0.4 : 0.25);
+    let moved = false;
+    if (e.state === 'stun' || e.stun > 0) {
+      // 晕乎乎：原地转圈
+      e.face += dt * 4; for (const a of e.cats) { a.yaw = e.face; a.moving = 0; }
+    } else if (e.state === 'chase' && s.kind !== 'boss') {
+      // 追击：直线逼近队伍，不进安全区；离太远 / 看不见 4 秒就放弃回家
+      const d = new THREE.Vector3().subVectors(lp, gp); d.y = 0; const dd = d.length();
+      if (dd > 17 || this.inSafe(gp.x, gp.z)) e.state = 'idle';
+      else if (this.clear(gp, lp)) e.lost = 0; else if ((e.lost += dt) > 4) { e.state = 'idle'; e.target.copy(e.home); }
+      if (e.state === 'chase' && dd > CATCH_R) {
+        d.multiplyScalar(1 / dd);
+        const nx = gp.x + d.x * CHASE_SPEED * dt, nz = gp.z + d.z * CHASE_SPEED * dt;
+        const [cx, cz] = this.cell(new THREE.Vector3(nx, 0, nz));
+        if (!this.grid[cz * this.N + cx] && !this.inSafe(nx, nz)) { gp.x = nx; gp.z = nz; moved = true; e.face = Math.atan2(d.x, d.z); }
+      }
+      if (e.state === 'chase' && dd <= CATCH_R && !this.busy && !this.inSafe(lp.x, lp.z)) { e.state = 'idle'; void this.startEncounter(e, 'enemy'); return; }
+      if (e.state === 'chase') e.face = Math.atan2(lp.x - gp.x, lp.z - gp.z);
+      for (const a of e.cats) { a.yaw = e.face; a.moving = moved ? 1 : 0; }
+    } else {
+      // 巡逻 + 张望
+      if ((e.wait -= dt) <= 0 && (s.patrol ?? 0) > 0 && !near) { const r = s.patrol!; e.target.set(e.home.x + (Math.random() - 0.5) * 2 * r, 0.32, e.home.z + (Math.random() - 0.5) * 2 * r); e.wait = 2 + Math.random() * 3; }
+      const d = new THREE.Vector3().subVectors(e.target, gp); d.y = 0;
+      const dd = d.length();
+      if (dd > 0.4 && (s.patrol ?? 0) > 0) {
+        d.multiplyScalar(1 / dd);
+        const nx = gp.x + d.x * 1.6 * dt, nz = gp.z + d.z * 1.6 * dt;
+        const [cx, cz] = this.cell(new THREE.Vector3(nx, 0, nz));
+        if (!this.grid[cz * this.N + cx] && !this.inSafe(nx, nz)) { gp.x = nx; gp.z = nz; moved = true; e.face = Math.atan2(d.x, d.z); }
+        else e.target.copy(gp);
+      } else e.face += Math.sin(e.t * 0.9) * dt * 0.9; // 站着时左右张望
+      for (const a of e.cats) { a.yaw = e.face; a.moving = moved ? 1 : 0; }
+    }
+    if (e.cone) {
+      const c = e.cone, m = c.material as THREE.MeshBasicMaterial;
+      c.visible = dLeader < 30 && e.stun <= 0;
+      c.rotation.y = e.face;
+      c.scale.setScalar((e.state === 'chase' ? 1.1 : sneaking ? SIGHT_SNEAK / SIGHT : 1));
+      m.color.setHex(e.state === 'chase' ? 0xff3a4a : 0xffd24a);
+      m.opacity = (e.state === 'chase' ? 0.34 : 0.24) + Math.sin(e.t * 5) * 0.04;
+      ((c.userData as { edge: THREE.LineLoop }).edge.material as THREE.LineBasicMaterial).color.setHex(e.state === 'chase' ? 0xff8a8a : 0xfff0a0);
+    }
+    if (e.mark) {
+      const up = e.stun > 0 || e.state === 'chase';
+      e.mark.position.y = (s.kind === 'boss' ? 7.6 : 6.3) + Math.sin(e.t * (up ? 8 : 4)) * (up ? 0.4 : 0.25);
+    }
   }
 
-  /** 玩家主动开战：对身边最近的野怪 / 首领。返回是否开打 */
+  /** 玩家主动开战：对身边最近的野怪 / 首领。返回是否开打。没被发现（背后 / 潜行）或被撞晕 = 我方偷袭 */
   engage(): boolean {
     const e = this.nearEnt;
     if (!e || !e.alive || this.busy) return false;
-    void this.startEncounter(e);
+    const lp = this.leaderPos, gp = e.group.position;
+    const toL = Math.atan2(lp.x - gp.x, lp.z - gp.z);
+    const behind = Math.abs(Math.atan2(Math.sin(toL - e.face), Math.cos(toL - e.face))) > 1.35;
+    const unaware = e.state === 'idle' && (behind || this.sneakT > 0);
+    void this.startEncounter(e, e.stun > 0 || unaware ? 'player' : 'none');
     return true;
+  }
+  /** 最近一只能偷袭的敌人（界面据此把「战斗」按钮换成「偷袭」） */
+  get ambushReady(): boolean {
+    const e = this.nearEnt;
+    if (!e || !e.alive) return false;
+    const lp = this.leaderPos, gp = e.group.position;
+    const toL = Math.atan2(lp.x - gp.x, lp.z - gp.z);
+    const behind = Math.abs(Math.atan2(Math.sin(toL - e.face), Math.cos(toL - e.face))) > 1.35;
+    return e.stun > 0 || (e.state === 'idle' && (behind || this.sneakT > 0));
   }
 
   /** 走进玩法入口：世界暂停，等小游戏结束；之后冷却一会儿，免得一出来又被触发 */
@@ -449,15 +593,16 @@ export class Explorer {
     try { await this.hooks.poi!(e.spawn); } finally { this.busy = false; this.paused = false; e.cooldown = 5; }
   }
 
-  private async startEncounter(e: Ent) {
+  private async startEncounter(e: Ent, mode: Ambush) {
     this.busy = true; this.paused = true; this.path = [];
     if (this.nearEnt) { this.nearEnt = null; this.hooks.near?.(null); }
-    const win = await this.hooks.encounter(e.spawn);
+    this.sneakT = 0;
+    const win = await this.hooks.encounter(e.spawn, mode);
     this.busy = false; this.paused = false;
     if (win) { e.alive = false; e.group.visible = false; }
     else {
       // 输了：敌人原地冷却，我方被击退回出生点附近
-      e.cooldown = 8; e.alert = false;
+      e.cooldown = 8; e.alert = false; e.state = 'idle'; this.grace = 4;
       const sp = this.street.spawn;
       for (const a of this.team) a.pos.set(sp.x, sp.y, sp.z);
       this.pet?.pos.set(sp.x, sp.y, sp.z);
@@ -493,7 +638,8 @@ export class Explorer {
     // 队长脚下的光圈
     const L = this.leader;
     this.ring.position.set(L.pos.x, 0.42, L.pos.z);
-    this.ring.scale.setScalar(1 + Math.sin(this.t * 4) * 0.06);
+    this.ring.scale.setScalar((1 + Math.sin(this.t * 4) * 0.06) * (this.sneakT > 0 ? 0.65 : 1));
+    (this.ring.material as THREE.MeshBasicMaterial).opacity = this.sneakT > 0 ? 0.35 : 0.9;
   }
 
   dispose() { this.wv.onTap = () => undefined; this.root.removeFromParent(); }

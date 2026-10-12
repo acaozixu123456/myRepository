@@ -25,6 +25,7 @@ ex.addSpawn({ id: 'e1', kind: 'enemy', x: 8, z: -2, units: ['mob_qun_vanguard', 
 ex.addSpawn({ id: 'b1', kind: 'boss', x: -4, z: -16, units: ['qun_dongzhuo'], label: '董桌 · 首领', patrol: 0 });
 ex.addSpawn({ id: 'c1', kind: 'chest', x: 6, z: 8, label: '宝箱' });
 ex.addSpawn({ id: 'n1', kind: 'npc', x: -8, z: 8, units: ['xian_changmiao'], label: '嫦喵' });
+ex.addSpawn({ id: 'x1', kind: 'chest', x: 2, z: 12, label: '隐藏宝箱', hidden: true });
 const go = q.get('go');
 if (go) { const [x, z] = go.split(',').map(Number); ex.moveTo(x, z); }
 const sim = +(q.get('t') ?? 0);
@@ -39,6 +40,7 @@ if (q.get('lights') === '0') st.group.traverse((o) => { if ((o as THREE.Light).i
 if (q.get('hemi') === '0') wv.scene.traverse((o) => { if ((o as THREE.HemisphereLight).isHemisphereLight) o.visible = false; });
 if (q.get('nomirror') === '1') st.group.traverse((o) => { if (o.scale.y === -1) o.visible = false; });
 if (q.get('fov')) { wv.camera.fov = +q.get('fov')!; wv.camera.updateProjectionMatrix(); }
+if (q.get('skill')) { ex.useSkill(q.get('skill') as 'dash' | 'sneak' | 'reveal'); for (let i = 0; i < 6; i++) ex.update(0.05); }
 wv.render(0.1);
 (window as unknown as { done: boolean; ex: Explorer; wv: WorldView }).ex = ex;
 (window as unknown as { done: boolean }).done = true;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { relocateOutOfSafe } from '../src/game/explore';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
-import { LEVELS, SAFE_R, herbsOf, inSafeZone, levelColliders, poisOf } from '../src/world/levels';
+import { LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 import { PROPS } from '../src/world/props';
 
@@ -17,7 +17,8 @@ describe('探索模式规则', () => {
     const plan = spawnPlan(newPlayer(1));
     expect(plan.filter((p) => p.kind === 'boss')).toHaveLength(1);
     expect(plan.filter((p) => p.kind === 'enemy')).toHaveLength(6);
-    expect(plan.filter((p) => p.kind === 'chest')).toHaveLength(4);
+    expect(plan.filter((p) => p.kind === 'chest' && !p.hidden)).toHaveLength(4);
+    expect(plan.filter((p) => p.hidden)).toHaveLength(3);
     expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
     for (const p of plan) if (p.kind === 'enemy' || p.kind === 'boss') expect(p.units?.length).toBeGreaterThan(0);
   });
@@ -258,5 +259,30 @@ describe('场景切换', () => {
     expect(setScene(s, 3)).toBe(true);
     expect(spawnPlan(s).some((p) => p.kind === 'boss')).toBe(true);
     expect(setScene(s, 99)).toBe(false);
+  });
+});
+
+describe('隐藏宝箱（灵视 / 死角）', () => {
+  it('每个场景 3 个：走得到、不在碰撞盒里、不在安全区、彼此相隔 > 16；位置固定', () => {
+    for (const L of Object.values(LEVELS)) {
+      const spots = hiddenSpotsOf(L);
+      expect(spots, L.id).toHaveLength(3);
+      expect(hiddenSpotsOf(L)).toBe(spots);
+      const { N, seen } = reachableCells(L);
+      const cols = levelColliders(L);
+      for (const [x, z] of spots) {
+        expect(seen[Math.floor(z + L.half) * N + Math.floor(x + L.half)], `${L.id} 走不到 ${x},${z}`).toBe(1);
+        for (const c of cols) expect(x >= c.x0 && x <= c.x1 && z >= c.z0 && z <= c.z1, `${L.id} 在碰撞盒里`).toBe(false);
+        expect(inSafeZone(L, x, z)).toBe(false);
+      }
+      for (let i = 0; i < 3; i++) for (let j = i + 1; j < 3; j++) expect(Math.hypot(spots[i][0] - spots[j][0], spots[i][1] - spots[j][1])).toBeGreaterThan(16);
+    }
+  });
+  it('隐藏宝箱的奖励是普通宝箱的两倍以上，且一定有猫薄荷和金铃铛', () => {
+    const s = newPlayer();
+    const a = openChest(s, 'c0')!, b = openChest(s, 'x0')!;
+    expect(b.fish).toBeGreaterThanOrEqual(a.fish * 2 - 1);
+    expect(b.catnip).toBeGreaterThan(0);
+    expect(b.bells).toBeGreaterThan(0);
   });
 });
