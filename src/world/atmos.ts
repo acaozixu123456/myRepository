@@ -31,19 +31,19 @@ export const ATMOS: Record<MoodId, Atmos> = {
   market: {
     dome: true, skyTop: 0x4a4a9a, skyMid: 0xe0788a, horizon: 0xffb878, discColor: 0xffd8a0, discSize: 0.05,
     fog: 0xd89080, fogD: 0.0048, hemiSky: 0xffc0a0, hemiGnd: 0x5a3a48, hemiI: 1.0, sun: 0xffb070, sunI: 2.1, sunPos: [-50, 26, -34],
-    exposure: 1.1, env: 0.4, bloom: [0.5, 0.5, 0.85], grade: { cool: 0.1, ca: 0.004, vig: 0.8, sat: 1.12, tint: [1.06, 0.98, 0.92] }, keyLight: 0.7, lit: 0.4,
+    exposure: 1.1, env: 0.4, bloom: [0.5, 0.5, 0.85], grade: { cool: 0.1, ca: 0.004, vig: 0.8, sat: 1.12, tint: [1.06, 0.98, 0.92] }, keyLight: 0.7, lit: 0.4, skyBand: 'sky_dusk_peach_01',
   },
   // 港口：赤壁的晚霞，天红水红
   redcliff: {
     dome: true, skyTop: 0x2a2a6a, skyMid: 0xc84060, horizon: 0xff9040, discColor: 0xffc070, discSize: 0.07,
     fog: 0xe0704c, fogD: 0.0052, hemiSky: 0xffa080, hemiGnd: 0x40242c, hemiI: 0.95, sun: 0xff7a3a, sunI: 2.3, sunPos: [10, 20, -52],
-    exposure: 1.1, env: 0.45, bloom: [0.55, 0.5, 0.82], grade: { cool: 0.08, ca: 0.004, vig: 0.9, sat: 1.15, tint: [1.08, 0.96, 0.9] }, keyLight: 1.1, lit: 0.45,
+    exposure: 1.1, env: 0.45, bloom: [0.55, 0.5, 0.82], grade: { cool: 0.08, ca: 0.004, vig: 0.9, sat: 1.15, tint: [1.08, 0.96, 0.9] }, keyLight: 1.1, lit: 0.45, skyBand: 'sky_sunset_redcloud_02',
   },
   // 森林：清晨，阳光从树冠漏下来
   forest: {
     dome: true, skyTop: 0x4aa8e8, skyMid: 0x9ad8f0, horizon: 0xe8f8d0, discColor: 0xfff4c8, discSize: 0.045,
     fog: 0xc4ecc8, fogD: 0.0042, hemiSky: 0xdaf4ff, hemiGnd: 0x3a5a40, hemiI: 1.15, sun: 0xfff0c0, sunI: 2.7, sunPos: [34, 62, 26],
-    exposure: 1.0, env: 0.5, bloom: [0.32, 0.5, 0.92], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.14, tint: [1.02, 1.03, 0.97] }, keyLight: 0.55, lit: 0.3,
+    exposure: 1.0, env: 0.5, bloom: [0.32, 0.5, 0.92], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.14, tint: [1.02, 1.03, 0.97] }, keyLight: 0.55, lit: 0.3, skyBand: 'sky_dawn_tealmist_03',
   },
   // 云岛：正午，云海之上
   mist: {

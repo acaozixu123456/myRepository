@@ -22,7 +22,7 @@
 
 ## 冻结源码与基线
 
-独立和正式拍摄固定 `60bc06577f5d5dd2966a661d2278802bb3e3fcee`：
+原独立审核固定 `60bc06577f5d5dd2966a661d2278802bb3e3fcee`；其原注册表与核心如下。当前正式8图已在主线560f54c重新拍摄，helper1834及下列核心均不变，合并注册表的新SHA见本节后。
 
 | 文件 | SHA256 |
 | --- | --- |
@@ -34,7 +34,9 @@
 | fx/actor.ts | 268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f |
 | fx/player.ts | 9e2e99c304514e8509dc1dcbfec5df1e488cf7f9321659c0c9a2a99bfd3a147d |
 
-当前注册除这三项和helper import之外，其余九项注册及已合羊须/铃铛/耳环函数保持主线原字节；移除仅原目标函数使用的未用sphere import；未移根、隐藏其它配饰、改相机FRAME或用姿势特例回避遮挡。旧的分析球面浮层、无效孔洞拓扑、悬空眼罩连接、source5/6旧图仅留忽略目录历史，不混入1834最终照片。
+当前注册除这三项和helper import之外，其余九项注册保留当前主线#126光弧/流苏/战纹及已合羊须/铃铛/耳环函数字节；移除仅原目标函数使用的未用sphere import与合入#126后已不用的hidden占位函数；未移根、隐藏其它配饰、改相机FRAME或用姿势特例回避遮挡。旧的分析球面浮层、无效孔洞拓扑、悬空眼罩连接、source5/6旧图仅留忽略目录历史，不混入1834最终照片。
+
+当前主线 `560f54cb70fcf50d53e85b4666069a915c4f7a79` 注册表 SHA256 `897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce`；helper仍1834。旧main60正式图和记录保存在先前提交 [c964475](https://github.com/acaozixu123456/myRepository/tree/c9644752425a4c17f010241f375aeaa3d789e8b8/src/art3d/parts/reviews/extras-veterans)，不重标旧独立范围。
 
 ## 正常审图
 
@@ -44,7 +46,7 @@
 | --- | --- | --- | --- | --- |
 | [大图](veterans-32-large.png) | [正面](veterans-front.png) | [小尺寸](veterans-32-native.png) | [反侧](veterans-reverse.png) | [背面](veterans-back.png) |
 
-[长须与红脸细节](chin-beard-red-face-detail.png)、[覆盖眼中心与开放眼](covered-open-eye-detail.png) 为420单格。等价参数 `PORT=5190 CHROME=/usr/bin/chromium node tools/cat3d-shots.mjs <raw.png> 'ids=shu_guanyunmiao,wei_xiahoudun&poses=idle,windup,strike&yaw=<0/32/-32/148>&w=250'`，只大图w290/detail单角色w420；唯一全SRC副本、未使用SHA导出核对真实cat/extras/helper/pose/actor身份，capture的19个关键依赖前后相同。后验另对正常捕获private副本259个运行时源去除五个未使用sentinel导出，与当时当前源逐字节比对全部同；不倒推说479份含审图文件全做了捕获前后guard。[采集记录](capture-records.json) 保存源、参数、raw路径/字节/哈希、delivery无损验证与真实战斗。
+[长须与红脸细节](chin-beard-red-face-detail.png)、[覆盖眼中心与开放眼](covered-open-eye-detail.png) 为420单格。等价参数 `PORT=5190 CHROME=/usr/bin/chromium node tools/cat3d-shots.mjs <raw.png> 'ids=shu_guanyunmiao,wei_xiahoudun&poses=idle,windup,strike&yaw=<0/32/-32/148>&w=250'`，只大图w290/detail单角色w420；本次main560唯一全SRC副本、未使用SHA导出核对真实cat/extras/helper/pose/actor身份，capture的19个关键依赖前后相同。后验对private副本305个非审图SRC文件去除五个未使用sentinel导出，与本次当前源逐字节比对全部同；不能将该后验说成捕获前后全部305个的guard。七张角色图与旧main60图完整RGBA相同，因此保留其更小的原无损PNG编码；记录仍对应本次实际新拍raw，战斗图更新为本次main560。[采集记录](capture-records.json) 保存源、参数、raw路径/字节/哈希、delivery无损验证与真实战斗。
 
 ## 实际十猫战斗
 
@@ -73,7 +75,14 @@
 
 [独立结论](qa-summary.md)、[400+48完整记录](qa-summary.json)、[正常旧新九组](before-after.png)固定source7/main60。新可见开放眼/鼻口点0，保留raw496及有意眼罩owner记录；新slump遮嘴点已消，87非目标同、耳48双版本0。实际红脸在默认host6632/world5094输出三角，逐实际host面核+z.001、头本体/口鼻0；展开头描边壳表层分别6613/5082三角进入，余19/12未计为交叠，不能说全部壳交0或所有输出面都交。纯数值faces缓存，无共享GPU geometry；没有手机FPS测量。
 
-当前已同步主线4d6fb66，保留其它已合批次和SP三位武器，注册表76596/helper1834与cat/pose/renderer/actor/player及两目标look不变。正式8图、独立400+48保留其原main60源快照，不重标作main4d重拍。当前作者重新复制整SRC，实际89/400复核87非目标原始Uint8同、raw open496/五点0/owned FRAME0/旧新整猫8/意外交叉0与前次同；原生typecheck+test退出0，78文件/1086测试。[当前作者验证](author-validation.json)、[正常捕获259源副本后验](capture-runtime-copy-validation.json)。两目标和正式十猫团队均无这次新增的三SP；其它模组的主线改变不混写为本批改动。有限样本和原始/可见遮挡分类分别说明，不宣称所有白眼被盖满。
+此前同步主线4d6fb66，保留其它已合批次和SP三位武器，注册表76596/helper1834与cat/pose/renderer/actor/player及两目标look不变。正式8图、独立400+48保留其原main60源快照，不重标作main4d重拍。当前作者重新复制整SRC，实际89/400复核87非目标原始Uint8同、raw open496/五点0/owned FRAME0/旧新整猫8/意外交叉0与前次同；原生typecheck+test退出0，78文件/1086测试。[当前作者验证](author-validation.json)、[正常捕获259源副本后验](capture-runtime-copy-validation.json)。两目标和正式十猫团队均无这次新增的三SP；其它模组的主线改变不混写为本批改动。有限样本和原始/可见遮挡分类分别说明，不宣称所有白眼被盖满。
 
 
-提交前另同步主线已通过的BACK3与海湾玩法至68e3f1d；两目标及其十猫团队没有背卷/旌旗配置、核心与本两源不变。当前实际全89/87非目标Uint8同、两目标idle smoke通过，原生80文件/1102测试退出0；此增补范围见author-validation.postApprovedBackSync，不冒称独立400或原正式图是在68重拍。
+提交前另同步主线已通过的BACK3与海湾玩法至68e3f1d；两目标及其十猫团队没有背卷/旌旗配置、核心与本两源不变。当前实际全89/87非目标Uint8同、两目标idle smoke通过，当时原生80文件/1102测试退出0；此历史增补范围见author-validation.postApprovedBackSync，不冒称独立400或原正式图是在68重拍。
+
+
+## 当前main560复核与重新拍摄
+
+#116/#126合入后保留两批注册表与进度，清除合并后真正不再使用的hidden占位函数，helper1834不变。当前作者重新完整SRC快照、以560实际注册表4c为基线完成400配对+全89/87非目标Uint8字节同；raw开放眼496、五点新增0、owned FRAME/finite/新增或增大whole裁幅0、旧新整猫8均与原范围相同。完整原始报告SHA与before/after源、预算和89结果见 [最新作者记录](post-main560-validation.json)；独立400+48依然是main60原记录，不称最新独立重新全跑。
+
+正式7张角色图和真实十猫12帧均本次main560新拍，身份sentinel为897a/1834和真实core；7角色图与旧main60完整RGBA同，战斗第05帧真实t≈4.5s、948×592，lossless WebP377016B，三项startup builder各1、10真cat与2目标。8交付全部raw全RGBA0、<500000B，无缩放/剪脸。记录 [capture-records](capture-records.json)、[本次305个非审图SRC副本后验](capture-runtime-copy-validation.json)。当前实际 typecheck+test退出0，80文件/1102测试。有限样本与眼罩细白边限制仍保留。

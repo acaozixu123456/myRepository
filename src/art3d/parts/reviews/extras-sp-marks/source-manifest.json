@@ -1,0 +1,42 @@
+{
+  "paths": [
+    "src/art3d/parts/extras.ts",
+    "src/art3d/parts/extra-sp-marks.ts"
+  ],
+  "baseline": "60bc06577f5d5dd2966a661d2278802bb3e3fcee",
+  "sha": {
+    "src/art3d/parts/extras.ts": "4c388b7e70cb5f596fd422f535a530e7d385db8177928ba8f67d13df7bec2b19",
+    "src/art3d/parts/extra-sp-marks.ts": "e9dcbe48bfc3ff908f0e66016a0b44174ce9627dbe5254ec3da44b834eaa7b9a"
+  },
+  "combined": "a9600d2a1e164e8efec62f42f68ab8b22b51f8437002e9fcac89a99996ed22be",
+  "dependencies": {
+    "src/art3d/cat3d.ts": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
+    "src/art3d/heroes.ts": "a52905509eda8750b950c54826b678686842a861ae920a79bd1bcd0c807b711e",
+    "src/art3d/mode.ts": "e78bdc28428b536eb2c35d18d99d2aa4243c65afb2adc71a3a1a27642583c78b",
+    "src/art3d/parts/back-fieldgear.ts": "87a4a0b05b51cf180ff64d1a2ba52f62282f128322432832dffa1f712326c3aa",
+    "src/art3d/parts/back-sp-regalia.ts": "b356c5152e9608eec6a43337c0d4e56bcc09614e8026eb8ecbe57360d60b45e7",
+    "src/art3d/parts/back.ts": "5edc60b3078a8a9df43e2fcfdbcaeb074c338332e986341179994c3498bde6ee",
+    "src/art3d/parts/body-field-armor.ts": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/body.ts": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+    "src/art3d/parts/extras-regalia.ts": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/hero-ur-liu-swords.ts": "7e55df1b9525db50367fa8c4b9d9b9a4b13ccae0c41286e6e5913517eea91e38",
+    "src/art3d/parts/hero-ur-regalia.ts": "c092409c3e60b8c09f9d7e3f55ea8cd7b9bb0668b56fd2d75cb23e7c9425dbb9",
+    "src/art3d/parts/hero-ur-weapons.ts": "e5df9c239a404dd40fa9eee3de70de49da1a5b195e54cab94a1fa333aaabcde2",
+    "src/art3d/parts/index.ts": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+    "src/art3d/parts/types.ts": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/portrait.ts": "6d5c5799023314c8aeb0509cbcccd5cf95ccdc64ee96ff8e1cff7ec69fd4ccf0",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/renderer.ts": "ccc15c4a584e0f44c91bf7faa35beb15afe6e1d509890003a3d0b7a47120ac05",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/content/mobs.ts": "72ea942357374719ca81d0992aed6bf08b1d9f3e1223775329b3fe14c5bad438",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/data/units.ts": "7e41b3c5d7b94a35f00012431256e62953dc5a0c5c395d4e357826bc91f5183a",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/player.ts": "9e2e99c304514e8509dc1dcbfec5df1e488cf7f9321659c0c9a2a99bfd3a147d"
+  }
+}

@@ -1,9 +1,9 @@
 {
-  "dateUTC": "2026-10-12T07:44:28.586Z",
-  "base": "60bc06577f5d5dd2966a661d2278802bb3e3fcee",
-  "snapshotPrefix": "/.shots/extras-veterans-official/source-1791791037224-246650",
+  "dateUTC": "2026-10-12T09:06:15.821Z",
+  "base": "560f54cb70fcf50d53e85b4666069a915c4f7a79",
+  "snapshotPrefix": "/.shots/extras-veterans-official-main560/source-1791795912642-296328",
   "sourceBefore": {
-    "src/art3d/parts/extras.ts": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+    "src/art3d/parts/extras.ts": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
     "src/art3d/parts/extras-veterans.ts": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
     "src/art3d/cat3d.ts": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
     "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
@@ -16,7 +16,7 @@
     "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
     "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
     "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
-    "src/art3d/parts/back.ts": "5edc60b3078a8a9df43e2fcfdbcaeb074c338332e986341179994c3498bde6ee",
+    "src/art3d/parts/back.ts": "2d5304b9263b3d7768251c55205cda732383fba4cdf8e2e107294509cd541961",
     "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
     "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
     "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
@@ -24,7 +24,7 @@
     "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5"
   },
   "sourceAfter": {
-    "src/art3d/parts/extras.ts": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+    "src/art3d/parts/extras.ts": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
     "src/art3d/parts/extras-veterans.ts": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
     "src/art3d/cat3d.ts": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
     "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
@@ -37,7 +37,7 @@
     "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
     "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
     "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
-    "src/art3d/parts/back.ts": "5edc60b3078a8a9df43e2fcfdbcaeb074c338332e986341179994c3498bde6ee",
+    "src/art3d/parts/back.ts": "2d5304b9263b3d7768251c55205cda732383fba4cdf8e2e107294509cd541961",
     "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
     "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
     "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
@@ -63,13 +63,13 @@
       "yaw": 32,
       "width": 290,
       "query": "ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
-      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/cat-1791791037224-246650.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
+      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/cat-1791795912642-296328.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=32&w=290",
       "rawPNG": "veterans-32-large.png",
       "rawBytes": 180269,
       "rawSHA256": "6fb3f434f46f014d282dee6a6865963b627d248a0c3565ccb93fd087eab8c2c4",
       "runtime": {
         "catSHA": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
-        "extraSHA": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+        "extraSHA": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
         "helperSHA": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
         "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
         "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
@@ -118,13 +118,13 @@
       "yaw": 32,
       "width": 250,
       "query": "ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
-      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/cat-1791791037224-246650.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
+      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/cat-1791795912642-296328.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=32&w=250",
       "rawPNG": "veterans-32-native.png",
       "rawBytes": 147656,
       "rawSHA256": "9efde23cac0938dd6c75aa384fd4148fd371c5e2d3da4051c559fcd66d1bdff4",
       "runtime": {
         "catSHA": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
-        "extraSHA": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+        "extraSHA": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
         "helperSHA": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
         "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
         "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
@@ -173,13 +173,13 @@
       "yaw": 0,
       "width": 250,
       "query": "ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
-      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/cat-1791791037224-246650.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
+      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/cat-1791795912642-296328.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=0&w=250",
       "rawPNG": "veterans-front.png",
       "rawBytes": 141511,
       "rawSHA256": "167edaabb92ce041cab205e8a0bbe08da0eaa4343937081b3f09e4a2e5648c74",
       "runtime": {
         "catSHA": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
-        "extraSHA": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+        "extraSHA": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
         "helperSHA": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
         "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
         "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
@@ -228,13 +228,13 @@
       "yaw": -32,
       "width": 250,
       "query": "ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
-      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/cat-1791791037224-246650.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
+      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/cat-1791795912642-296328.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=-32&w=250",
       "rawPNG": "veterans-reverse.png",
       "rawBytes": 145121,
       "rawSHA256": "0180488c3eaa20dbc75ef84ca10573c4bcbd9ebb8ff9eb3760889cde53df29ba",
       "runtime": {
         "catSHA": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
-        "extraSHA": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+        "extraSHA": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
         "helperSHA": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
         "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
         "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
@@ -283,13 +283,13 @@
       "yaw": 148,
       "width": 250,
       "query": "ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
-      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/cat-1791791037224-246650.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
+      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/cat-1791795912642-296328.html?ids=shu_guanyunmiao%2Cwei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=148&w=250",
       "rawPNG": "veterans-back.png",
       "rawBytes": 123285,
       "rawSHA256": "3fdc2c3e96a49423b97429d8ff5fa27c0d40111676da01520ba9a0537f62493c",
       "runtime": {
         "catSHA": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
-        "extraSHA": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+        "extraSHA": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
         "helperSHA": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
         "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
         "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
@@ -337,13 +337,13 @@
       "yaw": 0,
       "width": 420,
       "query": "ids=shu_guanyunmiao&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
-      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/cat-1791791037224-246650.html?ids=shu_guanyunmiao&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
+      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/cat-1791795912642-296328.html?ids=shu_guanyunmiao&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
       "rawPNG": "chin-beard-red-face-detail.png",
       "rawBytes": 147618,
       "rawSHA256": "f8e1dde559c6ca2121fa0bf08044cf6cf8d90051ee182993bea248ddb7db9a0c",
       "runtime": {
         "catSHA": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
-        "extraSHA": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+        "extraSHA": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
         "helperSHA": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
         "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
         "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
@@ -379,13 +379,13 @@
       "yaw": 0,
       "width": 420,
       "query": "ids=wei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
-      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/cat-1791791037224-246650.html?ids=wei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
+      "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/cat-1791795912642-296328.html?ids=wei_xiahoudun&poses=idle%2Cwindup%2Cstrike&yaw=0&w=420",
       "rawPNG": "covered-open-eye-detail.png",
       "rawBytes": 148512,
       "rawSHA256": "dd4f42f0a1a2268ab8b1a4203596aff3197b39b3a78721f2ee5e6718d3d7ffa6",
       "runtime": {
         "catSHA": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
-        "extraSHA": "76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107",
+        "extraSHA": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
         "helperSHA": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
         "poseSHA": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
         "actorSHA": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
@@ -411,7 +411,7 @@
   ],
   "battle": {
     "query": "test=1&r3d=1&a=shu_guanyunmiao%2Cwei_xiahoudun%2Cwei_caomiaode%2Cshu_liumiaobei%2Cshu_zhangmiaofei&b=qun_lvbuding%2Cman_mengmiaohuo%2Cxian_zuoci%2Cshu_zhaomiaoyun%2Cwu_sunxiangxiang&theme=meadow&seed=2",
-    "url": "http://127.0.0.1:5190/.shots/extras-veterans-official/battle-1791791037224-246650.html?test=1&r3d=1&a=shu_guanyunmiao%2Cwei_xiahoudun%2Cwei_caomiaode%2Cshu_liumiaobei%2Cshu_zhangmiaofei&b=qun_lvbuding%2Cman_mengmiaohuo%2Cxian_zuoci%2Cshu_zhaomiaoyun%2Cwu_sunxiangxiang&theme=meadow&seed=2",
+    "url": "http://127.0.0.1:5190/.shots/extras-veterans-official-main560/battle-1791795912642-296328.html?test=1&r3d=1&a=shu_guanyunmiao%2Cwei_xiahoudun%2Cwei_caomiaode%2Cshu_liumiaobei%2Cshu_zhangmiaofei&b=qun_lvbuding%2Cman_mengmiaohuo%2Cxian_zuoci%2Cshu_zhaomiaoyun%2Cwu_sunxiangxiang&theme=meadow&seed=2",
     "teamA": [
       "shu_guanyunmiao",
       "wei_xiahoudun",
@@ -545,8 +545,8 @@
         "index": 0,
         "requestedT": 3.25,
         "rawPNG": "battle-final-00.png",
-        "rawBytes": 556700,
-        "rawSHA256": "abb9db5baad038614017582021b42b031db95eb18b486da7e8ce4e2962aadcd5",
+        "rawBytes": 558087,
+        "rawSHA256": "5e584a1e0363842a01794edaba780a83117859cfd5674304f0a9376d2b0cf766",
         "state": {
           "sceneTime": 3.2499999999999933,
           "actors": [
@@ -624,8 +624,8 @@
         "index": 1,
         "requestedT": 3.5,
         "rawPNG": "battle-final-01.png",
-        "rawBytes": 547805,
-        "rawSHA256": "f7e51715975444c4d95a9716fc887ac1a68261bcb58f1d75930dfeede8c87836",
+        "rawBytes": 552867,
+        "rawSHA256": "0a712fbc0220abb5abed4adb10807a1441ae42e48c5edfaf622bf60b837579fa",
         "state": {
           "sceneTime": 3.4999999999999925,
           "actors": [
@@ -703,8 +703,8 @@
         "index": 2,
         "requestedT": 3.75,
         "rawPNG": "battle-final-02.png",
-        "rawBytes": 558739,
-        "rawSHA256": "84f000ce124ddfc173a206373e81ba32abc01725011e7bdbdb26e9a4fba27e62",
+        "rawBytes": 558770,
+        "rawSHA256": "f98782f916ae707a1f18066ed38cc771c1235d1e4cb449e95d6ff271d432e6d5",
         "state": {
           "sceneTime": 3.7499999999999916,
           "actors": [
@@ -782,8 +782,8 @@
         "index": 3,
         "requestedT": 4,
         "rawPNG": "battle-final-03.png",
-        "rawBytes": 565360,
-        "rawSHA256": "3ffaadc3fe465b1cd54816b14078b3b19a61522d575a428a532b88ff0bab0a53",
+        "rawBytes": 566040,
+        "rawSHA256": "c61d5db72079345a0b5ba117f10cd9e26f8a562378cf221df17f237c93004a34",
         "state": {
           "sceneTime": 3.9999999999999907,
           "actors": [
@@ -861,8 +861,8 @@
         "index": 4,
         "requestedT": 4.25,
         "rawPNG": "battle-final-04.png",
-        "rawBytes": 551281,
-        "rawSHA256": "83cea0764889dcc0cf665e6db2670a6094d9ddc21c21339bbb5bb7f68804999d",
+        "rawBytes": 552036,
+        "rawSHA256": "6924518d8bd68dc31f776c33479c68b19f54eda5652158547aae7e34bea26bab",
         "state": {
           "sceneTime": 4.24999999999999,
           "actors": [
@@ -940,8 +940,8 @@
         "index": 5,
         "requestedT": 4.5,
         "rawPNG": "battle-final-05.png",
-        "rawBytes": 544466,
-        "rawSHA256": "d10f260a7f686e93512f725ab9356d5948c5f5442b4f408dc3241f72798535b0",
+        "rawBytes": 509582,
+        "rawSHA256": "16ccc967217eb5672644007a81bd0cf51e87e1cd1d8b17e9640be43499946e2f",
         "state": {
           "sceneTime": 4.499999999999989,
           "actors": [
@@ -1019,8 +1019,8 @@
         "index": 6,
         "requestedT": 4.75,
         "rawPNG": "battle-final-06.png",
-        "rawBytes": 556183,
-        "rawSHA256": "e79d0c0e663eeb96f0498cf7fbb22530c669913ccfec3106a533583882ad189a",
+        "rawBytes": 556978,
+        "rawSHA256": "3684c22f4aeab2cad4c2fd9a876f9e7915e456cb92f809bf2441b9d07b16f37c",
         "state": {
           "sceneTime": 4.7499999999999885,
           "actors": [
@@ -1098,8 +1098,8 @@
         "index": 7,
         "requestedT": 5,
         "rawPNG": "battle-final-07.png",
-        "rawBytes": 559610,
-        "rawSHA256": "5503894f5634191fcbc9fec841f6ad67576ef587b664aa45d593c52aee4fd13c",
+        "rawBytes": 559532,
+        "rawSHA256": "ef73bfb5fe8f405d96fdd79d42ada46fc3d45cdc8d112262881c4706cec06ec8",
         "state": {
           "sceneTime": 4.999999999999988,
           "actors": [
@@ -1177,8 +1177,8 @@
         "index": 8,
         "requestedT": 5.25,
         "rawPNG": "battle-final-08.png",
-        "rawBytes": 560199,
-        "rawSHA256": "f5f607881d375930ab2c294a21cddb678bd4a62f204bad8b582d51ff21eb81c6",
+        "rawBytes": 559507,
+        "rawSHA256": "a37f37e9e5a1cdec54589bcc5b3bccfa1c7f33cf9f5acd70b91b32abaa6d4455",
         "state": {
           "sceneTime": 5.249999999999987,
           "actors": [
@@ -1256,8 +1256,8 @@
         "index": 9,
         "requestedT": 5.5,
         "rawPNG": "battle-final-09.png",
-        "rawBytes": 558697,
-        "rawSHA256": "1bdbc0c259a486a01dfba995e38e76596164c43c617d9fce28828f6f86411273",
+        "rawBytes": 559268,
+        "rawSHA256": "16ac7429d76809055b3c455ab8b65f6fd405adfc86c78ca3ec0c9735306102bf",
         "state": {
           "sceneTime": 5.499999999999986,
           "actors": [
@@ -1335,8 +1335,8 @@
         "index": 10,
         "requestedT": 5.75,
         "rawPNG": "battle-final-10.png",
-        "rawBytes": 518513,
-        "rawSHA256": "0989f2f39da2462e300ad9067e4cf3d80d800b0645305cc7edefbcc200354621",
+        "rawBytes": 512349,
+        "rawSHA256": "0ef361fc5b4f47311a9c84b3f3c443724c3dfe6b1a9c876f939565039bfed5fd",
         "state": {
           "sceneTime": 5.749999999999985,
           "actors": [
@@ -1414,8 +1414,8 @@
         "index": 11,
         "requestedT": 6,
         "rawPNG": "battle-final-11.png",
-        "rawBytes": 518574,
-        "rawSHA256": "52009ad647afbb752a0c632e694861a18e3407d4b0f7665ef747180d36c05451",
+        "rawBytes": 551388,
+        "rawSHA256": "a4e678ea476ba29d4128bd70fcdb45b498004c555f041ba6c3c0eadcb26ffc86",
         "state": {
           "sceneTime": 5.999999999999984,
           "actors": [
@@ -1505,7 +1505,9 @@
       "size": [
         1000,
         700
-      ]
+      ],
+      "previousMain60FullRGBAEqual": true,
+      "encoding": "Preserved prior lossless PNG encoding; actual new main560 raw decoded fullRGBA equals this delivery and old main60 capture."
     },
     {
       "file": "veterans-32-native.png",
@@ -1516,7 +1518,9 @@
       "size": [
         1000,
         700
-      ]
+      ],
+      "previousMain60FullRGBAEqual": true,
+      "encoding": "Preserved prior lossless PNG encoding; actual new main560 raw decoded fullRGBA equals this delivery and old main60 capture."
     },
     {
       "file": "veterans-front.png",
@@ -1527,7 +1531,9 @@
       "size": [
         1000,
         700
-      ]
+      ],
+      "previousMain60FullRGBAEqual": true,
+      "encoding": "Preserved prior lossless PNG encoding; actual new main560 raw decoded fullRGBA equals this delivery and old main60 capture."
     },
     {
       "file": "veterans-reverse.png",
@@ -1538,7 +1544,9 @@
       "size": [
         1000,
         700
-      ]
+      ],
+      "previousMain60FullRGBAEqual": true,
+      "encoding": "Preserved prior lossless PNG encoding; actual new main560 raw decoded fullRGBA equals this delivery and old main60 capture."
     },
     {
       "file": "veterans-back.png",
@@ -1549,7 +1557,9 @@
       "size": [
         1000,
         700
-      ]
+      ],
+      "previousMain60FullRGBAEqual": true,
+      "encoding": "Preserved prior lossless PNG encoding; actual new main560 raw decoded fullRGBA equals this delivery and old main60 capture."
     },
     {
       "file": "chin-beard-red-face-detail.png",
@@ -1560,7 +1570,9 @@
       "size": [
         1280,
         700
-      ]
+      ],
+      "previousMain60FullRGBAEqual": true,
+      "encoding": "Preserved prior lossless PNG encoding; actual new main560 raw decoded fullRGBA equals this delivery and old main60 capture."
     },
     {
       "file": "covered-open-eye-detail.png",
@@ -1571,18 +1583,22 @@
       "size": [
         1280,
         700
-      ]
+      ],
+      "previousMain60FullRGBAEqual": true,
+      "encoding": "Preserved prior lossless PNG encoding; actual new main560 raw decoded fullRGBA equals this delivery and old main60 capture."
     },
     {
       "file": "battle.webp",
-      "bytes": 400846,
-      "sha256": "69e6af01a7e235a5050d625f072d1c4cf15bb504bb699f634a3a2d7d79ee04c6",
+      "bytes": 377016,
+      "sha256": "aea5c7f0820fb48b01560d1bc98cdafa3d4ef5d14b8cf00839871787627274ad",
       "raw": "battle-final-05.png",
       "fullRGBAByteDifference": 0,
       "size": [
         948,
         592
-      ]
+      ],
+      "frame": 5,
+      "sceneTime": 4.499999999999989
     }
   ]
 }
