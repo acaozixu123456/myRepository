@@ -1,7 +1,8 @@
 // 采蘑菇小游戏界面：3×3 蘑菇地，蘑菇冒出来又缩回去。规则在 game/mushroom.ts。
 import { CELLS, DURATION, SCORE, makeSchedule, mushroomGain, recordPicked, runsLeft, tierOf, useRun, TIERS } from '../../game/mushroom';
 import type { Kind, Spawn } from '../../game/mushroom';
-import { gainText } from '../../game/explore';
+import { gainIcons, starsHtml } from '../../ui/gain';
+import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
@@ -31,7 +32,7 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>采蘑菇</h3><div class="fish-status"></div><div class="mu-grid"></div><div class="mu-time"><i></i></div><div class="mu-legend">红香菇 +1 · 金蘑菇 +3 · 紫色毒蘑菇 −3</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-mu="main">开始</button><button class="btn ghost" data-mu="close">收摊</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🍄</h3><div class="fish-status"></div><div class="mu-grid"></div><div class="mu-time"><i></i></div><div class="mu-legend"><span style="color:#ff6a5a">🍄</span> +1 &nbsp; <span style="color:#ffd24a">🍄</span> +3 &nbsp; <span style="color:#c08aff">🍄</span> −3</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-mu="main">▶</button><button class="btn ghost" data-mu="close">${icon('close', 22)}</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const status = q<HTMLElement>('.fish-status'), grid = q<HTMLElement>('.mu-grid'), timeBar = q<HTMLElement>('.mu-time i'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-mu="main"]');
@@ -40,14 +41,14 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
     let phase: Phase = 'idle', raf = 0, t0 = 0, score = 0, picked = 0, plan: Spawn[] = [], next = 0;
     const active = new Map<number, { kind: Kind; until: number }>();
 
-    const refresh = () => { info.textContent = `今天还能采 ${runsLeft(ctx.s)} 局`; };
+    const refresh = () => { info.innerHTML = `🎮 ${runsLeft(ctx.s)}`; };
     const clearCells = () => { active.clear(); for (const c of cells) { c.className = 'mu-cell'; delete c.dataset.kind; c.firstElementChild!.textContent = ''; } };
-    const hud = (left: number) => { status.innerHTML = `<div class="mu-hud"><span>分数 <b>${score}</b></span><span>剩余 ${Math.max(0, Math.ceil(left))} 秒</span></div>`; };
+    const hud = (left: number) => { status.innerHTML = `<div class="mu-hud"><span>⭐ <b>${score}</b></span><span>⏱ ${Math.max(0, Math.ceil(left))}</span></div>`; };
     const idle = () => {
       phase = 'idle'; clearCells(); refresh(); timeBar.style.width = '100%';
       const left = runsLeft(ctx.s) > 0;
-      main.disabled = !left; main.textContent = left ? '开始' : '今天采够啦';
-      status.innerHTML = left ? `${DURATION} 秒内尽量多采：点<b>红香菇</b>和<b>金蘑菇</b>，别碰<b>紫色毒蘑菇</b>。<br><small>${TIERS[0]} / ${TIERS[1]} / ${TIERS[2]} 分各是一档奖励</small>` : '蘑菇都被你采光了，明早 5 点再来';
+      main.disabled = !left; main.innerHTML = left ? '▶' : '😴';
+      status.innerHTML = left ? `<span class="mg-big">🍄 👆</span><span class="mg-sub">${starsHtml(1, 3, 14)} ${TIERS.join(' / ')}</span>` : '<span class="mg-big">😴</span>';
     };
     const start = () => {
       if (!useRun(ctx.s)) { idle(); return; }
@@ -59,7 +60,7 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
         const t = (now - t0) / 1000;
         while (next < plan.length && plan[next].t <= t) {
           const sp = plan[next++], c = cells[sp.cell];
-          c.className = `mu-cell ${sp.kind} up`; c.dataset.kind = sp.kind; c.firstElementChild!.textContent = sp.kind === 'gold' ? '金' : '';
+          c.className = `mu-cell ${sp.kind} up`; c.dataset.kind = sp.kind; c.firstElementChild!.textContent = sp.kind === 'gold' ? '★' : '';
           active.set(sp.cell, { kind: sp.kind, until: t + sp.life });
         }
         for (const [i, a] of active) if (a.until <= t) { active.delete(i); cells[i].className = 'mu-cell'; delete cells[i].dataset.kind; }
@@ -85,8 +86,8 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
       const tier = tierOf(score), g = mushroomGain(ctx.s, tier);
       if (tier > 0) { applyGain(ctx.s, g); sfx.coin(); } else sfx.no();
       recordPicked(ctx.s, picked); ctx.save();
-      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.textContent = main.disabled ? '今天采够啦' : '再来一局';
-      status.innerHTML = `<div class="ramen-stars">${'★'.repeat(tier)}${'☆'.repeat(3 - tier)}</div>得分 <b class="fish-r-fine">${score}</b>（采了 ${picked} 朵）<br><small>${tier > 0 ? gainText(g) : '没到第一档，没有收入'}</small>`;
+      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴' : '🔁';
+      status.innerHTML = `${starsHtml(tier)}<div class="mg-sub">⭐ ${score} &nbsp; 🍄 ${picked}</div><div style="margin-top:4px">${tier > 0 ? gainIcons(g, 20) : ''}</div>`;
       refresh();
     };
     const press = () => { if (main.disabled) return; if (phase === 'idle' || phase === 'result') start(); };

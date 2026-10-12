@@ -1,7 +1,8 @@
 // 拉面屋台小游戏界面：接单 → 按顺序加料（限时）→ 在绿区里起锅。规则在 game/ramen.ts。
 import { BOIL_ZONE, CUSTOMERS, TOPPINGS, TOPPING_TIME, judgeBoil, judgeToppings, makeOrder, markerPos, ordersLeft, ramenGain, recordBowl, stars, useOrder } from '../../game/ramen';
 import type { Topping } from '../../game/ramen';
-import { gainText } from '../../game/explore';
+import { gainIcons, starsHtml } from '../../ui/gain';
+import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
@@ -25,6 +26,8 @@ export const RAMEN_CSS = `
 .ramen-stars{font-size:26px;letter-spacing:6px;color:#ffd24a;text-shadow:0 0 10px rgba(255,200,60,.6)}
 `;
 
+const TOP_EMOJI: Record<string, string> = { 叉烧: '🥩', 溏心蛋: '🥚', 海苔: '🟩', 葱花: '🥬', 鱼板: '🍥', 猫薄荷叶: '🍃' };
+const em = (t: string) => TOP_EMOJI[t] ?? t;
 type Phase = 'idle' | 'top' | 'boil' | 'result';
 
 /** 打开拉面屋台；玩家点「收摊」后结束。 */
@@ -32,26 +35,26 @@ export function openRamen(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>拉面屋台</h3><div class="ramen-body"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-rm="main">接单</button><button class="btn ghost" data-rm="close">收摊</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🍜</h3><div class="ramen-body"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-rm="main">🍜</button><button class="btn ghost" data-rm="close">${icon('close', 22)}</button></div></div>`;
     host.appendChild(ov);
     const body = ov.querySelector('.ramen-body') as HTMLElement, info = ov.querySelector('.fish-info') as HTMLElement, main = ov.querySelector('[data-rm="main"]') as HTMLButtonElement;
     let phase: Phase = 'idle', raf = 0, order: Topping[] = [], taps: Topping[] = [], customer = CUSTOMERS[0], t0 = 0;
-    const refreshInfo = () => { info.textContent = `今天还能做 ${ordersLeft(ctx.s)} 碗`; };
+    const refreshInfo = () => { info.innerHTML = `🍜 ${ordersLeft(ctx.s)}`; };
     const stop = () => { cancelAnimationFrame(raf); raf = 0; };
     const progress = () => { let i = 0; for (const t of taps) { if (i < order.length && t === order[i]) i++; } return i; };
 
     const idle = () => {
       stop(); phase = 'idle'; refreshInfo();
-      main.style.display = ''; main.disabled = ordersLeft(ctx.s) <= 0; main.textContent = main.disabled ? '今天打烊啦' : '接单';
-      body.innerHTML = `<div class="ramen-ticket">${main.disabled ? '食材都用完了，明早 5 点再开张' : '客人在排队了。看单子，<b>按顺序</b>加料，再在<b>绿区</b>里起锅。'}</div>`;
+      main.style.display = ''; main.disabled = ordersLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴' : '🍜';
+      body.innerHTML = `<div class="ramen-ticket"><span class="mg-big">${main.disabled ? '😴' : '🍜 ➜ 🥩🥚🟩 ➜ 🎯'}</span></div>`;
     };
-    const chipsHtml = () => { const p = progress(); return order.map((t, i) => `<i class="${i < p ? 'done' : i === p ? 'next' : ''}">${t}</i>`).join('→'); };
+    const chipsHtml = () => { const p = progress(); return order.map((t, i) => `<i class="${i < p ? 'done' : i === p ? 'next' : ''}">${em(t)}</i>`).join('➜'); };
     const startOrder = () => {
       if (!useOrder(ctx.s)) { idle(); return; }
       ctx.save();
       order = makeOrder(Math.random); taps = []; customer = CUSTOMERS[Math.floor(Math.random() * CUSTOMERS.length)];
       phase = 'top'; t0 = performance.now(); main.style.display = 'none'; refreshInfo();
-      body.innerHTML = `<div class="ramen-ticket"><b>${customer.name}</b> 点单<small>${customer.line}</small></div><div class="ramen-chips"></div><div class="ramen-grid">${TOPPINGS.map((t) => `<button data-top="${t}">${t}</button>`).join('')}</div><div class="ramen-time"><i></i></div>`;
+      body.innerHTML = `<div class="ramen-ticket"><span class="mg-big">😼</span><small>${customer.name}</small></div><div class="ramen-chips"></div><div class="ramen-grid">${TOPPINGS.map((t) => `<button data-top="${t}">${em(t)}</button>`).join('')}</div><div class="ramen-time"><i></i></div>`;
       (body.querySelector('.ramen-chips') as HTMLElement).innerHTML = chipsHtml();
       const bar = body.querySelector('.ramen-time i') as HTMLElement;
       const tick = (now: number) => {
@@ -74,8 +77,8 @@ export function openRamen(ctx: AppCtx, host: Element): Promise<void> {
     const startBoil = () => {
       stop(); phase = 'boil'; t0 = performance.now();
       const lo = (BOIL_ZONE.center - BOIL_ZONE.half) * 100, w = BOIL_ZONE.half * 2 * 100;
-      body.innerHTML = `<div class="ramen-ticket">配料齐了！盯着金色标记，<b>进绿区时起锅</b>。</div><div class="ramen-bar"><div class="zone" style="left:${lo}%;width:${w}%"></div><div class="mk"></div></div>`;
-      main.style.display = ''; main.disabled = false; main.textContent = '起锅！';
+      body.innerHTML = `<div class="ramen-ticket"><span class="mg-big">🔥</span></div><div class="ramen-bar"><div class="zone" style="left:${lo}%;width:${w}%"></div><div class="mk"></div></div>`;
+      main.style.display = ''; main.disabled = false; main.innerHTML = '🥢';
       const mk = body.querySelector('.mk') as HTMLElement;
       const tick = (now: number) => { if (phase !== 'boil') return; mk.style.left = `${markerPos((now - t0) / 1000) * 100}%`; raf = requestAnimationFrame(tick); };
       raf = requestAnimationFrame(tick);
@@ -92,9 +95,9 @@ export function openRamen(ctx: AppCtx, host: Element): Promise<void> {
       const g = ramenGain(ctx.s, st);
       if (st > 0) { applyGain(ctx.s, g); sfx.coin(); if (st === 3) sfx.up(); } else sfx.no();
       recordBowl(ctx.s, st); ctx.save();
-      phase = 'result'; main.style.display = ''; main.disabled = false; main.textContent = ordersLeft(ctx.s) > 0 ? '下一单' : '今天打烊啦'; if (ordersLeft(ctx.s) <= 0) main.disabled = true;
-      const why = !served ? '来不及加料，客人等得不耐烦走了…' : boil === 'miss' ? '面泡烂了，客人皱着眉吃完了。' : st === 3 ? `${customer.name} 吃得连汤都喝光了！` : '客人点点头，付了钱。';
-      body.innerHTML = `<div class="ramen-stars">${'★'.repeat(st)}${'☆'.repeat(3 - st)}</div><div class="fish-status">${why}<br><small>${st > 0 ? gainText(g) : '没有收入'}</small></div>`;
+      phase = 'result'; main.style.display = ''; main.disabled = false; main.innerHTML = ordersLeft(ctx.s) > 0 ? '🔁' : '😴'; if (ordersLeft(ctx.s) <= 0) main.disabled = true;
+      const face = !served ? '😾' : boil === 'miss' ? '😿' : st === 3 ? '😻' : '😺';
+      body.innerHTML = `<span class="mg-big">${face}</span>${starsHtml(st)}<div style="margin-top:6px">${st > 0 ? gainIcons(g, 20) : ''}</div>`;
       refreshInfo();
     };
     const press = () => { if (main.disabled) return; if (phase === 'idle' || phase === 'result') startOrder(); else if (phase === 'boil') pull(); };

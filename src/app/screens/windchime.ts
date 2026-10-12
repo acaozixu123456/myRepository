@@ -1,7 +1,8 @@
 // 风铃节奏小游戏界面：音符沿 3 条轨道落下，落到判定线时点对应轨道。规则在 game/windchime.ts。
-import { FALL, LANES, LANE_NAMES, NOTES, TIERS, accuracy, chimeGain, makeChart, matchTap, recordHits, runsLeft, tierOf, useRun } from '../../game/windchime';
+import { FALL, LANES, LANE_NAMES, NOTES, accuracy, chimeGain, makeChart, matchTap, recordHits, runsLeft, tierOf, useRun } from '../../game/windchime';
 import type { Grade, Note } from '../../game/windchime';
-import { gainText } from '../../game/explore';
+import { gainIcons, starsHtml } from '../../ui/gain';
+import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
@@ -32,7 +33,7 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>风铃节奏</h3><div class="fish-status"></div><div class="wc-field">${Array.from({ length: LANES }, (_, i) => `<div class="wc-lane" data-lane="${i}"></div>`).join('')}<div class="wc-line"></div><div class="wc-fb"></div></div><div class="wc-combo"></div><div class="wc-keys">${LANE_NAMES.map((n, i) => `<button data-wc-key="${i}">${n}<small>${'ASD'[i]}</small></button>`).join('')}</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-wc="main">开始</button><button class="btn ghost" data-wc="close">收摊</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🎐</h3><div class="fish-status"></div><div class="wc-field">${Array.from({ length: LANES }, (_, i) => `<div class="wc-lane" data-lane="${i}"></div>`).join('')}<div class="wc-line"></div><div class="wc-fb"></div></div><div class="wc-combo"></div><div class="wc-keys">${LANE_NAMES.map((n, i) => `<button data-wc-key="${i}">${n}<small>${'ASD'[i]}</small></button>`).join('')}</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-wc="main">▶</button><button class="btn ghost" data-wc="close">${icon('close', 22)}</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const status = q<HTMLElement>('.fish-status'), field = q<HTMLElement>('.wc-field'), fb = q<HTMLElement>('.wc-fb'), comboEl = q<HTMLElement>('.wc-combo'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-wc="main"]');
@@ -41,25 +42,25 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
     let perfect = 0, good = 0, miss = 0, combo = 0;
     const now = () => (performance.now() - t0) / 1000;
 
-    const refresh = () => { info.textContent = `今天还能玩 ${runsLeft(ctx.s)} 局`; };
+    const refresh = () => { info.innerHTML = `🎮 ${runsLeft(ctx.s)}`; };
     const clear = () => { for (const l of lanes) l.innerHTML = ''; els = new Map(); };
     const idle = () => {
       phase = 'idle'; clear(); refresh(); comboEl.textContent = '';
       const left = runsLeft(ctx.s) > 0;
-      main.disabled = !left; main.textContent = left ? '开始' : '今天玩够啦';
-      status.innerHTML = left ? `音符落到<b>金线</b>时，点对应的轨道（或按 A / S / D）。<br><small>命中率 ${TIERS.map((x) => Math.round(x * 100)).join('% / ')}% 各是一档奖励</small>` : '风铃今天敲累了，明早 5 点再来';
+      main.disabled = !left; main.innerHTML = left ? '▶' : '😴';
+      status.innerHTML = left ? `<span class="mg-big">🎵 ➜ ➖ ➜ 👆</span>` : '<span class="mg-big">😴</span>';
     };
-    const flash = (g: Grade) => { fb.className = `wc-fb ${g}`; void fb.offsetWidth; fb.className = `wc-fb ${g} show`; fb.textContent = g === 'perfect' ? '完美！' : g === 'good' ? '好' : '失误'; };
+    const flash = (g: Grade) => { fb.className = `wc-fb ${g}`; void fb.offsetWidth; fb.className = `wc-fb ${g} show`; fb.textContent = g === 'perfect' ? '✨' : g === 'good' ? '👍' : '✖'; };
     const judge = (g: Grade) => {
       if (g === 'perfect') { perfect++; combo++; sfx.tap(); } else if (g === 'good') { good++; combo++; sfx.tap(); } else { miss++; combo = 0; sfx.no(); }
-      comboEl.textContent = combo >= 3 ? `${combo} 连击` : '';
+      comboEl.textContent = combo >= 3 ? `🔥 ${combo}` : '';
       flash(g);
     };
     const start = () => {
       if (!useRun(ctx.s)) { idle(); return; }
       ctx.save(); clear();
       chart = makeChart(Math.random); done_ = new Set(); nextSpawn = 0; perfect = good = miss = combo = 0;
-      phase = 'play'; main.style.display = 'none'; refresh(); comboEl.textContent = ''; status.textContent = '准备…';
+      phase = 'play'; main.style.display = 'none'; refresh(); comboEl.textContent = ''; status.innerHTML = '<span class="mg-sub">⏳</span>';
       t0 = performance.now();
       (window as unknown as { __chime?: unknown }).__chime = { chart, now }; // 调试 / 自动化测试用
       const tick = () => {
@@ -75,7 +76,7 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
           el.style.top = `calc(${frac * 82}% - 18px)`;
           if (t > chart[i].t + 0.22 && !done_.has(i)) { done_.add(i); judge('miss'); el.remove(); els.delete(i); }
         }
-        status.textContent = t < chart[0].t - FALL ? '准备…' : `命中 ${perfect + good} / ${NOTES}`;
+        status.innerHTML = t < chart[0].t - FALL ? '<span class="mg-sub">⏳</span>' : `<span class="mg-sub">🎯 ${perfect + good} / ${NOTES}</span>`;
         if (t > chart[chart.length - 1].t + 0.6) { finish(); return; }
         raf = requestAnimationFrame(tick);
       };
@@ -94,9 +95,9 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
       const acc = accuracy(perfect, good), tier = tierOf(acc), g = chimeGain(ctx.s, tier);
       if (tier > 0) { applyGain(ctx.s, g); sfx.coin(); if (tier === 3) sfx.up(); } else sfx.no();
       recordHits(ctx.s, perfect + good); ctx.save();
-      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.textContent = main.disabled ? '今天玩够啦' : '再来一局';
+      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴' : '🔁';
       comboEl.textContent = '';
-      status.innerHTML = `<div class="ramen-stars">${'★'.repeat(tier)}${'☆'.repeat(3 - tier)}</div>命中率 <b class="fish-r-fine">${Math.round(acc * 100)}%</b>（完美 ${perfect} · 好 ${good} · 失误 ${miss}）<br><small>${tier > 0 ? gainText(g) : '没到第一档，没有收入'}</small>`;
+      status.innerHTML = `${starsHtml(tier)}<div class="mg-sub">🎯 ${Math.round(acc * 100)}% &nbsp; ✨${perfect} 👍${good} ✖${miss}</div><div style="margin-top:4px">${tier > 0 ? gainIcons(g, 20) : ''}</div>`;
       refresh();
     };
     const press = () => { if (main.disabled) return; if (phase === 'idle' || phase === 'result') start(); };

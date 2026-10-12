@@ -1,7 +1,8 @@
 // 纸箱寻猫小游戏界面：看猫躲进哪个箱子 → 箱子互换 → 点出猫在的那个。规则在 game/boxcat.ts。
 import { MAX_ROUND, consolation, gamesLeft, makeRound, recordFound, rewardFor, useGame } from '../../game/boxcat';
 import type { Round } from '../../game/boxcat';
-import { gainText } from '../../game/explore';
+import { gainIcons } from '../../ui/gain';
+import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
@@ -28,42 +29,42 @@ export function openBoxCat(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>纸箱寻猫</h3><div class="fish-status"></div><div class="bc-stage"></div><div class="bc-streak"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-bc="main">开始</button><button class="btn blue" data-bc="cash" style="display:none">收手领奖</button><button class="btn ghost" data-bc="close">收摊</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>📦🐱</h3><div class="fish-status"></div><div class="bc-stage"></div><div class="bc-streak"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-bc="main">▶</button><button class="btn blue" data-bc="cash" style="display:none">💰</button><button class="btn ghost" data-bc="close">${icon('close', 22)}</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const status = q<HTMLElement>('.fish-status'), stage = q<HTMLElement>('.bc-stage'), streakEl = q<HTMLElement>('.bc-streak'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-bc="main"]'), cash = q<HTMLButtonElement>('[data-bc="cash"]');
     let phase: Phase = 'idle', streak = 0, rd: Round, alive = true;
     let boxes: HTMLElement[] = [], slotOf: number[] = [];
 
-    const refresh = () => { info.textContent = `今天还能玩 ${gamesLeft(ctx.s)} 局`; streakEl.textContent = streak > 0 ? `连胜 ${streak}/${MAX_ROUND} · 现在收手可得 ${gainText(rewardFor(ctx.s, streak))}` : ''; };
+    const refresh = () => { info.innerHTML = `🎮 ${gamesLeft(ctx.s)}`; streakEl.innerHTML = streak > 0 ? `${'🔥'.repeat(streak)}<span style="opacity:.35">${'🔥'.repeat(MAX_ROUND - streak)}</span> ${gainIcons(rewardFor(ctx.s, streak), 16)}` : ''; };
     const say = (t: string) => { status.innerHTML = t; };
     const place = () => boxes.forEach((b, i) => { b.style.left = `${((slotOf[i] + 0.5) / rd.boxes) * 100}%`; });
     const build = (r: Round) => {
       rd = r; stage.innerHTML = ''; slotOf = Array.from({ length: r.boxes }, (_, i) => i);
-      boxes = slotOf.map((i) => { const b = document.createElement('div'); b.className = 'bc-box'; b.dataset.box = String(i); if (i === r.cat) b.dataset.cat = '1'; b.innerHTML = '<span class="bc-cat">猫</span>'; stage.appendChild(b); return b; });
+      boxes = slotOf.map((i) => { const b = document.createElement('div'); b.className = 'bc-box'; b.dataset.box = String(i); if (i === r.cat) b.dataset.cat = '1'; b.innerHTML = '<span class="bc-cat">🐱</span>'; stage.appendChild(b); return b; });
       boxes.forEach((b) => { b.style.transitionDuration = `${r.stepMs * 0.8}ms`; });
       place();
     };
     const idle = () => {
       phase = 'idle'; refresh(); cash.style.display = 'none'; main.style.display = '';
       const left = gamesLeft(ctx.s) > 0;
-      main.disabled = !left; main.textContent = left ? '开始' : '今天玩够啦';
-      say(left ? '猫猫躲进纸箱里了。看清它在哪个箱子，箱子换位置后把它找出来！' : '猫猫都玩累了，明早 5 点再来');
+      main.disabled = !left; main.innerHTML = left ? '▶' : '😴';
+      say(`<span class="mg-big">${left ? '📦🐱 ➜ 🔀 ➜ 👆' : '😴'}</span>`);
       stage.innerHTML = '';
     };
     const startGame = () => { if (!useGame(ctx.s)) { idle(); return; } ctx.save(); streak = 0; void playRound(1); };
     const playRound = async (n: number) => {
       build(makeRound(n, Math.random)); cash.style.display = 'none'; main.style.display = 'none'; refresh();
-      phase = 'watch'; say(`第 ${n} 轮 · 看好，猫猫在这里！`);
+      phase = 'watch'; say(`<span class="mg-big">${'●'.repeat(n)}<span style="opacity:.3">${'●'.repeat(MAX_ROUND - n)}</span> 👀</span>`);
       boxes[rd.cat].classList.add('up'); await wait(1100); if (!alive) return;
       boxes[rd.cat].classList.remove('up'); await wait(350); if (!alive) return;
-      phase = 'shuffle'; say('换位置啦…盯紧！');
+      phase = 'shuffle'; say('<span class="mg-big">🔀</span>');
       for (const [a, b] of rd.swaps) {
         const ia = slotOf.indexOf(a), ib = slotOf.indexOf(b);
         slotOf[ia] = b; slotOf[ib] = a; place();
         await wait(rd.stepMs); if (!alive) return;
       }
-      phase = 'pick'; say('猫猫在哪个箱子里？');
+      phase = 'pick'; say('<span class="mg-big">❓ 👆</span>');
     };
     const pickBox = async (el: HTMLElement) => {
       if (phase !== 'pick') return;
@@ -75,21 +76,21 @@ export function openBoxCat(ctx: AppCtx, host: Element): Promise<void> {
       if (right) {
         streak++; recordFound(ctx.s); sfx.coin(); ctx.save();
         if (streak >= MAX_ROUND) { await bank(true); return; }
-        say(`找到啦！连胜 ${streak}。<br><small>继续挑战奖励更高，但猜错只能拿走一半。</small>`);
-        refresh(); main.style.display = ''; main.disabled = false; main.textContent = '继续挑战'; cash.style.display = '';
+        say('<span class="mg-big">😸</span>');
+        refresh(); main.style.display = ''; main.disabled = false; main.innerHTML = '⏩'; cash.style.display = '';
       } else {
         sfx.no();
         const g = consolation(ctx.s, streak);
         if (streak > 0) { applyGain(ctx.s, g); ctx.save(); }
-        say(`猜错啦，猫猫在这儿。<br>${streak > 0 ? `<small>拿走一半：${gainText(g)}</small>` : '<small>这局没有收入</small>'}`);
-        streak = 0; refresh(); phase = 'over'; main.style.display = ''; main.textContent = gamesLeft(ctx.s) > 0 ? '再来一局' : '今天玩够啦'; main.disabled = gamesLeft(ctx.s) <= 0; cash.style.display = 'none';
+        say(`<span class="mg-big">😿</span>${streak > 0 ? gainIcons(g, 20) : ''}`);
+        streak = 0; refresh(); phase = 'over'; main.style.display = ''; main.innerHTML = gamesLeft(ctx.s) > 0 ? '🔁' : '😴'; main.disabled = gamesLeft(ctx.s) <= 0; cash.style.display = 'none';
       }
     };
     const bank = async (perfect = false) => {
       const g = rewardFor(ctx.s, streak);
       applyGain(ctx.s, g); ctx.save(); sfx.up();
-      say(`${perfect ? '全部找对！<br>' : '见好就收！<br>'}<small>${gainText(g)}</small>`);
-      streak = 0; refresh(); phase = 'over'; cash.style.display = 'none'; main.style.display = ''; main.textContent = gamesLeft(ctx.s) > 0 ? '再来一局' : '今天玩够啦'; main.disabled = gamesLeft(ctx.s) <= 0;
+      say(`<span class="mg-big">${perfect ? '🏆' : '💰'}</span>${gainIcons(g, 20)}`);
+      streak = 0; refresh(); phase = 'over'; cash.style.display = 'none'; main.style.display = ''; main.innerHTML = gamesLeft(ctx.s) > 0 ? '🔁' : '😴'; main.disabled = gamesLeft(ctx.s) <= 0;
     };
     const press = () => { if (main.disabled || main.style.display === 'none') return; if (phase === 'idle' || phase === 'over') startGame(); else if (phase === 'decide') void playRound(streak + 1); };
     const close = () => { alive = false; window.removeEventListener('keydown', onKey); ov.remove(); ctx.save(); done(); };

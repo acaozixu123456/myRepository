@@ -92,11 +92,11 @@ export const DAILY_GOALS = [
   { key: 'chests', need: 3, label: '打开 3 个宝箱' },
   { key: 'boss', need: 1, label: '赢下 1 场首领战' },
 ] as const;
-export interface GoalProgress { label: string; have: number; need: number; done: boolean }
+export interface GoalProgress { key: 'kills' | 'chests' | 'boss'; label: string; have: number; need: number; done: boolean }
 export function dailyProgress(s: PlayerState, now = Date.now()): GoalProgress[] {
   const e = ensureExplore(s, now);
   const have = { kills: e.kills, chests: e.chests.length, boss: e.bossWins ?? 0 };
-  return DAILY_GOALS.map((g) => ({ label: g.label, have: Math.min(g.need, have[g.key]), need: g.need, done: have[g.key] >= g.need }));
+  return DAILY_GOALS.map((g) => ({ key: g.key, label: g.label, have: Math.min(g.need, have[g.key]), need: g.need, done: have[g.key] >= g.need }));
 }
 export const dailyReady = (s: PlayerState, now = Date.now()) => dailyProgress(s, now).every((g) => g.done);
 export const dailyClaimed = (s: PlayerState, now = Date.now()) => !!ensureExplore(s, now).claimed;
