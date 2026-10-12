@@ -209,11 +209,25 @@
 | `tabby` | 待审 | 1 | 11 使用者（7 英雄 + 4 杂兵）；前脸 u=.25 的额头 M、双颊纹、沿 z 的尾环；codex/3d-patterns-coat-basics |
 | `tuxedo` | 待审 | 1 | 6 使用者（2 英雄 + 4 杂兵）；前脸白鼻梁接下颌，body 白袜；胸领 / 手爪由既有引擎材质提供；codex/3d-patterns-coat-basics |
 | `calico` | 待审 | 1 | 4 使用者（2 英雄 + 2 杂兵）；浅底与橘 / 深块、不对称侧后块；保留实际毛色数据；codex/3d-patterns-coat-basics |
-| `point` | 底版 | 0 | |
-| `spots` | 底版 | 0 | |
-| `cow` | 底版 | 0 | |
-| `tortie` | 底版 | 0 | |
-| `butterfly` | 底版 | 0 | |
+| `point` | 待审 | 1 | 5 使用者（4 英雄 + 1 杂兵）；前脸渐深面罩，保留嫦喵浅冷蓝；codex/3d-patterns-coat-special |
+| `spots` | 待审 | 1 | 7 使用者（3 英雄 + 4 杂兵）；开口玫瑰环，脸侧留眼周空间；codex/3d-patterns-coat-special |
+| `cow` | 待审 | 1 | 5 使用者（2 英雄 + 3 杂兵）；浅底、不对称大斑，解决 accent=base 时底版斑纹不可见；codex/3d-patterns-coat-special |
+| `tortie` | 待审 | 1 | 孟喵优；深棕底与橙金大斑，不引入白色；codex/3d-patterns-coat-special |
+| `butterfly` | 待审 | 1 | 南华喵；前脸额头四瓣镜像毛色，中央负空间；codex/3d-patterns-coat-special |
+
+### 毛色花纹第 2 批检查
+
+`point / spots / cow / tortie / butterfly` 覆盖 19 使用者（11 英雄 + 8 杂兵），第 1 轮待审，首批三种在 #102 待审。本批从 `aa9afd3` 独立制作，只改五种花纹与审图 / 进度；保留三种首批基线输出、solid / shaded、缓存与 public API，未带入未合并 #102 实现。
+
+参考 11 张实际英雄 JPG 与 `ART_PROMPTS.md`。重点色的前脸渐深面罩保留嫦喵冷浅蓝；豹纹改为开口玫瑰环；奶牛改为浅底大斑，解决既定 accent=base 时底版图案不可见；玳瑁保留深底橘金大块；蝶斑为额心左右四瓣毛色与中央负空间。所有颜色来自既有 coat 字段，按 +z / u=.25 放置正脸。
+
+`npm run typecheck && npm test` 通过，66 文件 / 987 项测试。独立 QA：38 张目标 head/body 纹理均 256²、sRGB、全不透明，缓存 / 独立像素确定性 38/38，116 非目标输出逐 RGBA 或 null 同基线；3800 热调用新增 Canvas 0、全 77 位使用者 SSR 154/154 返回 null。两 mode 的 Canvas 约 9.5 MiB、默认 mipmap GPU 数据约 12.67 MiB，纹理数量 / 尺寸与基线相同，没有新网格或逐帧分配。
+
+266 全姿势静态与 228 三姿势动画样本中，正常烘焙几何属性 / 索引一致、世界坐标最大差 0、非有限 / 新取景回归 0。既有头饰上裁切保留，静态 41 / 动画 38 与基线相同，最高静态 y=3.74145395，FRAME 上界 3.6。边缘像素有 13 张相同 / 25 张非零差，不称数学无缝；实际审核视角未見明显硬缝。方法和有限性见 [QA](../src/art3d/parts/reviews/patterns-special/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/patterns-special/qa-summary.json)。
+
+审核图：[三姿势](../src/art3d/parts/reviews/patterns-special/poses.png)、[真实十猫战斗](../src/art3d/parts/reviews/patterns-special/battle.webp)、[原生小画布](../src/art3d/parts/reviews/patterns-special/poses-small.png)、[边界杂兵](../src/art3d/parts/reviews/patterns-special/boundaries.png)、[正常烘焙前后对照](../src/art3d/parts/reviews/patterns-special/before-after.png)；0 / ±32 / 148° 与真实参数见 [记录](../src/art3d/parts/reviews/patterns-special/README.md)。七次官方截图与十二帧战斗完成，页面运行错误 0，交付图片均 <500000 B、无损导出 RGB 差 0。
+
+最不满意：南华蓝色四瓣的下瓣在战斗尺度偏弱，尾玫瑰环受低分段球面拉伸。耳、爪、胸绒领、袖子仍为引擎独立纯色；重点色末尾仍取 light，ring 尾奇段仍取既有 stripe / fallback。需 Claude 扩展挂接契约才能改变这些部位，本批不改引擎。后续继续 SP 专属造型，与 A10 裂缝贴花交替。
 
 ### 毛色花纹第 1 批检查
 
