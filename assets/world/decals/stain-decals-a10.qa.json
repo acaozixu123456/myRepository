@@ -1,0 +1,1232 @@
+{
+  "batch": "WORLD-A10-STAINS-01",
+  "reviewer": "independent Codex QA review_queue",
+  "date": "2026-10-12",
+  "recorded_candidate_count": 13,
+  "archived_call_records_count": 13,
+  "archived_raw_paths_unique": true,
+  "assets": [
+    {
+      "id": "decal_stain_soot_01",
+      "path": "assets/world/decals/decal_stain_soot_01.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 107802,
+      "sha256": "aecef56c8e44a461a5fe4f0f19ee6753c9a3c4b11e5290bd920522ad5166a4f4",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "e3584fbf166fec150fce66db64fee02f3a9edcd9d868337e7a479c106d7156f7",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.517853,
+        "partial_fraction": 0.482037,
+        "opaque_fraction": 0.000111,
+        "border_max": 1,
+        "border_mean": 0.024902,
+        "bbox_gt16": [
+          25,
+          63,
+          491,
+          452
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-f093f136-9ebd-40c8-b196-d36d44e3b776.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_soot_01-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_mud_drag_02",
+      "path": "assets/world/decals/decal_stain_mud_drag_02.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 59860,
+      "sha256": "d93d4e60e7081f2ebb9525d5bd2b227288854d350d09293294ae9f84714ba304",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "426be04059af2b0a50ddf1542c8f965ce7b000520ae6d5fac4a16073ca1e0f95",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.817162,
+        "partial_fraction": 0.182076,
+        "opaque_fraction": 0.000763,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          27,
+          47,
+          490,
+          482
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-b4b19282-98a5-420c-aa06-c56475e95b10.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_mud_drag_02-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_oil_film_03",
+      "path": "assets/world/decals/decal_stain_oil_film_03.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 86828,
+      "sha256": "495be83b0d73af2fd85af5aec50223c07947200c57c70988e35f5b23bdf9f4ac",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "f28ebd5dc9be53c8cea250af0a1a370e3c4516fa39fa790b51ae66d977c18d75",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.660042,
+        "partial_fraction": 0.339134,
+        "opaque_fraction": 0.000824,
+        "border_max": 1,
+        "border_mean": 0.005371,
+        "bbox_gt16": [
+          26,
+          26,
+          494,
+          486
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-98653782-4f09-421c-b311-736d250dd253.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        },
+        {
+          "candidate": 2,
+          "raw_path": "/workspace/generated_images/exec-55530781-b267-4114-8748-9947c0c255f7.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true,
+          "reference_path_matches_first_candidate": true,
+          "reference_hash_matches_first_candidate": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_oil_film_03-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_mineral_04",
+      "path": "assets/world/decals/decal_stain_mineral_04.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 93502,
+      "sha256": "33e871b20195bda6e4ae2fea442a0f0b8c978c8876efdc5a0fc07e14c14b44f0",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "eaf6ca79947f7c69ca71719c3ffc8b36f2f40d50df51ad234214d5156ee08202",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.742313,
+        "partial_fraction": 0.255295,
+        "opaque_fraction": 0.002392,
+        "border_max": 1,
+        "border_mean": 0.000488,
+        "bbox_gt16": [
+          24,
+          35,
+          493,
+          483
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-88c3f1ae-a64b-44a3-875a-2d4e3d3bee13.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_mineral_04-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_rust_run_05",
+      "path": "assets/world/decals/decal_stain_rust_run_05.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 88942,
+      "sha256": "881122754cd6bf640fbc170b5be1a52747e6e0bd873cfd9a3d93803a2bbe0f88",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "e8ca7502f65ff4e65322b6dafe7e3f75d0b95f33083b75b9d7bca02828964d44",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.694046,
+        "partial_fraction": 0.305889,
+        "opaque_fraction": 6.5e-05,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          45,
+          49,
+          474,
+          491
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-2460df69-10d8-45ea-bce8-ff917ab3742e.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        },
+        {
+          "candidate": 2,
+          "raw_path": "/workspace/generated_images/exec-75a2e200-68d6-4daf-8134-a3e50d29b9ff.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true,
+          "reference_path_matches_first_candidate": true,
+          "reference_hash_matches_first_candidate": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_rust_run_05-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_mixed_tracks_06",
+      "path": "assets/world/decals/decal_stain_mixed_tracks_06.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 46818,
+      "sha256": "6fea7e9044d44ebcbae752f9d04070def58e9e989771b29705b2eec52fdad5a2",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "4a8fbafd3576b76ee3e54d3e9f137b215252e153ba2058d95d6ebe4a8b41ba8a",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.856468,
+        "partial_fraction": 0.141457,
+        "opaque_fraction": 0.002075,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          37,
+          44,
+          475,
+          475
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-4adb2d27-3212-4c44-8b94-4047ee1a3aa4.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_mixed_tracks_06-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_tire_scuff_07",
+      "path": "assets/world/decals/decal_stain_tire_scuff_07.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 63744,
+      "sha256": "8284547b957ca34c2358b1b50893cbb0a2fc7f4ab105324827f32454aaed3b0e",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "42e0cc1d7740bab20aa09d809443f881130882e4aef1b809e09d23acc48d3d4f",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.80125,
+        "partial_fraction": 0.19862,
+        "opaque_fraction": 0.00013,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          31,
+          44,
+          497,
+          481
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-e0a7ba1b-1d50-430c-a0bc-02e8163aa408.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        },
+        {
+          "candidate": 2,
+          "raw_path": "/workspace/generated_images/exec-f8d277cd-0c71-4949-ad60-2b3c6271edbd.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true,
+          "reference_path_matches_first_candidate": true,
+          "reference_hash_matches_first_candidate": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_tire_scuff_07-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_rain_dust_08",
+      "path": "assets/world/decals/decal_stain_rain_dust_08.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 107214,
+      "sha256": "ee9fee0c3683b5c05f5e7bd4d2841f6988132db173b0bb1b8141e793df3b4bf7",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "543a7a64a2ba363367debb879a6e1780e955d3439f59bfd9200200646d2af1fc",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.605278,
+        "partial_fraction": 0.394302,
+        "opaque_fraction": 0.00042,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          31,
+          22,
+          485,
+          492
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-7761a395-5bb9-4ad6-8be5-a7745e87fd0e.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_rain_dust_08-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_grit_spots_09",
+      "path": "assets/world/decals/decal_stain_grit_spots_09.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 63850,
+      "sha256": "9c277cef07b5e2d3fcd470a31eb5175303f8b6cea50ff16743def6b147e66f99",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "d928cb4d65a311370585060f2c33c26b15a10cf7bbca02bb71248c21df6a04d9",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.787941,
+        "partial_fraction": 0.212017,
+        "opaque_fraction": 4.2e-05,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          35,
+          46,
+          472,
+          487
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-ee9edcf5-bc64-4155-87ec-fb13729c934d.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_grit_spots_09-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_stain_algae_10",
+      "path": "assets/world/decals/decal_stain_algae_10.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 56404,
+      "sha256": "2cd202add1c065887b982e3d91073d1b1f3ada05577caed0a3f15a1f3aaf4d1d",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "087f5136e52a06624543a1eb272c7cc6942d5e0d0cef0f11636e5d37f340ef36",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.792988,
+        "partial_fraction": 0.206352,
+        "opaque_fraction": 0.00066,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          30,
+          86,
+          480,
+          426
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-796f8067-df0c-447f-99ee-e806be566522.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_stain_algae_10-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    }
+  ],
+  "backgrounds": [
+    {
+      "path": "/workspace/world-a09/assets/world/ground/ground_tile_slate_01.webp",
+      "hash_matches": true,
+      "size_matches": true,
+      "scope": "read-only review background, not part of delivered decals"
+    },
+    {
+      "path": "/workspace/a10-raw/ground_asphalt_wet_01.webp",
+      "hash_matches": true,
+      "size_matches": true,
+      "scope": "read-only review background, not part of delivered decals"
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/stain-decals-a10.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 250354,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_oil_film_03-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 215162,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 31,
+          "mae": 1.297499
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 21,
+          "mae": 0.685735
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 28,
+          "mae": 3.087098
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.285269
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_soot_01-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 212106,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 20,
+          "mae": 1.278868
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 16,
+          "mae": 0.919687
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 2.950831
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.18364
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_algae_10-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 197822,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 32,
+          "mae": 0.870215
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 16,
+          "mae": 0.352291
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 24,
+          "mae": 3.012193
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.264462
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_mineral_04-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 212204,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 23,
+          "mae": 1.005173
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 19,
+          "mae": 0.505374
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 23,
+          "mae": 3.120865
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.311492
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_mixed_tracks_06-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 198564,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 29,
+          "mae": 0.84779
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 15,
+          "mae": 0.298033
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 28,
+          "mae": 3.088504
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 32,
+          "mae": 3.33279
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_rain_dust_08-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 221194,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 28,
+          "mae": 1.170415
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 22,
+          "mae": 0.742461
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 3.012867
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 29,
+          "mae": 3.313053
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_tire_scuff_07-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 206584,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 19,
+          "mae": 0.88243
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 20,
+          "mae": 0.501239
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 2.969645
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 33,
+          "mae": 3.210597
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_mud_drag_02-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 202610,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 32,
+          "mae": 0.919666
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 17,
+          "mae": 0.394019
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 30,
+          "mae": 3.055635
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 33,
+          "mae": 3.319392
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_grit_spots_09-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 198588,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 20,
+          "mae": 0.903848
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 17,
+          "mae": 0.462376
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 3.030449
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.27795
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_rust_run_05-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 212576,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 32,
+          "mae": 1.261487
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 19,
+          "mae": 0.721261
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 32,
+          "mae": 3.106925
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.36901
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/stain-decals-a10-overlay.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 454868,
+      "sha256": "7b5ccdaf31db8725e50fdb6e8654c082e86f524c7d3967b1b7e448dd7bcd3218",
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "original_capture_reexport_identical_bytes": true,
+      "actually_viewed_with_view_image": [
+        "final overlay WebP at original 2048x1024",
+        "original lossless screenshot PNG at original 2048x1024"
+      ],
+      "visual_result": "Same ten decoded decals visible on both surfaces; local colored light changes tone without new obvious rectangular backing or whole-contour halo. Pale minerals remain conspicuous and dark tire marks remain less distinct over asphalt.",
+      "existing_capture_evidence_check": {
+        "loaded": 12,
+        "expected": 12,
+        "asset_responses_200": 12,
+        "page_errors": [],
+        "console_errors": [],
+        "failed_requests": [],
+        "draw_calls_per_renderer": [
+          11,
+          11,
+          11,
+          11
+        ],
+        "current_source_hashes_equal_recorded_before_and_after": true,
+        "source_hashes_still_equal_offline_QA": true,
+        "independent_lighting_mae": [
+          20.723,
+          14.607
+        ],
+        "lighting_mae_matches_recorded": true
+      },
+      "parameters_verified_against_preserved_HTML_and_report": {
+        "three_revision": "169",
+        "canvas": [
+          1024,
+          448
+        ],
+        "camera": {
+          "type": "OrthographicCamera",
+          "left": -10,
+          "right": 10,
+          "top": 4.375,
+          "bottom": -4.375,
+          "near": 0.1,
+          "far": 40,
+          "position": [
+            0,
+            10,
+            0
+          ],
+          "up": [
+            0,
+            0,
+            -1
+          ],
+          "look_at": [
+            0,
+            0,
+            0
+          ]
+        },
+        "ground": {
+          "plane": [
+            20,
+            8.75
+          ],
+          "repeat": [
+            5,
+            2
+          ],
+          "roughness": 0.8,
+          "metalness": 0
+        },
+        "decals": {
+          "plane": [
+            3.45,
+            3.45
+          ],
+          "color": "#ffffff",
+          "roughness": 0.8,
+          "metalness": 0,
+          "transparent": true,
+          "opacity": 1,
+          "alphaTest": 0.01,
+          "depthWrite": false,
+          "depthTest": true,
+          "blending": "NormalBlending",
+          "premultipliedAlpha": false,
+          "polygonOffset": true,
+          "polygonOffsetFactor": -2,
+          "polygonOffsetUnits": -2,
+          "y": 0.01,
+          "texture_wrap": "ClampToEdgeWrapping"
+        },
+        "renderer": {
+          "color_space": "SRGBColorSpace",
+          "tone_mapping": "ACESFilmicToneMapping",
+          "exposure": 1,
+          "device_pixel_ratio": 1,
+          "antialias": true,
+          "bloom": false,
+          "shadows": false
+        },
+        "white_lights": {
+          "hemisphere": {
+            "sky": "#ffffff",
+            "ground": "#777777",
+            "intensity": 0.65
+          },
+          "directional": {
+            "color": "#ffffff",
+            "intensity": 2,
+            "position": [
+              -1,
+              10,
+              4
+            ]
+          }
+        },
+        "extra_lights": {
+          "cyan": {
+            "color": "#20d9ff",
+            "intensity": 55,
+            "distance": 35,
+            "decay": 2,
+            "position": [
+              -5,
+              4,
+              0
+            ]
+          },
+          "magenta": {
+            "color": "#ef42be",
+            "intensity": 55,
+            "distance": 35,
+            "decay": 2,
+            "position": [
+              5,
+              4,
+              0
+            ]
+          }
+        }
+      },
+      "reviewer_reran_browser_capture": false,
+      "scope_note": "Actual recorded GPU capture reviewed, not game integration. AlphaTest 0.01 discards weakest tails during rendering only. Does not demonstrate threshold-free rendering; original-alpha checks use the separate unthresholded offline comparisons. Each decal plane projects to about 177 pixels per side in this preview, while offline source/composite review covers native 512 pixels."
+    }
+  ],
+  "schema_version": 1,
+  "decision": "ready_for_claude_review",
+  "claude_approved": false,
+  "blocking_findings": [],
+  "source_art_changed_by_reviewer": false,
+  "source_rgba_alpha_assessment": "All 13 archived raw candidates already contain RGBA alpha; all 10 final alpha channels exactly equal full-canvas native RGBA Lanczos downsampling. Recorded export reproduces identical final WebP bytes, with no extra mask operations required.",
+  "visual_inspection": {
+    "tool": "tools.view_image",
+    "actually_viewed": [
+      "all 10 final RGBA WebP files",
+      "2048x1024 overview",
+      "all 10 original-size native-alpha review sheets",
+      "all 10 independently recomputed lossless 2048x512 strips in /tmp at 1:1",
+      "selected existing lossless scratch examples for checker, mineral and rust on asphalt",
+      "final overlay WebP at original 2048x1024",
+      "original lossless screenshot PNG at original 2048x1024"
+    ],
+    "result": "No rectangular backing, obvious full-contour black or white halo, fresh blood-red color, large baked neon reflection direction or duplicated source silhouette observed in actual compositing over both reviewed surfaces. Distinct material shapes remain readable.",
+    "acceptable_limits": [
+      "Mineral salt ring 04 and washed dust 08 are pale and prominent on dark asphalt; control placement, scale and density at integration.",
+      "Tire scuff 07 is substantially weaker on busy dark asphalt than on slate paving; use where contrast is appropriate.",
+      "Oil 03, mineral 04 and rain dust 08 have broadly curved ring motifs, with visibly different broken layouts and materials; dense repeated placement could still look patterned.",
+      "Fine grain includes subtle light/dark material cues at 1:1; no claim of complete absence of microshading.",
+      "Soot 01 / oil 03 / mineral 04 have final outer-edge alpha maximum 1/255; the other seven have zero.",
+      "Native-alpha WebP review sheets are lossy reencodings, not exact delivered alpha values; independently recomputed lossless strips were also inspected.",
+      "No actual game placement, gameplay camera, blend ordering, mipmap or z-fighting verification in this offline portion."
+    ]
+  },
+  "test_execution": {
+    "typecheck_or_unit_tests_by_this_reviewer": false,
+    "game_engine_files_changed": false,
+    "commit_or_push_by_this_reviewer": false
+  },
+  "archived_call_evidence_note": "13 local calls.json records cross-checked with provenance prompts, candidate ids, raw paths, output_hint filenames, actual raw hashes and editing reference chain. Reviewer did not perform or replay image generation.",
+  "review_required_at_integration": "All-ten live Three.js overlay capture has been reviewed. Actual game camera, placement scale, depth and blend ordering, overlap and performance still require integration verification.",
+  "provenance_sha256_at_final_QA": "f92bb15a753873842f6638d2ec2d718267a82c2bf66ade55b381bc74e3be3910",
+  "GPU_preview_assessed": true
+}
