@@ -147,12 +147,20 @@ export class Explorer {
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'poi') {
       // 钓鱼点：木桩 + 一圈发光的橙色标记 + 立着的小鱼旗
-      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime';
-      const col = ramen ? '#ff5a4a' : boxcat ? '#ffcf5a' : mush ? '#b06aff' : chime ? '#9ab8ff' : '#ffb04a';
+      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns';
+      const col = ramen ? '#ff5a4a' : boxcat ? '#ffcf5a' : mush ? '#b06aff' : chime ? '#9ab8ff' : lant ? '#ffd24a' : '#ffb04a';
       const wood = std('#6a4a2a', 0.8, 0.1);
       for (const dx of [-0.7, 0.7]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.3, 6), wood); post.position.set(dx, 0.65, 0); group.add(post); }
       const ring = new THREE.Mesh(new THREE.RingGeometry(1.4, 1.7, 28), glowMat(col)); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.06; group.add(ring);
       const flag = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.7), new THREE.MeshStandardMaterial({ color: ramen ? '#d9483b' : '#ff7a3a', roughness: 0.8, side: THREE.DoubleSide })); flag.position.set(0, 1.55, 0); group.add(flag);
+      if (lant) { // 宫灯：三盏红灯笼挂在一根金杆上
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 2.2, 8), std('#c9a040', 0.5, 0.6)); pole.position.y = 1.1; group.add(pole);
+        [[-0.5, 1.7], [0.5, 1.7], [0, 1.2]].forEach(([dx, y]) => {
+          const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.34, 12, 10), glowMat('#ff5a3a')); lamp.scale.y = 1.15; lamp.position.set(dx, y, 0); group.add(lamp);
+          const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.08, 8), std('#e8c15a', 0.5, 0.5)); cap.position.set(dx, y + 0.42, 0); group.add(cap);
+        });
+        flag.visible = false;
+      }
       if (chime) { // 风铃架：一根横杆下挂着四串发光的小铃
         const bar = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.08, 0.08), std('#8a7a6a', 0.7)); bar.position.y = 1.7; group.add(bar);
         [-0.6, -0.2, 0.2, 0.6].forEach((dx, i) => {
@@ -181,7 +189,7 @@ export class Explorer {
         flag.position.set(0, 2.1, 0);
       }
       const zone = new THREE.Mesh(new THREE.RingGeometry(SAFE_R - 0.12, SAFE_R, 64), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false })); zone.rotation.x = -Math.PI / 2; zone.position.y = 0.05; group.add(zone);
-      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: ramen ? 0xff5a4a : boxcat ? 0xffcf5a : mush ? 0xb06aff : chime ? 0x9ab8ff : 0xffb04a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: ramen ? 0xff5a4a : boxcat ? 0xffcf5a : mush ? 0xb06aff : chime ? 0x9ab8ff : lant ? 0xffd24a : 0xffb04a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'herb') {
       const m = std('#3fdc8a', 0.6, 0.1);
       for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2, c = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.1 + (i % 3) * 0.35, 5), m); c.position.set(Math.cos(a) * 0.55, 0.55, Math.sin(a) * 0.55); c.rotation.z = Math.cos(a) * 0.25; c.rotation.x = -Math.sin(a) * 0.25; group.add(c); }
@@ -194,7 +202,7 @@ export class Explorer {
         cats.push(a);
       });
     }
-    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : s.kind === 'poi' ? (s.data === 'ramen' ? '#ff9a8a' : s.data === 'boxcat' ? '#ffe08a' : s.data === 'mushroom' ? '#d8b0ff' : s.data === 'windchime' ? '#c0d4ff' : '#ffcf8a') : '#ffffff');
+    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : s.kind === 'poi' ? (s.data === 'ramen' ? '#ff9a8a' : s.data === 'boxcat' ? '#ffe08a' : s.data === 'mushroom' ? '#d8b0ff' : s.data === 'windchime' ? '#c0d4ff' : s.data === 'lanterns' ? '#ffe9a0' : '#ffcf8a') : '#ffffff');
     tag.position.y = s.kind === 'chest' || s.kind === 'herb' || s.kind === 'poi' ? 3.0 : s.kind === 'boss' ? 6.0 : 4.8;
     group.add(tag);
     const mark = s.kind === 'boss' ? markSprite('!', '#ff4a6a') : s.kind === 'npc' ? markSprite('…', '#7ff0ff') : undefined;

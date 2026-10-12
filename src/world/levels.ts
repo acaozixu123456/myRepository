@@ -225,6 +225,7 @@ export const LEVEL_6: LevelDef = {
   tram: false, arches: [[0, -15, 0, '九重宫阙', '#ffd24a'], [0, 17, 0, '午门', '#ff5a5a']],
   lanterns: [[-4.5, -9, 4.5, -9, 7, '#ff4a3a'], [-4.5, 9, 4.5, 9, 7, '#ffd24a'], [-4.5, -25, 4.5, -25, 7, '#ff4a3a']],
   vents: [[-9, 0.5, -7.6], [9, 0.5, 7.6]],
+  pois: [{ id: 'lanterns', game: 'lanterns', x: -12.5, z: -5.6, label: '宫灯阵' }],
   ground: { pave: '#4a2a3a', road: 0xb09070 }, ...SPOTS,
 };
 
