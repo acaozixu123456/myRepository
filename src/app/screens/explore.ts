@@ -7,12 +7,13 @@ import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
-import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, killReward, autoKey, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
+import { LEVELS } from '../../world/levels';
+import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, sceneChapter, sceneGame, setScene, unlockedScenes, farmStage, killReward, autoKey, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
 import { artUrl } from '../../ui/art';
-import { fmt } from '../../ui/components';
+import { esc, fmt } from '../../ui/components';
 import { HERO_BY_ID } from '../../data/heroes';
 import { arenaFight } from '../arenaFight';
 import type { AppCtx } from '../ctx';
@@ -79,7 +80,14 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 .xfps{position:absolute;right:12px;top:216px;z-index:3;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);text-shadow:0 1px 2px #000;pointer-events:none}
 .xtools{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:8px}
 .xtools .btn{min-width:64px}
-.xfight{position:absolute;right:16px;bottom:26px;z-index:4;min-width:116px;padding:12px 18px;border-radius:999px;border:3px solid #fff;background:linear-gradient(#ff7a8a,#e0344f);color:#fff;font:900 20px var(--f-d,inherit);box-shadow:0 0 22px rgba(255,70,100,.75),0 4px 0 rgba(0,0,0,.3);animation:xfightPulse 1s ease-in-out infinite;touch-action:manipulation}
+.xscene{margin-left:6px;white-space:nowrap;font-size:13px}
+.scn-dlg{width:min(360px,92%)}
+.scn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scn{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:14px;border:2px solid rgba(0,0,0,.12);background:linear-gradient(var(--paper),var(--paper-2));font-family:inherit;cursor:pointer}
+.scn .se{font-size:30px;line-height:1.1}.scn b{font-size:14px;color:var(--ink)}.scn small{font-size:11.5px;font-weight:800;color:#6a5a48}
+.scn.on{border-color:#ff7ab8;box-shadow:0 0 0 3px rgba(255,122,184,.35)}.scn.lock{opacity:.5}
+.scn .here{position:absolute;right:6px;top:4px;font-style:normal;font-size:10px;font-weight:900;background:#ff7ab8;color:#fff;border-radius:8px;padding:1px 6px}
+.xfight{position:absolute;left:50%;margin-left:-70px;bottom:104px;z-index:4;width:140px;padding:12px 8px;border-radius:999px;border:3px solid #fff;background:linear-gradient(#ff7a8a,#e0344f);color:#fff;font:900 20px var(--f-d,inherit);box-shadow:0 0 22px rgba(255,70,100,.75),0 4px 0 rgba(0,0,0,.3);animation:xfightPulse 1s ease-in-out infinite;touch-action:manipulation}
 .xfight.boss{background:linear-gradient(#ffd24a,#e08a10);box-shadow:0 0 26px rgba(255,200,60,.85),0 4px 0 rgba(0,0,0,.3)}
 @keyframes xfightPulse{50%{transform:scale(1.07)}}
 .xjoy{position:absolute;left:14px;bottom:14px;z-index:3;width:116px;height:116px;border-radius:50%;background:rgba(10,6,24,.45);border:2px solid rgba(127,240,255,.45);touch-action:none}
@@ -204,7 +212,7 @@ function hud(ctx: AppCtx): string {
   const b = bossStage(ctx.s), rec = recommendedPowerOf(b.chapter, b.index), mine = teamPower(ctx.s);
   const ids = teamIds(ctx), ratio = Math.min(1, mine / rec), enough = mine >= rec;
   return `${topbar(ctx, '探索')}
-  <div class="xobj"><div class="grow"><b>${b.fresh ? '👑' : '🔁'} ${b.stage.id}</b><div class="xpow ${enough ? 'ok' : 'low'}"><i style="width:${Math.round(ratio * 100)}%"></i><span>${icon('sword', 14)} ${fmt(mine)} / ${fmt(rec)}</span></div></div><button class="btn sm green" data-act="x-boss" title="首领">${icon('arrowUp', 20)}</button></div>
+  <div class="xobj"><div class="grow"><b>${b.fresh ? '👑' : '🔁'} ${b.stage.id}</b><div class="xpow ${enough ? 'ok' : 'low'}"><i style="width:${Math.round(ratio * 100)}%"></i><span>${icon('sword', 14)} ${fmt(mine)} / ${fmt(rec)}</span></div></div>${sceneChapter(ctx.s) === b.chapter ? `<button class="btn sm green" data-act="x-boss" title="首领">${icon('arrowUp', 20)}</button>` : ''}<button class="btn sm pink xscene" data-act="x-scenes" title="切换场景">🗺️ ${esc(LEVELS[sceneChapter(ctx.s)]?.name.split(' · ')[0] ?? '场景')} ▾</button></div>
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
   ${questHtml(ctx)}
   <canvas class="xmini" id="xmini" width="184" height="184"></canvas><div class="xfps" id="xfps"></div>
@@ -435,6 +443,22 @@ function onTalk(ctx: AppCtx, _sp: Spawn) {
 }
 
 /** 探索足迹：长期累计目标，够数后手动领奖 */
+const SCENE_EMOJI = ['', '🌃', '🏮', '🌊', '🌲', '☁️', '🏯'];
+const GAME_EMOJI: Record<string, string> = { boxcat: '📦', ramen: '🍜', fish: '🎣', mushroom: '🍄', windchime: '🎐', lanterns: '🏮' };
+const GAME_NAME: Record<string, string> = { boxcat: '纸箱寻猫', ramen: '拉面屋台', fish: '钓鱼', mushroom: '采蘑菇', windchime: '风铃节拍', lanterns: '点灯谜题' };
+/** 一键切换场景：6 个场景一屏看完，已解锁的点一下就过去；各场景有各自的小游戏 */
+function openScenes(ctx: AppCtx) {
+  ctx.root.querySelectorAll('.scene-mask').forEach((e) => e.remove());
+  const cur = sceneChapter(ctx.s), open = new Set(unlockedScenes(ctx.s));
+  const cards = Object.keys(LEVELS).map(Number).map((c) => {
+    const g = sceneGame(c), un = open.has(c);
+    return `<button class="scn ${c === cur ? 'on' : ''} ${un ? '' : 'lock'}" data-act="x-scene" data-c="${c}" ${un ? '' : 'disabled'}>
+      <span class="se">${SCENE_EMOJI[c] ?? '🗺️'}</span><b>${esc(LEVELS[c].name)}</b>
+      <small>${un ? (g ? `${GAME_EMOJI[g] ?? '🎮'} ${GAME_NAME[g] ?? g}` : '') : `🔒 通关第 ${c - 1} 章解锁`}</small>${c === cur ? '<i class="here">当前</i>' : ''}</button>`;
+  }).join('');
+  ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center scene-mask" data-act="closedialog"><div class="dialog scn-dlg"><h3 class="title" style="margin:0 0 8px;text-align:center">🗺️ 切换场景</h3><div class="scn-grid">${cards}</div></div></div>`);
+}
+
 function openTrail(ctx: AppCtx) {
   ctx.root.querySelectorAll('.trail-mask').forEach((e) => e.remove());
   const rows = trailRows(ctx.s);
@@ -448,6 +472,13 @@ export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolea
     case 'x-boss': if (rt) { rt.ex.moveTo(rt.st.level.bossSpot[0], rt.st.level.bossSpot[1] + 5); } return true;
     case 'x-auto': autoOn = !autoOn; autoT = 0; autoSkip.clear(); autoLast = { key: '', tries: 0 }; refreshExploreHud(ctx); return true;
     case 'x-trail': openTrail(ctx); return true;
+    case 'x-scenes': openScenes(ctx); return true;
+    case 'x-scene': {
+      const c = +(el.dataset.c ?? 0);
+      ctx.root.querySelectorAll('.scene-mask').forEach((m) => m.remove());
+      if (c !== sceneChapter(ctx.s) && setScene(ctx.s, c)) { ctx.save(); if (rt) { loadLevel(ctx, explorerLevel(ctx.s)); rt.wv.snapCamera(); } refreshExploreHud(ctx); sfx.ok(); }
+      return true;
+    }
     case 'x-claim': {
       const g = claimTrail(ctx.s, el.dataset.id!);
       if (g) { applyGain(ctx.s, g); ctx.save(); sfx.up(); popReward(ctx, '🏆🎁', g); refreshExploreHud(ctx); openTrail(ctx); }

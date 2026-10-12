@@ -6,10 +6,10 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
-import { SAFE_R, herbsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
+import { LEVELS, SAFE_R, herbsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number }
+export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -37,7 +37,26 @@ export function farmStage(s: PlayerState): { chapter: number; index: number; sta
 export interface SpawnDef { id: string; kind: 'enemy' | 'boss' | 'chest' | 'herb' | 'npc' | 'poi'; x: number; z: number; units?: string[]; label: string; patrol?: number; stageKey?: string; game?: string }
 
 /** 当前该进哪个场景：跟着主线章节走（首领所在的章节） */
-export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(bossStage(s).chapter);
+export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(sceneChapter(s));
+
+/** 已解锁的场景（章节号）：打到哪一章，1..该章的场景都能进 */
+export const unlockedScenes = (s: PlayerState): number[] => {
+  const top = Math.min(bossStage(s).chapter, Object.keys(LEVELS).length);
+  return Array.from({ length: top }, (_, i) => i + 1);
+};
+/** 现在待的场景：玩家选过且已解锁就用选的，否则跟着主线进度 */
+export const sceneChapter = (s: PlayerState): number => {
+  const top = bossStage(s).chapter, pick = (s as unknown as { explore?: ExploreState }).explore?.scene;
+  return pick && pick >= 1 && pick <= top && LEVELS[pick] ? pick : top;
+};
+/** 切换场景；返回是否成功（未解锁 / 不存在的场景不行） */
+export function setScene(s: PlayerState, chapter: number): boolean {
+  if (!unlockedScenes(s).includes(chapter) || !LEVELS[chapter]) return false;
+  ensureExplore(s).scene = chapter;
+  return true;
+}
+/** 该场景里的玩法入口（图标用） */
+export const sceneGame = (chapter: number): string | undefined => poisOf(sceneOf(chapter))[0]?.game;
 
 const unitsOf = (st: StageDef, wave = 0, n = 3): string[] => st.waves[Math.min(wave, st.waves.length - 1)].enemies.slice(0, n).map((e) => e.unit);
 const levelOf = (st: StageDef) => st.waves[0].enemies[0]?.level ?? 1;
@@ -58,7 +77,8 @@ export function spawnPlan(s: PlayerState): SpawnDef[] {
   const L = explorerLevel(s);
   const boss = bossStage(s), farm = farmStage(s);
   const lastWave = boss.stage.waves[boss.stage.waves.length - 1];
-  out.push({ id: 'boss', kind: 'boss', x: L.bossSpot[0], z: L.bossSpot[1], units: [lastWave.enemies[0].unit], label: `${boss.stage.id} ${boss.stage.name}`, stageKey: `${boss.chapter}-${boss.index}` });
+  // 首领只在「主线进度所在的场景」里；去旧场景玩小游戏 / 打野时不放首领
+  if (sceneChapter(s) === boss.chapter) out.push({ id: 'boss', kind: 'boss', x: L.bossSpot[0], z: L.bossSpot[1], units: [lastWave.enemies[0].unit], label: `${boss.stage.id} ${boss.stage.name}`, stageKey: `${boss.chapter}-${boss.index}` });
   const rnd = mulberry(farm.chapter * 100 + farm.index);
   L.enemySpots.forEach(([sx, sz], i) => {
     const [x, z] = relocateOutOfSafe(L, sx, sz);

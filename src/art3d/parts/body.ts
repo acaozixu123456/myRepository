@@ -11,16 +11,16 @@ function robe(c: PartCtx, o: { hem: number; waist: number; chest: number; col?: 
   const skirt = new THREE.Group();
   const col = o.col ?? c.pal.main;
   const b = c.look.build ?? 1;
-  const P = ([[o.hem, -0.36], [o.hem * 0.92, 0.05], [o.waist * 0.92, 0.42], [o.chest, 0.85], [0.42, 1.18], [0.24, 1.32]] as [number, number][]).map(([r, y]) => new THREE.Vector2(r * b, y));
+  const P = ([[o.hem, -0.22], [o.hem * 0.92, 0.08], [o.waist * 0.92, 0.42], [o.chest, 0.85], [0.42, 1.18], [0.24, 1.32]] as [number, number][]).map(([r, y]) => new THREE.Vector2(r * b, y));
   const mat = toon(col, { double: true });
   skirt.add(solid(new THREE.LatheGeometry(P.slice(0, 3), 28), mat, 0.024));
   g.add(solid(new THREE.LatheGeometry(P.slice(2), 28), mat, 0.024));
   // 下摆封底：腿分开 / 低头时不会看到袍子里面
   const cap = new THREE.Mesh(new THREE.CircleGeometry(o.hem * b * 0.98, 24), toon('#2a2230', { double: true }));
-  cap.rotation.x = Math.PI / 2; cap.position.y = -0.3;
+  cap.rotation.x = Math.PI / 2; cap.position.y = -0.17;
   skirt.add(cap);
   const hemRing = solid(new THREE.TorusGeometry(o.hem * b * 0.99, 0.035, 6, 28), toon(o.trimCol ?? c.pal.trim), 0.01);
-  hemRing.rotation.x = Math.PI / 2; hemRing.position.y = -0.34;
+  hemRing.rotation.x = Math.PI / 2; hemRing.position.y = -0.2;
   skirt.add(hemRing);
   if (o.collar !== false) {
     const col2 = solid(new THREE.TorusGeometry(0.3, 0.05, 6, 20), toon(c.pal.trim), 0.01);
@@ -59,7 +59,7 @@ function panel(P: THREE.Vector2[], y0: number, y1: number, half: number, off: nu
 /** 前襟：正中一条窄的亮边门襟 + 两颗扣子（比整块前襟干净，缩小后也读得出） */
 function placket(P: THREE.Vector2[], c: PartCtx, lower: boolean): THREE.Group {
   const g = new THREE.Group();
-  const [y0, y1] = lower ? [-0.33, 0.4] : [0.44, 1.2];
+  const [y0, y1] = lower ? [-0.2, 0.4] : [0.44, 1.2];
   g.add(panel(P, y0, y1, 0.07, 0.014, c.pal.trim, 0));
   if (!lower) for (const y of [0.62, 0.84, 1.04]) { const b = solid(sphere(0.04), toon(c.pal.main), 0); b.position.set(0, y, radiusAt(P, y) + 0.03); g.add(b); }
   return g;

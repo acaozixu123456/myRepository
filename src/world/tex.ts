@@ -124,6 +124,14 @@ export function neonSign(text: string, color: string, o: { vertical?: boolean; b
 
 /** 路面：湿漉漉的沥青 + 虚线 + 斑马线 + 反光水洼 */
 export function asphalt(): THREE.CanvasTexture {
+  const ai = worldImg('ground_asphalt_wet_01');
+  if (ai) {
+    // 有 AI 湿沥青素材：直接铺（素材本身可无缝平铺），只叠上中线
+    return mk(512, 512, (g) => {
+      g.drawImage(ai, 0, 0, 512, 512);
+      g.fillStyle = 'rgba(255,230,160,.8)'; for (let y = 8; y < 512; y += 64) g.fillRect(250, y, 12, 36);
+    }, 'asphalt-ai');
+  }
   return mk(512, 512, (g) => {
     const rnd = mulberry(5);
     g.fillStyle = '#1c1c28'; g.fillRect(0, 0, 512, 512);

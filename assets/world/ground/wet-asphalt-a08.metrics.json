@@ -1,0 +1,133 @@
+{
+  "source": "/workspace/world-worktrees/wet-asphalt/assets/world/ground/ground_asphalt_wet_01.webp",
+  "sha256": "5cb849b916c76d86e80a195169316b6182c4bb3ea37c63aeb467194e2ea2b1f2",
+  "nativeSize": [
+    1024,
+    1024
+  ],
+  "mode": "RGB",
+  "diagnosticMode": "RGB",
+  "bytes": 491514,
+  "leftRight": {
+    "meanAbsRGB": 21.34700584411621,
+    "p95MeanAbsRGB": 64.566650390625,
+    "maxMeanAbsRGB": 130.3333282470703
+  },
+  "topBottom": {
+    "meanAbsRGB": 24.3935546875,
+    "p95MeanAbsRGB": 75.33333587646484,
+    "maxMeanAbsRGB": 157.6666717529297
+  },
+  "interiorHorizontalNeighbours": {
+    "meanAbsRGB": 17.768613815307617,
+    "p95MeanAbsRGB": 57.0,
+    "maxMeanAbsRGB": 183.0
+  },
+  "interiorVerticalNeighbours": {
+    "meanAbsRGB": 19.216543197631836,
+    "p95MeanAbsRGB": 61.0,
+    "maxMeanAbsRGB": 186.3333282470703
+  },
+  "quadrants": {
+    "TL": {
+      "meanRGB": [
+        46.71134948730469,
+        48.465938568115234,
+        50.805423736572266
+      ],
+      "meanDisplayLuma": 48.26182556152344
+    },
+    "TR": {
+      "meanRGB": [
+        47.91350173950195,
+        49.46929931640625,
+        52.2234001159668
+      ],
+      "meanDisplayLuma": 49.33738327026367
+    },
+    "BL": {
+      "meanRGB": [
+        45.731483459472656,
+        47.524871826171875,
+        50.52717208862305
+      ],
+      "meanDisplayLuma": 47.36035919189453
+    },
+    "BR": {
+      "meanRGB": [
+        46.00649642944336,
+        47.592010498046875,
+        49.97968292236328
+      ],
+      "meanDisplayLuma": 47.42732238769531
+    }
+  },
+  "files": {
+    "repeat-2x2-native": {
+      "path": "/workspace/world-review/wet-asphalt/final-repeat-2x2-native.png",
+      "size": [
+        2048,
+        2048
+      ],
+      "sha256": "f76ef70356b308fa1e6c1ef5581ca5fcf06af2f8965e2e0e782f22b435f447dd"
+    },
+    "repeat-2x2-preview": {
+      "path": "/workspace/world-review/wet-asphalt/final-repeat-2x2-preview.png",
+      "size": [
+        1536,
+        1536
+      ],
+      "sha256": "1a2fb91e534eb4ef4dd35c2e531c3325a4bf4d1094051fa896bfdb90c206868e"
+    },
+    "repeat-4x4-native": {
+      "path": "/workspace/world-review/wet-asphalt/final-repeat-4x4-native.png",
+      "size": [
+        4096,
+        4096
+      ],
+      "sha256": "3c84f872f8fc416e5653d127a266b00ed51c1061d559ad9e6afe3ef4a2668b10"
+    },
+    "repeat-4x4-preview": {
+      "path": "/workspace/world-review/wet-asphalt/final-repeat-4x4-preview.png",
+      "size": [
+        1536,
+        1536
+      ],
+      "sha256": "c0a302e7178b7295dd2f406b6784d68b2e4811cccf572036ec4ff00a92157f9b"
+    },
+    "joint-lr": {
+      "path": "/workspace/world-review/wet-asphalt/final-joint-lr.png",
+      "size": [
+        192,
+        1024
+      ],
+      "sha256": "32f3972e103b49dc86dfd319e94b381210cc803e107458bb2637f34a60429ce5"
+    },
+    "joint-tb": {
+      "path": "/workspace/world-review/wet-asphalt/final-joint-tb.png",
+      "size": [
+        1024,
+        192
+      ],
+      "sha256": "c47ac61d4d091c6d49a10f201dda2630026b0e40f6d55ae9ca151cd23a7586de"
+    },
+    "corner-joint": {
+      "path": "/workspace/world-review/wet-asphalt/final-corner-joint.png",
+      "size": [
+        192,
+        192
+      ],
+      "sha256": "a683bf7afa969ff2a963af585881dde13a0b2e0785b838d6b720a780a5508b97"
+    },
+    "offset-xy": {
+      "path": "/workspace/world-review/wet-asphalt/final-offset-xy.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "1fbdf6b0461dca1c54b4037e97c3f3d26737c31f8795a5fb374b1a36ce7c972f"
+    }
+  },
+  "method": "Exact tile copies and unmodified edge crops. Preview thumbnail only uses uniform Lanczos. offset-xy is exact half-width/half-height cyclic roll. No seam painting, blending, colour correction or mirror padding.",
+  "limits": "RGB differences and quadrant means diagnose actual pixels but do not establish visual structural continuity or absence of directional highlights; all native and repeat views require inspection."
+}

@@ -33,11 +33,8 @@ function patchLit(m: THREE.MeshToonMaterial) {
   float rimK = pow(1.0 - clamp(dot(nrm, normalize(vViewPosition)), 0.0, 1.0), 2.4);
   // 自下而上的柔和渐变：脚 / 下摆略暗、头最亮，立体感更足
   float ao = mix(0.8, 1.0, smoothstep(-0.2, 2.2, vCatY));
-  // 卡通高光：左上前方一块硬边亮斑，像上过釉的玩偶
-  float sp = smoothstep(0.95, 0.97, dot(nrm, normalize(vec3(-0.35, 0.7, 0.62))));
   vec3 lit = mix(tot, neutral, uLitK) * ao;
   lit += vec3(0.55, 0.82, 1.0) * rimK * (0.16 + 0.34 * uLitK);
-  lit += vec3(1.0, 0.97, 0.9) * sp * (0.04 + 0.1 * alb);
   reflectedLight.directDiffuse = lit;
   reflectedLight.indirectDiffuse = vec3(0.0);
 }`);

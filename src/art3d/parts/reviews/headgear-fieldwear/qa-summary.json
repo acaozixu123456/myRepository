@@ -1,0 +1,578 @@
+{
+  "status": "剩余六头饰最终80b可送Claude审核；独立QA完成，不代表Claude已通过",
+  "createdAtUTC": "2026-10-11T23:54:22.163013+00:00",
+  "worktree": "/workspace/three-worktrees/headgear-fieldwear",
+  "provenance": {
+    "headgearSource": "/workspace/three-worktrees/headgear-fieldwear/src/art3d/parts/headgear.ts",
+    "headgearSha256": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "sourceStayedFrozen": true,
+    "baselineCommit": "83b8abd7ccb1592c6eb208ca27590f13c182ca5e",
+    "baselineSha256": "9c26b1093bdda9df66fd958e5e81c8033b72ff927ccb71023262813218ce130c",
+    "toonSha256": "03d9f550749210bd73577b360753d569005e22ea2666802b4c16d87588224c29",
+    "toonStayedFrozen": true
+  },
+  "sharedLiveRegistry": true,
+  "actualUsers": [
+    {
+      "id": "wu_ganning",
+      "headgear": "sailorBandana",
+      "eyeStyle": "sharp",
+      "earStyle": "pointy",
+      "headK": 0.99,
+      "isMob": false
+    },
+    {
+      "id": "man_wutugu",
+      "headgear": "rattanHelm",
+      "eyeStyle": "cool",
+      "earStyle": "round",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "xian_guanlu",
+      "headgear": "fortuneHat",
+      "eyeStyle": "wide",
+      "earStyle": "pointy",
+      "headK": 1,
+      "isMob": false
+    },
+    {
+      "id": "mob_wei_healer",
+      "headgear": "sailorBandana",
+      "eyeStyle": "sleepy",
+      "earStyle": "fold",
+      "headK": 1.01,
+      "isMob": true
+    },
+    {
+      "id": "mob_wei_assassin",
+      "headgear": "hood",
+      "eyeStyle": "cool",
+      "earStyle": "pointy",
+      "headK": 0.96,
+      "isMob": true
+    },
+    {
+      "id": "mob_shu_guard",
+      "headgear": "sailorBandana",
+      "eyeStyle": "round",
+      "earStyle": "big",
+      "headK": 1.02,
+      "isMob": true
+    },
+    {
+      "id": "mob_shu_archer",
+      "headgear": "leafHat",
+      "eyeStyle": "keen",
+      "earStyle": "round",
+      "headK": 1.02,
+      "isMob": true
+    },
+    {
+      "id": "mob_shu_healer",
+      "headgear": "sailorBandana",
+      "eyeStyle": "happy",
+      "earStyle": "fold",
+      "headK": 1.03,
+      "isMob": true
+    },
+    {
+      "id": "mob_wu_guard",
+      "headgear": "ratCap",
+      "eyeStyle": "wide",
+      "earStyle": "round",
+      "headK": 1.04,
+      "isMob": true
+    },
+    {
+      "id": "mob_wu_archer",
+      "headgear": "sailorBandana",
+      "eyeStyle": "keen",
+      "earStyle": "round",
+      "headK": 1.01,
+      "isMob": true
+    },
+    {
+      "id": "mob_wu_healer",
+      "headgear": "leafHat",
+      "eyeStyle": "calm",
+      "earStyle": "round",
+      "headK": 1.01,
+      "isMob": true
+    },
+    {
+      "id": "mob_wu_assassin",
+      "headgear": "hood",
+      "eyeStyle": "sharp",
+      "earStyle": "pointy",
+      "headK": 0.96,
+      "isMob": true
+    },
+    {
+      "id": "mob_qun_vanguard",
+      "headgear": "sailorBandana",
+      "eyeStyle": "round",
+      "earStyle": "big",
+      "headK": 1.01,
+      "isMob": true
+    },
+    {
+      "id": "mob_qun_healer",
+      "headgear": "sailorBandana",
+      "eyeStyle": "calm",
+      "earStyle": "fold",
+      "headK": 1.02,
+      "isMob": true
+    },
+    {
+      "id": "mob_qun_assassin",
+      "headgear": "hood",
+      "eyeStyle": "keen",
+      "earStyle": "pointy",
+      "headK": 0.97,
+      "isMob": true
+    },
+    {
+      "id": "mob_man_guard",
+      "headgear": "rattanHelm",
+      "eyeStyle": "sleepy",
+      "earStyle": "round",
+      "headK": 1.07,
+      "isMob": true
+    },
+    {
+      "id": "mob_man_archer",
+      "headgear": "leafHat",
+      "eyeStyle": "happy",
+      "earStyle": "pointy",
+      "headK": 1.02,
+      "isMob": true
+    },
+    {
+      "id": "mob_man_healer",
+      "headgear": "leafHat",
+      "eyeStyle": "calm",
+      "earStyle": "tuft",
+      "headK": 1.02,
+      "isMob": true
+    },
+    {
+      "id": "mob_man_assassin",
+      "headgear": "leafHat",
+      "eyeStyle": "keen",
+      "earStyle": "tuft",
+      "headK": 0.96,
+      "isMob": true
+    },
+    {
+      "id": "mob_xian_archer",
+      "headgear": "fortuneHat",
+      "eyeStyle": "wide",
+      "earStyle": "pointy",
+      "headK": 0.99,
+      "isMob": true
+    }
+  ],
+  "actualUserCount": 20,
+  "heroCount": 3,
+  "mobCount": 17,
+  "headKRange": [
+    0.96,
+    1.07
+  ],
+  "budgets": [
+    {
+      "kind": "sailorBandana",
+      "logicalMeshes": 15,
+      "surfacesIncludingOutline": 26,
+      "triangles": 3416,
+      "maxSphereCylinderSegments": 12,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "fortuneHat",
+      "logicalMeshes": 8,
+      "surfacesIncludingOutline": 13,
+      "triangles": 1820,
+      "maxSphereCylinderSegments": 0,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "rattanHelm",
+      "logicalMeshes": 18,
+      "surfacesIncludingOutline": 22,
+      "triangles": 2932,
+      "maxSphereCylinderSegments": 12,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "leafHat",
+      "logicalMeshes": 14,
+      "surfacesIncludingOutline": 17,
+      "triangles": 2544,
+      "maxSphereCylinderSegments": 0,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "hood",
+      "logicalMeshes": 10,
+      "surfacesIncludingOutline": 18,
+      "triangles": 2344,
+      "maxSphereCylinderSegments": 0,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    },
+    {
+      "kind": "ratCap",
+      "logicalMeshes": 13,
+      "surfacesIncludingOutline": 22,
+      "triangles": 2580,
+      "maxSphereCylinderSegments": 14,
+      "cachedMaterials": true,
+      "allToonAndOutline": true,
+      "finite": true,
+      "rootIdentity": true
+    }
+  ],
+  "runs": [
+    {
+      "mode": "review",
+      "report": "candidate-03-review.json",
+      "cases": 60,
+      "poseNames": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "times": [
+        0.4
+      ],
+      "baselineEyeOcclusionCases": 16,
+      "finalEyeOcclusionCases": 0,
+      "finalEyeCoveredSamples": 0,
+      "minSamplesPerEye": 73,
+      "finiteErrors": 0,
+      "headgearFrameClips": 0,
+      "wholeCatFrameClips": 0,
+      "newFrameRegressions": 0,
+      "earSurfaceScreeningThreshold": -0.08,
+      "earSurfaceScreeningCases": 6,
+      "earSurfaceScreeningUsers": [
+        "mob_shu_archer",
+        "mob_wu_healer"
+      ],
+      "maxEarHitHeadTopLocalY": -0.06902007257135923,
+      "maxGearWorldY": 3.2422415521052015,
+      "maxGearCase": {
+        "id": "mob_wu_guard",
+        "pose": "strike",
+        "t": 0.4
+      },
+      "assemblyCalls": {
+        "sailorBandana": 7,
+        "fortuneHat": 2,
+        "rattanHelm": 2,
+        "leafHat": 5,
+        "hood": 3,
+        "ratCap": 1
+      }
+    },
+    {
+      "mode": "wiggle",
+      "report": "candidate-03-wiggle.json",
+      "cases": 60,
+      "poseNames": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "times": [
+        2.243994752564138
+      ],
+      "baselineEyeOcclusionCases": 15,
+      "finalEyeOcclusionCases": 0,
+      "finalEyeCoveredSamples": 0,
+      "minSamplesPerEye": 71,
+      "finiteErrors": 0,
+      "headgearFrameClips": 0,
+      "wholeCatFrameClips": 0,
+      "newFrameRegressions": 0,
+      "earSurfaceScreeningThreshold": -0.08,
+      "earSurfaceScreeningCases": 6,
+      "earSurfaceScreeningUsers": [
+        "mob_shu_archer",
+        "mob_wu_healer"
+      ],
+      "maxEarHitHeadTopLocalY": -0.0602649727615856,
+      "maxGearWorldY": 3.161605869285268,
+      "maxGearCase": {
+        "id": "mob_wu_guard",
+        "pose": "strike",
+        "t": 2.243994752564138
+      },
+      "assemblyCalls": {
+        "sailorBandana": 7,
+        "fortuneHat": 2,
+        "rattanHelm": 2,
+        "leafHat": 5,
+        "hood": 3,
+        "ratCap": 1
+      }
+    },
+    {
+      "mode": "allposes",
+      "report": "candidate-03-allposes.json",
+      "cases": 280,
+      "poseNames": [
+        "idle",
+        "ready",
+        "windup",
+        "windupLow",
+        "strike",
+        "thrust",
+        "cast",
+        "castUp",
+        "castFwd",
+        "guard",
+        "hurt",
+        "dash",
+        "victory",
+        "slump"
+      ],
+      "times": [
+        0.4
+      ],
+      "baselineEyeOcclusionCases": 74,
+      "finalEyeOcclusionCases": 0,
+      "finalEyeCoveredSamples": 0,
+      "minSamplesPerEye": 71,
+      "finiteErrors": 0,
+      "headgearFrameClips": 0,
+      "wholeCatFrameClips": 0,
+      "newFrameRegressions": 0,
+      "earSurfaceScreeningThreshold": -0.08,
+      "earSurfaceScreeningCases": 28,
+      "earSurfaceScreeningUsers": [
+        "mob_shu_archer",
+        "mob_wu_healer"
+      ],
+      "maxEarHitHeadTopLocalY": -0.06902007257135878,
+      "maxGearWorldY": 3.294602934493605,
+      "maxGearCase": {
+        "id": "mob_wu_guard",
+        "pose": "castUp",
+        "t": 0.4
+      },
+      "assemblyCalls": {
+        "sailorBandana": 7,
+        "fortuneHat": 2,
+        "rattanHelm": 2,
+        "leafHat": 5,
+        "hood": 3,
+        "ratCap": 1
+      }
+    },
+    {
+      "mode": "animated",
+      "report": "candidate-03-animated.json",
+      "cases": 720,
+      "poseNames": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "times": [
+        0,
+        0.4,
+        0.8,
+        1.2,
+        1.6,
+        2,
+        2.4,
+        2.8,
+        3.2,
+        4.8,
+        6.4,
+        8
+      ],
+      "baselineEyeOcclusionCases": 184,
+      "finalEyeOcclusionCases": 0,
+      "finalEyeCoveredSamples": 0,
+      "minSamplesPerEye": 71,
+      "finiteErrors": 0,
+      "headgearFrameClips": 0,
+      "wholeCatFrameClips": 0,
+      "newFrameRegressions": 0,
+      "earSurfaceScreeningThreshold": -0.08,
+      "earSurfaceScreeningCases": 72,
+      "earSurfaceScreeningUsers": [
+        "mob_shu_archer",
+        "mob_wu_healer"
+      ],
+      "maxEarHitHeadTopLocalY": -0.05915958405758251,
+      "maxGearWorldY": 3.25847558891382,
+      "maxGearCase": {
+        "id": "mob_wu_guard",
+        "pose": "strike",
+        "t": 0.8
+      },
+      "assemblyCalls": {
+        "sailorBandana": 7,
+        "fortuneHat": 2,
+        "rattanHelm": 2,
+        "leafHat": 5,
+        "hood": 3,
+        "ratCap": 1
+      }
+    }
+  ],
+  "earMountingIntersections": [
+    {
+      "kind": "sailorBandana",
+      "entries": 1884,
+      "headTopLocalYRange": [
+        -0.3583074207305921,
+        -0.1834823164707724
+      ],
+      "surfaceGeometryTypes": [
+        "BufferGeometry",
+        "ExtrudeGeometry",
+        "SphereGeometry",
+        "TubeGeometry"
+      ]
+    },
+    {
+      "kind": "fortuneHat",
+      "entries": 0,
+      "headTopLocalYRange": [
+        null,
+        null
+      ],
+      "surfaceGeometryTypes": []
+    },
+    {
+      "kind": "rattanHelm",
+      "entries": 144,
+      "headTopLocalYRange": [
+        -0.24159729035845728,
+        -0.1771532872609427
+      ],
+      "surfaceGeometryTypes": [
+        "BufferGeometry"
+      ]
+    },
+    {
+      "kind": "leafHat",
+      "entries": 432,
+      "headTopLocalYRange": [
+        -0.10299377096677856,
+        -0.05915958405758251
+      ],
+      "surfaceGeometryTypes": [
+        "BufferGeometry"
+      ]
+    },
+    {
+      "kind": "hood",
+      "entries": 672,
+      "headTopLocalYRange": [
+        -0.3228454895019545,
+        -0.18984728407280071
+      ],
+      "surfaceGeometryTypes": [
+        "BufferGeometry",
+        "ExtrudeGeometry"
+      ]
+    },
+    {
+      "kind": "ratCap",
+      "entries": 72,
+      "headTopLocalYRange": [
+        -0.26672763221856416,
+        -0.21455243365300403
+      ],
+      "surfaceGeometryTypes": [
+        "BufferGeometry"
+      ]
+    }
+  ],
+  "earInterpretation": "没有要求所有三角零。仅两round叶帽用户有-.08筛选以上的叶面/描边/底面接合；这是筛选提示，不是故障分类。普通与精确峰值yaw32、额外两用户yaw148后向三姿势实看自然耳轮廓完整，没有green sheet切入耳中部或截掉耳尖。叶片侧口后缘及底面接近耳根，动画命中y约[-.102994,-.059160]。其余额带/系绳/兜帽后罩接合更低，完整范围已记录。",
+  "actualVisualReviewed": [
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/gallery-01.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/gallery-02.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/gallery-03.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/gallery-04.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/gallery-05.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/gallery-06.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/gallery-07.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/gallery-01.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/gallery-02.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/gallery-03.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/gallery-04.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/gallery-05.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/gallery-06.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/gallery-07.png",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-rear-ear/gallery-01.png",
+    "/workspace/three-review/headgear-fieldwear/final-poses.png",
+    "/workspace/three-review/headgear-fieldwear/final-small.png",
+    "/workspace/three-review/headgear-fieldwear/final-battle.png",
+    "/workspace/three-review/headgear-fieldwear/final-reverse.png",
+    "/workspace/three-review/headgear-fieldwear/final-front.png"
+  ],
+  "captureManifests": [
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-all-users/manifest.json",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-peak/manifest.json",
+    "/workspace/three-review/headgear-fieldwear/qa-candidate-03-rear-ear/manifest.json",
+    "/workspace/three-review/headgear-fieldwear/final-capture-report.json",
+    "/workspace/three-review/headgear-fieldwear/final-supplements-report.json"
+  ],
+  "checks": {
+    "budgetsMaterialsRoots": "通过：15/8/18/14/10/13逻辑网格，sphere/cylinder最大14；toon/solid、缓存材质、根单位平移旋转，无新增每帧逻辑。",
+    "eyes": "通过：所有实际眼三角采样非空，60/60/280/720遮眼样本0，最低每眼71；全部20使用者190px普通/峰图及官方前向/反侧/三姿势/实际战斗图核对。",
+    "framing": "通过：四套最终报告头饰和整猫出框、finite和新增回归0。14姿势最高3.294603，低于FRAME顶3.6；动画最高3.258476。",
+    "silhouette": "可审：布巾浅点纹/侧结，算命帽前铜钱，藤盔编纹，叶帽有色顶底，兜帽落颊/颈罩，鼠耳与自然耳相分离均能识别。",
+    "ears": "可审：三角接合范围和实际截图一起判断；没有可见切穿耳轮廓，不把筛选阈值或整体bbox当结论，也不声称三角相交0。"
+  },
+  "method": {
+    "eyes": "Raster 12x12 samples from actual skinned white/iris/pupil/arc eye triangles; projected headgear triangle depths with material side and expanded outline; samples have not been filtered for eyelid/self-skull occlusion, so screenshot confirmation is required.",
+    "ears": "Triangle edge intersections with actual skinned ear outer/inner/outline surfaces; coplanar pairs are not diagnosed. Crossings around ear base can be intended mounting and require visual judgment.",
+    "bounds": "All actual skinned vertices including baked outlines; headgear raw vertices plus normal-expanded shader outlines; renderer FRAME. buildCat3D and HEADGEAR share one bundled live registry for trustworthy baseline comparisons."
+  },
+  "limitations": [
+    "眼部在实际蒙皮三角投影到世界+z正交观看平面后做12×12采样，按材质正反面/描边深度比较；没有过滤眼睑或自身头骨，因此与实际截图联合判断，非任意像素/视角证明。",
+    "耳部采用实际非共面三角边相交；共面重叠不诊断，低位隐蔽佩戴接合需要实际普通/峰/背向图判断。",
+    "14姿势t=.4、三姿势12时刻和phase0精确耳内摆峰是有限样本，非所有连续时刻和任意相位证明。",
+    "独立20用户联系表用透明截图alpha bbox裁切后等比高190px；官方w250截图保持原生canvas250×219，人物高近似190px；真实battle另核对。"
+  ],
+  "leastSatisfied": "叶帽strike现在有有色背面，190px背脉和叶片厚度仍弱，剪影偏薄；idle/windup的叶面与短柄更清楚。",
+  "obsoleteCandidateNote": "c6c0(C1)和a79中间源仅候选资料，所有最终数值仅来自80b的candidate-03四份报告。",
+  "productionEdited": false,
+  "evidenceRetention": {
+    "detailedMachineReports": "/workspace/three-review/headgear-fieldwear/candidate-03-*.json",
+    "fullUserGalleries": "/workspace/three-review/headgear-fieldwear/qa-candidate-03-*",
+    "submittedScreenshots": [
+      "poses.png",
+      "poses-190px.png",
+      "small-190px.png",
+      "front-190px.png",
+      "reverse-190px.png",
+      "battle.png",
+      "before-after.png"
+    ]
+  }
+}
