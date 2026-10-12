@@ -51,6 +51,8 @@
 
 本批必需检查已实际完成：根线程在 `4b658b79921838d91f9bde8907df00ba80b9a2fe` 基线上执行 `npm run typecheck && npm test`，退出码 0，68 个测试文件 / 1,019 项测试全部通过；2026-10-12 04:43:24 UTC 开始，测试耗时 30.50 秒，完整日志位于 `/workspace/world-review/palace-ground/required-checks-4b.log`。送审前根线程读取的最新主干为 `dea5a2cac40a37c997f487083c3c915daf660d1d`，六份必读文件 blob 与 `4b658b7` 一致；该读取记录不作为在 `dea5a2` 跑过测试的证明。
 
+2026-10-12 05:04 UTC · [远端 CI](https://github.com/acaozixu123456/myRepository/actions/runs/38206356554) 的 typecheck 通过，测试 1,018 通过 / 1 失败。`tests/explore.test.ts:59` 的每日委托用固定 `t0=2026-10-11 12:00 UTC`，而 `killReward / openChest` 读取真实时钟；跨每日 05:00 刷新后，两日期来回重置进度。根线程于 05:05:57 单独运行未修改的 `tests/explore.test.ts` 复现相同断言（29 通过 / 1 失败），日志 `/workspace/world-review/palace-ground/explore-after-0500.log`；该测试及 `src/game/explore.ts` 在 `4b658b7` 到最新主干 `ee2426c` 未改。已在 #109 正文记录，需要 Claude 固定测试时钟；本批未越过范围修改测试或游戏逻辑，04:43 的通过记录为真实历史，当前不将远端 CI 记为通过。
+
 ## 旧 A 类队列（保留历史）
 
 按 `4b658b7` 的最新 [固定队列](CODEX_QUEUE.md)：[PR #100](https://github.com/acaozixu123456/myRepository/pull/100) 地砖 / 沟盖两张、[PR #103](https://github.com/acaozixu123456/myRepository/pull/103) 污渍十张、[PR #106](https://github.com/acaozixu123456/myRepository/pull/106) 裂缝十张均已通过并合并，审核轮次仍为 1。#100 暂未接入，#106 先入库等待 Claude 接入贴花层；新贴花需面向明亮场景。旧记录中待审、尚未接入及旧后续顺序均对应当时提交历史，当前状态以各行和最新队列为准。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
