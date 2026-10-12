@@ -1,5 +1,7 @@
 # 3D 部件进度表（Codex 每完成 / 被打回一轮就更新对应行）
 
+> **本分支归档说明**：[PR #105](https://github.com/acaozixu123456/myRepository/pull/105) 已关闭，原因是重复 [PR #102](https://github.com/acaozixu123456/myRepository/pull/102)。首批 `tabby / tuxedo / calico` 的正式审核跟 #102；其余五种毛色花纹跟 [PR #104](https://github.com/acaozixu123456/myRepository/pull/104)。本文保留本分支 C2 的制作、截图、QA 与归档时状态 / 轮次历史，不作为待入库记录或后续任务队列；正式状态以对应 PR 与主分支固定队列为准。
+
 状态：`底版`（Claude 的占位造型，认得出来但粗糙）→ `待审`（已提交）→ `返修`（带意见打回）→ `通过`。
 「使用者」按稀有度排序（SP > UR > SSR > SR > 杂兵）；**优先做被高稀有度英雄使用的部件**。
 一个 PR 做同一文件里的 3~6 个相关部件即可（例如「武器：长剑 / 双股剑 / 短刀 / 飞刀 / 双短刀」）。
