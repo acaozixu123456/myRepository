@@ -19,10 +19,11 @@ import type { AppCtx } from '../ctx';
 import { sfx, rainAmbience, stepSfx, alertSfx } from '../sfx';
 import { FISHING_CSS, openFishing } from './fishing';
 import { RAMEN_CSS, openRamen } from './ramen';
+import { BOXCAT_CSS, openBoxCat } from './boxcat';
 import { topbar } from './lineup';
 import { playStoryOnce } from '../story';
 
-export const EXPLORE_CSS = FISHING_CSS + RAMEN_CSS + `
+export const EXPLORE_CSS = FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + `
 .screen.xplore{background:#0d0818}
 .xplore canvas#wcv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
@@ -354,7 +355,7 @@ async function onPoi(ctx: AppCtx, sp: Spawn): Promise<void> {
   if (autoOn) return;
   const host = ctx.root.querySelector('[data-screen="explore"]');
   if (!host) return;
-  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : null;
+  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : sp.data === 'boxcat' ? openBoxCat : null;
   if (open) { rainAmbience(false); await open(ctx, host); rainAmbience(true); refreshExploreHud(ctx); }
 }
 function onChest(ctx: AppCtx, sp: Spawn) {

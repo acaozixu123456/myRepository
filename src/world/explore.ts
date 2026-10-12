@@ -146,19 +146,25 @@ export class Explorer {
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'poi') {
       // 钓鱼点：木桩 + 一圈发光的橙色标记 + 立着的小鱼旗
-      const ramen = s.data === 'ramen';
-      const col = ramen ? '#ff5a4a' : '#ffb04a';
+      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat';
+      const col = ramen ? '#ff5a4a' : boxcat ? '#ffcf5a' : '#ffb04a';
       const wood = std('#6a4a2a', 0.8, 0.1);
       for (const dx of [-0.7, 0.7]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.3, 6), wood); post.position.set(dx, 0.65, 0); group.add(post); }
       const ring = new THREE.Mesh(new THREE.RingGeometry(1.4, 1.7, 28), glowMat(col)); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.06; group.add(ring);
       const flag = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.7), new THREE.MeshStandardMaterial({ color: ramen ? '#d9483b' : '#ff7a3a', roughness: 0.8, side: THREE.DoubleSide })); flag.position.set(0, 1.55, 0); group.add(flag);
+      if (boxcat) { // 一只纸箱，里面探出两只猫耳朵
+        const carton = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.9, 1.1), std('#b8793e', 0.85)); carton.position.y = 0.65; group.add(carton);
+        const tape = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.02, 1.12), std('#e8d8a8', 0.8)); tape.position.y = 1.11; group.add(tape);
+        for (const dx of [-0.28, 0.28]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.4, 4), std('#ff9a4a', 0.8)); ear.position.set(dx, 1.3, 0); ear.rotation.z = -dx * 0.5; group.add(ear); }
+        flag.position.set(0, 2.1, 0);
+      }
       if (ramen) { // 一碗面：白碗 + 面 + 一块叉烧
         const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.32, 0.4, 14), std('#f4efe6', 0.6)); bowl.position.y = 1.25; group.add(bowl);
         const noodles = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.06, 14), std('#ffd9a0', 0.8)); noodles.position.y = 1.47; group.add(noodles);
         const chashu = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.05, 10), std('#b0603a', 0.8)); chashu.position.set(0.15, 1.52, 0.05); group.add(chashu);
         flag.position.set(0, 2.1, 0);
       }
-      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: ramen ? 0xff5a4a : 0xffb04a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: ramen ? 0xff5a4a : boxcat ? 0xffcf5a : 0xffb04a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'herb') {
       const m = std('#3fdc8a', 0.6, 0.1);
       for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2, c = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.1 + (i % 3) * 0.35, 5), m); c.position.set(Math.cos(a) * 0.55, 0.55, Math.sin(a) * 0.55); c.rotation.z = Math.cos(a) * 0.25; c.rotation.x = -Math.sin(a) * 0.25; group.add(c); }
@@ -171,7 +177,7 @@ export class Explorer {
         cats.push(a);
       });
     }
-    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : s.kind === 'poi' ? (s.data === 'ramen' ? '#ff9a8a' : '#ffcf8a') : '#ffffff');
+    const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : s.kind === 'poi' ? (s.data === 'ramen' ? '#ff9a8a' : s.data === 'boxcat' ? '#ffe08a' : '#ffcf8a') : '#ffffff');
     tag.position.y = s.kind === 'chest' || s.kind === 'herb' || s.kind === 'poi' ? 3.0 : s.kind === 'boss' ? 6.0 : 4.8;
     group.add(tag);
     const mark = s.kind === 'boss' ? markSprite('!', '#ff4a6a') : s.kind === 'npc' ? markSprite('…', '#7ff0ff') : undefined;
