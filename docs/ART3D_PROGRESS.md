@@ -136,9 +136,9 @@
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR) 等7只 | 底版 | 0 | |
-| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 底版 | 0 | |
-| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR) 等7只 | 底版 | 0 | |
+| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR), `shu_liumiaobei`(UR), `wu_zhoumiaoyu`(UR), `shu_guanyunmiao`(SSR), `qun_dongzhuo`(SR) | 待审 | 1 | 16 网格；交领、金边、压褶；codex/3d-body-regalia |
+| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 待审 | 1 | 18 网格；双层波边裙、蝴蝶腰结；codex/3d-body-regalia |
+| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wei_xuhuang`(SR), `wu_huanggai`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 24 网格；三层金属肩甲、护心镜、五片裙甲；codex/3d-body-regalia |
 | `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR) 等5只 + 杂兵×2 | 底版 | 0 | |
 | `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR) 等4只 + 杂兵×2 | 底版 | 0 | |
 | `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR) 等7只 + 杂兵×12 | 底版 | 0 | |
@@ -146,6 +146,20 @@
 | `armorWei` | `wei_zhangliao`(SSR) + 杂兵×2 | 底版 | 0 | |
 | `vest` | `wu_ganning`(SR), `man_mengyou`(SR) + 杂兵×9 | 底版 | 0 | |
 | `rattan` | `man_wutugu`(SR) + 杂兵×2 | 底版 | 0 | |
+
+### 衣服第 1 批检查
+
+`codex/3d-body-regalia` 交付 `robeSilk / dress / armorHeavy`，第 1 轮待审，共 16 位英雄、无杂兵。原表的 7 / 2 / 7 数量正确，现补齐 ID。配色与造型参考 `ART_PROMPTS.md`、英雄参考 JPG 及已批准的 SP / UR 立绘；领口、裙摆与肩甲只改衣服部件，下摆继续挂在 `hip`。
+
+`npm run typecheck && npm test` 通过：65 个测试文件、980 项测试，退出码 0。三件逻辑网格为 16 / 18 / 24，几何分段最大 24，复用缓存材质，无每帧新增代码。内部修订已解决曲面装饰沉入壳体和裙层被遮挡的问题；已同步主分支 `bf37bd3` 最新大头 / 肉垫 / Toon，增强三层金属肩甲并合批裙甲金边，预算保持不变。同步后的检查和截图重新生成，不增加审核轮次。
+
+独立 QA 覆盖 16×14＝224 姿势和 16×3×12＝576 动画样本。衣服自身出框、眼睛及五个脸部样点遮挡、非有限坐标和新增整猫取景回归均为 0；每眼至少 71 个有效三角投影样本。三姿势 / 全 14 姿势 / 动画的正常蒙皮整猫裁切基线与候选相同，为 13 / 55 / 135；全姿势含背挂旧底裁切 12 与新版大头下既有头饰上裁切 43，动画为 36 / 99。最高 y=3.770092 超过 FRAME 上界 3.6，最低 y=-0.361908 低于下界 -0.25，双方边界完全一致。有限采样不能证明所有连续时刻无交叉；方法和边界见 [QA 摘要](../src/art3d/parts/reviews/body-regalia/qa-summary.md)。
+
+三种裙面在构建时固定腰口 y=0.57，连同裙饰收短至约 -0.20～-0.22，根仍为单位变换；官方三姿势及十猫截图确认肉垫靴露出。
+
+审核图：[三姿势](../src/art3d/parts/reviews/body-regalia/poses.png)、[十猫同屏战斗](../src/art3d/parts/reviews/body-regalia/battle.webp)、[小尺寸三姿势](../src/art3d/parts/reviews/body-regalia/poses-small.png)、[同引擎前后对照](../src/art3d/parts/reviews/body-regalia/before-after.png)、[胖体型与浅色甲](../src/art3d/parts/reviews/body-regalia/boundaries.png)。命令与冻结记录见 [截图说明](../src/art3d/parts/reviews/body-regalia/README.md)。
+
+最不满意：重甲在 190px 游戏尺度下的胸片细节偏简，浅色赵喵云的护心镜对比偏弱；短甲裙与肩饰仍能区别于丝袍。请 Claude 按实际战斗尺度审核。后续按最新固定队列先做毛色花纹，再做英雄专属造型，与 WORLD A10 地面贴花交替推进。
 
 ## 披挂（`src/art3d/parts/back.ts`）
 
