@@ -14,6 +14,7 @@ import { topbar } from './lineup';
 type QuestTab = QuestDef['kind'];
 export const questState: { tab: QuestTab } = { tab: 'daily' };
 
+const TAB_EMOJI: Record<string, string> = { daily: '📅', weekly: '🗓️', achievement: '🏆', newbie: '🎓' };
 const TABS: { id: QuestTab; name: string; title: string; note: string }[] = [
   { id: 'daily', name: '每日', title: '今日军需簿', note: '每天凌晨 5 点换页，早起的猫负责压住纸角。' },
   { id: 'weekly', name: '每周', title: '一周爪印册', note: '每周一凌晨 5 点更新，七天的长进慢慢记。' },
@@ -63,7 +64,7 @@ function rewardParts(reward: RewardDef): RewardPart[] {
 }
 
 function rewardsHtml(reward: RewardDef): string {
-  return rewardParts(reward).map((part) => `<span class="qst-reward" title="${esc(part.name)} ×${part.count}">${icon(part.image, 18)}${!part.resource || part.name === '经验' ? `<span>${esc(part.name)}</span>` : ''}<b class="num">${part.resource ? '+' : '×'}${fmt(part.count)}</b></span>`).join('');
+  return rewardParts(reward).map((part) => `<span class="qst-reward" title="${esc(part.name)} ×${part.count}">${icon(part.image, 18)}<b class="num">${part.resource ? '+' : '×'}${fmt(part.count)}</b></span>`).join('');
 }
 
 function taskHtml(ctx: AppCtx, quest: QuestDef): string {
@@ -73,7 +74,7 @@ function taskHtml(ctx: AppCtx, quest: QuestDef): string {
   const progress = questProgress(ctx.s, quest);
   const category = QUEST_CATEGORIES[quest.id];
   const action = claimed || !available ? '' : ready ? 'qst-claim' : 'qst-go';
-  const label = claimed ? '已领取' : !available ? '即将开放' : ready ? '领取' : '前往';
+  const label = claimed ? icon('check', 22) : !available ? icon('lock', 20) : ready ? icon('gift', 22) : '➡️';
   return `<article class="panel qst-card${claimed ? ' qst-claimed' : !available ? ' qst-unavailable' : ready ? ' qst-ready' : ''}" data-quest-id="${esc(quest.id)}">
     <div class="qst-card-head"><div class="qst-card-title"><h3>${esc(quest.name)}</h3>${category ? `<span class="tag">${esc(category)}</span>` : ''}</div>
       <button class="btn sm ${ready ? 'green' : 'ghost'} qst-action" ${action ? `data-act="${action}" data-id="${esc(quest.id)}"` : 'disabled'}>${label}</button></div>
@@ -96,10 +97,10 @@ export function questsHtml(ctx: AppCtx): string {
   const claimed = available.filter((quest) => ctx.s.quests.claimed[quest.id]).length;
   const ready = list.filter((quest) => isClaimable(ctx.s, quest)).length;
   const complete = available.length > 0 && claimed === available.length;
-  return `${topbar(ctx, '任务', '<button class="btn sm ghost qst-back" data-act="nav" data-to="home">返回</button>')}
-    <div class="qst-tabs"><div class="seg" aria-label="任务页签">${TABS.map((entry) => `<button class="pill" data-act="qst-tab" data-tab="${entry.id}" aria-pressed="${entry.id === tab.id}">${entry.name}</button>`).join('')}</div></div>
-    <div class="scroll qst-scroll"><section class="panel qst-summary"><div class="qst-summary-row"><div class="qst-summary-copy"><h3>${tab.title}</h3><div><b>${ready ? `${ready} 项可领取` : '暂无可领取'}</b><span>已领取 ${claimed} / ${available.length}</span></div></div><button class="btn sm qst-all" data-act="qst-all" ${ready ? '' : 'disabled'}>全部领取</button></div><p>${tab.note}</p></section>
-    ${complete ? `<div class="panel qst-complete">${icon('team', 40)}<div><h3>军需已经收好</h3><p>本页已开放的任务都领完了。把笔放好，猫猫正惦记午睡。</p></div></div>` : ''}
+  return `${topbar(ctx, '任务', `<button class="btn sm ghost qst-back" data-act="nav" data-to="home" title="返回">${icon('home', 20)}</button>`)}
+    <div class="qst-tabs"><div class="seg" aria-label="任务页签">${TABS.map((entry) => `<button class="pill" data-act="qst-tab" data-tab="${entry.id}" aria-pressed="${entry.id === tab.id}" title="${entry.name}">${TAB_EMOJI[entry.id] ?? entry.name}</button>`).join('')}</div></div>
+    <div class="scroll qst-scroll"><section class="panel qst-summary"><div class="qst-summary-row"><div class="qst-summary-copy"><h3>${TAB_EMOJI[tab.id] ?? ''}</h3><div><b>${ready ? `🎁 ${ready}` : '🎁 0'}</b><span>${icon('check', 16)} ${claimed} / ${available.length}</span></div></div><button class="btn sm qst-all" data-act="qst-all" ${ready ? '' : 'disabled'} title="全部领取">${icon('gift', 20)}⏩</button></div></section>
+    ${complete ? `<div class="panel qst-complete" style="text-align:center;font-size:40px">🎉😴</div>` : ''}
     <div class="qst-list">${list.map((quest) => taskHtml(ctx, quest)).join('')}</div></div>`;
 }
 
@@ -127,7 +128,6 @@ function finishClaim(ctx: AppCtx, rewards: RewardDef[]): void {
   ctx.refresh();
   const scroll = ctx.root.querySelector('.qst-scroll');
   if (scroll) scroll.scrollTop = scrollTop;
-  ctx.toast(`领到 ${rewards.length} 份任务军需`);
   const parts = rewardParts(sumRewards(rewards));
   parts.filter((part) => part.resource).forEach((part, index) => floaty(ctx, `+${fmt(part.count)}`, part.image, 42, 27 + index * 6));
   const items = parts.filter((part) => !part.resource);
