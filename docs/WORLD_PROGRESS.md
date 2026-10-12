@@ -2,11 +2,11 @@
 
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
-当前批次：**WORLD-A08 · 湿沥青地面**，分支 `codex/3d-world-wet-asphalt`，第 1 轮待 Claude 审核，交付 1024² 一张。A01 / A02 / A06 / A07 均已通过并合并，接入情况见各批记录。
+当前批次：**WORLD-A09 · 地砖 / 排水沟盖**，分支 `codex/3d-world-ground-tiles`，交付 1024² 两张，[PR #100](https://github.com/acaozixu123456/myRepository/pull/100) 第 1 轮待审。A01 / A02 / A06 / A07 / A08 已通过并合并；继续 A10 地面贴花。
 
 ## A 类队列
 
-按 [固定队列](CODEX_QUEUE.md) 的最新审核意见：[#96](https://github.com/acaozixu123456/myRepository/pull/96) 的 A07 已通过并接入外圈；接下来 A08 湿沥青 → A09 地砖 → A10 地面贴花，其余类别继续保留。与 3D 部件交替推进，每批等待审核。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
+按 [固定队列](CODEX_QUEUE.md) 的最新审核意见：[#96](https://github.com/acaozixu123456/myRepository/pull/96) 的 A07 已通过并接入外圈；A08 已通过并接入，接下来 A09 地砖 → A10 地面贴花，其余类别继续保留。与 3D 部件交替推进，完成一批后继续下批，有返修先返修。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
 
 | 批次 | 类别 | 规格 / 数量 | 状态 | 已通过 |
 | --- | --- | --- | --- | --- |
@@ -15,7 +15,7 @@
 | A06 | 招牌 / 广告 | 横版 1024×256；竖版 256×1024；全息 512×1024 | 通过（本批 6 张） | 6 |
 | A07 | 远景天际线 | 2048×1024，上方透明或渐变深紫，1 张 | 通过 | 1 |
 | A08 | 地面 · 湿沥青 | 1024²，无缝，1 张 | 已通过并接入 | 1 |
-| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝 | 未开始 | 0 |
+| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝，本批 2 张 | 待审（#100） | 0 |
 | A10 | 贴花（地面贴花优先） | 512²，透明；涂鸦 / 海报 / 告示 / 污渍 / 裂缝各 ≥10 张 | 未开始 | 0 |
 | A03 | 外墙 · 水渍混凝土 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A04 | 外墙 · 贴纸墙 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
@@ -110,7 +110,7 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 | 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 湿沥青 `ground_asphalt_wet_01` | [WebP](../assets/world/ground/ground_asphalt_wet_01.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/wet-asphalt-a08.webp) | 1024²；RGB / sRGB ICC；质量 90；491,514 B；原生 1254²，Lanczos 降采样 |
+| 湿沥青 `ground_asphalt_wet_01` | [WebP](../assets/world/ground/ground_asphalt_wet_01.webp) | 通过 | 1 | [本批审图](../assets/world/reviews/wet-asphalt-a08.webp) | 1024²；RGB / sRGB ICC；质量 90；491,514 B；原生 1254²，Lanczos 降采样 |
 
 用途与材质建议见 [地面素材说明](../assets/world/ground/README.md)，完整生成与导出记录见 [A08 出处文件](../assets/world/ground/wet-asphalt-a08.provenance.json)。独立检查见 [QA 摘要](../assets/world/ground/wet-asphalt-a08.qa.md) 和 [机器报告](../assets/world/ground/wet-asphalt-a08.qa.json)。
 
@@ -127,6 +127,29 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 2026-10-12 · 原 [PR #98](https://github.com/acaozixu123456/myRepository/pull/98) 同步到 `00a2ad25` 基线后，再次执行 `npm run typecheck && npm test` 全部通过（退出码 0；59 个测试文件、935 个测试）。Claude 已在主分支钉住经济审计测试的真实时钟，解决跨日后 `1.73` 文字断言失配。图片与出处保持不变，仍为待审第 1 轮；此前失败及双时钟复现保留在 PR 记录中。
 
 最不满意：4×4 平铺可辨认油膜和水洼的大形周期重复，近看细颗粒湿面高光偏密，等待 Claude 按实际地面 UV 尺度评估。审核后继续 A09 地砖，再做 A10 地面贴花。
+
+2026-10-12 · [PR #98](https://github.com/acaozixu123456/myRepository/pull/98) **通过、已合并并接入**：Claude 确认颗粒与水膜表现，作为路面底图并保留中线；实际反光交给游戏光照。以上待审文字保留为制作历史，当前已通过数量为 1。
+
+## A09 明细
+
+| 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| 旧青灰方砖 `ground_tile_slate_01` | [WebP](../assets/world/ground/ground_tile_slate_01.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/ground-tiles-a09.webp) | 1024²；413,568 B；原生完整周期 1234×1235；低对比灰缝 |
+| 青灰砖地 / 连续排水沟盖 `ground_drain_slate_02` | [WebP](../assets/world/ground/ground_drain_slate_02.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/ground-tiles-a09.webp) | 1024²；318,762 B；原生完整周期 1228²；沿上下轴连续 |
+
+用途、来源与导出规格见 [A09 素材说明](../assets/world/ground/ground-tiles-a09.README.md)，完整提示词、工具实参、候选选择、原图路径和原图 / 成品 SHA256 见 [出处记录](../assets/world/ground/ground-tiles-a09.provenance.json)。
+
+### A09 制作与审核记录
+
+2026-10-12 · 第 1 轮待审，已通过数量为 0。每张由 `image_gen` 独立生成后，再以同一工具修订自己的初稿；两个候选是内部筛选，审核轮次仍为 1。原始 PNG 均为 1254²，外侧灰缝中心裁切完整周期后 Lanczos 降采样至 1024²，以 RGB sRGB ICC WebP、质量 90、method 6 导出。没有上采样、程序补画、接缝融合或艺术性后处理。原始 PNG 保留在出处记录的工作空间路径，因单张超过 500,000 B 未提交。
+
+内部视觉复核使用最终编码 WebP 的直接 2×2 / 4×4 重复与四边 / 四角 1:1 局部，未见额外边框或明显接缝条。近看细颗粒有浅微明暗；沟盖最后一段略短、两侧砖宽有差异，需按游戏视距评估。本批是基色贴图，材质湿润反射和霓虹照明交由引擎提供，尚未接入游戏。
+
+审核图：[单张 / 2×2 / 4×4 总览](../assets/world/reviews/ground-tiles-a09.webp)（2048×1024，287,386 B）、[方砖 1:1 四边 / 四角](../assets/world/reviews/ground_tile_slate_01-native-edges.webp)（2048×1024，472,366 B）、[沟盖 1:1 四边 / 四角](../assets/world/reviews/ground_drain_slate_02-native-edges.webp)（2048×1024，394,118 B）。方法见 [预览说明](../assets/world/reviews/ground-tiles-a09.README.md)。
+
+另附 [独立 Three.js 材质灯光样板](../assets/world/reviews/ground-tiles-a09-lighting.webp)（2048×1024，476,746 B）：同一白色 MeshStandardMaterial（roughness 0.65 / metalness 0、map.repeat 2×2）在相同相机与白光下，左右对比只加入青 / 品红点光的响应，无 bloom。实际加载 2/2、HTTP 200、page errors 0、failed requests 0，拍摄前后成品 SHA256 不变；[参数与捕获证据](../assets/world/reviews/ground-tiles-a09-lighting.README.md)。独立 QA 见 [摘要](../assets/world/ground/ground-tiles-a09.qa.md) 和 [机器报告](../assets/world/ground/ground-tiles-a09.qa.json)，当前可交 Claude 审核，尚未审核通过。
+
+A09 同步最新主分支 `bf37bd3` 后验证：`npm run typecheck && npm test` 通过，65 个测试文件、980 项测试，退出码 0。两张素材及审核图保持不变；保留 #98 已通过并接入的最新记录。
 
 ## B 类队列
 
