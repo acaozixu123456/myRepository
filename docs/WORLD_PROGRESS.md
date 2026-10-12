@@ -1,39 +1,38 @@
 # 世界美术进度
 
-## 主题素材 · A09-HB 赤壁港旧木地面
+## 主题素材 · A09-FR 光之森草地与落叶
 
-当前主题批次：**A09-HB**，分支 `codex/3d-world-harbor-ground`，晚霞老海港纵纹木栈板三张，**第1轮待审，通过数量0**。按最新 [固定队列](CODEX_QUEUE.md) 与 [WORLD3D 场景主题](WORLD3D.md)；旧暗紫赛博工作单不覆盖新主题。已做夜市批次与赛博成果保留，各批独立提交，有返修先返修，不等审核再开下一批。
+当前主题批次：**A09-FR**，分支 `codex/3d-world-forest-ground`，清晨森林草地 / 落叶三变体，**第1轮待审，通过数量0**。依据最新 [固定队列](CODEX_QUEUE.md) 与 [WORLD3D 场景主题](WORLD3D.md)，明亮清爽主题优先于旧暗紫赛博计划；既有素材保留，各批独立提交，有返修先返修，不等待Claude审核开下一批。
 
 | 批次 | 场景地面 | 规格 / 数量 | 状态 | 已通过 |
 | --- | --- | --- | --- | --- |
-| A09-NM | 夜市暖砖 / 青石 / 篮织砂石 | 1024²，无缝，3张 | 已交付，另批第1轮待审 | 0 |
-| A09-HB | 赤壁港宽旧褐 / 浅漂洗 / 窄板木栈板 | 1024²，无缝，3张 | 第1轮待审 | 0 |
-| A09-MR | 宫阙汉白玉淡金纹 | 1024²，无缝，3变体 | 未开始 | 0 |
-| A09-FR | 森林草地 / 落叶 | 1024²，无缝，3变体 | 未开始 | 0 |
+| A09-NM | 夜市暖砖 / 青石 / 篮织砂石 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-HB | 赤壁港旧褐 / 漂洗 / 窄木板 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-MR | 宫阙奶白细晶 / 浅金矿纹 / 象牙云脉 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-FR | 光之森青绿稀叶 / 苔绿暖叶 / 浅鲜小叶 | 1024²，无缝，3张 | 第1轮待审 | 0 |
 | A09-CL | 云岛粉绿草地 / 小花 | 1024²，无缝，3变体 | 未开始 | 0 |
 
-新方向后续仍包括天空全景（2048×512横向无缝，仅天空与云）、瓦面（512²无缝俯视瓦垄）和透明云朵精灵图，按queue顺序，不继续旧涂鸦批次。
+旧批审核现状以queue / 主线为准：A08 #98已通过 / 接入；A09 #100、A10污渍 #103与裂缝 #106已通过 / 合并，29f6主线已有Claude贴花接入文件。下方旧基线文字保留，不覆盖新方向或这一审核现状。后续天空全景、瓦面、透明云朵按queue顺序；旧涂鸦批次不继续。
 
 | 名称 / ID | 素材 | 状态 / 轮次 | 审图 | 字节 |
 | --- | --- | --- | --- | ---: |
-| 宽暖旧褐 `ground_harbor_oldwood_01` | [WebP](../assets/world/ground/ground_harbor_oldwood_01.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_harbor_oldwood_01-2x2.webp) / [4×4](../assets/world/reviews/ground_harbor_oldwood_01-4x4.webp) | 226,494 |
-| 浅漂洗 `ground_harbor_washed_02` | [WebP](../assets/world/ground/ground_harbor_washed_02.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_harbor_washed_02-2x2.webp) / [4×4](../assets/world/reviews/ground_harbor_washed_02-4x4.webp) | 217,848 |
-| 浅褐窄板 `ground_harbor_narrowwood_03` | [WebP](../assets/world/ground/ground_harbor_narrowwood_03.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_harbor_narrowwood_03-2x2.webp) / [4×4](../assets/world/reviews/ground_harbor_narrowwood_03-4x4.webp) | 236,820 |
+| 青绿稀叶 `ground_forest_grass_sparse_01` | [WebP](../assets/world/ground/ground_forest_grass_sparse_01.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_forest_grass_sparse_01-2x2.webp) / [4×4](../assets/world/reviews/ground_forest_grass_sparse_01-4x4.webp) | 495,756 |
+| 苔绿暖叶 `ground_forest_moss_leaves_02` | [WebP](../assets/world/ground/ground_forest_moss_leaves_02.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_forest_moss_leaves_02-2x2.webp) / [4×4](../assets/world/reviews/ground_forest_moss_leaves_02-4x4.webp) | 402,274 |
+| 浅鲜小叶 `ground_forest_grass_light_03` | [WebP](../assets/world/ground/ground_forest_grass_light_03.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_forest_grass_light_03-2x2.webp) / [4×4](../assets/world/reviews/ground_forest_grass_light_03-4x4.webp) | 367,326 |
 
-2026-10-12 · 制作基线 `fecef9e`。实读当前queue / harbor.ts / atmos.ts，并实看主分支第3章码头作为只读材质色板参考，不改引擎/注册表。三个真实独立image_gen call，无引用、无编辑、无复制旋转。原生1254² RGB PNG（2,653,085～2,777,991 B）留工作空间，完整画布等比Lanczos降到1024² RGB sRGB ICC WebP，quality90/method6；无裁切、上采样、调色、补木纹或程序修缝。
+2026-10-12 · 制作基线 `29f6a8b`，提交基线正常快进至 `a7a41e9`，森林材质 / common地面 / 氛围与queue文件不变，WORLD3D仅新增探索玩法。开工fetch并实读当前queue / forest.ts / common.ts / atmos.ts，实看既有第4章清晨森林，只读色板参考，不改引擎 / 注册表。3次独立真实image_gen生成＋5次真实编辑，各原稿链独立。首稿草丝太密，q90导出均超500,000 B；AI简化后稀叶采用候选2，苔绿 / 浅鲜草候选2仍超限，进一步AI编辑采用候选3。8张原1254² RGB PNG（3,271,586～4,633,629 B）和试导出全保留工作空间。[完整候选出处](../assets/world/ground/forest-ground-a09-fr.provenance.json)。
 
-源材质三图合计681,162 B，单文件≤500,000 B。宽/漂洗/窄三种分别约6/8/12列纵板，细纤维与长板走向图像纵轴，没有大钉子/节疤/横梁或中心物件。[素材说明](../assets/world/ground/harbor-ground-a09-hb.README.md)、[真实出处与hash](../assets/world/ground/harbor-ground-a09-hb.provenance.json)。
+最终3张完整画布等比Lanczos降到1024² RGB sRGB ICC WebP，quality90 / method6，总1,265,356 B，单文件≤500,000 B。没有裁切 / 上采样 / 程序修缝、补纹、融合、模糊、调色或Alpha处理；[素材说明](../assets/world/ground/forest-ground-a09-fr.README.md)。
 
-[总览](../assets/world/reviews/harbor-ground-a09-hb.webp)（2048×1024，140,204 B），每图独立2×2 / 4×4以及9张无损RGB全边/四角PNG（1:1最终解码像素）；[方法](../assets/world/reviews/harbor-ground-a09-hb.README.md)。自查没有额外粗横断/宽边框，正常窄板缝可辨；4×4可见板色和低频纤维周期、板宽略变，不声称木纹数学连续或边界逐像素相等。
+[总览](../assets/world/reviews/forest-ground-a09-fr.webp)（2048×1024，356,302 B），6张2×2 / 4×4、9张无损原尺度全边 / 四角PNG；[方法](../assets/world/reviews/forest-ground-a09-fr.README.md)。无明显粗暗框或大跳色；仍有边沿叶端 / 草丝相位差，4×4叶位 / 草簇重复可辨，MAE非零，不声称数学无缝。最不满意：稀叶草丝仍较密，简化后的局部草斑趋平，小足迹下暖叶先于草纤维可辨。
 
-[真实 Three 中性/港口晚霞样板](../assets/world/reviews/harbor-ground-a09-hb-lighting.webp)（2048×1024，144,650 B），白MeshStandardMaterial roughness0.9/metalness0，repeat[3,1]；左右仅换白↔ATMOS.redcliff光色，强度/位置/相机/曝光一致，无bloom/雾/阴影/完整场景调色。3/3加载、HTTP200×3、page/console errors0、failed0，六renderer各1drawcall，三sourceSHA拍前后相同；[参数](../assets/world/reviews/harbor-ground-a09-hb-lighting.README.md)。晚霞对基色的橘红偏色明显，漂洗木仍较亮，如实保留。最不满意：细木纹在小足迹下会趋平，单板色差重复可辨；实际UV尺度由接入方控制。
+[真实Three白光 / 清晨灯色样板](../assets/world/reviews/forest-ground-a09-fr-lighting.webp)（2048×1024，405,744 B），白MeshStandardMaterial roughness0.95 / metalness0.02与森林groundPlane默认一致、repeat[3,1]。仅换白↔ATMOS.forest灯色，其余相机 / 材质 / 强度 / 位置 / 曝光相同，无bloom / 雾 / 阴影或完整场景调色；3/3加载、HTTP200×3、page / console errors0、failed0、6renderer各1drawcall，三sourceSHA拍前后相同；[参数](../assets/world/reviews/forest-ground-a09-fr-lighting.README.md)。
 
-独立QA见 [摘要](../assets/world/ground/harbor-ground-a09-hb.qa.md) 与 [机器报告](../assets/world/ground/harbor-ground-a09-hb.qa.json)。本HB worktree在最新 `e777d58` 实际执行 `npm run typecheck && npm test` 全过（退出码0；68个测试文件、1,019个测试），日志 `/workspace/harbor-ground-raw/tests-latest.log`；默认沙箱首次CLI spawnSync EPERM失败另留日志，启用工具网络/IPC权限同代码重跑通过，未改源码。当前第1轮待审，通过0。
+独立QA见 [摘要](../assets/world/ground/forest-ground-a09-fr.qa.md) / [机器报告](../assets/world/ground/forest-ground-a09-fr.qa.json)。本FR worktree在29f6实际执行 `npm run typecheck && npm test` 全过（整体退出0；68个测试文件、1,019个测试），完整test日志 `/workspace/forest-ground-raw/tests-latest.log`，typecheck输出由工具捕获。正常同步a7a主线后实际重跑全过（整体退出0；68文件 / 1,021测试），完整test日志 `/workspace/forest-ground-raw/tests-a7a41e9.log`，两次实际记录保留；当前第1轮待审，通过0。
 
 ## 旧方向基线文字与历史（保留）
 
-以下保留原基线的旧计划/批次文字，不覆盖上方新主题优先级；审核现状以最新queue与各批PR记录为准，其他批的既有记录未被本批重写。
-
+以下旧基线计划 / 批次原文未被本批重写，真实审核现状与优先级以上方最新queue / 主线记录为准。
 
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
