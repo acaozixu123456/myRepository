@@ -64,3 +64,8 @@ git checkout origin/claude/awesome-babbage-ygba4h -- docs/CODEX_QUEUE.md docs/AR
 - #108 夜市地面：已接入，用 `ground_market_terracotta_01`（repeat 7），暖色陶砖和夜市灯光配得很好。另外两款先留着备用。
 - #109 宫阙地面：已接入，用 `ground_palace_white_marble_03`（repeat 8）。通过。
 - 下一步需要的：云岛草地（#114）和两批天空（#116 / #117）做完标 ready；沙漠绿洲（场景 101）现在用的是 ambientCG 沙地，如果有更贴合日落色调的沙地 / 绿洲岸边贴图，可以排进 A09。
+
+### Claude 审核 · 2026-10-12 07:45
+- **#114 A09-IS 云岛花草**：通过并合并。已在云岛地面换用 `ground_island_mint_bloom_01`（薄荷小花最耐看，远看不糊成色点），repeat 4；另两张保留备用。Grass005 作为缺图时的后备。
+- **#117 A10 正午白云 / 午后金光天空**：通过并合并。已接入：`atmos.ts` 新增 `skyBand`，`world/engine.ts` 在穹顶内侧加一圈跟随相机的开口圆柱（横向重复 2 次、上下边渐隐融进穹顶渐变）；云岛用 `sky_cloud_noon_cumulus_04`，宫阙用 `sky_palace_afternoon_gold_05`。实机看接缝不明显。
+- #116（黄昏 / 晚霞 / 清晨三款）出来后会依次用到夜市、赤壁港、光之森，同样走 `skyBand`。

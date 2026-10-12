@@ -50,7 +50,7 @@ function islet(rnd: () => number, s: number): THREE.Group {
 export function buildCloud(L: LevelDef): Street {
   const g = new THREE.Group(); const A = atmosOf(L.mood); const rnd = mulberry(505);
   // ---- 岛面 / 岛底 ----
-  const cc0 = aiTex('cc0_grass_005'); // ambientCG Grass005（CC0）
+  const cc0 = aiTex('ground_island_mint_bloom_01') ?? aiTex('cc0_grass_005'); // Codex A09 薄荷小花草地；没有就用 ambientCG Grass005（CC0）
   const gt: THREE.Texture = cc0 ?? grassTex(); gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(cc0 ? 4 : 5, cc0 ? 4 : 5);
   const top = new THREE.Mesh(new THREE.CircleGeometry(ISLE_R + 1.2, 64), new THREE.MeshStandardMaterial({ map: gt, roughness: 0.95 })); top.rotation.x = -Math.PI / 2; top.position.y = 0.3; top.receiveShadow = true; g.add(nm(top));
   const rim = new THREE.Mesh(new THREE.CylinderGeometry(ISLE_R + 1.2, ISLE_R + 1.6, 1.6, 64, 1, true), std('#e8e0d4', 0.85)); rim.position.y = -0.5; g.add(nm(rim));

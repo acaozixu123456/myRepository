@@ -29,6 +29,9 @@ import ground_forest_moss_leaves_02 from './ground_forest_moss_leaves_02.webp';
 import ground_harbor_narrowwood_03 from './ground_harbor_narrowwood_03.webp';
 import ground_harbor_oldwood_01 from './ground_harbor_oldwood_01.webp';
 import ground_harbor_washed_02 from './ground_harbor_washed_02.webp';
+import ground_island_meadow_mix_03 from './ground_island_meadow_mix_03.webp';
+import ground_island_mint_bloom_01 from './ground_island_mint_bloom_01.webp';
+import ground_island_pink_clover_02 from './ground_island_pink_clover_02.webp';
 import ground_market_sandstone_weave_03 from './ground_market_sandstone_weave_03.webp';
 import ground_market_slate_02 from './ground_market_slate_02.webp';
 import ground_market_terracotta_01 from './ground_market_terracotta_01.webp';
@@ -42,6 +45,8 @@ import sign_netcafe_vertical_04 from './sign_netcafe_vertical_04.webp';
 import sign_pawn_horizontal_02 from './sign_pawn_horizontal_02.webp';
 import sign_pharmacy_horizontal_03 from './sign_pharmacy_horizontal_03.webp';
 import sign_ramen_horizontal_01 from './sign_ramen_horizontal_01.webp';
+import sky_cloud_noon_cumulus_04 from './sky_cloud_noon_cumulus_04.webp';
+import sky_palace_afternoon_gold_05 from './sky_palace_afternoon_gold_05.webp';
 import skyline_catcity_01 from './skyline_catcity_01.webp';
 import wall_metal_painted_02 from './wall_metal_painted_02.webp';
 import wall_metal_ribbed_03 from './wall_metal_ribbed_03.webp';
@@ -80,6 +85,9 @@ export const WORLD_TEX: Record<string, string> = {
   ground_harbor_narrowwood_03,
   ground_harbor_oldwood_01,
   ground_harbor_washed_02,
+  ground_island_meadow_mix_03,
+  ground_island_mint_bloom_01,
+  ground_island_pink_clover_02,
   ground_market_sandstone_weave_03,
   ground_market_slate_02,
   ground_market_terracotta_01,
@@ -93,6 +101,8 @@ export const WORLD_TEX: Record<string, string> = {
   sign_pawn_horizontal_02,
   sign_pharmacy_horizontal_03,
   sign_ramen_horizontal_01,
+  sky_cloud_noon_cumulus_04,
+  sky_palace_afternoon_gold_05,
   skyline_catcity_01,
   wall_metal_painted_02,
   wall_metal_ribbed_03,

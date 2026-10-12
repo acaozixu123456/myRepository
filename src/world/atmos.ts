@@ -16,6 +16,8 @@ export interface Atmos {
   grade: { cool: number; ca: number; vig: number; sat: number; tint: [number, number, number] };
   /** 跟着队伍的暖光强度（白天要弱，夜里要强） / 猫的光色中性化强度 */
   keyLight: number; lit: number;
+  /** 天边一圈云的横带贴图（Codex 的 A10 天空，素材名）；没有就只有穹顶渐变 */
+  skyBand?: string;
 }
 
 const NEON: Atmos = {
@@ -47,7 +49,7 @@ export const ATMOS: Record<MoodId, Atmos> = {
   mist: {
     dome: true, skyTop: 0x5a9ae8, skyMid: 0xa8d0ff, horizon: 0xfff4ec, discColor: 0xffffff, discSize: 0.05,
     fog: 0xe4eeff, fogD: 0.0036, hemiSky: 0xeaf4ff, hemiGnd: 0x9ab0d8, hemiI: 0.7, sun: 0xfff8e8, sunI: 1.35, sunPos: [-22, 70, 30],
-    exposure: 0.92, env: 0.3, bloom: [0.3, 0.5, 0.95], grade: { cool: 0, ca: 0, vig: 0.65, sat: 1.1, tint: [1, 1.01, 1.03] }, keyLight: 0.45, lit: 0.25,
+    exposure: 0.92, env: 0.3, bloom: [0.3, 0.5, 0.95], grade: { cool: 0, ca: 0, vig: 0.65, sat: 1.1, tint: [1, 1.01, 1.03] }, keyLight: 0.45, lit: 0.25, skyBand: 'sky_cloud_noon_cumulus_04',
   },
   // 沙漠：烈日当空，热浪把天边烤成浅橙
   desert: {
@@ -59,7 +61,7 @@ export const ATMOS: Record<MoodId, Atmos> = {
   palace: {
     dome: true, skyTop: 0x3a86d8, skyMid: 0x8cc8f0, horizon: 0xffecd0, discColor: 0xfff0c0, discSize: 0.05,
     fog: 0xf0e0c8, fogD: 0.0034, hemiSky: 0xfff0dc, hemiGnd: 0x8a5a4a, hemiI: 0.62, sun: 0xffe8b0, sunI: 1.5, sunPos: [42, 55, 32],
-    exposure: 0.9, env: 0.3, bloom: [0.3, 0.5, 0.96], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.18, tint: [1.04, 1.0, 0.95] }, keyLight: 0.55, lit: 0.3,
+    exposure: 0.9, env: 0.3, bloom: [0.3, 0.5, 0.96], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.18, tint: [1.04, 1.0, 0.95] }, keyLight: 0.55, lit: 0.3, skyBand: 'sky_palace_afternoon_gold_05',
   },
 };
 export const atmosOf = (m: string): Atmos => ATMOS[m as MoodId] ?? NEON;
