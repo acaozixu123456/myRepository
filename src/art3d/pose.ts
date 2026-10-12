@@ -52,5 +52,9 @@ export function applyPose(cat: Cat3D, P: Record<string, number>, o: PoseOpts): v
   j.earR.rotation.z = 0.32 - tw * 0.4;
   // 眨眼：每 ~3.5 秒一次
   const bl = Math.max(0, 1 - Math.abs(((o.t + cat.phase) % 3.6) - 3.45) * 14);
-  for (const e of j.eyes) e.scale.y = 1 - 0.9 * bl * live;
+  // 表情：face.0 = 眯眼程度（受击 / 开心），face.1 = 张嘴程度（喊招 / 受击）
+  const sq = Math.min(1, Math.max(0, g('face.0'))), op = Math.min(1, Math.max(0, g('face.1')));
+  for (const e of j.eyes) e.scale.y = Math.max(0.08, (1 - 0.9 * bl * live) * (1 - 0.82 * sq));
+  j.mouthO.scale.set(0.001 + op, 0.001 + op * (0.55 + 0.6 * op), 0.001 + op * 0.8);
+  for (const m of j.smile) m.scale.setScalar(op < 0.2 ? 1 : 0.001);
 }
