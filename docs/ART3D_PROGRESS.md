@@ -212,7 +212,7 @@
 | `gourd` | `xian_zuoci`(UR), `wei_guojia`(SR) + 杂兵×2 | 底版 | 0 | |
 | `furCloak` | `man_mengmiaohuo`(UR), `man_mulu`(SSR), `qun_dongzhuo`(SR) | 底版 | 0 | |
 | `scrollBack` | `xian_zhangzhua`(SSR), `mob_shu_strategist` | 待审 | 1 | 双木轴卷纸、束结、实体接袍短吊带；15 逻辑网格 |
-| `banner` | 实际使用者 0；仅合成 factory 样例 | 待审 | 1 | 厚弧布、后向猫爪、两条实体接身绑带；16 逻辑网格 |
+| `banner` | 实际使用者 0；仅合成 factory 样例 | 待审 | 2 | #123已通过；追加正面猫爪，两面可读；21逻辑网格/41含描边 |
 
 ### 披挂第 1 批检查（第 1 轮待审）
 
@@ -437,3 +437,14 @@ src/art3d/parts/hero-ur-weapons.ts
 
 
 配饰第3批 #128 提交后同步已通过#116/#126至560f54c，保留双方注册与记录；本批helper1834不变、最新注册表897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce，除三目标和新增import仅清除已不用sphere/hidden。作者fresh400+全89/87非目标当前主线Uint8同，raw开放眼496/五点新增0/owned FRAME0/whole旧新8；原独立400+48保留main60原标签。正式8图本次560全部重拍，7角色图与旧main60完整RGBA一致，保留原无损PNG编码；真实10cat/3builder各1、第05帧4.5s完整HUD新WebP377016B，raw全RGBA0。捕获19主依赖实际pre/post同、后验305非审图SRC副本去除五unusedsentinel字节全同，非倒推305全captureguard。最新作者与原始报告SHA见[main560增补](../src/art3d/parts/reviews/extras-veterans/post-main560-validation.json)，当前typecheck+test退出0、80文件/1102测试；helper/眼罩限制和原独立结论不变。
+
+
+### 旌旗第2轮补充（双面猫爪，待审）
+
+按Claude对已通过#123的08:15建议，仅在banner末尾追加27行/1721B的五个正面猫爪。背爪、原布/杆/金边/绑带、scrollBack函数及back注册表保持字节，删追加块恢复8319B原helper。最新helper f5a80e6693464626d8744ecc5bc4662834c34d9671b5a19053461d8c81f6e631、registry2d5304，21逻辑/41实际Mesh/maxseg20、缓存材质/正尺度/单位根，构建后无逐帧builder新增。没有新增装备配置；真实banner0，89全部非目标含两scroll及12PET原Uint8同，不用空集断言声称旗已接入。
+
+作者及独立分别完整4800=24合成context×200，四yaw/14静态与3动画12时刻，固定68真实normal bake/eye-core12×12/active mouth3×3/fiveface逐具体ID及有效集新0；独立另查实际白眼前表面3×3有限点新0。实际1120颅骨/expanded、560口鼻与完整Cone耳parenty.22本体/壳完整TRI0。仅旗ownedFRAME/finite/新增或增大whole裁幅0，whole big-ear旧新264=96+168，maxTop.05037611242197215同，不能写整猫全部0。新120primary爪各与opaque实体536tri布的40–42源tri实接；240含outline不跨后布224tri、完整XY裁剪signedZ最小后层余量.006788294490105762。原31phys全geometry/布局/index/变换/材质身份24context字节同，不用outline-only假接合。
+
+17作者PNG＋独立旧新PNG都是合成真实正常bake（无heroId），288原生218×190格四体型/六palette/四yaw/三pose；独立重拍全17图与作者raw/final完整RGBA0，最大354419B、无缩放或剪脸；布ROI只从900×788原生正常图取规定矩形。正面0/-32可辨，+32被旧头遮一部分，190趾/浮雕浅是最不满意；未声称有真实战斗banner图。完整证据[原作者说明](../src/art3d/parts/reviews/banner-two-sided/README.md)、[独立结论](../src/art3d/parts/reviews/banner-two-sided/qa-summary.md)、[独立4800](../src/art3d/parts/reviews/banner-two-sided/qa-summary.json)、[独立旧新](../src/art3d/parts/reviews/banner-two-sided/before-after-independent.png)。
+
+提交前root FF已通过#128的c569，helper/registry/core/pose/renderer/actor与全部24synthetic extra[] descriptors未变；独立4800及17图/300guard仍保留68标签。另fresh311源快照做当前24idle/.4/+32 smoke＋89/89非目标BYTE同、四正常对照；owned0/neweye-mouthface0、旧新big-ear6相同margin，原生typecheck+test82文件/1115退出0。[当前增补](../src/art3d/parts/reviews/banner-two-sided/post-main-validation.json)不当重新全跑4800。当前待审第2轮，不自行合并；有限离散样本及未实装banner限制保留。

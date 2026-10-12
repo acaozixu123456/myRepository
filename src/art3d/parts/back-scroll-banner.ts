@@ -130,6 +130,33 @@ export function banner(c: PartCtx): THREE.Group {
   };
   emblem(.57,.51,.105,1.18,.93,'banner-paw-pad');
   for(const [t,u]of [[.39,.29],[.32,.43],[.32,.62],[.40,.76]])emblem(t,u,.046,.91,1.12,'banner-paw-toe');
+  // 前爪沿实际三角布面贴合；浅浮雕根部进入厚布，最深处仍在背面以内。
+  const clothPositions=fabric.geometry.getAttribute('position'),clothIndex=fabric.geometry.getIndex()!;
+  const frontStart=(14+1)*(8+1);
+  const frontZ=(p:THREE.Vector3):number=>{
+    for(let i=0;i<clothIndex.count;i+=3){
+      const a=clothIndex.getX(i),b=clothIndex.getX(i+1),d=clothIndex.getX(i+2);
+      if(a<frontStart||b<frontStart||d<frontStart||a>=frontStart*2||b>=frontStart*2||d>=frontStart*2)continue;
+      const ax=clothPositions.getX(a),ay=clothPositions.getY(a),bx=clothPositions.getX(b),by=clothPositions.getY(b),dx=clothPositions.getX(d),dy=clothPositions.getY(d);
+      const det=(by-dy)*(ax-dx)+(dx-bx)*(ay-dy);
+      const wa=((by-dy)*(p.x-dx)+(dx-bx)*(p.y-dy))/det;
+      const wb=((dy-ay)*(p.x-dx)+(ax-dx)*(p.y-dy))/det,wc=1-wa-wb;
+      if(wa>=-1e-8&&wb>=-1e-8&&wc>=-1e-8)return wa*clothPositions.getZ(a)+wb*clothPositions.getZ(b)+wc*clothPositions.getZ(d);
+    }
+    throw new Error('Banner front paw outside cloth surface');
+  };
+  const frontEmblem=(t:number,u:number,r:number,sx:number,sy:number,name:string)=>{
+    const relief=sphere(r,sx,sy,.16,12),positions=relief.getAttribute('position');
+    for(let i=0;i<positions.count;i++){
+      const depth=positions.getZ(i),p=flag(t-positions.getY(i)/.83,u+positions.getX(i)/.58);
+      positions.setXYZ(i,p.x,p.y,frontZ(p)+.002+depth);
+    }
+    relief.computeVertexNormals();
+    const mark=solid(relief,toon(c.pal.trim),.004);
+    mark.name=name;g.add(mark);
+  };
+  frontEmblem(.57,.51,.105,1.18,.93,'banner-front-paw-pad');
+  for(const [t,u]of [[.39,.29],[.32,.43],[.32,.62],[.40,.76]])frontEmblem(t,u,.046,.91,1.12,'banner-front-paw-toe');
   return g;
 }
 
