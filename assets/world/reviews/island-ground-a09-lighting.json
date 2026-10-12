@@ -1,0 +1,569 @@
+{
+  "createdAt": "2026-10-12T05:58:49.813Z",
+  "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/world-review/island-ground/preview-final/capture-tools/material-preview.mjs --config /workspace/world-review/island-ground/preview-final/capture-config.json",
+  "base": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "parameterBase": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "candidate": "candidate-island-final",
+  "host": "http://127.0.0.1:45255",
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "args": [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--use-gl=angle",
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader",
+      "--ignore-gpu-blocklist"
+    ],
+    "viewport": [
+      2048,
+      1024
+    ],
+    "deviceScaleFactor": 1
+  },
+  "dependencies": {
+    "threeVersion": "0.169.0",
+    "threeModule": "/workspace/myRepository/node_modules/three/build/three.module.js",
+    "threeModuleSHA256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+    "roomEnvironmentModule": "/workspace/myRepository/node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+    "roomEnvironmentModuleSHA256": "85869bdd22f7cf0b22e68dcefe6cb710480af0f5c901a76f7a7764fd07fc8014",
+    "configFile": "/workspace/world-review/island-ground/preview-final/capture-config.json",
+    "configSHA256": "c01ee55c8632afbc08ff599d0a44c4b55440409553e71688f9ff02bd71e8891c",
+    "themeContextSHA256": "1885320af943846ca2c9d6e49eedd815e7731d5dcc3ee1fa23122ce031378474",
+    "dependencyVerification": "/workspace/world-review/island-ground/preview-final/capture-base-67.json",
+    "dependencyVerificationSHA256": "d153e3d3b096509f661e8dc104af9f8fc5a541e93434361fd68bfba377a9592c"
+  },
+  "sources": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "label": "薄荷花草",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+      "sha256": "bbe226fb0c375e91d8527cb242f38c11022fa773f56b004a24faf1ec270eb040",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 300178,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "7888c9798ab7493741b7964361adbadb7a6703eba47007032364f724ebb3722b",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+      "originalSHA256": "91a061528ed7b70c471318baf921506bba02eb14e99f93fea3fdf80b5825eb1a",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "label": "粉色苜蓿",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+      "sha256": "94534b9fcbc09d21a52a0a9575c0e4d31b67934013101077835342d7c64a9c3e",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 479916,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "be0c0b37b64956af00efbfd4954c4280c9b552f99749ad323a8bda1af35c4727",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+      "originalSHA256": "958dbc167e66ee6a120f90445021b718a37e58c1c7bf604c839f2947328ce3cd",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "label": "混合草甸",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+      "sha256": "d194e553b897bff729e5ba7290d4df941e43be0ade857a2178c24d0cef38f5ca",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 297664,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "3df6f9860594ff6cbca179540ee5e778112117da622032ddd39dd01d2f9ff3d7",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+      "originalSHA256": "1bab0cbe6b0605a96a450039e9a2d355beabf059af45890ac07fb41b240ab496",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "actualGameMapping": {
+    "type": "CircleGeometry",
+    "radius": 29.2,
+    "repeat": [
+      5,
+      5
+    ],
+    "roughness": 0.95,
+    "metalness": 0,
+    "approximateWorldUnitsPerTile": 11.68
+  },
+  "sampleMapping": {
+    "plane": [
+      8,
+      8
+    ],
+    "repeat": [
+      2,
+      2
+    ],
+    "worldUnitsPerTile": 4
+  },
+  "sourceProvenancePath": "/workspace/world-review/island-ground/island-ground-a09.provenance.json",
+  "sourceProvenanceSHA256": "31572052b1764926079e39a547c387ab5f3772413ab048d5a55d766ae94da4bd",
+  "sourceSelectionPath": "/workspace/world-review/island-ground/island-ground-a09.selection-at-export.json",
+  "sourceSelectionSHA256": "5daae3a3e06b3324c06fd2e4c9d327728af096654b8965f5b2d651151617efdd",
+  "sourceStayedFrozen": true,
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleMessages": [],
+  "independentMaterialSample": true,
+  "gameScreenshot": false,
+  "worldEngineImported": false,
+  "threeRevision": "169",
+  "webGL": true,
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "size": [
+    2048,
+    1024
+  ],
+  "sourceImagesLoaded": 3,
+  "loaded": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "size": [
+        1024,
+        1024
+      ],
+      "url": "/asset/0",
+      "colorSpace": "sRGB",
+      "repeat": [
+        2,
+        2
+      ],
+      "wrap": [
+        "RepeatWrapping",
+        "RepeatWrapping"
+      ],
+      "rotation": 0,
+      "flipY": true,
+      "anisotropy": 4
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "size": [
+        1024,
+        1024
+      ],
+      "url": "/asset/1",
+      "colorSpace": "sRGB",
+      "repeat": [
+        2,
+        2
+      ],
+      "wrap": [
+        "RepeatWrapping",
+        "RepeatWrapping"
+      ],
+      "rotation": 0,
+      "flipY": true,
+      "anisotropy": 4
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "size": [
+        1024,
+        1024
+      ],
+      "url": "/asset/2",
+      "colorSpace": "sRGB",
+      "repeat": [
+        2,
+        2
+      ],
+      "wrap": [
+        "RepeatWrapping",
+        "RepeatWrapping"
+      ],
+      "rotation": 0,
+      "flipY": true,
+      "anisotropy": 4
+    }
+  ],
+  "cells": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "row": 0,
+      "lighting": "neutral-white-control",
+      "viewport": [
+        32,
+        148,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.95,
+        "metalness": 0
+      },
+      "hemisphere": {
+        "sky": "ffffff",
+        "ground": "777777",
+        "intensity": 0.7
+      },
+      "sun": {
+        "color": "ffffff",
+        "intensity": 1.35,
+        "position": [
+          -22,
+          70,
+          30
+        ]
+      },
+      "exposure": 0.92,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_island_mint_bloom_01",
+      "row": 1,
+      "lighting": "cloud",
+      "viewport": [
+        32,
+        590,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.95,
+        "metalness": 0
+      },
+      "hemisphere": {
+        "sky": "eaf4ff",
+        "ground": "9ab0d8",
+        "intensity": 0.7
+      },
+      "sun": {
+        "color": "fff8e8",
+        "intensity": 1.35,
+        "position": [
+          -22,
+          70,
+          30
+        ]
+      },
+      "exposure": 0.92,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "row": 0,
+      "lighting": "neutral-white-control",
+      "viewport": [
+        704,
+        148,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.95,
+        "metalness": 0
+      },
+      "hemisphere": {
+        "sky": "ffffff",
+        "ground": "777777",
+        "intensity": 0.7
+      },
+      "sun": {
+        "color": "ffffff",
+        "intensity": 1.35,
+        "position": [
+          -22,
+          70,
+          30
+        ]
+      },
+      "exposure": 0.92,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "row": 1,
+      "lighting": "cloud",
+      "viewport": [
+        704,
+        590,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.95,
+        "metalness": 0
+      },
+      "hemisphere": {
+        "sky": "eaf4ff",
+        "ground": "9ab0d8",
+        "intensity": 0.7
+      },
+      "sun": {
+        "color": "fff8e8",
+        "intensity": 1.35,
+        "position": [
+          -22,
+          70,
+          30
+        ]
+      },
+      "exposure": 0.92,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "row": 0,
+      "lighting": "neutral-white-control",
+      "viewport": [
+        1376,
+        148,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.95,
+        "metalness": 0
+      },
+      "hemisphere": {
+        "sky": "ffffff",
+        "ground": "777777",
+        "intensity": 0.7
+      },
+      "sun": {
+        "color": "ffffff",
+        "intensity": 1.35,
+        "position": [
+          -22,
+          70,
+          30
+        ]
+      },
+      "exposure": 0.92,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "row": 1,
+      "lighting": "cloud",
+      "viewport": [
+        1376,
+        590,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.95,
+        "metalness": 0
+      },
+      "hemisphere": {
+        "sky": "eaf4ff",
+        "ground": "9ab0d8",
+        "intensity": 0.7
+      },
+      "sun": {
+        "color": "fff8e8",
+        "intensity": 1.35,
+        "position": [
+          -22,
+          70,
+          30
+        ]
+      },
+      "exposure": 0.92,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    }
+  ],
+  "toneMapping": "ACESFilmicToneMapping",
+  "environment": {
+    "type": "Three169 RoomEnvironment PMREM",
+    "sigma": 0.04,
+    "sharedWithinEachPair": true,
+    "intensitiesFromParameterBase": true
+  },
+  "shadows": false,
+  "bloom": false,
+  "normalMap": false,
+  "displacementMap": false,
+  "roughnessMap": false,
+  "colorGrading": false,
+  "postProcessing": false,
+  "cameraAndMaterialMatchedWithinEachPair": true,
+  "output": {
+    "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-lighting.webp",
+    "width": 2048,
+    "height": 1024,
+    "bytes": 216444,
+    "quality": 92,
+    "method": 6,
+    "lossless": false,
+    "sha256": "b694f9ef093bb948f4c5f0bc7ec7987f8bb6002f6d92373e6deb34e03634507a",
+    "originalPNG": "/workspace/world-review/island-ground/preview-final/island-ground-a09-lighting.png",
+    "originalPNGSha256": "2f3cc6050eb3c4a3ec4d6c43d645c15c670473c0866baf2917011d97aa636ec9",
+    "encoding": "Screenshot-only WebP compression. Source images unchanged; native proofs remain lossless PNG."
+  },
+  "toolSHA256": {
+    "common": "cdda69df442abe859315c17220c20dad1351f72ac17b467e6ae3bc39b4bf1a3c",
+    "driver": "1d921ae961d919644e19ba2c54734029428a909fb930452e49494462487ff509",
+    "css": "47e075c159b2c40fd20398551eedc4487ffe4a1806503a0d2852189dad2f23e8"
+  }
+}

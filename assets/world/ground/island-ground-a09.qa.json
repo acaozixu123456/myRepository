@@ -1,0 +1,780 @@
+{
+  "frozenAtUTC": "2026-10-12T06:06:52.188617+00:00",
+  "batch": "A09-IS",
+  "PR": 114,
+  "reviewRound": 1,
+  "state": "独立QA完成，可送Claude审；非Claude通过，尚未接入游戏",
+  "ClaudeDecision": null,
+  "finalMainCommit": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "claimAndMainMergeHEAD": "051c7d06ec72de337dabd3066bf64270bb4f40cb",
+  "sourceCount": 3,
+  "genuineGenerationCallCountFromRootHistory": 3,
+  "imagegenInvocationsByIndependentAgent": 0,
+  "creativePixelEditsByIndependentAgent": 0,
+  "productionWritesByIndependentAgent": 0,
+  "summaryChecks": {
+    "formatBudgetAlphaICC3of3": true,
+    "sourceArchivePrompt3of3": true,
+    "byteIdenticalReexport3of3": true,
+    "nativeAndCodedVisualReview3of3": true,
+    "actualPreviewSources3of3": true,
+    "native9SourceRGBExact": true,
+    "preview11POTBudgetHash": true,
+    "finalLightingAnisotropy4": true,
+    "frozenPreview37FilesHash": true,
+    "materialAndLightDepsSame3408to67": true
+  },
+  "assets": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "appearance": "浅薄荷/黄绿色草尖，少量乳白与淡粉五瓣小花，三款中更轻盈。",
+      "limitation": "细草笔触与草簇仍有共同方向；4×4可辨认相同草簇与花点重复。",
+      "internalRecommendation": "可送Claude审",
+      "ClaudeDecision": null,
+      "nativePath": "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+      "nativeSHA256": "91a061528ed7b70c471318baf921506bba02eb14e99f93fea3fdf80b5825eb1a",
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "nativeMode": "RGB",
+      "finalPath": "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+      "finalSHA256": "bbe226fb0c375e91d8527cb242f38c11022fa773f56b004a24faf1ec270eb040",
+      "finalRGBSHA256": "7888c9798ab7493741b7964361adbadb7a6703eba47007032364f724ebb3722b",
+      "finalSize": [
+        1024,
+        1024
+      ],
+      "finalMode": "RGB",
+      "finalBytes": 300178,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCBytes": 588,
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "scaleXY": [
+        0.8165869218500797,
+        0.8165869218500797
+      ],
+      "nativeAndCodedVisualWholeRepeat2Repeat4FullLRFullTBAndCornersReviewed": true,
+      "observedLongContinuousHardSeam": false,
+      "observedSharedBrightDarkBorderOrCenterVignette": false,
+      "localPlantFragmentsNotGuaranteedToContinueExactly": true,
+      "noObservedGlobalBakedLightBandOrCastShadow": true,
+      "sourceArchiveAndPromptRecordChecksPass": true,
+      "independentReexportByteIdentical": true,
+      "nativeSeamDiagnostics": {
+        "LR": {
+          "meanAbsRGB": 13.698032961190856,
+          "medianAbsRGB": 9.0,
+          "p95AbsRGB": 41.0,
+          "maxAbsRGB": 146.0
+        },
+        "TB": {
+          "meanAbsRGB": 11.019404572036152,
+          "medianAbsRGB": 8.0,
+          "p95AbsRGB": 29.0,
+          "maxAbsRGB": 100.0
+        },
+        "internalAdjacentXMean": 6.170019173547548,
+        "internalAdjacentYMean": 4.95669913738129
+      },
+      "codedSeamDiagnostics": {
+        "LR": {
+          "meanAbsRGB": 14.083333333333334,
+          "medianAbsRGB": 9.0,
+          "p95AbsRGB": 42.0,
+          "maxAbsRGB": 134.0
+        },
+        "TB": {
+          "meanAbsRGB": 11.2314453125,
+          "medianAbsRGB": 9.0,
+          "p95AbsRGB": 29.0,
+          "maxAbsRGB": 106.0
+        },
+        "internalAdjacentXMean": 7.054735866731835,
+        "internalAdjacentYMean": 5.795970351193385
+      }
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "appearance": "圆叶三叶草混短草，粉白小花球，绿色仍占主要画面。",
+      "limitation": "叶片/花球最密，局部叶片明暗最强，缩小和斜俯看时较碎。",
+      "internalRecommendation": "可送Claude审",
+      "ClaudeDecision": null,
+      "nativePath": "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+      "nativeSHA256": "958dbc167e66ee6a120f90445021b718a37e58c1c7bf604c839f2947328ce3cd",
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "nativeMode": "RGB",
+      "finalPath": "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+      "finalSHA256": "94534b9fcbc09d21a52a0a9575c0e4d31b67934013101077835342d7c64a9c3e",
+      "finalRGBSHA256": "be0c0b37b64956af00efbfd4954c4280c9b552f99749ad323a8bda1af35c4727",
+      "finalSize": [
+        1024,
+        1024
+      ],
+      "finalMode": "RGB",
+      "finalBytes": 479916,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCBytes": 588,
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "scaleXY": [
+        0.8165869218500797,
+        0.8165869218500797
+      ],
+      "nativeAndCodedVisualWholeRepeat2Repeat4FullLRFullTBAndCornersReviewed": true,
+      "observedLongContinuousHardSeam": false,
+      "observedSharedBrightDarkBorderOrCenterVignette": false,
+      "localPlantFragmentsNotGuaranteedToContinueExactly": true,
+      "noObservedGlobalBakedLightBandOrCastShadow": true,
+      "sourceArchiveAndPromptRecordChecksPass": true,
+      "independentReexportByteIdentical": true,
+      "nativeSeamDiagnostics": {
+        "LR": {
+          "meanAbsRGB": 18.860180754917597,
+          "medianAbsRGB": 15.0,
+          "p95AbsRGB": 53.0,
+          "maxAbsRGB": 128.0
+        },
+        "TB": {
+          "meanAbsRGB": 21.781765018607125,
+          "medianAbsRGB": 16.0,
+          "p95AbsRGB": 62.0,
+          "maxAbsRGB": 116.0
+        },
+        "internalAdjacentXMean": 12.016585394415445,
+        "internalAdjacentYMean": 10.553675325948188
+      },
+      "codedSeamDiagnostics": {
+        "LR": {
+          "meanAbsRGB": 19.399088541666668,
+          "medianAbsRGB": 15.0,
+          "p95AbsRGB": 53.0,
+          "maxAbsRGB": 151.0
+        },
+        "TB": {
+          "meanAbsRGB": 22.481770833333332,
+          "medianAbsRGB": 17.0,
+          "p95AbsRGB": 63.0,
+          "maxAbsRGB": 115.0
+        },
+        "internalAdjacentXMean": 14.031664299242424,
+        "internalAdjacentYMean": 12.528459366854024
+      }
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "appearance": "浅绿色草甸配白、淡黄、浅蓝五瓣花和少量淡紫花芽。",
+      "limitation": "花瓣在斜俯材质样板远尺度成为小色点，混色花丛仍有周期。",
+      "internalRecommendation": "可送Claude审",
+      "ClaudeDecision": null,
+      "nativePath": "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+      "nativeSHA256": "1bab0cbe6b0605a96a450039e9a2d355beabf059af45890ac07fb41b240ab496",
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "nativeMode": "RGB",
+      "finalPath": "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+      "finalSHA256": "d194e553b897bff729e5ba7290d4df941e43be0ade857a2178c24d0cef38f5ca",
+      "finalRGBSHA256": "3df6f9860594ff6cbca179540ee5e778112117da622032ddd39dd01d2f9ff3d7",
+      "finalSize": [
+        1024,
+        1024
+      ],
+      "finalMode": "RGB",
+      "finalBytes": 297664,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCBytes": 588,
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "scaleXY": [
+        0.8165869218500797,
+        0.8165869218500797
+      ],
+      "nativeAndCodedVisualWholeRepeat2Repeat4FullLRFullTBAndCornersReviewed": true,
+      "observedLongContinuousHardSeam": false,
+      "observedSharedBrightDarkBorderOrCenterVignette": false,
+      "localPlantFragmentsNotGuaranteedToContinueExactly": true,
+      "noObservedGlobalBakedLightBandOrCastShadow": true,
+      "sourceArchiveAndPromptRecordChecksPass": true,
+      "independentReexportByteIdentical": true,
+      "nativeSeamDiagnostics": {
+        "LR": {
+          "meanAbsRGB": 12.557150451887294,
+          "medianAbsRGB": 9.0,
+          "p95AbsRGB": 37.0,
+          "maxAbsRGB": 133.0
+        },
+        "TB": {
+          "meanAbsRGB": 12.830409356725147,
+          "medianAbsRGB": 9.0,
+          "p95AbsRGB": 40.0,
+          "maxAbsRGB": 121.0
+        },
+        "internalAdjacentXMean": 6.606701704320052,
+        "internalAdjacentYMean": 4.9206883808471575
+      },
+      "codedSeamDiagnostics": {
+        "LR": {
+          "meanAbsRGB": 12.717122395833334,
+          "medianAbsRGB": 9.0,
+          "p95AbsRGB": 37.0,
+          "maxAbsRGB": 119.0
+        },
+        "TB": {
+          "meanAbsRGB": 13.069661458333334,
+          "medianAbsRGB": 9.0,
+          "p95AbsRGB": 42.0,
+          "maxAbsRGB": 119.0
+        },
+        "internalAdjacentXMean": 7.628166429924242,
+        "internalAdjacentYMean": 5.837307042196155
+      }
+    }
+  ],
+  "preview": {
+    "overview": {
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09.webp",
+      "SHA256": "690be078f29758fc955a97fb7320a884f5217fd31146ce7e47b078d093c8405d",
+      "bytes": 494536,
+      "size": [
+        2048,
+        1024
+      ],
+      "quality": 86
+    },
+    "lighting": {
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-lighting.webp",
+      "SHA256": "b694f9ef093bb948f4c5f0bc7ec7987f8bb6002f6d92373e6deb34e03634507a",
+      "bytes": 216444,
+      "size": [
+        2048,
+        1024
+      ],
+      "quality": 92,
+      "metadataCreatedAt": "2026-10-12T05:58:49.813Z",
+      "actualAnisotropy": [
+        4,
+        4,
+        4
+      ],
+      "metadataSHA256": "2a478f28c6b93afc5960173f30a3a91720b18e4aa158a349ed6db86fb16781bc"
+    },
+    "nativeProofCount": 9,
+    "nativePixelsChecked": 589824,
+    "nativeLargestBytes": 181321,
+    "actualWebGLFromSavedCapture": true,
+    "actualLoadsFromSavedCapture": [
+      3,
+      3
+    ],
+    "pageErrorsFromBothSavedCaptures": 0,
+    "requestFailuresFromBothSavedCaptures": 0,
+    "whiteAndMistActualMaterial": {
+      "roughness": 0.95,
+      "metalness": 0,
+      "color": "ffffff",
+      "ACESExposure": 0.92,
+      "RoomEnvironment": 0.3
+    },
+    "independentSampleMapping": {
+      "PlaneSize": [
+        8,
+        8
+      ],
+      "repeat": [
+        2,
+        2
+      ],
+      "worldUnitsPerTile": 4
+    },
+    "actualGameMapping": {
+      "CircleRadius": 29.2,
+      "repeat": [
+        5,
+        5
+      ],
+      "worldUnitsPerTile": 11.68
+    },
+    "gameScreenshot": false,
+    "omittedEffects": [
+      "fog",
+      "shadow",
+      "bloom",
+      "grade",
+      "post",
+      "normalMap",
+      "displacementMap",
+      "roughnessMap"
+    ],
+    "oldAnisotropy8IsHistoricalOnly": true,
+    "new4CaptureImageBytesExactlyEqualOld8": true
+  },
+  "limitations": [
+    "接缝判定是本次实际尺度下的视觉平顺，不是严格逐像素周期无缝承诺；局部植物碎形仍有接合不完全连续。",
+    "三叶草细叶/花球偏密，4×4可辨草簇和花点周期；材质斜俯远尺度的花瓣呈小点。",
+    "草叶局部明暗和同向笔触仍在；未观察到整块统一投影、全局亮度坡度或宽烘焙光带。",
+    "提示词请求2048²，但实际native为1254²；本次全画布降采样至1024²，没有上采样/裁切/补缝/调色。",
+    "单文件预算按保守500000B核对；原稿及原始截图超预算文件仅留scratch，不作为交付小图。",
+    "Two actual helper captures and stored tool history are producer evidence inspected independently; this agent launched no browser and ran no full tests."
+  ],
+  "actualViews": {
+    "sourceAndTileImages": [
+      "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+      "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+      "/workspace/world-review/island-ground/independent-qa/mint-native-repeat2.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-native-repeat4.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-native-LR-native.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-native-TB-native.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-native-corners-native.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-coded-repeat2.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-coded-repeat4.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-coded-LR-native.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-coded-TB-native.png",
+      "/workspace/world-review/island-ground/independent-qa/mint-coded-corners-native.png",
+      "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+      "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+      "/workspace/world-review/island-ground/independent-qa/clover-native-repeat2.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-native-repeat4.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-native-LR-native.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-native-TB-native.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-native-corners-native.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-coded-repeat2.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-coded-repeat4.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-coded-LR-native.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-coded-TB-native.png",
+      "/workspace/world-review/island-ground/independent-qa/clover-coded-corners-native.png",
+      "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+      "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+      "/workspace/world-review/island-ground/independent-qa/meadow-native-repeat2.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-native-repeat4.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-native-LR-native.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-native-TB-native.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-native-corners-native.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-coded-repeat2.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-coded-repeat4.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-coded-LR-native.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-coded-TB-native.png",
+      "/workspace/world-review/island-ground/independent-qa/meadow-coded-corners-native.png"
+    ],
+    "deliveredPreviewImages": [
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09.webp",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-lighting.webp",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-lr.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-tb.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-corners.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-lr.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-tb.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-corners.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-lr.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-tb.png",
+      "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-corners.png"
+    ],
+    "sourceAndTileCount": 36,
+    "previewCount": 11
+  },
+  "evidence": [
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/format-reexport-and-source-check.json",
+      "bytes": 8977,
+      "SHA256": "e72b04ecb1cbf143193a68ab64e583a864aa1c56a08b308d9e2bae22af98e09d"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/raw-and-coded-metrics.json",
+      "bytes": 13867,
+      "SHA256": "308bee51dcf5821397d87bb099876e258f1524e4f6ab8e80cafebe6b8ac1b1e1"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/preview-overview-and-native-check.json",
+      "bytes": 11215,
+      "SHA256": "a757f29bc0975ea8d275f741efcce68d4cd4e39625c30a0cefee37b130ca9674"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/preview-lighting-check.json",
+      "bytes": 7045,
+      "SHA256": "b228c1b0726c64311dcd831bb176866cf223e7f7ed106757854e9bd247c17dc4"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/preview-freeze-and-readme-check.json",
+      "bytes": 7292,
+      "SHA256": "2e8b2d1ffa78833c16527a98f8df64c08ba0525a99f771bd8477c46a26e46419"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/main-sync-final-67.json",
+      "bytes": 4359,
+      "SHA256": "e43072943add14a2a7d6933e6ee9368b17d71622d520e9d707469be5a0c5d987"
+    }
+  ],
+  "fullTestsRunByIndependentAgent": 0,
+  "browserCapturesRunByIndependentAgent": 0,
+  "historicalBodyThemePalaceFilesWritten": 0,
+  "readyForClaudeReview": true,
+  "ClaudeApproved": false,
+  "approvedCount": 0,
+  "formalImageCount": 14,
+  "rawNativeImageCount": 3,
+  "formalImages": [
+    {
+      "role": "source-material",
+      "id": "ground_island_mint_bloom_01",
+      "path": "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+      "SHA256": "bbe226fb0c375e91d8527cb242f38c11022fa773f56b004a24faf1ec270eb040",
+      "bytes": 300178,
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 588,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCDescription": "sRGB built-in",
+      "colorEvidence": "Embedded frozen588B sRGBICC"
+    },
+    {
+      "role": "source-material",
+      "id": "ground_island_pink_clover_02",
+      "path": "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+      "SHA256": "94534b9fcbc09d21a52a0a9575c0e4d31b67934013101077835342d7c64a9c3e",
+      "bytes": 479916,
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 588,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCDescription": "sRGB built-in",
+      "colorEvidence": "Embedded frozen588B sRGBICC"
+    },
+    {
+      "role": "source-material",
+      "id": "ground_island_meadow_mix_03",
+      "path": "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+      "SHA256": "d194e553b897bff729e5ba7290d4df941e43be0ade857a2178c24d0cef38f5ca",
+      "bytes": 297664,
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 588,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCDescription": "sRGB built-in",
+      "colorEvidence": "Embedded frozen588B sRGBICC"
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09.webp",
+      "SHA256": "690be078f29758fc955a97fb7320a884f5217fd31146ce7e47b078d093c8405d",
+      "bytes": 494536,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-lighting",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-lighting.webp",
+      "SHA256": "b694f9ef093bb948f4c5f0bc7ec7987f8bb6002f6d92373e6deb34e03634507a",
+      "bytes": 216444,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_mint_bloom_01-native-lr",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-lr.png",
+      "SHA256": "78c83b4bfc1650f6af0858f7b602b03ee6e6c06138484bab43e4f25321e4fa98",
+      "bytes": 154570,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_mint_bloom_01-native-tb",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-tb.png",
+      "SHA256": "954d2d207b53dec0086032157c4ec5019b8e1d1e1008c3b01177cb10645e1446",
+      "bytes": 152296,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_mint_bloom_01-native-corners",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-corners.png",
+      "SHA256": "b9bc761ea39df1fbf449f804207308af09d3c9be5e4bd9c39ec2ebdf7b237725",
+      "bytes": 152452,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_pink_clover_02-native-lr",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-lr.png",
+      "SHA256": "f6fe7da874ea7baa8be010c734f6e3e53b40fda0333995146859189b1597aa62",
+      "bytes": 181321,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_pink_clover_02-native-tb",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-tb.png",
+      "SHA256": "c01bd34d3b057ab6149a9c1f53c6ec438b590f65df2866a808559512020b4d58",
+      "bytes": 180338,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_pink_clover_02-native-corners",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-corners.png",
+      "SHA256": "c93718bf8b14f61d338c791e7a93c6ebc3a84c55b7be543fc2ec3f4a72b1efa8",
+      "bytes": 179303,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_meadow_mix_03-native-lr",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-lr.png",
+      "SHA256": "43c843fc452a87f7a1d0ad285f537bb90c77a099f57f2e72171db3eb09f31b79",
+      "bytes": 149010,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_meadow_mix_03-native-tb",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-tb.png",
+      "SHA256": "9d81d446c95dec6a038bdf746d95f726ade135ada8341d2e718cdad4e3a7d6db",
+      "bytes": 152397,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    },
+    {
+      "role": "review",
+      "id": "island-ground-a09-ground_island_meadow_mix_03-native-corners",
+      "path": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-corners.png",
+      "SHA256": "5e5b6202be430291e07bb964282babe3b13406e92042429ad6f7cddadad2a019",
+      "bytes": 153134,
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "POT": true,
+      "within500000B": true,
+      "ICCBytes": 0,
+      "ICCSHA256": null,
+      "ICCDescription": null,
+      "colorEvidence": "Browser sRGB output; native9 exactdecoded-sourceRGB. Preview ICC count is measured, not claimed embedded."
+    }
+  ],
+  "rawNativeImages": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "path": "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+      "SHA256": "91a061528ed7b70c471318baf921506bba02eb14e99f93fea3fdf80b5825eb1a",
+      "bytes": 2851532,
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "scope": "native evidence only inworkspace; notproduction delivery budget/POT requirement"
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "path": "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+      "SHA256": "958dbc167e66ee6a120f90445021b718a37e58c1c7bf604c839f2947328ce3cd",
+      "bytes": 3621344,
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "scope": "native evidence only inworkspace; notproduction delivery budget/POT requirement"
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "path": "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+      "SHA256": "1bab0cbe6b0605a96a450039e9a2d355beabf059af45890ac07fb41b240ab496",
+      "bytes": 2788787,
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "scope": "native evidence only inworkspace; notproduction delivery budget/POT requirement"
+    }
+  ],
+  "ICCEmbeddedMaterialCount": 3,
+  "latestMainOwnerNotification": {
+    "prefix": "7ea6",
+    "evidence": "Root freshGitHub report: required docs/capture material dependencies unchanged; NotoUI is outside independent scene. Capture and independently compared fullbase remains67; no repeat image QA."
+  },
+  "deliveryFrozenAtUTC": "2026-10-12T06:10:20.252910+00:00"
+}

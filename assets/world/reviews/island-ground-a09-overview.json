@@ -1,0 +1,667 @@
+{
+  "createdAt": "2026-10-12T05:54:08.709Z",
+  "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/world-review/island-ground/preview-final/capture-tools/review-sheet.mjs --config /workspace/world-review/island-ground/preview-final/capture-config.json",
+  "base": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "parameterBase": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "candidate": "candidate-island-final",
+  "host": "http://127.0.0.1:41229",
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "args": [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--use-gl=angle",
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader",
+      "--ignore-gpu-blocklist"
+    ],
+    "viewport": [
+      2048,
+      1024
+    ],
+    "deviceScaleFactor": 1
+  },
+  "dependencies": {
+    "threeVersion": "0.169.0",
+    "threeModule": "/workspace/myRepository/node_modules/three/build/three.module.js",
+    "threeModuleSHA256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+    "roomEnvironmentModule": "/workspace/myRepository/node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+    "roomEnvironmentModuleSHA256": "85869bdd22f7cf0b22e68dcefe6cb710480af0f5c901a76f7a7764fd07fc8014",
+    "configFile": "/workspace/world-review/island-ground/preview-final/capture-config.json",
+    "configSHA256": "c01ee55c8632afbc08ff599d0a44c4b55440409553e71688f9ff02bd71e8891c",
+    "themeContextSHA256": "1885320af943846ca2c9d6e49eedd815e7731d5dcc3ee1fa23122ce031378474",
+    "dependencyVerification": "/workspace/world-review/island-ground/preview-final/capture-base-67.json",
+    "dependencyVerificationSHA256": "d153e3d3b096509f661e8dc104af9f8fc5a541e93434361fd68bfba377a9592c"
+  },
+  "sources": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "label": "薄荷花草",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+      "sha256": "bbe226fb0c375e91d8527cb242f38c11022fa773f56b004a24faf1ec270eb040",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 300178,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "7888c9798ab7493741b7964361adbadb7a6703eba47007032364f724ebb3722b",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+      "originalSHA256": "91a061528ed7b70c471318baf921506bba02eb14e99f93fea3fdf80b5825eb1a",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "label": "粉色苜蓿",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+      "sha256": "94534b9fcbc09d21a52a0a9575c0e4d31b67934013101077835342d7c64a9c3e",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 479916,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "be0c0b37b64956af00efbfd4954c4280c9b552f99749ad323a8bda1af35c4727",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+      "originalSHA256": "958dbc167e66ee6a120f90445021b718a37e58c1c7bf604c839f2947328ce3cd",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "label": "混合草甸",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+      "sha256": "d194e553b897bff729e5ba7290d4df941e43be0ade857a2178c24d0cef38f5ca",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 297664,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "3df6f9860594ff6cbca179540ee5e778112117da622032ddd39dd01d2f9ff3d7",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+      "originalSHA256": "1bab0cbe6b0605a96a450039e9a2d355beabf059af45890ac07fb41b240ab496",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "actualGameMapping": {
+    "type": "CircleGeometry",
+    "radius": 29.2,
+    "repeat": [
+      5,
+      5
+    ],
+    "roughness": 0.95,
+    "metalness": 0,
+    "approximateWorldUnitsPerTile": 11.68
+  },
+  "sampleMapping": {
+    "plane": [
+      8,
+      8
+    ],
+    "repeat": [
+      2,
+      2
+    ],
+    "worldUnitsPerTile": 4
+  },
+  "sourceProvenancePath": "/workspace/world-review/island-ground/island-ground-a09.provenance.json",
+  "sourceProvenanceSHA256": "31572052b1764926079e39a547c387ab5f3772413ab048d5a55d766ae94da4bd",
+  "sourceSelectionPath": "/workspace/world-review/island-ground/island-ground-a09.selection-at-export.json",
+  "sourceSelectionSHA256": "5daae3a3e06b3324c06fd2e4c9d327728af096654b8965f5b2d651151617efdd",
+  "sourceStayedFrozen": true,
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleMessages": [],
+  "independentMaterialSample": true,
+  "gameScreenshot": false,
+  "worldEngineImported": false,
+  "sourceImagesLoaded": 3,
+  "loads": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "size": [
+        1024,
+        1024
+      ]
+    }
+  ],
+  "size": [
+    2048,
+    1024
+  ],
+  "repeats": [
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      4,
+      4
+    ]
+  ],
+  "thumbnailSizes": [
+    256,
+    128,
+    64
+  ],
+  "seamCoverLines": false,
+  "imageColorEdits": false,
+  "artificialMasking": false,
+  "proofs": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "kind": "lr",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          384,
+          128,
+          256,
+          0,
+          0,
+          128,
+          256
+        ],
+        [
+          0,
+          384,
+          128,
+          256,
+          128,
+          0,
+          128,
+          256
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-lr.png",
+      "bytes": 154570,
+      "sha256": "78c83b4bfc1650f6af0858f7b602b03ee6e6c06138484bab43e4f25321e4fa98"
+    },
+    {
+      "id": "ground_island_mint_bloom_01",
+      "kind": "tb",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          384,
+          896,
+          256,
+          128,
+          0,
+          0,
+          256,
+          128
+        ],
+        [
+          384,
+          0,
+          256,
+          128,
+          0,
+          128,
+          256,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-tb.png",
+      "bytes": 152296,
+      "sha256": "954d2d207b53dec0086032157c4ec5019b8e1d1e1008c3b01177cb10645e1446"
+    },
+    {
+      "id": "ground_island_mint_bloom_01",
+      "kind": "corners",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          896,
+          128,
+          128,
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          0,
+          896,
+          128,
+          128,
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          896,
+          0,
+          128,
+          128,
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          0,
+          0,
+          128,
+          128,
+          128,
+          128,
+          128,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-corners.png",
+      "bytes": 152452,
+      "sha256": "b9bc761ea39df1fbf449f804207308af09d3c9be5e4bd9c39ec2ebdf7b237725"
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "kind": "lr",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          384,
+          128,
+          256,
+          0,
+          0,
+          128,
+          256
+        ],
+        [
+          0,
+          384,
+          128,
+          256,
+          128,
+          0,
+          128,
+          256
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-lr.png",
+      "bytes": 181321,
+      "sha256": "f6fe7da874ea7baa8be010c734f6e3e53b40fda0333995146859189b1597aa62"
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "kind": "tb",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          384,
+          896,
+          256,
+          128,
+          0,
+          0,
+          256,
+          128
+        ],
+        [
+          384,
+          0,
+          256,
+          128,
+          0,
+          128,
+          256,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-tb.png",
+      "bytes": 180338,
+      "sha256": "c01bd34d3b057ab6149a9c1f53c6ec438b590f65df2866a808559512020b4d58"
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "kind": "corners",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          896,
+          128,
+          128,
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          0,
+          896,
+          128,
+          128,
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          896,
+          0,
+          128,
+          128,
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          0,
+          0,
+          128,
+          128,
+          128,
+          128,
+          128,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-corners.png",
+      "bytes": 179303,
+      "sha256": "c93718bf8b14f61d338c791e7a93c6ebc3a84c55b7be543fc2ec3f4a72b1efa8"
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "kind": "lr",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          384,
+          128,
+          256,
+          0,
+          0,
+          128,
+          256
+        ],
+        [
+          0,
+          384,
+          128,
+          256,
+          128,
+          0,
+          128,
+          256
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-lr.png",
+      "bytes": 149010,
+      "sha256": "43c843fc452a87f7a1d0ad285f537bb90c77a099f57f2e72171db3eb09f31b79"
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "kind": "tb",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          384,
+          896,
+          256,
+          128,
+          0,
+          0,
+          256,
+          128
+        ],
+        [
+          384,
+          0,
+          256,
+          128,
+          0,
+          128,
+          256,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-tb.png",
+      "bytes": 152397,
+      "sha256": "9d81d446c95dec6a038bdf746d95f726ade135ada8341d2e718cdad4e3a7d6db"
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "kind": "corners",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          896,
+          128,
+          128,
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          0,
+          896,
+          128,
+          128,
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          896,
+          0,
+          128,
+          128,
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          0,
+          0,
+          128,
+          128,
+          128,
+          128,
+          128,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-corners.png",
+      "bytes": 153134,
+      "sha256": "5e5b6202be430291e07bb964282babe3b13406e92042429ad6f7cddadad2a019"
+    }
+  ],
+  "nativeVerification": {
+    "checked": 9,
+    "results": [
+      {
+        "id": "ground_island_mint_bloom_01",
+        "kind": "lr",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_mint_bloom_01",
+        "kind": "tb",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_mint_bloom_01",
+        "kind": "corners",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_pink_clover_02",
+        "kind": "lr",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_pink_clover_02",
+        "kind": "tb",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_pink_clover_02",
+        "kind": "corners",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_meadow_mix_03",
+        "kind": "lr",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_meadow_mix_03",
+        "kind": "tb",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_island_meadow_mix_03",
+        "kind": "corners",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      }
+    ]
+  },
+  "output": {
+    "file": "/workspace/world-review/island-ground/preview-final/island-ground-a09.webp",
+    "width": 2048,
+    "height": 1024,
+    "bytes": 494536,
+    "quality": 86,
+    "method": 6,
+    "lossless": false,
+    "sha256": "690be078f29758fc955a97fb7320a884f5217fd31146ce7e47b078d093c8405d",
+    "originalPNG": "/workspace/world-review/island-ground/preview-final/island-ground-a09.png",
+    "originalPNGSha256": "6af61792a3aee648e705fc9da08e1b70ad44c5cc84c087eedcd122b34583af91",
+    "encoding": "Screenshot-only WebP compression. Source images unchanged; native proofs remain lossless PNG."
+  },
+  "toolSHA256": {
+    "common": "cdda69df442abe859315c17220c20dad1351f72ac17b467e6ae3bc39b4bf1a3c",
+    "driver": "be7826900225138c0ac78ab379c47e094016bfec4c823ca0aa9dc05e7ab826c1",
+    "css": "dd6b303d55bf92c73094819544b2cdf666c6c0c91420e37222a8efd1a89ad75f",
+    "nativeVerifier": "d046ec69326c33b766c5e1de6dcd0f95e3b2f2905a06ba36f9c8b6be77866a9c"
+  },
+  "method": "Direct same-source CSS repeats; native integer1:1 canvas edge/corner crops; no painting, recoloring, masks or seam covering lines. Screenshot WebP is a compressed overview; separate PNG proofs preserve exact source RGB."
+}
