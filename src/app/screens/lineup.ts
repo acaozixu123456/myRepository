@@ -78,7 +78,7 @@ export function lineupHtml(ctx: AppCtx): string {
 
   return `
   ${topbar(ctx, '阵容')}
-  <div class="scroll">
+  <div class="scroll"><div class="lcols"><div class="lleft">
     <div class="row" style="margin-bottom:8px"><span class="pwr">${icon('sword', 20)}${fmt(teamPower(s))}</span><div class="grow"></div>${petChip(s)}<button class="btn sm blue" data-act="autolineup" title="一键上阵">✨${icon('team', 18)} 一键上阵</button></div>
     <div class="field"><div class="grid">
       <div class="col"><div class="lab">${icon('bow', 18)}</div>${slotHtml(ctx, 3)}${slotHtml(ctx, 4)}</div>
@@ -86,8 +86,9 @@ export function lineupHtml(ctx: AppCtx): string {
     </div></div>
     <div class="panel" style="margin-top:12px"><div class="syn">${facChips || '<span class="muted">点上面的空位，把猫猫放进阵容</span>'}${bondChips}</div>
       ${ef && counter ? `<div class="muted" style="font-size:12px;margin-top:8px;font-weight:700">🎯 本关主力 <span class="tag f" style="--c:${FACTIONS[ef].color}">${FACTIONS[ef].glyph}</span>，带 <span class="tag f" style="--c:${FACTIONS[counter].color}">${FACTIONS[counter].glyph}</span> 克制 <b>+7%</b></div>` : ''}</div>
+    </div><div class="lright">
     <div class="row" style="margin:14px 2px 6px"><div class="title" style="font-size:18px">${lineupState.pickSlot !== null ? '👆' : '🐱'} <span class="muted num" style="font-size:13px">${owned.length}/${HEROES.length}</span></div></div>
     <div class="seg"><button class="pill" aria-pressed="${filter === 'all'}" data-act="lf" data-f="all" title="全部">${icon('paw', 18)}</button>${FACTION_ORDER.map((f) => `<button class="pill glyph" style="--c:${FACTIONS[f].color}" aria-pressed="${filter === f}" data-act="lf" data-f="${f}">${FACTIONS[f].glyph}</button>`).join('')}</div>
     <div class="roster">${list.length ? list.map((h) => heroCard(h.id, { state: h, act: 'hero', badge: s.lineup.includes(h.id) ? '⚔️' : undefined })).join('') : '<div class="empty" style="grid-column:1/-1;font-size:34px">🐾❓</div>'}</div>
-  </div>`;
+  </div></div></div>`;
 }

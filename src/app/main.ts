@@ -4,6 +4,7 @@ import { initLive, liveSettings } from '../ui/live';
 import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
+import { LAND_CSS } from '../ui/landcss';
 import { infoDialogHtml } from '../ui/info';
 import { STORY_CSS, playStoryOnce } from './story';
 import { sfx, sfxState } from './sfx';
@@ -40,7 +41,7 @@ import { fmt } from '../ui/components';
 import { homePeriod, makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS + EXPLORE_CSS + '.nav{grid-template-columns:repeat(6,1fr)}.nav button{font-size:12px}';
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS + EXPLORE_CSS + '.nav{grid-template-columns:repeat(6,1fr)}.nav button{font-size:12px}' + LAND_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -103,6 +104,11 @@ app.innerHTML = `<div class="app" id="root">
   </nav></div>`;
 const root = document.getElementById('root')!;
 let scrollReset = false;
+// 横屏：窗口够宽就切到横屏布局（landcss.ts），转屏 / 缩放窗口时自动切换
+const applyLayout = () => { root.classList.toggle('land', innerWidth >= 640 && innerWidth / innerHeight >= 1.12); window.dispatchEvent(new Event('layoutchange')); };
+applyLayout();
+window.addEventListener('resize', applyLayout);
+window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
 let scenePeriod = '';
 const applyScenery = () => {
   const p = homePeriod();

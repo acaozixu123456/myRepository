@@ -28,6 +28,7 @@ export function homeHtml(): string {
     <div class="stagebar" id="stagebar"></div>
     <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="autopush" id="autoBtn">⏩</button><button data-act="speed" id="speedBtn">2×</button><button data-act="skipfight" title="跳过战斗">⏭</button></div><div class="rule" id="rule"></div></div>
     <div class="teamstrip" id="team" data-act="nav" data-to="lineup"></div>
+    <div class="side">
     <div class="idle panel" id="idle"></div>
     <div class="actions">
       <button class="btn green" data-act="challenge" id="chBtn">⚔️ 挑战</button>
@@ -36,6 +37,7 @@ export function homeHtml(): string {
     </div>
     <div class="quick" id="quick"></div>
     <div class="tip" id="tip"></div>
+    </div>
     <div class="ticker" id="ticker" data-act="nav" data-to="events"></div>
   </div>`;
 }
