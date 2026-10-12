@@ -1,15 +1,24 @@
 // 关卡数据（纯数据，不依赖 DOM / three：寻路、实体摆放合法性测试、玩法规则都读它）。
 // 一个关卡 = 十字路口街区；楼、道具、灯、电线杆、实体出生点都在这里摆。新增关卡：加一份 LevelDef，必要时在 kit / props 里补新道具。
+import { forestLevel } from './themes/forest.data';
+import { marketLevel } from './themes/market.data';
 import type { BuildingSpec } from './kit';
 
 export interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
 /** 场景里的玩法入口：走近触发一个小游戏（game 对应 app 层注册的小游戏名） */
+export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace';
 export interface PoiDef { id: string; game: string; x: number; z: number; label: string }
 export interface PropDef { kind: string; x: number; z: number; ry?: number; seed?: number; arg?: number }
 export interface AABB { x0: number; x1: number; z0: number; z1: number }
 export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow';
 export interface LevelDef {
   id: string; chapter: number; name: string; mood: MoodId; half: number;
+  /** 场景主题：street = 十字街区（旧逻辑）；其余各有独立布局 / 地面 / 建筑 / 天空（src/world/themes/） */
+  theme?: ThemeId;
+  /** 主题场景的碰撞盒（布局的唯一数据源：渲染与寻路都从它来）；street 主题不用，走 buildings / props 推导 */
+  solids?: AABB[];
+  /** 天气：rain = 雨夜（默认）；none = 无雨（森林 / 云岛 / 宫阙靠雾和萤火虫） */
+  weather?: 'rain' | 'none';
   buildings: Placed[];
   poles: [number, number][];
   props: PropDef[];
@@ -82,35 +91,7 @@ export const LEVEL_1: LevelDef = {
 };
 
 // ---------- 关卡 2：霓虹夜市 ----------
-const L2_BUILDINGS: Placed[] = [
-  { x: -14, z: -12, face: 1, spec: { w: 10, d: 9, floors: 5, style: 'pink', seed: 11, roof: 'tile', shop: { name: '章鱼烧', color: '#ff9a4a', awning: ['#fff0d8', '#ff7a3a'] }, signs: [{ text: '夜市', color: '#ff2ea8', vertical: true }, { text: '热卖', color: '#ffe27a' }], neon: '#ff9a4a' } },
-  { x: -25, z: -11.5, face: 1, spec: { w: 8, d: 8, floors: 4, style: 'brick', seed: 12, roof: 'flat', shop: { name: '串烧屋', color: '#ff4a4a', awning: ['#3a1a1a', '#e03a3a'] }, signs: [{ text: '串', color: '#ff4a4a', vertical: true }], neon: '#ff4a4a' } },
-  { x: 13, z: -12, face: 1, spec: { w: 11, d: 10, floors: 5, style: 'dark', seed: 13, roof: 'garden', shop: { name: '喵喵拉面', color: '#ffe27a', awning: ['#2a2230', '#d9483b'] }, signs: [{ text: '面', color: '#ffe27a', vertical: true }, { text: '24H', color: '#7ff0ff' }], neon: '#ffe27a' } },
-  { x: 25, z: -11.5, face: 1, spec: { w: 8, d: 8, floors: 4, style: 'teal', seed: 14, roof: 'tank', shop: { name: '鱼市', color: '#7ff0ff', awning: ['#e8fff8', '#2aa8c8'] }, signs: [{ text: '鲜', color: '#7ff0ff', vertical: true }], neon: '#7ff0ff' } },
-  { x: -14, z: 12, face: -1, spec: { w: 10, d: 9, floors: 4, style: 'cream', seed: 15, roof: 'tile', shop: { name: '糖水铺', color: '#ff7ad9', awning: ['#fff0f8', '#ff5aa8'] }, signs: [{ text: '甜', color: '#ff7ad9', vertical: true }], neon: '#ff7ad9' } },
-  { x: -25, z: 11.5, face: -1, spec: { w: 8, d: 8, floors: 5, style: 'dark', seed: 16, roof: 'flat', shop: { name: '夜市酒场', color: '#9a7aff', awning: ['#22223a', '#7a5aff'] }, signs: [{ text: '酒', color: '#9a7aff', vertical: true }, { text: 'BAR', color: '#ff4aa8' }], neon: '#9a7aff' } },
-  { x: 14, z: 12, face: -1, spec: { w: 10, d: 9, floors: 5, style: 'brick', seed: 17, roof: 'garden', shop: { name: '猫薄荷茶馆', color: '#4fe08a', awning: ['#f0fff4', '#3aa86a'] }, signs: [{ text: '茶', color: '#4fe08a', vertical: true }], neon: '#4fe08a' } },
-  { x: 25, z: 11.5, face: -1, spec: { w: 8, d: 8, floors: 4, style: 'pink', seed: 18, roof: 'tile', shop: { name: '烧烤摊', color: '#ff7a3a', awning: ['#fff0e0', '#ff5a2a'] }, signs: [{ text: '烤', color: '#ff7a3a', vertical: true }], neon: '#ff7a3a' } },
-];
-const L2_PROPS: PropDef[] = [
-  { kind: 'stall', x: -5.0, z: -7.4, ry: 0, arg: 0 }, { kind: 'stall', x: -3.6, z: -7.4, ry: 0, arg: 1 }, { kind: 'stall', x: 8, z: 7.4, ry: Math.PI, arg: 2 },
-  { kind: 'cardboard', x: -6.6, z: -7.2, seed: 5 }, { kind: 'cardboard', x: 17, z: -6.6, seed: 6 }, { kind: 'cardboard', x: -18, z: 6.8, seed: 7 }, { kind: 'cardboard', x: 5.8, z: 8.2, seed: 8 },
-  { kind: 'trash', x: 9.5, z: -7.0 }, { kind: 'trashB', x: -22, z: 7.0 },
-  { kind: 'stall', x: -8, z: -6.6, ry: 0, arg: 3 }, { kind: 'stall', x: 10, z: 6.8, ry: Math.PI, arg: 4 }, { kind: 'stall', x: 21, z: -6.4, ry: 0, arg: 5 }, { kind: 'stall', x: -21, z: 6.8, ry: Math.PI, arg: 0 },
-  { kind: 'planter', x: -17, z: -6.9, arg: 2.4 }, { kind: 'planter', x: 20, z: 6.9, arg: 2.0 }, { kind: 'bush', x: 4.6, z: -6.8, seed: 9, arg: 0.8 }, { kind: 'bush', x: -4.8, z: 6.9, seed: 10, arg: 0.7 },
-];
-export const LEVEL_2: LevelDef = {
-  id: 'neon-night-market', chapter: 2, name: '霓虹夜市', mood: 'market', half: 32,
-  buildings: L2_BUILDINGS, poles: L1_POLES, props: L2_PROPS, lamps: [[-2.5, -7, '#ffb060'], [3, 7, '#ff8a60'], [-12, 6.8, '#ffd070'], [12, -6.9, '#ffb060'], [-6.8, 12, '#ff9a60'], [6.8, -12, '#ffd070']], cones: CONES,
-  glows: [[0, 0, '#ff9a2e', 24], [-12, -6, '#ff4a4a', 14], [12, 6, '#ff2ea8', 16], [-22, 6, '#ffe27a', 12]],
-  lights: [[0, 5, 0, 0xffa030, 95, 26], [-14, 6, -4, 0xff4a4a, 70, 22], [14, 6, 4, 0xff2ea8, 70, 22]],
-  tram: false,
-  arches: [[-17, 0, Math.PI / 2, '夜市', '#ff4a4a'], [17, 0, Math.PI / 2, '欢迎', '#ffe27a']],
-  lanterns: [[-4.5, -10, 4.5, -10, 7, '#ff4a3a'], [-4.5, 10, 4.5, 10, 7, '#ffb03a'], [-4.5, -17, 4.5, -17, 7, '#ff4a3a']],
-  vents: [[-3, 0.5, -7.6], [3.4, 0.5, 7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4], [-8, 0.5, 7.7], [8.5, 0.5, -7.5]],
-  pois: [{ id: 'ramen', game: 'ramen', x: 13.5, z: -5.8, label: '拉面屋台' }],
-  ...SPOTS,
-};
+export const LEVEL_2: LevelDef = marketLevel(); // 独立布局，见 themes/market.data.ts
 
 // ---------- 关卡 3：赤壁霓虹港（码头：南面是水，集装箱 + 吊机 + 货轮）----------
 const L3_POLES: [number, number][] = [[-20, -5.2], [-6, -5.2], [6, 5.2], [20, 5.2], [5.2, -18]];
@@ -132,46 +113,8 @@ export const LEVEL_3: LevelDef = {
   bossSpot: [0, -23], npcSpot: [6, 5.8], spawn: [0, 8],
 };
 
-// ---------- 关卡 4：霓虹森林（树屋 + 发光巨树 + 蘑菇）----------
-const HUTS: Placed[] = [
-  { x: -14, z: -12, face: 1, spec: { w: 7, d: 7, floors: 3, style: 'teal', seed: 81, roof: 'tile', shop: { name: '树屋茶馆', color: '#4fe08a', awning: ['#f0fff4', '#3aa86a'] }, signs: [{ text: '茶', color: '#b0ff6a', vertical: true }], neon: '#4fe08a' } },
-  { x: 14, z: -12, face: 1, spec: { w: 7, d: 7, floors: 3, style: 'cream', seed: 82, roof: 'garden', shop: { name: '蘑菇铺', color: '#ff7ad9', awning: ['#fff0f8', '#ff5aa8'] }, signs: [{ text: '菇', color: '#7ff0ff', vertical: true }], neon: '#7ff0ff' } },
-  { x: -14, z: 12, face: -1, spec: { w: 7, d: 7, floors: 3, style: 'brick', seed: 83, roof: 'tile', shop: { name: '藤编坊', color: '#ffe27a', awning: ['#fffbe8', '#d9a23a'] }, signs: [{ text: '藤', color: '#4fe08a', vertical: true }], neon: '#ffe27a' } },
-  { x: 14, z: 12, face: -1, spec: { w: 7, d: 7, floors: 3, style: 'teal', seed: 84, roof: 'tank', shop: { name: '泉水站', color: '#7ff0ff', awning: ['#f0ffff', '#2aa8c8'] }, signs: [{ text: '泉', color: '#7ff0ff', vertical: true }], neon: '#7ff0ff' } },
-];
-function forestTrees(): [number, number, number, number, string][] {
-  const out: [number, number, number, number, string][] = [];
-  const cols = ['#4fe08a', '#7ff0ff', '#b0ff6a', '#ff7ad9'];
-  const spots = [...SPOTS.enemySpots, ...SPOTS.chestSpots, SPOTS.bossSpot, SPOTS.npcSpot, SPOTS.spawn];
-  let k = 0;
-  for (const x of [-29, -24, -19, -9, -7.5, 7.5, 9, 19, 24, 29]) for (const z of [-29, -24, -19, -8, 8, 19, 24, 29]) {
-    k++;
-    if (HUTS.some((b) => Math.abs(x - b.x) < b.spec.w / 2 + 3 && Math.abs(z - b.z) < b.spec.d / 2 + 3)) continue;
-    if (spots.some(([sx, sz]) => Math.hypot(sx - x, sz - z) < 4)) continue;
-    if (Math.abs(x) < 6.5 || Math.abs(z) < 6.5) continue; // 留出小路
-    out.push([x + ((k * 7) % 5 - 2) * 0.35, z + ((k * 11) % 5 - 2) * 0.35, 0.38 + ((k * 13) % 7) * 0.04, k, cols[k % cols.length]]);
-  }
-  return out;
-}
-function forestMushrooms(): [number, number, number, string][] {
-  const out: [number, number, number, string][] = [];
-  const cols = ['#ff7ad9', '#7ff0ff', '#ffe27a', '#b0ff6a'];
-  for (let i = 0; i < 36; i++) { const x = ((i * 37) % 59) - 29, z = ((i * 53) % 61) - 30; if (Math.abs(x) < 5.5 || Math.abs(z) < 5.5) continue; if (HUTS.some((b) => Math.abs(x - b.x) < 5 && Math.abs(z - b.z) < 5)) continue; out.push([x, z, 0.7 + (i % 4) * 0.25, cols[i % 4]]); }
-  return out;
-}
-export const LEVEL_4: LevelDef = {
-  id: 'neon-forest', chapter: 4, name: '霓虹森林', mood: 'forest', half: 32,
-  buildings: HUTS, poles: [], props: [{ kind: 'cardboard', x: -6.6, z: -7.2, seed: 11 }, { kind: 'bush', x: 4.6, z: -6.8, seed: 7, arg: 0.8 }, { kind: 'bush', x: -4.8, z: 6.9, seed: 8, arg: 0.7 }],
-  lamps: [[-5.2, -7, '#b0ff6a'], [5.2, 7, '#7ff0ff'], [-6.8, 12, '#4fe08a'], [6.8, -12, '#ff7ad9']], cones: [],
-  glows: [[0, 0, '#4fe08a', 24], [-14, -6, '#7ff0ff', 16], [14, 6, '#b0ff6a', 16], [0, -18, '#ff7ad9', 14]],
-  lights: [[0, 5, 0, 0x4fe08a, 90, 26], [-14, 6, -4, 0x7ff0ff, 70, 22], [14, 6, 4, 0xff7ad9, 70, 22]],
-  tram: false, arches: [], lanterns: [[-4.5, -10, 4.5, -10, 7, '#b0ff6a'], [-4.5, 10, 4.5, 10, 7, '#7ff0ff']],
-  vents: [[-9, 0.5, -7.6], [9, 0.5, 7.6]],
-  ground: { pave: '#1f3a2a', road: 0x5a7a60 },
-  trees: forestTrees(), mushrooms: forestMushrooms(),
-  pois: [{ id: 'mushroom', game: 'mushroom', x: -12.5, z: -5.6, label: '蘑菇地' }],
-  ...SPOTS,
-};
+// ---------- 关卡 4：霓虹森林（独立布局，见 themes/forest.data.ts）----------
+export const LEVEL_4: LevelDef = forestLevel();
 
 // ---------- 关卡 5：云端雾岛 / 关卡 6：九重宫阙 ----------
 const SPOT_LIST = [...SPOTS.enemySpots, ...SPOTS.chestSpots, SPOTS.bossSpot, SPOTS.npcSpot, SPOTS.spawn];
@@ -234,6 +177,7 @@ export const levelOf = (chapter: number): LevelDef => LEVELS[chapter] ?? LEVEL_1
 
 /** 碰撞盒（纯数据）：楼、电车、杆、拱门柱、道具 */
 export function levelColliders(L: LevelDef): AABB[] {
+  if (L.theme && L.theme !== 'street') return L.solids ?? [];
   const out: AABB[] = [];
   for (const p of L.buildings) out.push({ x0: p.x - p.spec.w / 2 - 0.3, x1: p.x + p.spec.w / 2 + 0.3, z0: p.z - p.spec.d / 2 - 0.3, z1: p.z + p.spec.d / 2 + 0.3 });
   if (L.tram) out.push({ x0: -14, x1: -4.2, z0: 0.8, z1: 4.4 });
@@ -244,4 +188,35 @@ export function levelColliders(L: LevelDef): AABB[] {
   for (const [x, z, sc] of L.trees ?? []) out.push({ x0: x - 1.1 * sc, x1: x + 1.1 * sc, z0: z - 1.1 * sc, z1: z + 1.1 * sc });
   for (const [x, z, ry] of L.containers ?? []) { const w = Math.abs(Math.sin(ry)) > 0.5 ? [1.6, 3.3] : [3.3, 1.6]; out.push({ x0: x - w[0], x1: x + w[0], z0: z - w[1], z1: z + w[1] }); }
   return out;
+}
+
+/** 寻路网格的格子边长（世界单位） */
+export const CELL = 1;
+/** 阻挡网格：碰撞盒外扩 0.9 再栅格化，四周留 2 格边界。explore.ts 的寻路与可达性测试共用这一份，布局改了不会各走各的 */
+export function blockedGrid(cols: AABB[], half: number): Uint8Array {
+  const N = (half * 2) / CELL, grid = new Uint8Array(N * N), pad = 0.9;
+  for (const c of cols) {
+    const x0 = Math.max(0, Math.floor((c.x0 - pad + half) / CELL)), x1 = Math.min(N - 1, Math.floor((c.x1 + pad + half) / CELL));
+    const z0 = Math.max(0, Math.floor((c.z0 - pad + half) / CELL)), z1 = Math.min(N - 1, Math.floor((c.z1 + pad + half) / CELL));
+    for (let z = z0; z <= z1; z++) for (let x = x0; x <= x1; x++) grid[z * N + x] = 1;
+  }
+  for (let i = 0; i < N; i++) for (const k of [0, 1, N - 2, N - 1]) { grid[i * N + k] = 1; grid[k * N + i] = 1; }
+  return grid;
+}
+/** 从出生点洪水填充，返回「走得到」的格子集合（8 邻域，不切角） */
+export function reachableCells(L: LevelDef): { N: number; grid: Uint8Array; seen: Uint8Array } {
+  const N = (L.half * 2) / CELL, grid = blockedGrid(levelColliders(L), L.half), seen = new Uint8Array(N * N);
+  const cx = Math.min(N - 1, Math.max(0, Math.floor((L.spawn[0] + L.half) / CELL))), cz = Math.min(N - 1, Math.max(0, Math.floor((L.spawn[1] + L.half) / CELL)));
+  const q = [cz * N + cx]; seen[q[0]] = 1;
+  for (let i = 0; i < q.length; i++) {
+    const x = q[i] % N, z = Math.floor(q[i] / N);
+    for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+      if (!dx && !dz) continue;
+      const nx = x + dx, nz = z + dz;
+      if (nx < 0 || nz < 0 || nx >= N || nz >= N || seen[nz * N + nx] || grid[nz * N + nx]) continue;
+      if (dx && dz && (grid[z * N + nx] || grid[nz * N + x])) continue;
+      seen[nz * N + nx] = 1; q.push(nz * N + nx);
+    }
+  }
+  return { N, grid, seen };
 }

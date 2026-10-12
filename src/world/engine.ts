@@ -1,7 +1,8 @@
 // 3D 世界渲染：透视「微缩景观」相机 + 泛光（赛博朋克霓虹）+ 雾 + 雨。画布在界面里占满，HUD 用 DOM 叠在上面。
 import { litK } from '../art3d/toon';
-const WORLD_LIT = 0.7;
 import * as THREE from 'three';
+import { atmosOf } from './atmos';
+import type { Atmos } from './atmos';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
@@ -34,6 +35,11 @@ export class WorldView {
   private fpsAcc = 0;
   private fpsN = 0;
   qualityLevel = 0;
+  /** 当前场景氛围；调色 pass 的 uniform 在这里，换场景时只改值 */
+  atmos: Atmos = atmosOf('neon');
+  private gradeU = { uCool: { value: 1 }, uCA: { value: 0.014 }, uVig: { value: 1.25 }, uSat: { value: 1 }, uTint: { value: new THREE.Vector3(1, 1, 1) } };
+  private sky: THREE.Mesh | null = null;
+  private skyU = { top: { value: new THREE.Color() }, mid: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, sunDir: { value: new THREE.Vector3(0, 1, 0) }, disc: { value: new THREE.Color() }, size: { value: 0.05 } };
   onQuality: (level: number) => void = () => undefined;
   time = 0;
   onUpdate: (dt: number, t: number) => void = () => undefined;
@@ -76,17 +82,38 @@ export class WorldView {
     this.resize();
   }
 
-  /** 按关卡氛围换天光 / 雾色 / 背景色 */
+  /** 这个场景下不下雨（森林 / 云岛 / 宫阙靠雾和萤火虫）；画质降到 1 档以上时雨本来就关 */
+  setRain(on: boolean) { if (this.rain) this.rain.visible = on && this.qualityLevel < 1; }
+  /** 按场景氛围换天空 / 光 / 雾 / 调色 / 泛光（氛围表见 atmos.ts） */
   setMood(m: string) {
-    const T: Record<string, [number, number, number, number]> = { // [天光, 地光, 雾/背景, 月光]
-      neon: [0x5a68d0, 0x1c1030, 0x1a1030, 0x8aa4ff], street: [0x5a68d0, 0x1c1030, 0x1a1030, 0x8aa4ff], meadow: [0x5a68d0, 0x1c1030, 0x1a1030, 0x8aa4ff],
-      market: [0x7a5a60, 0x2a1418, 0x2a1018, 0xffb080], redcliff: [0x8a4a40, 0x2a1010, 0x2a0e12, 0xff8a60],
-      forest: [0x3a8a70, 0x0e2018, 0x0c2018, 0x9affc8], mist: [0x6a82c8, 0x1c2440, 0x1a2444, 0xc8d8ff], palace: [0x8a62c0, 0x241038, 0x241038, 0xffd8f0],
-    };
-    const [sky, gnd, fog, sun] = T[m] ?? T.neon;
-    this.hemi.color.set(sky); this.hemi.groundColor.set(gnd);
-    (this.scene.fog as THREE.FogExp2).color.set(fog); (this.scene.background as THREE.Color).set(new THREE.Color(fog).multiplyScalar(0.75));
-    this.sun.color.set(sun);
+    const A = this.atmos = atmosOf(m);
+    this.hemi.color.set(A.hemiSky); this.hemi.groundColor.set(A.hemiGnd); this.hemi.intensity = A.hemiI;
+    (this.scene.fog as THREE.FogExp2).color.set(A.fog); (this.scene.fog as THREE.FogExp2).density = A.fogD;
+    this.scene.background = new THREE.Color(A.dome ? A.horizon : new THREE.Color(A.fog).multiplyScalar(0.75).getHex());
+    this.sun.color.set(A.sun); this.sun.intensity = A.sunI; this.sun.position.set(...A.sunPos);
+    this.renderer.toneMappingExposure = A.exposure; this.scene.environmentIntensity = A.env;
+    if (this.bloom) { this.bloom.strength = A.bloom[0]; this.bloom.radius = A.bloom[1]; this.bloom.threshold = A.bloom[2]; }
+    const g = A.grade; this.gradeU.uCool.value = g.cool; this.gradeU.uCA.value = g.ca; this.gradeU.uVig.value = g.vig; this.gradeU.uSat.value = g.sat; this.gradeU.uTint.value.set(...g.tint);
+    this.setSky(A);
+  }
+  /** 天空穹顶：竖向三色渐变 + 太阳光盘与光晕；跟着相机走，永远在最远处 */
+  private setSky(A: Atmos) {
+    if (!this.sky) {
+      const mat = new THREE.ShaderMaterial({
+        uniforms: this.skyU, side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false,
+        vertexShader: 'varying vec3 vD;void main(){vD=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+        fragmentShader: `uniform vec3 top,mid,hor,disc,sunDir;uniform float size;varying vec3 vD;
+        void main(){float h=clamp(vD.y,-0.2,1.0);vec3 c=mix(hor,mid,smoothstep(0.0,0.35,h));c=mix(c,top,smoothstep(0.3,0.95,h));
+        float s=max(dot(normalize(vD),normalize(sunDir)),0.0);float halo=pow(s,18.0)*0.45+pow(s,200.0)*0.5;float d=smoothstep(1.0-size*0.12,1.0-size*0.1,s);
+        c+=disc*(halo+d*1.4)*step(0.0,size);gl_FragColor=vec4(c,1.0);}`,
+      });
+      this.sky = new THREE.Mesh(new THREE.SphereGeometry(300, 24, 16), mat);
+      this.sky.renderOrder = -20; this.sky.frustumCulled = false; this.sky.userData.noMirror = true;
+      this.scene.add(this.sky);
+    }
+    this.sky.visible = A.dome;
+    this.skyU.top.value.set(A.skyTop); this.skyU.mid.value.set(A.skyMid); this.skyU.hor.value.set(A.horizon); this.skyU.disc.value.set(A.discColor); this.skyU.size.value = A.discSize;
+    this.skyU.sunDir.value.set(...A.sunPos).normalize();
   }
 
   private makeRain() {
@@ -111,16 +138,18 @@ export class WorldView {
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(new THREE.Vector2(w, h), 0.72, 0.55, 0.78);
         this.composer.addPass(this.bloom);
-        // 调色：暗部偏青蓝、亮部偏品红暖，边缘轻微色散 + 暗角
+        // 调色（随场景氛围变）：cool = 暗部偏青蓝、亮部偏品红暖（赛博味）；另有边缘色散 / 暗角 / 饱和度 / 色偏
         this.composer.addPass(new ShaderPass({
-          uniforms: { tDiffuse: { value: null } },
+          uniforms: { tDiffuse: { value: null }, uCool: this.gradeU.uCool, uCA: this.gradeU.uCA, uVig: this.gradeU.uVig, uSat: this.gradeU.uSat, uTint: this.gradeU.uTint },
           vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-          fragmentShader: `uniform sampler2D tDiffuse;varying vec2 vUv;
-          void main(){vec2 c=vUv-.5;float d=dot(c,c);vec2 off=c*d*0.014;
+          fragmentShader: `uniform sampler2D tDiffuse;uniform float uCool,uCA,uVig,uSat;uniform vec3 uTint;varying vec2 vUv;
+          void main(){vec2 c=vUv-.5;float d=dot(c,c);vec2 off=c*d*uCA;
           vec3 col=vec3(texture2D(tDiffuse,vUv+off).r,texture2D(tDiffuse,vUv).g,texture2D(tDiffuse,vUv-off).b);
           float l=dot(col,vec3(.3,.6,.1));
-          col=mix(col*vec3(.88,.95,1.18),col*vec3(1.12,.98,1.02),smoothstep(.15,.9,l));
-          col*=1.0-d*1.25;gl_FragColor=vec4(col,1.);}`,
+          vec3 cy=mix(col*vec3(.88,.95,1.18),col*vec3(1.12,.98,1.02),smoothstep(.15,.9,l));
+          col=mix(col,cy,uCool);
+          col=mix(vec3(l),col,uSat)*uTint;
+          col*=1.0-d*uVig;gl_FragColor=vec4(col,1.);}`,
         }));
         this.composer.addPass(new OutputPass());
       }
@@ -188,7 +217,7 @@ export class WorldView {
       const cp = Math.cos(0.2), sp = Math.sin(0.2), d = 26, f = this.focus;
       this.camera.position.set(f.x + Math.sin(yaw) * cp * d, f.y + 1.6 + sp * d * 0.5, f.z + Math.cos(yaw) * cp * d);
       this.camera.lookAt(f.x, f.y + 3.4, f.z);
-      litK.value = WORLD_LIT;
+      litK.value = this.atmos.lit;
       if (this.composer) this.composer.render(0); else this.renderer.render(this.scene, this.camera);
       const out = document.createElement('canvas'); out.width = w; out.height = h;
       const g = out.getContext('2d')!;
@@ -211,6 +240,7 @@ export class WorldView {
   render(dt = 0) {
     this.time += dt;
     this.placeCamera(dt);
+    if (this.sky) this.sky.position.copy(this.camera.position);
     if (this.rain) {
       const a = this.rain.geometry.getAttribute('position') as THREE.BufferAttribute;
       const fy = this.focus.y;
@@ -222,7 +252,7 @@ export class WorldView {
       a.needsUpdate = true;
       this.rain.position.set(Math.round(this.focus.x / 45) * 45 * 0, 0, 0);
     }
-    litK.value = WORLD_LIT;
+    litK.value = this.atmos.lit;
     if (this.composer) this.composer.render(dt); else this.renderer.render(this.scene, this.camera);
   }
 

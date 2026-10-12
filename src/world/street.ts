@@ -8,6 +8,7 @@ import { buildSteam } from './steam';
 import { LEVEL_1, levelColliders } from './levels';
 import type { AABB, LevelDef } from './levels';
 import { PROPS } from './props';
+import { buildTheme } from './themes';
 
 export type { AABB };
 export interface BuildingRef { low: THREE.Object3D; high: THREE.Object3D; mirrorHigh?: THREE.Object3D; x0: number; x1: number; z0: number; z1: number; top: number; t: number }
@@ -15,6 +16,7 @@ export interface Street { level: LevelDef; group: THREE.Group; colliders: AABB[]
 export const streetColliders = (L: LevelDef = LEVEL_1): AABB[] => levelColliders(L);
 
 export function buildStreet(L: LevelDef = LEVEL_1): Street {
+  if (L.theme && L.theme !== 'street') return buildTheme(L);
   const HALF = L.half;
   const g = new THREE.Group();
   const colliders = levelColliders(L);

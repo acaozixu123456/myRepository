@@ -274,6 +274,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
   const st = buildStreet(L);
   rt.wv.scene.add(st.group);
   rt.wv.setMood(L.mood);
+  rt.wv.setRain(L.weather !== 'none');
   const wv = rt.wv;
   const ex = new Explorer(wv, st, teamIds(ctx), {
     encounter: (s) => onEncounter(ctx, s),

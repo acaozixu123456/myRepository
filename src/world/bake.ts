@@ -6,13 +6,29 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 const vcStdCache = new Map<string, THREE.MeshStandardMaterial>();
 const vcStd = (rough: number, metal: number): THREE.MeshStandardMaterial => {
   const k = `${rough.toFixed(2)}|${metal.toFixed(2)}`; let m = vcStdCache.get(k);
-  if (!m) { m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: rough, metalness: metal, vertexColors: true }); vcStdCache.set(k, m); }
+  if (!m) {
+    m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: rough, metalness: metal, vertexColors: true });
+    // 离镜头太近的静态景物（比如森林里贴着镜头的参天树干）用抖动镂空淡出，不会把整个画面糊住
+    m.onBeforeCompile = (sh) => {
+      sh.fragmentShader = sh.fragmentShader.replace('void main() {', 'void main() {\n  { float fd = length(vViewPosition); if (fd < 16.0) { float k = smoothstep(6.0, 16.0, fd); float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453); if (n > k) discard; } }');
+    };
+    m.customProgramCacheKey = () => 'nearfade1';
+    vcStdCache.set(k, m);
+  }
   return m;
 };
 const vcBasicCache = new Map<boolean, THREE.MeshBasicMaterial>();
 const vcBasic = (toneMapped: boolean): THREE.MeshBasicMaterial => {
   let m = vcBasicCache.get(toneMapped);
-  if (!m) { m = new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, toneMapped }); vcBasicCache.set(toneMapped, m); }
+  if (!m) {
+    m = new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, toneMapped });
+    m.onBeforeCompile = (sh) => { // 同上：贴着镜头的发光件也做抖动淡出
+      sh.vertexShader = sh.vertexShader.replace('void main() {', 'varying float vFd;\nvoid main() {').replace('#include <project_vertex>', '#include <project_vertex>\nvFd = -mvPosition.z;');
+      sh.fragmentShader = sh.fragmentShader.replace('void main() {', 'varying float vFd;\nvoid main() {\n  { if (vFd < 16.0) { float k = smoothstep(6.0, 16.0, vFd); float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453); if (n > k) discard; } }');
+    };
+    m.customProgramCacheKey = () => 'nearfade1b';
+    vcBasicCache.set(toneMapped, m);
+  }
   return m;
 };
 

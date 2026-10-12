@@ -15,7 +15,7 @@ await preloadWorldTextures();
 const wv = new WorldView(document.getElementById('cv') as HTMLCanvasElement, quality);
 const L = levelOf(+(q.get('ch') ?? 1));
 const st = buildStreet(L);
-wv.setMood(L.mood);
+wv.setMood(L.mood); wv.setRain(L.weather !== 'none');
 wv.scene.add(st.group);
 wv.yaw = +(q.get('yaw') ?? 0.5); wv.pitch = +(q.get('pitch') ?? 1.0); wv.dist = +(q.get('dist') ?? 44);
 const team = (q.get('team') ?? 'wei_caomiaode,shu_liumiaobei,xian_changmiao,wei_simamiyi,shu_pangmiaotong').split(',');
@@ -37,6 +37,7 @@ if (q.get('sun')) wv.sun.intensity = +q.get('sun')!;
 if (q.get('lights') === '0') st.group.traverse((o) => { if ((o as THREE.Light).isLight) o.visible = false; });
 if (q.get('hemi') === '0') wv.scene.traverse((o) => { if ((o as THREE.HemisphereLight).isHemisphereLight) o.visible = false; });
 if (q.get('nomirror') === '1') st.group.traverse((o) => { if (o.scale.y === -1) o.visible = false; });
+if (q.get('fov')) { wv.camera.fov = +q.get('fov')!; wv.camera.updateProjectionMatrix(); }
 wv.render(0.1);
 (window as unknown as { done: boolean; ex: Explorer; wv: WorldView }).ex = ex;
 (window as unknown as { done: boolean }).done = true;

@@ -8,7 +8,7 @@ import { applyPose } from '../art3d/pose';
 import { lookOf } from '../data/units';
 import type { WorldView } from './engine';
 import type { AABB, Street } from './street';
-import { SAFE_R, inSafeZone } from './levels';
+import { CELL, SAFE_R, blockedGrid, inSafeZone } from './levels';
 import { glowTex } from './tex';
 import { glowMat, std } from './kit';
 
@@ -40,7 +40,7 @@ interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; s
 const ENGAGE_R = 5.2, ENGAGE_BOSS = 7;
 interface Ent { spawn: Spawn; group: THREE.Group; cats: Actor[]; home: THREE.Vector3; target: THREE.Vector3; wait: number; alive: boolean; cooldown: number; alert: boolean; tag: THREE.Sprite; mark?: THREE.Sprite; t: number }
 
-const CELL = 1;
+
 const WORLD_CAT_DETAIL = 0.6;
 const OUTLINE_DIST = 26; // 超过这个距离的实体猫不画描边外壳（小得看不出来）
 const CULL_DIST = 46; // 超过这个距离（世界单位）的实体不渲染
@@ -92,6 +92,7 @@ export class Explorer {
     this.grid = new Uint8Array(this.N * this.N);
     this.buildGrid(street.colliders);
     wv.scene.add(this.root);
+    this.keyLight.intensity = wv.atmos.keyLight;
     this.root.add(this.keyLight);
     this.ring = new THREE.Mesh(new THREE.RingGeometry(1.2, 1.5, 32), new THREE.MeshBasicMaterial({ color: 0x7ff0ff, transparent: true, opacity: 0.9, toneMapped: false, depthWrite: false }));
     this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = 0.4; this.root.add(this.ring);
@@ -234,17 +235,7 @@ export class Explorer {
   removeSpawn(id: string) { const e = this.ents.find((x) => x.spawn.id === id); if (e) { e.alive = false; e.group.visible = false; } }
 
   // ---------- 寻路 ----------
-  private buildGrid(cols: AABB[]) {
-    const N = this.N, h = this.street.half;
-    this.grid.fill(0);
-    const pad = 0.9;
-    for (const c of cols) {
-      const x0 = Math.max(0, Math.floor((c.x0 - pad + h) / CELL)), x1 = Math.min(N - 1, Math.floor((c.x1 + pad + h) / CELL));
-      const z0 = Math.max(0, Math.floor((c.z0 - pad + h) / CELL)), z1 = Math.min(N - 1, Math.floor((c.z1 + pad + h) / CELL));
-      for (let z = z0; z <= z1; z++) for (let x = x0; x <= x1; x++) this.grid[z * N + x] = 1;
-    }
-    for (let i = 0; i < N; i++) for (const k of [0, 1, N - 2, N - 1]) { this.grid[i * N + k] = 1; this.grid[k * N + i] = 1; }
-  }
+  private buildGrid(cols: AABB[]) { this.grid.set(blockedGrid(cols, this.street.half)); }
   private cell(v: THREE.Vector3): [number, number] { const h = this.street.half; return [Math.min(this.N - 1, Math.max(0, Math.floor((v.x + h) / CELL))), Math.min(this.N - 1, Math.max(0, Math.floor((v.z + h) / CELL)))]; }
   private world(cx: number, cz: number): THREE.Vector3 { const h = this.street.half; return new THREE.Vector3((cx + 0.5) * CELL - h, 0.32, (cz + 0.5) * CELL - h); }
   /** A*（8 邻域）；终点被挡就找最近的可走格 */

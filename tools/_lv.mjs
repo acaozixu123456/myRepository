@@ -1,0 +1,12 @@
+import { chromium } from 'playwright-core';
+const [out, q, w='900', h='560'] = process.argv.slice(2);
+const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'] });
+const p = await b.newPage({ viewport: { width: +w, height: +h } });
+p.on('pageerror', e => console.log('ERR', e.message));
+p.on('console', m => { if (m.type()==='error') console.log('CONSOLE', m.text()); });
+await p.goto('http://127.0.0.1:5173/world.html?'+q);
+await p.waitForFunction(() => window.done, null, { timeout: 90000 }).catch(()=>console.log('timeout'));
+await p.waitForTimeout(5000);
+console.log(await p.evaluate(()=>{ const i=window.wv?.renderer?.info; return i?JSON.stringify({calls:i.render.calls,tris:i.render.triangles}):'' }));
+await p.screenshot({ path: out });
+await b.close();
