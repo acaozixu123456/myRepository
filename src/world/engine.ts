@@ -3,6 +3,7 @@ import { litK } from '../art3d/toon';
 import * as THREE from 'three';
 import { atmosOf } from './atmos';
 import type { Atmos } from './atmos';
+import { aiTex } from './tex';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
@@ -39,6 +40,8 @@ export class WorldView {
   atmos: Atmos = atmosOf('neon');
   private gradeU = { uCool: { value: 1 }, uCA: { value: 0.014 }, uVig: { value: 1.25 }, uSat: { value: 1 }, uTint: { value: new THREE.Vector3(1, 1, 1) } };
   private sky: THREE.Mesh | null = null;
+  private skyBand: THREE.Mesh | null = null;
+  private skyBandU = { map: { value: null as THREE.Texture | null } };
   private skyU = { top: { value: new THREE.Color() }, mid: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, sunDir: { value: new THREE.Vector3(0, 1, 0) }, disc: { value: new THREE.Color() }, size: { value: 0.05 } };
   onQuality: (level: number) => void = () => undefined;
   time = 0;
@@ -114,6 +117,25 @@ export class WorldView {
     this.sky.visible = A.dome;
     this.skyU.top.value.set(A.skyTop); this.skyU.mid.value.set(A.skyMid); this.skyU.hor.value.set(A.horizon); this.skyU.disc.value.set(A.discColor); this.skyU.size.value = A.discSize;
     this.skyU.sunDir.value.set(...A.sunPos).normalize();
+    // 天边云带：一圈开口圆柱贴在穹顶内侧，上下边缘渐隐融进穹顶渐变
+    const band = A.dome && A.skyBand ? aiTex(A.skyBand) : null;
+    if (band && !this.skyBand) {
+      const mat = new THREE.ShaderMaterial({
+        uniforms: this.skyBandU, side: THREE.BackSide, transparent: true, depthWrite: false, fog: false, toneMapped: false,
+        vertexShader: 'varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+        fragmentShader: `uniform sampler2D map;varying vec2 vU;
+        void main(){vec4 c=texture2D(map,vec2(vU.x*2.0,vU.y));float a=smoothstep(0.0,0.18,vU.y)*(1.0-smoothstep(0.72,1.0,vU.y));gl_FragColor=vec4(c.rgb,a);
+        #include <colorspace_fragment>
+        }`,
+      });
+      this.skyBand = new THREE.Mesh(new THREE.CylinderGeometry(280, 280, 220, 48, 1, true), mat);
+      this.skyBand.renderOrder = -19; this.skyBand.frustumCulled = false; this.skyBand.userData.noMirror = true;
+      this.scene.add(this.skyBand);
+    }
+    if (this.skyBand) {
+      this.skyBand.visible = !!band;
+      if (band) { band.wrapS = THREE.RepeatWrapping; band.needsUpdate = true; this.skyBandU.map.value = band; }
+    }
   }
 
   private makeRain() {
@@ -241,6 +263,7 @@ export class WorldView {
     this.time += dt;
     this.placeCamera(dt);
     if (this.sky) this.sky.position.copy(this.camera.position);
+    if (this.skyBand) { this.skyBand.position.copy(this.camera.position); this.skyBand.position.y += 80; }
     if (this.rain) {
       const a = this.rain.geometry.getAttribute('position') as THREE.BufferAttribute;
       const fy = this.focus.y;

@@ -211,7 +211,8 @@
 | `cape` | `shu_liumiaobei`(UR), `wei_xiahoudun`(SSR), `shu_guanyunmiao`(SSR) 等6只 | 底版 | 0 | |
 | `gourd` | `xian_zuoci`(UR), `wei_guojia`(SR) + 杂兵×2 | 底版 | 0 | |
 | `furCloak` | `man_mengmiaohuo`(UR), `man_mulu`(SSR), `qun_dongzhuo`(SR) | 底版 | 0 | |
-| `scrollBack` | `xian_zhangzhua`(SSR) + 杂兵×1 | 底版 | 0 | |
+| `scrollBack` | `xian_zhangzhua`(SSR), `mob_shu_strategist` | 待审 | 1 | 双木轴卷纸、束结、实体接袍短吊带；15 逻辑网格 |
+| `banner` | 实际使用者 0；仅合成 factory 样例 | 待审 | 1 | 厚弧布、后向猫爪、两条实体接身绑带；16 逻辑网格 |
 
 ### 披挂第 1 批检查（第 1 轮待审）
 
@@ -380,3 +381,25 @@ src/art3d/parts/hero-ur-weapons.ts
 - 固定e777的typecheck与68文件 / 1019测试通过；主线随后日期修订的同步和提交前复检由维护者另记。原aa9/e6和fece图与报告完整保留为历史，当前交付使用current-e777，历史数据不充当当前复核。最不满意：strike羽扇仍呈窄斜面；月桂叶脉/月珠及前举侧弓饰在战斗尺度较小。
 
 提交前另同步主线 `29f6a8b` 日期测试修复；相关 art3d/look/actor/player 与 e777 累计变化为0，18源/9图保持原记录。维护者再次实际 typecheck + test 退出0，68文件 / 1019测试全通过。
+
+
+### 披挂第 3 批检查（背卷 / 旌旗，第 1 轮待审）
+
+`codex/3d-back-scroll-banner` 仅替换 `BACK.scrollBack / banner` 并新增 `parts/back-scroll-banner.ts`。固定主线 `60bc06577f5d5dd2966a661d2278802bb3e3fcee`，保留已合并的六件披挂与四件衣服；最终注册表 SHA256 `2d5304b9263b3d7768251c55205cda732383fba4cdf8e2e107294509cd541961`，helper `78b4a124dd58da56c6cc6302fbf1625f9443f2075f3c07b6d8bd04fbc530b5d9`。259 个运行时源 / 依赖在独立采样和正式拍摄前后保持同一 SHA；cat / pose / renderer / actor 固定为 `e5dd83cb… / 3abe84b5… / ccc15c4a… / 268bc636…`。进度为待 Claude 审核，不代表已通过。
+
+全89名显式真实 look/id 中，背卷只有张爪和羽扇书童2位；旌旗实际使用者0，没有新增角色或宠物数据。87名非目标的 geometry attribute 类型、布局、属性及 index 原始 Uint8 字节全部相同。背卷 / 旌旗为15 / 16逻辑网格、含描边30 / 31实际 Mesh，最大分段20；缓存材质、单位根、正尺度与构建后无逐帧新增调用均通过。公开素材优先检索的具体来源、受限代理失败与未引入现成模型的原因见 README；不将目录读取说成逐模型审图。
+
+独立真实400状态与合成24上下文4800状态分别记录：14姿势×4yaw、以及 idle/windup/strike×12时刻×4yaw，phase0、静态t=.4、动画t=i×8/11、yaw0/±32/148。另有48真实耳峰补测。实际颅骨1120面与展开头部描边壳、口鼻垫560面及耳实体/展开描边三角完整裁剪或面交均0；两眼实际12×12和活跃笑嘴/mouthO的3×3新增ID0。保守鼻口五点探针保留14个主状态加2个耳补测新ID，全为背视148°的muzzleL；16/16在卷轴之前已被实际原头壳/剩余opaque猫面遮住，新增可见被测鼻口点0，不能把raw16写成0或推广成逐像素证明。
+
+吊带悬空问题已修：独立分开100条实体/描边连接记录，共50条主Tube全部接上实际OPAQUE BODY主面；两条真实背卷主Tube分别相交7/5三角，48条合成旗带每条5～9三角。连接检查在idle/t=.4/yaw0，主面归属torso且与BACK共变换；不把outline-only当主体连接，也不将该离散审计冒写成所有连续时刻求交。原7f候选完整背带对剩余猫三角相交0、端距约.228/.255的报告留临时历史。
+
+目标自身FRAME、finite、新增/增加整猫裁幅均0；真实整猫0→0。合成head1.12大耳保留264例既有裁切，旧新精确四边margin相同，不能宣称所有大头/宠物耳尖入框。作者最终原生命令 `npm run typecheck && npm test` 退出0，69文件 / 1035测试通过；独立审核读取此日志，没有冒称重跑产品测试。
+
+11张正式图全部来自最终2d5304 / 78b4，真实两位覆盖四yaw与三姿势、原生约190px；旌旗八行配色/体型图逐格明确合成、无真实heroId。5张真实PNG及2张完整HUD战斗图与raw完整RGBA字节差0；4张合成图仅裁去右侧纯空白 `[0,0,766,1981]`，与对应raw区域RGBA差0，没有缩放脸。全部文件<500000 B，最大499975 B。真实10猫战斗12帧确认两位背卷startup builder各命中1次、alpha1，旌旗演员0；默认方向的背卷常被身体挡住。外部字体请求失败正常回退，页面脚本错误0。最不满意：190px的端卷螺旋和细绑结偏小，旌旗正面朴素、爪纹仅背面可读，且无实装出场验证。
+
+证据：[作者说明与11图](../src/art3d/parts/reviews/back-scroll-banner/README.md)、[真实190px](../src/art3d/parts/reviews/back-scroll-banner/real-32.png)、[背视](../src/art3d/parts/reviews/back-scroll-banner/real-148.png)、[合成旗正面](../src/art3d/parts/reviews/back-scroll-banner/synthetic-0.png)、[合成旗背面](../src/art3d/parts/reviews/back-scroll-banner/synthetic-148.png)、[真实十猫](../src/art3d/parts/reviews/back-scroll-banner/battle.webp)、[独立摘要](../src/art3d/parts/reviews/back-scroll-banner/qa-summary.md)、[5200+48完整机器记录](../src/art3d/parts/reviews/back-scroll-banner/qa-summary.json)、[真实旧新对照](../src/art3d/parts/reviews/back-scroll-banner/before-after.png)。有限采样不证明所有连续时刻、未来骨架或所有最终可见像素。
+
+
+提交前同步主线 `bb73f1f` 并保留双方进度记录，解决的冲突仅在本进度文档。本批注册表/helper、cat/pose/renderer/actor与正式图字节未变；旧独立 QA 与拍摄记录仍明确固定60bc源快照。新增小游戏和SP专属来自主线，不计为本批改动；合并后原生检查与89用户复核另按实际日志记录。
+
+同步bb73后作者重新冻结282运行时源，89实际id/87非目标字节同、真实400状态及100实际1120颅壳形位通过；新增眼/作者鼻口/FRAME/finite0。原生typecheck+test退出0，75文件 /1068测试，[当前复核](../src/art3d/parts/reviews/back-scroll-banner/post-main-validation.json)。独立5200+48和正式图仍保留60bc源快照与原始范围。

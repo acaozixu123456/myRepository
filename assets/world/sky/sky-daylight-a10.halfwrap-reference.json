@@ -1,0 +1,13 @@
+{
+  "created_utc": "2026-10-12T06:26:08.689389+00:00",
+  "source": "/workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png",
+  "source_sha256": "9bfa4708ef5e7d8db3d04ab6720dab912ef8523e714336344af0da4211634de1",
+  "source_size": [
+    2172,
+    724
+  ],
+  "reference": "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.png",
+  "reference_sha256": "db79bd595dbf63235cca9e3fbe936e3ee163715da9e00ea7f8313d036164bc87",
+  "transform": "Exact horizontal cyclic roll by-1086 columns. No resizing, color change, blending or painting. Original left/right join now at x1086. Raw reference only, never a finished texture.",
+  "inverse_after_real_AI_edit": "If imagegen returns2172x724, cyclic roll+1086 then centeredcrop[0,90,2172,633] ->2048x512. Record actual return dimensions."
+}

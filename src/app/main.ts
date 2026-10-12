@@ -22,6 +22,7 @@ import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
 import { applyGain, idleCapHours, nextStage, recommendedPowerOf, tickIdle } from '../game/stage';
 import type { Gain } from '../game/stage';
 import { armBgm, bgmState, setBgmOn } from './bgm';
+import { onAudioBlocked, unlockAudio } from './audio';
 import { exportSave, importSave } from '../game/backup';
 import { SAVE_KEY, autoLineup, equip, levelUp, load, save, swapSlots, teamPower, unequip } from '../game/state';
 import { bagHtml, handleBag } from './screens/bag';
@@ -184,6 +185,7 @@ const ctx: AppCtx = {
     updateGuide(ctx);
   },
 };
+onAudioBlocked(() => { if (sfxState.on || bgmState.on) ctx.toast('🔇 这个窗口不允许网页发声（电脑上的 Claude 预览常这样）。想听音效和音乐，请用手机或单独的浏览器网页打开'); });
 
 if (devGrant) (window as unknown as { __ctx: AppCtx }).__ctx = ctx; // 仅开发 / 试玩版：截图脚本用它直接打开小游戏等弹层
 ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
@@ -291,7 +293,7 @@ root.addEventListener('click', (e) => {
     case 'c3d': state.settings.cat3d = !(state.settings.cat3d !== false); spriteMode.cat3d = state.settings.cat3d; ctx.save(); openSettings(); sfx.ok(); break;
     case 'ill': state.settings.illustSprite = !(state.settings.illustSprite !== false); spriteMode.illust = state.settings.illustSprite; liveSettings.on = state.settings.illustSprite; ctx.save(); openSettings(); sfx.ok(); break;
     case 'bgm': state.settings.music = !(state.settings.music !== false); setBgmOn(state.settings.music); ctx.save(); openSettings(); sfx.ok(); break;
-    case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; ctx.save(); openSettings(); sfx.ok(); break;
+    case 'snd': state.settings.sound = !(state.settings.sound !== false); sfxState.on = state.settings.sound; if (sfxState.on) unlockAudio(); ctx.save(); openSettings(); sfx.ok(); break;
     case 'spd': state.settings.speed = Number(el.dataset.v); ctx.loop.setSpeed(state.settings.speed); ctx.save(); openSettings(); updateHome(ctx); break;
     case 'reset1': el.outerHTML = '<button class="btn pink" data-act="reset2">再点一次：清空存档</button>'; break;
     case 'reset2': try { storage?.removeItem('maoguozhi.save.v1'); } catch { /* 忽略 */ } location.reload(); break;

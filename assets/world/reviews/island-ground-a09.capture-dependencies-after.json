@@ -1,0 +1,106 @@
+{
+  "checkedAtUTC": "2026-10-12T06:03:04.552042+00:00",
+  "base": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "head": "051c7d06ec72de337dabd3066bf64270bb4f40cb",
+  "rows": [
+    {
+      "file": "docs/CODEX_WORLD_BRIEF.md",
+      "sha256": "5d397677aece696fb9bb24854d3ae31ad76da04690dec5d53d8201aa247a2ccf",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "docs/WORLD3D.md",
+      "sha256": "3e59c829aa85ec21e55a22c65843cedbd57c0015823540857536cd197ae60edf",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "docs/CODEX_QUEUE.md",
+      "sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "docs/WORLD_PROGRESS.md",
+      "sha256": "863975ec99a46b7d1cf6a3fb89347dd971a6fb0b36a75c025d357d42ee32d7cc",
+      "matches67Blob": false,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/themes/cloud.ts",
+      "sha256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/themes/cloud.data.ts",
+      "sha256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/themes/common.ts",
+      "sha256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/atmos.ts",
+      "sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/engine.ts",
+      "sha256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/kit.ts",
+      "sha256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/tex.ts",
+      "sha256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/themes/index.ts",
+      "sha256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/levels.ts",
+      "sha256": "fa2f8d8eb3a580e012b6e51162a443a676dbab2fa944d31bca9c416fda8772e3",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "src/world/explore.ts",
+      "sha256": "4fb7fa7241cb76e6e78363fa91ff3d9a093e02f593adfe34c0ead3a824e42c82",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "package.json",
+      "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "matches67Blob": true,
+      "sameWorkingAsBeforeCapture": true
+    }
+  ],
+  "independentRendererImportsOnlyThreeRoomAndFrozenMaps": true,
+  "noGameEngineImport": true,
+  "checkedAfterFinalAnisotropy4Capture": true
+}

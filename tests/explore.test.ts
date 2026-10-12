@@ -190,7 +190,11 @@ describe('自动探索选目标', () => {
 
 describe('场景玩法入口（POI）', () => {
   it('赤壁港有钓鱼点，会出现在刷新计划里；没有水的场景没有钓鱼点', () => {
-    expect(poisOf(LEVELS[3]).map((p) => p.game)).toContain('fish');
+    expect(poisOf(LEVELS[3]).map((p) => p.game)).toEqual(expect.arrayContaining(['fish', 'arrows']));
+    expect(poisOf(LEVELS[4]).map((p) => p.game)).toEqual(expect.arrayContaining(['mushroom', 'firefly']));
+    expect(poisOf(LEVELS[5]).map((p) => p.game)).toEqual(expect.arrayContaining(['windchime', 'kite']));
+    expect(poisOf(LEVELS[6]).map((p) => p.game)).toEqual(expect.arrayContaining(['lanterns', 'kitchen']));
+    expect(poisOf(ALL_SCENES[102]).map((p) => p.game)).toEqual(expect.arrayContaining(['sled', 'snowcat']));
     for (const L of Object.values(ALL_SCENES)) if (!L.water) expect(poisOf(L).some((p) => p.game === 'fish'), `${L.id} 没水却有钓鱼点`).toBe(false);
     const s = newPlayer(); s.best = { chapter: 3, index: 1 };
     const plan = spawnPlan(s);
@@ -328,8 +332,8 @@ describe('传送门', () => {
 });
 
 describe('场景机关（风口 / 潮汐滩 / 琉璃滑地）', () => {
-  it('云岛 = 风口、码头 = 潮汐滩、宫阙 = 滑地，各至少 3 处；其他场景没有；都走得到、不在碰撞盒 / 安全区里', () => {
-    const want: Record<string, string | undefined> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand' };
+  it('云岛 = 风口、码头 = 潮汐滩、宫阙 / 雪岭 = 滑地，各至少 3 处；其他场景没有；都走得到、不在碰撞盒 / 安全区里', () => {
+    const want: Record<string, string | undefined> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand', snow: 'slide' };
     for (const L of Object.values(ALL_SCENES)) {
       const zs = zonesOf(L), kind = want[L.theme ?? 'street'];
       expect(zonesOf(L)).toBe(zs);

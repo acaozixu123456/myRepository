@@ -14,9 +14,10 @@ export const TEAHOUSE = { x: 22.5, z: 3, w: 8.6, d: 7 };
 export const LIGHTHOUSE: [number, number] = [27, -6];
 export const CRATES: [number, number][] = [[-8, -4], [9, -2], [-13, 14], [13, 15]];
 const POI: [number, number] = [18, -19];
+const ARROW_POI: [number, number] = [-18, -20]; // 西栈桥尽头：草船借箭
 const SPAWN: [number, number] = [0, 18];
 const ENEMIES: [number, number][] = [[-12, 5], [11, 3], [-3, -3], [-23, -3], [23, 14], [-23, 16]];
-const CHESTS: [number, number][] = [[-18, -21], [14, -7], [-27, 24], [27, 26]];
+const CHESTS: [number, number][] = [[-28, -5], [14, -7], [-27, 24], [27, 26]];
 const HERBS: [number, number][] = [[-7, 10], [8, 9], [3, -5], [-14, -2], [14, -5]];
 const NPC: [number, number] = [6, 15];
 const BOSS: [number, number] = [0, -21];
@@ -44,7 +45,7 @@ export function harborLevel(): LevelDef {
     water: [-32, -34, 32, SEA_Z],
     solids: harborSolids(),
     enemySpots: ENEMIES, chestSpots: CHESTS, herbSpots: HERBS,
-    pois: [{ id: 'fish', game: 'fish', x: POI[0], z: POI[1], label: '钓鱼点' }],
+    pois: [{ id: 'fish', game: 'fish', x: POI[0], z: POI[1], label: '钓鱼点' }, { id: 'arrows', game: 'arrows', x: ARROW_POI[0], z: ARROW_POI[1], label: '草船借箭' }],
     bossSpot: BOSS, npcSpot: NPC, spawn: SPAWN,
   };
 }

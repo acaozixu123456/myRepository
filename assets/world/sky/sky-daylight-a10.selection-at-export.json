@@ -1,0 +1,24 @@
+{
+  "review_round": 1,
+  "genuine_calls": 3,
+  "selected": {
+    "sky_cloud_noon_cumulus_04": {
+      "candidate": 1,
+      "source_call_index": 0,
+      "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "final_sha256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "final_bytes": 83500
+    },
+    "sky_palace_afternoon_gold_05": {
+      "candidate": 2,
+      "source_call_index": 2,
+      "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "final_sha256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "final_bytes": 120818
+    }
+  },
+  "status": "04originalunchanged/05AIrepairC2 frozen; QA andnewcapture pending",
+  "claude_decision": null,
+  "accepted_count": 0,
+  "prior_candidate01_records_root": "/workspace/world-review/sky-daylight/independent-qa"
+}

@@ -1,0 +1,429 @@
+{
+  "batch": "A09-IS / PR114 source follow-up; also A10 remaining-sky preflight",
+  "newRuleCommit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+  "newRuleQueueBlob": "5b9feedf8d1ccf88e0291b03c5610f4c515aa258",
+  "newRulePublishedUTC": "2026-10-12T06:12:57Z",
+  "lookupStartedUTC": "2026-10-12T06:15:56.315Z",
+  "lookupCompletedUTC": "2026-10-12T06:36:34.267Z",
+  "lookupTiming": "New-rule post-generation follow-up, not a before-generation source search.",
+  "islandGeneration": {
+    "calls": 3,
+    "startedUTC": "2026-10-12T05:47:03Z",
+    "completedUTC": "2026-10-12T05:48:36Z",
+    "source": "island-ground-a09.provenance.json",
+    "externalReferencesInToolArgs": false
+  },
+  "originalSky117Generation": {
+    "calls": 2,
+    "startedUTC": "2026-10-12T06:09:36Z",
+    "completedUTC": "2026-10-12T06:10:19Z",
+    "source": "Root coordination message; this is original calls only, later genuine AI revisions have separate provenance."
+  },
+  "catalogsSearched": [
+    "ambientCG",
+    "Poly Haven",
+    "Kenney",
+    "OpenGameArt"
+  ],
+  "candidates": [
+    {
+      "catalog": "ambientCG",
+      "id": "Grass005",
+      "url": "https://ambientcg.com/view?id=Grass005",
+      "license": "CC0-1.0",
+      "licenseURL": "https://docs.ambientcg.com/license/",
+      "kind": "PBR short green lawn",
+      "status": "Already used by Claude main6f, alternative ground base",
+      "fit": "Green grass foundation is relevant. Current committed512² tile was viewed: grass only, no decorative small flowers. This does not make it unusable; existing game3D flowers can complement it.",
+      "verifiedDownloadedByHelper": false,
+      "currentMainTileViewedByHelper": true,
+      "adoptedByThisAIBatch": false
+    },
+    {
+      "catalog": "Poly Haven",
+      "id": "sparse_grass",
+      "url": "https://polyhaven.com/a/sparse_grass",
+      "license": "CC0",
+      "licenseURL": "https://polyhaven.com/license",
+      "kind": "8K PBR sparse grass",
+      "fit": "Official page describes roots and exposed damp soil, less directly matching clean mint ground than a lawn. Actual source image/style and tile remain untested.",
+      "binaryDownloaded": false,
+      "adopted": false
+    },
+    {
+      "catalog": "Kenney",
+      "id": "nature-kit",
+      "url": "https://kenney.nl/assets/nature-kit",
+      "license": "CC0",
+      "licenseEvidenceURL": "https://kenney.nl/assets/nature-kit",
+      "kind": "Nature asset pack,330 files",
+      "fit": "Useful low-poly nature resource, but file contents were not downloaded; no claim it contains a ready-made1024² flowering grass tile.",
+      "binaryDownloaded": false,
+      "adopted": false
+    },
+    {
+      "catalog": "OpenGameArt",
+      "id": "grass-textureseamless-2d",
+      "url": "https://opengameart.org/content/grass-textureseamless-2d",
+      "creator": "surfacecurve",
+      "license": "CC0",
+      "licenseEvidenceURL": "https://opengameart.org/content/grass-textureseamless-2d",
+      "kind": "512² grass PNG",
+      "fit": "Author notes strong vertical grass orientation, a relevant limitation for freely rotated3D ground. Palette/flowers and actual repeat not visually validated; not rejected solely from metadata.",
+      "binaryDownloaded": false,
+      "adopted": false
+    },
+    {
+      "catalog": "OpenGameArt",
+      "id": "seamless-grass-textures-20-pack",
+      "url": "https://opengameart.org/content/seamless-grass-textures-20-pack",
+      "creator": "athile",
+      "license": "CC0",
+      "licenseEvidenceURL": "https://opengameart.org/content/seamless-grass-textures-20-pack",
+      "kind": "20 tileable512² grass textures",
+      "fit": "Valid grass alternatives;1024² delivery would need truthful source-size/conversion record. Pink/white flowers and stylized fit require inspection.",
+      "binaryDownloaded": false,
+      "adopted": false
+    },
+    {
+      "catalog": "Kenney",
+      "id": "skyboxes",
+      "url": "https://kenney.nl/assets/skyboxes",
+      "license": "CC0",
+      "licenseEvidenceURL": "https://kenney.nl/assets/skyboxes",
+      "kind": "5 panoramic spherical skyboxes",
+      "authorCorroborationURL": "https://opengameart.org/content/skyboxes-1",
+      "fit": "Real candidate for game sky/clouds. Package also tags space/stars: inspect individual day variants rather than rejecting whole pack. Actual binary/resolution/style and4:1 crop not checked.",
+      "binaryDownloaded": false,
+      "renderChecked": false,
+      "rejected": false,
+      "adopted": false
+    },
+    {
+      "catalog": "OpenGameArt",
+      "id": "cloudy-skyboxes-0",
+      "url": "https://opengameart.org/content/cloudy-skyboxes-0",
+      "creator": "Screaming Brain Studios",
+      "license": "CC0",
+      "licenseEvidenceURL": "https://opengameart.org/content/cloudy-skyboxes-0",
+      "kind": "25 cloud panoramas2048×1024 plus cubemaps",
+      "fit": "Strong alternative: author explicitly includes sunny day/sunset skies. Need actual variant/style review and documented4:1 sky-band conversion; format alone is not a rejection reason.",
+      "binaryDownloaded": false,
+      "renderChecked": false,
+      "rejected": false,
+      "adopted": false
+    },
+    {
+      "catalog": "OpenGameArt",
+      "id": "clouds-skybox-1",
+      "url": "https://opengameart.org/content/clouds-skybox-1",
+      "creator": "Luke.RUSTLTD",
+      "license": "CC0",
+      "licenseEvidenceURL": "https://opengameart.org/content/clouds-skybox-1",
+      "kind": "6 cube faces1024² BMP, blue sky/white clouds",
+      "fit": "Relevant to noon sky; would need cube-to-panorama/sky-band conversion and seams inspection. Not downloaded or proven visually stylized.",
+      "binaryDownloaded": false,
+      "renderChecked": false,
+      "rejected": false,
+      "adopted": false
+    },
+    {
+      "catalog": "Poly Haven",
+      "id": "qwantani_noon_puresky",
+      "url": "https://polyhaven.com/a/qwantani_noon_puresky",
+      "license": "CC0",
+      "licenseURL": "https://polyhaven.com/license",
+      "kind": "24K pure midday sky HDRI",
+      "fit": "Actual sky-only/daytime alternative. HDR-to-LDR/4:1 mapping, sun handling, cloud amount and cartoon fit need inspection. Do not confuse moon_noon night variant.",
+      "binaryDownloaded": false,
+      "renderChecked": false,
+      "rejected": false,
+      "adopted": false
+    },
+    {
+      "catalog": "Poly Haven",
+      "id": "drakensberg_solitary_mountain_puresky",
+      "url": "https://polyhaven.com/a/drakensberg_solitary_mountain_puresky",
+      "license": "CC0",
+      "licenseURL": "https://polyhaven.com/license",
+      "kind": "24K pure clear afternoon sky HDRI",
+      "fit": "Afternoon sky-only alternative; warm gold/cloud look is not validated. Need actual tone-mapping/band conversion and style comparison.",
+      "binaryDownloaded": false,
+      "renderChecked": false,
+      "rejected": false,
+      "adopted": false
+    },
+    {
+      "catalog": "Poly Haven",
+      "id": "qwantani_sunset_puresky",
+      "url": "https://polyhaven.com/a/qwantani_sunset_puresky",
+      "license": "CC0",
+      "licenseURL": "https://polyhaven.com/license",
+      "kind": "24K pure partly-cloudy sunset HDRI",
+      "fit": "Warm sky alternative, but sunset timing differs from palace afternoon. Retain for comparison, not blanket rejection.",
+      "binaryDownloaded": false,
+      "renderChecked": false,
+      "rejected": false,
+      "adopted": false
+    }
+  ],
+  "limitations": {
+    "directHTTPRequests": "Ten public catalog GETs plus one curlHEAD blocked by proxyCONNECT403; retained real errors. Root diagnosed restricted/enforced allow-host policy; no proxy or policy bypass.",
+    "successfulMethod": "Official search_service_web_run search/open pages; real returned content saved privately.",
+    "candidateBinariesDownloaded": 0,
+    "candidateRuntimePreviews": 0,
+    "claimNoSuitableCC0": false,
+    "styleJudgments": "Metadata-based tentative except current mainGrass005 viewed locally.",
+    "thirdPartyAssetsAdoptedIn114": false,
+    "docsCreditsEdited": false
+  },
+  "dependencyComparison": {
+    "base": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+    "current": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+    "rows": [
+      {
+        "file": "docs/CODEX_WORLD_BRIEF.md",
+        "old67GitBlob": "0f791a241bf1a42a3c881a6ea82d32df604e7cd3",
+        "old67SHA256": "5d397677aece696fb9bb24854d3ae31ad76da04690dec5d53d8201aa247a2ccf",
+        "new6fGitBlob": "0f791a241bf1a42a3c881a6ea82d32df604e7cd3",
+        "changed": false,
+        "newBytes": 3034
+      },
+      {
+        "file": "docs/WORLD3D.md",
+        "old67GitBlob": "11511e220f4e5a289d415d2ef6997839dc6e31ab",
+        "old67SHA256": "3e59c829aa85ec21e55a22c65843cedbd57c0015823540857536cd197ae60edf",
+        "new6fGitBlob": "f4d58a30db11dce39bbe7be27dc71afe8a9991c7",
+        "changed": true,
+        "newBytes": 20013
+      },
+      {
+        "file": "docs/CODEX_QUEUE.md",
+        "old67GitBlob": "6e626f9632d741a9e219814b8ed187ac91f57ea3",
+        "old67SHA256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+        "new6fGitBlob": "5b9feedf8d1ccf88e0291b03c5610f4c515aa258",
+        "changed": true,
+        "newBytes": 10742
+      },
+      {
+        "file": "docs/WORLD_PROGRESS.md",
+        "old67GitBlob": "7d398769955de8f7fb7390439efd079d4239ace0",
+        "old67SHA256": "04abf3dfa9eaa0b0a30689eea406d6df064327f2dd0041aa6134369ac91e8be0",
+        "new6fGitBlob": "7d398769955de8f7fb7390439efd079d4239ace0",
+        "changed": false,
+        "newBytes": 22713
+      },
+      {
+        "file": "src/world/themes/cloud.ts",
+        "old67GitBlob": "bd179af8158e4f30e6815cac78dc2f83c3672507",
+        "old67SHA256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+        "new6fGitBlob": "3e0511f4f55c2d00b3754a2c85fba76d5b2bbb0d",
+        "changed": true,
+        "newBytes": 16848
+      },
+      {
+        "file": "src/world/themes/cloud.data.ts",
+        "old67GitBlob": "2cfe339feb1c0781116d9b1cb744b06c6b6432d7",
+        "old67SHA256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af",
+        "new6fGitBlob": "2cfe339feb1c0781116d9b1cb744b06c6b6432d7",
+        "changed": false,
+        "newBytes": 2579
+      },
+      {
+        "file": "src/world/themes/common.ts",
+        "old67GitBlob": "cf67bf1c99e842694b18b3ada07ecd871bb95878",
+        "old67SHA256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+        "new6fGitBlob": "cf67bf1c99e842694b18b3ada07ecd871bb95878",
+        "changed": false,
+        "newBytes": 9514
+      },
+      {
+        "file": "src/world/atmos.ts",
+        "old67GitBlob": "261ba7bfa7e7a28138f4cd13bfe331c813d9dac3",
+        "old67SHA256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+        "new6fGitBlob": "261ba7bfa7e7a28138f4cd13bfe331c813d9dac3",
+        "changed": false,
+        "newBytes": 4163
+      },
+      {
+        "file": "src/world/engine.ts",
+        "old67GitBlob": "8dc1ebb9ccdae78a82007b401db458d7b5e9695f",
+        "old67SHA256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a",
+        "new6fGitBlob": "8dc1ebb9ccdae78a82007b401db458d7b5e9695f",
+        "changed": false,
+        "newBytes": 17670
+      },
+      {
+        "file": "src/world/kit.ts",
+        "old67GitBlob": "169b31ff8bd60ebd65c6a787dbb16ae573c48711",
+        "old67SHA256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+        "new6fGitBlob": "169b31ff8bd60ebd65c6a787dbb16ae573c48711",
+        "changed": false,
+        "newBytes": 29139
+      },
+      {
+        "file": "src/world/tex.ts",
+        "old67GitBlob": "d62da42637c0600fade617057072ed2a82cb29d1",
+        "old67SHA256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+        "new6fGitBlob": "d62da42637c0600fade617057072ed2a82cb29d1",
+        "changed": false,
+        "newBytes": 12086
+      },
+      {
+        "file": "src/world/themes/index.ts",
+        "old67GitBlob": "395359768cea9cd49060ab8e9b691643778d3ad6",
+        "old67SHA256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73",
+        "new6fGitBlob": "395359768cea9cd49060ab8e9b691643778d3ad6",
+        "changed": false,
+        "newBytes": 750
+      },
+      {
+        "file": "src/world/levels.ts",
+        "old67GitBlob": "8aa1f229dc482228e25e1aec338fb089be8ee948",
+        "old67SHA256": "fa2f8d8eb3a580e012b6e51162a443a676dbab2fa944d31bca9c416fda8772e3",
+        "new6fGitBlob": "8aa1f229dc482228e25e1aec338fb089be8ee948",
+        "changed": false,
+        "newBytes": 20258
+      },
+      {
+        "file": "src/world/explore.ts",
+        "old67GitBlob": "b4125179c3d57e17ad1f507743de0277608c4b4f",
+        "old67SHA256": "4fb7fa7241cb76e6e78363fa91ff3d9a093e02f593adfe34c0ead3a824e42c82",
+        "new6fGitBlob": "b4125179c3d57e17ad1f507743de0277608c4b4f",
+        "changed": false,
+        "newBytes": 55663
+      },
+      {
+        "file": "package.json",
+        "old67GitBlob": "4b7d95b3beb4ed4ed40228ba44d1962db0b56f49",
+        "old67SHA256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+        "new6fGitBlob": "4b7d95b3beb4ed4ed40228ba44d1962db0b56f49",
+        "changed": false,
+        "newBytes": 1114
+      },
+      {
+        "file": "package-lock.json",
+        "old67GitBlob": "f559759cc43ab7a2f555ca1d6cc7d7bb860eb42c",
+        "old67SHA256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+        "new6fGitBlob": "f559759cc43ab7a2f555ca1d6cc7d7bb860eb42c",
+        "changed": false,
+        "newBytes": 51766
+      }
+    ],
+    "changed": [
+      {
+        "file": "docs/WORLD3D.md",
+        "old67GitBlob": "11511e220f4e5a289d415d2ef6997839dc6e31ab",
+        "old67SHA256": "3e59c829aa85ec21e55a22c65843cedbd57c0015823540857536cd197ae60edf",
+        "new6fGitBlob": "f4d58a30db11dce39bbe7be27dc71afe8a9991c7",
+        "changed": true,
+        "newBytes": 20013
+      },
+      {
+        "file": "docs/CODEX_QUEUE.md",
+        "old67GitBlob": "6e626f9632d741a9e219814b8ed187ac91f57ea3",
+        "old67SHA256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+        "new6fGitBlob": "5b9feedf8d1ccf88e0291b03c5610f4c515aa258",
+        "changed": true,
+        "newBytes": 10742
+      },
+      {
+        "file": "src/world/themes/cloud.ts",
+        "old67GitBlob": "bd179af8158e4f30e6815cac78dc2f83c3672507",
+        "old67SHA256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+        "new6fGitBlob": "3e0511f4f55c2d00b3754a2c85fba76d5b2bbb0d",
+        "changed": true,
+        "newBytes": 16848
+      }
+    ],
+    "all16Same": false,
+    "additionalChanged": [
+      "src/world/assets/index.ts",
+      "src/world/themes/forest.ts",
+      "src/world/themes/harbor.ts",
+      "docs/CREDITS.md"
+    ]
+  },
+  "currentGameChanges": {
+    "cloud": {
+      "asset": "cc0_grass_005",
+      "source": "ambientCG Grass005",
+      "deliveredCC0Size": [
+        512,
+        512
+      ],
+      "repeatIfLoaded": [
+        4,
+        4
+      ],
+      "fallbackRepeat": [
+        5,
+        5
+      ],
+      "islandDiameter": 58.4,
+      "worldUnitsPerTileIfLoaded": 14.6,
+      "worldUnitsPerTileFallback": 11.68,
+      "roughness": 0.95,
+      "metalness": 0,
+      "sourceBlob": "3e0511f4f55c2d00b3754a2c85fba76d5b2bbb0d"
+    },
+    "forest": {
+      "asset": "cc0_grass_005",
+      "repeatIfLoaded": 9,
+      "fallbackRepeat": 12,
+      "materialTint": "e4f6c8"
+    },
+    "harbor": {
+      "quayAsset": "cc0_wood_064",
+      "source": "ambientCG WoodFloor064",
+      "repeatIfLoaded": [
+        8,
+        1
+      ],
+      "fallbackRepeat": [
+        16,
+        1.2
+      ],
+      "roughness": 0.9,
+      "otherSurfaces": "Other harbor surfaces/pier decks remain their existing procedural sources."
+    }
+  },
+  "islandPreviewScope": {
+    "capturedAtBase": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+    "plane": [
+      8,
+      8
+    ],
+    "repeat": [
+      2,
+      2
+    ],
+    "worldUnitsPerTile": 4,
+    "gameScreenshot": false,
+    "sources": "The three frozen AI candidates, not current CC0Grass005",
+    "unchangedMaterialParameters": [
+      "roughness.95",
+      "metalness0",
+      "anisotropy4",
+      "ATMOS.mist lighting",
+      "RoomPMREM/exposure"
+    ],
+    "all16DependenciesIdenticalAt6f": false,
+    "interpretation": "Frozen independent candidate sample remains valid at67; current game source andUV differ. Do not relabel captures orQA as6f."
+  },
+  "latestRequiredChecks": {
+    "codeBase": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+    "checkedHead": "1d461545d9425c2d326ead28bdb3910675afc7e9",
+    "command": "npm run typecheck && npm test",
+    "commandStartUTC": "2026-10-12T06:18:54Z",
+    "vitestStartUTC": "2026-10-12T06:19:02Z",
+    "vitestDurationSeconds": 42.32,
+    "testFiles": 68,
+    "tests": 1024,
+    "exitCode": 0,
+    "source": "Root reported exit0; docs helper read required-checks-main6f.log, did not rerun."
+  },
+  "privateEvidenceRoot": "/workspace/world-review/source-policy-6f",
+  "privateRawSearchRecords": 9,
+  "conclusion": "ExistingCC0 grass and sky candidates exist and are retained forClaude comparison. Binary download and final style/format compatibility were not verified.114's three AI generations and117's two original calls occurred before new rule; this search is honestly recorded afterward. Future assets search sources first."
+}

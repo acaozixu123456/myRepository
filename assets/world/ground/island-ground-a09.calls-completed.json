@@ -1,0 +1,53 @@
+{
+  "batch": "A09-IS",
+  "pr": 114,
+  "review_round": 1,
+  "genuine_call_count": 3,
+  "calls": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Create a production-ready seamless BASE COLOR ground texture for a bright floating cloud-island in a charming stylized Three.js cat fantasy adventure game. Exact straight-down orthographic view of a continuous flat meadow; the entire square canvas is the ground surface, edge to edge. Clean softly painted game art, rounded simple grass tufts and small leaves, delicate texture variation, bright fresh colors, readable at handheld game scale, neither photorealistic nor a flat textile pattern. Grass dominates over 92 percent of the area. Flowers are small ground-level accents, sparse and naturally scattered, with irregular even density across the whole tile; no bouquet, large blossom, focal patch, orderly rows or symmetric decorative pattern. Keep grass scale small and consistent, distribute details evenly to all edges; no center vignette, no broad brightness gradient, no border or circular island edge. All four sides and corners must visually connect when repeated 2x2 and 4x4; grass clusters and individual flower shapes crossing an edge continue at the opposite edge. Use flat neutral diffuse illumination, no baked directional shadows, no shiny specular spots, no sunlight beams or ambient occlusion creases; engine creates daylight. No soil holes, dirt path, paving, clouds, horizon, sky, floating island silhouette, trees, rocks, objects, people, cats, letters, UI, watermark or contact sheet. One single square texture, requested 2048x2048 at the highest available native resolution. Variant MINT BLOOM: soft light mint and fresh pale lime-green short grass, based around #9AD87A with mint-green #A7DCA4 patches and slightly darker soft sage tufts. Very sparse tiny five-petal cream-white and pale blush-pink flowers, small yellow centers, petals only a little brighter than the grass. Keep the overall impression airy, green and clean. No large dark vegetation.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 05:47:03 UTC",
+      "completed_at_utc": "2026-10-12 05:48:36 UTC",
+      "original_path": "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "review_round": 1,
+      "candidate": 1,
+      "source_kind": "genuine native image generation output"
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Create a production-ready seamless BASE COLOR ground texture for a bright floating cloud-island in a charming stylized Three.js cat fantasy adventure game. Exact straight-down orthographic view of a continuous flat meadow; the entire square canvas is the ground surface, edge to edge. Clean softly painted game art, rounded simple grass tufts and small leaves, delicate texture variation, bright fresh colors, readable at handheld game scale, neither photorealistic nor a flat textile pattern. Grass dominates over 92 percent of the area. Flowers are small ground-level accents, sparse and naturally scattered, with irregular even density across the whole tile; no bouquet, large blossom, focal patch, orderly rows or symmetric decorative pattern. Keep grass scale small and consistent, distribute details evenly to all edges; no center vignette, no broad brightness gradient, no border or circular island edge. All four sides and corners must visually connect when repeated 2x2 and 4x4; grass clusters and individual flower shapes crossing an edge continue at the opposite edge. Use flat neutral diffuse illumination, no baked directional shadows, no shiny specular spots, no sunlight beams or ambient occlusion creases; engine creates daylight. No soil holes, dirt path, paving, clouds, horizon, sky, floating island silhouette, trees, rocks, objects, people, cats, letters, UI, watermark or contact sheet. One single square texture, requested 2048x2048 at the highest available native resolution. Variant PINK CLOVER: a lush low carpet of small rounded clover leaves mixed with short pale-green grass. Dominant fresh mint/lime green around #9AD87A, small natural pink-tinted clover leaves and tiny soft blush-pink or cream-white flowerheads around #FFD0E8 and #FFF4E8, never covering the green base. Soft sage leaf undersides, gentle individual leaf shading without a global light direction. Low botanical shapes, airy pastel pink and green balance. No flowers larger than a single clover cluster.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 05:47:03 UTC",
+      "completed_at_utc": "2026-10-12 05:48:36 UTC",
+      "original_path": "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "review_round": 1,
+      "candidate": 1,
+      "source_kind": "genuine native image generation output"
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Create a production-ready seamless BASE COLOR ground texture for a bright floating cloud-island in a charming stylized Three.js cat fantasy adventure game. Exact straight-down orthographic view of a continuous flat meadow; the entire square canvas is the ground surface, edge to edge. Clean softly painted game art, rounded simple grass tufts and small leaves, delicate texture variation, bright fresh colors, readable at handheld game scale, neither photorealistic nor a flat textile pattern. Grass dominates over 92 percent of the area. Flowers are small ground-level accents, sparse and naturally scattered, with irregular even density across the whole tile; no bouquet, large blossom, focal patch, orderly rows or symmetric decorative pattern. Keep grass scale small and consistent, distribute details evenly to all edges; no center vignette, no broad brightness gradient, no border or circular island edge. All four sides and corners must visually connect when repeated 2x2 and 4x4; grass clusters and individual flower shapes crossing an edge continue at the opposite edge. Use flat neutral diffuse illumination, no baked directional shadows, no shiny specular spots, no sunlight beams or ambient occlusion creases; engine creates daylight. No soil holes, dirt path, paving, clouds, horizon, sky, floating island silhouette, trees, rocks, objects, people, cats, letters, UI, watermark or contact sheet. One single square texture, requested 2048x2048 at the highest available native resolution. Variant MEADOW MIX: light apple-green and soft mint short grass around #9AD87A, scattered small rounded ground-cover leaves. A restrained mix of tiny white, pale butter-yellow #FFF2A0 and powder-blue #D0E8FF five-petal meadow flowers. Small blossoms only, about 2 to 4 percent total visual coverage, no dominant yellow flower patch or large daisy. Very subtle lavender buds may appear rarely. Green is the dominant color, varied miniature flowers add playful clean accents.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 05:47:03 UTC",
+      "completed_at_utc": "2026-10-12 05:48:36 UTC",
+      "original_path": "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "review_round": 1,
+      "candidate": 1,
+      "source_kind": "genuine native image generation output"
+    }
+  ]
+}
