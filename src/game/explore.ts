@@ -9,7 +9,7 @@ import { mulberry } from '../fx/util';
 import { herbsOf, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number }
+export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; }
   return e;
 }
 
@@ -122,7 +122,7 @@ export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | n
 }
 
 // ---------- 探索足迹（长期累计目标）----------
-export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish';
+export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen';
 export interface TrailMilestone { id: string; stat: TrailStat; need: number; label: string; reward: Gain }
 const G = (fish: number, catnip: number, bells: number, exp = 0): Gain => ({ fish, catnip, bells, exp });
 export const TRAIL: TrailMilestone[] = [
@@ -139,6 +139,9 @@ export const TRAIL: TrailMilestone[] = [
   { id: 'f10', stat: 'fish', need: 10, label: '新手钓手 · 钓上 10 条鱼', reward: G(300, 3, 0) },
   { id: 'f50', stat: 'fish', need: 50, label: '垂钓达人 · 钓上 50 条鱼', reward: G(1200, 10, 30) },
   { id: 'f150', stat: 'fish', need: 150, label: '渔港传说 · 钓上 150 条鱼', reward: G(3500, 25, 100) },
+  { id: 'r10', stat: 'ramen', need: 10, label: '屋台学徒 · 做好 10 碗面', reward: G(300, 3, 0) },
+  { id: 'r50', stat: 'ramen', need: 50, label: '夜市拉面师 · 做好 50 碗面', reward: G(1300, 10, 30) },
+  { id: 'r150', stat: 'ramen', need: 150, label: '九命拉面传人 · 做好 150 碗面', reward: G(3800, 25, 100) },
   { id: 'b3', stat: 'bosses', need: 3, label: '首领克星 · 赢 3 场首领战', reward: G(500, 4, 10, 200) },
   { id: 'b12', stat: 'bosses', need: 12, label: '首领终结者 · 赢 12 场首领战', reward: G(2000, 15, 50, 800) },
   { id: 'b40', stat: 'bosses', need: 40, label: '九命天敌 · 赢 40 场首领战', reward: G(6000, 40, 150, 2500) },

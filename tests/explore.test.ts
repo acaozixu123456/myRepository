@@ -144,7 +144,7 @@ describe('探索足迹（长期累计）', () => {
   });
   it('里程碑 id 唯一，同类目标越来越大、奖励越来越多', () => {
     expect(new Set(TRAIL.map((m) => m.id)).size).toBe(TRAIL.length);
-    for (const stat of ['kills', 'chests', 'herbs', 'bosses', 'fish'] as const) {
+    for (const stat of ['kills', 'chests', 'herbs', 'bosses', 'fish', 'ramen'] as const) {
       const ms = TRAIL.filter((m) => m.stat === stat);
       expect(ms.length).toBeGreaterThanOrEqual(3);
       for (let i = 1; i < ms.length; i++) { expect(ms[i].need).toBeGreaterThan(ms[i - 1].need); expect(ms[i].reward.fish).toBeGreaterThan(ms[i - 1].reward.fish); }
@@ -194,6 +194,13 @@ describe('场景玩法入口（POI）', () => {
     const plan = spawnPlan(s);
     expect(plan.filter((p) => p.kind === 'poi' && p.game === 'fish')).toHaveLength(1);
     expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
+  });
+  it('霓虹夜市有拉面屋台（在喵喵拉面店门口）', () => {
+    expect(poisOf(LEVELS[2]).map((p) => p.game)).toContain('ramen');
+    const shop = LEVELS[2].buildings.find((b) => b.spec.shop?.name === '喵喵拉面')!;
+    const p = poisOf(LEVELS[2]).find((q) => q.game === 'ramen')!;
+    expect(Math.abs(p.x - shop.x)).toBeLessThan(shop.spec.w / 2 + 2);
+    expect(Math.abs(p.z - shop.z)).toBeLessThan(shop.spec.d / 2 + 3);
   });
   it('钓鱼点贴着水边，离水不超过 3 个单位', () => {
     for (const L of Object.values(LEVELS)) for (const p of poisOf(L)) if (p.game === 'fish' && L.water) {
