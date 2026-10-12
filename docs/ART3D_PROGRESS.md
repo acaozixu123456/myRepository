@@ -247,9 +247,9 @@
 | `glowEyes` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `xian_changmiao`(SP) | 底版 | 0 | |
 | `tassel` | `shu_liumiaobei`(UR), `shu_zhugemiaoliang`(SSR), `wu_ganning`(SR) + 杂兵×3 | 底版 | 0 | |
 | `warPaint` | `man_mengmiaohuo`(UR), `shu_zhangmiaofei`(SSR), `man_zhurong`(SSR) 等4只 | 底版 | 0 | |
-| `beardLong` | `shu_guanyunmiao`(SSR) | 底版 | 0 | |
-| `eyepatch` | `wei_xiahoudun`(SSR) | 底版 | 0 | |
-| `redFace` | `shu_guanyunmiao`(SSR) | 底版 | 0 | |
+| `beardLong` | `shu_guanyunmiao`(SSR) | 待审 | 1 | 深色三绺长须、细发线、实际下颌接合；7逻辑网格 |
+| `eyepatch` | `wei_xiahoudun`(SSR) | 待审 | 1 | 缝边皮罩、圆铆钉、实际连通头带；7逻辑网格；保留外白边 |
+| `redFace` | `shu_guanyunmiao`(SSR) | 待审 | 1 | 真实host三角+z.001连续暖红贴肤片；1逻辑网格 |
 | `scar` | `wu_sunxiaoba`(SSR) | 底版 | 0 | |
 | `monocle` | `xian_guanlu`(SR) | 底版 | 0 | |
 | `scarf` | 杂兵×4 | 底版 | 0 | |
@@ -403,3 +403,20 @@ src/art3d/parts/hero-ur-weapons.ts
 提交前同步主线 `bb73f1f` 并保留双方进度记录，解决的冲突仅在本进度文档。本批注册表/helper、cat/pose/renderer/actor与正式图字节未变；旧独立 QA 与拍摄记录仍明确固定60bc源快照。新增小游戏和SP专属来自主线，不计为本批改动；合并后原生检查与89用户复核另按实际日志记录。
 
 同步bb73后作者重新冻结282运行时源，89实际id/87非目标字节同、真实400状态及100实际1120颅壳形位通过；新增眼/作者鼻口/FRAME/finite0。原生typecheck+test退出0，75文件 /1068测试，[当前复核](../src/art3d/parts/reviews/back-scroll-banner/post-main-validation.json)。独立5200+48和正式图仍保留60bc源快照与原始范围。
+
+
+### 配饰第3批检查（长须 / 眼罩 / 红脸，第1轮待审）
+
+`codex/3d-extras-veterans` 仅改 `EXTRA.beardLong / eyepatch / redFace`、新增 `parts/extras-veterans.ts`、移除原目标函数使用的未用sphere import；其余九项注册及已合羊须/铃铛/耳环函数保持主线字节。实际2英雄、0杂兵/宠物：关云喵长须+红脸，夏侯墩眼罩；全89显式look/id目标三builder真命中，87非目标Uint8属性/布局/index同，12宠物不变。注册表SHA256 `76596c1368f2219e384b083cf1c857713a11fc19689f6107b9720eb3f8e5a107`、helper `1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550`。7/7/1逻辑网格，含描边14/14/1，maxseg24，缓存Toon/outline、单位根、正尺度、无逐帧分配。
+
+独立source7/main60的400配对为两位各14pose×四yaw静态t=.4，加idle/windup/strike×12t×四yaw（0/±32/148、phase0、dash moving）。两眼真实baked核心12×12，raw开放眼新496个ID全在目标配饰之前已被真实head遮住，新可见开放眼0；包含夏侯有意眼罩index1时raw眼新4751，另保留13154逐owner/triangle映射，不豁免其它眼或整个脸。五点新0，活跃口3×3仅hurt/.4/148两个新mouthO点已经head先遮，可见新0。源码5/6曾真正挡slump/.4/+32的muzzleL，最终1834对同一真实点候选tri命中null、正常图复核闭合；未修改根、镜头或姿势。
+
+正常idle/windup/strike眼罩盖中心，仍有细白边。夏侯200姿态73例共1083可见眼核投影格未被罩覆盖、idle32为21，不把这些格直接叫白眼像素/虹膜中心，不承诺全部200姿态瞳孔或全白眼都被盖。新可见开放眼0与这项既有设计覆盖程度分开。最不满意即该外白边、190px须线弱、红脸眼周细折线；扩大罩下沿会再次挡真实嘴，因此保留当前清楚口鼻的形态。
+
+完整实际1120颅骨、560口鼻本体/normal外扩描边逐三角裁剪非意图0；仅具名long-beard-muzzle-contact以6实体/42outline三角接下颌窄区（x±.0534、y[-.2984,-.2883]、z[.5154,.5552]），头带仅16outline浅交、实体0。两个连接Tube主三角分别与头带tri252/260、259/283相交，不拿端点猜接通。耳48补测含真实外Cone父y=.22，左右实体/展开壳完整tri两版0；相对矩阵800条误差≤1.55e-15。
+
+红脸纯数值faces cache随LOD、不共享GPUgeometry。实际default28×21/1120、world17×13/408 host，色片6632/5094完整输出三角；42856/33580点全匹配host前面，真实+z偏置[.0009999449,.0010000572]、颅骨本体/口鼻完整交0。进入真实expanded头描边表层6613/5082三角，余19/12未被clip阈值计为交叠，明确表层意图而非全part忽略；不写全部头壳交0，也未做手机FPS测量。owned FRAME/finite/新增与增大whole裁幅0；整猫8旧=新为关云喵castFwd/guard四yaw既有paw下裁，精确margin同。
+
+8张正式图来自1834/main60正常bake，全部原生RGBA完整字节0、<500000B，最大battle400846B。两英雄190px四yaw三pose、2detail与真10cat完整HUD；12帧2target/3实际builder startup各1，页面抛错0，保留一次外部Google字体失败和同console复述。正常捕获19主依赖实际pre/post同，另独立后验259runtime副本同原bytes（五unusedSHA导出去除）；不是倒推当时全479含审图guard。独立九组旧新图530×2379/285130B全RGBA0。原生main60/source7 69文件1035通过；同步主线4d后作者fresh400/89/87非目标同、原生78/1086通过。提交前再同步已通过BACK3和海湾至68，当前89/87同、两目标idle smoke与原生80/1102退出0，后验范围分别记录，不将原图或独立400+48重标当前68。
+
+证据：[README与8图](../src/art3d/parts/reviews/extras-veterans/README.md)、[约190px](../src/art3d/parts/reviews/extras-veterans/veterans-32-native.png)、[正面](../src/art3d/parts/reviews/extras-veterans/veterans-front.png)、[背视](../src/art3d/parts/reviews/extras-veterans/veterans-back.png)、[完整十猫](../src/art3d/parts/reviews/extras-veterans/battle.webp)、[独立结论](../src/art3d/parts/reviews/extras-veterans/qa-summary.md)、[400+48与13154映射](../src/art3d/parts/reviews/extras-veterans/qa-summary.json)、[正常九组对照](../src/art3d/parts/reviews/extras-veterans/before-after.png)、[作者与主线增补](../src/art3d/parts/reviews/extras-veterans/author-validation.json)。本轮待Claude审核；有限离散phase/样本不保证全部连续时刻或全像素/未来镜头。公开素材限定目录与未采用范围、许可实际检索详README，不将目录查询当逐GLB审图。
