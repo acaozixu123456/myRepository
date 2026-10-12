@@ -75,15 +75,6 @@ function sash(c: PartCtx, r: number, y = 0.46): THREE.Group {
   for (const s of [1, -1]) { const t = solid(new THREE.BoxGeometry(0.1, 0.5, 0.025), toon(c.pal.sub), 0.01); t.position.set(r * 0.55 + s * 0.09, y - 0.28, -r * 1.0); t.rotation.z = s * 0.22; g.add(t); const tt = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.05, 0.03), toon(c.pal.trim)); tt.position.set(r * 0.55 + s * 0.09 + s * 0.055, y - 0.51, -r * 1.0); tt.rotation.z = s * 0.22; g.add(tt); }
   return g;
 }
-/** 披肩（文士 / 道袍 / 华服）：脖子根一圈柔软的肩领，盖住肩线 */
-function mantle(c: PartCtx, col: string): THREE.Group {
-  const g = new THREE.Group();
-  const m = solid(new THREE.SphereGeometry(0.62, 22, 10, 0, Math.PI * 2, 0, Math.PI / 2.1), toon(col, { double: true }), 0.016);
-  m.scale.set(0.78, 0.5, 0.74); m.position.y = 1.02; g.add(m);
-  const rim = solid(new THREE.TorusGeometry(0.62, 0.03, 6, 28), toon(c.pal.trim), 0.006);
-  rim.rotation.x = Math.PI / 2; rim.scale.set(0.78, 0.74, 1); rim.position.y = 1.02 + 0.0; g.add(rim);
-  return g;
-}
 /** 层叠肩甲：三片鳞状弧片 + 铆钉，big 时再加一圈尖刺 */
 function pauldrons(c: PartCtx, col: string, big = false): THREE.Group {
   const g = new THREE.Group();
