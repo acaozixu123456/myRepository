@@ -36,10 +36,12 @@ import { ARROWS_CSS, openArrows } from './arrows';
 import { FIREFLY_CSS, openFirefly } from './firefly';
 import { KITE_CSS, openKite } from './kite';
 import { KITCHEN_CSS, openKitchen } from './kitchen';
+import { SLED_CSS, openSled } from './sled';
+import { SNOWCAT_CSS, openSnowCat } from './snowcat';
 import { topbar } from './lineup';
 import { playStoryOnce } from '../story';
 
-export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUSHROOM_CSS + WINDCHIME_CSS + LANTERN_CSS + KART_CSS + CLAW_CSS + WHACK_CSS + RINGTOSS_CSS + ARROWS_CSS + FIREFLY_CSS + KITE_CSS + KITCHEN_CSS + `
+export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUSHROOM_CSS + WINDCHIME_CSS + LANTERN_CSS + KART_CSS + CLAW_CSS + WHACK_CSS + RINGTOSS_CSS + ARROWS_CSS + FIREFLY_CSS + KITE_CSS + KITCHEN_CSS + SLED_CSS + SNOWCAT_CSS + `
 .screen.xplore{background:#0d0818}
 .xplore canvas#wcv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
@@ -500,7 +502,7 @@ async function onPoi(ctx: AppCtx, sp: Spawn): Promise<void> {
   if (autoOn) return;
   const host = ctx.root.querySelector('[data-screen="explore"]');
   if (!host) return;
-  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : sp.data === 'boxcat' ? openBoxCat : sp.data === 'mushroom' ? openMushroom : sp.data === 'windchime' ? openWindChime : sp.data === 'lanterns' ? openLanterns : sp.data === 'kart' ? openKart : sp.data === 'claw' ? openClaw : sp.data === 'whack' ? openWhack : sp.data === 'ring' ? openRingToss : sp.data === 'arrows' ? openArrows : sp.data === 'firefly' ? openFirefly : sp.data === 'kite' ? openKite : sp.data === 'kitchen' ? openKitchen : null;
+  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : sp.data === 'boxcat' ? openBoxCat : sp.data === 'mushroom' ? openMushroom : sp.data === 'windchime' ? openWindChime : sp.data === 'lanterns' ? openLanterns : sp.data === 'kart' ? openKart : sp.data === 'claw' ? openClaw : sp.data === 'whack' ? openWhack : sp.data === 'ring' ? openRingToss : sp.data === 'arrows' ? openArrows : sp.data === 'firefly' ? openFirefly : sp.data === 'kite' ? openKite : sp.data === 'kitchen' ? openKitchen : sp.data === 'sled' ? openSled : sp.data === 'snowcat' ? openSnowCat : null;
   if (open) {
     // 小游戏开着时世界本来就是暂停的：把 3D 渲染也停掉（画面定格在背后）。不停的话，慢设备上每帧渲染会拖慢计时器和点击，节奏类玩法会漏拍，也白白耗电。
     // HUD 也藏起来：它带 backdrop-filter 模糊，盖在定格的 WebGL 画面上每帧都要重新合成，低端机很吃力
@@ -533,9 +535,9 @@ function onTalk(ctx: AppCtx, _sp: Spawn) {
 }
 
 /** 探索足迹：长期累计目标，够数后手动领奖 */
-const SCENE_EMOJI: Record<number, string> = { 1: '🌃', 2: '🏮', 3: '🌊', 4: '🌲', 5: '☁️', 6: '🏯', 101: '🏜️' };
-const GAME_EMOJI: Record<string, string> = { boxcat: '📦', ramen: '🍜', fish: '🎣', mushroom: '🍄', windchime: '🎐', lanterns: '🏮', kart: '🏎️', claw: '🧸', whack: '🖱️', ring: '⭕', arrows: '🏹', firefly: '✨', kite: '🪁', kitchen: '🥢' };
-const GAME_NAME: Record<string, string> = { boxcat: '纸箱寻猫', ramen: '拉面屋台', fish: '钓鱼', mushroom: '采蘑菇', windchime: '风铃节拍', lanterns: '点灯谜题', kart: '卡丁车', claw: '夹娃娃', whack: '鼠标大作战', ring: '套圈', arrows: '草船借箭', firefly: '萤火虫记忆', kite: '放纸鸢', kitchen: '御膳房配菜' };
+const SCENE_EMOJI: Record<number, string> = { 1: '🌃', 2: '🏮', 3: '🌊', 4: '🌲', 5: '☁️', 6: '🏯', 101: '🏜️', 102: '🏔️' };
+const GAME_EMOJI: Record<string, string> = { boxcat: '📦', ramen: '🍜', fish: '🎣', mushroom: '🍄', windchime: '🎐', lanterns: '🏮', kart: '🏎️', claw: '🧸', whack: '🖱️', ring: '⭕', arrows: '🏹', firefly: '✨', kite: '🪁', kitchen: '🥢', sled: '🛷', snowcat: '⛄' };
+const GAME_NAME: Record<string, string> = { boxcat: '纸箱寻猫', ramen: '拉面屋台', fish: '钓鱼', mushroom: '采蘑菇', windchime: '风铃节拍', lanterns: '点灯谜题', kart: '卡丁车', claw: '夹娃娃', whack: '鼠标大作战', ring: '套圈', arrows: '草船借箭', firefly: '萤火虫记忆', kite: '放纸鸢', kitchen: '御膳房配菜', sled: '雪橇滑坡', snowcat: '叠雪猫' };
 /** 一键切换场景：6 个场景一屏看完，已解锁的点一下就过去；各场景有各自的小游戏 */
 function openScenes(ctx: AppCtx) {
   ctx.root.querySelectorAll('.scene-mask').forEach((e) => e.remove());
