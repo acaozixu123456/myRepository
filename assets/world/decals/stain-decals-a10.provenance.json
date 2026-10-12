@@ -1,0 +1,1631 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A10-STAINS-01",
+  "title": "地面污渍透明贴花 · 首批10张",
+  "created_date_utc": "2026-10-12",
+  "branch": "codex/3d-world-stain-decals",
+  "base_branch": "claude/awesome-babbage-ygba4h",
+  "base_commit": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+  "brief": "docs/CODEX_WORLD_BRIEF.md",
+  "generator": {
+    "tool": "image_gen.imagegen",
+    "callable_tool": "image_gen__imagegen",
+    "provider": "OpenAI",
+    "model_version": null,
+    "seed": null,
+    "metadata_note": "工具未返回模型版本与随机种子。10张分别独立生成；油污/锈流/轮胎痕各另以工具编辑一次，共13次真实工具调用。",
+    "external_reference_images": [],
+    "reference_note": "生成未使用外部参考；修订只引用对应贴花自己的AI初稿。",
+    "raw_retention": "13份原始RGBA PNG保留在 raw_output.path 指向的 /workspace/generated_images 路径；未删除或覆盖，原图因仓库文件大小限制未提交。"
+  },
+  "review": {
+    "round": 1,
+    "status": "awaiting_claude",
+    "approved_count": 0
+  },
+  "assets": [
+    {
+      "id": "decal_stain_soot_01",
+      "title": "煤烟粉尘",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_soot_01.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A broad ASYMMETRIC charcoal soot-dust smear, with an off-center diffuse patch tapering into three separate wispy powder fingers to the right. Near-black cool brown-gray fine dust, translucent ragged powder edges and a few tiny separated black granules; broad interior remains partly open and mottled. Loose smoky ground grime, not clouds or smoke floating in air.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A broad ASYMMETRIC charcoal soot-dust smear, with an off-center diffuse patch tapering into three separate wispy powder fingers to the right. Near-black cool brown-gray fine dust, translucent ragged powder edges and a few tiny separated black granules; broad interior remains partly open and mottled. Loose smoky ground grime, not clouds or smoke floating in air.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-f093f136-9ebd-40c8-b196-d36d44e3b776.png",
+            "filename": "exec-f093f136-9ebd-40c8-b196-d36d44e3b776.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1908896,
+            "sha256": "d5293d1a317a33cf6674f4380cf02f05c816761bad20d5e9534b5356b666d62d"
+          },
+          "selection_note": "采用；独立污渍形态与透明叠加可读，无额外背景底板。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-f093f136-9ebd-40c8-b196-d36d44e3b776.png",
+        "raw_source_sha256": "d5293d1a317a33cf6674f4380cf02f05c816761bad20d5e9534b5356b666d62d",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 107802,
+        "sha256": "aecef56c8e44a461a5fe4f0f19ee6753c9a3c4b11e5290bd920522ad5166a4f4",
+        "alpha_resample_sha256": "e3584fbf166fec150fce66db64fee02f3a9edcd9d868337e7a479c106d7156f7",
+        "encoded_alpha_sha256": "e3584fbf166fec150fce66db64fee02f3a9edcd9d868337e7a479c106d7156f7",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.517853,
+          "partial_fraction": 0.482037,
+          "opaque_fraction": 0.000111,
+          "border_maximum": 1,
+          "border_mean": 0.024902,
+          "bbox_gt16": [
+            25,
+            63,
+            491,
+            452
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    },
+    {
+      "id": "decal_stain_mud_drag_02",
+      "title": "湿泥拖痕",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_mud_drag_02.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A narrow irregular DIAGONAL damp mud drag trace traveling from lower-left toward upper-right, with three parallel thin streaks breaking apart, one small dull umber accumulation at the starting end, and scattered tiny flecks. Desaturated dark earth brown; flat dirty deposit, no shiny water, no thick raised mud lumps. An elongated dragged shape clearly different from a circular stain.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A narrow irregular DIAGONAL damp mud drag trace traveling from lower-left toward upper-right, with three parallel thin streaks breaking apart, one small dull umber accumulation at the starting end, and scattered tiny flecks. Desaturated dark earth brown; flat dirty deposit, no shiny water, no thick raised mud lumps. An elongated dragged shape clearly different from a circular stain.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-b4b19282-98a5-420c-aa06-c56475e95b10.png",
+            "filename": "exec-b4b19282-98a5-420c-aa06-c56475e95b10.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 868860,
+            "sha256": "8fb3ce01e0fb2ff5513bb3750f3888fbbd7d0038301fc384932730186add7c7e"
+          },
+          "selection_note": "采用；独立污渍形态与透明叠加可读，无额外背景底板。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-b4b19282-98a5-420c-aa06-c56475e95b10.png",
+        "raw_source_sha256": "8fb3ce01e0fb2ff5513bb3750f3888fbbd7d0038301fc384932730186add7c7e",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 59860,
+        "sha256": "d93d4e60e7081f2ebb9525d5bd2b227288854d350d09293294ae9f84714ba304",
+        "alpha_resample_sha256": "426be04059af2b0a50ddf1542c8f965ce7b000520ae6d5fac4a16073ca1e0f95",
+        "encoded_alpha_sha256": "426be04059af2b0a50ddf1542c8f965ce7b000520ae6d5fac4a16073ca1e0f95",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.817162,
+          "partial_fraction": 0.182076,
+          "opaque_fraction": 0.000763,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            27,
+            47,
+            490,
+            482
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    },
+    {
+      "id": "decal_stain_oil_film_03",
+      "title": "褐色油膜",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_oil_film_03.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A broken LOW-CONTRAST brown-black used-oil film residue in a shallow crescent / open horseshoe shape, offset from center, with thin feathered swirls and two small satellite smudges. Sparse translucent coffee-brown and graphite material coloration, no rainbow sheen, no wet highlight or puddle surface. Interior transparent areas remain clearly open; quiet discolored ground, not a liquid object.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A broken LOW-CONTRAST brown-black used-oil film residue in a shallow crescent / open horseshoe shape, offset from center, with thin feathered swirls and two small satellite smudges. Sparse translucent coffee-brown and graphite material coloration, no rainbow sheen, no wet highlight or puddle surface. Interior transparent areas remain clearly open; quiet discolored ground, not a liquid object.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-98653782-4f09-421c-b311-736d250dd253.png",
+            "filename": "exec-98653782-4f09-421c-b311-736d250dd253.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1460739,
+            "sha256": "5c536ebfb22f4ddcbf7f957dbc33a3de20deab819d7317e1a9566a315b4eb2b8"
+          },
+          "selection_note": "未采用；浅褐泥壳与亮颗粒偏重，修订为更深的褐黑油污。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Transform this supplied transparent decal into a thin FLAT USED-OIL discoloration overlay, not dry mud, a soil ridge, a crust, or a raised material fragment. Preserve its open horseshoe/crescent silhouette and separate satellite spots, but completely remove the pale tan rim, crumbly bright granules and dark/light relief shading. The visible color must be quiet dark coffee-brown / brown-black grease, partly translucent with soft patchy wispy ends and tiny sparse speckles. All shapes are flat material color: NO reflective puddle, rainbow, specular shine, edge highlight, directional shadow or neon cast. Clear transparent gaps remain in the center and between marks. Keep the entire stain safely inside the square with at least 8% genuine empty transparent margin; no floor texture, backing layer, background color, border, white rectangle, painted checkerboard or artwork labels. This is one top-down 512x512 RGBA game ground decal on a TRUE transparent background. No people, animals, objects, words or fresh-red color.",
+          "tool_arguments": {
+            "prompt": "Transform this supplied transparent decal into a thin FLAT USED-OIL discoloration overlay, not dry mud, a soil ridge, a crust, or a raised material fragment. Preserve its open horseshoe/crescent silhouette and separate satellite spots, but completely remove the pale tan rim, crumbly bright granules and dark/light relief shading. The visible color must be quiet dark coffee-brown / brown-black grease, partly translucent with soft patchy wispy ends and tiny sparse speckles. All shapes are flat material color: NO reflective puddle, rainbow, specular shine, edge highlight, directional shadow or neon cast. Clear transparent gaps remain in the center and between marks. Keep the entire stain safely inside the square with at least 8% genuine empty transparent margin; no floor texture, backing layer, background color, border, white rectangle, painted checkerboard or artwork labels. This is one top-down 512x512 RGBA game ground decal on a TRUE transparent background. No people, animals, objects, words or fresh-red color.",
+            "referenced_image_paths": [
+              "/workspace/generated_images/exec-98653782-4f09-421c-b311-736d250dd253.png"
+            ],
+            "transparent_background": true
+          },
+          "references": [
+            "5c536ebfb22f4ddcbf7f957dbc33a3de20deab819d7317e1a9566a315b4eb2b8"
+          ],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-55530781-b267-4114-8748-9947c0c255f7.png",
+            "filename": "exec-55530781-b267-4114-8748-9947c0c255f7.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1294262,
+            "sha256": "f8086d495e4319cdcd0f8f176f743803e9e4f46c8b5e11ad37646df6ab5c7601"
+          },
+          "selection_note": "采用；AI修订材料颜色与过强亮粒后保留工具原生透明通道。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-55530781-b267-4114-8748-9947c0c255f7.png",
+        "raw_source_sha256": "f8086d495e4319cdcd0f8f176f743803e9e4f46c8b5e11ad37646df6ab5c7601",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 86828,
+        "sha256": "495be83b0d73af2fd85af5aec50223c07947200c57c70988e35f5b23bdf9f4ac",
+        "alpha_resample_sha256": "f28ebd5dc9be53c8cea250af0a1a370e3c4516fa39fa790b51ae66d977c18d75",
+        "encoded_alpha_sha256": "f28ebd5dc9be53c8cea250af0a1a370e3c4516fa39fa790b51ae66d977c18d75",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.660042,
+          "partial_fraction": 0.339134,
+          "opaque_fraction": 0.000824,
+          "border_maximum": 1,
+          "border_mean": 0.005371,
+          "bbox_gt16": [
+            26,
+            26,
+            494,
+            486
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    },
+    {
+      "id": "decal_stain_mineral_04",
+      "title": "矿物水渍",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_mineral_04.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A pale muted GRAY-BEIGE mineral water deposit consisting of TWO overlapping incomplete uneven drying rings and sparse chalky grains. One ring large and fractured, the other smaller offset toward bottom-right, both with wide fully transparent gaps. Restrained gray-tan salts, very soft translucent erosion edges, no luminous white edge or thick circle. No actual water reflection.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A pale muted GRAY-BEIGE mineral water deposit consisting of TWO overlapping incomplete uneven drying rings and sparse chalky grains. One ring large and fractured, the other smaller offset toward bottom-right, both with wide fully transparent gaps. Restrained gray-tan salts, very soft translucent erosion edges, no luminous white edge or thick circle. No actual water reflection.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-88c3f1ae-a64b-44a3-875a-2d4e3d3bee13.png",
+            "filename": "exec-88c3f1ae-a64b-44a3-875a-2d4e3d3bee13.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1107877,
+            "sha256": "821ae5c841d299efd4a726e8bf7dea2a00a794a1dadf44215816bfa1328606b1"
+          },
+          "selection_note": "采用；独立污渍形态与透明叠加可读，无额外背景底板。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-88c3f1ae-a64b-44a3-875a-2d4e3d3bee13.png",
+        "raw_source_sha256": "821ae5c841d299efd4a726e8bf7dea2a00a794a1dadf44215816bfa1328606b1",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 93502,
+        "sha256": "33e871b20195bda6e4ae2fea442a0f0b8c978c8876efdc5a0fc07e14c14b44f0",
+        "alpha_resample_sha256": "eaf6ca79947f7c69ca71719c3ffc8b36f2f40d50df51ad234214d5156ee08202",
+        "encoded_alpha_sha256": "eaf6ca79947f7c69ca71719c3ffc8b36f2f40d50df51ad234214d5156ee08202",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.742313,
+          "partial_fraction": 0.255295,
+          "opaque_fraction": 0.002392,
+          "border_maximum": 1,
+          "border_mean": 0.000488,
+          "bbox_gt16": [
+            24,
+            35,
+            493,
+            483
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "矿物盐痕偏亮，实际接入请控制尺度与摆放密度。"
+      }
+    },
+    {
+      "id": "decal_stain_rust_run_05",
+      "title": "淡锈褐流痕",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_rust_run_05.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A fan-shaped irregular RUST-BROWN washed residue: a small narrow starting area near top-left divides into four branching faint diagonal trailing streaks toward lower-right, ending as scattered small rusty dust spots. Muted ochre-brown only, low saturation and translucent feathering. Rust dust deposited on pavement, not metal objects, not orange flames or bright red liquid.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A fan-shaped irregular RUST-BROWN washed residue: a small narrow starting area near top-left divides into four branching faint diagonal trailing streaks toward lower-right, ending as scattered small rusty dust spots. Muted ochre-brown only, low saturation and translucent feathering. Rust dust deposited on pavement, not metal objects, not orange flames or bright red liquid.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-2460df69-10d8-45ea-bce8-ff917ab3742e.png",
+            "filename": "exec-2460df69-10d8-45ea-bce8-ff917ab3742e.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1167964,
+            "sha256": "375891d8973262cde88df8c5469ac6ed5ced5783b2a16d7642fdeafc3ad78dc8"
+          },
+          "selection_note": "未采用；锈色偏亮橙，修订为低饱和浅锈褐。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Refine the supplied transparent rust-run stain decal. Keep the same four branching fan-shaped washed residue streaks and dispersed spots, but make them QUIET DESATURATED EARTH-BROWN RUST DUST. Remove the strong orange/yellow saturation and all bright grain ridges or raised crumb relief. Thin faded rusty-brown material color only, not bright orange mud or fresh-red liquid. Substantial partial transparency lets arbitrary pavement texture show through. Ragged feathered speckled edges, no dark outline, no lighting, shine, directional shadow, neon reflection or lifted edge. Flat orthographic top-down stain, no rusted metal object and no floor backing. Preserve genuine transparency, clear gaps between streaks, and at least 8% fully transparent canvas margin. One full square 512x512 RGBA game decal on a TRUE transparent background. No text, faces, characters, frame, checkerboard pattern, white rectangle or other background.",
+          "tool_arguments": {
+            "prompt": "Refine the supplied transparent rust-run stain decal. Keep the same four branching fan-shaped washed residue streaks and dispersed spots, but make them QUIET DESATURATED EARTH-BROWN RUST DUST. Remove the strong orange/yellow saturation and all bright grain ridges or raised crumb relief. Thin faded rusty-brown material color only, not bright orange mud or fresh-red liquid. Substantial partial transparency lets arbitrary pavement texture show through. Ragged feathered speckled edges, no dark outline, no lighting, shine, directional shadow, neon reflection or lifted edge. Flat orthographic top-down stain, no rusted metal object and no floor backing. Preserve genuine transparency, clear gaps between streaks, and at least 8% fully transparent canvas margin. One full square 512x512 RGBA game decal on a TRUE transparent background. No text, faces, characters, frame, checkerboard pattern, white rectangle or other background.",
+            "referenced_image_paths": [
+              "/workspace/generated_images/exec-2460df69-10d8-45ea-bce8-ff917ab3742e.png"
+            ],
+            "transparent_background": true
+          },
+          "references": [
+            "375891d8973262cde88df8c5469ac6ed5ced5783b2a16d7642fdeafc3ad78dc8"
+          ],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-75a2e200-68d6-4daf-8134-a3e50d29b9ff.png",
+            "filename": "exec-75a2e200-68d6-4daf-8134-a3e50d29b9ff.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1267697,
+            "sha256": "593f1287acce9dc4959a75015054cbd465ae6b563c8dfc64e7c2ebf65e2543b5"
+          },
+          "selection_note": "采用；AI修订材料颜色与过强亮粒后保留工具原生透明通道。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-75a2e200-68d6-4daf-8134-a3e50d29b9ff.png",
+        "raw_source_sha256": "593f1287acce9dc4959a75015054cbd465ae6b563c8dfc64e7c2ebf65e2543b5",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 88942,
+        "sha256": "881122754cd6bf640fbc170b5be1a52747e6e0bd873cfd9a3d93803a2bbe0f88",
+        "alpha_resample_sha256": "e8ca7502f65ff4e65322b6dafe7e3f75d0b95f33083b75b9d7bca02828964d44",
+        "encoded_alpha_sha256": "e8ca7502f65ff4e65322b6dafe7e3f75d0b95f33083b75b9d7bca02828964d44",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.694046,
+          "partial_fraction": 0.305889,
+          "opaque_fraction": 0.000065,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            45,
+            49,
+            474,
+            491
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    },
+    {
+      "id": "decal_stain_mixed_tracks_06",
+      "title": "鞋印 / 猫爪泥迹",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_mixed_tracks_06.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A short irregular trail of muddy TRACKS: two incomplete subtle shoe-sole impressions with simple broken tread marks diagonally offset, interspersed with THREE much smaller cat-paw muddy prints. Cat-paw prints have one small central pad and four little toe spots, no claws. Footprints are worn patchy earth-brown stains with disconnected translucent smears, scale paw marks much smaller than shoe prints. No footwear, feet, person, animal or body appears; only understated dirty track residue.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A short irregular trail of muddy TRACKS: two incomplete subtle shoe-sole impressions with simple broken tread marks diagonally offset, interspersed with THREE much smaller cat-paw muddy prints. Cat-paw prints have one small central pad and four little toe spots, no claws. Footprints are worn patchy earth-brown stains with disconnected translucent smears, scale paw marks much smaller than shoe prints. No footwear, feet, person, animal or body appears; only understated dirty track residue.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-4adb2d27-3212-4c44-8b94-4047ee1a3aa4.png",
+            "filename": "exec-4adb2d27-3212-4c44-8b94-4047ee1a3aa4.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 674174,
+            "sha256": "71c047ca5bb4c735fd66798bf251c088e264b5604ce8a7d4fe3af497b445f6f3"
+          },
+          "selection_note": "采用；独立污渍形态与透明叠加可读，无额外背景底板。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-4adb2d27-3212-4c44-8b94-4047ee1a3aa4.png",
+        "raw_source_sha256": "71c047ca5bb4c735fd66798bf251c088e264b5604ce8a7d4fe3af497b445f6f3",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 46818,
+        "sha256": "6fea7e9044d44ebcbae752f9d04070def58e9e989771b29705b2eec52fdad5a2",
+        "alpha_resample_sha256": "4a8fbafd3576b76ee3e54d3e9f137b215252e153ba2058d95d6ebe4a8b41ba8a",
+        "encoded_alpha_sha256": "4a8fbafd3576b76ee3e54d3e9f137b215252e153ba2058d95d6ebe4a8b41ba8a",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.856468,
+          "partial_fraction": 0.141457,
+          "opaque_fraction": 0.002075,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            37,
+            44,
+            475,
+            475
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    },
+    {
+      "id": "decal_stain_tire_scuff_07",
+      "title": "轮胎擦痕",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_tire_scuff_07.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A thin curved graphite-black TIRE RUBBER SCUFF, one broad shallow S-shaped sweep with several separate narrow broken parallel rubber drag lines and tiny particulate specks. An irregular rubbed stain without a full tire track grid; desaturated dark graphite material, varied partial transparency and ragged feathered ends. No actual tire, car, raised rubber or directional cast shadow.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A thin curved graphite-black TIRE RUBBER SCUFF, one broad shallow S-shaped sweep with several separate narrow broken parallel rubber drag lines and tiny particulate specks. An irregular rubbed stain without a full tire track grid; desaturated dark graphite material, varied partial transparency and ragged feathered ends. No actual tire, car, raised rubber or directional cast shadow.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-e0a7ba1b-1d50-430c-a0bc-02e8163aa408.png",
+            "filename": "exec-e0a7ba1b-1d50-430c-a0bc-02e8163aa408.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1323170,
+            "sha256": "ba9a7f487e8f40c4cd4d1ce94b3f6f726c7f90dbd1da3e2401f1e2a62cb0b559"
+          },
+          "selection_note": "未采用；擦痕带较强浅灰亮粒，修订为更暗的石墨色橡胶痕。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Refine the supplied transparent S-shaped tire scuff into a thin FLAT DARK RUBBER smear decal. Keep its shallow S curve, irregular ends and the few narrow broken parallel rubbing lines, but remove the white/light-gray granular ridges and any material relief lighting. Tire rubber residue should be subdued GRAPHITE-BLACK / charcoal material color only, partly translucent with fine dark particles and worn gaps through which underlying pavement can show. No bright line or chalk, no stone/crust texture, no raised tire, no directional highlights or shadows, no shine or neon cast. Top-down orthographic 2D surface discoloration, no floor texture, background plate, frame or outline. Genuine empty transparency surrounds every mark, at least 8% canvas margin, maintain clear transparent gaps. Deliver one full square 512x512 RGBA ground decal on a TRUE transparent background, no text, objects, characters, faces or checkerboard.",
+          "tool_arguments": {
+            "prompt": "Refine the supplied transparent S-shaped tire scuff into a thin FLAT DARK RUBBER smear decal. Keep its shallow S curve, irregular ends and the few narrow broken parallel rubbing lines, but remove the white/light-gray granular ridges and any material relief lighting. Tire rubber residue should be subdued GRAPHITE-BLACK / charcoal material color only, partly translucent with fine dark particles and worn gaps through which underlying pavement can show. No bright line or chalk, no stone/crust texture, no raised tire, no directional highlights or shadows, no shine or neon cast. Top-down orthographic 2D surface discoloration, no floor texture, background plate, frame or outline. Genuine empty transparency surrounds every mark, at least 8% canvas margin, maintain clear transparent gaps. Deliver one full square 512x512 RGBA ground decal on a TRUE transparent background, no text, objects, characters, faces or checkerboard.",
+            "referenced_image_paths": [
+              "/workspace/generated_images/exec-e0a7ba1b-1d50-430c-a0bc-02e8163aa408.png"
+            ],
+            "transparent_background": true
+          },
+          "references": [
+            "ba9a7f487e8f40c4cd4d1ce94b3f6f726c7f90dbd1da3e2401f1e2a62cb0b559"
+          ],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-f8d277cd-0c71-4949-ad60-2b3c6271edbd.png",
+            "filename": "exec-f8d277cd-0c71-4949-ad60-2b3c6271edbd.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1022649,
+            "sha256": "dce3bae97e574f33581038898f35a903f77fe8c82d62cfef9b98c7aaf3a173a2"
+          },
+          "selection_note": "采用；AI修订材料颜色与过强亮粒后保留工具原生透明通道。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-f8d277cd-0c71-4949-ad60-2b3c6271edbd.png",
+        "raw_source_sha256": "dce3bae97e574f33581038898f35a903f77fe8c82d62cfef9b98c7aaf3a173a2",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 63744,
+        "sha256": "8284547b957ca34c2358b1b50893cbb0a2fc7f4ab105324827f32454aaed3b0e",
+        "alpha_resample_sha256": "42e0cc1d7740bab20aa09d809443f881130882e4aef1b809e09d23acc48d3d4f",
+        "encoded_alpha_sha256": "42e0cc1d7740bab20aa09d809443f881130882e4aef1b809e09d23acc48d3d4f",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.80125,
+          "partial_fraction": 0.19862,
+          "opaque_fraction": 0.00013,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            31,
+            44,
+            497,
+            481
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    },
+    {
+      "id": "decal_stain_rain_dust_08",
+      "title": "雨洗积尘",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_rain_dust_08.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. An asymmetric RAIN-WASHED DUST accumulation made of three shallow irregular scalloped silt bands around a broad mostly transparent empty center, plus tiny sparse detached tan-gray grit. Warm muted gray-brown dried sediment, low contrast, delicate rain-eroded streaks toward one side. Broken contours and a diffuse granular edge, no complete framed circle and no water, puddle glare or floor.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. An asymmetric RAIN-WASHED DUST accumulation made of three shallow irregular scalloped silt bands around a broad mostly transparent empty center, plus tiny sparse detached tan-gray grit. Warm muted gray-brown dried sediment, low contrast, delicate rain-eroded streaks toward one side. Broken contours and a diffuse granular edge, no complete framed circle and no water, puddle glare or floor.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-7761a395-5bb9-4ad6-8be5-a7745e87fd0e.png",
+            "filename": "exec-7761a395-5bb9-4ad6-8be5-a7745e87fd0e.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 1840007,
+            "sha256": "688bf446cc83733859f7bde79dbe6f80c0039c84afa9c1e2bcc8429e347fcc49"
+          },
+          "selection_note": "采用；独立污渍形态与透明叠加可读，无额外背景底板。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-7761a395-5bb9-4ad6-8be5-a7745e87fd0e.png",
+        "raw_source_sha256": "688bf446cc83733859f7bde79dbe6f80c0039c84afa9c1e2bcc8429e347fcc49",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 107214,
+        "sha256": "ee9fee0c3683b5c05f5e7bd4d2841f6988132db173b0bb1b8141e793df3b4bf7",
+        "alpha_resample_sha256": "543a7a64a2ba363367debb879a6e1780e955d3439f59bfd9200200646d2af1fc",
+        "encoded_alpha_sha256": "543a7a64a2ba363367debb879a6e1780e955d3439f59bfd9200200646d2af1fc",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.605278,
+          "partial_fraction": 0.394302,
+          "opaque_fraction": 0.00042,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            31,
+            22,
+            485,
+            492
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "沉积灰尘偏浅，沥青底上更显眼，实际接入请控制尺度与摆放密度。"
+      }
+    },
+    {
+      "id": "decal_stain_grit_spots_09",
+      "title": "粗颗粒污点",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_grit_spots_09.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A sparse LOPSIDED CLUSTER of many tiny coarse dirty granular spots and irregular short soil splats, with a few medium small flecks concentrated toward the lower-left and much sparser particles trailing toward the upper-right. Muted warm dark gray and umber flat granules, not stones or 3D pebbles, no single large central splash. Most canvas remains transparent, all particles safely inset from edges.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A sparse LOPSIDED CLUSTER of many tiny coarse dirty granular spots and irregular short soil splats, with a few medium small flecks concentrated toward the lower-left and much sparser particles trailing toward the upper-right. Muted warm dark gray and umber flat granules, not stones or 3D pebbles, no single large central splash. Most canvas remains transparent, all particles safely inset from edges.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-ee9edcf5-bc64-4155-87ec-fb13729c934d.png",
+            "filename": "exec-ee9edcf5-bc64-4155-87ec-fb13729c934d.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 930433,
+            "sha256": "50aae91b75d901e4c09a7e6e6c330c0d0c060fe80c80120c121a9a4a305fc70e"
+          },
+          "selection_note": "采用；独立污渍形态与透明叠加可读，无额外背景底板。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-ee9edcf5-bc64-4155-87ec-fb13729c934d.png",
+        "raw_source_sha256": "50aae91b75d901e4c09a7e6e6c330c0d0c060fe80c80120c121a9a4a305fc70e",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 63850,
+        "sha256": "9c277cef07b5e2d3fcd470a31eb5175303f8b6cea50ff16743def6b147e66f99",
+        "alpha_resample_sha256": "d928cb4d65a311370585060f2c33c26b15a10cf7bbca02bb71248c21df6a04d9",
+        "encoded_alpha_sha256": "d928cb4d65a311370585060f2c33c26b15a10cf7bbca02bb71248c21df6a04d9",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.787941,
+          "partial_fraction": 0.212017,
+          "opaque_fraction": 0.000042,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            35,
+            46,
+            472,
+            487
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    },
+    {
+      "id": "decal_stain_algae_10",
+      "title": "藻绿湿痕",
+      "category": "decals/stains",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_stain_algae_10.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A small broken elongated PATCH of very muted OLIVE-GREEN damp algae discoloration, two uneven connected lobes with thin branching fringe trails and sparse detached tiny moss-green flecks. Desaturated dark olive and gray-green material stains, partly translucent, flat and thin, no dimensional moss clumps, no grass, leaf or living plants. Quiet aged wet grime with open gaps.",
+          "tool_arguments": {
+            "prompt": "Create one production-ready 512x512 square RGBA GAME GROUND DECAL on a TRUE TRANSPARENT BACKGROUND. Only a thin irregular surface stain is visible, viewed strictly orthographically from directly above. It will be composited over arbitrary paving or asphalt; do NOT include any pavement, floor, square backing, rectangular material tile, paper, platform, border or background color. Leave fully transparent empty space around the entire stain, at least 8% margin on all four sides. Edges should dissolve into tiny disconnected speckles and natural partial transparency, never a hard cutout silhouette or dark outline. This is a diffuse BASE COLOR + alpha overlay for a restrained miniature rainy cyberpunk alley: flat material colors, no directional lighting, no cast shadow, no raised bevel, no specular glint, no reflected neon, no overall vignette. Keep detail legible after downsampling to 512 square. Subtle realistic environmental wear with slightly painterly restraint. No text, signs, logos, faces, characters, objects, standing liquid, fresh red color, blood, checkerboard painted into the image, or review montage. One independent distinctive stain design, not a rotated copy of another. A small broken elongated PATCH of very muted OLIVE-GREEN damp algae discoloration, two uneven connected lobes with thin branching fringe trails and sparse detached tiny moss-green flecks. Desaturated dark olive and gray-green material stains, partly translucent, flat and thin, no dimensional moss clumps, no grass, leaf or living plants. Quiet aged wet grime with open gaps.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-796f8067-df0c-447f-99ee-e806be566522.png",
+            "filename": "exec-796f8067-df0c-447f-99ee-e806be566522.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 883005,
+            "sha256": "c7b19663f9b0191bff936b640e359cc9e11d0a4d7fc6b01fd0d824fff51a394f"
+          },
+          "selection_note": "采用；独立污渍形态与透明叠加可读，无额外背景底板。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-796f8067-df0c-447f-99ee-e806be566522.png",
+        "raw_source_sha256": "c7b19663f9b0191bff936b640e359cc9e11d0a4d7fc6b01fd0d824fff51a394f",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 56404,
+        "sha256": "2cd202add1c065887b982e3d91073d1b1f3ada05577caed0a3f15a1f3aaf4d1d",
+        "alpha_resample_sha256": "087f5136e52a06624543a1eb272c7cc6942d5e0d0cef0f11636e5d37f340ef36",
+        "encoded_alpha_sha256": "087f5136e52a06624543a1eb272c7cc6942d5e0d0cef0f11636e5d37f340ef36",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.792988,
+          "partial_fraction": 0.206352,
+          "opaque_fraction": 0.00066,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            30,
+            86,
+            480,
+            426
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，不曾阈值处理或改写交付alpha。三张外圈有≤1/255微量残值，未声称四边全零。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部检查：未见矩形底板、明显边缘黑线、文字人物或霓虹烘焙方向。",
+        "review_focus": "近看保留细粒浅微明暗，属于颜色细节，不含法线或厚度。"
+      }
+    }
+  ],
+  "review_backgrounds": [
+    {
+      "id": "tile",
+      "path": "/workspace/world-a09/assets/world/ground/ground_tile_slate_01.webp",
+      "sha256": "db807e9d4c40667f6ab6610460be95de7d29658ed1df544b59e3f990968ac526",
+      "size": [
+        1024,
+        1024
+      ],
+      "scope": "read-only review background; source image not included in this batch",
+      "origin": "PR #100 WORLD-A09 / assets/world/ground/ground_tile_slate_01.webp"
+    },
+    {
+      "id": "asphalt",
+      "path": "/workspace/a10-raw/ground_asphalt_wet_01.webp",
+      "sha256": "5cb849b916c76d86e80a195169316b6182c4bb3ea37c63aeb467194e2ea2b1f2",
+      "size": [
+        1024,
+        1024
+      ],
+      "scope": "read-only review background; source image not included in this batch",
+      "origin": "origin/codex/3d-world-wet-asphalt / PR #98 / assets/world/ground/ground_asphalt_wet_01.webp"
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/stain-decals-a10.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 250354,
+      "sha256": "d48e296dfbdb69ae56ca365d7caabf0349c7f41fc09a6c1c0288cecc57864684",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 82,
+      "method": "10-item overview: final encoded RGBA composited over both reference surfaces plus checkerboard and grayscale alpha, Lanczos resized to 184x184 per panel"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_oil_film_03-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 215162,
+      "sha256": "97346725a0297495e866bc8ec3f576ed086fa20ebe7ccbf728918b9c610e52dc",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_soot_01-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 212106,
+      "sha256": "31a6d88e789973424e31de6f78e45ccf971d9539981719c72c23058d245b0e36",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_algae_10-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 197822,
+      "sha256": "09e7c3e07a6f9426f3d052c5da53d617f1cb19cf40fbd3ad1da041f00b153c27",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_mineral_04-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 212204,
+      "sha256": "f53bfa446780104825cae7610c2ab910f83b3396f22f090a738e3db9cc28c7bc",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_mixed_tracks_06-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 198564,
+      "sha256": "baaf5637d096fc094e699220b677b89bfb7356284d80e739edb81c8ae75ae5e0",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_rain_dust_08-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 221194,
+      "sha256": "86f44560ed6d56d6b723be7fce675c9eb8b81c8f81fb2ccc64eb2e9da4761af6",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_tire_scuff_07-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 206584,
+      "sha256": "45dce32e775a319a3a85f8016fd61bf04f80c6d9487976a8d5a7fc74a803b385",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_mud_drag_02-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 202610,
+      "sha256": "76ca51abcd0f391d9acfef330dfaee887b9a78552088af77817fc4993446b097",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_grit_spots_09-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 198588,
+      "sha256": "ba4133bed3b02d78e569d9b715333342e2657eb4623e06d374ee9c7c1e926226",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_stain_rust_run_05-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 212576,
+      "sha256": "1b3254399712a230ee7605cc1f953f8fb25ae33e36a6c5008a1a8d7c98b76b00",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; source final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/stain-decals-a10-overlay.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 454868,
+      "sha256": "7b5ccdaf31db8725e50fdb6e8654c082e86f524c7d3967b1b7e448dd7bcd3218",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_quality": 85,
+      "webp_method": 6,
+      "method": "actual Three.js r169 transparent MeshStandardMaterial plane overlays of all ten final encoded decals, two ground surfaces, same white light versus cyan/magenta point additions; no bloom; no source modifications",
+      "evidence": {
+        "ready": true,
+        "expected": 12,
+        "loaded": 12,
+        "parameters": {
+          "three_revision": "169",
+          "canvas": [
+            1024,
+            448
+          ],
+          "camera": {
+            "type": "OrthographicCamera",
+            "left": -10,
+            "right": 10,
+            "top": 4.375,
+            "bottom": -4.375,
+            "near": 0.1,
+            "far": 40,
+            "position": [
+              0,
+              10,
+              0
+            ],
+            "up": [
+              0,
+              0,
+              -1
+            ],
+            "look_at": [
+              0,
+              0,
+              0
+            ]
+          },
+          "ground": {
+            "plane": [
+              20,
+              8.75
+            ],
+            "repeat": [
+              5,
+              2
+            ],
+            "roughness": 0.8,
+            "metalness": 0
+          },
+          "decals": {
+            "plane": [
+              3.45,
+              3.45
+            ],
+            "color": "#ffffff",
+            "roughness": 0.8,
+            "metalness": 0,
+            "transparent": true,
+            "opacity": 1,
+            "alphaTest": 0.01,
+            "depthWrite": false,
+            "depthTest": true,
+            "blending": "NormalBlending",
+            "premultipliedAlpha": false,
+            "polygonOffset": true,
+            "polygonOffsetFactor": -2,
+            "polygonOffsetUnits": -2,
+            "y": 0.01,
+            "texture_wrap": "ClampToEdgeWrapping"
+          },
+          "renderer": {
+            "color_space": "SRGBColorSpace",
+            "tone_mapping": "ACESFilmicToneMapping",
+            "exposure": 1,
+            "device_pixel_ratio": 1,
+            "antialias": true,
+            "bloom": false,
+            "shadows": false
+          },
+          "white_lights": {
+            "hemisphere": {
+              "sky": "#ffffff",
+              "ground": "#777777",
+              "intensity": 0.65
+            },
+            "directional": {
+              "color": "#ffffff",
+              "intensity": 2,
+              "position": [
+                -1,
+                10,
+                4
+              ]
+            }
+          },
+          "extra_lights": {
+            "cyan": {
+              "color": "#20d9ff",
+              "intensity": 55,
+              "distance": 35,
+              "decay": 2,
+              "position": [
+                -5,
+                4,
+                0
+              ]
+            },
+            "magenta": {
+              "color": "#ef42be",
+              "intensity": 55,
+              "distance": 35,
+              "decay": 2,
+              "position": [
+                5,
+                4,
+                0
+              ]
+            }
+          }
+        },
+        "assets": [
+          {
+            "path": "/assets/world/decals/decal_stain_soot_01.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_mud_drag_02.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_oil_film_03.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_mixed_tracks_06.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_mineral_04.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/.tmp-a10/ground_tile_slate_01.webp",
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "path": "/assets/world/ground/ground_asphalt_wet_01.webp",
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_rust_run_05.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_tire_scuff_07.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_rain_dust_08.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_grit_spots_09.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_stain_algae_10.webp",
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "renderers": [
+          {
+            "row": 0,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          }
+        ],
+        "decal_order": [
+          "decal_stain_soot_01",
+          "decal_stain_mud_drag_02",
+          "decal_stain_oil_film_03",
+          "decal_stain_mineral_04",
+          "decal_stain_rust_run_05",
+          "decal_stain_mixed_tracks_06",
+          "decal_stain_tire_scuff_07",
+          "decal_stain_rain_dust_08",
+          "decal_stain_grit_spots_09",
+          "decal_stain_algae_10"
+        ],
+        "page_errors": [],
+        "console_errors": [],
+        "failed_requests": [],
+        "asset_responses": [
+          {
+            "url": "http://127.0.0.1:5191/.tmp-a10/ground_tile_slate_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/ground/ground_asphalt_wet_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_soot_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_mud_drag_02.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_oil_film_03.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_mineral_04.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_rust_run_05.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_mixed_tracks_06.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_tire_scuff_07.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_rain_dust_08.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_grit_spots_09.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5191/assets/world/decals/decal_stain_algae_10.webp",
+            "status": 200
+          }
+        ],
+        "source_hashes_unchanged": true,
+        "source_sha256_before": [
+          "aecef56c8e44a461a5fe4f0f19ee6753c9a3c4b11e5290bd920522ad5166a4f4",
+          "d93d4e60e7081f2ebb9525d5bd2b227288854d350d09293294ae9f84714ba304",
+          "495be83b0d73af2fd85af5aec50223c07947200c57c70988e35f5b23bdf9f4ac",
+          "33e871b20195bda6e4ae2fea442a0f0b8c978c8876efdc5a0fc07e14c14b44f0",
+          "881122754cd6bf640fbc170b5be1a52747e6e0bd873cfd9a3d93803a2bbe0f88",
+          "6fea7e9044d44ebcbae752f9d04070def58e9e989771b29705b2eec52fdad5a2",
+          "8284547b957ca34c2358b1b50893cbb0a2fc7f4ab105324827f32454aaed3b0e",
+          "ee9fee0c3683b5c05f5e7bd4d2841f6988132db173b0bb1b8141e793df3b4bf7",
+          "9c277cef07b5e2d3fcd470a31eb5175303f8b6cea50ff16743def6b147e66f99",
+          "2cd202add1c065887b982e3d91073d1b1f3ada05577caed0a3f15a1f3aaf4d1d"
+        ],
+        "source_sha256_after": [
+          "aecef56c8e44a461a5fe4f0f19ee6753c9a3c4b11e5290bd920522ad5166a4f4",
+          "d93d4e60e7081f2ebb9525d5bd2b227288854d350d09293294ae9f84714ba304",
+          "495be83b0d73af2fd85af5aec50223c07947200c57c70988e35f5b23bdf9f4ac",
+          "33e871b20195bda6e4ae2fea442a0f0b8c978c8876efdc5a0fc07e14c14b44f0",
+          "881122754cd6bf640fbc170b5be1a52747e6e0bd873cfd9a3d93803a2bbe0f88",
+          "6fea7e9044d44ebcbae752f9d04070def58e9e989771b29705b2eec52fdad5a2",
+          "8284547b957ca34c2358b1b50893cbb0a2fc7f4ab105324827f32454aaed3b0e",
+          "ee9fee0c3683b5c05f5e7bd4d2841f6988132db173b0bb1b8141e793df3b4bf7",
+          "9c277cef07b5e2d3fcd470a31eb5175303f8b6cea50ff16743def6b147e66f99",
+          "2cd202add1c065887b982e3d91073d1b1f3ada05577caed0a3f15a1f3aaf4d1d"
+        ],
+        "capture": {
+          "url": "http://127.0.0.1:5191/.tmp-a10/preview.html",
+          "browser": "Chromium /usr/bin/chromium",
+          "viewport": [
+            2048,
+            1024
+          ],
+          "device_scale_factor": 1,
+          "output_png": "/workspace/a10-raw/stain-decals-a10-overlay.png"
+        },
+        "lighting_difference_rgb_mae": [
+          20.723,
+          14.607
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "素材用于基色+透明度叠加，不包含法线、粗糙度、位移或自发光。",
+    "本批没有游戏接入；审图为Pillow alpha composite，不是引擎截图。",
+    "矿物盐痕与雨洗沉积较浅亮，需Claude按游戏材质与视距控制尺度和密度。",
+    "原图透明alpha由image_gen原生输出，没有抠底、阈值处理或手绘遮罩。",
+    "候选选择和独立QA不代表Claude审核通过。"
+  ],
+  "branch_creation_base_commit": "1f45261f2ec706043b7fbcb0f6ce3d60122a094f",
+  "generation_base_commit": "1f45261f2ec706043b7fbcb0f6ce3d60122a094f",
+  "main_sync_note": "仅快进合并主分支 bf37bd3；图像和导出参数未改，主分支A08通过/接入记录保留。",
+  "qa_paths": [
+    "assets/world/decals/stain-decals-a10.qa.md",
+    "assets/world/decals/stain-decals-a10.qa.json"
+  ],
+  "validation": {
+    "base_commit": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+    "command": "npm run typecheck && npm test",
+    "performed_by": "root agent",
+    "exit_code": 0,
+    "test_files": 65,
+    "tests": 980,
+    "log_path": "/workspace/a10-raw/tests-bf37.log",
+    "scope_note": "类型与单元测试通过；图像另经独立视觉/透明度/出处QA，不代表Claude审核通过。"
+  }
+}
