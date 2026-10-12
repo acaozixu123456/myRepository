@@ -7,12 +7,13 @@ import { buildStreet } from '../../world/street';
 import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
-import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, farmStage, killReward, autoKey, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
+import { LEVELS } from '../../world/levels';
+import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, sceneChapter, sceneGame, setScene, unlockedScenes, farmStage, killReward, autoKey, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
 import { teamPower } from '../../game/state';
 import { artUrl } from '../../ui/art';
-import { fmt } from '../../ui/components';
+import { esc, fmt } from '../../ui/components';
 import { HERO_BY_ID } from '../../data/heroes';
 import { arenaFight } from '../arenaFight';
 import type { AppCtx } from '../ctx';
@@ -50,7 +51,7 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 .xhelp{position:absolute;inset:0;z-index:25;display:grid;place-items:center;background:rgba(6,3,16,.35);pointer-events:none;animation:xhelpIn .3s ease-out both}
 @keyframes xhelpIn{from{opacity:0}to{opacity:1}}
 .xhelp>div{pointer-events:auto;width:min(320px,86%);padding:16px 18px;border-radius:16px;background:rgba(22,14,44,.96);border:2px solid rgba(127,240,255,.6);box-shadow:0 0 24px rgba(127,240,255,.3);color:#eae4ff;font-weight:700;font-size:13.5px;line-height:1.75}
-.xh{display:grid;gap:12px;text-align:center;font-size:32px;line-height:1.2}.xh small{font-size:12px;color:#9a8ec0}
+.xh{display:grid;gap:12px;text-align:center;font-size:15px;font-weight:800;line-height:1.5}.xh small{font-size:12px;color:#9a8ec0}
 .xhelp button{margin-top:10px;width:100%}
 .xquest{position:absolute;left:10px;top:122px;z-index:3;width:104px;padding:6px 8px;border-radius:12px;background:rgba(16,10,32,.62);border:1.5px solid rgba(127,240,255,.45);color:#cfc6e8;font-size:12px;font-weight:800;pointer-events:none}
 .xquest.ready{border-color:#ffe27a;box-shadow:0 0 12px rgba(255,226,122,.55);animation:xqPulse 1.2s ease-in-out infinite}
@@ -79,6 +80,16 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 .xfps{position:absolute;right:12px;top:216px;z-index:3;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);text-shadow:0 1px 2px #000;pointer-events:none}
 .xtools{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:8px}
 .xtools .btn{min-width:64px}
+.xscene{margin-left:6px;white-space:nowrap;font-size:13px}
+.scn-dlg{width:min(360px,92%)}
+.scn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scn{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:14px;border:2px solid rgba(0,0,0,.12);background:linear-gradient(var(--paper),var(--paper-2));font-family:inherit;cursor:pointer}
+.scn .se{font-size:30px;line-height:1.1}.scn b{font-size:14px;color:var(--ink)}.scn small{font-size:11.5px;font-weight:800;color:#6a5a48}
+.scn.on{border-color:#ff7ab8;box-shadow:0 0 0 3px rgba(255,122,184,.35)}.scn.lock{opacity:.5}
+.scn .here{position:absolute;right:6px;top:4px;font-style:normal;font-size:10px;font-weight:900;background:#ff7ab8;color:#fff;border-radius:8px;padding:1px 6px}
+.xfight{position:absolute;left:50%;margin-left:-70px;bottom:104px;z-index:4;width:140px;padding:12px 8px;border-radius:999px;border:3px solid #fff;background:linear-gradient(#ff7a8a,#e0344f);color:#fff;font:900 20px var(--f-d,inherit);box-shadow:0 0 22px rgba(255,70,100,.75),0 4px 0 rgba(0,0,0,.3);animation:xfightPulse 1s ease-in-out infinite;touch-action:manipulation}
+.xfight.boss{background:linear-gradient(#ffd24a,#e08a10);box-shadow:0 0 26px rgba(255,200,60,.85),0 4px 0 rgba(0,0,0,.3)}
+@keyframes xfightPulse{50%{transform:scale(1.07)}}
 .xjoy{position:absolute;left:14px;bottom:14px;z-index:3;width:116px;height:116px;border-radius:50%;background:rgba(10,6,24,.45);border:2px solid rgba(127,240,255,.45);touch-action:none}
 .xjoy i{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:rgba(127,240,255,.55);box-shadow:0 0 14px rgba(127,240,255,.6);pointer-events:none}
 .xload{position:absolute;inset:0;z-index:6;display:grid;place-items:center;background:#0d0818;color:#ffe9a0;font-family:var(--f-d);font-size:18px;text-align:center;line-height:1.8}
@@ -92,10 +103,11 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 @keyframes bannerPop{0%{transform:scale(2.2);opacity:0}35%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
 .arena-ov canvas{width:100%;aspect-ratio:960/600;display:block}
 .arena-ov .skip{position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top,0px));padding:7px 14px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font-weight:800;border:2px solid rgba(255,255,255,.4)}
+.arena-ov .skip2{top:calc(58px + env(safe-area-inset-top,0px))}
 `;
 
 export function exploreHtml(): string {
-  return `<canvas id="wcv"></canvas><div class="xload" id="xload">霓虹街区加载中…<small>第一次进入要生成场景，请稍等</small></div><div id="xui"></div><div class="xjoy" id="xjoy"><i></i></div>`;
+  return `<canvas id="wcv"></canvas><div class="xload" id="xload">霓虹街区加载中…<small>第一次进入要生成场景，请稍等</small></div><div id="xui"></div><div class="xjoy" id="xjoy"><i></i></div><button class="xfight" id="xfight" data-act="x-fight" style="display:none"></button>`;
 }
 
 // ---------- 摇杆 / 键盘移动（相对镜头朝向）----------
@@ -106,10 +118,23 @@ let autoLast = { key: '', tries: 0 };
 const keys = new Set<string>();
 let joy = { x: 0, y: 0 }; // x 右、y 上，-1..1
 let inputBound = false;
+let nearSp: Spawn | null = null;
+/** 队伍走到野怪 / 首领身边：显示大号「战斗」按钮（由玩家决定打不打）；走开就收起 */
+function showFight(sp: Spawn | null) {
+  nearSp = sp;
+  const b = document.getElementById('xfight') as HTMLElement | null;
+  if (!b) return;
+  b.style.display = sp ? '' : 'none';
+  if (sp) { b.classList.toggle('boss', sp.kind === 'boss'); b.innerHTML = sp.kind === 'boss' ? '👑 挑战首领' : '⚔️ 战斗'; }
+}
 function bindInput(scr: HTMLElement) {
   if (inputBound) return;
   inputBound = true;
-  window.addEventListener('keydown', (e) => { if (!(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) keys.add(e.key.toLowerCase()); });
+  window.addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    keys.add(e.key.toLowerCase());
+    if ((e.code === 'Space' || e.code === 'KeyF') && rt?.running && nearSp) { e.preventDefault(); rt.ex.engage(); }
+  });
   window.addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
   window.addEventListener('blur', () => keys.clear());
   const pad = scr.querySelector('#xjoy') as HTMLElement, knob = pad.querySelector('i') as HTMLElement;
@@ -187,7 +212,7 @@ function hud(ctx: AppCtx): string {
   const b = bossStage(ctx.s), rec = recommendedPowerOf(b.chapter, b.index), mine = teamPower(ctx.s);
   const ids = teamIds(ctx), ratio = Math.min(1, mine / rec), enough = mine >= rec;
   return `${topbar(ctx, '探索')}
-  <div class="xobj"><div class="grow"><b>${b.fresh ? '👑' : '🔁'} ${b.stage.id}</b><div class="xpow ${enough ? 'ok' : 'low'}"><i style="width:${Math.round(ratio * 100)}%"></i><span>${icon('sword', 14)} ${fmt(mine)} / ${fmt(rec)}</span></div></div><button class="btn sm green" data-act="x-boss" title="首领">${icon('arrowUp', 20)}</button></div>
+  <div class="xobj"><div class="grow"><b>${b.fresh ? '👑' : '🔁'} ${b.stage.id}</b><div class="xpow ${enough ? 'ok' : 'low'}"><i style="width:${Math.round(ratio * 100)}%"></i><span>${icon('sword', 14)} ${fmt(mine)} / ${fmt(rec)}</span></div></div>${sceneChapter(ctx.s) === b.chapter ? `<button class="btn sm green" data-act="x-boss" title="首领">${icon('arrowUp', 20)}</button>` : ''}<button class="btn sm pink xscene" data-act="x-scenes" title="切换场景">🗺️ ${esc(LEVELS[sceneChapter(ctx.s)]?.name.split(' · ')[0] ?? '场景')} ▾</button></div>
   <div class="xteam">${ids.map((id, i) => `<button class="${i === 0 ? 'lead' : ''}" data-act="x-hero" data-id="${id}" title="${HERO_BY_ID[id]?.name ?? ''}"><img src="${artUrl(id, 'head')}" alt="" draggable="false"></button>`).join('')}</div>
   ${questHtml(ctx)}
   <canvas class="xmini" id="xmini" width="184" height="184"></canvas><div class="xfps" id="xfps"></div>
@@ -208,7 +233,7 @@ function showHelpOnce(ctx: AppCtx) {
   const el = document.createElement('div');
   el.className = 'xhelp';
   el.innerHTML = `<div class="xh">
-    <div>👆 ➜ 🐾</div><div>🕹️ <small>WASD</small></div><div>☝️↔️ 🔄</div><div>🤏 🔍</div><div>🐱⚔️ ➜ 👑 ➜ 🏙️</div><div>📜 ➜ 🎁</div>
+    <div>👆 点地面走过去</div><div>🕹️ 摇杆 / WASD 移动</div><div>☝️ 拖动转镜头 · 🤏 缩放</div><div>🐱 走到野猫身边 ➜ 点 <b>⚔️ 战斗</b>（想打才打）</div><div>👑 首领打赢 ➜ 进下一章</div><div>📜 宝箱 / NPC / 小游戏入口 ➜ 奖励</div>
     <button class="btn green">${icon('check', 24)}</button></div>`;
   el.onclick = (e) => { if ((e.target as HTMLElement).closest('button')) el.remove(); };
   // 不挡操作：开始移动（摇杆 / 键盘）、点一下场景，或 12 秒后自动收起
@@ -255,6 +280,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     chest: (s) => onChest(ctx, s),
     talk: (s) => onTalk(ctx, s),
     alert: () => alertSfx(),
+    near: (sp) => showFight(sp),
     poi: (sp) => onPoi(ctx, sp),
   });
   let stepT = 0;
@@ -264,6 +290,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     if (d) ex.push(d[0], d[1], dt);
     else if (autoOn && ex.idle && (autoT -= dt) <= 0) {
       autoT = 0.6;
+      if (nearSp && nearSp.kind === 'enemy' && ex.engage()) return;
       const lp = ex.leaderPos;
       const nowMs = Date.now();
       for (const [k, until] of autoSkip) if (until < nowMs) autoSkip.delete(k);
@@ -280,6 +307,7 @@ function loadLevel(ctx: AppCtx, L: LevelDef) {
     ex.update(dt); st.update(wv.time, dt);
     if (ex.moving) { stepT -= dt; if (stepT <= 0) { stepSfx(); stepT = 0.26; } } else stepT = 0;
   };
+  showFight(null);
   rt.ex = ex; rt.st = st; rt.dead.clear();
   syncSpawns(ctx);
 }
@@ -321,7 +349,7 @@ export async function enterExplore(ctx: AppCtx) {
   miniT = window.setInterval(() => drawMini(ctx), 250);
   setTimeout(() => { load.style.display = 'none'; }, 250);
 }
-export function leaveExplore() { autoOn = false; autoSkip.clear(); autoLast = { key: '', tries: 0 }; rainAmbience(false); clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
+export function leaveExplore() { showFight(null); autoOn = false; autoSkip.clear(); autoLast = { key: '', tries: 0 }; rainAmbience(false); clearInterval(miniT); if (rt?.running) { rt.wv.stop(); rt.running = false; } }
 export function resizeExplore() { rt?.wv.resize(); }
 
 // ---------- 玩法 ----------
@@ -415,6 +443,22 @@ function onTalk(ctx: AppCtx, _sp: Spawn) {
 }
 
 /** 探索足迹：长期累计目标，够数后手动领奖 */
+const SCENE_EMOJI = ['', '🌃', '🏮', '🌊', '🌲', '☁️', '🏯'];
+const GAME_EMOJI: Record<string, string> = { boxcat: '📦', ramen: '🍜', fish: '🎣', mushroom: '🍄', windchime: '🎐', lanterns: '🏮' };
+const GAME_NAME: Record<string, string> = { boxcat: '纸箱寻猫', ramen: '拉面屋台', fish: '钓鱼', mushroom: '采蘑菇', windchime: '风铃节拍', lanterns: '点灯谜题' };
+/** 一键切换场景：6 个场景一屏看完，已解锁的点一下就过去；各场景有各自的小游戏 */
+function openScenes(ctx: AppCtx) {
+  ctx.root.querySelectorAll('.scene-mask').forEach((e) => e.remove());
+  const cur = sceneChapter(ctx.s), open = new Set(unlockedScenes(ctx.s));
+  const cards = Object.keys(LEVELS).map(Number).map((c) => {
+    const g = sceneGame(c), un = open.has(c);
+    return `<button class="scn ${c === cur ? 'on' : ''} ${un ? '' : 'lock'}" data-act="x-scene" data-c="${c}" ${un ? '' : 'disabled'}>
+      <span class="se">${SCENE_EMOJI[c] ?? '🗺️'}</span><b>${esc(LEVELS[c].name)}</b>
+      <small>${un ? (g ? `${GAME_EMOJI[g] ?? '🎮'} ${GAME_NAME[g] ?? g}` : '') : `🔒 通关第 ${c - 1} 章解锁`}</small>${c === cur ? '<i class="here">当前</i>' : ''}</button>`;
+  }).join('');
+  ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center scene-mask" data-act="closedialog"><div class="dialog scn-dlg"><h3 class="title" style="margin:0 0 8px;text-align:center">🗺️ 切换场景</h3><div class="scn-grid">${cards}</div></div></div>`);
+}
+
 function openTrail(ctx: AppCtx) {
   ctx.root.querySelectorAll('.trail-mask').forEach((e) => e.remove());
   const rows = trailRows(ctx.s);
@@ -424,9 +468,17 @@ function openTrail(ctx: AppCtx) {
 
 export function handleExplore(ctx: AppCtx, act: string, el: HTMLElement): boolean {
   switch (act) {
+    case 'x-fight': if (rt) rt.ex.engage(); return true;
     case 'x-boss': if (rt) { rt.ex.moveTo(rt.st.level.bossSpot[0], rt.st.level.bossSpot[1] + 5); } return true;
     case 'x-auto': autoOn = !autoOn; autoT = 0; autoSkip.clear(); autoLast = { key: '', tries: 0 }; refreshExploreHud(ctx); return true;
     case 'x-trail': openTrail(ctx); return true;
+    case 'x-scenes': openScenes(ctx); return true;
+    case 'x-scene': {
+      const c = +(el.dataset.c ?? 0);
+      ctx.root.querySelectorAll('.scene-mask').forEach((m) => m.remove());
+      if (c !== sceneChapter(ctx.s) && setScene(ctx.s, c)) { ctx.save(); if (rt) { loadLevel(ctx, explorerLevel(ctx.s)); rt.wv.snapCamera(); } refreshExploreHud(ctx); sfx.ok(); }
+      return true;
+    }
     case 'x-claim': {
       const g = claimTrail(ctx.s, el.dataset.id!);
       if (g) { applyGain(ctx.s, g); ctx.save(); sfx.up(); popReward(ctx, '🏆🎁', g); refreshExploreHud(ctx); openTrail(ctx); }

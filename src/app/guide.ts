@@ -21,7 +21,7 @@ export function clearGuide() {
 
 let key = '';
 export function updateGuide(ctx: AppCtx) {
-  if (ctx.screen === 'shop' || ctx.screen === 'pay' || ctx.screen === 'social' || ctx.screen === 'events' || ctx.root.querySelector('.story,.reveal,.mask')) { clearGuide(); key = ''; return; } // 有剧情 / 弹窗 / 抽卡时不打扰
+  if (ctx.screen === 'explore' || ctx.screen === 'shop' || ctx.screen === 'pay' || ctx.screen === 'social' || ctx.screen === 'events' || ctx.root.querySelector('.story,.reveal,.mask')) { clearGuide(); key = ''; return; } // 有剧情 / 弹窗 / 抽卡时不打扰
   const done = (ctx.s.tips ??= []);
   let any = false;
   for (const st of STEPS) {
@@ -38,7 +38,9 @@ export function updateGuide(ctx: AppCtx) {
     const host = ctx.root.getBoundingClientRect();
     bubble = document.createElement('div');
     bubble.className = 'guide-bubble';
-    bubble.innerHTML = `<b>喵</b><span>${st.text}</span>`;
+    bubble.innerHTML = `<b>喵</b><span>${st.text}</span><button class="gx" data-gx aria-label="关闭">✕</button>`;
+    // ✕：关掉整个新手引导，之后不再出现
+    (bubble.querySelector('[data-gx]') as HTMLElement).onclick = (e) => { e.stopPropagation(); const t = (ctx.s.tips ??= []); for (const x of STEPS) if (!t.includes(x.id)) t.push(x.id); ctx.save(); clearGuide(); key = ''; };
     const cx = r.left - host.left + r.width / 2;
     bubble.style.left = `${Math.max(12, Math.min(host.width - 232, cx - 110))}px`;
     bubble.style.bottom = `${host.bottom - r.top + 12}px`;
@@ -52,7 +54,9 @@ export function updateGuide(ctx: AppCtx) {
 export const GUIDE_CSS = `
 .guide-pulse{animation:gpulse 1.1s infinite;position:relative;z-index:15}
 @keyframes gpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,210,90,.9)}60%{box-shadow:0 0 0 12px rgba(255,210,90,0)}}
-.guide-bubble{position:absolute;z-index:16;width:220px;display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:16px;background:var(--paper);box-shadow:0 0 0 3px var(--wood-2),0 6px 14px rgba(0,0,0,.35);font-weight:800;font-size:13px;line-height:1.5;color:var(--ink);animation:rise .3s;pointer-events:none}
+.guide-bubble{position:absolute;z-index:16;width:220px;display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:16px;background:var(--paper);box-shadow:0 0 0 3px var(--wood-2),0 6px 14px rgba(0,0,0,.35);font-weight:800;font-size:13px;line-height:1.5;color:var(--ink);animation:rise .3s;pointer-events:auto}
+.guide-bubble .gx{flex:none;margin:-4px -6px 0 0;width:26px;height:26px;border:0;border-radius:50%;background:rgba(0,0,0,.12);color:#5a3a20;font-size:14px;font-weight:900;cursor:pointer;line-height:1}
+.guide-bubble .gskip{display:block;margin-top:3px;font-size:11px;font-style:normal;color:#8a6a4a;text-decoration:underline;cursor:pointer}
 .guide-bubble b{flex:none;width:26px;height:26px;border-radius:50%;background:linear-gradient(#ffd27a,#f0a22e);color:#5a2a05;font-family:var(--f-d);font-weight:400;display:flex;align-items:center;justify-content:center}
 .guide-bubble::after{content:'';position:absolute;bottom:-9px;left:var(--ax,50%);margin-left:-8px;border:8px solid transparent;border-top-color:var(--paper);border-bottom:0}
 `;

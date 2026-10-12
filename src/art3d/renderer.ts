@@ -1,6 +1,7 @@
 // 共享的 3D 渲染器：一个离屏 WebGL 画布，每次把一只猫画进去，再 drawImage 贴回主 Canvas 2D（特效 / 血条 / 层次照旧走 2D）。
 import * as THREE from 'three';
 import type { Cat3D } from './cat3d';
+import { litK } from './toon';
 
 /** 取景范围（3D 单位）：猫脚底 y=0，高约 2.6；左右留足武器 / 披风空间 */
 export const FRAME = { x0: -2.2, x1: 2.2, y0: -0.25, y1: 3.6 };
@@ -83,6 +84,7 @@ export class Renderer3D {
     this.r.setViewport(0, 0, pw, ph);
     this.r.setScissor(0, 0, pw, ph);
     this.r.setScissorTest(true);
+    litK.value = mood.startsWith('neon') ? 0.55 : 0; // 霓虹场景的彩光不要把猫染成一个色
     cat.root.rotation.y = yaw;
     this.scene.add(cat.root);
     this.r.render(this.scene, this.cam);

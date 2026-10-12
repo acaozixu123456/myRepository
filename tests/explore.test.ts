@@ -239,3 +239,25 @@ describe('玩法入口安全区', () => {
     for (const L of Object.values(LEVELS)) for (const p of poisOf(L)) expect(inSafeZone(L, p.x, p.z)).toBe(true);
   });
 });
+
+describe('场景切换', () => {
+  it('默认跟主线进度；只能切到已解锁的场景；首领只在进度所在场景出现', async () => {
+    const { newPlayer } = await import('../src/game/state');
+    const { sceneChapter, setScene, unlockedScenes, explorerLevel, spawnPlan } = await import('../src/game/explore');
+    const s = newPlayer(Date.now());
+    expect(sceneChapter(s)).toBe(1);
+    expect(unlockedScenes(s)).toEqual([1]);
+    expect(setScene(s, 3)).toBe(false);
+    s.best = { chapter: 3, index: 5 }; s.stage.chapter = 3;
+    expect(unlockedScenes(s)).toEqual([1, 2, 3]);
+    expect(sceneChapter(s)).toBe(3);
+    expect(setScene(s, 1)).toBe(true);
+    expect(sceneChapter(s)).toBe(1);
+    expect(explorerLevel(s).chapter).toBe(1);
+    expect(spawnPlan(s).some((p) => p.kind === 'boss')).toBe(false);
+    expect(spawnPlan(s).some((p) => p.kind === 'poi' && p.game === 'boxcat')).toBe(true);
+    expect(setScene(s, 3)).toBe(true);
+    expect(spawnPlan(s).some((p) => p.kind === 'boss')).toBe(true);
+    expect(setScene(s, 99)).toBe(false);
+  });
+});

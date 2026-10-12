@@ -31,12 +31,12 @@ function spHtml(ctx: AppCtx): string {
     <div class="banner sp"><div class="rays"></div><img src="${artImgUrl(up.id)}" alt="${up.name}"><span class="up" style="background:linear-gradient(90deg,#ffe27a,#ff9ad8);color:#5a1038">至尊 SP 概率 UP</span><div class="nm"><span>${up.name} · ${up.title}</span></div></div>
     ${poolTabs('sp')}
     <div class="pity">
-      <div class="r"><span class="rk sp">SP</span><div class="bar"><i style="width:${(p.pity.sp / SP_POOL.pity) * 100}%;background:linear-gradient(#ffe27a,#ff6ad0)"></i></div><em class="num">${left}</em></div>
+      <div class="r"><span class="rk sp">SP</span><div class="bar"><i style="width:${(p.pity.sp / SP_POOL.pity) * 100}%;background:linear-gradient(#ffe27a,#ff6ad0)"></i></div><em class="num">${left} 抽必出</em></div>
       <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">SP ${(rate * 100).toFixed(1)}%${p.pity.upLost ? ' · ⬆ UP' : ''} · 🎴 ${p.pulls} · <a data-act="nav" data-to="pay" style="cursor:pointer">${icon('moon', 16)}+</a></div>
     </div>
     <div class="pullbar">
-      <button class="btn blue ${ok1 ? '' : 'dim'}" data-act="pull1">🎴 ×1<span class="cost">${icon('moon', 16)}${spCost(s, 1)}</span></button>
-      <button class="btn lg ${ok10 ? '' : 'dim'}" data-act="pull10">🎴 ×10<span class="cost">${icon('moon', 16)}${spCost(s, 10)} · ✨UR</span></button>
+      <button class="btn blue ${ok1 ? '' : 'dim'}" data-act="pull1">🎴 单抽<span class="cost">${icon('moon', 16)}${spCost(s, 1)}</span></button>
+      <button class="btn lg ${ok10 ? '' : 'dim'}" data-act="pull10">🎴 十连<span class="cost">${icon('moon', 16)}${spCost(s, 10)} · ✨UR</span></button>
     </div>
     <div class="note">SP ${(SP_POOL.rateSp * 100).toFixed(0)}% · UR ${(SP_POOL.rateUr * 100).toFixed(0)}% · SSR ${((1 - SP_POOL.rateSp - SP_POOL.rateUr) * 100).toFixed(0)}% · <a data-act="rates" title="概率">ℹ️</a></div>
   </div>`;
@@ -62,13 +62,13 @@ export function gachaHtml(ctx: AppCtx): string {
     <div class="banner"><div class="rays"></div>${imgs}${up ? `<span class="up">⬆ UR</span>` : `<span class="up" style="background:var(--r-ssr);color:#fff">🎴</span>`}<div class="nm"><span>${up ? `${up.name} · ${up.title}` : '常驻招募'}</span></div></div>
     ${poolTabs(p.id)}
     <div class="pity">
-      <div class="r"><span class="rk ssr">SSR</span><div class="bar"><i style="width:${(s.pity.ssr / p.ssrPity) * 100}%"></i></div><em class="num">${ssrLeft}</em></div>
-      <div class="r"><span class="rk ur">UR</span><div class="bar"><i style="width:${(s.pity.ur / p.urPity) * 100}%;background:linear-gradient(#ffe08a,#f0a62e)"></i></div><em class="num">${urLeft}</em></div>
-      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">UR ${(urRate(p, s.pity.ur) * 100).toFixed(1)}%${s.pity.upLost ? ' · ⬆ UP' : ''} · <a data-act="dex" style="cursor:pointer">📖 ${Object.keys(s.heroes).length}/${TOTAL_HEROES}</a></div>
+      <div class="r"><span class="rk ssr">SSR</span><div class="bar"><i style="width:${(s.pity.ssr / p.ssrPity) * 100}%"></i></div><em class="num">${ssrLeft} 抽必出</em></div>
+      <div class="r"><span class="rk ur">UR</span><div class="bar"><i style="width:${(s.pity.ur / p.urPity) * 100}%;background:linear-gradient(#ffe08a,#f0a62e)"></i></div><em class="num">${urLeft} 抽必出</em></div>
+      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">UR ${(urRate(p, s.pity.ur) * 100).toFixed(1)}%${s.pity.upLost ? ' · ⬆ UP' : ''} · <a data-act="dex" style="cursor:pointer">📖 图鉴 ${Object.keys(s.heroes).length}/${TOTAL_HEROES}</a></div>
     </div>
     <div class="pullbar">
-      <button class="btn blue" data-act="pull1">🎴 ×1<span class="cost">${icon(c1.ic, 16)}${c1.v}</span></button>
-      <button class="btn lg" data-act="pull10">🎴 ×10<span class="cost">${icon(c10.ic, 16)}${c10.v} · ✨SSR</span></button>
+      <button class="btn blue" data-act="pull1">🎴 单抽<span class="cost">${icon(c1.ic, 16)}${c1.v}</span></button>
+      <button class="btn lg" data-act="pull10">🎴 十连<span class="cost">${icon(c10.ic, 16)}${c10.v} · 保底 SSR</span></button>
     </div>
     <div class="note">UR 1.5% · SSR 12% · SR 86.5% · <a data-act="rates" title="概率">ℹ️</a></div>
   </div>`;

@@ -64,7 +64,7 @@
 
 ## 头饰（`src/art3d/parts/headgear.ts`）
 
-头饰第 1 批 `codex/3d-headgear-crowns` 已在 #93 通过并合并，六种均为第 1 轮。当前第 2 批 `codex/3d-headgear-crests`：`pheasant / helmetWei / helmetGeneral / featherHeaddress / yellowBand / tigerHood`，第 1 轮待审，共 21 使用者（14 英雄 + 7 杂兵）。已按 `src/data/heroes.ts`、`src/data/mob-looks.ts` 和 `src/content/mobs.ts` 核对，原表数量无误，补齐使用者 ID。
+头饰前两批已在 #93 / #95 通过并合并，各六种均为第 1 轮。当前第 3 批 `codex/3d-headgear-fieldwear`：`sailorBandana / fortuneHat / rattanHelm / leafHat / hood / ratCap`，共 20 使用者（3 英雄 + 17 杂兵），第 1 轮待 Claude 审核。已按当前英雄与杂兵造型核对，原表数量无误，补齐使用者 ID。
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
@@ -74,22 +74,23 @@
 | `taoistCrown` | `wu_zhoumiaoyu`(UR), `xian_yuji`(SSR) + 杂兵×4（`mob_shu_strategist`, `mob_wu_strategist`, `mob_xian_vanguard`, `mob_xian_healer`） | 通过 | 1 | #93 已通过并合并；10 网格；道簪留出折耳活动间隙；codex/3d-headgear-crowns |
 | `emperorCrown` | `wei_caomiaode`(UR), `qun_dongzhuo`(SR) | 通过 | 1 | #93 已通过并合并；24 网格；冕板抬高以避开耳抖；codex/3d-headgear-crowns |
 | `boneCrown` | `man_mengmiaohuo`(UR) | 通过 | 1 | #93 已通过并合并；20 网格；codex/3d-headgear-crowns |
-| `pheasant` | `qun_lvbuding`(UR) | 待审 | 1 | 15 网格；codex/3d-headgear-crests |
-| `helmetWei` | `wei_xiahoudun`(SSR), `wei_xuhuang`(SR) + 杂兵×5（`mob_wei_guard`, `mob_wei_vanguard`, `mob_shu_vanguard`, `mob_wu_vanguard`, `mob_qun_guard`） | 待审 | 1 | 12 网格；codex/3d-headgear-crests |
-| `helmetGeneral` | `wei_zhangliao`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wu_sunxiaoba`(SSR), `shu_machao`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 13 网格；codex/3d-headgear-crests |
-| `featherHeaddress` | `man_zhurong`(SSR), `man_mulu`(SSR) + 杂兵×1（`mob_man_strategist`） | 待审 | 1 | 24 网格；codex/3d-headgear-crests |
-| `yellowBand` | `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR) + 杂兵×1（`mob_xian_strategist`） | 待审 | 1 | 9 网格；codex/3d-headgear-crests |
-| `tigerHood` | `wei_xuhuchi`(SSR) | 待审 | 1 | 16 网格；codex/3d-headgear-crests |
-| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6 | 底版 | 0 | |
-| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1 | 底版 | 0 | |
-| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1 | 底版 | 0 | |
-| `leafHat` | 杂兵×5 | 底版 | 0 | |
-| `hood` | 杂兵×3 | 底版 | 0 | |
-| `ratCap` | 杂兵×1 | 底版 | 0 | |
+| `pheasant` | `qun_lvbuding`(UR) | 通过 | 1 | #95 已合并；15 网格；codex/3d-headgear-crests |
+| `helmetWei` | `wei_xiahoudun`(SSR), `wei_xuhuang`(SR) + 杂兵×5（`mob_wei_guard`, `mob_wei_vanguard`, `mob_shu_vanguard`, `mob_wu_vanguard`, `mob_qun_guard`） | 通过 | 1 | #95 已合并；12 网格；codex/3d-headgear-crests |
+| `helmetGeneral` | `wei_zhangliao`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wu_sunxiaoba`(SSR), `shu_machao`(SR), `qun_huaxiong`(SR) | 通过 | 1 | #95 已合并；13 网格；codex/3d-headgear-crests |
+| `featherHeaddress` | `man_zhurong`(SSR), `man_mulu`(SSR) + 杂兵×1（`mob_man_strategist`） | 通过 | 1 | #95 已合并；24 网格；codex/3d-headgear-crests |
+| `yellowBand` | `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR) + 杂兵×1（`mob_xian_strategist`） | 通过 | 1 | #95 已合并；9 网格；codex/3d-headgear-crests |
+| `tigerHood` | `wei_xuhuchi`(SSR) | 通过 | 1 | #95 已合并；16 网格；codex/3d-headgear-crests |
+| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6（`mob_wei_healer`, `mob_shu_guard`, `mob_shu_healer`, `mob_wu_archer`, `mob_qun_vanguard`, `mob_qun_healer`） | 通过 | 1 | 15 网格；codex/3d-headgear-fieldwear |
+| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1（`mob_xian_archer`） | 通过 | 1 | 8 网格；codex/3d-headgear-fieldwear |
+| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1（`mob_man_guard`） | 通过 | 1 | 18 网格；codex/3d-headgear-fieldwear |
+| `leafHat` | 杂兵×5（`mob_shu_archer`, `mob_wu_healer`, `mob_man_archer`, `mob_man_healer`, `mob_man_assassin`） | 通过 | 1 | 14 网格；codex/3d-headgear-fieldwear |
+| `hood` | 杂兵×3（`mob_wei_assassin`, `mob_wu_assassin`, `mob_qun_assassin`） | 通过 | 1 | 10 网格；codex/3d-headgear-fieldwear |
+| `ratCap` | 杂兵×1（`mob_wu_guard`） | 通过 | 1 | 13 网格；codex/3d-headgear-fieldwear |
 
 ### 头饰审核记录
 
 - 2026-10-11 · [#93](https://github.com/acaozixu123456/myRepository/pull/93) · 六种头饰第 1 轮 **通过并合并**，按 [固定队列](CODEX_QUEUE.md) 同步。Claude 确认六种轮廓在 190px 下可辨认；浅色官帽布折偏弱，后续头饰注意剪影对比。
+- [#95](https://github.com/acaozixu123456/myRepository/pull/95) · 第 2 批六种头饰第 1 轮 **通过并合并**，按 [固定队列](CODEX_QUEUE.md) 的明确审核意见同步。Claude 建议下一批结带颜色更深，以提高小尺寸下的对比。
 
 ### 头饰第 1 批检查（#93）
 
@@ -103,7 +104,7 @@
 
 最不满意：官帽在 190px 下布折较弱，浅色 `pal` 的圆顶接近圆帽，短翼与额带仍可辨认。
 
-### 头饰第 2 批检查
+### 头饰第 2 批检查（#95）
 
 `npm run typecheck && npm test` 已通过（退出码 0；58 个测试文件、919 个测试）。六种分别为 15 / 12 / 13 / 24 / 9 / 16 网格，均在单部件预算内；球 / 圆柱最大 14 分段，全部复用缓存材质与 `toon` / `solid` 描边。
 
@@ -116,6 +117,20 @@
 审核截图：[idle / windup / strike](../src/art3d/parts/reviews/headgear-crests/poses.png)、[十猫同屏战斗](../src/art3d/parts/reviews/headgear-crests/battle.png)、[190px 剪影](../src/art3d/parts/reviews/headgear-crests/small-190px.png)、[190px 三姿势](../src/art3d/parts/reviews/headgear-crests/poses-190px.png)、[底版 / 最终版对照](../src/art3d/parts/reviews/headgear-crests/before-after.png)。拍摄命令、基线和冻结源码见 [截图说明](../src/art3d/parts/reviews/headgear-crests/README.md)。两次 `shots3d` 与十二帧战斗截图已完成，页面运行错误为 0，交付图片均 ≤500KB。
 
 最不满意：黄巾在张角角的黄色毛色上对比偏低，需 Claude 按 190px 游戏尺度审核。
+
+### 头饰第 3 批检查（第 1 轮待审）
+
+六种野外 / 制服头饰覆盖 SR 英雄 3 只与杂兵 17 只，头部倍率 0.96～1.07，包含尖耳 / 圆耳 / 折耳 / 大耳 / 簇耳。六种逻辑网格数分别为 15 / 8 / 18 / 14 / 10 / 13，球 / 圆柱最大 14 分段，均在单部件预算内。全部复用缓存材质与 `toon` / `solid` 描边，根平移旋转保持为 0。
+
+独立 QA 覆盖静态三姿势 60 组、精确耳抖峰值 60 组、全部 14 姿势 280 组，以及三姿势 × 12 动画时刻 720 组。预算违规、材质缓存违规、非有限坐标、遮眼样本、头饰自身裁切、整猫裁切与新增回归均为 0；每眼至少 71 个有效样本。以上结论对应本次有限姿势与时刻采样。
+
+圆耳叶帽使用者 `mob_shu_archer` / `mob_wu_healer` 保留低位后耳根接合；普通、精确耳峰与 yaw=148° 背向三姿势实图均确认耳轮廓连续，未见叶片切入耳中部或截掉耳尖。三角接合的具体范围与方法见 [QA 摘要](../src/art3d/parts/reviews/headgear-fieldwear/qa-summary.md) 和 [机器报告](../src/art3d/parts/reviews/headgear-fieldwear/qa-summary.json)。
+
+审核截图：[idle / windup / strike](../src/art3d/parts/reviews/headgear-fieldwear/poses.png)、[十猫同屏战斗](../src/art3d/parts/reviews/headgear-fieldwear/battle.png)、[190px 剪影](../src/art3d/parts/reviews/headgear-fieldwear/small-190px.png)、[190px 三姿势](../src/art3d/parts/reviews/headgear-fieldwear/poses-190px.png)、[底版 / 最终版对照](../src/art3d/parts/reviews/headgear-fieldwear/before-after.png)、[正面](../src/art3d/parts/reviews/headgear-fieldwear/front-190px.png)、[反侧](../src/art3d/parts/reviews/headgear-fieldwear/reverse-190px.png)。本批结带加深折线与结部配色，落实 #95 的后续建议；红 / 绿 / 蓝布巾和三阵营兜帽在实际截图中核对。四次 `shots3d` 与十二帧战斗截图完成，页面运行错误为 0，交付图片均 ≤500KB；取景、冻结源码与实际命令见 [截图说明](../src/art3d/parts/reviews/headgear-fieldwear/README.md)。
+
+本批 `npm run typecheck && npm test` 已通过（退出码 0；58 个测试文件、926 个测试）。
+
+最不满意：叶帽在 `strike` 中剪影偏薄，190px 下背面叶脉与厚度偏弱；`idle / windup` 的叶面与短柄较清楚，等待 Claude 按游戏尺度审核。
 
 ## 衣服（`src/art3d/parts/body.ts`）
 

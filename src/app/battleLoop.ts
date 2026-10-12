@@ -64,6 +64,8 @@ export class BattleLoop {
     this.player.setSpeed(this.speed);
     this.player.scene.start();
   }
+  /** 跳过当前这场战斗的回放：结果已由引擎算好，直接结算 */
+  skip() { this.player.aborted = true; this.player.skipping = true; this.player.setSpeed(8); }
   /** 立即挑战下一关（打断当前这场） */
   challenge() {
     this.pushNext = true;
@@ -145,18 +147,21 @@ export class BattleLoop {
   private async fight(stage: StageDef, token: number, chapter: number, A?: UnitSetup[]): Promise<boolean> {
     const s = this.hooks.state();
     let carry: Record<string, { hpPct: number; energy: number }> | undefined;
+    this.player.aborted = false; this.player.skipping = false;
     for (let w = 0; w < stage.waves.length; w++) {
       const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: A && w === 0 ? A : lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
       const foes = sim.units.filter((u) => u.side === 'B');
       this.lastDamagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
-      const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
-      await this.player.setup(start, CHAPTER_THEME[chapter] ?? 'meadow');
-      if (token !== this.token) return false;
-      this.player.setSpeed(this.paused ? 0 : this.speed);
-      // 最后一波之外不显示“胜利”横幅
-      const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
-      await this.player.play(evs);
-      if (token !== this.token) return false;
+      if (!this.player.aborted) {
+        const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
+        await this.player.setup(start, CHAPTER_THEME[chapter] ?? 'meadow');
+        if (token !== this.token) return false;
+        this.player.setSpeed(this.paused ? 0 : this.speed);
+        // 最后一波之外不显示“胜利”横幅
+        const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
+        await this.player.play(evs);
+        if (token !== this.token) return false;
+      }
       if (sim.winner !== 'A') { this.lastCarry = null; return false; }
       carry = {};
       for (const u of sim.units) if (u.side === 'A') carry[u.heroId] = { hpPct: u.alive ? u.hp / u.maxHp : 0, energy: u.energy };
