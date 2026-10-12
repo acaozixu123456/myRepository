@@ -142,10 +142,10 @@
 | `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR), `xian_yuji`(SSR) + 杂兵×2（`mob_xian_guard`, `mob_xian_strategist`） | 待审 | 1 | 21 网格；宽交领、阴阳纹、符袋；codex/3d-body-robes |
 | `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR), `man_shamoke`(SSR) + 杂兵×2（`mob_man_vanguard`, `mob_man_strategist`） | 待审 | 1 | 24 网格；露毛胸面、骨扣、三片短皮裙；codex/3d-body-robes |
 | `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR), `wei_guojia`(SR), `shu_jiangwei`(SR), `xian_guanlu`(SR), `xian_nanhua`(SR) + 杂兵×12（`mob_wei_strategist`, `mob_wei_healer`, `mob_shu_strategist`, `mob_shu_healer`, `mob_wu_strategist`, `mob_wu_healer`, `mob_qun_strategist`, `mob_qun_healer`, `mob_man_healer`, `mob_xian_vanguard`, `mob_xian_healer`, `mob_xian_assassin`） | 待审 | 1 | 18 网格；短翼领、侧开裾、侧扣；codex/3d-body-robes |
-| `armorLight` | `wei_xuhuchi`(SSR), `wu_sunxiaoba`(SSR), `wu_sunxiangxiang`(SSR) 等5只 + 杂兵×7 | 底版 | 0 | |
-| `armorWei` | `wei_zhangliao`(SSR) + 杂兵×2 | 底版 | 0 | |
-| `vest` | `wu_ganning`(SR), `man_mengyou`(SR) + 杂兵×9 | 底版 | 0 | |
-| `rattan` | `man_wutugu`(SR) + 杂兵×2 | 底版 | 0 | |
+| `armorLight` | `wei_xuhuchi`(SSR), `wu_sunxiaoba`(SSR), `wu_sunxiangxiang`(SSR), `shu_huangzhong`(SR), `shu_machao`(SR) + 杂兵×7（`mob_wei_vanguard`, `mob_shu_vanguard`, `mob_wu_guard`, `mob_wu_vanguard`, `mob_wu_archer`, `mob_qun_vanguard`, `mob_man_assassin`） | 待审 | 1 | 22逻辑 / 42含描边网格；X绑带、低V领、短肩与腰片；codex/3d-body-field-armor |
+| `armorWei` | `wei_zhangliao`(SSR) + 杂兵×2（`mob_wei_guard`, `mob_qun_guard`） | 待审 | 1 | 22逻辑 / 42含描边网格；规整札片、窄层肩与圆胸镜；codex/3d-body-field-armor |
+| `vest` | `wu_ganning`(SR), `man_mengyou`(SR) + 杂兵×9（`mob_wei_archer`, `mob_wei_assassin`, `mob_shu_archer`, `mob_shu_assassin`, `mob_wu_assassin`, `mob_qun_archer`, `mob_qun_assassin`, `mob_man_archer`, `mob_xian_archer`） | 待审 | 1 | 15逻辑 / 29含描边网格；开襟翻领、盘扣与短开衩；codex/3d-body-field-armor |
+| `rattan` | `man_wutugu`(SR) + 杂兵×2（`mob_shu_guard`, `mob_man_guard`） | 待审 | 1 | 22逻辑 / 38含描边网格；前胸、前腰交错藤编与低肩片；codex/3d-body-field-armor |
 
 ### 衣服第 1 批检查
 
@@ -172,6 +172,34 @@
 审核图：[三姿势](../src/art3d/parts/reviews/body-robes/poses.png)、[真实十猫战斗](../src/art3d/parts/reviews/body-robes/battle.webp)、[小尺寸](../src/art3d/parts/reviews/body-robes/poses-small.png)、[最新同引擎前后对照](../src/art3d/parts/reviews/body-robes/before-after.png)、[体宽与深色杂兵](../src/art3d/parts/reviews/body-robes/boundaries.png)。命令和截图版本记录见 [说明](../src/art3d/parts/reviews/body-robes/README.md)；十二帧战斗完成，运行错误 0，单图均 <500000 B。
 
 最不满意：浅色文士袍的小扣在游戏尺度偏弱，兽皮胸面的素色毛色片仍待后续花纹批次统一。后续按最新固定队列先做毛色花纹，再做英雄专属造型，与 A10 地面贴花交替。
+
+### 衣服第 3 批检查（战场衣服，2026-10-12）
+
+`codex/3d-body-field-armor` 交付 `armorWei / armorLight / vest / rattan`，第1轮待审。共29名实际使用者（9英雄、20杂兵），四件分别3 / 12 / 11 / 3名，完整ID已补在上表，并与独立机器报告核对。参考9张英雄原JPG与 `ART_PROMPTS.md`，采用魏甲札片和胸镜、轻甲X绑带、短褂开襟与藤甲菱形篮编，配色来自当前 `PartCtx.pal`。最不满意：190px下藤编前后穿插深度仍弱，背面是暖藤色完整底壳；魏甲小札片在侧后视更依赖肩层和胸镜识别。
+
+源码只替换 `body.ts` 四项注册、新增 `parts/body-field-armor.ts`，并删除四项旧底版替换后确实不再使用的辅助链和 `sphere` import，以满足 noUnused 检查。已通过六款衣服的 regalia 函数区间及 `body-robes.ts` helper与基线字节相同；没有改猫、姿势、材质、数据或挂接契约。
+
+固定审核与官图基线为 `e777d58f3b0e9965f7af25ded73948a84e68d219`。注册源码SHA为 `deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a`，helper为 `1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942`，body→helper按path+NUL+bytes+NUL合成 `74787654cae61640cc5634965b8a27632c87182271e3ea123156a13e8201918d`。当前cat/pose为 `39b82bcb… / 3abe84b5…`，含整颗头缩放、前举持握及眯眼/张嘴表情。腰口y=.57不动，上身几何在构建时收至.90，腰下仍挂hip；body根与skirt根为单位变换。
+
+| 衣服 | 逻辑网格（含skirt） | 含描边实际网格 | 最大分段 |
+| --- | ---: | ---: | ---: |
+| armorWei | 22 | 42 | 24 |
+| armorLight | 22 | 42 | 24 |
+| vest | 15 | 29 | 24 |
+| rattan | 22 | 38 | 24 |
+
+全部29名使用者复测，Toon/outline材质均复用缓存，尺度与行列式为正；没有每帧分配或新增独立动画。固定e777源码已有 `npm run typecheck && npm test` 通过记录，68文件 / 1019测试、退出0；提交前维护者另同步主线29f6日期修复并实际再次执行同命令，退出0、68文件/1019测试全部通过。相关 art3d/look/actor/player 累计字节无变化，2源、22图及独立QA三件保持冻结记录，拍摄基线仍为e777。
+
+独立 [QA说明](../src/art3d/parts/reviews/body-field-armor/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/body-field-armor/qa-summary.json) 锁定整src的298文件到唯一运行快照，核对SHA哨兵及全部源文件前后相同，旧BODY通过真实 `git show e777d58:src/art3d/parts/body.ts` 获取。29×(14姿势×4朝向+3姿势×12时刻)=2668状态，其中静态1624、动画1044；静态yaw=0/32/-32/148、t=.4、phase0，动画yaw32、t=i×8/11。
+
+- 新衣服实体及沿normal展开的描边，对真实颅骨1120三角面strict interior逐面裁剪，交叉状态0；能检查无inside顶点的跨壳三角，没有用名义椭球或仅顶点计数推断无交叉。旧高领2668状态均有真实交叉，新候选消除了本次采样中的交叉。
+- 眼睛来自实际baked eye核心三角的12×12投影网格，按具体被遮sample ID差集比较；眼睛与动态鼻口新增ID均0、有效眼格点不一致0。动态5面部点来自当前nose/muzzle及启用的smile或mouthO表面，包含mouthO1972 / smile696状态。受击眯眼和呼吸采样中，每眼最低有效数静态50 / 动画70，没有使用旧引擎110阈值。
+- 全89个显式id/look含41英雄、36杂兵、12宠物；29目标旧/新均真实调用BODY恰好1次，60非目标所有geometry attributes及index的TypedArray原始字节完全一致；12宠物body均none。
+- 自衣服出FRAME、非有限值、新增整猫裁切和四边裁幅增加均0。整猫仍保留双方相同的277个既有裁切（静态184、动画93），来自headTop及蜀/群前锋paw；最低y=-.290644194、最高y=3.755856928，FRAME y=[-.25,3.6]。不声称全员完整入框或所有连续时刻没有交叉。
+
+官图覆盖全部29名使用者：英雄 [三姿势1](../src/art3d/parts/reviews/body-field-armor/heroes-1.png) / [三姿势2](../src/art3d/parts/reviews/body-field-armor/heroes-2.png)，杂兵 [1](../src/art3d/parts/reviews/body-field-armor/mobs-1.png) / [2](../src/art3d/parts/reviews/body-field-armor/mobs-2.png) / [3](../src/art3d/parts/reviews/body-field-armor/mobs-3.png) / [4](../src/art3d/parts/reviews/body-field-armor/mobs-4.png)；各组另有原生250×219单格的小尺寸图，英雄另有正面/反侧/背面三姿势。补充 [大头低领](../src/art3d/parts/reviews/body-field-armor/neckroom-large-heads.png)、[藤编细节](../src/art3d/parts/reviews/body-field-armor/rattan-front-detail.png)、[独立正常前后](../src/art3d/parts/reviews/body-field-armor/before-after.png) 和 [真实十猫战斗](../src/art3d/parts/reviews/body-field-armor/battle.webp)。战斗保留HUD，十二帧取第04帧t=4.25s，10/10真实cat3d，四种body和skirt组逐只命中。
+
+官图20张PNG及battle为原尺寸无损，另有独立前后对照；单文件均小于500000 B，完整解码RGBA像素差0。原图/导出SHA、参数、采集依赖前后记录与错误见 [采集记录](../src/art3d/parts/reviews/body-field-armor/capture-records.json) 和 [README](../src/art3d/parts/reviews/body-field-armor/README.md)。页面脚本错误0；外部Google Fonts失败后回退系统字体的记录保留。原有盾与爪动作可能遮住部分口鼻，这批衣服没有通过隐藏其他部件改变这些既有动作。
 
 ## 披挂（`src/art3d/parts/back.ts`）
 
