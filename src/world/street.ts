@@ -8,6 +8,7 @@ import { buildSteam } from './steam';
 import { LEVEL_1, levelColliders } from './levels';
 import type { AABB, LevelDef } from './levels';
 import { PROPS } from './props';
+import { buildGroundDecals } from './decals';
 import { buildTheme } from './themes';
 
 export type { AABB };
@@ -49,6 +50,8 @@ export function buildStreet(L: LevelDef = LEVEL_1): Street {
       const curb = new THREE.Mesh(new THREE.BoxGeometry(bw, 0.1, bd), cm); curb.position.set(cx + ox, 0.34, cz + oz); g.add(nm(curb));
     }
   }
+
+  g.add(buildGroundDecals(HALF)); // 污渍 / 裂缝贴花（Codex A10）
 
   // ---- 楼 ----
   const refs: BuildingRef[] = [];
