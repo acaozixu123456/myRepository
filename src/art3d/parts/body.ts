@@ -196,6 +196,19 @@ function regaliaCap(c: PartCtx, r: number, y: number, col: string, depth = 0.82)
   return cap;
 }
 
+/** 在构建时把裙面和所有裙饰一起收短；腰口 y=.57 不动，插槽与裙根保持单位变换。 */
+function raiseRegaliaHem(skirt: THREE.Group, scaleY: number): void {
+  const lift = new THREE.Matrix4().makeScale(1, scaleY, 1);
+  lift.setPosition(0, 0.57 * (1 - scaleY), 0);
+  for (const child of skirt.children) {
+    const mesh = child as THREE.Mesh;
+    if (!mesh.isMesh) continue;
+    mesh.updateMatrix();
+    mesh.geometry.applyMatrix4(new THREE.Matrix4().multiplyMatrices(lift, mesh.matrix));
+    mesh.position.set(0, 0, 0); mesh.rotation.set(0, 0, 0); mesh.scale.set(1, 1, 1); mesh.updateMatrix();
+  }
+}
+
 function silkRegalia(c: PartCtx): THREE.Group {
   const g = new THREE.Group(), skirt = new THREE.Group(), b = c.look.build ?? 1;
   const upper: RegaliaProfile = [[0.51, 0.25], [0.54, 0.46], [0.54, 0.74], [0.45, 0.98], [0.30, 1.17], [0.24, 1.23]];
@@ -225,6 +238,7 @@ function silkRegalia(c: PartCtx): THREE.Group {
   g.add(regaliaShell(c, [[0.555, 0.42], [0.555, 0.55]], c.pal.sub));
   const buckle = solid(new THREE.SphereGeometry(0.085, 12, 8), toon(c.pal.trim), 0.01);
   buckle.scale.set(1.25, 0.8, 0.4); buckle.position.set(0, 0.49, 0.49 * b); g.add(buckle);
+  raiseRegaliaHem(skirt, 0.846);
   g.userData.skirt = skirt;
   return g;
 }
@@ -257,6 +271,7 @@ function petalDress(c: PartCtx): THREE.Group {
   }
   const knot = solid(new THREE.SphereGeometry(0.065, 10, 8), toon(c.pal.trim), 0.006);
   knot.scale.z = 0.45; knot.position.set(0, 0.49, 0.505 * b); g.add(knot);
+  raiseRegaliaHem(skirt, 0.85);
   g.userData.skirt = skirt;
   return g;
 }
@@ -303,6 +318,7 @@ function heavyRegalia(c: PartCtx): THREE.Group {
   g.add(regaliaShell(c, [[0.575, 0.42], [0.575, 0.55]], c.pal.trim));
   const buckle = solid(new THREE.SphereGeometry(0.08, 12, 8), toon(c.pal.sub), 0.008);
   buckle.scale.set(1.25, 0.85, 0.4); buckle.position.set(0, 0.49, 0.51 * b); g.add(buckle);
+  raiseRegaliaHem(skirt, 0.917);
   g.userData.skirt = skirt;
   return g;
 }

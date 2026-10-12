@@ -1,27 +1,24 @@
 {
-  "bodySHA256": "17dba1912cfc1ef3b4d90428590bcb57262618c308a59434e562803f26ea52f4",
+  "bodySHA256": "1214de77116ed5b1db8123874dec2be2b44faf1d7874523c11425424fe87306f",
   "engineSHA256": {
-    "src/art3d/cat3d.ts": "56288d563537fc36ee3e419e8f8a5ae741b57d8dc7915a0364561b2cdecc149f",
+    "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
     "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
-    "src/art3d/toon.ts": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
     "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
   },
   "engineSHA256After": {
-    "src/art3d/cat3d.ts": "56288d563537fc36ee3e419e8f8a5ae741b57d8dc7915a0364561b2cdecc149f",
+    "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
     "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
-    "src/art3d/toon.ts": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
     "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
   },
-  "baselineCommit": "1f45261",
+  "baselineCommit": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
   "baselineFixture": {
-    "sha256": "ae1a8e56e48a2c570370aaad7a31993e964d06f2cc3c6a9a08a691570e80feb8",
-    "commit": "1f45261"
+    "sha256": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167",
+    "commit": "bf37bd307e8669850af6cd5b502172ad7d7ab102"
   },
-  "status": "independent QA complete for final metal candidate; final visual approval remains with Claude",
-  "supersedes": [
-    "aa24c00 pre-upstream audit and screenshots archived under ignored .shots/body-regalia/obsolete/aa24c00",
-    "0ba5e54b shoulder/chest pre-metal revision archived under ignored .shots/body-regalia/obsolete/1f45261-heavy-pre-metal; neither group is final evidence"
-  ],
+  "status": "independent QA complete against frozen bf37bd3; visual approval remains with Claude",
+  "supersedes": "all pre-bf37 engine audits/images archived under ignored .shots/body-regalia/obsolete and not final evidence",
   "users": {
     "robeSilk": [
       "wei_caomiaode",
@@ -54,8 +51,8 @@
     "y0": -0.25,
     "y1": 3.6
   },
-  "method": "runtime noBake on BODY+skirt only; actual current buildCat3D/POSES phase=0/yaw=32; body outline vertex expansion; independent normal bake FRAME by applyBoneTransform on every vertex; 12x12 actual baked eye-core triangle projection plus five face landmark depth probes; baseline only body replaced from 1f45261, identical current engines",
-  "fixtureMethod": "Fresh generated module filename and fresh generated baseline filename on every run; runtime baseline SHA and commit sentinel checked against Node raw git-show fixture to prevent ignored .shots Vite transform cache reuse.",
+  "method": "runtime noBake on BODY+skirt only; actual current buildCat3D/POSES phase=0/yaw=32; body outline vertex expansion; independent normal bake FRAME by applyBoneTransform on every vertex; 12x12 actual baked eye-core triangle projection plus five face landmark depth probes; baseline only body replaced from bf37bd307e8669850af6cd5b502172ad7d7ab102, identical current engines",
+  "fixtureMethod": "Fresh unique QA/baseline module filenames each run; browser commit and raw baseline SHA sentinel checked against Node fixture to avoid ignored .shots Vite transform cache.",
   "actualBodyAttachments": 64,
   "expectedBodyAttachments": 64,
   "budget": [
@@ -820,8 +817,8 @@
       "minEyeSamples": 73,
       "clothingOutside": 0,
       "baselineClothingOutside": 0,
-      "wholeOutside": 3,
-      "baselineWholeOutside": 3,
+      "wholeOutside": 13,
+      "baselineWholeOutside": 13,
       "newWholeOutside": 0,
       "nonFinite": 0
     },
@@ -832,8 +829,8 @@
       "minEyeSamples": 72,
       "clothingOutside": 0,
       "baselineClothingOutside": 0,
-      "wholeOutside": 12,
-      "baselineWholeOutside": 12,
+      "wholeOutside": 55,
+      "baselineWholeOutside": 55,
       "newWholeOutside": 0,
       "nonFinite": 0
     },
@@ -844,8 +841,8 @@
       "minEyeSamples": 71,
       "clothingOutside": 0,
       "baselineClothingOutside": 0,
-      "wholeOutside": 36,
-      "baselineWholeOutside": 36,
+      "wholeOutside": 135,
+      "baselineWholeOutside": 135,
       "newWholeOutside": 0,
       "nonFinite": 0
     },
@@ -856,10 +853,20 @@
       "minEyeSamples": 71,
       "clothingOutside": 0,
       "baselineClothingOutside": 0,
-      "wholeOutside": 48,
-      "baselineWholeOutside": 48,
+      "wholeOutside": 190,
+      "baselineWholeOutside": 190,
       "newWholeOutside": 0,
       "nonFinite": 0
+    }
+  },
+  "clippedBoneCases": {
+    "all14": {
+      "back": 12,
+      "headTop": 43
+    },
+    "animation": {
+      "back": 36,
+      "headTop": 99
     }
   },
   "remainingBaselineFrameCases": [
@@ -870,6 +877,8 @@
       "suite": "all14",
       "candidateMinY": -0.2951290636051632,
       "baselineMinY": -0.2951290636051632,
+      "candidateMaxY": 3.5748479178794668,
+      "baselineMaxY": 3.5748479178794668,
       "candidateClippedBones": [
         "back"
       ],
@@ -884,6 +893,8 @@
       "suite": "all14",
       "candidateMinY": -0.3242586103685118,
       "baselineMinY": -0.3242586103685118,
+      "candidateMaxY": 3.584900173235102,
+      "baselineMaxY": 3.584900173235102,
       "candidateClippedBones": [
         "back"
       ],
@@ -893,11 +904,29 @@
     },
     {
       "id": "wei_caomiaode",
+      "pose": "castUp",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.1959051752608666,
+      "baselineMinY": -0.1959051752608666,
+      "candidateMaxY": 3.6585058231105045,
+      "baselineMaxY": 3.6585058231105045,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "wei_caomiaode",
       "pose": "hurt",
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3619077345062413,
       "baselineMinY": -0.3619077345062413,
+      "candidateMaxY": 3.5707929231246816,
+      "baselineMaxY": 3.5707929231246816,
       "candidateClippedBones": [
         "back"
       ],
@@ -912,6 +941,8 @@
       "suite": "all14",
       "candidateMinY": -0.2833483507056227,
       "baselineMinY": -0.2833483507056227,
+      "candidateMaxY": 3.588244218368477,
+      "baselineMaxY": 3.588244218368477,
       "candidateClippedBones": [
         "back"
       ],
@@ -926,6 +957,8 @@
       "suite": "animation",
       "candidateMinY": -0.29379166575070925,
       "baselineMinY": -0.29379166575070925,
+      "candidateMaxY": 3.543563040166619,
+      "baselineMaxY": 3.543563040166619,
       "candidateClippedBones": [
         "back"
       ],
@@ -940,6 +973,8 @@
       "suite": "animation",
       "candidateMinY": -0.29403629008678744,
       "baselineMinY": -0.29403629008678744,
+      "candidateMaxY": 3.5894895102410334,
+      "baselineMaxY": 3.5894895102410334,
       "candidateClippedBones": [
         "back"
       ],
@@ -954,6 +989,8 @@
       "suite": "animation",
       "candidateMinY": -0.28313695328771143,
       "baselineMinY": -0.28313695328771143,
+      "candidateMaxY": 3.5550129191969035,
+      "baselineMaxY": 3.5550129191969035,
       "candidateClippedBones": [
         "back"
       ],
@@ -968,6 +1005,8 @@
       "suite": "animation",
       "candidateMinY": -0.2751053485775319,
       "baselineMinY": -0.2751053485775319,
+      "candidateMaxY": 3.4952173744385537,
+      "baselineMaxY": 3.4952173744385537,
       "candidateClippedBones": [
         "back"
       ],
@@ -982,6 +1021,8 @@
       "suite": "animation",
       "candidateMinY": -0.2869381488905861,
       "baselineMinY": -0.2869381488905861,
+      "candidateMaxY": 3.516426362699497,
+      "baselineMaxY": 3.516426362699497,
       "candidateClippedBones": [
         "back"
       ],
@@ -996,6 +1037,8 @@
       "suite": "animation",
       "candidateMinY": -0.3070977127348855,
       "baselineMinY": -0.3070977127348855,
+      "candidateMaxY": 3.583785543901977,
+      "baselineMaxY": 3.583785543901977,
       "candidateClippedBones": [
         "back"
       ],
@@ -1010,6 +1053,8 @@
       "suite": "animation",
       "candidateMinY": -0.31123314645897937,
       "baselineMinY": -0.31123314645897937,
+      "candidateMaxY": 3.572482639877569,
+      "baselineMaxY": 3.572482639877569,
       "candidateClippedBones": [
         "back"
       ],
@@ -1024,6 +1069,8 @@
       "suite": "animation",
       "candidateMinY": -0.2994946089512638,
       "baselineMinY": -0.2994946089512638,
+      "candidateMaxY": 3.506465003781246,
+      "baselineMaxY": 3.506465003781246,
       "candidateClippedBones": [
         "back"
       ],
@@ -1038,6 +1085,8 @@
       "suite": "animation",
       "candidateMinY": -0.29244775448907356,
       "baselineMinY": -0.29244775448907356,
+      "candidateMaxY": 3.5050511089726712,
+      "baselineMaxY": 3.5050511089726712,
       "candidateClippedBones": [
         "back"
       ],
@@ -1052,6 +1101,8 @@
       "suite": "animation",
       "candidateMinY": -0.29488696631007805,
       "baselineMinY": -0.29488696631007805,
+      "candidateMaxY": 3.5699015247776957,
+      "baselineMaxY": 3.5699015247776957,
       "candidateClippedBones": [
         "back"
       ],
@@ -1066,6 +1117,8 @@
       "suite": "animation",
       "candidateMinY": -0.29118859400933905,
       "baselineMinY": -0.29118859400933905,
+      "candidateMaxY": 3.5846271338314226,
+      "baselineMaxY": 3.5846271338314226,
       "candidateClippedBones": [
         "back"
       ],
@@ -1080,11 +1133,1197 @@
       "suite": "animation",
       "candidateMinY": -0.27863775154584913,
       "baselineMinY": -0.27863775154584913,
+      "candidateMaxY": 3.5309578027884183,
+      "baselineMaxY": 3.5309578027884183,
       "candidateClippedBones": [
         "back"
       ],
       "baselineClippedBones": [
         "back"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7295907995344653,
+      "baselineMaxY": 3.7295907995344653,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "ready",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.19104314433153455,
+      "baselineMinY": -0.19104314433153455,
+      "candidateMaxY": 3.7111007917430943,
+      "baselineMaxY": 3.7111007917430943,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7414539486543803,
+      "baselineMaxY": 3.7414539486543803,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windupLow",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7238900404700086,
+      "baselineMaxY": 3.7238900404700086,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "strike",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6143489694366804,
+      "baselineMaxY": 3.6143489694366804,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "cast",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.680017996563319,
+      "baselineMaxY": 3.680017996563319,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "castUp",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.18151311830629852,
+      "baselineMinY": -0.18151311830629852,
+      "candidateMaxY": 3.6036145664854042,
+      "baselineMaxY": 3.6036145664854042,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "castFwd",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.663066908012407,
+      "baselineMaxY": 3.663066908012407,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "guard",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.740654417837362,
+      "baselineMaxY": 3.740654417837362,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "dash",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.18464764178807336,
+      "baselineMinY": -0.18464764178807336,
+      "candidateMaxY": 3.6027006931990844,
+      "baselineMaxY": 3.6027006931990844,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7203803804084634,
+      "baselineMaxY": 3.7203803804084634,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "slump",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6669307669958338,
+      "baselineMaxY": 3.6669307669958338,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.685567140579224,
+      "baselineMaxY": 3.685567140579224,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7468059192361354,
+      "baselineMaxY": 3.7468059192361354,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7025681916146054,
+      "baselineMaxY": 3.7025681916146054,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.632960123438146,
+      "baselineMaxY": 3.632960123438146,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.659497497894522,
+      "baselineMaxY": 3.659497497894522,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7326032207632465,
+      "baselineMaxY": 3.7326032207632465,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7195153913412886,
+      "baselineMaxY": 3.7195153913412886,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6412374443776594,
+      "baselineMaxY": 3.6412374443776594,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.636823082930677,
+      "baselineMaxY": 3.636823082930677,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.716529851865808,
+      "baselineMaxY": 3.716529851865808,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.742730550098558,
+      "baselineMaxY": 3.742730550098558,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "idle",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.671413874447764,
+      "baselineMaxY": 3.671413874447764,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7023519401997205,
+      "baselineMaxY": 3.7023519401997205,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7558569281236442,
+      "baselineMaxY": 3.7558569281236442,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7118007927766214,
+      "baselineMaxY": 3.7118007927766214,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.646748204047207,
+      "baselineMaxY": 3.646748204047207,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.674402808932658,
+      "baselineMaxY": 3.674402808932658,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.747036840984606,
+      "baselineMaxY": 3.747036840984606,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7380732229631812,
+      "baselineMaxY": 3.7380732229631812,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.66541978060077,
+      "baselineMaxY": 3.66541978060077,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.65933537056616,
+      "baselineMaxY": 3.65933537056616,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7301951050814735,
+      "baselineMaxY": 3.7301951050814735,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.750659208914058,
+      "baselineMaxY": 3.750659208914058,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "windup",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6818935548811003,
+      "baselineMaxY": 3.6818935548811003,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "strike",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6352531926446194,
+      "baselineMaxY": 3.6352531926446194,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "strike",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6104713630503773,
+      "baselineMaxY": 3.6104713630503773,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "pose": "strike",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6325351129279397,
+      "baselineMaxY": 3.6325351129279397,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6880986479951052,
+      "baselineMaxY": 3.6880986479951052,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "ready",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.19104314433153455,
+      "baselineMinY": -0.19104314433153455,
+      "candidateMaxY": 3.670136128376643,
+      "baselineMaxY": 3.670136128376643,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.698912302044579,
+      "baselineMaxY": 3.698912302044579,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windupLow",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.681491680157743,
+      "baselineMaxY": 3.681491680157743,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "cast",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6404558191891834,
+      "baselineMaxY": 3.6404558191891834,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "castFwd",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6232637065997046,
+      "baselineMaxY": 3.6232637065997046,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "guard",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.698116576362813,
+      "baselineMaxY": 3.698116576362813,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6801445803538857,
+      "baselineMaxY": 3.6801445803538857,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "slump",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6251273461794042,
+      "baselineMaxY": 3.6251273461794042,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6445882320404057,
+      "baselineMaxY": 3.6445882320404057,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7051071307979573,
+      "baselineMaxY": 3.7051071307979573,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6613312609754596,
+      "baselineMaxY": 3.6613312609754596,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6187971437404194,
+      "baselineMaxY": 3.6187971437404194,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6911541780249486,
+      "baselineMaxY": 3.6911541780249486,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.678236400316189,
+      "baselineMaxY": 3.678236400316189,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.600812755143794,
+      "baselineMaxY": 3.600812755143794,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.675184750085824,
+      "baselineMaxY": 3.675184750085824,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7010670130809404,
+      "baselineMaxY": 3.7010670130809404,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "idle",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6305305327338124,
+      "baselineMaxY": 3.6305305327338124,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.660242438934287,
+      "baselineMaxY": 3.660242438934287,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7131513636604,
+      "baselineMaxY": 3.7131513636604,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6695322349961867,
+      "baselineMaxY": 3.6695322349961867,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.605176729482223,
+      "baselineMaxY": 3.605176729482223,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6326116329381533,
+      "baselineMaxY": 3.6326116329381533,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7045641798065607,
+      "baselineMaxY": 3.7045641798065607,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6957087408859697,
+      "baselineMaxY": 3.6957087408859697,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6237710243309276,
+      "baselineMaxY": 3.6237710243309276,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6176900199991473,
+      "baselineMaxY": 3.6176900199991473,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6877679545315503,
+      "baselineMaxY": 3.6877679545315503,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.708003686862782,
+      "baselineMaxY": 3.708003686862782,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "pose": "windup",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.639956898340953,
+      "baselineMaxY": 3.639956898340953,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6623942007194676,
+      "baselineMaxY": 3.6623942007194676,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "ready",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.19104314433153455,
+      "baselineMinY": -0.19104314433153455,
+      "candidateMaxY": 3.6285060462620065,
+      "baselineMaxY": 3.6285060462620065,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7115526944260733,
+      "baselineMaxY": 3.7115526944260733,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windupLow",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.704676657774881,
+      "baselineMaxY": 3.704676657774881,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
       ]
     },
     {
@@ -1094,6 +2333,8 @@
       "suite": "all14",
       "candidateMinY": -0.2951290636051632,
       "baselineMinY": -0.2951290636051632,
+      "candidateMaxY": 3.4999351823553515,
+      "baselineMaxY": 3.4999351823553515,
       "candidateClippedBones": [
         "back"
       ],
@@ -1108,6 +2349,8 @@
       "suite": "all14",
       "candidateMinY": -0.3242586103685118,
       "baselineMinY": -0.3242586103685118,
+      "candidateMaxY": 3.43990335468565,
+      "baselineMaxY": 3.43990335468565,
       "candidateClippedBones": [
         "back"
       ],
@@ -1117,11 +2360,29 @@
     },
     {
       "id": "qun_lvbuding",
+      "pose": "guard",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7054841325795524,
+      "baselineMaxY": 3.7054841325795524,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
       "pose": "hurt",
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3619077345062413,
       "baselineMinY": -0.3619077345062413,
+      "candidateMaxY": 3.2200728088645167,
+      "baselineMaxY": 3.2200728088645167,
       "candidateClippedBones": [
         "back"
       ],
@@ -1136,6 +2397,8 @@
       "suite": "all14",
       "candidateMinY": -0.2833483507056227,
       "baselineMinY": -0.2833483507056227,
+      "candidateMaxY": 3.485039757164552,
+      "baselineMaxY": 3.485039757164552,
       "candidateClippedBones": [
         "back"
       ],
@@ -1145,11 +2408,365 @@
     },
     {
       "id": "qun_lvbuding",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6232839982474996,
+      "baselineMaxY": 3.6232839982474996,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "slump",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.664408074624468,
+      "baselineMaxY": 3.664408074624468,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.60928225517273,
+      "baselineMaxY": 3.60928225517273,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.685362333764353,
+      "baselineMaxY": 3.685362333764353,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.643493220016157,
+      "baselineMaxY": 3.643493220016157,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.670274991838805,
+      "baselineMaxY": 3.670274991838805,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6541156804729917,
+      "baselineMaxY": 3.6541156804729917,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.65547235217725,
+      "baselineMaxY": 3.65547235217725,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.680068075437904,
+      "baselineMaxY": 3.680068075437904,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "idle",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6001055777736015,
+      "baselineMaxY": 3.6001055777736015,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6642455875125064,
+      "baselineMaxY": 3.6642455875125064,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.730718279766235,
+      "baselineMaxY": 3.730718279766235,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6870925643181875,
+      "baselineMaxY": 3.6870925643181875,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6105464459025427,
+      "baselineMaxY": 3.6105464459025427,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6397653761382327,
+      "baselineMaxY": 3.6397653761382327,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.725732305566552,
+      "baselineMaxY": 3.725732305566552,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7149622283431367,
+      "baselineMaxY": 3.7149622283431367,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.627176861095234,
+      "baselineMaxY": 3.627176861095234,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6209767793237084,
+      "baselineMaxY": 3.6209767793237084,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7030882941297496,
+      "baselineMaxY": 3.7030882941297496,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7239721900792704,
+      "baselineMaxY": 3.7239721900792704,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "windup",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.644407840584416,
+      "baselineMaxY": 3.644407840584416,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_lvbuding",
       "pose": "strike",
       "t": 0,
       "suite": "animation",
       "candidateMinY": -0.29379166575070925,
       "baselineMinY": -0.29379166575070925,
+      "candidateMaxY": 3.4543776189873348,
+      "baselineMaxY": 3.4543776189873348,
       "candidateClippedBones": [
         "back"
       ],
@@ -1164,6 +2781,8 @@
       "suite": "animation",
       "candidateMinY": -0.29403629008678744,
       "baselineMinY": -0.29403629008678744,
+      "candidateMaxY": 3.5228502729595936,
+      "baselineMaxY": 3.5228502729595936,
       "candidateClippedBones": [
         "back"
       ],
@@ -1178,6 +2797,8 @@
       "suite": "animation",
       "candidateMinY": -0.28313695328771143,
       "baselineMinY": -0.28313695328771143,
+      "candidateMaxY": 3.4840347840974024,
+      "baselineMaxY": 3.4840347840974024,
       "candidateClippedBones": [
         "back"
       ],
@@ -1192,6 +2813,8 @@
       "suite": "animation",
       "candidateMinY": -0.2751053485775319,
       "baselineMinY": -0.2751053485775319,
+      "candidateMaxY": 3.4054214272597743,
+      "baselineMaxY": 3.4054214272597743,
       "candidateClippedBones": [
         "back"
       ],
@@ -1206,6 +2829,8 @@
       "suite": "animation",
       "candidateMinY": -0.2869381488905861,
       "baselineMinY": -0.2869381488905861,
+      "candidateMaxY": 3.4231341133562667,
+      "baselineMaxY": 3.4231341133562667,
       "candidateClippedBones": [
         "back"
       ],
@@ -1220,6 +2845,8 @@
       "suite": "animation",
       "candidateMinY": -0.3070977127348855,
       "baselineMinY": -0.3070977127348855,
+      "candidateMaxY": 3.498251719070889,
+      "baselineMaxY": 3.498251719070889,
       "candidateClippedBones": [
         "back"
       ],
@@ -1234,6 +2861,8 @@
       "suite": "animation",
       "candidateMinY": -0.31123314645897937,
       "baselineMinY": -0.31123314645897937,
+      "candidateMaxY": 3.4768631409458433,
+      "baselineMaxY": 3.4768631409458433,
       "candidateClippedBones": [
         "back"
       ],
@@ -1248,6 +2877,8 @@
       "suite": "animation",
       "candidateMinY": -0.2994946089512638,
       "baselineMinY": -0.2994946089512638,
+      "candidateMaxY": 3.3932494369433175,
+      "baselineMaxY": 3.3932494369433175,
       "candidateClippedBones": [
         "back"
       ],
@@ -1262,6 +2893,8 @@
       "suite": "animation",
       "candidateMinY": -0.29244775448907356,
       "baselineMinY": -0.29244775448907356,
+      "candidateMaxY": 3.39874641191386,
+      "baselineMaxY": 3.39874641191386,
       "candidateClippedBones": [
         "back"
       ],
@@ -1276,6 +2909,8 @@
       "suite": "animation",
       "candidateMinY": -0.29488696631007805,
       "baselineMinY": -0.29488696631007805,
+      "candidateMaxY": 3.4916905611884292,
+      "baselineMaxY": 3.4916905611884292,
       "candidateClippedBones": [
         "back"
       ],
@@ -1290,6 +2925,8 @@
       "suite": "animation",
       "candidateMinY": -0.29118859400933905,
       "baselineMinY": -0.29118859400933905,
+      "candidateMaxY": 3.5192179245341393,
+      "baselineMaxY": 3.5192179245341393,
       "candidateClippedBones": [
         "back"
       ],
@@ -1304,11 +2941,701 @@
       "suite": "animation",
       "candidateMinY": -0.27863775154584913,
       "baselineMinY": -0.27863775154584913,
+      "candidateMaxY": 3.4536644053357484,
+      "baselineMaxY": 3.4536644053357484,
       "candidateClippedBones": [
         "back"
       ],
       "baselineClippedBones": [
         "back"
+      ]
+    },
+    {
+      "id": "qun_dongzhuo",
+      "pose": "castUp",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.18151311830629852,
+      "baselineMinY": -0.18151311830629852,
+      "candidateMaxY": 3.6585058231105045,
+      "baselineMaxY": 3.6585058231105045,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7434215971047324,
+      "baselineMaxY": 3.7434215971047324,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "ready",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.19104314433153455,
+      "baselineMinY": -0.19104314433153455,
+      "candidateMaxY": 3.7247557591192515,
+      "baselineMaxY": 3.7247557591192515,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7556344225298797,
+      "baselineMaxY": 3.7556344225298797,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windupLow",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.738022754536533,
+      "baselineMaxY": 3.738022754536533,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "strike",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.627278214103956,
+      "baselineMaxY": 3.627278214103956,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "cast",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6932054662725773,
+      "baselineMaxY": 3.6932054662725773,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "castUp",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.18151311830629852,
+      "baselineMinY": -0.18151311830629852,
+      "candidateMaxY": 3.615915469917846,
+      "baselineMaxY": 3.615915469917846,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "castFwd",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6763347194790796,
+      "baselineMaxY": 3.6763347194790796,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "guard",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.754833622326558,
+      "baselineMaxY": 3.754833622326558,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "dash",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.18464764178807336,
+      "baselineMinY": -0.18464764178807336,
+      "candidateMaxY": 3.615476540713152,
+      "baselineMaxY": 3.615476540713152,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7337923921540552,
+      "baselineMaxY": 3.7337923921540552,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "slump",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6808651719950496,
+      "baselineMaxY": 3.6808651719950496,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6992268562316895,
+      "baselineMaxY": 3.6992268562316895,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7607055961283766,
+      "baselineMaxY": 3.7607055961283766,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.716313915011388,
+      "baselineMaxY": 3.716313915011388,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.646445773504799,
+      "baselineMaxY": 3.646445773504799,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.673064361574135,
+      "baselineMaxY": 3.673064361574135,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.746419648784419,
+      "baselineMaxY": 3.746419648784419,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.7332751351491176,
+      "baselineMaxY": 3.7332751351491176,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.654712419261927,
+      "baselineMaxY": 3.654712419261927,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6502953940784613,
+      "baselineMaxY": 3.6502953940784613,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.730311632542201,
+      "baselineMaxY": 3.730311632542201,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.756618476452666,
+      "baselineMaxY": 3.756618476452666,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "idle",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6850417342829282,
+      "baselineMaxY": 3.6850417342829282,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7163883659357775,
+      "baselineMaxY": 3.7163883659357775,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.770092041241351,
+      "baselineMaxY": 3.770092041241351,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7258902377003067,
+      "baselineMaxY": 3.7258902377003067,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.660605288607293,
+      "baselineMaxY": 3.660605288607293,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.688333126625897,
+      "baselineMaxY": 3.688333126625897,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7611943191379145,
+      "baselineMaxY": 3.7611943191379145,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7521946413564256,
+      "baselineMaxY": 3.7521946413564256,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.679302624747519,
+      "baselineMaxY": 3.679302624747519,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.673217079822569,
+      "baselineMaxY": 3.673217079822569,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7443374137303254,
+      "baselineMaxY": 3.7443374137303254,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.7648776413469687,
+      "baselineMaxY": 3.7648776413469687,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "windup",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6958723663455055,
+      "baselineMaxY": 3.6958723663455055,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "strike",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.648275230026029,
+      "baselineMaxY": 3.648275230026029,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "strike",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.604523186066285,
+      "baselineMaxY": 3.604523186066285,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "strike",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6233580691296874,
+      "baselineMaxY": 3.6233580691296874,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "strike",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6051519321748007,
+      "baselineMaxY": 3.6051519321748007,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "strike",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.612375062575139,
+      "baselineMaxY": 3.612375062575139,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "qun_huaxiong",
+      "pose": "strike",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6455509055920117,
+      "baselineMaxY": 3.6455509055920117,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
       ]
     },
     {
@@ -1318,6 +3645,8 @@
       "suite": "all14",
       "candidateMinY": -0.2951290636051632,
       "baselineMinY": -0.2951290636051632,
+      "candidateMaxY": 3.423819051028085,
+      "baselineMaxY": 3.423819051028085,
       "candidateClippedBones": [
         "back"
       ],
@@ -1332,6 +3661,8 @@
       "suite": "all14",
       "candidateMinY": -0.3242586103685118,
       "baselineMinY": -0.3242586103685118,
+      "candidateMaxY": 3.3919990425295437,
+      "baselineMaxY": 3.3919990425295437,
       "candidateClippedBones": [
         "back"
       ],
@@ -1346,6 +3677,8 @@
       "suite": "all14",
       "candidateMinY": -0.3619077345062413,
       "baselineMinY": -0.3619077345062413,
+      "candidateMaxY": 3.2569653972302675,
+      "baselineMaxY": 3.2569653972302675,
       "candidateClippedBones": [
         "back"
       ],
@@ -1360,6 +3693,8 @@
       "suite": "all14",
       "candidateMinY": -0.2833483507056227,
       "baselineMinY": -0.2833483507056227,
+      "candidateMaxY": 3.4202431370491437,
+      "baselineMaxY": 3.4202431370491437,
       "candidateClippedBones": [
         "back"
       ],
@@ -1374,6 +3709,8 @@
       "suite": "animation",
       "candidateMinY": -0.29379166575070925,
       "baselineMinY": -0.29379166575070925,
+      "candidateMaxY": 3.3852455976615143,
+      "baselineMaxY": 3.3852455976615143,
       "candidateClippedBones": [
         "back"
       ],
@@ -1388,6 +3725,8 @@
       "suite": "animation",
       "candidateMinY": -0.29403629008678744,
       "baselineMinY": -0.29403629008678744,
+      "candidateMaxY": 3.4431300802659996,
+      "baselineMaxY": 3.4431300802659996,
       "candidateClippedBones": [
         "back"
       ],
@@ -1402,6 +3741,8 @@
       "suite": "animation",
       "candidateMinY": -0.28313695328771143,
       "baselineMinY": -0.28313695328771143,
+      "candidateMaxY": 3.4073580480201167,
+      "baselineMaxY": 3.4073580480201167,
       "candidateClippedBones": [
         "back"
       ],
@@ -1416,6 +3757,8 @@
       "suite": "animation",
       "candidateMinY": -0.2751053485775319,
       "baselineMinY": -0.2751053485775319,
+      "candidateMaxY": 3.372342667768985,
+      "baselineMaxY": 3.372342667768985,
       "candidateClippedBones": [
         "back"
       ],
@@ -1430,6 +3773,8 @@
       "suite": "animation",
       "candidateMinY": -0.2869381488905861,
       "baselineMinY": -0.2869381488905861,
+      "candidateMaxY": 3.3559590228268323,
+      "baselineMaxY": 3.3559590228268323,
       "candidateClippedBones": [
         "back"
       ],
@@ -1444,6 +3789,8 @@
       "suite": "animation",
       "candidateMinY": -0.3070977127348855,
       "baselineMinY": -0.3070977127348855,
+      "candidateMaxY": 3.4263879947818894,
+      "baselineMaxY": 3.4263879947818894,
       "candidateClippedBones": [
         "back"
       ],
@@ -1458,6 +3805,8 @@
       "suite": "animation",
       "candidateMinY": -0.31123314645897937,
       "baselineMinY": -0.31123314645897937,
+      "candidateMaxY": 3.4091995873999004,
+      "baselineMaxY": 3.4091995873999004,
       "candidateClippedBones": [
         "back"
       ],
@@ -1472,6 +3821,8 @@
       "suite": "animation",
       "candidateMinY": -0.2994946089512638,
       "baselineMinY": -0.2994946089512638,
+      "candidateMaxY": 3.3345283076454937,
+      "baselineMaxY": 3.3345283076454937,
       "candidateClippedBones": [
         "back"
       ],
@@ -1486,6 +3837,8 @@
       "suite": "animation",
       "candidateMinY": -0.29244775448907356,
       "baselineMinY": -0.29244775448907356,
+      "candidateMaxY": 3.3376915314157714,
+      "baselineMaxY": 3.3376915314157714,
       "candidateClippedBones": [
         "back"
       ],
@@ -1500,6 +3853,8 @@
       "suite": "animation",
       "candidateMinY": -0.29488696631007805,
       "baselineMinY": -0.29488696631007805,
+      "candidateMaxY": 3.417571182668397,
+      "baselineMaxY": 3.417571182668397,
       "candidateClippedBones": [
         "back"
       ],
@@ -1514,6 +3869,8 @@
       "suite": "animation",
       "candidateMinY": -0.29118859400933905,
       "baselineMinY": -0.29118859400933905,
+      "candidateMaxY": 3.4390502282104327,
+      "baselineMaxY": 3.4390502282104327,
       "candidateClippedBones": [
         "back"
       ],
@@ -1528,30 +3885,48 @@
       "suite": "animation",
       "candidateMinY": -0.27863775154584913,
       "baselineMinY": -0.27863775154584913,
+      "candidateMaxY": 3.380351575387897,
+      "baselineMaxY": 3.380351575387897,
       "candidateClippedBones": [
         "back"
       ],
       "baselineClippedBones": [
         "back"
+      ]
+    },
+    {
+      "id": "xian_changmiao",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.614626132536166,
+      "baselineMaxY": 3.614626132536166,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
       ]
     }
   ],
   "comparisonScreenshot": {
     "output": "src/art3d/parts/reviews/body-regalia/before-after.png",
-    "bytes": 200919,
-    "bodySHA256": "17dba1912cfc1ef3b4d90428590bcb57262618c308a59434e562803f26ea52f4",
+    "bytes": 205289,
+    "bodySHA256": "1214de77116ed5b1db8123874dec2be2b44faf1d7874523c11425424fe87306f",
     "engineSHA256": {
-      "src/art3d/cat3d.ts": "56288d563537fc36ee3e419e8f8a5ae741b57d8dc7915a0364561b2cdecc149f",
+      "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
       "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
-      "src/art3d/toon.ts": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
+      "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
       "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
     },
-    "toonSHA256": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
+    "toonSHA256": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
     "pageErrors": [],
     "method": {
       "baselineFixture": {
-        "sha256": "ae1a8e56e48a2c570370aaad7a31993e964d06f2cc3c6a9a08a691570e80feb8",
-        "commit": "1f45261"
+        "sha256": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167",
+        "commit": "bf37bd307e8669850af6cd5b502172ad7d7ab102"
       },
       "ids": [
         "wei_caomiaode",
@@ -1571,20 +3946,18 @@
       "phase": 0,
       "yaw": 32
     },
-    "imageSHA256": "7a1973d64a2d84ac47835ac06199c5dce695d7f8b33162ddf17a1afca793ab2f"
+    "imageSHA256": "ec9d17e5b92006008d8b11ac421f68a42e965ca9a2f310df85369b9caf7efb74"
   },
   "visuallyInspected": [
-    "before-after.png, six heroes, actual normal bake, final metal source and latest 1f45261 baseline",
-    "metal-poses.png, six heroes, idle/windup/strike, final normal bake",
-    "metal-small.png, native small canvases, final normal bake",
-    "battle.webp (ten cats together, final metal shoulder/chest visible)"
+    "before-after.png (six heroes, normal bake, bf37 baseline/engine and 1214de77 hem-shortened metal candidate matched QA)"
   ],
   "limitations": [
-    "Phase fixed to zero; finite 12 times in [0,8] for three poses; no proof about all continuous times or phases.",
-    "Eye depth probes use actual white/iris/pupil/arc projected triangles, 12x12 sample grid; probes do not first subtract other face geometry or eyelids.",
-    "Face coverage uses five transformed nose/mouth/muzzle landmarks and visual inspection; it is not a full face triangle collision calculation.",
-    "noBake clothing instrumentation is only an audit aid; presentation screenshot and separate whole-cat FRAME checks use ordinary bakeCat.",
-    "Both sides use current 1f45261 engines; only the three baseline body builders are replaced."
+    "Phase=0/yaw32; finite 12 times in [0,8] for three poses; no proof about all continuous times or phases.",
+    "12x12 eye-core triangle depth samples do not first subtract eyelids or other face geometry.",
+    "Five nose/mouth/muzzle landmarks and visual inspection do not constitute full face triangle collision detection.",
+    "Clothing noBake is only instrumentation; full-cat FRAME checks and presentation screenshot use normal bakeCat.",
+    "Both sides use frozen bf37bd3 engines; only target baseline BODY builders are substituted.",
+    "55 static and 135 animation whole-cat clipping cases remain in baseline and candidate; no claim of all-cats-in-frame."
   ],
   "pageErrors": []
 }
