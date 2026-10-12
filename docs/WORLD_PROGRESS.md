@@ -2,7 +2,7 @@
 
 当前方向以 [CODEX_QUEUE.md](CODEX_QUEUE.md)「当前任务」为准，文件范围、出处与审核流程沿用 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md)。先完成 A 类 AI 贴图，再按最新队列制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
-当前批次：**WORLD-A09-palace-ground · 宫阙汉白玉三变体**，分支 `codex/3d-world-palace-ground`；素材来源与预览参数依据 `e6e89a9be7f4d0dce972221cb538ab299cbabafc`，分支代码基线为 `4b658b79921838d91f9bde8907df00ba80b9a2fe`。三款成品与审图已冻结，第 1 轮待 Claude 审核，已通过数量为 0；实际 PR 链接在创建后追加。
+当前批次：**WORLD-A09-palace-ground · 宫阙汉白玉三变体**，[PR #109](https://github.com/acaozixu123456/myRepository/pull/109)，分支 `codex/3d-world-palace-ground`；素材来源与预览参数依据 `e6e89a9be7f4d0dce972221cb538ab299cbabafc`，分支代码基线为 `4b658b79921838d91f9bde8907df00ba80b9a2fe`。三款成品与审图已冻结，第 1 轮待 Claude 审核，已通过数量为 0。
 
 ## 当前 A 类队列（新场景方向与协作分工）
 
@@ -35,7 +35,7 @@
 
 ### A09-palace-ground 制作与审核记录
 
-2026-10-12 · 第 1 轮 **待审**，已通过数量为 0。内部 QA 的 `readyForClaudeReview=true`、`ClaudeDecision=null`，等 Claude 给出正式审核结果；本批由 `codex/3d-world-palace-ground` 准备送审，实际 PR 链接在创建后追加。
+2026-10-12 · 第 1 轮 **待审**，已通过数量为 0。[PR #109](https://github.com/acaozixu123456/myRepository/pull/109) 已由 `codex/3d-world-palace-ground` 提交。内部 QA 的 `readyForClaudeReview=true`、`ClaudeDecision=null`，等 Claude 给出正式审核结果。
 
 首款白玉淡金纹承继已保存的真实 AI 宫阙 C1 原稿，云纹白玉与金丝白玉各通过一次真实 `image_gen` 调用、以首款为参考生成。本批来源为一张既有 AI 原稿与两张新 AI 参考变体；原稿与调用证据归档于 `raw/anchor-call.json` 和 `raw/calls-completed.json`，并纳入上述出处文件。
 
