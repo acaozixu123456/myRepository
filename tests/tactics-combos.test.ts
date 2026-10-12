@@ -24,10 +24,10 @@ describe('战技', () => {
     expect([...fx].sort()).toEqual(['tac.blessing', 'tac.guard', 'tac.rush', 'tac.spell', 'tac.volley'].map((x) => (x === 'tac.blessing' ? 'tac.bless' : x)).sort());
   });
   it('开启后每 3 次行动放一次（第 2 次行动起）；默认关闭时从不出现', () => {
-    const A = team(['wei_zhangliao', 'shu_huangzhong', 'wu_ganning', 'xian_guanlu', 'man_shamoke'], 90);
+    const A = team(['wei_zhangliao', 'shu_huangzhong', 'wu_ganning', 'xian_guanlu', 'man_shamoke'], 90, 20);
     const B = team(FOES, 40, 400);
-    const on = simulate({ seed: 7, A, B, tactics: true, maxRounds: 10 });
-    const off = simulate({ seed: 7, A, B, maxRounds: 10 });
+    const on = simulate({ seed: 7, A, B, tactics: true, maxRounds: 16 });
+    const off = simulate({ seed: 7, A, B, maxRounds: 16 });
     expect(off.events.some((e) => e.t === 'act' && e.kind === 'tactic')).toBe(false);
     const u = on.units.find((x) => x.side === 'A' && x.heroId === 'wei_zhangliao')!;
     const kinds = on.events.filter((e) => e.t === 'act' && e.uid === u.uid).map((e) => (e as { kind: string }).kind).filter((k) => k !== 'ultimate');

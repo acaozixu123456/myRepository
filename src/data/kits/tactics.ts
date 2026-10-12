@@ -57,8 +57,20 @@ function template(heroId: string): SkillDef {
   return { id: `t_${heroId}`, name: NAMES[f][role], fx: FX[role], melee, target, effects, desc: `【战技 · 每 ${TACTIC_CD} 次行动】${desc}` };
 }
 
-/** 个别英雄的专属战技（有就覆盖模板）。后续可以逐只补。 */
-const BESPOKE: Record<string, SkillDef> = {};
+/** 个别英雄的专属战技（有就覆盖模板）。先给 9 位 UR / SP 做，台词和性格对得上；其余按职业 × 阵营模板。 */
+const tac = (heroId: string, name: string, fx: string, target: TargetSel, effects: Effect[], desc: string, melee = false): SkillDef =>
+  ({ id: `t_${heroId}`, name, fx, melee, target, effects, desc: `【战技 · 每 ${TACTIC_CD} 次行动】${desc}` });
+const BESPOKE: Record<string, SkillDef> = {
+  wei_caomiaode: tac('wei_caomiaode', '爪印为法', 'tac.spell', enemy('all'), [dmg(0.85, { elem: 'magic' }), status('charm', 2, { p: 0.7 }), energy(10, self)], '盖下天下法度的爪印：对敌方全体造成 85% 攻击的法术伤害，70% 附「符咒」2 回合，自己元气 +10。'),
+  shu_liumiaobei: tac('shu_liumiaobei', '分我半碗猫粮', 'tac.bless', ally('all'), [{ t: 'heal', scale: { atk: 0.8 } }, status('purr', 2, { power: 0.06 }), { t: 'cleanse', n: 1, kind: 'debuff' }], '一碗猫粮分着吃：友方全体回复 80% 攻击，附「呼噜」2 回合，并净化 1 个负面状态。'),
+  wu_zhoumiaoyu: tac('wu_zhoumiaoyu', '火烧连营', 'tac.spell', enemy('all'), [dmg(0.8, { elem: 'fire' }), status('burn', 3, { snapAtk: 0.35 })], '一曲终了，火起：对敌方全体造成 80% 攻击的火焰伤害，并附「灼烧」3 回合。'),
+  qun_lvbuding: tac('qun_lvbuding', '画戟连斩', 'tac.rush', enemy('front'), [dmg(1.2, { hits: 2 }), status('fluff', 2, { power: 0.15, to: self })], '人中吕布，两连斩：对前排敌人造成 2 段各 120% 攻击的伤害，自己「炸毛」2 回合（攻击 +15%）。', true),
+  man_mengmiaohuo: tac('man_mengmiaohuo', '七擒七纵', 'tac.guard', enemy('front'), [dmg(0.8), { t: 'shield', scale: { maxHp: 0.2 }, turns: 2, to: self }, status('taunt', 2, { to: self })], '七次不算！重击前排（80% 攻击），自己获得最大生命 20% 的护盾，并「挑衅」2 回合。', true),
+  xian_zuoci: tac('xian_zuoci', '幻术分身', 'tac.spell', enemy('all'), [dmg(0.75, { elem: 'thunder' }), status('illusion', 2, { to: self }), energy(15, self)], '你看见的是我，还是你想看见的我？对敌方全体造成 75% 攻击的雷法伤害，自己留下「幻象」2 回合，元气 +15。'),
+  wei_simamiyi: tac('wei_simamiyi', '装睡一觉', 'tac.spell', enemy('front'), [dmg(1.1, { elem: 'magic' }), { t: 'shield', scale: { maxHp: 0.14 }, turns: 2, to: self }, energy(25, self)], '不急，我先睡一觉：对前排敌人造成 110% 攻击的法术伤害，自己获得最大生命 14% 的护盾，元气 +25。'),
+  shu_pangmiaotong: tac('shu_pangmiaotong', '羽箭连喷嚏', 'tac.volley', enemy('random', 4), [dmg(0.8), status('fright', 2, { power: 0.15 })], '别怕，喷嚏打完就轮到羽毛：射向 4 名随机敌人，各造成 80% 攻击的伤害，并附「受惊」2 回合（攻击 -15%）。'),
+  xian_changmiao: tac('xian_changmiao', '月华流照', 'tac.bless', ally('all'), [{ t: 'heal', scale: { atk: 0.9 } }, { t: 'shield', scale: { maxHp: 0.08 }, turns: 2 }, energy(15)], '月亮很大，毛线球很小：友方全体回复 90% 攻击，获得最大生命 8% 的护盾，元气 +15。'),
+};
 
 const cache = new Map<string, SkillDef>();
 export function tacticFor(heroId: string): SkillDef {
