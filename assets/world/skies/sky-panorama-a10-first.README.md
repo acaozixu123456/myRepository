@@ -27,3 +27,6 @@ PH 原雾晨2048 ×1024 HDR：Three169 RGBELoader FloatType解码，逐通道Rei
 固定主线 `60bc06577f5d5dd2966a661d2278802bb3e3fcee`，合并HEAD `274c7f2ce267d613b530878312b7f496f8465a44`：实际typecheck与test退出0，69测试文件 /1035测试通过；完整日志 `tests-fixed60.log`、SHA见出处。后续只改图与相关metadata，无sourcecode变化，不重复整库检查。最初7ea的68 /1024记录只留历史。
 
 独立QA见[摘要](sky-panorama-a10-first.qa.md)与[机器报告](sky-panorama-a10-first.qa.json)；Claude通过仍为0。
+
+
+提交前合并主线 `4d6fb66`，保留主线已通过场景与来源记录，未改本批17图或审图Three/ICC/导出依赖。维护者实际typecheck+test退出0，78文件/1086测试；独立444帧与原69/1035仍保留其60bc时间范围。另仅去公开来源Markdown末尾一条空白行并更新出处对应SHA字段，图片、提示词、8次真实调用、输入receipt与材质采样均未改；原2363出处/旧Markdown完整归档。[提交验证](sky-panorama-a10-first.submission-validation.json)。

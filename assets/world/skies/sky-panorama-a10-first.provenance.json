@@ -4887,7 +4887,7 @@
     "JSON_path": "assets/world/skies/sky-panorama-a10-first.resource-audit.json",
     "JSON_sha256": "41b759b496326fce26645bfc8103d2268b9857da81a3e368cd1f393f78c4b3c7",
     "Markdown_path": "assets/world/skies/sky-panorama-a10-first.resource-audit.md",
-    "Markdown_sha256": "4228e706db0f0d913b826db0eb7bd4a8cb18a6402dee6fed716d642359af6e07",
+    "Markdown_sha256": "b4b1d1fd8e80d7df10c2b72d3f06a569701adb93b10143950417b0f793b85cd7",
     "note": "Copied immutable JSON of06:46source audit; repositoryMarkdown adds final3edit context and turns productionlinks into publicURLs/relative companionlinks. Audit stagedirection mentioned one rededit; final actualthree rededits and two failed/unusedPH-adaptation edits recorded in this provenance; finalPH is directstandardSDR."
   },
   "credits_path": "docs/CREDITS.md",
