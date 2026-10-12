@@ -417,3 +417,10 @@ src/art3d/parts/hero-ur-weapons.ts
 当前36正式图全部bb新拍：21正常图覆盖14实际用户原生217×190三pose和四yaw、3detail；12真实十猫HUD图+3真实灰灰Player.doPet图。每张同raw全尺寸RGBA字节同、无裁切缩放、<500000 B，最大480011 B。独立新真实流程11 builder hit、519有效GL/504stage绘制/15闪白离屏/710HUD、50Scene.draw四向stage crop0、实际shakeMag最高3；灰灰uid−1、alpha.888888889、head.scale1.2768、真实跳跃四次舞台alpha边缘均入框。作者2856 FRAME样本whole308旧新同，与独立304不同范围分别记录。作者当前实际typecheck+test退出0，75文件/1068测试；独立读日志未冒称重跑。
 
 证据：[作者README与36图](../src/art3d/parts/reviews/extras-sp-marks/README.md)、[作者源/截图记录](../src/art3d/parts/reviews/extras-sp-marks/author-report.json)、[14实际190px](../src/art3d/parts/reviews/extras-sp-marks/heroes-190-32.png) / [其余含灰灰](../src/art3d/parts/reviews/extras-sp-marks/users-190-32.png)、[真实10猫](../src/art3d/parts/reviews/extras-sp-marks/battle_05.webp)、[真实灰灰](../src/art3d/parts/reviews/extras-sp-marks/pet_2.webp)、[原严格QA](../src/art3d/parts/reviews/extras-sp-marks/qa-summary.md) / [6608+168机器证据](../src/art3d/parts/reviews/extras-sp-marks/qa-summary.json)、[bb补查](../src/art3d/parts/reviews/extras-sp-marks/qa-post-main.md) / [新机器记录](../src/art3d/parts/reviews/extras-sp-marks/qa-post-main.json)。当前第1轮待Claude审核。最不满意：嫦喵浅蓝对白毛弱、棕战纹融入豹斑、190px褶线弱；head挂的灵光不会随眼睑收缩。有限离散样本不保证全部连续相位/每像素或未来镜头；没有改引擎契约或数据。
+
+
+### SSR 轻兵三位专属制作中（第0轮，通过0）
+
+`codex/3d-heroes-light-icons` 公开认领未覆盖的三位SSR，仅做 HERO_PARTS.weapon 三项与新helper：孙小霸 `wu_sunxiaoba` 长剑、孙香香 `wu_sunxiangxiang` 铃箭长弓、赵喵云 `shu_zhaomiaoyun` 银色长矛及细结绳。三张原JPG、ART_PROMPTS与实际lore已读；不照搬SP凤羽弓，不改数据、通用武器、核心或姿势。魏三位属于#121、蜀关/张/诸葛属于#124，SP/UR与其余映射保留，古琴暂不做。
+
+当前仅制作中认领，没有成品或通过裁决。固定基线 `25726e10da467a1b53f5d46d43f8ef491f8f4daf`，本树认领前实际 `npm run typecheck && npm test` 退出0、82文件/1115测试。按公开资源优先有界检索、完整实体头/壳及可见五官、新接合实际三角、89真实id非目标字节、190px四yaw三姿势与真10cat HUD完成后更新同一PR待审；不等待其它批次审核停止任务。
