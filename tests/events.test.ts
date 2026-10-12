@@ -386,9 +386,9 @@ describe('首页小公告', () => {
   it('四条：世界首领、公会首领、UP 招募、节日；节日期间显示进行中', () => {
     const l = tickerLines(new Date(2026, 9, 11, 12).getTime());
     expect(l).toHaveLength(4);
-    expect(l[0]).toContain('世界首领'); expect(l[1]).toContain('公会首领'); expect(l[2]).toContain('限时 UP');
-    expect(l[3]).toContain('下个节日'); expect(l[3]).toContain('南瓜纸箱夜');
-    expect(tickerLines(new Date(2026, 9, 30, 12).getTime())[3]).toContain('节日进行中');
+    expect(l[0]).toContain('👑'); expect(l[1]).toContain('🏰'); expect(l[2]).toContain('⭐');
+    expect(l[3]).toContain('🎈'); expect(l[3]).toContain('南瓜纸箱夜'); // 还没到：气球 + 节日名 + 倒计时
+    expect(tickerLines(new Date(2026, 9, 30, 12).getTime())[3]).toContain('🎊'); // 节日进行中
   });
 });
 

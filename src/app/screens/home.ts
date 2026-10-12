@@ -26,13 +26,13 @@ export function homeHtml(): string {
   <div class="screen home on" data-screen="home">
     <div class="hud" id="hud"></div>
     <div class="stagebar" id="stagebar"></div>
-    <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="autopush" id="autoBtn">自动闯关</button><button data-act="speed" id="speedBtn">2×</button></div><div class="rule" id="rule"></div></div>
+    <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="autopush" id="autoBtn">⏩</button><button data-act="speed" id="speedBtn">2×</button></div><div class="rule" id="rule"></div></div>
     <div class="teamstrip" id="team" data-act="nav" data-to="lineup"></div>
     <div class="idle panel" id="idle"></div>
     <div class="actions">
-      <button class="btn green" data-act="challenge" id="chBtn">挑战下一关</button>
-      <button class="btn blue" data-act="autolevel">一键升级</button>
-      <button class="btn pink" data-act="gift" id="giftBtn">每日福利</button>
+      <button class="btn green" data-act="challenge" id="chBtn">⚔️</button>
+      <button class="btn blue" data-act="autolevel">⬆️</button>
+      <button class="btn pink" data-act="gift" id="giftBtn">🎁</button>
     </div>
     <div class="quick" id="quick"></div>
     <div class="tip" id="tip"></div>
@@ -71,10 +71,10 @@ export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: strin
 export function tickerLines(now = Date.now()): string[] {
   const f = festivalNow(now), up = HERO_BY_ID[upHeroOf(upPeriod(now))];
   return [
-    `本周世界首领：${bossOfWeek(now).title}`,
-    `本周公会首领：${guildBossOf(now).title}`,
-    `限时 UP：${up.name}，本期还剩 ${upDaysLeft(now)} 天`,
-    f.active ? `节日进行中：${f.active.f.name}，快去签到` : `下个节日：${f.next.f.name}，还有 ${f.daysToNext} 天`,
+    `👑 ${bossOfWeek(now).title}`,
+    `🏰 ${guildBossOf(now).title}`,
+    `⭐ ${up.name} ⏳${upDaysLeft(now)}`,
+    f.active ? `🎊 ${f.active.f.name}` : `🎈 ${f.next.f.name} ⏳${f.daysToNext}`,
   ];
 }
 export function updateTicker(ctx: AppCtx) {
@@ -85,7 +85,7 @@ export function updateTicker(ctx: AppCtx) {
 }
 
 export function updateQuick(ctx: AppCtx) {
-  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''}>${icon(q.ic, 30)}<span>${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
+  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''} title="${q.label}">${icon(q.ic, 38)}${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
 }
 
 export function updateHome(ctx: AppCtx) {
@@ -103,30 +103,31 @@ export function updateHome(ctx: AppCtx) {
     <span class="tag f" style="--c:${FACTIONS[ch.focusFactions[0]].color}">${FACTIONS[ch.focusFactions[0]].glyph}</span>
     <div class="nm">第 ${s.stage.chapter} 章 · ${ch.name}<small>${st.id} ${st.name}${kind ? ' · ' + kind : ''}</small></div>
     <div class="pw ${low ? 'low' : ''}">战力<br><b class="num">${fmt(power)}</b> / ${fmt(rec)}</div>`;
-  $(ctx, '#badge').textContent = `${st.id} 连战 ${s.stage.wins}`;
+  $(ctx, '#badge').textContent = `${st.id} 🔥${s.stage.wins}`;
   $(ctx, '#rule').textContent = st.rule ?? '';
   $(ctx, '#speedBtn').textContent = `${s.settings.speed}×`;
-  const ab = $(ctx, '#autoBtn'); ab.textContent = autoPushOn(s) ? '自动闯关·开' : '自动闯关·关'; ab.classList.toggle('on', autoPushOn(s));
+  const ab = $(ctx, '#autoBtn'); ab.textContent = autoPushOn(s) ? '⏩ ✓' : '⏩ ✕'; ab.classList.toggle('on', autoPushOn(s));
   const b = s.best ?? s.stage;
   const nx = nextStage(b.chapter, b.index);
   const chBtn = $(ctx, '#chBtn') as HTMLButtonElement;
   chBtn.disabled = !nx;
-  chBtn.textContent = nx ? `挑战 ${nx.chapter}-${nx.index}` : '已通关全部';
+  chBtn.textContent = nx ? `⚔️ ${nx.chapter}-${nx.index}` : '🏆';
   const nrec = nx ? recommendedPowerOf(nx.chapter, nx.index) : 0;
-  $(ctx, '#tip').textContent = !nx ? '喵洲已经太平了，等待新章节' : power < nrec * 0.9 ? `战力低于 ${nx.chapter}-${nx.index} 推荐（${fmt(nrec)}），先去阵容升级升星吧` : `战力足够，可以挑战 ${nx.chapter}-${nx.index} 啦`;
+  const lowPower = nx ? power < nrec * 0.9 : false;
+  $(ctx, '#tip').innerHTML = !nx ? '🕊️' : `<div class="xpow ${lowPower ? 'low' : 'ok'}" style="height:18px;max-width:260px;margin:0 auto"><i style="width:${Math.round(Math.min(1, power / nrec) * 100)}%"></i><span>${icon('sword', 14)} ${fmt(power)} / ${fmt(nrec)}</span></div>`;
   $(ctx, '#team').innerHTML = s.lineup.map((id) => {
     const h = id ? HERO_BY_ID[id] : null;
     const st = id ? s.heroes[id] : null;
     return h && st
       ? `<div class="m ${h.rarity.toLowerCase()}"><img src="${artUrl(h.id, 'head')}" alt="${h.name}" draggable="false"><em>Lv.${st.lv}</em></div>`
       : `<div class="m empty">${icon('plus', 18)}</div>`;
-  }).join('') + `<span class="go">阵容 ›</span>`;
+  }).join('') + `<span class="go">${icon('team', 18)} ›</span>`;
   updateIdle(ctx);
   const now = Date.now();
   const taken = s.gift.last > 0 && dayIndex(s.gift.last) >= dayIndex(now);
   const g = $(ctx, '#giftBtn') as HTMLButtonElement;
   g.disabled = taken;
-  g.innerHTML = taken ? `每日福利<small>今日已领，明天再来</small>` : `每日福利<small>+铃铛 +招福符</small>`;
+  g.innerHTML = taken ? `🎁 ✓` : `🎁<small>${icon('bell', 14)} ${icon('ticket', 14)}</small>`;
 }
 
 export function updateIdle(ctx: AppCtx) {
@@ -139,18 +140,17 @@ export function updateIdle(ctx: AppCtx) {
     <div class="figs">
       <div class="big"><span>${icon('fish', 26)}<b class="num">${fmt(s.idle.fish)}</b></span><span>${icon('spark', 26)}<b class="num">${fmt(s.idle.exp)}</b></span></div>
       <div class="bar" style="margin-top:6px"><i style="width:${pct}%"></i></div>
-      <div class="sub">每分钟 +${fmt(r.fish)}鱼干 +${fmt(r.exp)}经验 · 上限${idleCapHours(s)}小时</div>
+      <div class="sub">${icon('fish', 14)}+${fmt(r.fish)} ${icon('spark', 14)}+${fmt(r.exp)} · ⏱ ${idleCapHours(s)}h</div>
     </div>
-    <div class="idlebtns"><button class="btn lg" data-act="claim">领取</button><button class="btn sm blue" data-act="fast">${fastLabel(ctx)}</button></div>`;
+    <div class="idlebtns"><button class="btn lg" data-act="claim">${icon('gift', 28)}</button><button class="btn sm blue" data-act="fast">${fastLabel(ctx)}</button></div>`;
 }
 
 export function claim(ctx: AppCtx) {
   const got = claimIdle(ctx.s);
-  if (got.fish < 1) return ctx.toast('还没攒下收益，再等等');
+  if (got.fish < 1) return floaty(ctx, '⏳', 'fish');
   ctx.save();
   floaty(ctx, `+${fmt(got.fish)}`, 'fish');
   sfx.coin();
-  ctx.toast(`领取了 ${fmt(got.fish)} 小鱼干、${fmt(got.exp)} 成长经验`);
   updateHome(ctx);
 }
 

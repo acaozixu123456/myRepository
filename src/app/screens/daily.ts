@@ -56,7 +56,7 @@ export function handleDaily(ctx: AppCtx, act: string): boolean {
 export const fastLabel = (ctx: AppCtx) => {
   const free = fastFree(ctx.s);
   const used = fastUsed(ctx.s);
-  return used >= FAST_MAX ? '今日已满' : free > 0 ? `快速探索 · 免费 ${free}` : `快速探索 · ${icon('bells', 14)}${FAST_COST}`;
+  return used >= FAST_MAX ? '⏩ ✓' : free > 0 ? `⏩ <b>${free}</b>` : `⏩ ${icon('bells', 14)}${FAST_COST}`;
 };
 
 export const DAILY_CSS = `
