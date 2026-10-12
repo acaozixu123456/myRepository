@@ -2,11 +2,11 @@
 
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
-当前批次：**WORLD-A08 · 湿沥青地面**，分支 `codex/3d-world-wet-asphalt`，第 1 轮待 Claude 审核，交付 1024² 一张。A01 / A02 / A06 / A07 均已通过并合并，接入情况见各批记录。
+当前批次：**WORLD-A10 · 裂缝透明贴花首批**，分支 `codex/3d-world-crack-decals`，交付 512² RGBA 十张，第 1 轮待审。A08 [#98](https://github.com/acaozixu123456/myRepository/pull/98) 已通过 / 接入；A09 地砖 [#100](https://github.com/acaozixu123456/myRepository/pull/100) 与 A10 污渍 [#103](https://github.com/acaozixu123456/myRepository/pull/103) 已提交待审，继续推进 A10 裂缝。
 
 ## A 类队列
 
-按 [固定队列](CODEX_QUEUE.md) 的最新审核意见：[#96](https://github.com/acaozixu123456/myRepository/pull/96) 的 A07 已通过并接入外圈；接下来 A08 湿沥青 → A09 地砖 → A10 地面贴花，其余类别继续保留。与 3D 部件交替推进，每批等待审核。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
+按 [固定队列](CODEX_QUEUE.md) 的最新审核意见：A08 已通过并接入；A09 地砖和 A10 污渍已提交，继续 A10 裂缝等地面贴花，其余类别保留。与 3D 部件交替推进，完成一批就继续下批，有返修先返修。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
 
 | 批次 | 类别 | 规格 / 数量 | 状态 | 已通过 |
 | --- | --- | --- | --- | --- |
@@ -15,8 +15,8 @@
 | A06 | 招牌 / 广告 | 横版 1024×256；竖版 256×1024；全息 512×1024 | 通过（本批 6 张） | 6 |
 | A07 | 远景天际线 | 2048×1024，上方透明或渐变深紫，1 张 | 通过 | 1 |
 | A08 | 地面 · 湿沥青 | 1024²，无缝，1 张 | 已通过并接入 | 1 |
-| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝 | 未开始 | 0 |
-| A10 | 贴花（地面贴花优先） | 512²，透明；涂鸦 / 海报 / 告示 / 污渍 / 裂缝各 ≥10 张 | 未开始 | 0 |
+| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝 | 待审（#100） | 0 |
+| A10 | 贴花（地面贴花优先） | 512² 透明；污渍 / 裂缝各10张，其他三类仍各 ≥10 张 | 待审（污渍#103 / 本批裂缝） | 0 |
 | A03 | 外墙 · 水渍混凝土 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A04 | 外墙 · 贴纸墙 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A05 | 外墙 · 管线 / 空调外机浮雕 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
@@ -110,13 +110,13 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 | 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 湿沥青 `ground_asphalt_wet_01` | [WebP](../assets/world/ground/ground_asphalt_wet_01.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/wet-asphalt-a08.webp) | 1024²；RGB / sRGB ICC；质量 90；491,514 B；原生 1254²，Lanczos 降采样 |
+| 湿沥青 `ground_asphalt_wet_01` | [WebP](../assets/world/ground/ground_asphalt_wet_01.webp) | 通过 | 1 | [本批审图](../assets/world/reviews/wet-asphalt-a08.webp) | 1024²；RGB / sRGB ICC；质量 90；491,514 B；#98 已接入路面底图并保留中线 |
 
 用途与材质建议见 [地面素材说明](../assets/world/ground/README.md)，完整生成与导出记录见 [A08 出处文件](../assets/world/ground/wet-asphalt-a08.provenance.json)。独立检查见 [QA 摘要](../assets/world/ground/wet-asphalt-a08.qa.md) 和 [机器报告](../assets/world/ground/wet-asphalt-a08.qa.json)。
 
 ## A08 制作与审核记录
 
-第 1 轮 **待审**，已通过数量为 0。两张初稿与一张 AI 接缝修订候选归本轮内部筛选，最终选第 2 张原稿：原生 1254²，等比 Lanczos 降采样为 1024² RGB / sRGB ICC WebP（质量 90），没有裁切、补边、调色、锐化或手绘接缝，无上采样。未选第 3 修订稿的颗粒更圆、更粗；三张候选原图、完整提示词、工具参数和位移参考保存在出处文件。
+2026-10-12 · 第 1 轮 **通过**，已通过数量为 1：[PR #98](https://github.com/acaozixu123456/myRepository/pull/98) 已合并并接入路面底图，保留中线，按固定队列同步。两张初稿与一张 AI 接缝修订候选归本轮内部筛选，最终选第 2 张原稿：原生 1254²，等比 Lanczos 降采样为 1024² RGB / sRGB ICC WebP（质量 90），没有裁切、补边、调色、锐化或手绘接缝，无上采样。未选第 3 修订稿的颗粒更圆、更粗；三张候选原图、完整提示词、工具参数和位移参考保存在出处文件。
 
 独立复核原图及最终编码成品的 2×2 / 4×4 平铺、左右 / 上下直接拼接条带与四角交会，未见贯穿硬直缝、边框或四块分割。细碎沥青颗粒、浅水膜、克制的冷灰 / 青反光、紫褐油膜和两处稀疏黄白残标可辨；未见统一投影、全局亮度坡度或整块明显单向霓虹长亮带。此为本次实际显示尺度的视觉检查。
 
@@ -124,9 +124,43 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 本批 `npm run typecheck && npm test` 已通过（退出码 0；58 个测试文件、926 个测试）。
 
-2026-10-12 · 原 [PR #98](https://github.com/acaozixu123456/myRepository/pull/98) 同步到 `00a2ad25` 基线后，再次执行 `npm run typecheck && npm test` 全部通过（退出码 0；59 个测试文件、935 个测试）。Claude 已在主分支钉住经济审计测试的真实时钟，解决跨日后 `1.73` 文字断言失配。图片与出处保持不变，仍为待审第 1 轮；此前失败及双时钟复现保留在 PR 记录中。
+2026-10-12 · 原 [PR #98](https://github.com/acaozixu123456/myRepository/pull/98) 同步到 `00a2ad25` 基线后，再次执行 `npm run typecheck && npm test` 全部通过（退出码 0；59 个测试文件、935 个测试）。Claude 已在主分支钉住经济审计测试的真实时钟，解决跨日后 `1.73` 文字断言失配。图片与出处保持不变；该次提交时待审，第 1 轮现已通过。此前失败及双时钟复现保留在 PR 记录中。
 
-最不满意：4×4 平铺可辨认油膜和水洼的大形周期重复，近看细颗粒湿面高光偏密，等待 Claude 按实际地面 UV 尺度评估。审核后继续 A09 地砖，再做 A10 地面贴花。
+保留限制：4×4 平铺可辨认油膜和水洼的大形周期重复，近看细颗粒湿面高光偏密。Claude 已确认颗粒与水膜符合场景，湿面反光交给游戏里的光。A09 已提交 #100 待审，继续 A10 地面贴花。
+
+
+## A10 明细 · 裂缝贴花首批
+
+此前「污渍」10 张已提交 [PR #103](https://github.com/acaozixu123456/myRepository/pull/103)，第 1 轮待审；本批是另 10 张独立裂缝，未带入 #103 素材。
+
+| 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| 细分叉裂 `decal_crack_branch_fine_01` | [WebP](../assets/world/decals/decal_crack_branch_fine_01.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp) | 512² RGBA；18,416 B；原生 1254² |
+| 浅横断裂 `decal_crack_transverse_02` | [WebP](../assets/world/decals/decal_crack_transverse_02.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_transverse_02-native-alpha.webp) | 512² RGBA；8,084 B；原生 1254² |
+| 旧修补口边裂 `decal_crack_repair_edge_03` | [WebP](../assets/world/decals/decal_crack_repair_edge_03.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp) | 512² RGBA；26,260 B；原生 1254² |
+| 石材短斜裂 `decal_crack_stone_diagonal_04` | [WebP](../assets/world/decals/decal_crack_stone_diagonal_04.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp) | 512² RGBA；8,362 B；原生 1254² |
+| 网状细龟裂 `decal_crack_crazing_05` | [WebP](../assets/world/decals/decal_crack_crazing_05.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_crazing_05-native-alpha.webp) | 512² RGBA；34,734 B；原生 1254² |
+| 坑缘碎裂 `decal_crack_pit_rim_06` | [WebP](../assets/world/decals/decal_crack_pit_rim_06.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp) | 512² RGBA；27,918 B；原生 1254² |
+| 伸缩缝端枝裂 `decal_crack_joint_ends_07` | [WebP](../assets/world/decals/decal_crack_joint_ends_07.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp) | 512² RGBA；18,652 B；原生 1254² |
+| 砖缝发丝裂 `decal_crack_grout_hair_08` | [WebP](../assets/world/decals/decal_crack_grout_hair_08.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp) | 512² RGBA；13,530 B；原生 1254² |
+| 沥青长走向裂 `decal_crack_asphalt_long_09` | [WebP](../assets/world/decals/decal_crack_asphalt_long_09.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp) | 512² RGBA；16,332 B；原生 1254² |
+| 三叉断裂 `decal_crack_threeway_10` | [WebP](../assets/world/decals/decal_crack_threeway_10.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_threeway_10-native-alpha.webp) | 512² RGBA；15,462 B；原生 1254² |
+
+### A10 裂缝制作与审核记录
+
+2026-10-12 · 裂缝首批 10 张，第 1 轮待审，通过数量为 0。分别调用 `image_gen` 且 `transparent_background: true`，生成无底板的独立细裂线；未引用地面背景，未复制旋转或修图。原生 1254² RGBA（119,088～389,612 B）保留在工作空间，非 2 的幂尺寸未提交为成品。完整画布等比 Lanczos 降采样到 512²，RGBA sRGB ICC WebP（quality 90 / method 6 / alpha_quality 100 / exact true）。没有上采样、程序描线、抠底、阈值 Alpha 清理或手绘遮罩。
+
+成品四边 Alpha 全部为 0，透明区域约 91.8%～98.2%，Alpha 与对应原图降采样逐字节一致。十图造型包含分叉、横断、L形修补边、短斜、网裂、坑缘、缝端、灰缝、长裂、三叉；没有铺满黑洞或完整地面底板。灰砖上清楚，深色粗颗粒湿沥青上较低对比；07 / 09 等纵向裂线空边距小于提示词8%要求，但均未触到 / 截断至画布边界。保留这些细节按实际视距评估，不用白框或烘光强提反差。本批仅基色 + Alpha，未接入游戏，不含法线、深度、位移、粗糙度或自发光。
+
+[素材说明](../assets/world/decals/crack-decals-a10.README.md)、[出处与哈希](../assets/world/decals/crack-decals-a10.provenance.json)、[总览](../assets/world/reviews/crack-decals-a10.webp)（2048×1024，202,578 B）、[四面板方法](../assets/world/reviews/crack-decals-a10.README.md)。每张原尺度审图含棋盘 / 灰度 Alpha / 灰砖 / 湿沥青四个 512² 面板，整张 2048×1024、RGB sRGB ICC，均 ≤500,000 B；源背景只读用于审图。
+
+主线程在 `aa9afd3` 基线执行 `npm run typecheck && npm test` 全过（退出码 0，66 个测试文件 / 987 个测试）；日志 `/workspace/scratch/world-cracks-aa9-tests.log`。
+
+A10 污渍和裂缝各 10 张已交付 / 待审，涂鸦、海报、告示仍各 ≥10 张另排批；完成本批后继续队列，有返修先返修。
+
+另附 [实际 Three.js 透明叠加样板](../assets/world/reviews/crack-decals-a10-overlay.webp)（2048×1024，435,688 B），两种地面在同一材质 / 白光 / 相机下，左右只增青 / 品红点光。normal transparent、alphaTest 0.01、depthWrite false、roughness 0.8 / metalness 0，无 bloom；12/12 加载、十二 HTTP 200、page / console errors 0、failed requests 0，各 renderer 11 draw calls，十 source SHA256 前后相同。[捕获参数](../assets/world/reviews/crack-decals-a10-overlay.README.md)；深沥青缩略大多很难辨认裂线，此限制保留源色不作强调。
+
+独立 QA 见 [摘要](../assets/world/decals/crack-decals-a10.qa.md) 和 [机器报告](../assets/world/decals/crack-decals-a10.qa.json)，离线视觉 / Alpha / 出处复核已完成，可交 Claude 审核，当前未审核通过。
 
 ## B 类队列
 

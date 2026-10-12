@@ -1,0 +1,1181 @@
+{
+  "batch": "WORLD-A10-CRACKS-01",
+  "reviewer": "independent Codex QA review_queue",
+  "date": "2026-10-12",
+  "recorded_candidate_count": 10,
+  "archived_call_records_count": 10,
+  "archived_raw_paths_unique": true,
+  "assets": [
+    {
+      "id": "decal_crack_branch_fine_01",
+      "path": "assets/world/decals/decal_crack_branch_fine_01.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 18416,
+      "sha256": "8a7633c6913c138e8aa62850ad0e7cf696c90299e87db26a8e38bd8ff60073ff",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "c9a92e1a9a9bae915caec63c07681d58225b609c0a9a3c8fe7431f3b6c3f8a09",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.962391,
+        "partial_fraction": 0.035389,
+        "opaque_fraction": 0.00222,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          43,
+          76,
+          473,
+          476
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-8c832485-8ab0-4721-b991-ae6c1e2bd8d5.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_branch_fine_01-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_transverse_02",
+      "path": "assets/world/decals/decal_crack_transverse_02.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 8084,
+      "sha256": "c8bd5b0a6d737d6c5fd6635a9eaeede4a780134e13ca548d7bbe0d001fdc5f60",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "32ea74666f8eac5cef52a868ffb55080f4683d1d9c30731e54c985dd87ebc341",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.981609,
+        "partial_fraction": 0.018089,
+        "opaque_fraction": 0.000301,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          23,
+          234,
+          486,
+          304
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-01124f6b-702a-4260-a1a2-dcc99efea006.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_transverse_02-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_repair_edge_03",
+      "path": "assets/world/decals/decal_crack_repair_edge_03.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 26260,
+      "sha256": "d3e574c5f564e8a8ea556a1e7d7cc89d842cb9e1d5d03206a8a01a6ac03858e1",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "d71ba5e446211a3055c4f2790340dc0a2d5fe4d9b3b6caca3ac93a1784a7296f",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.937222,
+        "partial_fraction": 0.061497,
+        "opaque_fraction": 0.001282,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          39,
+          47,
+          480,
+          476
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-643dd1df-b198-4b82-83af-d6c73666a7e3.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_repair_edge_03-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_stone_diagonal_04",
+      "path": "assets/world/decals/decal_crack_stone_diagonal_04.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 8362,
+      "sha256": "86dafd1232e6b8fac7d0d8a9811f8526613dd47aff977801b6c9720eb7458193",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "1237567bb942d2558eeeadf2712dd4016e73770c00fc2b14dc1c1714e816804e",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.982174,
+        "partial_fraction": 0.017342,
+        "opaque_fraction": 0.000484,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          115,
+          159,
+          342,
+          357
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-fe5a5a73-741b-449f-8129-990ee24a5f83.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_stone_diagonal_04-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_crazing_05",
+      "path": "assets/world/decals/decal_crack_crazing_05.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 34734,
+      "sha256": "2a7b37236155e2be219721f80f3420a690f1c3cdcbdb52eb0ad4c8daa5234ce8",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "854973f5e366b66320bdd7bf9d25213e0d250f56020cd5aade4002843b1cecd6",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.919331,
+        "partial_fraction": 0.079353,
+        "opaque_fraction": 0.001316,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          77,
+          62,
+          484,
+          462
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-17cdc5a9-0ae6-4fd8-87a1-6fa107b835d8.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_crazing_05-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_pit_rim_06",
+      "path": "assets/world/decals/decal_crack_pit_rim_06.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 27918,
+      "sha256": "5882bf5888736b27e46fea402dd0bdb65cf3443b804696adbe78007ae91aeb1b",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "d629c868701b351c58bea09b1038d8e2ca0b7c1fb457f99b09017bcaf660b4bb",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.918041,
+        "partial_fraction": 0.081413,
+        "opaque_fraction": 0.000546,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          35,
+          101,
+          468,
+          479
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-a65c8738-7863-4a9a-9e4a-e6d8eb6af0b8.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_pit_rim_06-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_joint_ends_07",
+      "path": "assets/world/decals/decal_crack_joint_ends_07.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 18652,
+      "sha256": "e80ba759edcfc5c8f0a4548337a6442cb43bf7f4b1635a6b6e33aab91c81c006",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "61b3b092a802d37f7efc8a0bf6035e49a6682103933df8ae9c6ef0e3e3f17c70",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.952404,
+        "partial_fraction": 0.047112,
+        "opaque_fraction": 0.000484,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          164,
+          14,
+          361,
+          498
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-f6ec8b6a-a70a-494d-ab50-b2dad6d05eba.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_joint_ends_07-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_grout_hair_08",
+      "path": "assets/world/decals/decal_crack_grout_hair_08.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 13530,
+      "sha256": "2387097057bb86b38a5d61d335e8beb475e458b7f4d621e6777a45a31cc050e4",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "04d2bf38fb754aabc89aab460e2ede6017de0424fbef5e2e67c2eaff6c64ce11",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.970127,
+        "partial_fraction": 0.02919,
+        "opaque_fraction": 0.000683,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          94,
+          129,
+          406,
+          407
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-f5eb33e5-5de8-422d-b07f-b4884cefb4e8.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_grout_hair_08-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_asphalt_long_09",
+      "path": "assets/world/decals/decal_crack_asphalt_long_09.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 16332,
+      "sha256": "53d1ef0b7b07dd64df51adb0f80fc74d63e77561d397ad8490c92360597280ef",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "c19e71058d9fb7c6fc35eb57f729e85068a5bb8961d3f93cafaa9232dacc69c3",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.963333,
+        "partial_fraction": 0.035748,
+        "opaque_fraction": 0.000919,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          205,
+          27,
+          325,
+          487
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-c18fac10-1902-49ca-b1a4-7068ed3597f0.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_asphalt_long_09-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    },
+    {
+      "id": "decal_crack_threeway_10",
+      "path": "assets/world/decals/decal_crack_threeway_10.webp",
+      "mode": "RGBA",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 15462,
+      "sha256": "57041d18e9240653d362ee935e34b17097d4cb27551ac5bb0ac5329eceda6b51",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "hash_matches_provenance": true,
+      "size_matches_provenance": true,
+      "bytes_match_provenance": true,
+      "under_500000": true,
+      "full_raw_canvas_used": true,
+      "recorded_export_reproduction_identical_bytes": true,
+      "encoded_alpha_equals_native_RGBA_Lanczos_resize": true,
+      "encoded_alpha_sha256": "09a1f56563ad64412e7604e04a901c1979434d9ea4de5dcd2a75e28b5bdc1a92",
+      "alpha_hash_matches_both_provenance_fields": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "zero_fraction": 0.965355,
+        "partial_fraction": 0.033592,
+        "opaque_fraction": 0.001053,
+        "border_max": 0,
+        "border_mean": 0.0,
+        "bbox_gt16": [
+          37,
+          29,
+          463,
+          477
+        ]
+      },
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-436a5252-c7b7-4a8b-bcde-4ecd76992938.png",
+          "raw_hash_matches": true,
+          "raw_bytes_match": true,
+          "raw_size_matches": true,
+          "raw_mode_matches": true,
+          "raw_native_alpha_has_zero_and_nonzero": true,
+          "prompt_matches_recorded_argument": true,
+          "prompt_matches_archived_call": true,
+          "raw_path_matches_archived_call": true,
+          "raw_path_present_in_output_hint": true,
+          "transparent_background_argument_true": true
+        }
+      ],
+      "independent_lossless_composite_path": "/tmp/decal_crack_threeway_10-independent.png",
+      "existing_scratch_composites_match_independent_pixels": {
+        "tile": true,
+        "asphalt": true,
+        "alpha": true
+      }
+    }
+  ],
+  "backgrounds": [
+    {
+      "path": "/workspace/world-a09/assets/world/ground/ground_tile_slate_01.webp",
+      "hash_matches": true,
+      "size_matches": true,
+      "scope": "read-only review background, not part of delivered decals"
+    },
+    {
+      "path": "/workspace/a10-cracks-raw/ground_asphalt_wet_01.webp",
+      "hash_matches": true,
+      "size_matches": true,
+      "scope": "read-only review background, not part of delivered decals"
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 188568,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 20,
+          "mae": 0.654041
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 18,
+          "mae": 0.173578
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 23,
+          "mae": 2.995978
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.230677
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 184262,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 19,
+          "mae": 0.610467
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 20,
+          "mae": 0.126235
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 23,
+          "mae": 2.989882
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.218774
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 182838,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 17,
+          "mae": 0.595207
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 13,
+          "mae": 0.104842
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 23,
+          "mae": 2.983927
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.220006
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 179820,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 18,
+          "mae": 0.56316
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 21,
+          "mae": 0.063936
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 24,
+          "mae": 2.980061
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.21932
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_transverse_02-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 181028,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 14,
+          "mae": 0.568376
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 14,
+          "mae": 0.072792
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 2.982422
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 28,
+          "mae": 3.217916
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/crack-decals-a10.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 202578,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_crazing_05-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 194248,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 20,
+          "mae": 0.709632
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 17,
+          "mae": 0.243247
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 25,
+          "mae": 3.000111
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.231592
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 183478,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 18,
+          "mae": 0.604994
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 15,
+          "mae": 0.115398
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 2.976549
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.220029
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 187908,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 18,
+          "mae": 0.666698
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 17,
+          "mae": 0.189341
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 3.006504
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 31,
+          "mae": 3.232625
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_threeway_10-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 184976,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 17,
+          "mae": 0.618479
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 19,
+          "mae": 0.120036
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 22,
+          "mae": 2.985895
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 27,
+          "mae": 3.217148
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 187172,
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "review_reencoding_regions": [
+        {
+          "suffix": "checker",
+          "max_diff": 19,
+          "mae": 0.63872
+        },
+        {
+          "suffix": "alpha",
+          "max_diff": 18,
+          "mae": 0.12338
+        },
+        {
+          "suffix": "tile",
+          "max_diff": 23,
+          "mae": 2.991405
+        },
+        {
+          "suffix": "asphalt",
+          "max_diff": 29,
+          "mae": 3.224983
+        }
+      ]
+    },
+    {
+      "path": "assets/world/reviews/crack-decals-a10-overlay.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 435688,
+      "sha256": "c6c9996d479d3fc3df96c5083f0a8b2474909a1bb35d78915b45ea57a1211b06",
+      "hash_matches": true,
+      "size_matches": true,
+      "bytes_match": true,
+      "sRGB": true,
+      "under_500000": true,
+      "original_capture_reexport_identical_bytes": true,
+      "actually_viewed_with_view_image": [
+        "final overlay WebP at original 2048x1024",
+        "original lossless screenshot PNG at original 2048x1024"
+      ],
+      "visual_result": "Ten fracture layouts readable on slate paving in white and local colored light. Most thin lines difficult to distinguish at reduced scale over dark granular wet asphalt; disclosed background/scale limitation. No new obvious backing rectangle or full-contour halo observed.",
+      "existing_capture_evidence_check": {
+        "loaded": 12,
+        "expected": 12,
+        "asset_responses_200": 12,
+        "page_errors": [],
+        "console_errors": [],
+        "failed_requests": [],
+        "draw_calls_per_renderer": [
+          11,
+          11,
+          11,
+          11
+        ],
+        "current_source_hashes_equal_recorded_before_and_after": true,
+        "source_hashes_still_equal_offline_QA": true,
+        "independent_lighting_mae": [
+          20.856,
+          14.339
+        ],
+        "lighting_mae_matches_recorded": true
+      },
+      "parameters_verified_against_preserved_HTML_and_report": {
+        "three_revision": "169",
+        "canvas": [
+          1024,
+          448
+        ],
+        "camera": {
+          "type": "OrthographicCamera",
+          "left": -10,
+          "right": 10,
+          "top": 4.375,
+          "bottom": -4.375,
+          "near": 0.1,
+          "far": 40,
+          "position": [
+            0,
+            10,
+            0
+          ],
+          "up": [
+            0,
+            0,
+            -1
+          ],
+          "look_at": [
+            0,
+            0,
+            0
+          ]
+        },
+        "ground": {
+          "plane": [
+            20,
+            8.75
+          ],
+          "repeat": [
+            5,
+            2
+          ],
+          "roughness": 0.8,
+          "metalness": 0
+        },
+        "decals": {
+          "plane": [
+            3.45,
+            3.45
+          ],
+          "color": "#ffffff",
+          "roughness": 0.8,
+          "metalness": 0,
+          "transparent": true,
+          "opacity": 1,
+          "alphaTest": 0.01,
+          "depthWrite": false,
+          "depthTest": true,
+          "blending": "NormalBlending",
+          "premultipliedAlpha": false,
+          "polygonOffset": true,
+          "polygonOffsetFactor": -2,
+          "polygonOffsetUnits": -2,
+          "y": 0.01,
+          "texture_wrap": "ClampToEdgeWrapping"
+        },
+        "renderer": {
+          "color_space": "SRGBColorSpace",
+          "tone_mapping": "ACESFilmicToneMapping",
+          "exposure": 1,
+          "device_pixel_ratio": 1,
+          "antialias": true,
+          "bloom": false,
+          "shadows": false
+        },
+        "white_lights": {
+          "hemisphere": {
+            "sky": "#ffffff",
+            "ground": "#777777",
+            "intensity": 0.65
+          },
+          "directional": {
+            "color": "#ffffff",
+            "intensity": 2,
+            "position": [
+              -1,
+              10,
+              4
+            ]
+          }
+        },
+        "extra_lights": {
+          "cyan": {
+            "color": "#20d9ff",
+            "intensity": 55,
+            "distance": 35,
+            "decay": 2,
+            "position": [
+              -5,
+              4,
+              0
+            ]
+          },
+          "magenta": {
+            "color": "#ef42be",
+            "intensity": 55,
+            "distance": 35,
+            "decay": 2,
+            "position": [
+              5,
+              4,
+              0
+            ]
+          }
+        }
+      },
+      "reviewer_reran_browser_capture": false,
+      "scope_note": "Recorded GPU capture reviewed, not game integration. AlphaTest 0.01 discards weakest tails during rendering only. Threshold-free source-alpha checks use separate native full-canvas resampling and offline compositing. Each decal plane projects to about 177 pixels per side; native 512 pixels separately reviewed."
+    }
+  ],
+  "schema_version": 1,
+  "decision": "ready_for_claude_review",
+  "claude_approved": false,
+  "blocking_findings": [],
+  "source_art_changed_by_reviewer": false,
+  "source_rgba_alpha_assessment": "All ten recorded raw candidates natively contain RGBA alpha. All ten final WebP alpha channels exactly equal full-canvas native RGBA Lanczos downsampling; recorded export reproduces identical final WebP bytes without extra masking.",
+  "visual_inspection": {
+    "tool": "tools.view_image",
+    "actually_viewed": [
+      "all ten 512x512 final RGBA WebP files",
+      "2048x1024 total overview",
+      "all ten original-size native-alpha four-panel review sheets",
+      "all ten independently recomputed lossless 2048x512 strips in /tmp at 1:1 spatial scale",
+      "final overlay WebP at original 2048x1024",
+      "original lossless screenshot PNG at original 2048x1024"
+    ],
+    "result": "Thin subdued fracture lines form distinct branching, transverse, L repair edge, small diagonal, network, open U pit rim, separated joint ends, grout-hair branch, long meandering and three-way layouts. No opaque pavement backing, broad rectangular tint, full-contour white halo, fresh red color or baked neon lighting direction seen in normal compositing.",
+    "acceptable_limits": [
+      "Most thin fracture lines have low contrast over dark granular wet asphalt; native 512-pixel review and slate background are clearer than thumbnail asphalt review. Prefer appropriate pavement regions and actual game scale instead of artificial white outlining.",
+      "Some requested 8% transparent margins were not achieved; joint_ends_07 has alpha>16 bbox y=14..498 and asphalt_long_09 y=27..487. All ten actual canvas-edge alpha channels are zero; no content cutoff at the four boundaries observed.",
+      "Fine edge mineral specks and tiny local material light/dark detail remain; not a claim of zero microscopic shading.",
+      "Lossy native-alpha WebP reencoding differs from exact source values; independent lossless recomputations were also inspected.",
+      "No actual game placement, camera, multi-decal blend order or z-fighting validation in the offline portion."
+    ]
+  },
+  "test_execution": {
+    "typecheck_or_unit_tests_by_this_reviewer": false,
+    "game_engine_files_changed": false,
+    "commit_or_push_by_this_reviewer": false
+  },
+  "archived_call_evidence_note": "Ten local calls.json records were checked against provenance prompts, operation/candidate ids, raw paths and actual hashes, native RGBA and returned output_hint paths. All are one independent generate per id, with no referenced-image arguments. Reviewer did not generate or replay image generation.",
+  "review_required_at_integration": "All-ten live Three.js overlay capture has been reviewed; actual game surface/scale must assess visibility, overlap, blend ordering and depth behavior. Low contrast on dark wet asphalt remains a material limitation.",
+  "provenance_sha256_at_final_QA": "6a7e81be13095fb03a2a0ec742071185ae02ecf0bc8ab87db017969e8a19b991",
+  "GPU_preview_assessed": true
+}
