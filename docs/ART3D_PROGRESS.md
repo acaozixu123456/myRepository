@@ -206,14 +206,26 @@
 
 | 花纹 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- |
-| `tabby` | 底版 | 0 | |
-| `tuxedo` | 底版 | 0 | |
-| `calico` | 底版 | 0 | |
+| `tabby` | 待审 | 1 | 11 使用者（7 英雄 + 4 杂兵）；前脸 u=.25 的额头 M、双颊纹、沿 z 的尾环；codex/3d-patterns-coat-basics |
+| `tuxedo` | 待审 | 1 | 6 使用者（2 英雄 + 4 杂兵）；前脸白鼻梁接下颌，body 白袜；胸领 / 手爪由既有引擎材质提供；codex/3d-patterns-coat-basics |
+| `calico` | 待审 | 1 | 4 使用者（2 英雄 + 2 杂兵）；浅底与橘 / 深块、不对称侧后块；保留实际毛色数据；codex/3d-patterns-coat-basics |
 | `point` | 底版 | 0 | |
 | `spots` | 底版 | 0 | |
 | `cow` | 底版 | 0 | |
 | `tortie` | 底版 | 0 | |
 | `butterfly` | 底版 | 0 | |
+
+### 毛色花纹第 1 批检查
+
+`tabby / tuxedo / calico` 首批覆盖 21 使用者（11 英雄 + 10 杂兵），第 1 轮待审。参考实际刘喵备、吕布丁、貂蝉喵、庞喵统 JPG 与 `ART_PROMPTS.md`，花纹按球面前脸 u≈0.25 放置；仅改程序化 256² head/body CanvasTexture，不改猫模型、五官、数据或其他五种纹样。
+
+`npm run typecheck && npm test` 通过，65 文件 / 980 项测试。42 张纹理冷缓存创建 42 Canvas，同描述 42/42 命中，独立模块 42/42 像素确定；暖调用 4200 次没有新 Canvas，其余 112 head/body 输出逐 RGBA 与基线相同。全批创建两个 mode 时 RGBA Canvas 约 10.5 MiB、含默认 mipmap 的 GPU 数据约 14 MiB，与原实现纹理数量 / 分辨率相同，没有新增网格或逐帧分配。
+
+独立检查覆盖 294 全姿势静态与 252 三姿势动画样本，正常烘焙几何属性和索引均与基线相同，顶点差 0、非有限 0、新取景回归 0；保留吕布丁已有头饰上裁切 / 背挂下裁切：静态 11 例（头饰 7 / 背挂 4）、动画 12 例（头饰 8 / 背挂 4），与基线相同。具体采样、缓存、UV 和视觉限制见 [QA 摘要](../src/art3d/parts/reviews/patterns-basics/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/patterns-basics/qa-summary.json)。
+
+审核图：[代表三姿势](../src/art3d/parts/reviews/patterns-basics/poses.png)、[真实十猫战斗](../src/art3d/parts/reviews/patterns-basics/battle.webp)、[原生紧凑画布](../src/art3d/parts/reviews/patterns-basics/poses-190px.png)、[边界杂兵](../src/art3d/parts/reviews/patterns-basics/mobs-poses-190px.png)、[前后对照](../src/art3d/parts/reviews/patterns-basics/before-after.png)；正面、反侧与背面、实参和冻结哈希见 [记录](../src/art3d/parts/reviews/patterns-basics/README.md)。七次官方拍图及十二帧战斗已完成，页面运行错误 0，图片均 <500000 B。
+
+最不满意：浅虎斑杂兵 M 对比弱，三花朝橘块的 32° 视角露出深块较少。body 纹理共享小腿与每个尾球 UV，燕尾尾腹浅带 / 三花块面会随尾节重复；手爪、耳和胸绒领仍由引擎独立材质决定。没有把 body 图上的白围兜宣称为实际躯干已重画。燕尾边界有一行抗锯齿差，不称逐像素无缝。继续剩余五种花纹与 A10 贴花，再做专属造型。
 
 ## 英雄专属造型（`src/art3d/heroes.ts` 的 `HERO_PARTS`）
 
