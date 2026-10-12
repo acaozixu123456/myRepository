@@ -52,7 +52,7 @@ interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; s
 const ENGAGE_R = 5.2, ENGAGE_BOSS = 7;
 interface Ent { spawn: Spawn; group: THREE.Group; cats: Actor[]; home: THREE.Vector3; target: THREE.Vector3; wait: number; alive: boolean; cooldown: number; alert: boolean; tag: THREE.Sprite; mark?: THREE.Sprite; t: number;
   /** 视野：朝向 / 状态（巡逻 · 追击 · 被撞晕）/ 视锥片 / 追丢计时 / 晕眩剩余 / 隐藏宝箱是否已发现 */
-  face: number; state: 'idle' | 'chase' | 'stun'; cone?: THREE.Mesh; lost: number; stun: number; found: boolean }
+  face: number; state: 'idle' | 'alert' | 'chase' | 'stun'; cone?: THREE.Mesh; lost: number; stun: number; found: boolean; alertT: number }
 
 
 const WORLD_CAT_DETAIL = 0.6;
@@ -296,12 +296,13 @@ export class Explorer {
     const tag = labelSprite(s.label, s.kind === 'boss' ? '#ff9ad0' : s.kind === 'npc' ? '#9ae8ff' : s.kind === 'chest' ? '#ffe27a' : s.kind === 'herb' ? '#9affc8' : s.kind === 'poi' ? (s.data === 'ramen' ? '#ff9a8a' : s.data === 'boxcat' ? '#ffe08a' : s.data === 'mushroom' ? '#d8b0ff' : s.data === 'windchime' ? '#c0d4ff' : s.data === 'lanterns' ? '#ffe9a0' : '#ffcf8a') : '#ffffff');
     tag.position.y = s.kind === 'chest' || s.kind === 'herb' || s.kind === 'poi' ? 3.0 : s.kind === 'boss' ? 6.0 : 4.8;
     group.add(tag);
-    const mark = s.kind === 'boss' ? markSprite('!', '#ff4a6a') : s.kind === 'npc' ? markSprite('…', '#7ff0ff') : undefined;
+    const mark = s.kind === 'boss' ? markSprite('!', '#ff4a6a') : s.kind === 'npc' ? markSprite('…', '#7ff0ff') : s.kind === 'enemy' ? markSprite('!', '#ff3a4a') : undefined;
+    if (mark && s.kind === 'enemy') mark.visible = false;
     if (mark) { mark.position.y = s.kind === 'boss' ? 7.6 : 6.3; group.add(mark); }
     group.position.set(s.x, 0.32, s.z);
     this.root.add(group);
     const ent: Ent = { spawn: s, group, cats, home: new THREE.Vector3(s.x, 0.32, s.z), target: new THREE.Vector3(s.x, 0.32, s.z), wait: Math.random() * 2, alive: true, cooldown: 0, alert: false, tag, mark, t: Math.random() * 6,
-      face: Math.random() * Math.PI * 2, state: 'idle', lost: 0, stun: 0, found: !s.hidden };
+      face: Math.random() * Math.PI * 2, state: 'idle', lost: 0, stun: 0, found: !s.hidden, alertT: 0 };
     if (s.kind === 'enemy' || s.kind === 'boss') {
       // 视野锥：脚下一片扇形，黄 = 没发现你，红 = 追你，灰 = 被撞晕。队伍走进扇形里就会被发现
       const R = SIGHT, seg = 18, pos: number[] = [0, 0, 0];
@@ -514,7 +515,8 @@ export class Explorer {
       const seen = dist < range && angTo < HALF_FOV && this.clear(gp, lp);
       const bumped = dist < 2.0 && !sneaking; // 贴脸也会发现
       if (seen || bumped) {
-        e.state = 'chase'; e.lost = 0;
+        // 先「发现」0.7 秒（头顶 ❗、原地盯着你），再开始追：给玩家反应时间，来得及跑 / 绕 / 冲撞
+        e.state = s.kind === 'boss' ? 'chase' : 'alert'; e.lost = 0; e.alertT = 0.7;
         this.hooks.alert?.(s);
         if (s.kind !== 'boss') this.hooks.note?.('❗ 被发现了！跑开，或者正面开战');
       }
@@ -523,6 +525,9 @@ export class Explorer {
     if (e.state === 'stun' || e.stun > 0) {
       // 晕乎乎：原地转圈
       e.face += dt * 4; for (const a of e.cats) { a.yaw = e.face; a.moving = 0; }
+    } else if (e.state === 'alert') {
+      e.face = Math.atan2(lp.x - gp.x, lp.z - gp.z); for (const a of e.cats) { a.yaw = e.face; a.moving = 0; }
+      if ((e.alertT -= dt) <= 0) { e.state = 'chase'; e.lost = 0; }
     } else if (e.state === 'chase' && s.kind !== 'boss') {
       // 追击：直线逼近队伍，不进安全区；离太远 / 看不见 4 秒就放弃回家
       const d = new THREE.Vector3().subVectors(lp, gp); d.y = 0; const dd = d.length();
@@ -555,13 +560,14 @@ export class Explorer {
       const c = e.cone, m = c.material as THREE.MeshBasicMaterial;
       c.visible = dLeader < 30 && e.stun <= 0;
       c.rotation.y = e.face;
-      c.scale.setScalar((e.state === 'chase' ? 1.1 : sneaking ? SIGHT_SNEAK / SIGHT : 1));
-      m.color.setHex(e.state === 'chase' ? 0xff3a4a : 0xffd24a);
+      c.scale.setScalar((e.state === 'chase' || e.state === 'alert' ? 1.1 : sneaking ? SIGHT_SNEAK / SIGHT : 1));
+      m.color.setHex(e.state === 'chase' || e.state === 'alert' ? 0xff3a4a : 0xffd24a);
       m.opacity = (e.state === 'chase' ? 0.34 : 0.24) + Math.sin(e.t * 5) * 0.04;
       ((c.userData as { edge: THREE.LineLoop }).edge.material as THREE.LineBasicMaterial).color.setHex(e.state === 'chase' ? 0xff8a8a : 0xfff0a0);
     }
     if (e.mark) {
-      const up = e.stun > 0 || e.state === 'chase';
+      const up = e.stun > 0 || e.state === 'chase' || e.state === 'alert';
+      if (s.kind === 'enemy') e.mark.visible = e.state === 'alert' || e.state === 'chase';
       e.mark.position.y = (s.kind === 'boss' ? 7.6 : 6.3) + Math.sin(e.t * (up ? 8 : 4)) * (up ? 0.4 : 0.25);
     }
   }
