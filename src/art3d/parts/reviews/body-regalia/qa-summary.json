@@ -1,9 +1,27 @@
 {
-  "bodySHA256": "d60ea10a971d686f0d7bb02d2cbba256908dc55ef44ebf2699d71866354f9d65",
-  "toonSHA256": "03d9f550749210bd73577b360753d569005e22ea2666802b4c16d87588224c29",
-  "baselineCommit": "aa24c00",
-  "baselineBodyRawSHA256": "e72b953828e31257a575a25b996cf69dee362a0691b24f2e1f4b3f17ab1d7715",
-  "status": "independent QA complete; visual approval remains with Claude",
+  "bodySHA256": "17dba1912cfc1ef3b4d90428590bcb57262618c308a59434e562803f26ea52f4",
+  "engineSHA256": {
+    "src/art3d/cat3d.ts": "56288d563537fc36ee3e419e8f8a5ae741b57d8dc7915a0364561b2cdecc149f",
+    "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+    "src/art3d/toon.ts": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+  },
+  "engineSHA256After": {
+    "src/art3d/cat3d.ts": "56288d563537fc36ee3e419e8f8a5ae741b57d8dc7915a0364561b2cdecc149f",
+    "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+    "src/art3d/toon.ts": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+  },
+  "baselineCommit": "1f45261",
+  "baselineFixture": {
+    "sha256": "ae1a8e56e48a2c570370aaad7a31993e964d06f2cc3c6a9a08a691570e80feb8",
+    "commit": "1f45261"
+  },
+  "status": "independent QA complete for final metal candidate; final visual approval remains with Claude",
+  "supersedes": [
+    "aa24c00 pre-upstream audit and screenshots archived under ignored .shots/body-regalia/obsolete/aa24c00",
+    "0ba5e54b shoulder/chest pre-metal revision archived under ignored .shots/body-regalia/obsolete/1f45261-heavy-pre-metal; neither group is final evidence"
+  ],
   "users": {
     "robeSilk": [
       "wei_caomiaode",
@@ -36,7 +54,8 @@
     "y0": -0.25,
     "y1": 3.6
   },
-  "method": "runtime noBake on BODY+skirt only; actual current buildCat3D/POSES phase=0/yaw=32; body outline vertex expansion; independent normal bake FRAME by applyBoneTransform on every vertex; 12x12 actual baked eye-core triangle projection plus five face landmark depth probes; baseline only body replaced from aa24c00, identical current engines",
+  "method": "runtime noBake on BODY+skirt only; actual current buildCat3D/POSES phase=0/yaw=32; body outline vertex expansion; independent normal bake FRAME by applyBoneTransform on every vertex; 12x12 actual baked eye-core triangle projection plus five face landmark depth probes; baseline only body replaced from 1f45261, identical current engines",
+  "fixtureMethod": "Fresh generated module filename and fresh generated baseline filename on every run; runtime baseline SHA and commit sentinel checked against Node raw git-show fixture to prevent ignored .shots Vite transform cache reuse.",
   "actualBodyAttachments": 64,
   "expectedBodyAttachments": 64,
   "budget": [
@@ -850,7 +869,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.2951290636051632,
-      "baselineMinY": -0.2951290636051632
+      "baselineMinY": -0.2951290636051632,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -858,7 +883,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3242586103685118,
-      "baselineMinY": -0.3242586103685118
+      "baselineMinY": -0.3242586103685118,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -866,7 +897,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3619077345062413,
-      "baselineMinY": -0.3619077345062413
+      "baselineMinY": -0.3619077345062413,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -874,7 +911,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.2833483507056227,
-      "baselineMinY": -0.2833483507056227
+      "baselineMinY": -0.2833483507056227,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -882,7 +925,13 @@
       "t": 0,
       "suite": "animation",
       "candidateMinY": -0.29379166575070925,
-      "baselineMinY": -0.29379166575070925
+      "baselineMinY": -0.29379166575070925,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -890,7 +939,13 @@
       "t": 0.7272727272727273,
       "suite": "animation",
       "candidateMinY": -0.29403629008678744,
-      "baselineMinY": -0.29403629008678744
+      "baselineMinY": -0.29403629008678744,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -898,7 +953,13 @@
       "t": 1.4545454545454546,
       "suite": "animation",
       "candidateMinY": -0.28313695328771143,
-      "baselineMinY": -0.28313695328771143
+      "baselineMinY": -0.28313695328771143,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -906,7 +967,13 @@
       "t": 2.1818181818181817,
       "suite": "animation",
       "candidateMinY": -0.2751053485775319,
-      "baselineMinY": -0.2751053485775319
+      "baselineMinY": -0.2751053485775319,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -914,7 +981,13 @@
       "t": 2.909090909090909,
       "suite": "animation",
       "candidateMinY": -0.2869381488905861,
-      "baselineMinY": -0.2869381488905861
+      "baselineMinY": -0.2869381488905861,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -922,7 +995,13 @@
       "t": 3.6363636363636362,
       "suite": "animation",
       "candidateMinY": -0.3070977127348855,
-      "baselineMinY": -0.3070977127348855
+      "baselineMinY": -0.3070977127348855,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -930,7 +1009,13 @@
       "t": 4.363636363636363,
       "suite": "animation",
       "candidateMinY": -0.31123314645897937,
-      "baselineMinY": -0.31123314645897937
+      "baselineMinY": -0.31123314645897937,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -938,7 +1023,13 @@
       "t": 5.090909090909091,
       "suite": "animation",
       "candidateMinY": -0.2994946089512638,
-      "baselineMinY": -0.2994946089512638
+      "baselineMinY": -0.2994946089512638,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -946,7 +1037,13 @@
       "t": 5.818181818181818,
       "suite": "animation",
       "candidateMinY": -0.29244775448907356,
-      "baselineMinY": -0.29244775448907356
+      "baselineMinY": -0.29244775448907356,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -954,7 +1051,13 @@
       "t": 6.545454545454546,
       "suite": "animation",
       "candidateMinY": -0.29488696631007805,
-      "baselineMinY": -0.29488696631007805
+      "baselineMinY": -0.29488696631007805,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -962,7 +1065,13 @@
       "t": 7.2727272727272725,
       "suite": "animation",
       "candidateMinY": -0.29118859400933905,
-      "baselineMinY": -0.29118859400933905
+      "baselineMinY": -0.29118859400933905,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_caomiaode",
@@ -970,7 +1079,13 @@
       "t": 8,
       "suite": "animation",
       "candidateMinY": -0.27863775154584913,
-      "baselineMinY": -0.27863775154584913
+      "baselineMinY": -0.27863775154584913,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -978,7 +1093,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.2951290636051632,
-      "baselineMinY": -0.2951290636051632
+      "baselineMinY": -0.2951290636051632,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -986,7 +1107,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3242586103685118,
-      "baselineMinY": -0.3242586103685118
+      "baselineMinY": -0.3242586103685118,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -994,7 +1121,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3619077345062413,
-      "baselineMinY": -0.3619077345062413
+      "baselineMinY": -0.3619077345062413,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1002,7 +1135,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.2833483507056227,
-      "baselineMinY": -0.2833483507056227
+      "baselineMinY": -0.2833483507056227,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1010,7 +1149,13 @@
       "t": 0,
       "suite": "animation",
       "candidateMinY": -0.29379166575070925,
-      "baselineMinY": -0.29379166575070925
+      "baselineMinY": -0.29379166575070925,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1018,7 +1163,13 @@
       "t": 0.7272727272727273,
       "suite": "animation",
       "candidateMinY": -0.29403629008678744,
-      "baselineMinY": -0.29403629008678744
+      "baselineMinY": -0.29403629008678744,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1026,7 +1177,13 @@
       "t": 1.4545454545454546,
       "suite": "animation",
       "candidateMinY": -0.28313695328771143,
-      "baselineMinY": -0.28313695328771143
+      "baselineMinY": -0.28313695328771143,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1034,7 +1191,13 @@
       "t": 2.1818181818181817,
       "suite": "animation",
       "candidateMinY": -0.2751053485775319,
-      "baselineMinY": -0.2751053485775319
+      "baselineMinY": -0.2751053485775319,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1042,7 +1205,13 @@
       "t": 2.909090909090909,
       "suite": "animation",
       "candidateMinY": -0.2869381488905861,
-      "baselineMinY": -0.2869381488905861
+      "baselineMinY": -0.2869381488905861,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1050,7 +1219,13 @@
       "t": 3.6363636363636362,
       "suite": "animation",
       "candidateMinY": -0.3070977127348855,
-      "baselineMinY": -0.3070977127348855
+      "baselineMinY": -0.3070977127348855,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1058,7 +1233,13 @@
       "t": 4.363636363636363,
       "suite": "animation",
       "candidateMinY": -0.31123314645897937,
-      "baselineMinY": -0.31123314645897937
+      "baselineMinY": -0.31123314645897937,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1066,7 +1247,13 @@
       "t": 5.090909090909091,
       "suite": "animation",
       "candidateMinY": -0.2994946089512638,
-      "baselineMinY": -0.2994946089512638
+      "baselineMinY": -0.2994946089512638,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1074,7 +1261,13 @@
       "t": 5.818181818181818,
       "suite": "animation",
       "candidateMinY": -0.29244775448907356,
-      "baselineMinY": -0.29244775448907356
+      "baselineMinY": -0.29244775448907356,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1082,7 +1275,13 @@
       "t": 6.545454545454546,
       "suite": "animation",
       "candidateMinY": -0.29488696631007805,
-      "baselineMinY": -0.29488696631007805
+      "baselineMinY": -0.29488696631007805,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1090,7 +1289,13 @@
       "t": 7.2727272727272725,
       "suite": "animation",
       "candidateMinY": -0.29118859400933905,
-      "baselineMinY": -0.29118859400933905
+      "baselineMinY": -0.29118859400933905,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "qun_lvbuding",
@@ -1098,7 +1303,13 @@
       "t": 8,
       "suite": "animation",
       "candidateMinY": -0.27863775154584913,
-      "baselineMinY": -0.27863775154584913
+      "baselineMinY": -0.27863775154584913,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1106,7 +1317,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.2951290636051632,
-      "baselineMinY": -0.2951290636051632
+      "baselineMinY": -0.2951290636051632,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1114,7 +1331,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3242586103685118,
-      "baselineMinY": -0.3242586103685118
+      "baselineMinY": -0.3242586103685118,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1122,7 +1345,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.3619077345062413,
-      "baselineMinY": -0.3619077345062413
+      "baselineMinY": -0.3619077345062413,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1130,7 +1359,13 @@
       "t": 0.4,
       "suite": "all14",
       "candidateMinY": -0.2833483507056227,
-      "baselineMinY": -0.2833483507056227
+      "baselineMinY": -0.2833483507056227,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1138,7 +1373,13 @@
       "t": 0,
       "suite": "animation",
       "candidateMinY": -0.29379166575070925,
-      "baselineMinY": -0.29379166575070925
+      "baselineMinY": -0.29379166575070925,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1146,7 +1387,13 @@
       "t": 0.7272727272727273,
       "suite": "animation",
       "candidateMinY": -0.29403629008678744,
-      "baselineMinY": -0.29403629008678744
+      "baselineMinY": -0.29403629008678744,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1154,7 +1401,13 @@
       "t": 1.4545454545454546,
       "suite": "animation",
       "candidateMinY": -0.28313695328771143,
-      "baselineMinY": -0.28313695328771143
+      "baselineMinY": -0.28313695328771143,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1162,7 +1415,13 @@
       "t": 2.1818181818181817,
       "suite": "animation",
       "candidateMinY": -0.2751053485775319,
-      "baselineMinY": -0.2751053485775319
+      "baselineMinY": -0.2751053485775319,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1170,7 +1429,13 @@
       "t": 2.909090909090909,
       "suite": "animation",
       "candidateMinY": -0.2869381488905861,
-      "baselineMinY": -0.2869381488905861
+      "baselineMinY": -0.2869381488905861,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1178,7 +1443,13 @@
       "t": 3.6363636363636362,
       "suite": "animation",
       "candidateMinY": -0.3070977127348855,
-      "baselineMinY": -0.3070977127348855
+      "baselineMinY": -0.3070977127348855,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1186,7 +1457,13 @@
       "t": 4.363636363636363,
       "suite": "animation",
       "candidateMinY": -0.31123314645897937,
-      "baselineMinY": -0.31123314645897937
+      "baselineMinY": -0.31123314645897937,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1194,7 +1471,13 @@
       "t": 5.090909090909091,
       "suite": "animation",
       "candidateMinY": -0.2994946089512638,
-      "baselineMinY": -0.2994946089512638
+      "baselineMinY": -0.2994946089512638,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1202,7 +1485,13 @@
       "t": 5.818181818181818,
       "suite": "animation",
       "candidateMinY": -0.29244775448907356,
-      "baselineMinY": -0.29244775448907356
+      "baselineMinY": -0.29244775448907356,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1210,7 +1499,13 @@
       "t": 6.545454545454546,
       "suite": "animation",
       "candidateMinY": -0.29488696631007805,
-      "baselineMinY": -0.29488696631007805
+      "baselineMinY": -0.29488696631007805,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1218,7 +1513,13 @@
       "t": 7.2727272727272725,
       "suite": "animation",
       "candidateMinY": -0.29118859400933905,
-      "baselineMinY": -0.29118859400933905
+      "baselineMinY": -0.29118859400933905,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     },
     {
       "id": "wei_simamiyi",
@@ -1226,16 +1527,32 @@
       "t": 8,
       "suite": "animation",
       "candidateMinY": -0.27863775154584913,
-      "baselineMinY": -0.27863775154584913
+      "baselineMinY": -0.27863775154584913,
+      "candidateClippedBones": [
+        "back"
+      ],
+      "baselineClippedBones": [
+        "back"
+      ]
     }
   ],
   "comparisonScreenshot": {
     "output": "src/art3d/parts/reviews/body-regalia/before-after.png",
-    "bytes": 131415,
-    "bodySHA256": "d60ea10a971d686f0d7bb02d2cbba256908dc55ef44ebf2699d71866354f9d65",
-    "toonSHA256": "03d9f550749210bd73577b360753d569005e22ea2666802b4c16d87588224c29",
+    "bytes": 200919,
+    "bodySHA256": "17dba1912cfc1ef3b4d90428590bcb57262618c308a59434e562803f26ea52f4",
+    "engineSHA256": {
+      "src/art3d/cat3d.ts": "56288d563537fc36ee3e419e8f8a5ae741b57d8dc7915a0364561b2cdecc149f",
+      "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+      "src/art3d/toon.ts": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
+      "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+    },
+    "toonSHA256": "01596b5f8927ae99c3c3ba3c85076366b6d43f16cc240a5808cea72fcab95fe1",
     "pageErrors": [],
     "method": {
+      "baselineFixture": {
+        "sha256": "ae1a8e56e48a2c570370aaad7a31993e964d06f2cc3c6a9a08a691570e80feb8",
+        "commit": "1f45261"
+      },
       "ids": [
         "wei_caomiaode",
         "shu_pangmiaotong",
@@ -1253,20 +1570,21 @@
       "t": 0.4,
       "phase": 0,
       "yaw": 32
-    }
+    },
+    "imageSHA256": "7a1973d64a2d84ac47835ac06199c5dce695d7f8b33162ddf17a1afca793ab2f"
   },
   "visuallyInspected": [
-    "before-after.png (six heroes, actual normal bake)",
-    "candidate-v2-poses.png (six heroes, idle/windup/strike, actual normal bake)",
-    "candidate-v2-small.png (native small canvases)",
-    "battle_03.png (ten cats together)"
+    "before-after.png, six heroes, actual normal bake, final metal source and latest 1f45261 baseline",
+    "metal-poses.png, six heroes, idle/windup/strike, final normal bake",
+    "metal-small.png, native small canvases, final normal bake",
+    "battle.webp (ten cats together, final metal shoulder/chest visible)"
   ],
   "limitations": [
     "Phase fixed to zero; finite 12 times in [0,8] for three poses; no proof about all continuous times or phases.",
     "Eye depth probes use actual white/iris/pupil/arc projected triangles, 12x12 sample grid; probes do not first subtract other face geometry or eyelids.",
     "Face coverage uses five transformed nose/mouth/muzzle landmarks and visual inspection; it is not a full face triangle collision calculation.",
     "noBake clothing instrumentation is only an audit aid; presentation screenshot and separate whole-cat FRAME checks use ordinary bakeCat.",
-    "Existing whole-cat clipping is matched against the same current engine with only baseline body builders substituted; not claimed as a replay of the entire old commit."
+    "Both sides use current 1f45261 engines; only the three baseline body builders are replaced."
   ],
   "pageErrors": []
 }

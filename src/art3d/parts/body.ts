@@ -1,6 +1,7 @@
 // 衣服：挂在 torso（髋部原点）。肩在 (±0.52, 1.0, 0)，脖子根 (0, 1.3, 0)。
 // 底版：一件车削出来的长袍（袍 / 裙 / 铠 / 兽皮 都用同一个造型，颜色与配件不同）。
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { solid, sphere, toon } from '../toon';
 import type { PartBuilder, PartCtx } from './types';
 
@@ -263,10 +264,11 @@ function petalDress(c: PartCtx): THREE.Group {
 function heavyRegalia(c: PartCtx): THREE.Group {
   const g = new THREE.Group(), skirt = new THREE.Group(), b = c.look.build ?? 1;
   const upper: RegaliaProfile = [[0.50, 0.24], [0.555, 0.48], [0.57, 0.76], [0.48, 1.01], [0.29, 1.18]];
-  g.add(regaliaShell(c, upper, c.pal.sub));
+  g.add(regaliaShell(c, upper, c.pal.main));
   skirt.add(regaliaShell(c, [[0.61, -0.16], [0.60, 0.10], [0.54, 0.44], [0.50, 0.57]], c.pal.sub));
   skirt.add(regaliaCap(c, 0.59, -0.12, c.pal.sub));
   // 五片弧面裙甲：分开的片尖形成重甲剪影，布衬保持腰下遮挡。
+  const hemGeometries: THREE.BufferGeometry[] = [];
   for (let i = -2; i <= 2; i++) {
     const centre = i * 0.55, arc = 0.46, bottom = i === 0 ? -0.27 : -0.21;
     skirt.add(regaliaShell(c, [[0.66, bottom], [0.655, bottom + 0.07], [0.625, 0.15], [0.568, 0.44]], i % 2 === 0 ? c.pal.main : c.pal.sub, 0.82, 0, centre - arc / 2, arc));
@@ -274,15 +276,23 @@ function heavyRegalia(c: PartCtx): THREE.Group {
       const phi = centre - arc / 2 + arc * j / 4;
       return new THREE.Vector3(Math.sin(phi) * 0.667 * b, bottom + 0.035, Math.cos(phi) * 0.667 * b * 0.82);
     });
-    skirt.add(regaliaCord(pts, 0.024, c.pal.trim));
+    hemGeometries.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 24, 0.024, 6, false));
   }
-  // 甲胸与护心镜保留阵营主色和镶边色，胸板中缝留出明暗层次。
+  // 五条同色裙甲边合成一网格，腾出的四个网格用于肩甲层次。
+  const hemGeometry = mergeGeometries(hemGeometries, false)!;
+  skirt.add(solid(hemGeometry, toon(c.pal.trim), 0.006));
+  for (const geo of hemGeometries) geo.dispose();
+  // 小块冷金属胸板留出大面积阵营色；圆润的三层肩甲形成重装剪影。
   for (const side of [-1, 1]) {
-    g.add(regaliaPatch(c, [[side * 0.05, 1.09], [side * 0.30, 1.10], [side * 0.43, 0.95], [side * 0.41, 0.68], [side * 0.12, 0.56], [side * 0.04, 0.74]], upper, c.pal.main, 0.045));
-    const shoulder = solid(new THREE.SphereGeometry(0.145 * b, 12, 8), toon(c.pal.main), 0.018);
-    shoulder.scale.set(1, 0.42, 0.95); shoulder.position.set(side * 0.405 * b, 1.08, -0.035);
-    g.add(shoulder);
-    const edge = regaliaCord([new THREE.Vector3(side * 0.28 * b, 1.08, 0.045), new THREE.Vector3(side * 0.40 * b, 1.06, 0.10), new THREE.Vector3(side * 0.53 * b, 1.025, 0.035)], 0.025, c.pal.trim);
+    g.add(regaliaPatch(c, [[side * 0.045, 1.05], [side * 0.27, 1.08], [side * 0.39, 0.95], [side * 0.36, 0.76], [side * 0.20, 0.85], [side * 0.04, 0.90]], upper, side === -1 ? '#9eb0c4' : '#c5d3e0', 0.045));
+    for (let layer = 0; layer < 3; layer++) {
+      const shoulder = solid(new THREE.SphereGeometry((0.215 - layer * 0.030) * b, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), toon(layer === 0 ? '#d8e3ee' : layer === 1 ? '#8296ac' : c.pal.main, { double: true }), 0.015);
+      shoulder.scale.set(1, 0.55, 0.95);
+      shoulder.position.set(side * (0.46 + layer * 0.025) * b, 1.035 - layer * 0.065, -0.035);
+      shoulder.rotation.z = -side * 0.25;
+      g.add(shoulder);
+    }
+    const edge = regaliaCord([new THREE.Vector3(side * 0.275 * b, 1.08, 0.045), new THREE.Vector3(side * 0.46 * b, 1.035, 0.172 * b), new THREE.Vector3(side * 0.645 * b, 0.99, 0.045)], 0.022, c.pal.trim);
     g.add(edge);
   }
   g.add(regaliaRing(c, 0.295, 1.16, c.pal.trim));

@@ -123,7 +123,7 @@
 | --- | --- | --- | --- | --- |
 | `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR), `shu_liumiaobei`(UR), `wu_zhoumiaoyu`(UR), `shu_guanyunmiao`(SSR), `qun_dongzhuo`(SR) | 待审 | 1 | 16 网格；交领、金边、压褶；codex/3d-body-regalia |
 | `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 待审 | 1 | 18 网格；双层波边裙、蝴蝶腰结；codex/3d-body-regalia |
-| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wei_xuhuang`(SR), `wu_huanggai`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 24 网格；护胸、护心镜、五片裙甲；codex/3d-body-regalia |
+| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wei_xuhuang`(SR), `wu_huanggai`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 24 网格；三层金属肩甲、护心镜、五片裙甲；codex/3d-body-regalia |
 | `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR) 等5只 + 杂兵×2 | 底版 | 0 | |
 | `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR) 等4只 + 杂兵×2 | 底版 | 0 | |
 | `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR) 等7只 + 杂兵×12 | 底版 | 0 | |
@@ -136,7 +136,7 @@
 
 `codex/3d-body-regalia` 交付 `robeSilk / dress / armorHeavy`，第 1 轮待审，共 16 位英雄、无杂兵。原表的 7 / 2 / 7 数量正确，现补齐 ID。配色与造型参考 `ART_PROMPTS.md`、英雄参考 JPG 及已批准的 SP / UR 立绘；领口、裙摆与肩甲只改衣服部件，下摆继续挂在 `hip`。
 
-`npm run typecheck && npm test` 通过：64 个测试文件、976 项测试，退出码 0。三件逻辑网格为 16 / 18 / 24，几何分段最大 24，复用缓存材质，无每帧新增代码。内部修订已解决曲面装饰沉入壳体和裙层被遮挡的问题，不增加审核轮次。
+`npm run typecheck && npm test` 通过：64 个测试文件、976 项测试，退出码 0。三件逻辑网格为 16 / 18 / 24，几何分段最大 24，复用缓存材质，无每帧新增代码。内部修订已解决曲面装饰沉入壳体和裙层被遮挡的问题；已同步主分支 `1f45261` 新模型 / 材质，增强三层金属肩甲并合批裙甲金边，预算保持不变。同步后的检查和截图重新生成，不增加审核轮次。
 
 独立 QA 覆盖 16×14＝224 姿势和 16×3×12＝576 动画样本。衣服自身出框、眼睛及五个脸部样点遮挡、非有限坐标和新增整猫取景回归均为 0；每眼至少 71 个有效三角投影样本。正常蒙皮整猫的既有底部裁切与底版相同：曹喵德、司马喵懿、吕布丁的 `strike / thrust / hurt / dash` 共 12 个姿势，三者 `strike` 共 36 个动画样本。有限采样不能证明所有连续时刻完全无交叉；方法和边界见 [QA 摘要](../src/art3d/parts/reviews/body-regalia/qa-summary.md)。
 
