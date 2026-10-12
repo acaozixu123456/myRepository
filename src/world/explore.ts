@@ -8,7 +8,7 @@ import { applyPose } from '../art3d/pose';
 import { lookOf, unitInfo } from '../data/units';
 import type { WorldView } from './engine';
 import type { AABB, Street } from './street';
-import { CELL, SAFE_R, blockedGrid, inSafeZone } from './levels';
+import { CELL, COVER_R, SAFE_R, blockedGrid, coverSpotsOf, inSafeZone } from './levels';
 import { glowTex } from './tex';
 import { glowMat, std } from './kit';
 
@@ -81,6 +81,33 @@ function markSprite(ch: string, color: string): THREE.Sprite {
   return s;
 }
 
+/** 掩体外观：每个场景换一种皮（纸箱堆 / 货箱 / 木桶 / 草丛 / 云团 / 屏风），都是低模，躲在里面能看出来是「躲」 */
+function coverMesh(theme: string | undefined): THREE.Group {
+  const g = new THREE.Group();
+  const add = (m: THREE.Mesh, x: number, y: number, z: number, ry = 0) => { m.position.set(x, y, z); m.rotation.y = ry; m.castShadow = true; g.add(m); return m; };
+  const rnd = (i: number) => { const v = Math.sin(i * 91.7) * 43758.5; return v - Math.floor(v); };
+  if (theme === 'forest') {
+    for (let i = 0; i < 7; i++) { const r = 0.9 + rnd(i) * 0.6; add(new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), std(i % 3 ? '#3fa05a' : '#56bd6a', 0.9)), Math.cos(i * 0.9) * 1.7, r * 0.8, Math.sin(i * 0.9) * 1.7); }
+    for (let i = 0; i < 5; i++) add(new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 5), glowMat(i % 2 ? '#ffd0e8' : '#fff4a0')), Math.cos(i * 1.7) * 1.9, 1.5 + (i % 2) * 0.3, Math.sin(i * 1.7) * 1.9);
+  } else if (theme === 'cloud') {
+    for (let i = 0; i < 7; i++) { const r = 0.9 + rnd(i + 3) * 0.7; const m = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 1, transparent: true, opacity: 0.92, emissive: '#cfe0ff', emissiveIntensity: 0.25 })); add(m, Math.cos(i * 0.95) * 1.6, r * 0.75, Math.sin(i * 0.95) * 1.6); }
+  } else if (theme === 'palace') {
+    for (let i = 0; i < 4; i++) { const m = new THREE.Mesh(new THREE.BoxGeometry(1.5, 3.0, 0.14), std(i % 2 ? '#c8352c' : '#a32420', 0.6)); add(m, (i - 1.5) * 1.35, 1.6, (i % 2) * 0.55, (i % 2 ? 0.45 : -0.45)); const f = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.14, 0.2), std('#e8c15a', 0.4, 0.6)); add(f, (i - 1.5) * 1.35, 3.1, (i % 2) * 0.55, (i % 2 ? 0.45 : -0.45)); }
+  } else if (theme === 'harbor') {
+    for (let i = 0; i < 5; i++) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.7, 1.4, 12), std('#7a4a2a', 0.8)); add(b, Math.cos(i * 1.3) * 1.6, 0.7, Math.sin(i * 1.3) * 1.6); const ring = new THREE.Mesh(new THREE.TorusGeometry(0.67, 0.05, 6, 16), std('#3a3a44', 0.4, 0.6)); ring.rotation.x = Math.PI / 2; add(ring, Math.cos(i * 1.3) * 1.6, 0.9, Math.sin(i * 1.3) * 1.6); }
+  } else if (theme === 'market') {
+    for (let i = 0; i < 5; i++) { const w = 1.2 + rnd(i) * 0.7; add(new THREE.Mesh(new THREE.BoxGeometry(w, w * 0.9, w), std(i % 2 ? '#c08a52' : '#a8723e', 0.8)), Math.cos(i * 1.3) * 1.6, w * 0.45, Math.sin(i * 1.3) * 1.6, i * 0.5); }
+    add(new THREE.Mesh(new THREE.SphereGeometry(0.55, 8, 6), std('#e8d2a0', 0.9)), 0.4, 0.5, 0.2);
+  } else {
+    // 街区：纸箱堆（纸箱街嘛）
+    for (let i = 0; i < 5; i++) { const w = 1.2 + rnd(i + 9) * 0.8; add(new THREE.Mesh(new THREE.BoxGeometry(w, w * 0.8, w), std(i % 2 ? '#c9955a' : '#b5834a', 0.85)), Math.cos(i * 1.3) * 1.5, w * 0.4, Math.sin(i * 1.3) * 1.5, i * 0.6); }
+    add(new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.7, 1.0), std('#d6a468', 0.85)), 0.2, 1.1, 0.1, 0.4);
+  }
+  const ring = new THREE.Mesh(new THREE.RingGeometry(COVER_R - 0.12, COVER_R, 40), new THREE.MeshBasicMaterial({ color: 0xbaffd0, transparent: true, opacity: 0.28, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+  ring.rotation.x = -Math.PI / 2; ring.position.y = 0.08; g.add(ring);
+  return g;
+}
+
 export class Explorer {
   readonly root = new THREE.Group();
   private team: Actor[] = [];
@@ -112,11 +139,17 @@ export class Explorer {
     this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = 0.4; this.root.add(this.ring);
     this.marker = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.7, 24), new THREE.MeshBasicMaterial({ color: 0xff7ad9, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }));
     this.marker.rotation.x = -Math.PI / 2; this.marker.position.y = 0.42; this.root.add(this.marker);
+    this.covers = coverSpotsOf(street.level);
+    for (const [x, z] of this.covers) { const m = coverMesh(street.level.theme); m.position.set(x, 0.32, z); m.rotation.y = (x * 7 + z * 3) % 6.28; this.root.add(m); }
     this.setTeam(teamIds);
     wv.onTap = (p) => this.tap(p);
   }
 
   // ---------- 探路技：冲撞 / 潜行 / 灵视（谁能放由队伍里的职业决定） ----------
+  private covers: [number, number][] = [];
+  private inCover = false;
+  /** 潜行中或躲在掩体里：敌人的视野缩到潜行水平，从这里出手算偷袭 */
+  get hiding(): boolean { return this.sneakT > 0 || this.inCover; }
   private sneakT = 0;
   /** 刚进场景 / 被击退回出生点后的几秒宽限：敌人不会立刻发现你 */
   private grace = 4;
@@ -150,6 +183,7 @@ export class Explorer {
   private tickSkills(dt: number) {
     for (const k of Object.keys(this.cd) as ExploreSkill[]) this.cd[k] = Math.max(0, this.cd[k] - dt);
     this.grace = Math.max(0, this.grace - dt);
+    { const lp = this.leader.pos; const now = this.covers.some(([x, z]) => Math.hypot(x - lp.x, z - lp.z) < COVER_R); if (now && !this.inCover) this.hooks.note?.('🫣 躲进掩体：敌人很难发现你，贴近可偷袭'); this.inCover = now; }
     this.sneakT = Math.max(0, this.sneakT - dt); this.revealT = Math.max(0, this.revealT - dt);
     // 冲撞：沿朝向冲 7 个单位，撞到的敌人晕 4 秒（我方可以偷袭）
     if (this.dashT > 0) {
@@ -509,7 +543,7 @@ export class Explorer {
     const toL = Math.atan2(lp.x - gp.x, lp.z - gp.z);
     const angTo = Math.abs(Math.atan2(Math.sin(toL - e.face), Math.cos(toL - e.face)));
     if (e.stun > 0) { e.stun -= dt; if (e.stun <= 0) { e.state = 'idle'; e.lost = 0; } }
-    const sneaking = this.sneakT > 0;
+    const sneaking = this.hiding;
     if (e.state === 'idle' && !this.busy && e.cooldown <= 0 && this.grace <= 0) {
       const range = sneaking ? SIGHT_SNEAK : SIGHT;
       const seen = dist < range && angTo < HALF_FOV && this.clear(gp, lp);
@@ -579,7 +613,7 @@ export class Explorer {
     const lp = this.leaderPos, gp = e.group.position;
     const toL = Math.atan2(lp.x - gp.x, lp.z - gp.z);
     const behind = Math.abs(Math.atan2(Math.sin(toL - e.face), Math.cos(toL - e.face))) > 1.35;
-    const unaware = e.state === 'idle' && (behind || this.sneakT > 0);
+    const unaware = e.state === 'idle' && (behind || this.hiding);
     void this.startEncounter(e, e.stun > 0 || unaware ? 'player' : 'none');
     return true;
   }
@@ -590,7 +624,7 @@ export class Explorer {
     const lp = this.leaderPos, gp = e.group.position;
     const toL = Math.atan2(lp.x - gp.x, lp.z - gp.z);
     const behind = Math.abs(Math.atan2(Math.sin(toL - e.face), Math.cos(toL - e.face))) > 1.35;
-    return e.stun > 0 || (e.state === 'idle' && (behind || this.sneakT > 0));
+    return e.stun > 0 || (e.state === 'idle' && (behind || this.hiding));
   }
 
   /** 走进玩法入口：世界暂停，等小游戏结束；之后冷却一会儿，免得一出来又被触发 */

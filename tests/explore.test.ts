@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { relocateOutOfSafe } from '../src/game/explore';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
-import { LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
+import { COVER_R, LEVELS, SAFE_R, coverSpotsOf, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 import { PROPS } from '../src/world/props';
 
@@ -284,5 +284,24 @@ describe('隐藏宝箱（灵视 / 死角）', () => {
     expect(b.fish).toBeGreaterThanOrEqual(a.fish * 2 - 1);
     expect(b.catnip).toBeGreaterThan(0);
     expect(b.bells).toBeGreaterThan(0);
+  });
+});
+
+describe('掩体（草丛 / 纸箱堆…）', () => {
+  it('每个场景每只野怪附近一个：5.5~9.5 米、走得到、不在碰撞盒 / 安全区里，位置固定', () => {
+    for (const L of Object.values(LEVELS)) {
+      const spots = coverSpotsOf(L);
+      expect(coverSpotsOf(L)).toBe(spots);
+      expect(spots.length, L.id).toBeGreaterThanOrEqual(Math.floor(L.enemySpots.length * 0.6));
+      const { N, seen } = reachableCells(L);
+      const cols = levelColliders(L);
+      for (const [x, z] of spots) {
+        expect(seen[Math.floor(z + L.half) * N + Math.floor(x + L.half)], `${L.id} 走不到掩体`).toBe(1);
+        for (const c of cols) expect(x >= c.x0 && x <= c.x1 && z >= c.z0 && z <= c.z1, `${L.id} 掩体在碰撞盒里`).toBe(false);
+        expect(inSafeZone(L, x, z)).toBe(false);
+        expect(L.enemySpots.some(([ex, ez]) => { const d = Math.hypot(ex - x, ez - z); return d >= 5.5 && d <= 9.5; })).toBe(true);
+      }
+    }
+    expect(COVER_R).toBeGreaterThan(2);
   });
 });

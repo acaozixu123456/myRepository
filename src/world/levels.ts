@@ -185,3 +185,33 @@ export function hiddenSpotsOf(L: LevelDef): [number, number][] {
   hiddenCache.set(L.id, out);
   return out;
 }
+
+export const COVER_R = 3;
+const coverCache = new Map<string, [number, number][]>();
+/** 掩体（纸箱堆 / 草丛 / 货箱 / 木桶 / 云团 / 屏风，按场景换皮）：每只野怪附近 5~9 米处一个，让玩家有地方躲着摸过去。
+ *  可走、不挡路；躲在里面（半径 COVER_R）敌人的视野缩到潜行水平，从里面出手算偷袭。位置固定。 */
+export function coverSpotsOf(L: LevelDef): [number, number][] {
+  const hit = coverCache.get(L.id);
+  if (hit) return hit;
+  const { N, grid, seen } = reachableCells(L);
+  const taken: [number, number][] = [L.spawn, L.bossSpot, L.npcSpot, ...L.chestSpots, ...herbsOf(L), ...hiddenSpotsOf(L), ...poisOf(L).map((p): [number, number] => [p.x, p.z])];
+  let seed = 7; for (const ch of L.id) seed = (seed * 33 + ch.charCodeAt(0)) >>> 0;
+  const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  const out: [number, number][] = [];
+  for (const [ex, ez] of L.enemySpots) {
+    const cand: [number, number][] = [];
+    for (let cz = 4; cz < N - 4; cz++) for (let cx = 4; cx < N - 4; cx++) {
+      if (!seen[cz * N + cx]) continue;
+      const x = cx + 0.5 - L.half, z = cz + 0.5 - L.half, d = Math.hypot(x - ex, z - ez);
+      if (d < 5.5 || d > 9.5 || inSafeZone(L, x, z)) continue;
+      let blocked = 0;
+      for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
+      if (blocked > 4) continue; // 开阔处，别卡在墙角
+      if (taken.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < 5) || out.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < 8)) continue;
+      cand.push([x, z]);
+    }
+    if (cand.length) out.push(cand[Math.floor(rnd() * cand.length)]);
+  }
+  coverCache.set(L.id, out);
+  return out;
+}
