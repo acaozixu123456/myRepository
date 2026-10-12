@@ -4,6 +4,7 @@ import { initLive, liveSettings } from '../ui/live';
 import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
+import { LAND_CSS } from '../ui/landcss';
 import { infoDialogHtml } from '../ui/info';
 import { STORY_CSS, playStoryOnce } from './story';
 import { sfx, sfxState } from './sfx';
@@ -40,7 +41,7 @@ import { fmt } from '../ui/components';
 import { homePeriod, makeHomeScenery } from '../fx/bg';
 
 const style = document.createElement('style');
-style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS + EXPLORE_CSS + '.nav{grid-template-columns:repeat(6,1fr)}.nav button{font-size:12px}';
+style.textContent = KIT_CSS + SCREEN_CSS + STORY_CSS + CAMPAIGN_CSS + GUIDE_CSS + DEX_CSS + PAY_CSS + SOCIAL_CSS + DAILY_CSS + EVENTS_CSS + EXPLORE_CSS + '.nav{grid-template-columns:repeat(6,1fr)}.nav button{font-size:12px}' + LAND_CSS;
 document.head.appendChild(style);
 
 const storage = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -102,6 +103,12 @@ app.innerHTML = `<div class="app" id="root">
     <button data-act="nav" data-to="bag">${icon('bag', 30)}背包</button>
   </nav></div>`;
 const root = document.getElementById('root')!;
+let scrollReset = false;
+// 横屏：窗口够宽就切到横屏布局（landcss.ts），转屏 / 缩放窗口时自动切换
+const applyLayout = () => { root.classList.toggle('land', innerWidth >= 640 && innerWidth / innerHeight >= 1.12); window.dispatchEvent(new Event('layoutchange')); };
+applyLayout();
+window.addEventListener('resize', applyLayout);
+window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
 let scenePeriod = '';
 const applyScenery = () => {
   const p = homePeriod();
@@ -126,6 +133,7 @@ const ctx: AppCtx = {
     setTimeout(() => t.remove(), 1950);
   },
   go(screen: ScreenId) {
+    scrollReset = ctx.screen !== screen;
     ctx.screen = screen;
     root.querySelectorAll('.screen').forEach((e) => e.classList.toggle('on', (e as HTMLElement).dataset.screen === screen));
     root.querySelectorAll('#nav button').forEach((b) => b.classList.toggle('on', (b as HTMLElement).dataset.to === screen));
@@ -150,18 +158,26 @@ const ctx: AppCtx = {
   },
   refresh() {
     syncQuestDay();
+    // 重绘页面时保留滚动位置（买东西 / 升级后不再跳回最上面）；切换页面时才回到顶部
+    const keep = !scrollReset; scrollReset = false;
+    const put = (name: string, html: string) => {
+      const el = root.querySelector(`[data-screen=${name}]`) as HTMLElement;
+      const saved = keep ? [...el.querySelectorAll('.scroll')].map((x) => x.scrollTop) : [];
+      el.innerHTML = html;
+      el.querySelectorAll('.scroll').forEach((x, i) => { (x as HTMLElement).scrollTop = saved[i] ?? 0; });
+    };
     const scr = ctx.screen;
     if (scr === 'home') updateHome(ctx);
-    else if (scr === 'lineup') (root.querySelector('[data-screen=lineup]') as HTMLElement).innerHTML = lineupHtml(ctx);
-    else if (scr === 'gacha') (root.querySelector('[data-screen=gacha]') as HTMLElement).innerHTML = gachaHtml(ctx);
-    else if (scr === 'campaign') (root.querySelector('[data-screen=campaign]') as HTMLElement).innerHTML = campaignHtml(ctx);
-    else if (scr === 'bag') (root.querySelector('[data-screen=bag]') as HTMLElement).innerHTML = bagHtml(ctx);
-    else if (scr === 'quests') (root.querySelector('[data-screen=quests]') as HTMLElement).innerHTML = questsHtml(ctx);
-    else if (scr === 'social') { (root.querySelector('[data-screen=social]') as HTMLElement).innerHTML = socialHtml(ctx); const lg = root.querySelector('.chat-log') as HTMLElement | null; if (lg) { lg.scrollTop = lg.scrollHeight; markRead(state); } }
-    else if (scr === 'events') (root.querySelector('[data-screen=events]') as HTMLElement).innerHTML = eventsHtml(ctx);
-    else if (scr === 'pets') (root.querySelector('[data-screen=pets]') as HTMLElement).innerHTML = petsHtml(ctx);
-    else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
-    else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
+    else if (scr === 'lineup') put('lineup', lineupHtml(ctx));
+    else if (scr === 'gacha') put('gacha', gachaHtml(ctx));
+    else if (scr === 'campaign') put('campaign', campaignHtml(ctx));
+    else if (scr === 'bag') put('bag', bagHtml(ctx));
+    else if (scr === 'quests') put('quests', questsHtml(ctx));
+    else if (scr === 'social') { put('social', socialHtml(ctx)); const lg = root.querySelector('.chat-log') as HTMLElement | null; if (lg) { lg.scrollTop = lg.scrollHeight; markRead(state); } }
+    else if (scr === 'events') put('events', eventsHtml(ctx));
+    else if (scr === 'pets') put('pets', petsHtml(ctx));
+    else if (scr === 'pay') put('pay', payHtml(ctx));
+    else if (scr === 'shop') put('shop', shopHtml(ctx));
     else if (scr === 'explore') refreshExploreHud(ctx);
     updateGuide(ctx);
   },

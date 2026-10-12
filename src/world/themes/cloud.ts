@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { mulberry } from '../../fx/util';
 import { glowMat, std } from '../kit';
-import { glowTex, mk, waterGlint } from '../tex';
+import { aiTex, glowTex, mk, waterGlint } from '../tex';
 import type { LevelDef } from '../levels';
 import type { Street } from '../street';
 import { atmosOf } from '../atmos';
@@ -50,7 +50,8 @@ function islet(rnd: () => number, s: number): THREE.Group {
 export function buildCloud(L: LevelDef): Street {
   const g = new THREE.Group(); const A = atmosOf(L.mood); const rnd = mulberry(505);
   // ---- 岛面 / 岛底 ----
-  const gt = grassTex(); gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(5, 5);
+  const cc0 = aiTex('cc0_grass_005'); // ambientCG Grass005（CC0）
+  const gt: THREE.Texture = cc0 ?? grassTex(); gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(cc0 ? 4 : 5, cc0 ? 4 : 5);
   const top = new THREE.Mesh(new THREE.CircleGeometry(ISLE_R + 1.2, 64), new THREE.MeshStandardMaterial({ map: gt, roughness: 0.95 })); top.rotation.x = -Math.PI / 2; top.position.y = 0.3; top.receiveShadow = true; g.add(nm(top));
   const rim = new THREE.Mesh(new THREE.CylinderGeometry(ISLE_R + 1.2, ISLE_R + 1.6, 1.6, 64, 1, true), std('#e8e0d4', 0.85)); rim.position.y = -0.5; g.add(nm(rim));
   const prof: THREE.Vector2[] = []; for (let i = 0; i <= 12; i++) { const t = i / 12; prof.push(new THREE.Vector2((ISLE_R + 1.6) * Math.pow(1 - t, 0.8) * (0.86 + rnd() * 0.28), -1.3 - t * 38)); }

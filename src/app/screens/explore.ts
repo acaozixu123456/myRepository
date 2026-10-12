@@ -92,7 +92,7 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 .xfight{position:absolute;left:50%;margin-left:-70px;bottom:104px;z-index:4;width:140px;padding:12px 8px;border-radius:999px;border:3px solid #fff;background:linear-gradient(#ff7a8a,#e0344f);color:#fff;font:900 20px var(--f-d,inherit);box-shadow:0 0 22px rgba(255,70,100,.75),0 4px 0 rgba(0,0,0,.3);animation:xfightPulse 1s ease-in-out infinite;touch-action:manipulation}
 .xskills{position:absolute;left:10px;bottom:236px;z-index:4;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .xsk{position:relative;display:flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border-radius:999px;border:2px solid rgba(255,255,255,.85);background:rgba(30,22,52,.72);color:#fff;font:800 13px var(--f-d,inherit);backdrop-filter:blur(3px);touch-action:manipulation;overflow:hidden;box-shadow:0 3px 0 rgba(0,0,0,.35)}
-.xsk .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(#ffd27a,#f0a22e);font-size:19px}
+.xsk .ic{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:radial-gradient(#fff6dc,#ffd27a)}.xsk .ic .ic{display:block}
 .xsk small{display:block;font-weight:700;font-size:10.5px;opacity:.85}
 .xsk .cdm{position:absolute;inset:0;background:rgba(0,0,0,.55);transform-origin:left}
 .xsk.off{opacity:.38;filter:grayscale(1)}.xsk.on{border-color:#7ff0ff;box-shadow:0 0 14px #7ff0ff}
@@ -153,9 +153,9 @@ function fightLabel() {
 
 // ---------- 探路技按钮 ----------
 const SK_META: Record<ExploreSkill, { ic: string; name: string; key: string; tip: string }> = {
-  dash: { ic: '💨', name: '冲撞', key: 'q', tip: '向前冲 7 米，撞晕沿途敌人' },
-  sneak: { ic: '🤫', name: '潜行', key: 'e', tip: '8 秒内敌人更难发现你' },
-  reveal: { ic: '👁️', name: '灵视', key: 'r', tip: '显出隐藏宝箱' },
+  dash: { ic: 'dash', name: '冲撞', key: 'q', tip: '向前冲 7 米，撞晕沿途敌人' },
+  sneak: { ic: 'sneak', name: '潜行', key: 'e', tip: '8 秒内敌人更难发现你' },
+  reveal: { ic: 'eye', name: '灵视', key: 'r', tip: '显出隐藏宝箱' },
 };
 let skSig = '';
 function refreshSkills() {
@@ -165,7 +165,7 @@ function refreshSkills() {
   const sig = parts.map(({ k, st }) => `${k}${st.owner?.id ?? '-'}${Math.ceil(st.cd * 4)}${st.on > 0 ? 1 : 0}`).join('|');
   if (sig === skSig) return;
   skSig = sig;
-  host.innerHTML = parts.map(({ k, st }) => { const m = SK_META[k]; const off = !st.owner; return `<button class="xsk ${off ? 'off' : ''} ${st.on > 0 ? 'on' : ''}" data-act="x-skill" data-k="${k}" title="${m.tip}"><span class="ic">${m.ic}</span><span>${m.name}<kbd>${m.key.toUpperCase()}</kbd><small>${st.owner ? esc(st.owner.name) : '队里没有' + (k === 'dash' ? '先锋 / 守护' : k === 'sneak' ? '刺客 / 神射' : '谋士 / 医者')}</small></span>${st.cd > 0 ? `<i class="cdm" style="transform:scaleX(${(st.cd / st.max).toFixed(2)})"></i>` : ''}</button>`; }).join('');
+  host.innerHTML = parts.map(({ k, st }) => { const m = SK_META[k]; const off = !st.owner; return `<button class="xsk ${off ? 'off' : ''} ${st.on > 0 ? 'on' : ''}" data-act="x-skill" data-k="${k}" title="${m.tip}"><span class="ic">${icon(m.ic, 28)}</span><span>${m.name}<kbd>${m.key.toUpperCase()}</kbd><small>${st.owner ? esc(st.owner.name) : '队里没有' + (k === 'dash' ? '先锋 / 守护' : k === 'sneak' ? '刺客 / 神射' : '谋士 / 医者')}</small></span>${st.cd > 0 ? `<i class="cdm" style="transform:scaleX(${(st.cd / st.max).toFixed(2)})"></i>` : ''}</button>`; }).join('');
 }
 function xnote(ctx: AppCtx, text: string) {
   const host = ctx.root.querySelector('[data-screen="explore"]');

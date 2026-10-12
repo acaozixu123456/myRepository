@@ -9,6 +9,7 @@ git checkout origin/claude/awesome-babbage-ygba4h -- docs/CODEX_QUEUE.md docs/AR
 然后读本文件「当前任务」与「审核意见」，按里面的指示做。**不要停止任务**：队列做空了就去看「候补」，候补也空了就每 30 分钟回来看一次。
 
 ## 规则（长期有效）
+0. **素材优先找现成的**（2026-10-12 起）：图标 / 贴图 / 贴花 / 音效等先去公开资源里找——[ambientCG](https://ambientcg.com/)、[Poly Haven](https://polyhaven.com/)（CC0 贴图）、[Kenney](https://kenney.nl/) / [OpenGameArt](https://opengameart.org/)（CC0 游戏素材）、[Iconify](https://iconify.design/) 里的 Noto / Fluent 等图标集；`curl` 经代理可直接访问。许可只收 **CC0 / MIT / Apache-2.0**（CC-BY 要写署名），**登记到 `docs/CREDITS.md`**（来源、许可、文件）。找不到合适的再自己生成 / 绘制，并在 PR 里写明「搜过哪些来源、为什么不合适」。
 1. 主分支 `claude/awesome-babbage-ygba4h`，PR 的 base 也是它；分支名 `codex/<类别>-<简短英文>`；一批一个 PR，PR 描述贴图。
 2. 只改任务指定的文件范围（见各工作单）；不改引擎文件、不改 `AGENTS.md`、不改本文件的「当前任务」与「审核意见」两节（状态表在各自的 PROGRESS 文件里更新）。
 3. 提交前 `npm run typecheck && npm test` 必须通过。
