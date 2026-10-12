@@ -4,6 +4,28 @@
 「使用者」按稀有度排序（SP > UR > SSR > SR > 杂兵）；**优先做被高稀有度英雄使用的部件**。
 一个 PR 做同一文件里的 3~6 个相关部件即可（例如「武器：长剑 / 双股剑 / 短刀 / 飞刀 / 双短刀」）。
 
+## 当前送审 · SSR 魏族首批专属战器
+
+[PR #121](https://github.com/acaozixu123456/myRepository/pull/121)，分支 `codex/3d-heroes-wei-icons`，base `claude/awesome-babbage-ygba4h`。三件专属 weapon 同在 `parts/hero-wei-weapons.ts`，只新增三位 SSR 的 `HERO_PARTS` 映射；**第1轮待审、通过0**。内部候选 C1–C5 不增加 Claude 审核轮次。
+
+| 英雄 / ID | 专属覆盖 | 状态 | 审核轮次 | 逻辑网格（含描边算1） |
+| --- | --- | --- | ---: | ---: |
+| 夏侯墩 `wei_xiahoudun` | 棕木细杆 / 冷白柳叶钢刃 / 金座 / 魏蓝短穗 | 待审 | 1 | 14 |
+| 许虎痴 `wei_xuhuchi` | 长卵木棒 / 两道金箍 / 七枚短钝骨齿 / 蓝握段 | 待审 | 1 | 16 |
+| 张喵辽 `wei_zhangliao` | 微弯银双刃 / 蓝柄 / 银护口，真实 `offhand` | 待审 | 1 | 20（主10 + 副10） |
+
+参考三只 `assets/heroes/ref/<id>.jpg`（真实实看）、ART_PROMPTS 与现有契约，仅锁定造型和配色；保留夏侯最新已通过的眼罩。张辽头饰沿用 `helmetGeneral` 将军盔红缨，原 JPG 蓝饰与文字设定红缨的差异已记录。通用注册表不动；最新主线三 SP / 六 UR 的九项覆盖全部保留，现共十二项。
+
+最终生产两源 SHA、方法和限制见 [交付说明](../src/art3d/parts/reviews/heroes-wei-icons/README.md)。逻辑网格14/16/20，实际含描边 Mesh26/32/36；最大球 / 圆柱分段12/16/12，缓存 `toon/solid`、根对象 identity / 正尺度，无新纹理或材质契约。
+
+真实 `npm run shots3d`：[idle / windup / strike](../src/art3d/parts/reviews/heroes-wei-icons/after-poses.png)、[190画布](../src/art3d/parts/reviews/heroes-wei-icons/after-190px.png)、[背面](../src/art3d/parts/reviews/heroes-wei-icons/after-rear.png)、[最新 f4 前后原尺寸对照](../src/art3d/parts/reviews/heroes-wei-icons/before-after-190px.png)；[正常十猫战斗](../src/art3d/parts/reviews/heroes-wei-icons/battle.webp) 为实际 Player/advance 六帧的 quiet00，无损 WebP。拍摄基线为明确 f4 blobs，实际工作树已 apply f4 merge；63输入前后稳定，照片五件均 <500000B。战斗 Google 字体隧道失败及 favicon404 原样记录，pageErrors 为空，不冒称全部浏览器零告警。
+
+[独立 QA](../src/art3d/parts/reviews/heroes-wei-icons/qa/qa-summary.md)：89 模型 finite；86 非目标 geometry/material/skin 指纹逐项相同。13组 before/after 配对姿势（26案例）中实际眼白 / 瞳孔 / 鼻 / 活动嘴面共20116投影点，武器遮挡为0；这是有限姿势的武器专查，不把眼罩等原配饰纳入结论。夏侯点名下杆 / 握段 / 尾饰新增穿头见证已消除。张辽既有握段 / 根部接头与后颅接触保留；八条严格边界见证在浮点阈值内如实记录。张辽盔红缨的旧上沿裁切 idle .08514 / windup .09527 与 stock 相同。有限三角裁剪 / 边界见证不证明全部连续动画或布尔体积相等。
+
+根在已 apply 最新主线 `f4b3c0c9907dc5b0f5a7315a1c8578de7567a057` 的最终 C5 源上实际执行 `npm run typecheck && npm test`，整体退出0，**83测试文件 /1118测试通过**；命令11:47:53 UTC，Vitest11:48:02，66.99秒。[完整日志](../src/art3d/parts/reviews/heroes-wei-icons/required-checks-final-candidate05-f4.log)。拍摄和 QA 源 SHA 与测试源相同，后续交付只增文档和图片。
+
+最不满意：张辽蓝柄 / 银护口在190画布下细节仍小；正常战斗长枪与骨棒会被队友遮挡。#107/#118 专属、#123背卷 / 旌旗、#126/#128 配饰等已通过并合并；蜀 SSR #124、轻兵 SSR #129、旗爪两面 #130 由原 owner 跟进。周喵瑜古琴按审核要求跳过；2D保持停止。历史送审文字仅表示原时点。初始第0轮认领另存于本批审图目录，不当作当前状态。
+
 ## 武器（`src/art3d/parts/weapons.ts`）
 
 武器第 2 批：`codex/3d-weapon-blades`，四个新部件第 1 轮，加上 `herbs` / `fan` 按 #89 建议追加细节的第 2 轮，共 6 个部件，已在 #91 通过并合并。内部候选调整不增加审核轮次。

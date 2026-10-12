@@ -1,0 +1,91 @@
+{
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "pairedConditionCount": 13,
+  "normalBakedModelCasesPerProbe": 26,
+  "cases": {
+    "wei_xiahoudun": [
+      {
+        "pose": "idle",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "windup",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "strike",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "windup",
+        "t": 2.4,
+        "phase": 0,
+        "yaw": 32
+      }
+    ],
+    "wei_xuhuchi": [
+      {
+        "pose": "idle",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "windup",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "strike",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "windup",
+        "t": 2.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "windup",
+        "t": 0.4,
+        "phase": 1.5707963267948966,
+        "yaw": 32
+      }
+    ],
+    "wei_zhangliao": [
+      {
+        "pose": "idle",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "windup",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "strike",
+        "t": 0.4,
+        "phase": 0,
+        "yaw": 32
+      },
+      {
+        "pose": "windup",
+        "t": 2.4,
+        "phase": 0,
+        "yaw": 32
+      }
+    ]
+  }
+}

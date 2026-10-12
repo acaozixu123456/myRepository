@@ -1,0 +1,364 @@
+{
+  "file": "before-after-190px.png",
+  "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/before-after-190px.png",
+  "dimensions": [
+    1408,
+    768
+  ],
+  "bytes": 198199,
+  "sha256": "19edbe3d90e6988629d62ed29d98179718a2c05e75981f398ecfc8a221a72058",
+  "nativeProofPixelCount": 742140,
+  "all18CanvasBlocksRGBExact": true,
+  "technicalLayoutOnly": true,
+  "baselineCommit": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "sharedPoseTime": 0.4,
+  "sharedYawDegrees": 32,
+  "sourceHashes": {
+    "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png": "41a80401f48ab7be1af0019fbc9d18dba7bc62185ceb1001dbe2f3cb6e60ba14",
+    "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png": "bbf52d0f6b99bb403b53163d350defdb8f11c13518954582915262040e3efc9e"
+  },
+  "blocks": [
+    {
+      "phase": "stock-f4",
+      "id": "wei_xiahoudun",
+      "pose": "idle",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        6,
+        6,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        24,
+        88,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "1a7881562a89f1286bcc7b4e6791c9f00e51b42a6675cfa93b50e81470920616"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_xiahoudun",
+      "pose": "windup",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        225,
+        6,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        243,
+        88,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "1dde7427e0c774de7e575d2b1a48645fc1c61d6c08140076749a1d0eb60ef8d9"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_xiahoudun",
+      "pose": "strike",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        444,
+        6,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        462,
+        88,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "3010f43d55aab230b5b309a228a34cf37dc0e50cf04efcd401b757f3be36f798"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_xiahoudun",
+      "pose": "idle",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        6,
+        6,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        729,
+        88,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "ae82788bf00782ce64b047faa3450d61d91199cef9630f1ff54a03a7d8509b25"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_xiahoudun",
+      "pose": "windup",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        225,
+        6,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        948,
+        88,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "f0c0b8072237a03719367f79ef423c9b55cb5b25c55492d2ec835a418ebe7160"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_xiahoudun",
+      "pose": "strike",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        444,
+        6,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        1167,
+        88,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "0073d410540d20789605a31a4ec24ffa473da4a915f7ff462da103fcb87e898e"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_xuhuchi",
+      "pose": "idle",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        6,
+        200,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        24,
+        312,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "09c2bc95a5b2b43e92bfb9ee2df1be6c9ab4f0e1a6e6d7bf14db8a7869bcba4b"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        225,
+        200,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        243,
+        312,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "cdde8dbe35a19afacb52ac4d62ff51a8bab8a8f43bd49c58a36965d41a96fc9f"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_xuhuchi",
+      "pose": "strike",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        444,
+        200,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        462,
+        312,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "d8af99e8b77f9a722cc9dfbfeb4d3dcf493ff478faa06203be400c59e4326dd8"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_xuhuchi",
+      "pose": "idle",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        6,
+        200,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        729,
+        312,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "56b31e7347046616e55656da2b9df5f1687bd806ec3982be2633f8999b6bf89d"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        225,
+        200,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        948,
+        312,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "0318b3a41cd45c790a561ddf6bc494f7f000f01ef232ac3a8bd44f20730c8129"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_xuhuchi",
+      "pose": "strike",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        444,
+        200,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        1167,
+        312,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "01702fc8a3bf3946366e3eb30b09aae0e8d2a662f8ade7bfa2a97c99d2487c27"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_zhangliao",
+      "pose": "idle",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        6,
+        394,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        24,
+        536,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "adc47a1576e6175262fb120a8f2eaf0a189395886630f0a57201e0a479fb3c44"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        225,
+        394,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        243,
+        536,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "b323547632d9eb401c3bec83e981a666a84cbddd5f9836de0ceacfc3c513821c"
+    },
+    {
+      "phase": "stock-f4",
+      "id": "wei_zhangliao",
+      "pose": "strike",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "sourceRectXYWH": [
+        444,
+        394,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        462,
+        536,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "a494c4c7fd3303cea2663a7de055316d4649e1277512665d7a1a34c9ba7359cb"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_zhangliao",
+      "pose": "idle",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        6,
+        394,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        729,
+        536,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "26cc1f07abc915eba9941c68232db81133ba74671a3748dc21e05355a7f25dfd"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        225,
+        394,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        948,
+        536,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "4a8af3999a6aff23f3f47f05b294434a4a4607bc5ef8aef78bde1297a7e2d15d"
+    },
+    {
+      "phase": "final-candidate05-f4",
+      "id": "wei_zhangliao",
+      "pose": "strike",
+      "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "sourceRectXYWH": [
+        444,
+        394,
+        217,
+        190
+      ],
+      "boardRectXYWH": [
+        1167,
+        536,
+        217,
+        190
+      ],
+      "sourceTileRGBSHA256": "5b8d07e22315b6aaa868b11d657ffaa166bb527c7db3bd44681198afffc5dc61"
+    }
+  ]
+}

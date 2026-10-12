@@ -1,0 +1,86 @@
+[
+  {
+    "file": "baseline-190px.png",
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+    "cwd": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree",
+    "command": "PORT=5187 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217'",
+    "port": 5187,
+    "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217",
+    "startedUTC": "2026-10-12T11:49:03.313273+00:00",
+    "completedUTC": "2026-10-12T11:49:12.350263+00:00",
+    "exitCode": 0,
+    "dimensions": [
+      1000,
+      700
+    ],
+    "bytes": 162194,
+    "sha256": "41a80401f48ab7be1af0019fbc9d18dba7bc62185ceb1001dbe2f3cb6e60ba14",
+    "devFixedAnimationT": 0.4,
+    "pageErrorsReported": [],
+    "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+    "baselineActualImmutableCommit": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057"
+  },
+  {
+    "file": "after-poses.png",
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-poses.png",
+    "cwd": "/workspace/three-worktrees/heroes-wei-icons",
+    "command": "PORT=5186 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-poses.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=300'",
+    "port": 5186,
+    "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=300",
+    "startedUTC": "2026-10-12T11:49:12.361364+00:00",
+    "completedUTC": "2026-10-12T11:49:15.817649+00:00",
+    "exitCode": 0,
+    "dimensions": [
+      1000,
+      823
+    ],
+    "bytes": 256116,
+    "sha256": "d4c028382bc17d7adc435629fdd403bfc5c80ded83b9708642bf159981567139",
+    "devFixedAnimationT": 0.4,
+    "pageErrorsReported": [],
+    "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+    "baselineActualImmutableCommit": null
+  },
+  {
+    "file": "after-190px.png",
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+    "cwd": "/workspace/three-worktrees/heroes-wei-icons",
+    "command": "PORT=5186 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217'",
+    "port": 5186,
+    "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217",
+    "startedUTC": "2026-10-12T11:49:15.822427+00:00",
+    "completedUTC": "2026-10-12T11:49:18.907101+00:00",
+    "exitCode": 0,
+    "dimensions": [
+      1000,
+      700
+    ],
+    "bytes": 163605,
+    "sha256": "bbf52d0f6b99bb403b53163d350defdb8f11c13518954582915262040e3efc9e",
+    "devFixedAnimationT": 0.4,
+    "pageErrorsReported": [],
+    "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+    "baselineActualImmutableCommit": null
+  },
+  {
+    "file": "after-rear.png",
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-rear.png",
+    "cwd": "/workspace/three-worktrees/heroes-wei-icons",
+    "command": "PORT=5186 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-rear.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle&yaw=180&w=217'",
+    "port": 5186,
+    "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle&yaw=180&w=217",
+    "startedUTC": "2026-10-12T11:49:18.911001+00:00",
+    "completedUTC": "2026-10-12T11:49:21.767424+00:00",
+    "exitCode": 0,
+    "dimensions": [
+      1000,
+      700
+    ],
+    "bytes": 51109,
+    "sha256": "bae192e0f73e4153e68e4ff5cb449e01ca3190c4e5a903846c97d598e67f1864",
+    "devFixedAnimationT": 0.4,
+    "pageErrorsReported": [],
+    "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+    "baselineActualImmutableCommit": null
+  }
+]

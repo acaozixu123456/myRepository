@@ -1,0 +1,77 @@
+{
+  "createdUTC": "2026-10-12T11:59:01.122203+00:00",
+  "candidate": 5,
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "actualCommandsAndExits": [
+    {
+      "command": "node /workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/run-model-smoke.mjs",
+      "actualExitCode": 0
+    },
+    {
+      "command": "node /workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/run-finite-probes.mjs",
+      "actualExitCode": 0
+    },
+    {
+      "command": "python /workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/named-lower-source-check.py",
+      "actualExitCode": 0
+    }
+  ],
+  "scripts": [
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/run-model-smoke.mjs",
+      "bytes": 5332,
+      "sha256": "018ed85cc0f3fc3612020f4dc6760dff9e84ed970f53a2e23db8665dd40ddb1e"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/model-smoke.ts",
+      "bytes": 11569,
+      "sha256": "e91f6737dd187fcf77ac7ce2af95d94530719de1ddd96c86fee612c1f1a14197"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/run-finite-probes.mjs",
+      "bytes": 3548,
+      "sha256": "edd4bd3c05fd823fc69646579c1dedf9d2a84a34b86604ad6e45790060e6a8da"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/face-probe.ts",
+      "bytes": 4516,
+      "sha256": "9c5f4a4546825bf179b0d04e3b49aee72835a7cba7b44364e44838764b7fff21"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/head-probe.ts",
+      "bytes": 9084,
+      "sha256": "e55e06dd7f4f0b1caedc3d59979c423d26867d02f3a882d04c2fd4615d22343a"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/named-lower-source-check.py",
+      "bytes": 4597,
+      "sha256": "8062a3a7de407b0fd3ece5c66fcc74aee2dfd9cc5bd1110ebec5916ca7ad0df8"
+    }
+  ],
+  "modelFingerprint": "Original automatic buildCat3D+bake, full transforms, geometry raw typed attribute/index bytes/groups/drawRange, materials and skeleton bind matrices; ignore UUID/randomphase. Both modes use actual f4 source apart from in-memory exact Git f4 heroes.ts baseline.",
+  "observationHook": "Only in-memory callback before original bake; capture actual source main/offhand meshes and skull/face transforms. Production bake or sources not bypassed or edited.",
+  "budgets": "Prebake main+actual userData.offhand, samectx double build; each primary counts once with child outline, finite positive transform and root identity, same object material cache, palette/look unchanged.",
+  "face": "12×12 projected samples inside actual front-facing triangles; transformed live eye bones indexed separately despite duplicate names; both smile halves use current actual smile Bone, mouth selected by current pose. Main/offhand depth with +z orthographic camera and yaw32. Compare face roles/valid counts and exact blocked sample keys between f4 and candidate.",
+  "skull": "Actual .62 head sphere triangle halfspaces, normal-expanded .028 skull outline; exact skeleton transforms and positive scale. Clip each source weapon triangle against both actual convex hulls, verify contact source points against normal-baked vertex positions.",
+  "newVertexWitnesses": "Scan every captured source vertex inside actual primary skull by>1e-6; strict outside-all-old-local-AABB points preserved. All points independently checked for local nearest box distance>1e-7, not only deepest point. No absence-to-volume-equivalence inference.",
+  "namedC4ToC5": "Static eight spear lower primary/outline source surfaces in same paw-owner coordinates compared to actual old stock-cylinder halfspaces/supporting envelope, with actual old side-Y range guard. No additional pose or yaw.",
+  "bounds": "Actual normal SkinnedMesh.getVertexPosition and matrixWorld, original FRAME[-2.2,2.2]x[-.25,3.6]; compare before/after excess and retain old plume crop.",
+  "poseConstructionCount": "Each mode builds three fresh automatic-baked cats for head probe and another three for face probe; each cat is evaluated at its4/5 prescribed poses. This is26 posed-case evaluations per probe, not26 separately constructed fresh cats per probe.",
+  "executionTimesAndWorkerHashes": {
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/probe-executions.json",
+    "bytes": 11184,
+    "sha256": "1a89a3ce6a4e1747d1ad814c2ba1c4a455c3b6ade565f9f3d656aa9b8ed242e1"
+  },
+  "sourceBefore": {
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-before.json",
+    "bytes": 9102,
+    "sha256": "dc388181c52f634e638c76a99aec4bffb2d8fe57b9f112b7cfeafd4ceefb508a"
+  },
+  "sourceAfter": {
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-after.json",
+    "bytes": 10423,
+    "sha256": "749f52ffbf28fde7c30fd9caa765e982b93d574dc132a119670d8086e714e155"
+  },
+  "historicC1ThroughC4Records": "Read-only; no reuse as new f4 results and no rewrites.",
+  "visualAndFullSuiteScope": "Handled by root/preview agent; this helper does not claim screenshot inspection or full tests."
+}

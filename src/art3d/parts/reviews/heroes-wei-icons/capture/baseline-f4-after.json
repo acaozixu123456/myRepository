@@ -1,0 +1,1218 @@
+{
+  "checkedUTC": "2026-10-12T11:49:31.843363+00:00",
+  "immutableCommit": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "fileCount": 242,
+  "allHashesExact": true,
+  "files": [
+    {
+      "path": "cat3d.html",
+      "sha256": "954358e0aca8e050c2c0dcf7eabddd34467aaa876acc5f9c29c08e6ed22ddb39",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/arenaFight.ts",
+      "sha256": "02a676a9a3b82fb72819626ffe287567045df7eae687f7f660913a4445707b8e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/audio.ts",
+      "sha256": "74f19e521bfae77aa7266545004c41ae4962cbfc173c158913744ec03f319b87",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/battleLoop.ts",
+      "sha256": "dc02156f2ed291adc29740badb0fda95f49f72dc732382c1e0f0a157e58f2a26",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/bgm.ts",
+      "sha256": "97ca646d57300b320facfeba5dd8d8035ae7c14e2cf8dcfd4c286e35d7ac0069",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/ctx.ts",
+      "sha256": "7886a17ba4bed38ac7624821caadf527f91de09a8f0beb556600a2541f2d51de",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/guide.ts",
+      "sha256": "912c35d71af256517542444bb4d63b042a4660001ed20a4212190301ef95f510",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/main.ts",
+      "sha256": "15edbb5641b4ba71a1776c9f2ad874cc41bd32b90712f27f4509001059dee818",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/arrows.ts",
+      "sha256": "11860b77fb92c31f1568c8e7b5a7d56074b56df3cf0c119de300dc2e2b18229a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/bag.ts",
+      "sha256": "306e02f41640de73ab749bdc48e516cb102efde5becf03ef3ca480f412c3676e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/boxcat.ts",
+      "sha256": "81d9586984fba8b53372aaa6f5bd997f25c559648be29ea3d715e49c04ea754c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/campaign.ts",
+      "sha256": "9ac546079ff6cf2b1e9f2ecb26932f50df2d3f5e55f0a4cba635a4f1b98630f2",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/clams.ts",
+      "sha256": "272f7307ef9f7b48ec3f407e239170a2a5d745fb7c10e1da4a9cc020b11c7813",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/claw.ts",
+      "sha256": "6f1249663ab7d9a6dd222cef0082fa899827642141ee1f4d1534edd85baf3a35",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/daily.ts",
+      "sha256": "5f689620d02b66db0bb9cd08b690c9317423a4389943f38d658fb5c444cd81a1",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/detail.ts",
+      "sha256": "4bba483006521f575f048e370d725648fb4ed4cc018999ed55f93e119d68a9c4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/dex.ts",
+      "sha256": "c4d1daeca262a7ab7b5d3836e1c5746009e76703db7f7b5aa04db9ae670bf3c3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/events.ts",
+      "sha256": "293db12214a5e951c07125bad7f0140ad01b64c902bb9dc39204b02c81a3446f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/explore.ts",
+      "sha256": "c4dbec76e63652429bbeeeb10b11fc83ffcf4a4e3bab7381b54364c8202ff556",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/firefly.ts",
+      "sha256": "e31c676f7126b82b1451474665dd8af73469eaee17bf4cc6128e123e3f22f78a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/fishing.ts",
+      "sha256": "02992e62e295d080b5c5adc70cb615f78749de533b2218c96fc8e71b055e143f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/gacha.ts",
+      "sha256": "1671c0199ec2e18ad31aa790236e295f2bee0505f31a2ccb1fc53a64d94e7cde",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/home.ts",
+      "sha256": "f3af4aba6bd94d8b4d23b940bc4115bdae4a6a1534072ebc04bdde7ed4922fef",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/kart.ts",
+      "sha256": "3f98667b615cef3ab4f7e5fd811840e24843f24449d9b22e4a7c2eef53958ad3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/kitchen.ts",
+      "sha256": "293f7001920d01a576c166274721a39bafe93612935266262ab378148d71a925",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/kite.ts",
+      "sha256": "9dd0e1725028f2c44848e67c363d4cc81513ea384b917dd1020bdf64ec55121c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/lanterns.ts",
+      "sha256": "b0eb650bdca5e49c97e7a24717f16eea58555dd53202a33745bc3416dc99de2b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/lineup.ts",
+      "sha256": "fa1a2dcf9908a4162db6cdcd0b0958b4bbbe8aedd98e1a92ce09e86a96befe7b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/mushroom.ts",
+      "sha256": "7f0e4f3a388e3eaa262e952826ab0910da9a3029896acd412633ac56cf800181",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/pay.ts",
+      "sha256": "295d1db0306c789454a46ebf30bf1321d96ce83982e7ce6dd90725c3f17b607b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/pets.ts",
+      "sha256": "2f11ada4299e95d29c70d43e77799102d56ebae3fae4fb32459928e5abe60ef3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/quests.ts",
+      "sha256": "00fd1f9df1f9ab54e480cc5d3d4e8447dfb001e9710879150a196bd006aa4c57",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/ramen.ts",
+      "sha256": "8a40729c2fac0e6a99f5044c08ff5b62686969933cf40ef7615f1f8d31c4b6ac",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/ringtoss.ts",
+      "sha256": "f9769fd4cd0caf986dc4817f6f369fecffc4e2ef713bf88ff66e845aa2e66790",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/shop.ts",
+      "sha256": "3a197e5643a0cb29de867bab87b24d54456287e39dce52b096bdc6977eb59422",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/sled.ts",
+      "sha256": "810c8a51bbe0b8283552f4cd30ebcaf9fb49984e3d5765cdd6f18930487c803e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/snowcat.ts",
+      "sha256": "476b83204d4e2573e08ea6c145fa5dc43f98c965a0d5ae99d7ca9a4bd5d93bcb",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/social.ts",
+      "sha256": "c3e2b598595fb52b2f91db089f01f5dad3400fec72d0694a5086b844ec497451",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/stoneskip.ts",
+      "sha256": "62a8f5060ed6e6c2d3c9777b640706100f0003b73dfcde26f5ebd5dc86f1ed97",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/surf.ts",
+      "sha256": "aaab128ba28b1586b759a11be3a19c8861a188b63f060707518e72b98de409f3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/sushi.ts",
+      "sha256": "9358b0092c2a25996b630ff25347a2233281d23614c6e402052a96d754a82f14",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/whack.ts",
+      "sha256": "1e690b8d2d87ef5a3cf9ec9b9c4c78d9d0fb4be034cf74ca796162646e3ac492",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screens/windchime.ts",
+      "sha256": "f41103955fe032b89391c2fd86cdba2a3a033f448aafa33158edcfdf794d4d46",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/screenscss.ts",
+      "sha256": "5b98b77dd254c3a13ef589ed8dc6105d708c6519f5995fd6b54b283eee607540",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/sfx.ts",
+      "sha256": "8865fdb3c6a12184455d0e216cddb9751f801871ab858fab8a9c2d0ea38e362b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/app/story.ts",
+      "sha256": "a3eea84e0a0ed06645a6a5308f0f88920d0921f9543b95d4bd06bd1d755c20f1",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/cat.ts",
+      "sha256": "fca2f17a741a325011d42223972852292c0e392e6daaf045e8c65bf336129eab",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/color.ts",
+      "sha256": "45fe93b21f6255da2b204fa5707b4754249261bbf844fcc96bed7b695aae7f23",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/garments.ts",
+      "sha256": "441b398880310fad1e81477c60b770cac91d93d4f72f5098a798cce963295267",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/gear.ts",
+      "sha256": "f3699c7154fbbf025f767929e64a1fd9792db8d37ad807e2f513b623bc321732",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/illust-index.ts",
+      "sha256": "083b98192cc96624cc7a75ad556657c6e1a42b0fdd5ae29645f09a533b6ce027",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/illust-rig.ts",
+      "sha256": "fbded8e056204ac52357c1e0049f07991294b87d76e3d0ceebb38afb67c2b1de",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/paint.ts",
+      "sha256": "dd669391ebbd48123397e584b554c8cdd952668d85241c3fea12952beb28c141",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/quad.ts",
+      "sha256": "54b975ad652bd1b11a4301ea24e78531b9251cdf61cdf96eecc1f0ea77d1ab6a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/types.ts",
+      "sha256": "3c1789ef07006cd1a13237c3937bffc3de3698d2062cd95b2afce020866bad1d",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art/weapons.ts",
+      "sha256": "472fa93d50094b42f5595cd368018cb6bc3b0d379dff74f0ffa03b247b0cf587",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/cat3d.ts",
+      "sha256": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/heroes.ts",
+      "sha256": "a85d34ff15a1fdf0c308414648c4b8ef907ea8da5c46b2d6fe161cafcfc16d98",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/mode.ts",
+      "sha256": "e78bdc28428b536eb2c35d18d99d2aa4243c65afb2adc71a3a1a27642583c78b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/back-fieldgear.ts",
+      "sha256": "87a4a0b05b51cf180ff64d1a2ba52f62282f128322432832dffa1f712326c3aa",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/back-scroll-banner.ts",
+      "sha256": "78b4a124dd58da56c6cc6302fbf1625f9443f2075f3c07b6d8bd04fbc530b5d9",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/back-sp-regalia.ts",
+      "sha256": "b356c5152e9608eec6a43337c0d4e56bcc09614e8026eb8ecbe57360d60b45e7",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/back.ts",
+      "sha256": "2d5304b9263b3d7768251c55205cda732383fba4cdf8e2e107294509cd541961",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/body-field-armor.ts",
+      "sha256": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/body-robes.ts",
+      "sha256": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/body.ts",
+      "sha256": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/extra-sp-marks.ts",
+      "sha256": "e9dcbe48bfc3ff908f0e66016a0b44174ce9627dbe5254ec3da44b834eaa7b9a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/extras-regalia.ts",
+      "sha256": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/extras-veterans.ts",
+      "sha256": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/extras.ts",
+      "sha256": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/headgear.ts",
+      "sha256": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/hero-ur-liu-swords.ts",
+      "sha256": "7e55df1b9525db50367fa8c4b9d9b9a4b13ccae0c41286e6e5913517eea91e38",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/hero-ur-regalia.ts",
+      "sha256": "c092409c3e60b8c09f9d7e3f55ea8cd7b9bb0668b56fd2d75cb23e7c9425dbb9",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/hero-ur-weapons.ts",
+      "sha256": "e5df9c239a404dd40fa9eee3de70de49da1a5b195e54cab94a1fa333aaabcde2",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/index.ts",
+      "sha256": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/types.ts",
+      "sha256": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/parts/weapons.ts",
+      "sha256": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/patterns.ts",
+      "sha256": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/portrait.ts",
+      "sha256": "6d5c5799023314c8aeb0509cbcccd5cf95ccdc64ee96ff8e1cff7ec69fd4ccf0",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/pose.ts",
+      "sha256": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/renderer.ts",
+      "sha256": "ccc15c4a584e0f44c91bf7faa35beb15afe6e1d509890003a3d0b7a47120ac05",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/art3d/toon.ts",
+      "sha256": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/campaign.ts",
+      "sha256": "f32d71d85cc316b8630f0f9be6f47414faa0958a8b1d8e1dbeba7f83bbe841fa",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/economy.ts",
+      "sha256": "628bcef3930678ac26dde52dd1dae80efdf7db15b453edcb44b042aaba0fd662",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/equipment.ts",
+      "sha256": "d8b2a9caaf0b85369ad73994b6bea010459a3a45084c8c1df21d3a9d80b6bddb",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/items.ts",
+      "sha256": "3790024d611975a59f40c61b86f3fae1500517f0121a5757bbcd4a306978a413",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/mobs.ts",
+      "sha256": "72ea942357374719ca81d0992aed6bf08b1d9f3e1223775329b3fe14c5bad438",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/progression.ts",
+      "sha256": "675782ea890ddaf9d8f42e47e006175b1b00a8d2b6b093ae896994d65ad8787e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/story.ts",
+      "sha256": "4bdef5df530a83a6769ae9f38d49e6ef52b1a5b5209e97adefd5fa9fcdf5b33f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/content/types.ts",
+      "sha256": "376cf92b289fbd4459a08752d026c87707b52f6109c01d70b78de866a840fae3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/chatlines.ts",
+      "sha256": "cf8a4093fe721f3a73a2a2982673c9366ebac6b2f0dfdf1b249acbe48f1ccb45",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/combos.ts",
+      "sha256": "0394fea40c693b1f73eb837c3bb7f29d25dacdaac799e2b241ca62828a942064",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/factions.ts",
+      "sha256": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/heroes.ts",
+      "sha256": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/batch2.ts",
+      "sha256": "79471e6cc758adfb86d7dea843bbec3f6d1b5ed2f677ee35c6bd39db9d41efc0",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/helpers.ts",
+      "sha256": "c030cdad7efcc2275249eaab7cd26d1ae5e46deeb5a593151a6fd7256de8bedf",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/index.ts",
+      "sha256": "c76c2efe6c35e34d7f5fd76712fbaf79ecb8f0ba41b17f83f065d647ec540934",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/remaining-man-xian.ts",
+      "sha256": "a8fca5c56322d2bf32e2af8c6d387dae7b13b5f32637d08ddae2fe1d9fe48e20",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/remaining-wei-wu.ts",
+      "sha256": "d0cda2bd974ac1c52e28061aa9d4daa5c5066509975e2715d5d6e588baaa0c9f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/remaining-wu-qun-man.ts",
+      "sha256": "17003002c8315065efa7ef6e33fec1df9ac044cf098a22c0b5774e5b27c3d66e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/sp.ts",
+      "sha256": "69f2da8f0778fa24bed878aa346b5ae935f2d7185e149181d293adb28c5e7d6e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/sr.ts",
+      "sha256": "d28f5e4c53cae471d7c60c330d5a68a0a641659d2d5716aa017976564330d3f4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/ssr.ts",
+      "sha256": "940a9721e5d815491624e3c2b462b70907a25a4a65c0da47cef5e9a4720d9876",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/tactics.ts",
+      "sha256": "08a405df154c62d650031b4108ac26c2079efa8cf8a7e5486a8ea74157dea448",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/kits/ur.ts",
+      "sha256": "9440538c6d3e6da52a7c3e8d321b0be4675e12fabc79d964705673dc149c4dbb",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/mob-looks.ts",
+      "sha256": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/pets.ts",
+      "sha256": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/skills.ts",
+      "sha256": "57abe2f696f9fa978e0b397127b47dad0aadbae386f530b144d4fd10ed85a5e4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/statuses.ts",
+      "sha256": "2d17bb7f66947ad27dcf3fd6e7ca6a71d22068b1b6c2de94190a495a051e56d8",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/systems.ts",
+      "sha256": "6242091f426d728f6bd3de12c36c0c39f173d358bdf224c557b7d58509305819",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/data/units.ts",
+      "sha256": "7e41b3c5d7b94a35f00012431256e62953dc5a0c5c395d4e357826bc91f5183a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/demo/battle.ts",
+      "sha256": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/dev/cat3d.ts",
+      "sha256": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/dev/dev.ts",
+      "sha256": "15da8298b023091dfa9a3693237ce49025afe4080b345f2e1762000b3d2dc39d",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/dev/puppet.ts",
+      "sha256": "14de32af152af97feb14f84e8e79b41ff9b2cb19c381c0c2ae518ca633d062e4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/dev/world.ts",
+      "sha256": "16594efaa02ded1772d4ac50cbf4472f415c3b002af2a86dd951e0f2be214a3a",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/engine/battle.ts",
+      "sha256": "e8d8155c621139c1e48e03bdc1a165c65abd9e802b0beb200898400da8b1dab5",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/engine/rng.ts",
+      "sha256": "1ed046cae8c366f41e5c5635d00eb110eacac80992a13e3f3f06c9fc3e12bbb4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/engine/statuses.ts",
+      "sha256": "113b221f836921716cf10bebe19d8973dcf88ee39f2d1c94ba25c26dc8723259",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/engine/types.ts",
+      "sha256": "d04c3d62091b974d7a1f191cfffce1c490cfd98dd5b5944561f8038c35c8eed2",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/actor.ts",
+      "sha256": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/bg-neon.ts",
+      "sha256": "fcc8a2154ffbbec1e86146731e3b057c4f71947d6117010e7328a6e08a4d72ee",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/bg.ts",
+      "sha256": "240cae2cc2da78e0d026e8c9616bcf21be080a3c05d7580f00322a1c5e451109",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/choreo.ts",
+      "sha256": "dd702b158c20934a0ff3832f62aee77b1e6d282d637f2012d423ba327314541e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/cutin.ts",
+      "sha256": "d99dbb863b05c6018f5e2d0f5d6d7af12d322614b6aaa27dd8614185abe36a8f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/mesh.ts",
+      "sha256": "73cffadcb2fcc134ada4ad5ed517b85d054c90dea50dbd9a135b7efae82dd935",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/pets.ts",
+      "sha256": "1f1f6f3909f4519cb0cc0615a9f9d137c6bde0aa436d54c4e25c43a5b6cc3b12",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/player.ts",
+      "sha256": "9e2e99c304514e8509dc1dcbfec5df1e488cf7f9321659c0c9a2a99bfd3a147d",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/puppet.ts",
+      "sha256": "eb246ad2014ba5f346ac9f4eea5879f65b78689355faac3d1a8806b8105354d5",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/rig.ts",
+      "sha256": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/scene.ts",
+      "sha256": "9939442e7ea55167607011905728d61751b3381ddfd8887646aafb5f0f45f249",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/skills.ts",
+      "sha256": "9268fc0bebb957a779478fbd02cc16a7e72dc31ae7b68aae97150e9b22d043a3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/skills2.ts",
+      "sha256": "0f6a3ba6ead9b0bd60bc1bac1c55d473e9dbaea993bf1616bba8671916a6fb32",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/skills3.ts",
+      "sha256": "476c3e024159c6ad5fc47f36e61878ab8c3632bf9925a43ac984d0bd06167491",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/skills4.ts",
+      "sha256": "f14c3001b7d9070e1e6e074df77af91850b2626e82a1ed7eb0de1b50f960725f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/skills5.ts",
+      "sha256": "896f73e8b9273b6c6f14ce383d8d1ddbe64dd9012ca681ce815ee3e17c018600",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/tactics.ts",
+      "sha256": "498775a075126e9e00ba0d8730489777a982b8d31757cdc1c714053da8ab737f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/util.ts",
+      "sha256": "fb33fa0af43cb0f86c888954915b2557fcfa99361c5801c4f904d0e8ba6b050d",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/fx/vfx.ts",
+      "sha256": "9b01b146e9ebb4bb93dc53d4249122894f28b4b766e1420bb389496f06c1842f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/affection.ts",
+      "sha256": "2f6c3d8e2f0adb2bd60c0a2c4dd90c36cb38c990b7b0afdbe8a4c880b868b122",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/arrows.ts",
+      "sha256": "3f8207fa1294cbbda36130113aa3d85d65b8f497f920c06c1f2f1ca6f9f82826",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/autopush.ts",
+      "sha256": "7c26427bd68c0eb75cc64326d163827e508d81a3671d2c3302b9ff7d2ad76869",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/backup.ts",
+      "sha256": "afada61fc150b2135497bc0f3130edeee53433dd9e66ed2477222fc58c299045",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/balance.ts",
+      "sha256": "32df5b4bfd6f9cb02dc6b34b20765903f36e847c9266a61fa19989e4429397da",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/boxcat.ts",
+      "sha256": "ea4e38ed0bde838486919aa5efb4aac478f2c26a79cbbb606ec8478ad8430b81",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/clams.ts",
+      "sha256": "b20b33d07dc67506f5a46a65e5bd5f211bcbac191c1ddd7b1ecb6d484926dafa",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/claw.ts",
+      "sha256": "c3755aaf293bcf6a8c5e17e3ddbacfd24507920413e0f3f9dc8fac6e21948d57",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/daily.ts",
+      "sha256": "83ed452a23896c45df6099f2dac58a7f727c9d3dde22fb8aba693fd61d2728eb",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/dungeon.ts",
+      "sha256": "fba7b41a3bf5ceee9f8f050a87c58dd8f3381f279912600ec3a8bb9aba648a48",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/events.ts",
+      "sha256": "524293e83b10e26aa978914debb2d9f3834f576925b26750c226997b275924fb",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/expedition.ts",
+      "sha256": "c8edc3e567a7d2951126a38998c42428690aee72f48d33f1ec31afa71c325a36",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/explore.ts",
+      "sha256": "6629c122c9bc4192be4f092d226d1bbe2a710cbc1f9135dbaada5ed9db1f032e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/featured.ts",
+      "sha256": "95cf2873da0102ce58d548c39328214d0580e3b91cfa3668ba1653df3b51d344",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/firefly.ts",
+      "sha256": "77032770706ba82d9cb4f91fa43b545760737cfc451d9d3ae011829d5d2a5fe0",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/fishing.ts",
+      "sha256": "d90be11db7596eff7b05c959de9bd73033a12585976f7f76beed889bcddd12c5",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/gacha.ts",
+      "sha256": "b16cd01df43bf733e7df3dde639f7b16686a5058f2b003bdf8b272b20b77bd44",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/gear.ts",
+      "sha256": "a1dc8353d4d69b860db4e2719a56afee3676f19abf1c5fa457af32db170c4784",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/guild.ts",
+      "sha256": "ecf49e8e94fda4a2af376af16d639b1c4f807620a91deb94e97ea80290eed70b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/guildboss.ts",
+      "sha256": "328aa6b1ee54c26a01b616d50e580358f8ffadd20b1686c8697d7878c972e279",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/inventory.ts",
+      "sha256": "4141431a3b6e5092b3fd33ba7a5fa82deeb6484df07a776d3c4ce568658f1283",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/kart.ts",
+      "sha256": "efed5e2ed51348ef3c41e59dd3487d86bf9395b41c7080af15dab6971060b068",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/kitchen.ts",
+      "sha256": "cf19c2544ad861f48737621edbb4be679c4dee3216ca27ee02c469b1c104e381",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/kite.ts",
+      "sha256": "a7e1db00083eb685905be233bb5a39fe745aea277aac9c574e11cc231a2267c4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/lanterns.ts",
+      "sha256": "0e0a9d7966c89dd5bbe342e10033b7e402152736a8156af2f2fbeb47e6774827",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/maze.ts",
+      "sha256": "121003ad76cc9b2547b4e6473a4d08cb450b8b49c5ba64853c6616f70a238600",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/moonshop.ts",
+      "sha256": "b8ed93a1058fc9c9f2ac109af474986290e3b16f902772cc100067ca936b0c7b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/mushroom.ts",
+      "sha256": "b16ec76cd24a0a2cf67f6fc5b8e94a996069317dd868183556e18f52d916be74",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/nest.ts",
+      "sha256": "f30341842c6c1d814b05120ada6a593caed303512fb10a7db66901dd6692ae3c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/npc.ts",
+      "sha256": "4de95148fb85b1ce20d862973459aaa84ad63dfabcbc3fd29f40710152228d79",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/periods.ts",
+      "sha256": "1dbc89e66229ee0508476ad857326142155ea9d8ca0ef9748e5d1fa38a509199",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/pets.ts",
+      "sha256": "792013fcc48e1383980540328064e941b4cb8ddbd3c9a4a5aaca2ca9cd0bb098",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/premium.ts",
+      "sha256": "3436bfd36bea48feee0b46a1fbf2d96c9da94f2b3b6022243671ad1a4a95a951",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/quests.ts",
+      "sha256": "c2e928197d0d5a32ac2bd2b7132b47bba95fbfb4be29a5464be01bc8ee2fbb49",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/ramen.ts",
+      "sha256": "ed22ddf77bd3e9611030c04190cc47afc1e596c3f45d2025fd1b4db8fd9fecb3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/ringtoss.ts",
+      "sha256": "479150bcbea82d92fbd246c5706341a7b1cb5387b920feae9259fb5378738fd2",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/shop.ts",
+      "sha256": "23a9737f192fbc65d9f93bb8d9478179d5aad175da259e509edebaa5b9e1ed62",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/sled.ts",
+      "sha256": "ae7b1fe571c8878cf4450fd6412134caf8ac547586b9e65d09c74b7f8cfd38c9",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/snowcat.ts",
+      "sha256": "4dd1e2a011da439e8a1678ee07a085e009dff209bc4accec3206341d90422527",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/social.ts",
+      "sha256": "f03b89942216bae37adf445aa74e85843498aad1eb87bbbc6ab25cfaaea00eff",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/soul.ts",
+      "sha256": "4f06e3d79fd339728fe86b922ed2be8cfa144092963143b7a3ae73c288810f5c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/stage.ts",
+      "sha256": "8979c4fa2992ef8db2778f6d6129aaedee08c81a69c2fc465e855b55c09f65cb",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/state.ts",
+      "sha256": "587d637dfebc2560583f47d5b493c83a9075adae7ecb17e8902da5aec0b33932",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/stoneskip.ts",
+      "sha256": "6002ed7c67e68b660e17ef72f9e8902baa6d20aa14a5def33c9780c31188554e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/surf.ts",
+      "sha256": "a6b25e57e630ccc03b910ccc72b5797261e9a2e64a25a583bbb0a46fb6e4dfac",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/sushi.ts",
+      "sha256": "0059b320e7a36e78bdbf72ca22fc6d5e6e51132474402416319f5fdf219c455c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/tower.ts",
+      "sha256": "6c3b26c19084c84c212ae4d282e572e22a8d4f683e589aa67e9db112e2a2b0bc",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/whack.ts",
+      "sha256": "68520114a8baaea284220d2157ac81f74cf58f2b70baa1e1aece7e2c74620aa3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/windchime.ts",
+      "sha256": "e6d8084f91db62b1700274cf2e942322d2bb84146c8ad0f4a79c449243835e1f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/game/worldboss.ts",
+      "sha256": "e7687161c8f692a8b255efc874303e44bd3f19fbc4efb725135b9d9258022379",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/showcase/main.ts",
+      "sha256": "ee7edc2fbfa75820cd7a5e28f5e2985c47ded435625eb9c9cf3e5ed3dc2ae361",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/showcase/style.css",
+      "sha256": "acdd659aa35b42c26916feeefa586dbe9c5b589f0689fea907cb3369ae84db77",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/art.ts",
+      "sha256": "2776a0a8419f4eb006836a545273966a7a08338131b94642675da6168d0332fe",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/components.ts",
+      "sha256": "d823c50683f1815063ca3d7583e965cc6651d07c5fb4e27e8e45164a129e09c4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/emoji.ts",
+      "sha256": "d6d00db7f5990c4f26f3cd37ef56bd66a87d394bce48a44d828555d14e05eed4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/emojify.ts",
+      "sha256": "8942cfb6f5eccced2cfa9f31bb0f4780bbc375438ce113c5cf9eb01047c90ee1",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/gain.ts",
+      "sha256": "9c21c6116be82750924f5b6f693788bb5dd97bbf6b87be1d0c0e77f05a92ecc5",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/icons.ts",
+      "sha256": "3da5f68b7415501d2b70815df9adcbcd755131a51a65d59ac13785c3824e8380",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/info.ts",
+      "sha256": "4c9c248b2bdb6979e3701d88a0b6d2c884a75508deee1a9cacc9cbe5d07431bb",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/kitcss.ts",
+      "sha256": "bc061f25492eb8346ff9a59f24944849ece63f4dc42a8504a512d926791304a3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/landcss.ts",
+      "sha256": "bf76f125ad609ef5472830c4c26e7b5b7edb3593d6b455f20c6e0c59162a7172",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/live.ts",
+      "sha256": "951d6197a3028750f7c02f860ce3b20f85b47c37e0fb936211fca456c82914bf",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/ui/noto.ts",
+      "sha256": "37d36c3b92688482f1563d0816d404d22cdb4703ccb69280021a739721ce06ee",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/assets/index.ts",
+      "sha256": "92be11964ac4210a886719d1de7487e11b29a90005f3b57f6fb49178f293b8e9",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/atmos.ts",
+      "sha256": "418c28287273023fdf93d17ee1af8dd8831f592c92d83e59deb3b37345fe3d07",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/backdrop.ts",
+      "sha256": "ee07b28af2d3f92fdd6a9a4a036c509df63b3019a2d7d93c24631648e2f556e3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/bake.ts",
+      "sha256": "4ff9a90bff4c524ad4c7285439bd6d2d51bf5bf3340b4461bea66afe8ccda474",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/decals.ts",
+      "sha256": "2897b252ce7ca926087e5a081739e0b35a9c814826d30e9c450703b8443f03f3",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/engine.ts",
+      "sha256": "f2385a93cdd0f2e062392bd7a1c5a632aacefc2f626f04859601b98808dd6d91",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/explore.ts",
+      "sha256": "2c4dfdcbd92bd93b521a5482b24f73a0d47f279811bc72707e6ec9382640b7e0",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/kit.ts",
+      "sha256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/levels.ts",
+      "sha256": "d9afc809fdd7913637fb9fd1297c9e86fda3d0718fbb08d4e6de1672e6022914",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/props/index.ts",
+      "sha256": "5a73891dd91f02aa0545a90612d5c9bec63b1a6e8303be8f6aa737507110a389",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/props/street.ts",
+      "sha256": "5c307c5220f43be476ab12842ef46d03f293fde265a7d5f7ec1efca221d20e86",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/steam.ts",
+      "sha256": "b235c685b6465690abf4807c6cb2f39101d2f5b2298efd7c417cf6c4ce5fdf7c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/street.ts",
+      "sha256": "102d7d8d5030086e729ac21c3e459463057cb606c2fbe516d39e76c189c2273f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/tex.ts",
+      "sha256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/arch.ts",
+      "sha256": "82220bd3dc833947b197d1f0f3dfd9184151f68f7c1274ea34a64362d2ad00e7",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/beach.data.ts",
+      "sha256": "9a459a59319d3b17c2c91168f14d05ba38a7e4d73c99d5c926784b0538aa2d32",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/beach.ts",
+      "sha256": "9801b908b0cca377b130e1f41b5399d3ce91ff04d15d25b3b8041fd029d087e4",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/cloud.data.ts",
+      "sha256": "253574b79bd2d09591fc575e88e8460db99354afdc34098f0e59f13e824b3881",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/cloud.ts",
+      "sha256": "1ca14193a03d087543afdb85217e34321040b4914cffe8af3327bf377b2c1a8c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/common.ts",
+      "sha256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/desert.data.ts",
+      "sha256": "9c8ceab3ed9394dfe39a5d747ee8430e52305b05669028a409797f343e25bf3b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/desert.ts",
+      "sha256": "82b75402c7bc28647b2ded813e3c1cc97b8a014b8e17b77eb335dba1a850e007",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/forest.data.ts",
+      "sha256": "b759b075e235af53e18b7f96937f60380496c7014f23fd8782cfb05da8d918c6",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/forest.ts",
+      "sha256": "3209d08c91fe313fd105b3faead20e774f7d8e42b567b19ee86ea3a1c22b8265",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/harbor.data.ts",
+      "sha256": "81674a4128a2f4732a776018dc0cf6e0b706c1570bac40c3e7a04e10253aa7aa",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/harbor.ts",
+      "sha256": "5111193559fcab93157c440cca517aa8fb226122410bea8306668a85227df325",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/index.ts",
+      "sha256": "775def4c6b21784dcbd46fc4f2d4e7cb8379dfa1b659825b4c40f48fea7c0b74",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/market.data.ts",
+      "sha256": "df4a74de4dfacd1560bb82acaa706494db7c8e391c1004c3284afcb710e9e634",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/market.ts",
+      "sha256": "7515a7e90c8a2b4bc8ef6af8a4751fc2c8f7d3e03db871397967f8cb05a7cb4d",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/onsen.data.ts",
+      "sha256": "a32e19a6c28e5d8194898982067441e0d4ff651f3e7517a53a764293e5a9b50b",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/onsen.ts",
+      "sha256": "7b71960f9dc888cca143425682e27a90887d2bf341348a758427506ee08af118",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/palace.data.ts",
+      "sha256": "7eacb7035e3149a5597c218e6c578e92897372e5ffb952cd4e955e2030919b82",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/palace.ts",
+      "sha256": "587a2c433493e67480a9d765e4b6fe09252fb3b408d2114d503d6db964021315",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/snow.data.ts",
+      "sha256": "53f13a6a40a579d4d21cb785d80c1e0ac8e8b0d2b3c1ab953db13c65a894df0f",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "src/world/themes/snow.ts",
+      "sha256": "93b93e148e6456d500b9564dae12495340ca2b0385fe06209682a530c911a39c",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "tools/cat3d-shots.mjs",
+      "sha256": "4c9b690b764b5c68f227e5b68bfda913fb45e0c70befe9ff561efc9c60649170",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "8801c6e88feb65360353624320d6772870abe253b7baa1f94f1cf34ed8da4b10",
+      "sameAsExportedGitBlob": true
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "f309e8c56c59d0f2770f22ddaad9f549f2d501da70a4ddde154894ebbd9efc5e",
+      "sameAsExportedGitBlob": true
+    }
+  ]
+}

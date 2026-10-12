@@ -1,0 +1,151 @@
+{
+  "createdUTC": "2026-10-12T11:59:01.122001+00:00",
+  "PR": 121,
+  "candidate": 5,
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "finiteGeometryQAComplete": true,
+  "canProceedToFrozenOfficialVisualReview": true,
+  "readinessScope": "Only bounded independent construction/geometry/pose QA; actual fresh capture inspection and required full checks are performed by root/preview helper.",
+  "reviewRoundAfterDelivery": 1,
+  "approvedCount": 0,
+  "ClaudeDecision": null,
+  "candidateSourceFiles": [
+    {
+      "path": "src/art3d/heroes.ts",
+      "sha256": "d685ca31ef7a35a51c82965cce0640d8d3409b80b48b34dffb215ef831dfb428",
+      "bytes": 8242
+    },
+    {
+      "path": "src/art3d/parts/hero-wei-weapons.ts",
+      "sha256": "105b8faa0b6012bc7c372cf4341d62e82af4b5f41231f7b6fe92d5d49ae76cb0",
+      "bytes": 9338
+    }
+  ],
+  "HEADAtRootFreeze": "a9261dcccd8184a0a57e8f723f022fccc998d8e7",
+  "appliedBaseMergeNotCommittedAtRootFreeze": true,
+  "roster": {
+    "heroes": 41,
+    "mobs": 36,
+    "pets": 12,
+    "total": 89
+  },
+  "all89NormallyBuiltAndAutomaticallyBakedPerMode": true,
+  "all89ModelsFiniteBothModes": true,
+  "nonTargetCount": 86,
+  "nonTargetActualBakedFingerprintsExactlySame": true,
+  "protectedLatestContext": "Actual f4 includes approved126 scroll/banner and128 veterans extras; f4 source guard and86 non-target exact snapshots include them.",
+  "registryBeforeCount": 9,
+  "registryAfterCount": 12,
+  "retained6UR3SPIDs": [
+    "wei_simamiyi",
+    "shu_pangmiaotong",
+    "xian_changmiao",
+    "wei_caomiaode",
+    "shu_liumiaobei",
+    "wu_zhoumiaoyu",
+    "qun_lvbuding",
+    "man_mengmiaohuo",
+    "xian_zuoci"
+  ],
+  "actualSSRExclusiveFactoriesHit": [
+    {
+      "id": "wei_xiahoudun",
+      "name": "xiahouSpear",
+      "exclusive": true
+    },
+    {
+      "id": "wei_xuhuchi",
+      "name": "xuhuBoneMace",
+      "exclusive": true
+    },
+    {
+      "id": "wei_zhangliao",
+      "name": "zhangliaoDualBlades",
+      "exclusive": true
+    }
+  ],
+  "budgets": [
+    {
+      "id": "wei_xiahoudun",
+      "logical": 14,
+      "mainLogical": 14,
+      "offhandLogical": 0,
+      "rawMeshesIncludingOutlines": 26,
+      "sphereCylinderEtcMaxSegments": 12,
+      "mainAndOffhandRootIdentity": true,
+      "allPositiveFinite": true,
+      "allMaterialsCachedOnSameContextRebuild": true,
+      "paletteUnchanged": true,
+      "lookUnchanged": true
+    },
+    {
+      "id": "wei_xuhuchi",
+      "logical": 16,
+      "mainLogical": 16,
+      "offhandLogical": 0,
+      "rawMeshesIncludingOutlines": 32,
+      "sphereCylinderEtcMaxSegments": 16,
+      "mainAndOffhandRootIdentity": true,
+      "allPositiveFinite": true,
+      "allMaterialsCachedOnSameContextRebuild": true,
+      "paletteUnchanged": true,
+      "lookUnchanged": true
+    },
+    {
+      "id": "wei_zhangliao",
+      "logical": 20,
+      "mainLogical": 10,
+      "offhandLogical": 10,
+      "rawMeshesIncludingOutlines": 36,
+      "sphereCylinderEtcMaxSegments": 12,
+      "mainAndOffhandRootIdentity": true,
+      "allPositiveFinite": true,
+      "allMaterialsCachedOnSameContextRebuild": true,
+      "paletteUnchanged": true,
+      "lookUnchanged": true
+    }
+  ],
+  "pairedPoseConditionCount": 13,
+  "normalBakedPosedCaseEvaluations": 26,
+  "poseProbeConstructionCounting": "Each mode builds three fresh automatic-baked cats for head probe and another three for face probe; each cat is evaluated at its4/5 prescribed poses. This is26 posed-case evaluations per probe, not26 separately constructed fresh cats per probe.",
+  "poseConditions": "All3 idle/windup/strike t.4 phase0 yaw32; all3 windup t2.4 phase0 yaw32; Xu windup t.4 phaseπ/2 yaw32.",
+  "validFaceSamplesBothModesTotal": 20116,
+  "weaponBlockedFaceSamplesBothModes": 0,
+  "faceBlockedSampleKeyPairsCompared": true,
+  "FRAME_excessRegression": 0,
+  "inheritedZhangGeneralHelmetRedPlumeFRAME_excess": {
+    "idle_t04": 0.08513648195712253,
+    "windup_t04": 0.09527238326812082,
+    "strike_t04": 0,
+    "windup_t24": 0
+  },
+  "xiahouNamedC4MillimeterVertexWitnessesEliminatedInC5FiniteSamples": true,
+  "xiahouNamedLowerPrimarySourceSurfacesInsideActualOldClosedRodHalfspaces": true,
+  "xiahouLowerOutlineFiniteSupportingDomainCheckPass": true,
+  "xiahouBladeTasselsUpperCurvedNeckClearOfBothSkullHullsInPrescribedCases": true,
+  "xuhuWoodHeadGoldHeadBandsSevenTeethCurvedNeckClearOfBothSkullHullsInPrescribedCases": true,
+  "inheritedXiahouXuhuLowerRodGripRearSkullContactRetained": true,
+  "zhangInheritedGuardBladeRootNeckSkullContactRetained": true,
+  "strictZhangPositiveVertexWitnessesCount": 8,
+  "strictZhangOldLocalAABBGapRange": [
+    1.3877787807814457e-17,
+    4.85722573273506e-16
+  ],
+  "robustNewVertexWitnessesBeyondLocal1e7": 0,
+  "robustZeroIsNotBooleanVolumeEquality": true,
+  "sourceGuardFileCount": 53,
+  "sourceAfterAllUnchanged": true,
+  "normalBakedContactPointMappingMaxError": 4.171403923908663e-08,
+  "browserCaptureOrFullSuiteRunByThisHelper": false,
+  "productionOrGitMutationsByThisHelper": false,
+  "limitations": [
+    "Node has no document, so coatTexture returns null; automatic bake and numeric geometry construction are verified, while actual texture/outline/face appearance needs the fresh official browser captures.",
+    "Face checks use12×12 actual eye-white/pupil/nose/current activated-mouth triangle samples and main/offhand weapon depth at yaw32. They do not certify eyepatch/lid/clothing visibility or all camera/animation states.",
+    "Latest128 eyepatch/extras are built identically in both f4 modes. Weapon occlusion only is tested; the sampled eye mesh can itself be behind the eyepatch.",
+    "Existing lower grip rear-skull intersections and Zhang guard/blade-root/neck intersections remain; no whole-weapon zero-contact assertion.",
+    "Strict1e-17–1e-16 old-box gap points remain in raw and final JSON. Local1e-7 is a numerical diagnostic threshold, not evidence of absence or exact occupied-volume equality.",
+    "Old local AABB union is a conservative superset with nonconvex gaps/open tube ends; no positive witness does not prove Boolean triangle/solid equality.",
+    "Named spear primary source triangles are independently contained in old closed stock-cylinder halfspaces. Outline supporting-plane envelope is explicitly narrower evidence than exact rendered-outline Boolean volume.",
+    "Only13 specified cases; no added yaw, all-animation sweep, engine patch, test rewrite, browser recapture or repeated full suite."
+  ]
+}

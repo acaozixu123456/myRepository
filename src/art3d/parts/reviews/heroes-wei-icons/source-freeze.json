@@ -1,0 +1,22 @@
+{
+  "candidate": 5,
+  "review_round_after_delivery": 1,
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "frozen_at_utc": "2026-10-12T11:47:52.649044+00:00",
+  "HEAD_during_applied_base_merge": "a9261dcccd8184a0a57e8f723f022fccc998d8e7",
+  "base_merge_applied_not_committed": true,
+  "files": [
+    {
+      "path": "src/art3d/heroes.ts",
+      "sha256": "d685ca31ef7a35a51c82965cce0640d8d3409b80b48b34dffb215ef831dfb428",
+      "bytes": 8242
+    },
+    {
+      "path": "src/art3d/parts/hero-wei-weapons.ts",
+      "sha256": "105b8faa0b6012bc7c372cf4341d62e82af4b5f41231f7b6fe92d5d49ae76cb0",
+      "bytes": 9338
+    }
+  ],
+  "previous_C5_two_sources_byte_unchanged": true,
+  "fresh_scope": "Includes approved126/128 extras and127 clouds; all C5 assets/probes freshly use f4 context, old e0af checks remain historical."
+}
