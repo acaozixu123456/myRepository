@@ -17,7 +17,7 @@ import type { Ease } from './util';
 /** 3D 小猫朝向：面朝对手方向偏转的角度（弧度） */
 export const YAW3D = 0.6;
 export type Xf = [number, number, number, number, number]; // rot(°), tx, ty, sx, sy
-export type PoseDelta = Partial<Record<PartId | 'root', Partial<Xf> | number[]>>;
+export type PoseDelta = Partial<Record<PartId | 'root' | 'face', Partial<Xf> | number[]>>;
 
 const ZERO: Xf = [0, 0, 0, 1, 1];
 const ROOT_KEYS = ['rot', 'ox', 'oy', 'sx', 'sy'] as const;
@@ -26,18 +26,18 @@ const ROOT_KEYS = ['rot', 'ox', 'oy', 'sx', 'sy'] as const;
 export const POSES: Record<string, PoseDelta> = {
   idle: {},
   ready: { armR: [-18], armL: [10], torso: [-2, 0, 0], head: [-2], legL: [-6], legR: [8] },
-  windup: { armR: [-175, -6, 0], armL: [-20], torso: [8, -6, 0], head: [6], legL: [10], legR: [-14], root: [-4] },
-  windupLow: { armR: [30, -8, 4], armL: [20], torso: [10, -8, 0], head: [8], root: [-3] },
-  strike: { armR: [-62, 10, 0], armL: [-40], torso: [-10, 12, 0], head: [-4, 6, 0], legL: [-18], legR: [18], root: [4] },
-  thrust: { armR: [-82, 14, 0], armL: [-60], torso: [-12, 14, 0], head: [-6, 8, 0], legL: [-22], legR: [20], root: [5] },
-  cast: { armR: [-120], armL: [-120], torso: [-3, 0, -4], head: [-8] },
-  castUp: { armR: [-170], armL: [-170], torso: [-6, 0, -8], head: [-14, 0, -2], legL: [-4], legR: [4] },
-  castFwd: { armR: [-95], armL: [-95], torso: [-6, 4, 0], head: [-4], root: [2] },
-  guard: { armR: [-100], armL: [-110], torso: [6, -4, 2], head: [6], root: [-2] },
-  hurt: { torso: [-14, -10, 2], head: [-16, -6, 0], armR: [28], armL: [-22], root: [-8], legL: [8], legR: [-8] },
-  dash: { armR: [-40], armL: [30], torso: [-10, 6, 0], head: [-6], root: [6] },
-  victory: { armR: [-160], armL: [20], torso: [-2, 0, -6], head: [-6, 0, -2] },
-  slump: { torso: [10, 0, 4], head: [14, 0, 4], armR: [20], armL: [-10] },
+  windup: { face: [0.15, 0.4], armR: [-175, -6, 0], armL: [-20], torso: [8, -6, 0], head: [6], legL: [10], legR: [-14], root: [-4] },
+  windupLow: { face: [0.15, 0.4], armR: [30, -8, 4], armL: [20], torso: [10, -8, 0], head: [8], root: [-3] },
+  strike: { face: [0.45, 1], armR: [-62, 10, 0], armL: [-40], torso: [-10, 12, 0], head: [-4, 6, 0], legL: [-18], legR: [18], root: [4] },
+  thrust: { face: [0.45, 1], armR: [-82, 14, 0], armL: [-60], torso: [-12, 14, 0], head: [-6, 8, 0], legL: [-22], legR: [20], root: [5] },
+  cast: { face: [0.1, 0.6], armR: [-120], armL: [-120], torso: [-3, 0, -4], head: [-8] },
+  castUp: { face: [0.1, 0.8], armR: [-170], armL: [-170], torso: [-6, 0, -8], head: [-14, 0, -2], legL: [-4], legR: [4] },
+  castFwd: { face: [0.1, 0.6], armR: [-95], armL: [-95], torso: [-6, 4, 0], head: [-4], root: [2] },
+  guard: { face: [0.35, 0.3], armR: [-100], armL: [-110], torso: [6, -4, 2], head: [6], root: [-2] },
+  hurt: { face: [0.85, 0.7], torso: [-14, -10, 2], head: [-16, -6, 0], armR: [28], armL: [-22], root: [-8], legL: [8], legR: [-8] },
+  dash: { face: [0.3, 0.5], armR: [-40], armL: [30], torso: [-10, 6, 0], head: [-6], root: [6] },
+  victory: { face: [0.85, 0.9], armR: [-160], armL: [20], torso: [-2, 0, -6], head: [-6, 0, -2] },
+  slump: { face: [1, 0], torso: [10, 0, 4], head: [14, 0, 4], armR: [20], armL: [-10] },
 };
 
 const STATUS_BADGE: Record<string, { ch: string; color: string }> = {
@@ -162,6 +162,9 @@ export class Actor {
     out['root.0'] = r[0] ?? 0;
     out['root.1'] = r[1] ?? 0;
     out['root.2'] = r[2] ?? 0;
+    const f = (delta.face ?? []) as number[];
+    out['face.0'] = f[0] ?? 0;
+    out['face.1'] = f[1] ?? 0;
     return out;
   }
   setPoseNow(delta: PoseDelta) {

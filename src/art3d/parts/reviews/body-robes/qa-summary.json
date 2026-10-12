@@ -1,0 +1,2907 @@
+{
+  "bodySHA256": "759c9b7b5bfcc2b4f08b8970c6893181aabf78d44350fde28f2dfc68c7800485",
+  "bodyRobesSHA256": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+  "engineSHA256": {
+    "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+    "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+  },
+  "engineSHA256After": {
+    "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+    "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+  },
+  "baselineCommit": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+  "baselineFixture": {
+    "sha256": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167",
+    "commit": "bf37bd307e8669850af6cd5b502172ad7d7ab102"
+  },
+  "status": "independent QA complete against frozen bf37bd3; visual approval remains with Claude",
+  "supersedes": "all pre-bf37 audits/images and invalid cache run archived under ignored .shots/body-robes/obsolete and not final evidence",
+  "users": {
+    "robeTaoist": [
+      "shu_zhugemiaoliang",
+      "qun_zhangjiao",
+      "xian_zuoci",
+      "xian_zhangzhua",
+      "xian_yuji",
+      "mob_xian_guard",
+      "mob_xian_strategist"
+    ],
+    "tribal": [
+      "man_mengmiaohuo",
+      "man_zhurong",
+      "man_mulu",
+      "man_shamoke",
+      "mob_man_vanguard",
+      "mob_man_strategist"
+    ],
+    "robeScholar": [
+      "wei_guojia",
+      "shu_jiangwei",
+      "wu_luxun",
+      "qun_huatuo",
+      "xian_shuijing",
+      "xian_guanlu",
+      "xian_nanhua",
+      "mob_wei_strategist",
+      "mob_wei_healer",
+      "mob_shu_strategist",
+      "mob_shu_healer",
+      "mob_wu_strategist",
+      "mob_wu_healer",
+      "mob_qun_strategist",
+      "mob_qun_healer",
+      "mob_man_healer",
+      "mob_xian_vanguard",
+      "mob_xian_healer",
+      "mob_xian_assassin"
+    ]
+  },
+  "heroCount": 16,
+  "mobCount": 16,
+  "frame": {
+    "x0": -2.2,
+    "x1": 2.2,
+    "y0": -0.25,
+    "y1": 3.6
+  },
+  "method": "runtime noBake on BODY+skirt only; actual current buildCat3D/POSES phase=0/yaw=32; body outline vertex expansion; independent normal bake FRAME by applyBoneTransform on every vertex; 12x12 actual baked eye-core triangle projection plus five face landmark depth probes; baseline only body replaced from bf37bd307e8669850af6cd5b502172ad7d7ab102, identical current engines",
+  "fixtureMethod": "Fresh unique QA/baseline module filenames each run; browser commit and raw baseline SHA sentinel checked against Node fixture to avoid ignored .shots Vite transform cache.",
+  "actualBodyAttachments": 128,
+  "expectedBodyAttachments": 128,
+  "budget": [
+    {
+      "id": "wei_guojia",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "shu_zhugemiaoliang",
+      "kind": "robeTaoist",
+      "logicalMeshes": 21,
+      "withOutlineMeshes": 37,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "shu_jiangwei",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "wu_luxun",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "qun_huatuo",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "qun_zhangjiao",
+      "kind": "robeTaoist",
+      "logicalMeshes": 21,
+      "withOutlineMeshes": 37,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "man_mengmiaohuo",
+      "kind": "tribal",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "man_zhurong",
+      "kind": "tribal",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "man_mulu",
+      "kind": "tribal",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "man_shamoke",
+      "kind": "tribal",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "xian_zuoci",
+      "kind": "robeTaoist",
+      "logicalMeshes": 21,
+      "withOutlineMeshes": 37,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "xian_zhangzhua",
+      "kind": "robeTaoist",
+      "logicalMeshes": 21,
+      "withOutlineMeshes": 37,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "xian_shuijing",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "xian_guanlu",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "xian_yuji",
+      "kind": "robeTaoist",
+      "logicalMeshes": 21,
+      "withOutlineMeshes": 37,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "xian_nanhua",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_wei_strategist",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_wei_healer",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_shu_strategist",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_shu_healer",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_wu_strategist",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_wu_healer",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_qun_strategist",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_qun_healer",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_man_vanguard",
+      "kind": "tribal",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_man_strategist",
+      "kind": "tribal",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_man_healer",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_xian_guard",
+      "kind": "robeTaoist",
+      "logicalMeshes": 21,
+      "withOutlineMeshes": 37,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_xian_vanguard",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_xian_strategist",
+      "kind": "robeTaoist",
+      "logicalMeshes": 21,
+      "withOutlineMeshes": 37,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_xian_healer",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "mob_xian_assassin",
+      "kind": "robeScholar",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    }
+  ],
+  "summary": {
+    "staticThreePoses": {
+      "cases": 96,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 73,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 8,
+      "baselineWholeOutside": 8,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    },
+    "all14": {
+      "cases": 448,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 72,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 27,
+      "baselineWholeOutside": 27,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    },
+    "animation": {
+      "cases": 1152,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 71,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 49,
+      "baselineWholeOutside": 49,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    },
+    "all": {
+      "cases": 1600,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 71,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 76,
+      "baselineWholeOutside": 76,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    }
+  },
+  "clippedBoneCases": {
+    "all14": {
+      "headTop": 27
+    },
+    "animation": {
+      "headTop": 49
+    }
+  },
+  "remainingBaselineFrameCases": [
+    {
+      "id": "man_zhurong",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6410643722212632,
+      "baselineMaxY": 3.6410643722212632,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "ready",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.19104314433153455,
+      "baselineMinY": -0.19104314433153455,
+      "candidateMaxY": 3.6094505904488208,
+      "baselineMaxY": 3.6094505904488208,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.681723753602844,
+      "baselineMaxY": 3.681723753602844,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windupLow",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6727141995721073,
+      "baselineMaxY": 3.6727141995721073,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "guard",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.67677023685319,
+      "baselineMaxY": 3.67677023685319,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6064999803566478,
+      "baselineMaxY": 3.6064999803566478,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "slump",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6290903505700665,
+      "baselineMaxY": 3.6290903505700665,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6593679532441943,
+      "baselineMaxY": 3.6593679532441943,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "idle",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.615034376266954,
+      "baselineMaxY": 3.615034376266954,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.642618366417848,
+      "baselineMaxY": 3.642618366417848,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "idle",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6278700474705166,
+      "baselineMaxY": 3.6278700474705166,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "idle",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6269754354870414,
+      "baselineMaxY": 3.6269754354870414,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6558184723740443,
+      "baselineMaxY": 3.6558184723740443,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.642507477768156,
+      "baselineMaxY": 3.642507477768156,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.696243784660072,
+      "baselineMaxY": 3.696243784660072,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.652423680252874,
+      "baselineMaxY": 3.652423680252874,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.616781598887193,
+      "baselineMaxY": 3.616781598887193,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6903224096261398,
+      "baselineMaxY": 3.6903224096261398,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6803114512784387,
+      "baselineMaxY": 3.6803114512784387,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6054160961595905,
+      "baselineMaxY": 3.6054160961595905,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6697440554124086,
+      "baselineMaxY": 3.6697440554124086,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.691565473075787,
+      "baselineMaxY": 3.691565473075787,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_zhurong",
+      "pose": "windup",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.623879590700841,
+      "baselineMaxY": 3.623879590700841,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6410643722212632,
+      "baselineMaxY": 3.6410643722212632,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "ready",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.19104314433153455,
+      "baselineMinY": -0.19104314433153455,
+      "candidateMaxY": 3.6094505904488208,
+      "baselineMaxY": 3.6094505904488208,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.681723753602844,
+      "baselineMaxY": 3.681723753602844,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windupLow",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6727141995721073,
+      "baselineMaxY": 3.6727141995721073,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "guard",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.67677023685319,
+      "baselineMaxY": 3.67677023685319,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6064999803566478,
+      "baselineMaxY": 3.6064999803566478,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "slump",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6290903505700665,
+      "baselineMaxY": 3.6290903505700665,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6593679532441943,
+      "baselineMaxY": 3.6593679532441943,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "idle",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.615034376266954,
+      "baselineMaxY": 3.615034376266954,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.642618366417848,
+      "baselineMaxY": 3.642618366417848,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "idle",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6278700474705166,
+      "baselineMaxY": 3.6278700474705166,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "idle",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6269754354870414,
+      "baselineMaxY": 3.6269754354870414,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6558184723740443,
+      "baselineMaxY": 3.6558184723740443,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.642507477768156,
+      "baselineMaxY": 3.642507477768156,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.696243784660072,
+      "baselineMaxY": 3.696243784660072,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.652423680252874,
+      "baselineMaxY": 3.652423680252874,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.616781598887193,
+      "baselineMaxY": 3.616781598887193,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6903224096261398,
+      "baselineMaxY": 3.6903224096261398,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6803114512784387,
+      "baselineMaxY": 3.6803114512784387,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6054160961595905,
+      "baselineMaxY": 3.6054160961595905,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6697440554124086,
+      "baselineMaxY": 3.6697440554124086,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.691565473075787,
+      "baselineMaxY": 3.691565473075787,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "man_mulu",
+      "pose": "windup",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.623879590700841,
+      "baselineMaxY": 3.623879590700841,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "xian_zuoci",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.614626132536166,
+      "baselineMaxY": 3.614626132536166,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6022277584340436,
+      "baselineMaxY": 3.6022277584340436,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.640974118022943,
+      "baselineMaxY": 3.640974118022943,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windupLow",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6318512162739567,
+      "baselineMaxY": 3.6318512162739567,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "guard",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.636149027489298,
+      "baselineMaxY": 3.636149027489298,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.620292047878087,
+      "baselineMaxY": 3.620292047878087,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.603868613729892,
+      "baselineMaxY": 3.603868613729892,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.616762042067379,
+      "baselineMaxY": 3.616762042067379,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.602193415093122,
+      "baselineMaxY": 3.602193415093122,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6553267197563173,
+      "baselineMaxY": 3.6553267197563173,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6119365401331915,
+      "baselineMaxY": 3.6119365401331915,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6495512944427855,
+      "baselineMaxY": 3.6495512944427855,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6396799352414977,
+      "baselineMaxY": 3.6396799352414977,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6291305413941277,
+      "baselineMaxY": 3.6291305413941277,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_man_strategist",
+      "pose": "windup",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.22183265252157552,
+      "baselineMinY": -0.22183265252157552,
+      "candidateMaxY": 3.6506828681661245,
+      "baselineMaxY": 3.6506828681661245,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "idle",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.60826728148574,
+      "baselineMaxY": 3.60826728148574,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "ready",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.19104314433153455,
+      "baselineMinY": -0.19104314433153455,
+      "candidateMaxY": 3.621880931181337,
+      "baselineMaxY": 3.621880931181337,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "strike",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.607438268935692,
+      "baselineMaxY": 3.607438268935692,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "cast",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6485829231688447,
+      "baselineMaxY": 3.6485829231688447,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "castUp",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.18151311830629852,
+      "baselineMinY": -0.18151311830629852,
+      "candidateMaxY": 3.6471952604619178,
+      "baselineMaxY": 3.6471952604619178,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "castFwd",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6230482869665006,
+      "baselineMaxY": 3.6230482869665006,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "dash",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.18464764178807336,
+      "baselineMinY": -0.18464764178807336,
+      "candidateMaxY": 3.6092084525982195,
+      "baselineMaxY": 3.6092084525982195,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "victory",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.664043935783677,
+      "baselineMaxY": 3.664043935783677,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "idle",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6214444441489793,
+      "baselineMaxY": 3.6214444441489793,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "idle",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6174802870511504,
+      "baselineMaxY": 3.6174802870511504,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "idle",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.6088517959526025,
+      "baselineMaxY": 3.6088517959526025,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "idle",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.17400000989437103,
+      "baselineMinY": -0.17400000989437103,
+      "candidateMaxY": 3.616826440211931,
+      "baselineMaxY": 3.616826440211931,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "strike",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6242473416553618,
+      "baselineMaxY": 3.6242473416553618,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "strike",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6091342952584777,
+      "baselineMaxY": 3.6091342952584777,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    },
+    {
+      "id": "mob_xian_guard",
+      "pose": "strike",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.23392665562956144,
+      "baselineMinY": -0.23392665562956144,
+      "candidateMaxY": 3.6209138033930044,
+      "baselineMaxY": 3.6209138033930044,
+      "candidateClippedBones": [
+        "headTop"
+      ],
+      "baselineClippedBones": [
+        "headTop"
+      ]
+    }
+  ],
+  "comparisonScreenshot": {
+    "output": "src/art3d/parts/reviews/body-robes/before-after.png",
+    "bytes": 187255,
+    "bodySHA256": "759c9b7b5bfcc2b4f08b8970c6893181aabf78d44350fde28f2dfc68c7800485",
+    "bodyRobesSHA256": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "engineSHA256": {
+      "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+      "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+      "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+      "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+    },
+    "toonSHA256": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "pageErrors": [],
+    "method": {
+      "baselineFixture": {
+        "sha256": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167",
+        "commit": "bf37bd307e8669850af6cd5b502172ad7d7ab102"
+      },
+      "ids": [
+        "xian_zuoci",
+        "shu_zhugemiaoliang",
+        "man_mengmiaohuo",
+        "man_zhurong",
+        "qun_huatuo",
+        "xian_shuijing"
+      ],
+      "dimensions": [
+        250,
+        219
+      ],
+      "normalBake": true,
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "yaw": 32
+    },
+    "imageSHA256": "dc2dd5a07900f4a663d2062dda98decda6fd45b9fd334e2de5f47a77b1b32dbc"
+  },
+  "visuallyInspected": [
+    "before-after.png (six heroes, normal bake, bf37 baseline/engine and 759c9b7b+0deacc5e hem-shortened candidate matched QA)"
+  ],
+  "limitations": [
+    "Phase=0/yaw32; finite 12 times in [0,8] for three poses; no proof about all continuous times or phases.",
+    "12x12 eye-core triangle depth samples do not first subtract eyelids or other face geometry.",
+    "Five nose/mouth/muzzle landmarks and visual inspection do not constitute full face triangle collision detection.",
+    "Clothing noBake is only instrumentation; full-cat FRAME checks and presentation screenshot use normal bakeCat.",
+    "Both sides use frozen bf37bd3 engines; only target baseline BODY builders are substituted.",
+    "27 static and 49 animation whole-cat clipping cases remain in baseline and candidate; no claim of all-cats-in-frame."
+  ],
+  "pageErrors": []
+}

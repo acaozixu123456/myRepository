@@ -68,10 +68,10 @@ export class Player {
 
   static slot(side: 'A' | 'B', pos: number): [number, number, number] {
     // 斜线阵型：前排三只斜排，后排两只在后
-    const A: [number, number][] = [[420, 440], [366, 496], [312, 552], [236, 462], [182, 526]];
+    const A: [number, number][] = [[404, 438], [344, 498], [284, 558], [206, 462], [138, 530]];
     const [ax, y] = A[pos];
     const x = side === 'A' ? ax : 960 - ax;
-    const s = lerp(0.285, 0.335, (y - 430) / 130);
+    const s = lerp(0.32, 0.375, (y - 430) / 130);
     return [x, y, s];
   }
 
@@ -213,7 +213,7 @@ export class Player {
     let pet = this.petActors.get(e.side);
     if (!pet) {
       const rig = use3D() ? buildRig3D(lookOf(e.id), 0.62 * this.scene.dpr, e.id) : await cachedRig(e.id, 0.62 * this.scene.dpr);
-      const x = e.side === 'A' ? 124 : 836;
+      const x = e.side === 'A' ? 62 : 898;
       const info: ActorInfo = { uid: e.side === 'A' ? -1 : -2, side: e.side, name: PET_BY_ID[e.id]?.name ?? '宠物', faction: 'xian', heroId: e.id, maxHp: 1, hp: 1 };
       pet = new Actor(this.scene, rig, info, x, 556, 0.25);
       pet.hudAlpha = 0;

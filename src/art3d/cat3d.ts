@@ -27,6 +27,8 @@ export interface Joints {
   kneeR: THREE.Bone;
   tail: THREE.Bone[];
   eyes: THREE.Object3D[]; // 眨眼用
+  smile: THREE.Object3D[]; // 平时的小笑嘴（张嘴时收起）
+  mouthO: THREE.Object3D; // 张嘴（喊招 / 受击）
 }
 export interface Sockets {
   headTop: THREE.Object3D;
@@ -199,7 +201,19 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   mouth.position.set(-0.05, -0.14, 0.64);
   const mouth2 = mouth.clone();
   mouth2.position.x = 0.05;
-  head.add(mouth, mouth2);
+  const smile = grp('smile');
+  smile.add(mouth, mouth2);
+  mouth.position.set(-0.05, -0.14, 0.64); mouth2.position.x = 0.05;
+  head.add(smile);
+  // 张嘴：深色椭球 + 粉舌头，平时缩成 0
+  const mouthO = grp('mouthO');
+  const cavity = new THREE.Mesh(sphere(0.085, 1, 1.15, 0.9, 12), toon('#4a1f2e'));
+  const tongue = new THREE.Mesh(sphere(0.05, 1.2, 0.7, 0.5, 10), toon('#ff8a9c'));
+  tongue.position.set(0, -0.045, 0.03);
+  mouthO.add(cavity, tongue);
+  mouthO.position.set(0, -0.16, 0.655);
+  mouthO.scale.setScalar(0.001);
+  head.add(mouthO);
   const eyes: THREE.Object3D[] = [];
   for (const s of [1, -1] as const) { const e = buildEye(look, s, fur, pink); e.position.y += 0.1; e.position.z = 0.52; head.add(e); eyes.push(e); }
   if (look.blush) for (const s of [1, -1]) { const b = new THREE.Mesh(sphere(0.09, 1.3, 0.7, 0.3, 10), toon('#ff9aa8')); b.position.set(s * 0.4, -0.06, 0.45); b.rotation.y = s * 0.7; head.add(b); }
@@ -304,7 +318,7 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
 
   const j: Joints = {
     root, hip, torso, neck, head, earL, earR, shoulderL: armL.sh, shoulderR: armR.sh, elbowL: armL.elbow, elbowR: armR.elbow,
-    hipL: legL.h, hipR: legR.h, kneeL: legL.knee, kneeR: legR.knee, tail, eyes,
+    hipL: legL.h, hipR: legR.h, kneeL: legL.knee, kneeR: legR.knee, tail, eyes, smile: [smile], mouthO,
   };
   const cat: Cat3D = { look, root, j, sock, build, phase: Math.random() * 6.28 };
   bakeCat(cat);
