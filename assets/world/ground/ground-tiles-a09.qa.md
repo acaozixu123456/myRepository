@@ -36,3 +36,9 @@
 两张 native-edges 审图的空间尺度为成品 1:1，之后仍经过有损 WebP 再编码；对应区域相对成品解码的最大通道差为 14～18，不能称审图与成品像素完全相等。工作区六张无损 LR / TB / corners PNG 与成品对应解码像素完全一致，独立 QA 同时查看了这些 PNG，审图 README 已准确区分两者。
 
 本 QA 没有改图、引擎或进度，没有提交或推送；未在游戏中验证灯光、相机和 UV，也未执行 typecheck / 单元测试。素材为基色图，不能证明实际雨夜材质或性能；这部分由交付线程测试记录和接入审核补充。详细文件哈希与逐项结果见 [机器报告](ground-tiles-a09.qa.json)。
+
+## 追加独立 Three.js 灯光样板复核
+
+已实际 `view_image` 查看新增 `ground-tiles-a09-lighting.webp` 原尺寸：左右砖地 / 沟盖结构对应，右栏呈现青 / 品红局部光响应，未見新出现粗接缝。审图为 2048×1024、RGB、sRGB ICC，476,746 B；SHA256 与追加出处一致。从记录的截图 PNG 按 q90 / method6 和内嵌 ICC 重导出，逐字节一致。
+
+读取并核对已有捕获证据：Three r169，map.repeat=2×2，统一白色 MeshStandardMaterial（roughness=0.65、metalness=0），相同白光，右栏增加两盏彩色点光，没有 bloom。记录加载 2/2、两素材 HTTP 200、page errors 与 failed requests 均为空，成品拍前后哈希相同。独立 QA 没有重新运行浏览器捕获；该记录与画面、实际素材和源截图相符。样板支持可交审判断，仍不等于游戏接入验证。

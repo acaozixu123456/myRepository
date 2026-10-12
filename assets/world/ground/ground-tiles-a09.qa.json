@@ -239,6 +239,36 @@
       "size_and_bytes_match_provenance": true,
       "hash_matches_provenance": true,
       "maximum_500000_bytes_pass": true
+    },
+    {
+      "path": "assets/world/reviews/ground-tiles-a09-lighting.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 476746,
+      "sha256": "2fb6bb008f42da844276f8d79bed76e2935f750edecb4dc1d9d275bfd66727ba",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "size_and_bytes_match_provenance": true,
+      "hash_matches_provenance": true,
+      "maximum_500000_bytes_pass": true,
+      "recorded_capture_export_reproduction_identical_bytes": true,
+      "visual_review": "Actually viewed with view_image at original size: same paving/drain layout remains clear; cyan and magenta form local color response, no new broad seam observed.",
+      "evidence_checked_from_existing_capture_record": {
+        "loaded": 2,
+        "expected": 2,
+        "page_errors": [],
+        "failed_requests": [],
+        "asset_response_statuses": [
+          200,
+          200
+        ],
+        "source_hashes_unchanged": true
+      },
+      "reviewer_reexecuted_browser_capture": false
     }
-  ]
+  ],
+  "provenance_sha256_at_followup_check": "ade7fbe0d8c6698b724cd983ee1272ceeaa15f595c453b85ac044c5dc8443b61"
 }

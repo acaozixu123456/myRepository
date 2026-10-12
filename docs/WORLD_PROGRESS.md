@@ -149,7 +149,7 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 另附 [独立 Three.js 材质灯光样板](../assets/world/reviews/ground-tiles-a09-lighting.webp)（2048×1024，476,746 B）：同一白色 MeshStandardMaterial（roughness 0.65 / metalness 0、map.repeat 2×2）在相同相机与白光下，左右对比只加入青 / 品红点光的响应，无 bloom。实际加载 2/2、HTTP 200、page errors 0、failed requests 0，拍摄前后成品 SHA256 不变；[参数与捕获证据](../assets/world/reviews/ground-tiles-a09-lighting.README.md)。独立 QA 见 [摘要](../assets/world/ground/ground-tiles-a09.qa.md) 和 [机器报告](../assets/world/ground/ground-tiles-a09.qa.json)，当前可交 Claude 审核，尚未审核通过。
 
-A09 提交前验证：`npm run typecheck && npm test` 通过，64 个测试文件、976 项测试，退出码 0。
+A09 同步最新主分支 `bf37bd3` 后验证：`npm run typecheck && npm test` 通过，65 个测试文件、980 项测试，退出码 0。两张素材及审核图保持不变；保留 #98 已通过并接入的最新记录。
 
 ## B 类队列
 
