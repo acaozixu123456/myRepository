@@ -1,4 +1,7 @@
 import { FACTIONS, FACTION_ORDER } from '../../data/factions';
+import { PET_BY_ID } from '../../data/pets';
+import type { PlayerState } from '../../game/state';
+import { activePet, petBonus } from '../../game/pets';
 import type { FactionId } from '../../data/factions';
 import { HERO_BY_ID, HEROES } from '../../data/heroes';
 import { BONDS, COUNTER_RING } from '../../data/systems';
@@ -12,6 +15,14 @@ import { icon } from '../../ui/icons';
 import type { AppCtx } from '../ctx';
 
 export const lineupState = { faction: 'all' as FactionId | 'all', pickSlot: null as number | null };
+
+/** 阵容页上的宠物小条：显示出战宠物与全队加成，点一下进宠物页 */
+function petChip(s: PlayerState): string {
+  const a = activePet(s);
+  const d = a && PET_BY_ID[a.id];
+  if (!a || !d) return `<button class="btn sm ghost" data-act="nav" data-to="pets" title="宠物">🐾 去领宠物</button>`;
+  return `<button class="btn sm ghost" data-act="nav" data-to="pets" title="出战宠物：${d.name}，技能 ${d.skill.name}">🐾 ${d.name} <b>+${(petBonus(a.owned) * 100).toFixed(1)}%</b></button>`;
+}
 
 export function topbar(ctx: AppCtx, title: string, right = ''): string {
   return `<div class="hud"><div class="title" style="color:#fff6dc;text-shadow:0 2px 0 rgba(0,0,0,.3)">${title}</div><div class="grow"></div>${right}${chip('fish', ctx.s.res.fish)}${chip('bells', ctx.s.res.bells)}</div>`;
@@ -68,7 +79,7 @@ export function lineupHtml(ctx: AppCtx): string {
   return `
   ${topbar(ctx, '阵容')}
   <div class="scroll">
-    <div class="row" style="margin-bottom:8px"><span class="pwr">${icon('sword', 20)}${fmt(teamPower(s))}</span><div class="grow"></div><button class="btn sm blue" data-act="autolineup" title="一键上阵">✨${icon('team', 18)} 一键上阵</button></div>
+    <div class="row" style="margin-bottom:8px"><span class="pwr">${icon('sword', 20)}${fmt(teamPower(s))}</span><div class="grow"></div>${petChip(s)}<button class="btn sm blue" data-act="autolineup" title="一键上阵">✨${icon('team', 18)} 一键上阵</button></div>
     <div class="field"><div class="grid">
       <div class="col"><div class="lab">${icon('bow', 18)}</div>${slotHtml(ctx, 3)}${slotHtml(ctx, 4)}</div>
       <div class="col"><div class="lab">${icon('shield', 18)}</div>${slotHtml(ctx, 0)}${slotHtml(ctx, 1)}${slotHtml(ctx, 2)}</div>
