@@ -68,7 +68,7 @@ export const SCREEN_CSS = INFO_CSS + `
 .detail .stat em{font-style:normal;text-align:right}
 .skillrow{display:grid;grid-template-columns:auto 1fr;gap:4px 8px;padding:8px 10px;border-radius:14px;background:var(--paper-2);margin-top:7px}
 .skillrow .k{grid-row:span 2;align-self:start;margin-top:2px;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--ink);color:var(--paper)}
-.skillrow .k.ultimate{background:var(--orange);color:#fff}.skillrow .k.passive{background:var(--c);color:#fff}
+.skillrow .k.ultimate{background:var(--orange);color:#fff}.skillrow .k.tactic{background:#3a9ad9;color:#fff}.skillrow .k.passive{background:var(--c);color:#fff}
 .skillrow b{font-family:var(--f-d);font-weight:400;font-size:15px}
 .skillrow p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink)}
 .skillrow .mods{display:flex;flex-direction:column;gap:2px;margin-top:3px}

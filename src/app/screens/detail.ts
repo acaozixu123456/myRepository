@@ -2,6 +2,7 @@ import { FACTIONS } from '../../data/factions';
 import { HERO_BY_ID } from '../../data/heroes';
 import { KITS } from '../../data/kits';
 import { SKILLS } from '../../data/skills';
+import { tacticFor } from '../../data/kits/tactics';
 import { ROLES } from '../../data/systems';
 import { EQUIPS, EQUIP_SLOTS } from '../../content/equipment';
 import type { Quality } from '../../content/types';
@@ -54,6 +55,7 @@ function skillsHtml(ctx: AppCtx, id: string): string {
   const mods = (kit.ultimate.levelMods ?? []).map((m) => `<div class="mod ${h.skillLv >= m.lv ? 'on' : ''}"><span>Lv${m.lv}</span><span>${esc(m.desc)}</span></div>`).join('');
   return `
     <div class="skillrow"><span class="k">普攻</span><b>${esc(kit.basic.name)}</b><p>${esc(kit.basic.desc)}</p></div>
+    ${HERO_BY_ID[id] ? `<div class="skillrow"><span class="k tactic">战技</span><b>${esc(tacticFor(id).name)}</b><p>${esc(tacticFor(id).desc)}</p></div>` : ''}
     <div class="skillrow"><span class="k ultimate">绝技 Lv.${h.skillLv}</span><b>${esc(kit.ultimate.name)}</b><p>${esc(kit.ultimate.desc)}</p><div class="mods" style="grid-column:2">${mods}</div></div>
     <div class="skillrow"><span class="k passive">被动</span><b>${esc(kit.passive.name)}</b><p>${esc(kit.passive.desc)}</p></div>`;
 }

@@ -2,6 +2,7 @@ import { FACTIONS, FACTION_ORDER } from '../../data/factions';
 import type { FactionId } from '../../data/factions';
 import { HERO_BY_ID, HEROES } from '../../data/heroes';
 import { BONDS, COUNTER_RING } from '../../data/systems';
+import { COMBO_BY_BOND } from '../../data/combos';
 import { MOB_BY_ID } from '../../data/units';
 import { getStage } from '../../game/stage';
 import { RARITY_ORDER, heroPower, teamPower } from '../../game/state';
@@ -59,7 +60,7 @@ export function lineupHtml(ctx: AppCtx): string {
     return { b, have };
   }).filter((x) => x.have > 0).sort((a, b) => b.have / b.b.heroes.length - a.have / a.b.heroes.length).slice(0, 4).map(({ b, have }) => {
     const on = have === b.heroes.length;
-    return `<span class="s ${on ? 'on' : 'off'}" title="${b.desc}">${icon('spark', 16)}${b.name} ${have}/${b.heroes.length}</span>`;
+    return `<span class="s ${on ? 'on' : 'off'}" title="${b.desc}${on ? `\n合击技「${COMBO_BY_BOND[b.name]?.name ?? ''}」：${COMBO_BY_BOND[b.name]?.desc ?? ''}` : ''}">${icon('spark', 16)}${b.name} ${have}/${b.heroes.length}${on ? ' ⚡合击' : ''}</span>`;
   }).join('');
   const ef = enemyMainFaction(ctx);
   const counter = ef ? COUNTER_RING[(COUNTER_RING.indexOf(ef) + 5) % 6] : null;
