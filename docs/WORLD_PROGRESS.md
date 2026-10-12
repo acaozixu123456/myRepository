@@ -1,6 +1,6 @@
 ## A12 柔边透明云朵：第1轮待审（通过0）
 
-[同一草稿PR #127](https://github.com/acaozixu123456/myRepository/pull/127)，分支 `codex/3d-world-cloud-sprites`；3纹理/12UV云组与审图出处已完成，独立QA完成，Claude尚未审核。只更新本认领段；后面历史正文原字节保留，旧表的历史“未开始”不当本批最新状态。
+[同一PR #127](https://github.com/acaozixu123456/myRepository/pull/127)，分支 `codex/3d-world-cloud-sprites`；3纹理/12UV云组与审图出处已完成，独立QA完成，Claude尚未审核。只更新本认领段；后面历史正文原字节保留，旧表的历史“未开始”不当本批最新状态。
 
 三款 [圆云](../assets/world/clouds/cloud_sprite_cumulus_atlas_01.webp) / [云丝](../assets/world/clouds/cloud_sprite_wisps_atlas_02.webp) / [散云](../assets/world/clouds/cloud_sprite_scattered_atlas_03.webp) 为512² RGBA、sRGB588B、losslessWebP，134604 /152392 /174084B；每款4个独立云组。01非等宽列x280，另两款x256，上下y256；精确UV/flipY与正缩放在 [说明](../assets/world/clouds/cloud-sprites-a12.README.md)。
 
@@ -8,7 +8,9 @@
 
 [原生三底/alpha与边角](../assets/world/reviews/cloud-sprites-a12.README.md)、[总览](../assets/world/reviews/cloud-sprites-a12-overview.webp)与 [实际Sprite](../assets/world/reviews/cloud-sprites-a12-render.webp) 共12review＋3source=15图。2真实加载6HTTP200 bodySHA、24panels/192sprites、48px缩略与低opacity.25都实际采样，无runtime错误，source拍前后恒定。四边/12UV框alpha最大1弱尾值保留，不声称全0。最不满意：云丝卷弯较幻想云气，48px细纹损失；未接入世界产品。
 
-代码固定基线 `68e3f1d`；root认领前实际 `npm run typecheck && npm test` 退出0，80文件/1102测试，作者读保存日志；图像改动后不冒称新一轮整库测试。原68固定独立QA已完成，Claude尚未审核；root同步257并真实原生检查后在同一#127追加QA并ready，不新开重复PR，不等Claude停工。
+代码固定基线 `68e3f1d`；root认领前实际 `npm run typecheck && npm test` 退出0，80文件/1102测试，作者读保存日志；图像改动后不冒称新一轮整库测试。原68固定独立QA已完成，Claude尚未审核；root同步当前已通过#128的c569406并真实原生检查后在同一#127追加QA并ready，不新开重复PR，不等Claude停工。
+
+当前提交主线固定 `c5694066a6855c7eda8e8bdeb9fa4c3f28e4ca4b`：实际 `npm run typecheck && npm test` 退出0，82文件/1115测试；source/provenance/全部15图与独立68冻结字节同。具体提交差异、文档历史范围与当前日志SHA见 [提交复核](../assets/world/clouds/cloud-sprites-a12.submission-validation.json)。作者说明中的待安排/80-1102是原68时序记录，当前状态以本段和独立QA为准，Claude通过仍为0。
 
 [独立审核](../assets/world/reviews/cloud-sprites-a12.qa.md)与[完整机器记录](../assets/world/reviews/cloud-sprites-a12.qa.json)：两页192真实Sprite、6HTTP当前sourceSHA、全15图/12UV边与三源重导出；保留alpha1弱尾，不称原1254全RGBA同。独立冻结provenance86bab与原68文档，当前主线同步只改变继承文档/产品代码，本批3source及所有15图和出处未变；补充验证另记，不把旧80/1102改标签。
 

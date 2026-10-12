@@ -1,0 +1,253 @@
+{
+  "status": "Ready for Claude review round1; Claude approval0; independent remains main68 and current native is mainc569.",
+  "submissionBase": "c5694066a6855c7eda8e8bdeb9fa4c3f28e4ca4b",
+  "authorFixedBase": "68e3f1d2c8af4337851eba52dca646c128eebc33",
+  "provenanceSHA256": "86bab7d28b02448e5781385179efa5c968f04bfd4e54f7573ded3014268f4dee",
+  "authorFreezeManifest": {
+    "path": "/tmp/cloud-sprites-public/author-final-manifest.json",
+    "sha256": "d1259509dcb83dde6b2aa06251705fe35ad3d021807a3d974eb6b5b5e83c56e2"
+  },
+  "independentFinalManifest": {
+    "path": "/tmp/cloud-a12-independent/qa-final-manifest.json",
+    "sha256": "bb1df3f8e0943083a6d113dd4ade09c245ec6ace91d1fcbda9ca4921077c48dc"
+  },
+  "sourceAndAll15ImagesUnchangedFromAuthorAndIndependent": true,
+  "changedSinceAuthorFreeze": [
+    "docs/CREDITS.md",
+    "docs/WORLD_PROGRESS.md"
+  ],
+  "docsScope": "Only own A12 prefix plus complete current main WORLD suffix; complete current main CREDITS prefix plus own A12 appendix. Author original README/native80-1102/QA source snapshots preserve original main68 scope and timeline.",
+  "images": [
+    {
+      "path": "assets/world/clouds/cloud_sprite_cumulus_atlas_01.webp",
+      "bytes": 134604,
+      "sha256": "2f0b4879739eb5d48c8fcb4dcd79df1e6601c23a159ad55b7cd2956bdb029729"
+    },
+    {
+      "path": "assets/world/clouds/cloud_sprite_scattered_atlas_03.webp",
+      "bytes": 174084,
+      "sha256": "a636d8cf7c5b29cb6848e5038fb6db4d68e8aac9239f196d95bdfc9702efc48d"
+    },
+    {
+      "path": "assets/world/clouds/cloud_sprite_wisps_atlas_02.webp",
+      "bytes": 152392,
+      "sha256": "98a2a04e7adc0925108ddb2d569661253cbeab968ba88e86abe86b68bc49ebdc"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-cumulus-01-alpha.png",
+      "bytes": 73799,
+      "sha256": "f3d6038fc290e9919e5307b83240f1bd7c3e5db7d407f1cc2e6b15cd075cfe1d"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-cumulus-01-boundaries.png",
+      "bytes": 10278,
+      "sha256": "be727393b0ce65690f081550db9203efbb37624615870841f6129a029f5668c9"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-cumulus-01-native.webp",
+      "bytes": 31874,
+      "sha256": "953f6954c409191cdeb3ed53b24d49ed8ba03e18fab96fc6586d5cfb185e8ef5"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-overview.webp",
+      "bytes": 94470,
+      "sha256": "2f3b03ad2428439c176c2855812048a32af065c66a82161520a55ae5943090b5"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-public-candidates.webp",
+      "bytes": 51108,
+      "sha256": "be8f45b806ab519b39819beeaae73b00fd93ad9b1d03394afc7f875f62cc4357"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-render.webp",
+      "bytes": 91144,
+      "sha256": "3f40e86005f4e8941c378f8aba2109fc20389fda5f7cd3952fb81ed3fdea8cac"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-scattered-03-alpha.png",
+      "bytes": 114458,
+      "sha256": "23a7e7ee01e348f4e9b199752c5528368b76818b1530c59ef0d9b8497ca19285"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-scattered-03-boundaries.png",
+      "bytes": 6053,
+      "sha256": "e9b12b0e7af59768c59633fede6b84d513489676c98439aade7e5bab936877e7"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-scattered-03-native.webp",
+      "bytes": 63628,
+      "sha256": "f10ad8e6bf1c8a32f8970baf45e8b64d65c6b5a444a2101e807d9aa6c9bda8d8"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-wisps-02-alpha.png",
+      "bytes": 83559,
+      "sha256": "1564570afdd11c8d852d2f94b05670166aaa0eeb0a8d2726fc8f9028edb06ee3"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-wisps-02-boundaries.png",
+      "bytes": 6687,
+      "sha256": "a02aca8da0cbbd8a824bca774be947a7c207b0e64ed871dd15f0f68bc559c3ec"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-wisps-02-native.webp",
+      "bytes": 31054,
+      "sha256": "68482a8445d63054b85501f48b33960db4ebf469df44069e95bf82fab69a4503"
+    }
+  ],
+  "all26PreSubmissionFiles": [
+    {
+      "path": "assets/world/clouds/cloud-sprites-a12.README.md",
+      "bytes": 3391,
+      "sha256": "d490ace43b3c0800a605e457d5aeeb37dafa6c90fe4674a2b8696c6ac8b04c42"
+    },
+    {
+      "path": "assets/world/clouds/cloud-sprites-a12.calls.json",
+      "bytes": 14053,
+      "sha256": "d646a165ae29ec3cc65d9921a49acf5257be42f2ae54068eeaa7a8048dd3aee8"
+    },
+    {
+      "path": "assets/world/clouds/cloud-sprites-a12.export.py",
+      "bytes": 1666,
+      "sha256": "8d0fcfba95028f761334532b5a6bcfedf1caf29c9315d43c7abd993137f915a1"
+    },
+    {
+      "path": "assets/world/clouds/cloud-sprites-a12.provenance.json",
+      "bytes": 255030,
+      "sha256": "86bab7d28b02448e5781385179efa5c968f04bfd4e54f7573ded3014268f4dee"
+    },
+    {
+      "path": "assets/world/clouds/cloud-sprites-a12.source-search.json",
+      "bytes": 23460,
+      "sha256": "379fe5e6fe4cdcac7d6d5ce9091df1f351c1484bed3008cd05b8dba055099ef3"
+    },
+    {
+      "path": "assets/world/clouds/cloud-sprites-a12.source-search.md",
+      "bytes": 2815,
+      "sha256": "af0ca93c3a24acc97f8e3ea192c17a2e90d5801ee9dd73d9c686b407eefa0976"
+    },
+    {
+      "path": "assets/world/clouds/cloud_sprite_cumulus_atlas_01.webp",
+      "bytes": 134604,
+      "sha256": "2f0b4879739eb5d48c8fcb4dcd79df1e6601c23a159ad55b7cd2956bdb029729"
+    },
+    {
+      "path": "assets/world/clouds/cloud_sprite_scattered_atlas_03.webp",
+      "bytes": 174084,
+      "sha256": "a636d8cf7c5b29cb6848e5038fb6db4d68e8aac9239f196d95bdfc9702efc48d"
+    },
+    {
+      "path": "assets/world/clouds/cloud_sprite_wisps_atlas_02.webp",
+      "bytes": 152392,
+      "sha256": "98a2a04e7adc0925108ddb2d569661253cbeab968ba88e86abe86b68bc49ebdc"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-cumulus-01-alpha.png",
+      "bytes": 73799,
+      "sha256": "f3d6038fc290e9919e5307b83240f1bd7c3e5db7d407f1cc2e6b15cd075cfe1d"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-cumulus-01-boundaries.png",
+      "bytes": 10278,
+      "sha256": "be727393b0ce65690f081550db9203efbb37624615870841f6129a029f5668c9"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-cumulus-01-native.webp",
+      "bytes": 31874,
+      "sha256": "953f6954c409191cdeb3ed53b24d49ed8ba03e18fab96fc6586d5cfb185e8ef5"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-overview.webp",
+      "bytes": 94470,
+      "sha256": "2f3b03ad2428439c176c2855812048a32af065c66a82161520a55ae5943090b5"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-public-candidates.webp",
+      "bytes": 51108,
+      "sha256": "be8f45b806ab519b39819beeaae73b00fd93ad9b1d03394afc7f875f62cc4357"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-render.webp",
+      "bytes": 91144,
+      "sha256": "3f40e86005f4e8941c378f8aba2109fc20389fda5f7cd3952fb81ed3fdea8cac"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-scattered-03-alpha.png",
+      "bytes": 114458,
+      "sha256": "23a7e7ee01e348f4e9b199752c5528368b76818b1530c59ef0d9b8497ca19285"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-scattered-03-boundaries.png",
+      "bytes": 6053,
+      "sha256": "e9b12b0e7af59768c59633fede6b84d513489676c98439aade7e5bab936877e7"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-scattered-03-native.webp",
+      "bytes": 63628,
+      "sha256": "f10ad8e6bf1c8a32f8970baf45e8b64d65c6b5a444a2101e807d9aa6c9bda8d8"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-wisps-02-alpha.png",
+      "bytes": 83559,
+      "sha256": "1564570afdd11c8d852d2f94b05670166aaa0eeb0a8d2726fc8f9028edb06ee3"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-wisps-02-boundaries.png",
+      "bytes": 6687,
+      "sha256": "a02aca8da0cbbd8a824bca774be947a7c207b0e64ed871dd15f0f68bc559c3ec"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12-wisps-02-native.webp",
+      "bytes": 31054,
+      "sha256": "68482a8445d63054b85501f48b33960db4ebf469df44069e95bf82fab69a4503"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12.README.md",
+      "bytes": 2703,
+      "sha256": "4db193fe50a70b794fbc7c22df7f9da1373b7c2d3eb73458a2ad15a03523ec3d"
+    },
+    {
+      "path": "docs/CREDITS.md",
+      "bytes": 6377,
+      "sha256": "2c13ebfc26524bbe429f73f5a83be8ad2040666ac36e7ce05891910df04b0529"
+    },
+    {
+      "path": "docs/WORLD_PROGRESS.md",
+      "bytes": 82367,
+      "sha256": "307021166ad307a5008f8a92a2d705c89840d54adea4d3acfcc774c83b6d2b94"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12.qa.md",
+      "bytes": 8471,
+      "sha256": "8a2c18cd4531a004340c2ebee182dabfacf7ebfbf9dcaa456d4a1961125b7528"
+    },
+    {
+      "path": "assets/world/reviews/cloud-sprites-a12.qa.json",
+      "bytes": 340104,
+      "sha256": "e28ed84fbe9b5d1ed7f9c78156fb13b51a049cccf5c20044bcd6d5c264d33914"
+    }
+  ],
+  "requiredChecks": [
+    {
+      "path": ".tmp-cloud-sprites/tests-main257.log",
+      "sha256": "2fcab464a7ee3a5638cbe30a6641690f6900a6aa7b3af423ea038ce557badb69",
+      "testFiles": 82,
+      "tests": 1115,
+      "exitCode": 0
+    },
+    {
+      "path": ".tmp-cloud-sprites/tests-mainc569.log",
+      "sha256": "8c42a24d2f87989fc18f75cee098eaf97e47d86ab42f09cf6f58ac3c2c0e95d3",
+      "testFiles": 82,
+      "tests": 1115,
+      "exitCode": 0
+    }
+  ],
+  "productSourceTestsPackagePolicyDiffVsCurrentMain": [],
+  "limitations": [
+    "FullRGBA0 is against technical512 input after full1254 Lanczos RGBA/alpha resampling, not original1254.",
+    "12 UV boundaries retain alpha1/255 tails, no threshold edit.",
+    "01 columns280/232, exact integer UV; native reviews and GPU WebP lossy, raw/source/alpha/crop diagnostics lossless.",
+    "48px wisps/fine cloud groups lose detail; lowopacity.25 weak.",
+    "Actual Sprite material read on 192 draws, independent main68; no product integration or phoneFPS promise."
+  ]
+}
