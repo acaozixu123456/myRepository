@@ -1,0 +1,513 @@
+{
+  "startedUTC": "2026-10-12T06:35:09.895Z",
+  "completedUTC": "2026-10-12T06:35:13.786Z",
+  "actualCommand": "CHROME=/usr/bin/chromium node capture-tools/capture.mjs",
+  "cwd": "/workspace/world-review/sky-daylight/candidate02/preview-final",
+  "chromiumPath": "/usr/bin/chromium",
+  "chromiumVersion": "154.0.8037.57",
+  "serverPort": 45493,
+  "serverURL": "http://127.0.0.1:45493/",
+  "contextCommit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+  "configSHA256": "c734514643127ed900e8511d360931409e9e3df29bf0f3d175a917c3a5bceeb8",
+  "scriptSHA256": "26a84fc68477c612bbed252f6987e4385f7b00b0362bd6e0422d94e06a07f582",
+  "previewScriptSHA256": "38491f15ee6231173c0c7ef51ab395c4dc1152e9dcb70ffa1879e8f1bc120605",
+  "metadata": {
+    "threeRevision": "169",
+    "browserUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "fonts": {
+      "family": "\"Noto Sans CJK SC\", \"Noto Sans CJK JP\", sans-serif",
+      "ready": "loaded",
+      "systemNotoAvailable": true
+    },
+    "imageLoads": [
+      {
+        "id": "sky_cloud_noon_cumulus_04",
+        "url": "http://127.0.0.1:45493/sources/sky_cloud_noon_cumulus_04.webp",
+        "width": 2048,
+        "height": 512
+      },
+      {
+        "id": "sky_palace_afternoon_gold_05",
+        "url": "http://127.0.0.1:45493/sources/sky_palace_afternoon_gold_05.webp",
+        "width": 2048,
+        "height": 512
+      }
+    ],
+    "textureLoads": [
+      {
+        "id": "sky_cloud_noon_cumulus_04",
+        "imageWidth": 2048,
+        "imageHeight": 512,
+        "colorSpace": "srgb",
+        "wrapS": 1000,
+        "wrapT": 1001,
+        "repeat": [
+          1,
+          1
+        ],
+        "offset": [
+          0,
+          0
+        ],
+        "flipY": true,
+        "anisotropy": 1,
+        "minFilter": 1008,
+        "magFilter": 1006,
+        "generateMipmaps": true
+      },
+      {
+        "id": "sky_palace_afternoon_gold_05",
+        "imageWidth": 2048,
+        "imageHeight": 512,
+        "colorSpace": "srgb",
+        "wrapS": 1000,
+        "wrapT": 1001,
+        "repeat": [
+          1,
+          1
+        ],
+        "offset": [
+          0,
+          0
+        ],
+        "flipY": true,
+        "anisotropy": 1,
+        "minFilter": 1008,
+        "magFilter": 1006,
+        "generateMipmaps": true
+      }
+    ],
+    "boardDimensions": [
+      2048,
+      1024
+    ],
+    "webgl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "contextAttributes": {
+        "alpha": true,
+        "antialias": true,
+        "depth": true,
+        "desynchronized": false,
+        "failIfMajorPerformanceCaveat": false,
+        "powerPreference": "default",
+        "premultipliedAlpha": true,
+        "preserveDrawingBuffer": true,
+        "stencil": false,
+        "xrCompatible": false
+      }
+    },
+    "renderer": {
+      "outputColorSpace": "srgb",
+      "toneMapping": 0,
+      "toneMappingExposure": 1,
+      "pixelRatio": 1,
+      "shadowMapEnabled": false,
+      "directRender": true
+    },
+    "geometry": {
+      "radiusTop": 8,
+      "radiusBottom": 8,
+      "height": 12.566370614359172,
+      "radialSegments": 192,
+      "heightSegments": 1,
+      "openEnded": true,
+      "thetaStart": 0,
+      "thetaLength": 6.283185307179586,
+      "uvTransform": "u=1-u_default;v=v_default",
+      "seamWorldDirection": [
+        0,
+        0,
+        1
+      ],
+      "circumferentialAspect": 4
+    },
+    "camera": {
+      "fov": 70,
+      "aspect": 1.6666666666666667,
+      "near": 0.1,
+      "far": 40,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "pitchDegrees": 0,
+      "yawsDegrees": [
+        0,
+        120,
+        240
+      ],
+      "viewport": [
+        640,
+        384
+      ],
+      "lookAtEquation": "[sin(yaw),0,cos(yaw)]"
+    },
+    "materials": [
+      {
+        "type": "MeshBasicMaterial",
+        "colorSRGB": "#ffffff",
+        "side": 1,
+        "toneMapped": false,
+        "fog": false,
+        "opacity": 1,
+        "transparent": false
+      },
+      {
+        "type": "MeshBasicMaterial",
+        "colorSRGB": "#ffffff",
+        "side": 1,
+        "toneMapped": false,
+        "fog": false,
+        "opacity": 1,
+        "transparent": false
+      }
+    ],
+    "scene": {
+      "children": [
+        "Mesh"
+      ],
+      "environment": null,
+      "fog": null,
+      "lights": 0
+    },
+    "effects": {
+      "bloom": false,
+      "grade": false,
+      "fog": false,
+      "vignette": false,
+      "pbrLighting": false,
+      "pmrem": false,
+      "recolor": false
+    },
+    "flatColorProbe": {
+      "viewport": [
+        2048,
+        512
+      ],
+      "geometry": {
+        "width": 4,
+        "height": 1,
+        "widthSegments": 1,
+        "heightSegments": 1
+      },
+      "camera": {
+        "type": "OrthographicCamera",
+        "left": -2,
+        "right": 2,
+        "top": 0.5,
+        "bottom": -0.5,
+        "near": 0.1,
+        "far": 10
+      },
+      "purpose": "actual Basic+sRGB one-to-one color probe; no source mutation"
+    },
+    "captureCandidate": 2,
+    "selectedSourceCandidates": {
+      "sky_cloud_noon_cumulus_04": 1,
+      "sky_palace_afternoon_gold_05": 2
+    },
+    "additionalYaw180": {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 180,
+      "purpose": "Check the old shifted-image outer join restored to final panorama midpoint; fresh actual frame, not C1 reuse"
+    }
+  },
+  "pageErrors": [],
+  "consoleWarnings": [],
+  "failedRequests": [],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:45493/",
+      "status": 200,
+      "resourceType": "document"
+    },
+    {
+      "url": "http://127.0.0.1:45493/preview.mjs",
+      "status": 200,
+      "resourceType": "script"
+    },
+    {
+      "url": "http://127.0.0.1:45493/three.module.js",
+      "status": 200,
+      "resourceType": "script"
+    },
+    {
+      "url": "http://127.0.0.1:45493/config.json",
+      "status": 200,
+      "resourceType": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:45493/sources/sky_cloud_noon_cumulus_04.webp",
+      "status": 200,
+      "resourceType": "image"
+    },
+    {
+      "url": "http://127.0.0.1:45493/sources/sky_palace_afternoon_gold_05.webp",
+      "status": 200,
+      "resourceType": "image"
+    },
+    {
+      "url": "http://127.0.0.1:45493/sources/sky_cloud_noon_cumulus_04.webp",
+      "status": 200,
+      "resourceType": "image"
+    },
+    {
+      "url": "http://127.0.0.1:45493/sources/sky_palace_afternoon_gold_05.webp",
+      "status": 200,
+      "resourceType": "image"
+    }
+  ],
+  "serverRequests": [
+    {
+      "path": "/",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.759Z"
+    },
+    {
+      "path": "/preview.mjs",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.791Z"
+    },
+    {
+      "path": "/three.module.js",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.799Z"
+    },
+    {
+      "path": "/config.json",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.862Z"
+    },
+    {
+      "path": "/favicon.ico",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.866Z"
+    },
+    {
+      "path": "/sources/sky_cloud_noon_cumulus_04.webp",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.869Z"
+    },
+    {
+      "path": "/sources/sky_palace_afternoon_gold_05.webp",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.873Z"
+    },
+    {
+      "path": "/sources/sky_cloud_noon_cumulus_04.webp",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.891Z"
+    },
+    {
+      "path": "/sources/sky_palace_afternoon_gold_05.webp",
+      "method": "GET",
+      "utc": "2026-10-12T06:35:10.892Z"
+    }
+  ],
+  "rawYawFrames": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "yaw": 0,
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-yaw-000-raw.png",
+      "bytes": 344357,
+      "sha256": "17995e2b28799583e548a67c75e080e790ff051292957c2ca3b930bdb5816a05"
+    },
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "yaw": 120,
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-yaw-120-raw.png",
+      "bytes": 298407,
+      "sha256": "0eb0443244dc8c9052dde217fa91b3e3804f359fe97850f34e188cbf3734ba02"
+    },
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "yaw": 240,
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-yaw-240-raw.png",
+      "bytes": 294988,
+      "sha256": "396b817d14421728b3a2a2a9130cb39ab96d8d8c6c2c73906b81111f4b82319a"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 0,
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-000-raw.png",
+      "bytes": 404080,
+      "sha256": "48535d3dfd6858722ebaf69e6c769a6e5ff3a058cbd50e3fa430ee48ea9ae7da"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 120,
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-120-raw.png",
+      "bytes": 388498,
+      "sha256": "d55bbdd8e9895c1a972c826d63e6465ae274604764af992837c69dda6dde8b64"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 240,
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-240-raw.png",
+      "bytes": 384783,
+      "sha256": "c34645eb797de31203506c175943bad32aa74f4241508917a5d12298d35faa86"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "yaw": 180,
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-180-raw.png",
+      "bytes": 351248,
+      "sha256": "38c7617f7c9b33629db1e116b864a1a4735cedb5f49d3673f736920908d6e62d"
+    }
+  ],
+  "flatColorProbes": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-basic-srgb-flat-1to1.png",
+      "bytes": 1112880,
+      "sha256": "fb7131deb601066114868673f33f4f877e8656395900103818e2077f9df93347"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-basic-srgb-flat-1to1.png",
+      "bytes": 1493379,
+      "sha256": "370e98d9cd556f254870ec6780d0adec32a567e43e1041decd3d5cb8158c2996"
+    }
+  ],
+  "sourceBefore": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "selectedCandidate": 1,
+      "exportPath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "exportBytes": 83500,
+      "fileSHA256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "decodedRGBSHA256": "f6a9dd3733832031864a726870a00c56307da4994f04e0026a90e16cf8099b0e",
+      "dimensions": [
+        2048,
+        512
+      ],
+      "mode": "RGB",
+      "iccBytes": 588,
+      "iccSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "rawPath": "/workspace/world-review/sky-daylight/raw/sky_cloud_noon_cumulus_04-candidate-01.png",
+      "rawBytes": 1609742,
+      "rawFileSHA256": "3b281de6015b2902e3b81f7c04d53ab8a2935b82087274cecebbb969603a85b2",
+      "rawDimensions": [
+        2172,
+        724
+      ],
+      "nativeProofPhase": "original imagegen phase",
+      "genuineRawPath": "/workspace/world-review/sky-daylight/raw/sky_cloud_noon_cumulus_04-candidate-01.png",
+      "genuineRawFileSHA256": "3b281de6015b2902e3b81f7c04d53ab8a2935b82087274cecebbb969603a85b2",
+      "genuineRawDimensions": [
+        2172,
+        724
+      ],
+      "genuineRawPhase": "original phase",
+      "exportRecipe": {
+        "crop_box_xyxy": [
+          0,
+          90,
+          2172,
+          633
+        ],
+        "crop_dimensions": [
+          2172,
+          543
+        ],
+        "removed_rows_top": 90,
+        "removed_rows_bottom": 91,
+        "removed_left_or_right_columns": 0,
+        "requested_aspect_ratio": "4:1",
+        "actual_native_aspect_ratio": "3:1",
+        "final_aspect_ratio": "4:1",
+        "resize": "Pillow Lanczos full-width centered crop2172x543 ->2048x512",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "srgb_icc_path": "/workspace/world-review/sky-daylight/frozen-srgb.icc",
+        "color_transform": false,
+        "color_edit": false,
+        "artistic_repaint": false,
+        "seam_blending": false,
+        "upsample": false,
+        "aspect_stretch": false
+      }
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "selectedCandidate": 2,
+      "exportPath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "exportBytes": 120818,
+      "fileSHA256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "decodedRGBSHA256": "4b732cdbc3c8202f54b4094b2088719b56188e0c26100a376a727243b1867eec",
+      "dimensions": [
+        2048,
+        512
+      ],
+      "mode": "RGB",
+      "iccBytes": 588,
+      "iccSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "rawPath": "/workspace/world-review/sky-daylight/candidate02/sky_palace_afternoon_gold_05-candidate-02-unshifted-full.png",
+      "rawBytes": 1693520,
+      "rawFileSHA256": "fdebf04b5edd6154edd362f4a9f6ef6b599b7d55d4a23215d9fb4b753a8caad9",
+      "rawDimensions": [
+        2172,
+        724
+      ],
+      "nativeProofPhase": "technical inverse roll+1086 from genuine shifted-phase AI output; no resampling before native proof",
+      "genuineRawPath": "/workspace/world-review/sky-daylight/raw/sky_palace_afternoon_gold_05-candidate-02-shifted.png",
+      "genuineRawFileSHA256": "129fee9d5daa804e4e6f08bc652df0cc8b2851f72c3ae14704c0d806c1b256b1",
+      "genuineRawDimensions": [
+        2172,
+        724
+      ],
+      "genuineRawPhase": "halfwrap shifted phase",
+      "exportRecipe": {
+        "inverse_horizontal_roll_columns": 1086,
+        "native_phase": "halfwrap shifted input/output; rolled back to original phase for final",
+        "crop_box_xyxy": [
+          0,
+          90,
+          2172,
+          633
+        ],
+        "crop_dimensions": [
+          2172,
+          543
+        ],
+        "resize": "Pillow Lanczos2172x543->2048x512",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "srgb_icc_path": "/workspace/world-review/sky-daylight/candidate02/frozen-srgb.icc",
+        "artistic_repaint_in_code": false,
+        "color_edit_in_code": false,
+        "seam_blending_in_code": false,
+        "upsample": false,
+        "aspect_stretch": false
+      }
+    }
+  ],
+  "sourceAfter": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "exportPath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "fileSHA256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "exportPath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "fileSHA256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705"
+    }
+  ],
+  "sourceStayedFrozen": true
+}

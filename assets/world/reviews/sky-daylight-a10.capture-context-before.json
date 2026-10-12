@@ -1,0 +1,318 @@
+{
+  "capturedUTC": "2026-10-12T06:35:08.270919+00:00",
+  "method": "Candidate02 independently read explicit6f context for every extant file; not currentremote HEAD claim. Root keepsclaimtree5a/base7ea while capturing.",
+  "claimBase": "7ea72216176654ba77fb4f6223d4958d5ee18c67",
+  "freshContextCommit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+  "files": [
+    {
+      "path": "docs/CODEX_QUEUE.md",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": false,
+      "oldBytes": 10086,
+      "freshBytes": 10742,
+      "oldSHA256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+      "freshSHA256": "d6f69159ff4b8832ba0a52cf8f9dc2bd9edd0c8d75de5b988bc9728295750ff0"
+    },
+    {
+      "path": "docs/WORLD3D.md",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": false,
+      "oldBytes": 19415,
+      "freshBytes": 20013,
+      "oldSHA256": "3e59c829aa85ec21e55a22c65843cedbd57c0015823540857536cd197ae60edf",
+      "freshSHA256": "6d4782ac57c95b7e3b288b494931be03807941f2212984e58ed2dfff4cf9c173"
+    },
+    {
+      "path": "src/world/atmos.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 4163,
+      "freshBytes": 4163,
+      "oldSHA256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+      "freshSHA256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b"
+    },
+    {
+      "path": "src/world/engine.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 17670,
+      "freshBytes": 17670,
+      "oldSHA256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a",
+      "freshSHA256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a"
+    },
+    {
+      "path": "src/world/backdrop.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 5946,
+      "freshBytes": 5946,
+      "oldSHA256": "ee07b28af2d3f92fdd6a9a4a036c509df63b3019a2d7d93c24631648e2f556e3",
+      "freshSHA256": "ee07b28af2d3f92fdd6a9a4a036c509df63b3019a2d7d93c24631648e2f556e3"
+    },
+    {
+      "path": "src/world/themes/index.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 750,
+      "freshBytes": 750,
+      "oldSHA256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73",
+      "freshSHA256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73"
+    },
+    {
+      "path": "src/world/themes/common.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 9514,
+      "freshBytes": 9514,
+      "oldSHA256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+      "freshSHA256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57"
+    },
+    {
+      "path": "src/world/themes/market.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 10390,
+      "freshBytes": 10390,
+      "oldSHA256": "d20f5ddfd3e53e0b43c9674383d70becbb7f0b838b3fc612ff640cc224143927",
+      "freshSHA256": "d20f5ddfd3e53e0b43c9674383d70becbb7f0b838b3fc612ff640cc224143927"
+    },
+    {
+      "path": "src/world/themes/market.data.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 2917,
+      "freshBytes": 2917,
+      "oldSHA256": "893925bdb108ee0f7eef2e752e911898b25b559723c274957c5b95ec2fc1a46e",
+      "freshSHA256": "893925bdb108ee0f7eef2e752e911898b25b559723c274957c5b95ec2fc1a46e"
+    },
+    {
+      "path": "src/world/themes/harbor.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": false,
+      "oldBytes": 18735,
+      "freshBytes": 18860,
+      "oldSHA256": "351a6329eabebc161b9e94cfac1de0b92bdac6afef0792b7c4528ef6611b3e19",
+      "freshSHA256": "10807208483f047617eb794fe319ba3ba1c529fefc3fd8a6f1bf40917670fd12"
+    },
+    {
+      "path": "src/world/themes/harbor.data.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 3228,
+      "freshBytes": 3228,
+      "oldSHA256": "ffd4445ee276d14a67c85f80c1628f56031d32cc5ac356d7428376e70b2e37cc",
+      "freshSHA256": "ffd4445ee276d14a67c85f80c1628f56031d32cc5ac356d7428376e70b2e37cc"
+    },
+    {
+      "path": "src/world/themes/forest.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": false,
+      "oldBytes": 16713,
+      "freshBytes": 16891,
+      "oldSHA256": "ae898a3eb5817f1187f9fbfaf5d0485b31c1b901968c2173ea5bc7d8bc6d8ac3",
+      "freshSHA256": "8a44ba8ad6154068b7be0de2d298c0ddc290f2b011cba55f96310f40f92a112f"
+    },
+    {
+      "path": "src/world/themes/forest.data.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 5902,
+      "freshBytes": 5902,
+      "oldSHA256": "9d25e9e9a957f07bce1296b50c39d7df3b8f459cde18d7e1d2d794ac7044ba43",
+      "freshSHA256": "9d25e9e9a957f07bce1296b50c39d7df3b8f459cde18d7e1d2d794ac7044ba43"
+    },
+    {
+      "path": "src/world/themes/cloud.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": false,
+      "oldBytes": 16730,
+      "freshBytes": 16848,
+      "oldSHA256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+      "freshSHA256": "3aa14c2e16a3947645c20740715dde9e49b8d17168f4e4176398dd2c99675518"
+    },
+    {
+      "path": "src/world/themes/cloud.data.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 2579,
+      "freshBytes": 2579,
+      "oldSHA256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af",
+      "freshSHA256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af"
+    },
+    {
+      "path": "src/world/themes/palace.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 12264,
+      "freshBytes": 12264,
+      "oldSHA256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+      "freshSHA256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce"
+    },
+    {
+      "path": "src/world/themes/palace.data.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 2828,
+      "freshBytes": 2828,
+      "oldSHA256": "684d032ad4604c363bfdec33048d1c3e006821daa520a33d5ed972ef88998c96",
+      "freshSHA256": "684d032ad4604c363bfdec33048d1c3e006821daa520a33d5ed972ef88998c96"
+    },
+    {
+      "path": "src/world/levels.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 20258,
+      "freshBytes": 20258,
+      "oldSHA256": "fa2f8d8eb3a580e012b6e51162a443a676dbab2fa944d31bca9c416fda8772e3",
+      "freshSHA256": "fa2f8d8eb3a580e012b6e51162a443a676dbab2fa944d31bca9c416fda8772e3"
+    },
+    {
+      "path": "src/world/tex.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 12086,
+      "freshBytes": 12086,
+      "oldSHA256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+      "freshSHA256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e"
+    },
+    {
+      "path": "world.html",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 290,
+      "freshBytes": 290,
+      "oldSHA256": "165cd0d81e3a63718b9015a767f611ec498e103b6b5eb656204f6fe902c654e7",
+      "freshSHA256": "165cd0d81e3a63718b9015a767f611ec498e103b6b5eb656204f6fe902c654e7"
+    },
+    {
+      "path": "src/dev/world.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 3206,
+      "freshBytes": 3206,
+      "oldSHA256": "16594efaa02ded1772d4ac50cbf4472f415c3b002af2a86dd951e0f2be214a3a",
+      "freshSHA256": "16594efaa02ded1772d4ac50cbf4472f415c3b002af2a86dd951e0f2be214a3a"
+    },
+    {
+      "path": "src/app/screens/explore.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": false,
+      "oldBytes": 40297,
+      "freshBytes": 40316,
+      "oldSHA256": "d8712754bd0848daf76143e143c0728055eeec2191bb62fcf32d549946c9403a",
+      "freshSHA256": "3addf05430a3a1580c69beef6f1bae227ae5fb50fc3b712850e53b86a9279ce0"
+    },
+    {
+      "path": "src/world/assets/index.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": false,
+      "oldBytes": 3642,
+      "freshBytes": 3904,
+      "oldSHA256": "344a909f15d69a994c27a9d2df37c7f969947c2e8a66d1ded477231f1c9e954a",
+      "freshSHA256": "4c82ae99094521d17d4192c4e530da25af382478f1f6489ab2aec99aa0292c7b"
+    },
+    {
+      "path": "src/world/street.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 10932,
+      "freshBytes": 10932,
+      "oldSHA256": "102d7d8d5030086e729ac21c3e459463057cb606c2fbe516d39e76c189c2273f",
+      "freshSHA256": "102d7d8d5030086e729ac21c3e459463057cb606c2fbe516d39e76c189c2273f"
+    },
+    {
+      "path": "src/world/explore.ts",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 55663,
+      "freshBytes": 55663,
+      "oldSHA256": "4fb7fa7241cb76e6e78363fa91ff3d9a093e02f593adfe34c0ead3a824e42c82",
+      "freshSHA256": "4fb7fa7241cb76e6e78363fa91ff3d9a093e02f593adfe34c0ead3a824e42c82"
+    },
+    {
+      "path": "package.json",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 1114,
+      "freshBytes": 1114,
+      "oldSHA256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "freshSHA256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88"
+    },
+    {
+      "path": "package-lock.json",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 51766,
+      "freshBytes": 51766,
+      "oldSHA256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "freshSHA256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84"
+    },
+    {
+      "path": "docs/CODEX_WORLD_BRIEF.md",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 3034,
+      "freshBytes": 3034,
+      "oldSHA256": "5d397677aece696fb9bb24854d3ae31ad76da04690dec5d53d8201aa247a2ccf",
+      "freshSHA256": "5d397677aece696fb9bb24854d3ae31ad76da04690dec5d53d8201aa247a2ccf"
+    },
+    {
+      "path": "docs/CODEX_SOURCE_FIRST.md",
+      "oldPresent": false,
+      "freshPresent": false,
+      "sameAsClaim": true,
+      "oldBytes": null,
+      "freshBytes": null,
+      "oldSHA256": null,
+      "freshSHA256": null
+    },
+    {
+      "path": "AGENTS.md",
+      "oldPresent": true,
+      "freshPresent": true,
+      "sameAsClaim": true,
+      "oldBytes": 4779,
+      "freshBytes": 4779,
+      "oldSHA256": "6ee4339f5c846dabf9e94b824470161bb2c468b7f3431c55aa7d8d59ff1befd4",
+      "freshSHA256": "6ee4339f5c846dabf9e94b824470161bb2c468b7f3431c55aa7d8d59ff1befd4"
+    }
+  ],
+  "changed": [
+    "docs/CODEX_QUEUE.md",
+    "docs/WORLD3D.md",
+    "src/world/themes/harbor.ts",
+    "src/world/themes/forest.ts",
+    "src/world/themes/cloud.ts",
+    "src/app/screens/explore.ts",
+    "src/world/assets/index.ts"
+  ],
+  "phase": "candidate02 fresh read exact6f SHA; not reused oldcapture"
+}

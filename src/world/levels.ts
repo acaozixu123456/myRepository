@@ -2,6 +2,7 @@
 // 一个关卡 = 十字路口街区；楼、道具、灯、电线杆、实体出生点都在这里摆。新增关卡：加一份 LevelDef，必要时在 kit / props 里补新道具。
 import { cloudLevel } from './themes/cloud.data';
 import { desertLevel } from './themes/desert.data';
+import { snowLevel } from './themes/snow.data';
 import { forestLevel } from './themes/forest.data';
 import { harborLevel } from './themes/harbor.data';
 import { marketLevel } from './themes/market.data';
@@ -10,11 +11,11 @@ import type { BuildingSpec } from './kit';
 
 export interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
 /** 场景里的玩法入口：走近触发一个小游戏（game 对应 app 层注册的小游戏名） */
-export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace' | 'desert';
+export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace' | 'desert' | 'snow';
 export interface PoiDef { id: string; game: string; x: number; z: number; label: string }
 export interface PropDef { kind: string; x: number; z: number; ry?: number; seed?: number; arg?: number }
 export interface AABB { x0: number; x1: number; z0: number; z1: number }
-export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert';
+export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow';
 export interface LevelDef {
   id: string; chapter: number; name: string; mood: MoodId; half: number;
   /** 场景主题：street = 十字街区（旧逻辑）；其余各有独立布局 / 地面 / 建筑 / 天空（src/world/themes/） */
@@ -116,9 +117,11 @@ export const LEVELS: Record<number, LevelDef> = { 1: LEVEL_1, 2: LEVEL_2, 3: LEV
 export const BONUS_BASE = 100;
 /** 沙漠绿洲：卡丁车赛道 + 绿洲钓鱼（见 themes/desert.data.ts） */
 export const LEVEL_DESERT: LevelDef = desertLevel();
-export const BONUS_LEVELS: Record<number, LevelDef> = { 101: LEVEL_DESERT };
+/** 喵雪岭：雪橇 + 叠雪猫（见 themes/snow.data.ts） */
+export const LEVEL_SNOW: LevelDef = snowLevel();
+export const BONUS_LEVELS: Record<number, LevelDef> = { 101: LEVEL_DESERT, 102: LEVEL_SNOW };
 /** 附加场景解锁条件：主线首领所在章节 ≥ 该值 */
-export const BONUS_UNLOCK: Record<number, number> = { 101: 3 };
+export const BONUS_UNLOCK: Record<number, number> = { 101: 3, 102: 5 };
 /** 所有场景（主线 + 附加），测试和场景选择都用它 */
 export const ALL_SCENES: Record<number, LevelDef> = { ...LEVELS, ...BONUS_LEVELS };
 export const isBonusScene = (id: number) => id > BONUS_BASE;
@@ -273,7 +276,7 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
 export type ZoneKind = 'wind' | 'tide' | 'slide' | 'sand';
 export interface Zone { x: number; z: number; r: number; kind: ZoneKind; dx: number; dz: number }
 const zoneCache = new Map<string, Zone[]>();
-const ZONE_BY_THEME: Partial<Record<string, ZoneKind>> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand' };
+const ZONE_BY_THEME: Partial<Record<string, ZoneKind>> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand', snow: 'slide' };
 export function zonesOf(L: LevelDef): Zone[] {
   const hit = zoneCache.get(L.id);
   if (hit) return hit;

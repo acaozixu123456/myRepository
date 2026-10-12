@@ -1,0 +1,207 @@
+{
+  "batch": "A10-SKY-DAY",
+  "rootPR": 117,
+  "createdUTC": "2026-10-12T06:35:08.366114+00:00",
+  "captureReady": true,
+  "claimBase": "7ea72216176654ba77fb4f6223d4958d5ee18c67",
+  "rootClaimHead": "5a0722d3bc103c681cbecfb8a1047900ee63ca50",
+  "contextCommit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+  "planCommit": "7ea72216176654ba77fb4f6223d4958d5ee18c67",
+  "nativeSourceGeometry": [
+    2172,
+    724
+  ],
+  "cropBoxHalfOpenXYXY": [
+    0,
+    90,
+    2172,
+    633
+  ],
+  "cropSize": [
+    2172,
+    543
+  ],
+  "finalSourceSize": [
+    2048,
+    512
+  ],
+  "geometry": "4:1 horizontal sky band; independent interior cylinder; not whole-sphere equirectangular",
+  "reviewDimensions": [
+    2048,
+    1024
+  ],
+  "cylinder": {
+    "captureDimensions": [
+      2048,
+      1024
+    ],
+    "grid": [
+      2,
+      3
+    ],
+    "viewportDimensions": [
+      640,
+      384
+    ],
+    "yawsDegrees": [
+      0,
+      120,
+      240
+    ],
+    "label": "独立柱面天空横带 / 非游戏截图",
+    "radius": 8,
+    "height": 12.566370614359172,
+    "circumferenceHeightRatio": 4,
+    "radialSegments": 192,
+    "heightSegments": 1,
+    "openEnded": true,
+    "thetaStart": 0,
+    "thetaLength": 6.283185307179586,
+    "capsOrPolarContinuation": false,
+    "seamWorldDirection": [
+      0,
+      0,
+      1
+    ],
+    "uvTransform": "u=1-u_default,v=v_default; preserve source horizontal reading order viewed from cylinder interior",
+    "uvBasisReadFrom": "local Three169 CylinderGeometry.js; x=R*sin(theta),z=R*cos(theta),uv=(u,1-v)",
+    "camera": {
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "pitchDegrees": 0,
+      "lookAtEquation": "[sin(yaw),0,cos(yaw)]",
+      "verticalFovDegrees": 70,
+      "horizontalFovDegrees": 98.8141952249359,
+      "aspect": 1.6666666666666667,
+      "near": 0.1,
+      "far": 40,
+      "bandVerticalLimitsDegrees": [
+        -38.146025987222544,
+        38.146025987222544
+      ],
+      "fullHeightOrPoleCoverageClaim": false,
+      "gameCameraMatched": false
+    },
+    "texture": {
+      "loader": "TextureLoader",
+      "colorSpace": "SRGBColorSpace",
+      "wrapS": "RepeatWrapping",
+      "wrapT": "ClampToEdgeWrapping",
+      "repeat": [
+        1,
+        1
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "flipY": true,
+      "anisotropy": 1,
+      "magFilter": "LinearFilter",
+      "minFilter": "LinearMipmapLinearFilter",
+      "generateMipmaps": true
+    },
+    "material": {
+      "type": "MeshBasicMaterial",
+      "color": "#ffffff",
+      "side": "BackSide",
+      "toneMapped": false,
+      "fog": false,
+      "opacity": 1,
+      "transparent": false
+    },
+    "renderer": {
+      "outputColorSpace": "SRGBColorSpace",
+      "toneMapping": "NoToneMapping",
+      "toneMappingExposure": 1,
+      "pixelRatio": 1,
+      "directRender": true,
+      "antialias": true
+    },
+    "lights": false,
+    "environment": null,
+    "pmrem": false,
+    "bloom": false,
+    "fog": false,
+    "grade": false,
+    "vignette": false,
+    "postImageRecolor": false,
+    "groundPbrTemplateUsed": false,
+    "runtimeActuallyExecuted": false
+  },
+  "assets": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "sourcePath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "frozenSHA256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "selectedCandidate": 1
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "sourcePath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "frozenSHA256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "selectedCandidate": 2
+    }
+  ],
+  "runtimeDependencies": [
+    {
+      "path": "/workspace/myRepository/node_modules/three/build/three.module.js",
+      "bytes": 1304820,
+      "sha256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416"
+    },
+    {
+      "path": "/workspace/myRepository/node_modules/three/src/geometries/CylinderGeometry.js",
+      "bytes": 5938,
+      "sha256": "1316895e87b6fe056ce0e5d68b867242edf2576f290473796e6df1b75e324852"
+    },
+    {
+      "path": "/workspace/myRepository/node_modules/three/package.json",
+      "bytes": 4373,
+      "sha256": "2dea831b9915a94b23a5c1ecc4bce0433f0cb6bca213401ff660277e85c3fe01"
+    },
+    {
+      "path": "/workspace/myRepository/node_modules/playwright-core/package.json",
+      "bytes": 876,
+      "sha256": "1d6b6f80ffb0c52865af0f9fe01abf2140df019e49ae6ac134605e462d583f3a"
+    }
+  ],
+  "contextChangedPaths": [
+    "docs/CODEX_QUEUE.md",
+    "docs/WORLD3D.md",
+    "src/world/themes/harbor.ts",
+    "src/world/themes/forest.ts",
+    "src/world/themes/cloud.ts",
+    "src/app/screens/explore.ts",
+    "src/world/assets/index.ts"
+  ],
+  "contextChangesAreNotImportedIntoStandalonePreview": true,
+  "worldEngineImported": false,
+  "gameIntegrationClaim": false,
+  "rootSourceFirstReviewByDocsHelper": true,
+  "generationTimesSource": "parent provenance; two genuine calls06:09:36–06:10:19UTC before06:12:57 rule commit; this helper performs no generation/source selection",
+  "plannedImages": [
+    "sky-daylight-a10.webp",
+    "sky-daylight-a10-cylinder.webp"
+  ],
+  "plannedNative": [
+    "sky_cloud_noon_cumulus_04-native-lr.png",
+    "sky_palace_afternoon_gold_05-native-lr.png"
+  ],
+  "captureCandidate": 2,
+  "candidatePerId": {
+    "sky_cloud_noon_cumulus_04": 1,
+    "sky_palace_afternoon_gold_05": 2
+  },
+  "genuineRepairTimes": "06:30:21→06:30:56 UTC; after source-firstrule, root lookup report separate",
+  "genuineCallCountIncludingC1History": 3,
+  "04RegeneratedOrRepainted": false,
+  "C1CaptureReused": false
+}

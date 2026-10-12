@@ -1,0 +1,479 @@
+{
+  "batch": "A10-SKY-DAY",
+  "PR": 117,
+  "reviewRound": 1,
+  "finalized_UTC": "2026-10-12T06:45:45.420212+00:00",
+  "readyForClaudeReview": true,
+  "claudeDecision": null,
+  "approved_count": 0,
+  "independent_agent": "world_tile_audit",
+  "evidence_boundary": "Read-only independent inspection and recomputation of parent-generated source/archive/call records and helper actual captures. This agent performed no imagegen call, creative pixel repair, production edit, browser capture, full test run, push or PR action.",
+  "selected": {
+    "sky_cloud_noon_cumulus_04": {
+      "candidate": 1,
+      "source_call_index": 0,
+      "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "final_sha256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "final_bytes": 83500
+    },
+    "sky_palace_afternoon_gold_05": {
+      "candidate": 2,
+      "source_call_index": 2,
+      "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "final_sha256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "final_bytes": 120818
+    }
+  },
+  "final_image_scope": {
+    "texture_count": 2,
+    "review_evidence_count": 7,
+    "optional_shifted_source_proof_count": 1,
+    "total_if_all_evidence_selected": 9,
+    "raw_native_call_output_count": 3,
+    "native_originals_scratch_only": true,
+    "technical_reference_and_restored_PNG_are_not_additional_AI_calls": true
+  },
+  "source_calls": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "candidate": 1,
+      "original_path": "/workspace/generated_images/exec-bfea3c71-64d7-4602-b024-49a6b16fa9be.png",
+      "original_SHA256": "3b281de6015b2902e3b81f7c04d53ab8a2935b82087274cecebbb969603a85b2",
+      "original_bytes": 1609742,
+      "dimensions": [
+        2172,
+        724
+      ],
+      "mode": "RGB",
+      "started_UTC": "2026-10-12 06:09:36 UTC",
+      "completed_UTC": "2026-10-12 06:10:19 UTC"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "candidate": 1,
+      "original_path": "/workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png",
+      "original_SHA256": "9bfa4708ef5e7d8db3d04ab6720dab912ef8523e714336344af0da4211634de1",
+      "original_bytes": 1751067,
+      "dimensions": [
+        2172,
+        724
+      ],
+      "mode": "RGB",
+      "started_UTC": "2026-10-12 06:09:36 UTC",
+      "completed_UTC": "2026-10-12 06:10:19 UTC"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "candidate": 2,
+      "original_path": "/workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png",
+      "original_SHA256": "129fee9d5daa804e4e6f08bc652df0cc8b2851f72c3ae14704c0d806c1b256b1",
+      "original_bytes": 1771323,
+      "dimensions": [
+        2172,
+        724
+      ],
+      "mode": "RGB",
+      "started_UTC": "2026-10-12 06:30:21 UTC",
+      "completed_UTC": "2026-10-12 06:30:56 UTC"
+    }
+  ],
+  "crop": {
+    "half_open_LTRB": [
+      0,
+      90,
+      2172,
+      633
+    ],
+    "native_dimensions": [
+      2172,
+      724
+    ],
+    "crop_dimensions": [
+      2172,
+      543
+    ],
+    "removed_top_rows": 90,
+    "removed_bottom_rows": 91,
+    "removed_side_columns": 0,
+    "final_dimensions": [
+      2048,
+      512
+    ],
+    "uniform_scale": 0.9429097605893186,
+    "aspect_stretch": false,
+    "upscale": false,
+    "quality": 90,
+    "method": 6,
+    "ICC_bytes": 588,
+    "ICC_SHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28"
+  },
+  "source_and_export_checks": {
+    "tool_archive_equal_original": true,
+    "tool_original_SHA_matches": true,
+    "reference_SHA_matches": true,
+    "reference_original_SHA_matches": true,
+    "reference_exact_negative_halfroll": true,
+    "restored_exact_positive_halfroll": true,
+    "restored_file_SHA_matches": true,
+    "native_and_restored_2172x724": true,
+    "native_actual_RGB": true,
+    "final_dimensions_POT": true,
+    "final_RGB_opaque": true,
+    "final_budget": true,
+    "final_frozen_ICC": true,
+    "frozen_ICC_expected_SHA": true,
+    "deterministic_reexport_exact": true,
+    "noon_is_copy_of_C1": true,
+    "noon_expected_hash": true,
+    "call_count_exact_three": true,
+    "original_two_call_args_paths_times_unchanged": true,
+    "completed_args_equal_planned": true,
+    "completed_args_equal_export_record": true,
+    "completed_paths_times_equal_export_record": true,
+    "third_call_full_arguments_preserved": true,
+    "only_real_third_call_is_afternoon_edit": true,
+    "reference_input_actual_arg": true,
+    "review_round_still_one": true
+  },
+  "noon_reuse": {
+    "C1_selected": true,
+    "regenerated": false,
+    "current_copy_byte_equal_C1": true,
+    "exact_reexport_evidence_reused_from_C1": true,
+    "C1_proof_reference": {
+      "path": "/workspace/world-review/sky-daylight/independent-qa/raw-crop-final-audit.json",
+      "bytes": 26976,
+      "SHA256": "4d9a02f0640dd2d6e8989e6c45cb0367205d9edc8f93ff2bb0ace813404a5d78"
+    }
+  },
+  "afternoon_C2_reexport": {
+    "bytes": 120818,
+    "SHA256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+    "exact_byte_equal": true
+  },
+  "actual_preview": {
+    "context_commit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+    "capture_start_UTC": "2026-10-12T06:35:09.895Z",
+    "capture_end_UTC": "2026-10-12T06:35:13.786Z",
+    "checks": {
+      "two_texture_loads_and_ids": true,
+      "actual_sRGB_repeatS_clampT_no_repeatY": true,
+      "unlit_basic_white_backsides": true,
+      "no_environment_fog_lights": true,
+      "renderer_no_tonemap": true,
+      "three_yaws_and_seam_at_zero": true,
+      "4_to_1_open_cylinder": true,
+      "no_post_processing": true,
+      "no_runtime_errors": true,
+      "source_before_after_still_equal": true,
+      "image_hashes_budget_POT": true,
+      "native_proof_pixels_exact": true,
+      "srgb_full_probes_exact": true,
+      "runtime_dependency_hashes_equal": true
+    },
+    "source_before_after_identical": true,
+    "source_texture_loads": 2,
+    "full_srgb_probe_pixels": 2097152,
+    "full_srgb_probe_exact": true,
+    "native_proof_pixels": 1265664,
+    "native_proof_exact": true,
+    "raw_frame_count": 7,
+    "main_board_pixel_count": 1474560,
+    "main_board_ROI_exact": true,
+    "extra_actual_yaw180": true,
+    "final_7_image_hash_budget_POT_check": true,
+    "actual_module_and_preview_hashes_check": true
+  },
+  "freeze": {
+    "preview_manifest_SHA256": "754b799311e5e6f517406f4dd1275a42efe3558442231d639c8a55c0cf4700d2",
+    "inventory_files_checked": 33,
+    "plus_manifest_files": 34,
+    "inventory_hashes_all_equal": true,
+    "C1_independent_evidence_files_unchanged": true,
+    "C1_independent_evidence_files_checked": 30
+  },
+  "visuals": {
+    "new_C2_paths_actually_viewed": [
+      "/workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png",
+      "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "/workspace/world-review/sky-daylight/independent-qa/candidate02/LR-and-new-center-full-height-1to1.png",
+      "/workspace/world-review/sky-daylight/independent-qa/candidate02/restored-full-repeat-2x1-4x1.png",
+      "/workspace/world-review/sky-daylight/independent-qa/candidate02/encoded-repeat-2x1-4x1.png",
+      "/workspace/world-review/sky-daylight/candidate02/preview-final/sky-daylight-a10-cylinder.webp",
+      "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-yaw-180-raw.png",
+      "/workspace/world-review/sky-daylight/candidate02/preview-final/sky-daylight-a10.webp",
+      "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-native-lr.png",
+      "/workspace/world-review/sky-daylight/candidate02/sky_palace_afternoon_gold_05-candidate-02-unshifted-full.png",
+      "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-native-full-lr-padded.png"
+    ],
+    "new_C2_path_count": 11,
+    "noon_C1_visuals_reused_on_identical_source_and_new_actual_C2_overview_and_cylinder": true,
+    "old_C1_afternoon_flat_cloud_cut_resolved": true,
+    "observed_C2_LR": "Rounded cloud crown and coherent cream/lavender underside replace the old flat vertical cut. No obvious continuous full-height hard stripe in raw-restored, coded full-height joins, repeat2/4 or seam-centered actual cylinder.",
+    "observed_inverse_center": "No obvious new hard vertical join in native restored center/coded center or actual afternoon180deg frame. Native restored centerx1086 and coded centerx1024 were explicitly checked.",
+    "palette": "04 clear blue+ivory cumulus;05 distinctly blue upper sky and warm champagne/soft-gold lower clouds. Crop keeps both bands while removing some empty top/bottom haze.",
+    "contents": "Sky/clouds only in inspected sources and previews;no foreground/city/buildings/text/sun disk/moon/star detected.",
+    "metric_reference": {
+      "tool-shifted": {
+        "LR": {
+          "MAE": 2.7490791896869244,
+          "p95": 8.0,
+          "max": 59,
+          "max_row_MAE": 34.0,
+          "max_row_y": 372
+        },
+        "center": {
+          "MAE": 3.110036832412523,
+          "p95": 11.0,
+          "max": 110,
+          "max_row_MAE": 51.0,
+          "max_row_y": 108
+        },
+        "internal_column_MAE_median": 1.3945672191528544,
+        "internal_column_MAE_p95": 2.0831031307550645,
+        "TB_tested": false
+      },
+      "restored-full": {
+        "LR": {
+          "MAE": 3.110036832412523,
+          "p95": 11.0,
+          "max": 110,
+          "max_row_MAE": 51.0,
+          "max_row_y": 108
+        },
+        "center": {
+          "MAE": 2.7490791896869244,
+          "p95": 8.0,
+          "max": 59,
+          "max_row_MAE": 34.0,
+          "max_row_y": 372
+        },
+        "internal_column_MAE_median": 1.3945672191528544,
+        "internal_column_MAE_p95": 2.0831031307550645,
+        "TB_tested": false
+      },
+      "native-crop": {
+        "LR": {
+          "MAE": 3.671577655003069,
+          "p95": 12.0,
+          "max": 110,
+          "max_row_MAE": 51.0,
+          "max_row_y": 18
+        },
+        "center": {
+          "MAE": 2.898710865561694,
+          "p95": 8.0,
+          "max": 59,
+          "max_row_MAE": 34.0,
+          "max_row_y": 282
+        },
+        "internal_column_MAE_median": 1.5064456721915285,
+        "internal_column_MAE_p95": 2.177716390423573,
+        "TB_tested": false
+      },
+      "encoded": {
+        "LR": {
+          "MAE": 5.781901041666667,
+          "p95": 17.0,
+          "max": 106,
+          "max_row_MAE": 51.0,
+          "max_row_y": 17
+        },
+        "center": {
+          "MAE": 1.6204427083333333,
+          "p95": 5.0,
+          "max": 43,
+          "max_row_MAE": 35.666666666666664,
+          "max_row_y": 266
+        },
+        "internal_column_MAE_median": 1.53125,
+        "internal_column_MAE_p95": 2.4294921874999997,
+        "TB_tested": false
+      }
+    },
+    "strict_pixel_periodicity_claim": false,
+    "TB_equality_test": false
+  },
+  "source_first_timeline": {
+    "rule_commit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+    "rule_commit_UTC": "2026-10-12 06:12:57 UTC",
+    "original_two_calls": "2026-10-12 06:09:36–06:10:19 UTC",
+    "repair_actual_third_call": "2026-10-12 06:30:21–06:30:56 UTC",
+    "original_pre_generation_public_search_verified": false,
+    "current_search_owner_record": "Original two calls completed06:10:19 before source-first6f06:12:57. Genuine repair06:30:21->06:30:56 after actual catalog lookups; source lookups did not verify remote downloadable pixel assets due enforced domain policy. No third-party pixel file adopted.",
+    "independent_remote_download_or_license_asset_pixel_verification": false,
+    "adopted_third_party_pixel_asset": false
+  },
+  "limitations": [
+    "Cloud wisps still have some non-equal edge pixels; coded afternoonLR MAE5.781901/max106, center MAE1.620443/max43. Means are diagnostics, not acceptance thresholds.",
+    "Main cloud clusters are visibly repeated at4x1; no claim of a nonrepeating sky.",
+    "Intentional blue-to-warm vertical gradient; horizontal wrap only; top/bottom do not need equality.",
+    "Independent Basic unlit cylinder has no game atmosphere/foreground/fog/bloom/grade. Engine at explicit6f context still uses shader sphere and its own sun; no texture integration claim.",
+    "Cylinder70deg camera and sampled yaws do not prove all camera directions or polar/zenith continuation.4:1 sky band is not entire-sphere equirectangular/HDRI.",
+    "sRGB and native RGB equality prove color/pixel transport, not cloud continuity.",
+    "AI call authenticity is supported by parent-saved actual call records/original files; this independent agent did not itself call imagegen or verify third-party candidate pixel downloads."
+  ],
+  "images": [
+    {
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky-daylight-a10.webp",
+      "bytes": 267372,
+      "SHA256": "1b59c2110341cf9d0103f881479bccd6ac01778827b653f4f1df2264a4395846",
+      "dimensions": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "hash_match": true,
+      "bytes_match": true,
+      "dimensions_match": true,
+      "RGB_SHA_match": true,
+      "POT": true,
+      "budget_under_500000": true,
+      "previously_verified": true
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky-daylight-a10-cylinder.webp",
+      "bytes": 198194,
+      "SHA256": "c378570a5e628cf5292046071ec0854185af75ac53e90c1690193d81cabe18e0",
+      "dimensions": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "hash_match": true,
+      "bytes_match": true,
+      "dimensions_match": true,
+      "RGB_SHA_match": true,
+      "POT": true,
+      "budget_under_500000": true,
+      "previously_verified": true
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-native-lr.png",
+      "bytes": 207981,
+      "SHA256": "337d9fb442b0f48d6200556f8bcfa3951cbaac5bd38ec2a27541ad3c63c8c856",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGB",
+      "hash_match": true,
+      "bytes_match": true,
+      "dimensions_match": true,
+      "RGB_SHA_match": true,
+      "POT": true,
+      "budget_under_500000": true,
+      "previously_verified": true,
+      "native_proof_exact": true,
+      "compared_pixels": 262144,
+      "source_SHA_matches": true
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-native-full-lr-padded.png",
+      "bytes": 343134,
+      "SHA256": "6d834baed16c7c3f20b8adf5845c9105245b704a18e3825ade46949b788932c4",
+      "dimensions": [
+        512,
+        1024
+      ],
+      "mode": "RGB",
+      "hash_match": true,
+      "bytes_match": true,
+      "dimensions_match": true,
+      "RGB_SHA_match": true,
+      "POT": true,
+      "budget_under_500000": true,
+      "previously_verified": true,
+      "native_proof_exact": true,
+      "compared_pixels": 370688,
+      "source_SHA_matches": true
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-native-lr.png",
+      "bytes": 272841,
+      "SHA256": "a27cfe8b8d372691cde7f0ba62da5be13ca0d07e21e8cc70a0844f598f7603b4",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGB",
+      "hash_match": true,
+      "bytes_match": true,
+      "dimensions_match": true,
+      "RGB_SHA_match": true,
+      "POT": true,
+      "budget_under_500000": true,
+      "previously_verified": true,
+      "native_proof_exact": true,
+      "compared_pixels": 262144,
+      "source_SHA_matches": true
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-native-full-lr-padded.png",
+      "bytes": 411521,
+      "SHA256": "be935ece33f4f4ef5fc8b3f20ef946f9e4d837ca1ecbf3033e948eafe0d98948",
+      "dimensions": [
+        512,
+        1024
+      ],
+      "mode": "RGB",
+      "hash_match": true,
+      "bytes_match": true,
+      "dimensions_match": true,
+      "RGB_SHA_match": true,
+      "POT": true,
+      "budget_under_500000": true,
+      "previously_verified": true,
+      "native_proof_exact": true,
+      "compared_pixels": 370688,
+      "source_SHA_matches": true
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-genuine-shifted-center-native-padded.png",
+      "bytes": 411521,
+      "SHA256": "be935ece33f4f4ef5fc8b3f20ef946f9e4d837ca1ecbf3033e948eafe0d98948",
+      "dimensions": [
+        512,
+        1024
+      ],
+      "mode": "RGB",
+      "hash_match": true,
+      "bytes_match": true,
+      "dimensions_match": true,
+      "RGB_SHA_match": true,
+      "POT": true,
+      "budget_under_500000": true,
+      "previously_verified": false,
+      "native_proof_exact": true,
+      "compared_pixels": 370688,
+      "source_SHA_matches": true
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "/workspace/world-review/sky-daylight/independent-qa/candidate02/source-chain-export-and-metrics.json",
+      "bytes": 15000,
+      "SHA256": "3640f1a1d590ec1c537df1fbbc7624d9b4c12d8a99193e0b113ffc017363c62b"
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/independent-qa/candidate02/candidate02-preview-verification.json",
+      "bytes": 12400,
+      "SHA256": "23dd3a0325f3311639cf3559a89a1c7d89d83b31978812fd0c242ed3f4863022"
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/independent-qa/candidate02/candidate02-frame-pixel-verification.json",
+      "bytes": 3376,
+      "SHA256": "f18704f750b6b1db66b483cbbabe502da023a185ed565e84de8e22c20206f6fd"
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/independent-qa/candidate02/candidate02-preview-final-freeze-check.json",
+      "bytes": 14855,
+      "SHA256": "be607d3be2de7143906f242587a8d98e40c013b95240fc90341e3e355447ecbb"
+    },
+    {
+      "path": "/workspace/world-review/sky-daylight/independent-qa/candidate02/protected-C1-freeze-verification.json",
+      "bytes": 3845,
+      "SHA256": "71e679fb09e41bb78726898e5ff1caecc4fae98abfe3d7f658d361a7906847a1"
+    }
+  ]
+}

@@ -1,23 +1,15 @@
-// 程序合成的音效（WebAudio，无音频文件）。第一次用户操作后才会真正发声。
-let ac: AudioContext | null = null;
+// 程序合成的音效（WebAudio，无音频文件）。第一次用户操作后才会真正发声（解锁见 audio.ts）。
+import { audioCtx } from './audio';
 let master: GainNode | null = null;
 export const sfxState = { on: true };
 
 function ctx(): AudioContext | null {
   if (!sfxState.on) return null;
-  try {
-    if (!ac) {
-      const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      ac = new AC();
-      master = ac.createGain();
-      master.gain.value = 0.5;
-      master.connect(ac.destination);
-    }
-    if (ac.state === 'suspended') void ac.resume();
-    return ac;
-  } catch {
-    return null;
-  }
+  const a = audioCtx();
+  if (!a) return null;
+  if (!master) { master = a.createGain(); master.gain.value = 0.5; master.connect(a.destination); }
+  if (a.state === 'suspended') void a.resume().catch(() => {});
+  return a;
 }
 
 interface Tone { f: number; t?: number; d: number; type?: OscillatorType; v?: number; slide?: number }
