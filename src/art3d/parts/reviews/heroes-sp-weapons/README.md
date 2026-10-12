@@ -80,7 +80,7 @@ node .shots/sp-weapons/current-e777/battle-stable.mjs 'r3d=1&seed=2&theme=meadow
 
 ## 当前验证与实际边界
 
-固定 e777 下 `npm run typecheck && npm test` 退出0，**68文件 / 1019测试通过**。这是 e777 的实测记录；主分支随后日期修订的同步与合并后提交前复检由维护者另行记录，不把本次结果记成尚未运行的检查。源码候选 SHA 未变，没有新增依赖或产品测试。
+固定 e777 下 `npm run typecheck && npm test` 退出0，**68文件 / 1019测试通过**。提交前另同步主线 `29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a` 的日期测试修复，维护者再次实际运行同命令，退出0、68文件/1019测试全部通过，日志 `.shots/sp-weapons/current-e777/tests-main-29f6.log`。相关 art3d / look / actor / player 与 e777 累计变化为0，十八份源文件及九图 SHA 保持原记录；当前图和采样仍明确以 e777 捕获。源码候选 SHA 未变，没有新增依赖或产品测试。
 
 | 武器 | 逻辑 Mesh（描边随父计1） | 含描边实际 Mesh | 最大分段 |
 | --- | ---: | ---: | ---: |

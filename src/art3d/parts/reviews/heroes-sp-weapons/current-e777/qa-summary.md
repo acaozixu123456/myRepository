@@ -31,3 +31,5 @@
 PNG 优化与 battle lossless WebP 对完整原图解码 RGBA 逐字节相同，九图均 <500000 B。参数、原生尺寸和字节数见 [当前交付说明](../README.md)，图 SHA 在 JSON。维护者实际 `npm run typecheck && npm test` 在固定 e777 下通过 **68 文件 / 1019 测试**；普通 art3d 单测没有传 heroId，不能代替这里的显式装配与实际战斗检查。
 
 完整原始报告 `.shots/sp-weapons-qa/current-e777-7656746361b4-report.json` 为 1,223,656 B，SHA `421fb8610a0aca1992a19f6f48e7a79f0a368a70e88d4dd9986faf22378bee52`，留在工作区；提交 JSON 保留全部 150 个原采样记录及 150 个动态嘴表面记录。最不满意：strike 扇面仍窄，前举侧弓饰与月桂叶脉/月珠在 190px 下较小。
+
+提交前维护者同步主线 `29f6a8b` 的日期测试修复，另实际 `npm run typecheck && npm test` 退出0，68文件/1019测试通过。相关 art3d/look/actor/player 累计字节无变化；这次验证不更改上述 e777 捕获基线和采样记录。
