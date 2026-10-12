@@ -1,0 +1,341 @@
+{
+  "verifiedAtUTC": "2026-10-12T03:37:45.248692+00:00",
+  "integratedMain": "aa9afd3",
+  "treeHead": "193b08e9fdaf561a084bc1b47d314d751d48d6f4",
+  "candidatePatternsSha256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+  "formalPngCount": 22,
+  "unchangedNonBattlePngs": 21,
+  "allRecordedHashSizeBytesAndBudgetsPass": true,
+  "maxBytes": 497698,
+  "formalBattleSourceFrame": 4,
+  "formalBattleMatchesCompleteRawFrameRGB": true,
+  "battleSha256": "323c90f52c7f4864ab6ad49cd691b41fefb328d365f14e0c338931b34f795d31",
+  "all33LatestCaptureSourceHashesStillMatch": true,
+  "sourceDrift": [],
+  "newBattleFramesActuallyViewed": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "newPoseTextureAuditsRun": 0,
+  "previous217PixelBlockEvidenceRetained": "/workspace/three-review/patterns-heraldic/qa-preview-pixel-validation.json",
+  "files": [
+    {
+      "name": "tabby-a.png",
+      "sha256": "f510e30f5a00a84df7754a0b4e41e7a6842218d6f2f2a72490e7d3eecc7f3f83",
+      "bytes": 344637,
+      "size": [
+        916,
+        1230
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "tabby-b.png",
+      "sha256": "3f378765003a9addb0d4ae1b6c90b24ec071f1223836a272d2506cb9e7b56729",
+      "bytes": 351241,
+      "size": [
+        916,
+        1230
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "tabby-c.png",
+      "sha256": "4d2e7734cd364bce28df11a7541714dfcd30edd65f7216f6643f62b567a2c641",
+      "bytes": 259904,
+      "size": [
+        916,
+        938
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "tuxedo-a.png",
+      "sha256": "f8cc049448a5ec71b19b4aa83d43502d5081fd2a90800d70ec730bf871983ed0",
+      "bytes": 252381,
+      "size": [
+        916,
+        938
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "tuxedo-b.png",
+      "sha256": "fbf76a0020fd8fbec794300f34f211a9f65f4b1825e075040b4aa8c4a4cf899e",
+      "bytes": 248948,
+      "size": [
+        916,
+        938
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "calico.png",
+      "sha256": "062419b9c3065cd513d508def5cde8fa32afe4457ba02bd2c292ce511d184b71",
+      "bytes": 335275,
+      "size": [
+        916,
+        1230
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "tabby-native-a.png",
+      "sha256": "06f7b4398f0b3bab8e5b822141a0875224a349499f3d2da65f6146e2f41f8819",
+      "bytes": 403909,
+      "size": [
+        766,
+        1550
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "tabby-native-b.png",
+      "sha256": "ad4925ecec3d49ae2d71de60e006cc5a960dc46a344ca4533553876a961516c9",
+      "bytes": 338980,
+      "size": [
+        766,
+        1302
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "tuxedo-native.png",
+      "sha256": "33487c0cabc114826b7395c4291faa4234a09520092cd3f60bab27f78500da2c",
+      "bytes": 384406,
+      "size": [
+        766,
+        1550
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "calico-native.png",
+      "sha256": "1103beb8646d3334e9dd66d6589832e6e9caf42428b356b675850181a9848c23",
+      "bytes": 263952,
+      "size": [
+        766,
+        1054
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "front-tabby.png",
+      "sha256": "185f22f4d1f18cf9d3aaf0b91ccaa4a28260ada3b04d84d0bdd13d9bdab5a40a",
+      "bytes": 265889,
+      "size": [
+        1024,
+        830
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "front-tuxedo.png",
+      "sha256": "db6dafcf2d3c2f56e1a00419117adecf5939c63eadf72174856a153d698e6cd5",
+      "bytes": 143929,
+      "size": [
+        1024,
+        570
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "front-calico.png",
+      "sha256": "655d7f2c391d9e23e6a115c111a27a2f91bdfff9e193e9535ca944c295894ca8",
+      "bytes": 99605,
+      "size": [
+        1024,
+        310
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "reverse-tabby.png",
+      "sha256": "cc79b59e10897ceae6cf2b0a6a2a597bf39c7509688ac0db6e950cacad15a568",
+      "bytes": 263617,
+      "size": [
+        1024,
+        830
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "reverse-tuxedo.png",
+      "sha256": "39b831232b444343e0e4adaa4ffce05bf15c4c06b46f884fb3872f436c1b7495",
+      "bytes": 145238,
+      "size": [
+        1024,
+        570
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "reverse-calico.png",
+      "sha256": "da9ffc4e0a0c95315b5b4a5a24a0053514d1d6367db9baae95b223d502b6abd3",
+      "bytes": 100585,
+      "size": [
+        1024,
+        310
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "rear-tabby.png",
+      "sha256": "db2fce4d5f71e556d0709be8859028da1d4a8494a800777e10484fe241a31e5d",
+      "bytes": 230330,
+      "size": [
+        1024,
+        830
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "rear-tuxedo.png",
+      "sha256": "50347a39e7163e11b17d420b258cd0cad8a736b00ba9e162152ce81fac4400fb",
+      "bytes": 125755,
+      "size": [
+        1024,
+        570
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "rear-calico.png",
+      "sha256": "440f577bec6c1d3fc7047a502f6316e489b8c4f8573c92f2305e0a722fdc1956",
+      "bytes": 94290,
+      "size": [
+        1024,
+        310
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "native-all21-idle.png",
+      "sha256": "b4968a93fa199e264ada05ba73219e411b2d54583c119a65a40ab798406d609b",
+      "bytes": 487169,
+      "size": [
+        1024,
+        1610
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "before-after.png",
+      "sha256": "15eeba58e9c451feddef3e597738e93ac358c6bded7e73061f3f0459e021ac85",
+      "bytes": 193774,
+      "size": [
+        916,
+        648
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": true
+    },
+    {
+      "name": "battle.png",
+      "sha256": "323c90f52c7f4864ab6ad49cd691b41fefb328d365f14e0c338931b34f795d31",
+      "bytes": 497698,
+      "size": [
+        948,
+        593
+      ],
+      "format": "PNG",
+      "mode": "RGB",
+      "matchesDeclaredHashSizeBytes": true,
+      "within500000": true,
+      "unchangedFromBFFrozenPng": false
+    }
+  ]
+}

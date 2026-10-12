@@ -1,0 +1,613 @@
+{
+  "schema": "independent-art3d-pattern-qa/v1",
+  "finalizedAtUTC": "2026-10-12T03:38:44.272459+00:00",
+  "recommendation": "ready_for_claude_review_with_disclosed_limits",
+  "claudeApproved": false,
+  "source": {
+    "baseCommit": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+    "candidatePatternsSha256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+    "baselinePatternsSha256": "60a0b1468d7cf216a319ac44df5d598a3ff8e67462b8c81b7ea024140271676e",
+    "sameModelToonBodyAndPartsForBothVersions": true,
+    "sourceStayedFrozen": true,
+    "coreHashes": {
+      "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+      "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+      "src/art3d/parts/body.ts": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167"
+    },
+    "mechanicalSourceHashes": {
+      "src/art/types.ts": "3c1789ef07006cd1a13237c3937bffc3de3698d2062cd95b2afce020866bad1d",
+      "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+      "src/art3d/heroes.ts": "0fc83a39421690538c37ac62cc9c1e0dc2d6ed7b1ffc7f2a0baae4a12216ce07",
+      "src/art3d/mode.ts": "e78bdc28428b536eb2c35d18d99d2aa4243c65afb2adc71a3a1a27642583c78b",
+      "src/art3d/parts/back.ts": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0",
+      "src/art3d/parts/body.ts": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167",
+      "src/art3d/parts/extras.ts": "de4e380baa3b7c41958c89b965a8b48bd2f016af3e2e9474dd5cdc760e77c65e",
+      "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+      "src/art3d/parts/index.ts": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+      "src/art3d/parts/types.ts": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c",
+      "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+      "src/art3d/patterns.ts": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+      "src/art3d/portrait.ts": "4314739e6e532fc1eed8283ec7aac3a018aa92342d3aea2f7e2e185a6bd03144",
+      "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+      "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db",
+      "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+      "src/content/mobs.ts": "72ea942357374719ca81d0992aed6bf08b1d9f3e1223775329b3fe14c5bad438",
+      "src/data/factions.ts": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d",
+      "src/data/heroes.ts": "e4181c0d825b4bcef99d25b084f4e080c450e7d15d50db9125481ed6bc801f59",
+      "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+      "src/data/units.ts": "309338e7d843a80f962db03e4cf5c951da72c6a9d983d0d8f5f90463ce1a652b",
+      "src/fx/actor.ts": "c84dd566df78c638d1d0bd6d1168a56dfb5e038a8944e6d4677f9283c198bffb",
+      "src/fx/util.ts": "fb33fa0af43cb0f86c888954915b2557fcfa99361c5801c4f904d0e8ba6b050d"
+    },
+    "screenshotDependencyCount": 31,
+    "screenshotSourceStayedFrozen": true,
+    "screenshotDependenciesUnchangedFromBF": true,
+    "excludedEvidence": [
+      "historic 206 model/captures",
+      "C1 preliminary model/visual evidence"
+    ],
+    "latestIntegratedMain": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+    "latestBattleTreeHead": "193b08e9fdaf561a084bc1b47d314d751d48d6f4",
+    "latestBattleSourceStayedFrozen": true
+  },
+  "scope": {
+    "patterns": [
+      "tabby",
+      "tuxedo",
+      "calico"
+    ],
+    "actualUsers": 21,
+    "heroes": 11,
+    "mobs": 10,
+    "patternCounts": {
+      "tabby": 11,
+      "tuxedo": 6,
+      "calico": 4
+    },
+    "ids": [
+      "man_shamoke",
+      "mob_qun_archer",
+      "mob_qun_assassin",
+      "mob_shu_archer",
+      "mob_shu_assassin",
+      "mob_shu_guard",
+      "mob_shu_strategist",
+      "mob_shu_vanguard",
+      "mob_wei_strategist",
+      "mob_wei_vanguard",
+      "mob_xian_strategist",
+      "qun_diaochan",
+      "qun_lvbuding",
+      "shu_huangzhong",
+      "shu_liumiaobei",
+      "shu_pangmiaotong",
+      "wei_xiahoudun",
+      "wei_xuhuang",
+      "wu_huanggai",
+      "wu_luxun",
+      "xian_zhangzhua"
+    ],
+    "liveRegistryAndCanonicalAgree": true,
+    "pointDeferred": true,
+    "nonTargetBranchesChanged": 0
+  },
+  "mechanical": {
+    "status": "passed",
+    "textureCases": 42,
+    "uniqueTextureKeys": 42,
+    "controlCases": 22,
+    "modelCasesPerVersion": 21,
+    "modelsActuallyBuiltIncludingBaseline": 42,
+    "poseCasesPerVersion": 63,
+    "poseNames": [
+      "idle",
+      "windup",
+      "strike"
+    ],
+    "poseParameters": {
+      "t": 0.4,
+      "phase": 0,
+      "yaw": 32
+    },
+    "all256SquaredCanvasTextures": true,
+    "allSRGB": true,
+    "allOpaqueRGBA": [
+      255,
+      255
+    ],
+    "sameKeyCacheIdentity": true,
+    "distinctHeadBodyTextureIdentities": true,
+    "lookInputPurity": true,
+    "freshContextTargetPixelDeterminism": true,
+    "sameModuleGraphCoatTextureBinding": true,
+    "whiteMappedMaterialAndVertexColors": true,
+    "cachedFinalMappedMaterials": true,
+    "allFiniteGeometryAndPoseBounds": true,
+    "geometryFingerprintsChanged": 0,
+    "poseBoundsChanged": 0,
+    "newFrameRegressions": 0,
+    "existingFrameClips": [
+      {
+        "id": "qun_lvbuding",
+        "pose": "idle",
+        "yMax": 3.6623942007194676,
+        "frameYMax": 3.6,
+        "unchangedFromBF": true
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windup",
+        "yMax": 3.6623942007194676,
+        "frameYMax": 3.6,
+        "unchangedFromBF": true
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "yMax": 3.6623942007194676,
+        "frameYMax": 3.6,
+        "unchangedFromBF": true
+      }
+    ],
+    "bakedMeshCounts": [
+      7
+    ],
+    "nonTargetOutputChanges": 0,
+    "protectedOutputs": {
+      "point": {
+        "actualUsers": 5,
+        "parts": 2,
+        "cases": 10
+      },
+      "spots_cow_tortie_butterfly": {
+        "paletteFixturesPerPattern": 1,
+        "parts": 2,
+        "cases": 8
+      },
+      "solid_shaded": {
+        "parts": 2,
+        "nullTextureCases": 4
+      }
+    },
+    "failures": [],
+    "pageErrors": []
+  },
+  "actualTextureCoverage": {
+    "head": [
+      "skull only; 638 vertices owned by head bone for every user"
+    ],
+    "body": [
+      "both shins; 338 vertices per shin",
+      "mapped tail spheres; 130 vertices per sphere, count varies by tail kind"
+    ],
+    "unmappedFixedAreas": [
+      "outer/inner ears",
+      "six cheek tufts",
+      "paws",
+      "sleeves",
+      "thighs",
+      "torso outfit",
+      "muzzle",
+      "collar",
+      "boots",
+      "ring odd tail segments",
+      "non-ring last tail segment"
+    ],
+    "deepPointEarsSupportedInCurrentBF": false,
+    "pointEvidence": "Fresh bf cat3d buildEar uses toon(coat.base) for outer ear, pink inside, no coat map; pattern edit cannot supply dark ears or dark paws/tip without Claude engine change."
+  },
+  "seamDiagnostics": {
+    "meaning": "Sphere/capsule u=0/1 diagnostics; coat textures are not WORLD four-edge tiles. Opposite v edges are different poles/endcaps and need not match. These numbers do not by themselves prove seamlessness.",
+    "UV": {
+      "skullSphere": "+z front is u=.25 (canvas x64); u seam lies on -x side",
+      "shinCapsule": "+z front is u=0/1, v follows Lathe profile index",
+      "tailSphere": "sphere UV restarts in each z-scaled segment; local-z stripe iso-band and segment repetition are inherent"
+    },
+    "results": [
+      {
+        "pattern": "tabby",
+        "part": "head",
+        "count": 11,
+        "horizontalEdgeMeanRange": [
+          0.40234375,
+          0.62890625
+        ],
+        "maxP95": 0,
+        "maxWorstRowRGBDifference": 59.66666666666667,
+        "diagnosticOnly": true
+      },
+      {
+        "pattern": "tabby",
+        "part": "body",
+        "count": 11,
+        "horizontalEdgeMeanRange": [
+          0,
+          0
+        ],
+        "maxP95": 0,
+        "maxWorstRowRGBDifference": 0,
+        "diagnosticOnly": true
+      },
+      {
+        "pattern": "tuxedo",
+        "part": "head",
+        "count": 6,
+        "horizontalEdgeMeanRange": [
+          0.3190104166666667,
+          0.7721354166666666
+        ],
+        "maxP95": 0,
+        "maxWorstRowRGBDifference": 99,
+        "diagnosticOnly": true
+      },
+      {
+        "pattern": "tuxedo",
+        "part": "body",
+        "count": 6,
+        "horizontalEdgeMeanRange": [
+          0.16015625,
+          0.38671875
+        ],
+        "maxP95": 0,
+        "maxWorstRowRGBDifference": 49.666666666666664,
+        "diagnosticOnly": true
+      },
+      {
+        "pattern": "calico",
+        "part": "head",
+        "count": 4,
+        "horizontalEdgeMeanRange": [
+          0.05338541666666667,
+          0.265625
+        ],
+        "maxP95": 0,
+        "maxWorstRowRGBDifference": 45.666666666666664,
+        "diagnosticOnly": true
+      },
+      {
+        "pattern": "calico",
+        "part": "body",
+        "count": 4,
+        "horizontalEdgeMeanRange": [
+          0.05338541666666667,
+          0.265625
+        ],
+        "maxP95": 0,
+        "maxWorstRowRGBDifference": 45.666666666666664,
+        "diagnosticOnly": true
+      }
+    ],
+    "visualFinding": "No obvious continuous u-seam line or pole fan of contrasting color in reviewed original-scale views; residual subpixel/edge-row differences remain. Do not call strictly pixel seamless or cross-segment continuous."
+  },
+  "visual": {
+    "status": "reviewed; ready for Claude decision",
+    "native63PoseCellsActuallyViewed": true,
+    "all21FrontReverseRearActuallyViewed": true,
+    "nativeCanvasDimensions": [
+      250,
+      219
+    ],
+    "battleIsFinalScaleReference": true,
+    "battleActors": 10,
+    "battleFramesCaptured": 12,
+    "battleFramesActuallyViewed": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "battleReviewPngActuallyViewed": true,
+    "rawTextureBoardsActuallyViewed": 6,
+    "formalPngsAdditionallyViewed": [
+      "before-after.png",
+      "native-all21-idle.png",
+      "rear-tuxedo.png",
+      "tabby-a.png",
+      "tuxedo-a.png",
+      "calico.png",
+      "battle.png"
+    ],
+    "tabby": "M and tapered cheek stripes read at original small scale; helmet/wrap wearers hide part of M. Back three bars and repeated tail band read; small shins remain partly covered by boots/outfits.",
+    "tuxedo": "Palette light blaze joins face/muzzle read; paws/collar/tip were already fixed light. C2 leaves recognizable base-colored tail areas and limited white surfaces; does not replace original white tip.",
+    "calico": "Three high-contrast users show asymmetric base/light/accent patches and preserved facial features. mob_qun_archer uses original brown light/base with lower frontal contrast; rear accent patch is easier to see.",
+    "mostUnsatisfactory": "mob_qun_archer frontal three-color distinction is weak at ~190px because original coat.light is brown and helmet hides upper patch; disclose without palette edit.",
+    "existingLimits": [
+      "qun_lvbuding feather tips already exceed FRAME in all three poses on bf and C2; same yMax3.6623942007194676",
+      "fixed cheek tufts/ears and non-ring tail tip do not sample new texture",
+      "clothes and boots cover much of body map; do not claim newly drawn white chest or mapped paws",
+      "discrete tail spheres reuse UV, so patches/stripes repeat along joints; finite views do not certify every continuous animated angle"
+    ],
+    "blockingNewVisualIssues": [],
+    "briefBattleReferenceHeightPixels": 190,
+    "nativeCanvasHeightMeaning": "250×219 are original canvas pixels; rendered character height varies with look/pose/gear, not a claim of uniform 190px height.",
+    "bfBattleFramesActuallyViewedPreviously": [
+      0,
+      3,
+      7,
+      11
+    ],
+    "bfBattleTimesPreviouslyListedWereNominalStepParameterSums": true,
+    "latestBattleIntegratedMain": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+    "battleAdvanceStepParameterSec": 0.25,
+    "battleAdvanceStartParameterSec": 0,
+    "battleAdvanceMethod": "__demo.advance",
+    "battleSelectedFrameIndex": 4,
+    "battleSelectedAdvanceCallCount": 5,
+    "battleSelectedNominalParameterSumSec": 1.25,
+    "battleTimeMeaning": "Nominal sum of supplied advance parameters; not a measured exact clock time.",
+    "latestBattleFinding": "All12 actual frames viewed after aa sync, including casting, strike/hurt and transient hit text/effects. Fur colors and pattern UV remain stable; no new pattern issue observed. Formal frame04 is legible with no large round title."
+  },
+  "screenshots": {
+    "count": 22,
+    "allPNGBytesWithin500000": true,
+    "maxPngBytes": 497698,
+    "allRecordedHashesDimensionsAndBudgetsIndependentlyVerified": true,
+    "independentSourceCanvasPixelBlocksCompared": 217,
+    "allSourceRGBPixelsEqual": true,
+    "reviewDirectory": "src/art3d/parts/reviews/pattern-heraldic/",
+    "files": [
+      {
+        "name": "tabby-a.png",
+        "dimensions": [
+          916,
+          1230
+        ],
+        "bytes": 344637,
+        "sha256": "f510e30f5a00a84df7754a0b4e41e7a6842218d6f2f2a72490e7d3eecc7f3f83"
+      },
+      {
+        "name": "tabby-b.png",
+        "dimensions": [
+          916,
+          1230
+        ],
+        "bytes": 351241,
+        "sha256": "3f378765003a9addb0d4ae1b6c90b24ec071f1223836a272d2506cb9e7b56729"
+      },
+      {
+        "name": "tabby-c.png",
+        "dimensions": [
+          916,
+          938
+        ],
+        "bytes": 259904,
+        "sha256": "4d2e7734cd364bce28df11a7541714dfcd30edd65f7216f6643f62b567a2c641"
+      },
+      {
+        "name": "tuxedo-a.png",
+        "dimensions": [
+          916,
+          938
+        ],
+        "bytes": 252381,
+        "sha256": "f8cc049448a5ec71b19b4aa83d43502d5081fd2a90800d70ec730bf871983ed0"
+      },
+      {
+        "name": "tuxedo-b.png",
+        "dimensions": [
+          916,
+          938
+        ],
+        "bytes": 248948,
+        "sha256": "fbf76a0020fd8fbec794300f34f211a9f65f4b1825e075040b4aa8c4a4cf899e"
+      },
+      {
+        "name": "calico.png",
+        "dimensions": [
+          916,
+          1230
+        ],
+        "bytes": 335275,
+        "sha256": "062419b9c3065cd513d508def5cde8fa32afe4457ba02bd2c292ce511d184b71"
+      },
+      {
+        "name": "tabby-native-a.png",
+        "dimensions": [
+          766,
+          1550
+        ],
+        "bytes": 403909,
+        "sha256": "06f7b4398f0b3bab8e5b822141a0875224a349499f3d2da65f6146e2f41f8819"
+      },
+      {
+        "name": "tabby-native-b.png",
+        "dimensions": [
+          766,
+          1302
+        ],
+        "bytes": 338980,
+        "sha256": "ad4925ecec3d49ae2d71de60e006cc5a960dc46a344ca4533553876a961516c9"
+      },
+      {
+        "name": "tuxedo-native.png",
+        "dimensions": [
+          766,
+          1550
+        ],
+        "bytes": 384406,
+        "sha256": "33487c0cabc114826b7395c4291faa4234a09520092cd3f60bab27f78500da2c"
+      },
+      {
+        "name": "calico-native.png",
+        "dimensions": [
+          766,
+          1054
+        ],
+        "bytes": 263952,
+        "sha256": "1103beb8646d3334e9dd66d6589832e6e9caf42428b356b675850181a9848c23"
+      },
+      {
+        "name": "front-tabby.png",
+        "dimensions": [
+          1024,
+          830
+        ],
+        "bytes": 265889,
+        "sha256": "185f22f4d1f18cf9d3aaf0b91ccaa4a28260ada3b04d84d0bdd13d9bdab5a40a"
+      },
+      {
+        "name": "front-tuxedo.png",
+        "dimensions": [
+          1024,
+          570
+        ],
+        "bytes": 143929,
+        "sha256": "db6dafcf2d3c2f56e1a00419117adecf5939c63eadf72174856a153d698e6cd5"
+      },
+      {
+        "name": "front-calico.png",
+        "dimensions": [
+          1024,
+          310
+        ],
+        "bytes": 99605,
+        "sha256": "655d7f2c391d9e23e6a115c111a27a2f91bdfff9e193e9535ca944c295894ca8"
+      },
+      {
+        "name": "reverse-tabby.png",
+        "dimensions": [
+          1024,
+          830
+        ],
+        "bytes": 263617,
+        "sha256": "cc79b59e10897ceae6cf2b0a6a2a597bf39c7509688ac0db6e950cacad15a568"
+      },
+      {
+        "name": "reverse-tuxedo.png",
+        "dimensions": [
+          1024,
+          570
+        ],
+        "bytes": 145238,
+        "sha256": "39b831232b444343e0e4adaa4ffce05bf15c4c06b46f884fb3872f436c1b7495"
+      },
+      {
+        "name": "reverse-calico.png",
+        "dimensions": [
+          1024,
+          310
+        ],
+        "bytes": 100585,
+        "sha256": "da9ffc4e0a0c95315b5b4a5a24a0053514d1d6367db9baae95b223d502b6abd3"
+      },
+      {
+        "name": "rear-tabby.png",
+        "dimensions": [
+          1024,
+          830
+        ],
+        "bytes": 230330,
+        "sha256": "db2fce4d5f71e556d0709be8859028da1d4a8494a800777e10484fe241a31e5d"
+      },
+      {
+        "name": "rear-tuxedo.png",
+        "dimensions": [
+          1024,
+          570
+        ],
+        "bytes": 125755,
+        "sha256": "50347a39e7163e11b17d420b258cd0cad8a736b00ba9e162152ce81fac4400fb"
+      },
+      {
+        "name": "rear-calico.png",
+        "dimensions": [
+          1024,
+          310
+        ],
+        "bytes": 94290,
+        "sha256": "440f577bec6c1d3fc7047a502f6316e489b8c4f8573c92f2305e0a722fdc1956"
+      },
+      {
+        "name": "native-all21-idle.png",
+        "dimensions": [
+          1024,
+          1610
+        ],
+        "bytes": 487169,
+        "sha256": "b4968a93fa199e264ada05ba73219e411b2d54583c119a65a40ab798406d609b"
+      },
+      {
+        "name": "before-after.png",
+        "dimensions": [
+          916,
+          648
+        ],
+        "bytes": 193774,
+        "sha256": "15eeba58e9c451feddef3e597738e93ac358c6bded7e73061f3f0459e021ac85"
+      },
+      {
+        "name": "battle.png",
+        "dimensions": [
+          948,
+          593
+        ],
+        "bytes": 497698,
+        "sha256": "323c90f52c7f4864ab6ad49cd691b41fefb328d365f14e0c338931b34f795d31"
+      }
+    ],
+    "pageErrors": [],
+    "networkNotes": [
+      "Google Fonts stylesheet net::ERR_TUNNEL_CONNECTION_FAILED observed on bf and final; does not concern coat map generation",
+      "final independent network observation saw favicon404; no production repair or repeated capture requested"
+    ],
+    "latestBattlePngSha256": "323c90f52c7f4864ab6ad49cd691b41fefb328d365f14e0c338931b34f795d31",
+    "other21ReviewPngsByteUnchanged": true,
+    "initialPixelBlockProofRetained": 217,
+    "currentPixelProofComposition": {
+      "reusedFrom21UnchangedImages": 216,
+      "newCompleteBattleFrameCompared": 1,
+      "currentTotal": 217
+    },
+    "latestFormalBattleSourceFrameRGBIdentical": true,
+    "latestBattleDimensions": [
+      948,
+      593
+    ],
+    "latestBattleBytes": 497698
+  },
+  "evidence": {
+    "mechanical": "/workspace/three-review/patterns-heraldic/audit-final-c2.json",
+    "method": "/workspace/three-review/patterns-heraldic/qa-method-notes.json",
+    "previewCapture": "/workspace/three-review/patterns-heraldic/final-capture-report.json",
+    "previewDelivery": "/workspace/three-review/patterns-heraldic/review-delivery.json",
+    "previewPixelValidation": "/workspace/three-review/patterns-heraldic/qa-preview-pixel-validation.json",
+    "independentVisualCropIndex": "/workspace/three-review/patterns-heraldic/qa-visual-final-c2-index.json",
+    "canonicalUsers": "/workspace/three-review/patterns-heraldic/users.json",
+    "sourceReceipts": "/workspace/three-review/patterns-heraldic/bf-source-receipts.json",
+    "latestBattleCapture": "/workspace/three-review/patterns-heraldic/latest-battle-capture-report.json",
+    "latestPreviewHashAndRGBValidation": "/workspace/three-review/patterns-heraldic/qa-preview-pixel-validation-aa9.json",
+    "mainSourceSyncVerification": "/workspace/three-review/patterns-heraldic/qa-main-sync-verification.json"
+  },
+  "actionsByIndependentReviewer": {
+    "productionFilesChanged": 0,
+    "testsRun": 0,
+    "newAgentsSpawned": 0,
+    "commitsOrPRs": 0,
+    "formalMechanicalAuditsRun": 1,
+    "scope": "Independent scratch QA only; root owns implementation and repository typecheck/tests.",
+    "postSyncModelTextureAuditsRun": 0,
+    "latestBattleFramesActuallyViewed": 12
+  },
+  "mainSyncVerification": {
+    "newMain": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+    "mergedTreeHead": "193b08e9fdaf561a084bc1b47d314d751d48d6f4",
+    "all24MechanicalSourceHashesIdenticalAfterSync": true,
+    "sourceChangesAgainstNewMain": [
+      "src/art3d/patterns.ts"
+    ],
+    "mechanicalAndPoseBaselineRemainsBF": true,
+    "newModelTextureAuditsRun": 0,
+    "latestBattleCaptureSourceCount": 33,
+    "latestBattleCaptureSourcesStayedFrozen": true,
+    "latestBattleSourcesIndependentlyStillMatchCurrentTree": true,
+    "report": "/workspace/three-review/patterns-heraldic/qa-main-sync-verification.json"
+  }
+}

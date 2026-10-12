@@ -1,0 +1,758 @@
+{
+  "base": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+  "patternsSha256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+  "sourceStayedFrozen": true,
+  "dependencies": [
+    {
+      "file": "src/art/types.ts",
+      "sha256": "3c1789ef07006cd1a13237c3937bffc3de3698d2062cd95b2afce020866bad1d"
+    },
+    {
+      "file": "src/data/heroes.ts",
+      "sha256": "e4181c0d825b4bcef99d25b084f4e080c450e7d15d50db9125481ed6bc801f59"
+    },
+    {
+      "file": "src/data/mob-looks.ts",
+      "sha256": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5"
+    },
+    {
+      "file": "src/content/mobs.ts",
+      "sha256": "72ea942357374719ca81d0992aed6bf08b1d9f3e1223775329b3fe14c5bad438"
+    },
+    {
+      "file": "src/data/factions.ts",
+      "sha256": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d"
+    },
+    {
+      "file": "src/data/units.ts",
+      "sha256": "309338e7d843a80f962db03e4cf5c951da72c6a9d983d0d8f5f90463ce1a652b"
+    },
+    {
+      "file": "src/art3d/patterns.ts",
+      "sha256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b"
+    },
+    {
+      "file": "src/art3d/cat3d.ts",
+      "sha256": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56"
+    },
+    {
+      "file": "src/art3d/renderer.ts",
+      "sha256": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+    },
+    {
+      "file": "src/art3d/toon.ts",
+      "sha256": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837"
+    },
+    {
+      "file": "src/art3d/pose.ts",
+      "sha256": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265"
+    },
+    {
+      "file": "src/art3d/parts/body.ts",
+      "sha256": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167"
+    },
+    {
+      "file": "src/art3d/parts/headgear.ts",
+      "sha256": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885"
+    },
+    {
+      "file": "src/art3d/parts/back.ts",
+      "sha256": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0"
+    },
+    {
+      "file": "src/art3d/parts/weapons.ts",
+      "sha256": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a"
+    },
+    {
+      "file": "src/art3d/parts/extras.ts",
+      "sha256": "de4e380baa3b7c41958c89b965a8b48bd2f016af3e2e9474dd5cdc760e77c65e"
+    },
+    {
+      "file": "src/art3d/parts/index.ts",
+      "sha256": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e"
+    },
+    {
+      "file": "src/art3d/heroes.ts",
+      "sha256": "0fc83a39421690538c37ac62cc9c1e0dc2d6ed7b1ffc7f2a0baae4a12216ce07"
+    },
+    {
+      "file": "src/fx/actor.ts",
+      "sha256": "c84dd566df78c638d1d0bd6d1168a56dfb5e038a8944e6d4677f9283c198bffb"
+    },
+    {
+      "file": "src/dev/cat3d.ts",
+      "sha256": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5"
+    },
+    {
+      "file": "tools/cat3d-shots.mjs",
+      "sha256": "4c9b690b764b5c68f227e5b68bfda913fb45e0c70befe9ff561efc9c60649170"
+    },
+    {
+      "file": "tools/battle-shots.mjs",
+      "sha256": "99ad6d721fb20f85947ca7dc097328741ffa1be1762d78a534c141174ffaefe4"
+    },
+    {
+      "file": "cat3d.html",
+      "sha256": "954358e0aca8e050c2c0dcf7eabddd34467aaa876acc5f9c29c08e6ed22ddb39"
+    },
+    {
+      "file": "battle.html",
+      "sha256": "bdfe23e9b0250b78ba9b1b26f5855856107ee2e417f3c29b9673f3f46694d1d8"
+    },
+    {
+      "file": "src/demo/battle.ts",
+      "sha256": "923add061477ace9134da20ecced259d0abef96eb1eebef79f2248e8baa0d45d"
+    },
+    {
+      "file": "package.json",
+      "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84"
+    },
+    {
+      "file": "src/art3d/parts/types.ts",
+      "sha256": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c"
+    },
+    {
+      "file": "src/art3d/portrait.ts",
+      "sha256": "4314739e6e532fc1eed8283ec7aac3a018aa92342d3aea2f7e2e185a6bd03144"
+    },
+    {
+      "file": "src/fx/player.ts",
+      "sha256": "4e1601157ed89628598c392e92bda5ff4375080dbafbaebcbdd9125cb60afc42"
+    },
+    {
+      "file": "src/fx/scene.ts",
+      "sha256": "9939442e7ea55167607011905728d61751b3381ddfd8887646aafb5f0f45f249"
+    }
+  ],
+  "files": [
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tabby-a.png",
+      "name": "tabby-a.png",
+      "dimensions": [
+        916,
+        1230
+      ],
+      "bytes": 344637,
+      "sha256": "f510e30f5a00a84df7754a0b4e41e7a6842218d6f2f2a72490e7d3eecc7f3f83",
+      "ids": [
+        "shu_liumiaobei",
+        "wei_xiahoudun",
+        "wu_luxun",
+        "man_shamoke"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        300,
+        263
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-poses-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tabby-b.png",
+      "name": "tabby-b.png",
+      "dimensions": [
+        916,
+        1230
+      ],
+      "bytes": 351241,
+      "sha256": "3f378765003a9addb0d4ae1b6c90b24ec071f1223836a272d2506cb9e7b56729",
+      "ids": [
+        "wei_xuhuang",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "mob_wei_vanguard"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        300,
+        263
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-poses-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tabby-c.png",
+      "name": "tabby-c.png",
+      "dimensions": [
+        916,
+        938
+      ],
+      "bytes": 259904,
+      "sha256": "4d2e7734cd364bce28df11a7541714dfcd30edd65f7216f6643f62b567a2c641",
+      "ids": [
+        "mob_shu_vanguard",
+        "mob_shu_strategist",
+        "mob_shu_assassin"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        300,
+        263
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-poses-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tuxedo-a.png",
+      "name": "tuxedo-a.png",
+      "dimensions": [
+        916,
+        938
+      ],
+      "bytes": 252381,
+      "sha256": "f8cc049448a5ec71b19b4aa83d43502d5081fd2a90800d70ec730bf871983ed0",
+      "ids": [
+        "qun_lvbuding",
+        "xian_zhangzhua",
+        "mob_wei_strategist"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        300,
+        263
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-poses-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tuxedo-b.png",
+      "name": "tuxedo-b.png",
+      "dimensions": [
+        916,
+        938
+      ],
+      "bytes": 248948,
+      "sha256": "fbf76a0020fd8fbec794300f34f211a9f65f4b1825e075040b4aa8c4a4cf899e",
+      "ids": [
+        "mob_shu_guard",
+        "mob_qun_assassin",
+        "mob_xian_strategist"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        300,
+        263
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-poses-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/calico.png",
+      "name": "calico.png",
+      "dimensions": [
+        916,
+        1230
+      ],
+      "bytes": 335275,
+      "sha256": "062419b9c3065cd513d508def5cde8fa32afe4457ba02bd2c292ce511d184b71",
+      "ids": [
+        "shu_pangmiaotong",
+        "qun_diaochan",
+        "mob_shu_archer",
+        "mob_qun_archer"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        300,
+        263
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-poses-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tabby-native-a.png",
+      "name": "tabby-native-a.png",
+      "dimensions": [
+        766,
+        1550
+      ],
+      "bytes": 403909,
+      "sha256": "06f7b4398f0b3bab8e5b822141a0875224a349499f3d2da65f6146e2f41f8819",
+      "ids": [
+        "shu_liumiaobei",
+        "wei_xiahoudun",
+        "wu_luxun",
+        "man_shamoke",
+        "wei_xuhuang",
+        "shu_huangzhong"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-native-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tabby-native-b.png",
+      "name": "tabby-native-b.png",
+      "dimensions": [
+        766,
+        1302
+      ],
+      "bytes": 338980,
+      "sha256": "ad4925ecec3d49ae2d71de60e006cc5a960dc46a344ca4533553876a961516c9",
+      "ids": [
+        "wu_huanggai",
+        "mob_wei_vanguard",
+        "mob_shu_vanguard",
+        "mob_shu_strategist",
+        "mob_shu_assassin"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-native-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/tuxedo-native.png",
+      "name": "tuxedo-native.png",
+      "dimensions": [
+        766,
+        1550
+      ],
+      "bytes": 384406,
+      "sha256": "33487c0cabc114826b7395c4291faa4234a09520092cd3f60bab27f78500da2c",
+      "ids": [
+        "qun_lvbuding",
+        "xian_zhangzhua",
+        "mob_wei_strategist",
+        "mob_shu_guard",
+        "mob_qun_assassin",
+        "mob_xian_strategist"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-native-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/calico-native.png",
+      "name": "calico-native.png",
+      "dimensions": [
+        766,
+        1054
+      ],
+      "bytes": 263952,
+      "sha256": "1103beb8646d3334e9dd66d6589832e6e9caf42428b356b675850181a9848c23",
+      "ids": [
+        "shu_pangmiaotong",
+        "qun_diaochan",
+        "mob_shu_archer",
+        "mob_qun_archer"
+      ],
+      "poses": [
+        "idle",
+        "windup",
+        "strike"
+      ],
+      "yaw": 32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-native-raw.png",
+      "operation": "Complete source canvases copied at original pixel size; no resize or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/front-tabby.png",
+      "name": "front-tabby.png",
+      "dimensions": [
+        1024,
+        830
+      ],
+      "bytes": 265889,
+      "sha256": "185f22f4d1f18cf9d3aaf0b91ccaa4a28260ada3b04d84d0bdd13d9bdab5a40a",
+      "ids": [
+        "shu_liumiaobei",
+        "wei_xiahoudun",
+        "wu_luxun",
+        "man_shamoke",
+        "wei_xuhuang",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "mob_wei_vanguard",
+        "mob_shu_vanguard",
+        "mob_shu_strategist",
+        "mob_shu_assassin"
+      ],
+      "pose": "idle",
+      "yaw": 0,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-front-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/front-tuxedo.png",
+      "name": "front-tuxedo.png",
+      "dimensions": [
+        1024,
+        570
+      ],
+      "bytes": 143929,
+      "sha256": "db6dafcf2d3c2f56e1a00419117adecf5939c63eadf72174856a153d698e6cd5",
+      "ids": [
+        "qun_lvbuding",
+        "xian_zhangzhua",
+        "mob_wei_strategist",
+        "mob_shu_guard",
+        "mob_qun_assassin",
+        "mob_xian_strategist"
+      ],
+      "pose": "idle",
+      "yaw": 0,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-front-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/front-calico.png",
+      "name": "front-calico.png",
+      "dimensions": [
+        1024,
+        310
+      ],
+      "bytes": 99605,
+      "sha256": "655d7f2c391d9e23e6a115c111a27a2f91bdfff9e193e9535ca944c295894ca8",
+      "ids": [
+        "shu_pangmiaotong",
+        "qun_diaochan",
+        "mob_shu_archer",
+        "mob_qun_archer"
+      ],
+      "pose": "idle",
+      "yaw": 0,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-front-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/reverse-tabby.png",
+      "name": "reverse-tabby.png",
+      "dimensions": [
+        1024,
+        830
+      ],
+      "bytes": 263617,
+      "sha256": "cc79b59e10897ceae6cf2b0a6a2a597bf39c7509688ac0db6e950cacad15a568",
+      "ids": [
+        "shu_liumiaobei",
+        "wei_xiahoudun",
+        "wu_luxun",
+        "man_shamoke",
+        "wei_xuhuang",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "mob_wei_vanguard",
+        "mob_shu_vanguard",
+        "mob_shu_strategist",
+        "mob_shu_assassin"
+      ],
+      "pose": "idle",
+      "yaw": -32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-reverse-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/reverse-tuxedo.png",
+      "name": "reverse-tuxedo.png",
+      "dimensions": [
+        1024,
+        570
+      ],
+      "bytes": 145238,
+      "sha256": "39b831232b444343e0e4adaa4ffce05bf15c4c06b46f884fb3872f436c1b7495",
+      "ids": [
+        "qun_lvbuding",
+        "xian_zhangzhua",
+        "mob_wei_strategist",
+        "mob_shu_guard",
+        "mob_qun_assassin",
+        "mob_xian_strategist"
+      ],
+      "pose": "idle",
+      "yaw": -32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-reverse-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/reverse-calico.png",
+      "name": "reverse-calico.png",
+      "dimensions": [
+        1024,
+        310
+      ],
+      "bytes": 100585,
+      "sha256": "da9ffc4e0a0c95315b5b4a5a24a0053514d1d6367db9baae95b223d502b6abd3",
+      "ids": [
+        "shu_pangmiaotong",
+        "qun_diaochan",
+        "mob_shu_archer",
+        "mob_qun_archer"
+      ],
+      "pose": "idle",
+      "yaw": -32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-reverse-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/rear-tabby.png",
+      "name": "rear-tabby.png",
+      "dimensions": [
+        1024,
+        830
+      ],
+      "bytes": 230330,
+      "sha256": "db2fce4d5f71e556d0709be8859028da1d4a8494a800777e10484fe241a31e5d",
+      "ids": [
+        "shu_liumiaobei",
+        "wei_xiahoudun",
+        "wu_luxun",
+        "man_shamoke",
+        "wei_xuhuang",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "mob_wei_vanguard",
+        "mob_shu_vanguard",
+        "mob_shu_strategist",
+        "mob_shu_assassin"
+      ],
+      "pose": "idle",
+      "yaw": 148,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-rear-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/rear-tuxedo.png",
+      "name": "rear-tuxedo.png",
+      "dimensions": [
+        1024,
+        570
+      ],
+      "bytes": 125755,
+      "sha256": "50347a39e7163e11b17d420b258cd0cad8a736b00ba9e162152ce81fac4400fb",
+      "ids": [
+        "qun_lvbuding",
+        "xian_zhangzhua",
+        "mob_wei_strategist",
+        "mob_shu_guard",
+        "mob_qun_assassin",
+        "mob_xian_strategist"
+      ],
+      "pose": "idle",
+      "yaw": 148,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-rear-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/rear-calico.png",
+      "name": "rear-calico.png",
+      "dimensions": [
+        1024,
+        310
+      ],
+      "bytes": 94290,
+      "sha256": "440f577bec6c1d3fc7047a502f6316e489b8c4f8573c92f2305e0a722fdc1956",
+      "ids": [
+        "shu_pangmiaotong",
+        "qun_diaochan",
+        "mob_shu_archer",
+        "mob_qun_archer"
+      ],
+      "pose": "idle",
+      "yaw": 148,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-rear-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/native-all21-idle.png",
+      "name": "native-all21-idle.png",
+      "dimensions": [
+        1024,
+        1610
+      ],
+      "bytes": 487169,
+      "sha256": "b4968a93fa199e264ada05ba73219e411b2d54583c119a65a40ab798406d609b",
+      "ids": [
+        "shu_liumiaobei",
+        "wei_xiahoudun",
+        "wu_luxun",
+        "man_shamoke",
+        "wei_xuhuang",
+        "shu_huangzhong",
+        "wu_huanggai",
+        "mob_wei_vanguard",
+        "mob_shu_vanguard",
+        "mob_shu_strategist",
+        "mob_shu_assassin",
+        "qun_lvbuding",
+        "xian_zhangzhua",
+        "mob_wei_strategist",
+        "mob_shu_guard",
+        "mob_qun_assassin",
+        "mob_xian_strategist",
+        "shu_pangmiaotong",
+        "qun_diaochan",
+        "mob_shu_archer",
+        "mob_qun_archer"
+      ],
+      "pose": "idle",
+      "yaw": 32,
+      "cellDimensions": [
+        250,
+        219
+      ],
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/final-native-raw.png",
+      "operation": "Whole source canvases copied at 1:1 and labelled outside pixels"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/before-after.png",
+      "name": "before-after.png",
+      "dimensions": [
+        916,
+        648
+      ],
+      "bytes": 193774,
+      "sha256": "15eeba58e9c451feddef3e597738e93ac358c6bded7e73061f3f0459e021ac85",
+      "ids": [
+        "shu_liumiaobei",
+        "qun_lvbuding",
+        "qun_diaochan"
+      ],
+      "pose": "idle",
+      "yaw": 32,
+      "cellDimensions": [
+        300,
+        263
+      ],
+      "baselineRaw": "/workspace/three-review/patterns-heraldic/baseline/root-bf-poses.png",
+      "baselineRawSha256": "61106e2f954859ff2f836b109e2fd2db47ddae3af776ae2d5ea281806b3fcf92",
+      "finalRaw": "/workspace/three-review/patterns-heraldic/final-poses-raw.png",
+      "finalRawSha256": "a6068dca165015ffc49c92215c2762fc63cf074faab22b7fdae73c7f6b8b3848",
+      "operation": "Same actual canvas rectangles from BF and final renders; no scaling, painting or recolor"
+    },
+    {
+      "file": "/workspace/three-worktrees/pattern-heraldic/src/art3d/parts/reviews/pattern-heraldic/battle.png",
+      "name": "battle.png",
+      "dimensions": [
+        948,
+        593
+      ],
+      "bytes": 497698,
+      "sha256": "323c90f52c7f4864ab6ad49cd691b41fefb328d365f14e0c338931b34f795d31",
+      "ids": "r3d=1&a=shu_liumiaobei,wei_xuhuang,qun_diaochan,shu_pangmiaotong,mob_wei_strategist&b=qun_lvbuding,mob_shu_guard,wu_luxun,man_shamoke,mob_qun_archer&theme=meadow&seed=2",
+      "sourceRaw": "/workspace/three-review/patterns-heraldic/latest-battle_04.png",
+      "stepTimeSec": 0.25,
+      "frame": 4,
+      "operation": "Original948x593 RGB pixels preserved, lossless PNG compression; selected frame index4",
+      "sourceRawSha256": "d13ee29fa2fa4b0825cbe9a56dea60854ec7aea26051fbdb2be81a1c8e3c91a2",
+      "stepParameterSec": 0.25,
+      "selectedNominalTimeSec": 1.25,
+      "integratedMain": "aa9afd3",
+      "gitHead": "193b08e9fdaf561a084bc1b47d314d751d48d6f4",
+      "stepMethod": "__demo.advance"
+    }
+  ],
+  "all21At3PosesBothSizes": true,
+  "frontReverseRearAll21": true,
+  "candidate1Excluded": true,
+  "history206Excluded": true,
+  "battleUpdate": {
+    "integratedMain": "aa9afd3",
+    "gitHead": "193b08e9fdaf561a084bc1b47d314d751d48d6f4",
+    "captureReport": "/workspace/three-review/patterns-heraldic/latest-battle-capture-report.json",
+    "other21ImagesByteIdentical": true,
+    "poseBaselineAndPoseCaptureReportUnchanged": true,
+    "previousBattleArchive": "/workspace/three-review/patterns-heraldic/bf-reviewed-battle.png"
+  }
+}

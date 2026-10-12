@@ -1,0 +1,39 @@
+{
+  "verifiedAtUTC": "2026-10-12T03:24:43.945913+00:00",
+  "mergedTreeHead": "193b08e9fdaf561a084bc1b47d314d751d48d6f4",
+  "newMain": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+  "originalMechanicalBase": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+  "candidatePatternsSha256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+  "all24MechanicalSourceHashesIdenticalAfterSync": true,
+  "changedSourceFiles": [],
+  "sourceChangesAgainstNewMain": [
+    "src/art3d/patterns.ts"
+  ],
+  "hashes": {
+    "src/art/types.ts": "3c1789ef07006cd1a13237c3937bffc3de3698d2062cd95b2afce020866bad1d",
+    "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+    "src/art3d/heroes.ts": "0fc83a39421690538c37ac62cc9c1e0dc2d6ed7b1ffc7f2a0baae4a12216ce07",
+    "src/art3d/mode.ts": "e78bdc28428b536eb2c35d18d99d2aa4243c65afb2adc71a3a1a27642583c78b",
+    "src/art3d/parts/back.ts": "6736da261b571ae7c9314d42882aba004edaaaf9f251b7e9486896a7f3e340f0",
+    "src/art3d/parts/body.ts": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167",
+    "src/art3d/parts/extras.ts": "de4e380baa3b7c41958c89b965a8b48bd2f016af3e2e9474dd5cdc760e77c65e",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/index.ts": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+    "src/art3d/parts/types.ts": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/patterns.ts": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+    "src/art3d/portrait.ts": "4314739e6e532fc1eed8283ec7aac3a018aa92342d3aea2f7e2e185a6bd03144",
+    "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/content/mobs.ts": "72ea942357374719ca81d0992aed6bf08b1d9f3e1223775329b3fe14c5bad438",
+    "src/data/factions.ts": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d",
+    "src/data/heroes.ts": "e4181c0d825b4bcef99d25b084f4e080c450e7d15d50db9125481ed6bc801f59",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/units.ts": "309338e7d843a80f962db03e4cf5c951da72c6a9d983d0d8f5f90463ce1a652b",
+    "src/fx/actor.ts": "c84dd566df78c638d1d0bd6d1168a56dfb5e038a8944e6d4677f9283c198bffb",
+    "src/fx/util.ts": "fb33fa0af43cb0f86c888954915b2557fcfa99361c5801c4f904d0e8ba6b050d"
+  },
+  "formalMechanicalReRun": false,
+  "reason": "Model/toon/parts/poses/actor/look inputs unchanged; new main updates battle behaviour and screenshot advance path only."
+}

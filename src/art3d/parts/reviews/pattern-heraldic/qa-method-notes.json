@@ -1,0 +1,206 @@
+{
+  "status": "最终 C2 同 BF 模型 / 纹理 QA 保留；aa9 主分支新版 battle 12 帧及22PNG预算终审完成，可送 Claude 审",
+  "activeBaselineCommit": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+  "historicSourceCommit": "206fb4191d545524cc21cfe635094cfa6a980a65",
+  "worktree": "/workspace/three-worktrees/pattern-heraldic",
+  "host": "http://127.0.0.1:5183",
+  "baselineManifest": "/workspace/three-review/patterns-heraldic/bf-baseline-manifest.json",
+  "baselineHashes": {
+    "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/parts/body.ts": "65eb57a345cf584e3b064206c469e1f606bdaf67e552c0dcb859361ad0f56167",
+    "src/art3d/patterns.ts": "60a0b1468d7cf216a319ac44df5d598a3ff8e67462b8c81b7ea024140271676e"
+  },
+  "sameCoreRequirement": "Before和after只区别patterns.ts；cat3d/toon/body/parts/pose/数据均取同一bf工作树。旧206头比例/硬高光捕获仅历史，不能作最终视觉基线。",
+  "scope": {
+    "patterns": [
+      "tabby",
+      "tuxedo",
+      "calico"
+    ],
+    "users": 21,
+    "heroes": 11,
+    "mobs": 10,
+    "patternCounts": {
+      "tabby": 11,
+      "tuxedo": 6,
+      "calico": 4
+    },
+    "textureCases": 42,
+    "reviewPoseCases": 63,
+    "canonicalUsers": "/workspace/three-review/patterns-heraldic/users.json",
+    "staticIndependentIdsAgree": true,
+    "pointExcluded": true,
+    "allOtherPatternOutputsProtected": true
+  },
+  "materialAndCoverage": [
+    {
+      "area": "skull",
+      "source": "cat3d.ts:132-135,186-189",
+      "map": "coatTexture(head)",
+      "UV": "SphereGeometry; +z u=.25 at equator, canvasx64; top canvasrow0; u seam on -x; polelongitude compressed",
+      "basis": "bf head.scale1.14 changes projected size but not UVangles"
+    },
+    {
+      "area": "shins",
+      "source": "cat3d.ts:152-154",
+      "map": "coatTexture(body)",
+      "UV": "CapsuleGeometry extends LatheGeometry; +z u=0/1 seam, v=j/(profilePoints-1), not linear worldy"
+    },
+    {
+      "area": "tail selected segments",
+      "source": "cat3d.ts:260-269",
+      "map": "coatTexture(body), except ring odd=stripe and nonring final=light",
+      "UV": "Each sphere restarts same UV and stretches alongz; raw canvas horizontal bars alone do not prove axial tailrings"
+    },
+    {
+      "area": "ear/cheek tufts/paw/sleeves/thigh/torso/muzzle/collar/boots/fixedtailsegments",
+      "map": "no coatTexture sampling",
+      "source": "ear103-121; cheek215-220; paw248; sleeve239-245; muzzle190-193/collar229-233; boots155-164",
+      "note": "Deep(point) outerears stillbase; pawonlytuxedo→light; originalfixedcolors are limits ofcurrentengine and do notcountascandidatepatternfeatures"
+    }
+  ],
+  "deepEarFreshSourceCheck": {
+    "supported": false,
+    "baseline": "bf37bd3",
+    "outer": "toon(fur), fur=coat.base, no map",
+    "inner": "toon(pink)",
+    "partType": "head|body only; EarStyle has no deep value",
+    "action": "point remains底版第0轮。Future engine changes require fresh source/live check, not reuse this as timeless rule."
+  },
+  "cacheAndColorContract": {
+    "coatTextureKey": "part|pattern|base|light|accent|stripe",
+    "dimensions": [
+      256,
+      256
+    ],
+    "sRGB": true,
+    "solidShadedReturnNull": true,
+    "mappedToon": "raw maptoon deliberately notcached; materialbasewhite avoids squaringbasecolor",
+    "bakedVertexColor": "mappedverticeswhite, UVpreserved",
+    "finalMaterialCache": "vertexColorMat(map.uuid,double)",
+    "determinism": "RGBAbytehash overtwo freshbrowsercontexts; UUIDonlyidentitywithincontext, never compareUUIDacrossfreshcontexts",
+    "purity": "look/color/outfit inputs unchanged"
+  },
+  "mechanicalAuditScript": "/workspace/three-review/patterns-heraldic/audit-patterns.mjs",
+  "runAfterRootFreeze": "node /workspace/three-review/patterns-heraldic/audit-patterns.mjs --expected-sha 3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b --label final-c2 --boards",
+  "implementedChecks": [
+    "samefixedbf model/toon/parts inputbaseline withsinglebundledcoatTexture binding",
+    "live lookOf 21 matchescanonical",
+    "42 Canvas256²/sRGB/opaque/cacheidentity/inputpurity cases",
+    "sameinputRGBA determinism infreshcontexts",
+    "head/skull andbody/shin/tail actualSkinnedMesh map+skinIndex ownership; white mapmaterial/vertexcolor andcachedfinalmaterial",
+    "before/after position-normal-UV-skin-color-index fingerprints",
+    "63 actualposebounds withnewframeregression comparison",
+    "point5users×2 andnon-targetfixtureoutput unchanged; solid/shaded stillnull"
+  ],
+  "seamMethod": [
+    "Check finalhead andbody nativecanvasleft/right edges andfullrows; reportMAE/p95/worstrowsrelativeinterior. Theseareu seamdiagnostics, notWORLDfour-edge tilingcertification.",
+    "Inspect actualskullside (-x) andshinfront (+z) seams, tailsegment boundaries/polarpinching using sourceUV andboneownership; v endpointsdifferentpoles/endcaps neednotmatch.",
+    "Nativecopytextureboards use separate qa-texture-board-<label>-* PNG names; technicalcopyonly, no recolor/creative edits.",
+    "Samebf model/toon previewall21 idle/windup/strike and190px; addselectedfront/side/rear andactualbattle frompreviewhelper frozenhashes. Newmodelgloss or clothingchanges cannotbe attributedto patterns."
+  ],
+  "visualCriteria": {
+    "tabby": "foreheadM/cheekstripes visible inhead frontx64; naturalstripecontrast andtail read underactualsphereUV",
+    "tuxedo": "palettebase/light recognisable whitefacial/blazebib andexistingwhitepaws; torso isoutfit so do notclaimbodytexture addswhitechest",
+    "calico": "actualbase/light/accent patches, unequalrounded shapes andkeptface readability; palette colors mayallbebrown forqun archer, neverforceblack/white",
+    "smallScale": "190px actualfeatures andeyes/cheeks contrast mustbeviewed; numericpixel/edge checks notvisualapproval"
+  },
+  "scopeLimits": [
+    "Noheadgear/weapon collisionaudit repetitions; unchangedgeometry fingerprint protectsagainstintroducedchanges andrequiredrootcheckscontinue.",
+    "NoformalQA beforecandidateSHA freeze; qa-summary.md/json writtenonlyaftermechanicalreport andactualpreviewreview.",
+    "Pixelmae doesnotprove equalu edges orrecognisable pattern; no universalthresholdused.",
+    "No edits toproduction, users.md/json, screenshots or otherREADME files."
+  ],
+  "actions": {
+    "modelsBuilt": 42,
+    "formalAuditsRun": 1,
+    "testsRun": 0,
+    "syntaxCheckOnly": false,
+    "productionFilesChanged": 0,
+    "agentsSpawned": 0,
+    "preliminaryTextureAuditsRun": 1,
+    "modelCasesPerVersion": 21,
+    "poseCasesPerVersion": 63,
+    "postSyncModelTextureAuditsRun": 0,
+    "newBattleFramesActuallyViewed": 12
+  },
+  "preliminaryTextureOnly": {
+    "candidateSha256": "0a50ef819b4dfec08346468d1088082f3365892dfd8b5b5bbdcecf6c7b9ac88d",
+    "report": "/workspace/three-review/patterns-heraldic/audit-preliminary-01.json",
+    "users": 21,
+    "textureCases": 42,
+    "controlCases": 22,
+    "modelsBuilt": 0,
+    "poseCases": 0,
+    "formatCachePurityDeterminismPassed": true,
+    "nonTargetOutputChanges": 0,
+    "pageErrors": [],
+    "interpretation": "C1历史预检，不引用为空的geometryChanges数组宣称几何通过；C2需按冻结SHA正式执行。",
+    "bodyTuxedoPendingRootEdit": "根实看148°大面积白尾，正在收小body白区；head保持。"
+  },
+  "finalCandidateSha256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+  "finalEvidence": {
+    "frozenAtUTC": "2026-10-12T03:38:44.272459+00:00",
+    "report": "/workspace/three-review/patterns-heraldic/audit-final-c2.json",
+    "summaryMarkdown": "/workspace/three-review/patterns-heraldic/qa-summary.md",
+    "summaryJson": "/workspace/three-review/patterns-heraldic/qa-summary.json",
+    "native63ActuallyViewed": true,
+    "all21DirectionsActuallyViewed": true,
+    "sixTextureBoardsActuallyViewed": true,
+    "battleFramesActuallyViewed": [
+      0,
+      3,
+      7,
+      11
+    ],
+    "pixelValidation": "/workspace/three-review/patterns-heraldic/qa-preview-pixel-validation.json",
+    "newFrameClips": 0,
+    "existingFrameClips": [
+      {
+        "id": "qun_lvbuding",
+        "pose": "idle",
+        "yMax": 3.6623942007194676,
+        "frameYMax": 3.6,
+        "unchangedFromBF": true
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windup",
+        "yMax": 3.6623942007194676,
+        "frameYMax": 3.6,
+        "unchangedFromBF": true
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "yMax": 3.6623942007194676,
+        "frameYMax": 3.6,
+        "unchangedFromBF": true
+      }
+    ],
+    "recommendation": "ready_for_claude_review_with_disclosed_limits",
+    "claudeApproved": false,
+    "nativeCanvas": [
+      250,
+      219
+    ],
+    "nativeCharacterHeightVariesByPoseAndGear": true,
+    "modelTextureAuditBaseRemainsBF": true,
+    "aaMainSyncSourceVerification": "/workspace/three-review/patterns-heraldic/qa-main-sync-verification.json",
+    "newBattleMeta": "/workspace/three-review/patterns-heraldic/latest-battle-capture-report.json",
+    "newBattleAll12FramesActuallyViewed": true,
+    "newBattleSelectedFrame": 4,
+    "newBattleAdvanceMethod": "__demo.advance",
+    "newBattleNominalSteps": {
+      "advanceParameterPerCallSec": 0.25,
+      "calls": 5,
+      "nominalSumParameterSec": 1.25,
+      "notExactMeasuredClockTime": true
+    },
+    "newBattlePngSha256": "323c90f52c7f4864ab6ad49cd691b41fefb328d365f14e0c338931b34f795d31",
+    "newBattleHashRGBValidation": "/workspace/three-review/patterns-heraldic/qa-preview-pixel-validation-aa9.json",
+    "other21PngsByteUnchanged": true,
+    "newMaxPngBytes": 497698
+  }
+}

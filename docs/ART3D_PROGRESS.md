@@ -4,6 +4,8 @@
 「使用者」按稀有度排序（SP > UR > SSR > SR > 杂兵）；**优先做被高稀有度英雄使用的部件**。
 一个 PR 做同一文件里的 3~6 个相关部件即可（例如「武器：长剑 / 双股剑 / 短刀 / 飞刀 / 双短刀」）。
 
+当前按 [固定队列](CODEX_QUEUE.md) 的最新 #97 审核意见推进：头饰全部通过，接下来为 **毛色花纹 → 英雄专属造型**。本批分支 `codex/3d-pattern-heraldic`，制作 `tabby / tuxedo / calico`，第 1 轮待 Claude 审核；模型与毛色对照的拍摄基线为 `bf37bd3`。
+
 ## 武器（`src/art3d/parts/weapons.ts`）
 
 武器第 2 批：`codex/3d-weapon-blades`，四个新部件第 1 轮，加上 `herbs` / `fan` 按 #89 建议追加细节的第 2 轮，共 6 个部件，已在 #91 通过并合并。内部候选调整不增加审核轮次。
@@ -64,7 +66,7 @@
 
 ## 头饰（`src/art3d/parts/headgear.ts`）
 
-头饰前两批已在 #93 / #95 通过并合并，各六种均为第 1 轮。当前第 3 批 `codex/3d-headgear-fieldwear`：`sailorBandana / fortuneHat / rattanHelm / leafHat / hood / ratCap`，共 20 使用者（3 英雄 + 17 杂兵），第 1 轮待 Claude 审核。已按当前英雄与杂兵造型核对，原表数量无误，补齐使用者 ID。
+头饰三批已分别在 #93 / #95 / #97 通过并合并，各六种均为第 1 轮。第 3 批 `codex/3d-headgear-fieldwear`：`sailorBandana / fortuneHat / rattanHelm / leafHat / hood / ratCap`，共 20 使用者（3 英雄 + 17 杂兵）。已按英雄与杂兵造型核对，原表数量无误，补齐使用者 ID；头饰制作已完成。
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
@@ -80,17 +82,18 @@
 | `featherHeaddress` | `man_zhurong`(SSR), `man_mulu`(SSR) + 杂兵×1（`mob_man_strategist`） | 通过 | 1 | #95 已合并；24 网格；codex/3d-headgear-crests |
 | `yellowBand` | `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR) + 杂兵×1（`mob_xian_strategist`） | 通过 | 1 | #95 已合并；9 网格；codex/3d-headgear-crests |
 | `tigerHood` | `wei_xuhuchi`(SSR) | 通过 | 1 | #95 已合并；16 网格；codex/3d-headgear-crests |
-| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6（`mob_wei_healer`, `mob_shu_guard`, `mob_shu_healer`, `mob_wu_archer`, `mob_qun_vanguard`, `mob_qun_healer`） | 通过 | 1 | 15 网格；codex/3d-headgear-fieldwear |
-| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1（`mob_xian_archer`） | 通过 | 1 | 8 网格；codex/3d-headgear-fieldwear |
-| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1（`mob_man_guard`） | 通过 | 1 | 18 网格；codex/3d-headgear-fieldwear |
-| `leafHat` | 杂兵×5（`mob_shu_archer`, `mob_wu_healer`, `mob_man_archer`, `mob_man_healer`, `mob_man_assassin`） | 通过 | 1 | 14 网格；codex/3d-headgear-fieldwear |
-| `hood` | 杂兵×3（`mob_wei_assassin`, `mob_wu_assassin`, `mob_qun_assassin`） | 通过 | 1 | 10 网格；codex/3d-headgear-fieldwear |
-| `ratCap` | 杂兵×1（`mob_wu_guard`） | 通过 | 1 | 13 网格；codex/3d-headgear-fieldwear |
+| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6（`mob_wei_healer`, `mob_shu_guard`, `mob_shu_healer`, `mob_wu_archer`, `mob_qun_vanguard`, `mob_qun_healer`） | 通过 | 1 | #97 已通过并合并；15 网格；codex/3d-headgear-fieldwear |
+| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1（`mob_xian_archer`） | 通过 | 1 | #97 已通过并合并；8 网格；codex/3d-headgear-fieldwear |
+| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1（`mob_man_guard`） | 通过 | 1 | #97 已通过并合并；18 网格；codex/3d-headgear-fieldwear |
+| `leafHat` | 杂兵×5（`mob_shu_archer`, `mob_wu_healer`, `mob_man_archer`, `mob_man_healer`, `mob_man_assassin`） | 通过 | 1 | #97 已通过并合并；14 网格；codex/3d-headgear-fieldwear |
+| `hood` | 杂兵×3（`mob_wei_assassin`, `mob_wu_assassin`, `mob_qun_assassin`） | 通过 | 1 | #97 已通过并合并；10 网格；codex/3d-headgear-fieldwear |
+| `ratCap` | 杂兵×1（`mob_wu_guard`） | 通过 | 1 | #97 已通过并合并；13 网格；codex/3d-headgear-fieldwear |
 
 ### 头饰审核记录
 
 - 2026-10-11 · [#93](https://github.com/acaozixu123456/myRepository/pull/93) · 六种头饰第 1 轮 **通过并合并**，按 [固定队列](CODEX_QUEUE.md) 同步。Claude 确认六种轮廓在 190px 下可辨认；浅色官帽布折偏弱，后续头饰注意剪影对比。
 - [#95](https://github.com/acaozixu123456/myRepository/pull/95) · 第 2 批六种头饰第 1 轮 **通过并合并**，按 [固定队列](CODEX_QUEUE.md) 的明确审核意见同步。Claude 建议下一批结带颜色更深，以提高小尺寸下的对比。
+- 2026-10-12 · [#97](https://github.com/acaozixu123456/myRepository/pull/97) · 第 3 批六种头饰第 1 轮 **通过并合并**，按 [固定队列](CODEX_QUEUE.md) 同步。Claude 确认 20 使用者三姿势没有穿头，叶帽在 `strike` 中剪影偏薄可以接受；头饰全部完成，下一步为毛色花纹，再做英雄专属造型。
 
 ### 头饰第 1 批检查（#93）
 
@@ -118,7 +121,7 @@
 
 最不满意：黄巾在张角角的黄色毛色上对比偏低，需 Claude 按 190px 游戏尺度审核。
 
-### 头饰第 3 批检查（第 1 轮待审）
+### 头饰第 3 批检查（#97，第 1 轮通过）
 
 六种野外 / 制服头饰覆盖 SR 英雄 3 只与杂兵 17 只，头部倍率 0.96～1.07，包含尖耳 / 圆耳 / 折耳 / 大耳 / 簇耳。六种逻辑网格数分别为 15 / 8 / 18 / 14 / 10 / 13，球 / 圆柱最大 14 分段，均在单部件预算内。全部复用缓存材质与 `toon` / `solid` 描边，根平移旋转保持为 0。
 
@@ -130,7 +133,7 @@
 
 本批 `npm run typecheck && npm test` 已通过（退出码 0；58 个测试文件、926 个测试）。
 
-最不满意：叶帽在 `strike` 中剪影偏薄，190px 下背面叶脉与厚度偏弱；`idle / windup` 的叶面与短柄较清楚，等待 Claude 按游戏尺度审核。
+制作时最不满意：叶帽在 `strike` 中剪影偏薄，190px 下背面叶脉与厚度偏弱；`idle / windup` 的叶面与短柄较清楚。Claude 在 #97 审核中确认这一限制可以接受。
 
 ## 衣服（`src/art3d/parts/body.ts`）
 
@@ -178,17 +181,43 @@
 
 ## 毛色花纹（`src/art3d/patterns.ts`）
 
-| 花纹 | 状态 | 轮次 | 备注 |
-| --- | --- | --- | --- |
-| `tabby` | 底版 | 0 | |
-| `tuxedo` | 底版 | 0 | |
-| `calico` | 底版 | 0 | |
-| `point` | 底版 | 0 | |
-| `spots` | 底版 | 0 | |
-| `cow` | 底版 | 0 | |
-| `tortie` | 底版 | 0 | |
-| `butterfly` | 底版 | 0 | |
+本批 `codex/3d-pattern-heraldic` 第 1 轮待审，覆盖 `tabby / tuxedo / calico` 共 21 使用者（11 英雄 + 10 杂兵）。按 `206fb419` 的英雄、杂兵外观和登记数据核对完整 ID、coat 配色、耳尾与体型。
+
+当前拍摄基线为 `bf37bd3`：用户数据源与原 `206fb419` 快照逐 blob 相同，使用者与配色未变；引擎采用 Claude 新版的大头 / 爪、调整后的袍摆与去掉硬高光的材质，底版与成品审图均以此为准。
+
+| 花纹 | 使用者 | 状态 | 轮次 | 备注 |
+| --- | --- | --- | --- | --- |
+| `tabby` | `shu_liumiaobei`(UR), `wei_xiahoudun`(SSR), `wu_luxun`(SSR), `man_shamoke`(SSR), `wei_xuhuang`(SR), `shu_huangzhong`(SR), `wu_huanggai`(SR) + 杂兵×4（`mob_wei_vanguard`, `mob_shu_vanguard`, `mob_shu_strategist`, `mob_shu_assassin`） | 待审 | 1 | 额头 M、颊纹与尾部 z 轴环纹；codex/3d-pattern-heraldic |
+| `tuxedo` | `qun_lvbuding`(UR), `xian_zhangzhua`(SSR) + 杂兵×4（`mob_wei_strategist`, `mob_shu_guard`, `mob_qun_assassin`, `mob_xian_strategist`） | 待审 | 1 | 白 V 与较窄 body 浅色区；白爪沿用引擎纯色；codex/3d-pattern-heraldic |
+| `calico` | `shu_pangmiaotong`(SP), `qun_diaochan`(SSR) + 杂兵×2（`mob_shu_archer`, `mob_qun_archer`） | 待审 | 1 | 三色、异侧眼斑与非对称分区；codex/3d-pattern-heraldic |
+| `point` | `xian_changmiao`(SP), `wu_zhoumiaoyu`(UR), `shu_zhugemiaoliang`(SSR), `shu_jiangwei`(SR) + 杂兵×1（`mob_wu_strategist`） | 底版 | 0 | 本批未制作；深耳 / 深爪 / 尾尖涉及引擎固定纯色，需 Claude 判断接入；未增加审核轮次 |
+| `spots` | `man_mengmiaohuo`(UR), `wu_sunxiaoba`(SSR), `man_zhurong`(SSR) + 杂兵×4（`mob_wu_vanguard`, `mob_wu_assassin`, `mob_man_vanguard`, `mob_man_archer`） | 底版 | 0 | 未制作；共 7 使用者 |
+| `cow` | `shu_zhangmiaofei`(SSR), `shu_machao`(SR) + 杂兵×3（`mob_shu_healer`, `mob_wu_guard`, `mob_qun_vanguard`） | 底版 | 0 | 未制作；共 5 使用者 |
+| `tortie` | `man_mengyou`(SR) | 底版 | 0 | 未制作；共 1 使用者 |
+| `butterfly` | `xian_nanhua`(SR) | 底版 | 0 | 未制作；共 1 使用者 |
+
+### 毛色花纹第 1 批检查（第 1 轮待审）
+
+本批选第 2 内部候选：虎斑为额头 M、两侧颊纹与尾部沿局部 z 轴等值线布置的环纹，共用 body 图的小腿呈侧弧纹；燕尾服为脸部白 V 和较窄的 body 浅色分区；三花保留三色、采用两眼异侧斑块。使用各自 `coat.base / light / accent / stripe`，分别处理 256² 的 `head / body` 图；内部候选不增加审核轮次。参考 `ART_PROMPTS.md` 与本批 11 张英雄 JPG 的毛色设定，人物调色保持不变。
+
+最终花纹源码冻结 SHA256：`3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b`。独立内审已完成，可送 Claude 审核；数值、实看范围和限制见 [QA 摘要](../src/art3d/parts/reviews/pattern-heraldic/qa-summary.md) 与 [机器报告](../src/art3d/parts/reviews/pattern-heraldic/qa-summary.json)。
+
+`bf37bd3` 基线上的本批 `npm run typecheck && npm test` 已通过（退出码 0；65 个测试文件、980 个测试）。合并新增战技 / 合击的主分支 `aa9afd3` 后，同一必需检查再次通过（退出码 0；66 个测试文件、987 个测试）。
+
+同步新玩法后，花纹源码 SHA256 保持不变，模型、pose、renderer 与 actor / look 依赖仍与 `bf37bd3` 相同；静态对照和本批独立内审保留同一基线。战斗图已在 `aa9afd3` 新玩法下重拍：实际步进 12 帧，选索引 04，名义累计 1.25s，十猫均可见；其余 21 张图保留原字节与哈希。
+
+独立机械检查确认：42 张纹理均为 256²、sRGB、不透明，同键缓存复用、head / body 分离、输入不变；两次全新浏览器上下文的目标 RGBA 哈希一致。22 组旧输出保护没有变化，覆盖 5 位 point 的两图、其余四斑型各一配色的两图与 solid / shaded 的 null 输出。21 套实际模型各为 7 个合批网格，几何指纹与 `bf37bd3` 底版一致。三姿势共 63 组的顶点均有限，边界与底版一致，未新增越框。
+
+实际审阅包含 6 张原生纹理板、全 21 猫三姿势的原生 w250 画布、正面 / 反侧 / 背向、正式前后对照与十猫战斗。在这些视角未见明显连续 u 接缝或极点异色扇片；少量边缘行仍有 RGB 差，尾球重复 UV 与跨球接合的结论限于已看视图。
+
+审核截图：[前后对照](../src/art3d/parts/reviews/pattern-heraldic/before-after.png)、[全 21 位原生 idle 总览](../src/art3d/parts/reviews/pattern-heraldic/native-all21-idle.png)、[十猫战斗](../src/art3d/parts/reviews/pattern-heraldic/battle.png)。三姿势分组：[虎斑 1](../src/art3d/parts/reviews/pattern-heraldic/tabby-a.png) / [2](../src/art3d/parts/reviews/pattern-heraldic/tabby-b.png) / [3](../src/art3d/parts/reviews/pattern-heraldic/tabby-c.png)、[燕尾服 1](../src/art3d/parts/reviews/pattern-heraldic/tuxedo-a.png) / [2](../src/art3d/parts/reviews/pattern-heraldic/tuxedo-b.png)、[三花](../src/art3d/parts/reviews/pattern-heraldic/calico.png)。原生 w250 的 canvas 为 250×219，各猫实际轮廓高度随造型与动作变化；游戏尺度以战斗图为参照。完整 22 张 PNG、正反背向图、实际命令与源码冻结信息见 [截图说明](../src/art3d/parts/reviews/pattern-heraldic/README.md)。独立像素复核确认静态画布块与新战斗图的 RGB 均与原始捕获一致，图片均 ≤500,000 B；最大为最新 `battle.png`（948×593，497,698 B，SHA256 `323c90f52c7f4864ab6ad49cd691b41fefb328d365f14e0c338931b34f795d31`）。没有 JavaScript pageerror；字体 CSS 加载失败和 favicon 404 的观察记录见截图说明。
+
+既有取景限制：`qun_lvbuding` 的羽冠在底版与本批三姿势中均达到 yMax=3.662394，超过 FRAME 顶部 3.6。此为相同的基线裁切，不能据机械检查称全部 63 组都在框内。
+
+最不满意：`mob_qun_archer` 的原设定 `base=#ac8054 / light=#b39371` 都是接近的棕色，小尺度正脸的三色差异较弱，后脑深斑更明显；头盔 / 布巾会遮住部分额纹。人物调色保持原设定，等待 Claude 按实际游戏尺度审核。
+
+当前引擎的实际挂钩：`head` 图贴颅骨球，正脸在 u≈0.25；`body` 图贴小腿与部分尾球。耳、爪球、脸颊绒毛、口鼻、绒领、袖子、靴子及指定尾段使用纯色。具体到 `point`：耳与爪用 `coat.base`，非环尾末段用 `coat.light`，不采样花纹图；仅修改 `patterns.ts` 无法新增这些部位的重点深色，因此本批保留底版第 0 轮，交由 Claude 判断引擎接入。
 
 ## 英雄专属造型（`src/art3d/heroes.ts` 的 `HERO_PARTS`）
 
-通用部件做完之后，再给 SP / UR 英雄做「独一份」的东西（青龙偃月刀、冕旒、羽扇等）。按 `docs/ILLUST_PROGRESS.md` 的顺序：SP → UR → SSR。
+按 [固定队列](CODEX_QUEUE.md) 的最新安排，在毛色花纹之后给 SP / UR 英雄做「独一份」的东西（青龙偃月刀、冕旒、羽扇等）。使用者顺序沿用 `docs/ILLUST_PROGRESS.md`：SP → UR → SSR。

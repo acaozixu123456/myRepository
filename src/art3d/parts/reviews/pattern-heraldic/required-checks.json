@@ -1,0 +1,24 @@
+{
+  "latest": {
+    "command": "npm run typecheck && npm test",
+    "exitCode": 0,
+    "testFilesPassed": 66,
+    "testsPassed": 987,
+    "startUTC": "2026-10-12T03:23:05Z",
+    "durationSeconds": 50.29,
+    "sourceSHA256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+    "baseCommit": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+    "evidence": "Actual root exec session6710 completed exit0; full terminal output stored in tools record."
+  },
+  "previousBFRun": {
+    "command": "npm run typecheck && npm test",
+    "exitCode": 0,
+    "testFilesPassed": 65,
+    "testsPassed": 980,
+    "startUTC": "2026-10-12T03:09:53Z",
+    "durationSeconds": 34.47,
+    "sourceSHA256": "3519b29b5275329d4f3abe96205bd55fdb2884060c4979136a0c47ee231cf98b",
+    "baseCommit": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+    "evidence": "Actual root exec session13443 completed with exit0; terminal output recorded in current chat."
+  }
+}
