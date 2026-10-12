@@ -1,0 +1,165 @@
+{
+  "frozenAtUTC": "2026-10-12T08:46:09.856259+00:00",
+  "directory": "/workspace/world-review/roof-tiles/candidate05/preview",
+  "phase": "real exportcandidate05 previews frozen for root/independentQA/Claude, not approval",
+  "fileCount": 31,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4559,
+      "sha256": "fdc35f04af5b6740087111de68c828f3e3a106ff03dcfdfd413bdf575e81c157"
+    },
+    {
+      "path": "capture-config.json",
+      "bytes": 5713,
+      "sha256": "f059e55f56b0e79b891b72095a993d5f701408bc71e9be18844abd70dc6e5036"
+    },
+    {
+      "path": "capture-dependencies.json",
+      "bytes": 2877,
+      "sha256": "3bb4b659e9d2db85bdcec864a0390955ee21165abab2082104de85f3c4349a4c"
+    },
+    {
+      "path": "capture-inventory.json",
+      "bytes": 4804,
+      "sha256": "4713c2361b2ed834a2a69f961c7156e5ca8647406948ab64e88c99a3352a3062"
+    },
+    {
+      "path": "capture-source-context-check.json",
+      "bytes": 2334,
+      "sha256": "bf7307b50c4fa55d90179e61122f029ea2bf8c2745012b6fcef1a35b1cb8bbf1"
+    },
+    {
+      "path": "capture-tools/material-preview.mjs",
+      "bytes": 7218,
+      "sha256": "066db99421d579244e48007b26640dc0d09f42d0e19e4f952bd09524e6e4b6a5"
+    },
+    {
+      "path": "capture-tools/material.css",
+      "bytes": 707,
+      "sha256": "8452c2cd8a381660c02a72bbe9adbca93538d027d123fdd0c821f956981de368"
+    },
+    {
+      "path": "capture-tools/preview-common.mjs",
+      "bytes": 8657,
+      "sha256": "54f2a325318ba4c744286c3ee15eebb1e8388b4da7486d699cfc43894de1d03c"
+    },
+    {
+      "path": "capture-tools/review-sheet.mjs",
+      "bytes": 3410,
+      "sha256": "4493e02bbd13c728cf9a0d1a2b7ec76b8e803544247d50fc49effa38ceb13a5a"
+    },
+    {
+      "path": "capture-tools/review.css",
+      "bytes": 686,
+      "sha256": "377845a21df08a3f42fbad6379e971c1ab73fef41fc3363ce4a2d053717b28e5"
+    },
+    {
+      "path": "capture-tools/theme-context.json",
+      "bytes": 1197,
+      "sha256": "96fb6f92c2abbf465577c1ef9e325d8438bdd404b8223a46766d3dfac86fe1e6"
+    },
+    {
+      "path": "lighting-capture.log",
+      "bytes": 901,
+      "sha256": "0d7584fa2829100078cefa9e85b64952f7dd4843011f683fccd672379edd6671"
+    },
+    {
+      "path": "overview-capture.log",
+      "bytes": 836,
+      "sha256": "d14b83974fd90d9c4ea8b247e03d587017eeb9f7f5185ec63489749c4f37bc1d"
+    },
+    {
+      "path": "roof-tiles-a11-candidate05-lighting.json",
+      "bytes": 15468,
+      "sha256": "bc541a9723a27a1aac6f220a6837f39a55ec15ce1e7fc3813d800a0c91e20446"
+    },
+    {
+      "path": "roof-tiles-a11-candidate05-lighting.png",
+      "bytes": 891525,
+      "sha256": "1b6dcf446685a5864e081bce3a4c7f42ec4e1b609773c44a4766f854b64fe57f"
+    },
+    {
+      "path": "roof-tiles-a11-candidate05-lighting.webp",
+      "bytes": 213360,
+      "sha256": "d86ac2cae26a12843926da1f8cc3f9a97891fbf714b82181fa525d56dc88bfe7"
+    },
+    {
+      "path": "roof-tiles-a11-candidate05-overview.json",
+      "bytes": 11432,
+      "sha256": "79b2f8330df8fc41265c8f5333b88e90cdcf39d68e25fdc825bf9869ff1a0a30"
+    },
+    {
+      "path": "roof-tiles-a11-candidate05-overview.png",
+      "bytes": 1474707,
+      "sha256": "0e90d787fdc18fb9fce323bf71c33d429e5e61a05bda79ca02a1b532181a74f4"
+    },
+    {
+      "path": "roof-tiles-a11-candidate05-overview.webp",
+      "bytes": 378182,
+      "sha256": "dc1fe5af6cf10dae7321897fc25f59081b06ed0d48eb4a96e7736d048dd3c5c0"
+    },
+    {
+      "path": "source-context/package-lock.json",
+      "bytes": 51766,
+      "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84"
+    },
+    {
+      "path": "source-context/package.json",
+      "bytes": 1114,
+      "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88"
+    },
+    {
+      "path": "source-context/src/world/atmos.ts",
+      "bytes": 5387,
+      "sha256": "a566777339d6fbd01555b96bbf203bf8ceb282f1a2074f98f5ef26afda59a82f"
+    },
+    {
+      "path": "source-context/src/world/engine.ts",
+      "bytes": 19126,
+      "sha256": "f2385a93cdd0f2e062392bd7a1c5a632aacefc2f626f04859601b98808dd6d91"
+    },
+    {
+      "path": "source-context/src/world/kit.ts",
+      "bytes": 29139,
+      "sha256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca"
+    },
+    {
+      "path": "source-context/src/world/tex.ts",
+      "bytes": 12086,
+      "sha256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e"
+    },
+    {
+      "path": "source-context/src/world/themes/arch.ts",
+      "bytes": 9675,
+      "sha256": "82220bd3dc833947b197d1f0f3dfd9184151f68f7c1274ea34a64362d2ad00e7"
+    },
+    {
+      "path": "source-context/src/world/themes/common.ts",
+      "bytes": 9514,
+      "sha256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57"
+    },
+    {
+      "path": "source-context/src/world/themes/palace.ts",
+      "bytes": 12382,
+      "sha256": "587a2c433493e67480a9d765e4b6fe09252fb3b408d2114d503d6db964021315"
+    },
+    {
+      "path": "source-context-fetch.json",
+      "bytes": 2343,
+      "sha256": "c5353c738c4dd050750ed74cfee999ac89f7b3f40575c046c361f952b57bdcea"
+    },
+    {
+      "path": "sources-after.json",
+      "bytes": 1639,
+      "sha256": "c8be95976ee66f8e58b54dd9dfaeb71cdfda043514d96e93fd5ae0f483a83060"
+    },
+    {
+      "path": "sources-before.json",
+      "bytes": 3928,
+      "sha256": "412c5690b801d7705a76552f69881c93eb8d4567c6eb957c70ed658227643456"
+    }
+  ],
+  "noFurtherCaptureWithoutRootSourceHandoff": true,
+  "exportsReadOnly": true
+}

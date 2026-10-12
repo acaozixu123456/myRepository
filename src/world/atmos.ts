@@ -1,6 +1,6 @@
 // 场景氛围：天空 / 雾 / 光 / 调色 / 泛光的整套参数（纯数据）。每个场景有自己的时间与天气：
 // 街区是赛博雨夜，夜市是黄昏的暖光，港口是晚霞，森林是清晨，云岛是正午，宫阙是午后金光——不再千篇一律都是暗色霓虹。
-export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow';
+export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow' | 'beach' | 'onsen';
 export interface Atmos {
   /** 天空穹顶（false = 沿用纯色背景，街区的暗夜不用穹顶） */
   dome: boolean;
@@ -31,19 +31,19 @@ export const ATMOS: Record<MoodId, Atmos> = {
   market: {
     dome: true, skyTop: 0x4a4a9a, skyMid: 0xe0788a, horizon: 0xffb878, discColor: 0xffd8a0, discSize: 0.05,
     fog: 0xd89080, fogD: 0.0048, hemiSky: 0xffc0a0, hemiGnd: 0x5a3a48, hemiI: 1.0, sun: 0xffb070, sunI: 2.1, sunPos: [-50, 26, -34],
-    exposure: 1.1, env: 0.4, bloom: [0.5, 0.5, 0.85], grade: { cool: 0.1, ca: 0.004, vig: 0.8, sat: 1.12, tint: [1.06, 0.98, 0.92] }, keyLight: 0.7, lit: 0.4,
+    exposure: 1.1, env: 0.4, bloom: [0.5, 0.5, 0.85], grade: { cool: 0.1, ca: 0.004, vig: 0.8, sat: 1.12, tint: [1.06, 0.98, 0.92] }, keyLight: 0.7, lit: 0.4, skyBand: 'sky_dusk_peach_01',
   },
   // 港口：赤壁的晚霞，天红水红
   redcliff: {
     dome: true, skyTop: 0x2a2a6a, skyMid: 0xc84060, horizon: 0xff9040, discColor: 0xffc070, discSize: 0.07,
     fog: 0xe0704c, fogD: 0.0052, hemiSky: 0xffa080, hemiGnd: 0x40242c, hemiI: 0.95, sun: 0xff7a3a, sunI: 2.3, sunPos: [10, 20, -52],
-    exposure: 1.1, env: 0.45, bloom: [0.55, 0.5, 0.82], grade: { cool: 0.08, ca: 0.004, vig: 0.9, sat: 1.15, tint: [1.08, 0.96, 0.9] }, keyLight: 1.1, lit: 0.45,
+    exposure: 1.1, env: 0.45, bloom: [0.55, 0.5, 0.82], grade: { cool: 0.08, ca: 0.004, vig: 0.9, sat: 1.15, tint: [1.08, 0.96, 0.9] }, keyLight: 1.1, lit: 0.45, skyBand: 'sky_sunset_redcloud_02',
   },
   // 森林：清晨，阳光从树冠漏下来
   forest: {
     dome: true, skyTop: 0x4aa8e8, skyMid: 0x9ad8f0, horizon: 0xe8f8d0, discColor: 0xfff4c8, discSize: 0.045,
     fog: 0xc4ecc8, fogD: 0.0042, hemiSky: 0xdaf4ff, hemiGnd: 0x3a5a40, hemiI: 1.15, sun: 0xfff0c0, sunI: 2.7, sunPos: [34, 62, 26],
-    exposure: 1.0, env: 0.5, bloom: [0.32, 0.5, 0.92], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.14, tint: [1.02, 1.03, 0.97] }, keyLight: 0.55, lit: 0.3,
+    exposure: 1.0, env: 0.5, bloom: [0.32, 0.5, 0.92], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.14, tint: [1.02, 1.03, 0.97] }, keyLight: 0.55, lit: 0.3, skyBand: 'sky_dawn_tealmist_03',
   },
   // 云岛：正午，云海之上
   mist: {
@@ -63,6 +63,20 @@ export const ATMOS: Record<MoodId, Atmos> = {
     fog: 0xe4ecf8, fogD: 0.0042, hemiSky: 0xeaf2ff, hemiGnd: 0x8aa0c8, hemiI: 0.7, sun: 0xfff6ec, sunI: 1.25, sunPos: [-30, 48, 26],
     exposure: 0.92, env: 0.3, bloom: [0.26, 0.5, 0.97], grade: { cool: 0, ca: 0, vig: 0.6, sat: 1.08, tint: [0.98, 1.0, 1.04] }, keyLight: 0.45, lit: 0.25,
     skyBand: 'sky_cloud_noon_cumulus_04',
+  },
+  // 海湾：上午的海边，天高海蓝，阳光暖而不烈
+  beach: {
+    dome: true, skyTop: 0x2a8ae8, skyMid: 0x7ac8f4, horizon: 0xe8f8ff, discColor: 0xfffbe8, discSize: 0.055,
+    fog: 0xd8f0fa, fogD: 0.0034, hemiSky: 0xeaf6ff, hemiGnd: 0xc8a878, hemiI: 0.72, sun: 0xfff2d8, sunI: 1.6, sunPos: [24, 58, 30],
+    exposure: 0.95, env: 0.32, bloom: [0.3, 0.5, 0.95], grade: { cool: 0, ca: 0, vig: 0.6, sat: 1.15, tint: [1.02, 1.0, 0.98] }, keyLight: 0.5, lit: 0.28,
+    skyBand: 'sky_cloud_noon_cumulus_04',
+  },
+  // 樱汤乡：春天的傍晚，粉色的天，温泉热气被夕阳照成金色
+  onsen: {
+    dome: true, skyTop: 0x6a7ad8, skyMid: 0xf0a8c0, horizon: 0xffe0c8, discColor: 0xffe8c0, discSize: 0.05,
+    fog: 0xf4d0d8, fogD: 0.0042, hemiSky: 0xffe0e8, hemiGnd: 0x6a5a58, hemiI: 0.85, sun: 0xffd0a0, sunI: 1.8, sunPos: [-40, 34, -30],
+    exposure: 1.0, env: 0.35, bloom: [0.38, 0.5, 0.9], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.12, tint: [1.05, 0.99, 0.98] }, keyLight: 0.6, lit: 0.32,
+    skyBand: 'sky_dusk_peach_01',
   },
   // 宫阙：午后金光，朱墙金瓦
   palace: {

@@ -1,5 +1,77 @@
 # 世界美术进度
 
+## 当前送审 · A11 青瓦 / 金琉璃瓦 / 朱红瓦
+
+[PR #122](https://github.com/acaozixu123456/myRepository/pull/122)，分支 `codex/3d-world-roof-tiles`，base 为 `claude/awesome-babbage-ygba4h`。三款俯视屋瓦为本批 **第 1 轮待审、已通过 0**；内部 AI 候选与技术导出版本不增加 Claude 审核轮次。接入与采用由 Claude 决定。
+
+| 名称 / ID | 成品 | 状态 | 审核轮次 | 规格 / 字节 | 最终选用原稿 |
+| --- | --- | --- | ---: | --- | --- |
+| 青灰弧瓦 `roof_tile_bluegreen_01` | [WebP](../assets/world/roof/roof_tile_bluegreen_01.webp) | 待审 | 1 | 512² opaque RGB / sRGB；46868 B | 真实 AI 候选 1 |
+| 金琉璃瓦 `roof_tile_glazed_gold_02` | [WebP](../assets/world/roof/roof_tile_glazed_gold_02.webp) | 待审 | 1 | 512² opaque RGB / sRGB；50380 B | 真实 AI 候选 2 |
+| 朱红陶瓦 `roof_tile_vermilion_03` | [WebP](../assets/world/roof/roof_tile_vermilion_03.webp) | 待审 | 1 | 512² opaque RGB / sRGB；40756 B | 真实 AI 候选 2 |
+
+### 原稿、技术导出与出处
+
+本批有六次真实 `image_gen.imagegen` 调用：三张初稿于 2026-10-12 07:30:22～07:32:11 UTC 生成；三次参考图编辑于 07:55:26～07:57:09 UTC 完成。六张实际原稿均为 1254² RGB，原始工具路径、完整提示词 / 参数、实际起止时间、参考图和原稿 / 归档 SHA256 保留在 [完整出处](../assets/world/roof/roof-tiles-a11.provenance.json)。最终选用原稿分别为 1 / 2 / 2；“技术导出候选 05”是同一轮中的裁切 / 编码方案，没有第七次 AI 调用。
+
+最终青瓦从原生候选 1 直接取半开矩形 `[307,205,1069,940]`，得到 762×735，保留四个瓦垄周期 / 五行搭接；然后两轴分别用 Lanczos 降到 512²：scaleX=`512/762=0.6719160104986877`，scaleY=`512/735=0.6965986394557823`。**这是非等比缩放**，瓦帽纵向相对横向比例变化为 3.673469%；两个轴均降采样，没有上采样。不能将矩形裁框写成正方形，或将该步骤称为等比缩放。
+
+金瓦取真正候选 2 的未恢复相位原稿 `[80,136,1147,1203]`（1067²）；朱瓦取候选 2 `[160,199,1068,1107]`（908²），均等比降到 512²。三张最终选框 / 导出没有 roll、恢复相位、代码补绘、边缘融合或调色；编辑调用之前的半幅移位参考和调用后的历史恢复文件仍各自记录，未冒称最终采用的源文件。成品统一 RGB WebP q90 / method6，嵌入同一 588 B sRGB ICC；规格和导出链见 [素材说明](../assets/world/roof/roof-tiles-a11.README.md)。
+
+| 成品 | 最终 SHA256 |
+| --- | --- |
+| 青瓦 | `8ce52607f49d2664872ec18bcbd9705f9b892a217ab78feac9b3da371f513990` |
+| 金瓦 | `335ba9f5a0101009a4e79ff620ea64abf55bdaec207210ba17441de388838b03` |
+| 朱瓦 | `2413a9a5dd2c282a72c0faf80aa7803a78395033af6f9afe9bde1257007abb8e` |
+
+### 现成素材优先与采用边界
+
+在初次生成之前，已实际查询 ambientCG / Poly Haven / Kenney / OpenGameArt 的六个 CC0 目录和许可，完成时间为 07:01:10 UTC，fallback 决策为 07:21:55 UTC。Kenney 的等距整楼图块用途与俯视瓦面不同；另五个石瓦 / 陶土 / 多色包确实存在，但这次有限查询没有取得可下载、可实看并核验的原始三色瓦垄素材组。网页或工具中的图像标记不算已收到像素。故选择真正 AI 自制候选作为此次 fallback；没有宣称所有公开素材都不适合或不存在。
+
+实际目录、许可、访问结果与判断边界见 [检索摘要](../assets/world/roof/roof-tiles-a11.source-search.md)、[检索记录](../assets/world/roof/roof-tiles-a11.source-search.json) 和 [fallback 决策](../assets/world/roof/roof-tiles-a11.fallback-decision.json)。本批未采用第三方像素，不扩写 CREDITS，不改引擎或素材注册；后续接入由 Claude 负责。
+
+### 有限独立 QA 与真实预览
+
+青瓦导出 05 已独立核对原生选框和原稿裁切逐 RGB 一致，q90 重导出与冻结成品逐字节相同，并实际查看原生选框、512² 成品、2×2 / 4×4、完整全高左右缝、完整全宽上下缝、四角和原生全高左右缝，共八张新证据。有限视图中的左右拼接保持 U 形谷，未见之前两个凸帽挤成尖 V / 缺谷列；上下和四角的搭接节奏正常，未见异常双沿短行或贯穿全宽硬断。
+
+金 / 朱最终原稿 SHA、裁框、成品字节及解码 RGB 与已冻结导出 03 / 04 相同，明确复用当时两款十张边 / 角 / 平铺实际观察和精确重导出证明；没有将旧视觉检查重标成这次新检查。技术检查和有限观察见 [QA 摘要](../assets/world/roof/roof-tiles-a11.qa.md) 及 [机器记录](../assets/world/roof/roof-tiles-a11.qa.json)。
+
+两张新审图均重新加载三款最终成品，于 08:42:28.871 / 08:42:36.651 UTC 实际浏览器捕获：[总览](../assets/world/reviews/roof-tiles-a11-candidate05-overview.webp)（2048×1024、378182 B）和 [白光 / 宫阙午后材质样板](../assets/world/reviews/roof-tiles-a11-candidate05-lighting.webp)（2048×1024、213360 B）。各 3/3 加载，页面、请求、HTTP≥400 和 console error / warning 数组均为空。总览 PNG 的三块原尺寸 512² 区域共 786432 个 RGB 像素与成品解码 RGB 相同；q92 有损 WebP 审图不作为逐像素相等证明。
+
+Three.js 0.169.0、sRGB / RepeatWrapping、actual anisotropy 4；独立 Plane8×8、repeat2×2，白色 MeshStandardMaterial roughness .65 / metalness 0。成对相机、灯强度 / 位置、环境与曝光相同，仅改白光和宫阙午后灯色，无雾、阴影、bloom、附加材质图或贴图调色。实际来源上下文仍是预览时冻结的 `e0afc86e2c295b46dfed1e1c0df9f87543e84b9e`，并非本次 f4 最新游戏截图；该快照的屋檐是程序 64² 底图、repeat5×4、roughness .55 / metalness .12 与圆台屋面。独立平面与实际屋顶 UV / PBR 不同，未在该样板接入游戏。[预览方法与限制](../assets/world/reviews/roof-tiles-a11-candidate05.README.md) 保留真实依赖和时点。
+
+最不满意：底色仍有浅瓦帽、深谷和搭接暗沿，金瓦仍有方向性的暖浅竖纹；磨损图形在 4×4 按完整贴片重复。有限视觉检查不宣称严格数学像素周期、零烘焙光照或已验证所有实际屋顶 / 镜头；青瓦的 3.673469% 形状比例变化也保留供审核。
+
+### 最新主线实际提交检查
+
+根在已 apply 主线 `f4b3c0c9907dc5b0f5a7315a1c8578de7567a057` 的最终工作树实际执行 `npm run typecheck && npm test`，整体退出0，**83测试文件 /1118测试通过**；命令2026-10-12 11:47:53 UTC，Vitest11:48:03、69.67秒。[完整日志](../assets/world/roof/roof-tiles-a11.required-checks-final-main-f4.log)。照片仍为上面注明的08:42 e0af独立材质预览，不因最新提交检查改写拍摄时点。出处/selection中的导出时待查字段属于历史；当前验证另存[提交验证](../assets/world/roof/roof-tiles-a11.submission-validation.json)，ClaudeDecision仍null。
+
+## 最新已通过与协作状态
+
+以下按实际 GitHub 主干 `f4b3c0c9907dc5b0f5a7315a1c8578de7567a057` 的 [CODEX_QUEUE](CODEX_QUEUE.md)（blob `5cf00e7ffff0acc588b6c28e3246a869f1c9bb1f`）同步；原提交记录中的“待审 / 未接入 / 制作中”表示当时阶段，保留在下方历史中。
+
+| 批次 | PR | 当前审核 / 接入 | 审核轮次 | 已通过 |
+| --- | --- | --- | ---: | ---: |
+| A09 夜市暖地面 | [#108](https://github.com/acaozixu123456/myRepository/pull/108) | 通过并合并；接入暖陶砖 01 / repeat7 | 1 | 3 |
+| A09 港口木栈板 | [#110](https://github.com/acaozixu123456/myRepository/pull/110) | 通过并合并；接入旧木栈板 01 | 1 | 3 |
+| A09 宫阙汉白玉 | [#109](https://github.com/acaozixu123456/myRepository/pull/109) | 通过并合并；接入白玉 03 / repeat8 | 1 | 3 |
+| A09 森林草地 | [#115](https://github.com/acaozixu123456/myRepository/pull/115) | 通过并合并；接入浅鲜草 03 | 1 | 3 |
+| A09 云岛花草 | [#114](https://github.com/acaozixu123456/myRepository/pull/114) | 通过并合并；接入薄荷小花 01 / repeat4 | 1 | 3 |
+| A10 前三天空 | [#116](https://github.com/acaozixu123456/myRepository/pull/116) | 通过并合并；已接入夜市 / 赤壁港 / 光之森 | 1 | 3 |
+| A10 正午 / 午后天空 | [#117](https://github.com/acaozixu123456/myRepository/pull/117) | 通过并合并；已接入云岛 / 宫阙 | 1 | 2 |
+| A11 三色瓦面 | [#122](https://github.com/acaozixu123456/myRepository/pull/122) | 本批第 1 轮待审；通过 0 | 1 | 0 |
+| A12 柔边云精灵 | [#127](https://github.com/acaozixu123456/myRepository/pull/127) | 通过并合并；三 atlas / 十二 UV 云组已接入云端雾岛 | 1 | 3 |
+
+#123 背卷 / 旌旗、#126 眼角光弧 / 流苏 / 战纹、#128 长须 / 眼罩 / 红脸已通过并合并。#130 旗爪两面由原 owner 待审；魏 SSR #121、蜀 SSR #124、轻兵 SSR #129 各自认领，不重复制作。周喵瑜古琴按审核要求暂不做，2D 立绘保持停止。
+
+后续 WORLD 以最新审核为准：A12 已通过，不能按旧表重画；可独立核对 Claude 07:20 审核明确允许的 A09 日落沙地 / 绿洲岸边，先查现成来源，再决定是否新增批次。有返修先跟原 PR，只暂停对应批次。
+
+## A11 第0轮认领记录（历史原文）
+
+以下为原始公开认领时点，不代表本次第1轮待审或最新外部批次状态。
+
+# 世界美术进度
+
 ## 当前制作认领 · A11 青瓦 / 金琉璃瓦 / 朱红瓦
 
 分支 `codex/3d-world-roof-tiles`，基线 `b4977cfe5114a9318b23d8aa3bf607d08fd01162`，base 为 `claude/awesome-babbage-ygba4h`。当前制作中，第0轮、通过0；真实512²成品、出处与平铺/材质预览及独立QA完成后，在同一草稿PR转第1轮待审。
@@ -13,6 +85,51 @@
 制作前按最新现成素材优先规则，实际查询ambientCG / Poly Haven / Kenney / OpenGameArt的六个CC0候选目录和许可。Kenney为等距整楼图块，不能作俯视重复瓦面；另五个石瓦/陶土/多色包确实存在，但当前环境没有取得可下载、可实看和核验的原始贴图文件，尚不能确认中式瓦垄、金琉璃配色与无缝适配。本批以真实AI绘制作为未取得可验证三色素材组时的候选fallback，保存检索及限制；不声称所有现成候选不合适或不存在。本批不采用第三方像素，不修改CREDITS或引擎；原始搜索与决策记录待最终出处一起入库。
 
 #114云岛、#117天空后两款已由Claude通过、合并并接入；#116前三天空仍由另一owner制作。#108夜市、#109宫阙已由Claude通过并接入，#110港口/#115森林也已通过；3D #121魏族SSR并行独立QA，只暂停等待对应批次，不重复写入。
+
+
+## 既有批次原始提交记录（历史原文）
+
+以下为完整 fresh f4 主线进度原文，保留原提交时的状态、数字、时间与限制；当前裁决以上方最新摘要与固定队列为准。
+
+## A12 柔边透明云朵：第1轮待审（通过0）
+
+[同一PR #127](https://github.com/acaozixu123456/myRepository/pull/127)，分支 `codex/3d-world-cloud-sprites`；3纹理/12UV云组与审图出处已完成，独立QA完成，Claude尚未审核。只更新本认领段；后面历史正文原字节保留，旧表的历史“未开始”不当本批最新状态。
+
+三款 [圆云](../assets/world/clouds/cloud_sprite_cumulus_atlas_01.webp) / [云丝](../assets/world/clouds/cloud_sprite_wisps_atlas_02.webp) / [散云](../assets/world/clouds/cloud_sprite_scattered_atlas_03.webp) 为512² RGBA、sRGB588B、losslessWebP，134604 /152392 /174084B；每款4个独立云组。01非等宽列x280，另两款x256，上下y256；精确UV/flipY与正缩放在 [说明](../assets/world/clouds/cloud-sprites-a12.README.md)。
+
+先下载实看12个CC0现成PNG（Kenney3/WickedInsignia6/bonecandy3），软灰烟/淡灰云与硬描边云各有具体不符。后以CC001/04/05做3次真实透明参考编辑；实际原稿均1254²RGBA，全幅Lanczos等比缩512，RGBA/alpha都重采样，lossless只与512技术input全RGBA0。最终是AI改编而不是官方原件；[源比较](../assets/world/clouds/cloud-sprites-a12.source-search.md)、[完整出处](../assets/world/clouds/cloud-sprites-a12.provenance.json)、[CREDITS](CREDITS.md)均记录镜像/主许可/真实时序。没有程序抠底、艺术改色或补云。
+
+[原生三底/alpha与边角](../assets/world/reviews/cloud-sprites-a12.README.md)、[总览](../assets/world/reviews/cloud-sprites-a12-overview.webp)与 [实际Sprite](../assets/world/reviews/cloud-sprites-a12-render.webp) 共12review＋3source=15图。2真实加载6HTTP200 bodySHA、24panels/192sprites、48px缩略与低opacity.25都实际采样，无runtime错误，source拍前后恒定。四边/12UV框alpha最大1弱尾值保留，不声称全0。最不满意：云丝卷弯较幻想云气，48px细纹损失；未接入世界产品。
+
+代码固定基线 `68e3f1d`；root认领前实际 `npm run typecheck && npm test` 退出0，80文件/1102测试，作者读保存日志；图像改动后不冒称新一轮整库测试。原68固定独立QA已完成，Claude尚未审核；root同步当前已通过#128的c569406并真实原生检查后在同一#127追加QA并ready，不新开重复PR，不等Claude停工。
+
+当前提交主线固定 `c5694066a6855c7eda8e8bdeb9fa4c3f28e4ca4b`：实际 `npm run typecheck && npm test` 退出0，82文件/1115测试；source/provenance/全部15图与独立68冻结字节同。具体提交差异、文档历史范围与当前日志SHA见 [提交复核](../assets/world/clouds/cloud-sprites-a12.submission-validation.json)。作者说明中的待安排/80-1102是原68时序记录，当前状态以本段和独立QA为准，Claude通过仍为0。
+
+[独立审核](../assets/world/reviews/cloud-sprites-a12.qa.md)与[完整机器记录](../assets/world/reviews/cloud-sprites-a12.qa.json)：两页192真实Sprite、6HTTP当前sourceSHA、全15图/12UV边与三源重导出；保留alpha1弱尾，不称原1254全RGBA同。独立冻结provenance86bab与原68文档，当前主线同步只改变继承文档/产品代码，本批3source及所有15图和出处未变；补充验证另记，不把旧80/1102改标签。
+
+## A10 天空首批：第 1 轮待审（2026-10-12）
+
+本线程交付前三天空：黄昏橘粉、晚霞赤红带云、清晨灰蓝薄雾（目标蓝绿，现用原雾绿色不足），分支 `codex/3d-world-sky-first`，同一 [PR #116](https://github.com/acaozixu123456/myRepository/pull/116)。三图均 2048 × 512 RGB sRGB WebP，横向循环，只天空与云，未接入游戏；第 1 轮待审，通过数量 0。
+
+| 素材 | 最终来源 | 状态 | 轮次 |
+| --- | --- | --- | --- |
+| [sky_dusk_peach_01](../assets/world/skies/sky_dusk_peach_01.webp) | Kenney CC0 现成天空带，等比缩小 | 待审 | 1 |
+| [sky_sunset_redcloud_02](../assets/world/skies/sky_sunset_redcloud_02.webp) | 真实公开素材比较后的 AI fallback，经三次真实参考编辑，采用候选4 | 待审 | 1 |
+| [sky_dawn_tealmist_03](../assets/world/skies/sky_dawn_tealmist_03.webp) | PH CC0 原雾晨 HDR → 标准 SDR 全宽上512带直接编码，无AI编辑 | 待审 | 1 |
+
+新规则后实际取得 / 比较 33 件公开原素材（Kenney 5 / OGA 25 / PH HDR 3），均 HTTP 200、固定 blob/长度吻合；PH 原 HDR 另核官方 API MD5。现成红云有褐暗色和太阳焦点，PH 原雾晨适合雾分布但蓝绿不足；赤云采用原生成方向经真实参考修订，晨雾两张蓝绿编辑在实际圆柱视觉失败而unused，最终直接适配灰蓝原雾；没有因 2:1、摄影或受阻下载预设拒选。原三次生成在新规则之前，补查与五次参考编辑在之后，不声称先搜后生成。两件 CC0 来源已登记 [CREDITS](CREDITS.md)。原稿和中间编辑完整留存。
+
+Kenney 原生4096 ×2048，完整360°宽裁框 `[0,640,4096,1664]` →4096 ×1024 →等比0.5缩小。只有最终AI赤云候选4原生2172 ×724（3:1）完整向下缩至2048 ×512（4:1），云形纵横比例压扁25%。PH现用原HDR2048 ×1024经标准Reinhard曝光2 /sRGB8bit，完整360°上512带原生2048 ×512直接编码，不缩放 / 不改变比例，没有AI编辑。此限制不误套其他两件CC0。三图共134,878 B，每件≤500,000 B，q90/m6/sRGB588B；未程序绘云、补缝、艺术调色、上采样或移缝隐藏。PH官方MD5只验证原HDR，标准SDR/WebP是披露的常规转换。
+
+[素材说明](../assets/world/skies/sky-panorama-a10-first.README.md)、[完整出处](../assets/world/skies/sky-panorama-a10-first.provenance.json)、[公开来源审计](../assets/world/skies/sky-panorama-a10-first.resource-audit.md)、[总览与完整重复 / 1:1 边角](../assets/world/reviews/sky-panorama-a10-first.README.md)、[实际无光照圆柱环视](../assets/world/reviews/sky-panorama-a10-first-render.webp)与[参数](../assets/world/reviews/sky-panorama-a10-first-render.README.md)。正式审图 14 张：13 离线 + 1 GPU。原生 PNG 保留成品精确 RGB；WebP 审图为有损再编码，不冒充逐像素原件。
+
+实际圆柱MeshBasic /BackSide /正尺度 /RepeatS /ClampT；最终三图两次fresh加载6HTTP200bodySHA匹配，432全yaw/三pitchprobe＋12正式帧＝444实际渲染，page/console errors与failedrequests0，sourceSHA前后恒定。最终LR MAE0.339 /1.954 /0.206，非数学无缝；4倍低频周期仍可见。赤云前两编辑有硬云枝或实际圆柱稳定竖色阶而弃；最终第三编辑两端约15%低细节同色，下降指标不单独等于视觉通过。两张淡蓝绿晨雾AI编辑虽机器检查过，实际圆柱仍有稳定青竖带，失败且unused，旧7298与8call失败阶段完整留存。现用PH原雾最不满意是浅灰蓝较素、没有明显绿色 / 云体弱，与原蓝绿请求存在差异，诚实交审；没有强造绿色。当前桃粉样板云偏上。
+
+授权固定主线 `60bc06577f5d5dd2966a661d2278802bb3e3fcee`；合并 HEAD `274c7f2ce267d613b530878312b7f496f8465a44`：实际 `npm run typecheck && npm test` 退出 0，69 个测试文件 / 1,035 测试通过，日志在工作空间 `tests-fixed60.log`、哈希见出处。独立 QA 另见 [摘要](../assets/world/skies/sky-panorama-a10-first.qa.md)与[机器报告](../assets/world/skies/sky-panorama-a10-first.qa.json)，Claude 通过仍为 0。
+
+协作：森林已在 #115 通过 / 接入，云岛由 #114、宫阙由 #109；正午 / 午后天空属于 #117，不在本次范围。下方固定主线 WORLD 历史原文完整保留，只有本天空认领段转为本批待审。
+
+# 世界美术进度
 
 ## 当前送审 · A09-IS 云岛草地三款
 
@@ -521,3 +638,6 @@ A10 污渍和裂缝各 10 张已交付 / 待审，涂鸦、海报、告示仍各
 | 无人机 / 飞行器 / 悬浮车 | 未开始 | — |
 
 2026-10-12 · #100 / #103 / #106 通过并合并；以最新 CODEX_QUEUE.md 的审核记录为准，历史制作记录中的“待审”描述对应当时提交阶段，图与来源未改。
+
+
+提交前合并主线 `4d6fb66`，保留主线已通过场景与来源记录，未改本批17图或审图Three/ICC/导出依赖。维护者实际typecheck+test退出0，78文件/1086测试；独立444帧与原69/1035仍保留其60bc时间范围。另仅去公开来源Markdown末尾一条空白行并更新出处对应SHA字段，图片、提示词、8次真实调用、输入receipt与材质采样均未改；原2363出处/旧Markdown完整归档。[提交验证](../assets/world/skies/sky-panorama-a10-first.submission-validation.json)。

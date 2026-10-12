@@ -1,0 +1,52 @@
+{
+  "fetchedAtUTC": "2026-10-12T08:17:44.819Z",
+  "method": "GitHub readonly fetch_file exact ref; no production checkout/fetch/ref changes",
+  "ref": "e0afc86e2c295b46dfed1e1c0df9f87543e84b9e",
+  "files": [
+    {
+      "path": "src/world/atmos.ts",
+      "blob": "29fcc7f2b09382807c19c1e969fd19b56c017498",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/src/world/atmos.ts"
+    },
+    {
+      "path": "src/world/themes/common.ts",
+      "blob": "cf67bf1c99e842694b18b3ada07ecd871bb95878",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/src/world/themes/common.ts"
+    },
+    {
+      "path": "src/world/kit.ts",
+      "blob": "169b31ff8bd60ebd65c6a787dbb16ae573c48711",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/src/world/kit.ts"
+    },
+    {
+      "path": "src/world/themes/arch.ts",
+      "blob": "1fa435aa3dc87003f95c70187717d5ca9adae59f",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/src/world/themes/arch.ts"
+    },
+    {
+      "path": "src/world/themes/palace.ts",
+      "blob": "118588d66e2470709ba14415ae880810af4948e0",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/src/world/themes/palace.ts"
+    },
+    {
+      "path": "src/world/tex.ts",
+      "blob": "d62da42637c0600fade617057072ed2a82cb29d1",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/src/world/tex.ts"
+    },
+    {
+      "path": "src/world/engine.ts",
+      "blob": "e9e2990fc5d55acea0db1957feb894a3f6211fba",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/src/world/engine.ts"
+    },
+    {
+      "path": "package.json",
+      "blob": "4b7d95b3beb4ed4ed40228ba44d1962db0b56f49",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/package.json"
+    },
+    {
+      "path": "package-lock.json",
+      "blob": "f559759cc43ab7a2f555ca1d6cc7d7bb860eb42c",
+      "url": "https://github.com/acaozixu123456/myRepository/blob/e0afc86e2c295b46dfed1e1c0df9f87543e84b9e/package-lock.json"
+    }
+  ]
+}

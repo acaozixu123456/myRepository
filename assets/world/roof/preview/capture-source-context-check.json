@@ -1,0 +1,70 @@
+{
+  "ref": "e0afc86e2c295b46dfed1e1c0df9f87543e84b9e",
+  "previousRef": "848828c477db8b84ab8674a0ff5489b80a5ad663",
+  "rows": [
+    {
+      "path": "src/world/atmos.ts",
+      "gitBlob": "29fcc7f2b09382807c19c1e969fd19b56c017498",
+      "bytes": 5387,
+      "sha256": "a566777339d6fbd01555b96bbf203bf8ceb282f1a2074f98f5ef26afda59a82f",
+      "sameAs848": false
+    },
+    {
+      "path": "src/world/themes/common.ts",
+      "gitBlob": "cf67bf1c99e842694b18b3ada07ecd871bb95878",
+      "bytes": 9514,
+      "sha256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+      "sameAs848": true
+    },
+    {
+      "path": "src/world/kit.ts",
+      "gitBlob": "169b31ff8bd60ebd65c6a787dbb16ae573c48711",
+      "bytes": 29139,
+      "sha256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+      "sameAs848": true
+    },
+    {
+      "path": "src/world/themes/arch.ts",
+      "gitBlob": "1fa435aa3dc87003f95c70187717d5ca9adae59f",
+      "bytes": 9675,
+      "sha256": "82220bd3dc833947b197d1f0f3dfd9184151f68f7c1274ea34a64362d2ad00e7",
+      "sameAs848": true
+    },
+    {
+      "path": "src/world/themes/palace.ts",
+      "gitBlob": "118588d66e2470709ba14415ae880810af4948e0",
+      "bytes": 12382,
+      "sha256": "587a2c433493e67480a9d765e4b6fe09252fb3b408d2114d503d6db964021315",
+      "sameAs848": true
+    },
+    {
+      "path": "src/world/tex.ts",
+      "gitBlob": "d62da42637c0600fade617057072ed2a82cb29d1",
+      "bytes": 12086,
+      "sha256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+      "sameAs848": true
+    },
+    {
+      "path": "src/world/engine.ts",
+      "gitBlob": "e9e2990fc5d55acea0db1957feb894a3f6211fba",
+      "bytes": 19126,
+      "sha256": "f2385a93cdd0f2e062392bd7a1c5a632aacefc2f626f04859601b98808dd6d91",
+      "sameAs848": true
+    },
+    {
+      "path": "package.json",
+      "gitBlob": "4b7d95b3beb4ed4ed40228ba44d1962db0b56f49",
+      "bytes": 1114,
+      "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "sameAs848": true
+    },
+    {
+      "path": "package-lock.json",
+      "gitBlob": "f559759cc43ab7a2f555ca1d6cc7d7bb860eb42c",
+      "bytes": 51766,
+      "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "sameAs848": true
+    }
+  ],
+  "worldEngineImported": false
+}

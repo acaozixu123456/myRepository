@@ -40,7 +40,7 @@ function cactus(sc: number, seed: number): THREE.Group {
 }
 
 /** 棕榈：略弯的树干分节 + 放射下垂的叶片 + 一簇椰子 */
-function palm(sc: number, seed: number): THREE.Group {
+export function palm(sc: number, seed: number): THREE.Group {
   const g = new THREE.Group(), rnd = mulberry(seed), bark = std('#9a6c42', 0.9), leaf = std('#3f9a3e', 0.8), leaf2 = std('#58b048', 0.8);
   const lean = (rnd() - 0.5) * 0.5, ang = rnd() * 6.28, H = 6.4;
   let x = 0, z = 0;

@@ -1,0 +1,91 @@
+{
+  "frozenUTC": "2026-10-12T10:59:41.815471+00:00",
+  "scope": "Final candidate05 independent QA and nine exact small proof PNGs; inputs unchanged. No further writes after this freeze without root handoff.",
+  "files": [
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/audit-final.py",
+      "bytes": 13836,
+      "sha256": "89ddee387c336656b4cbd98718a981a433334a46b5acb44f5f59cd1c617030c6"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_bluegreen_01-native-corners.png",
+      "bytes": 84843,
+      "sha256": "046549d5a54912b8ad6fd2174f57431735facf72b3eb456b20466ff3d932ed29"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_bluegreen_01-native-lr.png",
+      "bytes": 170116,
+      "sha256": "f58ae42655c5c55a75eebbdb69ea333025ab745f5da6fe010eb05f3b7577d5d4"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_bluegreen_01-native-tb.png",
+      "bytes": 167664,
+      "sha256": "8b00c5af0093ac3f0acebc83889c91fba4c533acaa547e5291915e7211d6dc8c"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_glazed_gold_02-native-corners.png",
+      "bytes": 89657,
+      "sha256": "4461ce672a95383aa12bdea3d831634d1a7c09c04f8c30d9fd6710d07504630c"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_glazed_gold_02-native-lr.png",
+      "bytes": 175127,
+      "sha256": "66def932a4b0175da106ddbad5a6407225f1f2c180368b044101c8e0c8869ecd"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_glazed_gold_02-native-tb.png",
+      "bytes": 177925,
+      "sha256": "56c87bb31e2af643c512d3e1ea30b0d2f503a399cd2fc16315ef6d8a1dcf2551"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_vermilion_03-native-corners.png",
+      "bytes": 75460,
+      "sha256": "85a998b6aba765466bdfb7bf1b5a5bd743af77ae05a343970e0d01a03318ee73"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_vermilion_03-native-lr.png",
+      "bytes": 149537,
+      "sha256": "337076cfe11d6305259051a77c4d9646d115a98cbf777644b9bb06811fee4574"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_vermilion_03-native-tb.png",
+      "bytes": 147705,
+      "sha256": "58d5c581c5f6461ec120033c6fd4eeac6b80114716cb9708999e39b50d815405"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11.final-technical.json",
+      "bytes": 28824,
+      "sha256": "b3b2cf6511ef34f5dc37c5afd090e8f533c285def1377e4a4f8c2d9841d6c887"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11.qa-method.json",
+      "bytes": 5065,
+      "sha256": "b2005e40a5eba0065177a9eb5fe370ef2880ea13e5b0214accf94d083fd32738"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11.qa.json",
+      "bytes": 10253,
+      "sha256": "f73443a58f25c7aad0219ad1b400b4d1ffc16c1834fb2bcd755d934b9ffdb79c"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11.qa.md",
+      "bytes": 3256,
+      "sha256": "8e4e650d8eb847be04828ef91c6e8303e130d26b237a0dc1e533577dfb4e9659"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/sources-after.json",
+      "bytes": 5541,
+      "sha256": "3fae83508effca4d6328a2d3516c843dccbe780ef93b559387c6b9651012e0c2"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/sources-before.json",
+      "bytes": 5507,
+      "sha256": "30b8869f6dea567a63ac8eb77e95ca20a3c0f4b3d7a82b27e40c06da4d680e9b"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/write-summary.py",
+      "bytes": 11766,
+      "sha256": "4ff76a000b538a00a65659ebcea261c71198423737444c00d4302909d9f3bbd8"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import type { Kind, Spawn } from '../../game/mushroom';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -86,7 +87,7 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
     const finish = () => {
       cancelAnimationFrame(raf); raf = 0; clearCells();
       const tier = tierOf(score), g = mushroomGain(ctx.s, tier);
-      if (tier > 0) { applyGain(ctx.s, g); sfx.coin(); } else sfx.no();
+      if (tier > 0) { applyGain(ctx.s, boostGain(ctx.s, g, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); sfx.coin(); } else sfx.no();
       recordPicked(ctx.s, picked); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       status.innerHTML = `${starsHtml(tier)}<div class="mg-sub">⭐ ${score} &nbsp; 🍄 ${picked}</div><div style="margin-top:4px">${tier > 0 ? gainIcons(g, 20) : ''}</div>`;
