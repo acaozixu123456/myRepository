@@ -1,5 +1,37 @@
 # 世界美术进度
 
+## 主题素材 · A09-MR 宫阙汉白玉地面
+
+当前主题批次：**A09-MR**，分支 `codex/3d-world-marble-ground`，午后金光宫阙汉白玉三变体，**第1轮待审，通过数量0**。依据最新 [固定队列](CODEX_QUEUE.md) 与 [WORLD3D 场景主题](WORLD3D.md)，明亮浅白石材优先于旧暗紫赛博计划；已做素材保留，各批独立提交，有返修先返修，完成后继续下一批。
+
+| 批次 | 场景地面 | 规格 / 数量 | 状态 | 已通过 |
+| --- | --- | --- | --- | --- |
+| A09-NM | 夜市暖砖 / 青石 / 篮织砂石 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-HB | 赤壁港旧褐 / 漂洗 / 窄木板 | 1024²，无缝，3张 | 已交付，另批待审 | 0 |
+| A09-MR | 宫阙奶白细晶 / 浅金矿纹 / 象牙云脉 | 1024²，无缝，3张 | 第1轮待审 | 0 |
+| A09-FR | 森林草地 / 落叶 | 1024²，无缝，3变体 | 未开始 | 0 |
+| A09-CL | 云岛粉绿草地 / 小花 | 1024²，无缝，3变体 | 未开始 | 0 |
+
+旧批审核现状按最新queue：A08 #98已通过 / 接入；A09 #100、A10污渍 #103与裂缝 #106已通过 / 合并，后两类尚待贴花层接入。下方旧基线的历史文字保留，不覆盖新主题顺序或这一审核现状。后续天空全景、俯视瓦面、透明云朵按queue顺序，旧涂鸦批次不继续。
+
+| 名称 / ID | 素材 | 状态 / 轮次 | 审图 | 字节 |
+| --- | --- | --- | --- | ---: |
+| 淡奶白细晶 `ground_palace_marble_milk_01` | [WebP](../assets/world/ground/ground_palace_marble_milk_01.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_palace_marble_milk_01-2x2.webp) / [4×4](../assets/world/reviews/ground_palace_marble_milk_01-4x4.webp) | 142,528 |
+| 柔浅金矿纹 `ground_palace_marble_gold_02` | [WebP](../assets/world/ground/ground_palace_marble_gold_02.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_palace_marble_gold_02-2x2.webp) / [4×4](../assets/world/reviews/ground_palace_marble_gold_02-4x4.webp) | 65,828 |
+| 浅暖象牙云脉 `ground_palace_marble_cloud_03` | [WebP](../assets/world/ground/ground_palace_marble_cloud_03.webp) | 待审 / 1 | [2×2](../assets/world/reviews/ground_palace_marble_cloud_03-2x2.webp) / [4×4](../assets/world/reviews/ground_palace_marble_cloud_03-4x4.webp) | 76,952 |
+
+2026-10-12 · 制作基线 `e777d58`，提交基线正常快进到 `29f6a8b`，宫阙材质 / 氛围参考文件hash不变。实读最新queue / palace.ts / atmos.ts，并实看既有第6章宫阙作为只读材质色板；不改引擎或注册表。三个真实独立image_gen call，无引用、无编辑、无复制旋转。原生1254² RGB PNG（1,984,169～2,290,360 B）保留workspace；完整画布等比Lanczos降到1024² RGB sRGB ICC WebP，quality90 / method6，无裁切、上采样、调色、程序补纹或修缝。源图总285,308 B，单文件≤500,000 B。[素材说明](../assets/world/ground/marble-ground-a09-mr.README.md)、[真实出处与hash](../assets/world/ground/marble-ground-a09-mr.provenance.json)。
+
+[总览](../assets/world/reviews/marble-ground-a09-mr.webp)（2048×1024，77,558 B），6张独立2×2 / 4×4、9张无损原尺度RGB全边 / 四角PNG；[方法](../assets/world/reviews/marble-ground-a09-mr.README.md)。自查无明显粗暗带或外围框，MAE非零；浅金枝端与云纹有细小相位差，4×4可辨云脉低频周期，不声称数学无缝。连续石材无板缝网格，铺装几何与UV尺度交接入方。
+
+[真实Three中性 / 宫阙午后金光样板](../assets/world/reviews/marble-ground-a09-mr-lighting.webp)（2048×1024，75,716 B），白MeshStandardMaterial roughness0.55 / metalness0、repeat[3,1]；只改白↔ATMOS.palace灯色，强度 / 位置 / 曝光 / 相机一致，无bloom / 雾 / 阴影 / 全场景调色。3/3加载、HTTP200×3、page / console errors0、failed0，6renderer各1drawcall，三源SHA拍前后相同；[参数](../assets/world/reviews/marble-ground-a09-mr-lighting.README.md)。暖光推向浅金米色。最不满意：小足迹下浅矿纹趋平，云脉周期较另外两张更可辨。
+
+独立QA见 [摘要](../assets/world/ground/marble-ground-a09-mr.qa.md) 与 [机器报告](../assets/world/ground/marble-ground-a09-mr.qa.json)。本MR worktree在e777实际typecheck退出0，npm test退出1（67/68文件、1018/1019测试通过），每日委托唯一日期测试失败；最后失败输出节选保留，非完整日志。主线修复后，29f6提交基线实际执行 `npm run typecheck && npm test` 全过（退出0；68个测试文件、1,019个测试），完整测试日志 `/workspace/marble-ground-raw/tests-latest.log`。当前第1轮待审，通过0。
+
+## 旧方向基线文字与历史（保留）
+
+以下是原基线旧计划 / 批次文字，未被本批重写；实际优先级及审核状态以上方最新queue记录为准。
+
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
 当前批次：**WORLD-A10 · 裂缝透明贴花首批**，分支 `codex/3d-world-crack-decals`，交付 512² RGBA 十张，第 1 轮待审。A08 [#98](https://github.com/acaozixu123456/myRepository/pull/98) 已通过 / 接入；A09 地砖 [#100](https://github.com/acaozixu123456/myRepository/pull/100) 与 A10 污渍 [#103](https://github.com/acaozixu123456/myRepository/pull/103) 已提交待审，继续推进 A10 裂缝。

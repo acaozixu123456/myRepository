@@ -1,0 +1,1019 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A09-MR",
+  "title": "宫阙汉白玉地面3变体",
+  "created_date_utc": "2026-10-12",
+  "branch": "codex/3d-world-marble-ground",
+  "base_branch": "claude/awesome-babbage-ygba4h",
+  "base_commit": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+  "branch_creation_base_commit": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+  "submission_base_commit": "29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a",
+  "brief": {
+    "priority_source": "latest docs/CODEX_QUEUE.md scene-material A09 palace Hanbaiyu task",
+    "theme_source": "docs/WORLD3D.md 场景主题 ch6 宫阙 午后金光",
+    "old_brief_note": "新QUEUE/WORLD3D主题优先于旧暗紫赛博街工作单，本批为明亮宫阙浅白石材。",
+    "scope": "assets/world/** + docs/WORLD_PROGRESS.md; no engine/texture registry integration",
+    "reference_files": [
+      {
+        "path": "docs/CODEX_QUEUE.md",
+        "sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+        "snapshot_path": "/workspace/marble-ground-raw/reference-snapshots/e777d58/docs/CODEX_QUEUE.md"
+      },
+      {
+        "path": "docs/WORLD3D.md",
+        "sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf",
+        "snapshot_path": "/workspace/marble-ground-raw/reference-snapshots/e777d58/docs/WORLD3D.md"
+      },
+      {
+        "path": "src/world/themes/palace.ts",
+        "sha256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+        "snapshot_path": "/workspace/marble-ground-raw/reference-snapshots/e777d58/src/world/themes/palace.ts"
+      },
+      {
+        "path": "src/world/atmos.ts",
+        "sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+        "snapshot_path": "/workspace/marble-ground-raw/reference-snapshots/e777d58/src/world/atmos.ts"
+      }
+    ],
+    "palette": {
+      "palace_white_stone": "#f2ede2",
+      "palace_gold": "#c8a050",
+      "palace_road": "#e9d8a8",
+      "sun": "#ffe8b0",
+      "hemi_sky": "#fff0dc",
+      "hemi_ground": "#8a5a4a"
+    },
+    "main_scene_reference": {
+      "path": "/workspace/marble-ground-raw/palace-scene-reference.png",
+      "sha256": "1534022a80096f1736a096f312c7f4567208b3f79df36b6b9195176224241e16",
+      "capture_report": "/workspace/marble-ground-raw/palace-scene-reference.json",
+      "purpose": "read-only existing procedural ch6 palette / scene inspection; no generated texture integration"
+    }
+  },
+  "generator": {
+    "tool": "image_gen.imagegen",
+    "generation_calls": 3,
+    "edit_calls": 0,
+    "independent_materials": 3,
+    "archived_call_records": "/workspace/marble-ground-raw/calls.json",
+    "raw_storage": "All three native1254 RGB PNG originals retained at actual /workspace/generated_images paths; actual file sizes recorded; not committed because native non-POT originals.",
+    "program_processing": "only conventional proportional downsample/encoding; no mineral drawing, seam repair, blending, color remap, alpha modification or artistic replacement"
+  },
+  "assets": [
+    {
+      "id": "ground_palace_marble_milk_01",
+      "title": "淡奶白细晶汉白玉",
+      "path": "assets/world/ground/ground_palace_marble_milk_01.webp",
+      "role": "opaque_base_color",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "tool": "image_gen.imagegen",
+          "prompt": "Create ONE independently designed square 1024x1024 SEAMLESS repeatable CHINESE HANBAIYU white marble palace plaza GROUND MATERIAL base-color / DIFFUSE ALBEDO texture. It is a completely flat orthographic top-down material image, filled edge to edge by stone: no camera tilt or perspective, no scene, no sculpture, no material ball, no objects, no horizon or tiled sample montage. Match a bright clean miniature Chinese imperial palace with vermilion pillars and gold roofs, whose warm AFTERNOON SUN will be applied by the engine later. The unlit stone base itself remains light, warm-neutral ivory white around #f2ede2, airy and calm, not dark gray, blue-white or black marble. This texture must repeat naturally in BOTH horizontal and vertical directions, with consistent fine mineral grain and tone at opposite edges; no outer border, no edge strips, no central subject, no global brightness slope or visible colored box. Smooth finely compact crystalline white stone, subtle fine material detail rather than sandy rough concrete, with only restrained small color variations. Uniform neutral diffuse presentation: NO baked directional sun, highlights, reflective gloss streaks, mirrored windows, shadows, relief, bevel shading, ambient-occlusion crevices, specular shine, wet reflection, glow or vignette. No engraved lines, cracks, black veins, strong dark streaks, metallic gold foil, ornate emblems, rings, glyphs, checker pattern, decorative tile border or repeating central medallions. No soot, oil, dirt patches, rubble, plants, leaves, blood, fresh red color, lettering, people, faces, animals or architecture. No slab-outline grid: this is a continuous stone-material repeat; geometry/stone joints can be handled separately in the game. Output a single high-resolution texture without transparency. VARIANT 1: pale milky-white Hanbaiyu with a very fine compact crystalline micrograin, tiny softly mottled off-white mineral freckles and scattered barely-visible pin-sized warm gray-beige inclusions. Mostly homogeneous light base #f2ede2 / #f5f0e7 / #eee8dc with softly interspersed fine grains, no long veins, no cloudy large blobs, no gritty holes. The material should read as smooth quiet natural white carved stone, not flat blank paper; minute mineral variation spread evenly across the square and no distinctive repeating focal feature.",
+          "tool_arguments": {
+            "prompt": "Create ONE independently designed square 1024x1024 SEAMLESS repeatable CHINESE HANBAIYU white marble palace plaza GROUND MATERIAL base-color / DIFFUSE ALBEDO texture. It is a completely flat orthographic top-down material image, filled edge to edge by stone: no camera tilt or perspective, no scene, no sculpture, no material ball, no objects, no horizon or tiled sample montage. Match a bright clean miniature Chinese imperial palace with vermilion pillars and gold roofs, whose warm AFTERNOON SUN will be applied by the engine later. The unlit stone base itself remains light, warm-neutral ivory white around #f2ede2, airy and calm, not dark gray, blue-white or black marble. This texture must repeat naturally in BOTH horizontal and vertical directions, with consistent fine mineral grain and tone at opposite edges; no outer border, no edge strips, no central subject, no global brightness slope or visible colored box. Smooth finely compact crystalline white stone, subtle fine material detail rather than sandy rough concrete, with only restrained small color variations. Uniform neutral diffuse presentation: NO baked directional sun, highlights, reflective gloss streaks, mirrored windows, shadows, relief, bevel shading, ambient-occlusion crevices, specular shine, wet reflection, glow or vignette. No engraved lines, cracks, black veins, strong dark streaks, metallic gold foil, ornate emblems, rings, glyphs, checker pattern, decorative tile border or repeating central medallions. No soot, oil, dirt patches, rubble, plants, leaves, blood, fresh red color, lettering, people, faces, animals or architecture. No slab-outline grid: this is a continuous stone-material repeat; geometry/stone joints can be handled separately in the game. Output a single high-resolution texture without transparency. VARIANT 1: pale milky-white Hanbaiyu with a very fine compact crystalline micrograin, tiny softly mottled off-white mineral freckles and scattered barely-visible pin-sized warm gray-beige inclusions. Mostly homogeneous light base #f2ede2 / #f5f0e7 / #eee8dc with softly interspersed fine grains, no long veins, no cloudy large blobs, no gritty holes. The material should read as smooth quiet natural white carved stone, not flat blank paper; minute mineral variation spread evenly across the square and no distinctive repeating focal feature.",
+            "transparent_background": false
+          },
+          "references": [],
+          "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-e993cad4-7f1c-42b5-9d8a-4fd606a0c1d6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-e993cad4-7f1c-42b5-9d8a-4fd606a0c1d6.png",
+            "identifier": "exec-e993cad4-7f1c-42b5-9d8a-4fd606a0c1d6.png",
+            "size": [
+              1254,
+              1254
+            ],
+            "mode": "RGB",
+            "bytes": 2290360,
+            "sha256": "ca06587c5ed862c82e60ba701fd27a75ce688a984e4b6af185fae19f83761d68",
+            "native_icc_present": false
+          },
+          "selected": true,
+          "selection_note": "采用独立第1原稿：暖浅白石与该变体矿物结构符合宫阙主题；直接平铺没有明显粗暗框或强跳色。未产生额外弃选稿，未进行AI编辑。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-e993cad4-7f1c-42b5-9d8a-4fd606a0c1d6.png",
+        "raw_source_sha256": "ca06587c5ed862c82e60ba701fd27a75ce688a984e4b6af185fae19f83761d68",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_note": "full canvas; zero-based half-open; no crop",
+        "target_size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "alpha": false,
+        "color_space": "sRGB",
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded; timestamped original payload retained in final and reused for byte-identical reproduction",
+        "icc_bytes": 588,
+        "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "operations": [
+          "retain native RGB full canvas without material edits",
+          "proportional whole-canvas Lanczos downsample 1254x1254 to 1024x1024",
+          "encode opaque RGB WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_program_processing": false,
+        "bytes": 142528,
+        "sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      "self_check": {
+        "status": "final_encoded_2x2_4x4_full_edges_corners_visually_reviewed",
+        "claude_approved": false,
+        "mean_rgb": [
+          239.059,
+          232.949,
+          222.398
+        ],
+        "edge_mae_rgb": {
+          "left_right": 6.183,
+          "top_bottom": 5.959
+        },
+        "metric_note": "Nonzero MAE includes grain/mineral differences. Diagnostic only, not a mathematical seamless proof.",
+        "visual_findings": "细晶分布均匀，未见大暗线、外框或大颗粒坑洞；两轴边界是细晶相位差。",
+        "limitations": "小足迹下细晶可能趋于均匀浅白；并非逐像素周期。"
+      }
+    },
+    {
+      "id": "ground_palace_marble_gold_02",
+      "title": "柔浅金细枝微纹汉白玉",
+      "path": "assets/world/ground/ground_palace_marble_gold_02.webp",
+      "role": "opaque_base_color",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "tool": "image_gen.imagegen",
+          "prompt": "Create ONE independently designed square 1024x1024 SEAMLESS repeatable CHINESE HANBAIYU white marble palace plaza GROUND MATERIAL base-color / DIFFUSE ALBEDO texture. It is a completely flat orthographic top-down material image, filled edge to edge by stone: no camera tilt or perspective, no scene, no sculpture, no material ball, no objects, no horizon or tiled sample montage. Match a bright clean miniature Chinese imperial palace with vermilion pillars and gold roofs, whose warm AFTERNOON SUN will be applied by the engine later. The unlit stone base itself remains light, warm-neutral ivory white around #f2ede2, airy and calm, not dark gray, blue-white or black marble. This texture must repeat naturally in BOTH horizontal and vertical directions, with consistent fine mineral grain and tone at opposite edges; no outer border, no edge strips, no central subject, no global brightness slope or visible colored box. Smooth finely compact crystalline white stone, subtle fine material detail rather than sandy rough concrete, with only restrained small color variations. Uniform neutral diffuse presentation: NO baked directional sun, highlights, reflective gloss streaks, mirrored windows, shadows, relief, bevel shading, ambient-occlusion crevices, specular shine, wet reflection, glow or vignette. No engraved lines, cracks, black veins, strong dark streaks, metallic gold foil, ornate emblems, rings, glyphs, checker pattern, decorative tile border or repeating central medallions. No soot, oil, dirt patches, rubble, plants, leaves, blood, fresh red color, lettering, people, faces, animals or architecture. No slab-outline grid: this is a continuous stone-material repeat; geometry/stone joints can be handled separately in the game. Output a single high-resolution texture without transparency. VARIANT 2: near-white creamy Hanbaiyu with a few extremely thin, softly broken pale CHAMPAGNE-GOLD mineral threads, branching gently like short irregular natural hairline inclusions rather than cracks. Faint muted light warm-beige gold around #decfb3 / #e5d7bf against ivory #f4efe4; keep the threads LOW CONTRAST, delicate and sparse, only about 2-4% of the surface, not shiny metal, not saturated yellow and never dark bold marble lightning. Several dispersed tiny short branching structures at different sizes, no dominant diagonal stripe, no concentrated center, no circular eyes or large gold clusters. Very smooth quiet fine white mineral background. Match any minute branches that reach borders across the repeat without an obvious cutoff.",
+          "tool_arguments": {
+            "prompt": "Create ONE independently designed square 1024x1024 SEAMLESS repeatable CHINESE HANBAIYU white marble palace plaza GROUND MATERIAL base-color / DIFFUSE ALBEDO texture. It is a completely flat orthographic top-down material image, filled edge to edge by stone: no camera tilt or perspective, no scene, no sculpture, no material ball, no objects, no horizon or tiled sample montage. Match a bright clean miniature Chinese imperial palace with vermilion pillars and gold roofs, whose warm AFTERNOON SUN will be applied by the engine later. The unlit stone base itself remains light, warm-neutral ivory white around #f2ede2, airy and calm, not dark gray, blue-white or black marble. This texture must repeat naturally in BOTH horizontal and vertical directions, with consistent fine mineral grain and tone at opposite edges; no outer border, no edge strips, no central subject, no global brightness slope or visible colored box. Smooth finely compact crystalline white stone, subtle fine material detail rather than sandy rough concrete, with only restrained small color variations. Uniform neutral diffuse presentation: NO baked directional sun, highlights, reflective gloss streaks, mirrored windows, shadows, relief, bevel shading, ambient-occlusion crevices, specular shine, wet reflection, glow or vignette. No engraved lines, cracks, black veins, strong dark streaks, metallic gold foil, ornate emblems, rings, glyphs, checker pattern, decorative tile border or repeating central medallions. No soot, oil, dirt patches, rubble, plants, leaves, blood, fresh red color, lettering, people, faces, animals or architecture. No slab-outline grid: this is a continuous stone-material repeat; geometry/stone joints can be handled separately in the game. Output a single high-resolution texture without transparency. VARIANT 2: near-white creamy Hanbaiyu with a few extremely thin, softly broken pale CHAMPAGNE-GOLD mineral threads, branching gently like short irregular natural hairline inclusions rather than cracks. Faint muted light warm-beige gold around #decfb3 / #e5d7bf against ivory #f4efe4; keep the threads LOW CONTRAST, delicate and sparse, only about 2-4% of the surface, not shiny metal, not saturated yellow and never dark bold marble lightning. Several dispersed tiny short branching structures at different sizes, no dominant diagonal stripe, no concentrated center, no circular eyes or large gold clusters. Very smooth quiet fine white mineral background. Match any minute branches that reach borders across the repeat without an obvious cutoff.",
+            "transparent_background": false
+          },
+          "references": [],
+          "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-21130fbc-a594-4d03-99bc-9276ad55a322.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-21130fbc-a594-4d03-99bc-9276ad55a322.png",
+            "identifier": "exec-21130fbc-a594-4d03-99bc-9276ad55a322.png",
+            "size": [
+              1254,
+              1254
+            ],
+            "mode": "RGB",
+            "bytes": 2007491,
+            "sha256": "aa972aa16738d227a68cc05372bccf7e8699941ac62320c555d28de934f3a529",
+            "native_icc_present": false
+          },
+          "selected": true,
+          "selection_note": "采用独立第1原稿：暖浅白石与该变体矿物结构符合宫阙主题；直接平铺没有明显粗暗框或强跳色。未产生额外弃选稿，未进行AI编辑。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-21130fbc-a594-4d03-99bc-9276ad55a322.png",
+        "raw_source_sha256": "aa972aa16738d227a68cc05372bccf7e8699941ac62320c555d28de934f3a529",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_note": "full canvas; zero-based half-open; no crop",
+        "target_size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "alpha": false,
+        "color_space": "sRGB",
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded; timestamped original payload retained in final and reused for byte-identical reproduction",
+        "icc_bytes": 588,
+        "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "operations": [
+          "retain native RGB full canvas without material edits",
+          "proportional whole-canvas Lanczos downsample 1254x1254 to 1024x1024",
+          "encode opaque RGB WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_program_processing": false,
+        "bytes": 65828,
+        "sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      "self_check": {
+        "status": "final_encoded_2x2_4x4_full_edges_corners_visually_reviewed",
+        "claude_approved": false,
+        "mean_rgb": [
+          240.183,
+          233.156,
+          221.117
+        ],
+        "edge_mae_rgb": {
+          "left_right": 2.137,
+          "top_bottom": 3.009
+        },
+        "metric_note": "Nonzero MAE includes grain/mineral differences. Diagnostic only, not a mathematical seamless proof.",
+        "visual_findings": "浅香槟色微矿纹低对比，未见黑金裂线；个别细枝在包裹边界有端点相位变化。",
+        "limitations": "矿纹比提示词所需的短小断续枝更连贯；部分端点不能逐像素续接，小足迹下浅纹较弱。"
+      }
+    },
+    {
+      "id": "ground_palace_marble_cloud_03",
+      "title": "浅暖象牙细云脉汉白玉",
+      "path": "assets/world/ground/ground_palace_marble_cloud_03.webp",
+      "role": "opaque_base_color",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "tool": "image_gen.imagegen",
+          "prompt": "Create ONE independently designed square 1024x1024 SEAMLESS repeatable CHINESE HANBAIYU white marble palace plaza GROUND MATERIAL base-color / DIFFUSE ALBEDO texture. It is a completely flat orthographic top-down material image, filled edge to edge by stone: no camera tilt or perspective, no scene, no sculpture, no material ball, no objects, no horizon or tiled sample montage. Match a bright clean miniature Chinese imperial palace with vermilion pillars and gold roofs, whose warm AFTERNOON SUN will be applied by the engine later. The unlit stone base itself remains light, warm-neutral ivory white around #f2ede2, airy and calm, not dark gray, blue-white or black marble. This texture must repeat naturally in BOTH horizontal and vertical directions, with consistent fine mineral grain and tone at opposite edges; no outer border, no edge strips, no central subject, no global brightness slope or visible colored box. Smooth finely compact crystalline white stone, subtle fine material detail rather than sandy rough concrete, with only restrained small color variations. Uniform neutral diffuse presentation: NO baked directional sun, highlights, reflective gloss streaks, mirrored windows, shadows, relief, bevel shading, ambient-occlusion crevices, specular shine, wet reflection, glow or vignette. No engraved lines, cracks, black veins, strong dark streaks, metallic gold foil, ornate emblems, rings, glyphs, checker pattern, decorative tile border or repeating central medallions. No soot, oil, dirt patches, rubble, plants, leaves, blood, fresh red color, lettering, people, faces, animals or architecture. No slab-outline grid: this is a continuous stone-material repeat; geometry/stone joints can be handled separately in the game. Output a single high-resolution texture without transparency. VARIANT 3: slightly warmer light ivory Hanbaiyu, fine gently clouded mineral ribbons and softly feathered small wisps. Warm white base #f1e9d8 / #f5efe3, small low-contrast warm-neutral clouded patches #e7dfd1 dispersed evenly, softly interleaved with light fine crystalline areas. This design uses smooth rounded, softly branching cloud-mineral shapes rather than the tiny grain-only design or thin gold filaments of the other materials. No heavy sweeping band, no large dark blobs, no high-contrast marble veins, no central cloud medallion, no repeated swirls or eye knots; keep broad areas calm and pale. Mineral cloud shapes reaching the borders must continue unobtrusively across both axes.",
+          "tool_arguments": {
+            "prompt": "Create ONE independently designed square 1024x1024 SEAMLESS repeatable CHINESE HANBAIYU white marble palace plaza GROUND MATERIAL base-color / DIFFUSE ALBEDO texture. It is a completely flat orthographic top-down material image, filled edge to edge by stone: no camera tilt or perspective, no scene, no sculpture, no material ball, no objects, no horizon or tiled sample montage. Match a bright clean miniature Chinese imperial palace with vermilion pillars and gold roofs, whose warm AFTERNOON SUN will be applied by the engine later. The unlit stone base itself remains light, warm-neutral ivory white around #f2ede2, airy and calm, not dark gray, blue-white or black marble. This texture must repeat naturally in BOTH horizontal and vertical directions, with consistent fine mineral grain and tone at opposite edges; no outer border, no edge strips, no central subject, no global brightness slope or visible colored box. Smooth finely compact crystalline white stone, subtle fine material detail rather than sandy rough concrete, with only restrained small color variations. Uniform neutral diffuse presentation: NO baked directional sun, highlights, reflective gloss streaks, mirrored windows, shadows, relief, bevel shading, ambient-occlusion crevices, specular shine, wet reflection, glow or vignette. No engraved lines, cracks, black veins, strong dark streaks, metallic gold foil, ornate emblems, rings, glyphs, checker pattern, decorative tile border or repeating central medallions. No soot, oil, dirt patches, rubble, plants, leaves, blood, fresh red color, lettering, people, faces, animals or architecture. No slab-outline grid: this is a continuous stone-material repeat; geometry/stone joints can be handled separately in the game. Output a single high-resolution texture without transparency. VARIANT 3: slightly warmer light ivory Hanbaiyu, fine gently clouded mineral ribbons and softly feathered small wisps. Warm white base #f1e9d8 / #f5efe3, small low-contrast warm-neutral clouded patches #e7dfd1 dispersed evenly, softly interleaved with light fine crystalline areas. This design uses smooth rounded, softly branching cloud-mineral shapes rather than the tiny grain-only design or thin gold filaments of the other materials. No heavy sweeping band, no large dark blobs, no high-contrast marble veins, no central cloud medallion, no repeated swirls or eye knots; keep broad areas calm and pale. Mineral cloud shapes reaching the borders must continue unobtrusively across both axes.",
+            "transparent_background": false
+          },
+          "references": [],
+          "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-651409a7-e02f-4446-8402-e4f5b5d0b6b9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-651409a7-e02f-4446-8402-e4f5b5d0b6b9.png",
+            "identifier": "exec-651409a7-e02f-4446-8402-e4f5b5d0b6b9.png",
+            "size": [
+              1254,
+              1254
+            ],
+            "mode": "RGB",
+            "bytes": 1984169,
+            "sha256": "860426e1307516e03db55f79acb10be8b8ce5fb162b6feed6db719d264c5da17",
+            "native_icc_present": false
+          },
+          "selected": true,
+          "selection_note": "采用独立第1原稿：暖浅白石与该变体矿物结构符合宫阙主题；直接平铺没有明显粗暗框或强跳色。未产生额外弃选稿，未进行AI编辑。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-651409a7-e02f-4446-8402-e4f5b5d0b6b9.png",
+        "raw_source_sha256": "860426e1307516e03db55f79acb10be8b8ce5fb162b6feed6db719d264c5da17",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_note": "full canvas; zero-based half-open; no crop",
+        "target_size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "alpha": false,
+        "color_space": "sRGB",
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded; timestamped original payload retained in final and reused for byte-identical reproduction",
+        "icc_bytes": 588,
+        "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "operations": [
+          "retain native RGB full canvas without material edits",
+          "proportional whole-canvas Lanczos downsample 1254x1254 to 1024x1024",
+          "encode opaque RGB WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_program_processing": false,
+        "bytes": 76952,
+        "sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      },
+      "self_check": {
+        "status": "final_encoded_2x2_4x4_full_edges_corners_visually_reviewed",
+        "claude_approved": false,
+        "mean_rgb": [
+          240.827,
+          231.876,
+          215.713
+        ],
+        "edge_mae_rgb": {
+          "left_right": 2.893,
+          "top_bottom": 4.07
+        },
+        "metric_note": "Nonzero MAE includes grain/mineral differences. Diagnostic only, not a mathematical seamless proof.",
+        "visual_findings": "暖象牙云状矿物变化柔和，原生包裹边角未见明显粗暗带或框。",
+        "limitations": "4×4可辨柔云块的低频周期与边沿形状相位变化；本图三者中重复最容易识别。"
+      }
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/ground_palace_marble_milk_01-2x2.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 87848,
+      "sha256": "d27253d8da0de94aee03f7f89738826b26917e9381fd3b5a2b44eb30a5f32d5e",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "direct 2x2 repeat of final encoded tile, each tile Lanczos reduced to 512; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_milk_01-4x4.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 78512,
+      "sha256": "fe8515f378c40ef8dcd30bcf78f4898a238b20d264fe29c4d695ccbc2c1805fd",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "direct 4x4 repeat of final encoded tile, each tile Lanczos reduced to 256; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_milk_01-native-lr.png",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 148920,
+      "sha256": "a446438a716f931b222f403e332f890c7919e925c1fed49780f2b043611aba77",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless full-height right64|left64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_milk_01-native-tb.png",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "bytes": 146858,
+      "sha256": "43d1b4b4eb9cf7da400195deca915e5e666b901acae72bd90f1cdb8f1ce1d072",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless full-width bottom64/top64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_milk_01-native-corners.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "bytes": 72835,
+      "sha256": "acadde61f5c37df2acbcefd6abec45581db4cab6daf3b129c2cebe4aeee88279",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless BR128|BL128 / TR128|TL128 final decoded pixel four-corner junction, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_gold_02-2x2.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 35494,
+      "sha256": "0985cdca2b7c50a7cfee7f3d94f094c62bbeef978e26615cfc20520dd01bfaad",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "direct 2x2 repeat of final encoded tile, each tile Lanczos reduced to 512; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_gold_02-4x4.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 35456,
+      "sha256": "738693c037490a1bf988dabcbf072e3dbae0c8d1e9e130c6b785ae223c705881",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "direct 4x4 repeat of final encoded tile, each tile Lanczos reduced to 256; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_gold_02-native-lr.png",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 86080,
+      "sha256": "3693dbb1829fc9483f84c2a0c9ea32a8b2cff4879b9fc4fcc435c512655d975c",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless full-height right64|left64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_gold_02-native-tb.png",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "bytes": 78396,
+      "sha256": "180ac67308cb67cd8358eb533f21844234f1bf92e025f55de68123ccb740b193",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless full-width bottom64/top64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_gold_02-native-corners.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "bytes": 48030,
+      "sha256": "99d0cf3316baf330e1cce92bd987373c8ff8b096011f1ed574d3e3a9c5c8c4ec",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless BR128|BL128 / TR128|TL128 final decoded pixel four-corner junction, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_cloud_03-2x2.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 53694,
+      "sha256": "67ff3b53c51743d4d64005a565cf2c883e070ecff60c3e0769057d8f80255923",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "direct 2x2 repeat of final encoded tile, each tile Lanczos reduced to 512; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_cloud_03-4x4.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 61708,
+      "sha256": "207cae37ed2bffda9b0d8eebd49d42890c8b07caffbc48b4e277eb612b3169d6",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "direct 4x4 repeat of final encoded tile, each tile Lanczos reduced to 256; no blending"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-lr.png",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 103440,
+      "sha256": "cbc5d218dd814df35b15bbc4a95f05d06780b4b1875aa5b917fc9d490ae4bfa7",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless full-height right64|left64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-tb.png",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "bytes": 102618,
+      "sha256": "b4d5b7db2bdd6e15951f256b1ef6fc83b027a903c28d5b9d2ec60431ede45a58",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless full-width bottom64/top64 exact final decoded pixels, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-corners.png",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "bytes": 53730,
+      "sha256": "4751b76b6667007c8edaf95c24edaef4ede105747460528060aaeed1247de1b5",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "lossless BR128|BL128 / TR128|TL128 final decoded pixel four-corner junction, 1:1"
+    },
+    {
+      "path": "assets/world/reviews/marble-ground-a09-mr.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 77558,
+      "sha256": "8d8112aece9f7d8a1afd178216631e396f382286321f8c23a9e9cce0a41d6a05",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "method": "three final tiles at 512 scale plus 2x2/4x4 direct-repeat thumbnails; layout only"
+    },
+    {
+      "path": "assets/world/reviews/marble-ground-a09-mr-lighting.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 75716,
+      "sha256": "9f00d0a9f5f5eb145f212f1b3fc203636e58a9b5da69a41c3ad44adbe2d87530",
+      "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+      "webp_quality": 85,
+      "webp_method": 6,
+      "method": "actual independent Three.js r169 material preview; only white versus ATMOS.palace light colors differ, all intensity/position/material/camera/exposure fixed",
+      "evidence": {
+        "ready": true,
+        "loaded": 3,
+        "expected": 3,
+        "parameters": {
+          "three_revision": "169",
+          "canvas": [
+            1024,
+            288
+          ],
+          "texture_repeat": [
+            3,
+            1
+          ],
+          "material": {
+            "color": "#ffffff",
+            "roughness": 0.55,
+            "metalness": 0
+          },
+          "camera": {
+            "type": "OrthographicCamera",
+            "left": -10,
+            "right": 10,
+            "top": 2.8125,
+            "bottom": -2.8125,
+            "near": 0.1,
+            "far": 50,
+            "position": [
+              0,
+              12,
+              0
+            ],
+            "up": [
+              0,
+              0,
+              -1
+            ],
+            "look_at": [
+              0,
+              0,
+              0
+            ]
+          },
+          "plane": {
+            "size": [
+              18,
+              6
+            ],
+            "rotation_x": -1.5707963267948966
+          },
+          "renderer": {
+            "output_color_space": "SRGBColorSpace",
+            "tone_mapping": "ACESFilmicToneMapping",
+            "exposure": 0.9,
+            "antialias": true,
+            "device_pixel_ratio": 1,
+            "bloom": false,
+            "shadows": false
+          },
+          "neutral_lights": {
+            "hemisphere": {
+              "sky": "#ffffff",
+              "ground": "#777777",
+              "intensity": 0.62
+            },
+            "directional": {
+              "color": "#ffffff",
+              "intensity": 1.5,
+              "position": [
+                42,
+                55,
+                32
+              ]
+            }
+          },
+          "palace_lights": {
+            "hemisphere": {
+              "sky": "#fff0dc",
+              "ground": "#8a5a4a",
+              "intensity": 0.62
+            },
+            "directional": {
+              "color": "#ffe8b0",
+              "intensity": 1.5,
+              "position": [
+                42,
+                55,
+                32
+              ]
+            }
+          },
+          "comparison": "only light colors differ; intensities/position/camera/material/exposure fixed",
+          "omitted_palace_effects": [
+            "sky dome",
+            "fog",
+            "bloom",
+            "color grading",
+            "lantern point lights"
+          ]
+        },
+        "assets": [
+          {
+            "path": "/assets/world/ground/ground_palace_marble_milk_01.webp",
+            "size": [
+              1024,
+              1024
+            ],
+            "repeat": [
+              3,
+              1
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          },
+          {
+            "path": "/assets/world/ground/ground_palace_marble_gold_02.webp",
+            "size": [
+              1024,
+              1024
+            ],
+            "repeat": [
+              3,
+              1
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          },
+          {
+            "path": "/assets/world/ground/ground_palace_marble_cloud_03.webp",
+            "size": [
+              1024,
+              1024
+            ],
+            "repeat": [
+              3,
+              1
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          }
+        ],
+        "renderers": [
+          {
+            "row": 0,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 1
+          }
+        ],
+        "page_errors": [],
+        "console_errors": [],
+        "failed_requests": [],
+        "asset_responses": [
+          {
+            "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_milk_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_gold_02.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_cloud_03.webp",
+            "status": 200
+          }
+        ],
+        "source_sha256_before": [
+          "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33",
+          "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d",
+          "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+        ],
+        "source_sha256_after": [
+          "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33",
+          "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d",
+          "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+        ],
+        "source_hashes_unchanged": true,
+        "capture": {
+          "url": "http://127.0.0.1:5196/.tmp-marble-ground/preview.html",
+          "operation": "initial load + actual reload, capture after ready on reload",
+          "browser": "Chromium /usr/bin/chromium",
+          "viewport": [
+            2048,
+            1024
+          ],
+          "device_scale_factor": 1,
+          "output_png": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.png"
+        },
+        "lighting_difference_rgb_mae": [
+          17.012,
+          17.009,
+          17.096
+        ],
+        "lighting_difference_region": {
+          "left_x": [
+            52,
+            972
+          ],
+          "right_x": [
+            1076,
+            1996
+          ],
+          "y_formula": "row*336+48 through +288, half-open; visible material only"
+        }
+      },
+      "raw_png_path": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.png",
+      "raw_png_sha256": "3bc0be58dbf763633ea7c74c7547b4662c214f0a81bba5362c0704432edafbbd",
+      "html_snapshot_path": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.html",
+      "html_sha256": "5902ff61e3fa065b34f16792745c95421d06f2f67abcff3c855209a1437c1fab",
+      "capture_script_path": "/workspace/marble-ground-raw/capture-lighting.mjs",
+      "capture_script_sha256": "c24b734713fa2b0380302e8934a02c524f9ca9e61a976e38b8e18879fb7f4c89",
+      "capture_cache_note": "empty favicon and browser HTTP cache disabled before initial load and actual reload; no earlier failed capture in this batch"
+    }
+  ],
+  "review": {
+    "overview": "assets/world/reviews/marble-ground-a09-mr.webp",
+    "direct_repeat": "final decoded tile -> Lanczos512 (2x2) /256 (4x4), directly repeated; no seam blending",
+    "native_edges": "exact decoded RGB: LR right64|left64 fullheight; TB bottom64/top64 fullwidth; corner BR128|BL128 / TR128|TL128",
+    "review_reencoding": "overview/repeat WebP q85m6 lossy re-encode; 9native PNG lossless exact RGB,1:1 spatial scale",
+    "lighting_status": "actual neutral/palace-afternoon colors capture complete; 3 loaded, HTTP200x3, page/console/failed errors0, same source hashes before/after; not engine integration",
+    "self_actual_view_scope": "3 final whole encoded WebP + 3 raw generated whole images + 17 official review images (overview, six repeat WebP, nine native PNG, actual Three WebP) all visually inspected. Existing palace scene inspected separately as read-only reference.",
+    "lighting_capture_base_commit": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+    "lighting_submission_note": "Existing capture was on the creation base; palace.ts/atmos.ts, queue and progress baseline files unchanged on latest submission base. Dedicated material preview does not exercise gameplay/decal integration."
+  },
+  "limitations": [
+    "浅矿物结构低对比，小足迹时会变弱，4×4云脉仍可辨低频周期。",
+    "边界并非逐像素相等；浅金纹端点与云纹相位差保留，未见额外粗暗带或外围框。",
+    "无板缝网格，素材是连续白石基色；几何铺装结构和UV尺度由接入方决定。",
+    "只交基色，不含法线/深度/粗糙度/位移；不烘焙午后光、镜面或阴影。"
+  ],
+  "validation": {
+    "status": "passed_latest_submission_base",
+    "requires_latest_base_recheck": false,
+    "exit_code": 0,
+    "attempts": [
+      {
+        "revision": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+        "performed_by": "/root/patterns_qa",
+        "typecheck": {
+          "command": "npm run typecheck",
+          "exec_session_id": 1489,
+          "exit_code": 0
+        },
+        "tests": {
+          "command": "npm test",
+          "exec_session_id": 73084,
+          "exit_code": 1,
+          "start_time_utc": "2026-10-12 05:15:19",
+          "duration_seconds": 22.23,
+          "test_files": {
+            "passed": 67,
+            "failed": 1,
+            "total": 68
+          },
+          "tests": {
+            "passed": 1018,
+            "failed": 1,
+            "total": 1019
+          },
+          "failure": {
+            "path": "tests/explore.test.ts",
+            "line": 59,
+            "column": 53,
+            "suite": "嫦喵的每日委托",
+            "test": "三项都完成后才能领奖，每天只能领一次，隔天重置",
+            "expected": [
+              true,
+              true,
+              false
+            ],
+            "received": [
+              false,
+              false,
+              false
+            ]
+          },
+          "interpretation": "Unmodified baseline test uses Date.UTC(2026,9,11,12) while reward calls use current time; observed on October 12. Root handles the existing main-branch Date.now() fix and final checks. No test or gameplay files changed by this QA."
+        },
+        "record_path": "/workspace/marble-ground-raw/checks-e777.json",
+        "record_sha256": "be6d1e162e31181797e532fede1b8199a7dea65583881116d0bc0403093dc033",
+        "output_excerpt_path": "/workspace/marble-ground-raw/tests-e777-captured-tail.txt",
+        "output_excerpt_sha256": "a5883ebcce669718a4085b54ee3aacc2cf54925460582ea71ec7c4f9e9535b73",
+        "capture_note": "Actual exec_command then write_stdin results; initial stdout was truncated by the model context, so the accompanying text is the preserved final failure excerpt, not a full test log."
+      },
+      {
+        "revision": "29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a",
+        "performed_by": "/root/world_a09",
+        "worktree": "/workspace/world-marble-ground",
+        "command": "npm run typecheck && npm test > /workspace/marble-ground-raw/tests-latest.log 2>&1",
+        "exec_session_id": 72264,
+        "exit_code": 0,
+        "typecheck": {
+          "command": "npm run typecheck",
+          "exit_code": 0,
+          "capture_note": "typecheck stdout returned by exec tool; test stdout/stderr alone redirected to the full test log"
+        },
+        "tests": {
+          "command": "npm test",
+          "exit_code": 0,
+          "test_files": {
+            "passed": 68,
+            "failed": 0,
+            "total": 68
+          },
+          "tests": {
+            "passed": 1019,
+            "failed": 0,
+            "total": 1019
+          },
+          "start_time_utc": "2026-10-12 05:20:06",
+          "duration_seconds": 19.32,
+          "full_test_log_path": "/workspace/marble-ground-raw/tests-latest.log",
+          "full_test_log_sha256": "1caad84b50294fa87363d391952c0699bb347c06fe96e164334c9b3756b327a4"
+        },
+        "permissions": {
+          "sandbox_permissions": "with_additional_permissions",
+          "network_enabled": true
+        },
+        "note": "Actual checks on latest main; prior fixed-date baseline failure retained. No test/gameplay files authored by this asset batch."
+      }
+    ],
+    "revision": "29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a",
+    "command": "npm run typecheck && npm test > /workspace/marble-ground-raw/tests-latest.log 2>&1",
+    "test_files": 68,
+    "tests": 1019,
+    "performed_by": "/root/world_a09"
+  },
+  "qa_paths": [
+    "assets/world/ground/marble-ground-a09-mr.qa.md",
+    "assets/world/ground/marble-ground-a09-mr.qa.json"
+  ],
+  "workspace_audit": {
+    "note": "Workspace originals and reproduction scripts retained, excluded from delivery. All committed source/review files are listed in assets/previews.",
+    "files": [
+      {
+        "path": "/workspace/marble-ground-raw/calls.json",
+        "bytes": 17116,
+        "sha256": "4475d1d9578de24b869eac7d75170ef26fb199b559c137c7e4b46504cfba198b"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/prompts.json",
+        "bytes": 7753,
+        "sha256": "17c6605a570c8405616a06de3d1d3a05760b33e99a9dccc25917aa4619e1d760"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-candidates.py",
+        "bytes": 2528,
+        "sha256": "ff462b546550a38ad3d2569c9db0bfb7eb01d25f72ed6358f7664e78d8f7d8a7"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/candidates-export.json",
+        "bytes": 2408,
+        "sha256": "08249e7091196ecc375247f68f1f28891f523cf2fc274e1d251354f1c4d44b49"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-reviews.py",
+        "bytes": 3235,
+        "sha256": "6bef39a474da6b21dd7300fcf0c6cc193881dc5433fa63958320bf706a05e209"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/review-export.json",
+        "bytes": 6900,
+        "sha256": "156a661eab60aa44b67d5f9c57b42475fbe376d5a50f4ad8c17e2c52377b59a2"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/write-provenance.py",
+        "bytes": 6700,
+        "sha256": "23e301f21a896f49bc5be7f5e3b4b2877a681e9ed725f31f8d998052a34248e6"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/capture-scene-reference.mjs",
+        "bytes": 1091,
+        "sha256": "f8b2b2dfb1aab52815ba63f1eb2c6abcb17939f188519ff9a60a9fc151272254"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/palace-scene-reference.json",
+        "bytes": 269,
+        "sha256": "72e28f62e0da4bea7852368e69a1ff1c7266b13bc1227246307236ee61249da8"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/capture-lighting.mjs",
+        "bytes": 2939,
+        "sha256": "c24b734713fa2b0380302e8934a02c524f9ca9e61a976e38b8e18879fb7f4c89"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-lighting.py",
+        "bytes": 3026,
+        "sha256": "60006fff10eb98fb20112d2c15138b40fc38ff8610a4a49c092bdea96e5fe9c0"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/lighting-report.json",
+        "bytes": 5341,
+        "sha256": "da80f84dbf4d6f0e6da76e1195b8c5098d87d5c2546f37591a3df312aa78fe9e"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/lighting-export.json",
+        "bytes": 7018,
+        "sha256": "da571b7b8268f49d0c70b137a7166914bfa336c8c0085c7a405d60621d39d894"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.html",
+        "bytes": 5450,
+        "sha256": "5902ff61e3fa065b34f16792745c95421d06f2f67abcff3c855209a1437c1fab"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/checks-e777.json",
+        "bytes": 1243,
+        "sha256": "be6d1e162e31181797e532fede1b8199a7dea65583881116d0bc0403093dc033"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/tests-e777-captured-tail.txt",
+        "bytes": 1024,
+        "sha256": "a5883ebcce669718a4085b54ee3aacc2cf54925460582ea71ec7c4f9e9535b73"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/tests-latest.log",
+        "bytes": 6415,
+        "sha256": "1caad84b50294fa87363d391952c0699bb347c06fe96e164334c9b3756b327a4"
+      },
+      {
+        "path": "/workspace/marble-ground-raw/build-final-manifest.py",
+        "bytes": 3167,
+        "sha256": "1eaeec3107ec7fc3f077b478b3d4bdac838813674abcc349a1a34f452a332a25"
+      }
+    ]
+  },
+  "submission_reference_comparison": [
+    {
+      "path": "docs/CODEX_QUEUE.md",
+      "creation_sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+      "submission_sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9",
+      "unchanged": true
+    },
+    {
+      "path": "docs/WORLD3D.md",
+      "creation_sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf",
+      "submission_sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf",
+      "unchanged": true
+    },
+    {
+      "path": "src/world/themes/palace.ts",
+      "creation_sha256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+      "submission_sha256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+      "unchanged": true
+    },
+    {
+      "path": "src/world/atmos.ts",
+      "creation_sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+      "submission_sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+      "unchanged": true
+    }
+  ]
+}

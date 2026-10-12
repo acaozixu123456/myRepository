@@ -1,0 +1,3936 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A09-MR",
+  "reviewer": "/root/patterns_qa",
+  "status": "asset_checks_passed_latest_required_checks_passed_with_baseline_failure_retained",
+  "creation_and_independent_test_base": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+  "submission_base_after_author_fast_forward": "29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a",
+  "provenance": {
+    "path": "assets/world/ground/marble-ground-a09-mr.provenance.json",
+    "sha256": "264fc7761d86b627515c3330a37a972cee5cb7b8013f5911406df51a53867d8a",
+    "all_archived_call_and_raw_bindings_verified": true,
+    "workspace_file_metadata": [
+      {
+        "path": "/workspace/marble-ground-raw/calls.json",
+        "sha256": "4475d1d9578de24b869eac7d75170ef26fb199b559c137c7e4b46504cfba198b",
+        "bytes": 17116,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/prompts.json",
+        "sha256": "17c6605a570c8405616a06de3d1d3a05760b33e99a9dccc25917aa4619e1d760",
+        "bytes": 7753,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-candidates.py",
+        "sha256": "ff462b546550a38ad3d2569c9db0bfb7eb01d25f72ed6358f7664e78d8f7d8a7",
+        "bytes": 2528,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/candidates-export.json",
+        "sha256": "08249e7091196ecc375247f68f1f28891f523cf2fc274e1d251354f1c4d44b49",
+        "bytes": 2408,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-reviews.py",
+        "sha256": "6bef39a474da6b21dd7300fcf0c6cc193881dc5433fa63958320bf706a05e209",
+        "bytes": 3235,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/review-export.json",
+        "sha256": "156a661eab60aa44b67d5f9c57b42475fbe376d5a50f4ad8c17e2c52377b59a2",
+        "bytes": 6900,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/write-provenance.py",
+        "sha256": "23e301f21a896f49bc5be7f5e3b4b2877a681e9ed725f31f8d998052a34248e6",
+        "bytes": 6700,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/capture-scene-reference.mjs",
+        "sha256": "f8b2b2dfb1aab52815ba63f1eb2c6abcb17939f188519ff9a60a9fc151272254",
+        "bytes": 1091,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/palace-scene-reference.json",
+        "sha256": "72e28f62e0da4bea7852368e69a1ff1c7266b13bc1227246307236ee61249da8",
+        "bytes": 269,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/capture-lighting.mjs",
+        "sha256": "c24b734713fa2b0380302e8934a02c524f9ca9e61a976e38b8e18879fb7f4c89",
+        "bytes": 2939,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-lighting.py",
+        "sha256": "60006fff10eb98fb20112d2c15138b40fc38ff8610a4a49c092bdea96e5fe9c0",
+        "bytes": 3026,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/lighting-report.json",
+        "sha256": "da80f84dbf4d6f0e6da76e1195b8c5098d87d5c2546f37591a3df312aa78fe9e",
+        "bytes": 5341,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/lighting-export.json",
+        "sha256": "da571b7b8268f49d0c70b137a7166914bfa336c8c0085c7a405d60621d39d894",
+        "bytes": 7018,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.html",
+        "sha256": "5902ff61e3fa065b34f16792745c95421d06f2f67abcff3c855209a1437c1fab",
+        "bytes": 5450,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/checks-e777.json",
+        "sha256": "be6d1e162e31181797e532fede1b8199a7dea65583881116d0bc0403093dc033",
+        "bytes": 1243,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/tests-e777-captured-tail.txt",
+        "sha256": "a5883ebcce669718a4085b54ee3aacc2cf54925460582ea71ec7c4f9e9535b73",
+        "bytes": 1024,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/tests-latest.log",
+        "sha256": "1caad84b50294fa87363d391952c0699bb347c06fe96e164334c9b3756b327a4",
+        "bytes": 6415,
+        "declared_metadata_match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/build-final-manifest.py",
+        "sha256": "1eaeec3107ec7fc3f077b478b3d4bdac838813674abcc349a1a34f452a332a25",
+        "bytes": 3167,
+        "declared_metadata_match": true
+      }
+    ]
+  },
+  "independent_offline": {
+    "method": "Independent offline reconstruction; embedded export ICC reused for binary identity because profile creation timestamps are nondeterministic",
+    "software": {
+      "pillow": "12.3.0",
+      "webp": "1.6.0"
+    },
+    "calls": [
+      {
+        "id": "ground_palace_marble_milk_01",
+        "candidate": 1,
+        "operation": "generate",
+        "selected": true,
+        "raw_path": "/workspace/generated_images/exec-e993cad4-7f1c-42b5-9d8a-4fd606a0c1d6.png",
+        "raw_sha256": "ca06587c5ed862c82e60ba701fd27a75ce688a984e4b6af185fae19f83761d68",
+        "raw_bytes": 2290360,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "00977b1e8c3191f3d82cd002012b15612fa9edcacad7d21162e7bb2c8354a9b5",
+        "prompt_sha256": "0d55b6c971b8d345ef439c010915d7798c1e0cf6f14311607903aa2124c8d793",
+        "reference_paths": []
+      },
+      {
+        "id": "ground_palace_marble_gold_02",
+        "candidate": 1,
+        "operation": "generate",
+        "selected": true,
+        "raw_path": "/workspace/generated_images/exec-21130fbc-a594-4d03-99bc-9276ad55a322.png",
+        "raw_sha256": "aa972aa16738d227a68cc05372bccf7e8699941ac62320c555d28de934f3a529",
+        "raw_bytes": 2007491,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "1842a4b191477d2b3d5113824d79fa61604d9a8370da22cda684e9a1ad0fc21e",
+        "prompt_sha256": "ab26b5225e21062ba8c9e7bf34179c0e92bdb442deeef3ced5707e9bc30dea19",
+        "reference_paths": []
+      },
+      {
+        "id": "ground_palace_marble_cloud_03",
+        "candidate": 1,
+        "operation": "generate",
+        "selected": true,
+        "raw_path": "/workspace/generated_images/exec-651409a7-e02f-4446-8402-e4f5b5d0b6b9.png",
+        "raw_sha256": "860426e1307516e03db55f79acb10be8b8ce5fb162b6feed6db719d264c5da17",
+        "raw_bytes": 1984169,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "efb611b6cc99e3bba610457f9a3c6d758a74a6a4bf4e8e143885d856abc34c27",
+        "prompt_sha256": "80ab1387d0af5174e094116e9d7f4b297aa160c25f0346f22778910227a9a1d2",
+        "reference_paths": []
+      }
+    ],
+    "assets": [
+      {
+        "id": "ground_palace_marble_milk_01",
+        "path": "assets/world/ground/ground_palace_marble_milk_01.webp",
+        "sha256_before": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33",
+        "sha256_after_offline": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33",
+        "bytes": 142528,
+        "format": "WEBP",
+        "mode": "RGB",
+        "size": [
+          1024,
+          1024
+        ],
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "riff_chunks": [
+          "VP8X",
+          "ICCP",
+          "VP8 "
+        ],
+        "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+        "icc_description": "sRGB built-in",
+        "icc_color_space": "RGB",
+        "selected_raw": {
+          "id": "ground_palace_marble_milk_01",
+          "candidate": 1,
+          "operation": "generate",
+          "selected": true,
+          "raw_path": "/workspace/generated_images/exec-e993cad4-7f1c-42b5-9d8a-4fd606a0c1d6.png",
+          "raw_sha256": "ca06587c5ed862c82e60ba701fd27a75ce688a984e4b6af185fae19f83761d68",
+          "raw_bytes": 2290360,
+          "raw_size": [
+            1254,
+            1254
+          ],
+          "raw_mode": "RGB",
+          "tool_arguments_sha256": "00977b1e8c3191f3d82cd002012b15612fa9edcacad7d21162e7bb2c8354a9b5",
+          "prompt_sha256": "0d55b6c971b8d345ef439c010915d7798c1e0cf6f14311607903aa2124c8d793",
+          "reference_paths": []
+        },
+        "export": {
+          "source_rectangle": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "source_size": [
+            1254,
+            1254
+          ],
+          "target_size": [
+            1024,
+            1024
+          ],
+          "filter": "Lanczos",
+          "scale": 0.8165869218500797,
+          "quality": 90,
+          "method": 6,
+          "binary_identity": true,
+          "decoded_rgb_difference_count": 0,
+          "output_sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+        },
+        "edge_diagnostics": {
+          "lr": {
+            "mean_abs_rgb": 6.183268229166667,
+            "max_abs_channel": 73,
+            "p95_abs_channel": 17.0,
+            "different_channel_count": 2833
+          },
+          "tb": {
+            "mean_abs_rgb": 5.959309895833333,
+            "max_abs_channel": 53,
+            "p95_abs_channel": 17.449999999999818,
+            "different_channel_count": 2853
+          },
+          "interior_horizontal_neighbor_mean": 2.4588039543621703,
+          "interior_vertical_neighbor_mean": 2.524385424303519
+        },
+        "mean_rgb": [
+          239.05863857269287,
+          232.9491949081421,
+          222.39752388000488
+        ],
+        "icc_matches_lcms_srgb_except_creation_timestamp": true,
+        "sha256_final": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      {
+        "id": "ground_palace_marble_gold_02",
+        "path": "assets/world/ground/ground_palace_marble_gold_02.webp",
+        "sha256_before": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d",
+        "sha256_after_offline": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d",
+        "bytes": 65828,
+        "format": "WEBP",
+        "mode": "RGB",
+        "size": [
+          1024,
+          1024
+        ],
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "riff_chunks": [
+          "VP8X",
+          "ICCP",
+          "VP8 "
+        ],
+        "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+        "icc_description": "sRGB built-in",
+        "icc_color_space": "RGB",
+        "selected_raw": {
+          "id": "ground_palace_marble_gold_02",
+          "candidate": 1,
+          "operation": "generate",
+          "selected": true,
+          "raw_path": "/workspace/generated_images/exec-21130fbc-a594-4d03-99bc-9276ad55a322.png",
+          "raw_sha256": "aa972aa16738d227a68cc05372bccf7e8699941ac62320c555d28de934f3a529",
+          "raw_bytes": 2007491,
+          "raw_size": [
+            1254,
+            1254
+          ],
+          "raw_mode": "RGB",
+          "tool_arguments_sha256": "1842a4b191477d2b3d5113824d79fa61604d9a8370da22cda684e9a1ad0fc21e",
+          "prompt_sha256": "ab26b5225e21062ba8c9e7bf34179c0e92bdb442deeef3ced5707e9bc30dea19",
+          "reference_paths": []
+        },
+        "export": {
+          "source_rectangle": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "source_size": [
+            1254,
+            1254
+          ],
+          "target_size": [
+            1024,
+            1024
+          ],
+          "filter": "Lanczos",
+          "scale": 0.8165869218500797,
+          "quality": 90,
+          "method": 6,
+          "binary_identity": true,
+          "decoded_rgb_difference_count": 0,
+          "output_sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+        },
+        "edge_diagnostics": {
+          "lr": {
+            "mean_abs_rgb": 2.1373697916666665,
+            "max_abs_channel": 39,
+            "p95_abs_channel": 6.0,
+            "different_channel_count": 2465
+          },
+          "tb": {
+            "mean_abs_rgb": 3.0094401041666665,
+            "max_abs_channel": 39,
+            "p95_abs_channel": 7.0,
+            "different_channel_count": 2698
+          },
+          "interior_horizontal_neighbor_mean": 0.9335982048305637,
+          "interior_vertical_neighbor_mean": 0.9491280623778103
+        },
+        "mean_rgb": [
+          240.1833152770996,
+          233.1555814743042,
+          221.11708641052246
+        ],
+        "icc_matches_lcms_srgb_except_creation_timestamp": true,
+        "sha256_final": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      {
+        "id": "ground_palace_marble_cloud_03",
+        "path": "assets/world/ground/ground_palace_marble_cloud_03.webp",
+        "sha256_before": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff",
+        "sha256_after_offline": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff",
+        "bytes": 76952,
+        "format": "WEBP",
+        "mode": "RGB",
+        "size": [
+          1024,
+          1024
+        ],
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "riff_chunks": [
+          "VP8X",
+          "ICCP",
+          "VP8 "
+        ],
+        "icc_sha256": "bf50e3377fe5628ff5d5e492b2bf321b34134fb71605235bea4288919cbaaea5",
+        "icc_description": "sRGB built-in",
+        "icc_color_space": "RGB",
+        "selected_raw": {
+          "id": "ground_palace_marble_cloud_03",
+          "candidate": 1,
+          "operation": "generate",
+          "selected": true,
+          "raw_path": "/workspace/generated_images/exec-651409a7-e02f-4446-8402-e4f5b5d0b6b9.png",
+          "raw_sha256": "860426e1307516e03db55f79acb10be8b8ce5fb162b6feed6db719d264c5da17",
+          "raw_bytes": 1984169,
+          "raw_size": [
+            1254,
+            1254
+          ],
+          "raw_mode": "RGB",
+          "tool_arguments_sha256": "efb611b6cc99e3bba610457f9a3c6d758a74a6a4bf4e8e143885d856abc34c27",
+          "prompt_sha256": "80ab1387d0af5174e094116e9d7f4b297aa160c25f0346f22778910227a9a1d2",
+          "reference_paths": []
+        },
+        "export": {
+          "source_rectangle": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "source_size": [
+            1254,
+            1254
+          ],
+          "target_size": [
+            1024,
+            1024
+          ],
+          "filter": "Lanczos",
+          "scale": 0.8165869218500797,
+          "quality": 90,
+          "method": 6,
+          "binary_identity": true,
+          "decoded_rgb_difference_count": 0,
+          "output_sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+        },
+        "edge_diagnostics": {
+          "lr": {
+            "mean_abs_rgb": 2.8929036458333335,
+            "max_abs_channel": 23,
+            "p95_abs_channel": 9.0,
+            "different_channel_count": 2616
+          },
+          "tb": {
+            "mean_abs_rgb": 4.069661458333333,
+            "max_abs_channel": 44,
+            "p95_abs_channel": 10.0,
+            "different_channel_count": 2842
+          },
+          "interior_horizontal_neighbor_mean": 1.1520780511770936,
+          "interior_vertical_neighbor_mean": 1.3476199749511242
+        },
+        "mean_rgb": [
+          240.82666492462158,
+          231.87586212158203,
+          215.71306324005127
+        ],
+        "icc_matches_lcms_srgb_except_creation_timestamp": true,
+        "sha256_final": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      }
+    ],
+    "reviews": [
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-native-lr.png",
+        "size": [
+          128,
+          1024
+        ],
+        "sha256": "a446438a716f931b222f403e332f890c7919e925c1fed49780f2b043611aba77",
+        "bytes": 148920,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-native-tb.png",
+        "size": [
+          1024,
+          128
+        ],
+        "sha256": "43d1b4b4eb9cf7da400195deca915e5e666b901acae72bd90f1cdb8f1ce1d072",
+        "bytes": 146858,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-native-corners.png",
+        "size": [
+          256,
+          256
+        ],
+        "sha256": "acadde61f5c37df2acbcefd6abec45581db4cab6daf3b129c2cebe4aeee88279",
+        "bytes": 72835,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-2x2.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "d27253d8da0de94aee03f7f89738826b26917e9381fd3b5a2b44eb30a5f32d5e",
+        "bytes": 87848,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-4x4.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "fe8515f378c40ef8dcd30bcf78f4898a238b20d264fe29c4d695ccbc2c1805fd",
+        "bytes": 78512,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-native-lr.png",
+        "size": [
+          128,
+          1024
+        ],
+        "sha256": "3693dbb1829fc9483f84c2a0c9ea32a8b2cff4879b9fc4fcc435c512655d975c",
+        "bytes": 86080,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-native-tb.png",
+        "size": [
+          1024,
+          128
+        ],
+        "sha256": "180ac67308cb67cd8358eb533f21844234f1bf92e025f55de68123ccb740b193",
+        "bytes": 78396,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-native-corners.png",
+        "size": [
+          256,
+          256
+        ],
+        "sha256": "99d0cf3316baf330e1cce92bd987373c8ff8b096011f1ed574d3e3a9c5c8c4ec",
+        "bytes": 48030,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-2x2.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "0985cdca2b7c50a7cfee7f3d94f094c62bbeef978e26615cfc20520dd01bfaad",
+        "bytes": 35494,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-4x4.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "738693c037490a1bf988dabcbf072e3dbae0c8d1e9e130c6b785ae223c705881",
+        "bytes": 35456,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-lr.png",
+        "size": [
+          128,
+          1024
+        ],
+        "sha256": "cbc5d218dd814df35b15bbc4a95f05d06780b4b1875aa5b917fc9d490ae4bfa7",
+        "bytes": 103440,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-tb.png",
+        "size": [
+          1024,
+          128
+        ],
+        "sha256": "b4d5b7db2bdd6e15951f256b1ef6fc83b027a903c28d5b9d2ec60431ede45a58",
+        "bytes": 102618,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-corners.png",
+        "size": [
+          256,
+          256
+        ],
+        "sha256": "4751b76b6667007c8edaf95c24edaef4ede105747460528060aaeed1247de1b5",
+        "bytes": 53730,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-2x2.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "67ff3b53c51743d4d64005a565cf2c883e070ecff60c3e0769057d8f80255923",
+        "bytes": 53694,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-4x4.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "207cae37ed2bffda9b0d8eebd49d42890c8b07caffbc48b4e277eb612b3169d6",
+        "bytes": 61708,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      }
+    ],
+    "assertions": [
+      {
+        "name": "call ground_palace_marble_milk_01 candidate1 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_milk_01 candidate1 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_milk_01 candidate1 no transparency",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_gold_02 candidate1 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_gold_02 candidate1 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_gold_02 candidate1 no transparency",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_cloud_03 candidate1 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_cloud_03 candidate1 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_palace_marble_cloud_03 candidate1 no transparency",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 export exact bytes",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 opaque RGB POT budget",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 verified sRGB profile",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 native lr exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 native tb exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 native corners exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 2x2 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_milk_01 4x4 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 export exact bytes",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 opaque RGB POT budget",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 verified sRGB profile",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 native lr exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 native tb exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 native corners exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 2x2 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_gold_02 4x4 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 export exact bytes",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 opaque RGB POT budget",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 verified sRGB profile",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 native lr exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 native tb exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 native corners exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 2x2 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_palace_marble_cloud_03 4x4 repeat exact reconstruction",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "generation_calls": 3,
+      "edit_calls": 0,
+      "selected_materials": 3,
+      "binary_exact_reexports": 3,
+      "decoded_native_edge_figures_exact": 9,
+      "repeat_figure_reconstruction_exact": 6,
+      "assertions": 33,
+      "failures": 0
+    }
+  },
+  "independent_browser": {
+    "fixture_source": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.html",
+    "fixture_source_sha256": "5902ff61e3fa065b34f16792745c95421d06f2f67abcff3c855209a1437c1fab",
+    "injected_fixture_sha256": "1411baf1213861d2ec1749ce92ec3d43528f2c1baf6646b93c416a3bb702563f",
+    "instrumentation": "Only MeshStandardMaterial/Texture/Light/WebGLRenderer runtime observation; no rendering or geometry mutations. Query nonce plus CDP cache disable; verify each HTTP body SHA against frozen production source.",
+    "url": "http://127.0.0.1:5196/.tmp-marble-ground/preview.html?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+    "loads": [
+      {
+        "declared": {
+          "ready": true,
+          "loaded": 3,
+          "expected": 3,
+          "parameters": {
+            "three_revision": "169",
+            "canvas": [
+              1024,
+              288
+            ],
+            "texture_repeat": [
+              3,
+              1
+            ],
+            "material": {
+              "color": "#ffffff",
+              "roughness": 0.55,
+              "metalness": 0
+            },
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "look_at": [
+                0,
+                0,
+                0
+              ]
+            },
+            "plane": {
+              "size": [
+                18,
+                6
+              ],
+              "rotation_x": -1.5707963267948966
+            },
+            "renderer": {
+              "output_color_space": "SRGBColorSpace",
+              "tone_mapping": "ACESFilmicToneMapping",
+              "exposure": 0.9,
+              "antialias": true,
+              "device_pixel_ratio": 1,
+              "bloom": false,
+              "shadows": false
+            },
+            "neutral_lights": {
+              "hemisphere": {
+                "sky": "#ffffff",
+                "ground": "#777777",
+                "intensity": 0.62
+              },
+              "directional": {
+                "color": "#ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            },
+            "palace_lights": {
+              "hemisphere": {
+                "sky": "#fff0dc",
+                "ground": "#8a5a4a",
+                "intensity": 0.62
+              },
+              "directional": {
+                "color": "#ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            },
+            "comparison": "only light colors differ; intensities/position/camera/material/exposure fixed",
+            "omitted_palace_effects": [
+              "sky dome",
+              "fog",
+              "bloom",
+              "color grading",
+              "lantern point lights"
+            ]
+          },
+          "assets": [
+            {
+              "path": "/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            }
+          ],
+          "renderers": [
+            {
+              "row": 0,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 0,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            }
+          ]
+        },
+        "actual": [
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "fff0dc",
+                "ground_color": "8a5a4a",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "fff0dc",
+                "ground_color": "8a5a4a",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "fff0dc",
+                "ground_color": "8a5a4a",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          }
+        ]
+      },
+      {
+        "declared": {
+          "ready": true,
+          "loaded": 3,
+          "expected": 3,
+          "parameters": {
+            "three_revision": "169",
+            "canvas": [
+              1024,
+              288
+            ],
+            "texture_repeat": [
+              3,
+              1
+            ],
+            "material": {
+              "color": "#ffffff",
+              "roughness": 0.55,
+              "metalness": 0
+            },
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "look_at": [
+                0,
+                0,
+                0
+              ]
+            },
+            "plane": {
+              "size": [
+                18,
+                6
+              ],
+              "rotation_x": -1.5707963267948966
+            },
+            "renderer": {
+              "output_color_space": "SRGBColorSpace",
+              "tone_mapping": "ACESFilmicToneMapping",
+              "exposure": 0.9,
+              "antialias": true,
+              "device_pixel_ratio": 1,
+              "bloom": false,
+              "shadows": false
+            },
+            "neutral_lights": {
+              "hemisphere": {
+                "sky": "#ffffff",
+                "ground": "#777777",
+                "intensity": 0.62
+              },
+              "directional": {
+                "color": "#ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            },
+            "palace_lights": {
+              "hemisphere": {
+                "sky": "#fff0dc",
+                "ground": "#8a5a4a",
+                "intensity": 0.62
+              },
+              "directional": {
+                "color": "#ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            },
+            "comparison": "only light colors differ; intensities/position/camera/material/exposure fixed",
+            "omitted_palace_effects": [
+              "sky dome",
+              "fog",
+              "bloom",
+              "color grading",
+              "lantern point lights"
+            ]
+          },
+          "assets": [
+            {
+              "path": "/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            }
+          ],
+          "renderers": [
+            {
+              "row": 0,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 0,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            }
+          ]
+        },
+        "actual": [
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "fff0dc",
+                "ground_color": "8a5a4a",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "fff0dc",
+                "ground_color": "8a5a4a",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.55,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "geometry_parameters": {
+                  "width": 18,
+                  "height": 6,
+                  "widthSegments": 1,
+                  "heightSegments": 1
+                },
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "fff0dc",
+                "ground_color": "8a5a4a",
+                "intensity": 0.62,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffe8b0",
+                "intensity": 1.5,
+                "position": [
+                  42,
+                  55,
+                  32
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 0.9,
+            "shadow_map": false,
+            "dpr": 1,
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "matrix_world": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                2.220446049250313e-16,
+                -1,
+                0,
+                0,
+                1,
+                2.220446049250313e-16,
+                0,
+                0,
+                12,
+                0,
+                1
+              ]
+            },
+            "canvas": [
+              1024,
+              288
+            ]
+          }
+        ]
+      }
+    ],
+    "responses": [
+      {
+        "iteration": 1,
+        "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+        "status": 200,
+        "body_sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      {
+        "iteration": 1,
+        "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+        "status": 200,
+        "body_sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      {
+        "iteration": 1,
+        "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+        "status": 200,
+        "body_sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      },
+      {
+        "iteration": 2,
+        "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_milk_01.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+        "status": 200,
+        "body_sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      {
+        "iteration": 2,
+        "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_gold_02.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+        "status": 200,
+        "body_sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      {
+        "iteration": 2,
+        "url": "http://127.0.0.1:5196/assets/world/ground/ground_palace_marble_cloud_03.webp?qa=independent-4036032957-8c5a6821a7-8f1412af76",
+        "status": 200,
+        "body_sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      }
+    ],
+    "page_errors": [],
+    "console_errors": [],
+    "failed_requests": [],
+    "source_sha256_before": [
+      {
+        "id": "ground_palace_marble_milk_01",
+        "sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      {
+        "id": "ground_palace_marble_gold_02",
+        "sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      {
+        "id": "ground_palace_marble_cloud_03",
+        "sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      }
+    ],
+    "source_sha256_after": [
+      {
+        "id": "ground_palace_marble_milk_01",
+        "sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      {
+        "id": "ground_palace_marble_gold_02",
+        "sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      {
+        "id": "ground_palace_marble_cloud_03",
+        "sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      }
+    ],
+    "source_hashes_unchanged": true,
+    "relevant_source_hashes": [
+      {
+        "path": "src/world/atmos.ts",
+        "sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b"
+      },
+      {
+        "path": "src/world/themes/palace.ts",
+        "sha256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce"
+      },
+      {
+        "path": "docs/CODEX_QUEUE.md",
+        "sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9"
+      },
+      {
+        "path": "docs/WORLD3D.md",
+        "sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf"
+      }
+    ],
+    "relevant_source_hashes_before": [
+      {
+        "path": "src/world/atmos.ts",
+        "sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b"
+      },
+      {
+        "path": "src/world/themes/palace.ts",
+        "sha256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce"
+      },
+      {
+        "path": "docs/CODEX_QUEUE.md",
+        "sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9"
+      },
+      {
+        "path": "docs/WORLD3D.md",
+        "sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf"
+      },
+      {
+        "path": "node_modules/three/build/three.module.js",
+        "sha256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416"
+      }
+    ],
+    "relevant_source_hashes_after": [
+      {
+        "path": "src/world/atmos.ts",
+        "sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b"
+      },
+      {
+        "path": "src/world/themes/palace.ts",
+        "sha256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce"
+      },
+      {
+        "path": "docs/CODEX_QUEUE.md",
+        "sha256": "edd5d16de2944c20de940df607f789afd66b870efb0a4d0d6a8a1619455237e9"
+      },
+      {
+        "path": "docs/WORLD3D.md",
+        "sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf"
+      },
+      {
+        "path": "node_modules/three/build/three.module.js",
+        "sha256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416"
+      }
+    ],
+    "relevant_source_hashes_unchanged": true,
+    "screenshot": "/tmp/marble-ground-qa/independent-lighting.png",
+    "independent_screenshot_vs_author": {
+      "author_path": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.png",
+      "author_sha256": "3bc0be58dbf763633ea7c74c7547b4662c214f0a81bba5362c0704432edafbbd",
+      "independent_path": "/tmp/marble-ground-qa/independent-lighting.png",
+      "independent_sha256": "3bc0be58dbf763633ea7c74c7547b4662c214f0a81bba5362c0704432edafbbd",
+      "size": [
+        2048,
+        1024
+      ],
+      "rgba_difference_count": 0
+    },
+    "gpu_figure": {
+      "path": "assets/world/reviews/marble-ground-a09-mr-lighting.webp",
+      "sha256": "9f00d0a9f5f5eb145f212f1b3fc203636e58a9b5da69a41c3ad44adbe2d87530",
+      "bytes": 75716,
+      "size": [
+        2048,
+        1024
+      ],
+      "quality": 85,
+      "method": 6,
+      "binary_reconstruction_identity": true,
+      "lossless": false
+    },
+    "lighting_difference": {
+      "mean_abs_rgb": [
+        17.012357840177135,
+        17.008504428341386,
+        17.096200684380033
+      ],
+      "left_x": [
+        52,
+        972
+      ],
+      "right_x": [
+        1076,
+        1996
+      ],
+      "y_half_open_formula": "row*336+48 .. row*336+336",
+      "scope": "actual material region; light colors only; not source texture difference"
+    },
+    "independent_assertions": [
+      {
+        "name": "asset production source stable from offline start through browser completion",
+        "passed": true
+      },
+      {
+        "name": "load1 actual exposure .9, colorspace sRGB, ACES and DPR1",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load2 actual exposure .9, colorspace sRGB, ACES and DPR1",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "independent rendered screenshot matches author raw PNG exact RGBA",
+        "passed": true
+      },
+      {
+        "name": "GPU WebP q85 method6 binary reconstruction exact",
+        "passed": true
+      },
+      {
+        "name": "author lighting-export raw/html/capture metadata exact",
+        "passed": true
+      }
+    ]
+  },
+  "supplement": {
+    "checks": [
+      {
+        "name": "asset production source stable from offline start through browser completion",
+        "passed": true
+      },
+      {
+        "name": "load1 actual exposure .9, colorspace sRGB, ACES and DPR1",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load1 row0 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load1 row1 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load1 row2 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load2 actual exposure .9, colorspace sRGB, ACES and DPR1",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load2 row0 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load2 row1 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 camera and geometry same",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 lights unchanged except colors",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 actual palace light values",
+        "passed": true
+      },
+      {
+        "name": "load2 row2 shared map with default UV and opaque white material",
+        "passed": true
+      },
+      {
+        "name": "independent rendered screenshot matches author raw PNG exact RGBA",
+        "passed": true
+      },
+      {
+        "name": "GPU WebP q85 method6 binary reconstruction exact",
+        "passed": true
+      },
+      {
+        "name": "author lighting-export raw/html/capture metadata exact",
+        "passed": true
+      },
+      {
+        "name": "overview q85m6 byte reconstruction exact",
+        "passed": true
+      }
+    ],
+    "overview": {
+      "path": "assets/world/reviews/marble-ground-a09-mr.webp",
+      "sha256": "8d8112aece9f7d8a1afd178216631e396f382286321f8c23a9e9cce0a41d6a05",
+      "bytes": 77558,
+      "binary_reconstruction_identity": true,
+      "lossless": false
+    },
+    "source_hashes_final": [
+      {
+        "id": "ground_palace_marble_milk_01",
+        "path": "assets/world/ground/ground_palace_marble_milk_01.webp",
+        "sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      {
+        "id": "ground_palace_marble_gold_02",
+        "path": "assets/world/ground/ground_palace_marble_gold_02.webp",
+        "sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      {
+        "id": "ground_palace_marble_cloud_03",
+        "path": "assets/world/ground/ground_palace_marble_cloud_03.webp",
+        "sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      }
+    ]
+  },
+  "old_asset_history_and_image_manifest": {
+    "checks": [
+      {
+        "path": "/workspace/marble-ground-raw/calls.json",
+        "actual_sha256": "4475d1d9578de24b869eac7d75170ef26fb199b559c137c7e4b46504cfba198b",
+        "declared_sha256": "4475d1d9578de24b869eac7d75170ef26fb199b559c137c7e4b46504cfba198b",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/prompts.json",
+        "actual_sha256": "17c6605a570c8405616a06de3d1d3a05760b33e99a9dccc25917aa4619e1d760",
+        "declared_sha256": "17c6605a570c8405616a06de3d1d3a05760b33e99a9dccc25917aa4619e1d760",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-candidates.py",
+        "actual_sha256": "ff462b546550a38ad3d2569c9db0bfb7eb01d25f72ed6358f7664e78d8f7d8a7",
+        "declared_sha256": "ff462b546550a38ad3d2569c9db0bfb7eb01d25f72ed6358f7664e78d8f7d8a7",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/candidates-export.json",
+        "actual_sha256": "08249e7091196ecc375247f68f1f28891f523cf2fc274e1d251354f1c4d44b49",
+        "declared_sha256": "08249e7091196ecc375247f68f1f28891f523cf2fc274e1d251354f1c4d44b49",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-reviews.py",
+        "actual_sha256": "6bef39a474da6b21dd7300fcf0c6cc193881dc5433fa63958320bf706a05e209",
+        "declared_sha256": "6bef39a474da6b21dd7300fcf0c6cc193881dc5433fa63958320bf706a05e209",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/review-export.json",
+        "actual_sha256": "156a661eab60aa44b67d5f9c57b42475fbe376d5a50f4ad8c17e2c52377b59a2",
+        "declared_sha256": "156a661eab60aa44b67d5f9c57b42475fbe376d5a50f4ad8c17e2c52377b59a2",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/write-provenance.py",
+        "actual_sha256": "23e301f21a896f49bc5be7f5e3b4b2877a681e9ed725f31f8d998052a34248e6",
+        "declared_sha256": "23e301f21a896f49bc5be7f5e3b4b2877a681e9ed725f31f8d998052a34248e6",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/capture-scene-reference.mjs",
+        "actual_sha256": "f8b2b2dfb1aab52815ba63f1eb2c6abcb17939f188519ff9a60a9fc151272254",
+        "declared_sha256": "f8b2b2dfb1aab52815ba63f1eb2c6abcb17939f188519ff9a60a9fc151272254",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/palace-scene-reference.json",
+        "actual_sha256": "72e28f62e0da4bea7852368e69a1ff1c7266b13bc1227246307236ee61249da8",
+        "declared_sha256": "72e28f62e0da4bea7852368e69a1ff1c7266b13bc1227246307236ee61249da8",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/capture-lighting.mjs",
+        "actual_sha256": "c24b734713fa2b0380302e8934a02c524f9ca9e61a976e38b8e18879fb7f4c89",
+        "declared_sha256": "c24b734713fa2b0380302e8934a02c524f9ca9e61a976e38b8e18879fb7f4c89",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/export-lighting.py",
+        "actual_sha256": "60006fff10eb98fb20112d2c15138b40fc38ff8610a4a49c092bdea96e5fe9c0",
+        "declared_sha256": "60006fff10eb98fb20112d2c15138b40fc38ff8610a4a49c092bdea96e5fe9c0",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/lighting-report.json",
+        "actual_sha256": "da80f84dbf4d6f0e6da76e1195b8c5098d87d5c2546f37591a3df312aa78fe9e",
+        "declared_sha256": "da80f84dbf4d6f0e6da76e1195b8c5098d87d5c2546f37591a3df312aa78fe9e",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/lighting-export.json",
+        "actual_sha256": "da571b7b8268f49d0c70b137a7166914bfa336c8c0085c7a405d60621d39d894",
+        "declared_sha256": "da571b7b8268f49d0c70b137a7166914bfa336c8c0085c7a405d60621d39d894",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/marble-ground-a09-mr-lighting.html",
+        "actual_sha256": "5902ff61e3fa065b34f16792745c95421d06f2f67abcff3c855209a1437c1fab",
+        "declared_sha256": "5902ff61e3fa065b34f16792745c95421d06f2f67abcff3c855209a1437c1fab",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/checks-e777.json",
+        "actual_sha256": "be6d1e162e31181797e532fede1b8199a7dea65583881116d0bc0403093dc033",
+        "declared_sha256": "be6d1e162e31181797e532fede1b8199a7dea65583881116d0bc0403093dc033",
+        "match": true
+      },
+      {
+        "path": "/workspace/marble-ground-raw/tests-e777-captured-tail.txt",
+        "actual_sha256": "a5883ebcce669718a4085b54ee3aacc2cf54925460582ea71ec7c4f9e9535b73",
+        "declared_sha256": "a5883ebcce669718a4085b54ee3aacc2cf54925460582ea71ec7c4f9e9535b73",
+        "match": true
+      },
+      {
+        "path": "docs/CODEX_QUEUE.md",
+        "match": true
+      },
+      {
+        "path": "docs/WORLD3D.md",
+        "match": true
+      },
+      {
+        "path": "src/world/themes/palace.ts",
+        "match": true
+      },
+      {
+        "path": "src/world/atmos.ts",
+        "match": true
+      }
+    ],
+    "all_audit_hashes_and_references_match": true,
+    "old_e777_world_files": [
+      {
+        "path": "assets/world/decals/crack-decals-a10.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/crack-decals-a10.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/crack-decals-a10.qa.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/crack-decals-a10.qa.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_asphalt_long_09.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_branch_fine_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_crazing_05.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_grout_hair_08.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_joint_ends_07.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_pit_rim_06.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_repair_edge_03.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_stone_diagonal_04.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_threeway_10.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_crack_transverse_02.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_algae_10.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_grit_spots_09.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_mineral_04.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_mixed_tracks_06.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_mud_drag_02.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_oil_film_03.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_rain_dust_08.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_rust_run_05.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_soot_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/decal_stain_tire_scuff_07.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/stain-decals-a10.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/stain-decals-a10.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/stain-decals-a10.qa.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/decals/stain-decals-a10.qa.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/ground-tiles-a09.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/ground-tiles-a09.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/ground-tiles-a09.qa.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/ground-tiles-a09.qa.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/ground_asphalt_wet_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/ground_drain_slate_02.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/ground_tile_slate_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/wet-asphalt-a08.metrics.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/wet-asphalt-a08.provenance-verification.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/wet-asphalt-a08.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/wet-asphalt-a08.qa.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/ground/wet-asphalt-a08.qa.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/crack-decals-a10-overlay.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/crack-decals-a10-overlay.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/crack-decals-a10.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/crack-decals-a10.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_crazing_05-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_threeway_10-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_crack_transverse_02-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_algae_10-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_grit_spots_09-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_mineral_04-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_mixed_tracks_06-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_mud_drag_02-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_oil_film_03-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_rain_dust_08-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_rust_run_05-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_soot_01-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/decal_stain_tire_scuff_07-native-alpha.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/ground-tiles-a09-lighting.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/ground-tiles-a09-lighting.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/ground-tiles-a09.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/ground-tiles-a09.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/ground_drain_slate_02-native-edges.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/ground_tile_slate_01-native-edges.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/metal-walls-a01-lighting.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/metal-walls-a01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/neon-signs-a06-emissive.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/neon-signs-a06.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/neon-signs-a06.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/old-tiles-a02-lighting.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/old-tiles-a02.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/skyline-a07-native-edge.png",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/skyline-a07.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/skyline-a07.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/stain-decals-a10-overlay.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/stain-decals-a10-overlay.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/stain-decals-a10.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/stain-decals-a10.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/wet-asphalt-a08-lighting.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/wet-asphalt-a08-native-lr.png",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/wet-asphalt-a08-native-tb.png",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/wet-asphalt-a08.README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/reviews/wet-asphalt-a08.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/ad_ninelives_hologram_06.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/neon-signs-a06.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/neon-signs-a06.qa.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/neon-signs-a06.qa.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/sign_bar_vertical_05.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/sign_netcafe_vertical_04.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/sign_pawn_horizontal_02.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/sign_pharmacy_horizontal_03.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/signs/sign_ramen_horizontal_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/skyline/README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/skyline/skyline-a07.metrics.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/skyline/skyline-a07.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/skyline/skyline-a07.qa.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/skyline/skyline-a07.qa.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/skyline/skyline_catcity_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/README.md",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/metal-walls-a01.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/old-tiles-a02.provenance.json",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/wall_metal_painted_02.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/wall_metal_ribbed_03.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/wall_metal_riveted_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/wall_tile_ivory_02.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/wall_tile_seafoam_01.webp",
+        "unchanged": true
+      },
+      {
+        "path": "assets/world/walls/wall_tile_slate_03.webp",
+        "unchanged": true
+      }
+    ],
+    "old_files_unchanged": true,
+    "new_image_manifest": [
+      {
+        "path": "assets/world/ground/ground_palace_marble_cloud_03.webp",
+        "bytes": 76952,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+      },
+      {
+        "path": "assets/world/ground/ground_palace_marble_gold_02.webp",
+        "bytes": 65828,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+      },
+      {
+        "path": "assets/world/ground/ground_palace_marble_milk_01.webp",
+        "bytes": 142528,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-2x2.webp",
+        "bytes": 53694,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "67ff3b53c51743d4d64005a565cf2c883e070ecff60c3e0769057d8f80255923"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-4x4.webp",
+        "bytes": 61708,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "207cae37ed2bffda9b0d8eebd49d42890c8b07caffbc48b4e277eb612b3169d6"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-corners.png",
+        "bytes": 53730,
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGB",
+        "sha256": "4751b76b6667007c8edaf95c24edaef4ede105747460528060aaeed1247de1b5"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-lr.png",
+        "bytes": 103440,
+        "size": [
+          128,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "cbc5d218dd814df35b15bbc4a95f05d06780b4b1875aa5b917fc9d490ae4bfa7"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_cloud_03-native-tb.png",
+        "bytes": 102618,
+        "size": [
+          1024,
+          128
+        ],
+        "mode": "RGB",
+        "sha256": "b4d5b7db2bdd6e15951f256b1ef6fc83b027a903c28d5b9d2ec60431ede45a58"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-2x2.webp",
+        "bytes": 35494,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "0985cdca2b7c50a7cfee7f3d94f094c62bbeef978e26615cfc20520dd01bfaad"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-4x4.webp",
+        "bytes": 35456,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "738693c037490a1bf988dabcbf072e3dbae0c8d1e9e130c6b785ae223c705881"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-native-corners.png",
+        "bytes": 48030,
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGB",
+        "sha256": "99d0cf3316baf330e1cce92bd987373c8ff8b096011f1ed574d3e3a9c5c8c4ec"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-native-lr.png",
+        "bytes": 86080,
+        "size": [
+          128,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "3693dbb1829fc9483f84c2a0c9ea32a8b2cff4879b9fc4fcc435c512655d975c"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_gold_02-native-tb.png",
+        "bytes": 78396,
+        "size": [
+          1024,
+          128
+        ],
+        "mode": "RGB",
+        "sha256": "180ac67308cb67cd8358eb533f21844234f1bf92e025f55de68123ccb740b193"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-2x2.webp",
+        "bytes": 87848,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "d27253d8da0de94aee03f7f89738826b26917e9381fd3b5a2b44eb30a5f32d5e"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-4x4.webp",
+        "bytes": 78512,
+        "size": [
+          1024,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "fe8515f378c40ef8dcd30bcf78f4898a238b20d264fe29c4d695ccbc2c1805fd"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-native-corners.png",
+        "bytes": 72835,
+        "size": [
+          256,
+          256
+        ],
+        "mode": "RGB",
+        "sha256": "acadde61f5c37df2acbcefd6abec45581db4cab6daf3b129c2cebe4aeee88279"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-native-lr.png",
+        "bytes": 148920,
+        "size": [
+          128,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "a446438a716f931b222f403e332f890c7919e925c1fed49780f2b043611aba77"
+      },
+      {
+        "path": "assets/world/reviews/ground_palace_marble_milk_01-native-tb.png",
+        "bytes": 146858,
+        "size": [
+          1024,
+          128
+        ],
+        "mode": "RGB",
+        "sha256": "43d1b4b4eb9cf7da400195deca915e5e666b901acae72bd90f1cdb8f1ce1d072"
+      },
+      {
+        "path": "assets/world/reviews/marble-ground-a09-mr-lighting.webp",
+        "bytes": 75716,
+        "size": [
+          2048,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "9f00d0a9f5f5eb145f212f1b3fc203636e58a9b5da69a41c3ad44adbe2d87530"
+      },
+      {
+        "path": "assets/world/reviews/marble-ground-a09-mr.webp",
+        "bytes": 77558,
+        "size": [
+          2048,
+          1024
+        ],
+        "mode": "RGB",
+        "sha256": "8d8112aece9f7d8a1afd178216631e396f382286321f8c23a9e9cce0a41d6a05"
+      }
+    ],
+    "all_images_lt500000": true,
+    "observed_head_after_browser": "29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a"
+  },
+  "visual_inspection": {
+    "actual_viewed_scope": {
+      "native_generated_originals": 3,
+      "whole_final_encoded_tiles": 3,
+      "official_reviews": 17,
+      "review_breakdown": {
+        "overview": 1,
+        "direct_repeat": 6,
+        "native_edge_corner": 9,
+        "gpu_lighting": 1
+      },
+      "extra": [
+        "independently rendered lighting PNG",
+        "existing procedural palace scene PNG, palette reference only"
+      ]
+    },
+    "assets": [
+      {
+        "id": "ground_palace_marble_milk_01",
+        "finding": "Light warm-neutral fine crystals are evenly distributed. In 2x2/4x4 and native opposing strips/corner junctions, no prominent straight seam band or darker perimeter was visible; single-pixel grain changes remain."
+      },
+      {
+        "id": "ground_palace_marble_gold_02",
+        "finding": "Restrained pale champagne mineral branches on white stone. Some fine branches terminate or change phase at the opposing edge; not every vein continues as one exact curve. At the inspected repeat/lighting scales these do not form a prominent dark line or square grid. Small-footprint mipmapping weakens the faint gold detail."
+      },
+      {
+        "id": "ground_palace_marble_cloud_03",
+        "finding": "Warm ivory cloud-like mineral variation. The repeated diagonal cloud clusters are recognizable in 4x4; this low-frequency motif cycle remains. No prominent coarse straight border or color step was visible in the inspected opposing strips and repeat/GPU figures."
+      }
+    ],
+    "scope_limit": "Finite visual inspection plus endpoint diagnostics; not pixel-identical opposite edges, a mathematical continuity proof, full game integration, or device performance testing."
+  },
+  "validation": {
+    "independent_attempt_1": {
+      "revision": "e777d58f3b0e9965f7af25ded73948a84e68d219",
+      "performed_by": "/root/patterns_qa",
+      "cwd": "/workspace/world-marble-ground",
+      "capture_method": "Actual exec_command then write_stdin results; initial stdout was truncated by the model context, so the accompanying text is the preserved final failure excerpt, not a full test log.",
+      "typecheck": {
+        "command": "npm run typecheck",
+        "exec_session_id": 1489,
+        "exit_code": 0
+      },
+      "tests": {
+        "command": "npm test",
+        "exec_session_id": 73084,
+        "exit_code": 1,
+        "start_time_utc": "2026-10-12 05:15:19",
+        "duration_seconds": 22.23,
+        "test_files": {
+          "passed": 67,
+          "failed": 1,
+          "total": 68
+        },
+        "tests": {
+          "passed": 1018,
+          "failed": 1,
+          "total": 1019
+        },
+        "failure": {
+          "path": "tests/explore.test.ts",
+          "line": 59,
+          "column": 53,
+          "suite": "嫦喵的每日委托",
+          "test": "三项都完成后才能领奖，每天只能领一次，隔天重置",
+          "expected": [
+            true,
+            true,
+            false
+          ],
+          "received": [
+            false,
+            false,
+            false
+          ]
+        },
+        "interpretation": "Unmodified baseline test uses Date.UTC(2026,9,11,12) while reward calls use current time; observed on October 12. Root handles the existing main-branch Date.now() fix and final checks. No test or gameplay files changed by this QA."
+      }
+    },
+    "author_attempt_2": {
+      "performed_by": "/root/world_a09",
+      "qa_method": "Read the actual completed test log and the author-confirmed successful exec result; this second run is attributed to the author, not counted as another independent QA run.",
+      "revision": "29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a",
+      "exec_session_id": 72264,
+      "command": "npm run typecheck && npm test > /workspace/marble-ground-raw/tests-latest.log 2>&1",
+      "overall_exit_code": 0,
+      "typecheck_exit_code": 0,
+      "test_exit_code": 0,
+      "test_files": {
+        "passed": 68,
+        "failed": 0,
+        "total": 68
+      },
+      "tests": {
+        "passed": 1019,
+        "failed": 0,
+        "total": 1019
+      },
+      "start_time_utc": "2026-10-12 05:20:06",
+      "duration_seconds": 19.32,
+      "actual_test_log": {
+        "path": "/workspace/marble-ground-raw/tests-latest.log",
+        "sha256": "1caad84b50294fa87363d391952c0699bb347c06fe96e164334c9b3756b327a4",
+        "bytes": 6415
+      },
+      "provenance_attempt": {
+        "revision": "29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a",
+        "performed_by": "/root/world_a09",
+        "worktree": "/workspace/world-marble-ground",
+        "command": "npm run typecheck && npm test > /workspace/marble-ground-raw/tests-latest.log 2>&1",
+        "exec_session_id": 72264,
+        "exit_code": 0,
+        "typecheck": {
+          "command": "npm run typecheck",
+          "exit_code": 0,
+          "capture_note": "typecheck stdout returned by exec tool; test stdout/stderr alone redirected to the full test log"
+        },
+        "tests": {
+          "command": "npm test",
+          "exit_code": 0,
+          "test_files": {
+            "passed": 68,
+            "failed": 0,
+            "total": 68
+          },
+          "tests": {
+            "passed": 1019,
+            "failed": 0,
+            "total": 1019
+          },
+          "start_time_utc": "2026-10-12 05:20:06",
+          "duration_seconds": 19.32,
+          "full_test_log_path": "/workspace/marble-ground-raw/tests-latest.log",
+          "full_test_log_sha256": "1caad84b50294fa87363d391952c0699bb347c06fe96e164334c9b3756b327a4"
+        },
+        "permissions": {
+          "sandbox_permissions": "with_additional_permissions",
+          "network_enabled": true
+        },
+        "note": "Actual checks on latest main; prior fixed-date baseline failure retained. No test/gameplay files authored by this asset batch."
+      }
+    }
+  },
+  "source_sha256_final": [
+    {
+      "id": "ground_palace_marble_milk_01",
+      "path": "assets/world/ground/ground_palace_marble_milk_01.webp",
+      "sha256": "4036032957926521ec13ba12d182c7991a32fb543421a8e7ffdd576d48882d33"
+    },
+    {
+      "id": "ground_palace_marble_gold_02",
+      "path": "assets/world/ground/ground_palace_marble_gold_02.webp",
+      "sha256": "8c5a6821a7dfa69c05239ee655584c1b103db7bcbead45044fed4abe87daf56d"
+    },
+    {
+      "id": "ground_palace_marble_cloud_03",
+      "path": "assets/world/ground/ground_palace_marble_cloud_03.webp",
+      "sha256": "8f1412af763ae5f7da916f62621537fcab51acedc47da0d0c44f4ab0f60631ff"
+    }
+  ],
+  "summary": {
+    "raw_generation_calls": 3,
+    "edit_calls": 0,
+    "binary_exact_production_reexports": 3,
+    "binary_exact_repeat_reexports": 6,
+    "native_exact_rgb_figures": 9,
+    "binary_exact_overview_reexport": 1,
+    "binary_exact_gpu_figure_reexport": 1,
+    "official_figures_visually_inspected": 17,
+    "actual_browser_page_loads": 2,
+    "actual_texture_http_responses": 6,
+    "verified_http_200_and_body_sha256": 6,
+    "actual_render_invocations": 12,
+    "browser_runtime_errors": 0,
+    "source_hash_changes": 0,
+    "independent_screenshot_rgba_difference_count": 0,
+    "offline_assertions_passed": 33,
+    "supplement_assertions_passed": 31,
+    "old_world_files_byte_unchanged": 115,
+    "new_source_and_review_images": 20,
+    "maximum_image_bytes": 148920
+  },
+  "temporary_reproduction": [
+    {
+      "path": "/tmp/marble-ground-qa/check-offline.py",
+      "sha256": "e9f0b78b23f776c03f5d1e98a87f9a202c8baf7d1eee642b8b8c80d38c6a958b"
+    },
+    {
+      "path": "/tmp/marble-ground-qa/check-browser.mjs",
+      "sha256": "4102b1f9b6648e42c2cddf26d7700aad9dcb9b9fec75ac8427e7f45007daf801"
+    },
+    {
+      "path": "/tmp/marble-ground-qa/checks-e777.json",
+      "sha256": "be6d1e162e31181797e532fede1b8199a7dea65583881116d0bc0403093dc033"
+    },
+    {
+      "path": "/tmp/marble-ground-qa/tests-e777-captured-tail.txt",
+      "sha256": "a5883ebcce669718a4085b54ee3aacc2cf54925460582ea71ec7c4f9e9535b73"
+    }
+  ],
+  "scope": "Only this QA Markdown/JSON authored in the worktree. Existing source pixels, export metadata, README, progress, engine, tests and branches are owned by the parent/author and were not edited by this QA."
+}
