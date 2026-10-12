@@ -40,4 +40,3 @@ OpenGameArt按每件页面确认许可，未把整个站都当成CC0。除当前
 
 9份网页搜索 / 官方页open返回、查询UTC、URL、完整结果及GitHub6f证据保存在私有工作区`/workspace/world-review/source-policy-6f/`。10个公开catalog/API GET和一次curl HEAD受到当前restricted/enforced代理目标策略403拒绝，实际错误已记录；未改代理 / policy或绕过拒绝。后续使用网页工具取得官方页面，不把403当成不存在资产的证据。
 本批没有采用第三方候选，不新增CREDITS项；现有CC0登记是Claude主干已经完成的工作。保留候选给Claude比较，未来素材按规则0先查现成。上述检索与许可证据不等于候选画风、文件格式或接缝已验证。完整结构化记录见[来源补查JSON](island-ground-a09.source-search.json)。
-
