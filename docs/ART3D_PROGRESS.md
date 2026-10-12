@@ -401,3 +401,5 @@ src/art3d/parts/hero-ur-weapons.ts
 
 
 提交前同步主线 `bb73f1f` 并保留双方进度记录，解决的冲突仅在本进度文档。本批注册表/helper、cat/pose/renderer/actor与正式图字节未变；旧独立 QA 与拍摄记录仍明确固定60bc源快照。新增小游戏和SP专属来自主线，不计为本批改动；合并后原生检查与89用户复核另按实际日志记录。
+
+同步bb73后作者重新冻结282运行时源，89实际id/87非目标字节同、真实400状态及100实际1120颅壳形位通过；新增眼/作者鼻口/FRAME/finite0。原生typecheck+test退出0，75文件 /1068测试，[当前复核](../src/art3d/parts/reviews/back-scroll-banner/post-main-validation.json)。独立5200+48和正式图仍保留60bc源快照与原始范围。
