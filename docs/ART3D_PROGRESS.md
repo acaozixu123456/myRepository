@@ -64,7 +64,7 @@
 
 ## 头饰（`src/art3d/parts/headgear.ts`）
 
-头饰第 1 批 `codex/3d-headgear-crowns` 已在 #93 通过并合并，六种均为第 1 轮。当前第 2 批 `codex/3d-headgear-crests`：`pheasant / helmetWei / helmetGeneral / featherHeaddress / yellowBand / tigerHood`，第 1 轮待审，共 21 使用者（14 英雄 + 7 杂兵）。已按 `src/data/heroes.ts`、`src/data/mob-looks.ts` 和 `src/content/mobs.ts` 核对，原表数量无误，补齐使用者 ID。
+头饰第 1 批已在 #93 通过并合并，第 2 批已按固定队列的 #95 审核记录通过并合并。剩余六种由 [#97](https://github.com/acaozixu123456/myRepository/pull/97) 交付，第 1 轮待审，尚未合并；继续衣服批次，不重复制作已提交的头饰。
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
@@ -74,18 +74,18 @@
 | `taoistCrown` | `wu_zhoumiaoyu`(UR), `xian_yuji`(SSR) + 杂兵×4（`mob_shu_strategist`, `mob_wu_strategist`, `mob_xian_vanguard`, `mob_xian_healer`） | 通过 | 1 | #93 已通过并合并；10 网格；道簪留出折耳活动间隙；codex/3d-headgear-crowns |
 | `emperorCrown` | `wei_caomiaode`(UR), `qun_dongzhuo`(SR) | 通过 | 1 | #93 已通过并合并；24 网格；冕板抬高以避开耳抖；codex/3d-headgear-crowns |
 | `boneCrown` | `man_mengmiaohuo`(UR) | 通过 | 1 | #93 已通过并合并；20 网格；codex/3d-headgear-crowns |
-| `pheasant` | `qun_lvbuding`(UR) | 待审 | 1 | 15 网格；codex/3d-headgear-crests |
-| `helmetWei` | `wei_xiahoudun`(SSR), `wei_xuhuang`(SR) + 杂兵×5（`mob_wei_guard`, `mob_wei_vanguard`, `mob_shu_vanguard`, `mob_wu_vanguard`, `mob_qun_guard`） | 待审 | 1 | 12 网格；codex/3d-headgear-crests |
-| `helmetGeneral` | `wei_zhangliao`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wu_sunxiaoba`(SSR), `shu_machao`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 13 网格；codex/3d-headgear-crests |
-| `featherHeaddress` | `man_zhurong`(SSR), `man_mulu`(SSR) + 杂兵×1（`mob_man_strategist`） | 待审 | 1 | 24 网格；codex/3d-headgear-crests |
-| `yellowBand` | `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR) + 杂兵×1（`mob_xian_strategist`） | 待审 | 1 | 9 网格；codex/3d-headgear-crests |
-| `tigerHood` | `wei_xuhuchi`(SSR) | 待审 | 1 | 16 网格；codex/3d-headgear-crests |
-| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6 | 底版 | 0 | |
-| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1 | 底版 | 0 | |
-| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1 | 底版 | 0 | |
-| `leafHat` | 杂兵×5 | 底版 | 0 | |
-| `hood` | 杂兵×3 | 底版 | 0 | |
-| `ratCap` | 杂兵×1 | 底版 | 0 | |
+| `pheasant` | `qun_lvbuding`(UR) | 通过 | 1 | #95 已通过并合并；15 网格；codex/3d-headgear-crests |
+| `helmetWei` | `wei_xiahoudun`(SSR), `wei_xuhuang`(SR) + 杂兵×5（`mob_wei_guard`, `mob_wei_vanguard`, `mob_shu_vanguard`, `mob_wu_vanguard`, `mob_qun_guard`） | 通过 | 1 | #95 已通过并合并；12 网格；codex/3d-headgear-crests |
+| `helmetGeneral` | `wei_zhangliao`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wu_sunxiaoba`(SSR), `shu_machao`(SR), `qun_huaxiong`(SR) | 通过 | 1 | #95 已通过并合并；13 网格；codex/3d-headgear-crests |
+| `featherHeaddress` | `man_zhurong`(SSR), `man_mulu`(SSR) + 杂兵×1（`mob_man_strategist`） | 通过 | 1 | #95 已通过并合并；24 网格；codex/3d-headgear-crests |
+| `yellowBand` | `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR) + 杂兵×1（`mob_xian_strategist`） | 通过 | 1 | #95 已通过并合并；9 网格；codex/3d-headgear-crests |
+| `tigerHood` | `wei_xuhuchi`(SSR) | 通过 | 1 | #95 已通过并合并；16 网格；codex/3d-headgear-crests |
+| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6 | 待审 | 1 | [#97](https://github.com/acaozixu123456/myRepository/pull/97) 已提交，尚未合并；codex/3d-headgear-fieldwear |
+| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1 | 待审 | 1 | [#97](https://github.com/acaozixu123456/myRepository/pull/97) 已提交，尚未合并；codex/3d-headgear-fieldwear |
+| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1 | 待审 | 1 | [#97](https://github.com/acaozixu123456/myRepository/pull/97) 已提交，尚未合并；codex/3d-headgear-fieldwear |
+| `leafHat` | 杂兵×5 | 待审 | 1 | [#97](https://github.com/acaozixu123456/myRepository/pull/97) 已提交，尚未合并；codex/3d-headgear-fieldwear |
+| `hood` | 杂兵×3 | 待审 | 1 | [#97](https://github.com/acaozixu123456/myRepository/pull/97) 已提交，尚未合并；codex/3d-headgear-fieldwear |
+| `ratCap` | 杂兵×1 | 待审 | 1 | [#97](https://github.com/acaozixu123456/myRepository/pull/97) 已提交，尚未合并；codex/3d-headgear-fieldwear |
 
 ### 头饰审核记录
 
@@ -121,9 +121,9 @@
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR) 等7只 | 底版 | 0 | |
-| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 底版 | 0 | |
-| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR) 等7只 | 底版 | 0 | |
+| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR), `shu_liumiaobei`(UR), `wu_zhoumiaoyu`(UR), `shu_guanyunmiao`(SSR), `qun_dongzhuo`(SR) | 待审 | 1 | 16 网格；交领、金边、压褶；codex/3d-body-regalia |
+| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 待审 | 1 | 18 网格；双层波边裙、蝴蝶腰结；codex/3d-body-regalia |
+| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wei_xuhuang`(SR), `wu_huanggai`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 24 网格；护胸、护心镜、五片裙甲；codex/3d-body-regalia |
 | `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR) 等5只 + 杂兵×2 | 底版 | 0 | |
 | `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR) 等4只 + 杂兵×2 | 底版 | 0 | |
 | `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR) 等7只 + 杂兵×12 | 底版 | 0 | |
@@ -131,6 +131,18 @@
 | `armorWei` | `wei_zhangliao`(SSR) + 杂兵×2 | 底版 | 0 | |
 | `vest` | `wu_ganning`(SR), `man_mengyou`(SR) + 杂兵×9 | 底版 | 0 | |
 | `rattan` | `man_wutugu`(SR) + 杂兵×2 | 底版 | 0 | |
+
+### 衣服第 1 批检查
+
+`codex/3d-body-regalia` 交付 `robeSilk / dress / armorHeavy`，第 1 轮待审，共 16 位英雄、无杂兵。原表的 7 / 2 / 7 数量正确，现补齐 ID。配色与造型参考 `ART_PROMPTS.md`、英雄参考 JPG 及已批准的 SP / UR 立绘；领口、裙摆与肩甲只改衣服部件，下摆继续挂在 `hip`。
+
+`npm run typecheck && npm test` 通过：64 个测试文件、976 项测试，退出码 0。三件逻辑网格为 16 / 18 / 24，几何分段最大 24，复用缓存材质，无每帧新增代码。内部修订已解决曲面装饰沉入壳体和裙层被遮挡的问题，不增加审核轮次。
+
+独立 QA 覆盖 16×14＝224 姿势和 16×3×12＝576 动画样本。衣服自身出框、眼睛及五个脸部样点遮挡、非有限坐标和新增整猫取景回归均为 0；每眼至少 71 个有效三角投影样本。正常蒙皮整猫的既有底部裁切与底版相同：曹喵德、司马喵懿、吕布丁的 `strike / thrust / hurt / dash` 共 12 个姿势，三者 `strike` 共 36 个动画样本。有限采样不能证明所有连续时刻完全无交叉；方法和边界见 [QA 摘要](../src/art3d/parts/reviews/body-regalia/qa-summary.md)。
+
+审核图：[三姿势](../src/art3d/parts/reviews/body-regalia/poses.png)、[十猫同屏战斗](../src/art3d/parts/reviews/body-regalia/battle.webp)、[小尺寸三姿势](../src/art3d/parts/reviews/body-regalia/poses-small.png)、[同引擎前后对照](../src/art3d/parts/reviews/body-regalia/before-after.png)、[胖体型与浅色甲](../src/art3d/parts/reviews/body-regalia/boundaries.png)。命令与冻结记录见 [截图说明](../src/art3d/parts/reviews/body-regalia/README.md)。
+
+最不满意：重甲在 190px 游戏尺度下的胸片细节偏简，浅色赵喵云的护心镜对比偏弱；短甲裙与肩饰仍能区别于丝袍。请 Claude 按实际战斗尺度审核。下一批衣服按表继续 `robeTaoist / tribal / robeScholar`，与 WORLD A09 地砖交替推进。
 
 ## 披挂（`src/art3d/parts/back.ts`）
 

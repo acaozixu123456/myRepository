@@ -1,0 +1,1272 @@
+{
+  "bodySHA256": "d60ea10a971d686f0d7bb02d2cbba256908dc55ef44ebf2699d71866354f9d65",
+  "toonSHA256": "03d9f550749210bd73577b360753d569005e22ea2666802b4c16d87588224c29",
+  "baselineCommit": "aa24c00",
+  "baselineBodyRawSHA256": "e72b953828e31257a575a25b996cf69dee362a0691b24f2e1f4b3f17ab1d7715",
+  "status": "independent QA complete; visual approval remains with Claude",
+  "users": {
+    "robeSilk": [
+      "wei_caomiaode",
+      "shu_liumiaobei",
+      "shu_guanyunmiao",
+      "wu_zhoumiaoyu",
+      "qun_dongzhuo",
+      "wei_simamiyi",
+      "shu_pangmiaotong"
+    ],
+    "dress": [
+      "qun_diaochan",
+      "xian_changmiao"
+    ],
+    "armorHeavy": [
+      "wei_xiahoudun",
+      "wei_xuhuang",
+      "shu_zhangmiaofei",
+      "shu_zhaomiaoyun",
+      "wu_huanggai",
+      "qun_lvbuding",
+      "qun_huaxiong"
+    ]
+  },
+  "heroCount": 16,
+  "mobCount": 0,
+  "frame": {
+    "x0": -2.2,
+    "x1": 2.2,
+    "y0": -0.25,
+    "y1": 3.6
+  },
+  "method": "runtime noBake on BODY+skirt only; actual current buildCat3D/POSES phase=0/yaw=32; body outline vertex expansion; independent normal bake FRAME by applyBoneTransform on every vertex; 12x12 actual baked eye-core triangle projection plus five face landmark depth probes; baseline only body replaced from aa24c00, identical current engines",
+  "actualBodyAttachments": 64,
+  "expectedBodyAttachments": 64,
+  "budget": [
+    {
+      "id": "wei_caomiaode",
+      "kind": "robeSilk",
+      "logicalMeshes": 16,
+      "withOutlineMeshes": 31,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "wei_xiahoudun",
+      "kind": "armorHeavy",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "wei_xuhuang",
+      "kind": "armorHeavy",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "shu_liumiaobei",
+      "kind": "robeSilk",
+      "logicalMeshes": 16,
+      "withOutlineMeshes": 31,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "shu_guanyunmiao",
+      "kind": "robeSilk",
+      "logicalMeshes": 16,
+      "withOutlineMeshes": 31,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "shu_zhangmiaofei",
+      "kind": "armorHeavy",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "shu_zhaomiaoyun",
+      "kind": "armorHeavy",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "wu_zhoumiaoyu",
+      "kind": "robeSilk",
+      "logicalMeshes": 16,
+      "withOutlineMeshes": 31,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "wu_huanggai",
+      "kind": "armorHeavy",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "qun_lvbuding",
+      "kind": "armorHeavy",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "qun_diaochan",
+      "kind": "dress",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "qun_dongzhuo",
+      "kind": "robeSilk",
+      "logicalMeshes": 16,
+      "withOutlineMeshes": 31,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "qun_huaxiong",
+      "kind": "armorHeavy",
+      "logicalMeshes": 24,
+      "withOutlineMeshes": 47,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "wei_simamiyi",
+      "kind": "robeSilk",
+      "logicalMeshes": 16,
+      "withOutlineMeshes": 31,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "shu_pangmiaotong",
+      "kind": "robeSilk",
+      "logicalMeshes": 16,
+      "withOutlineMeshes": 31,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    },
+    {
+      "id": "xian_changmiao",
+      "kind": "dress",
+      "logicalMeshes": 18,
+      "withOutlineMeshes": 35,
+      "maxSegments": 24,
+      "segmentViolations": [],
+      "materialCacheReused": true,
+      "allMaterialsToonOrOutline": true,
+      "roots": [
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      ],
+      "nonFinite": 0
+    }
+  ],
+  "summary": {
+    "staticThreePoses": {
+      "cases": 48,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 73,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 3,
+      "baselineWholeOutside": 3,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    },
+    "all14": {
+      "cases": 224,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 72,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 12,
+      "baselineWholeOutside": 12,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    },
+    "animation": {
+      "cases": 576,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 71,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 36,
+      "baselineWholeOutside": 36,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    },
+    "all": {
+      "cases": 800,
+      "eyeBlockedCases": 0,
+      "faceBlockedCases": 0,
+      "minEyeSamples": 71,
+      "clothingOutside": 0,
+      "baselineClothingOutside": 0,
+      "wholeOutside": 48,
+      "baselineWholeOutside": 48,
+      "newWholeOutside": 0,
+      "nonFinite": 0
+    }
+  },
+  "remainingBaselineFrameCases": [
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.2951290636051632,
+      "baselineMinY": -0.2951290636051632
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "thrust",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.3242586103685118,
+      "baselineMinY": -0.3242586103685118
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "hurt",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.3619077345062413,
+      "baselineMinY": -0.3619077345062413
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "dash",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.2833483507056227,
+      "baselineMinY": -0.2833483507056227
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.29379166575070925,
+      "baselineMinY": -0.29379166575070925
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.29403629008678744,
+      "baselineMinY": -0.29403629008678744
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.28313695328771143,
+      "baselineMinY": -0.28313695328771143
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.2751053485775319,
+      "baselineMinY": -0.2751053485775319
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.2869381488905861,
+      "baselineMinY": -0.2869381488905861
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.3070977127348855,
+      "baselineMinY": -0.3070977127348855
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.31123314645897937,
+      "baselineMinY": -0.31123314645897937
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.2994946089512638,
+      "baselineMinY": -0.2994946089512638
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.29244775448907356,
+      "baselineMinY": -0.29244775448907356
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.29488696631007805,
+      "baselineMinY": -0.29488696631007805
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.29118859400933905,
+      "baselineMinY": -0.29118859400933905
+    },
+    {
+      "id": "wei_caomiaode",
+      "pose": "strike",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.27863775154584913,
+      "baselineMinY": -0.27863775154584913
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.2951290636051632,
+      "baselineMinY": -0.2951290636051632
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "thrust",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.3242586103685118,
+      "baselineMinY": -0.3242586103685118
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "hurt",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.3619077345062413,
+      "baselineMinY": -0.3619077345062413
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "dash",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.2833483507056227,
+      "baselineMinY": -0.2833483507056227
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.29379166575070925,
+      "baselineMinY": -0.29379166575070925
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.29403629008678744,
+      "baselineMinY": -0.29403629008678744
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.28313695328771143,
+      "baselineMinY": -0.28313695328771143
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.2751053485775319,
+      "baselineMinY": -0.2751053485775319
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.2869381488905861,
+      "baselineMinY": -0.2869381488905861
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.3070977127348855,
+      "baselineMinY": -0.3070977127348855
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.31123314645897937,
+      "baselineMinY": -0.31123314645897937
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.2994946089512638,
+      "baselineMinY": -0.2994946089512638
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.29244775448907356,
+      "baselineMinY": -0.29244775448907356
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.29488696631007805,
+      "baselineMinY": -0.29488696631007805
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.29118859400933905,
+      "baselineMinY": -0.29118859400933905
+    },
+    {
+      "id": "qun_lvbuding",
+      "pose": "strike",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.27863775154584913,
+      "baselineMinY": -0.27863775154584913
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.2951290636051632,
+      "baselineMinY": -0.2951290636051632
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "thrust",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.3242586103685118,
+      "baselineMinY": -0.3242586103685118
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "hurt",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.3619077345062413,
+      "baselineMinY": -0.3619077345062413
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "dash",
+      "t": 0.4,
+      "suite": "all14",
+      "candidateMinY": -0.2833483507056227,
+      "baselineMinY": -0.2833483507056227
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 0,
+      "suite": "animation",
+      "candidateMinY": -0.29379166575070925,
+      "baselineMinY": -0.29379166575070925
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 0.7272727272727273,
+      "suite": "animation",
+      "candidateMinY": -0.29403629008678744,
+      "baselineMinY": -0.29403629008678744
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 1.4545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.28313695328771143,
+      "baselineMinY": -0.28313695328771143
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 2.1818181818181817,
+      "suite": "animation",
+      "candidateMinY": -0.2751053485775319,
+      "baselineMinY": -0.2751053485775319
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 2.909090909090909,
+      "suite": "animation",
+      "candidateMinY": -0.2869381488905861,
+      "baselineMinY": -0.2869381488905861
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 3.6363636363636362,
+      "suite": "animation",
+      "candidateMinY": -0.3070977127348855,
+      "baselineMinY": -0.3070977127348855
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 4.363636363636363,
+      "suite": "animation",
+      "candidateMinY": -0.31123314645897937,
+      "baselineMinY": -0.31123314645897937
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 5.090909090909091,
+      "suite": "animation",
+      "candidateMinY": -0.2994946089512638,
+      "baselineMinY": -0.2994946089512638
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 5.818181818181818,
+      "suite": "animation",
+      "candidateMinY": -0.29244775448907356,
+      "baselineMinY": -0.29244775448907356
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 6.545454545454546,
+      "suite": "animation",
+      "candidateMinY": -0.29488696631007805,
+      "baselineMinY": -0.29488696631007805
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 7.2727272727272725,
+      "suite": "animation",
+      "candidateMinY": -0.29118859400933905,
+      "baselineMinY": -0.29118859400933905
+    },
+    {
+      "id": "wei_simamiyi",
+      "pose": "strike",
+      "t": 8,
+      "suite": "animation",
+      "candidateMinY": -0.27863775154584913,
+      "baselineMinY": -0.27863775154584913
+    }
+  ],
+  "comparisonScreenshot": {
+    "output": "src/art3d/parts/reviews/body-regalia/before-after.png",
+    "bytes": 131415,
+    "bodySHA256": "d60ea10a971d686f0d7bb02d2cbba256908dc55ef44ebf2699d71866354f9d65",
+    "toonSHA256": "03d9f550749210bd73577b360753d569005e22ea2666802b4c16d87588224c29",
+    "pageErrors": [],
+    "method": {
+      "ids": [
+        "wei_caomiaode",
+        "shu_pangmiaotong",
+        "qun_diaochan",
+        "xian_changmiao",
+        "qun_lvbuding",
+        "shu_zhaomiaoyun"
+      ],
+      "dimensions": [
+        250,
+        219
+      ],
+      "normalBake": true,
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "yaw": 32
+    }
+  },
+  "visuallyInspected": [
+    "before-after.png (six heroes, actual normal bake)",
+    "candidate-v2-poses.png (six heroes, idle/windup/strike, actual normal bake)",
+    "candidate-v2-small.png (native small canvases)",
+    "battle_03.png (ten cats together)"
+  ],
+  "limitations": [
+    "Phase fixed to zero; finite 12 times in [0,8] for three poses; no proof about all continuous times or phases.",
+    "Eye depth probes use actual white/iris/pupil/arc projected triangles, 12x12 sample grid; probes do not first subtract other face geometry or eyelids.",
+    "Face coverage uses five transformed nose/mouth/muzzle landmarks and visual inspection; it is not a full face triangle collision calculation.",
+    "noBake clothing instrumentation is only an audit aid; presentation screenshot and separate whole-cat FRAME checks use ordinary bakeCat.",
+    "Existing whole-cat clipping is matched against the same current engine with only baseline body builders substituted; not claimed as a replay of the entire old commit."
+  ],
+  "pageErrors": []
+}
