@@ -156,7 +156,7 @@ export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | n
 }
 
 // ---------- 探索足迹（长期累计目标）----------
-export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern';
+export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern' | 'kart' | 'claw' | 'whack';
 export interface TrailMilestone { id: string; stat: TrailStat; need: number; label: string; reward: Gain }
 const G = (fish: number, catnip: number, bells: number, exp = 0): Gain => ({ fish, catnip, bells, exp });
 export const TRAIL: TrailMilestone[] = [
@@ -188,6 +188,9 @@ export const TRAIL: TrailMilestone[] = [
   { id: 'l10', stat: 'lantern', need: 10, label: '掌灯学徒 · 点亮 10 盏宫灯阵', reward: G(400, 3, 0) },
   { id: 'l50', stat: 'lantern', need: 50, label: '宫灯师 · 点亮 50 盏宫灯阵', reward: G(1500, 10, 30) },
   { id: 'l150', stat: 'lantern', need: 150, label: '九重掌灯官 · 点亮 150 盏宫灯阵', reward: G(4200, 25, 100) },
+  { id: 'kt5', stat: 'kart', need: 5, label: '卡丁车新手 · 跑完 5 场比赛', reward: G(400, 3, 0) },
+  { id: 'kt25', stat: 'kart', need: 25, label: '沙漠车手 · 跑完 25 场比赛', reward: G(1500, 10, 30) },
+  { id: 'kt80', stat: 'kart', need: 80, label: '日落绿洲车王 · 跑完 80 场比赛', reward: G(4200, 25, 100) },
   { id: 'b3', stat: 'bosses', need: 3, label: '首领克星 · 赢 3 场首领战', reward: G(500, 4, 10, 200) },
   { id: 'b12', stat: 'bosses', need: 12, label: '首领终结者 · 赢 12 场首领战', reward: G(2000, 15, 50, 800) },
   { id: 'b40', stat: 'bosses', need: 40, label: '九命天敌 · 赢 40 场首领战', reward: G(6000, 40, 150, 2500) },
