@@ -191,6 +191,7 @@ describe('自动探索选目标', () => {
 describe('场景玩法入口（POI）', () => {
   it('赤壁港有钓鱼点，会出现在刷新计划里；没有水的场景没有钓鱼点', () => {
     expect(poisOf(LEVELS[3]).map((p) => p.game)).toEqual(expect.arrayContaining(['fish', 'arrows']));
+    expect(poisOf(LEVELS[4]).map((p) => p.game)).toEqual(expect.arrayContaining(['mushroom', 'firefly']));
     for (const L of Object.values(ALL_SCENES)) if (!L.water) expect(poisOf(L).some((p) => p.game === 'fish'), `${L.id} 没水却有钓鱼点`).toBe(false);
     const s = newPlayer(); s.best = { chapter: 3, index: 1 };
     const plan = spawnPlan(s);

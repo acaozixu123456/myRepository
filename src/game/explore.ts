@@ -9,7 +9,7 @@ import { mulberry } from '../fx/util';
 import { ALL_SCENES, BONUS_LEVELS, BONUS_UNLOCK, LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number; ringRuns?: number; arrowRuns?: number }
+export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number; ringRuns?: number; arrowRuns?: number; fireflyRuns?: number }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; e.ringRuns = 0; e.arrowRuns = 0; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; e.ringRuns = 0; e.arrowRuns = 0; e.fireflyRuns = 0; }
   return e;
 }
 
@@ -156,7 +156,7 @@ export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | n
 }
 
 // ---------- 探索足迹（长期累计目标）----------
-export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern' | 'kart' | 'claw' | 'whack' | 'ring' | 'arrows';
+export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern' | 'kart' | 'claw' | 'whack' | 'ring' | 'arrows' | 'firefly';
 export interface TrailMilestone { id: string; stat: TrailStat; need: number; label: string; reward: Gain }
 const G = (fish: number, catnip: number, bells: number, exp = 0): Gain => ({ fish, catnip, bells, exp });
 export const TRAIL: TrailMilestone[] = [
@@ -203,6 +203,9 @@ export const TRAIL: TrailMilestone[] = [
   { id: 'ar50', stat: 'arrows', need: 50, label: '借箭新手 · 借到 50 支箭', reward: G(400, 3, 0) },
   { id: 'ar300', stat: 'arrows', need: 300, label: '草船大丰收 · 借到 300 支箭', reward: G(1500, 10, 30) },
   { id: 'ar1000', stat: 'arrows', need: 1000, label: '十万支也不在话下 · 借到 1000 支箭', reward: G(4200, 25, 100) },
+  { id: 'ff10', stat: 'firefly', need: 10, label: '萤火学徒 · 记住 10 轮萤火', reward: G(400, 3, 0) },
+  { id: 'ff60', stat: 'firefly', need: 60, label: '遗迹守夜猫 · 记住 60 轮萤火', reward: G(1500, 10, 30) },
+  { id: 'ff200', stat: 'firefly', need: 200, label: '过目不忘 · 记住 200 轮萤火', reward: G(4200, 25, 100) },
   { id: 'b3', stat: 'bosses', need: 3, label: '首领克星 · 赢 3 场首领战', reward: G(500, 4, 10, 200) },
   { id: 'b12', stat: 'bosses', need: 12, label: '首领终结者 · 赢 12 场首领战', reward: G(2000, 15, 50, 800) },
   { id: 'b40', stat: 'bosses', need: 40, label: '九命天敌 · 赢 40 场首领战', reward: G(6000, 40, 150, 2500) },
