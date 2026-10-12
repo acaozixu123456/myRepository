@@ -5,10 +5,12 @@ import { buildCat3D } from '../art3d/cat3d';
 import { detail } from '../art3d/toon';
 import type { Cat3D } from '../art3d/cat3d';
 import { applyPose } from '../art3d/pose';
+import { PET_BY_ID } from '../data/pets';
 import { lookOf, unitInfo } from '../data/units';
 import type { WorldView } from './engine';
 import type { AABB, Street } from './street';
-import { CELL, COVER_R, PORTAL_R, SAFE_R, blockedGrid, coverSpotsOf, inSafeZone, portalSpotsOf } from './levels';
+import { CELL, COVER_R, PORTAL_R, SAFE_R, blockedGrid, coverSpotsOf, inSafeZone, portalSpotsOf, zonesOf } from './levels';
+import type { Zone } from './levels';
 import { glowTex } from './tex';
 import { glowMat, std } from './kit';
 
@@ -125,6 +127,31 @@ function portalMesh(theme: string | undefined): THREE.Group {
   return g;
 }
 
+/** 场景机关的外观：风口（青色圆盘 + 流动箭头）/ 潮汐滩（蓝色水洼 + 涟漪）/ 琉璃滑地（亮面圆盘 + 星点） */
+function zoneMesh(z: Zone): THREE.Group {
+  const g = new THREE.Group();
+  const col = z.kind === 'wind' ? 0x9ae8ff : z.kind === 'tide' ? 0x1e8ae8 : 0xa8e0ff;
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(z.r, 36), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: z.kind === 'tide' ? 0.55 : z.kind === 'slide' ? 0.4 : 0.3, depthWrite: false, toneMapped: false }));
+  disc.rotation.x = -Math.PI / 2; disc.position.y = 0.06; g.add(disc);
+  const rim = new THREE.Mesh(new THREE.RingGeometry(z.r - 0.14, z.r, 36), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+  rim.rotation.x = -Math.PI / 2; rim.position.y = 0.08; g.add(rim);
+  const marks: THREE.Object3D[] = [];
+  if (z.kind === 'wind') {
+    // 三枚朝风向的箭头，沿风向循环流动
+    for (let i = 0; i < 3; i++) {
+      const sh = new THREE.Shape(); sh.moveTo(0, 0.7); sh.lineTo(0.6, -0.1); sh.lineTo(0.22, -0.1); sh.lineTo(0.22, -0.7); sh.lineTo(-0.22, -0.7); sh.lineTo(-0.22, -0.1); sh.lineTo(-0.6, -0.1); sh.closePath();
+      const a = new THREE.Mesh(new THREE.ShapeGeometry(sh), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+      a.rotation.x = -Math.PI / 2; a.rotation.z = -Math.atan2(z.dx, z.dz) + Math.PI; a.rotation.order = 'YXZ'; a.userData.i = i; g.add(a); marks.push(a);
+    }
+  } else if (z.kind === 'tide') {
+    for (let i = 0; i < 2; i++) { const r = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.0, 32), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })); r.rotation.x = -Math.PI / 2; r.position.y = 0.09; r.userData.i = i; g.add(r); marks.push(r); }
+  } else {
+    for (let i = 0; i < 6; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xfff6c8, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); sp.scale.setScalar(0.9); sp.userData.i = i; sp.position.set(Math.cos(i * 1.05) * z.r * 0.6, 0.3, Math.sin(i * 1.05) * z.r * 0.6); g.add(sp); marks.push(sp); }
+  }
+  g.userData.marks = marks; g.userData.zone = z;
+  return g;
+}
+
 export class Explorer {
   readonly root = new THREE.Group();
   private team: Actor[] = [];
@@ -156,6 +183,8 @@ export class Explorer {
     this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = 0.4; this.root.add(this.ring);
     this.marker = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.7, 24), new THREE.MeshBasicMaterial({ color: 0xff7ad9, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }));
     this.marker.rotation.x = -Math.PI / 2; this.marker.position.y = 0.42; this.root.add(this.marker);
+    this.zones = zonesOf(street.level);
+    for (const z of this.zones) { const m = zoneMesh(z); m.position.set(z.x, 0.32, z.z); this.root.add(m); this.zoneMeshes.push(m); }
     this.portals = portalSpotsOf(street.level);
     for (const [x, z] of this.portals) { const m = portalMesh(street.level.theme); m.position.set(x, 0.32, z); this.root.add(m); this.portalMeshes.push(m); }
     this.covers = coverSpotsOf(street.level);
@@ -166,6 +195,14 @@ export class Explorer {
 
   // ---------- 探路技：冲撞 / 潜行 / 灵视（谁能放由队伍里的职业决定） ----------
   private covers: [number, number][] = [];
+  private zones: Zone[] = [];
+  private zoneMeshes: THREE.Group[] = [];
+  private zoneNow: Zone | null = null;
+  private vel = new THREE.Vector3();
+  private pushed = false;
+  private zoneAt(x: number, z: number): Zone | null { for (const q of this.zones) if (Math.hypot(q.x - x, q.z - z) < q.r) return q; return null; }
+  /** 队伍当前的移动速度（潜行变慢，潮汐滩变慢，风口加速） */
+  private get spd(): number { const k = this.zoneNow?.kind; return SPEED * (this.sneakT > 0 ? 0.62 : 1) * (k === 'tide' ? 0.55 : k === 'wind' ? 1.5 : 1); }
   private portals: [number, number][] = [];
   private portalMeshes: THREE.Group[] = [];
   private portalCd = 0;
@@ -215,6 +252,18 @@ export class Explorer {
   }
   private tickSkills(dt: number) {
     for (const k of Object.keys(this.cd) as ExploreSkill[]) this.cd[k] = Math.max(0, this.cd[k] - dt);
+    // 场景机关：风口顺风推一把 / 滑地松手还滑一段 / 潮汐滩变慢（见 spd）
+    { const L0 = this.leader, prev = this.zoneNow; this.zoneNow = this.zoneAt(L0.pos.x, L0.pos.z);
+      if (this.zoneNow && this.zoneNow !== prev) this.hooks.note?.(this.zoneNow.kind === 'wind' ? '🌬️ 风口：顺风加速' : this.zoneNow.kind === 'tide' ? '🌊 潮汐滩：走得慢，追兵也一样' : '✨ 琉璃滑地：松手还会滑一段');
+      const mv = (ax: number, az: number) => { const t = new THREE.Vector3(L0.pos.x + ax, 0.32, L0.pos.z + az); const [cx, cz] = this.cell(t); if (!this.grid[cz * this.N + cx]) { L0.pos.copy(t); L0.moving = 1; return true; } return false; };
+      if (this.zoneNow?.kind === 'wind' && !this.busy) mv(this.zoneNow.dx * 4.5 * dt, this.zoneNow.dz * 4.5 * dt);
+      if (this.zoneNow?.kind === 'slide' && !this.pushed && this.vel.lengthSq() > 0.6 && !this.busy) { if (!mv(this.vel.x * dt, this.vel.z * dt)) this.vel.set(0, 0, 0); this.vel.multiplyScalar(Math.pow(0.05, dt)); }
+      else if (!this.zoneNow || this.pushed) { if (!this.pushed) this.vel.multiplyScalar(0.5); }
+      this.pushed = false;
+      for (const m of this.zoneMeshes) { const z = m.userData.zone as Zone; for (const k of m.userData.marks as THREE.Object3D[]) { const i = k.userData.i as number;
+        if (z.kind === 'wind') { const ph = ((this.t * 0.9 + i / 3) % 1); k.position.set(z.dx * (ph - 0.5) * z.r * 1.3, 0.1, z.dz * (ph - 0.5) * z.r * 1.3); ((k as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = Math.sin(ph * Math.PI) * 0.85; }
+        else if (z.kind === 'tide') { const ph = ((this.t * 0.6 + i * 0.5) % 1); k.scale.setScalar(0.4 + ph * z.r * 0.9); ((k as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = 0.7 * (1 - ph); }
+        else { (k as THREE.Sprite).material.opacity = 0.5 + Math.sin(this.t * 3 + i * 1.7) * 0.4; } } } }
     this.grace = Math.max(0, this.grace - dt);
     // 传送门：走进一个，出现在另一个；追你的敌人跟丢
     this.portalCd = Math.max(0, this.portalCd - dt);
@@ -243,7 +292,10 @@ export class Explorer {
 
   // ---------- 宠物（跟在队尾，比猫小一圈，走路时一蹦一蹦） ----------
   private pet: Actor | null = null;
+  /** 宠物的鼻子：隐藏宝箱的发现距离（没带宠物 4 米；普通 / 稀有 / 传说宠物 8 / 10 / 13 米） */
+  private sniffR = 4;
   setPet(id: string | null | undefined) {
+    this.sniffR = !id ? 4 : ({ R: 8, SR: 10, SSR: 13 } as Record<string, number>)[PET_BY_ID[id]?.rarity ?? 'R'] ?? 8;
     if (this.pet) { this.root.remove(this.pet.cat.root); this.root.remove(this.pet.shadow); this.pet = null; }
     if (!id) return;
     this.pet = this.mkActor(id, 0.62);
@@ -459,7 +511,8 @@ export class Explorer {
   push(dx: number, dz: number, dt: number) {
     if (this.paused || this.busy) return;
     this.path = [];
-    const sp = SPEED * (this.sneakT > 0 ? 0.62 : 1), l = this.leader, sx = dx * sp * dt, sz = dz * sp * dt;
+    const sp = this.spd, l = this.leader, sx = dx * sp * dt, sz = dz * sp * dt;
+    this.pushed = true; this.vel.set(dx * sp, 0, dz * sp);
     // 先试斜走，被挡就沿墙滑（只走 x 或只走 z）
     for (const [ax, az] of [[sx, sz], [sx, 0], [0, sz]]) {
       if (!ax && !az) continue;
@@ -480,7 +533,7 @@ export class Explorer {
       const tgt = this.path[0];
       const d = new THREE.Vector3().subVectors(tgt, L.pos); d.y = 0;
       const dist = d.length();
-      const step = SPEED * (this.sneakT > 0 ? 0.62 : 1) * dt;
+      const step = this.spd * dt;
       if (dist <= step) { L.pos.copy(tgt); this.path.shift(); } else { d.multiplyScalar(1 / dist); L.pos.addScaledVector(d, step); L.yaw = Math.atan2(d.x, d.z); }
       moving = true;
     }
@@ -562,7 +615,7 @@ export class Explorer {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
       if (s.hidden && !e.found) {
         // 隐藏宝箱：走到 4 米内，或者「灵视」生效时在 26 米内，就显形（之后一直在）
-        if (dLeader < 4 || (this.revealT > 0 && dLeader < 26)) { e.found = true; e.group.visible = true; this.hooks.note?.('✨ 发现了隐藏宝箱！'); }
+        if (dLeader < this.sniffR || (this.revealT > 0 && dLeader < 26)) { const byPet = this.pet && dLeader >= 4 && !(this.revealT > 0); e.found = true; e.group.visible = true; this.hooks.note?.(byPet ? '🐾 宠物嗅到了宝箱的味道！' : '✨ 发现了隐藏宝箱！'); if (byPet) this.pulse(0xffe27a, 3, 0.6); }
         else { e.group.visible = false; return; }
       }
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }
@@ -610,7 +663,8 @@ export class Explorer {
       else if (this.clear(gp, lp)) e.lost = 0; else if ((e.lost += dt) > 4) { e.state = 'idle'; e.target.copy(e.home); }
       if (e.state === 'chase' && dd > CATCH_R) {
         d.multiplyScalar(1 / dd);
-        const nx = gp.x + d.x * CHASE_SPEED * dt, nz = gp.z + d.z * CHASE_SPEED * dt;
+        const cs = CHASE_SPEED * (this.zoneAt(gp.x, gp.z)?.kind === 'tide' ? 0.55 : 1);
+        const nx = gp.x + d.x * cs * dt, nz = gp.z + d.z * cs * dt;
         const [cx, cz] = this.cell(new THREE.Vector3(nx, 0, nz));
         if (!this.grid[cz * this.N + cx] && !this.inSafe(nx, nz)) { gp.x = nx; gp.z = nz; moved = true; e.face = Math.atan2(d.x, d.z); }
       }

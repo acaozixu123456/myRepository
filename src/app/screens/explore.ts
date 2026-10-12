@@ -80,8 +80,8 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 .xteam img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
 .xmini{position:absolute;right:10px;top:122px;z-index:3;width:92px;height:92px;border-radius:12px;border:2px solid rgba(127,240,255,.6);background:rgba(10,6,24,.7);box-shadow:0 0 12px rgba(127,240,255,.25)}
 .xfps{position:absolute;right:12px;top:216px;z-index:3;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);text-shadow:0 1px 2px #000;pointer-events:none}
-.xtools{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:8px}
-.xtools .btn{min-width:64px}
+.xtools{position:absolute;right:10px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
+.xtools .btn{min-width:64px;min-height:42px}
 .xscene{margin-left:6px;white-space:nowrap;font-size:13px}
 .scn-dlg{width:min(360px,92%)}
 .scn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -287,7 +287,7 @@ function showHelpOnce(ctx: AppCtx) {
   const el = document.createElement('div');
   el.className = 'xhelp';
   el.innerHTML = `<div class="xh">
-    <div>👆 点地面走过去</div><div>🕹️ 摇杆 / WASD 移动</div><div>☝️ 拖动转镜头 · 🤏 缩放</div><div>🐱 走到野猫身边 ➜ 点 <b>⚔️ 战斗</b>（想打才打）</div><div>🟡 野猫脚下的<b>黄色扇形</b>是视野：走进去会被追，跑得比它快就能甩掉；绕到<b>背后</b>再点 <b>🗡️ 偷袭</b>，开局元气 +70、奖励 ×1.5（被追上则对方先手）</div><div>📦🌿 野猫附近的<b>掩体</b>（纸箱堆 / 草丛 / 木桶…）：躲进去敌人更难发现你，从里面出手就是偷袭</div><div>🌀 每个场景有一对<b>传送门</b>（光柱）：走进一个，从另一个出来——抄近路，也能甩掉追兵</div><div>💨🤫👁️ <b>探路技</b>（左侧按钮，队里要有对应职业）：冲撞撞晕敌人 · 潜行靠近 · 灵视找隐藏宝箱（奖励翻倍）</div><div>👑 首领打赢 ➜ 进下一章</div><div>📜 宝箱 / NPC / 小游戏入口 ➜ 奖励</div>
+    <div>👆 点地面走过去</div><div>🕹️ 摇杆 / WASD 移动</div><div>☝️ 拖动转镜头 · 🤏 缩放</div><div>🐱 走到野猫身边 ➜ 点 <b>⚔️ 战斗</b>（想打才打）</div><div>🟡 野猫脚下的<b>黄色扇形</b>是视野：走进去会被追，跑得比它快就能甩掉；绕到<b>背后</b>再点 <b>🗡️ 偷袭</b>，开局元气 +70、奖励 ×1.5（被追上则对方先手）</div><div>📦🌿 野猫附近的<b>掩体</b>（纸箱堆 / 草丛 / 木桶…）：躲进去敌人更难发现你，从里面出手就是偷袭</div><div>🌬️🌊✨ 场景机关：云岛<b>风口</b>顺风加速 · 码头<b>潮汐滩</b>你和追兵都变慢 · 宫阙<b>琉璃滑地</b>松手还会滑一段</div><div>🌀 每个场景有一对<b>传送门</b>（光柱）：走进一个，从另一个出来——抄近路，也能甩掉追兵</div><div>💨🤫👁️ <b>探路技</b>（左侧按钮，队里要有对应职业）：冲撞撞晕敌人 · 潜行靠近 · 灵视找隐藏宝箱（奖励翻倍）</div><div>👑 首领打赢 ➜ 进下一章</div><div>📜 宝箱 / NPC / 小游戏入口 ➜ 奖励</div>
     <button class="btn green">${icon('check', 24)}</button></div>`;
   el.onclick = (e) => { if ((e.target as HTMLElement).closest('button')) el.remove(); };
   // 不挡操作：开始移动（摇杆 / 键盘）、点一下场景，或 12 秒后自动收起

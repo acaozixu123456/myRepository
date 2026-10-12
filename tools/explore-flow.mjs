@@ -47,5 +47,32 @@ const r = await p.evaluate(async () => {
   out.F = { at: [+L.pos.x.toFixed(1), +L.pos.z.toFixed(1)], toB: Math.hypot(L.pos.x - pb[0], L.pos.z - pb[1]) < 0.5 };
   return out;
 });
+// H: 宠物嗅探（带宠物时隐藏宝箱 8+ 米就显形，不带只有 4 米）
+await p.goto('http://127.0.0.1:5173/world.html?ch=4&t=0', { waitUntil: 'networkidle' });
+await p.waitForFunction(() => window.done, null, { timeout: 90000 });
+r.H = await p.evaluate(() => {
+  const ex = window.ex; ex.grace = 99; const ch = ex.ents.find((x) => x.spawn.id === 'x1'); const at = (d) => { ch.found = false; ch.group.visible = false; for (const a of ex.team) a.pos.set(2 + d, 0.32, 12); ex.update(0.05); return ch.found; };
+  const noPet = { d6: at(6) };
+  ex.setPet('pet_tuanzi'); const withPet = { d6: at(6), d12: at(12) };
+  return { noPet, withPet };
+});
+// G: 场景机关速度（码头潮汐滩约 0.55 倍；云岛风口约 1.5 倍 + 顺风漂移；宫阙滑地松手后继续滑）
+r.G = {};
+for (const ch of [3, 5, 6]) {
+  await p.goto(`http://127.0.0.1:5173/world.html?ch=${ch}&t=0`, { waitUntil: 'networkidle' });
+  await p.waitForFunction(() => window.done, null, { timeout: 90000 });
+  r.G[ch] = await p.evaluate(() => {
+    const ex = window.ex, z = ex.zones[0]; if (!z) return null;
+    ex.grace = 99;
+    const place = (x, zz) => { for (const a of ex.team) a.pos.set(x, 0.32, zz); ex.zoneNow = null; ex.vel.set(0, 0, 0); };
+    const dist = (x, zz, steps) => { place(x, zz); const p0 = ex.leader.pos.clone(); for (let i = 0; i < steps; i++) { ex.push(z.dx || 1, z.dz || 0, 0.02); ex.update(0.02); } return ex.leader.pos.distanceTo(p0); };
+    const open = ex.zones.length ? [z.x + 9, z.z] : [0, 0];
+    const inZ = dist(z.x - 1, z.z, 6), outZ = dist(open[0], open[1], 6);
+    // 滑地：在圈里推 6 步后松手，再空转 30 帧，看还滑了多远
+    place(z.x - 1, z.z); for (let i = 0; i < 6; i++) { ex.push(z.dx || 1, z.dz || 0, 0.02); ex.update(0.02); }
+    const p1 = ex.leader.pos.clone(); for (let i = 0; i < 30; i++) ex.update(0.02);
+    return { kind: z.kind, inZone: +inZ.toFixed(2), outside: +outZ.toFixed(2), coastAfterRelease: +ex.leader.pos.distanceTo(p1).toFixed(2) };
+  });
+}
 console.log(JSON.stringify(r));
 await b.close();
