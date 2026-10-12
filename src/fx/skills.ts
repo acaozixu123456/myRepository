@@ -8,6 +8,7 @@ import { SKILL_FX2 } from './skills2';
 import { SKILL_FX3 } from './skills3';
 import { SKILL_FX4 } from './skills4';
 import { SKILL_FX5 } from './skills5';
+import { SKILL_FX_TACTICS } from './tactics';
 
 export type SkillFx = (c: Choreo) => Promise<void>;
 type Dmg = Extract<BEvent, { t: 'damage' }>;
@@ -767,6 +768,7 @@ export const SKILL_FX: Record<string, SkillFx> = {
   ...SKILL_FX3,
   ...SKILL_FX4,
   ...SKILL_FX5,
+  ...SKILL_FX_TACTICS,
 };
 
 export function defaultFx(e: Extract<BEvent, { t: 'act' }>): SkillFx {

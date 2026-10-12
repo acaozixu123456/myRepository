@@ -11,6 +11,7 @@ const q = new URLSearchParams(location.search);
 const PRESETS: Record<string, { name: string; a: string; b: string }> = {
   classic: { name: '蜀吴联军 vs 群雄乱斗', a: 'shu_guanyunmiao,shu_zhangmiaofei,shu_zhugemiaoliang,shu_liumiaobei,wu_zhoumiaoyu', b: 'qun_lvbuding,man_mengmiaohuo,xian_zuoci,wei_caomiaode,man_zhurong' },
   ur: { name: 'UR 大乱斗', a: 'man_mengmiaohuo,wei_caomiaode,wu_zhoumiaoyu,shu_liumiaobei,wu_sunxiangxiang', b: 'qun_lvbuding,shu_zhangmiaofei,xian_zuoci,qun_huatuo,man_zhurong' },
+  oath: { name: '桃园 + 赤壁（看合击技）', a: 'shu_liumiaobei,shu_guanyunmiao,shu_zhangmiaofei,shu_zhugemiaoliang,wu_zhoumiaoyu', b: 'qun_lvbuding,man_mengmiaohuo,xian_zuoci,wei_caomiaode,man_zhurong' },
   wei: { name: '魏 vs 蜀', a: 'wei_xuhuchi,wei_xiahoudun,wei_caomiaode,wei_guojia,qun_huatuo', b: 'shu_zhangmiaofei,shu_guanyunmiao,shu_liumiaobei,shu_zhugemiaoliang,wu_sunxiangxiang' },
 };
 spriteMode.cat3d = !!q.get('r3d');
@@ -69,7 +70,7 @@ async function start(seed = SEED) {
   const theme = (document.getElementById('theme') as HTMLSelectElement).value as BgTheme;
   const full = (document.getElementById('ult') as HTMLInputElement).checked;
   const t = teams();
-  const sim = simulate({ seed, A: setups(t.a), B: setups(t.b), startEnergy: full ? 100 : { A: +(q.get('energy') ?? 0), B: +(q.get('energyB') ?? 0) } });
+  const sim = simulate({ seed, A: setups(t.a), B: setups(t.b), tactics: q.get('tac') !== '0', combos: q.get('combo') !== '0', comboEvery: q.get('ce') ? +q.get('ce')! : undefined, startEnergy: full ? 100 : { A: +(q.get('energy') ?? 0), B: +(q.get('energyB') ?? 0) } });
   const startEv = sim.events[0];
   if (startEv.t !== 'start') return;
   await player.setup(startEv, theme);
@@ -99,6 +100,8 @@ document.getElementById('skip')!.onclick = () => { if (player) { player.skipping
 (window as unknown as Record<string, unknown>).__demo = {
   get player() { return player; },
   step(sec: number) { const dt = 1 / 60; for (let t = 0; t < sec; t += dt) { player!.scene.step(dt); } player!.scene.draw(); },
+  /** 逐帧推进并让出微任务，使回放里 await 的编排能一步步往下走（step 是同步循环，编排的后续动作会被卡住） */
+  async advance(sec: number) { const dt = 1 / 60; for (let t = 0; t < sec; t += dt) { player!.scene.step(dt); await new Promise<void>((r) => queueMicrotask(r)); } player!.scene.draw(); },
   KITS, HERO_BY_ID, FACTIONS,
 };
 void start();

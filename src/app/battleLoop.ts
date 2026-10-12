@@ -149,7 +149,7 @@ export class BattleLoop {
     let carry: Record<string, { hpPct: number; energy: number }> | undefined;
     this.player.aborted = false; this.player.skipping = false;
     for (let w = 0; w < stage.waves.length; w++) {
-      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: A && w === 0 ? A : lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
+      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: A && w === 0 ? A : lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx, tactics: true, combos: true });
       const foes = sim.units.filter((u) => u.side === 'B');
       this.lastDamagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
       if (!this.player.aborted) {
