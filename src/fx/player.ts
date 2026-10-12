@@ -8,7 +8,7 @@ import type { ActorInfo } from './actor';
 import { makeBackground } from './bg';
 import type { BgTheme } from './bg';
 import { Choreo } from './choreo';
-import { playCutIn } from './cutin';
+import { playComboCutIn, playCutIn } from './cutin';
 import { buildIllustRig, buildPortrait, buildRig, buildRig3D, illustPortrait } from './rig';
 import { portrait3D } from '../art3d/portrait';
 import { Renderer3D } from '../art3d/renderer';
@@ -17,6 +17,7 @@ import { ILLUST } from '../art/illust-index';
 import type { Rig } from './rig';
 import { Scene } from './scene';
 import { SKILL_FX, defaultFx } from './skills';
+import { COMBO_COLORS } from './tactics';
 import { lerp } from './util';
 
 type StartEv = Extract<BEvent, { t: 'start' }>;
@@ -120,6 +121,13 @@ export class Player {
         i = j;
         continue;
       }
+      if (e.t === 'combo') {
+        let j = i + 1;
+        while (j < events.length && !['act', 'round', 'end', 'combo'].includes(events[j].t)) j++;
+        await this.doCombo(e, events.slice(i + 1, j));
+        i = j;
+        continue;
+      }
       this.applyEvent(e);
       if (e.t === 'round') await this.roundBanner(e.n);
       else if (e.t === 'end') await this.endBanner(e.winner);
@@ -166,6 +174,27 @@ export class Player {
       ctx.fillText(b.text, 0, 0);
       ctx.restore();
     });
+  }
+
+  /** 合击技：全员插入图 → 成员蓄力 → 光球砸向对面 */
+  private async doCombo(e: Extract<BEvent, { t: 'combo' }>, batch: BEvent[]) {
+    const members = e.members.map((id) => this.actors.get(id)!).filter(Boolean);
+    if (!members.length) return;
+    const targets = e.targets.map((id) => this.actors.get(id)!).filter(Boolean);
+    this.onLog(`合击技 ${e.name}`);
+    const portraits = await Promise.all(members.map((m) => this.portrait(m.heroId)));
+    const color = COMBO_COLORS[e.fx] ?? '#ffcf6a';
+    await playComboCutIn(this.scene, { portraits, names: members.map((m) => m.name), bond: e.bond, name: e.name, color, side: e.side, duration: this.skipping ? 0.01 : 1.7 });
+    const fake = { t: 'act', uid: members[0].uid, skill: e.name, fx: e.fx, kind: 'ultimate', targets: e.targets, melee: false } as Extract<BEvent, { t: 'act' }>;
+    const c = new Choreo(this, members[0], targets, batch, fake);
+    (fake as unknown as { members: Actor[] }).members = members;
+    const fx = SKILL_FX[e.fx] ?? defaultFx(fake);
+    try { await fx(c); } catch (err) { console.error('combo fx failed', e.fx, err); }
+    c.rest();
+    this.scene.resetCam(0.35);
+    this.scene.tween(this.scene, { dim: 0 }, 0.3, 'out');
+    for (const m of members) { m.moving = false; void m.poseTo(POSES.idle, 0.25); }
+    await this.sleep(0.5);
   }
 
   private async doAct(e: Extract<BEvent, { t: 'act' }>, batch: BEvent[]) {

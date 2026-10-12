@@ -130,6 +130,8 @@ export interface PassiveSkillDef {
 export interface Kit {
   heroId: string;
   basic: SkillDef;
+  /** 战技：每 3 次行动放一次的小招（普攻与绝技之间）；缺省由 data/kits/tactics.ts 按职业 × 阵营生成 */
+  tactic?: SkillDef;
   ultimate: SkillDef;
   passive: PassiveSkillDef;
   awaken: { A: AwakenBranch; B: AwakenBranch };
@@ -185,7 +187,8 @@ export type RuleFx = ((
   | { t: 'dodgeAdd'; side: RuleSide; to: RuleTo; add: number; rounds?: number } // rounds：只在前 N 回合有效
 ) & { needFactions?: number });
 
-export interface BattleConfig { seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number }; noBonds?: boolean; rules?: RuleFx[] /* 平衡实验用：关闭命名羁绊（阵营同族加成保留） */ }
+/** tactics / combos：实战才开（战技、羁绊合击技）；引擎规则测试与平衡实验默认关，保证口径稳定 */
+export interface BattleConfig { tactics?: boolean; combos?: boolean; /** 合击技触发间隔（回合），缺省 3；演示 / 测试用 */ comboEvery?: number; seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number }; noBonds?: boolean; rules?: RuleFx[] /* 平衡实验用：关闭命名羁绊（阵营同族加成保留） */ }
 
 export interface StatusInst { id: string; turns: number; stacks: number; power: number; snap: number; src: number }
 
@@ -213,6 +216,7 @@ export interface Unit {
   counters: Record<string, number>;
   used: Record<string, number>; // 被动触发次数记录
   acted: number;
+  tacticCd: number; // 战技冷却（自己的行动数），0 = 可放
   extraTurn: boolean;
   invuln: number; // 无敌回合
   dmgMul: number; // 羁绊等永久倍率
@@ -227,7 +231,7 @@ export interface Unit {
 export type BEvent =
   | { t: 'start'; units: { uid: number; side: 'A' | 'B'; pos: number; heroId: string; name: string; maxHp: number; hp: number; faction: FactionId }[] }
   | { t: 'round'; n: number }
-  | { t: 'act'; uid: number; skill: string; fx: string; kind: 'basic' | 'ultimate'; targets: number[]; melee: boolean }
+  | { t: 'act'; uid: number; skill: string; fx: string; kind: 'basic' | 'tactic' | 'ultimate'; targets: number[]; melee: boolean }
   | { t: 'damage'; src: number; dst: number; amount: number; crit: boolean; elem: Elem; hp: number; shield: number; killed: boolean; hit: number; hits: number; absorbed: number }
   | { t: 'heal'; src: number; dst: number; amount: number; hp: number }
   | { t: 'shield'; src: number; dst: number; amount: number; total: number }
@@ -239,5 +243,6 @@ export type BEvent =
   | { t: 'skip'; uid: number; reason: string }
   | { t: 'text'; uid: number; text: string }
   | { t: 'passive'; uid: number; name: string }
+  | { t: 'combo'; side: 'A' | 'B'; bond: string; name: string; fx: string; members: number[]; targets: number[] } // 合击技：羁绊成员齐出手
   | { t: 'summon'; uid: number; beast: string; count: number; targets: number[] }
   | { t: 'end'; winner: 'A' | 'B' | 'draw'; rounds: number };

@@ -1,3 +1,5 @@
+import { COMBO_BY_BOND, COMBO_EVERY } from '../data/combos';
+import { TACTIC_CD, tacticFor } from '../data/kits/tactics';
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
 import { unitInfo } from '../data/units';
@@ -84,6 +86,7 @@ class Battle {
     bs.atk = Math.round(bs.atk * h.atkMul);
     const m = lvMul(s.level) * (1 + ((s.star ?? 1) - 1) * 0.08) * (s.statMul ?? 1);
     const kit = clone(KITS[s.heroId] ?? genericKit(s.heroId));
+    if (this.cfg.tactics && !kit.tactic) kit.tactic = clone(tacticFor(s.heroId));
     const skillLv = s.skillLv ?? 1;
     for (const lm of kit.ultimate.levelMods ?? []) if (lm.lv <= skillLv) applyPatch(kit, lm.patch);
     for (const lm of kit.basic.levelMods ?? []) if (lm.lv <= skillLv) applyPatch(kit, lm.patch);
@@ -94,7 +97,7 @@ class Battle {
     return {
       uid: this.uidSeq++, side, pos: s.pos, heroId: s.heroId, name: h.name, faction: h.faction, role: h.role, level: s.level,
       maxHp, hp: Math.max(1, Math.round(maxHp * (s.hpPct ?? 1))), atk: Math.round(bs.atk * m) + Math.round(g.atk ?? 0), def: Math.round(bs.def * m) + Math.round(g.def ?? 0), spd: bs.spd + Math.round(g.spd ?? 0), crit: roleCrit + (g.crit ?? 0), critDmg: 1.5 + (g.critDmg ?? 0),
-      energy: s.energy ?? (typeof this.cfg.startEnergy === 'object' ? this.cfg.startEnergy[side] : (this.cfg.startEnergy ?? 0)), shield: [], statuses: [], alive: true, kit, counters: {}, used: {}, acted: 0, extraTurn: false, invuln: 0, dmgMul: 1,
+      energy: s.energy ?? (typeof this.cfg.startEnergy === 'object' ? this.cfg.startEnergy[side] : (this.cfg.startEnergy ?? 0)), shield: [], statuses: [], alive: true, kit, counters: {}, used: {}, acted: 0, tacticCd: 2, extraTurn: false, invuln: 0, dmgMul: 1,
       hit: g.hit ?? 0, dodge: g.dodge ?? 0, dmgReduce: Math.min(0.6, g.dmgReduce ?? 0), healBonus: g.healBonus ?? 0, set4: s.set4 ?? [],
     };
   }
@@ -893,8 +896,13 @@ class Battle {
     this.fire('beforeAct', { caster: u, targets: [u] }, u);
     if (!u.alive) return;
     let ult = u.energy >= 100 && !this.flag(u, 'silence');
-    if (ult && this.cfg.rules && this.telegraphs(u)) ult = false;
-    const skill = ult ? u.kit.ultimate : u.kit.basic;
+    let warn = false; // 绝技预告回合：本回合只许普攻，不能顺手放战技
+    if (ult && this.cfg.rules && this.telegraphs(u)) { ult = false; warn = true; }
+    // 战技：不放绝技时，冷却好了就放战技（每 3 次行动一次）；没放就 -1
+    if (!ult && u.tacticCd > 0) u.tacticCd--;
+    const tac = !ult && !warn && !!u.kit.tactic && u.tacticCd <= 0 && !this.flag(u, 'silence') && !this.flag(u, 'confuse');
+    const skill = ult ? u.kit.ultimate : tac ? u.kit.tactic! : u.kit.basic;
+    if (tac) u.tacticCd = TACTIC_CD;
     const ctx: Ctx = { caster: u, targets: [], isBasic: !ult, melee: !!skill.melee };
     const confused = this.flag(u, 'confuse');
     let effects = skill.effects;
@@ -908,7 +916,7 @@ class Battle {
     if (!targets.length) { this.tickEnd(u); return; }
     ctx.targets = targets;
     if (ult) { u.energy = 0; this.push({ t: 'energy', uid: u.uid, energy: 0 }); }
-    this.push({ t: 'act', uid: u.uid, skill: skill.name, fx: skill.fx, kind: ult ? 'ultimate' : 'basic', targets: targets.map((x) => x.uid), melee: !!skill.melee });
+    this.push({ t: 'act', uid: u.uid, skill: skill.name, fx: skill.fx, kind: ult ? 'ultimate' : tac ? 'tactic' : 'basic', targets: targets.map((x) => x.uid), melee: !!skill.melee });
     this.fire(ult ? 'onUlt' : 'onBasic', ctx, u);
     if (ult) for (const e of this.alive(this.foe(u))) this.fire('onEnemyUlt', { caster: e, targets: [e], source: u }, e);
     this.exec(effects, ctx, targets);
@@ -918,6 +926,26 @@ class Battle {
     this.factionAfterAct(u, !ult);
     u.acted++;
     this.tickEnd(u);
+  }
+
+  /** 合击技：羁绊成员都在场就齐出手（A 方先、B 方后；每方每个羁绊每个触发回合各一次） */
+  comboRound() {
+    for (const side of ['A', 'B'] as const) {
+      for (const bond of BONDS) {
+        if (!this.bondsOn[side].has(bond.name)) continue;
+        const def = COMBO_BY_BOND[bond.name];
+        const members = this.units.filter((u) => u.side === side && bond.heroes.includes(u.heroId));
+        if (!def || members.length < bond.heroes.length || !members.every((m) => m.alive)) continue;
+        const caster = members.slice().sort((a, b) => this.stat(b, 'atk') - this.stat(a, 'atk'))[0];
+        const ctx: Ctx = { caster, targets: [], isBasic: false, melee: false };
+        const targets = this.select(def.target, ctx, false);
+        if (!targets.length) continue;
+        ctx.targets = targets;
+        this.push({ t: 'combo', side, bond: bond.name, name: def.name, fx: def.fx, members: members.map((m) => m.uid), targets: targets.map((x) => x.uid) });
+        this.exec(def.effects, ctx, targets);
+        if (this.over()) return;
+      }
+    }
   }
 
   over(): 'A' | 'B' | null {
@@ -938,6 +966,7 @@ class Battle {
       this.factionRoundStart();
       this.applyRuleRound();
       this.fireAll('roundStart');
+      if (this.cfg.combos && !this.cfg.noBonds && this.round % (this.cfg.comboEvery ?? COMBO_EVERY) === 0) { this.comboRound(); winner = this.over(); if (winner) break; }
       const order = this.units.filter((u) => u.alive).sort((a, c) => this.stat(c, 'spd') - this.stat(a, 'spd') || a.pos - c.pos);
       for (const u of order) {
         if (!u.alive) continue;
