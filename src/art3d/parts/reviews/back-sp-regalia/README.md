@@ -87,6 +87,8 @@
 
 `npm run typecheck && npm test` 退出0：**68 文件 / 1019 测试**；`git diff --check` 通过。测试和 Chromium 在当前环境带附加网络权限运行。
 
+维护者在交付时另同步主线 `29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a`（含每日委托测试日期修复），实际再次运行相同命令，退出0、68文件/1019测试全部通过，日志 `.shots/back-sp-regalia/tests-main-29f6.log`。e777→29f6 的 art3d、英雄/杂兵/宠物 look、actor/player 文件没有变化；本批两份源文件及十九个审图文件字节不变，正式图和独立报告的 e777 拍摄基线仍准确。
+
 | 部件 | 逻辑 Mesh | 描边子 Mesh | 实际 Mesh | 最大分段 |
 | --- | ---: | ---: | ---: | --- |
 | capeLong | 12 | 12 | 24 | cloth16×6 / Tube20×6 / sphere12×9 |
