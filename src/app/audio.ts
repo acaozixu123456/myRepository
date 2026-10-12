@@ -6,6 +6,10 @@ let ac: AudioContext | null = null;
 let silent: HTMLAudioElement | null = null;
 let armed = false;
 const onUnlock: (() => void)[] = [];
+let blockedHint: (() => void) | null = null;
+let tries = 0;
+/** 连续几次手势都没能出声时调用一次（多半是外层页面框架禁止了声音），用来提示玩家 */
+export function onAudioBlocked(f: () => void) { blockedHint = f; }
 
 /** 共用的 AudioContext（第一次调用时创建；浏览器不支持返回 null） */
 export function audioCtx(): AudioContext | null {
@@ -55,7 +59,12 @@ const GESTURES = ['pointerup', 'touchend', 'click', 'keydown'] as const;
 export function armAudio() {
   if (armed) return;
   armed = true;
-  const h = () => { unlockAudio(); if (audioRunning() && (!silent || !silent.paused)) for (const g of GESTURES) window.removeEventListener(g, h, true); };
+  const h = () => {
+    unlockAudio();
+    // 一次点击会触发抬手 + click 两个事件，大约点三下还没出声就提示
+    if (++tries === 6) setTimeout(() => { if (!audioRunning() && blockedHint) { blockedHint(); blockedHint = null; } }, 600);
+    if (audioRunning() && (!silent || !silent.paused)) for (const g of GESTURES) window.removeEventListener(g, h, true);
+  };
   for (const g of GESTURES) window.addEventListener(g, h, true);
   document.addEventListener('visibilitychange', () => {
     if (!ac) return;
