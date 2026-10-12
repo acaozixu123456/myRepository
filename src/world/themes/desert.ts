@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { mulberry } from '../../fx/util';
 import { atmosOf } from '../atmos';
 import { glowMat, std } from '../kit';
-import { mk, waterGlint } from '../tex';
+import { aiTex, mk, waterGlint } from '../tex';
 import type { LevelDef } from '../levels';
 import type { Street } from '../street';
 import { ARCH, CACTI, CAMP, DUNES, KART_GATE, KART_TRACK, OASIS, PALMS, PYRAMID } from './desert.data';
@@ -71,7 +71,8 @@ function dune(w: number, h: number, seed: number): THREE.Mesh {
 export function buildDesert(L: LevelDef): Street {
   const g = new THREE.Group(); const half = L.half; const A = atmosOf(L.mood);
   plinth(g, half, '#a8793e', undefined, A.fog);
-  groundPlane(g, half, sandTex(), 9, { color: 0xfff2dc });
+  const cc0 = aiTex('cc0_sand_080'); // ambientCG Ground080 风纹沙地（CC0），加载不到时退回程序化沙地
+  groundPlane(g, half, cc0 ?? sandTex(), cc0 ? 6 : 9, { color: cc0 ? 0xffffff : 0xfff2dc });
   const rnd = mulberry(321);
 
   // ---- 沙丘（外圈 + 角上）----

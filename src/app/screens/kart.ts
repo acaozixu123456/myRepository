@@ -107,12 +107,15 @@ export function openKart(ctx: AppCtx, host: Element): Promise<void> {
     };
     const tick = (now: number) => {
       if (phase !== 'count' && phase !== 'play') return;
-      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      // 掉帧时按真实时间分几小步推进（每步 ≤ 0.05 秒，最多补 0.25 秒），慢手机上比赛不会变成慢动作
+      const real = Math.min(0.25, (now - last) / 1000), dt = real; last = now;
       if (phase === 'count') { count -= dt; if (count <= -0.5) { phase = 'play'; count = 0; } }
       else {
         const hits = JSON.stringify(race.hits);
-        step(race, (right ? 1 : 0) - (left ? 1 : 0), nitroHit, dt);
-        if (nitroHit) { sfx.up(); nitroHit = false; }
+        for (let rest = real; rest > 1e-6 && !race.over; rest -= 0.05) {
+          step(race, (right ? 1 : 0) - (left ? 1 : 0), nitroHit, Math.min(0.05, rest));
+          if (nitroHit) { sfx.up(); nitroHit = false; }
+        }
         if (hits !== lastHits) { for (const k of Object.keys(race.hits) as ItemKind[]) if (lastHits && race.hits[k] !== JSON.parse(lastHits)[k]) { say(`${{ boost: '🚀', sand: '🏜️', oil: '🌀', fuel: '⛽' }[k]} ${ITEM_NAME[k]}！`); if (k === 'boost' || k === 'fuel') sfx.tap(); else sfx.no(); } lastHits = hits; }
         if (race.over) { draw(); finish(); return; }
       }
