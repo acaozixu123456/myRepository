@@ -244,3 +244,40 @@
 ## 英雄专属造型（`src/art3d/heroes.ts` 的 `HERO_PARTS`）
 
 通用部件做完之后，再给 SP / UR 英雄做「独一份」的东西（青龙偃月刀、冕旒、羽扇等）。按 `docs/ILLUST_PROGRESS.md` 的顺序：SP → UR → SSR。
+
+## 配饰首批（第 1 轮待审）
+
+以下记录本批实际使用者与验收结果；上方底版第 0 轮表保留为历史。三项覆盖 20 个实际 ID：14 英雄、1 杂兵、5 宠物。宠物数据未改，12 只宠物的 body 仍为 none。
+
+| 部件 | 使用者（实际 ID） | 状态 | 轮次 | 备注 |
+| --- | --- | --- | --- | --- |
+| `beardGoat` | `wei_caomiaode`, `shu_huangzhong`, `wu_huanggai`, `qun_dongzhuo`, `qun_huatuo`, `xian_shuijing`, `xian_yuji`, `wei_simamiyi` | 待审 | 1 | 8 英雄；三束钝圆浅毛须与小绑环；逻辑 / 含描边实际网格 5 / 10 |
+| `bell` | `wu_sunxiangxiang`, `wu_ganning`, `xian_changmiao`, `mob_xian_assassin`, `pet_tuanzi`, `pet_xueqiu`, `pet_huihui`, `pet_xingxing` | 待审 | 1 | 3 英雄 + 1 杂兵 + 4 宠物；颈带、挂环、开槽壳、内衬与铃舌；网格 8 / 12 |
+| `earring` | `wu_zhoumiaoyu`, `qun_lvbuding`, `shu_pangmiaotong`, `pet_jiuwei` | 待审 | 1 | 3 英雄 + 1 宠物；固定侧耳根耳钉、接链、金圈与圆钝垂饰；网格 6 / 11 |
+
+基线 `a7a41e9ebaf4083f5cf3c0904f3850a9c81f7a07`，仅替换 `EXTRA.beardGoat / bell / earring`，其余九项注册行与真实旧版逐字相同。冻结源码 SHA256：
+
+| 文件 | SHA256 |
+| --- | --- |
+| `src/art3d/parts/extras.ts` | `d74a720eef4820d61e3baf83fcc8aeb8f966997317b31cbf95b5d81d77014e07` |
+| `src/art3d/parts/extras-regalia.ts` | `e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2` |
+
+三项最大分段均 24，材质复用缓存 Toon / outline；真实 head 插槽根位置、旋转为零，scale=1，所有节点正尺度、正行列式，无新逐帧分配。独立完整运行时快照 321 个原有源 / 依赖文件的 SHA 前后一致；显式构建 41 英雄 + 36 杂兵 + 12 宠物，共 89 个实际造型。20 个目标旧 / 新 builder 各命中一次，69 个非目标的正常烘焙几何属性规格、TypedArray 与 index 原始字节相同。
+
+独立 QA 覆盖 1,840 状态：20×〔14 姿势×yaw 0/32/-32/148 + idle/windup/strike×12 时刻〕，静态 1,120、动画 720，phase=0；静态 t=.4，动画 yaw32、t=i×8/11。实际 baked 眼核心 12×12、动态鼻口 5 点、实际活跃嘴骨表面 3×3 均按具体遮挡采样 ID 比较，新增 ID 0；活跃嘴有效 ID 差异 0。自配饰越框、新增整猫裁切 / 裁幅增加、非有限值均 0。整猫既有 253 例裁切（静态 156、动画 97）保留，旧 / 新边界相同，涉及既有披挂、冠饰与灰灰 / 九尾大耳，不写成所有猫都完整入框。
+
+耳朵使用实际左右外耳实体与展开描边三角复核。另加 20 使用者×3 姿势×t=.2 / 精确耳峰 π/(2×.7)=2.243994752564138，共 120 状态；与 1,840 主状态均未见耳实体内部、实体表面、描边表面交叉。覆盖五只宠物 head=1.12、九尾大耳及折耳。
+
+佩戴接触只允许以下具体网格与对应表面的小范围；真实颅骨 1,120 三角、口鼻垫 560 三角的严格内部裁剪包含跨壳但无内部顶点的三角，未豁免整件配饰。
+
+| 原接触网格 | 表面 | 实体 / 描边相交三角（每状态） |
+| --- | --- | ---: |
+| `goat-muzzle-contact` | 口鼻垫下沿 | 47 / 47 |
+| `bell-collar-contact` | 颅骨颈带区 | 38 / 88 |
+| `earring-stud-contact` | 颅骨侧耳根皮肤 | 10 / 16 |
+
+其余可见组件（须束、绑环、铃壳 / 内衬 / 铃舌 / 挂环 / 底沿 / 高光、耳链 / 圈 / 钩 / 垂饰 / 高光）逐网格对颅骨及口鼻垫均为 0；胡须根垫对颅骨、颈带 / 耳钉对口鼻垫亦为 0。上述非零数是相交三角计数，不是穿插体积或可见像素面积。后向铃铛 16 个保守鼻口命中状态没有新增 ID；当前被测 32 点在配饰前已被颅骨挡住，不将其写成新增可见脸遮挡。有限姿势、时刻和采样网格不证明全部连续时刻或每个渲染像素。
+
+审图与方法：[README](../src/art3d/parts/reviews/extras-regalia/README.md)、[独立 QA](../src/art3d/parts/reviews/extras-regalia/qa-summary.md)、[机器记录](../src/art3d/parts/reviews/extras-regalia/qa-summary.json)、[正常旧 / 新对照](../src/art3d/parts/reviews/extras-regalia/before-after.png)、[真实十猫战斗](../src/art3d/parts/reviews/extras-regalia/battle.webp)。对照图含曹喵德 / 司马喵懿、甘宁宁 / 团子、庞喵统 / 九尾；正常 bake、idle/t=.4/phase0/yaw32，无损压缩解码字节差 0。官图 28 张 PNG 保留原画布，真实战斗 12 帧全 10 actor 有 rig.cat3d 并命中三类配饰，未以 2D 缓存代替。最终 `battle.webp` 为 397,966 B，SHA256 `ad428b26f82b2fc95600fe5d84eb7a2507c399b25e458ea02365cc8e088f1d81`，完整 RGBA changedPixels=0；审核交付单文件均 <500000 B。
+
+作者原生 `npm run typecheck && npm test` 通过，68 文件 / 1,021 项测试，日志 `.shots/extras-regalia/tests-final.log`；引用作者实测，独立 QA 未重复跑产品测试。小尺寸浅毛角色的羊须分束深度仍偏弱，铃舌与耳链细节较小；保持待审第 1 轮，未写 Claude 已通过。
