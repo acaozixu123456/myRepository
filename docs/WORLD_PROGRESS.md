@@ -2,7 +2,7 @@
 
 当前方向以 [CODEX_QUEUE.md](CODEX_QUEUE.md)「当前任务」为准，文件范围、出处与审核流程沿用 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md)。先完成 A 类 AI 贴图，再按最新队列制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
-当前批次：**WORLD-A09-palace-ground · 宫阙汉白玉三变体**，[PR #109](https://github.com/acaozixu123456/myRepository/pull/109)，分支 `codex/3d-world-palace-ground`；素材来源与预览参数依据 `e6e89a9be7f4d0dce972221cb538ab299cbabafc`，分支代码基线为 `4b658b79921838d91f9bde8907df00ba80b9a2fe`。三款成品与审图已冻结，第 1 轮待 Claude 审核，已通过数量为 0。
+当前批次：**WORLD-A09-palace-ground · 宫阙汉白玉三变体**，[PR #109](https://github.com/acaozixu123456/myRepository/pull/109)，分支 `codex/3d-world-palace-ground`；素材来源与预览参数依据 `e6e89a9be7f4d0dce972221cb538ab299cbabafc`，原制作基线 `4b658b7`，已同步主分支 `29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a` 的时钟测试修复。三款成品与审图已冻结，第 1 轮待 Claude 审核，已通过数量为 0。
 
 ## 当前 A 类队列（新场景方向与协作分工）
 
@@ -52,6 +52,8 @@
 本批必需检查已实际完成：根线程在 `4b658b79921838d91f9bde8907df00ba80b9a2fe` 基线上执行 `npm run typecheck && npm test`，退出码 0，68 个测试文件 / 1,019 项测试全部通过；2026-10-12 04:43:24 UTC 开始，测试耗时 30.50 秒，完整日志位于 `/workspace/world-review/palace-ground/required-checks-4b.log`。送审前根线程读取的最新主干为 `dea5a2cac40a37c997f487083c3c915daf660d1d`，六份必读文件 blob 与 `4b658b7` 一致；该读取记录不作为在 `dea5a2` 跑过测试的证明。
 
 2026-10-12 05:04 UTC · [远端 CI](https://github.com/acaozixu123456/myRepository/actions/runs/38206356554) 的 typecheck 通过，测试 1,018 通过 / 1 失败。`tests/explore.test.ts:59` 的每日委托用固定 `t0=2026-10-11 12:00 UTC`，而 `killReward / openChest` 读取真实时钟；跨每日 05:00 刷新后，两日期来回重置进度。根线程于 05:05:57 单独运行未修改的 `tests/explore.test.ts` 复现相同断言（29 通过 / 1 失败），日志 `/workspace/world-review/palace-ground/explore-after-0500.log`；该测试及 `src/game/explore.ts` 在 `4b658b7` 到最新主干 `ee2426c` 未改。已在 #109 正文记录，需要 Claude 固定测试时钟；本批未越过范围修改测试或游戏逻辑，04:43 的通过记录为真实历史，当前不将远端 CI 记为通过。
+
+2026-10-12 05:16 UTC · Claude 已在主分支 `29f6a8b` 将每日委托测试的固定日期改为真实时间。原 #109 同步该主分支后，根线程重新实际执行 `npm run typecheck && npm test`，退出码 0，68 文件 / 1,019 测试通过（05:16:27 开始，40.20 秒，日志 `/workspace/world-review/palace-ground/required-checks-main29.log`）。素材和审图 SHA 保持不变；19 个预览参数依赖到 `29f6a8b` 仍逐字节一致，见 [同步后参数核对](../assets/world/reviews/palace-ground-a09.dependencies-main29.json)。前一段失败是已解决的历史，审核轮次仍为 1。
 
 ## 旧 A 类队列（保留历史）
 

@@ -35,3 +35,5 @@ Three.js 0.169.0（REVISION 169），Chromium + ANGLE SwiftShader，viewport 204
 参数来自 `e6e89a9be7f4d0dce972221cb538ab299cbabafc`，提交检查基线为 `4b658b79921838d91f9bde8907df00ba80b9a2fe`；两基线 19 个参数 / 依赖文件逐字节相同，见 [依赖核对](palace-ground-a09.dependencies.json)。拍摄前后源 SHA 不变，见 [源复核](palace-ground-a09.source-check.json)；全部 11 张审图的尺寸、字节与 SHA 见 [交付清单](palace-ground-a09.delivery.json)。原始全页无损 PNG 超过预算，仅留 scratch，交付总览和 lighting 采用 WebP q92 / method6。
 
 实际检查位置的灰缝对齐，未见额外外框或统一亮度断带。04 灰斜矿带仍在；细金纹与变体间差异在固定白光 / 金光及小图下偏弱，纹簇的周期可辨。完整平铺与出处检查见 [独立 QA](../ground/palace-ground-a09.qa.md)。
+
+送审分支后来同步 Claude 的 `29f6a8b` 时钟测试修复。上述 19 个捕获参数依赖到该基线仍逐字节相同，实际核对见 [同步后依赖报告](palace-ground-a09.dependencies-main29.json)；源图与所有截图 SHA 未变，因此没有重复拍摄同一独立样板。

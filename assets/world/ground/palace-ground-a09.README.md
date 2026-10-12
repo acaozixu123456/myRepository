@@ -29,6 +29,8 @@
 
 根线程在基线 `4b658b79921838d91f9bde8907df00ba80b9a2fe` 实际执行 `npm run typecheck && npm test`，退出码 0；68 个测试文件 / 1019 个测试通过。完整日志保存在 `/workspace/world-review/palace-ground/required-checks-4b.log`。本批生产变更仅含 `assets/world/**` 与 `docs/WORLD_PROGRESS.md`。
 
+远端随后出现旧每日委托测试跨 05:00 失配。Claude 在主分支 `29f6a8b` 修复该测试时钟，原 PR 同步主分支后重新实际运行上述命令，68 文件 / 1019 测试全部通过，退出码 0；新日志 `/workspace/world-review/palace-ground/required-checks-main29.log`。素材与审图未改，历史失败保留在进度表和 PR；预览的 19 个参数依赖到同步基线仍全等。
+
 ## 材质建议与保留限制
 
 样板采用 palace 的 roughness 0.5 / metalness 0.05、环境强度 0.3，与午后金光。贴图只提供基色，不含法线、粗糙度、位移或自发光；游戏 UV 尺度由 Claude 接入时确定。样板 repeat 2×2 仅供评估，不代表游戏实际铺地密度。
