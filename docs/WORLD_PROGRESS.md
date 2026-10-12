@@ -2,24 +2,24 @@
 
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
-当前批次：**WORLD-A07 · 远景天际线**，分支 `codex/3d-world-skyline`，交付 2048×1024 一张，第 1 轮待审。A01 / A02 / A06 均已通过并合并，接入情况见各批记录。
+当前批次：**WORLD-A09 · 地砖 / 排水沟盖**，分支 `codex/3d-world-ground-tiles`，交付 1024² 两张，第 1 轮待审。A01 / A02 / A06 / A07 已通过并合并；A08 湿沥青在 [PR #98](https://github.com/acaozixu123456/myRepository/pull/98) 待审，继续推进 A09。
 
 ## A 类队列
 
-按 [固定队列](CODEX_QUEUE.md) 的最新审核记录：A06 已通过；接下来 A07 天际线 → A08 湿沥青 → 地面贴花，其余类别继续保留。与 3D 部件交替推进，每批等待审核。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
+按 [固定队列](CODEX_QUEUE.md) 的最新审核记录：A07 已通过；接下来 A08 湿沥青 → A09 地砖 → A10 贴花，其余类别继续保留。与 3D 部件交替推进，完成一批后继续下批；有返修先返修。提前招牌的顺序最初见 [#90 审核评论](https://github.com/acaozixu123456/myRepository/pull/90#issuecomment-6110089599)。
 
 | 批次 | 类别 | 规格 / 数量 | 状态 | 已通过 |
 | --- | --- | --- | --- | --- |
 | A01 | 外墙 · 脏污金属板 | 1024²，无缝，3～4 张变体 | 通过（本批 3 张） | 3 |
 | A02 | 外墙 · 老旧瓷砖 | 1024²，无缝，3～4 张变体 | 通过（本批 3 张） | 3 |
 | A06 | 招牌 / 广告 | 横版 1024×256；竖版 256×1024；全息 512×1024 | 通过（本批 6 张） | 6 |
-| A07 | 远景天际线 | 2048×1024，上方透明或渐变深紫，1 张 | 待审 | 0 |
-| A08 | 地面 · 湿沥青 | 1024²，无缝 | 未开始 | 0 |
+| A07 | 远景天际线 | 2048×1024，上方透明或渐变深紫，1 张 | 通过（#96 已接入） | 1 |
+| A08 | 地面 · 湿沥青 | 1024²，无缝 | 待审（#98） | 0 |
+| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝，本批 2 张 | 待审 | 0 |
 | A10 | 贴花（地面贴花优先） | 512²，透明；涂鸦 / 海报 / 告示 / 污渍 / 裂缝各 ≥10 张 | 未开始 | 0 |
 | A03 | 外墙 · 水渍混凝土 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A04 | 外墙 · 贴纸墙 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A05 | 外墙 · 管线 / 空调外机浮雕 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
-| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝 | 未开始 | 0 |
 
 ## A01 明细
 
@@ -90,13 +90,13 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 | 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 猫城远景天际线 `skyline_catcity_01` | [WebP](../assets/world/skyline/skyline_catcity_01.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/skyline-a07.webp) | 2048×1024；131,512 B；原生 1774×887，等比上采样约 15.44%；深紫天空渐变 |
+| 猫城远景天际线 `skyline_catcity_01` | [WebP](../assets/world/skyline/skyline_catcity_01.webp) | 通过 | 1 | [本批审图](../assets/world/reviews/skyline-a07.webp) | 2048×1024；131,512 B；原生 1774×887，等比上采样约 15.44%；#96 已接入外圈柱面 |
 
 用途与接入建议见 [天际线素材说明](../assets/world/skyline/README.md)，完整提示词、候选与导出记录见 [A07 出处文件](../assets/world/skyline/skyline-a07.provenance.json)。独立 QA 见 [审核摘要](../assets/world/skyline/skyline-a07.qa.md) 与 [机器报告](../assets/world/skyline/skyline-a07.qa.json)。
 
 ### A07 制作与审核记录
 
-第 1 轮待审：选第 3 AI 候选，导出 2048×1024、RGB、sRGB ICC WebP（质量 90）。依据世界工作单生成，修图参考本批第 2 候选。实际原生图为 1774×887，等比 Lanczos 上采样约 15.44% 达到交付规格；上采样不增加原生细节。当前已通过数量为 0，等待 Claude 审核。
+2026-10-12 · 第 1 轮 **通过**：[PR #96](https://github.com/acaozixu123456/myRepository/pull/96) 已合并并接入外圈柱面，按固定队列同步，已通过数量为 1。选第 3 AI 候选，导出 2048×1024、RGB、sRGB ICC WebP（质量 90）。依据世界工作单生成，修图参考本批第 2 候选。实际原生图为 1774×887，等比 Lanczos 上采样约 15.44% 达到交付规格；上采样不增加原生细节。
 
 顶部 10% 平均 RGB 约为 22.83 / 14.15 / 39.12，采用深紫天空渐变。首尾边缘拼接与柱面三个视角的独立视觉检查未见明显竖缝；画面含高楼剪影、空中走廊、飞行器光点与猫形全息光晕，无真人面孔或文字。此结论对应实际文件和审阅尺度的视觉检查。
 
@@ -104,7 +104,28 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 本批 `npm run typecheck && npm test` 通过（退出码 0；58 个测试文件、919 个测试）。
 
-最不满意：原生尺寸略低，近看小窗线偏软，需 Claude 按远景观看距离评估。本批审核后继续 A08 湿沥青，再做地面贴花。
+原生尺寸略低，近看小窗线偏软。Claude 的接入实测指出近处巨楼会遮住大部分天际线，主要从楼缝与楼顶露出；上半紫色天空和雾层更重要。继续 A08 湿沥青 → A09 地砖 → A10 贴花。
+
+## A09 明细
+
+| 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
+| --- | --- | --- | --- | --- | --- |
+| 旧青灰方砖 `ground_tile_slate_01` | [WebP](../assets/world/ground/ground_tile_slate_01.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/ground-tiles-a09.webp) | 1024²；413,568 B；原生完整周期 1234×1235；低对比灰缝 |
+| 青灰砖地 / 连续排水沟盖 `ground_drain_slate_02` | [WebP](../assets/world/ground/ground_drain_slate_02.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/ground-tiles-a09.webp) | 1024²；318,762 B；原生完整周期 1228²；沿上下轴连续 |
+
+用途、来源与导出规格见 [A09 素材说明](../assets/world/ground/ground-tiles-a09.README.md)，完整提示词、工具实参、候选选择、原图路径和原图 / 成品 SHA256 见 [出处记录](../assets/world/ground/ground-tiles-a09.provenance.json)。
+
+### A09 制作与审核记录
+
+2026-10-12 · 第 1 轮待审，已通过数量为 0。每张由 `image_gen` 独立生成后，再以同一工具修订自己的初稿；两个候选是内部筛选，审核轮次仍为 1。原始 PNG 均为 1254²，外侧灰缝中心裁切完整周期后 Lanczos 降采样至 1024²，以 RGB sRGB ICC WebP、质量 90、method 6 导出。没有上采样、程序补画、接缝融合或艺术性后处理。原始 PNG 保留在出处记录的工作空间路径，因单张超过 500,000 B 未提交。
+
+内部视觉复核使用最终编码 WebP 的直接 2×2 / 4×4 重复与四边 / 四角 1:1 局部，未见额外边框或明显接缝条。近看细颗粒有浅微明暗；沟盖最后一段略短、两侧砖宽有差异，需按游戏视距评估。本批是基色贴图，材质湿润反射和霓虹照明交由引擎提供，尚未接入游戏。
+
+审核图：[单张 / 2×2 / 4×4 总览](../assets/world/reviews/ground-tiles-a09.webp)（2048×1024，287,386 B）、[方砖 1:1 四边 / 四角](../assets/world/reviews/ground_tile_slate_01-native-edges.webp)（2048×1024，472,366 B）、[沟盖 1:1 四边 / 四角](../assets/world/reviews/ground_drain_slate_02-native-edges.webp)（2048×1024，394,118 B）。方法见 [预览说明](../assets/world/reviews/ground-tiles-a09.README.md)。
+
+另附 [独立 Three.js 材质灯光样板](../assets/world/reviews/ground-tiles-a09-lighting.webp)（2048×1024，476,746 B）：同一白色 MeshStandardMaterial（roughness 0.65 / metalness 0、map.repeat 2×2）在相同相机与白光下，左右对比只加入青 / 品红点光的响应，无 bloom。实际加载 2/2、HTTP 200、page errors 0、failed requests 0，拍摄前后成品 SHA256 不变；[参数与捕获证据](../assets/world/reviews/ground-tiles-a09-lighting.README.md)。独立 QA 见 [摘要](../assets/world/ground/ground-tiles-a09.qa.md) 和 [机器报告](../assets/world/ground/ground-tiles-a09.qa.json)，当前可交 Claude 审核，尚未审核通过。
+
+A09 提交前验证：`npm run typecheck && npm test` 通过，64 个测试文件、976 项测试，退出码 0。
 
 ## B 类队列
 
