@@ -70,7 +70,7 @@ async function start(seed = SEED) {
   const theme = (document.getElementById('theme') as HTMLSelectElement).value as BgTheme;
   const full = (document.getElementById('ult') as HTMLInputElement).checked;
   const t = teams();
-  const sim = simulate({ seed, A: setups(t.a), B: setups(t.b), tactics: q.get('tac') !== '0', combos: q.get('combo') !== '0', comboEvery: q.get('ce') ? +q.get('ce')! : undefined, startEnergy: full ? 100 : { A: +(q.get('energy') ?? 0), B: +(q.get('energyB') ?? 0) } });
+  const sim = simulate({ seed, A: setups(t.a), B: setups(t.b), tactics: q.get('tac') !== '0', combos: q.get('combo') !== '0', comboEvery: q.get('ce') ? +q.get('ce')! : undefined, pet: q.get('pet') ? { A: { id: q.get('pet')!, power: 1.4 } } : undefined, startEnergy: full ? 100 : { A: +(q.get('energy') ?? 0), B: +(q.get('energyB') ?? 0) } });
   const startEv = sim.events[0];
   if (startEv.t !== 'start') return;
   await player.setup(startEv, theme);

@@ -102,6 +102,16 @@ export class Explorer {
     wv.onTap = (p) => this.tap(p);
   }
 
+  // ---------- 宠物（跟在队尾，比猫小一圈，走路时一蹦一蹦） ----------
+  private pet: Actor | null = null;
+  setPet(id: string | null | undefined) {
+    if (this.pet) { this.root.remove(this.pet.cat.root); this.root.remove(this.pet.shadow); this.pet = null; }
+    if (!id) return;
+    this.pet = this.mkActor(id, 0.62);
+    const sp = this.street.spawn;
+    this.pet.pos.set(sp.x, sp.y, sp.z + this.team.length * 1.5 + 1);
+  }
+
   // ---------- 队伍 ----------
   setTeam(ids: string[]) {
     for (const a of this.team) { this.root.remove(a.cat.root); this.root.remove(a.shadow); }
@@ -332,6 +342,13 @@ export class Explorer {
       const dist = d.length();
       if (dist > 0.12) { a.pos.addScaledVector(d, Math.min(1, dt * 9)); a.yaw = Math.atan2(d.x, d.z); a.moving = Math.min(1, dist * 2.5); } else a.moving = Math.max(0, a.moving - dt * 6);
     }
+    if (this.pet) {
+      const a = this.pet;
+      const want = this.trail[Math.min(this.trail.length - 1, this.team.length * 5 + 2)];
+      const d = new THREE.Vector3().subVectors(want, a.pos); d.y = 0;
+      const dist = d.length();
+      if (dist > 0.1) { a.pos.addScaledVector(d, Math.min(1, dt * 7)); a.yaw = Math.atan2(d.x, d.z); a.moving = Math.min(1, dist * 2.5); } else a.moving = Math.max(0, a.moving - dt * 6);
+    }
     // 敌人 / 实体
     this.frameNear = null; this.frameNearD = 1e9;
     for (const e of this.ents) { if (e.alive) this.updateEnt(e, dt); }
@@ -443,6 +460,7 @@ export class Explorer {
       e.cooldown = 8; e.alert = false;
       const sp = this.street.spawn;
       for (const a of this.team) a.pos.set(sp.x, sp.y, sp.z);
+      this.pet?.pos.set(sp.x, sp.y, sp.z);
       this.trail = this.trail.map(() => new THREE.Vector3(sp.x, sp.y, sp.z));
       this.wv.focus.set(sp.x, 0, sp.z);
     }
@@ -459,6 +477,7 @@ export class Explorer {
       a.shadow.position.set(a.cat.root.position.x, 0.36, a.cat.root.position.z);
     };
     for (const a of this.team) sync(a);
+    if (this.pet) { sync(this.pet); if (this.pet.moving > 0.2) this.pet.cat.root.position.y += Math.abs(Math.sin(this.t * 11)) * 0.22; }
     for (const e of this.ents) if (e.alive) for (const a of e.cats) {
       // 敌人的猫放在世界坐标：组位置 + 偏移（猫本身加到 root，不是 group 的子节点）
       a.cat.root.position.set(e.group.position.x + a.pos.x, 0.32, e.group.position.z + a.pos.z);

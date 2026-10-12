@@ -1,4 +1,6 @@
 // 风铃节奏小游戏界面：音符沿 3 条轨道落下，落到判定线时点对应轨道。规则在 game/windchime.ts。
+import { dailyEgg } from '../../game/pets';
+import { dayIndex } from '../../game/premium';
 import { FALL, LANES, LANE_NAMES, NOTES, accuracy, chimeGain, makeChart, matchTap, recordHits, runsLeft, tierOf, useRun } from '../../game/windchime';
 import type { Grade, Note } from '../../game/windchime';
 import { gainIcons, starsHtml } from '../../ui/gain';
@@ -94,7 +96,7 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
       cancelAnimationFrame(raf); raf = 0; clear();
       const acc = accuracy(perfect, good), tier = tierOf(acc), g = chimeGain(ctx.s, tier);
       if (tier > 0) { applyGain(ctx.s, g); sfx.coin(); if (tier === 3) sfx.up(); } else sfx.no();
-      recordHits(ctx.s, perfect + good); ctx.save();
+      recordHits(ctx.s, perfect + good); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       comboEl.textContent = '';
       status.innerHTML = `${starsHtml(tier)}<div class="mg-sub">🎯 ${Math.round(acc * 100)}% &nbsp; ✨${perfect} 👍${good} ✖${miss}</div><div style="margin-top:4px">${tier > 0 ? gainIcons(g, 20) : ''}</div>`;

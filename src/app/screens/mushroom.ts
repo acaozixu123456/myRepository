@@ -1,4 +1,6 @@
 // 采蘑菇小游戏界面：3×3 蘑菇地，蘑菇冒出来又缩回去。规则在 game/mushroom.ts。
+import { dailyEgg } from '../../game/pets';
+import { dayIndex } from '../../game/premium';
 import { CELLS, DURATION, SCORE, makeSchedule, mushroomGain, recordPicked, runsLeft, tierOf, useRun, TIERS } from '../../game/mushroom';
 import type { Kind, Spawn } from '../../game/mushroom';
 import { gainIcons, starsHtml } from '../../ui/gain';
@@ -85,7 +87,7 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
       cancelAnimationFrame(raf); raf = 0; clearCells();
       const tier = tierOf(score), g = mushroomGain(ctx.s, tier);
       if (tier > 0) { applyGain(ctx.s, g); sfx.coin(); } else sfx.no();
-      recordPicked(ctx.s, picked); ctx.save();
+      recordPicked(ctx.s, picked); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       status.innerHTML = `${starsHtml(tier)}<div class="mg-sub">⭐ ${score} &nbsp; 🍄 ${picked}</div><div style="margin-top:4px">${tier > 0 ? gainIcons(g, 20) : ''}</div>`;
       refresh();

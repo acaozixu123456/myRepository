@@ -16,6 +16,8 @@ import type { ShopState } from './shop';
 import type { PayState } from './premium';
 import { affMul } from './affection';
 import { soulMul } from './soul';
+import { petMul } from './pets';
+import type { PetState } from './pets';
 import type { AffState } from './affection';
 import type { EventState } from './events';
 import type { GuildBossState } from './guildboss';
@@ -72,6 +74,7 @@ export interface PlayerState {
   guild?: GuildState; // 公会（旧存档读取时补齐）
   social?: SocialState; // 世界聊天 / 好友 / 竞技场（旧存档读取时补齐）
   pay?: PayState; // 氪金：累计充值 / 月卡 / VIP / 至尊保底（旧存档读取时补齐）
+  pets?: PetState; // 宠物：拥有 / 出战 / 蛋（见 game/pets.ts）
   heroes: Record<string, HeroState>;
   lineup: (string | null)[]; // 0-2 前排，3-4 后排
   stage: { chapter: number; index: number; wins: number }; // 当前挂机关卡（≤ best）
@@ -175,7 +178,8 @@ export function heroPower(h: HeroState, gear?: StatBlock): number {
   return Math.round((s.hp / 10 + s.atk + s.def + s.spd * 0.6) * 0.25);
 }
 export function teamPower(s: PlayerState): number {
-  return s.lineup.reduce((a, id) => a + (id && s.heroes[id] ? heroPower(s.heroes[id], heroGear(s, id).stats) : 0), 0);
+  const sum = s.lineup.reduce((a, id) => a + (id && s.heroes[id] ? heroPower(s.heroes[id], heroGear(s, id).stats) : 0), 0);
+  return Math.round(sum * petMul(s)); // 出战宠物给全队的百分比加成
 }
 
 // ---------- 养成（原型口径） ----------

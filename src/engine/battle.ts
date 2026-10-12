@@ -2,6 +2,7 @@ import { COMBO_BY_BOND, COMBO_EVERY } from '../data/combos';
 import { TACTIC_CD, tacticFor } from '../data/kits/tactics';
 import { FACTIONS } from '../data/factions';
 import type { FactionId } from '../data/factions';
+import { PET_BY_ID } from '../data/pets';
 import { unitInfo } from '../data/units';
 import { BONDS, COUNTER_BONUS, COUNTER_RING, baseStats } from '../data/systems';
 import { KITS, genericKit } from '../data/kits';
@@ -948,6 +949,27 @@ class Battle {
     }
   }
 
+  /** 宠物技：每 3 回合（第 2、5、8…）开场，各方的出战宠物放一次技能；以我方最强攻击者的身份结算，威力按宠物等级 / 星级缩放 */
+  petRound() {
+    for (const side of ['A', 'B'] as const) {
+      const cfg = this.cfg.pet?.[side];
+      const def = cfg && PET_BY_ID[cfg.id];
+      if (!cfg || !def) continue;
+      const mates = this.alive(side);
+      if (!mates.length) continue;
+      const caster = mates.slice().sort((a, b) => this.stat(b, 'atk') - this.stat(a, 'atk'))[0];
+      const ctx: Ctx = { caster, targets: [], isBasic: false, melee: false };
+      const targets = this.select(def.skill.target, ctx, false);
+      if (!targets.length) continue;
+      ctx.targets = targets;
+      const k = cfg.power;
+      const scaleFx = (fx: Effect[]): Effect[] => fx.map((e) => ('scale' in e && e.scale ? { ...e, scale: Object.fromEntries(Object.entries(e.scale).map(([a, v]) => [a, (v as number) * k])) } as Effect : e));
+      this.push({ t: 'pet', side, id: cfg.id, name: def.skill.name, fx: def.skill.fx, targets: targets.map((x) => x.uid) });
+      this.exec(scaleFx(def.skill.effects), ctx, targets);
+      if (this.over()) return;
+    }
+  }
+
   over(): 'A' | 'B' | null {
     if (!this.alive('A').length) return 'B';
     if (!this.alive('B').length) return 'A';
@@ -967,6 +989,7 @@ class Battle {
       this.applyRuleRound();
       this.fireAll('roundStart');
       if (this.cfg.combos && !this.cfg.noBonds && this.round % (this.cfg.comboEvery ?? COMBO_EVERY) === 0) { this.comboRound(); winner = this.over(); if (winner) break; }
+      if (this.cfg.pet && this.round % 3 === 2) { this.petRound(); winner = this.over(); if (winner) break; }
       const order = this.units.filter((u) => u.alive).sort((a, c) => this.stat(c, 'spd') - this.stat(a, 'spd') || a.pos - c.pos);
       for (const u of order) {
         if (!u.alive) continue;

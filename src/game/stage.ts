@@ -1,6 +1,7 @@
 // 关卡与战斗配置：把阵容、关卡数据转成引擎的 BattleConfig；结算奖励；挂机收益。
 import { affMul } from './affection';
 import { soulMul } from './soul';
+import { petMul } from './pets';
 import { CHAPTERS } from '../content/campaign';
 import { idleCap, idleRate as contentIdleRate } from '../content/progression';
 import type { StageDef } from '../content/types';
@@ -55,13 +56,14 @@ export function recommendedPowerOf(chapter: number, index: number): number {
 /** 我方 UnitSetup（可带继承状态） */
 export function lineupSetups(s: PlayerState, carry?: Record<string, { hpPct: number; energy: number }>): UnitSetup[] {
   const out: UnitSetup[] = [];
+  const pm = petMul(s);
   s.lineup.forEach((id, pos) => {
     if (!id) return;
     const h = s.heroes[id];
     if (!h) return;
     const c = carry?.[id];
     const g = heroGear(s, id);
-    out.push({ heroId: id, level: h.lv, star: h.star, awaken: h.awaken, skillLv: h.skillLv, statMul: affMul(h) * soulMul(h), pos, hpPct: c?.hpPct, energy: c?.energy, gear: g.stats, set4: g.set4 });
+    out.push({ heroId: id, level: h.lv, star: h.star, awaken: h.awaken, skillLv: h.skillLv, statMul: affMul(h) * soulMul(h) * pm, pos, hpPct: c?.hpPct, energy: c?.energy, gear: g.stats, set4: g.set4 });
   });
   return out;
 }

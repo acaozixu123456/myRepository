@@ -1,4 +1,5 @@
 // 主界面里的“挂机战斗”循环：反复打当前关卡，结算奖励；可主动挑战下一关。
+import { petCfg } from '../game/pets';
 import { recordAutoResult, shouldAutoPush } from '../game/autopush';
 import type { StageDef } from '../content/types';
 import { simulate } from '../engine/battle';
@@ -149,7 +150,7 @@ export class BattleLoop {
     let carry: Record<string, { hpPct: number; energy: number }> | undefined;
     this.player.aborted = false; this.player.skipping = false;
     for (let w = 0; w < stage.waves.length; w++) {
-      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: A && w === 0 ? A : lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx, tactics: true, combos: true });
+      const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: A && w === 0 ? A : lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx, tactics: true, combos: true, pet: petCfg(s) });
       const foes = sim.units.filter((u) => u.side === 'B');
       this.lastDamagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
       if (!this.player.aborted) {

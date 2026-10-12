@@ -1,4 +1,5 @@
 // 日常福利：七日签到（漏签不清零）、快速探索（立刻领取 2 小时挂机收益）。
+import { dailyEgg } from './pets';
 import { dayIndex, vipLevel } from './premium';
 import { idleRate } from './stage';
 import type { PlayerState } from './state';
@@ -43,7 +44,7 @@ export function fastFree(s: PlayerState, now = Date.now()): number {
   return Math.max(0, free - (d.fastDay === dayIndex(now) ? d.fastUsed : 0));
 }
 export const fastUsed = (s: PlayerState, now = Date.now()) => { const d = ensureDaily(s); return d.fastDay === dayIndex(now) ? d.fastUsed : 0; };
-export function fastExplore(s: PlayerState, now = Date.now()): { ok: true; fish: number; exp: number; paid: boolean } | { ok: false; reason: string } {
+export function fastExplore(s: PlayerState, now = Date.now()): { ok: true; fish: number; exp: number; paid: boolean; egg: boolean } | { ok: false; reason: string } {
   const d = ensureDaily(s);
   const today = dayIndex(now);
   if (d.fastDay !== today) { d.fastDay = today; d.fastUsed = 0; }
@@ -53,5 +54,6 @@ export function fastExplore(s: PlayerState, now = Date.now()): { ok: true; fish:
   const r = idleRate(s);
   const fish = Math.round(r.fish * FAST_MINUTES), exp = Math.round(r.exp * FAST_MINUTES);
   s.res.fish += fish; s.res.exp += exp; d.fastUsed++;
-  return { ok: true, fish, exp, paid };
+  const egg = d.fastUsed === 1 && dailyEgg(s, today);
+  return { ok: true, fish, exp, paid, egg };
 }

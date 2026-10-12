@@ -5,6 +5,7 @@ import type { FactionId } from './factions';
 import { HERO_BY_ID } from './heroes';
 import type { Rarity, Role } from './heroes';
 import { MOB_LOOKS } from './mob-looks';
+import { PET_BY_ID } from './pets';
 
 export { MOB_LOOKS } from './mob-looks';
 
@@ -35,6 +36,7 @@ export function lookOf(id: string): CatLook {
   const h = HERO_BY_ID[id];
   if (h) return h.look;
   if (MOB_LOOKS[id]) return MOB_LOOKS[id];
+  if (PET_BY_ID[id]) return PET_BY_ID[id].look;
   unitInfo(id); // 保持未知单位原有的报错语义。
   throw new Error(`missing mob look ${id}`);
 }

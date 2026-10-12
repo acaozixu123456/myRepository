@@ -62,6 +62,7 @@ export function quickEntries(ctx: AppCtx): { act: string; to?: string; ic: strin
     { act: 'signin', ic: 'calendar', label: '签到', dot: canSign(s) },
     { act: 'nav', to: 'social', ic: 'chat', label: '广场', dot: unreadCount(s) > 0 || guildTodo(s) },
     { act: 'nav', to: 'events', ic: 'gift', label: '活动', cls: 'ev', dot: eventsDot(ctx) },
+    { act: 'nav', to: 'pets', ic: 'paw', label: '宠物', dot: (s.pets?.eggs ?? 0) > 0 },
     { act: 'nav', to: 'shop', ic: 'bag', label: '商店' },
     { act: 'nav', to: 'pay', ic: 'moon', label: '充值', cls: 'pay', dot: canClaimCard(s) || canClaimVip(s) },
   ];
