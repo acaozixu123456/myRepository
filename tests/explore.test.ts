@@ -204,6 +204,7 @@ describe('场景玩法入口（POI）', () => {
     expect(Math.hypot(p.x, p.z)).toBeLessThan(14);
   });
   it('纸箱街有纸箱寻猫入口', () => { expect(poisOf(LEVELS[1]).map((p) => p.game)).toContain('boxcat'); });
+  it('纸箱街的店铺能进去玩：九命电器夹娃娃机、赛博猫网咖鼠标大作战', () => { expect(poisOf(LEVELS[1]).map((p) => p.game)).toEqual(expect.arrayContaining(['boxcat', 'claw', 'whack'])); });
   it('光之森有蘑菇地入口', () => { expect(poisOf(LEVELS[4]).map((p) => p.game)).toContain('mushroom'); });
   it('云端雾岛有风铃架入口', () => { expect(poisOf(LEVELS[5]).map((p) => p.game)).toContain('windchime'); });
   it('九重宫阙有宫灯阵入口，六章都有各自的玩法', () => { expect(poisOf(LEVELS[6]).map((p) => p.game)).toContain('lanterns'); for (let c = 1; c <= 6; c++) expect(poisOf(LEVELS[c]).length, `第 ${c} 章没有玩法入口`).toBeGreaterThan(0); });

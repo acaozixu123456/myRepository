@@ -90,7 +90,8 @@ export const LEVEL_1: LevelDef = {
   lights: [[0, 5, 0, 0xff2ea8, 90, 26], [-14, 6, -4, 0x7ff0ff, 70, 22], [14, 6, 4, 0x9a7aff, 70, 22]],
   tram: true, arches: [], lanterns: [],
   vents: [[-3, 0.5, -7.6], [3.4, 0.5, 7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4], [-8, 0.5, 7.7], [8.5, 0.5, -7.5]],
-  pois: [{ id: 'boxcat', game: 'boxcat', x: -10.5, z: -5.4, label: '纸箱寻猫' }],
+  // 店铺玩法：九命电器门口的夹娃娃机、赛博猫网咖里的鼠标大作战
+  pois: [{ id: 'boxcat', game: 'boxcat', x: -10.5, z: -5.4, label: '纸箱寻猫' }, { id: 'claw', game: 'claw', x: -25, z: -5.8, label: '九命电器 · 夹娃娃' }, { id: 'whack', game: 'whack', x: 25, z: -5.8, label: '赛博猫网咖 · 鼠标大作战' }],
   ...SPOTS,
 };
 
