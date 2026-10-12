@@ -10,7 +10,7 @@ import { teamPower } from '../../game/state';
 import { TOWER_FLOORS, towerBest, towerClear, towerFaction, towerFloor, towerReward } from '../../game/tower';
 import { DAILY_TRIES, DUNGEONS, DUNGEON_BY_ID, TIERS, dungeonLeft, dungeonReward, dungeonStage, dungeonStart, dungeonSweep, dungeonWin, ensureDungeon, tierUnlocked } from '../../game/dungeon';
 import type { DungeonId } from '../../game/dungeon';
-import { MULTS, ROUTES, ROUTE_BY_ID, availableHeroes, claimTeam, dispatch, ensureExpedition, minutesLeft, needMet, needText, needsMet, rewardFor, slotsOf, teamDone } from '../../game/expedition';
+import { ROUTES, ROUTE_BY_ID, availableHeroes, claimTeam, dispatch, ensureExpedition, minutesLeft, needMet, needText, needsMet, rewardFor, slotsOf, teamDone } from '../../game/expedition';
 import { BUFF_BY_ID, MAZE_EXTRA_COST, MAZE_EXTRA_MAX, MAZE_FLOORS, abandonRun, buffChoices, clearedFloors, buyRun, chooseBuff, ensureMaze, finishFloor, mazeRewardFor, mazeSetups, mazeStage, runsLeft, startRun } from '../../game/maze';
 import { ATTEMPTS_PER_DAY, MILESTONES, attemptsLeft, bossBoard, bossLevel, bossOfWeek, bossStage, claimMilestone, claimable, ensureBoss, finishAttempt, startAttempt } from '../../game/worldboss';
 import { artUrl } from '../../ui/art';
@@ -30,7 +30,7 @@ function nodeState(ctx: AppCtx, c: number, i: number): NodeState {
   return o <= b ? 'done' : o === b + 1 ? 'next' : 'locked';
 }
 
-const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}">主线</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}">爬塔</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}">秘境</button><button class="pill" data-act="cmode" data-m="boss" aria-pressed="${campaignState.mode === 'boss'}">Boss</button><button class="pill" data-act="cmode" data-m="maze" aria-pressed="${campaignState.mode === 'maze'}">迷宫</button><button class="pill" data-act="cmode" data-m="trip" aria-pressed="${campaignState.mode === 'trip'}">远征</button></div>`;
+const modeTabs = () => `<div class="seg" style="margin-bottom:2px"><button class="pill" data-act="cmode" data-m="main" aria-pressed="${campaignState.mode === 'main'}" title="主线">🗺️</button><button class="pill" data-act="cmode" data-m="tower" aria-pressed="${campaignState.mode === 'tower'}" title="爬塔">🗼</button><button class="pill" data-act="cmode" data-m="dungeon" aria-pressed="${campaignState.mode === 'dungeon'}" title="秘境">🔑</button><button class="pill" data-act="cmode" data-m="boss" aria-pressed="${campaignState.mode === 'boss'}" title="Boss">👑</button><button class="pill" data-act="cmode" data-m="maze" aria-pressed="${campaignState.mode === 'maze'}" title="迷宫">🧩</button><button class="pill" data-act="cmode" data-m="trip" aria-pressed="${campaignState.mode === 'trip'}" title="远征">🧭</button></div>`;
 
 function towerHtml(ctx: AppCtx): string {
   const best = towerBest(ctx.s);
@@ -52,12 +52,12 @@ function towerHtml(ctx: AppCtx): string {
   return `
     ${modeTabs()}
     <div class="panel tnow">
-      <div class="row"><span class="tag f" style="--c:${f.color}">${f.glyph}</span><b class="ttl">${done ? '登顶！' : `第 ${n} 层`}</b><span class="tag ${st.kind}">${kind}</span><div class="grow"></div><span class="muted prog">最高 ${best} / ${TOWER_FLOORS}</span></div>
+      <div class="row"><span class="tag f" style="--c:${f.color}">${f.glyph}</span><b class="ttl">${done ? '🏆' : `🗼 ${n}`}</b><span class="tag ${st.kind}">${kind}</span><div class="grow"></div><span class="muted prog">最高 ${best} / ${TOWER_FLOORS}</span></div>
       <div class="bar" style="margin:8px 0"><i style="width:${(best / TOWER_FLOORS) * 100}%"></i></div>
-      ${done ? '<p class="intro">九命塔已经爬到了顶，猫猫们在塔尖晒起了太阳。</p>' : `<div class="heads" style="display:flex;gap:6px;margin:6px 0 8px">${heads}</div>
+      ${done ? '<p class="intro" style="font-size:34px;text-align:center">🏆😺☀️</p>' : `<div class="heads" style="display:flex;gap:6px;margin:6px 0 8px">${heads}</div>
       <div class="rw"><b>首通</b>${rewardRow(towerReward(n))}</div>
-      <p class="intro" style="margin-top:6px">每层只有首次通关有奖励；敌方阵营每 5 层轮换，别忘了阵营克制。</p>
-      <div class="cfoot"><button class="btn green lg" data-act="tgo" data-n="${n}">挑战第 ${n} 层</button></div>`}
+      
+      <div class="cfoot"><button class="btn green lg" data-act="tgo" data-n="${n}">⚔️ ${n}</button></div>`}
     </div>
     <div class="tcol">${rows.join('')}</div>`;
 }
@@ -74,15 +74,14 @@ function dungeonHtml(ctx: AppCtx): string {
     const can = tierUnlocked(s, tier) && left > 0;
     const cleared = st.best[d.id] >= tier;
     return `<section class="panel dgn">
-      <div class="row"><span class="dico">${icon(d.icon, 30)}</span><div class="grow"><b class="ttl">${d.name}</b><div class="muted" style="font-size:11.5px;font-weight:700">今日剩余 ${left} / ${DAILY_TRIES}</div></div></div>
-      <p class="intro" style="margin:6px 0">${d.desc}</p>
+      <div class="row"><span class="dico">${icon(d.icon, 30)}</span><div class="grow"><b class="ttl">${d.name}</b><div class="muted" style="font-size:11.5px;font-weight:700">🎮 ${left} / ${DAILY_TRIES}</div></div></div>
       <div class="seg" style="margin:4px 0">${pills}</div>
       <div class="heads" style="display:flex;gap:6px;margin:6px 0">${heads}</div>
-      <div class="rw"><b>通关</b>${rewardRow({ ...dungeonReward(d.id, tier), items: undefined })}</div>
-      <div class="row" style="gap:8px;margin-top:8px"><button class="btn green" style="flex:1" data-act="dgo" data-d="${d.id}" ${can ? '' : 'disabled'}>${tierUnlocked(s, tier) ? '挑战' : '未解锁'}</button><button class="btn blue" style="flex:1" data-act="dsweep" data-d="${d.id}" ${can && cleared ? '' : 'disabled'}>扫荡</button></div>
+      <div class="rw"><b>🏁</b>${rewardRow({ ...dungeonReward(d.id, tier), items: undefined })}</div>
+      <div class="row" style="gap:8px;margin-top:8px"><button class="btn green" style="flex:1" data-act="dgo" data-d="${d.id}" ${can ? '' : 'disabled'}>${tierUnlocked(s, tier) ? '⚔️' : '🔒'}</button><button class="btn blue" style="flex:1" data-act="dsweep" data-d="${d.id}" ${can && cleared ? '' : 'disabled'}>⏩⏩</button></div>
     </section>`;
   }).join('');
-  return `${modeTabs()}<p class="intro" style="margin:2px 4px 8px">秘境每天刷新次数；通关过的档位可以直接扫荡。档位随主线推进解锁。</p>${cards}`;
+  return `${modeTabs()}${cards}`;
 }
 
 export const tripState = { route: 'patrol', sel: [] as string[] };
@@ -96,7 +95,7 @@ function tripHtml(ctx: AppCtx): string {
   const needs = route.needs.map((n) => `<span class="chip light ${needMet(s, n, tripState.sel) ? 'ok' : ''}">${needMet(s, n, tripState.sel) ? '✓ ' : ''}${needText(n)}</span>`).join('');
   const full = ex.teams.length >= slots;
   return `${modeTabs()}<section class="panel"><h3>猫猫远征 <small class="muted" style="font-size:12px">队伍位 ${ex.teams.length}/${slots}</small></h3>
-    <p class="intro">把没上阵的猫派出去，按真实时间结算，<b>下线也在跑</b>。每条路线有 3 个需要，满足得越多收益越高（最高 ×${MULTS[3]}）；出门的猫不能上阵。VIP3 / VIP8 / 月卡各多一个队伍位。</p>${running || '<div class="muted" style="font-size:12px">还没有队伍出门。</div>'}</section>
+    ${running || '<div class="muted" style="font-size:12px">还没有队伍出门。</div>'}</section>
     <section class="panel"><div class="seg" style="margin-bottom:6px">${ROUTES.map((r) => `<button class="pill" data-act="tr-route" data-id="${r.id}" aria-pressed="${r.id === route.id}">${esc(r.name)}</button>`).join('')}</div>
     <p class="intro" style="margin:2px 0 6px">${esc(route.desc)}（${route.minutes >= 60 ? `${route.minutes / 60} 小时` : `${route.minutes} 分钟`}，最多 ${route.max} 只）</p><div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:6px">${needs}</div>
     <div class="wishpick">${picker}</div>
@@ -109,7 +108,7 @@ function mazeHtml(ctx: AppCtx): string {
   if (!run) {
     const ladder = [1, 4, MAZE_FLOORS].map((n) => { const r = mazeRewardFor(n); return `<div class="evr"><div class="grow"><b>通过 ${n} 层</b><small>${fmt(r.fish)} 小鱼干 · ${r.catnip} 猫薄荷${r.bells ? ` · ${r.bells} 金铃铛` : ''}${r.tickets ? ` · ${r.tickets} 招福符` : ''}</small></div></div>`; }).join('');
     return `${modeTabs()}<section class="panel"><h3>纸箱迷宫 <small class="muted" style="font-size:12px">最高 ${m.best} / ${MAZE_FLOORS} 层</small></h3>
-      <p class="intro">一座会变形的纸箱迷宫：一局 ${MAZE_FLOORS} 层，每层打完从 3 个加成里选 1 个，加成会叠加；<b>血量和元气会带到下一层</b>，倒下的猫不会复活，全队睡着就结束，按通过的层数结算。战斗仍然自动打，决策在战斗之间。</p>
+      
       <div class="row" style="gap:8px;margin:8px 0"><div class="grow">今日剩余 <b>${left}</b> 次<br><small class="muted">VIP3 / VIP8 每天各 +1 次；可花 ${MAZE_EXTRA_COST} 金铃铛加次数（今日已买 ${m.bought}/${MAZE_EXTRA_MAX}）</small></div>
       <button class="btn sm blue" data-act="mz-buy" ${m.bought >= MAZE_EXTRA_MAX ? 'disabled' : ''}>加次数</button><button class="btn green" data-act="mz-start" ${left > 0 ? '' : 'disabled'}>开始探险</button></div>
       <div class="note" style="font-weight:800;margin-top:6px">奖励（逐层累计）</div>${ladder}</section>`;
@@ -140,7 +139,7 @@ function bossHtml(ctx: AppCtx): string {
   }).join('');
   return `${modeTabs()}<section class="panel wbs"><div class="row"><img class="bimg" src="${artUrl(def.hero, 'head')}" alt="" draggable="false"><div class="grow"><b class="ttl">${esc(def.title)}</b><div class="muted" style="font-size:11.5px;font-weight:700">本周 Boss · Lv.${bossLevel(s)} · 周一 05:00 换班</div></div></div>
     <p class="intro" style="margin:6px 0">${esc(def.desc)}</p>
-    <p class="intro" style="margin:0 0 6px">每次挑战最多打 30 回合，按打掉的生命比例拿奖励；打满整条血也不会提前结束，快去试试。</p>
+    
     <div class="row" style="gap:8px"><div class="grow">今日剩余 <b>${left}</b> / ${ATTEMPTS_PER_DAY}<br><small class="muted">本周累计 <b class="num">${b.bars.toFixed(2)}</b> 条 · 单次最高 ${Math.round(b.best * 100)}% · 排名第 ${myRank}</small></div>
     <button class="btn green" data-act="bgo" ${left > 0 ? '' : 'disabled'}>挑战</button></div></section>
     <section class="panel"><div class="note" style="font-weight:800;margin-bottom:4px">周累计里程碑</div>${ms}</section>
@@ -210,12 +209,12 @@ export function stageSheetHtml(ctx: AppCtx, id: string): string {
     return `<div class="eh ${u.isMob ? '' : 'hero'}" title="${esc(u.name)}"><img src="${artUrl(e.unit, 'head')}" alt="${esc(u.name)}" draggable="false"><em>Lv.${e.level}</em></div>`;
   }).join('')}</div></div>`).join('');
   const action = ns === 'locked'
-    ? `<button class="btn lg" disabled>先通关前面的关卡</button>`
+    ? `<button class="btn lg" disabled>🔒</button>`
     : ns === 'next'
-      ? `<button class="btn green lg" data-act="cgo" data-id="${st.id}">挑战 ${st.id}</button>`
+      ? `<button class="btn green lg" data-act="cgo" data-id="${st.id}">⚔️ ${st.id}</button>`
       : farm
-        ? `<button class="btn lg" disabled>正在这里挂机</button>`
-        : `<button class="btn blue lg" data-act="cfarm" data-id="${st.id}">在此挂机</button>`;
+        ? `<button class="btn lg" disabled>⏩ ✓</button>`
+        : `<button class="btn blue lg" data-act="cfarm" data-id="${st.id}">⏩</button>`;
   return `<div class="mask" data-act="sheetmask"><div class="sheet cstagesheet" data-id="${st.id}">
     <div class="row"><b class="ttl">${st.id} ${esc(st.name)}</b><span class="tag ${st.kind}">${kind}</span><div class="grow"></div>${chip('sword', fmt(rec))}</div>
     <div class="muted" style="font-size:12px;margin:2px 0 8px;font-weight:700">${esc(ch.name)} · 我方战力 <b class="${power < rec * 0.9 ? 'bad' : ''}">${fmt(power)}</b></div>

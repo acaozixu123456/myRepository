@@ -21,7 +21,7 @@ const sheetState = { uid: null as string | null, picking: false };
 const EQUIP_BY_ID = Object.fromEntries(EQUIPS.map((d) => [d.id, d]));
 const SET_BY_ID = Object.fromEntries(EQUIP_SETS.map((d) => [d.id, d]));
 const QUALITY_COLOR: Record<Quality, string> = { common: 'var(--paper-line)', fine: 'var(--green)', rare: 'var(--r-sr)', epic: 'var(--r-ssr)', legend: 'var(--r-ur)' };
-const QUALITY_NAME: Record<Quality, string> = { common: '普通', fine: '精良', rare: '稀有', epic: '史诗', legend: '传说' };
+const QUALITY_NAME: Record<Quality, string> = { common: '★', fine: '★★', rare: '★★★', epic: '★★★★', legend: '★★★★★' };
 const SLOT_NAME: Record<EquipSlot, string> = { weapon: '武器', armor: '铠甲', head: '头饰', charm: '铃铛' };
 const SLOT_ICON: Record<EquipSlot, string> = { weapon: 'sword', armor: 'armor', head: 'helmet', charm: 'bell' };
 const STAT_NAMES: Record<StatKey, string> = { hp: '生命', atk: '攻击', def: '防御', spd: '速度', crit: '暴击', critDmg: '暴击伤害', hit: '命中', dodge: '闪避', healBonus: '治疗加成', dmgReduce: '减伤' };
@@ -32,19 +32,19 @@ const quantity = (n: number) => Number.isInteger(n) ? fmt(n) : n.toLocaleString(
 const inventoryEquipment = (ctx: AppCtx) => ctx.s.inventory.equipment.filter((e) => EQUIP_BY_ID[e.equipId]);
 const ownedHeroes = (ctx: AppCtx) => Object.values(ctx.s.heroes).filter((h) => HERO_BY_ID[h.id]).sort((a, b) => Number(ctx.s.lineup.includes(b.id)) - Number(ctx.s.lineup.includes(a.id)) || RARITY_ORDER[HERO_BY_ID[a.id].rarity] - RARITY_ORDER[HERO_BY_ID[b.id].rarity]);
 
-function emptyHtml(image: string, title: string, text: string): string {
-  return `<div class="panel bag-empty"><div class="bag-empty-art">${icon(image, 64)}</div><h3>${title}</h3><p>${text}</p></div>`;
+function emptyHtml(image: string, title: string, _text = ''): string {
+  return `<div class="panel bag-empty"><div class="bag-empty-art">${icon(image, 64)}</div><h3 style="font-size:34px">${title}</h3></div>`;
 }
 
 function equipmentHtml(ctx: AppCtx): string {
   const list = inventoryEquipment(ctx);
-  if (!list.length) return emptyHtml('bag', '箱子让猫占了', '装备还没放进来，倒有一只猫睡得很整齐。');
+  if (!list.length) return emptyHtml('bag', '😴📦');
   return `<div class="bag-equip-grid">${list.map((instance) => {
     const def = EQUIP_BY_ID[instance.equipId];
     const wearer = instance.heroId && HERO_BY_ID[instance.heroId];
     return `<button class="hcard bag-equip-card" style="--rc:${QUALITY_COLOR[def.quality]}" data-act="bag-open" data-uid="${esc(instance.uid)}" aria-label="${esc(def.name)}，${QUALITY_NAME[def.quality]}，等级${instance.level}">
       <div class="bag-equip-art"><span class="bag-quality">${QUALITY_NAME[def.quality]}</span>${icon(SLOT_ICON[def.slot], 46)}<span class="bag-equip-level">Lv.${instance.level}</span></div>
-      <div class="bag-equip-info"><b>${esc(def.name)}</b><small>${SLOT_NAME[def.slot]}${def.setId ? ' · 套装' : ''}</small><span class="bag-wearer${wearer ? ' bag-wearing' : ''}">${wearer ? `${esc(wearer.name)} · 穿戴中` : '收在背包'}</span></div>
+      <div class="bag-equip-info"><b>${esc(def.name)}</b><small>${icon(SLOT_ICON[def.slot], 16)}${def.setId ? ' 🔗' : ''}</small><span class="bag-wearer${wearer ? ' bag-wearing' : ''}">${wearer ? `⚔️ ${esc(wearer.name)}` : '🎒'}</span></div>
     </button>`;
   }).join('')}</div>`;
 }
@@ -63,7 +63,7 @@ function itemIcon(item: ItemDef): string {
 }
 
 function itemsHtml(ctx: AppCtx): string {
-  if (!ITEMS.some((d) => itemCount(ctx.s, d.id) > 0)) return emptyHtml('gift', '军需匣也打了个盹', '鱼干和线团都用完了，空箱子先借猫猫睡一会儿。');
+  if (!ITEMS.some((d) => itemCount(ctx.s, d.id) > 0)) return emptyHtml('gift', '😴🎁');
   // 留下空毛线球的位置，让使用按钮明确显示需要库存；其他零数量道具不占行。
   const list = ITEMS.filter((d) => itemCount(ctx.s, d.id) > 0 || d.id in YARN_MINUTES);
   return `<div class="bag-item-list">${list.map((d) => {
@@ -71,20 +71,20 @@ function itemsHtml(ctx: AppCtx): string {
     const minutes = YARN_MINUTES[d.id as keyof typeof YARN_MINUTES];
     return `<div class="panel bag-item-row"><div class="hcard bag-item-icon" style="--rc:${QUALITY_COLOR[d.quality]}">${icon(itemIcon(d), 32)}</div>
       <div class="bag-item-copy"><div class="bag-item-heading"><b>${esc(d.name)}</b><span class="bag-item-count num">×${quantity(count)}</span></div><p>${esc(d.desc)}</p>
-      ${minutes ? `<div class="bag-yarn-use"><span>${minutes} 分钟挂机收益</span><button class="btn sm pink" data-act="bag-use" data-id="${d.id}" ${count < 1 ? 'disabled' : ''}>${count < 1 ? '暂无毛线球' : '使用一颗'}</button></div>` : ''}</div>
+      ${minutes ? `<div class="bag-yarn-use"><span>⏱ ${minutes}m</span><button class="btn sm pink" data-act="bag-use" data-id="${d.id}" ${count < 1 ? 'disabled' : ''}>${count < 1 ? '🚫' : '▶'}</button></div>` : ''}</div>
     </div>`;
   }).join('')}</div>`;
 }
 
 function shardsHtml(ctx: AppCtx): string {
   const heroes = ownedHeroes(ctx);
-  if (!heroes.length) return emptyHtml('team', '还没有来信', '先请一位猫猫进门，碎片就有了归处。');
+  if (!heroes.length) return emptyHtml('team', '📭');
   const allZero = heroes.every((h) => h.shards === 0);
-  return `${allZero ? '<div class="panel bag-zero-shards"><h3>来信还在路上</h3><p>猫猫先到了，碎片还在路上。星星的事，容邮差舔完这只爪。</p></div>' : ''}
+  return `${allZero ? '<div class="panel bag-zero-shards"><h3 style="font-size:34px;text-align:center">📬</h3></div>' : ''}
     <div class="bag-shard-list">${heroes.map((h) => {
       const d = HERO_BY_ID[h.id];
       return `<button class="hcard bag-shard-card" data-r="${d.rarity}" style="--c:${FACTIONS[d.faction].color}" data-act="bag-hero" data-id="${h.id}" aria-label="${d.name}，${h.shards}枚碎片，查看详情">
-        <div class="bag-hero-portrait">${artImg(h.id, 'head', d.name)}</div><div class="bag-shard-name"><b>${d.name}</b><small>${FACTIONS[d.faction].full} · ${d.role}</small></div><span class="bag-shard-number"><b class="num">${fmt(h.shards)}</b><small>枚碎片</small></span>
+        <div class="bag-hero-portrait">${artImg(h.id, 'head', d.name)}</div><div class="bag-shard-name"><b>${d.name}</b><small>${FACTIONS[d.faction].glyph}</small></div><span class="bag-shard-number"><b class="num">🧩 ${fmt(h.shards)}</b></span>
       </button>`;
     }).join('')}</div>`;
 }
@@ -93,12 +93,12 @@ export function bagHtml(ctx: AppCtx): string {
   const equipment = inventoryEquipment(ctx);
   const tabs: { id: BagTab; name: string; image: string }[] = [{ id: 'equipment', name: '装备', image: 'sword' }, { id: 'items', name: '道具', image: 'bag' }, { id: 'shards', name: '碎片', image: 'paw' }];
   const copy = {
-    equipment: { title: '装备箱', count: `${equipment.length} 件 · 已穿戴 ${equipment.filter((e) => e.heroId).length} 件`, text: '护耳的、垫爪的，都收在这里。' },
-    items: { title: '军需小匣', count: `${ITEMS.filter((d) => itemCount(ctx.s, d.id) > 0).length} 种`, text: '小鱼干记进账，毛线球留给赶路的日子。' },
-    shards: { title: '猫猫的来信', count: `${fmt(ownedHeroes(ctx).reduce((sum, h) => sum + h.shards, 0))} 枚`, text: '来信攒得厚，老朋友的星星也会多一颗。' },
+    equipment: { title: '🎒', count: `📦 ${equipment.length} · ⚔️ ${equipment.filter((e) => e.heroId).length}`, text: '' },
+    items: { title: '🎁', count: `${ITEMS.filter((d) => itemCount(ctx.s, d.id) > 0).length}`, text: '' },
+    shards: { title: '🧩', count: `${fmt(ownedHeroes(ctx).reduce((sum, h) => sum + h.shards, 0))}`, text: '' },
   }[bagState.tab];
-  return `${topbar(ctx, '背包')}<div class="scroll bag-scroll"><div class="seg bag-tabs" aria-label="背包页签">${tabs.map((tab) => `<button class="pill" aria-pressed="${bagState.tab === tab.id}" data-act="bag-tab" data-tab="${tab.id}">${icon(tab.image, 20)}${tab.name}</button>`).join('')}</div>
-    <div class="panel bag-summary"><div class="row"><h3 class="grow">${copy.title}</h3><span class="tag num">${copy.count}</span></div><p>${copy.text}</p></div>
+  return `${topbar(ctx, '背包')}<div class="scroll bag-scroll"><div class="seg bag-tabs" aria-label="背包页签">${tabs.map((tab) => `<button class="pill" aria-pressed="${bagState.tab === tab.id}" data-act="bag-tab" data-tab="${tab.id}">${icon(tab.image, 24)}</button>`).join('')}</div>
+    <div class="panel bag-summary"><div class="row"><h3 class="grow" style="font-size:26px">${copy.title}</h3><span class="tag num">${copy.count}</span></div></div>
     ${bagState.tab === 'equipment' ? equipmentHtml(ctx) : bagState.tab === 'items' ? itemsHtml(ctx) : shardsHtml(ctx)}</div>`;
 }
 
@@ -124,14 +124,14 @@ function setHtml(ctx: AppCtx, instance: EquipmentInstance, def: EquipDef): strin
 
 function pickerHtml(ctx: AppCtx, instance: EquipmentInstance, def: EquipDef): string {
   const heroes = ownedHeroes(ctx);
-  return `<div class="panel bag-picker-note"><h3>穿戴给哪只猫？</h3><p>同一部位只穿戴一件。换下的装备会收回背包。</p></div><div class="bag-hero-grid">${heroes.map((h) => {
+  return `<div class="panel bag-picker-note"><h3 style="text-align:center;font-size:30px">👆🐱</h3></div><div class="bag-hero-grid">${heroes.map((h) => {
     const d = HERO_BY_ID[h.id];
     const current = inventoryEquipment(ctx).find((e) => e.heroId === h.id && EQUIP_BY_ID[e.equipId].slot === def.slot);
     const wearing = instance.heroId === h.id;
     return `<button class="hcard bag-hero-choice" data-r="${d.rarity}" style="--c:${FACTIONS[d.faction].color}" data-act="bag-equip" data-uid="${esc(instance.uid)}" data-id="${h.id}" ${wearing ? 'disabled' : ''} aria-label="${wearing ? '已穿戴' : '穿戴给'}${d.name}">
       <div class="bag-hero-portrait">${artImg(h.id, 'head', d.name)}</div><div class="bag-hero-choice-copy"><b>${d.name}</b><small>${d.role} · Lv.${h.lv}</small><span>${wearing ? '已穿戴这件' : current ? `替换 ${esc(EQUIP_BY_ID[current.equipId].name)}` : `${SLOT_NAME[def.slot]}空着`}</span></div>
     </button>`;
-  }).join('')}</div>${heroes.length ? '' : emptyHtml('team', '先留一个位置', '还没有猫猫能试穿，装备在箱子里等一会儿。')}<div class="bag-picker-foot"><button class="btn ghost" data-act="bag-pick-back">返回装备详情</button></div>`;
+  }).join('')}</div>${heroes.length ? '' : emptyHtml('team', '➕🐱')}<div class="bag-picker-foot"><button class="btn ghost" data-act="bag-pick-back">⬅️</button></div>`;
 }
 
 function sheetHtml(ctx: AppCtx, instance: EquipmentInstance): string {
@@ -143,10 +143,10 @@ function sheetHtml(ctx: AppCtx, instance: EquipmentInstance): string {
   return `<div class="sheet bag-sheet" data-act="bag-panel" data-uid="${esc(instance.uid)}" role="dialog" aria-modal="true" aria-label="${esc(def.name)}装备详情">
     <button class="close bag-close" data-act="bag-close" aria-label="关闭装备详情">${icon('close', 22)}</button>
     <div class="bag-detail-head"><div class="hcard bag-detail-icon" style="--rc:${QUALITY_COLOR[def.quality]}">${icon(SLOT_ICON[def.slot], 52)}</div><div class="bag-detail-title"><span class="tag r" style="--rc:${QUALITY_COLOR[def.quality]}">${QUALITY_NAME[def.quality]}</span><h2>${esc(def.name)}</h2><div>${SLOT_NAME[def.slot]} · Lv.${instance.level} / ${def.levelCap}</div></div></div>
-    <div class="bag-owner">${icon(wearer ? 'team' : 'bag', 18)}${wearer ? `${esc(wearer.name)}正在穿戴` : '收在背包中'}</div>
+    <div class="bag-owner">${icon(wearer ? 'team' : 'bag', 18)}${wearer ? `${esc(wearer.name)}` : '🎒'}</div>
     ${sheetState.picking ? pickerHtml(ctx, instance, def) : `${attributesHtml(instance, def)}${setHtml(ctx, instance, def)}<div class="panel bag-flavor"><h3>行囊小记</h3><p>${esc(def.flavor)}</p></div>
-      <div class="bag-actions"><button class="btn green" data-act="bag-pick" ${ownedHeroes(ctx).length ? '' : 'disabled'}>${icon('team', 20)}穿戴给…</button><button class="btn ghost" data-act="bag-unequip" data-uid="${esc(instance.uid)}" ${instance.heroId ? '' : 'disabled'}>${icon('bag', 20)}卸下</button>
-      <button class="btn bag-enhance" data-act="bag-enhance" data-uid="${esc(instance.uid)}" ${full || !enough ? 'disabled' : ''}>${full ? '已强化至上限' : `${enough ? '强化' : '小鱼干不足'}<span class="cost">${icon('fish', 18)}${fmt(cost)} · Lv.${instance.level} → ${instance.level + 1}</span>`}</button></div>`}
+      <div class="bag-actions"><button class="btn green" data-act="bag-pick" ${ownedHeroes(ctx).length ? '' : 'disabled'}>${icon('team', 22)}</button><button class="btn ghost" data-act="bag-unequip" data-uid="${esc(instance.uid)}" ${instance.heroId ? '' : 'disabled'}>${icon('bag', 22)}</button>
+      <button class="btn bag-enhance" data-act="bag-enhance" data-uid="${esc(instance.uid)}" ${full || !enough ? 'disabled' : ''}>${full ? '🔝' : `${enough ? '⬆️' : '🚫'}<span class="cost">${icon('fish', 18)}${fmt(cost)} · Lv.${instance.level} → ${instance.level + 1}</span>`}</button></div>`}
   </div>`;
 }
 
@@ -213,13 +213,13 @@ export function handleBag(ctx: AppCtx, el: HTMLElement): boolean {
       const id = el.dataset.id ?? '';
       const result = equipEquipment(ctx.s, el.dataset.uid ?? '', id);
       if (result.ok) { sheetState.picking = false; sfx.ok(); }
-      finishOperation(ctx, result, `已穿戴给${HERO_BY_ID[id]?.name ?? '猫猫'}`, 0);
+      finishOperation(ctx, result, '✅', 0);
       return true;
     }
     case 'bag-unequip': {
       const result = unequipEquipment(ctx.s, el.dataset.uid ?? '');
       if (result.ok) sfx.ok();
-      finishOperation(ctx, result, '装备收回背包了');
+      finishOperation(ctx, result, '✅');
       return true;
     }
     case 'bag-enhance': {
@@ -227,7 +227,7 @@ export function handleBag(ctx: AppCtx, el: HTMLElement): boolean {
       const result = enhanceEquipment(ctx.s, uid);
       if (result.ok) sfx.up();
       const level = inventoryEquipment(ctx).find((e) => e.uid === uid)?.level;
-      finishOperation(ctx, result, `强化完成 · Lv.${level ?? ''}`);
+      finishOperation(ctx, result, `⬆️ Lv.${level ?? ''}`);
       return true;
     }
     case 'bag-use': {
