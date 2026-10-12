@@ -233,5 +233,5 @@
       "transform": "remove extra EOF newline(s) only; frozen scratch source unchanged"
     }
   ],
-  "transformPolicy": "images and all QA/capture/provenance bytes preserved; three Wei and two World text copies remove extra trailing EOF newlines only; frozen scratch originals unchanged"
+  "transformPolicy": "All WORLD images and all QA/capture/provenance bytes preserved. Only WORLD source-search.md and the required-check log remove extra EOF newline(s); frozen scratch originals and raw-source SHA unchanged."
 }
