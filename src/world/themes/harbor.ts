@@ -5,7 +5,7 @@ import { mulberry } from '../../fx/util';
 import { atmosOf } from '../atmos';
 import { glowMat, std } from '../kit';
 import { buildSteam } from '../steam';
-import { glowTex, mk, waterGlint } from '../tex';
+import { aiTex, glowTex, mk, waterGlint } from '../tex';
 import type { LevelDef } from '../levels';
 import type { Street } from '../street';
 import { eaveRoof, hall, lantern } from './arch';
@@ -101,7 +101,8 @@ export function buildHarbor(L: LevelDef): Street {
   const landD = half - SEA_Z + 2.4, landZ = (SEA_Z + half + 2.4) / 2;
   const st = stoneTex(); st.wrapS = st.wrapT = THREE.RepeatWrapping; st.repeat.set(10, 7);
   const land = new THREE.Mesh(new THREE.PlaneGeometry(half * 2 + 3, landD), new THREE.MeshStandardMaterial({ map: st, roughness: 0.9 })); land.rotation.x = -Math.PI / 2; land.position.set(0, 0.3, landZ); land.receiveShadow = true; g.add(nm(land));
-  const bt = plankTex('quay', '#a87850', false); bt.wrapS = bt.wrapT = THREE.RepeatWrapping; bt.repeat.set(16, 1.2);
+  const wood = aiTex('cc0_wood_064'); // ambientCG WoodFloor064（CC0）
+  const bt: THREE.Texture = wood ?? plankTex('quay', '#a87850', false); bt.wrapS = bt.wrapT = THREE.RepeatWrapping; bt.repeat.set(wood ? 8 : 16, wood ? 1 : 1.2);
   const quay = new THREE.Mesh(new THREE.PlaneGeometry(half * 2 + 3, 5), new THREE.MeshStandardMaterial({ map: bt, roughness: 0.9 })); quay.rotation.x = -Math.PI / 2; quay.position.set(0, 0.34, SEA_Z + 2.5); quay.receiveShadow = true; g.add(nm(quay));
   const lane = new THREE.Mesh(new THREE.PlaneGeometry(5, landD - 6), new THREE.MeshStandardMaterial({ color: 0xc8a070, roughness: 0.95 })); lane.rotation.x = -Math.PI / 2; lane.position.set(0, 0.35, landZ + 2.5); g.add(nm(lane));
   // 三面堤岸 + 海堤
