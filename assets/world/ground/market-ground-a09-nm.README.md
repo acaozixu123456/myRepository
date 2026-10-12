@@ -28,5 +28,5 @@
 
 另附 [真实 Three 白光 / 夜市暖光对照](../reviews/market-ground-a09-nm-lighting.webp)，三图实际加载，左右仅换白光与 `ATMOS.market` 光色，材质 / 强度 / 位置 / 相机 / 曝光相同；[参数](../reviews/market-ground-a09-nm-lighting.README.md)。这是独立材料样板，没有模拟完整场景天空、雾、泛光或调色；暖光会明显将青灰石和砂石推向橘褐。
 
-独立 QA 见 [摘要](market-ground-a09-nm.qa.md) 与 [机器报告](market-ground-a09-nm.qa.json)。主线程在最新 `fecef9e` 基线执行 `npm run typecheck && npm test` 全过（退出码0；68个测试文件、1,019个测试）；日志 `.tmp-nm/tests-latest.log`，未提交。当前第1轮待审，不等同于 Claude 审核通过。
+独立 QA 见 [摘要](market-ground-a09-nm.qa.md) 与 [机器报告](market-ground-a09-nm.qa.json)。主线程先在 `fecef9e`、再同步主分支 `153de998`（合并旧批衣服 / 花纹 / 场景素材及角色表情）后执行 `npm run typecheck && npm test`，两次全过（68 个测试文件 / 1019 测试）。两主分支之间 `src/world` 没有变更；三素材、17 审图、出处和独立 QA 保持冻结哈希。临时日志为 `.tmp-nm/tests-latest.log / tests-main153.log`。进度保留旧 #100 / #103 / #106 的完整历史并更新为通过合并；新夜市仍为第 1 轮待审。
 

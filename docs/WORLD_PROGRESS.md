@@ -35,7 +35,7 @@
 
 [真实 Three 白光/夜市暖光样板](../assets/world/reviews/market-ground-a09-nm-lighting.webp)（2048×1024，171,564 B），同白材质 roughness.85/metalness0、相机/强度/位置/曝光，仅换 ATMOS.market 光色；repeat[3,1]，无bloom/阴影，3/3加载、HTTP200×3、page/console errors0、failed0，六renderer各1drawcall，三sourceSHA拍前后恒定。[固定参数](../assets/world/reviews/market-ground-a09-nm-lighting.README.md)。暖光明显将石材推橘褐；此独立样板未模拟整场景天空/雾/调色。
 
-独立QA见 [摘要](../assets/world/ground/market-ground-a09-nm.qa.md) 与 [机器报告](../assets/world/ground/market-ground-a09-nm.qa.json)。主线程已同步到最新 `fecef9e` 基线执行 `npm run typecheck && npm test`，全过（退出码0；68个测试文件、1,019个测试），日志 `.tmp-nm/tests-latest.log`；三素材hash与制作/拍摄时一致。批后按最新队列继续码头木栈板等主题素材，有返修先返修。
+独立QA见 [摘要](../assets/world/ground/market-ground-a09-nm.qa.md) 与 [机器报告](../assets/world/ground/market-ground-a09-nm.qa.json)。主线程先在 `fecef9e`、再同步 `153de998` 后执行 `npm run typecheck && npm test`，两次全过（68个测试文件 / 1019测试），日志 `.tmp-nm/tests-latest.log / tests-main153.log`；三素材、17审图、出处、QA hash与制作 / 拍摄时一致。两主分支版本的 `src/world` 无变更，已合入旧批完整历史并按新queue标记 #100 / #103 / #106通过，新夜市未自行标通过。批后继续码头木栈板，有返修先返修。
 
 ## A 类旧赛博队列与历史
 
