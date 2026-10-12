@@ -1,5 +1,23 @@
 # 世界美术进度
 
+## 当前制作认领 · A09-IS 云岛草地三款
+
+根线程正在 `codex/3d-world-island-ground` 制作云岛粉绿草地与小花三变体，基线 `5e10ec25257c7f8d1b219a529df64707ef724f96`。本批制作中，审核轮次 0、通过 0；同一个草稿 PR 用于公开认领，真实素材、出处、平铺 / Three 预览与独立 QA 完成后再转正式待审，第 1 轮。当前尚无成品或 Claude 裁决。
+
+| 计划 ID | 方向 | 状态 | 轮次 | 规格 |
+| --- | --- | --- | --- | --- |
+| `ground_island_mint_bloom_01` | 清浅嫩绿草，稀疏白 / 淡粉小花 | 制作中 | 0 | 1024² 无缝 RGB / sRGB |
+| `ground_island_pink_clover_02` | 粉绿三叶草，淡粉花与少量奶白花 | 制作中 | 0 | 1024² 无缝 RGB / sRGB |
+| `ground_island_meadow_mix_03` | 浅绿草与小叶，白 / 淡黄 / 浅蓝小花 | 制作中 | 0 | 1024² 无缝 RGB / sRGB |
+
+主题按最新 [固定队列](CODEX_QUEUE.md)：云岛为晴朗正午，明亮粉绿草地与小花；只做地面基色，太阳、云海、白石小径、场景阴影与发光交由现有引擎负责。本批全部艺术内容实际调用图片生成工具，原图路径、完整提示词 / 参数与 SHA 随最终成品保存。
+
+协作状态：夜市 [#108](https://github.com/acaozixu123456/myRepository/pull/108)、港口 [#110](https://github.com/acaozixu123456/myRepository/pull/110)、宫阙 [#109](https://github.com/acaozixu123456/myRepository/pull/109) 为待审批次；同宫阙候补 #112 已关闭，该 owner 继续森林草地。四底版衣服跟进外部 [#113](https://github.com/acaozixu123456/myRepository/pull/113)，根线程候选仅保留私有参考。云岛随后继续最新队列天空全景 → 瓦面 → 柔边云精灵，并与 3D 独立核对交替推进。
+
+认领提交前已在上述基线实际执行 `npm run typecheck && npm test`，退出码 0，68 文件 / 1,023 测试通过（05:40:06 UTC 开始，27.63 秒）；日志 `/workspace/world-review/island-ground/required-checks-5e.log`。当前只有进度认领，尚未完成素材 QA。
+
+以下保留此前素材进度与制作 / 审核历史；已通过和队列要求跳过的项目不重做。最终交付时更新本批状态及实际验证结果。
+
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
 当前批次：**WORLD-A10 · 裂缝透明贴花首批**，分支 `codex/3d-world-crack-decals`，交付 512² RGBA 十张，第 1 轮待审。A08 [#98](https://github.com/acaozixu123456/myRepository/pull/98) 已通过 / 接入；A09 地砖 [#100](https://github.com/acaozixu123456/myRepository/pull/100) 与 A10 污渍 [#103](https://github.com/acaozixu123456/myRepository/pull/103) 已提交待审，继续推进 A10 裂缝。
