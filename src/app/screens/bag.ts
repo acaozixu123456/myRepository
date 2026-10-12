@@ -97,7 +97,7 @@ export function bagHtml(ctx: AppCtx): string {
     items: { title: '🎁', count: `${ITEMS.filter((d) => itemCount(ctx.s, d.id) > 0).length}`, text: '' },
     shards: { title: '🧩', count: `${fmt(ownedHeroes(ctx).reduce((sum, h) => sum + h.shards, 0))}`, text: '' },
   }[bagState.tab];
-  return `${topbar(ctx, '背包')}<div class="scroll bag-scroll"><div class="seg bag-tabs" aria-label="背包页签">${tabs.map((tab) => `<button class="pill" aria-pressed="${bagState.tab === tab.id}" data-act="bag-tab" data-tab="${tab.id}">${icon(tab.image, 24)}</button>`).join('')}</div>
+  return `${topbar(ctx, '背包')}<div class="scroll bag-scroll"><div class="seg bag-tabs" aria-label="背包页签">${tabs.map((tab) => `<button class="pill" aria-pressed="${bagState.tab === tab.id}" data-act="bag-tab" data-tab="${tab.id}" title="${tab.name}">${icon(tab.image, 22)}</button>`).join('')}</div>
     <div class="panel bag-summary"><div class="row"><h3 class="grow" style="font-size:26px">${copy.title}</h3><span class="tag num">${copy.count}</span></div></div>
     ${bagState.tab === 'equipment' ? equipmentHtml(ctx) : bagState.tab === 'items' ? itemsHtml(ctx) : shardsHtml(ctx)}</div>`;
 }

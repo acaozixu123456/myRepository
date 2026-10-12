@@ -32,7 +32,7 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>🍄</h3><div class="fish-status"></div><div class="mu-grid"></div><div class="mu-time"><i></i></div><div class="mu-legend"><span style="color:#ff6a5a">🍄</span> +1 &nbsp; <span style="color:#ffd24a">🍄</span> +3 &nbsp; <span style="color:#c08aff">🍄</span> −3</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-mu="main">▶</button><button class="btn ghost" data-mu="close">${icon('close', 22)}</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🍄 采蘑菇</h3><div class="fish-status"></div><div class="mu-grid"></div><div class="mu-time"><i></i></div><div class="mu-legend"><span style="color:#ff6a5a">🍄</span> +1 &nbsp; <span style="color:#ffd24a">🍄</span> +3 &nbsp; <span style="color:#c08aff">🍄</span> −3</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-mu="main">▶</button><button class="btn ghost" data-mu="close">${icon('close', 18)} 离开</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const status = q<HTMLElement>('.fish-status'), grid = q<HTMLElement>('.mu-grid'), timeBar = q<HTMLElement>('.mu-time i'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-mu="main"]');
@@ -41,14 +41,14 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
     let phase: Phase = 'idle', raf = 0, t0 = 0, score = 0, picked = 0, plan: Spawn[] = [], next = 0;
     const active = new Map<number, { kind: Kind; until: number }>();
 
-    const refresh = () => { info.innerHTML = `🎮 ${runsLeft(ctx.s)}`; };
+    const refresh = () => { info.innerHTML = `🎮 今日剩余 ${runsLeft(ctx.s)} 局`; };
     const clearCells = () => { active.clear(); for (const c of cells) { c.className = 'mu-cell'; delete c.dataset.kind; c.firstElementChild!.textContent = ''; } };
     const hud = (left: number) => { status.innerHTML = `<div class="mu-hud"><span>⭐ <b>${score}</b></span><span>⏱ ${Math.max(0, Math.ceil(left))}</span></div>`; };
     const idle = () => {
       phase = 'idle'; clearCells(); refresh(); timeBar.style.width = '100%';
       const left = runsLeft(ctx.s) > 0;
-      main.disabled = !left; main.innerHTML = left ? '▶' : '😴';
-      status.innerHTML = left ? `<span class="mg-big">🍄 👆</span><span class="mg-sub">${starsHtml(1, 3, 14)} ${TIERS.join(' / ')}</span>` : '<span class="mg-big">😴</span>';
+      main.disabled = !left; main.innerHTML = left ? '▶ 开始' : '😴 今天玩够啦';
+      status.innerHTML = left ? `<span class="mg-big">🍄 👆</span><span class="mg-sub">限时点蘑菇：红 +1、金 +3，紫色毒蘑菇别点（−3）</span><span class="mg-sub">${starsHtml(1, 3, 14)} ${TIERS.join(' / ')}</span>` : '<span class="mg-big">😴</span>';
     };
     const start = () => {
       if (!useRun(ctx.s)) { idle(); return; }
@@ -86,7 +86,7 @@ export function openMushroom(ctx: AppCtx, host: Element): Promise<void> {
       const tier = tierOf(score), g = mushroomGain(ctx.s, tier);
       if (tier > 0) { applyGain(ctx.s, g); sfx.coin(); } else sfx.no();
       recordPicked(ctx.s, picked); ctx.save();
-      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴' : '🔁';
+      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       status.innerHTML = `${starsHtml(tier)}<div class="mg-sub">⭐ ${score} &nbsp; 🍄 ${picked}</div><div style="margin-top:4px">${tier > 0 ? gainIcons(g, 20) : ''}</div>`;
       refresh();
     };

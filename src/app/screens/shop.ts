@@ -47,7 +47,7 @@ function offerHtml(entry: ShopEntry): string {
     <p class="shop-product-desc">${esc(entry.item.desc.split('；')[0])}</p>
     <div class="shop-price">${icon(itemIcon(entry.currency.id), 20)}<b class="num">${fmt(entry.offer.price.count)}</b></div>
     <div class="shop-limit">${limitText(entry)}</div>
-    <button class="btn sm ${entry.maxCount > 0 ? 'green' : 'ghost'} shop-buy" data-act="shop-open" data-id="${esc(entry.offer.id)}" ${!entry.available || soldOut ? 'disabled' : ''}>${!entry.available ? icon('lock', 20) : soldOut ? '🚫' : icon('bag', 22)}</button>
+    <button class="btn sm ${entry.maxCount > 0 ? 'green' : 'ghost'} shop-buy" data-act="shop-open" data-id="${esc(entry.offer.id)}" ${!entry.available || soldOut ? 'disabled' : ''}>${!entry.available ? `${icon('lock', 18)}未开放` : soldOut ? '已售罄' : `${icon('bag', 20)}购买`}</button>
   </article>`;
 }
 

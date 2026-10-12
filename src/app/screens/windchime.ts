@@ -33,7 +33,7 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>🎐</h3><div class="fish-status"></div><div class="wc-field">${Array.from({ length: LANES }, (_, i) => `<div class="wc-lane" data-lane="${i}"></div>`).join('')}<div class="wc-line"></div><div class="wc-fb"></div></div><div class="wc-combo"></div><div class="wc-keys">${LANE_NAMES.map((n, i) => `<button data-wc-key="${i}">${n}<small>${'ASD'[i]}</small></button>`).join('')}</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-wc="main">▶</button><button class="btn ghost" data-wc="close">${icon('close', 22)}</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🎐 风铃节拍</h3><div class="fish-status"></div><div class="wc-field">${Array.from({ length: LANES }, (_, i) => `<div class="wc-lane" data-lane="${i}"></div>`).join('')}<div class="wc-line"></div><div class="wc-fb"></div></div><div class="wc-combo"></div><div class="wc-keys">${LANE_NAMES.map((n, i) => `<button data-wc-key="${i}">${n}<small>${'ASD'[i]}</small></button>`).join('')}</div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-wc="main">▶</button><button class="btn ghost" data-wc="close">${icon('close', 18)} 离开</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const status = q<HTMLElement>('.fish-status'), field = q<HTMLElement>('.wc-field'), fb = q<HTMLElement>('.wc-fb'), comboEl = q<HTMLElement>('.wc-combo'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-wc="main"]');
@@ -42,13 +42,13 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
     let perfect = 0, good = 0, miss = 0, combo = 0;
     const now = () => (performance.now() - t0) / 1000;
 
-    const refresh = () => { info.innerHTML = `🎮 ${runsLeft(ctx.s)}`; };
+    const refresh = () => { info.innerHTML = `🎮 今日剩余 ${runsLeft(ctx.s)} 局`; };
     const clear = () => { for (const l of lanes) l.innerHTML = ''; els = new Map(); };
     const idle = () => {
       phase = 'idle'; clear(); refresh(); comboEl.textContent = '';
       const left = runsLeft(ctx.s) > 0;
-      main.disabled = !left; main.innerHTML = left ? '▶' : '😴';
-      status.innerHTML = left ? `<span class="mg-big">🎵 ➜ ➖ ➜ 👆</span>` : '<span class="mg-big">😴</span>';
+      main.disabled = !left; main.innerHTML = left ? '▶ 开始' : '😴 今天玩够啦';
+      status.innerHTML = left ? `<span class="mg-big">🎵 ➜ ➖ ➜ 👆</span><span class="mg-sub">风铃落到横线时，点对应的那一列（也可用键盘）</span>` : '<span class="mg-big">😴</span>';
     };
     const flash = (g: Grade) => { fb.className = `wc-fb ${g}`; void fb.offsetWidth; fb.className = `wc-fb ${g} show`; fb.textContent = g === 'perfect' ? '✨' : g === 'good' ? '👍' : '✖'; };
     const judge = (g: Grade) => {
@@ -95,7 +95,7 @@ export function openWindChime(ctx: AppCtx, host: Element): Promise<void> {
       const acc = accuracy(perfect, good), tier = tierOf(acc), g = chimeGain(ctx.s, tier);
       if (tier > 0) { applyGain(ctx.s, g); sfx.coin(); if (tier === 3) sfx.up(); } else sfx.no();
       recordHits(ctx.s, perfect + good); ctx.save();
-      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴' : '🔁';
+      phase = 'result'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       comboEl.textContent = '';
       status.innerHTML = `${starsHtml(tier)}<div class="mg-sub">🎯 ${Math.round(acc * 100)}% &nbsp; ✨${perfect} 👍${good} ✖${miss}</div><div style="margin-top:4px">${tier > 0 ? gainIcons(g, 20) : ''}</div>`;
       refresh();

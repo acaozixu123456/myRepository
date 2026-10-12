@@ -32,9 +32,12 @@ export interface ExploreHooks {
   poi?(s: Spawn): Promise<void>;
   /** 野怪刚发现队伍（音效用，可选） */
   alert?(s: Spawn): void;
+  /** 队伍走到某只野怪 / 首领身边（可以主动开战）或离开（null）；界面据此显示「战斗」按钮 */
+  near?(s: Spawn | null): void;
 }
 
 interface Actor { cat: Cat3D; pos: THREE.Vector3; yaw: number; moving: number; shadow: THREE.Mesh; outlines: THREE.Object3D[] }
+const ENGAGE_R = 5.2, ENGAGE_BOSS = 7;
 interface Ent { spawn: Spawn; group: THREE.Group; cats: Actor[]; home: THREE.Vector3; target: THREE.Vector3; wait: number; alive: boolean; cooldown: number; alert: boolean; tag: THREE.Sprite; mark?: THREE.Sprite; t: number }
 
 const CELL = 1;
@@ -77,6 +80,9 @@ export class Explorer {
   private markerT = 0;
   paused = false;
   private busy = false;
+  private nearEnt: Ent | null = null;
+  private frameNear: Ent | null = null;
+  private frameNearD = 1e9;
   t = 0;
   /** 点击地面时，若点到了某个实体附近，就走过去 */
   constructor(private wv: WorldView, private street: Street, teamIds: string[], private hooks: ExploreHooks) {
@@ -327,7 +333,10 @@ export class Explorer {
       if (dist > 0.12) { a.pos.addScaledVector(d, Math.min(1, dt * 9)); a.yaw = Math.atan2(d.x, d.z); a.moving = Math.min(1, dist * 2.5); } else a.moving = Math.max(0, a.moving - dt * 6);
     }
     // 敌人 / 实体
+    this.frameNear = null; this.frameNearD = 1e9;
     for (const e of this.ents) { if (e.alive) this.updateEnt(e, dt); }
+    const fn = this.frameNear as Ent | null;
+    if (fn !== this.nearEnt) { this.nearEnt = fn; this.hooks.near?.(fn ? fn.spawn : null); if (fn) this.hooks.alert?.(fn.spawn); }
     // 相机跟随
     this.wv.focus.lerp(L.pos, Math.min(1, dt * 5));
     this.occlude(dt);
@@ -387,32 +396,33 @@ export class Explorer {
       if (gp.distanceTo(lp) < 3.2 && e.cooldown <= 0) { e.cooldown = 6; this.hooks.talk(s); }
       return;
     }
-    // 敌人：巡逻 / 追击
+    // 敌人：只在原地巡逻，不追人、不碰就打；队伍走到身边时可以主动开战（engage）
     const dist = gp.distanceTo(lp);
-    const sight = s.kind === 'boss' ? 0 : 9;
-    const was = e.alert;
-    const leaderSafe = this.inSafe(lp.x, lp.z);
-    e.alert = sight > 0 && dist < sight && e.cooldown <= 0 && !leaderSafe; // 队伍在安全区里：野猫不追
-    if (e.alert && !was) this.hooks.alert?.(s);
-    let speed = 0;
-    if (e.alert) { e.target.copy(lp); speed = 4.4; }
-    else if ((e.wait -= dt) <= 0 && (s.patrol ?? 0) > 0) { const r = s.patrol!; e.target.set(e.home.x + (Math.random() - 0.5) * 2 * r, 0.32, e.home.z + (Math.random() - 0.5) * 2 * r); e.wait = 2 + Math.random() * 3; }
-    const d = new THREE.Vector3().subVectors(e.target, gp); d.y = 0;
+    const near = dist < (s.kind === 'boss' ? ENGAGE_BOSS : ENGAGE_R) && e.cooldown <= 0 && !this.busy;
+    if (near && dist < this.frameNearD) { this.frameNear = e; this.frameNearD = dist; }
+    e.alert = near;
+    if (!near && (e.wait -= dt) <= 0 && (s.patrol ?? 0) > 0) { const r = s.patrol!; e.target.set(e.home.x + (Math.random() - 0.5) * 2 * r, 0.32, e.home.z + (Math.random() - 0.5) * 2 * r); e.wait = 2 + Math.random() * 3; }
+    const d = new THREE.Vector3().subVectors(near ? gp : e.target, gp); d.y = 0;
     const dd = d.length();
     let moved = false;
-    if (dd > 0.4 && (e.alert || (s.patrol ?? 0) > 0)) {
+    if (dd > 0.4 && (s.patrol ?? 0) > 0) {
       d.multiplyScalar(1 / dd);
-      const sp = e.alert ? speed : 1.6;
-      const nx = gp.x + d.x * sp * dt, nz = gp.z + d.z * sp * dt;
+      const nx = gp.x + d.x * 1.6 * dt, nz = gp.z + d.z * 1.6 * dt;
       const [cx, cz] = this.cell(new THREE.Vector3(nx, 0, nz));
       if (!this.grid[cz * this.N + cx] && !this.inSafe(nx, nz)) { gp.x = nx; gp.z = nz; moved = true; for (const a of e.cats) a.yaw = Math.atan2(d.x, d.z); }
       else e.target.copy(gp);
     }
     for (const a of e.cats) a.moving = moved ? 1 : 0;
-    if (!e.alert && !moved && s.kind === 'enemy') for (const a of e.cats) a.yaw = Math.atan2(lp.x - gp.x, lp.z - gp.z) * 0.0 + a.yaw;
-    if (e.mark) e.mark.position.y = (s.kind === 'boss' ? 7.6 : 6.3) + Math.sin(e.t * 4) * 0.25;
-    // 触碰 → 战斗
-    if (dist < (s.kind === 'boss' ? 4.2 : 2.9) && e.cooldown <= 0 && !this.busy && !leaderSafe) void this.startEncounter(e);
+    if (near) for (const a of e.cats) a.yaw = Math.atan2(lp.x - gp.x, lp.z - gp.z); // 看向队伍
+    if (e.mark) e.mark.position.y = (s.kind === 'boss' ? 7.6 : 6.3) + Math.sin(e.t * (near ? 7 : 4)) * (near ? 0.4 : 0.25);
+  }
+
+  /** 玩家主动开战：对身边最近的野怪 / 首领。返回是否开打 */
+  engage(): boolean {
+    const e = this.nearEnt;
+    if (!e || !e.alive || this.busy) return false;
+    void this.startEncounter(e);
+    return true;
   }
 
   /** 走进玩法入口：世界暂停，等小游戏结束；之后冷却一会儿，免得一出来又被触发 */
@@ -423,6 +433,7 @@ export class Explorer {
 
   private async startEncounter(e: Ent) {
     this.busy = true; this.paused = true; this.path = [];
+    if (this.nearEnt) { this.nearEnt = null; this.hooks.near?.(null); }
     const win = await this.hooks.encounter(e.spawn);
     this.busy = false; this.paused = false;
     if (win) { e.alive = false; e.group.visible = false; }

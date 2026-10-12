@@ -4,6 +4,7 @@ import { initLive, liveSettings } from '../ui/live';
 import { KIT_CSS } from '../ui/kitcss';
 import { icon } from '../ui/icons';
 import { SCREEN_CSS } from './screenscss';
+import { infoDialogHtml } from '../ui/info';
 import { STORY_CSS, playStoryOnce } from './story';
 import { sfx, sfxState } from './sfx';
 import { GUIDE_CSS, updateGuide } from './guide';
@@ -327,6 +328,8 @@ root.addEventListener('click', (e) => {
     case 'pull1': void doPull(ctx, 1); break;
     case 'pull10': void doPull(ctx, 10); break;
     case 'rates': ratesDialog(ctx); break;
+    case 'skipfight': ctx.loop.skip(); break;
+    case 'info': root.insertAdjacentHTML('beforeend', infoDialogHtml(el.dataset.t ?? '', el.dataset.h ?? '')); break;
     case 'closedialog': if ((e.target as HTMLElement) === el || el.tagName === 'BUTTON') root.querySelectorAll('.mask.center').forEach((m) => m.remove()); break;
     case 'sheetmask': if (e.target === el) closeSheet(ctx); break;
   }

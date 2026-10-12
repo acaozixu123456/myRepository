@@ -1,4 +1,8 @@
-export const SCREEN_CSS = `
+import { INFO_CSS } from '../ui/info';
+export const SCREEN_CSS = INFO_CSS + `
+.seg .pill[title]::after{content:attr(title);margin-left:4px;font-size:.88em;font-weight:900}
+.ev-tabs .pill::after,.pill.glyph::after{content:none!important}
+
 /* ---------- 主城 ---------- */
 .home .stagebar{margin:8px 10px 0;display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:14px;background:linear-gradient(var(--paper),var(--paper-2));box-shadow:0 3px 0 var(--paper-line);position:relative;z-index:2}
 .home .stagebar .nm{font-family:var(--f-d);font-size:16px;line-height:1.15;min-width:0}
@@ -153,6 +157,7 @@ export const SCREEN_CSS = `
 .quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(50px,1fr));gap:6px;margin:8px 10px 0;flex:none}
 .quick button{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px 5px;border-radius:14px;background:linear-gradient(var(--paper),var(--paper-2));box-shadow:0 3px 0 var(--paper-line),inset 0 0 0 2px rgba(255,255,255,.65);font-family:var(--f-d);font-size:12.5px}
 .quick button:active{transform:translateY(2px)}
+.quick .ql{font-size:11px;font-weight:900;color:#5a4030;line-height:1.1}
 .quick button .rd{position:absolute;right:6px;top:3px;width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px #fff}
 .quick button.ev{background:linear-gradient(#ffd6ec,#ffa9d6)}
 .quick button.pay{background:linear-gradient(#ffe9a0,#ffc84a)}
