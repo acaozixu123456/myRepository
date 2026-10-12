@@ -1,0 +1,138 @@
+{
+  "status": "author submission metadata after final image QA; image hashes and core frozen unchanged",
+  "submissionBase": "4d6fb667b67024f65ca3a6d358334a3ea3214299",
+  "originalIndependentQABase": "60bc06577f5d5dd2966a661d2278802bb3e3fcee",
+  "normalization": {
+    "path": "assets/world/skies/sky-panorama-a10-first.resource-audit.md",
+    "operation": "normalize only extra blank EOF line for git diff --check; image/provenance/runtime untouched",
+    "bytesBefore": 16260,
+    "bytesAfter": 16259,
+    "sha256Before": "4228e706db0f0d913b826db0eb7bd4a8cb18a6402dee6fed716d642359af6e07",
+    "sha256After": "b4b1d1fd8e80d7df10c2b72d3f06a569701adb93b10143950417b0f793b85cd7"
+  },
+  "provenanceBefore": "2363f40946fb5e01a0f9ac13d0af96c56710036a3b3f51a397729d6e73ee9b2a",
+  "provenanceAfter": "e0ac71b5a88b45cd66e5b6ef70f69d2f2f6cb2a9585255919793e40316107d83",
+  "provenanceChange": "Only source_audit.Markdown_sha256 leaf updated for a single removed trailing blank line; prompts/source/8calls/images/export/runtime/receipts unchanged",
+  "images": [
+    {
+      "path": "assets/world/skies/sky_dawn_tealmist_03.webp",
+      "bytes": 6600,
+      "sha256": "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4"
+    },
+    {
+      "path": "assets/world/skies/sky_sunset_redcloud_02.webp",
+      "bytes": 114444,
+      "sha256": "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7"
+    },
+    {
+      "path": "assets/world/skies/sky_dusk_peach_01.webp",
+      "bytes": 13834,
+      "sha256": "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3"
+    },
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first.webp",
+      "bytes": 82762,
+      "sha256": "2a09aa49a6cf98cd764f98cb9d9844423eca0e21829c4373001ab4097bc7fa31"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-corners.png",
+      "bytes": 17305,
+      "sha256": "7ce5123126d1cd86ea5c0e910c19abc29d9ea2112440448c7598b1067d8477ae"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-lr.png",
+      "bytes": 4104,
+      "sha256": "afc6de009957dce7e1dbf1d52bbdb6105dd74fb3108f38e3d448235084d2e605"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-4x-horizontal.webp",
+      "bytes": 312986,
+      "sha256": "1e301ad6855f71df520bb15e8c8fb9cd825bd69262ab9b4cf3046348cff7ccdf"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-4x-horizontal.webp",
+      "bytes": 42018,
+      "sha256": "38b59384a16ef0bd5e3b0c2e2af3dc56a1e1532782cc5ccae4090fc43b7269bb"
+    },
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first-render.webp",
+      "bytes": 66554,
+      "sha256": "368ffbc6f8ecdf8ad6af49d342849d2c1923fdf2cf2bc57cabb0c172e13764ad"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-2x-horizontal.webp",
+      "bytes": 156730,
+      "sha256": "aa5911f8a2f2a98dfa94ac1b49f4dbaff91231ff8d90097309df966d84d786fc"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-lr.png",
+      "bytes": 13452,
+      "sha256": "a286be4a89f0685cb4aae2b41f3de782d3c3073bf09dd117741ea8531ca174a8"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-4x-horizontal.webp",
+      "bytes": 20426,
+      "sha256": "3525ea1aab7539381cc9062ea8e010cca22848d1a248ae53a1c2a5fd48364625"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-lr.png",
+      "bytes": 51499,
+      "sha256": "15aad7e83d8e9ca8260fd9d4f9b8e45bec0b17ec62c99e85817dcd4f241071fd"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-corners.png",
+      "bytes": 2489,
+      "sha256": "57881631bc5b1e4089e09134d59a760d713b1c94cd5f383d01567e3bf13c34a3"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-corners.png",
+      "bytes": 5934,
+      "sha256": "9d21ba441f520a2f94e207d29f996058d40a61fd66de4b0ff41d05497b8af950"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-2x-horizontal.webp",
+      "bytes": 21462,
+      "sha256": "662b65a4815a18393fe82e86c13ca6da269a2287b56d9027968b35f7654e0797"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-2x-horizontal.webp",
+      "bytes": 10624,
+      "sha256": "50ca92e3802ce4bc54c116ca0ce220cb2d4b725ea5e3bfbfbb43efac26fca7d7"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "package.json",
+      "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "currentByteEqual": true
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "currentByteEqual": true
+    },
+    {
+      "path": "node_modules/three/package.json",
+      "sha256": "2dea831b9915a94b23a5c1ecc4bce0433f0cb6bca213401ff660277e85c3fe01",
+      "currentByteEqual": true
+    },
+    {
+      "path": "node_modules/three/build/three.module.js",
+      "sha256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+      "currentByteEqual": true
+    },
+    {
+      "path": "node_modules/three/examples/jsm/loaders/RGBELoader.js",
+      "sha256": "f0e87d0008d9484d31358b32befd1bf80e4301f77573cc9a7cf7d871cc3f64b4",
+      "currentByteEqual": true
+    }
+  ],
+  "requiredChecks": {
+    "command": "npm run typecheck && npm test",
+    "exit": 0,
+    "testFiles": 78,
+    "tests": 1086,
+    "logSHA256": "bf215859fe1fcf7bfcff201b1e27be3d43596e2aba2295c4c5ae91ccfae4c994",
+    "logPath": "/workspace/sky-first-raw/tests-final-4d6fb66.log"
+  }
+}

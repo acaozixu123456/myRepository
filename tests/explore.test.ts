@@ -196,6 +196,7 @@ describe('场景玩法入口（POI）', () => {
     expect(poisOf(LEVELS[6]).map((p) => p.game)).toEqual(expect.arrayContaining(['lanterns', 'kitchen']));
     expect(poisOf(ALL_SCENES[102]).map((p) => p.game)).toEqual(expect.arrayContaining(['sled', 'snowcat']));
     expect(poisOf(ALL_SCENES[103]).map((p) => p.game)).toEqual(expect.arrayContaining(['surf', 'fish', 'clams']));
+    expect(poisOf(ALL_SCENES[104]).map((p) => p.game)).toEqual(expect.arrayContaining(['skip', 'fish', 'sushi']));
     for (const L of Object.values(ALL_SCENES)) if (!L.water) expect(poisOf(L).some((p) => p.game === 'fish'), `${L.id} 没水却有钓鱼点`).toBe(false);
     const s = newPlayer(); s.best = { chapter: 3, index: 1 };
     const plan = spawnPlan(s);
@@ -257,6 +258,9 @@ describe('场景切换', () => {
     expect(setScene(s, 3)).toBe(false);
     s.best = { chapter: 3, index: 5 }; s.stage.chapter = 3;
     expect(unlockedScenes(s)).toEqual([1, 2, 3, 101, 103]);
+    s.best = { chapter: 4, index: 1 };
+    expect(unlockedScenes(s)).toEqual([1, 2, 3, 4, 101, 103, 104]);
+    s.best = { chapter: 3, index: 5 };
     expect(sceneChapter(s)).toBe(3);
     expect(setScene(s, 1)).toBe(true);
     expect(sceneChapter(s)).toBe(1);

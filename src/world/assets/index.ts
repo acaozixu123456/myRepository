@@ -48,6 +48,9 @@ import sign_netcafe_vertical_04 from './sign_netcafe_vertical_04.webp';
 import sign_pawn_horizontal_02 from './sign_pawn_horizontal_02.webp';
 import sign_pharmacy_horizontal_03 from './sign_pharmacy_horizontal_03.webp';
 import sign_ramen_horizontal_01 from './sign_ramen_horizontal_01.webp';
+import sky_dawn_tealmist_03 from './sky_dawn_tealmist_03.webp';
+import sky_dusk_peach_01 from './sky_dusk_peach_01.webp';
+import sky_sunset_redcloud_02 from './sky_sunset_redcloud_02.webp';
 import sky_cloud_noon_cumulus_04 from './sky_cloud_noon_cumulus_04.webp';
 import sky_palace_afternoon_gold_05 from './sky_palace_afternoon_gold_05.webp';
 import skyline_catcity_01 from './skyline_catcity_01.webp';
@@ -107,6 +110,9 @@ export const WORLD_TEX: Record<string, string> = {
   sign_pawn_horizontal_02,
   sign_pharmacy_horizontal_03,
   sign_ramen_horizontal_01,
+  sky_dawn_tealmist_03,
+  sky_dusk_peach_01,
+  sky_sunset_redcloud_02,
   sky_cloud_noon_cumulus_04,
   sky_palace_afternoon_gold_05,
   skyline_catcity_01,

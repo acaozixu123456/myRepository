@@ -4,6 +4,7 @@ import { cloudLevel } from './themes/cloud.data';
 import { desertLevel } from './themes/desert.data';
 import { snowLevel } from './themes/snow.data';
 import { beachLevel } from './themes/beach.data';
+import { onsenLevel } from './themes/onsen.data';
 import { forestLevel } from './themes/forest.data';
 import { harborLevel } from './themes/harbor.data';
 import { marketLevel } from './themes/market.data';
@@ -12,11 +13,11 @@ import type { BuildingSpec } from './kit';
 
 export interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
 /** 场景里的玩法入口：走近触发一个小游戏（game 对应 app 层注册的小游戏名） */
-export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace' | 'desert' | 'snow' | 'beach';
+export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace' | 'desert' | 'snow' | 'beach' | 'onsen';
 export interface PoiDef { id: string; game: string; x: number; z: number; label: string }
 export interface PropDef { kind: string; x: number; z: number; ry?: number; seed?: number; arg?: number }
 export interface AABB { x0: number; x1: number; z0: number; z1: number }
-export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow' | 'beach';
+export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow' | 'beach' | 'onsen';
 export interface LevelDef {
   id: string; chapter: number; name: string; mood: MoodId; half: number;
   /** 场景主题：street = 十字街区（旧逻辑）；其余各有独立布局 / 地面 / 建筑 / 天空（src/world/themes/） */
@@ -122,9 +123,11 @@ export const LEVEL_DESERT: LevelDef = desertLevel();
 export const LEVEL_SNOW: LevelDef = snowLevel();
 /** 椰风海湾：冲浪 + 栈桥钓鱼 + 赶海（见 themes/beach.data.ts） */
 export const LEVEL_BEACH: LevelDef = beachLevel();
-export const BONUS_LEVELS: Record<number, LevelDef> = { 101: LEVEL_DESERT, 102: LEVEL_SNOW, 103: LEVEL_BEACH };
+/** 樱汤乡：打水漂 + 锦鲤池钓鱼 + 回转寿司（见 themes/onsen.data.ts） */
+export const LEVEL_ONSEN: LevelDef = onsenLevel();
+export const BONUS_LEVELS: Record<number, LevelDef> = { 101: LEVEL_DESERT, 102: LEVEL_SNOW, 103: LEVEL_BEACH, 104: LEVEL_ONSEN };
 /** 附加场景解锁条件：主线首领所在章节 ≥ 该值 */
-export const BONUS_UNLOCK: Record<number, number> = { 101: 3, 102: 5, 103: 2 };
+export const BONUS_UNLOCK: Record<number, number> = { 101: 3, 102: 5, 103: 2, 104: 4 };
 /** 所有场景（主线 + 附加），测试和场景选择都用它 */
 export const ALL_SCENES: Record<number, LevelDef> = { ...LEVELS, ...BONUS_LEVELS };
 export const isBonusScene = (id: number) => id > BONUS_BASE;

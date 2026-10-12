@@ -103,6 +103,9 @@ function coverMesh(theme: string | undefined): THREE.Group {
   } else if (theme === 'beach') {
     for (let i = 0; i < 4; i++) { const r = 0.7 + rnd(i + 11) * 0.5; const m = new THREE.Mesh(new THREE.DodecahedronGeometry(r, 0), std(i % 2 ? '#a89a88' : '#8a8070', 0.95)); m.scale.y = 0.7; add(m, Math.cos(i * 1.6) * 1.7, r * 0.55, Math.sin(i * 1.6) * 1.7, i); }
     const um = new THREE.Mesh(new THREE.ConeGeometry(1.6, 0.6, 10), std('#ff6a5a', 0.8)); add(um, 0, 2.2, 0); add(new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.2, 5), std('#e8e0d0', 0.6)), 0, 1.1, 0);
+  } else if (theme === 'onsen') {
+    for (let i = 0; i < 5; i++) { const r = 0.7 + rnd(i + 13) * 0.5; const m = new THREE.Mesh(new THREE.DodecahedronGeometry(r, 0), std(i % 2 ? '#8a8478' : '#9a9488', 0.95)); m.scale.y = 0.7; add(m, Math.cos(i * 1.25) * 1.7, r * 0.55, Math.sin(i * 1.25) * 1.7, i); }
+    for (let i = 0; i < 3; i++) { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 1), std(['#ffb8d0', '#ffc8dc', '#ffa8c4'][i], 0.85)); b.scale.y = 0.7; add(b, Math.cos(i * 2.1) * 1.0, 1.4 + i * 0.3, Math.sin(i * 2.1) * 1.0); }
   } else if (theme === 'harbor') {
     for (let i = 0; i < 5; i++) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.7, 1.4, 12), std('#7a4a2a', 0.8)); add(b, Math.cos(i * 1.3) * 1.6, 0.7, Math.sin(i * 1.3) * 1.6); const ring = new THREE.Mesh(new THREE.TorusGeometry(0.67, 0.05, 6, 16), std('#3a3a44', 0.4, 0.6)); ring.rotation.x = Math.PI / 2; add(ring, Math.cos(i * 1.3) * 1.6, 0.9, Math.sin(i * 1.3) * 1.6); }
   } else if (theme === 'market') {
@@ -118,7 +121,7 @@ function coverMesh(theme: string | undefined): THREE.Group {
   return g;
 }
 
-const PORTAL_COLOR: Record<string, number> = { street: 0xff5ad8, market: 0xffb04a, harbor: 0x4ac8ff, forest: 0xb06aff, cloud: 0x9ad0ff, palace: 0xffd24a, desert: 0x7ff0ff, snow: 0x9ad8ff, beach: 0x4ae0d0 };
+const PORTAL_COLOR: Record<string, number> = { street: 0xff5ad8, market: 0xffb04a, harbor: 0x4ac8ff, forest: 0xb06aff, cloud: 0x9ad0ff, palace: 0xffd24a, desert: 0x7ff0ff, snow: 0x9ad8ff, beach: 0x4ae0d0, onsen: 0xff9ac0 };
 /** 传送门外观：脚下转动的光环 + 一道光柱 + 光晕，一对同色 */
 function portalMesh(theme: string | undefined): THREE.Group {
   const col = PORTAL_COLOR[theme ?? 'street'] ?? 0xff5ad8;
@@ -161,8 +164,8 @@ function zoneMesh(z: Zone): THREE.Group {
 }
 
 /** 各玩法入口的主色（脚下光环 / 光晕）与头顶标签色 */
-const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff', ring: '#ffb04a', arrows: '#8ad0e8', firefly: '#b0ff6a', kite: '#ff9ab0', kitchen: '#ff8a4a', sled: '#9ad8ff', snowcat: '#ffd0e8', surf: '#4ae0d0', clams: '#ffb08a' };
-const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff', ring: '#ffd8a0', arrows: '#c0e8f4', firefly: '#d8ffb0', kite: '#ffc8d8', kitchen: '#ffc8a0', sled: '#d0ecff', snowcat: '#ffe8f2', surf: '#b8f4ec', clams: '#ffd8c0' };
+const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff', ring: '#ffb04a', arrows: '#8ad0e8', firefly: '#b0ff6a', kite: '#ff9ab0', kitchen: '#ff8a4a', sled: '#9ad8ff', snowcat: '#ffd0e8', surf: '#4ae0d0', clams: '#ffb08a', skip: '#ffb8d0', sushi: '#ff9a6a' };
+const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff', ring: '#ffd8a0', arrows: '#c0e8f4', firefly: '#d8ffb0', kite: '#ffc8d8', kitchen: '#ffc8a0', sled: '#d0ecff', snowcat: '#ffe8f2', surf: '#b8f4ec', clams: '#ffd8c0', skip: '#ffe0ec', sushi: '#ffd0b8' };
 
 export class Explorer {
   readonly root = new THREE.Group();
@@ -377,7 +380,7 @@ export class Explorer {
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'poi') {
       // 钓鱼点：木桩 + 一圈发光的橙色标记 + 立着的小鱼旗
-      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack', ringT = s.data === 'ring', arrowsT = s.data === 'arrows', ffT = s.data === 'firefly', kiteT = s.data === 'kite', kitchenT = s.data === 'kitchen', sledT = s.data === 'sled', snowcatT = s.data === 'snowcat', surfT = s.data === 'surf', clamsT = s.data === 'clams';
+      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack', ringT = s.data === 'ring', arrowsT = s.data === 'arrows', ffT = s.data === 'firefly', kiteT = s.data === 'kite', kitchenT = s.data === 'kitchen', sledT = s.data === 'sled', snowcatT = s.data === 'snowcat', surfT = s.data === 'surf', clamsT = s.data === 'clams', skipT = s.data === 'skip', sushiT = s.data === 'sushi';
       const col = POI_COL[String(s.data ?? '')] ?? '#ffb04a';
       const wood = std('#6a4a2a', 0.8, 0.1);
       for (const dx of [-0.7, 0.7]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.3, 6), wood); post.position.set(dx, 0.65, 0); group.add(post); }
@@ -521,6 +524,16 @@ export class Explorer {
         const blade = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.28, 0.04), std('#ff6a5a', 0.5)); blade.position.set(0.92, 0.08, 0.1); blade.rotation.z = -0.5; group.add(blade);
         for (let i = 0; i < 5; i++) { const sh = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2), std(['#ffd0e0', '#fff4e0', '#ffb08a'][i % 3], 0.6)); sh.scale.set(1, 0.5, 1.2); sh.position.set(-0.8 + i * 0.35, 0.05, 0.6 + (i % 2) * 0.2); group.add(sh); }
         flag.position.set(0, 1.8, 0);
+      }
+      if (skipT) { // 打水漂：一摞扁石片 + 一只小木桶
+        for (let i = 0; i < 5; i++) { const st = new THREE.Mesh(new THREE.CylinderGeometry(0.3 - i * 0.02, 0.34 - i * 0.02, 0.1, 9), std(['#8a8a92', '#a09a90', '#7a7a84'][i % 3], 0.7)); st.position.set(-0.4 + (i % 2) * 0.06, 0.06 + i * 0.1, 0.3); group.add(st); }
+        const pail = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.3, 0.5, 10), std('#c89a5a', 0.8)); pail.position.set(0.6, 0.25, 0.2); group.add(pail);
+        flag.position.set(0, 1.8, 0);
+      }
+      if (sushiT) { // 回转寿司：一小段传送带 + 几个寿司盘
+        const belt = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.5, 0.7), std('#9a9aa4', 0.5, 0.3)); belt.position.set(0, 0.6, 0.2); group.add(belt);
+        for (let i = 0; i < 3; i++) { const pl = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.06, 12), std(['#ffffff', '#ffd0d8', '#c8e0ff'][i], 0.4)); pl.position.set(-0.7 + i * 0.7, 0.88, 0.2); group.add(pl); const sushi = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, 0.16), std(['#ff8a5a', '#d8304a', '#ffd84a'][i], 0.5)); sushi.position.set(-0.7 + i * 0.7, 0.98, 0.2); group.add(sushi); }
+        flag.position.set(0, 2.0, 0);
       }
       const zone = new THREE.Mesh(new THREE.RingGeometry(SAFE_R - 0.12, SAFE_R, 64), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false })); zone.rotation.x = -Math.PI / 2; zone.position.y = 0.05; group.add(zone);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: new THREE.Color(col), transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);

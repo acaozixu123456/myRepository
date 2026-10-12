@@ -1,10 +1,38 @@
-## A12 柔边透明云朵：制作中公开认领（第0轮，通过0）
+## A12 柔边透明云朵：第1轮待审（通过0）
 
-分支 `codex/3d-world-cloud-sprites`，仅做云朵sprite素材与审图/出处，不改世界引擎或接入表。先实际比较Kenney / OpenGameArt等CC0现成透明云/粒子PNG，核真实alpha、柔边、多个云型和许可；找到合适原素材优先复用登记CREDITS，不能把检查格当透明底或声称未经下载的模型/像素不适合。若公开候选确实不满足再用真实imagegen透明底，并保留完整真实调用与未选候选。
+[同一草稿PR #127](https://github.com/acaozixu123456/myRepository/pull/127)，分支 `codex/3d-world-cloud-sprites`；3纹理/12UV云组与审图出处已完成，独立QA完成，Claude尚未审核。只更新本认领段；后面历史正文原字节保留，旧表的历史“未开始”不当本批最新状态。
 
-预计一批3项，实际尺寸、朵数/atlas格与文件名在选源后明确；POT、单文件<500000B、明亮白云浅蓝、无建筑/文字，正常透明叠浅/深背景与实际Sprite/Plane加载检查。未完成素材，不标待审或通过。A11瓦面属于另一线程 #122，前三天空 #116已ready。
+三款 [圆云](../assets/world/clouds/cloud_sprite_cumulus_atlas_01.webp) / [云丝](../assets/world/clouds/cloud_sprite_wisps_atlas_02.webp) / [散云](../assets/world/clouds/cloud_sprite_scattered_atlas_03.webp) 为512² RGBA、sRGB588B、losslessWebP，134604 /152392 /174084B；每款4个独立云组。01非等宽列x280，另两款x256，上下y256；精确UV/flipY与正缩放在 [说明](../assets/world/clouds/cloud-sprites-a12.README.md)。
 
-基线 `68e3f1d`；本工作树认领前实际 `npm run typecheck && npm test` 退出0，80文件 /1102测试。仅此认领段，主线其它世界进度原文保留；完成独立审图后更新同一PR到第1轮待审，不等待Claude审核停止队列。
+先下载实看12个CC0现成PNG（Kenney3/WickedInsignia6/bonecandy3），软灰烟/淡灰云与硬描边云各有具体不符。后以CC001/04/05做3次真实透明参考编辑；实际原稿均1254²RGBA，全幅Lanczos等比缩512，RGBA/alpha都重采样，lossless只与512技术input全RGBA0。最终是AI改编而不是官方原件；[源比较](../assets/world/clouds/cloud-sprites-a12.source-search.md)、[完整出处](../assets/world/clouds/cloud-sprites-a12.provenance.json)、[CREDITS](CREDITS.md)均记录镜像/主许可/真实时序。没有程序抠底、艺术改色或补云。
+
+[原生三底/alpha与边角](../assets/world/reviews/cloud-sprites-a12.README.md)、[总览](../assets/world/reviews/cloud-sprites-a12-overview.webp)与 [实际Sprite](../assets/world/reviews/cloud-sprites-a12-render.webp) 共12review＋3source=15图。2真实加载6HTTP200 bodySHA、24panels/192sprites、48px缩略与低opacity.25都实际采样，无runtime错误，source拍前后恒定。四边/12UV框alpha最大1弱尾值保留，不声称全0。最不满意：云丝卷弯较幻想云气，48px细纹损失；未接入世界产品。
+
+代码固定基线 `68e3f1d`；root认领前实际 `npm run typecheck && npm test` 退出0，80文件/1102测试，作者读保存日志；图像改动后不冒称新一轮整库测试。原68固定独立QA已完成，Claude尚未审核；root同步257并真实原生检查后在同一#127追加QA并ready，不新开重复PR，不等Claude停工。
+
+[独立审核](../assets/world/reviews/cloud-sprites-a12.qa.md)与[完整机器记录](../assets/world/reviews/cloud-sprites-a12.qa.json)：两页192真实Sprite、6HTTP当前sourceSHA、全15图/12UV边与三源重导出；保留alpha1弱尾，不称原1254全RGBA同。独立冻结provenance86bab与原68文档，当前主线同步只改变继承文档/产品代码，本批3source及所有15图和出处未变；补充验证另记，不把旧80/1102改标签。
+
+## A10 天空首批：第 1 轮待审（2026-10-12）
+
+本线程交付前三天空：黄昏橘粉、晚霞赤红带云、清晨灰蓝薄雾（目标蓝绿，现用原雾绿色不足），分支 `codex/3d-world-sky-first`，同一 [PR #116](https://github.com/acaozixu123456/myRepository/pull/116)。三图均 2048 × 512 RGB sRGB WebP，横向循环，只天空与云，未接入游戏；第 1 轮待审，通过数量 0。
+
+| 素材 | 最终来源 | 状态 | 轮次 |
+| --- | --- | --- | --- |
+| [sky_dusk_peach_01](../assets/world/skies/sky_dusk_peach_01.webp) | Kenney CC0 现成天空带，等比缩小 | 待审 | 1 |
+| [sky_sunset_redcloud_02](../assets/world/skies/sky_sunset_redcloud_02.webp) | 真实公开素材比较后的 AI fallback，经三次真实参考编辑，采用候选4 | 待审 | 1 |
+| [sky_dawn_tealmist_03](../assets/world/skies/sky_dawn_tealmist_03.webp) | PH CC0 原雾晨 HDR → 标准 SDR 全宽上512带直接编码，无AI编辑 | 待审 | 1 |
+
+新规则后实际取得 / 比较 33 件公开原素材（Kenney 5 / OGA 25 / PH HDR 3），均 HTTP 200、固定 blob/长度吻合；PH 原 HDR 另核官方 API MD5。现成红云有褐暗色和太阳焦点，PH 原雾晨适合雾分布但蓝绿不足；赤云采用原生成方向经真实参考修订，晨雾两张蓝绿编辑在实际圆柱视觉失败而unused，最终直接适配灰蓝原雾；没有因 2:1、摄影或受阻下载预设拒选。原三次生成在新规则之前，补查与五次参考编辑在之后，不声称先搜后生成。两件 CC0 来源已登记 [CREDITS](CREDITS.md)。原稿和中间编辑完整留存。
+
+Kenney 原生4096 ×2048，完整360°宽裁框 `[0,640,4096,1664]` →4096 ×1024 →等比0.5缩小。只有最终AI赤云候选4原生2172 ×724（3:1）完整向下缩至2048 ×512（4:1），云形纵横比例压扁25%。PH现用原HDR2048 ×1024经标准Reinhard曝光2 /sRGB8bit，完整360°上512带原生2048 ×512直接编码，不缩放 / 不改变比例，没有AI编辑。此限制不误套其他两件CC0。三图共134,878 B，每件≤500,000 B，q90/m6/sRGB588B；未程序绘云、补缝、艺术调色、上采样或移缝隐藏。PH官方MD5只验证原HDR，标准SDR/WebP是披露的常规转换。
+
+[素材说明](../assets/world/skies/sky-panorama-a10-first.README.md)、[完整出处](../assets/world/skies/sky-panorama-a10-first.provenance.json)、[公开来源审计](../assets/world/skies/sky-panorama-a10-first.resource-audit.md)、[总览与完整重复 / 1:1 边角](../assets/world/reviews/sky-panorama-a10-first.README.md)、[实际无光照圆柱环视](../assets/world/reviews/sky-panorama-a10-first-render.webp)与[参数](../assets/world/reviews/sky-panorama-a10-first-render.README.md)。正式审图 14 张：13 离线 + 1 GPU。原生 PNG 保留成品精确 RGB；WebP 审图为有损再编码，不冒充逐像素原件。
+
+实际圆柱MeshBasic /BackSide /正尺度 /RepeatS /ClampT；最终三图两次fresh加载6HTTP200bodySHA匹配，432全yaw/三pitchprobe＋12正式帧＝444实际渲染，page/console errors与failedrequests0，sourceSHA前后恒定。最终LR MAE0.339 /1.954 /0.206，非数学无缝；4倍低频周期仍可见。赤云前两编辑有硬云枝或实际圆柱稳定竖色阶而弃；最终第三编辑两端约15%低细节同色，下降指标不单独等于视觉通过。两张淡蓝绿晨雾AI编辑虽机器检查过，实际圆柱仍有稳定青竖带，失败且unused，旧7298与8call失败阶段完整留存。现用PH原雾最不满意是浅灰蓝较素、没有明显绿色 / 云体弱，与原蓝绿请求存在差异，诚实交审；没有强造绿色。当前桃粉样板云偏上。
+
+授权固定主线 `60bc06577f5d5dd2966a661d2278802bb3e3fcee`；合并 HEAD `274c7f2ce267d613b530878312b7f496f8465a44`：实际 `npm run typecheck && npm test` 退出 0，69 个测试文件 / 1,035 测试通过，日志在工作空间 `tests-fixed60.log`、哈希见出处。独立 QA 另见 [摘要](../assets/world/skies/sky-panorama-a10-first.qa.md)与[机器报告](../assets/world/skies/sky-panorama-a10-first.qa.json)，Claude 通过仍为 0。
+
+协作：森林已在 #115 通过 / 接入，云岛由 #114、宫阙由 #109；正午 / 午后天空属于 #117，不在本次范围。下方固定主线 WORLD 历史原文完整保留，只有本天空认领段转为本批待审。
 
 # 世界美术进度
 
@@ -515,3 +543,6 @@ A10 污渍和裂缝各 10 张已交付 / 待审，涂鸦、海报、告示仍各
 | 无人机 / 飞行器 / 悬浮车 | 未开始 | — |
 
 2026-10-12 · #100 / #103 / #106 通过并合并；以最新 CODEX_QUEUE.md 的审核记录为准，历史制作记录中的“待审”描述对应当时提交阶段，图与来源未改。
+
+
+提交前合并主线 `4d6fb66`，保留主线已通过场景与来源记录，未改本批17图或审图Three/ICC/导出依赖。维护者实际typecheck+test退出0，78文件/1086测试；独立444帧与原69/1035仍保留其60bc时间范围。另仅去公开来源Markdown末尾一条空白行并更新出处对应SHA字段，图片、提示词、8次真实调用、输入receipt与材质采样均未改；原2363出处/旧Markdown完整归档。[提交验证](../assets/world/skies/sky-panorama-a10-first.submission-validation.json)。
