@@ -988,7 +988,7 @@ export const HEROES: HeroDef[] = [
     quote: '月亮很大，毛线球很小，但我都抱得住。',
     likes: '桂花糕、云被、安静的夜晚',
     look: {
-      coat: { pattern: 'point', base: '#fbfbff', light: '#ffffff', accent: '#b7c4e6' },
+      coat: { pattern: 'shaded', base: '#f6f8ff', light: '#ffffff', accent: '#b7c4e6' },
       eye: { color: '#7fc4ff', style: 'calm' },
       ear: 'round',
       tail: 'bushy',
