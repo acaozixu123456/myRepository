@@ -1,0 +1,88 @@
+{
+  "checkedAtUTC": "2026-10-12T06:03:05.380876+00:00",
+  "sources": [
+    {
+      "file": "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+      "name": "ground_island_mint_bloom_01.webp",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 300178,
+      "sha256": "bbe226fb0c375e91d8527cb242f38c11022fa773f56b004a24faf1ec270eb040",
+      "id": "ground_island_mint_bloom_01",
+      "RGBSHA256": "7888c9798ab7493741b7964361adbadb7a6703eba47007032364f724ebb3722b",
+      "iccBytes": 588,
+      "iccSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "original": {
+        "file": "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+        "name": "exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+        "dimensions": [
+          1254,
+          1254
+        ],
+        "mode": "RGB",
+        "bytes": 2851532,
+        "sha256": "91a061528ed7b70c471318baf921506bba02eb14e99f93fea3fdf80b5825eb1a"
+      },
+      "matchesCapturedFrozenSource": true
+    },
+    {
+      "file": "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+      "name": "ground_island_pink_clover_02.webp",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 479916,
+      "sha256": "94534b9fcbc09d21a52a0a9575c0e4d31b67934013101077835342d7c64a9c3e",
+      "id": "ground_island_pink_clover_02",
+      "RGBSHA256": "be0c0b37b64956af00efbfd4954c4280c9b552f99749ad323a8bda1af35c4727",
+      "iccBytes": 588,
+      "iccSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "original": {
+        "file": "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+        "name": "exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+        "dimensions": [
+          1254,
+          1254
+        ],
+        "mode": "RGB",
+        "bytes": 3621344,
+        "sha256": "958dbc167e66ee6a120f90445021b718a37e58c1c7bf604c839f2947328ce3cd"
+      },
+      "matchesCapturedFrozenSource": true
+    },
+    {
+      "file": "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+      "name": "ground_island_meadow_mix_03.webp",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 297664,
+      "sha256": "d194e553b897bff729e5ba7290d4df941e43be0ade857a2178c24d0cef38f5ca",
+      "id": "ground_island_meadow_mix_03",
+      "RGBSHA256": "3df6f9860594ff6cbca179540ee5e778112117da622032ddd39dd01d2f9ff3d7",
+      "iccBytes": 588,
+      "iccSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "original": {
+        "file": "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+        "name": "exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+        "dimensions": [
+          1254,
+          1254
+        ],
+        "mode": "RGB",
+        "bytes": 2788787,
+        "sha256": "1bab0cbe6b0605a96a450039e9a2d355beabf059af45890ac07fb41b240ab496"
+      },
+      "matchesCapturedFrozenSource": true
+    }
+  ],
+  "allSourcesStayedFrozen": true,
+  "scope": "Read-only file/RGB/ICC/original metadata check after the real new captures. Root performed imagegen and exports; helper did not repaint, edit or re-export them."
+}

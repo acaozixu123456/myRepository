@@ -1,22 +1,57 @@
 # 世界美术进度
 
-## 当前制作认领 · A09-IS 云岛草地三款
+## 当前送审 · A09-IS 云岛草地三款
 
-根线程正在 `codex/3d-world-island-ground` 制作云岛粉绿草地与小花三变体，基线 `5e10ec25257c7f8d1b219a529df64707ef724f96`。本批制作中，审核轮次 0、通过 0；同一个草稿 PR 用于公开认领，真实素材、出处、平铺 / Three 预览与独立 QA 完成后再转正式待审，第 1 轮。当前尚无成品或 Claude 裁决。
+[PR #114](https://github.com/acaozixu123456/myRepository/pull/114)，分支 `codex/3d-world-island-ground`，base 为 `claude/awesome-babbage-ygba4h`。三款成品及独立审图已完成，**第 1 轮待审，已通过 0**；`readyForClaudeReview=true`、`ClaudeDecision=null`。本批是带小花的云岛地面候选，尚未接入游戏，Claude 审核后再决定采用。
 
-| 计划 ID | 方向 | 状态 | 轮次 | 规格 |
+| 名称 / ID | 素材 | 状态 | 审核轮次 | 规格 / 字节 | 截图 |
+| --- | --- | --- | --- | --- | --- |
+| 薄荷小花 `ground_island_mint_bloom_01` | [WebP](../assets/world/ground/ground_island_mint_bloom_01.webp) | 待审 | 1 | 1024² RGB / sRGB；300178 B | [本批缩略图](../assets/world/reviews/island-ground-a09.webp) |
+| 粉绿三叶草 `ground_island_pink_clover_02` | [WebP](../assets/world/ground/ground_island_pink_clover_02.webp) | 待审 | 1 | 1024² RGB / sRGB；479916 B | [本批缩略图](../assets/world/reviews/island-ground-a09.webp) |
+| 混色草甸 `ground_island_meadow_mix_03` | [WebP](../assets/world/ground/ground_island_meadow_mix_03.webp) | 待审 | 1 | 1024² RGB / sRGB；297664 B | [本批缩略图](../assets/world/reviews/island-ground-a09.webp) |
+
+### A09-IS 制作、审图与来源记录
+
+2026-10-12 · 第 1 轮待审。三次真实 `image_gen.imagegen` 调用于 05:47:03～05:48:36 UTC 完成，没有参考图片。实际返回原稿均为 1254² RGB；提示词请求 2048²，未把请求尺寸当成实际产物。保留完整画布，Lanczos 等比降采样至 1024²，再以 WebP q90 / method6 编码，嵌入同一 588 B sRGB ICC；没有裁切、上采样、补边、手绘接缝或调色。每张原稿路径、完整提示词 / 参数、时间与原稿 / 成品 SHA 见 [出处记录](../assets/world/ground/island-ground-a09.provenance.json)，规格及用途见 [素材说明](../assets/world/ground/island-ground-a09.README.md)。
+
+独立 QA 已核三原稿与三成品、2×2 / 4×4、完整左右 / 上下边缘与四角，共 36 张检查图；3/3 重新导出字节一致，14 张正式图均为 POT 且低于 500000 B。未观察到贯穿的硬直接缝、边框亮暗带或中心光斑；局部草叶和花朵碎形仍有接合不完全连续，共同草叶笔触和局部叶片深浅也保留。此结论是视觉检查，不能承诺严格逐像素周期无缝。QA 已可送审，Claude 尚未裁决，详见 [QA 摘要](../assets/world/ground/island-ground-a09.qa.md)、[机器记录](../assets/world/ground/island-ground-a09.qa.json) 与 [检查方法](../assets/world/ground/island-ground-a09.qa-method.json)。
+
+正式审图为 [平铺总览](../assets/world/reviews/island-ground-a09.webp)（2048×1024，494536 B）和 [白光 / 正午光材质样板](../assets/world/reviews/island-ground-a09-lighting.webp)（2048×1024，216444 B），另有 9 张 256² 原生 PNG，合计交付 3 张素材 + 2 张审图 + 9 张边缘局部 = 14 张图片。9 张 PNG 是最终 WebP 的 1:1 裁拼，589824 个 RGB 像素已逐个核对一致，最大 181321 B；原稿 1254² 只保留为工作空间出处证据。PNG 路径与捕获方式见 [审图说明](../assets/world/reviews/island-ground-a09.README.md)。
+
+总览实际捕获于 05:54:08.709 UTC，最终灯光图实际捕获于 05:58:49.813 UTC；两次均实际加载 3/3 素材，WebGL 成功，页面 / 请求 / console 错误为空，最终 anisotropy 为 `[4,4,4]`。拍摄和独立 QA 基线保留为 `67d7bef7b1ad8155b92420daf5f6083289bd97a8`（当时工作树 HEAD `051c7d06ec72de337dabd3066bf64270bb4f40cb`）。样板使用独立 Plane8×8 / repeat2×2（每周期 4 世界单位），两侧同用白色 MeshStandard、roughness .95 / metalness 0、ACES 曝光 .92、Room 环境 .3，仅更换白光和 ATMOS.mist 正午灯色；没有游戏对象、雾、阴影、bloom 或附加材质图。这是实际 Three 材质样板，不是接入后的游戏截图。
+
+最新主干 `6fdb7eefe166877b9cb874cb3a8c27f821206519` 已由 Claude 接入 ambientCG Grass005：云岛草地加载成功时 repeat4×4，半径 29.2、直径 58.4，每周期约 14.6 世界单位；旧程序草地 repeat5×5、约 11.68 单位仅为 fallback。材质与正午光参数保持原值，独立样板尺度不同。67→6f 所跟踪 16 项输入中，`WORLD3D.md`、`CODEX_QUEUE.md`、`cloud.ts` 三项已变，另有素材注册 / CC0 资源及其他主题变化；未将冻结审图或 QA 重标成 6f，也不声称所有依赖未变。本批保留候选，不修改引擎或替换当前 CC0 草地。
+
+最不满意：第二款三叶草与花球较密，斜俯或缩小时细花成为色点；4×4 大形草簇和花点仍有周期重复。请 Claude 按实际相机与 UV 尺度评估花朵密度、风格和采用范围。
+
+### 现成素材优先规则与本批时间线
+
+`6f` 于 06:12:57 UTC 新增现成素材优先规则，本批三原稿生成早于该规则。收到规则后，06:15:56 UTC 起实际补查 ambientCG、Poly Haven、Kenney 和 OpenGameArt，记录了真实网址、许可与 11 个地面 / 天空候选；不能把补查称为生成前检索，也不主张不存在合适 CC0 素材。目录网页可检索，外部下载 / API 请求受环境策略返回 403，候选文件未下载，画风与接缝适配尚未验证。仅实看当前主干已提交的 Grass005，它是无小花草坪底材。详见 [来源补查摘要](../assets/world/ground/island-ground-a09.source-search.md) 与 [来源记录](../assets/world/ground/island-ground-a09.source-search.json)。本批图片未采用第三方文件或参考图，未改 CREDITS；此批保留为规则前已完成的绘画候选供审核，后续制作先按最新规则检索。
+
+### 本批必要检查
+
+根线程同步 6f 后，在本工作树 HEAD `1d461545d9425c2d326ead28bdb3910675afc7e9` 实际执行 `npm run typecheck && npm test`，退出码 0：68 文件 / 1024 测试全部通过。完整命令于 06:18:54 UTC 开始，Vitest 于 06:19:02 UTC 开始，耗时 42.32 秒；完整日志 `/workspace/world-review/island-ground/required-checks-main6f.log`。该检查是最新代码基线的结果；审图 / QA 仍按上文 67 基线记录。认领时 5e 的 68 文件 / 1023 测试（05:40:06 UTC，27.63 秒）保留为历史。
+
+## 当前主题队列与协作范围
+
+以 [最新固定队列](CODEX_QUEUE.md) 的新 WORLD 主题方向和现成素材优先规则为准：A09 五种主题地面 → A10 天空全景 → A11 瓦面 → A12 柔边云精灵；旧赛博素材表保留为提交历史，不与新主题 A10 天空混写。
+
+| 主题批次 | 范围 / 正式 PR | 状态 | 审核轮次 | 已通过 |
 | --- | --- | --- | --- | --- |
-| `ground_island_mint_bloom_01` | 清浅嫩绿草，稀疏白 / 淡粉小花 | 制作中 | 0 | 1024² 无缝 RGB / sRGB |
-| `ground_island_pink_clover_02` | 粉绿三叶草，淡粉花与少量奶白花 | 制作中 | 0 | 1024² 无缝 RGB / sRGB |
-| `ground_island_meadow_mix_03` | 浅绿草与小叶，白 / 淡黄 / 浅蓝小花 | 制作中 | 0 | 1024² 无缝 RGB / sRGB |
+| A09 夜市 | 外部 [#108](https://github.com/acaozixu123456/myRepository/pull/108) | 待审 | 1 | 0 |
+| A09 港口 | 外部 [#110](https://github.com/acaozixu123456/myRepository/pull/110) | 待审 | 1 | 0 |
+| A09 宫阙 | 正式 [#109](https://github.com/acaozixu123456/myRepository/pull/109)；候补 #112 已关闭 | 待审 | 1 | 0 |
+| A09 森林 | 外部 [#115](https://github.com/acaozixu123456/myRepository/pull/115)，三款 | 待审 | 1 | 0 |
+| A09 云岛 | 本批 [#114](https://github.com/acaozixu123456/myRepository/pull/114)，三款 | 待审 | 1 | 0 |
+| A10 天空前三款 | 外部草稿 [#116](https://github.com/acaozixu123456/myRepository/pull/116)：黄昏橘粉 / 晚霞赤红云 / 清晨蓝绿雾 | 制作中 | 0 | 0 |
+| A10 天空后两款 | 根线程草稿 [#117](https://github.com/acaozixu123456/myRepository/pull/117)：正午白云蓝天 / 午后金光 | 制作中 | 0 | 0 |
+| A11 / A12 | 瓦面 / 柔边云精灵 | 未开始 | 0 | 0 |
 
-主题按最新 [固定队列](CODEX_QUEUE.md)：云岛为晴朗正午，明亮粉绿草地与小花；只做地面基色，太阳、云海、白石小径、场景阴影与发光交由现有引擎负责。本批全部艺术内容实际调用图片生成工具，原图路径、完整提示词 / 参数与 SHA 随最终成品保存。
+四底版衣服由外部 [#113](https://github.com/acaozixu123456/myRepository/pull/113) 送审；披挂 / 配饰按外部 owner 认领推进。本批不重复制作其源文件，不将已关闭候补 PR 当成已通过或已合并。
 
-协作状态：夜市 [#108](https://github.com/acaozixu123456/myRepository/pull/108)、港口 [#110](https://github.com/acaozixu123456/myRepository/pull/110)、宫阙 [#109](https://github.com/acaozixu123456/myRepository/pull/109) 为待审批次；同宫阙候补 #112 已关闭，该 owner 继续森林草地。四底版衣服跟进外部 [#113](https://github.com/acaozixu123456/myRepository/pull/113)，根线程候选仅保留私有参考。云岛随后继续最新队列天空全景 → 瓦面 → 柔边云精灵，并与 3D 独立核对交替推进。
+## 旧赛博素材与提交历史
 
-认领提交前已在上述基线实际执行 `npm run typecheck && npm test`，退出码 0，68 文件 / 1,023 测试通过（05:40:06 UTC 开始，27.63 秒）；日志 `/workspace/world-review/island-ground/required-checks-5e.log`。当前只有进度认领，尚未完成素材 QA。
-
-以下保留此前素材进度与制作 / 审核历史；已通过和队列要求跳过的项目不重做。最终交付时更新本批状态及实际验证结果。
+固定队列已确认 [#100](https://github.com/acaozixu123456/myRepository/pull/100) 两张地面、[#103](https://github.com/acaozixu123456/myRepository/pull/103) 十张污渍与 [#106](https://github.com/acaozixu123456/myRepository/pull/106) 十张裂缝通过并合入主干，共 22 张，审核轮次均为 1。以下表格同步这些已通过事实；原有制作记录中的「当前批次 / 待审 / 提交」措辞保留为当时提交历史，旧测试与 QA 不当作本轮实测。其他 A / B 类完成状态及原始限制保留。
 
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
@@ -33,8 +68,8 @@
 | A06 | 招牌 / 广告 | 横版 1024×256；竖版 256×1024；全息 512×1024 | 通过（本批 6 张） | 6 |
 | A07 | 远景天际线 | 2048×1024，上方透明或渐变深紫，1 张 | 通过 | 1 |
 | A08 | 地面 · 湿沥青 | 1024²，无缝，1 张 | 已通过并接入 | 1 |
-| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝 | 待审（#100） | 0 |
-| A10 | 贴花（地面贴花优先） | 512² 透明；污渍 / 裂缝各10张，其他三类仍各 ≥10 张 | 待审（污渍#103 / 本批裂缝） | 0 |
+| A09 | 地面 · 地砖 / 排水沟盖 | 1024²，无缝 | 通过（#100 两张；旧赛博地面） | 2 |
+| A10 | 贴花（旧队列） | 512² 透明；污渍 / 裂缝各10张，其他三类仍各 ≥10 张 | 通过（#103 污渍10张 / #106 裂缝10张；其余未开始） | 20 |
 | A03 | 外墙 · 水渍混凝土 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A04 | 外墙 · 贴纸墙 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
 | A05 | 外墙 · 管线 / 空调外机浮雕 | 1024²，无缝，3～4 张变体 | 未开始 | 0 |
@@ -153,16 +188,16 @@ Claude 已将灰绿用于青色楼、暖白用于奶油色楼。深灰青的浅�
 
 | 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 细分叉裂 `decal_crack_branch_fine_01` | [WebP](../assets/world/decals/decal_crack_branch_fine_01.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp) | 512² RGBA；18,416 B；原生 1254² |
-| 浅横断裂 `decal_crack_transverse_02` | [WebP](../assets/world/decals/decal_crack_transverse_02.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_transverse_02-native-alpha.webp) | 512² RGBA；8,084 B；原生 1254² |
-| 旧修补口边裂 `decal_crack_repair_edge_03` | [WebP](../assets/world/decals/decal_crack_repair_edge_03.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp) | 512² RGBA；26,260 B；原生 1254² |
-| 石材短斜裂 `decal_crack_stone_diagonal_04` | [WebP](../assets/world/decals/decal_crack_stone_diagonal_04.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp) | 512² RGBA；8,362 B；原生 1254² |
-| 网状细龟裂 `decal_crack_crazing_05` | [WebP](../assets/world/decals/decal_crack_crazing_05.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_crazing_05-native-alpha.webp) | 512² RGBA；34,734 B；原生 1254² |
-| 坑缘碎裂 `decal_crack_pit_rim_06` | [WebP](../assets/world/decals/decal_crack_pit_rim_06.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp) | 512² RGBA；27,918 B；原生 1254² |
-| 伸缩缝端枝裂 `decal_crack_joint_ends_07` | [WebP](../assets/world/decals/decal_crack_joint_ends_07.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp) | 512² RGBA；18,652 B；原生 1254² |
-| 砖缝发丝裂 `decal_crack_grout_hair_08` | [WebP](../assets/world/decals/decal_crack_grout_hair_08.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp) | 512² RGBA；13,530 B；原生 1254² |
-| 沥青长走向裂 `decal_crack_asphalt_long_09` | [WebP](../assets/world/decals/decal_crack_asphalt_long_09.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp) | 512² RGBA；16,332 B；原生 1254² |
-| 三叉断裂 `decal_crack_threeway_10` | [WebP](../assets/world/decals/decal_crack_threeway_10.webp) | 待审 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_threeway_10-native-alpha.webp) | 512² RGBA；15,462 B；原生 1254² |
+| 细分叉裂 `decal_crack_branch_fine_01` | [WebP](../assets/world/decals/decal_crack_branch_fine_01.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp) | 512² RGBA；18,416 B；原生 1254² |
+| 浅横断裂 `decal_crack_transverse_02` | [WebP](../assets/world/decals/decal_crack_transverse_02.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_transverse_02-native-alpha.webp) | 512² RGBA；8,084 B；原生 1254² |
+| 旧修补口边裂 `decal_crack_repair_edge_03` | [WebP](../assets/world/decals/decal_crack_repair_edge_03.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp) | 512² RGBA；26,260 B；原生 1254² |
+| 石材短斜裂 `decal_crack_stone_diagonal_04` | [WebP](../assets/world/decals/decal_crack_stone_diagonal_04.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp) | 512² RGBA；8,362 B；原生 1254² |
+| 网状细龟裂 `decal_crack_crazing_05` | [WebP](../assets/world/decals/decal_crack_crazing_05.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_crazing_05-native-alpha.webp) | 512² RGBA；34,734 B；原生 1254² |
+| 坑缘碎裂 `decal_crack_pit_rim_06` | [WebP](../assets/world/decals/decal_crack_pit_rim_06.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp) | 512² RGBA；27,918 B；原生 1254² |
+| 伸缩缝端枝裂 `decal_crack_joint_ends_07` | [WebP](../assets/world/decals/decal_crack_joint_ends_07.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp) | 512² RGBA；18,652 B；原生 1254² |
+| 砖缝发丝裂 `decal_crack_grout_hair_08` | [WebP](../assets/world/decals/decal_crack_grout_hair_08.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp) | 512² RGBA；13,530 B；原生 1254² |
+| 沥青长走向裂 `decal_crack_asphalt_long_09` | [WebP](../assets/world/decals/decal_crack_asphalt_long_09.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp) | 512² RGBA；16,332 B；原生 1254² |
+| 三叉断裂 `decal_crack_threeway_10` | [WebP](../assets/world/decals/decal_crack_threeway_10.webp) | 通过 | 1 | [1:1 审图](../assets/world/reviews/decal_crack_threeway_10-native-alpha.webp) | 512² RGBA；15,462 B；原生 1254² |
 
 ### A10 裂缝制作与审核记录
 
