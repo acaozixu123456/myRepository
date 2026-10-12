@@ -188,7 +188,7 @@
 | vest | 15 | 29 | 24 |
 | rattan | 22 | 38 | 24 |
 
-全部29名使用者复测，Toon/outline材质均复用缓存，尺度与行列式为正；没有每帧分配或新增独立动画。固定e777源码已有 `npm run typecheck && npm test` 通过记录，68文件 / 1019测试、退出0；主线后续日期修订的同步与合并后提交前复检由维护者另记，不把历史e777结果说成尚未运行的检查。
+全部29名使用者复测，Toon/outline材质均复用缓存，尺度与行列式为正；没有每帧分配或新增独立动画。固定e777源码已有 `npm run typecheck && npm test` 通过记录，68文件 / 1019测试、退出0；提交前维护者另同步主线29f6日期修复并实际再次执行同命令，退出0、68文件/1019测试全部通过。相关 art3d/look/actor/player 累计字节无变化，2源、22图及独立QA三件保持冻结记录，拍摄基线仍为e777。
 
 独立 [QA说明](../src/art3d/parts/reviews/body-field-armor/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/body-field-armor/qa-summary.json) 锁定整src的298文件到唯一运行快照，核对SHA哨兵及全部源文件前后相同，旧BODY通过真实 `git show e777d58:src/art3d/parts/body.ts` 获取。29×(14姿势×4朝向+3姿势×12时刻)=2668状态，其中静态1624、动画1044；静态yaw=0/32/-32/148、t=.4、phase0，动画yaw32、t=i×8/11。
 
