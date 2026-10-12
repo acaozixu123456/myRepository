@@ -1,0 +1,354 @@
+{
+  "status": "最终编码贴图可送Claude审；独立QA完成，不代表Claude已通过",
+  "createdAtUTC": "2026-10-11T23:50:05.283379+00:00",
+  "asset": "/workspace/world-worktrees/wet-asphalt/assets/world/ground/ground_asphalt_wet_01.webp",
+  "sha256": "5cb849b916c76d86e80a195169316b6182c4bb3ea37c63aeb467194e2ea2b1f2",
+  "selectedAIcandidate": 2,
+  "sourceRaw": "exec-71b6f3ff-5128-4573-ab0e-7f599b302f40.png",
+  "sourceNativeSize": [
+    1254,
+    1254
+  ],
+  "export": {
+    "size": [
+      1024,
+      1024
+    ],
+    "mode": "RGB",
+    "iccProfile": "sRGB built-in",
+    "bytes": 491514,
+    "scale": 0.8165869218500797,
+    "encoding": {
+      "format": "WebP",
+      "quality": 90,
+      "method": 6
+    }
+  },
+  "checks": {
+    "format": "通过：1024×1024、RGB不透明、sRGB ICC、WebP q90/method6；491514B≤500000B，SHA与出处一致。",
+    "sourceResolution": "通过：所选C2实际原生1254×1254，等比Lanczos降到1024×1024（scale .81658692185），未裁切/补边/调色/锐化/像素修缝。",
+    "tileStructure": "可送审：原生与成品2×2/4×4、LR/TB 1:1接缝条和四角交会实看，没有明显贯穿硬直缝、边框或四面板分割。此为有限观看尺度的结构连续结论，非严格逐像素四边相等。",
+    "materialFeatures": "通过：颗粒沥青与平滑浅水膜能分开，冷灰/低饱和青水面反光、紫褐油膜及两处稀疏黄白磨损残标可读；没有完整路标字/箭头、品牌或人脸。",
+    "lightingDirection": "通过当前观察：未见整块烘焙的明显单向霓虹长条、统一投影或亮度坡度。克制水面颜色和局部湿面 glints属于保留的材质表现，不作新禁区。",
+    "generationTrace": "通过：三张原图basename/实际原生尺寸/字节数/SHA均匹配；C1/C2完整prompt与generation-requests逐字一致，C3编辑prompt及references与edit-request一致；offset参考是纯627px双轴循环位移。C3未用于成品。",
+    "candidateChoice": "推荐C2：C1强白线在4×4重复成显著焦点阵列；C3整图颗粒更圆、更粗、更像亮石子，未见比C2更好的四边实读收益。未因调用过AI修订而优先选C3，也未仅用MAE选图。",
+    "officialReviewFiles": "通过：正式2048×1024平铺审图和白光/青品红Three材质对照均已实际查看；两审图与两原生局部PNG的字节、尺寸及SHA与README/交付记录一致，均≤500000B，绑定同一最终5cb849源图。",
+    "threeMaterialSample": "可送审：白光与白光加青/品红点光的同相机、同2×2平面实际对照里，青/品红局部光斑可见，水膜/油膜/残标可读，没有新出现的贯穿拼接直线。两栏只有灯光变化；独立Three样板未加载游戏WorldView。"
+  },
+  "finalEdgeDiagnostics": {
+    "leftRight": {
+      "meanAbsRGB": 21.34700584411621,
+      "p95MeanAbsRGB": 64.566650390625,
+      "maxMeanAbsRGB": 130.3333282470703
+    },
+    "topBottom": {
+      "meanAbsRGB": 24.3935546875,
+      "p95MeanAbsRGB": 75.33333587646484,
+      "maxMeanAbsRGB": 157.6666717529297
+    },
+    "interiorHorizontalNeighbours": {
+      "meanAbsRGB": 17.768613815307617,
+      "p95MeanAbsRGB": 57.0,
+      "maxMeanAbsRGB": 183.0
+    },
+    "interiorVerticalNeighbours": {
+      "meanAbsRGB": 19.216543197631836,
+      "p95MeanAbsRGB": 61.0,
+      "maxMeanAbsRGB": 186.3333282470703
+    },
+    "interpretation": "高频沥青的边缘RGB差本身不能证明硬缝或无缝。成品LR/TB MAE21.347/24.394，内部邻接17.769/19.217；已结合完整平铺与原像素接缝/角核对。"
+  },
+  "coordinateComparisonC2C3": {
+    "C2original": {
+      "outerLR": 20.395002658160553,
+      "outerTB": 22.86868686868687,
+      "centreLR": 18.351408825093035,
+      "centreTB": 15.993620414673046
+    },
+    "C2exactOffset": {
+      "outerLR": 18.351408825093035,
+      "outerTB": 15.993620414673046,
+      "centreLR": 20.395002658160553,
+      "centreTB": 22.86868686868687
+    },
+    "C3editedOffset": {
+      "outerLR": 25.141148325358852,
+      "outerTB": 17.361509835194045,
+      "centreLR": 14.639819245082403,
+      "centreTB": 15.541998936735778
+    },
+    "reference": "/workspace/world-review/wet-asphalt/candidate-02-offset.png",
+    "referenceSHA": "b0e9911dc90f8c5566ed9eb799cb396f9c2f3d860355c3a1dfd6614265e2dc4d",
+    "referencePixelsAreExact627xyRoll": true,
+    "note": "Edited offset orientation compares C3 outer edge against C2 OFFSET outer edge (original centre adjacency), and C3 central cross against C2 OFFSET central cross (original outer edges). RGB distances diagnose pixels, not aesthetic/visual seamlessness."
+  },
+  "provenanceVerification": {
+    "checks": [
+      {
+        "candidate": 1,
+        "promptChars": 1843,
+        "promptSha256": "2c286fc8d4599877ee91ad19eab1539d6c561d7d808a5ace4044e223b4e8037a",
+        "rawSize": [
+          1254,
+          1254
+        ],
+        "rawSha256": "ff9a3e26c37b41af6c5be566f0ac575b720189e3e09aeb7b81de745eddd21fe2",
+        "promptExactMatch": true,
+        "rawMetadataMatch": true
+      },
+      {
+        "candidate": 2,
+        "promptChars": 1944,
+        "promptSha256": "376967aff848a5956f49c081f7575b0358cf2a8adb5a2b09af46e4fbe1097c32",
+        "rawSize": [
+          1254,
+          1254
+        ],
+        "rawSha256": "1ab4e09eed5c8f8edb87e3bb2fb18d06d2e71a025fec9aa9599eff3bcd030881",
+        "promptExactMatch": true,
+        "rawMetadataMatch": true
+      },
+      {
+        "candidate": 3,
+        "promptChars": 1654,
+        "promptExactMatch": true,
+        "rawMetadataMatch": true,
+        "selected": false
+      }
+    ],
+    "referenceExact627xyRoll": true,
+    "selectedCandidate": 2,
+    "exportHashMatches": true,
+    "exportSizeModeProfileBudgetMatches": true,
+    "iccProfile": "sRGB built-in"
+  },
+  "actualVisualReviewed": [
+    "/workspace/world-review/wet-asphalt/candidate-01-repeat-2x2-preview.png",
+    "/workspace/world-review/wet-asphalt/candidate-01-repeat-4x4-preview.png",
+    "/workspace/world-review/wet-asphalt/candidate-01-joint-lr.png",
+    "/workspace/world-review/wet-asphalt/candidate-01-joint-tb.png",
+    "/workspace/world-review/wet-asphalt/candidate-01-corner-joint.png",
+    "/workspace/world-review/wet-asphalt/candidate-02-repeat-2x2-preview.png",
+    "/workspace/world-review/wet-asphalt/candidate-02-repeat-4x4-preview.png",
+    "/workspace/world-review/wet-asphalt/candidate-02-joint-lr.png",
+    "/workspace/world-review/wet-asphalt/candidate-02-joint-tb.png",
+    "/workspace/world-review/wet-asphalt/candidate-02-corner-joint.png",
+    "/workspace/world-review/wet-asphalt/candidate-03-repeat-2x2-preview.png",
+    "/workspace/world-review/wet-asphalt/candidate-03-repeat-4x4-preview.png",
+    "/workspace/world-review/wet-asphalt/candidate-03-joint-lr.png",
+    "/workspace/world-review/wet-asphalt/candidate-03-joint-tb.png",
+    "/workspace/world-review/wet-asphalt/candidate-03-corner-joint.png",
+    "/workspace/world-review/wet-asphalt/candidate-02-1024-qa.png",
+    "/workspace/world-review/wet-asphalt/candidate-03-1024-qa.png",
+    "/workspace/world-review/wet-asphalt/candidate-02-1024-repeat-4x4-preview.png",
+    "/workspace/world-review/wet-asphalt/candidate-03-1024-repeat-4x4-preview.png",
+    "/workspace/world-review/wet-asphalt/final-repeat-2x2-preview.png",
+    "/workspace/world-review/wet-asphalt/final-repeat-4x4-preview.png",
+    "/workspace/world-review/wet-asphalt/final-joint-lr.png",
+    "/workspace/world-review/wet-asphalt/final-joint-tb.png",
+    "/workspace/world-review/wet-asphalt/final-corner-joint.png",
+    "/workspace/world-worktrees/wet-asphalt/assets/world/reviews/wet-asphalt-a08.webp",
+    "/workspace/world-worktrees/wet-asphalt/assets/world/reviews/wet-asphalt-a08-lighting.webp"
+  ],
+  "rawImagesReviewed": [
+    "/workspace/generated_images/exec-f57206e1-afcd-47db-a398-c31143378dd5.png",
+    "/workspace/generated_images/exec-71b6f3ff-5128-4573-ab0e-7f599b302f40.png",
+    "/workspace/generated_images/exec-d57786cc-11c6-42ee-877a-c20a5c37f2bd.png"
+  ],
+  "leastSatisfied": "4×4里仍能认出相同油膜大形和水洼的周期重复；细颗粒湿面高光在近看时较密，需要Claude结合地面UV尺度评估。",
+  "limits": [
+    "技术QA预览只做原像素重复/裁边/角拼接及等比缩略，没有绘制、混色、接缝融合或镜像补边。",
+    "像素统计只辅助实际观察；不存在逐像素四边完全相等证明，也没有把prompt的周期性要求当成已实现结果。",
+    "本摘要已实看原生/1024技术候选、正式WebP平铺审图及最终Three白光/青品红对照。独立Three样板不是游戏截图；uniform roughness=.42、metalness=0，没有按水洼分区的粗糙度图或额外水面几何，水膜glints来自原图，不能据此宣称动态水洼物理反射或已接入游戏。"
+  ],
+  "technicalMetrics": "wet-asphalt-a08.metrics.json",
+  "productionEditedByAudit": false,
+  "updatedAtUTC": "2026-10-11T23:59:28.615508+00:00",
+  "finalFrozen": true,
+  "frozenAtUTC": "2026-10-11T23:59:28.615508+00:00",
+  "officialPreviewVerification": {
+    "reviewedAtUTC": "2026-10-11T23:59:28.615508+00:00",
+    "readme": "/workspace/world-worktrees/wet-asphalt/assets/world/reviews/wet-asphalt-a08.README.md",
+    "files": [
+      {
+        "file": "/workspace/world-worktrees/wet-asphalt/assets/world/reviews/wet-asphalt-a08.webp",
+        "width": 2048,
+        "height": 1024,
+        "bytes": 349356,
+        "sha256": "48b33bba4d55fbe8f9f5959270baec24835242d66412a378a4360b6c0930215e",
+        "mode": "RGB",
+        "metadataVerifiedByAudit": true
+      },
+      {
+        "file": "/workspace/world-worktrees/wet-asphalt/assets/world/reviews/wet-asphalt-a08-lighting.webp",
+        "width": 2048,
+        "height": 1024,
+        "bytes": 137066,
+        "sha256": "1b1e33247ffb38a2d42ce4c1c78c396c9250a5708eb1a4944d99b34ece1914c2",
+        "mode": "RGB",
+        "metadataVerifiedByAudit": true
+      },
+      {
+        "file": "/workspace/world-worktrees/wet-asphalt/assets/world/reviews/wet-asphalt-a08-native-lr.png",
+        "width": 256,
+        "height": 256,
+        "bytes": 168566,
+        "sha256": "142ac8e2646daf44ee2ee8d6207ea41f81262d19f8cc8259b5f980c7a19c05b7",
+        "mode": "RGBA",
+        "metadataVerifiedByAudit": true
+      },
+      {
+        "file": "/workspace/world-worktrees/wet-asphalt/assets/world/reviews/wet-asphalt-a08-native-tb.png",
+        "width": 256,
+        "height": 256,
+        "bytes": 167458,
+        "sha256": "8935d294263d9bde2642f074bd081d2a9c56d018bd83d3ecf85099f6fe0075c2",
+        "mode": "RGBA",
+        "metadataVerifiedByAudit": true
+      }
+    ],
+    "actualViewConclusion": "正式单张/2×2/4×4平铺及1:1边界局部未见明显贯穿硬直线；4×4油膜、水洼与残标的大形重复仍能认出。Three右栏青/品红光斑实际可见，材质细节保持可辨。",
+    "tileCaptureAtUTC": "2026-10-11T23:48:33.837Z",
+    "lightingCaptureAtUTC": "2026-10-11T23:48:34.370Z",
+    "sourceSha256": "5cb849b916c76d86e80a195169316b6182c4bb3ea37c63aeb467194e2ea2b1f2",
+    "sourceStayedFrozen": true,
+    "pageErrors": [],
+    "lightingMethod": {
+      "threeRevision": "169",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "independent": true,
+      "worldViewImported": false,
+      "geometry": {
+        "type": "PlaneGeometry",
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.42,
+        "metalness": 0
+      },
+      "camera": {
+        "type": "PerspectiveCamera",
+        "fov": 40,
+        "position": [
+          6,
+          8,
+          9
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "colorSpace": "sRGB",
+      "wrap": [
+        "RepeatWrapping",
+        "RepeatWrapping"
+      ],
+      "repeats": [
+        2,
+        2
+      ],
+      "anisotropy": 8,
+      "toneMapping": "NoToneMapping",
+      "exposure": 1,
+      "environment": false,
+      "shadows": false,
+      "bloom": false,
+      "normalMap": false,
+      "displacementMap": false,
+      "roughnessMap": false,
+      "lights": {
+        "hemisphere": {
+          "sky": "ffffff",
+          "ground": "777777",
+          "intensity": 1
+        },
+        "white": {
+          "type": "DirectionalLight",
+          "color": "ffffff",
+          "intensity": 1.1,
+          "position": [
+            1,
+            8,
+            5
+          ]
+        },
+        "cyan": {
+          "type": "PointLight",
+          "color": "35c8df",
+          "intensity": 8,
+          "distance": 14,
+          "decay": 2,
+          "position": [
+            -2,
+            2.2,
+            2
+          ]
+        },
+        "magenta": {
+          "type": "PointLight",
+          "color": "e064b9",
+          "intensity": 8,
+          "distance": 14,
+          "decay": 2,
+          "position": [
+            2,
+            2.2,
+            -2
+          ]
+        }
+      }
+    },
+    "nativeProofPixelValidation": [
+      {
+        "kind": "lr",
+        "comparedRGBPixels": 65536,
+        "maximumRGBDelta": 0,
+        "meanRGBDelta": 0.0,
+        "pixelsWithAnyDifference": 0,
+        "equalDecodedSourceRGB": true
+      },
+      {
+        "kind": "tb",
+        "comparedRGBPixels": 65536,
+        "maximumRGBDelta": 0,
+        "meanRGBDelta": 0.0,
+        "pixelsWithAnyDifference": 0,
+        "equalDecodedSourceRGB": true
+      }
+    ],
+    "lightingROIPixelComparison": {
+      "ROI": "Rendered viewport rows200..887, excluding DOM titles/captions and footer",
+      "leftRect": [
+        36,
+        200,
+        968,
+        688
+      ],
+      "rightRect": [
+        1044,
+        200,
+        968,
+        688
+      ],
+      "maxRGBDelta": 71,
+      "meanAbsoluteRGBDelta": 2.6934555985328976,
+      "pixelsWithAnyDifference": 249216
+    },
+    "pixelMetricAttribution": "ROI和原生局部像素验证读取preview helper已有review-pixel-validation.json；此处独立实看正式WebP并核对其哈希和规格，没有重跑渲染或扩大测试。",
+    "reviewEncoding": {
+      "format": "WebP",
+      "quality": 84,
+      "method": 6,
+      "sourceEncodingUnchanged": true
+    }
+  },
+  "provenanceVerificationFile": "wet-asphalt-a08.provenance-verification.json"
+}

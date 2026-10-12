@@ -1,0 +1,87 @@
+{
+  "category": "A08",
+  "round": 1,
+  "base": "83b8abd7ccb1592c6eb208ca27590f13c182ca5e",
+  "branch": "codex/3d-world-wet-asphalt",
+  "generator": "image_gen.imagegen",
+  "transparent_background": false,
+  "initial": [
+    {
+      "candidate": 1,
+      "prompt": "Create a finished seamless TILEABLE square base-color texture for wet asphalt in the game 猫国志, a dark rainy cyberpunk cat-city street. Full canvas must be only a flat ground material seen exactly from above, orthographic, no perspective, no horizon, no scene, no props, no poster, no frame, no labels, no typography, no logo, no people or faces. Aim for a 2048x2048 native working texture to export at 1024x1024. TRUE FOUR-EDGE PERIODICITY: left matches right, top matches bottom, including water, grain, faded paint and oil; patterns that reach any edge continue naturally from the opposite edge. Do not introduce edge borders, tile outlines, mirrored quadrants or a centered symmetric repeat. Very dark charcoal with subtle desaturated blue-violet wet undertones, small broken asphalt aggregate grain, broad low-contrast damp zones and a few irregular shallow puddles. Oil traces are thin subdued brown-violet iridescent films. Keep pooled water distinct from grain by smoother texture and softly blurred, restrained cold-gray/cyan reflections, not neon stripes or an entire city reflected in the ground. No bright hard directional lighting, lamp shadows, raised 3D bevels or sunny illumination. A gently painterly believable material consistent with miniature cyberpunk scenery, not a glossy product photo. Puddles, worn road paint and oil must look like weathered surface features, not decorative stickers. No big focal centerpiece. Use the entire square, opaque background. Composition variant A: two or three small fragmented shallow puddles, fine cracked dark aggregate, one short isolated ghost of an off-white painted road-marking dash with missing chips, not readable letters or symbols. Preserve spacious mostly plain asphalt between features. Ensure the faded marking stays low-contrast enough for game characters to stand over it.",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-f57206e1-afcd-47db-a398-c31143378dd5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "path": "/workspace/generated_images/exec-f57206e1-afcd-47db-a398-c31143378dd5.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_bytes": 4136824,
+      "native_sha256": "ff9a3e26c37b41af6c5be566f0ac575b720189e3e09aeb7b81de745eddd21fe2"
+    },
+    {
+      "candidate": 2,
+      "prompt": "Create a finished seamless TILEABLE square base-color texture for wet asphalt in the game 猫国志, a dark rainy cyberpunk cat-city street. Full canvas must be only a flat ground material seen exactly from above, orthographic, no perspective, no horizon, no scene, no props, no poster, no frame, no labels, no typography, no logo, no people or faces. Aim for a 2048x2048 native working texture to export at 1024x1024. TRUE FOUR-EDGE PERIODICITY: left matches right, top matches bottom, including water, grain, faded paint and oil; patterns that reach any edge continue naturally from the opposite edge. Do not introduce edge borders, tile outlines, mirrored quadrants or a centered symmetric repeat. Very dark charcoal with subtle desaturated blue-violet wet undertones, small broken asphalt aggregate grain, broad low-contrast damp zones and a few irregular shallow puddles. Oil traces are thin subdued brown-violet iridescent films. Keep pooled water distinct from grain by smoother texture and softly blurred, restrained cold-gray/cyan reflections, not neon stripes or an entire city reflected in the ground. No bright hard directional lighting, lamp shadows, raised 3D bevels or sunny illumination. A gently painterly believable material consistent with miniature cyberpunk scenery, not a glossy product photo. Puddles, worn road paint and oil must look like weathered surface features, not decorative stickers. No big focal centerpiece. Use the entire square, opaque background. Composition variant B: slightly coarser asphalt, asymmetric low-contrast damp patches and shallow irregular water films spreading across the periodic tile, a few subtle small violet-brown oily patches, and two tiny disconnected worn yellowish-white line remnants near different interior locations. Keep paint fragments sparse, not a complete lane line, arrow or letters. Dark pooled water has soft muted glints, with no strong illumination gradient across the tile.",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-71b6f3ff-5128-4573-ab0e-7f599b302f40.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "path": "/workspace/generated_images/exec-71b6f3ff-5128-4573-ab0e-7f599b302f40.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "native_bytes": 4221125,
+      "native_sha256": "1ab4e09eed5c8f8edb87e3bb2fb18d06d2e71a025fec9aa9599eff3bcd030881"
+    }
+  ],
+  "edit_candidate": {
+    "candidate": 3,
+    "references": [
+      "/workspace/world-review/wet-asphalt/candidate-02-offset.png"
+    ],
+    "prompt": "Edit the supplied square 1254x1254 wet asphalt material. Keep the same top-down orthographic dark charcoal/blue-gray surface, aggregate grain scale, asymmetric shallow puddles, subdued purple-brown oil films and two small chipped pale-yellow paint remnants. This image is an exact half-width and half-height cyclic offset of a repeating texture; the OLD four-edge joins are now the CENTRAL PLUS-SHAPED CROSS at x≈627 and y≈627. Repair those two central full-length discontinuities, including their crossing: continue puddle outlines, cracked aggregate and oil stain edges naturally across the old cuts, match coarse grain density and soft gray water values, and remove any straight center-line boundary. Paint only within the narrow vertical and horizontal bands, each about the central 18 percent of the square; avoid a big central feature and avoid making the center brighter. The existing LEFTMOST/RIGHTMOST and TOPMOST/BOTTOMMOST edge areas now belong to naturally adjacent interior regions of the original material. Preserve them and especially all FOUR CORNERS as closely as possible so the resulting left/right AND top/bottom boundaries tile naturally. Do not add a border, illuminated rim, dark groove, mirrored quadrant, four-panel grid, letters, arrows, new paint markings, objects, skyline reflections, neon streaks or a global directional illumination gradient. Keep irregular smooth water films and subtle restrained wet glints, with most pixels still dark asphalt. The whole image remains one opaque, flat square game texture, not a preview montage. Do not alter overall framing or enlarge the grain. Output a repaired production tile only.",
+    "path": "/workspace/generated_images/exec-d57786cc-11c6-42ee-877a-c20a5c37f2bd.png",
+    "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-d57786cc-11c6-42ee-877a-c20a5c37f2bd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_bytes": 3883253,
+    "native_sha256": "dd45295140e71d29dcb784303d1cdde7ed13d9108a884ba1fc19a0d3e8d9a2db",
+    "reference_derivation": {
+      "file": "candidate-02-offset.png",
+      "sha256": "b0e9911dc90f8c5566ed9eb799cb396f9c2f3d860355c3a1dfd6614265e2dc4d",
+      "source_raw": "/workspace/generated_images/exec-71b6f3ff-5128-4573-ab0e-7f599b302f40.png",
+      "operation": "Exact 627px cyclic x and y shift; pixel coordinates only, no blending or painting"
+    }
+  },
+  "selected_candidate": 2,
+  "selection_reason": "Candidate 2 has distributed fragmented road-mark ghosts, shallow dark water films and oil patches, with finer asphalt aggregate than the AI cross-seam repair candidate 3. Independent native and encoded tiling review preferred 2; candidate 3 was not used in the delivered material.",
+  "export": {
+    "candidate": 2,
+    "raw": "exec-71b6f3ff-5128-4573-ab0e-7f599b302f40.png",
+    "native_size": [
+      1254,
+      1254
+    ],
+    "native_bytes": 4221125,
+    "native_sha256": "1ab4e09eed5c8f8edb87e3bb2fb18d06d2e71a025fec9aa9599eff3bcd030881",
+    "export_size": [
+      1024,
+      1024
+    ],
+    "export_bytes": 491514,
+    "export_sha256": "5cb849b916c76d86e80a195169316b6182c4bb3ea37c63aeb467194e2ea2b1f2",
+    "quality": 90,
+    "method": 6,
+    "icc": "sRGB",
+    "lr_mae": 21.347005208333332,
+    "tb_mae": 24.3935546875,
+    "id": "ground_asphalt_wet_01",
+    "file": "ground_asphalt_wet_01.webp",
+    "transform": "Uniform Lanczos downsample 1254x1254 to 1024x1024; no cropping, padding, recoloring, sharpening or manual seam blend",
+    "scale": 0.8165869218500797,
+    "mode": "RGB",
+    "colorspace": "sRGB ICC embedded",
+    "intermediate_export": "candidate-02-1024.webp"
+  },
+  "external_image_references": [],
+  "raw_source_note": "Original image-generation outputs remain at their recorded workspace paths; their sizes/hashes and full prompts are preserved here. Raw PNGs exceed the repository per-file budget and are not committed."
+}
