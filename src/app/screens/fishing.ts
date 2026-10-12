@@ -7,6 +7,7 @@ import { alertSfx, sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
 export const FISHING_CSS = `
+.screen.mg #xui,.screen.mg .xjoy{visibility:hidden}
 .fish-ov{position:absolute;inset:0;z-index:40;display:grid;place-items:center;background:rgba(6,3,16,.72);animation:xhelpIn .25s ease-out both}
 .fish-card{width:min(340px,90%);padding:16px 18px;border-radius:18px;background:rgba(22,14,44,.97);border:2px solid rgba(255,176,74,.65);box-shadow:0 0 28px rgba(255,160,60,.3);color:#eae4ff;text-align:center}
 .fish-card h3{margin:0 0 8px;font-family:var(--f-d);font-size:20px;color:#ffe9a0;letter-spacing:.06em}

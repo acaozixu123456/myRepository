@@ -21,10 +21,11 @@ import { FISHING_CSS, openFishing } from './fishing';
 import { RAMEN_CSS, openRamen } from './ramen';
 import { BOXCAT_CSS, openBoxCat } from './boxcat';
 import { MUSHROOM_CSS, openMushroom } from './mushroom';
+import { WINDCHIME_CSS, openWindChime } from './windchime';
 import { topbar } from './lineup';
 import { playStoryOnce } from '../story';
 
-export const EXPLORE_CSS = FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUSHROOM_CSS + `
+export const EXPLORE_CSS = FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUSHROOM_CSS + WINDCHIME_CSS + `
 .screen.xplore{background:#0d0818}
 .xplore canvas#wcv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
@@ -356,8 +357,13 @@ async function onPoi(ctx: AppCtx, sp: Spawn): Promise<void> {
   if (autoOn) return;
   const host = ctx.root.querySelector('[data-screen="explore"]');
   if (!host) return;
-  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : sp.data === 'boxcat' ? openBoxCat : sp.data === 'mushroom' ? openMushroom : null;
-  if (open) { rainAmbience(false); await open(ctx, host); rainAmbience(true); refreshExploreHud(ctx); }
+  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : sp.data === 'boxcat' ? openBoxCat : sp.data === 'mushroom' ? openMushroom : sp.data === 'windchime' ? openWindChime : null;
+  if (open) {
+    // 小游戏开着时世界本来就是暂停的：把 3D 渲染也停掉（画面定格在背后）。不停的话，慢设备上每帧渲染会拖慢计时器和点击，节奏类玩法会漏拍，也白白耗电。
+    // HUD 也藏起来：它带 backdrop-filter 模糊，盖在定格的 WebGL 画面上每帧都要重新合成，低端机很吃力
+    rainAmbience(false); rt?.wv.stop(); host.classList.add('mg');
+    try { await open(ctx, host); } finally { host.classList.remove('mg'); rt?.wv.start(); rainAmbience(true); refreshExploreHud(ctx); }
+  }
 }
 function onChest(ctx: AppCtx, sp: Spawn) {
   const g = sp.kind === 'herb' ? pickHerb(ctx.s, sp.id) : openChest(ctx.s, sp.id);

@@ -200,6 +200,7 @@ export const LEVEL_5: LevelDef = {
   lights: [[0, 5, 0, 0x9ab8ff, 90, 26], [-14, 6, -4, 0xc08aff, 70, 22], [14, 6, 4, 0x7ff0ff, 70, 22]],
   tram: false, arches: [[0, -15, 0, '云梯', '#9ab8ff']], lanterns: [[-4.5, -9, 4.5, -9, 7, '#c8d8ff'], [-4.5, 9, 4.5, 9, 7, '#e0c8ff']],
   vents: [[-9, 0.5, -7.6], [9, 0.5, 7.6], [-3, 0.5, 8]],
+  pois: [{ id: 'windchime', game: 'windchime', x: -12.5, z: 5.6, label: '风铃架' }],
   ground: { pave: '#3a4a7a', road: 0x8aa0d0 }, ...SPOTS,
 };
 const B6: Placed[] = [

@@ -144,7 +144,7 @@ describe('探索足迹（长期累计）', () => {
   });
   it('里程碑 id 唯一，同类目标越来越大、奖励越来越多', () => {
     expect(new Set(TRAIL.map((m) => m.id)).size).toBe(TRAIL.length);
-    for (const stat of ['kills', 'chests', 'herbs', 'bosses', 'fish', 'ramen', 'found', 'mush'] as const) {
+    for (const stat of ['kills', 'chests', 'herbs', 'bosses', 'fish', 'ramen', 'found', 'mush', 'chime'] as const) {
       const ms = TRAIL.filter((m) => m.stat === stat);
       expect(ms.length).toBeGreaterThanOrEqual(3);
       for (let i = 1; i < ms.length; i++) { expect(ms[i].need).toBeGreaterThan(ms[i - 1].need); expect(ms[i].reward.fish).toBeGreaterThan(ms[i - 1].reward.fish); }
@@ -204,6 +204,7 @@ describe('场景玩法入口（POI）', () => {
   });
   it('纸箱街有纸箱寻猫入口', () => { expect(poisOf(LEVELS[1]).map((p) => p.game)).toContain('boxcat'); });
   it('霓虹森林有蘑菇地入口', () => { expect(poisOf(LEVELS[4]).map((p) => p.game)).toContain('mushroom'); });
+  it('云端雾岛有风铃架入口', () => { expect(poisOf(LEVELS[5]).map((p) => p.game)).toContain('windchime'); });
   it('钓鱼点贴着水边，离水不超过 3 个单位', () => {
     for (const L of Object.values(LEVELS)) for (const p of poisOf(L)) if (p.game === 'fish' && L.water) {
       const [x0, z0, x1, z1] = L.water;
