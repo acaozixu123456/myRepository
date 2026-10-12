@@ -1,0 +1,629 @@
+{
+  "createdAt": "2026-10-12T04:50:10.542Z",
+  "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/world-review/palace-ground/preview-final/capture-tools/review-sheet.mjs --config /workspace/world-review/palace-ground/preview-final/palace-config.json",
+  "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+  "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc",
+  "candidate": "candidate-palace-final",
+  "host": "http://127.0.0.1:46379",
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "args": [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--use-gl=angle",
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader",
+      "--ignore-gpu-blocklist"
+    ],
+    "viewport": [
+      2048,
+      1024
+    ],
+    "deviceScaleFactor": 1
+  },
+  "dependencies": {
+    "threeVersion": "0.169.0",
+    "threeModule": "/workspace/myRepository/node_modules/three/build/three.module.js",
+    "threeModuleSHA256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+    "roomEnvironmentModule": "/workspace/myRepository/node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+    "roomEnvironmentModuleSHA256": "85869bdd22f7cf0b22e68dcefe6cb710480af0f5c901a76f7a7764fd07fc8014",
+    "configFile": "/workspace/world-review/palace-ground/preview-final/palace-config.json",
+    "configSHA256": "5e0c49554b3e8f9338ec2eb25906f8286da9da30d76f58af80b9b4b26c9e190b",
+    "themeContextSHA256": "a12d99f14a971dbadafbb03c4a5b14867dc0c2001a8f417479fc33c59a08cc9e",
+    "dependencyVerification": "/workspace/world-review/palace-ground/preview-final/dependency-e6-to-4b.json",
+    "dependencyVerificationSHA256": "d7710589ebfb464e99d18ca420700163064c429376383bdc47880803b7f169bc"
+  },
+  "sources": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "label": "汉白玉 · 淡金纹",
+      "theme": "palace",
+      "source": "/workspace/world-review/palace-ground/exports/ground_palace_white_marble_03.webp",
+      "sha256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 124046,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "RGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+      "iccBytes": 588,
+      "sourceSelection": "Existing anchor C1",
+      "status": "Current root-selected source; recapture on new root hash if candidate changes."
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "label": "汉白玉 · 云灰纹",
+      "theme": "palace",
+      "source": "/workspace/world-review/palace-ground/exports/ground_palace_cloud_marble_04.webp",
+      "sha256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 107562,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "RGBSHA256": "36d6abdf08e12443b882d0b628c22d2d9b2f381bfc04e557b43c6596c1da52c5",
+      "iccBytes": 588,
+      "sourceSelection": "Root generated genuine anchor-reference variant",
+      "status": "Current root-selected source; recapture on new root hash if candidate changes."
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "label": "汉白玉 · 金丝纹",
+      "theme": "palace",
+      "source": "/workspace/world-review/palace-ground/exports/ground_palace_gold_thread_05.webp",
+      "sha256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 106010,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "RGBSHA256": "6966b352510c98bf1ee58c1d72e35fab311f12b9f011e538aa0597f4e1036185",
+      "iccBytes": 588,
+      "sourceSelection": "Root generated genuine anchor-reference variant",
+      "status": "Current root-selected source; recapture on new root hash if candidate changes."
+    }
+  ],
+  "sourceStayedFrozen": true,
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleMessages": [],
+  "independentMaterialSample": true,
+  "gameScreenshot": false,
+  "worldEngineImported": false,
+  "sourceImagesLoaded": 3,
+  "loads": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "size": [
+        1024,
+        1024
+      ]
+    }
+  ],
+  "size": [
+    2048,
+    1024
+  ],
+  "repeats": [
+    [
+      1,
+      1
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      4,
+      4
+    ]
+  ],
+  "thumbnailSizes": [
+    256,
+    128,
+    64
+  ],
+  "seamCoverLines": false,
+  "imageColorEdits": false,
+  "artificialMasking": false,
+  "proofs": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "lr",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          384,
+          128,
+          256,
+          0,
+          0,
+          128,
+          256
+        ],
+        [
+          0,
+          384,
+          128,
+          256,
+          128,
+          0,
+          128,
+          256
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-lr.png",
+      "bytes": 95698,
+      "sha256": "2a8749f84ab0476227167ea5181c9624ced94aa9059c5c6dec6128a8bd65b7d8"
+    },
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "tb",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          384,
+          896,
+          256,
+          128,
+          0,
+          0,
+          256,
+          128
+        ],
+        [
+          384,
+          0,
+          256,
+          128,
+          0,
+          128,
+          256,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-tb.png",
+      "bytes": 94671,
+      "sha256": "076827ee1e52f74ee0766a3904587fccb4ae08053b97d23a613a43d596e62994"
+    },
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "corners",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          896,
+          128,
+          128,
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          0,
+          896,
+          128,
+          128,
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          896,
+          0,
+          128,
+          128,
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          0,
+          0,
+          128,
+          128,
+          128,
+          128,
+          128,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-corners.png",
+      "bytes": 100673,
+      "sha256": "a999bd7b4025d191b37cea299e31eb3f67383b825fe5031d2f114d09a3b0585f"
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "lr",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          384,
+          128,
+          256,
+          0,
+          0,
+          128,
+          256
+        ],
+        [
+          0,
+          384,
+          128,
+          256,
+          128,
+          0,
+          128,
+          256
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-lr.png",
+      "bytes": 87325,
+      "sha256": "50511d26a274b030d1a0c4e88f21829ec9b0ca4ceea7e17cc1ce2e66ffddf90e"
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "tb",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          384,
+          896,
+          256,
+          128,
+          0,
+          0,
+          256,
+          128
+        ],
+        [
+          384,
+          0,
+          256,
+          128,
+          0,
+          128,
+          256,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-tb.png",
+      "bytes": 83814,
+      "sha256": "bc707107fa3a0ab87d0b52640ea8feca37d415d372f81c64eb67dd3df95b0a66"
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "corners",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          896,
+          128,
+          128,
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          0,
+          896,
+          128,
+          128,
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          896,
+          0,
+          128,
+          128,
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          0,
+          0,
+          128,
+          128,
+          128,
+          128,
+          128,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-corners.png",
+      "bytes": 87348,
+      "sha256": "67b070fd31131fea2c681bf68e571c3d017c545c0cb70db0479114fccd4bb122"
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "lr",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          384,
+          128,
+          256,
+          0,
+          0,
+          128,
+          256
+        ],
+        [
+          0,
+          384,
+          128,
+          256,
+          128,
+          0,
+          128,
+          256
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-lr.png",
+      "bytes": 87071,
+      "sha256": "06feed506b1f33de5c530876047763ef249e7ac9f78589f689bd5499fac5b2c5"
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "tb",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          384,
+          896,
+          256,
+          128,
+          0,
+          0,
+          256,
+          128
+        ],
+        [
+          384,
+          0,
+          256,
+          128,
+          0,
+          128,
+          256,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-tb.png",
+      "bytes": 81342,
+      "sha256": "9bf737c2cc81cb089481a0b77510df325866636063ee318d730be64ba63f2213"
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "corners",
+      "size": [
+        256,
+        256
+      ],
+      "rectangles": [
+        [
+          896,
+          896,
+          128,
+          128,
+          0,
+          0,
+          128,
+          128
+        ],
+        [
+          0,
+          896,
+          128,
+          128,
+          128,
+          0,
+          128,
+          128
+        ],
+        [
+          896,
+          0,
+          128,
+          128,
+          0,
+          128,
+          128,
+          128
+        ],
+        [
+          0,
+          0,
+          128,
+          128,
+          128,
+          128,
+          128,
+          128
+        ]
+      ],
+      "nativeScale": 1,
+      "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-corners.png",
+      "bytes": 86408,
+      "sha256": "0327419267032babb1b61c4a3b09c86916756766eb05bf9b844697f6141c18fa"
+    }
+  ],
+  "nativeVerification": {
+    "checked": 9,
+    "results": [
+      {
+        "id": "ground_palace_white_marble_03",
+        "kind": "lr",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_white_marble_03",
+        "kind": "tb",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_white_marble_03",
+        "kind": "corners",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_cloud_marble_04",
+        "kind": "lr",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_cloud_marble_04",
+        "kind": "tb",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_cloud_marble_04",
+        "kind": "corners",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_gold_thread_05",
+        "kind": "lr",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_gold_thread_05",
+        "kind": "tb",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      },
+      {
+        "id": "ground_palace_gold_thread_05",
+        "kind": "corners",
+        "size": [
+          256,
+          256
+        ],
+        "RGBPixelsEqualToDecodedSource": true,
+        "pixelsChecked": 65536
+      }
+    ]
+  },
+  "output": {
+    "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09.webp",
+    "width": 2048,
+    "height": 1024,
+    "bytes": 253880,
+    "quality": 92,
+    "method": 6,
+    "lossless": false,
+    "sha256": "6e1b9cf6a0cd393b2ebd73c6e6786d2128238192735e65f10ce0db266673bd93",
+    "originalPNG": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09.png",
+    "originalPNGSha256": "4ced348ea631820eb59d257f582735271adf12d49b78b6e697ee202a46fac924",
+    "encoding": "Screenshot-only WebP compression. Source images unchanged; native proofs remain lossless PNG."
+  },
+  "toolSHA256": {
+    "common": "b370fe71e01707622bb11f4a5f1bbe429d494e06a6bcefc42d31be33fe54f2e1",
+    "driver": "2398e1ebff419b525535cad581cce9864aec1c46635f6fe1d3ff3b8d72abbbef",
+    "css": "dd6b303d55bf92c73094819544b2cdf666c6c0c91420e37222a8efd1a89ad75f",
+    "nativeVerifier": "d046ec69326c33b766c5e1de6dcd0f95e3b2f2905a06ba36f9c8b6be77866a9c"
+  },
+  "method": "Direct same-source CSS repeats; native integer1:1 canvas edge/corner crops; no painting, recoloring, masks or seam covering lines. Screenshot WebP is a compressed overview; separate PNG proofs preserve exact source RGB."
+}
