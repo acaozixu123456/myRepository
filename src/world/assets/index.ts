@@ -29,6 +29,12 @@ import ground_forest_moss_leaves_02 from './ground_forest_moss_leaves_02.webp';
 import ground_harbor_narrowwood_03 from './ground_harbor_narrowwood_03.webp';
 import ground_harbor_oldwood_01 from './ground_harbor_oldwood_01.webp';
 import ground_harbor_washed_02 from './ground_harbor_washed_02.webp';
+import ground_market_sandstone_weave_03 from './ground_market_sandstone_weave_03.webp';
+import ground_market_slate_02 from './ground_market_slate_02.webp';
+import ground_market_terracotta_01 from './ground_market_terracotta_01.webp';
+import ground_palace_cloud_marble_04 from './ground_palace_cloud_marble_04.webp';
+import ground_palace_gold_thread_05 from './ground_palace_gold_thread_05.webp';
+import ground_palace_white_marble_03 from './ground_palace_white_marble_03.webp';
 import ground_tile_slate_01 from './ground_tile_slate_01.webp';
 import ad_ninelives_hologram_06 from './ad_ninelives_hologram_06.webp';
 import sign_bar_vertical_05 from './sign_bar_vertical_05.webp';
@@ -74,6 +80,12 @@ export const WORLD_TEX: Record<string, string> = {
   ground_harbor_narrowwood_03,
   ground_harbor_oldwood_01,
   ground_harbor_washed_02,
+  ground_market_sandstone_weave_03,
+  ground_market_slate_02,
+  ground_market_terracotta_01,
+  ground_palace_cloud_marble_04,
+  ground_palace_gold_thread_05,
+  ground_palace_white_marble_03,
   ground_tile_slate_01,
   ad_ninelives_hologram_06,
   sign_bar_vertical_05,
