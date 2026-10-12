@@ -20,8 +20,8 @@ export const lineupState = { faction: 'all' as FactionId | 'all', pickSlot: null
 function petChip(s: PlayerState): string {
   const a = activePet(s);
   const d = a && PET_BY_ID[a.id];
-  if (!a || !d) return `<button class="btn sm ghost" data-act="nav" data-to="pets" title="宠物">🐾 去领宠物</button>`;
-  return `<button class="btn sm ghost" data-act="nav" data-to="pets" title="出战宠物：${d.name}，技能 ${d.skill.name}">🐾 ${d.name} <b>+${(petBonus(a.owned) * 100).toFixed(1)}%</b></button>`;
+  if (!a || !d) return `<button class="btn sm ghost" data-act="nav" data-to="pets" title="宠物">${icon('paw', 18)} 去领宠物</button>`;
+  return `<button class="btn sm ghost" data-act="nav" data-to="pets" title="出战宠物：${d.name}，技能 ${d.skill.name}">${icon('paw', 18)} ${d.name} <b>+${(petBonus(a.owned) * 100).toFixed(1)}%</b></button>`;
 }
 
 export function topbar(ctx: AppCtx, title: string, right = ''): string {

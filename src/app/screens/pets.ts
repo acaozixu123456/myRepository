@@ -49,14 +49,14 @@ export function petsHtml(ctx: AppCtx): string {
     detail = `<div class="pt-info"><div class="pt-top"><h3>？？？</h3><span class="pt-rar" style="background:${RC[def.rarity]}">${PET_RARITY_NAME[def.rarity]}</span></div><p class="pt-tag">还没有遇见这只小猫。去孵宠物蛋，说不定就是它。</p><div class="pt-skill"><b>${icon('spark', 18)} ${esc(def.skill.name)}</b><p>${esc(def.skill.desc)}</p></div></div>`;
   }
   return `
-  ${topbar(ctx, `宠物${infoBtn(HELP, '宠物说明')}`, `<span class="chip">🥚<b class="num">${p.eggs}</b></span>`)}
+  ${topbar(ctx, `宠物${infoBtn(HELP, '宠物说明')}`, `<span class="chip">${icon('egg', 20)}<b class="num">${p.eggs}</b></span>`)}
   <div class="scroll" style="padding:0 0 18px">
     <div class="pt-stage" style="--rc:${RC[def.rarity]}">
       <div class="rays"></div><img src="${artUrl(sel, 'full')}" alt="${esc(def.name)}" draggable="false" class="${own ? '' : 'sil'}">
     </div>
     ${detail}
     <div class="pt-hatch">
-      <button class="btn lg ${p.eggs > 0 ? '' : 'dim'}" data-act="pet-hatch">🥚 孵蛋 <span class="cost">×${p.eggs}</span></button>
+      <button class="btn lg ${p.eggs > 0 ? '' : 'dim'}" data-act="pet-hatch">${icon('egg', 24)} 孵蛋 <span class="cost">×${p.eggs}</span></button>
       <button class="btn blue ${s.res.bells >= PET_EGG_BELLS ? '' : 'dim'}" data-act="pet-buy">买蛋 <span class="cost">${icon('bells', 16)}${PET_EGG_BELLS}</span></button>
       <small>传说保底：${p.pity}/${PET_PITY}　已孵 ${p.hatched}　图鉴 ${Object.keys(p.owned).length}/${PETS.length}</small>
     </div>
