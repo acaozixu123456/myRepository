@@ -202,8 +202,9 @@
 | `xian_changmiao` / `weapon` | 待审 | 1 | 月桂三枝；Y 形空隙、两片宽主叶、两颗节点月珠；23 逻辑网格 |
 
 - 分支 `codex/3d-heroes-sp-weapons`。仅登记三个英雄武器，不改变同类泛用部件；参考三张原 JPG、三张批准立绘和英雄 lore，完整记录见 [README](../src/art3d/parts/reviews/heroes-sp-weapons/README.md)。
-- [三姿势](../src/art3d/parts/reviews/heroes-sp-weapons/poses.png)、[约 190px 检查](../src/art3d/parts/reviews/heroes-sp-weapons/poses-190px.png)、[正常烘焙前后](../src/art3d/parts/reviews/heroes-sp-weapons/before-after.png)、[真实十猫战斗](../src/art3d/parts/reviews/heroes-sp-weapons/battle.webp)；另有正面、反向、背面、弓动作探针与泛用家族图，全部原尺寸无损、单文件 <500000 B。
+- [三姿势](../src/art3d/parts/reviews/heroes-sp-weapons/poses.png)、[约 190px 检查](../src/art3d/parts/reviews/heroes-sp-weapons/poses-190px.png)、[正常烘焙前后](../src/art3d/parts/reviews/heroes-sp-weapons/before-after.png)、[最新真实十猫战斗](../src/art3d/parts/reviews/heroes-sp-weapons/battle-latest.webp)；另有正面、反向、背面、弓动作探针与泛用家族图，全部原尺寸无损、单文件 <500000 B。
 - 独立 [QA](../src/art3d/parts/reviews/heroes-sp-weapons/qa-summary.md) 检查 42 个全姿势例和 108 个时间样本；实际烘焙眼芯网格、鼻口按具体采样 ID 比较，新增遮挡均 0。三主要姿势 108 例眼 / 鼻口遮挡均 0；庞统原有 thrust / castFwd / guard 的眼采样 25 / 19 / 29 与基线同 ID，thrust 原有鼻采样 1 相同，保守深度计数不等于可见像素数。
 - 全 77 位英雄 / 杂兵显式传 heroId 构建：三目标实际命中，其余 74 位几何属性和索引逐数组相同；正常战斗 10/10 cat3d、三个命名武器组命中。三根保持掌心原点、正缩放、缓存材质，最大分段 20，无每帧新增对象。
 - 150 例非有限坐标、武器出框、新增整猫裁切与四边裁幅增加均 0。完整模型继承静态 5 / 动画 12 例裁切（司马披风下沿、嫦喵 victory 冠顶）；windup 的右爪落入后颅和武器交叠也有旧基线，不把顶点数当可见穿模证明，未改姿势或镜头。
 - 图 / QA 使用 `aa9afd3` 基线，最新主分支 `e6e89a9` 的相关 art3d / data / fx 文件逐字节相同，合入最新主分支后 typecheck 与 67 文件 / 1011 测试通过。最不满意：strike 羽扇仍呈窄斜面；月桂叶脉 / 月珠在战斗尺度较小，前举侧弓饰细节偏少。
+- 随后同步 `fecef9e` 的宠物 / 头缩放更新：三位 SP head=1，实际正常 bake 属性与索引字节、idle 世界矩阵和完整 150 例目标审核记录与旧引擎相同；最新同引擎 74 非目标字节一致。家族与十猫战斗另拍最新图，原独立图 / 报告保留。[复核](../src/art3d/parts/reviews/heroes-sp-weapons/latest-engine-check.md) 由维护者重新运行冻结夹具，68 文件 / 1019 测试通过。

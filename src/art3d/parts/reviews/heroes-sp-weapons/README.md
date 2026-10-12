@@ -48,6 +48,10 @@
 | [family.png](family.png) | 同类别使用者 idle，yaw=-32° | 1000×1360 | 146962 |
 | [battle.webp](battle.webp) | 真实十猫战斗，frame00 / t=3.25s | 948×593 | 387378 |
 
+上述原始审图与独立 QA 保留原文件，源自 `aa9afd3 / e6e89a9` 引擎。随后主分支 `fecef9e` 修正 `look.head` 的整颗头缩放，本 PR 已同步，并另拍 [family-latest.png](family-latest.png)（1000×1360、162033 B）与 [battle-latest.webp](battle-latest.webp)（948×593、388032 B）。这两张包含其他头部比例的英雄，使用最新引擎；没有用旧图冒充更新后的完整阵容。两图均原尺寸无损、RGBA 差 0，最新战斗仍为 12 帧中的 frame00 / t=3.25s，真实 10/10 cat3d 与 3/3 SP 专属组命中、运行错误 0。
+
+三位 SP 的 `look.head` 都为 1。维护者以独立审核的冻结夹具重新检查最新引擎，三位正常 bake 的全部 geometry 属性 / 索引字节与 idle 世界矩阵逐值相同，完整 150 个目标审核记录也与原独立记录相同，因此三位的原三姿势 / 四方向 / 对照图仍适用；这项相等结论不延伸到其他英雄。最新同引擎下重查 77 位英雄 / 杂兵，74 非目标字节不变，详见 [最新引擎复核](latest-engine-check.md) / [机器报告](latest-engine-check.json)。
+
 `family.png` 六行依次是 `wei_simamiyi / shu_zhugemiaoliang / shu_pangmiaotong / wu_sunxiangxiang / xian_changmiao / qun_huatuo`：展示三套专属与三位泛用 fan / bow / herbs 使用者的真实造型。它比较不同英雄，不作同一英雄的前后对照。
 
 独立审核见 [qa-summary.md](qa-summary.md) 与保留逐样本 ID 的 [qa-summary.json](qa-summary.json)；[before-after.png](before-after.png) 是同一英雄左基线 / 右候选的正常烘焙对照，由独立审核者拍摄。
@@ -77,7 +81,7 @@ node .shots/sp-weapons/battle-stable.mjs 'r3d=1&seed=2&theme=meadow&a=wei_simami
 
 ## 验证与实际边界
 
-`aa9afd3` 上的 `npm run typecheck && npm test` 退出 0，**66 文件 / 987 测试通过**；合入最新主分支 `e6e89a9` 后再次通过，**67 文件 / 1011 测试**。该次主分支更新只涉及场景、文档与测试，`src/art3d / src/art / src/data / src/fx` 无变更；正式图与 QA 的冻结源码及相关引擎 SHA 不变。`git diff --check` 通过。
+`aa9afd3` 上的 `npm run typecheck && npm test` 退出 0，**66 文件 / 987 测试通过**；同步 `e6e89a9` 后通过 **67 文件 / 1011 测试**，该次场景更新的相关角色引擎无变更。再同步宠物及头缩放更新 `fecef9e` 后通过 **68 文件 / 1019 测试**，对应最新复核与新战斗 / 家族图。专属源码 SHA 始终为 `7656746361b4…`；旧 / 新 cat3d SHA 分别 `06e44bc8… / ac0843cf…`，不声称引擎源码未变。`git diff --check` 通过。
 
 | 武器 | 逻辑网格 | 描边子 Mesh | 烘焙前实际 Mesh | 最大分段 |
 | --- | --- | --- | --- | --- |
