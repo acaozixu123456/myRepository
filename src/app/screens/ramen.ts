@@ -1,4 +1,6 @@
 // 拉面屋台小游戏界面：接单 → 按顺序加料（限时）→ 在绿区里起锅。规则在 game/ramen.ts。
+import { dailyEgg } from '../../game/pets';
+import { dayIndex } from '../../game/premium';
 import { BOIL_ZONE, CUSTOMERS, TOPPINGS, TOPPING_TIME, judgeBoil, judgeToppings, makeOrder, markerPos, ordersLeft, ramenGain, recordBowl, stars, useOrder } from '../../game/ramen';
 import type { Topping } from '../../game/ramen';
 import { gainIcons, starsHtml } from '../../ui/gain';
@@ -94,7 +96,7 @@ export function openRamen(ctx: AppCtx, host: Element): Promise<void> {
       const st = served ? stars(top, boil) : 0;
       const g = ramenGain(ctx.s, st);
       if (st > 0) { applyGain(ctx.s, g); sfx.coin(); if (st === 3) sfx.up(); } else sfx.no();
-      recordBowl(ctx.s, st); ctx.save();
+      recordBowl(ctx.s, st); if (st === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       phase = 'result'; main.style.display = ''; main.disabled = false; main.innerHTML = ordersLeft(ctx.s) > 0 ? '🔁 下一单' : '😴 今天打烊了'; if (ordersLeft(ctx.s) <= 0) main.disabled = true;
       const face = !served ? '😾' : boil === 'miss' ? '😿' : st === 3 ? '😻' : '😺';
       body.innerHTML = `<span class="mg-big">${face}</span>${starsHtml(st)}<div style="margin-top:6px">${st > 0 ? gainIcons(g, 20) : ''}</div>`;

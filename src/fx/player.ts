@@ -1,6 +1,7 @@
 // 战斗回放器：把引擎产出的事件时间线，变成会动的战斗。
 import { FACTIONS } from '../data/factions';
 import { lookOf, unitInfo } from '../data/units';
+import { PET_BY_ID } from '../data/pets';
 import { STATUSES } from '../data/statuses';
 import type { BEvent } from '../engine/types';
 import { Actor, POSES } from './actor';
@@ -48,6 +49,8 @@ export class Player {
   aborted = false;
   onLog: (s: string) => void = () => undefined;
   private lastPassive = new Map<number, number>();
+  /** 宠物小猫（不在 actors 里，不会成为技能目标；第一次出手时才召出） */
+  private petActors = new Map<'A' | 'B', Actor>();
   private bgCache = new Map<string, HTMLCanvasElement>();
   private portraits = new Map<string, HTMLCanvasElement>();
 
@@ -74,6 +77,7 @@ export class Player {
 
   async setup(start: StartEv, theme: BgTheme = 'meadow', progress?: (p: number) => void) {
     this.actors.clear();
+    this.petActors.clear();
     this.scene.clearAll();
     this.banner = null;
     this.lastPassive.clear();
@@ -125,6 +129,13 @@ export class Player {
         let j = i + 1;
         while (j < events.length && !['act', 'round', 'end', 'combo'].includes(events[j].t)) j++;
         await this.doCombo(e, events.slice(i + 1, j));
+        i = j;
+        continue;
+      }
+      if (e.t === 'pet') {
+        let j = i + 1;
+        while (j < events.length && !['act', 'round', 'end', 'combo', 'pet'].includes(events[j].t)) j++;
+        await this.doPet(e, events.slice(i + 1, j));
         i = j;
         continue;
       }
@@ -195,6 +206,39 @@ export class Player {
     this.scene.tween(this.scene, { dim: 0 }, 0.3, 'out');
     for (const m of members) { m.moving = false; void m.poseTo(POSES.idle, 0.25); }
     await this.sleep(0.5);
+  }
+
+  /** 宠物技：小猫从队伍后面蹦出来放一次技能，放完淡出 */
+  private async doPet(e: Extract<BEvent, { t: 'pet' }>, batch: BEvent[]) {
+    let pet = this.petActors.get(e.side);
+    if (!pet) {
+      const rig = use3D() ? buildRig3D(lookOf(e.id), 0.62 * this.scene.dpr, e.id) : await cachedRig(e.id, 0.62 * this.scene.dpr);
+      const x = e.side === 'A' ? 112 : 848;
+      const info: ActorInfo = { uid: e.side === 'A' ? -1 : -2, side: e.side, name: PET_BY_ID[e.id]?.name ?? '宠物', faction: 'xian', heroId: e.id, maxHp: 1, hp: 1 };
+      pet = new Actor(this.scene, rig, info, x, 548, 0.34);
+      pet.hudAlpha = 0;
+      pet.alpha = 0;
+      this.petActors.set(e.side, pet);
+      this.scene.actors.push(pet);
+    }
+    const targets = e.targets.map((id) => this.actors.get(id)!).filter(Boolean);
+    this.onLog(`🐾 ${pet.name} ${e.name}`);
+    const fake = { t: 'act', uid: pet.uid, skill: e.name, fx: e.fx, kind: 'tactic', targets: e.targets, melee: false } as Extract<BEvent, { t: 'act' }>;
+    const c = new Choreo(this, pet, targets, batch, fake);
+    const b = { text: `🐾 ${pet.name}・${e.name}`, sub: '', a: 0, y: 0 };
+    this.banner = b;
+    void this.scene.tween(pet, { alpha: 1 }, 0.2, 'out');
+    await this.scene.tween(b, { a: 1 }, 0.16, 'out');
+    const fx = SKILL_FX[e.fx] ?? defaultFx(fake);
+    try { await fx(c); } catch (err) { console.error('pet fx failed', e.fx, err); }
+    c.rest();
+    this.scene.resetCam(0.35);
+    pet.moving = false;
+    void pet.poseTo(POSES.idle, 0.2);
+    await this.scene.tween(b, { a: 0 }, 0.2, 'in');
+    this.banner = null;
+    await this.scene.tween(pet, { alpha: 0 }, 0.25, 'in');
+    await this.sleep(0.15);
   }
 
   private async doAct(e: Extract<BEvent, { t: 'act' }>, batch: BEvent[]) {

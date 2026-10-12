@@ -188,7 +188,9 @@ export type RuleFx = ((
 ) & { needFactions?: number });
 
 /** tactics / combos：实战才开（战技、羁绊合击技）；引擎规则测试与平衡实验默认关，保证口径稳定 */
-export interface BattleConfig { tactics?: boolean; combos?: boolean; /** 合击技触发间隔（回合），缺省 3；演示 / 测试用 */ comboEvery?: number; seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number }; noBonds?: boolean; rules?: RuleFx[] /* 平衡实验用：关闭命名羁绊（阵营同族加成保留） */ }
+/** 出战宠物：id 取自 data/pets，power 是等级 / 星级决定的技能威力倍率 */
+export interface PetCfg { id: string; power: number }
+export interface BattleConfig { pet?: { A?: PetCfg; B?: PetCfg }; tactics?: boolean; combos?: boolean; /** 合击技触发间隔（回合），缺省 3；演示 / 测试用 */ comboEvery?: number; seed: number; A: UnitSetup[]; B: UnitSetup[]; maxRounds?: number; startEnergy?: number | { A: number; B: number }; noBonds?: boolean; rules?: RuleFx[] /* 平衡实验用：关闭命名羁绊（阵营同族加成保留） */ }
 
 export interface StatusInst { id: string; turns: number; stacks: number; power: number; snap: number; src: number }
 
@@ -244,5 +246,6 @@ export type BEvent =
   | { t: 'text'; uid: number; text: string }
   | { t: 'passive'; uid: number; name: string }
   | { t: 'combo'; side: 'A' | 'B'; bond: string; name: string; fx: string; members: number[]; targets: number[] } // 合击技：羁绊成员齐出手
+  | { t: 'pet'; side: 'A' | 'B'; id: string; name: string; fx: string; targets: number[] } // 宠物技：第 2、5、8… 回合开场，由一只小猫出手
   | { t: 'summon'; uid: number; beast: string; count: number; targets: number[] }
   | { t: 'end'; winner: 'A' | 'B' | 'draw'; rounds: number };

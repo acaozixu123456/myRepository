@@ -45,7 +45,7 @@ export function handleDaily(ctx: AppCtx, act: string): boolean {
       const r = fastExplore(s);
       if (!r.ok) { ctx.toast(r.reason); return true; }
       ctx.save(); sfx.coin(); floaty(ctx, `+${fmt(r.fish)}`, 'fish', 50, 40);
-      ctx.toast(`快速探索：${FAST_MINUTES / 60} 小时收益 ${fmt(r.fish)} 小鱼干、${fmt(r.exp)} 经验${r.paid ? `（花了 ${FAST_COST} 金铃铛）` : ''}`);
+      ctx.toast(`快速探索：${FAST_MINUTES / 60} 小时收益 ${fmt(r.fish)} 小鱼干、${fmt(r.exp)} 经验${r.paid ? `（花了 ${FAST_COST} 金铃铛）` : ''}${r.egg ? '　🥚 +1 宠物蛋' : ''}`);
       updateHome(ctx);
       return true;
     }

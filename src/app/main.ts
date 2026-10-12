@@ -14,6 +14,7 @@ import { BattleLoop } from './battleLoop';
 import type { AppCtx, ScreenId } from './ctx';
 import { claim, floaty, homeHtml, updateHome, updateIdle, updateQuick, updateTicker } from './screens/home';
 import { lineupHtml, lineupState } from './screens/lineup';
+import { petsHtml, handlePets } from './screens/pets';
 import { gachaHtml, gachaState, doPull, ratesDialog } from './screens/gacha';
 import { closeSheet, handleDetail, openHeroSheet } from './screens/detail';
 import { applyGain, idleCapHours, nextStage, recommendedPowerOf, tickIdle } from '../game/stage';
@@ -90,6 +91,7 @@ app.innerHTML = `<div class="app" id="root">
   <div class="screen shop-screen" data-screen="pay"></div>
   <div class="screen shop-screen" data-screen="social"></div>
   <div class="screen shop-screen" data-screen="events"></div>
+  <div class="screen shop-screen pets-screen" data-screen="pets"></div>
   <div class="screen xplore" data-screen="explore">${exploreHtml()}</div>
   <nav class="nav" id="nav">
     <button data-act="nav" data-to="explore">${icon('paw', 30)}探索</button>
@@ -157,6 +159,7 @@ const ctx: AppCtx = {
     else if (scr === 'quests') (root.querySelector('[data-screen=quests]') as HTMLElement).innerHTML = questsHtml(ctx);
     else if (scr === 'social') { (root.querySelector('[data-screen=social]') as HTMLElement).innerHTML = socialHtml(ctx); const lg = root.querySelector('.chat-log') as HTMLElement | null; if (lg) { lg.scrollTop = lg.scrollHeight; markRead(state); } }
     else if (scr === 'events') (root.querySelector('[data-screen=events]') as HTMLElement).innerHTML = eventsHtml(ctx);
+    else if (scr === 'pets') (root.querySelector('[data-screen=pets]') as HTMLElement).innerHTML = petsHtml(ctx);
     else if (scr === 'pay') (root.querySelector('[data-screen=pay]') as HTMLElement).innerHTML = payHtml(ctx);
     else if (scr === 'shop') (root.querySelector('[data-screen=shop]') as HTMLElement).innerHTML = shopHtml(ctx);
     else if (scr === 'explore') refreshExploreHud(ctx);
@@ -230,6 +233,7 @@ root.addEventListener('click', (e) => {
   if (handlePay(ctx, act, el)) return;
   if (handleExplore(ctx, act, el)) return;
   if (handleEvents(ctx, act, el)) return;
+  if (handlePets(ctx, act, el)) return;
   if (handleSocial(ctx, act, el)) return;
   if (handleDaily(ctx, act)) return;
   switch (act) {

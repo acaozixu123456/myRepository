@@ -1,4 +1,6 @@
 // 点灯小游戏界面：3×3 宫灯，点一盏翻转它和上下左右，全部点亮过关。规则在 game/lanterns.ts。
+import { dailyEgg } from '../../game/pets';
+import { dayIndex } from '../../game/premium';
 import { CELLS, PUZZLES, lanternGain, lit, makePuzzle, recordSolved, runsLeft, solved, stars, tap, useRun } from '../../game/lanterns';
 import type { Puzzle } from '../../game/lanterns';
 import { gainIcons, starsHtml } from '../../ui/gain';
@@ -62,7 +64,7 @@ export function openLanterns(ctx: AppCtx, host: Element): Promise<void> {
     let alive = true;
     const finish = () => {
       const st = stars(true, extra), g = lanternGain(ctx.s, st);
-      applyGain(ctx.s, g); recordSolved(ctx.s, solvedN); ctx.save(); sfx.up();
+      applyGain(ctx.s, g); recordSolved(ctx.s, solvedN); if (st === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save(); sfx.up();
       phase = 'result'; reset.style.display = 'none'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       status.innerHTML = `${starsHtml(st)}<div class="mg-sub" style="margin-top:6px">${gainIcons(g, 20)}</div>`;
       state = 0b111111111; draw(); movesEl.innerHTML = extra === 0 ? '🏆' : `➕ ${extra}`; refresh();
