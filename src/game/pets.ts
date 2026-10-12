@@ -39,11 +39,12 @@ export const petLvCap = (star: number) => Math.min(PET_LV_MAX, 10 + 4 * star);
 export const petLvCost = (lv: number) => 400 * lv;
 export const petStarCost = (star: number) => Math.floor(10 * star + 5 * star * star); // 1→2: 15, 2→3: 40, 3→4: 75, 4→5: 120
 /** 技能威力倍率：等级 +2.5%/级，星级 +8%/星 */
-export const petPower = (o: PetOwned) => (1 + (o.lv - 1) * 0.025) * (1 + (o.star - 1) * 0.08);
+export const PET_SKILL_K = 0.45; // 平衡抽样：Lv5 宠物约等于全队 +2 级（原系数约 +3 级，前期首领通关率 +40 个点）
+export const petPower = (o: PetOwned) => PET_SKILL_K * (1 + (o.lv - 1) * 0.025) * (1 + (o.star - 1) * 0.08);
 /** 全队属性加成（hp / atk / def 同比例），< 10% */
 export function petBonus(o: PetOwned | undefined): number {
   if (!o) return 0;
-  return 0.02 + 0.0012 * (o.lv - 1) + 0.008 * (o.star - 1);
+  return 0.015 + 0.0012 * (o.lv - 1) + 0.008 * (o.star - 1);
 }
 export const petMul = (s: PlayerState): number => {
   const p = s.pets;
