@@ -12,6 +12,7 @@ import { FURNITURE, NEST_MAX_DAYS, buyFurniture, collectNest, comfortOf, ensureN
 import { canClaimCard, vipLevel } from '../../game/premium';
 import { artUrl } from '../../ui/art';
 import { fmt } from '../../ui/components';
+import { icon } from '../../ui/icons';
 import { FACTIONS, FACTION_ORDER } from '../../data/factions';
 import { esc } from '../../ui/components';
 import type { AppCtx } from '../ctx';
@@ -20,12 +21,13 @@ import { topbar } from './lineup';
 
 type Tab = 'dex' | 'nest' | 'mail' | 'sprint' | 'carnival' | 'spin' | 'quiz' | 'wish' | 'pulls' | 'rank' | 'open' | 'festival' | 'first' | 'cum' | 'growth' | 'pass' | 'packs';
 export const eventsState = { tab: 'sprint' as Tab, spinning: false, hit: -1 };
+const TAB_EMOJI: Record<string, string> = {'dex': '📖', 'nest': '🛏️', 'mail': '✉️', 'sprint': '🏃', 'carnival': '🎪', 'spin': '🎰', 'quiz': '❓', 'wish': '⛲', 'pulls': '🎴', 'rank': '📈', 'open': '🏁', 'festival': '🎊', 'first': '🎁', 'cum': '💰', 'growth': '🌱', 'pass': '🎫', 'packs': '🛍️'};
 const TABS: [Tab, string, boolean][] = [['dex', '图鉴奖励', false], ['nest', '猫窝', false], ['mail', '邮件', false], ['sprint', '七日喵程', false], ['carnival', '嘉年华', false], ['spin', '猫抓机', false], ['quiz', '问答', false], ['wish', '许愿池', false], ['pulls', '招募盛典', false], ['rank', '周冲榜', false], ['open', '开服冲榜', false], ['festival', '节日', false], ['first', '首充豪礼', true], ['cum', '周累充', true], ['growth', '成长基金', true], ['pass', '通行证', true], ['packs', '礼包', true]];
 
 const ordinal = (ctx: AppCtx) => { const b = ctx.s.best ?? ctx.s.stage; return (b.chapter - 1) * 24 + b.index; };
-function rbtn(act: string, data: Record<string, string | number>, state: 'ok' | 'done' | 'lock', label = '领取'): string {
+function rbtn(act: string, data: Record<string, string | number>, state: 'ok' | 'done' | 'lock', _label?: string): string {
   const attrs = Object.entries(data).map(([k, v]) => `data-${k}="${v}"`).join(' ');
-  return `<button class="btn sm ${state === 'ok' ? 'green' : 'ghost'}" data-act="${act}" ${attrs} ${state === 'ok' ? '' : 'disabled'}>${state === 'done' ? '已领' : state === 'lock' ? '未达' : label}</button>`;
+  return `<button class="btn sm ${state === 'ok' ? 'green' : 'ghost'}" data-act="${act}" ${attrs} ${state === 'ok' ? '' : 'disabled'}>${state === 'done' ? icon('check', 20) : state === 'lock' ? icon('lock', 18) : icon('gift', 20)}</button>`;
 }
 const row = (title: string, r: Reward, btn: string, sub = '') => `<div class="evr"><div class="grow"><b>${title}</b><small>${rewardText(r)}</small>${sub ? `<em>${sub}</em>` : ''}</div>${btn}</div>`;
 
@@ -35,7 +37,7 @@ function sprintHtml(ctx: AppCtx): string {
   const rows = SPRINT.map((g, i) => {
     const un = sprintUnlocked(s, i), done = sprintDone(s, i), got = e.sprint.includes(i);
     const val = Math.min(g.target, g.value(s));
-    return row(`第 ${g.day} 天 · ${g.text}`, g.r, rbtn('ev-sprint', { i }, got ? 'done' : un && done ? 'ok' : 'lock', un ? '领取' : '未解锁'), `${val} / ${g.target}`);
+    return row(`第 ${g.day} 天 · ${g.text}`, g.r, rbtn('ev-sprint', { i }, got ? 'done' : un && done ? 'ok' : 'lock'), `${val} / ${g.target}`);
   }).join('');
   const all = e.sprint.length >= SPRINT.length;
   return `<section class="panel"><h3>七日喵程 <small>第 ${Math.min(day, SPRINT_DAYS)} / ${SPRINT_DAYS} 天${sprintActive(s) ? '' : '（已结束）'}</small></h3>
@@ -54,7 +56,7 @@ function spinHtml(ctx: AppCtx): string {
   const left = spinsLeft(s, vip, card);
   const cells = SPIN_ORDER.map((pi, pos) => `<div class="cell ${PRIZES[pi].big ? 'big' : ''} ${eventsState.hit === pos ? 'hit' : ''}"><b>${PRIZES[pi].label}</b><small>${rewardText(PRIZES[pi].r)}</small></div>`).join('');
   return `<section class="panel"><h3>幸运猫抓机 <small>每天免费</small></h3><p>每天 1 次免费，VIP 3 / VIP 8 / 月卡各 +1 次（现在每天 ${left.free + e.spinUsed} 次免费）；还可以花 ${SPIN_EXTRA_COST} 金铃铛加抓（今日还能买 ${left.paid} 次）。每抓满 ${SPIN_PITY} 次必出招福符，当前保底进度 ${e.spinPity}/${SPIN_PITY}。</p>
-    <div class="spin">${cells}<button class="btn pink spin-go" data-act="ev-spin" ${eventsState.spinning || left.free + left.paid <= 0 ? 'disabled' : ''}>${left.free > 0 ? `免费抓<small>剩 ${left.free}</small>` : `${SPIN_EXTRA_COST} 铃铛<small>加抓</small>`}</button></div></section>`;
+    <div class="spin">${cells}<button class="btn pink spin-go" data-act="ev-spin" ${eventsState.spinning || left.free + left.paid <= 0 ? 'disabled' : ''}>${left.free > 0 ? `🎰<small>×${left.free}</small>` : `🎰<small>${icon('bell', 14)}${SPIN_EXTRA_COST}</small>`}</button></div></section>`;
 }
 function quizHtml(ctx: AppCtx): string {
   const e = quizState(ctx.s), qs = quizToday(), n = e.quizAns.length;
@@ -72,7 +74,7 @@ function wishHtml(ctx: AppCtx): string {
   return `<section class="panel"><h3>猫猫许愿池 <small>每天免费</small></h3><p>选一只已拥有的猫猫许愿，每天可得 <b>${n}</b> 个升星碎片（VIP3 / VIP8 / 月卡各 +1）。连续许愿满 7 天，额外再得 <b>${WISH_STREAK_BONUS}</b> 个！中断了就从头再来。</p>
     <p class="muted">连续 ${w.streak} 天 · 累计许愿 ${w.total} 次${w.streak % 7 === 0 && w.streak > 0 ? '' : ` · 再连续 ${toNext > 7 ? 7 : toNext} 天有大奖`}</p>
     <div class="wishpick">${picks}</div>
-    <button class="btn pink" style="width:100%;margin-top:8px" data-act="ev-wish" ${canWish(s) && w.hero ? '' : 'disabled'}>${!w.hero ? '先选一只猫猫' : canWish(s) ? `为 ${esc(HERO_BY_ID[w.hero]?.name ?? '')} 许愿` : '今天已许愿'}</button></section>`;
+    <button class="btn pink" style="width:100%;margin-top:8px" data-act="ev-wish" ${canWish(s) && w.hero ? '' : 'disabled'}>${!w.hero ? '👆🐱' : canWish(s) ? `⛲ ${esc(HERO_BY_ID[w.hero]?.name ?? '')}` : '⛲ ✓'}</button></section>`;
 }
 function pullsHtml(ctx: AppCtx): string {
   const e = ensureEv(ctx.s);
@@ -102,15 +104,15 @@ function nestHtml(ctx: AppCtx): string {
   const s = ctx.s, n = ensureNest(s), comfort = comfortOf(s), days = nestDaysReady(s), pend = nestPending(s);
   const rows = FURNITURE.map((f) => {
     const own = n.owned.includes(f.id), prem = !!f.cost.moon;
-    return `<div class="evr ${prem ? 'big' : ''}"><div class="grow"><b>${esc(f.name)} <em>舒适 +${f.comfort}${prem ? ' · 高级' : ''}</em></b><small>${esc(f.desc)}</small><em>${costText(f.cost)}</em></div><button class="btn sm ${own ? 'ghost' : prem ? 'pink' : 'green'}" data-act="ev-nest-buy" data-id="${f.id}" ${own ? 'disabled' : ''}>${own ? '已摆放' : '购买'}</button></div>`;
+    return `<div class="evr ${prem ? 'big' : ''}"><div class="grow"><b>${esc(f.name)} <em>舒适 +${f.comfort}${prem ? ' · 高级' : ''}</em></b><small>${esc(f.desc)}</small><em>${costText(f.cost)}</em></div><button class="btn sm ${own ? 'ghost' : prem ? 'pink' : 'green'}" data-act="ev-nest-buy" data-id="${f.id}" ${own ? 'disabled' : ''}>${own ? '✓' : '🛒'}</button></div>`;
   }).join('');
   return `<section class="panel"><h3>猫窝 <small>舒适度 ${comfort}</small></h3><p>给猫猫们布置一个家：家具买一次永久生效，舒适度越高，每天攒的小鱼干越多（最多攒 ${NEST_MAX_DAYS} 天，每点舒适度每天 60 小鱼干）。免费家具用小鱼干和金铃铛，高级家具用月光珠，舒适度高得多。</p>
-    <div class="evr big"><div class="grow"><b>可领取：${pend.toLocaleString('en-US')} 小鱼干</b><small>已攒 ${days} 天 · 每天 ${(comfort * 60).toLocaleString('en-US')}</small></div><button class="btn sm ${days > 0 && comfort > 0 ? 'green' : 'ghost'}" data-act="ev-nest-collect" ${days > 0 && comfort > 0 ? '' : 'disabled'}>领取</button></div>${rows}</section>`;
+    <div class="evr big"><div class="grow"><b>可领取：${pend.toLocaleString('en-US')} 小鱼干</b><small>已攒 ${days} 天 · 每天 ${(comfort * 60).toLocaleString('en-US')}</small></div><button class="btn sm ${days > 0 && comfort > 0 ? 'green' : 'ghost'}" data-act="ev-nest-collect" ${days > 0 && comfort > 0 ? '' : 'disabled'}>${icon('gift', 20)}</button></div>${rows}</section>`;
 }
 function mailHtml(ctx: AppCtx): string {
   const list = mailbox(ctx.s), un = unclaimedMail(ctx.s).length;
   const rows = list.map((m) => { const got = mailClaimed(ctx.s, m.id); return `<div class="evr big ${got ? '' : 'unread'}"><div class="grow"><b>${esc(m.title)}</b><small style="white-space:pre-line">${esc(m.body.replace(/\\n/g, '\n'))}</small><em>附件：${rewardText(m.r)}</em></div>${rbtn('ev-mail', { id: m.id }, got ? 'done' : 'ok')}</div>`; }).join('');
-  return `<section class="panel"><h3>邮件 <small>${un ? `${un} 封有附件` : '都看过啦'}</small></h3><button class="btn sm ${un ? 'green' : 'ghost'}" data-act="ev-mail-all" ${un ? '' : 'disabled'}>一键领取全部</button>${rows}</section>`;
+  return `<section class="panel"><h3>邮件 <small>${un ? `${un} 封有附件` : '都看过啦'}</small></h3><button class="btn sm ${un ? 'green' : 'ghost'}" data-act="ev-mail-all" ${un ? '' : 'disabled'}>${icon('gift', 18)}⏩</button>${rows}</section>`;
 }
 function openHtml(ctx: AppCtx): string {
   const s = ctx.s, e = ensureEv(s), o = openRankOf(s);
@@ -120,7 +122,7 @@ function openHtml(ctx: AppCtx): string {
   const me = o.board[o.rank - 1];
   return `<section class="panel"><h3>开服冲榜 · 第 ${o.day} / ${OPEN_DAYS} 天 <small>${o.theme.label}</small></h3><p>新来的军师和 20 位老玩家同台：每天换一个主题，当天只要排进前 15 名，就能领一次当日奖励；名次越高奖励越丰厚。榜单实时更新，老玩家也在涨，想领大奖要早点冲。</p>
     <p class="muted">你现在第 <b>${o.rank}</b> 名 · ${tier ? `可领「${tier.label}」奖励` : '暂未进前 15 名'}</p>
-    <button class="btn ${got ? 'ghost' : tier ? 'green' : 'ghost'}" style="width:100%" data-act="ev-open" ${!got && tier ? '' : 'disabled'}>${got ? '今天已领取' : tier ? `领取 ${tier.label} 奖励` : '继续冲榜'}</button>
+    <button class="btn ${got ? 'ghost' : tier ? 'green' : 'ghost'}" style="width:100%" data-act="ev-open" ${!got && tier ? '' : 'disabled'}>${got ? '✓' : tier ? `🎁 ${tier.label}` : '📈'}</button>
     ${OPEN_REWARDS.map((x) => `<div class="evr"><div class="grow"><b>${x.label}</b><small>${rewardText(x.r)}</small></div></div>`).join('')}
     <div class="note" style="font-weight:800;margin:8px 0 4px">实时榜</div>${top}${o.rank > 8 ? `<div class="arow me"><i class="rk">${o.rank}</i><div class="who"><b>${esc(me.name)}</b></div><div class="rt"><em>${o.theme.unit}</em><b class="num">${fmt(me.v)}</b></div></div>` : ''}</section>`;
 }
@@ -134,7 +136,7 @@ function festivalHtml(ctx: AppCtx): string {
     return row(`第 ${i + 1} 天`, festivalGift(i, a.days), rbtn('ev-fest', { i }, got ? 'done' : ok ? 'ok' : 'lock', ok ? '领取' : '未到'));
   }).join('');
   return `<section class="panel"><h3>${esc(a.f.name)} <small>剩 ${a.end - d + 1} 天</small></h3><p>${esc(a.f.flavor)}</p>${rows}
-    <div class="evr big"><div class="grow"><b>${FESTIVAL_PACK.name} <em>¥${FESTIVAL_PACK.yuan}</em></b><small>${rewardText(FESTIVAL_PACK.r)}</small><em>本届节日限购 1 次</em></div><button class="btn sm ${st.pack ? 'ghost' : 'pink'}" data-act="ev-buy" data-kind="festival" ${st.pack ? 'disabled' : ''}>${st.pack ? '已购买' : `¥${FESTIVAL_PACK.yuan}`}</button></div></section>`;
+    <div class="evr big"><div class="grow"><b>${FESTIVAL_PACK.name} <em>¥${FESTIVAL_PACK.yuan}</em></b><small>${rewardText(FESTIVAL_PACK.r)}</small><em>本届节日限购 1 次</em></div><button class="btn sm ${st.pack ? 'ghost' : 'pink'}" data-act="ev-buy" data-kind="festival" ${st.pack ? 'disabled' : ''}>${st.pack ? '✓' : `¥${FESTIVAL_PACK.yuan}`}</button></div></section>`;
 }
 
 // ---------- 氪金 ----------
@@ -142,19 +144,19 @@ function firstHtml(ctx: AppCtx): string {
   const e = ensureEvents(ctx.s), can = canClaimFirstPay(ctx.s);
   return `<section class="panel pay-vip"><h3>首充豪礼 <small>任意一笔充值即可领取 · 限 1 次</small></h3><p>完成任意金额的第一笔充值，立刻领取一份丰厚的开拓礼：</p>
     <div class="evr big"><div class="grow"><b>豪礼</b><small>${rewardText(FIRST_PAY_GIFT)}</small></div>${rbtn('ev-first', {}, e.firstPay ? 'done' : can ? 'ok' : 'lock', can ? '领取' : '去充值')}</div>
-    <button class="btn sm blue" data-act="nav" data-to="pay">去充值中心</button></section>`;
+    <button class="btn sm blue" data-act="nav" data-to="pay">${icon('moon', 18)}➕</button></section>`;
 }
 function cumHtml(ctx: AppCtx): string {
   const e = ensureEvents(ctx.s);
   const rows = CUM_TIERS.map((t, i) => row(`本周累计充值 ¥${t.yuan}`, t.r, rbtn('ev-cum', { i }, e.cum.includes(i) ? 'done' : e.weekYuan >= t.yuan ? 'ok' : 'lock'))).join('');
-  return `<section class="panel"><h3>周累计充值 <small>周一 05:00 重置</small></h3><p>本周已充值 <b>¥${e.weekYuan}</b>。档位越高奖励越丰厚，所有档位可叠加领取。<br><span class="muted">模拟支付：不会产生真实扣费。</span></p>${rows}<button class="btn sm blue" data-act="nav" data-to="pay">去充值中心</button></section>`;
+  return `<section class="panel"><h3>周累计充值 <small>周一 05:00 重置</small></h3><p>本周已充值 <b>¥${e.weekYuan}</b>。档位越高奖励越丰厚，所有档位可叠加领取。<br><span class="muted">模拟支付：不会产生真实扣费。</span></p>${rows}<button class="btn sm blue" data-act="nav" data-to="pay">${icon('moon', 18)}➕</button></section>`;
 }
 function growthHtml(ctx: AppCtx): string {
   const e = ensureEvents(ctx.s), o = ordinal(ctx);
   const total = GROWTH_TIERS.reduce((a, t) => a + (t.r.moon ?? 0), 0);
   const rows = GROWTH_TIERS.map((t, i) => row(`主线通关 ${t.ord} 关`, t.r, rbtn('ev-growth', { i }, e.growth.claimed.includes(i) ? 'done' : e.growth.bought && o >= t.ord ? 'ok' : 'lock'), `当前 ${Math.min(o, t.ord)} / ${t.ord}`)).join('');
   return `<section class="panel pay-vip"><h3>${GROWTH.title} <small>¥${GROWTH.yuan} · 限购 1 次</small></h3><p>推进主线就能分批领回月光珠：全部领完共 <b>${total}</b> 月光珠（当量 ¥${total / 10}，超过买价），还有金铃铛。越早买、推得越快，回得越早。</p>
-    <button class="btn sm ${e.growth.bought ? 'ghost' : 'pink'}" data-act="ev-buy" data-kind="growth" ${e.growth.bought ? 'disabled' : ''}>${e.growth.bought ? '已购买' : `购买 ¥${GROWTH.yuan}`}</button>${rows}</section>`;
+    <button class="btn sm ${e.growth.bought ? 'ghost' : 'pink'}" data-act="ev-buy" data-kind="growth" ${e.growth.bought ? 'disabled' : ''}>${e.growth.bought ? '✓' : `🛒 ¥${GROWTH.yuan}`}</button>${rows}</section>`;
 }
 function passHtml(ctx: AppCtx): string {
   const s = ctx.s, e = ensureEvents(s), lv = passLevel(s);
@@ -165,7 +167,7 @@ function passHtml(ctx: AppCtx): string {
   }).join('');
   const buy = (tier: 1 | 2) => {
     const price = PASS_PRICE[tier] - (e.passTier ? PASS_PRICE[e.passTier as 1 | 2] : 0);
-    return `<button class="btn sm ${e.passTier >= tier ? 'ghost' : tier === 2 ? 'orange' : 'pink'}" data-act="ev-buy" data-kind="pass${tier}" ${e.passTier >= tier ? 'disabled' : ''}>${e.passTier >= tier ? (tier === 1 ? '已解锁通行证' : '已解锁豪华版') : `${tier === 1 ? '通行证' : '豪华版'} ¥${price}`}</button>`;
+    return `<button class="btn sm ${e.passTier >= tier ? 'ghost' : tier === 2 ? 'orange' : 'pink'}" data-act="ev-buy" data-kind="pass${tier}" ${e.passTier >= tier ? 'disabled' : ''}>${e.passTier >= tier ? '✓' : `${tier === 1 ? '通行证' : '豪华版'} ¥${price}`}</button>`;
   };
   return `<section class="panel"><h3>喵喵通行证 <small>赛季剩 ${seasonDaysLeft()} 天</small></h3><p>活动点同时换算通行证经验（每 ${PASS_XP} 点 1 级）。免费轨人人可领；<b>通行证 ¥${PASS_PRICE[1]}</b> 额外解锁每级奖励和三档月光珠；<b>豪华版 ¥${PASS_PRICE[2]}</b> 再多一条每 5 级的豪华轨，并立得 ${PASS_BONUS_LEVELS} 级。赛季每 28 天重置。</p>
     <div class="evbar"><i style="width:${(lv / PASS_MAX) * 100}%"></i></div><p class="muted">当前 <b>Lv.${lv}</b> / ${PASS_MAX} · 本赛季 ${e.xp} 经验</p><div class="row" style="gap:8px;margin-bottom:8px">${buy(1)}${buy(2)}</div>
@@ -174,7 +176,7 @@ function passHtml(ctx: AppCtx): string {
 function packsHtml(ctx: AppCtx): string {
   const rows = PACKS.map((p) => {
     const can = packAvailable(ctx.s, p);
-    return `<div class="evr big"><div class="grow"><b>${p.name} <em>¥${p.yuan}</em></b><small>${rewardText(p.r)}</small><em>${p.desc}</em></div><button class="btn sm ${can ? 'pink' : 'ghost'}" data-act="ev-buy" data-kind="${p.id}" ${can ? '' : 'disabled'}>${can ? `¥${p.yuan}` : '本期已购'}</button></div>`;
+    return `<div class="evr big"><div class="grow"><b>${p.name} <em>¥${p.yuan}</em></b><small>${rewardText(p.r)}</small><em>${p.desc}</em></div><button class="btn sm ${can ? 'pink' : 'ghost'}" data-act="ev-buy" data-kind="${p.id}" ${can ? '' : 'disabled'}>${can ? `¥${p.yuan}` : '✓'}</button></div>`;
   }).join('');
   return `<section class="panel"><h3>限时礼包 <small>按周期限购</small></h3><p>日 / 周 / 月三档，越大的箱子越划算（折算每元的招福符和鱼骨更多）。<span class="muted">模拟支付：不会产生真实扣费。</span></p>${rows}</section>`;
 }
@@ -182,8 +184,8 @@ function packsHtml(ctx: AppCtx): string {
 export function eventsHtml(ctx: AppCtx): string {
   const t = eventsState.tab;
   const body = { dex: dexHtml, nest: nestHtml, mail: mailHtml, sprint: sprintHtml, carnival: carnivalHtml, spin: spinHtml, quiz: quizHtml, wish: wishHtml, pulls: pullsHtml, rank: rankHtml, open: openHtml, festival: festivalHtml, first: firstHtml, cum: cumHtml, growth: growthHtml, pass: passHtml, packs: packsHtml }[t](ctx);
-  return `${topbar(ctx, '活动', '<button class="btn sm ghost shop-back" data-act="nav" data-to="home">返回</button>')}
-    <div class="shop-tabs ev-tabs"><div class="seg">${TABS.map(([id, name, paid]) => `<button class="pill ${paid ? 'paid' : ''}" data-act="ev-tab" data-tab="${id}" aria-pressed="${t === id}">${name}${paid ? '<i>氪</i>' : ''}</button>`).join('')}</div></div>
+  return `${topbar(ctx, '活动', `<button class="btn sm ghost shop-back" data-act="nav" data-to="home" title="返回">${icon('home', 20)}</button>`)}
+    <div class="shop-tabs ev-tabs"><div class="seg">${TABS.map(([id, name, paid]) => `<button class="pill ${paid ? 'paid' : ''}" data-act="ev-tab" data-tab="${id}" aria-pressed="${t === id}" title="${name}">${TAB_EMOJI[id] ?? name}${paid ? '<i>💎</i>' : ''}</button>`).join('')}</div></div>
     <div class="scroll ev-scroll">${body}</div>`;
 }
 
@@ -192,7 +194,7 @@ function confirm(ctx: AppCtx, title: string, desc: string, kind: string) {
   ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center" data-act="closedialog"><div class="dialog" style="text-align:center">
     <h3 class="title" style="margin:0 0 6px">${title}</h3><p style="font-size:13.5px;line-height:1.7;font-weight:700;margin:0 0 4px">${desc}</p>
     <p class="muted" style="font-size:11.5px;margin:0 0 12px">模拟支付：确认后直接到账，不会产生真实扣费。</p>
-    <div class="row" style="justify-content:center;gap:10px"><button class="btn ghost" data-act="closedialog">取消</button><button class="btn pink" data-act="ev-buy-ok" data-kind="${kind}">确认支付</button></div></div></div>`);
+    <div class="row" style="justify-content:center;gap:10px"><button class="btn ghost" data-act="closedialog">${icon('close', 22)}</button><button class="btn pink" data-act="ev-buy-ok" data-kind="${kind}">${icon('check', 24)}</button></div></div></div>`);
 }
 const say = (ctx: AppCtx, r: { ok: boolean; reason?: string; r?: Reward }, ok = '领到了') => { ctx.toast(r.ok ? `${ok}：${rewardText(r.r!)}` : r.reason ?? ''); if (r.ok) { sfx.ok(); ctx.save(); } ctx.refresh(); };
 
