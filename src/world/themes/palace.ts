@@ -74,7 +74,7 @@ export function buildPalace(L: LevelDef): Street {
   g.add(box(half * 2 + 6, 4.6, 4.6, wallM, 0, 2.3, GATE_Z + 2.6));
   g.add(box(half * 2 + 6.6, 0.6, 5.2, goldM, 0, 4.9, GATE_Z + 2.6));
   g.add(box(half * 2 + 7, 1.2, 5.8, marble, 0, 0.6, GATE_Z + 2.6));
-  for (const gx of [-12, 0, 12]) g.add(box(gx === 0 ? 8.4 : 5, 4.2, 5.0, std('#2a1a14', 0.8), gx, 2.1, GATE_Z + 2.6));
+  for (const gx of [-12, 0, 12]) g.add(box(gx === 0 ? 8.4 : 5, 4.2, 5.0, std('#8a2e24', 0.7), gx, 2.1, GATE_Z + 2.6));
   for (let i = 0; i < 9; i++) { const nail = new THREE.Mesh(new THREE.SphereGeometry(0.15, 5, 4), glowMat('#ffd070')); nail.position.set(-3.6 + i * 0.9, 3.4, GATE_Z - 0.2); g.add(nail); }
   for (const sx of [-1, 1]) for (const k of [-1, 1]) { const l = lantern('#ff3a2a', 0.9); l.position.set(sx * (4.7 + (k > 0 ? 0 : 1.2)), 4.0, GATE_Z - 0.6); g.add(l); }
   for (const sx of [-1, 1]) { const c = stoneCat(); c.scale.setScalar(1.5); c.position.set(sx * 6.4, 0.32, GATE_Z - 1.6); c.rotation.y = Math.PI + sx * 0.25; g.add(c); }
