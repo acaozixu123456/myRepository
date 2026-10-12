@@ -182,6 +182,7 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
   const neck = grp('neck', 0, 1.2, 0);
   torso.add(neck);
   const head = grp('head', 0, 0.46, 0);
+  head.scale.setScalar(1.14); // Q 版：脑袋再大一圈
   neck.add(head);
   const skull = solid(sphere(0.62 * headK, 1.16, 1, 1.02, 28), headMat);
   skull.position.y = 0.14;
@@ -244,7 +245,7 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
     const cuff = solid(new THREE.CylinderGeometry(0.15, 0.17, 0.12, 14), toon(pal.trim), 0.02);
     cuff.position.y = -0.28;
     const paw = grp('paw', 0, -0.4, 0);
-    const pawBall = solid(sphere(0.14, 1.05, 1, 1.05), toon(look.coat.pattern === 'tuxedo' ? light : fur), 0.022);
+    const pawBall = solid(sphere(0.17, 1.05, 1, 1.05), toon(look.coat.pattern === 'tuxedo' ? light : fur), 0.022);
     const pad = new THREE.Mesh(sphere(0.05, 1.3, 0.9, 0.6, 8), toon(pink));
     pad.position.set(0, -0.02, 0.12);
     paw.add(pawBall, pad);
