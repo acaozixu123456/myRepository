@@ -156,8 +156,8 @@ function zoneMesh(z: Zone): THREE.Group {
 }
 
 /** 各玩法入口的主色（脚下光环 / 光晕）与头顶标签色 */
-const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff', ring: '#ffb04a' };
-const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff', ring: '#ffd8a0' };
+const POI_COL: Record<string, string> = { ramen: '#ff5a4a', boxcat: '#ffcf5a', mushroom: '#b06aff', windchime: '#9ab8ff', lanterns: '#ffd24a', kart: '#ff7a3a', claw: '#ff6ac0', whack: '#9a7aff', ring: '#ffb04a', arrows: '#8ad0e8' };
+const POI_TAG: Record<string, string> = { ramen: '#ff9a8a', boxcat: '#ffe08a', mushroom: '#d8b0ff', windchime: '#c0d4ff', lanterns: '#ffe9a0', kart: '#ffb080', claw: '#ffa0dc', whack: '#c8b4ff', ring: '#ffd8a0', arrows: '#c0e8f4' };
 
 export class Explorer {
   readonly root = new THREE.Group();
@@ -372,7 +372,7 @@ export class Explorer {
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0xffd24a, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'poi') {
       // 钓鱼点：木桩 + 一圈发光的橙色标记 + 立着的小鱼旗
-      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack', ringT = s.data === 'ring';
+      const ramen = s.data === 'ramen', boxcat = s.data === 'boxcat', mush = s.data === 'mushroom', chime = s.data === 'windchime', lant = s.data === 'lanterns', kart = s.data === 'kart', claw = s.data === 'claw', whack = s.data === 'whack', ringT = s.data === 'ring', arrowsT = s.data === 'arrows';
       const col = POI_COL[String(s.data ?? '')] ?? '#ffb04a';
       const wood = std('#6a4a2a', 0.8, 0.1);
       for (const dx of [-0.7, 0.7]) { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.3, 6), wood); post.position.set(dx, 0.65, 0); group.add(post); }
@@ -446,6 +446,17 @@ export class Explorer {
         }));
         for (let i = 0; i < 3; i++) { const hoop = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.04, 6, 16), glowMat('#ff5aa0')); hoop.position.set(-0.5 + i * 0.5, 0.35, 1.0); hoop.rotation.x = 1.2; group.add(hoop); }
         flag.position.set(0, 2.1, 0);
+      }
+      if (arrowsT) { // 草船：小木船上立着三个稻草人，身上插着几支箭
+        const hull = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.4, 1.0), std('#6a4a2a', 0.8)); hull.position.y = 0.3; group.add(hull);
+        for (const dx of [-1.25, 1.25]) { const tip = new THREE.Mesh(new THREE.ConeGeometry(0.5, 0.6, 4), std('#6a4a2a', 0.8)); tip.rotation.z = dx > 0 ? -Math.PI / 2 : Math.PI / 2; tip.position.set(dx, 0.3, 0); group.add(tip); }
+        const straw = std('#d8b860', 0.95);
+        [-0.7, 0, 0.7].forEach((dx, i) => {
+          const body = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 0.9, 7), straw); body.position.set(dx, 0.95, 0); group.add(body);
+          for (const s2 of [-1, 1]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.2, 4), straw); ear.position.set(dx + s2 * 0.12, 1.5, 0); group.add(ear); }
+          for (let k = 0; k < 2; k++) { const arrow = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.6, 4), std('#3a2a1a', 0.7)); arrow.position.set(dx + (k - 0.5) * 0.15, 1.0 + k * 0.15, 0.3); arrow.rotation.x = 1.1 + i * 0.1; group.add(arrow); }
+        });
+        flag.position.set(0, 2.2, 0);
       }
       const zone = new THREE.Mesh(new THREE.RingGeometry(SAFE_R - 0.12, SAFE_R, 64), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false })); zone.rotation.x = -Math.PI / 2; zone.position.y = 0.05; group.add(zone);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: new THREE.Color(col), transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
