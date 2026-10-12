@@ -24,14 +24,18 @@ export function applyPose(cat: Cat3D, P: Record<string, number>, o: PoseOpts): v
   j.head.rotation.set(g('head.0') * D + live * b * 0.012, live * Math.sin(tt * 0.45 + 1) * 0.05, live * Math.sin(tt * 0.6) * 0.02);
   j.head.position.set(0, 0.46 + live * 0.012 * b + g('head.2') * -UNIT * 0.5, g('head.1') * UNIT * 0.5);
   // 手臂：负角度 = 向前上方抬起；R 臂 = 持武器手
-  const armR = g('armR.0'), armL = g('armL.0');
+  // 站姿基线：持武器的手自然抬到身前（武器不再悬在背后），另一只手微微前摆
+  const armed = cat.look.outfit.weapon !== 'none';
+  const rawR = g('armR.0'), rawL = g('armL.0');
+  const fade = (a: number) => Math.max(0, 1 - Math.abs(a) / 45); // 姿势一用力，基线就淡出，不干扰出招动作
+  const armR = rawR - (armed ? 20 : 4) * fade(rawR), armL = rawL - 6 * fade(rawL);
   // 举过头顶时随抬高向外张开，手不会穿进脑袋
   const lift = (a: number) => Math.max(a * D * 1.15, -2.55);
   const splay = (a: number) => 0.12 + Math.max(0, -a) * 0.0042;
   j.shoulderR.rotation.set(lift(armR), 0, splay(armR) + live * Math.sin(tt + 0.3) * 0.02);
   j.shoulderL.rotation.set(lift(armL), 0, -splay(armL) + live * Math.sin(tt + 0.6) * 0.02);
   // 手臂举过肩时，肘部自然弯一点
-  j.elbowR.rotation.set(-0.15 - Math.min(0.45, Math.max(0, -armR - 40) * D * 0.35), 0, 0);
+  j.elbowR.rotation.set(-(armed ? 0.5 : 0.18) - Math.min(0.45, Math.max(0, -armR - 40) * D * 0.35), 0, 0);
   j.elbowL.rotation.set(-0.15 - Math.min(0.45, Math.max(0, -armL - 40) * D * 0.35), 0, 0);
   // 腿
   const lg = (side: 'L' | 'R', sgn: number) => {
