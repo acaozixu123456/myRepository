@@ -195,6 +195,8 @@ describe('场景玩法入口（POI）', () => {
     expect(poisOf(LEVELS[5]).map((p) => p.game)).toEqual(expect.arrayContaining(['windchime', 'kite']));
     expect(poisOf(LEVELS[6]).map((p) => p.game)).toEqual(expect.arrayContaining(['lanterns', 'kitchen']));
     expect(poisOf(ALL_SCENES[102]).map((p) => p.game)).toEqual(expect.arrayContaining(['sled', 'snowcat']));
+    expect(poisOf(ALL_SCENES[103]).map((p) => p.game)).toEqual(expect.arrayContaining(['surf', 'fish', 'clams']));
+    expect(poisOf(ALL_SCENES[104]).map((p) => p.game)).toEqual(expect.arrayContaining(['skip', 'fish', 'sushi']));
     for (const L of Object.values(ALL_SCENES)) if (!L.water) expect(poisOf(L).some((p) => p.game === 'fish'), `${L.id} 没水却有钓鱼点`).toBe(false);
     const s = newPlayer(); s.best = { chapter: 3, index: 1 };
     const plan = spawnPlan(s);
@@ -255,7 +257,10 @@ describe('场景切换', () => {
     expect(unlockedScenes(s)).toEqual([1]);
     expect(setScene(s, 3)).toBe(false);
     s.best = { chapter: 3, index: 5 }; s.stage.chapter = 3;
-    expect(unlockedScenes(s)).toEqual([1, 2, 3, 101]);
+    expect(unlockedScenes(s)).toEqual([1, 2, 3, 101, 103]);
+    s.best = { chapter: 4, index: 1 };
+    expect(unlockedScenes(s)).toEqual([1, 2, 3, 4, 101, 103, 104]);
+    s.best = { chapter: 3, index: 5 };
     expect(sceneChapter(s)).toBe(3);
     expect(setScene(s, 1)).toBe(true);
     expect(sceneChapter(s)).toBe(1);
@@ -333,7 +338,7 @@ describe('传送门', () => {
 
 describe('场景机关（风口 / 潮汐滩 / 琉璃滑地）', () => {
   it('云岛 = 风口、码头 = 潮汐滩、宫阙 / 雪岭 = 滑地，各至少 3 处；其他场景没有；都走得到、不在碰撞盒 / 安全区里', () => {
-    const want: Record<string, string | undefined> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand', snow: 'slide' };
+    const want: Record<string, string | undefined> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand', snow: 'slide', beach: 'tide' };
     for (const L of Object.values(ALL_SCENES)) {
       const zs = zonesOf(L), kind = want[L.theme ?? 'street'];
       expect(zonesOf(L)).toBe(zs);

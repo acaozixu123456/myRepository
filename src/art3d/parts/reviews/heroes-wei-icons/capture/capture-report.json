@@ -1,0 +1,755 @@
+{
+  "candidate": 5,
+  "phase": "Final C5/f4 actual captures; all five formal images actually viewed; separate mechanical QA still required",
+  "PR": 121,
+  "base": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "actualTreeHEAD": "a9261dcccd8184a0a57e8f723f022fccc998d8e7",
+  "latestMergeAppliedNotCommitted": true,
+  "expectedRootSources": {
+    "src/art3d/heroes.ts": "d685ca31ef7a35a51c82965cce0640d8d3409b80b48b34dffb215ef831dfb428",
+    "src/art3d/parts/hero-wei-weapons.ts": "105b8faa0b6012bc7c372cf4341d62e82af4b5f41231f7b6fe92d5d49ae76cb0"
+  },
+  "rootSourceFreeze": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/source-freeze.json",
+  "rootSourceFreezeSHA256": "47cbc2673aeb50929993ccf928221a0492c65b6cc6245ec59ac6a297e6455aec",
+  "captureSourceSnapshotCount": 63,
+  "protectedNonWriterSourceCount": 61,
+  "protectedNonWriterSourcesEqualF4": true,
+  "sourceStayedFrozenDuringCapture": true,
+  "liveCaptureStoppedUTC": "2026-10-12T11:49:31.688Z",
+  "productionSourceReadsStoppedUTC": "2026-10-12T11:49:31.815219+00:00",
+  "fiveDeliveryImages": [
+    {
+      "file": "after-poses.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-poses.png",
+      "dimensions": [
+        1000,
+        823
+      ],
+      "bytes": 256116,
+      "sha256": "d4c028382bc17d7adc435629fdd403bfc5c80ded83b9708642bf159981567139",
+      "visuallyInspected": true
+    },
+    {
+      "file": "after-190px.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "dimensions": [
+        1000,
+        700
+      ],
+      "bytes": 163605,
+      "sha256": "bbf52d0f6b99bb403b53163d350defdb8f11c13518954582915262040e3efc9e",
+      "visuallyInspected": true
+    },
+    {
+      "file": "after-rear.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-rear.png",
+      "dimensions": [
+        1000,
+        700
+      ],
+      "bytes": 51109,
+      "sha256": "bae192e0f73e4153e68e4ff5cb449e01ca3190c4e5a903846c97d598e67f1864",
+      "visuallyInspected": true
+    },
+    {
+      "file": "before-after-190px.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/before-after-190px.png",
+      "dimensions": [
+        1408,
+        768
+      ],
+      "bytes": 198199,
+      "sha256": "19edbe3d90e6988629d62ed29d98179718a2c05e75981f398ecfc8a221a72058",
+      "visuallyInspected": true
+    },
+    {
+      "file": "battle.webp",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle.webp",
+      "dimensions": [
+        948,
+        593
+      ],
+      "bytes": 406524,
+      "sha256": "7eef0e35ea4b2045041fdf0831bdf18609dd2a33bab0859672a6466c7e5af1cb",
+      "visuallyInspected": true
+    }
+  ],
+  "actualOfficialCaptureCount": 4,
+  "officialSourceImages": [
+    {
+      "file": "baseline-190px.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+      "cwd": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree",
+      "command": "PORT=5187 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217'",
+      "port": 5187,
+      "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217",
+      "startedUTC": "2026-10-12T11:49:03.313273+00:00",
+      "completedUTC": "2026-10-12T11:49:12.350263+00:00",
+      "exitCode": 0,
+      "dimensions": [
+        1000,
+        700
+      ],
+      "bytes": 162194,
+      "sha256": "41a80401f48ab7be1af0019fbc9d18dba7bc62185ceb1001dbe2f3cb6e60ba14",
+      "devFixedAnimationT": 0.4,
+      "pageErrorsReported": [],
+      "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+      "baselineActualImmutableCommit": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+      "visuallyInspected": true
+    },
+    {
+      "file": "after-poses.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-poses.png",
+      "cwd": "/workspace/three-worktrees/heroes-wei-icons",
+      "command": "PORT=5186 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-poses.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=300'",
+      "port": 5186,
+      "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=300",
+      "startedUTC": "2026-10-12T11:49:12.361364+00:00",
+      "completedUTC": "2026-10-12T11:49:15.817649+00:00",
+      "exitCode": 0,
+      "dimensions": [
+        1000,
+        823
+      ],
+      "bytes": 256116,
+      "sha256": "d4c028382bc17d7adc435629fdd403bfc5c80ded83b9708642bf159981567139",
+      "devFixedAnimationT": 0.4,
+      "pageErrorsReported": [],
+      "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+      "baselineActualImmutableCommit": null,
+      "visuallyInspected": true
+    },
+    {
+      "file": "after-190px.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "cwd": "/workspace/three-worktrees/heroes-wei-icons",
+      "command": "PORT=5186 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217'",
+      "port": 5186,
+      "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle,windup,strike&yaw=32&w=217",
+      "startedUTC": "2026-10-12T11:49:15.822427+00:00",
+      "completedUTC": "2026-10-12T11:49:18.907101+00:00",
+      "exitCode": 0,
+      "dimensions": [
+        1000,
+        700
+      ],
+      "bytes": 163605,
+      "sha256": "bbf52d0f6b99bb403b53163d350defdb8f11c13518954582915262040e3efc9e",
+      "devFixedAnimationT": 0.4,
+      "pageErrorsReported": [],
+      "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+      "baselineActualImmutableCommit": null,
+      "visuallyInspected": true
+    },
+    {
+      "file": "after-rear.png",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-rear.png",
+      "cwd": "/workspace/three-worktrees/heroes-wei-icons",
+      "command": "PORT=5186 CHROME=/usr/bin/chromium npm run shots3d -- /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-rear.png 'ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle&yaw=180&w=217'",
+      "port": 5186,
+      "query": "ids=wei_xiahoudun,wei_xuhuchi,wei_zhangliao&poses=idle&yaw=180&w=217",
+      "startedUTC": "2026-10-12T11:49:18.911001+00:00",
+      "completedUTC": "2026-10-12T11:49:21.767424+00:00",
+      "exitCode": 0,
+      "dimensions": [
+        1000,
+        700
+      ],
+      "bytes": 51109,
+      "sha256": "bae192e0f73e4153e68e4ff5cb449e01ca3190c4e5a903846c97d598e67f1864",
+      "devFixedAnimationT": 0.4,
+      "pageErrorsReported": [],
+      "consoleAndRequestFailuresNotInstrumentedByOfficialTool": true,
+      "baselineActualImmutableCommit": null,
+      "visuallyInspected": true
+    }
+  ],
+  "baseline": {
+    "genuineNewF4StockBaseline": true,
+    "immutableCommit": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+    "sourceManifest": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree-manifest.json",
+    "afterManifest": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-after.json",
+    "baselineSourceFileCount": 242,
+    "baselineSourceAllHashesExactAfterShot": true,
+    "heroWeiHelperAbsentFromBaseline": true,
+    "targetSSRKeysAbsentFromBaselineHeroRegistry": true,
+    "oldBeforeNotUsed": true
+  },
+  "nativeBeforeAfterProof": {
+    "file": "before-after-190px.png",
+    "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/before-after-190px.png",
+    "dimensions": [
+      1408,
+      768
+    ],
+    "bytes": 198199,
+    "sha256": "19edbe3d90e6988629d62ed29d98179718a2c05e75981f398ecfc8a221a72058",
+    "nativeProofPixelCount": 742140,
+    "all18CanvasBlocksRGBExact": true,
+    "technicalLayoutOnly": true,
+    "baselineCommit": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+    "sharedPoseTime": 0.4,
+    "sharedYawDegrees": 32,
+    "sourceHashes": {
+      "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png": "41a80401f48ab7be1af0019fbc9d18dba7bc62185ceb1001dbe2f3cb6e60ba14",
+      "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png": "bbf52d0f6b99bb403b53163d350defdb8f11c13518954582915262040e3efc9e"
+    },
+    "blocks": [
+      {
+        "phase": "stock-f4",
+        "id": "wei_xiahoudun",
+        "pose": "idle",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          6,
+          6,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          24,
+          88,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "1a7881562a89f1286bcc7b4e6791c9f00e51b42a6675cfa93b50e81470920616"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_xiahoudun",
+        "pose": "windup",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          225,
+          6,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          243,
+          88,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "1dde7427e0c774de7e575d2b1a48645fc1c61d6c08140076749a1d0eb60ef8d9"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_xiahoudun",
+        "pose": "strike",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          444,
+          6,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          462,
+          88,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "3010f43d55aab230b5b309a228a34cf37dc0e50cf04efcd401b757f3be36f798"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_xiahoudun",
+        "pose": "idle",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          6,
+          6,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          729,
+          88,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "ae82788bf00782ce64b047faa3450d61d91199cef9630f1ff54a03a7d8509b25"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_xiahoudun",
+        "pose": "windup",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          225,
+          6,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          948,
+          88,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "f0c0b8072237a03719367f79ef423c9b55cb5b25c55492d2ec835a418ebe7160"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_xiahoudun",
+        "pose": "strike",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          444,
+          6,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          1167,
+          88,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "0073d410540d20789605a31a4ec24ffa473da4a915f7ff462da103fcb87e898e"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_xuhuchi",
+        "pose": "idle",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          6,
+          200,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          24,
+          312,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "09c2bc95a5b2b43e92bfb9ee2df1be6c9ab4f0e1a6e6d7bf14db8a7869bcba4b"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_xuhuchi",
+        "pose": "windup",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          225,
+          200,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          243,
+          312,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "cdde8dbe35a19afacb52ac4d62ff51a8bab8a8f43bd49c58a36965d41a96fc9f"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_xuhuchi",
+        "pose": "strike",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          444,
+          200,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          462,
+          312,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "d8af99e8b77f9a722cc9dfbfeb4d3dcf493ff478faa06203be400c59e4326dd8"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_xuhuchi",
+        "pose": "idle",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          6,
+          200,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          729,
+          312,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "56b31e7347046616e55656da2b9df5f1687bd806ec3982be2633f8999b6bf89d"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_xuhuchi",
+        "pose": "windup",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          225,
+          200,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          948,
+          312,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "0318b3a41cd45c790a561ddf6bc494f7f000f01ef232ac3a8bd44f20730c8129"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_xuhuchi",
+        "pose": "strike",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          444,
+          200,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          1167,
+          312,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "01702fc8a3bf3946366e3eb30b09aae0e8d2a662f8ade7bfa2a97c99d2487c27"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_zhangliao",
+        "pose": "idle",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          6,
+          394,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          24,
+          536,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "adc47a1576e6175262fb120a8f2eaf0a189395886630f0a57201e0a479fb3c44"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_zhangliao",
+        "pose": "windup",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          225,
+          394,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          243,
+          536,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "b323547632d9eb401c3bec83e981a666a84cbddd5f9836de0ceacfc3c513821c"
+      },
+      {
+        "phase": "stock-f4",
+        "id": "wei_zhangliao",
+        "pose": "strike",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-190px.png",
+        "sourceRectXYWH": [
+          444,
+          394,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          462,
+          536,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "a494c4c7fd3303cea2663a7de055316d4649e1277512665d7a1a34c9ba7359cb"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_zhangliao",
+        "pose": "idle",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          6,
+          394,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          729,
+          536,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "26cc1f07abc915eba9941c68232db81133ba74671a3748dc21e05355a7f25dfd"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_zhangliao",
+        "pose": "windup",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          225,
+          394,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          948,
+          536,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "4a8af3999a6aff23f3f47f05b294434a4a4607bc5ef8aef78bde1297a7e2d15d"
+      },
+      {
+        "phase": "final-candidate05-f4",
+        "id": "wei_zhangliao",
+        "pose": "strike",
+        "sourcePath": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+        "sourceRectXYWH": [
+          444,
+          394,
+          217,
+          190
+        ],
+        "boardRectXYWH": [
+          1167,
+          536,
+          217,
+          190
+        ],
+        "sourceTileRGBSHA256": "5b8d07e22315b6aaa868b11d657ffaa166bb527c7db3bd44681198afffc5dc61"
+      }
+    ]
+  },
+  "battle": {
+    "captureReport": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle-capture-report.json",
+    "commandRecord": {
+      "cwd": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview",
+      "command": "PORT=5186 CHROME=/usr/bin/chromium node battle-capture.mjs 'r3d=1&a=wei_xiahoudun,wei_xuhuchi,wei_zhangliao,wei_caomiaode,wei_simamiyi&b=shu_liumiaobei,shu_guanyunmiao,wu_sunxiaoba,wu_zhoumiaoyu,qun_lvbuding&seed=121' /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle 0.25 6 0",
+      "startedUTC": "2026-10-12T11:49:21.771372+00:00",
+      "completedUTC": "2026-10-12T11:49:31.813392+00:00",
+      "exitCode": 0,
+      "actualTreeHEAD": "a9261dcccd8184a0a57e8f723f022fccc998d8e7",
+      "latestImmutableBase": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057"
+    },
+    "actualFrameCount": 6,
+    "advance": {
+      "stepSec": 0.25,
+      "count": 6,
+      "startAt": 0,
+      "method": "__demo.advance"
+    },
+    "actualTenCatsAll3D": true,
+    "actualSSRBuilderHits": [
+      {
+        "id": "wei_xiahoudun",
+        "actorPresent": true,
+        "actual3D": true,
+        "expectedWeaponNames": [
+          "ssr-xiahou-spear"
+        ],
+        "namesFound": [
+          "ssr-xiahou-spear"
+        ],
+        "allNamesFound": true
+      },
+      {
+        "id": "wei_xuhuchi",
+        "actorPresent": true,
+        "actual3D": true,
+        "expectedWeaponNames": [
+          "ssr-xuhu-bone-mace"
+        ],
+        "namesFound": [
+          "ssr-xuhu-bone-mace"
+        ],
+        "allNamesFound": true
+      },
+      {
+        "id": "wei_zhangliao",
+        "actorPresent": true,
+        "actual3D": true,
+        "expectedWeaponNames": [
+          "ssr-zhangliao-blade-main",
+          "ssr-zhangliao-blade-off"
+        ],
+        "namesFound": [
+          "ssr-zhangliao-blade-off",
+          "ssr-zhangliao-blade-main"
+        ],
+        "allNamesFound": true
+      }
+    ],
+    "selectedFrame": {
+      "file": "battle.webp",
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle.webp",
+      "dimensions": [
+        948,
+        593
+      ],
+      "bytes": 406524,
+      "sha256": "7eef0e35ea4b2045041fdf0831bdf18609dd2a33bab0859672a6466c7e5af1cb",
+      "selectedFrame": 0,
+      "nominalAdvanceSeconds": 0.25,
+      "sourceRawFrame": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle_00.png",
+      "sourceRawSHA256": "01dd881542fad961b85a86f8de80ed3701a1ec69a5cdccafaa9933a75ef1498e",
+      "decodedRGBSHA256": "fd5ae2e3ae96fe35efdd3e2abce9be29ad665048e0f03d19b264e5714484b1a2",
+      "RGBExactlyEqualToActualFrame": true,
+      "RGBPixelCount": 562164,
+      "encoding": "Pillow lossless WebP quality100/method6/exactTrue; no resizing, repaint, quantization or colour edit",
+      "losslessPNGOptimize9Bytes": 527454,
+      "captureReport": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle-capture-report.json",
+      "selectionReason": "Original quiet frame00; natural actor poses and ordinary party occlusion retained",
+      "viewedFrameIndices": [
+        0,
+        5
+      ],
+      "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+      "actualTreeHEAD": "a9261dcccd8184a0a57e8f723f022fccc998d8e7",
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+          "type": "stylesheet",
+          "failure": {
+            "errorText": "net::ERR_TUNNEL_CONNECTION_FAILED"
+          }
+        }
+      ],
+      "consoleMessages": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+          "location": {
+            "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "location": {
+            "url": "http://127.0.0.1:5186/favicon.ico",
+            "line": 0,
+            "column": 0,
+            "lineNumber": 0,
+            "columnNumber": 0
+          }
+        }
+      ]
+    },
+    "noManualModelsOrPosesPlaced": true,
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+        "type": "stylesheet",
+        "failure": {
+          "errorText": "net::ERR_TUNNEL_CONNECTION_FAILED"
+        }
+      }
+    ],
+    "consoleMessages": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+        "location": {
+          "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "location": {
+          "url": "http://127.0.0.1:5186/favicon.ico",
+          "line": 0,
+          "column": 0,
+          "lineNumber": 0,
+          "columnNumber": 0
+        }
+      }
+    ]
+  },
+  "privateServices": [
+    {
+      "phase": "candidate",
+      "pid": 142188,
+      "port": 5186,
+      "root": "/workspace/three-worktrees/heroes-wei-icons",
+      "command": "node /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-private.mjs /workspace/three-worktrees/heroes-wei-icons /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-cache-candidate 5186",
+      "startedUTC": "2026-10-12T11:49:00.256462+00:00",
+      "cacheWithinPrivatePreview": true,
+      "stoppedUTC": "2026-10-12T11:49:31.893152+00:00",
+      "exitCode": 0,
+      "ownPrivateServerStopped": true
+    },
+    {
+      "phase": "baseline",
+      "pid": 142269,
+      "port": 5187,
+      "root": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree",
+      "command": "node /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-private.mjs /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-cache-baseline 5187",
+      "startedUTC": "2026-10-12T11:49:01.707273+00:00",
+      "cacheWithinPrivatePreview": true,
+      "stoppedUTC": "2026-10-12T11:49:31.893172+00:00",
+      "exitCode": 0,
+      "ownPrivateServerStopped": true
+    }
+  ],
+  "allOwnServersStopped": true,
+  "privateViteSetup": {
+    "configFile": false,
+    "effectiveDevBase": "./",
+    "reason": "Keep optimizer cache entirely inside this preview directory; tracked original config base ./ with build-only inputs unchanged"
+  },
+  "mechanicalCollisionQABySeparateAgent": true,
+  "noExpandedPoseOrTestRunByHelper": true,
+  "logicalMeshBudgetNotMeasuredByThisHelper": true,
+  "productionFilesChangedByHelper": false,
+  "trackedToolsChangedByHelper": false,
+  "sourceRootNeverCheckedOutByHelper": true,
+  "ClaudeDecision": null,
+  "allFiveFormalImagesActuallyViewed": true,
+  "visualInspectionUTC": "2026-10-12T11:52:05.423575+00:00",
+  "visualObservations": [
+    "已实际查看三张 after、真正新 f4 stock、18 格原尺寸对照、raw battle00/05 与最终 battle.webp。",
+    "夏侯精钢柳叶刃和蓝缨、许虎木骨锤的可辨识轮廓比 stock 清楚。夏侯下杆 C5 修改未造成照片中明显的脱离握持；数值碰撞仍以独立 QA 为准。",
+    "张辽双刃仍可辨，但蓝柄和护手细节在 190 画布最弱；采用原始官方取景，没有为增大细节改变镜头或模型。",
+    "张辽将军盔 helmetGeneral 红缨在 idle/windup 上沿的已有裁切同时存在于本次 f4 stock 与 after，未称为新增裁切，也未换镜头掩盖。",
+    "最新 f4 的夏侯眼罩同时保留于 stock 和 after。照片本身不作脸部无遮挡、全动画无穿插或网格预算数值证明。",
+    "战斗00保留10张可读的脸和孙小霸自然眨眼；部分夏侯长枪、许虎骨锤被队友正常遮挡。张辽双刃在前排可见。05已有白圈战斗特效叠在猫的上身区域，选择原quiet00，未修改战斗内容。"
+  ],
+  "existingFrameCrop": {
+    "id": "wei_zhangliao",
+    "headgear": "helmetGeneral",
+    "labelZh": "将军盔红缨",
+    "baselineAlsoCropped": true,
+    "notChangedToHideIt": true
+  }
+}

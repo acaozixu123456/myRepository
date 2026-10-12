@@ -1,0 +1,274 @@
+{
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "expected": {
+    "src/art3d/heroes.ts": "d685ca31ef7a35a51c82965cce0640d8d3409b80b48b34dffb215ef831dfb428",
+    "src/art3d/parts/hero-wei-weapons.ts": "105b8faa0b6012bc7c372cf4341d62e82af4b5f41231f7b6fe92d5d49ae76cb0"
+  },
+  "files": [
+    {
+      "path": "package-lock.json",
+      "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+      "baselineSame": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art/types.ts",
+      "sha256": "3c1789ef07006cd1a13237c3937bffc3de3698d2062cd95b2afce020866bad1d",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/cat3d.ts",
+      "sha256": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/heroes.ts",
+      "sha256": "d685ca31ef7a35a51c82965cce0640d8d3409b80b48b34dffb215ef831dfb428",
+      "baselineSame": false
+    },
+    {
+      "path": "src/art3d/mode.ts",
+      "sha256": "e78bdc28428b536eb2c35d18d99d2aa4243c65afb2adc71a3a1a27642583c78b",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/back-fieldgear.ts",
+      "sha256": "87a4a0b05b51cf180ff64d1a2ba52f62282f128322432832dffa1f712326c3aa",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/back-scroll-banner.ts",
+      "sha256": "78b4a124dd58da56c6cc6302fbf1625f9443f2075f3c07b6d8bd04fbc530b5d9",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/back-sp-regalia.ts",
+      "sha256": "b356c5152e9608eec6a43337c0d4e56bcc09614e8026eb8ecbe57360d60b45e7",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/back.ts",
+      "sha256": "2d5304b9263b3d7768251c55205cda732383fba4cdf8e2e107294509cd541961",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/body-field-armor.ts",
+      "sha256": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/body-robes.ts",
+      "sha256": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/body.ts",
+      "sha256": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/extra-sp-marks.ts",
+      "sha256": "e9dcbe48bfc3ff908f0e66016a0b44174ce9627dbe5254ec3da44b834eaa7b9a",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/extras-regalia.ts",
+      "sha256": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/extras-veterans.ts",
+      "sha256": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/extras.ts",
+      "sha256": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/headgear.ts",
+      "sha256": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/hero-ur-liu-swords.ts",
+      "sha256": "7e55df1b9525db50367fa8c4b9d9b9a4b13ccae0c41286e6e5913517eea91e38",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/hero-ur-regalia.ts",
+      "sha256": "c092409c3e60b8c09f9d7e3f55ea8cd7b9bb0668b56fd2d75cb23e7c9425dbb9",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/hero-ur-weapons.ts",
+      "sha256": "e5df9c239a404dd40fa9eee3de70de49da1a5b195e54cab94a1fa333aaabcde2",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/index.ts",
+      "sha256": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/types.ts",
+      "sha256": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/weapons.ts",
+      "sha256": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/patterns.ts",
+      "sha256": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/portrait.ts",
+      "sha256": "6d5c5799023314c8aeb0509cbcccd5cf95ccdc64ee96ff8e1cff7ec69fd4ccf0",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/pose.ts",
+      "sha256": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/renderer.ts",
+      "sha256": "ccc15c4a584e0f44c91bf7faa35beb15afe6e1d509890003a3d0b7a47120ac05",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/toon.ts",
+      "sha256": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/chatlines.ts",
+      "sha256": "cf8a4093fe721f3a73a2a2982673c9366ebac6b2f0dfdf1b249acbe48f1ccb45",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/combos.ts",
+      "sha256": "0394fea40c693b1f73eb837c3bb7f29d25dacdaac799e2b241ca62828a942064",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/factions.ts",
+      "sha256": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/heroes.ts",
+      "sha256": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/batch2.ts",
+      "sha256": "79471e6cc758adfb86d7dea843bbec3f6d1b5ed2f677ee35c6bd39db9d41efc0",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/helpers.ts",
+      "sha256": "c030cdad7efcc2275249eaab7cd26d1ae5e46deeb5a593151a6fd7256de8bedf",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/index.ts",
+      "sha256": "c76c2efe6c35e34d7f5fd76712fbaf79ecb8f0ba41b17f83f065d647ec540934",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/remaining-man-xian.ts",
+      "sha256": "a8fca5c56322d2bf32e2af8c6d387dae7b13b5f32637d08ddae2fe1d9fe48e20",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/remaining-wei-wu.ts",
+      "sha256": "d0cda2bd974ac1c52e28061aa9d4daa5c5066509975e2715d5d6e588baaa0c9f",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/remaining-wu-qun-man.ts",
+      "sha256": "17003002c8315065efa7ef6e33fec1df9ac044cf098a22c0b5774e5b27c3d66e",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/sp.ts",
+      "sha256": "69f2da8f0778fa24bed878aa346b5ae935f2d7185e149181d293adb28c5e7d6e",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/sr.ts",
+      "sha256": "d28f5e4c53cae471d7c60c330d5a68a0a641659d2d5716aa017976564330d3f4",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/ssr.ts",
+      "sha256": "940a9721e5d815491624e3c2b462b70907a25a4a65c0da47cef5e9a4720d9876",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/tactics.ts",
+      "sha256": "08a405df154c62d650031b4108ac26c2079efa8cf8a7e5486a8ea74157dea448",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/kits/ur.ts",
+      "sha256": "9440538c6d3e6da52a7c3e8d321b0be4675e12fabc79d964705673dc149c4dbb",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/mob-looks.ts",
+      "sha256": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/pets.ts",
+      "sha256": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/skills.ts",
+      "sha256": "57abe2f696f9fa978e0b397127b47dad0aadbae386f530b144d4fd10ed85a5e4",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/statuses.ts",
+      "sha256": "2d17bb7f66947ad27dcf3fd6e7ca6a71d22068b1b6c2de94190a495a051e56d8",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/systems.ts",
+      "sha256": "6242091f426d728f6bd3de12c36c0c39f173d358bdf224c557b7d58509305819",
+      "baselineSame": true
+    },
+    {
+      "path": "src/data/units.ts",
+      "sha256": "7e41b3c5d7b94a35f00012431256e62953dc5a0c5c395d4e357826bc91f5183a",
+      "baselineSame": true
+    },
+    {
+      "path": "src/fx/actor.ts",
+      "sha256": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+      "baselineSame": true
+    },
+    {
+      "path": "src/fx/puppet.ts",
+      "sha256": "eb246ad2014ba5f346ac9f4eea5879f65b78689355faac3d1a8806b8105354d5",
+      "baselineSame": true
+    },
+    {
+      "path": "src/art3d/parts/hero-wei-weapons.ts",
+      "sha256": "105b8faa0b6012bc7c372cf4341d62e82af4b5f41231f7b6fe92d5d49ae76cb0",
+      "baselineSame": false
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "cwd": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview",
+  "command": "PORT=5186 CHROME=/usr/bin/chromium node battle-capture.mjs 'r3d=1&a=wei_xiahoudun,wei_xuhuchi,wei_zhangliao,wei_caomiaode,wei_simamiyi&b=shu_liumiaobei,shu_guanyunmiao,wu_sunxiaoba,wu_zhoumiaoyu,qun_lvbuding&seed=121' /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle 0.25 6 0",
+  "startedUTC": "2026-10-12T11:49:21.771372+00:00",
+  "completedUTC": "2026-10-12T11:49:31.813392+00:00",
+  "exitCode": 0,
+  "actualTreeHEAD": "a9261dcccd8184a0a57e8f723f022fccc998d8e7",
+  "latestImmutableBase": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057"
+}

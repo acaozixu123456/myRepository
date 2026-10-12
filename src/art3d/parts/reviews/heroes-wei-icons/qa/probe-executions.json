@@ -1,0 +1,463 @@
+{
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "createdUTC": "2026-10-12T11:52:32.125Z",
+  "executions": [
+    {
+      "mode": "baseline",
+      "kind": "face",
+      "id": "wei_xiahoudun",
+      "startedUTC": "2026-10-12T11:52:16.187Z",
+      "completedUTC": "2026-10-12T11:52:16.455Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "f5b1c719ed85b58f00cc5fde2f9480860dd0cdbc4a3b37c33ccb5215d26c4b8a",
+      "reportSHA256": "1ab4cdd673d12fbb82d69ec3ac8b53ee91930250d30b62be91f4b14b8cf20d85"
+    },
+    {
+      "mode": "baseline",
+      "kind": "face",
+      "id": "wei_xuhuchi",
+      "startedUTC": "2026-10-12T11:52:16.460Z",
+      "completedUTC": "2026-10-12T11:52:16.691Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 1.5707963267948966,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "f5b1c719ed85b58f00cc5fde2f9480860dd0cdbc4a3b37c33ccb5215d26c4b8a",
+      "reportSHA256": "b302014fe4e3266fbd7e7a1d61f8276af62854c93e16c09bce56066a937717e8"
+    },
+    {
+      "mode": "baseline",
+      "kind": "face",
+      "id": "wei_zhangliao",
+      "startedUTC": "2026-10-12T11:52:16.695Z",
+      "completedUTC": "2026-10-12T11:52:16.968Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "f5b1c719ed85b58f00cc5fde2f9480860dd0cdbc4a3b37c33ccb5215d26c4b8a",
+      "reportSHA256": "b0b0b115c49738fbdba1a576a158dfddeee2d6487ddb07800ad10d7b6143d813"
+    },
+    {
+      "mode": "baseline",
+      "kind": "head",
+      "id": "wei_xiahoudun",
+      "startedUTC": "2026-10-12T11:52:17.071Z",
+      "completedUTC": "2026-10-12T11:52:18.139Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "1905ffc67d6271ae90eb939433d7c1c3c83aa494e8656e446633ec0c4adc6c01",
+      "reportSHA256": "57c1b2ef8daddc025fada280e705f4245f3ced1557bc7ea6d3ee48310fde6995"
+    },
+    {
+      "mode": "baseline",
+      "kind": "head",
+      "id": "wei_xuhuchi",
+      "startedUTC": "2026-10-12T11:52:18.144Z",
+      "completedUTC": "2026-10-12T11:52:19.030Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 1.5707963267948966,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "1905ffc67d6271ae90eb939433d7c1c3c83aa494e8656e446633ec0c4adc6c01",
+      "reportSHA256": "42efe1b3ef1fe4dee6b90ab8f67a59931a95c18e44f7bbcbc4e0893055781129"
+    },
+    {
+      "mode": "baseline",
+      "kind": "head",
+      "id": "wei_zhangliao",
+      "startedUTC": "2026-10-12T11:52:19.034Z",
+      "completedUTC": "2026-10-12T11:52:21.129Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "1905ffc67d6271ae90eb939433d7c1c3c83aa494e8656e446633ec0c4adc6c01",
+      "reportSHA256": "73cad6d498476e58e11dc6850c244c341ff093639dc1b4a2e065f904798b9898"
+    },
+    {
+      "mode": "candidate",
+      "kind": "face",
+      "id": "wei_xiahoudun",
+      "startedUTC": "2026-10-12T11:52:21.275Z",
+      "completedUTC": "2026-10-12T11:52:21.581Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "223a2fcb80b7c5de188e7ded533b537a0325747732ca95a703e27af09fc0cbf3",
+      "reportSHA256": "fbb107695143a8dd81b8f823a8f50b16ccef4c17d5dc9e7f0694886ecc72718e"
+    },
+    {
+      "mode": "candidate",
+      "kind": "face",
+      "id": "wei_xuhuchi",
+      "startedUTC": "2026-10-12T11:52:21.585Z",
+      "completedUTC": "2026-10-12T11:52:21.976Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 1.5707963267948966,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "223a2fcb80b7c5de188e7ded533b537a0325747732ca95a703e27af09fc0cbf3",
+      "reportSHA256": "a6025eebcb1a5874fcb437a686b4a1ef4744968c1959a9d9631593500f3530a9"
+    },
+    {
+      "mode": "candidate",
+      "kind": "face",
+      "id": "wei_zhangliao",
+      "startedUTC": "2026-10-12T11:52:21.981Z",
+      "completedUTC": "2026-10-12T11:52:22.295Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "223a2fcb80b7c5de188e7ded533b537a0325747732ca95a703e27af09fc0cbf3",
+      "reportSHA256": "b12f501c5f75129dcd4a3364a429f24ac4438629273f6ce8276b272441096989"
+    },
+    {
+      "mode": "candidate",
+      "kind": "head",
+      "id": "wei_xiahoudun",
+      "startedUTC": "2026-10-12T11:52:22.437Z",
+      "completedUTC": "2026-10-12T11:52:24.284Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "eef215766d0d90180c07ac45b277bdb10c5492e7e7d439618b03109d3377eadc",
+      "reportSHA256": "238b3783077f3e0df0c0a729a2699301e363faf0d55a30db3022c143d8d89cf7"
+    },
+    {
+      "mode": "candidate",
+      "kind": "head",
+      "id": "wei_xuhuchi",
+      "startedUTC": "2026-10-12T11:52:24.289Z",
+      "completedUTC": "2026-10-12T11:52:29.106Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 1.5707963267948966,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "eef215766d0d90180c07ac45b277bdb10c5492e7e7d439618b03109d3377eadc",
+      "reportSHA256": "1e98e647372d955e4dda5cc6b22bece620b2f258195f3f5c784e8370b20c073b"
+    },
+    {
+      "mode": "candidate",
+      "kind": "head",
+      "id": "wei_zhangliao",
+      "startedUTC": "2026-10-12T11:52:29.111Z",
+      "completedUTC": "2026-10-12T11:52:32.124Z",
+      "actualExitCode": 0,
+      "requestedFiniteCases": [
+        {
+          "pose": "idle",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "strike",
+          "t": 0.4,
+          "phase": 0,
+          "yaw": 32
+        },
+        {
+          "pose": "windup",
+          "t": 2.4,
+          "phase": 0,
+          "yaw": 32
+        }
+      ],
+      "workerSHA256": "eef215766d0d90180c07ac45b277bdb10c5492e7e7d439618b03109d3377eadc",
+      "reportSHA256": "f66b03557f52903c653563e3479e27dbd27de2db4f086a8d7a4683bcc8e2b35d"
+    }
+  ],
+  "noExpandedPosesOrAngles": true
+}

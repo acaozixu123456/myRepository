@@ -1,0 +1,749 @@
+{
+  "title": "A12 bounded public-production source audit before any image generation",
+  "created_utc": "2026-10-12T08:43:06.202945+00:00",
+  "actual_candidate_count": 12,
+  "search_bound": 12,
+  "official_sources": [
+    {
+      "author": "Kenney Vleugels",
+      "license": "CC0-1.0",
+      "page": "https://kenney.nl/assets/particle-pack",
+      "mirror": "Calinou/kenney-particle-pack",
+      "commit": "ab7086639ee73be31abd87feb21bf1402d4e8144",
+      "license_file": "LICENSE.txt",
+      "specific_license_sha256": "7edd59126c258e602e69905a0517cf51bedea489b1a69eb06a77edee1769e81e"
+    },
+    {
+      "author": "WickedInsignia",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/clouds-with-transparency",
+      "individual_pages": [
+        "https://opengameart.org/content/clouds-with-transparency-fxcloudalpha01png",
+        "https://opengameart.org/content/clouds-with-transparency-fxcloudalpha04png",
+        "https://opengameart.org/content/clouds-with-transparency-fxcloudalpha05png"
+      ],
+      "mirror_pack": "NoahOppy/Castle-Conquest",
+      "pack_commit": "d7d8451d8a30635c45322e908d69d5c4f59a59cf",
+      "second_05_mirror": "YuriNikolai/StrangeWinds",
+      "second_05_commit": "9b50080be41c66032909a7b51b9694298d00db89",
+      "identity": "Official individual pages match author/license/native2048 dimensions/original basenames and approximate original sizes; 05 has exact Gitblob in both unrelated mirrors and second mirror README explicitly lists this asset CC0. Official PNG GET is CONNECT403, so no official-origin byteidentity assertion. Root game-code LICENSE is not the cloud license."
+    },
+    {
+      "author": "bonecandy",
+      "license": "CC0-1.0",
+      "page": "https://opengameart.org/content/clouds-9",
+      "mirror": "Alexakamm/Dimensions",
+      "commit": "4ad38e34c3f9470cd571070b87e9acf36a4cdbd2",
+      "identity": "Original page lists all three exact UUID PNG names and matching rounded sizes; downloaded fixed mirror files match Gitblob/size. No official-byte equality assertion."
+    }
+  ],
+  "candidates": [
+    {
+      "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/smoke_01.png",
+      "path": "addons/kenney_particle_pack/smoke_01.png",
+      "expected_blob": "b9024235f2cc35e9205219324c7b7ae18277c4c8",
+      "expected_bytes": 91637,
+      "time_utc": "2026-10-12T08:36:46.585930+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/kenney/smoke_01.png",
+      "bytes": 91637,
+      "sha256": "89df665bb2e9a021edad2a9077d2651c44e6c6cd28f3fd38f800c41a5febd2a2",
+      "git_blob_sha1": "b9024235f2cc35e9205219324c7b7ae18277c4c8",
+      "git_blob_matches": true,
+      "bytes_match": true,
+      "mode": "P",
+      "size": [
+        512,
+        512
+      ],
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/kenney/smoke_01.png",
+        "size": [
+          512,
+          512
+        ],
+        "native_mode": "P",
+        "alpha_min_max": [
+          0,
+          189
+        ],
+        "alpha_unique_count": 177,
+        "alpha_zero_fraction": 0.4001045227050781,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          27,
+          31,
+          484,
+          484
+        ],
+        "alpha_weighted_RGB_mean": [
+          114.105,
+          114.105,
+          114.105
+        ]
+      },
+      "initial_inspection_error": "The image has no channel \"A\"",
+      "correction": "Indexed PNG uses native tRNS palette transparency, converted normally to decoded RGBA for alpha audit; original bytes unchanged."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/smoke_02.png",
+      "path": "addons/kenney_particle_pack/smoke_02.png",
+      "expected_blob": "fd3f732c3cc3a98abde155c647c35ed2e924cdf8",
+      "expected_bytes": 91493,
+      "time_utc": "2026-10-12T08:36:46.987183+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/kenney/smoke_02.png",
+      "bytes": 91493,
+      "sha256": "c1959ff3ae2f07495cd9f3a0417534402e0ea327f77502b942ae3b874c5017af",
+      "git_blob_sha1": "fd3f732c3cc3a98abde155c647c35ed2e924cdf8",
+      "git_blob_matches": true,
+      "bytes_match": true,
+      "mode": "P",
+      "size": [
+        512,
+        512
+      ],
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/kenney/smoke_02.png",
+        "size": [
+          512,
+          512
+        ],
+        "native_mode": "P",
+        "alpha_min_max": [
+          0,
+          188
+        ],
+        "alpha_unique_count": 185,
+        "alpha_zero_fraction": 0.41773223876953125,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          28,
+          29,
+          482,
+          479
+        ],
+        "alpha_weighted_RGB_mean": [
+          121.8,
+          121.8,
+          121.8
+        ]
+      },
+      "initial_inspection_error": "The image has no channel \"A\"",
+      "correction": "Indexed PNG uses native tRNS palette transparency, converted normally to decoded RGBA for alpha audit; original bytes unchanged."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/addons/kenney_particle_pack/smoke_03.png",
+      "path": "addons/kenney_particle_pack/smoke_03.png",
+      "expected_blob": "34cad39231026b6617f25e03e99c0b860258d010",
+      "expected_bytes": 38182,
+      "time_utc": "2026-10-12T08:36:47.402396+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/kenney/smoke_03.png",
+      "bytes": 38182,
+      "sha256": "03c219c4384206174c44ff6997ffdabd1bd4354709b9569f957bf9aa75e7dafd",
+      "git_blob_sha1": "34cad39231026b6617f25e03e99c0b860258d010",
+      "git_blob_matches": true,
+      "bytes_match": true,
+      "mode": "P",
+      "size": [
+        512,
+        512
+      ],
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/kenney/smoke_03.png",
+        "size": [
+          512,
+          512
+        ],
+        "native_mode": "P",
+        "alpha_min_max": [
+          0,
+          185
+        ],
+        "alpha_unique_count": 181,
+        "alpha_zero_fraction": 0.8244667053222656,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          113,
+          123,
+          400,
+          392
+        ],
+        "alpha_weighted_RGB_mean": [
+          126.205,
+          126.205,
+          126.205
+        ]
+      },
+      "initial_inspection_error": "The image has no channel \"A\"",
+      "correction": "Indexed PNG uses native tRNS palette transparency, converted normally to decoded RGBA for alpha audit; original bytes unchanged."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NoahOppy/Castle-Conquest/d7d8451d8a30635c45322e908d69d5c4f59a59cf/Assets/fx_cloudalphas/FX_CloudAlpha01.png",
+      "expected_blob": "2f0db6565b66ea6fbd06d2373d3be32a645c47c0",
+      "expected_bytes": 2400903,
+      "time_utc": "2026-10-12T08:39:14.876438+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha01.png",
+      "sha256": "53bbdc9d10cd37f4386f339aa2f846f96d5e152ea34a618b0d04ae52b918dde0",
+      "bytes": 2400903,
+      "mode": "RGBA",
+      "size": [
+        2048,
+        2048
+      ],
+      "blob": "2f0db6565b66ea6fbd06d2373d3be32a645c47c0",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        102
+      ],
+      "alpha_zero_fraction": 0.6359415054321289,
+      "alpha_border_max": 0,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha01.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "native_mode": "RGBA",
+        "alpha_min_max": [
+          0,
+          102
+        ],
+        "alpha_unique_count": 100,
+        "alpha_zero_fraction": 0.6359415054321289,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          80,
+          300,
+          1939,
+          1679
+        ],
+        "alpha_weighted_RGB_mean": [
+          186.093,
+          186.093,
+          186.093
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NoahOppy/Castle-Conquest/d7d8451d8a30635c45322e908d69d5c4f59a59cf/Assets/fx_cloudalphas/FX_CloudAlpha02.png",
+      "expected_blob": "3f9695d2efb707efa9355c472b8b488eea5ce9b0",
+      "expected_bytes": 2058598,
+      "time_utc": "2026-10-12T08:39:15.711183+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha02.png",
+      "sha256": "6e8352e41f0ceccdadaccf81663d045c2b8e875a4ab28146ecf88e0c2d9b85ab",
+      "bytes": 2058598,
+      "mode": "LA",
+      "size": [
+        2048,
+        2048
+      ],
+      "blob": "3f9695d2efb707efa9355c472b8b488eea5ce9b0",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        70
+      ],
+      "alpha_zero_fraction": 0.6599297523498535,
+      "alpha_border_max": 4,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha02.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "native_mode": "LA",
+        "alpha_min_max": [
+          0,
+          70
+        ],
+        "alpha_unique_count": 69,
+        "alpha_zero_fraction": 0.6599297523498535,
+        "edge_alpha_max": 4,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          134,
+          248,
+          2048,
+          1761
+        ],
+        "alpha_weighted_RGB_mean": [
+          169.933,
+          169.933,
+          169.933
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NoahOppy/Castle-Conquest/d7d8451d8a30635c45322e908d69d5c4f59a59cf/Assets/fx_cloudalphas/FX_CloudAlpha03.png",
+      "expected_blob": "1b891c6d16f40d40476d66c0ebc6574271dcfb36",
+      "expected_bytes": 2017932,
+      "time_utc": "2026-10-12T08:39:16.175596+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha03.png",
+      "sha256": "602a55f5e25e606999bfa218572a9703f54469ed1fe7c857c77e5038cc4681ee",
+      "bytes": 2017932,
+      "mode": "LA",
+      "size": [
+        2048,
+        2048
+      ],
+      "blob": "1b891c6d16f40d40476d66c0ebc6574271dcfb36",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_fraction": 0.5831599235534668,
+      "alpha_border_max": 0,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha03.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "native_mode": "LA",
+        "alpha_min_max": [
+          0,
+          255
+        ],
+        "alpha_unique_count": 252,
+        "alpha_zero_fraction": 0.5831599235534668,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          9,
+          293,
+          2029,
+          1716
+        ],
+        "alpha_weighted_RGB_mean": [
+          103.635,
+          103.635,
+          103.635
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NoahOppy/Castle-Conquest/d7d8451d8a30635c45322e908d69d5c4f59a59cf/Assets/fx_cloudalphas/FX_CloudAlpha04.png",
+      "expected_blob": "3ef719ea84ec12f61411cb85b947702eb0406de1",
+      "expected_bytes": 2048676,
+      "time_utc": "2026-10-12T08:39:17.021401+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha04.png",
+      "sha256": "72b2fdc48f271aea089fa391867f0fb72158db2cbb28828149fdd64d614da489",
+      "bytes": 2048676,
+      "mode": "LA",
+      "size": [
+        2048,
+        2048
+      ],
+      "blob": "3ef719ea84ec12f61411cb85b947702eb0406de1",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        89
+      ],
+      "alpha_zero_fraction": 0.6100914478302002,
+      "alpha_border_max": 4,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha04.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "native_mode": "LA",
+        "alpha_min_max": [
+          0,
+          89
+        ],
+        "alpha_unique_count": 89,
+        "alpha_zero_fraction": 0.6100914478302002,
+        "edge_alpha_max": 4,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          77,
+          310,
+          2048,
+          1672
+        ],
+        "alpha_weighted_RGB_mean": [
+          140.935,
+          140.935,
+          140.935
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NoahOppy/Castle-Conquest/d7d8451d8a30635c45322e908d69d5c4f59a59cf/Assets/fx_cloudalphas/FX_CloudAlpha06.png",
+      "expected_blob": "22e4deab2183cbad86acb70cf6271dd342bd8ebf",
+      "expected_bytes": 2059759,
+      "time_utc": "2026-10-12T08:39:17.699381+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha06.png",
+      "sha256": "a1f05810c43d7811cb72f460595cc6e446e20fd4601342ba93d30045cb6095f1",
+      "bytes": 2059759,
+      "mode": "LA",
+      "size": [
+        2048,
+        2048
+      ],
+      "blob": "22e4deab2183cbad86acb70cf6271dd342bd8ebf",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_fraction": 0.6302204132080078,
+      "alpha_border_max": 0,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/wicked/FX_CloudAlpha06.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "native_mode": "LA",
+        "alpha_min_max": [
+          0,
+          255
+        ],
+        "alpha_unique_count": 256,
+        "alpha_zero_fraction": 0.6302204132080078,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          48,
+          250,
+          2020,
+          1922
+        ],
+        "alpha_weighted_RGB_mean": [
+          110.899,
+          110.899,
+          110.899
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Alexakamm/Dimensions/4ad38e34c3f9470cd571070b87e9acf36a4cdbd2/art/8c49b122-ccc5-4bb6-89f6-e87972cd0dd8.png",
+      "expected_blob": "04b9fefdfb921b7456f5becc9e8f64bd13a9d3c9",
+      "expected_bytes": 112402,
+      "time_utc": "2026-10-12T08:40:43.624439+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/bonecandy/8c49b122-ccc5-4bb6-89f6-e87972cd0dd8.png",
+      "sha256": "937d0cad2a388c2c13cf7b7d276134a34bcb96391e7b919c2e0aba5766f2c499",
+      "bytes": 112402,
+      "mode": "RGBA",
+      "size": [
+        2388,
+        1668
+      ],
+      "blob": "04b9fefdfb921b7456f5becc9e8f64bd13a9d3c9",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_fraction": 0.5801323765108516,
+      "alpha_border_max": 0,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/bonecandy/8c49b122-ccc5-4bb6-89f6-e87972cd0dd8.png",
+        "size": [
+          2388,
+          1668
+        ],
+        "native_mode": "RGBA",
+        "alpha_min_max": [
+          0,
+          255
+        ],
+        "alpha_unique_count": 256,
+        "alpha_zero_fraction": 0.5801323765108516,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          68,
+          263,
+          2346,
+          1399
+        ],
+        "alpha_weighted_RGB_mean": [
+          185.367,
+          202.871,
+          206.175
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Alexakamm/Dimensions/4ad38e34c3f9470cd571070b87e9acf36a4cdbd2/art/e875f8d8-0e5e-4d4f-9ed9-13c7fa554599.png",
+      "expected_blob": "890bb06df9889b8724e647fa90df1cd7a342a84c",
+      "expected_bytes": 132162,
+      "time_utc": "2026-10-12T08:40:44.122727+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/bonecandy/e875f8d8-0e5e-4d4f-9ed9-13c7fa554599.png",
+      "sha256": "b2ea0d84c58e732f3c9b60261431a1c82c7e5d5b2378148179df45278f46781e",
+      "bytes": 132162,
+      "mode": "RGBA",
+      "size": [
+        2388,
+        1668
+      ],
+      "blob": "890bb06df9889b8724e647fa90df1cd7a342a84c",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_fraction": 0.6551525111569036,
+      "alpha_border_max": 0,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/bonecandy/e875f8d8-0e5e-4d4f-9ed9-13c7fa554599.png",
+        "size": [
+          2388,
+          1668
+        ],
+        "native_mode": "RGBA",
+        "alpha_min_max": [
+          0,
+          255
+        ],
+        "alpha_unique_count": 256,
+        "alpha_zero_fraction": 0.6551525111569036,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          106,
+          284,
+          2346,
+          1251
+        ],
+        "alpha_weighted_RGB_mean": [
+          180.641,
+          197.547,
+          202.079
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Alexakamm/Dimensions/4ad38e34c3f9470cd571070b87e9acf36a4cdbd2/art/fad65f3f-3797-4cb3-b147-27ee7453c738.png",
+      "expected_blob": "b82229bad3e8c4c40965e05239edffd963e350ec",
+      "expected_bytes": 84010,
+      "time_utc": "2026-10-12T08:40:44.521959+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/bonecandy/fad65f3f-3797-4cb3-b147-27ee7453c738.png",
+      "sha256": "3787666408800024905abc91e3bb36341ec7ca7b22d77c1c115d027507d22d71",
+      "bytes": 84010,
+      "mode": "RGBA",
+      "size": [
+        2388,
+        1668
+      ],
+      "blob": "b82229bad3e8c4c40965e05239edffd963e350ec",
+      "blob_matches": true,
+      "size_matches": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_zero_fraction": 0.6146457206094421,
+      "alpha_border_max": 0,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/bonecandy/fad65f3f-3797-4cb3-b147-27ee7453c738.png",
+        "size": [
+          2388,
+          1668
+        ],
+        "native_mode": "RGBA",
+        "alpha_min_max": [
+          0,
+          255
+        ],
+        "alpha_unique_count": 234,
+        "alpha_zero_fraction": 0.6146457206094421,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          90,
+          296,
+          2342,
+          1337
+        ],
+        "alpha_weighted_RGB_mean": [
+          184.57,
+          202.822,
+          206.1
+        ]
+      }
+    },
+    {
+      "url": "https://raw.githubusercontent.com/YuriNikolai/StrangeWinds/9b50080be41c66032909a7b51b9694298d00db89/gfx/fx/FX_CloudAlpha05.png",
+      "expected_blob": "b7f07c838b818ea4f06797dc9f499cdae45feef9",
+      "expected_bytes": 2624209,
+      "time_utc": "2026-10-12T08:38:12.831625+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/yuri-cloudalpha05.png",
+      "sha256": "5cae51b43d8d7dbb4b9d8e1f8830d4120ef1cd9f95690f4c5f58afb0c2b0f339",
+      "bytes": 2624209,
+      "mode": "LA",
+      "size": [
+        2048,
+        2048
+      ],
+      "blob": "b7f07c838b818ea4f06797dc9f499cdae45feef9",
+      "blob_matches": true,
+      "actual_alpha_audit": {
+        "path": "/tmp/cloud-sprites-public/yuri-cloudalpha05.png",
+        "size": [
+          2048,
+          2048
+        ],
+        "native_mode": "LA",
+        "alpha_min_max": [
+          0,
+          237
+        ],
+        "alpha_unique_count": 234,
+        "alpha_zero_fraction": 0.5959875583648682,
+        "edge_alpha_max": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "alpha_bbox": [
+          47,
+          50,
+          2000,
+          1934
+        ],
+        "alpha_weighted_RGB_mean": [
+          138.631,
+          138.631,
+          138.631
+        ]
+      }
+    }
+  ],
+  "visual_review": {
+    "actual_tool_view": [
+      "kenney/smoke_01.png",
+      "kenney/smoke_02.png",
+      "kenney/smoke_03.png",
+      "yuri-cloudalpha05.png",
+      "wicked/FX_CloudAlpha01.png",
+      "wicked/FX_CloudAlpha04.png",
+      "kenney-initial-composite.png",
+      "wicked-six-contact.png",
+      "bonecandy-three-contact.png"
+    ],
+    "composites": "Only review files use Pillow normal straight-alpha composites, scale down with Lanczos, labels; no raw source pixels changed. Lightstone235235223/sky124191230/deepblue234780.",
+    "kenney": "Soft but gray smoke clouds, fragmented circular puff on03; native transparent512, no white/blue billow mainbody.",
+    "wicked": "01/02/04 extremely pale gray diffuse cloud, low alpha; 03/05/06 darker gray density. 05 gives several clusters but neutral-gray shadow look on bright blue; 02/04 native edge alpha4. Useful real CC0 shape references rather than claim absent stock.",
+    "bonecandy": "White/cyan body, but hard dark-purple outline and pixel-art contour; each only one large outlined cloud, not requested atmospheric soft edge.",
+    "decision": "Prefer genuine reference edits from actual CC001/04/05 to bright white/lightblue multiple-cloud atlas, transparent_background true. No procedural recolor/halo fix/background removal; full original-byte audit retained."
+  },
+  "generation_before_audit": false,
+  "license_and_readme_downloads": [
+    {
+      "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/LICENSE.txt",
+      "path": "LICENSE.txt",
+      "expected_blob": "e198510d3c6ac7e3dc4370f1f0861d8c617362e8",
+      "expected_bytes": 629,
+      "time_utc": "2026-10-12T08:36:45.788525+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/kenney/LICENSE.txt",
+      "bytes": 629,
+      "sha256": "7edd59126c258e602e69905a0517cf51bedea489b1a69eb06a77edee1769e81e",
+      "git_blob_sha1": "e198510d3c6ac7e3dc4370f1f0861d8c617362e8",
+      "git_blob_matches": true,
+      "bytes_match": true,
+      "actual_alpha_audit": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Calinou/kenney-particle-pack/ab7086639ee73be31abd87feb21bf1402d4e8144/README.md",
+      "path": "README.md",
+      "expected_blob": "6cee0b7eead5520edc717106325d061ad8ca4763",
+      "expected_bytes": 1549,
+      "time_utc": "2026-10-12T08:36:46.251330+00:00",
+      "http_status": 200,
+      "local_path": "/tmp/cloud-sprites-public/kenney/README.md",
+      "bytes": 1549,
+      "sha256": "8c88ea08e8212711ab4d59a118b297fd5887210fb50fcfbd58508825999a1953",
+      "git_blob_sha1": "6cee0b7eead5520edc717106325d061ad8ca4763",
+      "git_blob_matches": true,
+      "bytes_match": true,
+      "actual_alpha_audit": null
+    }
+  ]
+}

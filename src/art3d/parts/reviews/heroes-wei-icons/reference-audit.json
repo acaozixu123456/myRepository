@@ -1,0 +1,361 @@
+{
+  "capturedUTC": "2026-10-12T07:12:34.724510+00:00",
+  "base": "913334948c16a0f9a9bb899edc943fb86c322337",
+  "queueBlob": "15f2c9a6be0d04f7250b479d50e724289387d5c9",
+  "scope": "Read-only reference audit. Only scratch reports/drafts are written; no production source, tests, git mutation, image generation or PR actions.",
+  "heroes": [
+    {
+      "id": "wei_xiahoudun",
+      "heroSourceLine": 50,
+      "name": "夏侯墩",
+      "origin": "夏侯惇",
+      "title": "独眼猛将",
+      "faction": "wei",
+      "rarity": "SSR",
+      "role": "先锋",
+      "breed": "灰虎斑",
+      "age": "壮年 · 墩墩圆润",
+      "lore": "拔矢啖睛的传说猫。据说他为了追一颗滚走的毛线球，把一只眼睛“弄丢”了——从此戴上眼罩，凶名远扬。其实眼罩下面什么都没发生。",
+      "quote": "一只眼，足够看穿你的小心思！",
+      "likes": "毛线球、铁头功、被曹喵德摸头",
+      "look": {
+        "coat": {
+          "pattern": "tabby",
+          "base": "#a58b72",
+          "light": "#e9dccb",
+          "stripe": "#6f5846"
+        },
+        "eye": {
+          "color": "#c9a23a",
+          "style": "fierce"
+        },
+        "ear": "pointy",
+        "tail": "long",
+        "build": 1.14,
+        "outfit": {
+          "pal": {
+            "main": "#3f63ad",
+            "sub": "#26397a",
+            "trim": "#e6c25a",
+            "cloth": "#e8edf7"
+          },
+          "head": "helmetWei",
+          "body": "armorHeavy",
+          "back": "cape",
+          "weapon": "spear",
+          "extra": [
+            "eyepatch"
+          ]
+        }
+      },
+      "effectiveDefaults": {
+        "headK": 1,
+        "headScaleInCurrentCat3D": 1.14,
+        "pink": "#f4a6b0"
+      },
+      "reference": "assets/heroes/ref/wei_xiahoudun.jpg",
+      "referenceActuallyViewed": true,
+      "approved2DIllustrationExists": false,
+      "HERO_PARTS_has_override_at_base": false,
+      "weaponSilhouette": {
+        "observed": "实际 JPG 为细长棕木杆、冷白柳叶枪头、浅蓝枪面内脊、金色枪座及短蓝穗；正面长杆偏身体一侧。",
+        "recommendation": "保留长矛纵向细长剪影，枪尖为圆钝收尖的厚柳叶形，做清楚的双侧面和中脊。小金座与短蓝穗区别于普通锥头；握段穿掌心，杆和枪头连接连续。优先检查举矛时枪座/穗的外侧位置，不缩整根或漂移根物体来规避握持。",
+        "avoid": "不变成大月牙偃月刀、双叉戟或整根银色短剑；不加入血痕或眼伤表现。",
+        "baseline": "WEAPON.spear 当前为长2.2木pole和四边锥枪头，未有该SSR专属override。"
+      }
+    },
+    {
+      "id": "wei_xuhuchi",
+      "heroSourceLine": 72,
+      "name": "许虎痴",
+      "origin": "许褚",
+      "title": "虎痴",
+      "faction": "wei",
+      "rarity": "SSR",
+      "role": "守护",
+      "breed": "沙色缅因",
+      "age": "青年 · 巨大号",
+      "lore": "曹喵德的贴身护卫，体型是同龄猫的两倍。总觉得自己是一只老虎，因此常年戴着虎头帽。能一口气吃掉三十条小鱼干，然后把骨头整整齐齐码好。",
+      "quote": "嗷——本虎在此！谁敢动主公的鱼干！",
+      "likes": "虎头帽、大骨头、被叫“老虎”",
+      "look": {
+        "coat": {
+          "pattern": "solid",
+          "base": "#c9a574",
+          "light": "#f3e6c8"
+        },
+        "eye": {
+          "color": "#6a4a22",
+          "style": "round"
+        },
+        "ear": "round",
+        "tail": "bushy",
+        "blush": true,
+        "build": 1.28,
+        "outfit": {
+          "pal": {
+            "main": "#3f63ad",
+            "sub": "#26397a",
+            "trim": "#e6c25a",
+            "cloth": "#e8edf7"
+          },
+          "head": "tigerHood",
+          "body": "armorLight",
+          "back": "none",
+          "weapon": "mace",
+          "extra": []
+        }
+      },
+      "effectiveDefaults": {
+        "headK": 1,
+        "headScaleInCurrentCat3D": 1.14,
+        "pink": "#f4a6b0"
+      },
+      "reference": "assets/heroes/ref/wei_xuhuchi.jpg",
+      "referenceActuallyViewed": true,
+      "approved2DIllustrationExists": false,
+      "HERO_PARTS_has_override_at_base": false,
+      "weaponSilhouette": {
+        "observed": "实际 JPG 为偏长卵形棕木棒头、两道金箍、乳白短骨齿，棕木柄中段有蓝色握带；体格大而表情圆润。",
+        "recommendation": "拉出纵向木棒头的重量感，圆钝短骨齿沿两侧少量交错分布，两道金箍留明显间距，蓝握带沿pal.main，骨齿用暖白自然材色。棕木颈与柄连续；与孟喵获的短卵木头/双骨箍区分。宽头不能遮虎帽或碰耳。",
+        "avoid": "不做通用球头小锤；不复制孟喵获七齿短棒；不把整武器涂成白骨或做尖长血腥狼牙。",
+        "baseline": "WEAPON.mace 当前为长1.2的木pole和半径0.2棕灰球，UR孟喵获已另有独立weapon override。"
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "heroSourceLine": 119,
+      "name": "张喵辽",
+      "origin": "张辽",
+      "title": "逍遥津突阵将",
+      "faction": "wei",
+      "rarity": "SSR",
+      "role": "先锋",
+      "breed": "灰蓝短毛猫",
+      "age": "壮年 · 精瘦矫健",
+      "lore": "逍遥津的桥口只够几条尾巴并肩，他偏能从中寻出路来。点兵时话不多，总把最窄的一段留给自己；同伴少了，脚步反而更利落。凯旋后众猫夸他胆大，他却认真纠正：桥不宽，喊得太响会把睡着的船夫吵醒。",
+      "quote": "跟紧这一步。桥口虽窄，回家的路总要留着。",
+      "likes": "窄桥上的风、利落的双刃、安静点兵",
+      "look": {
+        "coat": {
+          "pattern": "solid",
+          "base": "#738a9e",
+          "light": "#dce5eb"
+        },
+        "eye": {
+          "color": "#76a994",
+          "style": "keen"
+        },
+        "ear": "pointy",
+        "tail": "stub",
+        "build": 0.97,
+        "head": 0.98,
+        "fluffy": false,
+        "blush": false,
+        "outfit": {
+          "pal": {
+            "main": "#3f63ad",
+            "sub": "#26397a",
+            "trim": "#c0d0db",
+            "cloth": "#e8edf7"
+          },
+          "head": "helmetGeneral",
+          "body": "armorWei",
+          "back": "none",
+          "extra": [],
+          "weapon": "dualBlades"
+        }
+      },
+      "effectiveDefaults": {
+        "headK": 0.98,
+        "headScaleInCurrentCat3D": 1.1172,
+        "pink": "#f4a6b0"
+      },
+      "reference": "assets/heroes/ref/wei_zhangliao.jpg",
+      "referenceActuallyViewed": true,
+      "approved2DIllustrationExists": false,
+      "HERO_PARTS_has_override_at_base": false,
+      "weaponSilhouette": {
+        "observed": "实际 JPG 是两把宽短、略弯的冷银刀，内侧浅蓝刀脊、深蓝短握柄及银色护口；服装点缀也为银蓝。",
+        "recommendation": "两把短刀在190px下靠宽度和短弧形刀尖识别，刀面保持厚度与银白/冷蓝两面区分。短护口不做宽十字护手，保持魏蓝握柄与pal.trim银蓝收口；主手、真正offhand均保留掌心握段，刀身微向各自肩外侧。",
+        "avoid": "不变成刘喵备长直双剑或大号战斧；不把两把刀都挂在handR；不额外改helmetGeneral。",
+        "baseline": "WEAPON.dualBlades 已在#91通过，使用refinedBladeObj左右各一并设userData.offhand；本批应新增该英雄weapon override，保持通用版及其基线安全握段。",
+        "referenceDiscrepancy": "ART_PROMPTS 将军盔写红缨，实际 JPG 为蓝缨；只记录差异，本批weapon范围内不改帽。"
+      }
+    }
+  ],
+  "heroCount": 3,
+  "mobTargets": 0,
+  "currentOverrides": [
+    {
+      "id": "wei_caomiaode",
+      "group": "headgear",
+      "builder": "caomaoCrown"
+    },
+    {
+      "id": "shu_liumiaobei",
+      "group": "weapon",
+      "builder": "liubeiDualSwords"
+    },
+    {
+      "id": "wu_zhoumiaoyu",
+      "group": "headgear",
+      "builder": "zhouyuCrown"
+    },
+    {
+      "id": "qun_lvbuding",
+      "group": "weapon",
+      "builder": "lvbuHalberd"
+    },
+    {
+      "id": "man_mengmiaohuo",
+      "group": "weapon",
+      "builder": "menghuoMace"
+    },
+    {
+      "id": "xian_zuoci",
+      "group": "weapon",
+      "builder": "zuociStaff"
+    }
+  ],
+  "SP107": "external owner; not imported or modified",
+  "UR118": "queue explicitly approved and merged; all six overrides remain",
+  "qinContract": "wu_zhoumiaoyu weapon unfinished; queue says do not implement yet",
+  "sourceManifest": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 4779,
+      "GitBlob": "ca1bd8c65ef69b7a4a48427b74dae1d802e65043",
+      "SHA256": "6ee4339f5c846dabf9e94b824470161bb2c468b7f3431c55aa7d8d59ff1befd4"
+    },
+    {
+      "path": "docs/CODEX_3D_BRIEF.md",
+      "bytes": 7742,
+      "GitBlob": "b6757aa655b2fa625825d8f5c15e7a8bf98a30cb",
+      "SHA256": "d7a44ca079f041d1a65a832acfd99e79881f10370155eefa8ea8b3144d0fc18e"
+    },
+    {
+      "path": "docs/CODEX_STANDING_ORDERS.md",
+      "bytes": 3968,
+      "GitBlob": "9c5096cccc42e4ae43864ec517edc2ed858c530c",
+      "SHA256": "2ab2a6f2caf4567647ba1e08129a61f1b72e89fe009d6ca965d2e16bce2a938d"
+    },
+    {
+      "path": "docs/CODEX_QUEUE.md",
+      "bytes": 11944,
+      "GitBlob": "15f2c9a6be0d04f7250b479d50e724289387d5c9",
+      "SHA256": "53ee6d44da2dc26091905e946bf35721a6d4580b9c2f01e095e242e4a271e447"
+    },
+    {
+      "path": "docs/ART3D_PROGRESS.md",
+      "bytes": 58829,
+      "GitBlob": "7fe11d9970064ca224f2072798a33c786bbf1dff",
+      "SHA256": "d7561d450ec6b37989133f347ac405e1d2f260c0011c35bad21752e29d37256c"
+    },
+    {
+      "path": "docs/ILLUST_PROGRESS.md",
+      "bytes": 2650,
+      "GitBlob": "2aea247b3d5cf4641925df4351abf21af9667804",
+      "SHA256": "426d7032aa81fc16c12834146bb7297523dd253afdcf31809d6e845c982c0fbc"
+    },
+    {
+      "path": "docs/ART_PROMPTS.md",
+      "bytes": 20770,
+      "GitBlob": "4eee458013c5feeeabbd36ab2f7d869713cef4c6",
+      "SHA256": "6b01dda36171698ad98ee8ab2870c9ecd73711e1a3286aa28a0cbc21d3c61f28"
+    },
+    {
+      "path": "src/data/heroes.ts",
+      "bytes": 41772,
+      "GitBlob": "ab0941dcba198842e42e56a8bfc4e74f499260da",
+      "SHA256": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800"
+    },
+    {
+      "path": "src/data/factions.ts",
+      "bytes": 4515,
+      "GitBlob": "b5f1650ed10c2f2d92409fc62395fa45ad709882",
+      "SHA256": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d"
+    },
+    {
+      "path": "src/art3d/heroes.ts",
+      "bytes": 957,
+      "GitBlob": "d1ca4007e46905a2844c07672790e251222b98ea",
+      "SHA256": "a52905509eda8750b950c54826b678686842a861ae920a79bd1bcd0c807b711e"
+    },
+    {
+      "path": "src/art3d/parts/weapons.ts",
+      "bytes": 19014,
+      "GitBlob": "5dc3269d532bce5a57f542843357d413f1c88004",
+      "SHA256": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a"
+    },
+    {
+      "path": "src/art3d/parts/types.ts",
+      "bytes": 1199,
+      "GitBlob": "d3a49bdfaa72896baeccdac6aa47b6f3f3acf5ab",
+      "SHA256": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c"
+    },
+    {
+      "path": "src/art3d/cat3d.ts",
+      "bytes": 19174,
+      "GitBlob": "fde01f59392168cc43340bb2044e36a208cc20bc",
+      "SHA256": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0"
+    },
+    {
+      "path": "assets/heroes/ref/wei_xiahoudun.jpg",
+      "bytes": 85576,
+      "GitBlob": "4899876995d8bfe81e6fa6298dbb47a43838fdc1",
+      "SHA256": "e5710ab554a58444a0ebf39fe84023717f2382935a5752319ed47d3944f5d37b",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/heroes/ref/wei_xuhuchi.jpg",
+      "bytes": 82905,
+      "GitBlob": "f2180e5d27abc3438ad50a011474085509cf1aa9",
+      "SHA256": "5ebc14d718e34f20c67b41c2e9ca1c5ddf4938c25f4908ad7d83d2c7da0eb181",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/heroes/ref/wei_zhangliao.jpg",
+      "bytes": 76814,
+      "GitBlob": "80cf3927734f853b9d5b10c659d8a21e18ea357c",
+      "SHA256": "ad7444af56c5c103097869007b0d13912905fddcda25b1142752cb0453d9cd0f",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "documentStatus": {
+    "claim": {
+      "state": "制作中",
+      "round": 0,
+      "passed": 0
+    },
+    "submissionDraft": {
+      "state": "待审",
+      "round": 1,
+      "passed": 0,
+      "requiresFinalQAAndTests": true
+    }
+  },
+  "engineConstraints": {
+    "hand": "PartBuilder root at actual handR palm origin, rod +y, blade face +z; root identity transform",
+    "offhand": "second separate Object3D on userData.offhand, engine attaches handL",
+    "partBudget": "<=24 logical meshes including outline as one unit; report physical outline meshes separately",
+    "maxSegments": 24,
+    "materials": "cached toon/outline only",
+    "ownOverride": "only weapon group for exactly three hero IDs",
+    "nonTargets": "preserve six current UR records, generic registry, all other hero/mob/PET models; SP107 external owner remains",
+    "scope": "No source, contract, hero data, headgear, body, back, patterns or extras edits by docs helper",
+    "unverified": "No candidate geometry QA, official captures or final required checks have been provided yet"
+  }
+}

@@ -6,6 +6,7 @@ import type { Game, Shot } from '../../game/arrows';
 import { gainIcons, starsHtml } from '../../ui/gain';
 import { icon } from '../../ui/icons';
 import { applyGain } from '../../game/stage';
+import { boostGain } from '../../game/featured';
 import { sfx } from '../sfx';
 import type { AppCtx } from '../ctx';
 
@@ -128,7 +129,7 @@ export function openArrows(ctx: AppCtx, host: Element): Promise<void> {
     const finish = () => {
       cancelAnimationFrame(raf); raf = 0; phase = 'result'; draw();
       const tier = tierOf(g.score), gain = arrowsGain(ctx.s, tier);
-      if (tier > 0) { applyGain(ctx.s, gain); sfx.win(); } else sfx.no();
+      if (tier > 0) { applyGain(ctx.s, boostGain(ctx.s, gain, () => ctx.toast('🌟 今日推荐小游戏：这局奖励翻倍！'))); sfx.win(); } else sfx.no();
       recordArrows(ctx.s, g.got); if (tier === 3 && dailyEgg(ctx.s, dayIndex())) ctx.toast('🥚 三星奖励：获得一颗宠物蛋！'); ctx.save();
       main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再借一船';
       note.innerHTML = `${starsHtml(tier)} ⭐ ${g.score} &nbsp; 🏹 借到 ${g.got} 支 &nbsp; ${tier > 0 ? gainIcons(gain, 18) : ''}`;

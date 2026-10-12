@@ -1,0 +1,898 @@
+{
+  "startedUTC": "2026-10-12T11:49:22.125Z",
+  "completedUTC": "2026-10-12T11:49:31.688Z",
+  "sourceBase": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "expectedFrozenSources": {
+    "battle.html": "bdfe23e9b0250b78ba9b1b26f5855856107ee2e417f3c29b9673f3f46694d1d8",
+    "cat3d.html": "954358e0aca8e050c2c0dcf7eabddd34467aaa876acc5f9c29c08e6ed22ddb39",
+    "package-lock.json": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+    "package.json": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+    "src/art/types.ts": "3c1789ef07006cd1a13237c3937bffc3de3698d2062cd95b2afce020866bad1d",
+    "src/art3d/cat3d.ts": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
+    "src/art3d/heroes.ts": "d685ca31ef7a35a51c82965cce0640d8d3409b80b48b34dffb215ef831dfb428",
+    "src/art3d/mode.ts": "e78bdc28428b536eb2c35d18d99d2aa4243c65afb2adc71a3a1a27642583c78b",
+    "src/art3d/parts/back-fieldgear.ts": "87a4a0b05b51cf180ff64d1a2ba52f62282f128322432832dffa1f712326c3aa",
+    "src/art3d/parts/back-scroll-banner.ts": "78b4a124dd58da56c6cc6302fbf1625f9443f2075f3c07b6d8bd04fbc530b5d9",
+    "src/art3d/parts/back-sp-regalia.ts": "b356c5152e9608eec6a43337c0d4e56bcc09614e8026eb8ecbe57360d60b45e7",
+    "src/art3d/parts/back.ts": "2d5304b9263b3d7768251c55205cda732383fba4cdf8e2e107294509cd541961",
+    "src/art3d/parts/body-field-armor.ts": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/body.ts": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+    "src/art3d/parts/extra-sp-marks.ts": "e9dcbe48bfc3ff908f0e66016a0b44174ce9627dbe5254ec3da44b834eaa7b9a",
+    "src/art3d/parts/extras-regalia.ts": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+    "src/art3d/parts/extras-veterans.ts": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
+    "src/art3d/parts/extras.ts": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/hero-ur-liu-swords.ts": "7e55df1b9525db50367fa8c4b9d9b9a4b13ccae0c41286e6e5913517eea91e38",
+    "src/art3d/parts/hero-ur-regalia.ts": "c092409c3e60b8c09f9d7e3f55ea8cd7b9bb0668b56fd2d75cb23e7c9425dbb9",
+    "src/art3d/parts/hero-ur-weapons.ts": "e5df9c239a404dd40fa9eee3de70de49da1a5b195e54cab94a1fa333aaabcde2",
+    "src/art3d/parts/hero-wei-weapons.ts": "105b8faa0b6012bc7c372cf4341d62e82af4b5f41231f7b6fe92d5d49ae76cb0",
+    "src/art3d/parts/index.ts": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+    "src/art3d/parts/types.ts": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/portrait.ts": "6d5c5799023314c8aeb0509cbcccd5cf95ccdc64ee96ff8e1cff7ec69fd4ccf0",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/renderer.ts": "ccc15c4a584e0f44c91bf7faa35beb15afe6e1d509890003a3d0b7a47120ac05",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/content/mobs.ts": "72ea942357374719ca81d0992aed6bf08b1d9f3e1223775329b3fe14c5bad438",
+    "src/data/factions.ts": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/data/units.ts": "7e41b3c5d7b94a35f00012431256e62953dc5a0c5c395d4e357826bc91f5183a",
+    "src/demo/battle.ts": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+    "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/bg-neon.ts": "fcc8a2154ffbbec1e86146731e3b057c4f71947d6117010e7328a6e08a4d72ee",
+    "src/fx/bg.ts": "240cae2cc2da78e0d026e8c9616bcf21be080a3c05d7580f00322a1c5e451109",
+    "src/fx/choreo.ts": "dd702b158c20934a0ff3832f62aee77b1e6d282d637f2012d423ba327314541e",
+    "src/fx/cutin.ts": "d99dbb863b05c6018f5e2d0f5d6d7af12d322614b6aaa27dd8614185abe36a8f",
+    "src/fx/mesh.ts": "73cffadcb2fcc134ada4ad5ed517b85d054c90dea50dbd9a135b7efae82dd935",
+    "src/fx/pets.ts": "1f1f6f3909f4519cb0cc0615a9f9d137c6bde0aa436d54c4e25c43a5b6cc3b12",
+    "src/fx/player.ts": "9e2e99c304514e8509dc1dcbfec5df1e488cf7f9321659c0c9a2a99bfd3a147d",
+    "src/fx/puppet.ts": "eb246ad2014ba5f346ac9f4eea5879f65b78689355faac3d1a8806b8105354d5",
+    "src/fx/rig.ts": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+    "src/fx/scene.ts": "9939442e7ea55167607011905728d61751b3381ddfd8887646aafb5f0f45f249",
+    "src/fx/skills.ts": "9268fc0bebb957a779478fbd02cc16a7e72dc31ae7b68aae97150e9b22d043a3",
+    "src/fx/skills2.ts": "0f6a3ba6ead9b0bd60bc1bac1c55d473e9dbaea993bf1616bba8671916a6fb32",
+    "src/fx/skills3.ts": "476c3e024159c6ad5fc47f36e61878ab8c3632bf9925a43ac984d0bd06167491",
+    "src/fx/skills4.ts": "f14c3001b7d9070e1e6e074df77af91850b2626e82a1ed7eb0de1b50f960725f",
+    "src/fx/skills5.ts": "896f73e8b9273b6c6f14ce383d8d1ddbe64dd9012ca681ce815ee3e17c018600",
+    "src/fx/tactics.ts": "498775a075126e9e00ba0d8730489777a982b8d31757cdc1c714053da8ab737f",
+    "src/fx/util.ts": "fb33fa0af43cb0f86c888954915b2557fcfa99361c5801c4f904d0e8ba6b050d",
+    "src/fx/vfx.ts": "9b01b146e9ebb4bb93dc53d4249122894f28b4b766e1420bb389496f06c1842f",
+    "tools/battle-shots.mjs": "394a20647b7b0791c9d3615d57727d6e7451b84a5e960ef1782c0c27178ac08c",
+    "tools/cat3d-shots.mjs": "4c9b690b764b5c68f227e5b68bfda913fb45e0c70befe9ff561efc9c60649170",
+    "tsconfig.json": "8801c6e88feb65360353624320d6772870abe253b7baa1f94f1cf34ed8da4b10",
+    "vite.config.ts": "f309e8c56c59d0f2770f22ddaad9f549f2d501da70a4ddde154894ebbd9efc5e"
+  },
+  "sourceAfter": {
+    "battle.html": "bdfe23e9b0250b78ba9b1b26f5855856107ee2e417f3c29b9673f3f46694d1d8",
+    "cat3d.html": "954358e0aca8e050c2c0dcf7eabddd34467aaa876acc5f9c29c08e6ed22ddb39",
+    "package-lock.json": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+    "package.json": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+    "src/art/types.ts": "3c1789ef07006cd1a13237c3937bffc3de3698d2062cd95b2afce020866bad1d",
+    "src/art3d/cat3d.ts": "e5dd83cb7077e4f5dd5516880bb6b9ea60df0dcbb6069294b1bb18979988f8e0",
+    "src/art3d/heroes.ts": "d685ca31ef7a35a51c82965cce0640d8d3409b80b48b34dffb215ef831dfb428",
+    "src/art3d/mode.ts": "e78bdc28428b536eb2c35d18d99d2aa4243c65afb2adc71a3a1a27642583c78b",
+    "src/art3d/parts/back-fieldgear.ts": "87a4a0b05b51cf180ff64d1a2ba52f62282f128322432832dffa1f712326c3aa",
+    "src/art3d/parts/back-scroll-banner.ts": "78b4a124dd58da56c6cc6302fbf1625f9443f2075f3c07b6d8bd04fbc530b5d9",
+    "src/art3d/parts/back-sp-regalia.ts": "b356c5152e9608eec6a43337c0d4e56bcc09614e8026eb8ecbe57360d60b45e7",
+    "src/art3d/parts/back.ts": "2d5304b9263b3d7768251c55205cda732383fba4cdf8e2e107294509cd541961",
+    "src/art3d/parts/body-field-armor.ts": "1735d0cbbb9095bdcf995a91fb9cd406c0096d9882b885f341b970081b012942",
+    "src/art3d/parts/body-robes.ts": "0deacc5ee8a1c8e766f9e7e9aa803a24ce0c37ce52ef3f23db5f70b15bb24cfd",
+    "src/art3d/parts/body.ts": "deff4ede63cecfff2513149843d01dbb48c570689658a66a60413c64daae959a",
+    "src/art3d/parts/extra-sp-marks.ts": "e9dcbe48bfc3ff908f0e66016a0b44174ce9627dbe5254ec3da44b834eaa7b9a",
+    "src/art3d/parts/extras-regalia.ts": "e5a09e559cfedc522f39f8834d172c3fbb2cce9404d3d2f42cf2219ee09db9a2",
+    "src/art3d/parts/extras-veterans.ts": "1834799bcb2a4315e6eb7802c99e3fe0a178b3532ff50de3671fa43dae7e3550",
+    "src/art3d/parts/extras.ts": "897a4ce8ff19cb30b809408eb5efe31a7c50d492583366acb351e8d99a59fcce",
+    "src/art3d/parts/headgear.ts": "80b57c864f0a276b4809fd6a1cadd6b1e774674025a9c2cc8a5ac93ada89c885",
+    "src/art3d/parts/hero-ur-liu-swords.ts": "7e55df1b9525db50367fa8c4b9d9b9a4b13ccae0c41286e6e5913517eea91e38",
+    "src/art3d/parts/hero-ur-regalia.ts": "c092409c3e60b8c09f9d7e3f55ea8cd7b9bb0668b56fd2d75cb23e7c9425dbb9",
+    "src/art3d/parts/hero-ur-weapons.ts": "e5df9c239a404dd40fa9eee3de70de49da1a5b195e54cab94a1fa333aaabcde2",
+    "src/art3d/parts/hero-wei-weapons.ts": "105b8faa0b6012bc7c372cf4341d62e82af4b5f41231f7b6fe92d5d49ae76cb0",
+    "src/art3d/parts/index.ts": "9cb96c27b47b4051ff793f9110f2f4e9857a17690faadf181b1564e7926d8b4e",
+    "src/art3d/parts/types.ts": "36b7c638a46131e7e0e3a42c55fc91d76895f977a11ac3bfd14bbd8e846d302c",
+    "src/art3d/parts/weapons.ts": "513389ac1938782b32361ad2f2f8fcf673b04c8209145a4cdd9110564e66015a",
+    "src/art3d/patterns.ts": "bc941057c14b0b339c07898e660390ab6e87601a96dd60ea28a733f0ff281346",
+    "src/art3d/portrait.ts": "6d5c5799023314c8aeb0509cbcccd5cf95ccdc64ee96ff8e1cff7ec69fd4ccf0",
+    "src/art3d/pose.ts": "3abe84b540c541d2637a36e7291c599d9b5a52318d4524662f122ce803e6431c",
+    "src/art3d/renderer.ts": "ccc15c4a584e0f44c91bf7faa35beb15afe6e1d509890003a3d0b7a47120ac05",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/content/mobs.ts": "72ea942357374719ca81d0992aed6bf08b1d9f3e1223775329b3fe14c5bad438",
+    "src/data/factions.ts": "6d6510bcb740206be694d823cb125654c223c135f9dcc54eb3694807d1ad9f8d",
+    "src/data/heroes.ts": "d0be352c7c179c93cb9fa74e45a5cb087df2048078e068a618405b972c06b800",
+    "src/data/mob-looks.ts": "236fba967b442a28686f9fa5b1669feb57128a0fc627b4bc36a31b181c79a5f5",
+    "src/data/pets.ts": "9b89e82baa30a67438e35d1727427894529d0bec795100d6acef19de87e528a7",
+    "src/data/units.ts": "7e41b3c5d7b94a35f00012431256e62953dc5a0c5c395d4e357826bc91f5183a",
+    "src/demo/battle.ts": "9c49bdd69e1d74b1c03052e6e485ac2cc9a30de08cacf7c39075f4dbcde6e2e8",
+    "src/dev/cat3d.ts": "3dc4e040a693d529d89aa9cde9da7d1b06c2f34c802c95901396096c4fef9bc5",
+    "src/fx/actor.ts": "268bc636c0ea4271432c0b0428105e66c204cb6fb5c3739ccb7c0aabb38f238f",
+    "src/fx/bg-neon.ts": "fcc8a2154ffbbec1e86146731e3b057c4f71947d6117010e7328a6e08a4d72ee",
+    "src/fx/bg.ts": "240cae2cc2da78e0d026e8c9616bcf21be080a3c05d7580f00322a1c5e451109",
+    "src/fx/choreo.ts": "dd702b158c20934a0ff3832f62aee77b1e6d282d637f2012d423ba327314541e",
+    "src/fx/cutin.ts": "d99dbb863b05c6018f5e2d0f5d6d7af12d322614b6aaa27dd8614185abe36a8f",
+    "src/fx/mesh.ts": "73cffadcb2fcc134ada4ad5ed517b85d054c90dea50dbd9a135b7efae82dd935",
+    "src/fx/pets.ts": "1f1f6f3909f4519cb0cc0615a9f9d137c6bde0aa436d54c4e25c43a5b6cc3b12",
+    "src/fx/player.ts": "9e2e99c304514e8509dc1dcbfec5df1e488cf7f9321659c0c9a2a99bfd3a147d",
+    "src/fx/puppet.ts": "eb246ad2014ba5f346ac9f4eea5879f65b78689355faac3d1a8806b8105354d5",
+    "src/fx/rig.ts": "48f2c867942ddf20cb88d6d3ccd1d0b6fc9a19f167f941821abbc543611cb1a3",
+    "src/fx/scene.ts": "9939442e7ea55167607011905728d61751b3381ddfd8887646aafb5f0f45f249",
+    "src/fx/skills.ts": "9268fc0bebb957a779478fbd02cc16a7e72dc31ae7b68aae97150e9b22d043a3",
+    "src/fx/skills2.ts": "0f6a3ba6ead9b0bd60bc1bac1c55d473e9dbaea993bf1616bba8671916a6fb32",
+    "src/fx/skills3.ts": "476c3e024159c6ad5fc47f36e61878ab8c3632bf9925a43ac984d0bd06167491",
+    "src/fx/skills4.ts": "f14c3001b7d9070e1e6e074df77af91850b2626e82a1ed7eb0de1b50f960725f",
+    "src/fx/skills5.ts": "896f73e8b9273b6c6f14ce383d8d1ddbe64dd9012ca681ce815ee3e17c018600",
+    "src/fx/tactics.ts": "498775a075126e9e00ba0d8730489777a982b8d31757cdc1c714053da8ab737f",
+    "src/fx/util.ts": "fb33fa0af43cb0f86c888954915b2557fcfa99361c5801c4f904d0e8ba6b050d",
+    "src/fx/vfx.ts": "9b01b146e9ebb4bb93dc53d4249122894f28b4b766e1420bb389496f06c1842f",
+    "tools/battle-shots.mjs": "394a20647b7b0791c9d3615d57727d6e7451b84a5e960ef1782c0c27178ac08c",
+    "tools/cat3d-shots.mjs": "4c9b690b764b5c68f227e5b68bfda913fb45e0c70befe9ff561efc9c60649170",
+    "tsconfig.json": "8801c6e88feb65360353624320d6772870abe253b7baa1f94f1cf34ed8da4b10",
+    "vite.config.ts": "f309e8c56c59d0f2770f22ddaad9f549f2d501da70a4ddde154894ebbd9efc5e"
+  },
+  "sourceStayedFrozen": true,
+  "originalToolSHA256": "394a20647b7b0791c9d3615d57727d6e7451b84a5e960ef1782c0c27178ac08c",
+  "adaptations": [
+    "Playwright import absolute existing module",
+    "CHROME existing local executable",
+    "PORT5186 URL"
+  ],
+  "addedObservationOnly": [
+    "capture error/request/status URL records",
+    "read actual __demo.player actors and built rig.cat3d named weapon groups",
+    "source pre/post hashes and actual frame inventory"
+  ],
+  "query": "r3d=1&a=wei_xiahoudun,wei_xuhuchi,wei_zhangliao,wei_caomiaode,wei_simamiyi&b=shu_liumiaobei,shu_guanyunmiao,wu_sunxiaoba,wu_zhoumiaoyu,qun_lvbuding&seed=121",
+  "URL": "http://127.0.0.1:5186/battle.html?test=1&r3d=1&a=wei_xiahoudun,wei_xuhuchi,wei_zhangliao,wei_caomiaode,wei_simamiyi&b=shu_liumiaobei,shu_guanyunmiao,wu_sunxiaoba,wu_zhoumiaoyu,qun_lvbuding&seed=121",
+  "advance": {
+    "stepSec": 0.25,
+    "count": 6,
+    "startAt": 0,
+    "method": "__demo.advance"
+  },
+  "chromiumVersion": "154.0.8037.57",
+  "errors": [],
+  "consoleMessages": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+      "location": {
+        "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "location": {
+        "url": "http://127.0.0.1:5186/favicon.ico",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ],
+  "failedRequests": [
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap",
+      "type": "stylesheet",
+      "failure": {
+        "errorText": "net::ERR_TUNNEL_CONNECTION_FAILED"
+      }
+    }
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:5186/battle.html?test=1&r3d=1&a=wei_xiahoudun,wei_xuhuchi,wei_zhangliao,wei_caomiaode,wei_simamiyi&b=shu_liumiaobei,shu_guanyunmiao,wu_sunxiaoba,wu_zhoumiaoyu,qun_lvbuding&seed=121",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:5186/@vite/client",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/demo/battle.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/@fs/workspace/myRepository/node_modules/vite/dist/client/env.mjs",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/player.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/engine/battle.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/index.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/factions.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/heroes.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/units.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/statuses.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/actor.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/pets.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/choreo.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/portrait.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/cutin.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/cat3d.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/rig.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/renderer.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/scene.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/mode.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust-index.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/combos.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/tactics.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/util.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/tactics.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/engine/rng.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/skills.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/bg.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/systems.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/sr.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/helpers.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/engine/statuses.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/ssr.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/ur.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/sp.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/batch2.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/mob-looks.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/cat.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/content/mobs.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/pose.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/@fs/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-cache-candidate/deps/three.js?v=4eef22ad",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/mesh.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/puppet.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/@fs/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-cache-candidate/deps/three_examples_jsm_utils_BufferGeometryUtils__js.js?v=0cd5ba22",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/heroes.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/index.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/shu_liumiaobei.full.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/patterns.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust-rig.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/toon.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/vfx.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/shu_liumiaobei.card.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/shu_liumiaobei.head.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/wei_caomiaode.card.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/shu_pangmiaotong.full.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/shu_pangmiaotong.card.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/shu_pangmiaotong.head.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/wei_caomiaode.full.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/wei_simamiyi.full.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/wei_caomiaode.head.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/wei_simamiyi.head.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/xian_changmiao.full.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/wei_simamiyi.card.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/xian_changmiao.card.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/illust/xian_changmiao.head.webp?import",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/skills4.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/skills5.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/skills3.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/skills2.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/pets.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/color.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/remaining-wu-qun-man.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/remaining-man-xian.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/data/kits/remaining-wei-wu.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/fx/bg-neon.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/gear.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/paint.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/garments.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/hero-ur-regalia.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/hero-ur-weapons.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/hero-wei-weapons.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/hero-ur-liu-swords.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/weapons.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/body.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/extras.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/headgear.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/back.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art/weapons.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/body-robes.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/body-field-armor.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/extras-veterans.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/extra-sp-marks.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/extras-regalia.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/back-sp-regalia.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/back-scroll-banner.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/src/art3d/parts/back-fieldgear.ts",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5186/@fs/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-cache-candidate/deps/chunk-QDSDZAGI.js?v=c7e80694",
+      "status": 200,
+      "type": "script"
+    }
+  ],
+  "builder": {
+    "count": 10,
+    "actors": [
+      {
+        "uid": 1,
+        "heroId": "wei_xiahoudun",
+        "side": "A",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [
+          "ssr-xiahou-spear"
+        ],
+        "rigHeight": 560,
+        "actorScale": 0.3233846153846154
+      },
+      {
+        "uid": 2,
+        "heroId": "wei_xuhuchi",
+        "side": "A",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [
+          "ssr-xuhu-bone-mace"
+        ],
+        "rigHeight": 560,
+        "actorScale": 0.3487692307692308
+      },
+      {
+        "uid": 3,
+        "heroId": "wei_zhangliao",
+        "side": "A",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [
+          "ssr-zhangliao-blade-off",
+          "ssr-zhangliao-blade-main"
+        ],
+        "rigHeight": 560,
+        "actorScale": 0.37415384615384617
+      },
+      {
+        "uid": 4,
+        "heroId": "wei_caomiaode",
+        "side": "A",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [],
+        "rigHeight": 560,
+        "actorScale": 0.33353846153846156
+      },
+      {
+        "uid": 5,
+        "heroId": "wei_simamiyi",
+        "side": "A",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [],
+        "rigHeight": 560,
+        "actorScale": 0.36230769230769233
+      },
+      {
+        "uid": 6,
+        "heroId": "shu_liumiaobei",
+        "side": "B",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [],
+        "rigHeight": 560,
+        "actorScale": 0.3233846153846154
+      },
+      {
+        "uid": 7,
+        "heroId": "shu_guanyunmiao",
+        "side": "B",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [],
+        "rigHeight": 560,
+        "actorScale": 0.3487692307692308
+      },
+      {
+        "uid": 8,
+        "heroId": "wu_sunxiaoba",
+        "side": "B",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [],
+        "rigHeight": 560,
+        "actorScale": 0.37415384615384617
+      },
+      {
+        "uid": 9,
+        "heroId": "wu_zhoumiaoyu",
+        "side": "B",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [],
+        "rigHeight": 560,
+        "actorScale": 0.33353846153846156
+      },
+      {
+        "uid": 10,
+        "heroId": "qun_lvbuding",
+        "side": "B",
+        "alive": true,
+        "has3D": true,
+        "sourceWeaponNames": [],
+        "rigHeight": 560,
+        "actorScale": 0.36230769230769233
+      }
+    ],
+    "sceneActorCount": 10,
+    "sceneDPR": 1,
+    "canvas": {
+      "width": 960,
+      "height": 600,
+      "rect": {
+        "x": 16,
+        "y": 85,
+        "width": 948,
+        "height": 592.5,
+        "top": 85,
+        "right": 964,
+        "bottom": 677.5,
+        "left": 16
+      }
+    }
+  },
+  "builderHits": [
+    {
+      "id": "wei_xiahoudun",
+      "actorPresent": true,
+      "actual3D": true,
+      "expectedWeaponNames": [
+        "ssr-xiahou-spear"
+      ],
+      "namesFound": [
+        "ssr-xiahou-spear"
+      ],
+      "allNamesFound": true
+    },
+    {
+      "id": "wei_xuhuchi",
+      "actorPresent": true,
+      "actual3D": true,
+      "expectedWeaponNames": [
+        "ssr-xuhu-bone-mace"
+      ],
+      "namesFound": [
+        "ssr-xuhu-bone-mace"
+      ],
+      "allNamesFound": true
+    },
+    {
+      "id": "wei_zhangliao",
+      "actorPresent": true,
+      "actual3D": true,
+      "expectedWeaponNames": [
+        "ssr-zhangliao-blade-main",
+        "ssr-zhangliao-blade-off"
+      ],
+      "namesFound": [
+        "ssr-zhangliao-blade-off",
+        "ssr-zhangliao-blade-main"
+      ],
+      "allNamesFound": true
+    }
+  ],
+  "actualTenCatsAll3D": true,
+  "allTargetActualBuilderHits": true,
+  "frames": [
+    {
+      "index": 0,
+      "nominalAdvanceSeconds": 0.25,
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle_00.png",
+      "bytes": 558038,
+      "sha256": "01dd881542fad961b85a86f8de80ed3701a1ec69a5cdccafaa9933a75ef1498e"
+    },
+    {
+      "index": 1,
+      "nominalAdvanceSeconds": 0.5,
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle_01.png",
+      "bytes": 565395,
+      "sha256": "8fe0028f94eebf21496e4c65dc1856389919f4bfd77a6427c41bc9580b89984f"
+    },
+    {
+      "index": 2,
+      "nominalAdvanceSeconds": 0.75,
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle_02.png",
+      "bytes": 579119,
+      "sha256": "a38567b14538887f9e1be749df862169740fd08bb374436db52c91acc2b69675"
+    },
+    {
+      "index": 3,
+      "nominalAdvanceSeconds": 1,
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle_03.png",
+      "bytes": 578520,
+      "sha256": "381bd3dd6b7858a5e563badf15b35ff66ca687e898e6ad9f1179b275d8e74507"
+    },
+    {
+      "index": 4,
+      "nominalAdvanceSeconds": 1.25,
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle_04.png",
+      "bytes": 571897,
+      "sha256": "69655613f78fb32988ee0fd70601541263c5eef2c53c4bb60f2265d214ca49e0"
+    },
+    {
+      "index": 5,
+      "nominalAdvanceSeconds": 1.5,
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle_05.png",
+      "bytes": 557766,
+      "sha256": "8ab26b8379721499f24ec89aaa5af893eaf7a0b77de5ffab2673466341136ccf"
+    }
+  ],
+  "noManualModelsOrPosesPlaced": true,
+  "noTrackedToolsEdited": true
+}

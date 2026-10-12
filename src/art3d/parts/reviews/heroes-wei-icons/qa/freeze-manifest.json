@@ -1,0 +1,283 @@
+{
+  "frozenUTC": "2026-10-12T11:59:01.123038+00:00",
+  "candidate": 5,
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "scope": "Bounded final-f4 numeric QA; inputs locked and unchanged; no further writes without root handoff.",
+  "files": [
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-f4-heroes.ts",
+      "bytes": 8018,
+      "sha256": "a85d34ff15a1fdf0c308414648c4b8ef907ea8da5c46b2d6fe161cafcfc16d98"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-face-worker.mjs",
+      "bytes": 760502,
+      "sha256": "f5b1c719ed85b58f00cc5fde2f9480860dd0cdbc4a3b37c33ccb5215d26c4b8a"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-head-worker.mjs",
+      "bytes": 768542,
+      "sha256": "1905ffc67d6271ae90eb939433d7c1c3c83aa494e8656e446633ec0c4adc6c01"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-model-smoke.json",
+      "bytes": 36649,
+      "sha256": "68e6186a2c48ab31972c8b57bba82f7a1e6afd6121765ba224b58d914db0e5d2"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-prebake-surfaces.json",
+      "bytes": 1073675,
+      "sha256": "4a1e09df6d22351df681940234cc775fd16b91c189ed8dfe042d5318b9aedc52"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-smoke-worker.mjs",
+      "bytes": 780667,
+      "sha256": "6cd8a825f18d403552fe3e46b44268a0afb6cf6780e10bbdba1df5811459a815"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-smoke.log",
+      "bytes": 361,
+      "sha256": "b049073308ed38ce69075f51417db499b22b3e6cc52878012fb1cc084c5ffcce"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xiahoudun-face-probe.json",
+      "bytes": 9547,
+      "sha256": "1ab4cdd673d12fbb82d69ec3ac8b53ee91930250d30b62be91f4b14b8cf20d85"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xiahoudun-face.log",
+      "bytes": 440,
+      "sha256": "9f6066bc698aa3437b147cbb8e335de038f50e92759232c23f5f8026d1065b6c"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xiahoudun-head-probe.json",
+      "bytes": 10734,
+      "sha256": "57c1b2ef8daddc025fada280e705f4245f3ced1557bc7ea6d3ee48310fde6995"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xiahoudun-head.log",
+      "bytes": 1545,
+      "sha256": "c1a6b1d82567bbaaa65dfbb58864c97746086f4d1944e9d31590c3978d10fe1c"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xuhuchi-face-probe.json",
+      "bytes": 11872,
+      "sha256": "b302014fe4e3266fbd7e7a1d61f8276af62854c93e16c09bce56066a937717e8"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xuhuchi-face.log",
+      "bytes": 557,
+      "sha256": "19467fb332d42135e5985bf26031e0c2e6c5414063b89c874f057727029214cc"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xuhuchi-head-probe.json",
+      "bytes": 14904,
+      "sha256": "42efe1b3ef1fe4dee6b90ab8f67a59931a95c18e44f7bbcbc4e0893055781129"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_xuhuchi-head.log",
+      "bytes": 2143,
+      "sha256": "8219530cf10234568756b70d795e4a199cbeeea65ebd6eda001c8848147d9ebb"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_zhangliao-face-probe.json",
+      "bytes": 9547,
+      "sha256": "b0b0b115c49738fbdba1a576a158dfddeee2d6487ddb07800ad10d7b6143d813"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_zhangliao-face.log",
+      "bytes": 440,
+      "sha256": "66c48922b7cbc75c105286671929d016709841a3b13dbbe8470af3be66efc167"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_zhangliao-head-probe.json",
+      "bytes": 61227,
+      "sha256": "73cad6d498476e58e11dc6850c244c341ff093639dc1b4a2e065f904798b9898"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-wei_zhangliao-head.log",
+      "bytes": 8729,
+      "sha256": "6500a26a5d70b2598c56cf1f03f17d5c87c94f87cc0e32c0640d8b4b8a08c8ea"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-face-worker.mjs",
+      "bytes": 768768,
+      "sha256": "223a2fcb80b7c5de188e7ded533b537a0325747732ca95a703e27af09fc0cbf3"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-head-worker.mjs",
+      "bytes": 776808,
+      "sha256": "eef215766d0d90180c07ac45b277bdb10c5492e7e7d439618b03109d3377eadc"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-model-smoke.json",
+      "bytes": 40945,
+      "sha256": "d413e1f3f0fd7957106fc8c8edc87118cc6cef72393deafbeabbdcd9e0fa447a"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-prebake-surfaces.json",
+      "bytes": 1886432,
+      "sha256": "2b946e514790baa21f31c0f6414f55f7f48a8313d0039c0a62a7c1d9f87587ec"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-smoke-worker.mjs",
+      "bytes": 788933,
+      "sha256": "ede94d5b0b45b9b1cbaa70f4cc81c6c36fe809cd96d11848049da898c31ab6cc"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-smoke.log",
+      "bytes": 366,
+      "sha256": "df3e40688a21455c599323ef56adf1fe2ade700855698815ec5a1e32b1170d1e"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xiahoudun-face-probe.json",
+      "bytes": 9551,
+      "sha256": "fbb107695143a8dd81b8f823a8f50b16ccef4c17d5dc9e7f0694886ecc72718e"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xiahoudun-face.log",
+      "bytes": 444,
+      "sha256": "9c655e82cea7a0c4bdea62fdd9607ee1dcd7cfbad825ffd6134aac54ed006b39"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xiahoudun-head-probe.json",
+      "bytes": 34391,
+      "sha256": "238b3783077f3e0df0c0a729a2699301e363faf0d55a30db3022c143d8d89cf7"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xiahoudun-head.log",
+      "bytes": 4910,
+      "sha256": "b3343d24a08631ef2dd34782725b30ada5fa8599a693034a10749dba94c223a9"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xuhuchi-face-probe.json",
+      "bytes": 11877,
+      "sha256": "a6025eebcb1a5874fcb437a686b4a1ef4744968c1959a9d9631593500f3530a9"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xuhuchi-face.log",
+      "bytes": 562,
+      "sha256": "44f441a2f60545bd009a5e1c0855813c91b648e72870f7e882f6d15048df3230"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xuhuchi-head-probe.json",
+      "bytes": 50453,
+      "sha256": "1e98e647372d955e4dda5cc6b22bece620b2f258195f3f5c784e8370b20c073b"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_xuhuchi-head.log",
+      "bytes": 7201,
+      "sha256": "9eb3825b8674f32cd6656dacbc60e94dc803d5e872858eecf2e3d1e444b66eca"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_zhangliao-face-probe.json",
+      "bytes": 9551,
+      "sha256": "b12f501c5f75129dcd4a3364a429f24ac4438629273f6ce8276b272441096989"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_zhangliao-face.log",
+      "bytes": 444,
+      "sha256": "6bb032e9d478a47f04e22648f421dd0e8b28cb225000bf8da4d3a7382d811a48"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_zhangliao-head-probe.json",
+      "bytes": 64821,
+      "sha256": "f66b03557f52903c653563e3479e27dbd27de2db4f086a8d7a4683bcc8e2b35d"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-wei_zhangliao-head.log",
+      "bytes": 8325,
+      "sha256": "1c6f37ef885ffc8895f230b6b5fb8334706724a327ebfd82bca03c704f7ff514"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/face-probe.ts",
+      "bytes": 4516,
+      "sha256": "9c5f4a4546825bf179b0d04e3b49aee72835a7cba7b44364e44838764b7fff21"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/finite-cases.json",
+      "bytes": 1530,
+      "sha256": "ecb236e6b4066646b00ead8405699504ace916e2a433fc4fe14bb48df81f02d1"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/finite-metrics.json",
+      "bytes": 24553,
+      "sha256": "6dc7a01767a8bd02ec25061b73b09891cffe5dba64dfae8da60808925b06baeb"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/head-probe.ts",
+      "bytes": 9084,
+      "sha256": "e55e06dd7f4f0b1caedc3d59979c423d26867d02f3a882d04c2fd4615d22343a"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/model-smoke.ts",
+      "bytes": 11569,
+      "sha256": "e91f6737dd187fcf77ac7ce2af95d94530719de1ddd96c86fee612c1f1a14197"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/named-lower-source-check.json",
+      "bytes": 6276,
+      "sha256": "c8ecf9947d3563ab211da284e18a63302081db743efac994c06dd02392007c12"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/named-lower-source-check.py",
+      "bytes": 4597,
+      "sha256": "8062a3a7de407b0fd3ece5c66fcc74aee2dfd9cc5bd1110ebec5916ca7ad0df8"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/paired-model-smoke.json",
+      "bytes": 47486,
+      "sha256": "f0e8a92c474bec4d02cad7935003486f25147301dd3d719e6e593a971737211f"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/probe-executions.json",
+      "bytes": 11184,
+      "sha256": "1a89a3ce6a4e1747d1ad814c2ba1c4a455c3b6ade565f9f3d656aa9b8ed242e1"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/qa-method.json",
+      "bytes": 5317,
+      "sha256": "043939b712fb6b381f9455785e83084158110d9f74e9e218a5c8d6939d67af33"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/qa-summary.json",
+      "bytes": 6457,
+      "sha256": "0188c9ef7e8db15635d8a54ed76055365f19ab4b12eb343c6a81a95f5e2da760"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/qa-summary.md",
+      "bytes": 3754,
+      "sha256": "3f79ed908e702dcdc156de400c7ef1266482133c627845a5168e35572e05e749"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/run-finite-probes.mjs",
+      "bytes": 3548,
+      "sha256": "edd4bd3c05fd823fc69646579c1dedf9d2a84a34b86604ad6e45790060e6a8da"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/run-model-smoke.mjs",
+      "bytes": 5332,
+      "sha256": "018ed85cc0f3fc3612020f4dc6760dff9e84ed970f53a2e23db8665dd40ddb1e"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-after-probes.json",
+      "bytes": 8793,
+      "sha256": "e7643e7a6469efaf3cafd866ad991c4b718de97e8b4c992f2f061f75d2d04ca6"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-after.json",
+      "bytes": 10423,
+      "sha256": "749f52ffbf28fde7c30fd9caa765e982b93d574dc132a119670d8086e714e155"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-before.json",
+      "bytes": 9102,
+      "sha256": "dc388181c52f634e638c76a99aec4bffb2d8fe57b9f112b7cfeafd4ceefb508a"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/summarize-final.py",
+      "bytes": 21691,
+      "sha256": "0950d03d1efdc0ef9c50d84a915b166a37135a2672ddb6585069313fefe2fc5e"
+    }
+  ]
+}

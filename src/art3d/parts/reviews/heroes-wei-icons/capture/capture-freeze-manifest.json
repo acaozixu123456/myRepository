@@ -1,0 +1,206 @@
+{
+  "frozenUTC": "2026-10-12T11:52:05.448159+00:00",
+  "candidate": 5,
+  "base": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "productionSourceReadsStoppedUTC": "2026-10-12T11:49:31.815219+00:00",
+  "liveCaptureStoppedUTC": "2026-10-12T11:49:31.688Z",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 7841,
+      "sha256": "65a341af4496bf6a51069a311a84c1de9652d1ee5d2c87743135db1170f4c4b9"
+    },
+    {
+      "file": "after-190px.log",
+      "bytes": 317,
+      "sha256": "21607821997486a5517d40f03f1900c6f9326c311aa8ab5ca58d78115eed7e3c"
+    },
+    {
+      "file": "after-190px.png",
+      "bytes": 163605,
+      "sha256": "bbf52d0f6b99bb403b53163d350defdb8f11c13518954582915262040e3efc9e"
+    },
+    {
+      "file": "after-poses.log",
+      "bytes": 317,
+      "sha256": "f4d1e51489377ea843275e61711c569f26eeb26d88775af40968a093f82c7c22"
+    },
+    {
+      "file": "after-poses.png",
+      "bytes": 256116,
+      "sha256": "d4c028382bc17d7adc435629fdd403bfc5c80ded83b9708642bf159981567139"
+    },
+    {
+      "file": "after-rear.log",
+      "bytes": 302,
+      "sha256": "78b29aa8a0ee2975102768765903356ddbb86cbb19d43561e1f95430efd8b13b"
+    },
+    {
+      "file": "after-rear.png",
+      "bytes": 51109,
+      "sha256": "bae192e0f73e4153e68e4ff5cb449e01ca3190c4e5a903846c97d598e67f1864"
+    },
+    {
+      "file": "baseline-190px.log",
+      "bytes": 323,
+      "sha256": "a53c49482f34c66d34dd32dca0e43a1d10cf7ce8dfb76256fbc523fc3af701eb"
+    },
+    {
+      "file": "baseline-190px.png",
+      "bytes": 162194,
+      "sha256": "41a80401f48ab7be1af0019fbc9d18dba7bc62185ceb1001dbe2f3cb6e60ba14"
+    },
+    {
+      "file": "baseline-f4-after.json",
+      "bytes": 41772,
+      "sha256": "7c594cd3a6a9e1e1fac60355b19c50d3b5254e3f3b8cf91ee1bac48c45359a4b"
+    },
+    {
+      "file": "baseline-f4-tree-manifest.json",
+      "bytes": 38361,
+      "sha256": "c6afad57a22ab4e08b73c0cf71ec34edbc86fbcd8e014f1839c235755eeb98da"
+    },
+    {
+      "file": "baseline-vite.log",
+      "bytes": 301,
+      "sha256": "7e255f1f836269669e6db659b780abe22161b4c36d78a522a5f3c0d513d98c96"
+    },
+    {
+      "file": "battle-capture-report.json",
+      "bytes": 32341,
+      "sha256": "fd14ef57f70c314783887faa1a9bf307bbf1acdbd47727e71d6789d26fb0310b"
+    },
+    {
+      "file": "battle-capture.log",
+      "bytes": 1012,
+      "sha256": "db5e3912dda8f7bacc62f315ee8ad6c79f262c2ee7fc8a9b76ea82d8ea1dc87d"
+    },
+    {
+      "file": "battle-capture.mjs",
+      "bytes": 5930,
+      "sha256": "b8786acba50abe901b0f944b019d23ec3b5c05cd97a76d63d04512954547cfcf"
+    },
+    {
+      "file": "battle-command.json",
+      "bytes": 661,
+      "sha256": "97ec264b7f309844607fe7ecba5f7dd360f16a49dc16ac453eddc6070937c090"
+    },
+    {
+      "file": "battle-png-optimize-private.png",
+      "bytes": 527454,
+      "sha256": "9de4ceed607a65c103c9c6debfc93bf77dc7800c292892cacb6796fe5c63b688"
+    },
+    {
+      "file": "battle-selection.json",
+      "bytes": 2192,
+      "sha256": "d58d88b6e76e385307eba53c9180715a78d5d2db03a644fec02dd4192431f6d0"
+    },
+    {
+      "file": "battle.webp",
+      "bytes": 406524,
+      "sha256": "7eef0e35ea4b2045041fdf0831bdf18609dd2a33bab0859672a6466c7e5af1cb"
+    },
+    {
+      "file": "battle_00.png",
+      "bytes": 558038,
+      "sha256": "01dd881542fad961b85a86f8de80ed3701a1ec69a5cdccafaa9933a75ef1498e"
+    },
+    {
+      "file": "battle_01.png",
+      "bytes": 565395,
+      "sha256": "8fe0028f94eebf21496e4c65dc1856389919f4bfd77a6427c41bc9580b89984f"
+    },
+    {
+      "file": "battle_02.png",
+      "bytes": 579119,
+      "sha256": "a38567b14538887f9e1be749df862169740fd08bb374436db52c91acc2b69675"
+    },
+    {
+      "file": "battle_03.png",
+      "bytes": 578520,
+      "sha256": "381bd3dd6b7858a5e563badf15b35ff66ca687e898e6ad9f1179b275d8e74507"
+    },
+    {
+      "file": "battle_04.png",
+      "bytes": 571897,
+      "sha256": "69655613f78fb32988ee0fd70601541263c5eef2c53c4bb60f2265d214ca49e0"
+    },
+    {
+      "file": "battle_05.png",
+      "bytes": 557766,
+      "sha256": "8ab26b8379721499f24ec89aaa5af893eaf7a0b77de5ffab2673466341136ccf"
+    },
+    {
+      "file": "before-after-190px.json",
+      "bytes": 9393,
+      "sha256": "be61f7ed98835a8eb14e6b484c1740f5883675b764dd0e256b444f552d8c9be4"
+    },
+    {
+      "file": "before-after-190px.png",
+      "bytes": 198199,
+      "sha256": "19edbe3d90e6988629d62ed29d98179718a2c05e75981f398ecfc8a221a72058"
+    },
+    {
+      "file": "candidate-vite.log",
+      "bytes": 259,
+      "sha256": "b76922122e5e6eaa23cfa66acc992a56a2b6ac6c07272dc90c5000a0b2f7de32"
+    },
+    {
+      "file": "capture-report.json",
+      "bytes": 26753,
+      "sha256": "25c9d4f9165ca3de2095f9b01f6328e4ac641246d27f1db2f4c7738c670b22ee"
+    },
+    {
+      "file": "capture-source-after.json",
+      "bytes": 6450,
+      "sha256": "94bab182c7db5261d5d1677846f627a32495a974e647c6fe153f7845150b2e49"
+    },
+    {
+      "file": "capture-source-before.json",
+      "bytes": 32610,
+      "sha256": "a8fbab50d61a27d99a569ca942827e6316e704ec6fdeee4998621ddcea8acf36"
+    },
+    {
+      "file": "finalize-capture.py",
+      "bytes": 7682,
+      "sha256": "33fbfac7b10fb9c08bf8cb56895700b106deb97be1770752e0a619b0d5b714f3"
+    },
+    {
+      "file": "official-capture-images.json",
+      "bytes": 4099,
+      "sha256": "631326ddd6060590bb7686d99ef27ebedd5ea660a474d964e31c15d93a83afdc"
+    },
+    {
+      "file": "prepare-capture.py",
+      "bytes": 4545,
+      "sha256": "c4542c607c69de36ad5eaefd31b19c03492b41f38fe01e27c529ab694f41541e"
+    },
+    {
+      "file": "private-services.json",
+      "bytes": 1253,
+      "sha256": "451ef1cc3e6753274f03008a530f869373f39e167a47cb9f507d8e3aa6bcd7ea"
+    },
+    {
+      "file": "run-capture.py",
+      "bytes": 6637,
+      "sha256": "2dc0c7fe1637b33c64c3df759379364d1322812e5d6cb342bd9e0c9f26c0f9e2"
+    },
+    {
+      "file": "vite-private.mjs",
+      "bytes": 865,
+      "sha256": "6a7222d6fde10175ab83c16cdad73290d0fdb232957b0bb0b76ee1f1b3fcb771"
+    }
+  ],
+  "fiveFormalImages": [
+    "after-poses.png",
+    "after-190px.png",
+    "after-rear.png",
+    "before-after-190px.png",
+    "battle.webp"
+  ],
+  "sourceSnapshotsInSeparate63FileManifest": true,
+  "baselineGitExportInSeparate242FileManifest": true,
+  "cachesNotDeliveryArtifacts": true,
+  "sourceAndHistoricalDirectoriesNotModified": true,
+  "ClaudeDecision": null
+}

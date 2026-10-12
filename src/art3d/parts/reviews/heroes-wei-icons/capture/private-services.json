@@ -1,0 +1,26 @@
+[
+  {
+    "phase": "candidate",
+    "pid": 142188,
+    "port": 5186,
+    "root": "/workspace/three-worktrees/heroes-wei-icons",
+    "command": "node /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-private.mjs /workspace/three-worktrees/heroes-wei-icons /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-cache-candidate 5186",
+    "startedUTC": "2026-10-12T11:49:00.256462+00:00",
+    "cacheWithinPrivatePreview": true,
+    "stoppedUTC": "2026-10-12T11:49:31.893152+00:00",
+    "exitCode": 0,
+    "ownPrivateServerStopped": true
+  },
+  {
+    "phase": "baseline",
+    "pid": 142269,
+    "port": 5187,
+    "root": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree",
+    "command": "node /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-private.mjs /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree /workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/vite-cache-baseline 5187",
+    "startedUTC": "2026-10-12T11:49:01.707273+00:00",
+    "cacheWithinPrivatePreview": true,
+    "stoppedUTC": "2026-10-12T11:49:31.893172+00:00",
+    "exitCode": 0,
+    "ownPrivateServerStopped": true
+  }
+]

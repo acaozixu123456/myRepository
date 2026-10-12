@@ -9,6 +9,7 @@ import { solid, sphere, toon } from './toon';
 import { caomaoCrown, zhouyuCrown } from './parts/hero-ur-regalia';
 import { liubeiDualSwords } from './parts/hero-ur-liu-swords';
 import { lvbuHalberd, menghuoMace, zuociStaff } from './parts/hero-ur-weapons';
+import { xiahouSpear, xuhuBoneMace, zhangliaoDualBlades } from './parts/hero-wei-weapons';
 
 /** 专属叶 / 羽饰沿 +y 生长；握段与全部部件根仍留在掌心原点。 */
 function leafShape(length: number, width: number): THREE.Shape {
@@ -161,4 +162,7 @@ export const HERO_PARTS: Record<string, Partial<Record<PartGroup, PartBuilder>>>
   qun_lvbuding: { weapon: lvbuHalberd },
   man_mengmiaohuo: { weapon: menghuoMace },
   xian_zuoci: { weapon: zuociStaff },
+  wei_xiahoudun: { weapon: xiahouSpear },
+  wei_xuhuchi: { weapon: xuhuBoneMace },
+  wei_zhangliao: { weapon: zhangliaoDualBlades },
 };

@@ -1,4 +1,7 @@
 // 自动生成：python3 tools/sync-world-assets.py（素材来自 assets/world/**，已缩到游戏内尺寸）。
+import cloud_sprite_cumulus_atlas_01 from './cloud_sprite_cumulus_atlas_01.webp';
+import cloud_sprite_scattered_atlas_03 from './cloud_sprite_scattered_atlas_03.webp';
+import cloud_sprite_wisps_atlas_02 from './cloud_sprite_wisps_atlas_02.webp';
 import decal_crack_asphalt_long_09 from './decal_crack_asphalt_long_09.webp';
 import decal_crack_branch_fine_01 from './decal_crack_branch_fine_01.webp';
 import decal_crack_crazing_05 from './decal_crack_crazing_05.webp';
@@ -19,9 +22,11 @@ import decal_stain_rain_dust_08 from './decal_stain_rain_dust_08.webp';
 import decal_stain_rust_run_05 from './decal_stain_rust_run_05.webp';
 import decal_stain_soot_01 from './decal_stain_soot_01.webp';
 import decal_stain_tire_scuff_07 from './decal_stain_tire_scuff_07.webp';
+import cc0_beach_093c from './cc0_beach_093c.webp';
 import cc0_grass_005 from './cc0_grass_005.webp';
 import cc0_sand_080 from './cc0_sand_080.webp';
 import cc0_snow_014 from './cc0_snow_014.webp';
+import cc0_wetsand_054 from './cc0_wetsand_054.webp';
 import ground_asphalt_wet_01 from './ground_asphalt_wet_01.webp';
 import ground_drain_slate_02 from './ground_drain_slate_02.webp';
 import ground_forest_grass_light_03 from './ground_forest_grass_light_03.webp';
@@ -46,6 +51,9 @@ import sign_netcafe_vertical_04 from './sign_netcafe_vertical_04.webp';
 import sign_pawn_horizontal_02 from './sign_pawn_horizontal_02.webp';
 import sign_pharmacy_horizontal_03 from './sign_pharmacy_horizontal_03.webp';
 import sign_ramen_horizontal_01 from './sign_ramen_horizontal_01.webp';
+import sky_dawn_tealmist_03 from './sky_dawn_tealmist_03.webp';
+import sky_dusk_peach_01 from './sky_dusk_peach_01.webp';
+import sky_sunset_redcloud_02 from './sky_sunset_redcloud_02.webp';
 import sky_cloud_noon_cumulus_04 from './sky_cloud_noon_cumulus_04.webp';
 import sky_palace_afternoon_gold_05 from './sky_palace_afternoon_gold_05.webp';
 import skyline_catcity_01 from './skyline_catcity_01.webp';
@@ -56,6 +64,9 @@ import wall_tile_ivory_02 from './wall_tile_ivory_02.webp';
 import wall_tile_seafoam_01 from './wall_tile_seafoam_01.webp';
 import wall_tile_slate_03 from './wall_tile_slate_03.webp';
 export const WORLD_TEX: Record<string, string> = {
+  cloud_sprite_cumulus_atlas_01,
+  cloud_sprite_scattered_atlas_03,
+  cloud_sprite_wisps_atlas_02,
   decal_crack_asphalt_long_09,
   decal_crack_branch_fine_01,
   decal_crack_crazing_05,
@@ -76,9 +87,11 @@ export const WORLD_TEX: Record<string, string> = {
   decal_stain_rust_run_05,
   decal_stain_soot_01,
   decal_stain_tire_scuff_07,
+  cc0_beach_093c,
   cc0_grass_005,
   cc0_sand_080,
   cc0_snow_014,
+  cc0_wetsand_054,
   ground_asphalt_wet_01,
   ground_drain_slate_02,
   ground_forest_grass_light_03,
@@ -103,6 +116,9 @@ export const WORLD_TEX: Record<string, string> = {
   sign_pawn_horizontal_02,
   sign_pharmacy_horizontal_03,
   sign_ramen_horizontal_01,
+  sky_dawn_tealmist_03,
+  sky_dusk_peach_01,
+  sky_sunset_redcloud_02,
   sky_cloud_noon_cumulus_04,
   sky_palace_afternoon_gold_05,
   skyline_catcity_01,

@@ -1,0 +1,168 @@
+{
+  "createdUTC": "2026-10-12T11:56:16.819299+00:00",
+  "scope": "Only the named spear lower sleeve/two bands/pommel source components, primary and outline, in common paw-owner local coordinates. No new pose or animation samples.",
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "candidate": 5,
+  "stockPrimaryClosedCylinder": {
+    "radiusTop": 0.04,
+    "radiusBottom": 0.04,
+    "height": 2.2,
+    "radialSegments": 10,
+    "heightSegments": 1,
+    "openEnded": false,
+    "thetaStart": 0,
+    "thetaLength": 6.283185307179586
+  },
+  "stockPrimarySideOwnerLocalYRange": [
+    -0.4400000238418579,
+    1.760000023841858
+  ],
+  "namedC4RobustWitnessSurfaceIndices": [
+    3,
+    5,
+    7,
+    8,
+    9
+  ],
+  "checks": [
+    {
+      "surfaceIndex": 2,
+      "geometry": "CylinderGeometry",
+      "outline": false,
+      "sourceVertexCount": 64,
+      "C5MaximumSupportingPlaneDistance": -0.0038042260543960996,
+      "C4MaximumSupportingPlaneDistance": 0.008957736194133759,
+      "reference": "actual closed stock primary cylinder triangle halfspaces",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        -0.13499999940395357,
+        0.08499999940395353
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    },
+    {
+      "surfaceIndex": 3,
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "sourceVertexCount": 64,
+      "C5MaximumSupportingPlaneDistance": -0.013314791284108299,
+      "C4MaximumSupportingPlaneDistance": 0.0026918884519168892,
+      "reference": "actual stock rod expanded-normal supporting-plane convex domain",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        -0.13999999940395358,
+        0.08999999940395353
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    },
+    {
+      "surfaceIndex": 4,
+      "geometry": "CylinderGeometry",
+      "outline": false,
+      "sourceVertexCount": 64,
+      "C5MaximumSupportingPlaneDistance": -0.0019021128211599986,
+      "C4MaximumSupportingPlaneDistance": 0.012957736849784851,
+      "reference": "actual closed stock primary cylinder triangle halfspaces",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        -0.15800000026822092,
+        -0.13199999973177912
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    },
+    {
+      "surfaceIndex": 5,
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "sourceVertexCount": 64,
+      "C5MaximumSupportingPlaneDistance": -0.009510565009369303,
+      "C4MaximumSupportingPlaneDistance": 0.005691889107567981,
+      "reference": "actual stock rod expanded-normal supporting-plane convex domain",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        -0.16500000026822093,
+        -0.12499999973177911
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    },
+    {
+      "surfaceIndex": 6,
+      "geometry": "CylinderGeometry",
+      "outline": false,
+      "sourceVertexCount": 64,
+      "C5MaximumSupportingPlaneDistance": -0.0019021128211599986,
+      "C4MaximumSupportingPlaneDistance": 0.012957736849784851,
+      "reference": "actual closed stock primary cylinder triangle halfspaces",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        0.08199999973177907,
+        0.10800000026822087
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    },
+    {
+      "surfaceIndex": 7,
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "sourceVertexCount": 64,
+      "C5MaximumSupportingPlaneDistance": -0.009510565009369303,
+      "C4MaximumSupportingPlaneDistance": 0.005691889107567981,
+      "reference": "actual stock rod expanded-normal supporting-plane convex domain",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        0.07499999973177907,
+        0.11500000026822088
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    },
+    {
+      "surfaceIndex": 8,
+      "geometry": "SphereGeometry",
+      "outline": false,
+      "sourceVertexCount": 130,
+      "C5MaximumSupportingPlaneDistance": -0.0006195679306983393,
+      "C4MaximumSupportingPlaneDistance": 0.029449974447488925,
+      "reference": "actual closed stock primary cylinder triangle halfspaces",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        -0.42089999988675125,
+        -0.3791000001132489
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    },
+    {
+      "surfaceIndex": 9,
+      "geometry": "SphereGeometry",
+      "outline": true,
+      "sourceVertexCount": 130,
+      "C5MaximumSupportingPlaneDistance": -0.009171857653978793,
+      "C4MaximumSupportingPlaneDistance": 0.02244997444748903,
+      "reference": "actual stock rod expanded-normal supporting-plane convex domain",
+      "C5AllSourceVerticesInsideReference": true,
+      "C5OwnerLocalYRange": [
+        -0.42689999988675126,
+        -0.3731000001132489
+      ],
+      "C5WithinStockPrimarySideYRange": true
+    }
+  ],
+  "allNamedC5SourceVertexChecksPass": true,
+  "primaryGeometryInference": "Primary target source triangles are convex combinations of contained vertices, so the named primary surfaces are contained in the old closed convex primary stock-rod domain.",
+  "outlineInferenceLimit": "Expanded-normal supporting planes plus finite side-Y span establish this source-domain test. Do not promote a shader outline convex envelope to a Boolean proof of the rendered outline solid or of the complete weapon.",
+  "fullWeaponVolumeEqualityClaimed": false,
+  "C4HistoryUnchanged": true,
+  "sourceFiles": [
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/baseline-prebake-surfaces.json",
+      "sha256": "4a1e09df6d22351df681940234cc775fd16b91c189ed8dfe042d5318b9aedc52"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/candidate-prebake-surfaces.json",
+      "sha256": "2b946e514790baa21f31c0f6414f55f7f48a8313d0039c0a62a7c1d9f87587ec"
+    },
+    {
+      "path": "/workspace/three-review/heroes-wei-icons/final-candidate04-e0af/independent-qa/candidate-prebake-surfaces.json",
+      "sha256": "bf62e6840cb8276ea4bf5422ef201c33a5e50dbd1e4f51f000bc12dc8331851a"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "dateUTC": "2026-10-12T07:51:06.926121+00:00",
+  "stage": "final-source selection after procedural prototype; no claim of pre-implementation search",
+  "queries": [
+    {
+      "query": "eyepatch CC0",
+      "repositoryResults": 0
+    },
+    {
+      "query": "beard CC0 model",
+      "repositoryResults": 0
+    }
+  ],
+  "catalogs": [
+    {
+      "url": "https://github.com/shorepine/kenney/tree/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters",
+      "models": 26,
+      "relevantNames": [
+        "aid-glasses.glb",
+        "aid-mask.glb",
+        "aid-sunglasses.glb"
+      ],
+      "finding": "Directory and mirror README read; these are named human aids / whole character models, not the requested parameterized cat eyepatch/three-lock beard/actual-host skin paint. Binary models not downloaded or viewed."
+    },
+    {
+      "url": "https://github.com/shorepine/kenney/tree/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/pirate",
+      "models": 72,
+      "finding": "Actual file directory read: boats/flags/environment objects. No named beard/eyepatch accessory in this limited catalog. Does not assert absence across all public resources."
+    }
+  ],
+  "licenseScope": "Mirror README says Kenney collection CC0; root LICENSE text specifically Castle Kit and cannot alone establish Mini Characters/Pirate provenance. No third-party files adopted, no asset-license equivalence claim.",
+  "decision": "Retain project-native parameterized three-lock beard, stitched patch with connected band, and direct real-skull facet paint with cached toon/outline, exact pose and mesh budget checks. No icon/texture/GLB import; no CREDITS entry needed."
+}

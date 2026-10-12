@@ -1,0 +1,215 @@
+{
+  "copiedSources": [
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-poses.png",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/after-poses.png",
+      "bytes": 256116,
+      "sha256": "d4c028382bc17d7adc435629fdd403bfc5c80ded83b9708642bf159981567139"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-190px.png",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/after-190px.png",
+      "bytes": 163605,
+      "sha256": "bbf52d0f6b99bb403b53163d350defdb8f11c13518954582915262040e3efc9e"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/after-rear.png",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/after-rear.png",
+      "bytes": 51109,
+      "sha256": "bae192e0f73e4153e68e4ff5cb449e01ca3190c4e5a903846c97d598e67f1864"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/before-after-190px.png",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/before-after-190px.png",
+      "bytes": 198199,
+      "sha256": "19edbe3d90e6988629d62ed29d98179718a2c05e75981f398ecfc8a221a72058"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle.webp",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/battle.webp",
+      "bytes": 406524,
+      "sha256": "7eef0e35ea4b2045041fdf0831bdf18609dd2a33bab0859672a6466c7e5af1cb"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/README.md",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/README.md",
+      "bytes": 7841,
+      "sha256": "65a341af4496bf6a51069a311a84c1de9652d1ee5d2c87743135db1170f4c4b9"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/capture-report.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/capture-report.json",
+      "bytes": 26753,
+      "sha256": "25c9d4f9165ca3de2095f9b01f6328e4ac641246d27f1db2f4c7738c670b22ee"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/capture-source-before.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/capture-source-before.json",
+      "bytes": 32610,
+      "sha256": "a8fbab50d61a27d99a569ca942827e6316e704ec6fdeee4998621ddcea8acf36"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/capture-source-after.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/capture-source-after.json",
+      "bytes": 6450,
+      "sha256": "94bab182c7db5261d5d1677846f627a32495a974e647c6fe153f7845150b2e49"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/official-capture-images.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/official-capture-images.json",
+      "bytes": 4099,
+      "sha256": "631326ddd6060590bb7686d99ef27ebedd5ea660a474d964e31c15d93a83afdc"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/before-after-190px.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/before-after-190px.json",
+      "bytes": 9393,
+      "sha256": "be61f7ed98835a8eb14e6b484c1740f5883675b764dd0e256b444f552d8c9be4"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle-capture-report.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/battle-capture-report.json",
+      "bytes": 32341,
+      "sha256": "fd14ef57f70c314783887faa1a9bf307bbf1acdbd47727e71d6789d26fb0310b"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle-command.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/battle-command.json",
+      "bytes": 661,
+      "sha256": "97ec264b7f309844607fe7ecba5f7dd360f16a49dc16ac453eddc6070937c090"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/battle-selection.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/battle-selection.json",
+      "bytes": 2192,
+      "sha256": "d58d88b6e76e385307eba53c9180715a78d5d2db03a644fec02dd4192431f6d0"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/capture-freeze-manifest.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/capture-freeze-manifest.json",
+      "bytes": 6328,
+      "sha256": "a002844bcc4ccee5de1777c843f72c41a4def9d79a2a750c89f6db02614ee731"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-tree-manifest.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/baseline-f4-tree-manifest.json",
+      "bytes": 38361,
+      "sha256": "c6afad57a22ab4e08b73c0cf71ec34edbc86fbcd8e014f1839c235755eeb98da"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/baseline-f4-after.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/baseline-f4-after.json",
+      "bytes": 41772,
+      "sha256": "7c594cd3a6a9e1e1fac60355b19c50d3b5254e3f3b8cf91ee1bac48c45359a4b"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/preview/private-services.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/capture/private-services.json",
+      "bytes": 1253,
+      "sha256": "451ef1cc3e6753274f03008a530f869373f39e167a47cb9f507d8e3aa6bcd7ea"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/qa-summary.md",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/qa-summary.md",
+      "bytes": 3754,
+      "sha256": "3f79ed908e702dcdc156de400c7ef1266482133c627845a5168e35572e05e749"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/qa-summary.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/qa-summary.json",
+      "bytes": 6457,
+      "sha256": "0188c9ef7e8db15635d8a54ed76055365f19ab4b12eb343c6a81a95f5e2da760"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/qa-method.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/qa-method.json",
+      "bytes": 5317,
+      "sha256": "043939b712fb6b381f9455785e83084158110d9f74e9e218a5c8d6939d67af33"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/finite-metrics.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/finite-metrics.json",
+      "bytes": 24553,
+      "sha256": "6dc7a01767a8bd02ec25061b73b09891cffe5dba64dfae8da60808925b06baeb"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/named-lower-source-check.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/named-lower-source-check.json",
+      "bytes": 6276,
+      "sha256": "c8ecf9947d3563ab211da284e18a63302081db743efac994c06dd02392007c12"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-before.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/source-before.json",
+      "bytes": 9102,
+      "sha256": "dc388181c52f634e638c76a99aec4bffb2d8fe57b9f112b7cfeafd4ceefb508a"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-after.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/source-after.json",
+      "bytes": 10423,
+      "sha256": "749f52ffbf28fde7c30fd9caa765e982b93d574dc132a119670d8086e714e155"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/source-after-probes.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/source-after-probes.json",
+      "bytes": 8793,
+      "sha256": "e7643e7a6469efaf3cafd866ad991c4b718de97e8b4c992f2f061f75d2d04ca6"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/paired-model-smoke.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/paired-model-smoke.json",
+      "bytes": 47486,
+      "sha256": "f0e8a92c474bec4d02cad7935003486f25147301dd3d719e6e593a971737211f"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/finite-cases.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/finite-cases.json",
+      "bytes": 1530,
+      "sha256": "ecb236e6b4066646b00ead8405699504ace916e2a433fc4fe14bb48df81f02d1"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/probe-executions.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/probe-executions.json",
+      "bytes": 11184,
+      "sha256": "1a89a3ce6a4e1747d1ad814c2ba1c4a455c3b6ade565f9f3d656aa9b8ed242e1"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/independent-qa/freeze-manifest.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/qa/freeze-manifest.json",
+      "bytes": 13423,
+      "sha256": "c820177db65e0f5362109b63ff30419540aa0ee602191d44a6f6835f54c5aa02"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/final-candidate05-f4/source-freeze.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/source-freeze.json",
+      "bytes": 832,
+      "sha256": "47cbc2673aeb50929993ccf928221a0492c65b6cc6245ec59ac6a297e6455aec"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/reference-audit.md",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/reference-audit.md",
+      "bytes": 7224,
+      "sha256": "5125405c43ed9bc791a6963bc491bf8d6abad18d70f419d72a6777d020f399b4",
+      "source_sha256": "1ceff896ac95ee2dfa31776282a8e2d33de5bef291f86c0026faefa494d70d0c",
+      "transform": "remove extra EOF newline only and rewrite three repository JPG links; two private historical draft links rendered as paths with current progress pointer; frozen raw audit unchanged"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/reference-audit.json",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/reference-audit.json",
+      "bytes": 13490,
+      "sha256": "f3e2663661b05517b465e2f60a37b42c2e79cb2fcc0cff090a1157d29a78705c",
+      "source_sha256": "0f7743aa8e2121809a0869169d4ecfcf7f4c9e70be9f974808dafdf77506bfb8",
+      "transform": "remove extra EOF newline(s) only; frozen scratch source unchanged"
+    },
+    {
+      "source": "/workspace/three-review/heroes-wei-icons/required-checks-final-candidate05-f4.log",
+      "destination": "/workspace/three-worktrees/heroes-wei-icons/src/art3d/parts/reviews/heroes-wei-icons/required-checks-final-candidate05-f4.log",
+      "bytes": 10731,
+      "sha256": "b1d28fe246bac6cb094fdf20fd34d630c35eb00516ef3e1805a9a7aa5042c8ff",
+      "source_sha256": "6a4523143a8a8ba4ee4c9765d18e924ee826438efee096428fd2130ff1f572ff",
+      "transform": "remove extra EOF newline(s) only; frozen scratch source unchanged"
+    }
+  ],
+  "transformPolicy": "All images, QA/capture/provenance bytes preserved. Three Wei text copies remove extra EOF newlines; reference Markdown additionally fixes public JPG links and explicitly marks uncommitted historical templates. Raw scratch originals and source SHA unchanged."
+}

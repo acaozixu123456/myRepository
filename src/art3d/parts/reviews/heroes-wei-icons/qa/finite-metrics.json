@@ -1,0 +1,903 @@
+{
+  "baseline": "f4b3c0c9907dc5b0f5a7315a1c8578de7567a057",
+  "candidate": 5,
+  "pairedFinitePoseConditions": [
+    {
+      "id": "wei_xiahoudun",
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 708,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 0,
+      "candidateContactCountDiagnosticOnly": 0,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0
+    },
+    {
+      "id": "wei_xiahoudun",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 794,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 4,
+      "candidateContactCountDiagnosticOnly": 20,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0.4931702836629872,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0.525170373266395
+    },
+    {
+      "id": "wei_xiahoudun",
+      "pose": "strike",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 774,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 0,
+      "candidateContactCountDiagnosticOnly": 0,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0
+    },
+    {
+      "id": "wei_xiahoudun",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 798,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 4,
+      "candidateContactCountDiagnosticOnly": 20,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0.5193647411177762,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0.5508389314495767
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 714,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 0,
+      "candidateContactCountDiagnosticOnly": 0,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 786,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 4,
+      "candidateContactCountDiagnosticOnly": 20,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0.5124405605647495,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0.5443039895372552
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "strike",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 804,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 0,
+      "candidateContactCountDiagnosticOnly": 0,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 792,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 4,
+      "candidateContactCountDiagnosticOnly": 20,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0.5376388184302698,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0.5692201878404757
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 1.5707963267948966,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 786,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 4,
+      "candidateContactCountDiagnosticOnly": 20,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0.5168373011137458,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0.5486959461095069
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0.08513648195712253
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0.08513648195712253
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 706,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 0,
+      "candidateContactCountDiagnosticOnly": 0,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0.09527238326812082
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0.09527238326812082
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 800,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 4,
+      "baselineContactCountDiagnosticOnly": 38,
+      "candidateContactCountDiagnosticOnly": 36,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0.526642368697498,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0.5579392815893296
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "strike",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 796,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 0,
+      "baselineContactCountDiagnosticOnly": 0,
+      "candidateContactCountDiagnosticOnly": 0,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "baselineAndCandidateNormalBakedFinite": true,
+      "FRAME_excessBefore": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessAfter": {
+        "left": 0,
+        "right": 0,
+        "bottom": 0,
+        "top": 0
+      },
+      "FRAME_excessExactlySame": true,
+      "faceActualValidSamplesPerSide": 800,
+      "baselineWeaponBlockedSampleKeys": [],
+      "candidateWeaponBlockedSampleKeys": [],
+      "eyeWhitePupilNoseActivatedMouthActualSourceSurfacesExactlySame": true,
+      "robustNewVertexWitnessesBeyond1e7": [],
+      "strictNewVertexWitnessCount": 4,
+      "baselineContactCountDiagnosticOnly": 38,
+      "candidateContactCountDiagnosticOnly": 36,
+      "candidatePrimarySkullMaxInsideVertexMargin": 0.555183304672155,
+      "candidateExpandedSkullMaxInsideVertexMargin": 0.5861306997505872
+    }
+  ],
+  "pairedConditionCount": 13,
+  "normalBakedPosedCaseEvaluations": 26,
+  "validFaceSamples": {
+    "baseline": 10058,
+    "candidate": 10058
+  },
+  "allFaceWeaponBlockedSamples": {
+    "baseline": 0,
+    "candidate": 0
+  },
+  "normalBakedContactPointMappingMaxError": 4.171403923908663e-08,
+  "FRAME_excessMaximumRegression": 0,
+  "actualHeadTriangleChecks": [
+    {
+      "id": "wei_xiahoudun",
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xiahoudun",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xiahoudun",
+      "pose": "strike",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xiahoudun",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "strike",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_xuhuchi",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 1.5707963267948966,
+      "candidateContactSurfaceIndices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "idle",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "strike",
+      "t": 0.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "candidateContactSurfaceIndices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "actualPrimaryTriangleCount": 1120,
+      "actualExpandedTriangleCount": 1120
+    }
+  ],
+  "strictPositiveVertexWitnessesPreserved": [
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 1,
+      "role": "main",
+      "name": "outline",
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 12,
+      "witness": {
+        "primaryInsideMargin": 0.32990023827427306,
+        "minimumOldLocalAABBGap": 1.3877787807814457e-17,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          -0.022258286697558763,
+          1.9836027847268567,
+          0.16730014569705065
+        ],
+        "headLocalPoint": [
+          -0.09579037958887018,
+          -0.1753898537651275,
+          -0.03371686198217011
+        ],
+        "ownerLocalPoint": [
+          -0.024099195376038995,
+          0.05499999880790729,
+          0.0331696979701519
+        ]
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 3,
+      "role": "main",
+      "name": "outline",
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 15,
+      "witness": {
+        "primaryInsideMargin": 0.4639843716192016,
+        "minimumOldLocalAABBGap": 1.5265566588595902e-16,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          0.04672123889065007,
+          2.12296064019802,
+          0.1218673085254984
+        ],
+        "headLocalPoint": [
+          -0.019656663256225775,
+          -0.05717271666607737,
+          -0.06357878242521481
+        ],
+        "ownerLocalPoint": [
+          -0.04850388328417199,
+          -0.09600000038742995,
+          -0.015759866965672865
+        ]
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 5,
+      "role": "main",
+      "name": "outline",
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 15,
+      "witness": {
+        "primaryInsideMargin": 0.3685572936407857,
+        "minimumOldLocalAABBGap": 1.3877787807814457e-17,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          0.07158403859500631,
+          2.0019566361109367,
+          0.15554494978728572
+        ],
+        "headLocalPoint": [
+          -0.020761445153776543,
+          -0.151304174559024,
+          0.0002030813033783163
+        ],
+        "ownerLocalPoint": [
+          -4.440892098500626e-16,
+          0.016000000387430324,
+          -0.050999999761581406
+        ]
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 0.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 17,
+      "role": "main",
+      "name": "outline",
+      "geometry": "TubeGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 24,
+      "witness": {
+        "primaryInsideMargin": 0.419438650759798,
+        "minimumOldLocalAABBGap": 1.3877787807814457e-17,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          0.0015789551844053624,
+          2.06412940825511,
+          0.2962598167977113
+        ],
+        "headLocalPoint": [
+          -0.14193491566142694,
+          -0.07819630847191328,
+          0.05129892012948778
+        ],
+        "ownerLocalPoint": [
+          -0.16273652017116613,
+          0.053574148565531,
+          -0.03200000020861627
+        ]
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 1,
+      "role": "main",
+      "name": "outline",
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 19,
+      "witness": {
+        "primaryInsideMargin": 0.37265514458956184,
+        "minimumOldLocalAABBGap": 4.85722573273506e-16,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          0.035221896764506565,
+          1.958167194699426,
+          0.2057146342290302
+        ],
+        "headLocalPoint": [
+          -0.07208931346597414,
+          -0.13442116983206653,
+          0.017266837559531956
+        ],
+        "ownerLocalPoint": [
+          -0.024099195376038336,
+          0.05499999880790753,
+          -0.03316969797015188
+        ]
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 3,
+      "role": "main",
+      "name": "outline",
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 15,
+      "witness": {
+        "primaryInsideMargin": 0.4821133734377314,
+        "minimumOldLocalAABBGap": 1.6653345369377348e-16,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          0.013503184251270117,
+          2.1105593425832248,
+          0.12027326275775549
+        ],
+        "headLocalPoint": [
+          -0.04735250115853991,
+          -0.01844219711208739,
+          -0.08863509175669171
+        ],
+        "ownerLocalPoint": [
+          -0.04850388328417156,
+          -0.11399999961257004,
+          0.01575986696567289
+        ]
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 5,
+      "role": "main",
+      "name": "outline",
+      "geometry": "CylinderGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 15,
+      "witness": {
+        "primaryInsideMargin": 0.39347621103307695,
+        "minimumOldLocalAABBGap": 4.85722573273506e-17,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          0.0661824730670457,
+          1.9775266411244603,
+          0.17335363483821933
+        ],
+        "headLocalPoint": [
+          -0.032863154841942036,
+          -0.11995443700731534,
+          0.0034586559292877905
+        ],
+        "ownerLocalPoint": [
+          0,
+          0.016000000387430328,
+          -0.05099999976158141
+        ]
+      }
+    },
+    {
+      "id": "wei_zhangliao",
+      "pose": "windup",
+      "t": 2.4,
+      "phase": 0,
+      "yawDegrees": 32,
+      "surfaceIndex": 17,
+      "role": "main",
+      "name": "outline",
+      "geometry": "TubeGeometry",
+      "outline": true,
+      "duplicateTriangleVertexCountDiagnosticOnly": 54,
+      "witness": {
+        "primaryInsideMargin": 0.43336316620950055,
+        "minimumOldLocalAABBGap": 1.3877787807814457e-17,
+        "outsideAllOldAABBSupersetsBeyond1e7": false,
+        "worldPoint": [
+          -0.016056694973321947,
+          2.048446611070117,
+          0.33570258550506304
+        ],
+        "headLocalPoint": [
+          -0.17292440878869375,
+          -0.03631790435860305,
+          0.07000743107225449
+        ],
+        "ownerLocalPoint": [
+          -0.1919486075639723,
+          0.05521825700998308,
+          -0.03200000020861627
+        ]
+      }
+    }
+  ],
+  "robustWitnessDistanceToleranceLocal": 1e-07,
+  "allStrictPositiveDistancesMin": 1.3877787807814457e-17,
+  "allStrictPositiveDistancesMax": 4.85722573273506e-16,
+  "noBooleanWholeWeaponVolumeEqualityClaim": true
+}

@@ -10,6 +10,7 @@ import { preloadWorldTextures } from '../../world/tex';
 import type { Street } from '../../world/street';
 import type { LevelDef } from '../../world/levels';
 import { ALL_SCENES, BONUS_UNLOCK } from '../../world/levels';
+import type { TrailStat } from '../../game/explore';
 import { bossStage, claimDaily, claimTrail, dailyClaimed, dailyProgress, ensureExplore, explorerLevel, sceneChapter, sceneGames, setScene, unlockedScenes, farmStage, killReward, autoKey, openChest, pickAutoTarget, killsLeft, pickHerb, recordBossWin, spawnPlan, trailRows } from '../../game/explore';
 import { applyGain, firstClearReward, recommendedPowerOf, winReward } from '../../game/stage';
 import { rollover, track } from '../../game/quests';
@@ -38,10 +39,15 @@ import { KITE_CSS, openKite } from './kite';
 import { KITCHEN_CSS, openKitchen } from './kitchen';
 import { SLED_CSS, openSled } from './sled';
 import { SNOWCAT_CSS, openSnowCat } from './snowcat';
+import { SURF_CSS, openSurf } from './surf';
+import { CLAMS_CSS, openClams } from './clams';
+import { STONESKIP_CSS, openStoneSkip } from './stoneskip';
+import { featureUsed, featuredGame, setPlaying } from '../../game/featured';
+import { SUSHI_CSS, openSushi } from './sushi';
 import { topbar } from './lineup';
 import { playStoryOnce } from '../story';
 
-export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUSHROOM_CSS + WINDCHIME_CSS + LANTERN_CSS + KART_CSS + CLAW_CSS + WHACK_CSS + RINGTOSS_CSS + ARROWS_CSS + FIREFLY_CSS + KITE_CSS + KITCHEN_CSS + SLED_CSS + SNOWCAT_CSS + `
+export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUSHROOM_CSS + WINDCHIME_CSS + LANTERN_CSS + KART_CSS + CLAW_CSS + WHACK_CSS + RINGTOSS_CSS + ARROWS_CSS + FIREFLY_CSS + KITE_CSS + KITCHEN_CSS + SLED_CSS + SNOWCAT_CSS + SURF_CSS + CLAMS_CSS + STONESKIP_CSS + SUSHI_CSS + `
 .screen.xplore{background:#0d0818}
 .xplore canvas#wcv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .xplore .hud{position:absolute;left:0;right:0;top:0;z-index:3;pointer-events:none;background:linear-gradient(rgba(10,6,24,.85),rgba(10,6,24,0))}
@@ -99,6 +105,8 @@ export const EXPLORE_CSS = GAIN_CSS + FISHING_CSS + RAMEN_CSS + BOXCAT_CSS + MUS
 .scn .se{font-size:30px;line-height:1.1}.scn b{font-size:14px;color:var(--ink)}.scn small{font-size:11.5px;font-weight:800;color:#6a5a48}
 .scn.bonus{grid-column:1/-1}
 .scn.on{border-color:#ff7ab8;box-shadow:0 0 0 3px rgba(255,122,184,.35)}.scn.lock{opacity:.5}
+.scn .feat{font-style:normal;color:#ffd24a;font-weight:900}.scn .feat.done{color:inherit;opacity:.7}
+.feat-tip{margin:0 0 8px;text-align:center;font-size:12px;font-weight:800;color:#ffe9a0}
 .scn .here{position:absolute;right:6px;top:4px;font-style:normal;font-size:10px;font-weight:900;background:#ff7ab8;color:#fff;border-radius:8px;padding:1px 6px}
 .xfight{position:absolute;left:50%;margin-left:-70px;bottom:104px;z-index:4;width:140px;padding:12px 8px;border-radius:999px;border:3px solid #fff;background:linear-gradient(#ff7a8a,#e0344f);color:#fff;font:900 20px var(--f-d,inherit);box-shadow:0 0 22px rgba(255,70,100,.75),0 4px 0 rgba(0,0,0,.3);animation:xfightPulse 1s ease-in-out infinite;touch-action:manipulation}
 .xskills{position:absolute;left:10px;bottom:236px;z-index:4;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
@@ -272,7 +280,7 @@ function questHtml(ctx: AppCtx): string {
   const goals = dailyProgress(ctx.s), claimed = dailyClaimed(ctx.s), ready = goals.every((g) => g.done);
   return `<div class="xquest ${ready && !claimed ? 'ready' : ''}"><div class="xq-t">${claimed ? '📜✔' : ready ? '📜❗' : '📜'}</div>${goals.map((g) => `<div class="xq-r ${g.done ? 'ok' : ''}"><span>${STAT_ICON[g.key]}</span><i style="--p:${Math.round((g.have / g.need) * 100)}%"></i><b>${g.have}/${g.need}</b></div>`).join('')}</div>`;
 }
-const STAT_ICON: Record<string, string> = { kills: '⚔️', chests: '📦', herbs: '🌿', bosses: '👑', fish: '🐟', ramen: '🍜', found: '🐱', mush: '🍄', chime: '🎐', boss: '👑' };
+const STAT_ICON: Record<TrailStat | 'boss', string> = { kills: '⚔️', chests: '📦', herbs: '🌿', bosses: '👑', fish: '🐟', ramen: '🍜', found: '🐱', mush: '🍄', chime: '🎐', boss: '👑', lantern: '🏮', kart: '🏎️', claw: '🧸', whack: '🖱️', ring: '⭕', arrows: '🏹', firefly: '✨', kite: '🪁', kitchen: '🥢', sled: '🛷', snowcat: '⛄', surf: '🏄', clams: '🦪', skips: '🪨', sushi: '🍣' };
 function hud(ctx: AppCtx): string {
   const b = bossStage(ctx.s), rec = recommendedPowerOf(b.chapter, b.index), mine = teamPower(ctx.s);
   const ids = teamIds(ctx), ratio = Math.min(1, mine / rec), enough = mine >= rec;
@@ -502,12 +510,13 @@ async function onPoi(ctx: AppCtx, sp: Spawn): Promise<void> {
   if (autoOn) return;
   const host = ctx.root.querySelector('[data-screen="explore"]');
   if (!host) return;
-  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : sp.data === 'boxcat' ? openBoxCat : sp.data === 'mushroom' ? openMushroom : sp.data === 'windchime' ? openWindChime : sp.data === 'lanterns' ? openLanterns : sp.data === 'kart' ? openKart : sp.data === 'claw' ? openClaw : sp.data === 'whack' ? openWhack : sp.data === 'ring' ? openRingToss : sp.data === 'arrows' ? openArrows : sp.data === 'firefly' ? openFirefly : sp.data === 'kite' ? openKite : sp.data === 'kitchen' ? openKitchen : sp.data === 'sled' ? openSled : sp.data === 'snowcat' ? openSnowCat : null;
+  const open = sp.data === 'fish' ? openFishing : sp.data === 'ramen' ? openRamen : sp.data === 'boxcat' ? openBoxCat : sp.data === 'mushroom' ? openMushroom : sp.data === 'windchime' ? openWindChime : sp.data === 'lanterns' ? openLanterns : sp.data === 'kart' ? openKart : sp.data === 'claw' ? openClaw : sp.data === 'whack' ? openWhack : sp.data === 'ring' ? openRingToss : sp.data === 'arrows' ? openArrows : sp.data === 'firefly' ? openFirefly : sp.data === 'kite' ? openKite : sp.data === 'kitchen' ? openKitchen : sp.data === 'sled' ? openSled : sp.data === 'snowcat' ? openSnowCat : sp.data === 'surf' ? openSurf : sp.data === 'clams' ? openClams : sp.data === 'skip' ? openStoneSkip : sp.data === 'sushi' ? openSushi : null;
   if (open) {
     // 小游戏开着时世界本来就是暂停的：把 3D 渲染也停掉（画面定格在背后）。不停的话，慢设备上每帧渲染会拖慢计时器和点击，节奏类玩法会漏拍，也白白耗电。
     // HUD 也藏起来：它带 backdrop-filter 模糊，盖在定格的 WebGL 画面上每帧都要重新合成，低端机很吃力
     rainAmbience(false); rt?.wv.stop(); host.classList.add('mg');
-    try { await open(ctx, host); } finally { host.classList.remove('mg'); rt?.wv.start(); rainAmbience(true); refreshExploreHud(ctx); }
+    setPlaying(String(sp.data));
+    try { await open(ctx, host); } finally { setPlaying(null); host.classList.remove('mg'); rt?.wv.start(); rainAmbience(true); refreshExploreHud(ctx); }
   }
 }
 function onChest(ctx: AppCtx, sp: Spawn) {
@@ -535,20 +544,20 @@ function onTalk(ctx: AppCtx, _sp: Spawn) {
 }
 
 /** 探索足迹：长期累计目标，够数后手动领奖 */
-const SCENE_EMOJI: Record<number, string> = { 1: '🌃', 2: '🏮', 3: '🌊', 4: '🌲', 5: '☁️', 6: '🏯', 101: '🏜️', 102: '🏔️' };
-const GAME_EMOJI: Record<string, string> = { boxcat: '📦', ramen: '🍜', fish: '🎣', mushroom: '🍄', windchime: '🎐', lanterns: '🏮', kart: '🏎️', claw: '🧸', whack: '🖱️', ring: '⭕', arrows: '🏹', firefly: '✨', kite: '🪁', kitchen: '🥢', sled: '🛷', snowcat: '⛄' };
-const GAME_NAME: Record<string, string> = { boxcat: '纸箱寻猫', ramen: '拉面屋台', fish: '钓鱼', mushroom: '采蘑菇', windchime: '风铃节拍', lanterns: '点灯谜题', kart: '卡丁车', claw: '夹娃娃', whack: '鼠标大作战', ring: '套圈', arrows: '草船借箭', firefly: '萤火虫记忆', kite: '放纸鸢', kitchen: '御膳房配菜', sled: '雪橇滑坡', snowcat: '叠雪猫' };
+const SCENE_EMOJI: Record<number, string> = { 1: '🌃', 2: '🏮', 3: '🌊', 4: '🌲', 5: '☁️', 6: '🏯', 101: '🏜️', 102: '🏔️', 103: '🏖️', 104: '🌸' };
+const GAME_EMOJI: Record<string, string> = { boxcat: '📦', ramen: '🍜', fish: '🎣', mushroom: '🍄', windchime: '🎐', lanterns: '🏮', kart: '🏎️', claw: '🧸', whack: '🖱️', ring: '⭕', arrows: '🏹', firefly: '✨', kite: '🪁', kitchen: '🥢', sled: '🛷', snowcat: '⛄', surf: '🏄', clams: '🦪', skip: '🪨', sushi: '🍣' };
+const GAME_NAME: Record<string, string> = { boxcat: '纸箱寻猫', ramen: '拉面屋台', fish: '钓鱼', mushroom: '采蘑菇', windchime: '风铃节拍', lanterns: '点灯谜题', kart: '卡丁车', claw: '夹娃娃', whack: '鼠标大作战', ring: '套圈', arrows: '草船借箭', firefly: '萤火虫记忆', kite: '放纸鸢', kitchen: '御膳房配菜', sled: '雪橇滑坡', snowcat: '叠雪猫', surf: '冲浪', clams: '赶海', skip: '打水漂', sushi: '回转寿司' };
 /** 一键切换场景：6 个场景一屏看完，已解锁的点一下就过去；各场景有各自的小游戏 */
 function openScenes(ctx: AppCtx) {
   ctx.root.querySelectorAll('.scene-mask').forEach((e) => e.remove());
-  const cur = sceneChapter(ctx.s), open = new Set(unlockedScenes(ctx.s));
+  const cur = sceneChapter(ctx.s), open = new Set(unlockedScenes(ctx.s)), feat = featuredGame(ctx.s), featDone = featureUsed(ctx.s);
   const cards = Object.keys(ALL_SCENES).map(Number).map((c) => {
     const gs = sceneGames(c), un = open.has(c);
     return `<button class="scn ${c > 100 ? 'bonus' : ''} ${c === cur ? 'on' : ''} ${un ? '' : 'lock'}" data-act="x-scene" data-c="${c}" ${un ? '' : 'disabled'}>
       <span class="se">${SCENE_EMOJI[c] ?? '🗺️'}</span><b>${esc(ALL_SCENES[c].name)}</b>
-      <small>${un ? gs.map((g) => `${GAME_EMOJI[g] ?? '🎮'} ${GAME_NAME[g] ?? g}`).join(' · ') : `🔒 通关第 ${(BONUS_UNLOCK[c] ?? c) - 1} 章解锁`}</small>${c === cur ? '<i class="here">当前</i>' : ''}</button>`;
+      <small>${un ? gs.map((g) => g === feat ? `<em class="feat ${featDone ? 'done' : ''}">🌟${GAME_EMOJI[g] ?? '🎮'} ${GAME_NAME[g] ?? g}</em>` : `${GAME_EMOJI[g] ?? '🎮'} ${GAME_NAME[g] ?? g}`).join(' · ') : `🔒 通关第 ${(BONUS_UNLOCK[c] ?? c) - 1} 章解锁`}</small>${c === cur ? '<i class="here">当前</i>' : ''}</button>`;
   }).join('');
-  ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center scene-mask" data-act="closedialog"><div class="dialog scn-dlg"><h3 class="title" style="margin:0 0 8px;text-align:center">🗺️ 切换场景</h3><div class="scn-grid">${cards}</div></div></div>`);
+  ctx.root.insertAdjacentHTML('beforeend', `<div class="mask center scene-mask" data-act="closedialog"><div class="dialog scn-dlg"><h3 class="title" style="margin:0 0 4px;text-align:center">🗺️ 切换场景</h3>${feat ? `<p class="feat-tip">🌟 今日推荐：<b>${GAME_NAME[feat] ?? feat}</b>${featDone ? '（今天的翻倍已领）' : '，今天第一次拿到星奖励翻倍'}</p>` : ''}<div class="scn-grid">${cards}</div></div></div>`);
 }
 
 function openTrail(ctx: AppCtx) {
