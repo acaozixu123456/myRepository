@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#161b26">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="冥想">
+  <title>冥想</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 首页 -->
+  <main id="home" class="screen active">
+    <header class="stats">
+      <div class="stat">
+        <div class="stat-num" id="streak">0</div>
+        <div class="stat-label">连续天数</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="today">0</div>
+        <div class="stat-label">今天（分钟）</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="total">0</div>
+        <div class="stat-label">总时长（分钟）</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>时长</h2>
+      <div class="chips" id="presets">
+        <button data-min="5">5</button>
+        <button data-min="10">10</button>
+        <button data-min="15">15</button>
+        <button data-min="20">20</button>
+        <button data-min="30">30</button>
+      </div>
+      <div class="custom">
+        <button class="step" id="minus" aria-label="减少一分钟">−</button>
+        <label class="custom-val"><input id="minutes" type="number" inputmode="numeric" min="1" max="180" value="10"> 分钟</label>
+        <button class="step" id="plus" aria-label="增加一分钟">+</button>
+      </div>
+    </section>
+
+    <button id="start" class="primary">开始</button>
+
+    <section class="card settings">
+      <h2>设置</h2>
+      <label class="row">
+        <span>中途钟声</span>
+        <select id="interval">
+          <option value="0">不响</option>
+          <option value="5">每 5 分钟</option>
+          <option value="10">每 10 分钟</option>
+          <option value="15">每 15 分钟</option>
+        </select>
+      </label>
+      <label class="row">
+        <span>开始前准备 10 秒</span>
+        <input type="checkbox" id="prep" class="switch">
+      </label>
+      <label class="row">
+        <span>计时中保持屏幕常亮</span>
+        <input type="checkbox" id="wake" class="switch">
+      </label>
+      <label class="row">
+        <span>钟声音量</span>
+        <input type="range" id="volume" min="0.1" max="1" step="0.05">
+      </label>
+      <div class="row">
+        <span>试听钟声</span>
+        <button id="test" class="ghost small">▶︎ 播放</button>
+      </div>
+      <p class="hint">提示：iPhone 侧面静音键打开时可能没有声音。</p>
+    </section>
+
+    <section class="card">
+      <h2>最近记录</h2>
+      <ul id="log" class="log"></ul>
+      <p id="log-empty" class="hint">还没有记录，今天开始第一次吧。</p>
+      <div class="backup">
+        <button id="export" class="ghost small">导出备份</button>
+        <label class="ghost small file-btn">导入备份<input id="import" type="file" accept="application/json,.json" hidden></label>
+      </div>
+    </section>
+  </main>
+
+  <!-- 计时页 -->
+  <main id="session" class="screen">
+    <div class="phase" id="phase">准备</div>
+    <div class="ring-wrap">
+      <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="ring-bg" cx="100" cy="100" r="90"/>
+        <circle class="ring-fg" id="ring" cx="100" cy="100" r="90"/>
+      </svg>
+      <div class="time" id="time">10</div>
+    </div>
+    <p class="hint center" id="session-hint">坐好，放松肩膀。轻点圆圈可跳过准备。</p>
+    <div class="controls">
+      <button id="pause" class="ghost">暂停</button>
+      <button id="stop" class="ghost">结束</button>
+    </div>
+  </main>
+
+  <!-- 完成页 -->
+  <main id="done" class="screen">
+    <div class="done-mark">◯</div>
+    <h1 id="done-title">完成</h1>
+    <p id="done-detail" class="center"></p>
+    <button id="back" class="primary">回到首页</button>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
