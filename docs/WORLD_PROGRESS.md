@@ -1,5 +1,22 @@
 # 世界美术进度
 
+## 当前制作认领 · A10-SKY-DAY 正午 / 午后天空
+
+根线程在 `codex/3d-world-sky-daylight` 制作后两款纯天空：正午白云蓝天、午后金光。基线 `7ea72216176654ba77fb4f6223d4958d5ee18c67`，同一个草稿 PR 公开认领后完成素材、出处和真实预览；当前制作中，审核轮 0、通过 0、真实图片调用尚未执行，尚无成品 / QA / Claude 裁决。
+
+| 计划 ID | 方向 | 状态 | 轮次 | 目标 |
+| --- | --- | --- | --- | --- |
+| `sky_cloud_noon_cumulus_04` | 正午白云蓝天，清浅蓝与粉暖白云 | 制作中 | 0 | 2048×512 / RGB / sRGB / 横向无缝 |
+| `sky_palace_afternoon_gold_05` | 午后金光，蓝天与柔金白云 | 制作中 | 0 | 2048×512 / RGB / sRGB / 横向无缝 |
+
+同类前三天空由外部 [#116](https://github.com/acaozixu123456/myRepository/pull/116) 制作：黄昏橘粉 / 晚霞赤红云 / 清晨蓝绿雾；本批仅后两款，避免重复。森林三款 [#115](https://github.com/acaozixu123456/myRepository/pull/115) 已提交待审；云岛 [#114](https://github.com/acaozixu123456/myRepository/pull/114) 正在最终 QA 送审，宫阙 [#109](https://github.com/acaozixu123456/myRepository/pull/109) 正式待审、#112 关闭候补。
+
+按最新固定队列，只画天空和云，不含城市、建筑或地面；允许纵向天空渐变。当前引擎天空为三色 ShaderMaterial，没有 AI 贴图 sampler；2048×512 交付为4:1横向条带，独立柱面预览不当作整球经纬天空或已接入游戏。真实原图路径、完整 prompt / 实参 / 时间 / SHA，以及任何实际尺寸转换将随成品记录。
+
+认领前在本批上述基线实际执行 `npm run typecheck && npm test`：退出 0，68 文件 / 1024 测试全部通过，Vitest 06:06:06 UTC 开始、29.93 秒，日志 `/workspace/world-review/sky-daylight/required-checks-claim.log`。不把测试结果称为尚未执行的图片 QA。
+
+以下保留旧批次制作 / 审核历史；当前顺序以最新 CODEX_QUEUE 为准，已通过和队列要求跳过的项目不重做。
+
 以 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md) 为准。先完成 A 类 AI 贴图，再制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
 当前批次：**WORLD-A10 · 裂缝透明贴花首批**，分支 `codex/3d-world-crack-decals`，交付 512² RGBA 十张，第 1 轮待审。A08 [#98](https://github.com/acaozixu123456/myRepository/pull/98) 已通过 / 接入；A09 地砖 [#100](https://github.com/acaozixu123456/myRepository/pull/100) 与 A10 污渍 [#103](https://github.com/acaozixu123456/myRepository/pull/103) 已提交待审，继续推进 A10 裂缝。
