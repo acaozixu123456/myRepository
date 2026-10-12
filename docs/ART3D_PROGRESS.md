@@ -180,10 +180,26 @@
 | `capeLong` | `wei_simamiyi`(SP), `wei_caomiaode`(UR), `qun_lvbuding`(UR) | 底版 | 0 | |
 | `ribbons` | `xian_changmiao`(SP), `wu_sunxiangxiang`(SSR), `qun_diaochan`(SSR) | 底版 | 0 | |
 | `wings` | `shu_pangmiaotong`(SP) | 底版 | 0 | |
-| `cape` | `shu_liumiaobei`(UR), `wei_xiahoudun`(SSR), `shu_guanyunmiao`(SSR) 等6只 | 底版 | 0 | |
-| `gourd` | `xian_zuoci`(UR), `wei_guojia`(SR) + 杂兵×2 | 底版 | 0 | |
-| `furCloak` | `man_mengmiaohuo`(UR), `man_mulu`(SSR), `qun_dongzhuo`(SR) | 底版 | 0 | |
+| `cape` | `shu_liumiaobei`(UR), `wei_xiahoudun`(SSR), `shu_guanyunmiao`(SSR), `shu_zhangmiaofei`(SSR), `shu_machao`(SR), `wu_sunxiaoba`(SSR) + 宠物×3（`pet_meiqiu`, `pet_xueqiu`, `pet_shouhu`） | 待审 | 1 | 12 逻辑 / 24 含描边网格；弧形分摆、折肩、金边与中央尾口；codex/3d-back-fieldgear |
+| `gourd` | `xian_zuoci`(UR), `wei_guojia`(SR) + 杂兵×2（`mob_wei_healer`, `mob_man_healer`） | 待审 | 1 | 10 逻辑 / 20 含描边网格；连体双腹、木塞、束绳、接到腰结的吊带；codex/3d-back-fieldgear |
+| `furCloak` | `man_mengmiaohuo`(UR), `man_mulu`(SSR), `qun_dongzhuo`(SR) | 待审 | 1 | 16 逻辑 / 32 含描边网格；短厚皮肩、大块圆钝毛边与中央尾口；codex/3d-back-fieldgear |
 | `scrollBack` | `xian_zhangzhua`(SSR) + 杂兵×1 | 底版 | 0 | |
+
+### 披挂第 2 批检查
+
+`codex/3d-back-fieldgear` 交付 `cape / gourd / furCloak`，第 1 轮待审，共 16 个真实使用者：11 英雄、2 杂兵、3 宠物，完整 ID 见上表。基线固定 `29f6a8bbe66bbcf4ea1c0119675cac65f8c4e00a`；仅更新三件注册与 `parts/back-fieldgear.ts`。最终注册表 SHA256 为 `50171fc70ea9b9a2d74f544cc86bcdcdbaa068311031d517543606946034f162`，helper 为 `87a4a0b05b51cf180ff64d1a2ba52f62282f128322432832dffa1f712326c3aa`；cat/pose/actor 分别固定 `39b82bcb… / 3abe84b5… / 268bc636…`。236 个 src 文件的独立快照与审核前后源码一致，23 张作者正式图均在最终冻结源下鲜拍，没有沿用旧候选图。
+
+三件逻辑网格 12 / 10 / 16，含描边实际 24 / 20 / 32，分段最大 20；三次构建复用 Toon/描边缓存，根为单位变换、内部尺度为正，无每帧新增代码。披风保留阵营主辅色与滚边，小体型宠物内部收宽；葫芦用一体双腹、木塞和连续吊带连接背扣与腰束；兽皮沿用天然暖棕皮/米色毛边，绑带与扣来自阵营色。参考 11 张英雄 JPG、`ART_PROMPTS.md` 对应设定与刘喵备 full 立绘。
+
+独立 QA 完成 3200 组新旧配对：16×（14 姿势×4 yaw + 3 姿势×12 时刻×4 yaw），静态 896、动画 2304；yaw=0/-32/+32/148，静态 t=.4、动画 t=i×8/11，phase0，dash 使用 moving=true。两眼实际 core 三角 12×12 采样，最少有效点 50，新增眼部 sample ID 为 0；五个实际鼻子/笑嘴或 mouthO/口鼻垫点的名称、世界坐标与口型模式逐组一致。新增 raw `mouthR` 命中 2 个（董桌、孟获 slump/t=.4/yaw148），实际剩余 paw 表面已先遮住该嘴点，未发现新增可见鼻口探针遮挡；不把 raw 数写成 0。
+
+800 个相对姿势/时刻用实际 1120 非退化颅壳面，完整裁剪披挂本体与法线扩张描边的三角形，新旧两版进入颅壳的顶点/完整三角均 0；共同刚性 yaw 不改变交叠关系。披挂自身 FRAME 出框、非有限坐标与新增/加重整猫裁幅均 0。正常整猫保留原有 720 组出框（静态 228、动画 492），其中 headTop 712、关云喵 paw 8，逐组四边幅度与同引擎基线完全相同；不能说所有猫都在取景框内。73 个非目标的全部 attribute/layout/类型与索引 Uint8 字节一致，89 个真实 look/id 均显式构建，16 个目标新旧注册各命中一次，包含全部 12 宠物。
+
+真实十猫战斗为 10/10 cat3d、10/10 本批 BACK 名称命中。煤球、雪球、守护喵分别经真实 `Player.doPet` 出场，新旧各 12 帧，共 72 条记录，均 alpha1、实际 cape 装配 hit1、主演员 10/10 3D；本体与正常扩张描边的四个舞台边缘裁切均 0。旧新 actor/root/cam 轨迹逐帧相同，未人为挪演员或镜头；煤球技能会自然跨场，不声称每帧 x 固定 62。新版最小空隙 27.640210761641413 逻辑 px，统一扣本批最大实测 shake5 后为 22.640210761641413>5。此范围是披挂部件的有限出场窗口，不等于整只宠物/VFX或所有战斗镜头无裁切。
+
+作者在最终 87a4 上实际运行 `npm run typecheck && npm test`，68 文件、1019 测试通过、退出 0；独立 QA 没有冒称另跑这些命令，也未用未逐一传入 heroId/PET 的单测代替真实装配。23 张正式图与对应 raw 尺寸相同、完整 RGBA 差 0，单图均 <500000 B；独立正常 bake 的 11 英雄旧新对照为 530×2948、316654 B，同 raw 字节/RGBA 差 0。QA md/json 均 <500000 B，紧凑 JSON 无损保留全部 3200 样本键、眼/鼻口 ID、mouth mode、精确 margin 与完整物理统计，往返核验通过；完整 raw 留临时目录并记录 SHA。
+
+审核证据：[作者说明与 23 图索引](../src/art3d/parts/reviews/back-fieldgear/README.md)、[三姿势](../src/art3d/parts/reviews/back-fieldgear/poses.png)、[真实十猫](../src/art3d/parts/reviews/back-fieldgear/battle.webp)、[煤球真实宠物技](../src/art3d/parts/reviews/back-fieldgear/pet-battle.webp)、[独立摘要](../src/art3d/parts/reviews/back-fieldgear/qa-summary.md)、[机器报告](../src/art3d/parts/reviews/back-fieldgear/qa-summary.json)、[正常旧新对照](../src/art3d/parts/reviews/back-fieldgear/before-after.png)。有限离散 pose/time/phase、颅壳不含耳/绒毛/口鼻、尾根辅助距离不等于完整摆尾碰撞；葫芦退化 Lathe 封口的最近点诊断仅在 QA 临时夹具补核，来源与方法见机器报告。最不满意：毛边仍读成圆块，190px 下短披风细折与绳结偏弱，-32° 壶身多被躯干遮住，+32°/背视双腹较清楚。
 
 ## 配饰（`src/art3d/parts/extras.ts`）
 
