@@ -5,6 +5,7 @@ import { buildCat3D } from '../art3d/cat3d';
 import { detail } from '../art3d/toon';
 import type { Cat3D } from '../art3d/cat3d';
 import { applyPose } from '../art3d/pose';
+import { PET_BY_ID } from '../data/pets';
 import { lookOf, unitInfo } from '../data/units';
 import type { WorldView } from './engine';
 import type { AABB, Street } from './street';
@@ -291,7 +292,10 @@ export class Explorer {
 
   // ---------- 宠物（跟在队尾，比猫小一圈，走路时一蹦一蹦） ----------
   private pet: Actor | null = null;
+  /** 宠物的鼻子：隐藏宝箱的发现距离（没带宠物 4 米；普通 / 稀有 / 传说宠物 8 / 10 / 13 米） */
+  private sniffR = 4;
   setPet(id: string | null | undefined) {
+    this.sniffR = !id ? 4 : ({ R: 8, SR: 10, SSR: 13 } as Record<string, number>)[PET_BY_ID[id]?.rarity ?? 'R'] ?? 8;
     if (this.pet) { this.root.remove(this.pet.cat.root); this.root.remove(this.pet.shadow); this.pet = null; }
     if (!id) return;
     this.pet = this.mkActor(id, 0.62);
@@ -611,7 +615,7 @@ export class Explorer {
       e.tag.position.y = 3.0 + Math.sin(e.t * 3) * 0.12;
       if (s.hidden && !e.found) {
         // 隐藏宝箱：走到 4 米内，或者「灵视」生效时在 26 米内，就显形（之后一直在）
-        if (dLeader < 4 || (this.revealT > 0 && dLeader < 26)) { e.found = true; e.group.visible = true; this.hooks.note?.('✨ 发现了隐藏宝箱！'); }
+        if (dLeader < this.sniffR || (this.revealT > 0 && dLeader < 26)) { const byPet = this.pet && dLeader >= 4 && !(this.revealT > 0); e.found = true; e.group.visible = true; this.hooks.note?.(byPet ? '🐾 宠物嗅到了宝箱的味道！' : '✨ 发现了隐藏宝箱！'); if (byPet) this.pulse(0xffe27a, 3, 0.6); }
         else { e.group.visible = false; return; }
       }
       if (gp.distanceTo(lp) < 2.4 && e.cooldown <= 0) { e.alive = false; e.group.visible = false; this.hooks.chest(s); }

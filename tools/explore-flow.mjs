@@ -47,6 +47,15 @@ const r = await p.evaluate(async () => {
   out.F = { at: [+L.pos.x.toFixed(1), +L.pos.z.toFixed(1)], toB: Math.hypot(L.pos.x - pb[0], L.pos.z - pb[1]) < 0.5 };
   return out;
 });
+// H: 宠物嗅探（带宠物时隐藏宝箱 8+ 米就显形，不带只有 4 米）
+await p.goto('http://127.0.0.1:5173/world.html?ch=4&t=0', { waitUntil: 'networkidle' });
+await p.waitForFunction(() => window.done, null, { timeout: 90000 });
+r.H = await p.evaluate(() => {
+  const ex = window.ex; ex.grace = 99; const ch = ex.ents.find((x) => x.spawn.id === 'x1'); const at = (d) => { ch.found = false; ch.group.visible = false; for (const a of ex.team) a.pos.set(2 + d, 0.32, 12); ex.update(0.05); return ch.found; };
+  const noPet = { d6: at(6) };
+  ex.setPet('pet_tuanzi'); const withPet = { d6: at(6), d12: at(12) };
+  return { noPet, withPet };
+});
 // G: 场景机关速度（码头潮汐滩约 0.55 倍；云岛风口约 1.5 倍 + 顺风漂移；宫阙滑地松手后继续滑）
 r.G = {};
 for (const ch of [3, 5, 6]) {
