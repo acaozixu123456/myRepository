@@ -5,9 +5,12 @@ import { SKILLS } from '../../data/skills';
 import { ROLES } from '../../data/systems';
 import { EQUIPS, EQUIP_SLOTS } from '../../content/equipment';
 import type { Quality } from '../../content/types';
+import type { HeroState } from '../../game/state';
 import { MAX_STAR, starShards, heroLevelCap, heroPower, heroStats, isInLineup, levelUp, levelUpCost, setAwaken, skillUp, skillUpCost, starUp, equip, unequip } from '../../game/state';
 import { AFF_NAMES, FISH_SNACK, MOON_SNACK, PET_PER_DAY, affLines, affProgress, ensureAff, feedSnack, petHero, petsLeft } from '../../game/affection';
 import { heroGear } from '../../game/gear';
+import { SOUL_MAX, SOUL_PER, soulCost, soulMark, soulOf, soulUp } from '../../game/soul';
+import { infoBtn } from '../../ui/info';
 import { liveImg } from '../../ui/live';
 import { esc, fmt, stars } from '../../ui/components';
 import { ROLE_ICON, icon } from '../../ui/icons';
@@ -100,10 +103,20 @@ export function heroSheetHtml(ctx: AppCtx, id: string): string {
     <div class="panel" style="margin-top:12px"><h3>养成</h3>
       <div class="row" style="margin:6px 0"><div class="grow"><b>升级</b> <span class="muted" style="font-size:12px">Lv.${h.lv} → ${h.lv + 1}</span></div><button class="btn sm" data-act="levelup" ${h.lv >= cap ? 'disabled' : ''}>${h.lv >= cap ? '已到上限' : `<span class="cost">${icon('fish', 16)}${fmt(lc.fish)} ${icon('spark', 16)}${fmt(lc.exp)}</span>`}</button></div>
       <div class="row" style="margin:8px 0"><div class="grow"><b>升星</b> <span class="muted" style="font-size:12px">碎片 ${h.shards}${h.star < MAX_STAR ? ' / ' + need : ''}</span></div><button class="btn sm green" data-act="starup" ${h.star >= MAX_STAR || h.shards < need ? 'disabled' : ''}>${h.star >= MAX_STAR ? '已满星' : '升星'}</button></div>
+      ${soulRow(h)}
       <div class="row" style="margin:8px 0 0"><div class="grow"><b>绝技</b> <span class="muted" style="font-size:12px">Lv.${h.skillLv} / 10</span></div><button class="btn sm blue" data-act="skillup" ${h.skillLv >= 10 ? 'disabled' : ''}>${h.skillLv >= 10 ? '已满级' : `<span class="cost">${icon('fish', 16)}${fmt(sc.fish)} ${icon('catnip', 16)}${sc.catnip}</span>`}</button></div>
     </div>
     <div class="footbar"><button class="btn ${inTeam ? 'ghost' : 'green'} lg" data-act="toggleteam">${inTeam ? '下阵' : '上阵'}</button><button class="btn lg" data-act="levelup" ${h.lv >= cap ? 'disabled' : ''}>升级</button></div>
   </div></div>`;
+}
+
+/** 星魂行：满星后才解锁；显示魂印、当前加成、下一级所需碎片 */
+function soulRow(h: HeroState): string {
+  const d = HERO_BY_ID[h.id], lv = soulOf(h), mk = soulMark(h);
+  const tip = infoBtn(`星魂：★5 满星后，多余的重复碎片可以点亮星魂。\n每级全属性 +${SOUL_PER * 100}%，最高 ${SOUL_MAX} 级（共 +${SOUL_MAX * SOUL_PER * 100}%）；每 5 级一枚魂印。`, '星魂');
+  if (h.star < 5) return `<div class="row" style="margin:8px 0"><div class="grow"><b>✨ 星魂</b>${tip} <span class="muted" style="font-size:12px">★5 满星后解锁</span></div><button class="btn sm ghost" disabled>${icon('lock', 16)}未解锁</button></div>`;
+  const need = lv >= SOUL_MAX ? 0 : soulCost(lv, d.rarity);
+  return `<div class="row" style="margin:8px 0"><div class="grow"><b>✨ 星魂</b>${tip} <span class="muted" style="font-size:12px">Lv.${lv} / ${SOUL_MAX} · 全属性 +${Math.round(lv * SOUL_PER * 100)}% ${mk ? mk.emoji + mk.name : ''}${lv < SOUL_MAX ? ` · 碎片 ${h.shards} / ${need}` : ''}</span></div><button class="btn sm pink" data-act="soulup" ${lv >= SOUL_MAX || h.shards < need ? 'disabled' : ''}>${lv >= SOUL_MAX ? '已满级' : '点亮'}</button></div>`;
 }
 
 export function openHeroSheet(ctx: AppCtx, id: string) {
@@ -125,6 +138,7 @@ export function handleDetail(ctx: AppCtx, act: string, el: HTMLElement): boolean
   switch (act) {
     case 'levelup': r = levelUp(ctx.s, id); break;
     case 'skillup': r = skillUp(ctx.s, id); break;
+    case 'soulup': r = soulUp(ctx.s.heroes[id], HERO_BY_ID[id].rarity); if (r.ok) ctx.toast('星魂点亮！全属性提升'); break;
     case 'starup': r = starUp(ctx.s, id); if (r.ok) ctx.toast('升星成功！等级上限提高'); break;
     case 'awaken': r = setAwaken(ctx.s, id, el.dataset.b as 'A' | 'B'); if (r.ok) ctx.toast('已切换觉醒路线'); break;
     case 'pet': { const x = petHero(ctx.s, id); r = x.ok ? { ok: true } : x; if (x.ok) { ctx.toast(`呼噜呼噜～ 好感 +${x.gain}${x.leveled ? '，好感升级了！' : ''}`); sfx.ok(); } break; }
@@ -134,7 +148,7 @@ export function handleDetail(ctx: AppCtx, act: string, el: HTMLElement): boolean
     default: return false;
   }
   if (r && !r.ok) { ctx.toast((r as { reason: string }).reason); sfx.no(); }
-  else if (r && (act === 'levelup' || act === 'skillup' || act === 'starup')) sfx.up();
+  else if (r && (act === 'levelup' || act === 'skillup' || act === 'starup' || act === 'soulup')) sfx.up();
   ctx.save();
   const scroll = (ctx.root.querySelector('.sheet.detail') as HTMLElement).scrollTop;
   openHeroSheet(ctx, id);

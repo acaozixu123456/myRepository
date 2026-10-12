@@ -15,6 +15,7 @@ import { createShopState, normalizeShopState } from './shop';
 import type { ShopState } from './shop';
 import type { PayState } from './premium';
 import { affMul } from './affection';
+import { soulMul } from './soul';
 import type { AffState } from './affection';
 import type { EventState } from './events';
 import type { GuildBossState } from './guildboss';
@@ -35,6 +36,7 @@ export interface HeroState {
   skillLv: number; // 绝技等级 1~10
   awaken?: 'A' | 'B';
   aff?: AffState; // 好感度（撸毛 / 点心）
+  soul?: number; // 星魂等级 0~20：满星后的重复碎片点亮（见 game/soul.ts）
 }
 
 export interface Resources {
@@ -165,7 +167,7 @@ export const starMul = (star: number) => 1 + (star - 1) * 0.08;
 export function heroStats(h: HeroState, gear?: StatBlock) {
   const def = HERO_BY_ID[h.id];
   const b = baseStats(def.role, def.rarity);
-  const m = levelMul(h.lv) * starMul(h.star) * affMul(h);
+  const m = levelMul(h.lv) * starMul(h.star) * affMul(h) * soulMul(h);
   return { hp: Math.round(b.hp * m) + Math.round(gear?.hp ?? 0), atk: Math.round(b.atk * m) + Math.round(gear?.atk ?? 0), def: Math.round(b.def * m) + Math.round(gear?.def ?? 0), spd: b.spd + Math.round(gear?.spd ?? 0) };
 }
 export function heroPower(h: HeroState, gear?: StatBlock): number {
