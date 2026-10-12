@@ -80,12 +80,12 @@
 | `featherHeaddress` | `man_zhurong`(SSR), `man_mulu`(SSR) + 杂兵×1（`mob_man_strategist`） | 通过 | 1 | #95 已合并；24 网格；codex/3d-headgear-crests |
 | `yellowBand` | `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR) + 杂兵×1（`mob_xian_strategist`） | 通过 | 1 | #95 已合并；9 网格；codex/3d-headgear-crests |
 | `tigerHood` | `wei_xuhuchi`(SSR) | 通过 | 1 | #95 已合并；16 网格；codex/3d-headgear-crests |
-| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6（`mob_wei_healer`, `mob_shu_guard`, `mob_shu_healer`, `mob_wu_archer`, `mob_qun_vanguard`, `mob_qun_healer`） | 待审 | 1 | 15 网格；codex/3d-headgear-fieldwear |
-| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1（`mob_xian_archer`） | 待审 | 1 | 8 网格；codex/3d-headgear-fieldwear |
-| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1（`mob_man_guard`） | 待审 | 1 | 18 网格；codex/3d-headgear-fieldwear |
-| `leafHat` | 杂兵×5（`mob_shu_archer`, `mob_wu_healer`, `mob_man_archer`, `mob_man_healer`, `mob_man_assassin`） | 待审 | 1 | 14 网格；codex/3d-headgear-fieldwear |
-| `hood` | 杂兵×3（`mob_wei_assassin`, `mob_wu_assassin`, `mob_qun_assassin`） | 待审 | 1 | 10 网格；codex/3d-headgear-fieldwear |
-| `ratCap` | 杂兵×1（`mob_wu_guard`） | 待审 | 1 | 13 网格；codex/3d-headgear-fieldwear |
+| `sailorBandana` | `wu_ganning`(SR) + 杂兵×6（`mob_wei_healer`, `mob_shu_guard`, `mob_shu_healer`, `mob_wu_archer`, `mob_qun_vanguard`, `mob_qun_healer`） | 通过 | 1 | 15 网格；codex/3d-headgear-fieldwear |
+| `fortuneHat` | `xian_guanlu`(SR) + 杂兵×1（`mob_xian_archer`） | 通过 | 1 | 8 网格；codex/3d-headgear-fieldwear |
+| `rattanHelm` | `man_wutugu`(SR) + 杂兵×1（`mob_man_guard`） | 通过 | 1 | 18 网格；codex/3d-headgear-fieldwear |
+| `leafHat` | 杂兵×5（`mob_shu_archer`, `mob_wu_healer`, `mob_man_archer`, `mob_man_healer`, `mob_man_assassin`） | 通过 | 1 | 14 网格；codex/3d-headgear-fieldwear |
+| `hood` | 杂兵×3（`mob_wei_assassin`, `mob_wu_assassin`, `mob_qun_assassin`） | 通过 | 1 | 10 网格；codex/3d-headgear-fieldwear |
+| `ratCap` | 杂兵×1（`mob_wu_guard`） | 通过 | 1 | 13 网格；codex/3d-headgear-fieldwear |
 
 ### 头饰审核记录
 
