@@ -1,0 +1,79 @@
+{
+  "preparedAtUTC": "2026-10-12T04:45:16.167812+00:00",
+  "scope": "Palace-only3variants. QA-only scratch writes, no imagegen/art edits/production/PR/progress.",
+  "var1Reference": {
+    "archivedPriorSource": {
+      "id": "ground_palace_white_marble_03",
+      "candidate": 1,
+      "originalPath": "/workspace/world-review/theme-ground/raw/ground_palace_white_marble_03-candidate-01.png",
+      "originalSHA256": "c887452c1ddf3af0140a9d8033845922e61a5da9fb2fbfee7d8afbc89cdf755b",
+      "originalMatchesSelection": true,
+      "nativeSize": [
+        1254,
+        1254
+      ],
+      "nativeMode": "RGB",
+      "nativeBytes": 2330025,
+      "nativeDimensionsMatch": true,
+      "nativeBytesMatch": true,
+      "halfOpenLTRB": null,
+      "periodSize": [
+        1254,
+        1254
+      ],
+      "periodDimensionsMatch": true,
+      "scaleXY": [
+        0.8165869218500797,
+        0.8165869218500797
+      ],
+      "relativeVerticalStretchPercent": 0.0,
+      "anyUpsampling": false,
+      "finalPath": "/workspace/world-review/theme-ground/exports/final/ground_palace_white_marble_03.webp",
+      "snapshot": "/workspace/world-review/theme-ground/independent-qa/final-encoded-snapshot/ground_palace_white_marble_03.webp",
+      "finalSHA256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "finalMatchesSelection": true,
+      "finalBytes": 124046,
+      "finalBytesMatch": true,
+      "finalSize": [
+        1024,
+        1024
+      ],
+      "finalMode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "budgetUnder500000": true,
+      "ICCBytes": 588,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCEqualsFrozenProfile": true,
+      "ICCDescription": "sRGB built-in",
+      "reexportByteIdentical": true,
+      "reexportSHA256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "encodedDecodedRGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+      "resize": "Lanczos",
+      "webpQuality": 90,
+      "webpMethod": 6,
+      "RGBEqualsEarlierVerifiedCandidateExport": true
+    },
+    "requiredDecodedRGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+    "oldIndependentQAComplete": true,
+    "oldSubmitted": false,
+    "oldClaudeDecision": null,
+    "priorSummaryMD": "/workspace/world-review/theme-ground/independent-qa/qa-summary.md",
+    "priorSummaryMDSHA256": "bda4a1f2506713423c7f855c94e7ce014fdd4a1260ce60d8cfc0dab3a624f803",
+    "priorSummaryJSON": "/workspace/world-review/theme-ground/independent-qa/qa-summary.json",
+    "priorSummaryJSONSHA256": "f47e085bbcf3329c75a1e649a38532fc275d17d73f5c8dc5a71a3a130c958fd0",
+    "reuseMethod": "When root selects actualnewvar1 file, check decodedRGB identity and requested finalformat/hash/budget. IfRGB identical, cite prior fullnative/2x2/4x4/LR/TB/corners/light visual checks; do notrerun allfinite checks. New3palace preview separately maps actualselected sources."
+  },
+  "newVariantsMethod": {
+    "state": "awaiting root genuine generationpaths and selectedexports",
+    "rawInspection": "Viewraw beforeQA; compare intendedlayout toactualcourse count/material seams andedgephase. Veinsmaynaturallystopatphysicalslabjoints.",
+    "periodInspection": "Trueunchanged source2x2/4x4, native1:1LR/TB/fourcorners; checkcollectivebrightness/structuralphase. Ifneededonlyauthorizedglobalrectcropin scratch, no handpainting orseamblend.",
+    "metadata": "Actualnative/resolution/crop/scales/upsampling,1024squareopaqueRGBsRGBICC,sha/bytes/budget,fullrequest-completedargs andsource/reference files.",
+    "export": "Exactoriginalselectedrectangle+Lanczos/q/method+frozenICC independentbyte reproduce onlynewexports.",
+    "lighting": "Actuallyviewnewthreepalace1/2/3 material sample, sourcesfrozenSHAs, accuratewhite/themeparametercontrols. FinalvisualQA isinternalreadiness, notClaudeapproval."
+  },
+  "oldThemeScratchEditsAfterFreeze": 0,
+  "notNewHardRules": "Layout and style are root brief/prompt intent. QAplan doesnot impose extra artworkrequirements orzero-MAEedgecriterion."
+}

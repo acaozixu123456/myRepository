@@ -83,7 +83,7 @@ export function forestLevel(): LevelDef {
     lights: [[0, 6, 20, 0x4fe08a, 70, 24], [MUSH_RING[0], 4, MUSH_RING[1], 0xff7ad9, 60, 20], [RUINS[0], 4, RUINS[1], 0x7ff0ff, 60, 20], [BOSS[0], 5, BOSS[1] + 3, 0xb0ff6a, 70, 22]],
     solids: forestSolids(), trees: forestTrees(), mushrooms: forestMushrooms(),
     enemySpots: ENEMIES, chestSpots: CHESTS, herbSpots: HERBS,
-    pois: [{ id: 'mushroom', game: 'mushroom', x: MUSH_RING[0], z: MUSH_RING[1], label: '蘑菇地' }],
+    pois: [{ id: 'mushroom', game: 'mushroom', x: MUSH_RING[0], z: MUSH_RING[1], label: '蘑菇地' }, { id: 'firefly', game: 'firefly', x: RUINS[0], z: RUINS[1] + 1.5, label: '遗迹 · 萤火虫记忆' }],
     bossSpot: BOSS, npcSpot: NPC, spawn: SPAWN,
   };
 }

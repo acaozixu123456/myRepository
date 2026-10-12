@@ -1,0 +1,35 @@
+{
+  "method": "compare actual Chromium+SwiftShader MeshBasicMaterial SRGBColorSpace NoToneMapping toneMapped=false 2048x512 OrthographicCamera plane against final WebP decoded RGB; whole RGB array, no tolerance",
+  "captures": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "browserProbePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_cloud_noon_cumulus_04-basic-srgb-flat-1to1.png",
+      "browserProbeSHA256": "fb7131deb601066114868673f33f4f877e8656395900103818e2077f9df93347",
+      "sourcePath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "sourceFileSHA256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "sourceDecodedRGBSHA256": "f6a9dd3733832031864a726870a00c56307da4994f04e0026a90e16cf8099b0e",
+      "pixelCount": 1048576,
+      "channels": 3,
+      "maxAbsoluteChannelDifference": 0,
+      "meanAbsoluteDifference": 0.0,
+      "nonexactPixels": 0,
+      "RGBExactlyEqual": true
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "browserProbePath": "/workspace/world-review/sky-daylight/candidate02/preview-final/sky_palace_afternoon_gold_05-basic-srgb-flat-1to1.png",
+      "browserProbeSHA256": "370e98d9cd556f254870ec6780d0adec32a567e43e1041decd3d5cb8158c2996",
+      "sourcePath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "sourceFileSHA256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "sourceDecodedRGBSHA256": "4b732cdbc3c8202f54b4094b2088719b56188e0c26100a376a727243b1867eec",
+      "pixelCount": 1048576,
+      "channels": 3,
+      "maxAbsoluteChannelDifference": 0,
+      "meanAbsoluteDifference": 0.0,
+      "nonexactPixels": 0,
+      "RGBExactlyEqual": true
+    }
+  ],
+  "totalPixelsVerified": 2097152,
+  "allExact": true
+}

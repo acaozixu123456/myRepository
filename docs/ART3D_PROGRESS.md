@@ -400,4 +400,4 @@ src/art3d/parts/hero-ur-weapons.ts
 证据：[作者说明与11图](../src/art3d/parts/reviews/back-scroll-banner/README.md)、[真实190px](../src/art3d/parts/reviews/back-scroll-banner/real-32.png)、[背视](../src/art3d/parts/reviews/back-scroll-banner/real-148.png)、[合成旗正面](../src/art3d/parts/reviews/back-scroll-banner/synthetic-0.png)、[合成旗背面](../src/art3d/parts/reviews/back-scroll-banner/synthetic-148.png)、[真实十猫](../src/art3d/parts/reviews/back-scroll-banner/battle.webp)、[独立摘要](../src/art3d/parts/reviews/back-scroll-banner/qa-summary.md)、[5200+48完整机器记录](../src/art3d/parts/reviews/back-scroll-banner/qa-summary.json)、[真实旧新对照](../src/art3d/parts/reviews/back-scroll-banner/before-after.png)。有限采样不证明所有连续时刻、未来骨架或所有最终可见像素。
 
 
-提交前仅同步主线 `bb73f1f` 的最新进度文档，保留已批准及其它作者记录。正式图与独立 QA 仍明确固定60bc源快照；本批注册表/helper和审图字节未变，未把最新主线新增SP专属或新小游戏的检查结果冒写为本批既有证据。
+提交前同步主线 `bb73f1f` 并保留双方进度记录，解决的冲突仅在本进度文档。本批注册表/helper、cat/pose/renderer/actor与正式图字节未变；旧独立 QA 与拍摄记录仍明确固定60bc源快照。新增小游戏和SP专属来自主线，不计为本批改动；合并后原生检查与89用户复核另按实际日志记录。

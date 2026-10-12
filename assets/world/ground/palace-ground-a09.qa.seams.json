@@ -1,0 +1,249 @@
+{
+  "method": "Unchanged source copies in repeats; LR/TB/corners native-size crops, seam at x64/y64 or x128/y128. Repeat overview uniformly downsampled only for display. No seam painting, warping, blending, or recolor.",
+  "pillow": "12.3.0",
+  "libwebp": "1.6.0",
+  "cases": {
+    "cloud-raw": {
+      "path": "/workspace/world-review/palace-ground/raw/ground_palace_cloud_marble_04-candidate-01.png",
+      "sha256": "e3dd8d6feba259293f11ebb15d9ba76249f5f4600fc66474ca95568c3b4ce009",
+      "bytes": 2142481,
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "iccBytes": 0,
+      "derived": {
+        "repeat2": "/workspace/world-review/palace-ground/independent-qa/cloud-raw-repeat2.png",
+        "repeat4": "/workspace/world-review/palace-ground/independent-qa/cloud-raw-repeat4.png",
+        "LR-native": "/workspace/world-review/palace-ground/independent-qa/cloud-raw-LR-native.png",
+        "TB-native": "/workspace/world-review/palace-ground/independent-qa/cloud-raw-TB-native.png",
+        "corners-native": "/workspace/world-review/palace-ground/independent-qa/cloud-raw-corners-native.png",
+        "center-horizontal-native": "/workspace/world-review/palace-ground/independent-qa/cloud-raw-center-horizontal-native.png",
+        "center-vertical-native": "/workspace/world-review/palace-ground/independent-qa/cloud-raw-center-vertical-native.png"
+      },
+      "seams": {
+        "LR": {
+          "meanAbsRGB": 11.850877192982455,
+          "p95AbsRGB": 29.0,
+          "maxAbsRGB": 48.0
+        },
+        "TB": {
+          "meanAbsRGB": 67.92822966507177,
+          "p95AbsRGB": 88.0,
+          "maxAbsRGB": 113.0
+        },
+        "internalAdjacentXMean": 2.7345749255481686,
+        "internalAdjacentYMean": 2.7049721815967036
+      },
+      "quadrantsMeanRGB": [
+        [
+          235.78449821814215,
+          231.10240658918573,
+          222.99608525445845
+        ],
+        [
+          235.3108038328386,
+          230.65180894820784,
+          222.72778655352315
+        ],
+        [
+          236.2142146725375,
+          231.62386900991785,
+          223.63697921038641
+        ],
+        [
+          236.08985854515947,
+          231.42556260158878,
+          223.4339924045288
+        ]
+      ]
+    },
+    "cloud-final": {
+      "path": "/workspace/world-review/palace-ground/exports/ground_palace_cloud_marble_04.webp",
+      "sha256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "bytes": 107562,
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "iccBytes": 588,
+      "derived": {
+        "repeat2": "/workspace/world-review/palace-ground/independent-qa/cloud-final-repeat2.png",
+        "repeat4": "/workspace/world-review/palace-ground/independent-qa/cloud-final-repeat4.png",
+        "LR-native": "/workspace/world-review/palace-ground/independent-qa/cloud-final-LR-native.png",
+        "TB-native": "/workspace/world-review/palace-ground/independent-qa/cloud-final-TB-native.png",
+        "corners-native": "/workspace/world-review/palace-ground/independent-qa/cloud-final-corners-native.png",
+        "center-horizontal-native": "/workspace/world-review/palace-ground/independent-qa/cloud-final-center-horizontal-native.png",
+        "center-vertical-native": "/workspace/world-review/palace-ground/independent-qa/cloud-final-center-vertical-native.png"
+      },
+      "iccDescription": "sRGB built-in",
+      "seams": {
+        "LR": {
+          "meanAbsRGB": 13.0185546875,
+          "p95AbsRGB": 33.0,
+          "maxAbsRGB": 61.0
+        },
+        "TB": {
+          "meanAbsRGB": 63.209309895833336,
+          "p95AbsRGB": 79.0,
+          "maxAbsRGB": 98.0
+        },
+        "internalAdjacentXMean": 2.509427376079342,
+        "internalAdjacentYMean": 2.511705703710492
+      },
+      "quadrantsMeanRGB": [
+        [
+          235.5826873779297,
+          231.36014938354492,
+          223.1491928100586
+        ],
+        [
+          235.07211303710938,
+          230.91623306274414,
+          222.8615951538086
+        ],
+        [
+          235.9947052001953,
+          231.87025833129883,
+          223.75927352905273
+        ],
+        [
+          235.8563346862793,
+          231.6781883239746,
+          223.57949829101562
+        ]
+      ]
+    },
+    "gold-raw": {
+      "path": "/workspace/world-review/palace-ground/raw/ground_palace_gold_thread_05-candidate-01.png",
+      "sha256": "d6d57b6cc4f9640885cc8fce4e1badd1848b2b3bfc734b8273e974f5ec7363ca",
+      "bytes": 2150598,
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "iccBytes": 0,
+      "derived": {
+        "repeat2": "/workspace/world-review/palace-ground/independent-qa/gold-raw-repeat2.png",
+        "repeat4": "/workspace/world-review/palace-ground/independent-qa/gold-raw-repeat4.png",
+        "LR-native": "/workspace/world-review/palace-ground/independent-qa/gold-raw-LR-native.png",
+        "TB-native": "/workspace/world-review/palace-ground/independent-qa/gold-raw-TB-native.png",
+        "corners-native": "/workspace/world-review/palace-ground/independent-qa/gold-raw-corners-native.png",
+        "center-horizontal-native": "/workspace/world-review/palace-ground/independent-qa/gold-raw-center-horizontal-native.png",
+        "center-vertical-native": "/workspace/world-review/palace-ground/independent-qa/gold-raw-center-vertical-native.png"
+      },
+      "seams": {
+        "LR": {
+          "meanAbsRGB": 52.46836788942052,
+          "p95AbsRGB": 93.0,
+          "maxAbsRGB": 124.0
+        },
+        "TB": {
+          "meanAbsRGB": 79.11961722488039,
+          "p95AbsRGB": 101.0,
+          "maxAbsRGB": 119.0
+        },
+        "internalAdjacentXMean": 2.7071929018415344,
+        "internalAdjacentYMean": 2.650431733642554
+      },
+      "quadrantsMeanRGB": [
+        [
+          236.95536070857148,
+          228.13109182990826,
+          216.15631764637052
+        ],
+        [
+          236.93940157047686,
+          228.0926388030392,
+          216.1718647059871
+        ],
+        [
+          237.059848039702,
+          228.29384756657484,
+          216.42654446759207
+        ],
+        [
+          237.02117116773374,
+          228.27029295727357,
+          216.49168847884536
+        ]
+      ]
+    },
+    "gold-final": {
+      "path": "/workspace/world-review/palace-ground/exports/ground_palace_gold_thread_05.webp",
+      "sha256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "bytes": 106010,
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "iccBytes": 588,
+      "derived": {
+        "repeat2": "/workspace/world-review/palace-ground/independent-qa/gold-final-repeat2.png",
+        "repeat4": "/workspace/world-review/palace-ground/independent-qa/gold-final-repeat4.png",
+        "LR-native": "/workspace/world-review/palace-ground/independent-qa/gold-final-LR-native.png",
+        "TB-native": "/workspace/world-review/palace-ground/independent-qa/gold-final-TB-native.png",
+        "corners-native": "/workspace/world-review/palace-ground/independent-qa/gold-final-corners-native.png",
+        "center-horizontal-native": "/workspace/world-review/palace-ground/independent-qa/gold-final-center-horizontal-native.png",
+        "center-vertical-native": "/workspace/world-review/palace-ground/independent-qa/gold-final-center-vertical-native.png"
+      },
+      "iccDescription": "sRGB built-in",
+      "seams": {
+        "LR": {
+          "meanAbsRGB": 52.711588541666664,
+          "p95AbsRGB": 91.0,
+          "maxAbsRGB": 117.0
+        },
+        "TB": {
+          "meanAbsRGB": 74.06640625,
+          "p95AbsRGB": 93.0,
+          "maxAbsRGB": 107.0
+        },
+        "internalAdjacentXMean": 2.4468239603698274,
+        "internalAdjacentYMean": 2.4219570961632453
+      },
+      "quadrantsMeanRGB": [
+        [
+          236.6125946044922,
+          228.4874496459961,
+          216.39422607421875
+        ],
+        [
+          236.58147430419922,
+          228.46035766601562,
+          216.3682632446289
+        ],
+        [
+          236.6880874633789,
+          228.67194366455078,
+          216.6265640258789
+        ],
+        [
+          236.64325332641602,
+          228.63769149780273,
+          216.69540786743164
+        ]
+      ]
+    }
+  }
+}

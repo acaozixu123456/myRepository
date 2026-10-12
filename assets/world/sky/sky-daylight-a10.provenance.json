@@ -1,0 +1,224 @@
+{
+  "batch": "A10-SKY-DAY",
+  "pr": 117,
+  "review_round": 1,
+  "genuine_call_count": 3,
+  "calls": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Paint ONE production sky-only panorama texture for a bright charming stylized Three.js cat fantasy adventure game. Ultra-wide horizontal 4:1 canvas: requested 2048 pixels wide by 512 pixels high, highest available native resolution, width exactly four times height. The entire canvas is sky and clouds, no margins, frames, panels, contact sheet or labels. The horizontal panorama represents a continuous sky band all around the viewer: the left and right edges must connect naturally in cloud shapes, color and brightness when wrapped, or repeated 2x1 and 4x1. Uniform treatment horizontally, no broad left-to-right exposure gradient, no large spotlight or isolated hero focal cloud. A gentle vertical high-sky to low-sky color gradient is intentional; top and bottom do NOT need to match. Clean soft painted fantasy game art, beautiful airy layered clouds with rounded clear shapes and restrained fine detail, bright and fresh, enough calm open sky, neither photorealistic nor flat vector symbols. No ground, water, sea, mountains, forest or tree silhouette, horizon land line, buildings, palace, skyline, city, ships, islands, rainbow, birds, creatures, people, cat faces, text, logo, UI or watermark. No sun disk, moon, stars or hard light rays; the game already draws its own sun. No black or transparent area, no vignette. One continuous sky image at the widest native 4:1 aspect ratio. NOON CUMULUS variant for the sunny cloud island: clear fresh cornflower-blue high sky around #5A9AE8, softly fading through #A8D0FF to a very light warm-pinkish ivory haze near the bottom around #FFF4EC. Loose fluffy white cumulus clouds, soft cream lit crowns and very restrained cool lavender-gray lower interiors. Moderate cloud amount with generous open blue sky, clouds mainly in the middle/lower band, small airy wisps in the upper band. Sunny peaceful noon, rounded clouds with clean edges blending gently into sky, absolutely no floating islands or near-ground cloud platform.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 06:09:36 UTC",
+      "completed_at_utc": "2026-10-12 06:10:19 UTC",
+      "original_path": "/workspace/generated_images/exec-bfea3c71-64d7-4602-b024-49a6b16fa9be.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-bfea3c71-64d7-4602-b024-49a6b16fa9be.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source_kind": "genuine native image generation output",
+      "review_round": 1,
+      "candidate": 1,
+      "original_sha256": "3b281de6015b2902e3b81f7c04d53ab8a2935b82087274cecebbb969603a85b2",
+      "original_bytes": 1609742,
+      "original_dimensions": [
+        2172,
+        724
+      ],
+      "original_mode": "RGB",
+      "original_icc_bytes": 0,
+      "archived_copy_path": "/workspace/world-review/sky-daylight/raw/sky_cloud_noon_cumulus_04-candidate-01.png",
+      "archived_copy_sha256": "3b281de6015b2902e3b81f7c04d53ab8a2935b82087274cecebbb969603a85b2",
+      "final_path": "/workspace/world-review/sky-daylight/exports/sky_cloud_noon_cumulus_04.webp",
+      "final_sha256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "final_bytes": 83500,
+      "final_dimensions": [
+        2048,
+        512
+      ],
+      "export": {
+        "crop_box_xyxy": [
+          0,
+          90,
+          2172,
+          633
+        ],
+        "crop_dimensions": [
+          2172,
+          543
+        ],
+        "removed_rows_top": 90,
+        "removed_rows_bottom": 91,
+        "removed_left_or_right_columns": 0,
+        "requested_aspect_ratio": "4:1",
+        "actual_native_aspect_ratio": "3:1",
+        "final_aspect_ratio": "4:1",
+        "resize": "Pillow Lanczos full-width centered crop2172x543 ->2048x512",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "srgb_icc_path": "/workspace/world-review/sky-daylight/frozen-srgb.icc",
+        "color_transform": false,
+        "color_edit": false,
+        "artistic_repaint": false,
+        "seam_blending": false,
+        "upsample": false,
+        "aspect_stretch": false
+      }
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Paint ONE production sky-only panorama texture for a bright charming stylized Three.js cat fantasy adventure game. Ultra-wide horizontal 4:1 canvas: requested 2048 pixels wide by 512 pixels high, highest available native resolution, width exactly four times height. The entire canvas is sky and clouds, no margins, frames, panels, contact sheet or labels. The horizontal panorama represents a continuous sky band all around the viewer: the left and right edges must connect naturally in cloud shapes, color and brightness when wrapped, or repeated 2x1 and 4x1. Uniform treatment horizontally, no broad left-to-right exposure gradient, no large spotlight or isolated hero focal cloud. A gentle vertical high-sky to low-sky color gradient is intentional; top and bottom do NOT need to match. Clean soft painted fantasy game art, beautiful airy layered clouds with rounded clear shapes and restrained fine detail, bright and fresh, enough calm open sky, neither photorealistic nor flat vector symbols. No ground, water, sea, mountains, forest or tree silhouette, horizon land line, buildings, palace, skyline, city, ships, islands, rainbow, birds, creatures, people, cat faces, text, logo, UI or watermark. No sun disk, moon, stars or hard light rays; the game already draws its own sun. No black or transparent area, no vignette. One continuous sky image at the widest native 4:1 aspect ratio. AFTERNOON GOLD variant for the imperial palace region: clear medium blue high sky around #3A86D8, light airy blue middle sky around #8CC8F0, fading to warm champagne-ivory and pale apricot golden haze near the bottom around #FFECD0. Soft layered white clouds with delicate pale-gold sunlit edges, gentle blue-lavender undersides; only small warm rose accents. Bright calm afternoon golden hour, understated warm-gold lower cloud band, still a distinctly BLUE open upper sky, never an entirely yellow or orange image, not a fiery red sunset, no gilded ornamental patterns. Keep the gold soft and cloudlike without shiny metallic highlights.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 06:09:36 UTC",
+      "completed_at_utc": "2026-10-12 06:10:19 UTC",
+      "original_path": "/workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source_kind": "genuine native image generation output",
+      "review_round": 1,
+      "candidate": 1,
+      "original_sha256": "9bfa4708ef5e7d8db3d04ab6720dab912ef8523e714336344af0da4211634de1",
+      "original_bytes": 1751067,
+      "original_dimensions": [
+        2172,
+        724
+      ],
+      "original_mode": "RGB",
+      "original_icc_bytes": 0,
+      "archived_copy_path": "/workspace/world-review/sky-daylight/raw/sky_palace_afternoon_gold_05-candidate-01.png",
+      "archived_copy_sha256": "9bfa4708ef5e7d8db3d04ab6720dab912ef8523e714336344af0da4211634de1",
+      "final_path": "/workspace/world-review/sky-daylight/exports/sky_palace_afternoon_gold_05.webp",
+      "final_sha256": "3b5b445c1035680cbda0c66e25ab4778c87ad196f021aaa0d291c18e5260f38c",
+      "final_bytes": 113226,
+      "final_dimensions": [
+        2048,
+        512
+      ],
+      "export": {
+        "crop_box_xyxy": [
+          0,
+          90,
+          2172,
+          633
+        ],
+        "crop_dimensions": [
+          2172,
+          543
+        ],
+        "removed_rows_top": 90,
+        "removed_rows_bottom": 91,
+        "removed_left_or_right_columns": 0,
+        "requested_aspect_ratio": "4:1",
+        "actual_native_aspect_ratio": "3:1",
+        "final_aspect_ratio": "4:1",
+        "resize": "Pillow Lanczos full-width centered crop2172x543 ->2048x512",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "srgb_icc_path": "/workspace/world-review/sky-daylight/frozen-srgb.icc",
+        "color_transform": false,
+        "color_edit": false,
+        "artistic_repaint": false,
+        "seam_blending": false,
+        "upsample": false,
+        "aspect_stretch": false
+      }
+    },
+    {
+      "pr": 117,
+      "id": "sky_palace_afternoon_gold_05",
+      "review_round": 1,
+      "candidate": 2,
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Edit the supplied ultra-wide afternoon sky panorama. Preserve the same soft fantasy game painting style, blue upper sky, champagne-gold lower clouds, lavender cloud undersides, overall cloud sizes, composition and brightness. This reference is the ORIGINAL SKY shifted horizontally by exactly half a width so that its old left-right wrap junction is now the vertical center of this image. The only repair target is the abrupt local cloud-shape and cream-light / lavender-shadow discontinuity on that CENTER join: especially the cumulus crown and shading where the two halves meet. Repaint a narrow central region into one naturally continuous rounded cloud with coherent cream highlights and softly connected lavender shadows across the center; no straight vertical cut, stripe, blurry blend, smudged stripe, repeated cloned puff or empty blue gap hiding it. Keep the rest of the cloudfield and colors as close as possible, do not redesign the panorama, add new clouds globally, recolor the scene or change its lighting. Also preserve the natural sky continuity at the outer left-right edges of this shifted reference; they are adjacent pieces of the original image's middle. No objects, ground, horizon land, buildings, sun/moon disks, text, borders or watermark. Keep the native 3:1 panoramic aspect of the reference (2172x724 requested, highest native resolution). One opaque sky image filling the whole canvas. The result will be shifted back and cropped to a 4:1 horizontal sky band for a cylindrical wrap, so both the center repair and the unchanged outer-edge continuity must be smooth.",
+        "referenced_image_paths": [
+          "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.png"
+        ],
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 06:30:21 UTC",
+      "completed_at_utc": "2026-10-12 06:30:56 UTC",
+      "original_path": "/workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "reference_manifest": "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.json",
+      "source_kind": "genuine imagegen edit of halfwrap reference; output native shifted phase",
+      "original_sha256": "129fee9d5daa804e4e6f08bc652df0cc8b2851f72c3ae14704c0d806c1b256b1",
+      "original_dimensions": [
+        2172,
+        724
+      ],
+      "original_mode": "RGB",
+      "original_bytes": 1771323,
+      "archived_copy_path": "/workspace/world-review/sky-daylight/raw/sky_palace_afternoon_gold_05-candidate-02-shifted.png",
+      "archived_copy_sha256": "129fee9d5daa804e4e6f08bc652df0cc8b2851f72c3ae14704c0d806c1b256b1",
+      "reference_path": "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.png",
+      "reference_sha256": "db79bd595dbf63235cca9e3fbe936e3ee163715da9e00ea7f8313d036164bc87",
+      "reference_original_path": "/workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png",
+      "reference_original_sha256": "9bfa4708ef5e7d8db3d04ab6720dab912ef8523e714336344af0da4211634de1",
+      "reference_transform": "Exact horizontal cyclic roll by-1086 columns. No resizing, color change, blending or painting. Original left/right join now at x1086. Raw reference only, never a finished texture.",
+      "technical_unshifted_full_path": "/workspace/world-review/sky-daylight/candidate02/sky_palace_afternoon_gold_05-candidate-02-unshifted-full.png",
+      "technical_unshifted_full_sha256": "fdebf04b5edd6154edd362f4a9f6ef6b599b7d55d4a23215d9fb4b753a8caad9",
+      "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "final_sha256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "final_bytes": 120818,
+      "final_dimensions": [
+        2048,
+        512
+      ],
+      "export": {
+        "inverse_horizontal_roll_columns": 1086,
+        "native_phase": "halfwrap shifted input/output; rolled back to original phase for final",
+        "crop_box_xyxy": [
+          0,
+          90,
+          2172,
+          633
+        ],
+        "crop_dimensions": [
+          2172,
+          543
+        ],
+        "resize": "Pillow Lanczos2172x543->2048x512",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "srgb_icc_path": "/workspace/world-review/sky-daylight/candidate02/frozen-srgb.icc",
+        "artistic_repaint_in_code": false,
+        "color_edit_in_code": false,
+        "seam_blending_in_code": false,
+        "upsample": false,
+        "aspect_stretch": false
+      }
+    }
+  ],
+  "phase": "Candidate02 genuine targeted AI repair; C1 fully retained; final independent QA pending",
+  "export_completed_at_utc": "2026-10-12T06:32:19.274968+00:00",
+  "originals_committed": false,
+  "crop_policy": "Both native3:1 panoramas retain every column; remove90 top/91 bottom rows to genuine4:1 crop; uniformly downsample, do not stretch clouds. Horizontal edge positions preserved.",
+  "selected_by_id": {
+    "sky_cloud_noon_cumulus_04": {
+      "candidate": 1,
+      "source_call_index": 0,
+      "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "final_sha256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "final_bytes": 83500
+    },
+    "sky_palace_afternoon_gold_05": {
+      "candidate": 2,
+      "source_call_index": 2,
+      "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "final_sha256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "final_bytes": 120818
+    }
+  },
+  "source_policy_timing": "Original two calls completed06:10:19 before source-first6f06:12:57. Genuine repair06:30:21->06:30:56 after actual catalog lookups; source lookups did not verify remote downloadable pixel assets due enforced domain policy. No third-party pixel file adopted."
+}

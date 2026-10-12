@@ -1,5 +1,5 @@
 // 云端雾岛（第 5 章，正午）的布局数据：一座漂在云海上的圆形浮岛（半径 28，碰撞盒把圆外全部挡住），
-// 白石小径穿过三道牌坊通向北边的水晶祭坛；东边风车，西边风铃架，岛心一汪莲池。
+// 白石小径穿过三道牌坊通向北边的水晶祭坛；东边风车（南坡放纸鸢），西边风铃架，岛心一汪莲池。
 import type { AABB, LevelDef } from '../levels';
 
 export const ISLE_R = 28;
@@ -8,6 +8,7 @@ export const POND: [number, number, number] = [-8, -8, 3.4];
 export const GATES = [12, -2, -14];
 export const CRYSTALS: [number, number, number][] = [[-18, 12, 1.2], [20, -12, 1.4], [-4, -17, 1.1], [11, 18, 1.2], [-21, -2, 1.3]];
 const POI: [number, number] = [-14, 6];
+const KITE_POI: [number, number] = [19, -6]; // 风车南边的草坡：放纸鸢
 const SPAWN: [number, number] = [0, 22];
 const ENEMIES: [number, number][] = [[12, 9], [-6, 14], [8, -6], [-14, -12], [14, -15], [2, 3]];
 const CHESTS: [number, number][] = [[22, -4], [-20, -7], [-12, 20], [16, 19]];
@@ -38,7 +39,7 @@ export function cloudLevel(): LevelDef {
     lights: [[0, 8, 6, 0xfff0d0, 40, 30], [BOSS[0], 5, BOSS[1], 0xffc8f0, 40, 20]],
     solids: cloudSolids(),
     enemySpots: ENEMIES, chestSpots: CHESTS, herbSpots: HERBS,
-    pois: [{ id: 'windchime', game: 'windchime', x: POI[0], z: POI[1], label: '风铃架' }],
+    pois: [{ id: 'windchime', game: 'windchime', x: POI[0], z: POI[1], label: '风铃架' }, { id: 'kite', game: 'kite', x: KITE_POI[0], z: KITE_POI[1], label: '风车坡 · 放纸鸢' }],
     bossSpot: BOSS, npcSpot: NPC, spawn: SPAWN,
   };
 }

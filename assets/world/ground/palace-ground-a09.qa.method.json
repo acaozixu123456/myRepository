@@ -1,0 +1,92 @@
+{
+  "createdAtUTC": "2026-10-12T04:56:35.044397+00:00",
+  "scope": "IndependentQA-only scratch. No artworkgeneration/modification/production/PR/progress/test writes.",
+  "sourceCounts": {
+    "existingGenuineAnchor": 1,
+    "newReferenceVariationCalls": 2,
+    "selectedFinalSources": 3
+  },
+  "anchorReuse": {
+    "sourceRGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+    "identityConfirmed": true,
+    "priorEvidence": "/workspace/world-review/theme-ground/independent-qa/qa-summary.md",
+    "priorArchiveSubmitted": false,
+    "priorArchiveClaudeDecision": null,
+    "reusedChecks": "Identicaloriginal/finalpixels previously fullyviewed with2\u00d72/4\u00d74/nativeLR/TB/corners. No repeatedfinitevisual suite. Currentformat/hash and3/3exportchecked; new3palace previewactuallyshows anchor."
+  },
+  "newVariantChecks": {
+    "ids": [
+      "ground_palace_cloud_marble_04",
+      "ground_palace_gold_thread_05"
+    ],
+    "rawFullViewBeforeDerivedQA": true,
+    "rawAndCodedActualViews": [
+      "wholeimage",
+      "2x2",
+      "4x4",
+      "nativeLR",
+      "nativeTB",
+      "nativefourcorners"
+    ],
+    "layoutObserved": "4\u00d74physicalslabs",
+    "directionLightObserved": "Noobviousglobalbakedlightgradient/sharedbrightnessband; mineraldiagonalorientationnotclassifiedaslighting."
+  },
+  "repeatMethod": "Unchanged source copies at2\u00d72/4\u00d74; wholeplateuniformlydownsampled foroverview only. LRlast64+first64cols, TB last64+first64rows, fourcorners128\u00b2quadrants; nativecropsnotresampled orpainted.",
+  "formatMethod": "Original1254squareRGB fullcanvas\u21921024squareLanczos, equalaxes. q90/method6/frozen588BICCbytes, independentlycompare allencodedbytes. Allalpha255. No crop, upsample, color change, sharpening, manual seam synthesis.",
+  "ICC_SHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+  "finalSources": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "originalSHA256": "c887452c1ddf3af0140a9d8033845922e61a5da9fb2fbfee7d8afbc89cdf755b",
+      "finalSHA256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "finalBytes": 124046,
+      "decodedRGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce"
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "originalSHA256": "e3dd8d6feba259293f11ebb15d9ba76249f5f4600fc66474ca95568c3b4ce009",
+      "finalSHA256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "finalBytes": 107562,
+      "decodedRGBSHA256": "36d6abdf08e12443b882d0b628c22d2d9b2f381bfc04e557b43c6596c1da52c5"
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "originalSHA256": "d6d57b6cc4f9640885cc8fce4e1badd1848b2b3bfc734b8273e974f5ec7363ca",
+      "finalSHA256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "finalBytes": 106010,
+      "decodedRGBSHA256": "6966b352510c98bf1ee58c1d72e35fab311f12b9f011e538aa0597f4e1036185"
+    }
+  ],
+  "previewMethod": {
+    "actuallyViewed": true,
+    "files": [
+      "/workspace/world-review/palace-ground/preview-final/palace-ground-a09.webp",
+      "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.webp"
+    ],
+    "all3PalaceMaterials": {
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "environmentIntensity": 0.3,
+      "ACESExposure": 0.9,
+      "repeat": [
+        2,
+        2
+      ]
+    },
+    "roomPMREM": 0.04,
+    "whiteAndGoldenControl": "Matchedcamera/material/sunintensity/direction; lightcolorsdiffer. No fullWorld import or postcolor effects.",
+    "nativePNGsIndependentlyVerified": 9,
+    "runtimeEvidence": "Produceractualcapture3/3loads/page/request/consoleempty; QA doesnot rerunChromium.",
+    "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc",
+    "submitBase": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+    "actual19GitDependencyBytesSame": true
+  },
+  "evidenceBoundary": "Actual imagebytes/pixels/metadata/args/Git inspected. Remotegeneratorcalls belongtoroottool evidence; promptconstraintsnotassumedachieved. InternalQAisnotClaudeartdecision orgameintegration.",
+  "limits": [
+    "04stilldiagonalgreymineralbands",
+    "Finegoldveinsandvariantdifferencesweakunderstrongwhite/goldlight orsmallrender",
+    "Repeatingmineralclustersvisiblein4\u00d74",
+    "No strict mathematical pixel-perfectseamlessness claim"
+  ],
+  "oldThemeDirectoryWritesThisBatch": 0
+}

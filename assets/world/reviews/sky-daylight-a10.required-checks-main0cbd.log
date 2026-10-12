@@ -1,0 +1,133 @@
+
+> maoguozhi@0.1.0 typecheck
+> tsc --noEmit
+
+
+> maoguozhi@0.1.0 test
+> vitest run
+
+
+ RUN  v2.1.8 /workspace/world-worktrees/sky-daylight
+
+ ✓ tests/engine-rules.test.ts (39 tests) 109ms
+ ✓ tests/kits-batch2.test.ts (60 tests) 474ms
+ ✓ tests/inventory.test.ts (54 tests) 190ms
+ ✓ tests/explore.test.ts (37 tests) 515ms
+ ✓ tests/events.test.ts (29 tests) 287ms
+ ✓ tests/quests.test.ts (34 tests) 437ms
+ ✓ tests/content-boss-rules.test.ts (30 tests) 161ms
+ ✓ tests/balance.test.ts (16 tests) 3141ms
+   ✓ balance sampling and complete report > passes no-bonds to every sample, keeps all teams and seeds identical, and remains deterministic 1034ms
+   ✓ balance sampling and complete report > repeats exactly for a fixed seed and does not mutate explicit roster input 546ms
+   ✓ balance sampling and complete report > preserves zero-appearance null statistics and low-sample markers with no-bonds enabled 318ms
+ ✓ tests/content-guards.test.ts (139 tests) 342ms
+ ✓ tests/shop.test.ts (46 tests) 117ms
+ ✓ tests/skill-consistency.test.ts (35 tests) 6172ms
+   ✓ real skill consistency CLI > runs from another cwd, resolves actual files and returns full JSON 1223ms
+   ✓ real skill consistency CLI > returns strict failure while preserving parseable JSON for legacy review 1382ms
+   ✓ real skill consistency CLI > prints a readable default report and supports help 2433ms
+   ✓ real skill consistency CLI > returns usage error 2 for unknown parameters 989ms
+ ✓ tests/lint-content.test.ts (44 tests) 6553ms
+   ✓ 内容检查：真实 CLI 与固定源码目录 > 默认报告成功，strict对同一警示报告退出1，并包含相对源码位置 2019ms
+   ✓ 内容检查：真实 CLI 与固定源码目录 > strict对无问题固定源码也成功，报告保留零警示计数 712ms
+   ✓ 内容检查：真实 CLI 与固定源码目录 > 真实 --max 参数改变报告及strict退出码，不能只解析后丢掉阈值 2363ms
+   ✓ 内容检查：真实 CLI 与固定源码目录 > 真实 CLI拒绝非法阈值与未知开关，不能静默退回默认值 1334ms
+ ✓ tests/economy.test.ts (8 tests) 142ms
+ ✓ tests/heroes-batch2.test.ts (21 tests) 715ms
+   ✓ second batch hero acceptance > uses only declared art styles that have actual drawing branches 440ms
+ ✓ tests/sp-balance.test.ts (16 tests) 13518ms
+   ✓ SP audit sampling and real displayed power > uses all seven SP subsets, legal five-cat lineups, diverse ordinary archetypes and deterministic seeds 382ms
+   ✓ SP audit CLI and validation > prints help without running simulations and exits unsuccessfully for invalid real CLI input 1282ms
+   ✓ SP audit CLI and validation > runs a small actual CLI audit, passes arguments into simulations and writes the requested file and Git revision 6536ms
+ ✓ tests/chatlines.test.ts (23 tests) 2494ms
+   ✓ 世界频道手写语料 > 每句非空且不超过40个Unicode码点 329ms
+   ✓ 真实一周统计口径 > runner固定UTC，真实worldFeed七天完整非系统台词至少600条，样本已填充 1770ms
+stdout | tests/maze.test.ts > 纸箱迷宫：战斗配置与平衡 > 平衡检查：中期队伍（Lv.45）带着随机加成，平均能通过 4~8 层；极弱队伍过不了几层
+maze avg cleared: Lv8=0.00 Lv25=2.00 Lv35=3.42 Lv45=4.33 Lv55=6.08 Lv70=7.50 paceLevel 45
+
+ ✓ tests/maze.test.ts (10 tests) 4023ms
+   ✓ 纸箱迷宫：战斗配置与平衡 > 平衡检查：中期队伍（Lv.45）带着随机加成，平均能通过 4~8 层；极弱队伍过不了几层 3986ms
+ ✓ tests/content-campaign.test.ts (8 tests) 544ms
+ ✓ tests/kits.test.ts (47 tests) 3581ms
+ ✓ tests/mob-looks.test.ts (8 tests) 505ms
+ ✓ tests/premium.test.ts (15 tests) 612ms
+ ✓ tests/stage-rules3.test.ts (12 tests) 782ms
+   ✓ campaign rules > at least 40 of the 48 rules are now executable and all run cleanly 345ms
+ ✓ tests/progression.test.ts (7 tests) 127ms
+ ✓ tests/npc.test.ts (16 tests) 3641ms
+   ✓ 模拟玩家：自由发展 > 等级随天数单调不降（噪声外）、不超过 100，早入服的更靠前 437ms
+   ✓ 世界聊天 > 确定性、按时间排序、没有残留占位符 515ms
+   ✓ 世界聊天 > 不同时段切片拼接与整段一致（离线追赶不会丢也不会重） 539ms
+   ✓ 世界聊天 > 密度合理：晚高峰每小时 2~40 条，凌晨明显更少；只有在线的人会说话 838ms
+   ✓ 世界聊天 > 语料丰富：一周内不同台词 ≥ 150 种 662ms
+ ✓ tests/soak.test.ts (4 tests) 4968ms
+   ✓ 长程浸泡：90 天、全部玩法 > 种子 1：每天随机操作不出错，存档可读回 2398ms
+   ✓ 长程浸泡：90 天、全部玩法 > 种子 2：每天随机操作不出错，存档可读回 1245ms
+   ✓ 长程浸泡：90 天、全部玩法 > 种子 3：每天随机操作不出错，存档可读回 1321ms
+ ✓ tests/pets.test.ts (8 tests) 98ms
+ ✓ tests/social.test.ts (10 tests) 664ms
+ ✓ tests/quest-actions.test.ts (7 tests) 45ms
+ ✓ tests/tactics-combos.test.ts (7 tests) 204ms
+ ✓ tests/content-rules.test.ts (6 tests) 593ms
+   ✓ machine readable campaign rules > validates nested references and runs every active stage with a fixed five cat lineup 483ms
+ ✓ tests/game.test.ts (13 tests) 579ms
+ ✓ tests/expedition.test.ts (7 tests) 20ms
+ ✓ tests/engine-primitives2.test.ts (6 tests) 23ms
+ ✓ tests/content-equipment.test.ts (5 tests) 205ms
+ ✓ tests/gear.test.ts (7 tests) 502ms
+ ✓ tests/guild.test.ts (7 tests) 187ms
+ ✓ tests/windchime.test.ts (7 tests) 222ms
+ ✓ tests/guildboss.test.ts (6 tests) 2849ms
+   ✓ 公会 Boss > 成员贡献是确定的；血量随公会等级增厚；周内累计只增不减 357ms
+   ✓ 聊天里的 Boss / 公会 / 活动话题 > 每周一 05:00 有新一周首领公告，周中没有；新话题池可被 NPC 抽到 2203ms
+ ✓ tests/content-mobs.test.ts (6 tests) 19ms
+ ✓ tests/content-items.test.ts (6 tests) 52ms
+stdout | tests/worldboss.test.ts > 世界 Boss > 排行榜：模拟玩家贡献确定、随周内时间不降，且包含玩家
+NPC week bars 0.75 6.19
+
+ ✓ tests/worldboss.test.ts (6 tests) 187ms
+ ✓ tests/affection.test.ts (5 tests) 104ms
+ ✓ tests/ramen.test.ts (8 tests) 61ms
+ ✓ tests/mushroom.test.ts (6 tests) 275ms
+ ✓ tests/stage-rules2.test.ts (6 tests) 492ms
+   ✓ RuleFx 第二批原语 > every rule marked ready in the campaign runs through a fixed-seed battle 417ms
+ ✓ tests/content-story.test.ts (4 tests) 220ms
+ ✓ tests/boxcat.test.ts (5 tests) 550ms
+   ✓ 纸箱寻猫规则 > 交换总是两个不同的合法位置，猫在合法的箱子里 504ms
+ ✓ tests/kart.test.ts (5 tests) 3082ms
+   ✓ 沙漠卡丁车 > 每局都能在 2 分钟内跑完，名次 1~4 676ms
+   ✓ 沙漠卡丁车 > 平衡：会躲会冲的玩家大多拿第一；一直直行不管的玩家基本拿不到第一 2391ms
+ ✓ tests/lanterns.test.ts (7 tests) 400ms
+ ✓ tests/fishing.test.ts (7 tests) 372ms
+ ✓ tests/faction-mechanics.test.ts (4 tests) 269ms
+ ✓ tests/nest.test.ts (4 tests) 15ms
+ ✓ tests/engine.test.ts (7 tests) 1198ms
+   ✓ battle engine > every kit hero can fight with both awakening branches 340ms
+   ✓ battle engine > mirror matches are roughly balanced across seeds 488ms
+ ✓ tests/economy-paid.test.ts (13 tests) 49291ms
+   ✓ paid economy audit actual resource accounting > covers all required snapshots, current tiers and NPCs with deterministic finite outputs 18784ms
+   ✓ economy audit independent mechanical fixtures > characterizes K=24 from equal-rating actual outcomes and caps seven-day free matches 1808ms
+   ✓ economy audit independent mechanical fixtures > actually acquires specific shards before crossing level caps in the reproducible no-SP growth trace 701ms
+   ✓ economy audit independent mechanical fixtures > rejects invalid scenarios and exposes CLI help, invalid arguments and deterministic JSON 13794ms
+ ✓ tests/stage-rules.test.ts (5 tests) 117ms
+ ✓ tests/daily.test.ts (5 tests) 8ms
+ ✓ tests/dungeon.test.ts (4 tests) 246ms
+ ✓ tests/puppet.test.ts (6 tests) 4171ms
+   ✓ 立绘木偶 > 所有招式姿势下顶点有限，且脚底基本不动 3892ms
+ ✓ tests/levels-reach.test.ts (28 tests) 54ms
+ ✓ tests/soul.test.ts (3 tests) 213ms
+ ✓ tests/moonshop.test.ts (3 tests) 21ms
+ ✓ tests/backup.test.ts (4 tests) 12ms
+ ✓ tests/autopush.test.ts (5 tests) 10ms
+ ✓ tests/quest-battle.test.ts (1 test) 28ms
+ ✓ tests/tower.test.ts (4 tests) 84ms
+ ✓ tests/engine-bonds.test.ts (2 tests) 37ms
+ ✓ tests/bgm.test.ts (2 tests) 19ms
+ ✓ tests/data.test.ts (2 tests) 6ms
+ ✓ tests/art3d.test.ts (8 tests) 13386ms
+   ✓ 3D 小猫 > 全部英雄与杂兵都能生成，尺寸与面数在预算内 13242ms
+
+ Test Files  69 passed (69)
+      Tests  1035 passed (1035)
+   Start at  06:53:53
+   Duration  75.59s (transform 8.04s, setup 0ms, collect 34.34s, tests 135.34s, environment 56ms, prepare 16.21s)

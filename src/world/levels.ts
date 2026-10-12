@@ -90,7 +90,8 @@ export const LEVEL_1: LevelDef = {
   lights: [[0, 5, 0, 0xff2ea8, 90, 26], [-14, 6, -4, 0x7ff0ff, 70, 22], [14, 6, 4, 0x9a7aff, 70, 22]],
   tram: true, arches: [], lanterns: [],
   vents: [[-3, 0.5, -7.6], [3.4, 0.5, 7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4], [-8, 0.5, 7.7], [8.5, 0.5, -7.5]],
-  pois: [{ id: 'boxcat', game: 'boxcat', x: -10.5, z: -5.4, label: '纸箱寻猫' }],
+  // 店铺玩法：九命电器门口的夹娃娃机、赛博猫网咖里的鼠标大作战
+  pois: [{ id: 'boxcat', game: 'boxcat', x: -10.5, z: -5.4, label: '纸箱寻猫' }, { id: 'claw', game: 'claw', x: -25, z: -5.8, label: '九命电器 · 夹娃娃' }, { id: 'whack', game: 'whack', x: 25, z: -5.8, label: '赛博猫网咖 · 鼠标大作战' }],
   ...SPOTS,
 };
 
@@ -236,15 +237,22 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
   if (hit) return hit;
   const { N, grid, seen } = reachableCells(L);
   const taken: [number, number][] = [L.spawn, L.bossSpot, L.npcSpot, ...L.enemySpots, ...L.chestSpots, ...herbsOf(L), ...hiddenSpotsOf(L), ...coverSpotsOf(L), ...poisOf(L).map((p): [number, number] => [p.x, p.z])];
-  const cand: [number, number][] = [];
-  for (let cz = 5; cz < N - 5; cz++) for (let cx = 5; cx < N - 5; cx++) {
-    if (!seen[cz * N + cx]) continue;
-    const x = cx + 0.5 - L.half, z = cz + 0.5 - L.half;
-    if (inSafeZone(L, x, z) || taken.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < 6)) continue;
-    let blocked = 0;
-    for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
-    if (blocked <= 4) cand.push([x, z]);
-  }
+  // 候选：走得到、四周不太挤、离其他东西有点距离；挤的场景（夜市主街两侧都是玩法安全区）放宽到 3.5 米
+  const collect = (gap: number) => {
+    const out: [number, number][] = [];
+    for (let cz = 5; cz < N - 5; cz++) for (let cx = 5; cx < N - 5; cx++) {
+      if (!seen[cz * N + cx]) continue;
+      const x = cx + 0.5 - L.half, z = cz + 0.5 - L.half;
+      if (inSafeZone(L, x, z) || taken.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < gap)) continue;
+      let blocked = 0;
+      for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
+      if (blocked <= 4) out.push([x, z]);
+    }
+    return out;
+  };
+  let cand = collect(6);
+  const span = (c: [number, number][]) => { let lo = Infinity, hi = -Infinity; for (const [, z] of c) { lo = Math.min(lo, z); hi = Math.max(hi, z); } return hi - lo; };
+  if (span(cand) < 20) cand = collect(3.5);
   let seed = 3; for (const ch of L.id) seed = (seed * 37 + ch.charCodeAt(0)) >>> 0;
   const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
   let out: [number, number][] = [];
@@ -254,7 +262,8 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
   }
   if (!out.length && cand.length > 1) { // 兜底：取候选里相距最远的一对
     let best = 0;
-    for (let i = 0; i < cand.length; i += 3) for (let j = i + 1; j < cand.length; j += 3) { const d = Math.hypot(cand[i][0] - cand[j][0], cand[i][1] - cand[j][1]); if (d > best) { best = d; out = [cand[i], cand[j]]; } }
+    const step = Math.max(1, Math.floor(cand.length / 400));
+    for (let i = 0; i < cand.length; i += step) for (let j = i + 1; j < cand.length; j++) { const d = Math.hypot(cand[i][0] - cand[j][0], cand[i][1] - cand[j][1]); if (d > best) { best = d; out = [cand[i], cand[j]]; } }
   }
   portalCache.set(L.id, out);
   return out;

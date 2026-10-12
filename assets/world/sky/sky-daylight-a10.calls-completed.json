@@ -1,0 +1,38 @@
+{
+  "batch": "A10-SKY-DAY",
+  "pr": 117,
+  "review_round": 1,
+  "genuine_call_count": 2,
+  "calls": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Paint ONE production sky-only panorama texture for a bright charming stylized Three.js cat fantasy adventure game. Ultra-wide horizontal 4:1 canvas: requested 2048 pixels wide by 512 pixels high, highest available native resolution, width exactly four times height. The entire canvas is sky and clouds, no margins, frames, panels, contact sheet or labels. The horizontal panorama represents a continuous sky band all around the viewer: the left and right edges must connect naturally in cloud shapes, color and brightness when wrapped, or repeated 2x1 and 4x1. Uniform treatment horizontally, no broad left-to-right exposure gradient, no large spotlight or isolated hero focal cloud. A gentle vertical high-sky to low-sky color gradient is intentional; top and bottom do NOT need to match. Clean soft painted fantasy game art, beautiful airy layered clouds with rounded clear shapes and restrained fine detail, bright and fresh, enough calm open sky, neither photorealistic nor flat vector symbols. No ground, water, sea, mountains, forest or tree silhouette, horizon land line, buildings, palace, skyline, city, ships, islands, rainbow, birds, creatures, people, cat faces, text, logo, UI or watermark. No sun disk, moon, stars or hard light rays; the game already draws its own sun. No black or transparent area, no vignette. One continuous sky image at the widest native 4:1 aspect ratio. NOON CUMULUS variant for the sunny cloud island: clear fresh cornflower-blue high sky around #5A9AE8, softly fading through #A8D0FF to a very light warm-pinkish ivory haze near the bottom around #FFF4EC. Loose fluffy white cumulus clouds, soft cream lit crowns and very restrained cool lavender-gray lower interiors. Moderate cloud amount with generous open blue sky, clouds mainly in the middle/lower band, small airy wisps in the upper band. Sunny peaceful noon, rounded clouds with clean edges blending gently into sky, absolutely no floating islands or near-ground cloud platform.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 06:09:36 UTC",
+      "completed_at_utc": "2026-10-12 06:10:19 UTC",
+      "original_path": "/workspace/generated_images/exec-bfea3c71-64d7-4602-b024-49a6b16fa9be.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-bfea3c71-64d7-4602-b024-49a6b16fa9be.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source_kind": "genuine native image generation output",
+      "review_round": 1,
+      "candidate": 1
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Paint ONE production sky-only panorama texture for a bright charming stylized Three.js cat fantasy adventure game. Ultra-wide horizontal 4:1 canvas: requested 2048 pixels wide by 512 pixels high, highest available native resolution, width exactly four times height. The entire canvas is sky and clouds, no margins, frames, panels, contact sheet or labels. The horizontal panorama represents a continuous sky band all around the viewer: the left and right edges must connect naturally in cloud shapes, color and brightness when wrapped, or repeated 2x1 and 4x1. Uniform treatment horizontally, no broad left-to-right exposure gradient, no large spotlight or isolated hero focal cloud. A gentle vertical high-sky to low-sky color gradient is intentional; top and bottom do NOT need to match. Clean soft painted fantasy game art, beautiful airy layered clouds with rounded clear shapes and restrained fine detail, bright and fresh, enough calm open sky, neither photorealistic nor flat vector symbols. No ground, water, sea, mountains, forest or tree silhouette, horizon land line, buildings, palace, skyline, city, ships, islands, rainbow, birds, creatures, people, cat faces, text, logo, UI or watermark. No sun disk, moon, stars or hard light rays; the game already draws its own sun. No black or transparent area, no vignette. One continuous sky image at the widest native 4:1 aspect ratio. AFTERNOON GOLD variant for the imperial palace region: clear medium blue high sky around #3A86D8, light airy blue middle sky around #8CC8F0, fading to warm champagne-ivory and pale apricot golden haze near the bottom around #FFECD0. Soft layered white clouds with delicate pale-gold sunlit edges, gentle blue-lavender undersides; only small warm rose accents. Bright calm afternoon golden hour, understated warm-gold lower cloud band, still a distinctly BLUE open upper sky, never an entirely yellow or orange image, not a fiery red sunset, no gilded ornamental patterns. Keep the gold soft and cloudlike without shiny metallic highlights.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 06:09:36 UTC",
+      "completed_at_utc": "2026-10-12 06:10:19 UTC",
+      "original_path": "/workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source_kind": "genuine native image generation output",
+      "review_round": 1,
+      "candidate": 1
+    }
+  ]
+}

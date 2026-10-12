@@ -1,0 +1,53 @@
+{
+  "checkedAtUTC": "2026-10-12T04:56:18.334700+00:00",
+  "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+  "sources": [
+    {
+      "path": "/workspace/world-review/palace-ground/exports/ground_palace_white_marble_03.webp",
+      "name": "ground_palace_white_marble_03.webp",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 124046,
+      "sha256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "id": "ground_palace_white_marble_03",
+      "RGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+      "iccBytes": 588,
+      "matchesCaptureManifest": true
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/exports/ground_palace_cloud_marble_04.webp",
+      "name": "ground_palace_cloud_marble_04.webp",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 107562,
+      "sha256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "id": "ground_palace_cloud_marble_04",
+      "RGBSHA256": "36d6abdf08e12443b882d0b628c22d2d9b2f381bfc04e557b43c6596c1da52c5",
+      "iccBytes": 588,
+      "matchesCaptureManifest": true
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/exports/ground_palace_gold_thread_05.webp",
+      "name": "ground_palace_gold_thread_05.webp",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 106010,
+      "sha256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "id": "ground_palace_gold_thread_05",
+      "RGBSHA256": "6966b352510c98bf1ee58c1d72e35fab311f12b9f011e538aa0597f4e1036185",
+      "iccBytes": 588,
+      "matchesCaptureManifest": true
+    }
+  ],
+  "allCaptureSourcesStillFrozen": true,
+  "scope": "Read-only SHA/dimensions/decoded-RGB/ICC verification of the three final exports after both actual captures."
+}

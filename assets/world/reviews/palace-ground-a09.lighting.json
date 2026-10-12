@@ -1,0 +1,531 @@
+{
+  "createdAt": "2026-10-12T04:50:12.375Z",
+  "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/world-review/palace-ground/preview-final/capture-tools/material-preview.mjs --config /workspace/world-review/palace-ground/preview-final/palace-config.json",
+  "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+  "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc",
+  "candidate": "candidate-palace-final",
+  "host": "http://127.0.0.1:37305",
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "args": [
+      "--no-sandbox",
+      "--disable-dev-shm-usage",
+      "--use-gl=angle",
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader",
+      "--ignore-gpu-blocklist"
+    ],
+    "viewport": [
+      2048,
+      1024
+    ],
+    "deviceScaleFactor": 1
+  },
+  "dependencies": {
+    "threeVersion": "0.169.0",
+    "threeModule": "/workspace/myRepository/node_modules/three/build/three.module.js",
+    "threeModuleSHA256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+    "roomEnvironmentModule": "/workspace/myRepository/node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+    "roomEnvironmentModuleSHA256": "85869bdd22f7cf0b22e68dcefe6cb710480af0f5c901a76f7a7764fd07fc8014",
+    "configFile": "/workspace/world-review/palace-ground/preview-final/palace-config.json",
+    "configSHA256": "5e0c49554b3e8f9338ec2eb25906f8286da9da30d76f58af80b9b4b26c9e190b",
+    "themeContextSHA256": "a12d99f14a971dbadafbb03c4a5b14867dc0c2001a8f417479fc33c59a08cc9e",
+    "dependencyVerification": "/workspace/world-review/palace-ground/preview-final/dependency-e6-to-4b.json",
+    "dependencyVerificationSHA256": "d7710589ebfb464e99d18ca420700163064c429376383bdc47880803b7f169bc"
+  },
+  "sources": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "label": "汉白玉 · 淡金纹",
+      "theme": "palace",
+      "source": "/workspace/world-review/palace-ground/exports/ground_palace_white_marble_03.webp",
+      "sha256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 124046,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "RGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+      "iccBytes": 588,
+      "sourceSelection": "Existing anchor C1",
+      "status": "Current root-selected source; recapture on new root hash if candidate changes."
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "label": "汉白玉 · 云灰纹",
+      "theme": "palace",
+      "source": "/workspace/world-review/palace-ground/exports/ground_palace_cloud_marble_04.webp",
+      "sha256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 107562,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "RGBSHA256": "36d6abdf08e12443b882d0b628c22d2d9b2f381bfc04e557b43c6596c1da52c5",
+      "iccBytes": 588,
+      "sourceSelection": "Root generated genuine anchor-reference variant",
+      "status": "Current root-selected source; recapture on new root hash if candidate changes."
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "label": "汉白玉 · 金丝纹",
+      "theme": "palace",
+      "source": "/workspace/world-review/palace-ground/exports/ground_palace_gold_thread_05.webp",
+      "sha256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 106010,
+      "roughness": 0.5,
+      "metalness": 0.05,
+      "RGBSHA256": "6966b352510c98bf1ee58c1d72e35fab311f12b9f011e538aa0597f4e1036185",
+      "iccBytes": 588,
+      "sourceSelection": "Root generated genuine anchor-reference variant",
+      "status": "Current root-selected source; recapture on new root hash if candidate changes."
+    }
+  ],
+  "sourceStayedFrozen": true,
+  "pageErrors": [],
+  "requestFailures": [],
+  "consoleMessages": [],
+  "independentMaterialSample": true,
+  "gameScreenshot": false,
+  "worldEngineImported": false,
+  "threeRevision": "169",
+  "webGL": true,
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "size": [
+    2048,
+    1024
+  ],
+  "sourceImagesLoaded": 3,
+  "loaded": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "size": [
+        1024,
+        1024
+      ],
+      "url": "/asset/0",
+      "colorSpace": "sRGB",
+      "repeat": [
+        2,
+        2
+      ],
+      "wrap": [
+        "RepeatWrapping",
+        "RepeatWrapping"
+      ],
+      "rotation": 0,
+      "flipY": true,
+      "anisotropy": 8
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "size": [
+        1024,
+        1024
+      ],
+      "url": "/asset/1",
+      "colorSpace": "sRGB",
+      "repeat": [
+        2,
+        2
+      ],
+      "wrap": [
+        "RepeatWrapping",
+        "RepeatWrapping"
+      ],
+      "rotation": 0,
+      "flipY": true,
+      "anisotropy": 8
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "size": [
+        1024,
+        1024
+      ],
+      "url": "/asset/2",
+      "colorSpace": "sRGB",
+      "repeat": [
+        2,
+        2
+      ],
+      "wrap": [
+        "RepeatWrapping",
+        "RepeatWrapping"
+      ],
+      "rotation": 0,
+      "flipY": true,
+      "anisotropy": 8
+    }
+  ],
+  "cells": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "row": 0,
+      "lighting": "neutral-white-control",
+      "viewport": [
+        32,
+        148,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.5,
+        "metalness": 0.05
+      },
+      "hemisphere": {
+        "sky": "ffffff",
+        "ground": "777777",
+        "intensity": 0.62
+      },
+      "sun": {
+        "color": "ffffff",
+        "intensity": 1.5,
+        "position": [
+          42,
+          55,
+          32
+        ]
+      },
+      "exposure": 0.9,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_palace_white_marble_03",
+      "row": 1,
+      "lighting": "palace",
+      "viewport": [
+        32,
+        590,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.5,
+        "metalness": 0.05
+      },
+      "hemisphere": {
+        "sky": "fff0dc",
+        "ground": "8a5a4a",
+        "intensity": 0.62
+      },
+      "sun": {
+        "color": "ffe8b0",
+        "intensity": 1.5,
+        "position": [
+          42,
+          55,
+          32
+        ]
+      },
+      "exposure": 0.9,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "row": 0,
+      "lighting": "neutral-white-control",
+      "viewport": [
+        704,
+        148,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.5,
+        "metalness": 0.05
+      },
+      "hemisphere": {
+        "sky": "ffffff",
+        "ground": "777777",
+        "intensity": 0.62
+      },
+      "sun": {
+        "color": "ffffff",
+        "intensity": 1.5,
+        "position": [
+          42,
+          55,
+          32
+        ]
+      },
+      "exposure": 0.9,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "row": 1,
+      "lighting": "palace",
+      "viewport": [
+        704,
+        590,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.5,
+        "metalness": 0.05
+      },
+      "hemisphere": {
+        "sky": "fff0dc",
+        "ground": "8a5a4a",
+        "intensity": 0.62
+      },
+      "sun": {
+        "color": "ffe8b0",
+        "intensity": 1.5,
+        "position": [
+          42,
+          55,
+          32
+        ]
+      },
+      "exposure": 0.9,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "row": 0,
+      "lighting": "neutral-white-control",
+      "viewport": [
+        1376,
+        148,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.5,
+        "metalness": 0.05
+      },
+      "hemisphere": {
+        "sky": "ffffff",
+        "ground": "777777",
+        "intensity": 0.62
+      },
+      "sun": {
+        "color": "ffffff",
+        "intensity": 1.5,
+        "position": [
+          42,
+          55,
+          32
+        ]
+      },
+      "exposure": 0.9,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "row": 1,
+      "lighting": "palace",
+      "viewport": [
+        1376,
+        590,
+        640,
+        352
+      ],
+      "camera": {
+        "fov": 40,
+        "position": [
+          5.7,
+          7.5,
+          8.5
+        ],
+        "lookAt": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ground": {
+        "size": [
+          8,
+          8
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": "ffffff",
+        "roughness": 0.5,
+        "metalness": 0.05
+      },
+      "hemisphere": {
+        "sky": "fff0dc",
+        "ground": "8a5a4a",
+        "intensity": 0.62
+      },
+      "sun": {
+        "color": "ffe8b0",
+        "intensity": 1.5,
+        "position": [
+          42,
+          55,
+          32
+        ]
+      },
+      "exposure": 0.9,
+      "environmentIntensity": 0.3,
+      "calls": 1,
+      "triangles": 2
+    }
+  ],
+  "toneMapping": "ACESFilmicToneMapping",
+  "environment": {
+    "type": "Three169 RoomEnvironment PMREM",
+    "sigma": 0.04,
+    "sharedWithinEachPair": true,
+    "intensitiesFromE6": true
+  },
+  "shadows": false,
+  "bloom": false,
+  "normalMap": false,
+  "displacementMap": false,
+  "roughnessMap": false,
+  "colorGrading": false,
+  "postProcessing": false,
+  "cameraAndMaterialMatchedWithinEachPair": true,
+  "output": {
+    "file": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.webp",
+    "width": 2048,
+    "height": 1024,
+    "bytes": 90946,
+    "quality": 92,
+    "method": 6,
+    "lossless": false,
+    "sha256": "e792290d5743aa6ee8ac5a600e7b6d9d955822a7e2a0b96c3b168bcff6b2b7d9",
+    "originalPNG": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.png",
+    "originalPNGSha256": "cba09ead5faa3603af6bbc001f82c14bd6fbc5ae33568c684981abb4b687fc14",
+    "encoding": "Screenshot-only WebP compression. Source images unchanged; native proofs remain lossless PNG."
+  },
+  "toolSHA256": {
+    "common": "b370fe71e01707622bb11f4a5f1bbe429d494e06a6bcefc42d31be33fe54f2e1",
+    "driver": "8e96bc024823c401c3c92d190b5f75600b07150e8c98ec2adced77511ec7fcea",
+    "css": "47e075c159b2c40fd20398551eedc4487ffe4a1806503a0d2852189dad2f23e8"
+  }
+}

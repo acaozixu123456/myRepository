@@ -1,0 +1,120 @@
+{
+  "frozenAtUTC": "2026-10-12T06:06:52.188617+00:00",
+  "mainBase": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "worktreeHEAD": "051c7d06ec72de337dabd3066bf64270bb4f40cb",
+  "pipeline": [
+    "从明确GitSHA读取queue/brief/cloud/atmos/tex/engine，比较3408到67物理字节，未改源/UV/灯光。",
+    "原生及coded直接重复2x2/4x4，仅统一缩小显示；完整LR为最后64列接最前64列，完整TB为最后64行接最前64行，四角各128²。所有边缝视图保持1:1。",
+    "整图/重复板/全部边缝/交角均实际view_image；总36图，本次可辨接缝和植物周期分别记录，RGB均值不作视觉通过替代。",
+    "Pillow直接测原稿、归档、正式编码mode/尺寸/alpha/ICC/bytes/SHA，逐字比较planned/completed/provenance三个args对象。",
+    "独立读原稿、无裁切Lanczos1024²，再用冻结ICC及q90/method6重导出，3/3字节相同。未调用imagegen、修改像素或重新创建ICC。",
+    "真实overview和最终anisotropy4 lighting以及9张native PNG实看并独立核文件hash/预算/POT/源码依赖；native按meta rectangles以Pillow重建，589824 RGB像素全等。",
+    "最终lighting为05:58:49.813Z、loaded[4,4,4]，首次8版本只留history。新4/旧8 PNG及WebP同字节，已有实看结论在确认同hash后复用。",
+    "37个preview冻结文件全部实际SHA复查；没有重新捕获、跑全测试或扩大样本。"
+  ],
+  "artifactAndEvidenceBoundary": {
+    "toolInvocations": "3 genuine calls are root tool history and saved records; independent agent verifies their outputs/records and deterministic export, not a fresh AI invocation.",
+    "nativeROI": "Delivered9PNG are local1:1 proof fidelity, not complete boundary coverage. Independent full-height/full-width seam strips provide this batch full-boundary inspection.",
+    "lighting": "Plane8/repeat2 sample differs from actual Circle29.2/repeat5; fog/grade and world objects absent; no claim of game integration or every runtime view.",
+    "color": "源图局部叶片深浅存在，且草笔触有方向；未见整幅宽光带或统一投影。没有按prompt意图自动记成功。",
+    "testStatus": "Root handles required typecheck/tests. Independent agent does not rerun them or introduce tests."
+  },
+  "independentRuntime": {
+    "Pillow": "12.3.0",
+    "libwebp": "1.6.0"
+  },
+  "allWritesUnder": "/workspace/world-review/island-ground/independent-qa",
+  "filesForProductionCopy": [
+    "island-ground-a09.qa.md",
+    "island-ground-a09.qa.json",
+    "island-ground-a09.qa-method.json"
+  ],
+  "sourceQAImagesViewed": [
+    "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+    "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+    "/workspace/world-review/island-ground/independent-qa/mint-native-repeat2.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-native-repeat4.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-native-LR-native.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-native-TB-native.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-native-corners-native.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-coded-repeat2.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-coded-repeat4.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-coded-LR-native.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-coded-TB-native.png",
+    "/workspace/world-review/island-ground/independent-qa/mint-coded-corners-native.png",
+    "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+    "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+    "/workspace/world-review/island-ground/independent-qa/clover-native-repeat2.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-native-repeat4.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-native-LR-native.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-native-TB-native.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-native-corners-native.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-coded-repeat2.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-coded-repeat4.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-coded-LR-native.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-coded-TB-native.png",
+    "/workspace/world-review/island-ground/independent-qa/clover-coded-corners-native.png",
+    "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+    "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+    "/workspace/world-review/island-ground/independent-qa/meadow-native-repeat2.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-native-repeat4.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-native-LR-native.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-native-TB-native.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-native-corners-native.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-coded-repeat2.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-coded-repeat4.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-coded-LR-native.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-coded-TB-native.png",
+    "/workspace/world-review/island-ground/independent-qa/meadow-coded-corners-native.png"
+  ],
+  "previewImagesViewed": [
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09.webp",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-lighting.webp",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-lr.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-tb.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_mint_bloom_01-native-corners.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-lr.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-tb.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_pink_clover_02-native-corners.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-lr.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-tb.png",
+    "/workspace/world-review/island-ground/preview-final/island-ground-a09-ground_island_meadow_mix_03-native-corners.png"
+  ],
+  "evidence": [
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/format-reexport-and-source-check.json",
+      "bytes": 8977,
+      "SHA256": "e72b04ecb1cbf143193a68ab64e583a864aa1c56a08b308d9e2bae22af98e09d"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/raw-and-coded-metrics.json",
+      "bytes": 13867,
+      "SHA256": "308bee51dcf5821397d87bb099876e258f1524e4f6ab8e80cafebe6b8ac1b1e1"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/preview-overview-and-native-check.json",
+      "bytes": 11215,
+      "SHA256": "a757f29bc0975ea8d275f741efcce68d4cd4e39625c30a0cefee37b130ca9674"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/preview-lighting-check.json",
+      "bytes": 7045,
+      "SHA256": "b228c1b0726c64311dcd831bb176866cf223e7f7ed106757854e9bd247c17dc4"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/preview-freeze-and-readme-check.json",
+      "bytes": 7292,
+      "SHA256": "2e8b2d1ffa78833c16527a98f8df64c08ba0525a99f771bd8477c46a26e46419"
+    },
+    {
+      "file": "/workspace/world-review/island-ground/independent-qa/main-sync-final-67.json",
+      "bytes": 4359,
+      "SHA256": "e43072943add14a2a7d6933e6ee9368b17d71622d520e9d707469be5a0c5d987"
+    }
+  ],
+  "readyForClaudeReview": true,
+  "ClaudeDecision": null,
+  "formalImageCount": 14,
+  "rawNativeImageCount": 3,
+  "finalCanonicalDeliveryMetadata": "/workspace/world-review/island-ground/independent-qa/island-ground-a09.qa.json"
+}
