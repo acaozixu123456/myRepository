@@ -215,3 +215,35 @@ export function coverSpotsOf(L: LevelDef): [number, number][] {
   coverCache.set(L.id, out);
   return out;
 }
+
+export const PORTAL_R = 1.6;
+const portalCache = new Map<string, [number, number][]>();
+/** 传送门一对（A ↔ B）：开阔、走得到、彼此相隔 ≥ 26 米、离其他东西 ≥ 8 米。走进一个就出现在另一个——抄近路，也能甩掉追兵。位置固定 */
+export function portalSpotsOf(L: LevelDef): [number, number][] {
+  const hit = portalCache.get(L.id);
+  if (hit) return hit;
+  const { N, grid, seen } = reachableCells(L);
+  const taken: [number, number][] = [L.spawn, L.bossSpot, L.npcSpot, ...L.enemySpots, ...L.chestSpots, ...herbsOf(L), ...hiddenSpotsOf(L), ...coverSpotsOf(L), ...poisOf(L).map((p): [number, number] => [p.x, p.z])];
+  const cand: [number, number][] = [];
+  for (let cz = 5; cz < N - 5; cz++) for (let cx = 5; cx < N - 5; cx++) {
+    if (!seen[cz * N + cx]) continue;
+    const x = cx + 0.5 - L.half, z = cz + 0.5 - L.half;
+    if (inSafeZone(L, x, z) || taken.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < 6)) continue;
+    let blocked = 0;
+    for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
+    if (blocked <= 4) cand.push([x, z]);
+  }
+  let seed = 3; for (const ch of L.id) seed = (seed * 37 + ch.charCodeAt(0)) >>> 0;
+  const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  let out: [number, number][] = [];
+  for (let g = 0; g < 400 && cand.length > 1 && !out.length; g++) {
+    const a = cand[Math.floor(rnd() * cand.length)], b = cand[Math.floor(rnd() * cand.length)];
+    if (Math.hypot(a[0] - b[0], a[1] - b[1]) >= Math.min(26, L.half)) out = [a, b];
+  }
+  if (!out.length && cand.length > 1) { // 兜底：取候选里相距最远的一对
+    let best = 0;
+    for (let i = 0; i < cand.length; i += 3) for (let j = i + 1; j < cand.length; j += 3) { const d = Math.hypot(cand[i][0] - cand[j][0], cand[i][1] - cand[j][1]); if (d > best) { best = d; out = [cand[i], cand[j]]; } }
+  }
+  portalCache.set(L.id, out);
+  return out;
+}

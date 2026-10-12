@@ -8,7 +8,7 @@ import { applyPose } from '../art3d/pose';
 import { lookOf, unitInfo } from '../data/units';
 import type { WorldView } from './engine';
 import type { AABB, Street } from './street';
-import { CELL, COVER_R, SAFE_R, blockedGrid, coverSpotsOf, inSafeZone } from './levels';
+import { CELL, COVER_R, PORTAL_R, SAFE_R, blockedGrid, coverSpotsOf, inSafeZone, portalSpotsOf } from './levels';
 import { glowTex } from './tex';
 import { glowMat, std } from './kit';
 
@@ -108,6 +108,23 @@ function coverMesh(theme: string | undefined): THREE.Group {
   return g;
 }
 
+const PORTAL_COLOR: Record<string, number> = { street: 0xff5ad8, market: 0xffb04a, harbor: 0x4ac8ff, forest: 0xb06aff, cloud: 0x9ad0ff, palace: 0xffd24a };
+/** 传送门外观：脚下转动的光环 + 一道光柱 + 光晕，一对同色 */
+function portalMesh(theme: string | undefined): THREE.Group {
+  const col = PORTAL_COLOR[theme ?? 'street'] ?? 0xff5ad8;
+  const g = new THREE.Group();
+  const ring = new THREE.Mesh(new THREE.RingGeometry(PORTAL_R - 0.25, PORTAL_R, 40), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+  ring.rotation.x = -Math.PI / 2; ring.position.y = 0.1; g.add(ring);
+  const ring2 = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.75, 6), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
+  ring2.rotation.x = -Math.PI / 2; ring2.position.y = 0.12; g.add(ring2);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(PORTAL_R * 0.8, PORTAL_R * 0.95, 5.5, 20, 1, true), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+  beam.position.y = 2.75; g.add(beam);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: col, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  halo.scale.set(6, 6, 1); halo.position.y = 0.6; g.add(halo);
+  g.userData.spin = [ring, ring2, beam];
+  return g;
+}
+
 export class Explorer {
   readonly root = new THREE.Group();
   private team: Actor[] = [];
@@ -139,6 +156,8 @@ export class Explorer {
     this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = 0.4; this.root.add(this.ring);
     this.marker = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.7, 24), new THREE.MeshBasicMaterial({ color: 0xff7ad9, transparent: true, opacity: 0, toneMapped: false, depthWrite: false }));
     this.marker.rotation.x = -Math.PI / 2; this.marker.position.y = 0.42; this.root.add(this.marker);
+    this.portals = portalSpotsOf(street.level);
+    for (const [x, z] of this.portals) { const m = portalMesh(street.level.theme); m.position.set(x, 0.32, z); this.root.add(m); this.portalMeshes.push(m); }
     this.covers = coverSpotsOf(street.level);
     for (const [x, z] of this.covers) { const m = coverMesh(street.level.theme); m.position.set(x, 0.32, z); m.rotation.y = (x * 7 + z * 3) % 6.28; this.root.add(m); }
     this.setTeam(teamIds);
@@ -147,6 +166,9 @@ export class Explorer {
 
   // ---------- 探路技：冲撞 / 潜行 / 灵视（谁能放由队伍里的职业决定） ----------
   private covers: [number, number][] = [];
+  private portals: [number, number][] = [];
+  private portalMeshes: THREE.Group[] = [];
+  private portalCd = 0;
   private inCover = false;
   /** 潜行中或躲在掩体里：敌人的视野缩到潜行水平，从这里出手算偷袭 */
   get hiding(): boolean { return this.sneakT > 0 || this.inCover; }
@@ -175,6 +197,17 @@ export class Explorer {
     else { this.path = []; this.dashT = 0.26; this.dashDir.set(Math.sin(L.yaw), 0, Math.cos(L.yaw)); this.pulse(0xffa04a, 3, 0.35); }
     return true;
   }
+  private teleport([x, z]: [number, number]) {
+    this.pulse(0xffffff, 5, 0.4);
+    for (const a of this.team) a.pos.set(x, 0.32, z);
+    this.pet?.pos.set(x, 0.32, z);
+    this.trail = this.trail.map(() => new THREE.Vector3(x, 0.32, z));
+    this.path = []; this.dashT = 0; this.portalCd = 2.5;
+    this.wv.focus.set(x, 0.3, z);
+    for (const e of this.ents) if ((e.state === 'chase' || e.state === 'alert') && e.group.position.distanceTo(this.leader.pos) > 3) { e.state = 'idle'; e.target.copy(e.home); }
+    this.hooks.note?.('🌀 传送！追兵跟丢了');
+    this.pulse(0xffffff, 5, 0.5);
+  }
   private pulse(color: number, r: number, life: number) {
     const m = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.0, 48), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false, side: THREE.DoubleSide }));
     m.rotation.x = -Math.PI / 2; m.position.set(this.leader.pos.x, 0.5, this.leader.pos.z);
@@ -183,6 +216,14 @@ export class Explorer {
   private tickSkills(dt: number) {
     for (const k of Object.keys(this.cd) as ExploreSkill[]) this.cd[k] = Math.max(0, this.cd[k] - dt);
     this.grace = Math.max(0, this.grace - dt);
+    // 传送门：走进一个，出现在另一个；追你的敌人跟丢
+    this.portalCd = Math.max(0, this.portalCd - dt);
+    for (const m of this.portalMeshes) { const [r1, r2, bm] = m.userData.spin as THREE.Mesh[]; r1.rotation.z += dt * 0.8; r2.rotation.z -= dt * 1.6; bm.rotation.y += dt * 0.6; }
+    if (this.portals.length === 2 && this.portalCd <= 0 && !this.busy) {
+      const lp = this.leader.pos;
+      const i = this.portals.findIndex(([x, z]) => Math.hypot(x - lp.x, z - lp.z) < PORTAL_R - 0.3);
+      if (i >= 0) this.teleport(this.portals[1 - i]);
+    }
     { const lp = this.leader.pos; const now = this.covers.some(([x, z]) => Math.hypot(x - lp.x, z - lp.z) < COVER_R); if (now && !this.inCover) this.hooks.note?.('🫣 躲进掩体：敌人很难发现你，贴近可偷袭'); this.inCover = now; }
     this.sneakT = Math.max(0, this.sneakT - dt); this.revealT = Math.max(0, this.revealT - dt);
     // 冲撞：沿朝向冲 7 个单位，撞到的敌人晕 4 秒（我方可以偷袭）

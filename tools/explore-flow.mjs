@@ -40,6 +40,11 @@ const r = await p.evaluate(async () => {
   // E: 灵视显出隐藏宝箱
   const ch = ex.ents.find((x) => x.spawn.id === 'x1'); out.E0 = ch.group.visible;
   reset(2, 0); ex.cd.reveal = 0; ex.useSkill('reveal'); ex.update(0.05); out.E1 = ch.group.visible;
+  // F: 传送门
+  ex.busy = false; ex.paused = false; ex.portalCd = 0;
+  const [pa, pb] = ex.portals; reset(pa[0], pa[1]); ex.grace = 0;
+  ex.update(0.05);
+  out.F = { at: [+L.pos.x.toFixed(1), +L.pos.z.toFixed(1)], toB: Math.hypot(L.pos.x - pb[0], L.pos.z - pb[1]) < 0.5 };
   return out;
 });
 console.log(JSON.stringify(r));

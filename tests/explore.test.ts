@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { relocateOutOfSafe } from '../src/game/explore';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
-import { COVER_R, LEVELS, SAFE_R, coverSpotsOf, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
+import { COVER_R, LEVELS, PORTAL_R, portalSpotsOf, SAFE_R, coverSpotsOf, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 import { PROPS } from '../src/world/props';
 
@@ -303,5 +303,24 @@ describe('掩体（草丛 / 纸箱堆…）', () => {
       }
     }
     expect(COVER_R).toBeGreaterThan(2);
+  });
+});
+
+describe('传送门', () => {
+  it('每个场景一对：走得到、不在碰撞盒 / 安全区里、相距足够远，位置固定', () => {
+    for (const L of Object.values(LEVELS)) {
+      const spots = portalSpotsOf(L);
+      expect(portalSpotsOf(L)).toBe(spots);
+      expect(spots, L.id).toHaveLength(2);
+      const { N, seen } = reachableCells(L);
+      const cols = levelColliders(L);
+      for (const [x, z] of spots) {
+        expect(seen[Math.floor(z + L.half) * N + Math.floor(x + L.half)]).toBe(1);
+        for (const c of cols) expect(x >= c.x0 && x <= c.x1 && z >= c.z0 && z <= c.z1).toBe(false);
+        expect(inSafeZone(L, x, z)).toBe(false);
+      }
+      expect(Math.hypot(spots[0][0] - spots[1][0], spots[0][1] - spots[1][1])).toBeGreaterThanOrEqual(18);
+    }
+    expect(PORTAL_R).toBeGreaterThan(1);
   });
 });
