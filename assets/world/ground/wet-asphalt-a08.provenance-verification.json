@@ -1,0 +1,40 @@
+{
+  "checks": [
+    {
+      "candidate": 1,
+      "promptChars": 1843,
+      "promptSha256": "2c286fc8d4599877ee91ad19eab1539d6c561d7d808a5ace4044e223b4e8037a",
+      "rawSize": [
+        1254,
+        1254
+      ],
+      "rawSha256": "ff9a3e26c37b41af6c5be566f0ac575b720189e3e09aeb7b81de745eddd21fe2",
+      "promptExactMatch": true,
+      "rawMetadataMatch": true
+    },
+    {
+      "candidate": 2,
+      "promptChars": 1944,
+      "promptSha256": "376967aff848a5956f49c081f7575b0358cf2a8adb5a2b09af46e4fbe1097c32",
+      "rawSize": [
+        1254,
+        1254
+      ],
+      "rawSha256": "1ab4e09eed5c8f8edb87e3bb2fb18d06d2e71a025fec9aa9599eff3bcd030881",
+      "promptExactMatch": true,
+      "rawMetadataMatch": true
+    },
+    {
+      "candidate": 3,
+      "promptChars": 1654,
+      "promptExactMatch": true,
+      "rawMetadataMatch": true,
+      "selected": false
+    }
+  ],
+  "referenceExact627xyRoll": true,
+  "selectedCandidate": 2,
+  "exportHashMatches": true,
+  "exportSizeModeProfileBudgetMatches": true,
+  "iccProfile": "sRGB built-in"
+}
