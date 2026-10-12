@@ -1,0 +1,566 @@
+{
+  "pr": 122,
+  "actual_call_count": 6,
+  "calls": [
+    {
+      "id": "roof_tile_bluegreen_01",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Create ONE original production albedo texture for a bright charming stylized Three.js cat fantasy adventure game, traditional Chinese curved roof tiles viewed perfectly straight from above, orthographic top-down, no roof silhouette or pitched-roof perspective. One continuous opaque square seamless tile filling the entire canvas: repeating vertical roof ridges / cylindrical convex tile caps alternating with narrow concave channels, with regular subtle horizontal overlap-course joints. About 8 parallel ridges across the width and 8 courses along the height, same grid and motif density throughout. Correct roof-tile geometry: rounded semi-cylindrical clay tiles with small overlapping lips, clearly a curved Chinese tiled roof surface, not flat bricks, fish scales, shingles, metal panels or a whole building. The left/right edges and top/bottom edges must connect in ridge locations, course phase, color and detail when repeated 2x2 and 4x4; no edge frame, border band, margin, center composition or large unique crack. Soft clean painted fantasy game texture, moderately chunky rounded shapes, restrained fine grain and a few tiny irregular chips, fresh bright colors with readable tile courses, not photorealistic or noisy. This is BASE COLOR, neutral even diffuse illumination: no overall lighting direction, no cast shadows, no sunbeam, no bright specular streaks, no broad brightness gradient or baked scene reflection. Only very gentle intrinsic color differences at overlap creases, not deep black grooves. No plants, moss patches, snow, dirt piles, puddles, gold ornaments, cat faces, people, animals, text, logo, labels, UI or watermark. Highest available native square resolution, 1024x1024 requested; the final game texture will be 512x512. ONE square image, not a board/contact sheet. QINGWA variant: traditional fresh blue-gray clay curved tiles, slate-teal blue gray around #607F8B with muted pale blue-gray variation around #9BB9C1 and restrained deeper gray-teal crease color around #496873. Matte mineral-clay surface, soft lightly worn corners, no shiny metallic glaze. Bright clean daytime rooftop, not dark navy, violet, neon or desaturated black.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 07:30:22 UTC",
+      "completed_at_utc": "2026-10-12 07:32:11 UTC",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-0110ec17-d024-41fc-b38f-fd29e4ea4a04.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original_path": "/workspace/generated_images/exec-0110ec17-d024-41fc-b38f-fd29e4ea4a04.png",
+      "source_kind": "genuine native imagegen generation output",
+      "review_round": 1,
+      "candidate": 1,
+      "original_sha256": "fe32b34b496a2cfaf96baea59fdbdb239a9a9653e16ffaf5800cc9c9d2243a5e",
+      "original_bytes": 2523577,
+      "original_dimensions": [
+        1254,
+        1254
+      ],
+      "original_mode": "RGB",
+      "archived_copy_path": "/workspace/world-review/roof-tiles/raw/roof_tile_bluegreen_01-candidate-01.png",
+      "archived_copy_sha256": "fe32b34b496a2cfaf96baea59fdbdb239a9a9653e16ffaf5800cc9c9d2243a5e",
+      "final_path": "/workspace/world-review/roof-tiles/exports/roof_tile_bluegreen_01.webp",
+      "final_sha256": "394a98f0c196b11ebcb61dbd0d46da9e28ba51e490cd5ccfc405feac46cb8598",
+      "final_bytes": 58322,
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "resize": "full canvas uniform PillowLanczos native->512square",
+        "crop": null,
+        "format": "opaqueRGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      }
+    },
+    {
+      "id": "roof_tile_glazed_gold_02",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Create ONE original production albedo texture for a bright charming stylized Three.js cat fantasy adventure game, traditional Chinese curved roof tiles viewed perfectly straight from above, orthographic top-down, no roof silhouette or pitched-roof perspective. One continuous opaque square seamless tile filling the entire canvas: repeating vertical roof ridges / cylindrical convex tile caps alternating with narrow concave channels, with regular subtle horizontal overlap-course joints. About 8 parallel ridges across the width and 8 courses along the height, same grid and motif density throughout. Correct roof-tile geometry: rounded semi-cylindrical clay tiles with small overlapping lips, clearly a curved Chinese tiled roof surface, not flat bricks, fish scales, shingles, metal panels or a whole building. The left/right edges and top/bottom edges must connect in ridge locations, course phase, color and detail when repeated 2x2 and 4x4; no edge frame, border band, margin, center composition or large unique crack. Soft clean painted fantasy game texture, moderately chunky rounded shapes, restrained fine grain and a few tiny irregular chips, fresh bright colors with readable tile courses, not photorealistic or noisy. This is BASE COLOR, neutral even diffuse illumination: no overall lighting direction, no cast shadows, no sunbeam, no bright specular streaks, no broad brightness gradient or baked scene reflection. Only very gentle intrinsic color differences at overlap creases, not deep black grooves. No plants, moss patches, snow, dirt piles, puddles, gold ornaments, cat faces, people, animals, text, logo, labels, UI or watermark. Highest available native square resolution, 1024x1024 requested; the final game texture will be 512x512. ONE square image, not a board/contact sheet. GOLD GLAZED CLAY variant: imperial golden-yellow curved ceramic roof tiles, warm yellow ochre around #EABD45 and soft pale honey/cream glaze variations around #F7DC88, restrained caramel course edges around #BA8F30. The gold is colored ceramic glaze rather than brass/metal sheet, with smooth rounded clay tile caps, not mirror metallic highlights. Bright fresh afternoon palette, no glyphs, ornaments, embossed gold patterns or decorative dragon ridge.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 07:30:22 UTC",
+      "completed_at_utc": "2026-10-12 07:31:31 UTC",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-faa68ea1-9623-483f-8a6d-603187ac9f96.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original_path": "/workspace/generated_images/exec-faa68ea1-9623-483f-8a6d-603187ac9f96.png",
+      "source_kind": "genuine native imagegen generation output",
+      "review_round": 1,
+      "candidate": 1,
+      "original_sha256": "c1c2d8e91c484a4c900fd8cc8db14a30f8e3312fa96bb4b506217f4a644f0417",
+      "original_bytes": 1984891,
+      "original_dimensions": [
+        1254,
+        1254
+      ],
+      "original_mode": "RGB",
+      "archived_copy_path": "/workspace/world-review/roof-tiles/raw/roof_tile_glazed_gold_02-candidate-01.png",
+      "archived_copy_sha256": "c1c2d8e91c484a4c900fd8cc8db14a30f8e3312fa96bb4b506217f4a644f0417",
+      "final_path": "/workspace/world-review/roof-tiles/exports/roof_tile_glazed_gold_02.webp",
+      "final_sha256": "e973b2c871f9d84dcab71b973388864fa9305fe5ab2100fe2387b2e08db285d5",
+      "final_bytes": 56972,
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "resize": "full canvas uniform PillowLanczos native->512square",
+        "crop": null,
+        "format": "opaqueRGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      }
+    },
+    {
+      "id": "roof_tile_vermilion_03",
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "prompt": "Create ONE original production albedo texture for a bright charming stylized Three.js cat fantasy adventure game, traditional Chinese curved roof tiles viewed perfectly straight from above, orthographic top-down, no roof silhouette or pitched-roof perspective. One continuous opaque square seamless tile filling the entire canvas: repeating vertical roof ridges / cylindrical convex tile caps alternating with narrow concave channels, with regular subtle horizontal overlap-course joints. About 8 parallel ridges across the width and 8 courses along the height, same grid and motif density throughout. Correct roof-tile geometry: rounded semi-cylindrical clay tiles with small overlapping lips, clearly a curved Chinese tiled roof surface, not flat bricks, fish scales, shingles, metal panels or a whole building. The left/right edges and top/bottom edges must connect in ridge locations, course phase, color and detail when repeated 2x2 and 4x4; no edge frame, border band, margin, center composition or large unique crack. Soft clean painted fantasy game texture, moderately chunky rounded shapes, restrained fine grain and a few tiny irregular chips, fresh bright colors with readable tile courses, not photorealistic or noisy. This is BASE COLOR, neutral even diffuse illumination: no overall lighting direction, no cast shadows, no sunbeam, no bright specular streaks, no broad brightness gradient or baked scene reflection. Only very gentle intrinsic color differences at overlap creases, not deep black grooves. No plants, moss patches, snow, dirt piles, puddles, gold ornaments, cat faces, people, animals, text, logo, labels, UI or watermark. Highest available native square resolution, 1024x1024 requested; the final game texture will be 512x512. ONE square image, not a board/contact sheet. VERMILION CLAY variant: warm bright red-orange Chinese curved clay tiles around #CE5C48, soft muted peach worn rims around #EA957D, restrained earthy red crease color around #9F4438. Matte terracotta with very small occasional surface chips and subtle clay color variation, clean and welcoming miniature street roof, not scarlet neon, weathered black ruin, rusted metal or baked sunset illumination.",
+        "transparent_background": false
+      },
+      "started_at_utc": "2026-10-12 07:30:22 UTC",
+      "completed_at_utc": "2026-10-12 07:32:11 UTC",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-2ebb868b-6c52-4eaf-bac0-79c65b00bb38.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original_path": "/workspace/generated_images/exec-2ebb868b-6c52-4eaf-bac0-79c65b00bb38.png",
+      "source_kind": "genuine native imagegen generation output",
+      "review_round": 1,
+      "candidate": 1,
+      "original_sha256": "0b977c745ca320e126dad09e9874f7f0c249af3bf235c703080fb211742c2663",
+      "original_bytes": 2082645,
+      "original_dimensions": [
+        1254,
+        1254
+      ],
+      "original_mode": "RGB",
+      "archived_copy_path": "/workspace/world-review/roof-tiles/raw/roof_tile_vermilion_03-candidate-01.png",
+      "archived_copy_sha256": "0b977c745ca320e126dad09e9874f7f0c249af3bf235c703080fb211742c2663",
+      "final_path": "/workspace/world-review/roof-tiles/exports/roof_tile_vermilion_03.webp",
+      "final_sha256": "6671bba29fe7e36d5367e97752c25c42b354c0c67c8b0494308e1b6bafbc0cd4",
+      "final_bytes": 49080,
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "resize": "full canvas uniform PillowLanczos native->512square",
+        "crop": null,
+        "format": "opaqueRGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      }
+    },
+    {
+      "id": "roof_tile_bluegreen_01",
+      "candidate": 2,
+      "review_round": 1,
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "referenced_image_paths": [
+          "/workspace/world-review/roof-tiles/references/roof_tile_bluegreen_01-candidate01-halfwrap-reference.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Edit this existing BLUEGREEN Chinese roof tile base-color texture, preserving its orthographic top-down square grid, painted game style, muted bluegray clay color, tile widths, regular horizontal overlap courses and restrained surface grain. The reference is an EXACT horizontal half-wrap of a previous texture: its erroneous old left/right repeat junction now runs vertically through the CENTER of the image, approximately x=627 of the 1254-square reference. At that central column, two convex ridge caps meet into an abrupt V and the normal concave U-shaped drainage valley is missing or too narrow. Repair this local vertical junction into the SAME regularly spaced rounded cap and concave channel pattern as its neighbors, keeping the cap pitch and all overlap courses continuous; not an extra narrow cap, not a flat painted stripe, not a black crack. Preserve other tile shapes/colors as closely as possible; do not redesign, add ornaments, alter palette, add buildings or text. Ensure ALL four OUTER edges of this edited full square canvas also remain seamless in cap spacing, course phase and diffuse color under exact 2x2 and 4x4 repeats. Uniform diffuse base color, not baked lighting: very gentle intrinsic overlap shading only, no specular stripe, cast shadow or global exposure gradient. One opaque square texture filling the canvas, highest available native square resolution; requested 1254x1254 as reference. No border, crop, padding, labels or contact sheet."
+      },
+      "started_at_utc": "2026-10-12 07:55:26 UTC",
+      "completed_at_utc": "2026-10-12 07:57:09 UTC",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-1b2200cb-b84e-4ce4-9ffa-ee5e266829c0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original_path": "/workspace/generated_images/exec-1b2200cb-b84e-4ce4-9ffa-ee5e266829c0.png",
+      "source_kind": "genuine image-tool edit of exact technical halfwrap C1 reference",
+      "original_sha256": "a05d00a58ff099c23e266e9b12968c365f6771b2ec23767f4144bb1df8a1f772",
+      "original_bytes": 2219005,
+      "original_dimensions": [
+        1254,
+        1254
+      ],
+      "original_mode": "RGB",
+      "archived_copy_path": "/workspace/world-review/roof-tiles/candidate02/raw/roof_tile_bluegreen_01-candidate02-native.png",
+      "archived_copy_sha256": "a05d00a58ff099c23e266e9b12968c365f6771b2ec23767f4144bb1df8a1f772",
+      "reference": {
+        "id": "roof_tile_bluegreen_01",
+        "source_path": "/workspace/world-review/roof-tiles/raw/roof_tile_bluegreen_01-candidate-01.png",
+        "source_sha256": "fe32b34b496a2cfaf96baea59fdbdb239a9a9653e16ffaf5800cc9c9d2243a5e",
+        "reference_path": "/workspace/world-review/roof-tiles/references/roof_tile_bluegreen_01-candidate01-halfwrap-reference.png",
+        "reference_sha256": "525c22fa0b0cee80587e355261ecebe9c270990fb3d77818e024b627b2d0de19",
+        "dimensions": [
+          1254,
+          1254
+        ],
+        "horizontal_roll_columns": -627,
+        "vertical_roll_rows": 0,
+        "original_edge_junction_now_at": "x627",
+        "transform": "Exact cyclic pixel shifts only; no resize,color edit,blending or painting. Reference only; future genuineAI edits will be technically inverse-shifted."
+      },
+      "phase_restoration": {
+        "path": "/workspace/world-review/roof-tiles/candidate02/raw/roof_tile_bluegreen_01-candidate02-phase-restored.png",
+        "sha256": "7c950f70c64eb559ea6896a41138f5814385a499aa382bbc0f4d5c09742be528",
+        "horizontal_roll_columns": 627,
+        "vertical_roll_rows": 0,
+        "exact_cyclic_rgb_shift": true,
+        "no_resize_or_color_edit": true
+      },
+      "final_path": "/workspace/world-review/roof-tiles/candidate02/exports/roof_tile_bluegreen_01.webp",
+      "final_sha256": "bdef7712327e23163a5ffd720b7d54d5cbb85d13c19a6604d0200b2269b4a82f",
+      "final_bytes": 53290,
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "crop": null,
+        "resize": "full phase-restored canvas uniformly downsampled with Pillow Lanczos to512 square",
+        "format": "opaqueRGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      }
+    },
+    {
+      "id": "roof_tile_glazed_gold_02",
+      "candidate": 2,
+      "review_round": 1,
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "referenced_image_paths": [
+          "/workspace/world-review/roof-tiles/references/roof_tile_glazed_gold_02-candidate01-halfwrap-reference.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Edit this existing GOLD-OCHRE Chinese glazed-clay roof tile base-color texture. Preserve the current orthographic top-down curved roof ridges, regular cap spacing and overlapping course grid, warm ochre golden clay palette and softly painted fantasy game style. This reference is an EXACT horizontal AND vertical half-wrap of a previous texture: the old repeat joins now meet at the central x=627 and y=627 of the 1254-square image. Repair the central VERTICAL junction, where an orange-gold color step and excessively narrow valley repeat through the height; restore the same rounded ridge/concave channel width and gently varied color phase as neighboring tile columns. Also smooth only the center horizontal course/color discontinuity to match the normal course rhythm. The original has repeated nearly white longitudinal glints on each convex ridge and deep dark cap shading; reduce these baked directional glints and dark shadows across the texture into subtle intrinsic golden-clay color variations suitable for neutral BASE COLOR under new game lighting. Preserve the gold ochre hue and ceramic character, not brass metal or mirror reflection. Keep every OUTER edge seamless in ridge location, course phase and color under exact 2x2/4x4 repeats. No global brightness gradient, strong fixed light direction, white reflection streaks or cast shadows. Do not add buildings, plants, ornaments, people, cats, text, border or frame. One opaque full-canvas square texture, no crop or contact sheet, highest available native square resolution; requested1254x1254 as reference."
+      },
+      "started_at_utc": "2026-10-12 07:55:26 UTC",
+      "completed_at_utc": "2026-10-12 07:56:41 UTC",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-16a26703-bda6-4e7f-8d4b-6f64e5608cfe.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original_path": "/workspace/generated_images/exec-16a26703-bda6-4e7f-8d4b-6f64e5608cfe.png",
+      "source_kind": "genuine image-tool edit of exact technical halfwrap C1 reference",
+      "original_sha256": "3a36a1ba9f5182acc7d6bc2917140f2425668b683cee88b23b08902aa7debb0e",
+      "original_bytes": 1907003,
+      "original_dimensions": [
+        1254,
+        1254
+      ],
+      "original_mode": "RGB",
+      "archived_copy_path": "/workspace/world-review/roof-tiles/candidate02/raw/roof_tile_glazed_gold_02-candidate02-native.png",
+      "archived_copy_sha256": "3a36a1ba9f5182acc7d6bc2917140f2425668b683cee88b23b08902aa7debb0e",
+      "reference": {
+        "id": "roof_tile_glazed_gold_02",
+        "source_path": "/workspace/world-review/roof-tiles/raw/roof_tile_glazed_gold_02-candidate-01.png",
+        "source_sha256": "c1c2d8e91c484a4c900fd8cc8db14a30f8e3312fa96bb4b506217f4a644f0417",
+        "reference_path": "/workspace/world-review/roof-tiles/references/roof_tile_glazed_gold_02-candidate01-halfwrap-reference.png",
+        "reference_sha256": "6d715267291df05ed2897c2bdf695b4070e82b53777d434c7e4910a09df262a3",
+        "dimensions": [
+          1254,
+          1254
+        ],
+        "horizontal_roll_columns": -627,
+        "vertical_roll_rows": -627,
+        "original_edge_junction_now_at": "x627/y627",
+        "transform": "Exact cyclic pixel shifts only; no resize,color edit,blending or painting. Reference only; future genuineAI edits will be technically inverse-shifted."
+      },
+      "phase_restoration": {
+        "path": "/workspace/world-review/roof-tiles/candidate02/raw/roof_tile_glazed_gold_02-candidate02-phase-restored.png",
+        "sha256": "4a1720c116fd275d93eced25c77e189f9bdc2522cf736d1147cf92a5070c07df",
+        "horizontal_roll_columns": 627,
+        "vertical_roll_rows": 627,
+        "exact_cyclic_rgb_shift": true,
+        "no_resize_or_color_edit": true
+      },
+      "final_path": "/workspace/world-review/roof-tiles/candidate02/exports/roof_tile_glazed_gold_02.webp",
+      "final_sha256": "a983a595d25f8ad1e768927b6ec550b18c984e11cff542d0956b91108eb06557",
+      "final_bytes": 55590,
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "crop": null,
+        "resize": "full phase-restored canvas uniformly downsampled with Pillow Lanczos to512 square",
+        "format": "opaqueRGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      }
+    },
+    {
+      "id": "roof_tile_vermilion_03",
+      "candidate": 2,
+      "review_round": 1,
+      "tool": "image_gen.imagegen",
+      "tool_arguments": {
+        "referenced_image_paths": [
+          "/workspace/world-review/roof-tiles/references/roof_tile_vermilion_03-candidate01-halfwrap-reference.png"
+        ],
+        "transparent_background": false,
+        "prompt": "Edit this existing VERMILION terracotta Chinese curved roof tile base-color texture. Preserve the orthographic top-down view, rounded parallel ridge caps and valleys, red-orange clay/soft peach worn rims, regularly spaced normal overlap courses, softly painted game style and restrained grain. This reference is an EXACT VERTICAL half-wrap of a previous texture: the old top/bottom repeat seam now sits at the CENTER horizontal line, approximately y=627 of its1254-square reference. Along this center line the old course closure has an EXTRA shortened cap/doubled horizontal rim band. Repair this ONE horizontal junction into a single normal overlap-course boundary with the SAME course height and rim thickness as nearby rows, continuous along every ridge and valley. No extra little cap row, no double lip, no shortened squeezed course and no bright horizontal strip. Keep the rest of this reference as close as possible and preserve the OUTER top/bottom course closure and left/right cap-spacing continuity so the full canvas is seamless under exact2x2/4x4 repetition. Do not redesign ridges, alter red hue, add deep black creases, baked specular/shadow direction, buildings, text or ornaments. Flat neutral base-color illumination with only gentle clay color variation. One opaque full square canvas, no crop, padding, frame or contact sheet, highest available native square resolution; requested1254x1254 as reference."
+      },
+      "started_at_utc": "2026-10-12 07:55:26 UTC",
+      "completed_at_utc": "2026-10-12 07:57:09 UTC",
+      "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-16369b60-6e4f-46e5-b086-cd36037ec2fb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "original_path": "/workspace/generated_images/exec-16369b60-6e4f-46e5-b086-cd36037ec2fb.png",
+      "source_kind": "genuine image-tool edit of exact technical halfwrap C1 reference",
+      "original_sha256": "15a4330a8c2eb36a5a92d8c458f2d51dc0615e075dccad2ac9a7ff0ee60f4a4d",
+      "original_bytes": 1943443,
+      "original_dimensions": [
+        1254,
+        1254
+      ],
+      "original_mode": "RGB",
+      "archived_copy_path": "/workspace/world-review/roof-tiles/candidate02/raw/roof_tile_vermilion_03-candidate02-native.png",
+      "archived_copy_sha256": "15a4330a8c2eb36a5a92d8c458f2d51dc0615e075dccad2ac9a7ff0ee60f4a4d",
+      "reference": {
+        "id": "roof_tile_vermilion_03",
+        "source_path": "/workspace/world-review/roof-tiles/raw/roof_tile_vermilion_03-candidate-01.png",
+        "source_sha256": "0b977c745ca320e126dad09e9874f7f0c249af3bf235c703080fb211742c2663",
+        "reference_path": "/workspace/world-review/roof-tiles/references/roof_tile_vermilion_03-candidate01-halfwrap-reference.png",
+        "reference_sha256": "356c305655fc205c9d0888677a166556dfba701eed285cbbdf2620eff71b4f82",
+        "dimensions": [
+          1254,
+          1254
+        ],
+        "horizontal_roll_columns": 0,
+        "vertical_roll_rows": -627,
+        "original_edge_junction_now_at": "y627",
+        "transform": "Exact cyclic pixel shifts only; no resize,color edit,blending or painting. Reference only; future genuineAI edits will be technically inverse-shifted."
+      },
+      "phase_restoration": {
+        "path": "/workspace/world-review/roof-tiles/candidate02/raw/roof_tile_vermilion_03-candidate02-phase-restored.png",
+        "sha256": "1dfd0d8c28808f98c4023dd1405d6b9e6d01fbbb5f8d981dfa59a67d904e8b05",
+        "horizontal_roll_columns": 0,
+        "vertical_roll_rows": 627,
+        "exact_cyclic_rgb_shift": true,
+        "no_resize_or_color_edit": true
+      },
+      "final_path": "/workspace/world-review/roof-tiles/candidate02/exports/roof_tile_vermilion_03.webp",
+      "final_sha256": "ecbfdacd67a8c4618fd95aaec0c7f6c49e2d1fe41b956ca02edc49b51524590d",
+      "final_bytes": 47386,
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "crop": null,
+        "resize": "full phase-restored canvas uniformly downsampled with Pillow Lanczos to512 square",
+        "format": "opaqueRGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      }
+    }
+  ],
+  "selected_native_candidate_by_id": {
+    "roof_tile_bluegreen_01": 1,
+    "roof_tile_glazed_gold_02": 2,
+    "roof_tile_vermilion_03": 2
+  },
+  "selected_export_candidate_by_id": {
+    "roof_tile_bluegreen_01": 5,
+    "roof_tile_glazed_gold_02": 5,
+    "roof_tile_vermilion_03": 5
+  },
+  "selected_final_exports": [
+    {
+      "crop_rank": 1,
+      "native_candidate": 1,
+      "id": "roof_tile_bluegreen_01",
+      "original_path": "/workspace/generated_images/exec-0110ec17-d024-41fc-b38f-fd29e4ea4a04.png",
+      "crop_half_open": [
+        307,
+        205,
+        1069,
+        940
+      ],
+      "cropped_dimensions": [
+        762,
+        735
+      ],
+      "diagnostic_row_strip_score": 30.69536328315735,
+      "path": "/workspace/world-review/roof-tiles/blue-period-rectangle-preflight/blue-native-four-ridges-five-courses-rank1.png",
+      "proof": "/workspace/world-review/roof-tiles/blue-period-rectangle-preflight/blue-native-rank1-2x2.png",
+      "method": "LR valley centers selected from independent native trace307->1069,4ridge pitches; boundedTB phase matching only, not certification. Existing pixels only. Rectangular crop to square game texture will use separately recorded downsampling ratios.",
+      "native_dimensions": [
+        1254,
+        1254
+      ],
+      "native_sha256": "fe32b34b496a2cfaf96baea59fdbdb239a9a9653e16ffaf5800cc9c9d2243a5e",
+      "export_candidate": 5,
+      "selected_crop_path": "/workspace/world-review/roof-tiles/candidate05/selected-native-crops/roof_tile_bluegreen_01-candidate01-native-four-ridges-five-courses.png",
+      "selected_crop_sha256": "58a758d3ebc2f5c9c9cc0eafa8e36f2ac34b37fb7e0ce97eea50e4ec7307154a",
+      "final_path": "/workspace/world-review/roof-tiles/candidate05/exports/roof_tile_bluegreen_01.webp",
+      "final_bytes": 46868,
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "final_sha256": "8ce52607f49d2664872ec18bcbd9705f9b892a217ab78feac9b3da371f513990",
+      "export": {
+        "source": "actualAI nativeC1 normalinterior,LR valleys307/1069 matchingfour ridges andTB5course735pixelspan",
+        "crop_half_open": [
+          307,
+          205,
+          1069,
+          940
+        ],
+        "cropped_dimensions": [
+          762,
+          735
+        ],
+        "scale_x": 0.6719160104986877,
+        "scale_y": 0.6965986394557823,
+        "aspect_change_factor": 1.036734693877551,
+        "uniform_scale": false,
+        "resize": "PillowLanczos eachaxis downsample, nativeperiodrectangle packedtosquare512 gameUV, bluecapaspectchanges3.67347percent; disclosed",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "phase_restore_applied": false,
+        "roll_applied": false,
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      }
+    },
+    {
+      "id": "roof_tile_glazed_gold_02",
+      "original_path": "/workspace/generated_images/exec-16a26703-bda6-4e7f-8d4b-6f64e5608cfe.png",
+      "crop_half_open": [
+        80,
+        136,
+        1147,
+        1203
+      ],
+      "dimensions": [
+        1067,
+        1067
+      ],
+      "row_score": 19.336786448955536,
+      "column_score": 8.999468684196472,
+      "path": "/workspace/world-review/roof-tiles/crop-preflight/roof_tile_glazed_gold_02-square-crop-1.png",
+      "proof": "/workspace/world-review/roof-tiles/crop-preflight/roof_tile_glazed_gold_02-square-crop-1-2x2.png",
+      "method": "Only existing source pixels cropped into a square; sampling metric is candidate ranking, not seam certification. No repair/repaint/color adjustment/inverse-wrap applied.",
+      "native_candidate": 2,
+      "export_candidate": 5,
+      "native_sha256": "3a36a1ba9f5182acc7d6bc2917140f2425668b683cee88b23b08902aa7debb0e",
+      "native_dimensions": [
+        1254,
+        1254
+      ],
+      "selected_crop_path": "/workspace/world-review/roof-tiles/candidate03/selected-native-crops/roof_tile_glazed_gold_02-candidate02-native-selected-period.png",
+      "selected_crop_sha256": "2f3913ef9034cdfef1f239affabc171cbd56c63fd94450d359aabfea9e1c8359",
+      "final_path": "/workspace/world-review/roof-tiles/candidate05/exports/roof_tile_glazed_gold_02.webp",
+      "final_bytes": 50380,
+      "final_sha256": "335ba9f5a0101009a4e79ff620ea64abf55bdaec207210ba17441de388838b03",
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "source": "actual genuineAI native candidate02; pre-inverse original tool output",
+        "crop_half_open": [
+          80,
+          136,
+          1147,
+          1203
+        ],
+        "cropped_dimensions": [
+          1067,
+          1067
+        ],
+        "crop_reason": "Select native cap/course phase, exclude incompatible full-canvas closure; confirmed first finite2x2 by root, independentQA still pending",
+        "uniform_scale": 0.47985004686035615,
+        "resize": "PillowLanczos exact square crop->512",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "phase_restore_applied": false,
+        "roll_applied": false,
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      },
+      "unchanged_from_exportcandidate03": true,
+      "crop_rank": 1
+    },
+    {
+      "id": "roof_tile_vermilion_03",
+      "original_path": "/workspace/generated_images/exec-16369b60-6e4f-46e5-b086-cd36037ec2fb.png",
+      "crop_half_open": [
+        160,
+        199,
+        1068,
+        1107
+      ],
+      "dimensions": [
+        908,
+        908
+      ],
+      "row_score": 8.307835459709167,
+      "column_score": 10.379814147949219,
+      "path": "/workspace/world-review/roof-tiles/crop-preflight/roof_tile_vermilion_03-square-crop-1.png",
+      "proof": "/workspace/world-review/roof-tiles/crop-preflight/roof_tile_vermilion_03-square-crop-1-2x2.png",
+      "method": "Only existing source pixels cropped into a square; sampling metric is candidate ranking, not seam certification. No repair/repaint/color adjustment/inverse-wrap applied.",
+      "native_candidate": 2,
+      "export_candidate": 5,
+      "native_sha256": "15a4330a8c2eb36a5a92d8c458f2d51dc0615e075dccad2ac9a7ff0ee60f4a4d",
+      "native_dimensions": [
+        1254,
+        1254
+      ],
+      "selected_crop_path": "/workspace/world-review/roof-tiles/candidate03/selected-native-crops/roof_tile_vermilion_03-candidate02-native-selected-period.png",
+      "selected_crop_sha256": "59bb8798fcf4f88f5afa72d3df60af7b5927d1572edd481961e0fd48d52ca007",
+      "final_path": "/workspace/world-review/roof-tiles/candidate05/exports/roof_tile_vermilion_03.webp",
+      "final_bytes": 40756,
+      "final_sha256": "2413a9a5dd2c282a72c0faf80aa7803a78395033af6f9afe9bde1257007abb8e",
+      "final_dimensions": [
+        512,
+        512
+      ],
+      "export": {
+        "source": "actual genuineAI native candidate02; pre-inverse original tool output",
+        "crop_half_open": [
+          160,
+          199,
+          1068,
+          1107
+        ],
+        "cropped_dimensions": [
+          908,
+          908
+        ],
+        "crop_reason": "Select native cap/course phase, exclude incompatible full-canvas closure; confirmed first finite2x2 by root, independentQA still pending",
+        "uniform_scale": 0.5638766519823789,
+        "resize": "PillowLanczos exact square crop->512",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "phase_restore_applied": false,
+        "roll_applied": false,
+        "artistic_repaint_in_code": false,
+        "seam_blending": false,
+        "color_edit": false,
+        "upsample": false
+      },
+      "unchanged_from_exportcandidate03": true,
+      "crop_rank": 1
+    }
+  ],
+  "historical_candidate01_ready": false,
+  "historical_candidate02_full_canvas_ready": false,
+  "historical_context_file": "/workspace/world-review/roof-tiles/candidate02/roof-tiles-a11.provenance.json",
+  "source_first_search": "/workspace/world-review/roof-tiles/../roof-tiles-next/source-search.json",
+  "source_first_decision": "/workspace/world-review/roof-tiles/../roof-tiles-next/fallback-decision.json",
+  "no_third_party_pixels": true,
+  "notes": [
+    "Actual6AIcalls remainunaltered andtimelines do notclaim7thcall",
+    "BlueC1 interior4completevalley-to-valley ridgepitches and5courses in762x735 native periodrectangle",
+    "Blueexport dimensions512square with distinctx/y downsample. This slightlyadjustscapaspect3.67347percent; notfalselydescribedasuniformscale",
+    "Gold/Red crop andencodedbytes unchangedfromexport03",
+    "Alloldfailuresandfrozenpreviews preserved",
+    "No artificial art repair, paint, blending or color adjustments"
+  ],
+  "historical_exportcandidate03_ready": false,
+  "candidate05_visual_ready": "await finitephasepreflight"
+}

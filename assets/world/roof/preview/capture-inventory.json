@@ -1,0 +1,125 @@
+{
+  "frozenAtUTC": "2026-10-12T08:46:09.849031+00:00",
+  "phase": "real exportcandidate05 previews frozen for root/independentQA/Claude, not approval",
+  "exportCandidate": 5,
+  "actualAICallCount": 6,
+  "selectedNativeCandidates": [
+    1,
+    2,
+    2
+  ],
+  "captures": [
+    {
+      "kind": "overview",
+      "createdAt": "2026-10-12T08:42:28.871Z",
+      "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/world-review/roof-tiles/candidate05/preview/capture-tools/review-sheet.mjs --config capture-config.json",
+      "cwd": "/workspace/world-review/roof-tiles/candidate05/preview",
+      "exitCode": 0,
+      "loads": 3,
+      "output": {
+        "file": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-overview.webp",
+        "width": 2048,
+        "height": 1024,
+        "bytes": 378182,
+        "quality": 92,
+        "method": 6,
+        "lossless": false,
+        "sha256": "dc1fe5af6cf10dae7321897fc25f59081b06ed0d48eb4a96e7736d048dd3c5c0",
+        "originalPNG": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-overview.png",
+        "originalPNGSha256": "0e90d787fdc18fb9fce323bf71c33d429e5e61a05bda79ca02a1b532181a74f4",
+        "encoding": "Screenshot-only WebP compression. Source images unchanged; the original screenshot preserves native image blocks. Separate native edge proofs are owned by source-audit."
+      },
+      "errors": {
+        "pageErrors": [],
+        "requestFailures": [],
+        "httpErrors": [],
+        "consoleMessages": []
+      }
+    },
+    {
+      "kind": "lighting",
+      "createdAt": "2026-10-12T08:42:36.651Z",
+      "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/world-review/roof-tiles/candidate05/preview/capture-tools/material-preview.mjs --config capture-config.json",
+      "cwd": "/workspace/world-review/roof-tiles/candidate05/preview",
+      "exitCode": 0,
+      "loads": 3,
+      "output": {
+        "file": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-lighting.webp",
+        "width": 2048,
+        "height": 1024,
+        "bytes": 213360,
+        "quality": 92,
+        "method": 6,
+        "lossless": false,
+        "sha256": "d86ac2cae26a12843926da1f8cc3f9a97891fbf714b82181fa525d56dc88bfe7",
+        "originalPNG": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-lighting.png",
+        "originalPNGSha256": "1b6dcf446685a5864e081bce3a4c7f42ec4e1b609773c44a4766f854b64fe57f",
+        "encoding": "Screenshot-only WebP compression. Source images unchanged; the original screenshot preserves native image blocks. Separate native edge proofs are owned by source-audit."
+      },
+      "errors": {
+        "pageErrors": [],
+        "requestFailures": [],
+        "httpErrors": [],
+        "consoleMessages": []
+      }
+    }
+  ],
+  "blueNonuniformTechnicalScaling": {
+    "cropHalfOpen": [
+      307,
+      205,
+      1069,
+      940
+    ],
+    "croppedDimensions": [
+      762,
+      735
+    ],
+    "scaleX": 0.6719160104986877,
+    "scaleY": 0.6965986394557823,
+    "cropResizeUniform": false,
+    "relativeVerticalToHorizontalScale": 1.036734693877551,
+    "relativeVerticalToHorizontalScalePercentChange": 3.6734693877551017
+  },
+  "sourceStayedFrozen": true,
+  "native512InsertedRGBExact": true,
+  "nativePixelCount": 786432,
+  "lightingPairsOnlyChangeColors": true,
+  "contextRef": "e0afc86e2c295b46dfed1e1c0df9f87543e84b9e",
+  "contextSnapshotCopiedFromExactVerifiedE0af": true,
+  "contextComparisonVs848": "atmos adds unrelatedsnow; palaceblock exact, other8 files exact",
+  "actualGameRoof": {
+    "function": "src/world/themes/arch.ts tileMat/eaveRoof",
+    "source": "procedural mk(64,64), not these AI files",
+    "repeat": [
+      5,
+      4
+    ],
+    "roughness": 0.55,
+    "metalness": 0.12,
+    "nearFade": true,
+    "geometry": "two 4-segment tapered CylinderGeometry roof slopes, plus trim"
+  },
+  "standaloneSample": {
+    "geometry": "horizontal PlaneGeometry",
+    "plane": [
+      8,
+      8
+    ],
+    "repeat": [
+      2,
+      2
+    ],
+    "roughness": 0.65,
+    "metalness": 0,
+    "color": "ffffff",
+    "worldUnitsPerTile": 4,
+    "note": "standalonePBR values, not actual eaveRoofUV/PBR"
+  },
+  "worldEngineImported": false,
+  "actualGameScreenshot": false,
+  "visualObservation": "Actualnew sheets show blue4ridge/5course; no oldV/internalhardline observed in the limited single/repeat/sample views. Periodic wear and source-baked highlights remain. No strictmathematicalseam or zero-lighting claim.",
+  "independentFullEdgeQAOwner": "source-audit, root reported8actualviews separately; this helper did not replace their QA",
+  "ClaudeDecision": null,
+  "noProductionEdits": true
+}

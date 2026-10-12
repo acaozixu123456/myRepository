@@ -1,0 +1,476 @@
+{
+  "task": "A11 existing CC0/MIT/Apache roof tile sources — bounded read-only search",
+  "completedUTC": "2026-10-12 07:01:10 UTC",
+  "scope": {
+    "onlyWrittenFiles": [
+      "/workspace/world-review/roof-tiles-next/source-search.md",
+      "/workspace/world-review/roof-tiles-next/source-search.json"
+    ],
+    "productionEdited": false,
+    "gitMutated": false,
+    "prCreated": false,
+    "branchClaimed": false,
+    "generationCalls": 0,
+    "sourceMediaDownloaded": 0,
+    "localImageFilesCreated": 0,
+    "oldFrozenDirectoriesEdited": false
+  },
+  "requiredAssets": {
+    "targetDimensions": [
+      512,
+      512
+    ],
+    "types": [
+      "青瓦",
+      "金琉璃瓦",
+      "朱红瓦"
+    ],
+    "view": "top-down",
+    "repeatAxes": [
+      "S",
+      "T"
+    ],
+    "ridgeRequired": true,
+    "brightFreshStyle": true
+  },
+  "sourceFirstPolicy": {
+    "readMethod": "GitHub fetch_file on known main branch, first35lines; file blob returned",
+    "repository": "acaozixu123456/myRepository",
+    "branch": "claude/awesome-babbage-ygba4h",
+    "path": "docs/CODEX_QUEUE.md",
+    "liveFileBlobSHA": "15f2c9a6be0d04f7250b479d50e724289387d5c9",
+    "resolvedMainCommit": null,
+    "localHistoricalCommit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+    "localHistoricalFileBlobSHA": "5b9feedf8d1ccf88e0291b03c5610f4c515aa258",
+    "sameWholeFileBlob": false,
+    "requestedSourceFirstRuleSame": true,
+    "sourceLicenseAcceptanceForThisTask": [
+      "CC0",
+      "MIT",
+      "Apache-2.0"
+    ],
+    "futureAdoptionRequiresCreditsRegistration": true
+  },
+  "search": {
+    "stopped": true,
+    "queryCount": 8,
+    "candidateCount": 6,
+    "maxCandidates": 6,
+    "providers": [
+      "ambientCG",
+      "Poly Haven",
+      "Kenney",
+      "OpenGameArt"
+    ],
+    "queries": [
+      "site:ambientcg.com roof tiles CC0 texture",
+      "site:polyhaven.com roof tiles texture CC0",
+      "site:kenney.nl assets roof tiles texture CC0",
+      "site:opengameart.org roof tiles seamless CC0",
+      "site:ambientcg.com/view \"Roofing Tiles\"",
+      "site:ambientcg.com CC0 license",
+      "site:opengameart.org \"Classic Roofing Texture Pack\" CC0",
+      "\"ambientCG\" \"RoofingTiles001\""
+    ],
+    "methods": [
+      "native search_service web_run catalog/license opens",
+      "GitHub policy file read"
+    ],
+    "directNetworkRequestsByHelper": 0,
+    "direct403ObservedByHelper": false,
+    "failedDirect403Retried": false,
+    "proxyOverrides": 0,
+    "noAlternateRouteAfterFailures": true,
+    "noMediaDownloadToWorkAroundDisplayRestriction": true,
+    "noNextSearchScheduled": true
+  },
+  "candidates": [
+    {
+      "catalogRead": true,
+      "licenseRead": true,
+      "licenseDeclared": "CC0 1.0",
+      "sourceFilesDownloaded": false,
+      "sourceFileSHA256": null,
+      "decodedPixelSHA256": null,
+      "pixelsDeliveredToAssistant": false,
+      "visualInspectionPerformed": false,
+      "seamTestPerformed": false,
+      "productionAdopted": false,
+      "id": "ambientcg-roofingtiles001",
+      "provider": "ambientCG",
+      "name": "Roofing Tiles 001",
+      "author": "Lennart Demes / ambientCG (author naming from search metadata; official asset owner ambientCG)",
+      "catalogURL": "https://ambientcg.com/view?id=RoofingTiles001",
+      "licenseURL": "https://docs.ambientcg.com/license/",
+      "officialCatalogFacts": {
+        "formats": "1K–8K JPG/PNG ZIP PBR maps",
+        "tags": [
+          "Slate",
+          "Stone",
+          "Roof",
+          "Tiles"
+        ],
+        "technique": "procedural (catalog typo Prodedural)"
+      },
+      "imageEndpoint": {
+        "url": "https://acg-media.struffelproductions.com/file/ambientCG-Web/media/thumbnail/2048-WEBP/RoofingTiles001.webp",
+        "role": "official material thumbnail, not source Color albedo",
+        "toolOutcome": "ImageDisplayed text placeholder",
+        "imageContentBlockReturned": false,
+        "actualDecodedDimensions": null
+      },
+      "fitInference": {
+        "closestRequestedStyle": "青灰近似",
+        "basis": "Slate/Stone metadata, not visual inspection",
+        "roofRidgesConfirmed": false,
+        "chineseBarrelTilesConfirmed": false,
+        "goldGlazeConfirmed": false
+      },
+      "disposition": "hold for actual source-pixel check; no ready-to-use acceptance"
+    },
+    {
+      "catalogRead": true,
+      "licenseRead": true,
+      "licenseDeclared": "CC0 1.0",
+      "sourceFilesDownloaded": false,
+      "sourceFileSHA256": null,
+      "decodedPixelSHA256": null,
+      "pixelsDeliveredToAssistant": false,
+      "visualInspectionPerformed": false,
+      "seamTestPerformed": false,
+      "productionAdopted": false,
+      "id": "polyhaven-roof_tiles",
+      "provider": "Poly Haven",
+      "name": "Roof Tiles",
+      "author": "Stephan Seeliger",
+      "catalogURL": "https://polyhaven.com/a/roof_tiles",
+      "licenseURL": "https://polyhaven.com/license",
+      "officialCatalogFacts": {
+        "formats": "1K–16K AO/arm/Diffuse/Displacement/Normal/Rough/Spec",
+        "category": "Ceramic/Terracotta",
+        "physicalWidthMeters": 2,
+        "descriptionSummary": "weathered overlapping terracotta ceramic; chipped/dirty/mossy"
+      },
+      "imageEndpoint": {
+        "url": "https://cdn.polyhaven.com/asset_img/map_previews/roof_tiles/roof_tiles_diff_1k.jpg?height=50&quality=95&v=2db1678b&width=50",
+        "role": "Diffuse map preview; not adopted source file",
+        "requestedDimensions": [
+          50,
+          50
+        ],
+        "toolOutcome": "ImageDisplayed text placeholder",
+        "imageContentBlockReturned": false,
+        "actualDecodedDimensions": null
+      },
+      "fullFileAttempt": {
+        "action": "open catalog Diffuse PNG download link",
+        "outcome": "Internal Error, no content returned",
+        "httpStatus": null,
+        "originalPixelContentReceived": false,
+        "retried": false,
+        "alternateProxyUsed": false
+      },
+      "fitInference": {
+        "closestRequestedStyle": "朱红瓦近似",
+        "basis": "Ceramic/Terracotta catalog; not actual color/shape inspection",
+        "roofRidgesConfirmed": false,
+        "brightStylizedFitConfirmed": false,
+        "weatheringMayNeedArtReview": true
+      },
+      "disposition": "red-roof source priority after proper source access; not accepted"
+    },
+    {
+      "catalogRead": true,
+      "licenseRead": true,
+      "licenseDeclared": "CC0 1.0",
+      "sourceFilesDownloaded": false,
+      "sourceFileSHA256": null,
+      "decodedPixelSHA256": null,
+      "pixelsDeliveredToAssistant": false,
+      "visualInspectionPerformed": false,
+      "seamTestPerformed": false,
+      "productionAdopted": false,
+      "id": "polyhaven-roof_slates_03",
+      "provider": "Poly Haven",
+      "name": "Roof Slates 03",
+      "author": "Rob Tuytel",
+      "catalogURL": "https://polyhaven.com/a/roof_slates_03",
+      "licenseURL": "https://polyhaven.com/license",
+      "officialCatalogFacts": {
+        "formats": "1K–8K AO/arm/Diffuse/Displacement/Normal/Rough",
+        "category": "Stone/Slate",
+        "physicalWidthMeters": 3,
+        "descriptionSummary": "aged even gray slate roof tiles, low sheen"
+      },
+      "imageEndpoint": {
+        "url": "https://cdn.polyhaven.com/asset_img/map_previews/roof_slates_03/roof_slates_03_diff_1k.jpg?height=50&quality=95&v=2e9176ac&width=50",
+        "role": "Diffuse map preview; not adopted source file",
+        "requestedDimensions": [
+          50,
+          50
+        ],
+        "toolOutcome": "ImageDisplayed text placeholder",
+        "imageContentBlockReturned": false,
+        "actualDecodedDimensions": null
+      },
+      "fitInference": {
+        "closestRequestedStyle": "青灰近似",
+        "basis": "gray Slate catalog; not actual inspection",
+        "curvedRidgesConfirmed": false,
+        "chineseTileProfileConfirmed": false
+      },
+      "disposition": "color-near alternative; geometry/ridges not established"
+    },
+    {
+      "catalogRead": true,
+      "licenseRead": true,
+      "licenseDeclared": "CC0 1.0",
+      "sourceFilesDownloaded": false,
+      "sourceFileSHA256": null,
+      "decodedPixelSHA256": null,
+      "pixelsDeliveredToAssistant": false,
+      "visualInspectionPerformed": false,
+      "seamTestPerformed": false,
+      "productionAdopted": false,
+      "id": "opengameart-classic-roofing-512",
+      "provider": "OpenGameArt",
+      "name": "Classic Roofing Texture Pack (512px)",
+      "author": "Sayarina",
+      "catalogURL": "https://opengameart.org/content/classic-roofing-texture-pack-512px",
+      "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "assetLicenseEvidenceURL": "https://opengameart.org/content/classic-roofing-texture-pack-512px",
+      "officialCatalogFacts": {
+        "declaredDimensions": [
+          512,
+          512
+        ],
+        "packs": 5,
+        "colors": 9,
+        "sourceDerivation": "author says colors reconstructed using ambientCG normal/AO, not original colors",
+        "lightGrayGrayBlackTransparentVariants": true
+      },
+      "submember": {
+        "catalogURL": "https://opengameart.org/content/classic-roofing-texture-pack-512px-classicroofing3transparent-1png",
+        "name": "ClassicRoofing_3_Transparent (1).png",
+        "declaredDimensions": [
+          512,
+          512
+        ],
+        "catalogFileSizeText": "601.9 Kb",
+        "actualBytes": null,
+        "license": "CC0"
+      },
+      "imageEndpoint": {
+        "url": "https://opengameart.org/sites/default/files/oga-textures/141643/classicroofing_3_transparent%20%281%29.png",
+        "role": "one actual original PNG member endpoint; bitmap not returned to assistant",
+        "toolOutcome": "ImageDisplayed text placeholder",
+        "imageContentBlockReturned": false,
+        "actualDecodedDimensions": null
+      },
+      "archiveAttempt": {
+        "url": "https://opengameart.org/sites/default/files/classicroofing1.7z",
+        "toolOutcome": "400 unsupported content-type application/x-7z-compressed",
+        "archiveActuallyObtained": false,
+        "archiveDecoded": false,
+        "retried": false,
+        "alternateProxyUsed": false
+      },
+      "fitInference": {
+        "closestRequestedStyle": "512² multicolor candidate; gold/blue/red names not verified",
+        "basis": "asset metadata only",
+        "allRequestedColorsConfirmed": false,
+        "roofRidgesConfirmed": false,
+        "opaqueVersionSelected": false,
+        "bakedAOOrLightingNeedInspection": true
+      },
+      "disposition": "first small-dimension pack to inspect if source access works; gold variant unconfirmed"
+    },
+    {
+      "catalogRead": true,
+      "licenseRead": true,
+      "licenseDeclared": "CC0 1.0",
+      "sourceFilesDownloaded": false,
+      "sourceFileSHA256": null,
+      "decodedPixelSHA256": null,
+      "pixelsDeliveredToAssistant": false,
+      "visualInspectionPerformed": false,
+      "seamTestPerformed": false,
+      "productionAdopted": false,
+      "id": "opengameart-free-urban-roof-tiles",
+      "provider": "OpenGameArt",
+      "name": "Free Urban Textures: Roof, Tiles",
+      "author": "Scouser",
+      "catalogURL": "https://opengameart.org/content/free-urban-textures-roof-tiles",
+      "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "assetLicenseEvidenceURL": "https://opengameart.org/content/free-urban-textures-roof-tiles",
+      "officialCatalogFacts": {
+        "licenseLabel": "CC0",
+        "zipName": "roof-tiles.zip",
+        "catalogSizeText": "36.8 Mb",
+        "actualDimensions": null
+      },
+      "pixels": {
+        "archiveOpened": false,
+        "archiveDecoded": false,
+        "imageEndpointOpened": false
+      },
+      "fitInference": {
+        "basis": "roof/tiles category only",
+        "colorAndShapeUnknown": true
+      },
+      "disposition": "second roof pack fallback; content compatibility unknown"
+    },
+    {
+      "catalogRead": true,
+      "licenseRead": true,
+      "licenseDeclared": "CC0 1.0",
+      "sourceFilesDownloaded": false,
+      "sourceFileSHA256": null,
+      "decodedPixelSHA256": null,
+      "pixelsDeliveredToAssistant": false,
+      "visualInspectionPerformed": false,
+      "seamTestPerformed": false,
+      "productionAdopted": false,
+      "id": "kenney-isometric-tiles-buildings",
+      "provider": "Kenney",
+      "name": "Isometric Tiles Buildings",
+      "author": "Kenney",
+      "catalogURL": "https://kenney.nl/assets/isometric-tiles-buildings",
+      "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "assetLicenseEvidenceURL": "https://kenney.nl/assets/isometric-tiles-buildings",
+      "officialCatalogFacts": {
+        "category": "2D • Isometric Tiles",
+        "files": 128,
+        "declaredLicense": "Creative Commons CC0"
+      },
+      "downloadButton": {
+        "action": "click Download",
+        "result": "HTML donation/download page same catalog, no ZIP content retrieved"
+      },
+      "fitInference": {
+        "basis": "catalog category Isometric buildings vs task orthographic top-down roof texture",
+        "direct512SquareTopDownRoofFit": false
+      },
+      "disposition": "excluded this round by purpose/orientation metadata; no pixel aesthetic claim"
+    }
+  ],
+  "licenseEvidence": [
+    {
+      "provider": "ambientCG",
+      "url": "https://docs.ambientcg.com/license/",
+      "observed": "CC0 1.0 applies to downloadable assets and material preview renders"
+    },
+    {
+      "provider": "Poly Haven",
+      "url": "https://polyhaven.com/license",
+      "observed": "assets CC0; site logos/example renders and other website content separately protected; production uses original maps, not preview sphere"
+    },
+    {
+      "provider": "Kenney",
+      "url": "https://kenney.nl/assets/isometric-tiles-buildings",
+      "observed": "individual pack labeled Creative Commons CC0 with canonical deed link"
+    },
+    {
+      "provider": "OpenGameArt",
+      "url": "https://opengameart.org/content/classic-roofing-texture-pack-512px",
+      "observed": "individual pack labeled CC0, same for individual member and Free Urban roof pack"
+    },
+    {
+      "provider": "Creative Commons",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "observed": "canonical CC0 deed actually read"
+    }
+  ],
+  "accessLimitations": [
+    {
+      "url": "https://ambientcg.com/list?category=Roof",
+      "outcome": "web tool says URL not accessible; specific official RoofingTiles001 page later readable",
+      "retriedSameURL": false
+    },
+    {
+      "url": "https://docs.ambientcg.com/books/website-licensing/page/license-information",
+      "outcome": "old OGA license cross-link404; current official /license page separately read",
+      "retriedSameURL": false
+    },
+    {
+      "url": "https://opengameart.org/sites/default/files/classicroofing1.7z",
+      "outcome": "web reader unsupported archive content-type; no compressed pixels obtained",
+      "retriedSameURL": false
+    },
+    {
+      "page": "https://polyhaven.com/a/roof_tiles",
+      "action": "Diffuse PNG link",
+      "outcome": "Internal Error, unknown status, no image payload",
+      "retriedSameURL": false
+    }
+  ],
+  "pixelEvidence": {
+    "imageEndpointsReportedDisplay": 4,
+    "originalPNGEndpointReportedDisplay": 1,
+    "actualImageContentBlocksReceived": 0,
+    "actualPixelBytesReceivedByAssistant": 0,
+    "actualImagesVisuallyInspected": 0,
+    "nativeImageDimensionsIndependentlyDecoded": 0,
+    "onlyTextPlaceholderReturned": true,
+    "allMediaToolCallsWereTextOnly": true,
+    "explanation": "ImageDisplayed marker is evidence the web tool recognized an image endpoint; it is not image data delivered to this agent. No native pixel/visual/seam inspection is claimed.",
+    "fileSHA256VerifiedCount": 0,
+    "readyToUseAdoptedTextures": 0
+  },
+  "conclusion": {
+    "licenseGate": "all six selected entries declare CC0; catalog/license checked, file contents not fully audited",
+    "priorityForFutureSourcePixelCheck": [
+      "polyhaven-roof_tiles",
+      "opengameart-classic-roofing-512"
+    ],
+    "qingwa": "gray/slate near matches exist; curved Chinese ridges unverified",
+    "goldGlaze": "no actually viewed pixel match established; multicolor pack not proved to contain desired gold",
+    "vermilion": "terracotta near match in catalog; actual geometry/style still unverified",
+    "negativeExistenceClaim": false,
+    "claimNoSuitablePublicAssetsExist": false,
+    "selectionForProduction": null,
+    "futureActionOwner": "root; decide normal source retrieval/adoption or documented fallback after inspecting actual pixels"
+  },
+  "toolResponseSummary": [
+    {
+      "key": "roofSearch1",
+      "isError": false,
+      "contentTypes": [
+        "text"
+      ],
+      "textLength": 29735
+    },
+    {
+      "key": "roofRead0",
+      "isError": false,
+      "contentTypes": [
+        "text"
+      ],
+      "textLength": 26539
+    },
+    {
+      "key": "roofRead3",
+      "isError": false,
+      "contentTypes": [
+        "text"
+      ],
+      "textLength": 25094
+    },
+    {
+      "key": "roofRead4",
+      "isError": false,
+      "contentTypes": [
+        "text"
+      ],
+      "textLength": 11598
+    },
+    {
+      "key": "roofPixelFinal",
+      "isError": false,
+      "contentTypes": [
+        "text"
+      ],
+      "textLength": 145
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "decidedUTC": "2026-10-12T07:21:55.962720+00:00",
+  "task": "A11roof3",
+  "sourceSearch": "source-search.md/json completed07:01:10UTC beforeanynewgeneration",
+  "catalogsActuallyRead": [
+    "ambientCG",
+    "Poly Haven",
+    "Kenney",
+    "OpenGameArt"
+  ],
+  "licensedCandidates": 6,
+  "actualRemoteFilePixelsReceived": 0,
+  "readyToAdoptFiles": 0,
+  "knownNegativeMatch": [
+    "Kenney IsometricBuildings iswholeisometricbuilding tiles,not topdownrepeatable albedo"
+  ],
+  "otherCandidates": "CC0slate/terracotta/multicolorpack catalogexists; actualridge/style/goldcolors notverified. No claimthatallunsuitable ornoneexist.",
+  "access": "Nativecataloglicenses readable; fullpixels notdelivered bywebconnector. Runtimepolicyexplicitrestricted/preexisting403; no bypass,retries orunsupportedconfigurationchange.",
+  "decision": "Generateoriginal3curvedroof-ridge candidates usingavailablegenuineimagegen asdocumentedfallback because noverifiedretrievableproduction3color set wasobtained in boundedsourcefirstsearch; submitforClaude judgment withthislimitation.",
+  "thirdPartyPixelsAdopted": false,
+  "creditsWritten": false,
+  "generationCallsAtDecision": 0,
+  "reviewRoundAfterDelivery": 1,
+  "productionAssets": "512square opaqueRGB/sRGB WebbP, truthfulnativepaths/prompts/time/hash",
+  "otherBatches": "SSR121frozen andQAinprogress; no writes toits source whileroofwork."
+}

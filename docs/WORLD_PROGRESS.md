@@ -1,3 +1,96 @@
+# 世界美术进度
+
+## 当前送审 · A11 青瓦 / 金琉璃瓦 / 朱红瓦
+
+[PR #122](https://github.com/acaozixu123456/myRepository/pull/122)，分支 `codex/3d-world-roof-tiles`，base 为 `claude/awesome-babbage-ygba4h`。三款俯视屋瓦为本批 **第 1 轮待审、已通过 0**；内部 AI 候选与技术导出版本不增加 Claude 审核轮次。接入与采用由 Claude 决定。
+
+| 名称 / ID | 成品 | 状态 | 审核轮次 | 规格 / 字节 | 最终选用原稿 |
+| --- | --- | --- | ---: | --- | --- |
+| 青灰弧瓦 `roof_tile_bluegreen_01` | [WebP](../assets/world/roof/roof_tile_bluegreen_01.webp) | 待审 | 1 | 512² opaque RGB / sRGB；46868 B | 真实 AI 候选 1 |
+| 金琉璃瓦 `roof_tile_glazed_gold_02` | [WebP](../assets/world/roof/roof_tile_glazed_gold_02.webp) | 待审 | 1 | 512² opaque RGB / sRGB；50380 B | 真实 AI 候选 2 |
+| 朱红陶瓦 `roof_tile_vermilion_03` | [WebP](../assets/world/roof/roof_tile_vermilion_03.webp) | 待审 | 1 | 512² opaque RGB / sRGB；40756 B | 真实 AI 候选 2 |
+
+### 原稿、技术导出与出处
+
+本批有六次真实 `image_gen.imagegen` 调用：三张初稿于 2026-10-12 07:30:22～07:32:11 UTC 生成；三次参考图编辑于 07:55:26～07:57:09 UTC 完成。六张实际原稿均为 1254² RGB，原始工具路径、完整提示词 / 参数、实际起止时间、参考图和原稿 / 归档 SHA256 保留在 [完整出处](../assets/world/roof/roof-tiles-a11.provenance.json)。最终选用原稿分别为 1 / 2 / 2；“技术导出候选 05”是同一轮中的裁切 / 编码方案，没有第七次 AI 调用。
+
+最终青瓦从原生候选 1 直接取半开矩形 `[307,205,1069,940]`，得到 762×735，保留四个瓦垄周期 / 五行搭接；然后两轴分别用 Lanczos 降到 512²：scaleX=`512/762=0.6719160104986877`，scaleY=`512/735=0.6965986394557823`。**这是非等比缩放**，瓦帽纵向相对横向比例变化为 3.673469%；两个轴均降采样，没有上采样。不能将矩形裁框写成正方形，或将该步骤称为等比缩放。
+
+金瓦取真正候选 2 的未恢复相位原稿 `[80,136,1147,1203]`（1067²）；朱瓦取候选 2 `[160,199,1068,1107]`（908²），均等比降到 512²。三张最终选框 / 导出没有 roll、恢复相位、代码补绘、边缘融合或调色；编辑调用之前的半幅移位参考和调用后的历史恢复文件仍各自记录，未冒称最终采用的源文件。成品统一 RGB WebP q90 / method6，嵌入同一 588 B sRGB ICC；规格和导出链见 [素材说明](../assets/world/roof/roof-tiles-a11.README.md)。
+
+| 成品 | 最终 SHA256 |
+| --- | --- |
+| 青瓦 | `8ce52607f49d2664872ec18bcbd9705f9b892a217ab78feac9b3da371f513990` |
+| 金瓦 | `335ba9f5a0101009a4e79ff620ea64abf55bdaec207210ba17441de388838b03` |
+| 朱瓦 | `2413a9a5dd2c282a72c0faf80aa7803a78395033af6f9afe9bde1257007abb8e` |
+
+### 现成素材优先与采用边界
+
+在初次生成之前，已实际查询 ambientCG / Poly Haven / Kenney / OpenGameArt 的六个 CC0 目录和许可，完成时间为 07:01:10 UTC，fallback 决策为 07:21:55 UTC。Kenney 的等距整楼图块用途与俯视瓦面不同；另五个石瓦 / 陶土 / 多色包确实存在，但这次有限查询没有取得可下载、可实看并核验的原始三色瓦垄素材组。网页或工具中的图像标记不算已收到像素。故选择真正 AI 自制候选作为此次 fallback；没有宣称所有公开素材都不适合或不存在。
+
+实际目录、许可、访问结果与判断边界见 [检索摘要](../assets/world/roof/roof-tiles-a11.source-search.md)、[检索记录](../assets/world/roof/roof-tiles-a11.source-search.json) 和 [fallback 决策](../assets/world/roof/roof-tiles-a11.fallback-decision.json)。本批未采用第三方像素，不扩写 CREDITS，不改引擎或素材注册；后续接入由 Claude 负责。
+
+### 有限独立 QA 与真实预览
+
+青瓦导出 05 已独立核对原生选框和原稿裁切逐 RGB 一致，q90 重导出与冻结成品逐字节相同，并实际查看原生选框、512² 成品、2×2 / 4×4、完整全高左右缝、完整全宽上下缝、四角和原生全高左右缝，共八张新证据。有限视图中的左右拼接保持 U 形谷，未见之前两个凸帽挤成尖 V / 缺谷列；上下和四角的搭接节奏正常，未见异常双沿短行或贯穿全宽硬断。
+
+金 / 朱最终原稿 SHA、裁框、成品字节及解码 RGB 与已冻结导出 03 / 04 相同，明确复用当时两款十张边 / 角 / 平铺实际观察和精确重导出证明；没有将旧视觉检查重标成这次新检查。技术检查和有限观察见 [QA 摘要](../assets/world/roof/roof-tiles-a11.qa.md) 及 [机器记录](../assets/world/roof/roof-tiles-a11.qa.json)。
+
+两张新审图均重新加载三款最终成品，于 08:42:28.871 / 08:42:36.651 UTC 实际浏览器捕获：[总览](../assets/world/reviews/roof-tiles-a11-candidate05-overview.webp)（2048×1024、378182 B）和 [白光 / 宫阙午后材质样板](../assets/world/reviews/roof-tiles-a11-candidate05-lighting.webp)（2048×1024、213360 B）。各 3/3 加载，页面、请求、HTTP≥400 和 console error / warning 数组均为空。总览 PNG 的三块原尺寸 512² 区域共 786432 个 RGB 像素与成品解码 RGB 相同；q92 有损 WebP 审图不作为逐像素相等证明。
+
+Three.js 0.169.0、sRGB / RepeatWrapping、actual anisotropy 4；独立 Plane8×8、repeat2×2，白色 MeshStandardMaterial roughness .65 / metalness 0。成对相机、灯强度 / 位置、环境与曝光相同，仅改白光和宫阙午后灯色，无雾、阴影、bloom、附加材质图或贴图调色。实际来源上下文仍是预览时冻结的 `e0afc86e2c295b46dfed1e1c0df9f87543e84b9e`，并非本次 f4 最新游戏截图；该快照的屋檐是程序 64² 底图、repeat5×4、roughness .55 / metalness .12 与圆台屋面。独立平面与实际屋顶 UV / PBR 不同，未在该样板接入游戏。[预览方法与限制](../assets/world/reviews/roof-tiles-a11-candidate05.README.md) 保留真实依赖和时点。
+
+最不满意：底色仍有浅瓦帽、深谷和搭接暗沿，金瓦仍有方向性的暖浅竖纹；磨损图形在 4×4 按完整贴片重复。有限视觉检查不宣称严格数学像素周期、零烘焙光照或已验证所有实际屋顶 / 镜头；青瓦的 3.673469% 形状比例变化也保留供审核。
+
+### 最新主线实际提交检查
+
+根在已 apply 主线 `f4b3c0c9907dc5b0f5a7315a1c8578de7567a057` 的最终工作树实际执行 `npm run typecheck && npm test`，整体退出0，**83测试文件 /1118测试通过**；命令2026-10-12 11:47:53 UTC，Vitest11:48:03、69.67秒。[完整日志](../assets/world/roof/roof-tiles-a11.required-checks-final-main-f4.log)。照片仍为上面注明的08:42 e0af独立材质预览，不因最新提交检查改写拍摄时点。出处/selection中的导出时待查字段属于历史；当前验证另存[提交验证](../assets/world/roof/roof-tiles-a11.submission-validation.json)，ClaudeDecision仍null。
+
+## 最新已通过与协作状态
+
+以下按实际 GitHub 主干 `f4b3c0c9907dc5b0f5a7315a1c8578de7567a057` 的 [CODEX_QUEUE](CODEX_QUEUE.md)（blob `5cf00e7ffff0acc588b6c28e3246a869f1c9bb1f`）同步；原提交记录中的“待审 / 未接入 / 制作中”表示当时阶段，保留在下方历史中。
+
+| 批次 | PR | 当前审核 / 接入 | 审核轮次 | 已通过 |
+| --- | --- | --- | ---: | ---: |
+| A09 夜市暖地面 | [#108](https://github.com/acaozixu123456/myRepository/pull/108) | 通过并合并；接入暖陶砖 01 / repeat7 | 1 | 3 |
+| A09 港口木栈板 | [#110](https://github.com/acaozixu123456/myRepository/pull/110) | 通过并合并；接入旧木栈板 01 | 1 | 3 |
+| A09 宫阙汉白玉 | [#109](https://github.com/acaozixu123456/myRepository/pull/109) | 通过并合并；接入白玉 03 / repeat8 | 1 | 3 |
+| A09 森林草地 | [#115](https://github.com/acaozixu123456/myRepository/pull/115) | 通过并合并；接入浅鲜草 03 | 1 | 3 |
+| A09 云岛花草 | [#114](https://github.com/acaozixu123456/myRepository/pull/114) | 通过并合并；接入薄荷小花 01 / repeat4 | 1 | 3 |
+| A10 前三天空 | [#116](https://github.com/acaozixu123456/myRepository/pull/116) | 通过并合并；已接入夜市 / 赤壁港 / 光之森 | 1 | 3 |
+| A10 正午 / 午后天空 | [#117](https://github.com/acaozixu123456/myRepository/pull/117) | 通过并合并；已接入云岛 / 宫阙 | 1 | 2 |
+| A11 三色瓦面 | [#122](https://github.com/acaozixu123456/myRepository/pull/122) | 本批第 1 轮待审；通过 0 | 1 | 0 |
+| A12 柔边云精灵 | [#127](https://github.com/acaozixu123456/myRepository/pull/127) | 通过并合并；三 atlas / 十二 UV 云组已接入云端雾岛 | 1 | 3 |
+
+#123 背卷 / 旌旗、#126 眼角光弧 / 流苏 / 战纹、#128 长须 / 眼罩 / 红脸已通过并合并。#130 旗爪两面由原 owner 待审；魏 SSR #121、蜀 SSR #124、轻兵 SSR #129 各自认领，不重复制作。周喵瑜古琴按审核要求暂不做，2D 立绘保持停止。
+
+后续 WORLD 以最新审核为准：A12 已通过，不能按旧表重画；可独立核对 Claude 07:20 审核明确允许的 A09 日落沙地 / 绿洲岸边，先查现成来源，再决定是否新增批次。有返修先跟原 PR，只暂停对应批次。
+
+## A11 第0轮认领记录（历史原文）
+
+以下为原始公开认领时点，不代表本次第1轮待审或最新外部批次状态。
+
+# 世界美术进度
+
+## 当前制作认领 · A11 青瓦 / 金琉璃瓦 / 朱红瓦
+
+分支 `codex/3d-world-roof-tiles`，基线 `b4977cfe5114a9318b23d8aa3bf607d08fd01162`，base 为 `claude/awesome-babbage-ygba4h`。当前制作中，第0轮、通过0；真实512²成品、出处与平铺/材质预览及独立QA完成后，在同一草稿PR转第1轮待审。
+
+| 计划ID | 方向 | 状态 | 轮次 | 规格 |
+| --- | --- | --- | --- | --- |
+| `roof_tile_bluegreen_01` | 明亮青灰弧瓦，平行瓦垄 | 制作中 | 0 | 512² RGB/sRGB，可横纵平铺 |
+| `roof_tile_glazed_gold_02` | 金黄琉璃弧瓦，柔和釉色 | 制作中 | 0 | 512² RGB/sRGB，可横纵平铺 |
+| `roof_tile_vermilion_03` | 明亮朱红陶瓦，浅色自然磨损 | 制作中 | 0 | 512² RGB/sRGB，可横纵平铺 |
+
+制作前按最新现成素材优先规则，实际查询ambientCG / Poly Haven / Kenney / OpenGameArt的六个CC0候选目录和许可。Kenney为等距整楼图块，不能作俯视重复瓦面；另五个石瓦/陶土/多色包确实存在，但当前环境没有取得可下载、可实看和核验的原始贴图文件，尚不能确认中式瓦垄、金琉璃配色与无缝适配。本批以真实AI绘制作为未取得可验证三色素材组时的候选fallback，保存检索及限制；不声称所有现成候选不合适或不存在。本批不采用第三方像素，不修改CREDITS或引擎；原始搜索与决策记录待最终出处一起入库。
+
+#114云岛、#117天空后两款已由Claude通过、合并并接入；#116前三天空仍由另一owner制作。#108夜市、#109宫阙已由Claude通过并接入，#110港口/#115森林也已通过；3D #121魏族SSR并行独立QA，只暂停等待对应批次，不重复写入。
+
+
+## 既有批次原始提交记录（历史原文）
+
+以下为完整 fresh f4 主线进度原文，保留原提交时的状态、数字、时间与限制；当前裁决以上方最新摘要与固定队列为准。
+
 ## A12 柔边透明云朵：第1轮待审（通过0）
 
 [同一PR #127](https://github.com/acaozixu123456/myRepository/pull/127)，分支 `codex/3d-world-cloud-sprites`；3纹理/12UV云组与审图出处已完成，独立QA完成，Claude尚未审核。只更新本认领段；后面历史正文原字节保留，旧表的历史“未开始”不当本批最新状态。

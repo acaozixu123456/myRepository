@@ -1,0 +1,131 @@
+{
+  "verifiedAtUTC": "2026-10-12T10:57:30.301914+00:00",
+  "allSourcesUnchanged": true,
+  "files": [
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate03/independent-qa/roof-tiles-a11.partial-qa.json",
+      "bytes": 4132,
+      "sha256": "195afc8d9708423ce457c9b86aefc1ddc21ed865c7a350c6a3c4859f4bcd410c"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/export-freeze.json",
+      "bytes": 1122,
+      "sha256": "85ae95ac700d51876f3776cf380f50728a675d08316e52e5986fe9f4c81978d5"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/exports/roof_tile_bluegreen_01.webp",
+      "bytes": 46868,
+      "sha256": "8ce52607f49d2664872ec18bcbd9705f9b892a217ab78feac9b3da371f513990"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/exports/roof_tile_glazed_gold_02.webp",
+      "bytes": 50380,
+      "sha256": "335ba9f5a0101009a4e79ff620ea64abf55bdaec207210ba17441de388838b03"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/exports/roof_tile_vermilion_03.webp",
+      "bytes": 40756,
+      "sha256": "2413a9a5dd2c282a72c0faf80aa7803a78395033af6f9afe9bde1257007abb8e"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/README.md",
+      "bytes": 4559,
+      "sha256": "fdc35f04af5b6740087111de68c828f3e3a106ff03dcfdfd413bdf575e81c157"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/capture-config.json",
+      "bytes": 5713,
+      "sha256": "f059e55f56b0e79b891b72095a993d5f701408bc71e9be18844abd70dc6e5036"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/capture-dependencies.json",
+      "bytes": 2877,
+      "sha256": "3bb4b659e9d2db85bdcec864a0390955ee21165abab2082104de85f3c4349a4c"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/capture-freeze-manifest.json",
+      "bytes": 5473,
+      "sha256": "cc23a9ce04ab76aeac7ad2add6c84d6cc23cdea024ed340dcb57ef5ff2ef0bad"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/capture-inventory.json",
+      "bytes": 4804,
+      "sha256": "4713c2361b2ed834a2a69f961c7156e5ca8647406948ab64e88c99a3352a3062"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/capture-source-context-check.json",
+      "bytes": 2334,
+      "sha256": "bf7307b50c4fa55d90179e61122f029ea2bf8c2745012b6fcef1a35b1cb8bbf1"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-lighting.json",
+      "bytes": 15468,
+      "sha256": "bc541a9723a27a1aac6f220a6837f39a55ec15ce1e7fc3813d800a0c91e20446"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-lighting.png",
+      "bytes": 891525,
+      "sha256": "1b6dcf446685a5864e081bce3a4c7f42ec4e1b609773c44a4766f854b64fe57f"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-lighting.webp",
+      "bytes": 213360,
+      "sha256": "d86ac2cae26a12843926da1f8cc3f9a97891fbf714b82181fa525d56dc88bfe7"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-overview.json",
+      "bytes": 11432,
+      "sha256": "79b2f8330df8fc41265c8f5333b88e90cdcf39d68e25fdc825bf9869ff1a0a30"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-overview.png",
+      "bytes": 1474707,
+      "sha256": "0e90d787fdc18fb9fce323bf71c33d429e5e61a05bda79ca02a1b532181a74f4"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-overview.webp",
+      "bytes": 378182,
+      "sha256": "dc1fe5af6cf10dae7321897fc25f59081b06ed0d48eb4a96e7736d048dd3c5c0"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/source-context-fetch.json",
+      "bytes": 2343,
+      "sha256": "c5353c738c4dd050750ed74cfee999ac89f7b3f40575c046c361f952b57bdcea"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/sources-after.json",
+      "bytes": 1639,
+      "sha256": "c8be95976ee66f8e58b54dd9dfaeb71cdfda043514d96e93fd5ae0f483a83060"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/sources-before.json",
+      "bytes": 3928,
+      "sha256": "412c5690b801d7705a76552f69881c93eb8d4567c6eb957c70ed658227643456"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/roof-tiles-a11.provenance.json",
+      "bytes": 37598,
+      "sha256": "ac0c285a3e8a15d33078264212312edcf0dbdca16752d88e54c1f8cb1de3f568"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/selection-at-export.json",
+      "bytes": 7398,
+      "sha256": "58cd6a0aea554ebd7fdbf1255ed0f68ec57c8865700a69d74ea0a167e87077b5"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/source-audit/qa-summary.json",
+      "bytes": 11323,
+      "sha256": "34350e51f369bf8c64611cfa5e789f137a707a71c155611bb2045597e0288fb7"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/source-audit/qa-summary.md",
+      "bytes": 2917,
+      "sha256": "4101cccb32f7f33ba7348d14bde5cc62854872d45da0662c1648ffa6a52d86e2"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/source-audit/technical-checks.json",
+      "bytes": 11301,
+      "sha256": "ff25910eafbaae0bf723f4ab1bc98ce05d0e2656b29b8bb2aebc551f5263fb03"
+    }
+  ]
+}

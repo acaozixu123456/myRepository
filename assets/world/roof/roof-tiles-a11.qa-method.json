@@ -1,0 +1,96 @@
+{
+  "createdUTC": "2026-10-12T10:59:41.801898+00:00",
+  "command": "python /workspace/world-review/roof-tiles/final-qa/audit-final.py",
+  "actualExitCode": 0,
+  "script": {
+    "path": "/workspace/world-review/roof-tiles/final-qa/audit-final.py",
+    "bytes": 13836,
+    "sha256": "89ddee387c336656b4cbd98718a981a433334a46b5acb44f5f59cd1c617030c6"
+  },
+  "PillowVersion": "12.3.0",
+  "scope": "Three frozen source files, exact selected native crops, unchanged six historical call records and archive hashes, two existing fresh screenshots, frozen manifests, and nine small technical proofs.",
+  "proofConstruction": {
+    "LR": "decodedRGB[:,384:512] beside decodedRGB[:,0:128];256×512 PNG",
+    "TB": "decodedRGB[384:512,:] above decodedRGB[0:128,:];512×256 PNG",
+    "corners": "four128²original corners around wrap point; bottom-right/bottom-left above top-right/top-left;256² PNG",
+    "pixelScale": "1:1, no resize/painting/blending/labels/masks; PNG decoded RGB compared exact.",
+    "ICC": "Copy the same frozen588B sRGB profile; no pixel transform."
+  },
+  "numericScoresUsedAsVisualPass": false,
+  "actualViewsByThisHelper": [
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-overview.webp",
+      "bytes": 378182,
+      "sha256": "dc1fe5af6cf10dae7321897fc25f59081b06ed0d48eb4a96e7736d048dd3c5c0"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/preview/roof-tiles-a11-candidate05-lighting.webp",
+      "bytes": 213360,
+      "sha256": "d86ac2cae26a12843926da1f8cc3f9a97891fbf714b82181fa525d56dc88bfe7"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_bluegreen_01-native-lr.png",
+      "bytes": 170116,
+      "sha256": "f58ae42655c5c55a75eebbdb69ea333025ab745f5da6fe010eb05f3b7577d5d4"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_bluegreen_01-native-tb.png",
+      "bytes": 167664,
+      "sha256": "8b00c5af0093ac3f0acebc83889c91fba4c533acaa547e5291915e7211d6dc8c"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_bluegreen_01-native-corners.png",
+      "bytes": 84843,
+      "sha256": "046549d5a54912b8ad6fd2174f57431735facf72b3eb456b20466ff3d932ed29"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_glazed_gold_02-native-lr.png",
+      "bytes": 175127,
+      "sha256": "66def932a4b0175da106ddbad5a6407225f1f2c180368b044101c8e0c8869ecd"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_glazed_gold_02-native-tb.png",
+      "bytes": 177925,
+      "sha256": "56c87bb31e2af643c512d3e1ea30b0d2f503a399cd2fc16315ef6d8a1dcf2551"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_glazed_gold_02-native-corners.png",
+      "bytes": 89657,
+      "sha256": "4461ce672a95383aa12bdea3d831634d1a7c09c04f8c30d9fd6710d07504630c"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_vermilion_03-native-lr.png",
+      "bytes": 149537,
+      "sha256": "337076cfe11d6305259051a77c4d9646d115a98cbf777644b9bb06811fee4574"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_vermilion_03-native-tb.png",
+      "bytes": 147705,
+      "sha256": "58d5c581c5f6461ec120033c6fd4eeac6b80114716cb9708999e39b50d815405"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/final-qa/roof-tiles-a11-roof_tile_vermilion_03-native-corners.png",
+      "bytes": 75460,
+      "sha256": "85a998b6aba765466bdfb7bf1b5a5bd743af77ae05a343970e0d01a03318ee73"
+    },
+    {
+      "path": "/workspace/world-review/roof-tiles/candidate05/source-audit/roof_tile_bluegreen_01-coded-4x4.png",
+      "bytes": 1515636,
+      "sha256": "00ba6a1330506464252d8fabb8057b67b37019a8e7939507bf48ee4701a0eef8"
+    }
+  ],
+  "limitedHistoricalReuse": "Gold/red C3 and C4 actual finite observations reused only after current native hashes, rectangles, exact archived crop RGB, encoded file bytes/hash and decoded RGB identity. Blue C5 preflight separately frozen and new proof/repeat views inspected. No recapture and no full historical sweep.",
+  "nativeScreenshotProof": "Compare original overviewPNG three512²single rects to decoded sourceRGB;786432pixels exact. Lossy reviewWebP not used as pixel proof.",
+  "before": {
+    "path": "/workspace/world-review/roof-tiles/final-qa/sources-before.json",
+    "bytes": 5507,
+    "sha256": "30b8869f6dea567a63ac8eb77e95ca20a3c0f4b3d7a82b27e40c06da4d680e9b"
+  },
+  "after": {
+    "path": "/workspace/world-review/roof-tiles/final-qa/sources-after.json",
+    "bytes": 5541,
+    "sha256": "3fae83508effca4d6328a2d3516c843dccbe780ef93b559387c6b9651012e0c2"
+  },
+  "immutableInputTimes": "Source freezes and screenshot reports are read-only; finalQA gets its actual new timestamps without rewriting historical times.",
+  "rootSubmissionScopeAndFullRequiredChecks": "Not performed by this helper."
+}
