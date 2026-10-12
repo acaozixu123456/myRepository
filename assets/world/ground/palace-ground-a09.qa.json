@@ -1,0 +1,514 @@
+{
+  "completedAtUTC": "2026-10-12T04:56:35.044397+00:00",
+  "batch": "WORLD A09-PAL palace-only3variants",
+  "readyForClaudeReview": true,
+  "ClaudeDecision": null,
+  "QAProductionWrites": 0,
+  "selectedSources": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "candidate": 1,
+      "importedAnchor": true,
+      "originalPath": "/workspace/generated_images/exec-3b31523b-78b3-4576-9197-476f1d234cd1.png",
+      "archivedPath": "/workspace/world-review/palace-ground/raw/ground_palace_white_marble_03-candidate-01.png",
+      "originalSHA256": "c887452c1ddf3af0140a9d8033845922e61a5da9fb2fbfee7d8afbc89cdf755b",
+      "originalHashMatchesRecord": true,
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "originalMode": "RGB",
+      "originalSizeMatchesRecord": true,
+      "originalBytes": 2330025,
+      "originalBytesMatchRecord": true,
+      "archiveBytesEqualOriginal": true,
+      "finalPath": "/workspace/world-review/palace-ground/exports/ground_palace_white_marble_03.webp",
+      "finalSHA256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "finalHashMatchesRecord": true,
+      "finalSize": [
+        1024,
+        1024
+      ],
+      "finalMode": "RGB",
+      "finalBytes": 124046,
+      "finalBytesMatchesRecord": true,
+      "budgetUnder500000": true,
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "ICCBytes": 588,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCEqualsFrozenProfile": true,
+      "ICCDescription": "sRGB built-in",
+      "fullCanvas": true,
+      "crop": null,
+      "resize": "1254square full canvas ->1024square Lanczos, no upsampling",
+      "scaleXY": [
+        0.8165869218500797,
+        0.8165869218500797
+      ],
+      "reexportByteIdentical": true,
+      "reexportSHA256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "decodedRGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+      "decodedRGBExactlyMatchesPriorVerifiedAnchor": true,
+      "priorVerifiedVisualEvidenceReused": "/workspace/world-review/theme-ground/independent-qa/qa-summary.md",
+      "fullPromptArgsMatchesPriorAnchorRecord": true,
+      "anchorIsExistingOriginalNotNewGenerationThisBatch": true
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "candidate": 1,
+      "importedAnchor": false,
+      "originalPath": "/workspace/generated_images/exec-5a502ecd-4784-4338-892a-9d7516f82b2e.png",
+      "archivedPath": "/workspace/world-review/palace-ground/raw/ground_palace_cloud_marble_04-candidate-01.png",
+      "originalSHA256": "e3dd8d6feba259293f11ebb15d9ba76249f5f4600fc66474ca95568c3b4ce009",
+      "originalHashMatchesRecord": true,
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "originalMode": "RGB",
+      "originalSizeMatchesRecord": true,
+      "originalBytes": 2142481,
+      "originalBytesMatchRecord": true,
+      "archiveBytesEqualOriginal": true,
+      "finalPath": "/workspace/world-review/palace-ground/exports/ground_palace_cloud_marble_04.webp",
+      "finalSHA256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "finalHashMatchesRecord": true,
+      "finalSize": [
+        1024,
+        1024
+      ],
+      "finalMode": "RGB",
+      "finalBytes": 107562,
+      "finalBytesMatchesRecord": true,
+      "budgetUnder500000": true,
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "ICCBytes": 588,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCEqualsFrozenProfile": true,
+      "ICCDescription": "sRGB built-in",
+      "fullCanvas": true,
+      "crop": null,
+      "resize": "1254square full canvas ->1024square Lanczos, no upsampling",
+      "scaleXY": [
+        0.8165869218500797,
+        0.8165869218500797
+      ],
+      "reexportByteIdentical": true,
+      "reexportSHA256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "decodedRGBSHA256": "36d6abdf08e12443b882d0b628c22d2d9b2f381bfc04e557b43c6596c1da52c5",
+      "fullRequestedArgsWordForWordEqual": true,
+      "references": [
+        {
+          "path": "/workspace/world-review/palace-ground/raw/ground_palace_white_marble_03-candidate-01.png",
+          "exists": true,
+          "SHA256": "c887452c1ddf3af0140a9d8033845922e61a5da9fb2fbfee7d8afbc89cdf755b",
+          "RGBReferenceMatchesAnchorNative": true
+        }
+      ]
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "candidate": 1,
+      "importedAnchor": false,
+      "originalPath": "/workspace/generated_images/exec-aa9cd9ff-60c6-4121-8dd3-0e6628566ada.png",
+      "archivedPath": "/workspace/world-review/palace-ground/raw/ground_palace_gold_thread_05-candidate-01.png",
+      "originalSHA256": "d6d57b6cc4f9640885cc8fce4e1badd1848b2b3bfc734b8273e974f5ec7363ca",
+      "originalHashMatchesRecord": true,
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "originalMode": "RGB",
+      "originalSizeMatchesRecord": true,
+      "originalBytes": 2150598,
+      "originalBytesMatchRecord": true,
+      "archiveBytesEqualOriginal": true,
+      "finalPath": "/workspace/world-review/palace-ground/exports/ground_palace_gold_thread_05.webp",
+      "finalSHA256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "finalHashMatchesRecord": true,
+      "finalSize": [
+        1024,
+        1024
+      ],
+      "finalMode": "RGB",
+      "finalBytes": 106010,
+      "finalBytesMatchesRecord": true,
+      "budgetUnder500000": true,
+      "alphaMinMax": [
+        255,
+        255
+      ],
+      "ICCBytes": 588,
+      "ICCSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "ICCEqualsFrozenProfile": true,
+      "ICCDescription": "sRGB built-in",
+      "fullCanvas": true,
+      "crop": null,
+      "resize": "1254square full canvas ->1024square Lanczos, no upsampling",
+      "scaleXY": [
+        0.8165869218500797,
+        0.8165869218500797
+      ],
+      "reexportByteIdentical": true,
+      "reexportSHA256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "decodedRGBSHA256": "6966b352510c98bf1ee58c1d72e35fab311f12b9f011e538aa0597f4e1036185",
+      "fullRequestedArgsWordForWordEqual": true,
+      "references": [
+        {
+          "path": "/workspace/world-review/palace-ground/raw/ground_palace_white_marble_03-candidate-01.png",
+          "exists": true,
+          "SHA256": "c887452c1ddf3af0140a9d8033845922e61a5da9fb2fbfee7d8afbc89cdf755b",
+          "RGBReferenceMatchesAnchorNative": true
+        }
+      ]
+    }
+  ],
+  "all3FormatSourceBudgetAndReexportChecksPassed": true,
+  "anchorReuseConditions": {
+    "sourceRGBSHA256": "bae5b9078047156d85c61ac45a1171c77dfea39a3a50420608c5493bb42638ce",
+    "identityConfirmed": true,
+    "priorEvidence": "/workspace/world-review/theme-ground/independent-qa/qa-summary.md",
+    "priorArchiveSubmitted": false,
+    "priorArchiveClaudeDecision": null,
+    "reusedChecks": "Identicaloriginal/finalpixels previously fullyviewed with2\u00d72/4\u00d74/nativeLR/TB/corners. No repeatedfinitevisual suite. Currentformat/hash and3/3exportchecked; new3palace previewactuallyshows anchor."
+  },
+  "new2CompleteVisualChecks": {
+    "ids": [
+      "ground_palace_cloud_marble_04",
+      "ground_palace_gold_thread_05"
+    ],
+    "rawFullViewBeforeDerivedQA": true,
+    "rawAndCodedActualViews": [
+      "wholeimage",
+      "2x2",
+      "4x4",
+      "nativeLR",
+      "nativeTB",
+      "nativefourcorners"
+    ],
+    "layoutObserved": "4\u00d74physicalslabs",
+    "directionLightObserved": "Noobviousglobalbakedlightgradient/sharedbrightnessband; mineraldiagonalorientationnotclassifiedaslighting."
+  },
+  "visualFindings": {
+    "all": "Complete4\u00d74slabperiod/normalnarrowjoints andcorners; noobvious sharedbrightnessseam/extraedgeframe/bakedsungradient.",
+    "cloud04": "Greymineralclouds stillpreferdiagonalbands; do notclaimallpromptchangesachieved.",
+    "gold05": "Slightlywarmerivory andmorevisible palegoldthreads; lowcontrast, matteminerallines.",
+    "limits": [
+      "04stilldiagonalgreymineralbands",
+      "Finegoldveinsandvariantdifferencesweakunderstrongwhite/goldlight orsmallrender",
+      "Repeatingmineralclustersvisiblein4\u00d74",
+      "No strict mathematical pixel-perfectseamlessness claim"
+    ]
+  },
+  "newVariantSeamDiagnostics": {
+    "cloud-raw": {
+      "LR": {
+        "meanAbsRGB": 11.850877192982455,
+        "p95AbsRGB": 29.0,
+        "maxAbsRGB": 48.0
+      },
+      "TB": {
+        "meanAbsRGB": 67.92822966507177,
+        "p95AbsRGB": 88.0,
+        "maxAbsRGB": 113.0
+      },
+      "internalAdjacentXMean": 2.7345749255481686,
+      "internalAdjacentYMean": 2.7049721815967036
+    },
+    "cloud-final": {
+      "LR": {
+        "meanAbsRGB": 13.0185546875,
+        "p95AbsRGB": 33.0,
+        "maxAbsRGB": 61.0
+      },
+      "TB": {
+        "meanAbsRGB": 63.209309895833336,
+        "p95AbsRGB": 79.0,
+        "maxAbsRGB": 98.0
+      },
+      "internalAdjacentXMean": 2.509427376079342,
+      "internalAdjacentYMean": 2.511705703710492
+    },
+    "gold-raw": {
+      "LR": {
+        "meanAbsRGB": 52.46836788942052,
+        "p95AbsRGB": 93.0,
+        "maxAbsRGB": 124.0
+      },
+      "TB": {
+        "meanAbsRGB": 79.11961722488039,
+        "p95AbsRGB": 101.0,
+        "maxAbsRGB": 119.0
+      },
+      "internalAdjacentXMean": 2.7071929018415344,
+      "internalAdjacentYMean": 2.650431733642554
+    },
+    "gold-final": {
+      "LR": {
+        "meanAbsRGB": 52.711588541666664,
+        "p95AbsRGB": 91.0,
+        "maxAbsRGB": 117.0
+      },
+      "TB": {
+        "meanAbsRGB": 74.06640625,
+        "p95AbsRGB": 93.0,
+        "maxAbsRGB": 107.0
+      },
+      "internalAdjacentXMean": 2.4468239603698274,
+      "internalAdjacentYMean": 2.4219570961632453
+    }
+  },
+  "strictPixelSeamlessnessClaimed": false,
+  "gameIntegrationVerified": false,
+  "actualFinalThreeViews": [
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09.webp",
+      "SHA256": "6e1b9cf6a0cd393b2ebd73c6e6786d2128238192735e65f10ce0db266673bd93",
+      "hashMatchesMeta": true,
+      "bytes": 253880,
+      "bytesMatchMeta": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "budgetUnder500000": true,
+      "actuallyViewedIndependently": true,
+      "sourceSHAsMatchSelected": true,
+      "actualSourcesStillMatchSelected": true,
+      "producerRecordedLoaded": 3,
+      "producerPageErrors": [],
+      "producerRequestFailures": [],
+      "producerConsoleMessages": [],
+      "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+      "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc"
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.webp",
+      "SHA256": "e792290d5743aa6ee8ac5a600e7b6d9d955822a7e2a0b96c3b168bcff6b2b7d9",
+      "hashMatchesMeta": true,
+      "bytes": 90946,
+      "bytesMatchMeta": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "budgetUnder500000": true,
+      "actuallyViewedIndependently": true,
+      "sourceSHAsMatchSelected": true,
+      "actualSourcesStillMatchSelected": true,
+      "producerRecordedLoaded": 3,
+      "producerPageErrors": [],
+      "producerRequestFailures": [],
+      "producerConsoleMessages": [],
+      "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+      "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc"
+    }
+  ],
+  "nativePNGs": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "lr",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-lr.png",
+      "SHA256": "2a8749f84ab0476227167ea5181c9624ced94aa9059c5c6dec6128a8bd65b7d8",
+      "hashMatchesMeta": true,
+      "bytes": 95698,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "tb",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-tb.png",
+      "SHA256": "076827ee1e52f74ee0766a3904587fccb4ae08053b97d23a613a43d596e62994",
+      "hashMatchesMeta": true,
+      "bytes": 94671,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "corners",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-corners.png",
+      "SHA256": "a999bd7b4025d191b37cea299e31eb3f67383b825fe5031d2f114d09a3b0585f",
+      "hashMatchesMeta": true,
+      "bytes": 100673,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "lr",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-lr.png",
+      "SHA256": "50511d26a274b030d1a0c4e88f21829ec9b0ca4ceea7e17cc1ce2e66ffddf90e",
+      "hashMatchesMeta": true,
+      "bytes": 87325,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "tb",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-tb.png",
+      "SHA256": "bc707107fa3a0ab87d0b52640ea8feca37d415d372f81c64eb67dd3df95b0a66",
+      "hashMatchesMeta": true,
+      "bytes": 83814,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "corners",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-corners.png",
+      "SHA256": "67b070fd31131fea2c681bf68e571c3d017c545c0cb70db0479114fccd4bb122",
+      "hashMatchesMeta": true,
+      "bytes": 87348,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "lr",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-lr.png",
+      "SHA256": "06feed506b1f33de5c530876047763ef249e7ac9f78589f689bd5499fac5b2c5",
+      "hashMatchesMeta": true,
+      "bytes": 87071,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "tb",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-tb.png",
+      "SHA256": "9bf737c2cc81cb089481a0b77510df325866636063ee318d730be64ba63f2213",
+      "hashMatchesMeta": true,
+      "bytes": 81342,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "corners",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-corners.png",
+      "SHA256": "0327419267032babb1b61c4a3b09c86916756766eb05bf9b844697f6141c18fa",
+      "hashMatchesMeta": true,
+      "bytes": 86408,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    }
+  ],
+  "all9NativePixelsHashesBudgetPass": true,
+  "provenance": {
+    "path": "/workspace/world-review/palace-ground/palace-ground-a09.provenance.json",
+    "SHA256": "e65a394940ba87fae53da4b146483cb038ad05dc36d3cbc5a935314ea5020774",
+    "retainedSourceCalls": 3,
+    "newThisBatch": 2,
+    "existingAIAnchor": 1,
+    "all3PromptArgsAndSourceFieldsExactlyCopied": true,
+    "finalSelectionExactlyCopied": true,
+    "independentSelectionChecks": [
+      {
+        "id": "ground_palace_white_marble_03",
+        "sourceAndFinalHashesMatchIndependentEvidence": true,
+        "nativeAndFinalSizeBytesMatch": true,
+        "fullCanvasNoCropNoUpsample": true
+      },
+      {
+        "id": "ground_palace_cloud_marble_04",
+        "sourceAndFinalHashesMatchIndependentEvidence": true,
+        "nativeAndFinalSizeBytesMatch": true,
+        "fullCanvasNoCropNoUpsample": true
+      },
+      {
+        "id": "ground_palace_gold_thread_05",
+        "sourceAndFinalHashesMatchIndependentEvidence": true,
+        "nativeAndFinalSizeBytesMatch": true,
+        "fullCanvasNoCropNoUpsample": true
+      }
+    ],
+    "records": [
+      {
+        "id": "ground_palace_white_marble_03",
+        "anchorReused": true,
+        "fullPromptArgsExactlyCopied": true,
+        "sourceFieldsExactlyCopied": true
+      },
+      {
+        "id": "ground_palace_cloud_marble_04",
+        "anchorReused": false,
+        "fullPromptArgsExactlyCopied": true,
+        "sourceFieldsExactlyCopied": true
+      },
+      {
+        "id": "ground_palace_gold_thread_05",
+        "anchorReused": false,
+        "fullPromptArgsExactlyCopied": true,
+        "sourceFieldsExactlyCopied": true
+      }
+    ]
+  },
+  "all19ActualDependencyBytesSame": true,
+  "finalSelectionSHA256": "1bfe75a47d5d396858b9ee9010702e9dcd6a2dc3c749e8e11b608a5c78444057",
+  "claimPRStatus": "Parentroot ownsclaim/PR/status; independentQA hasnotcreatedorupdated aPR. Do notinterpret thissummary asformalClaudeapproval.",
+  "oldThreeThemePack": "Unsubmittedscratcharchiveonly, untouchedthisbatch.",
+  "evidenceFiles": [
+    "qa-summary.md",
+    "qa-method-notes.json",
+    "format-reexport-and-source-check.json",
+    "initial-new-variants-seam-metrics.json",
+    "preview-provenance-check.json",
+    "var1-reuse-and-qa-plan.json"
+  ]
+}

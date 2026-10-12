@@ -1,0 +1,376 @@
+{
+  "createdAtUTC": "2026-10-12T04:54:47.358520+00:00",
+  "nativeProofs": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "lr",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-lr.png",
+      "SHA256": "2a8749f84ab0476227167ea5181c9624ced94aa9059c5c6dec6128a8bd65b7d8",
+      "hashMatchesMeta": true,
+      "bytes": 95698,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "tb",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-tb.png",
+      "SHA256": "076827ee1e52f74ee0766a3904587fccb4ae08053b97d23a613a43d596e62994",
+      "hashMatchesMeta": true,
+      "bytes": 94671,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_white_marble_03",
+      "kind": "corners",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_white_marble_03-native-corners.png",
+      "SHA256": "a999bd7b4025d191b37cea299e31eb3f67383b825fe5031d2f114d09a3b0585f",
+      "hashMatchesMeta": true,
+      "bytes": 100673,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "lr",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-lr.png",
+      "SHA256": "50511d26a274b030d1a0c4e88f21829ec9b0ca4ceea7e17cc1ce2e66ffddf90e",
+      "hashMatchesMeta": true,
+      "bytes": 87325,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "tb",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-tb.png",
+      "SHA256": "bc707107fa3a0ab87d0b52640ea8feca37d415d372f81c64eb67dd3df95b0a66",
+      "hashMatchesMeta": true,
+      "bytes": 83814,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "kind": "corners",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_cloud_marble_04-native-corners.png",
+      "SHA256": "67b070fd31131fea2c681bf68e571c3d017c545c0cb70db0479114fccd4bb122",
+      "hashMatchesMeta": true,
+      "bytes": 87348,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "lr",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-lr.png",
+      "SHA256": "06feed506b1f33de5c530876047763ef249e7ac9f78589f689bd5499fac5b2c5",
+      "hashMatchesMeta": true,
+      "bytes": 87071,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "tb",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-tb.png",
+      "SHA256": "9bf737c2cc81cb089481a0b77510df325866636063ee318d730be64ba63f2213",
+      "hashMatchesMeta": true,
+      "bytes": 81342,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "kind": "corners",
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-ground_palace_gold_thread_05-native-corners.png",
+      "SHA256": "0327419267032babb1b61c4a3b09c86916756766eb05bf9b844697f6141c18fa",
+      "hashMatchesMeta": true,
+      "bytes": 86408,
+      "bytesMatchMeta": true,
+      "size": [
+        256,
+        256
+      ],
+      "RGBPixelsEqualToSelectedFinal": true,
+      "budgetUnder500000": true
+    }
+  ],
+  "reviewViews": [
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09.webp",
+      "SHA256": "6e1b9cf6a0cd393b2ebd73c6e6786d2128238192735e65f10ce0db266673bd93",
+      "hashMatchesMeta": true,
+      "bytes": 253880,
+      "bytesMatchMeta": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "budgetUnder500000": true,
+      "actuallyViewedIndependently": true,
+      "sourceSHAsMatchSelected": true,
+      "actualSourcesStillMatchSelected": true,
+      "producerRecordedLoaded": 3,
+      "producerPageErrors": [],
+      "producerRequestFailures": [],
+      "producerConsoleMessages": [],
+      "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+      "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc"
+    },
+    {
+      "path": "/workspace/world-review/palace-ground/preview-final/palace-ground-a09-lighting.webp",
+      "SHA256": "e792290d5743aa6ee8ac5a600e7b6d9d955822a7e2a0b96c3b168bcff6b2b7d9",
+      "hashMatchesMeta": true,
+      "bytes": 90946,
+      "bytesMatchMeta": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "budgetUnder500000": true,
+      "actuallyViewedIndependently": true,
+      "sourceSHAsMatchSelected": true,
+      "actualSourcesStillMatchSelected": true,
+      "producerRecordedLoaded": 3,
+      "producerPageErrors": [],
+      "producerRequestFailures": [],
+      "producerConsoleMessages": [],
+      "base": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+      "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc"
+    }
+  ],
+  "provenance": {
+    "path": "/workspace/world-review/palace-ground/palace-ground-a09.provenance.json",
+    "SHA256": "e65a394940ba87fae53da4b146483cb038ad05dc36d3cbc5a935314ea5020774",
+    "retainedSourceCalls": 3,
+    "newThisBatch": 2,
+    "existingAIAnchor": 1,
+    "all3PromptArgsAndSourceFieldsExactlyCopied": true,
+    "finalSelectionExactlyCopied": true,
+    "independentSelectionChecks": [
+      {
+        "id": "ground_palace_white_marble_03",
+        "sourceAndFinalHashesMatchIndependentEvidence": true,
+        "nativeAndFinalSizeBytesMatch": true,
+        "fullCanvasNoCropNoUpsample": true
+      },
+      {
+        "id": "ground_palace_cloud_marble_04",
+        "sourceAndFinalHashesMatchIndependentEvidence": true,
+        "nativeAndFinalSizeBytesMatch": true,
+        "fullCanvasNoCropNoUpsample": true
+      },
+      {
+        "id": "ground_palace_gold_thread_05",
+        "sourceAndFinalHashesMatchIndependentEvidence": true,
+        "nativeAndFinalSizeBytesMatch": true,
+        "fullCanvasNoCropNoUpsample": true
+      }
+    ],
+    "records": [
+      {
+        "id": "ground_palace_white_marble_03",
+        "anchorReused": true,
+        "fullPromptArgsExactlyCopied": true,
+        "sourceFieldsExactlyCopied": true
+      },
+      {
+        "id": "ground_palace_cloud_marble_04",
+        "anchorReused": false,
+        "fullPromptArgsExactlyCopied": true,
+        "sourceFieldsExactlyCopied": true
+      },
+      {
+        "id": "ground_palace_gold_thread_05",
+        "anchorReused": false,
+        "fullPromptArgsExactlyCopied": true,
+        "sourceFieldsExactlyCopied": true
+      }
+    ]
+  },
+  "dependencyActualChecks": {
+    "parameterBase": "e6e89a9be7f4d0dce972221cb538ab299cbabafc",
+    "submissionBase": "4b658b79921838d91f9bde8907df00ba80b9a2fe",
+    "files": [
+      {
+        "file": "src/world/themes/market.ts",
+        "actualParameterSHA256": "d20f5ddfd3e53e0b43c9674383d70becbb7f0b838b3fc612ff640cc224143927",
+        "actualSubmissionSHA256": "d20f5ddfd3e53e0b43c9674383d70becbb7f0b838b3fc612ff640cc224143927",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/harbor.ts",
+        "actualParameterSHA256": "351a6329eabebc161b9e94cfac1de0b92bdac6afef0792b7c4528ef6611b3e19",
+        "actualSubmissionSHA256": "351a6329eabebc161b9e94cfac1de0b92bdac6afef0792b7c4528ef6611b3e19",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/forest.ts",
+        "actualParameterSHA256": "ae898a3eb5817f1187f9fbfaf5d0485b31c1b901968c2173ea5bc7d8bc6d8ac3",
+        "actualSubmissionSHA256": "ae898a3eb5817f1187f9fbfaf5d0485b31c1b901968c2173ea5bc7d8bc6d8ac3",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/cloud.ts",
+        "actualParameterSHA256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+        "actualSubmissionSHA256": "59b0af5b550190fafdc75400b759fc1f3a22343cb0fb441b5b2d078533079d5a",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/palace.ts",
+        "actualParameterSHA256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+        "actualSubmissionSHA256": "c935da0bbb292d032d4c22172b43b9349ad36a5ee3f600c29d9434f6766ce5ce",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/common.ts",
+        "actualParameterSHA256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+        "actualSubmissionSHA256": "1d29a6495fee809101dc57d8f57b8b58166665253ba3f985da8b4475d3a7ed57",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/arch.ts",
+        "actualParameterSHA256": "82220bd3dc833947b197d1f0f3dfd9184151f68f7c1274ea34a64362d2ad00e7",
+        "actualSubmissionSHA256": "82220bd3dc833947b197d1f0f3dfd9184151f68f7c1274ea34a64362d2ad00e7",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/index.ts",
+        "actualParameterSHA256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73",
+        "actualSubmissionSHA256": "cf214e3dc0cda34731090059ab9b844809e88011da7320ba87c76eb203519e73",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/market.data.ts",
+        "actualParameterSHA256": "893925bdb108ee0f7eef2e752e911898b25b559723c274957c5b95ec2fc1a46e",
+        "actualSubmissionSHA256": "893925bdb108ee0f7eef2e752e911898b25b559723c274957c5b95ec2fc1a46e",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/harbor.data.ts",
+        "actualParameterSHA256": "ffd4445ee276d14a67c85f80c1628f56031d32cc5ac356d7428376e70b2e37cc",
+        "actualSubmissionSHA256": "ffd4445ee276d14a67c85f80c1628f56031d32cc5ac356d7428376e70b2e37cc",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/forest.data.ts",
+        "actualParameterSHA256": "9d25e9e9a957f07bce1296b50c39d7df3b8f459cde18d7e1d2d794ac7044ba43",
+        "actualSubmissionSHA256": "9d25e9e9a957f07bce1296b50c39d7df3b8f459cde18d7e1d2d794ac7044ba43",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/cloud.data.ts",
+        "actualParameterSHA256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af",
+        "actualSubmissionSHA256": "c378ed0aef62ad0bb0d421e4c56877aecaedf4e08931b984795697972bbb28af",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/themes/palace.data.ts",
+        "actualParameterSHA256": "684d032ad4604c363bfdec33048d1c3e006821daa520a33d5ed972ef88998c96",
+        "actualSubmissionSHA256": "684d032ad4604c363bfdec33048d1c3e006821daa520a33d5ed972ef88998c96",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/atmos.ts",
+        "actualParameterSHA256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+        "actualSubmissionSHA256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/tex.ts",
+        "actualParameterSHA256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+        "actualSubmissionSHA256": "678861acbc850e913d6abf1b0d64e61b59b5e34dc2859cd04cb5cb2fbd2c4f1e",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/kit.ts",
+        "actualParameterSHA256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+        "actualSubmissionSHA256": "c5c1b19c4331cd07017b6399f1c53db24211706e4a3ede82b14e6317f9331cca",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "src/world/engine.ts",
+        "actualParameterSHA256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a",
+        "actualSubmissionSHA256": "9f2a4523d6413b324dcee783afdfd0745faac521a4109ec05e5c792f2c0f183a",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "package.json",
+        "actualParameterSHA256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+        "actualSubmissionSHA256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      },
+      {
+        "file": "package-lock.json",
+        "actualParameterSHA256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+        "actualSubmissionSHA256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+        "bothHashesMatchMeta": true,
+        "actualBytesEqual": true
+      }
+    ],
+    "all19ActualBytesEqual": true
+  },
+  "evidenceBoundary": "Actual image/files/pixels/Git bytes checked independently. Chromium loads/events are preview producer capture evidence; no duplicate browser or tests. No prompt achievement or formalClaudeapproval inferred."
+}

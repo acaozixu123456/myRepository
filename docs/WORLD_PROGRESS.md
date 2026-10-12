@@ -2,7 +2,7 @@
 
 当前方向以 [CODEX_QUEUE.md](CODEX_QUEUE.md)「当前任务」为准，文件范围、出处与审核流程沿用 [CODEX_WORLD_BRIEF.md](CODEX_WORLD_BRIEF.md)。先完成 A 类 AI 贴图，再按最新队列制作 B 类程序化道具；每批独立 PR，等待 Claude 给出「通过 / 返修 / 换思路」。状态：未开始 / 制作中 / 待审 / 返修 / 通过；另以「已由 Claude 实现（跳过）」标记固定队列要求跳过的已有道具。
 
-当前批次：**WORLD-A09-palace-ground · 宫阙汉白玉三变体**，分支 `codex/3d-world-palace-ground`；素材来源与预览参数依据 `e6e89a9be7f4d0dce972221cb538ab299cbabafc`，提交基线为 `4b658b79921838d91f9bde8907df00ba80b9a2fe`。三款均为制作中、审核轮次 0、已通过 0；首款承继已保存的 AI 原稿，另两款真实 AI 参考变体已生成并初导，均等待 QA。
+当前批次：**WORLD-A09-palace-ground · 宫阙汉白玉三变体**，分支 `codex/3d-world-palace-ground`；素材来源与预览参数依据 `e6e89a9be7f4d0dce972221cb538ab299cbabafc`，分支代码基线为 `4b658b79921838d91f9bde8907df00ba80b9a2fe`。三款成品与审图已冻结，第 1 轮待 Claude 审核，已通过数量为 0；实际 PR 链接在创建后追加。
 
 ## 当前 A 类队列（新场景方向与协作分工）
 
@@ -16,7 +16,7 @@
 | --- | --- | --- | --- | --- |
 | A09-night-market | 夜市暖陶砖、浅青灰石板、砂石篮织 | 1024²，无缝，外部批次 3 张 | 外部 PR #108 待审第 1 轮 | 0 |
 | A09-harbor | 港口纵纹旧木栈板 | 1024²，无缝，数量按 owner 的批次记录 | 外部 owner 已认领，制作中 | 0 |
-| A09-palace-ground | 宫阙汉白玉淡金纹三变体（本批） | 1024²，无缝，3 张 | 制作中 / 审核 0 | 0 |
+| A09-palace-ground | 宫阙汉白玉淡金纹三变体（本批） | 1024²，无缝，3 张 | 待审 / 第 1 轮 | 0 |
 | A09-forest-ground | 森林草地 + 落叶 | 1024²，无缝 | 未开始 | 0 |
 | A09-island-ground | 云岛粉绿草地 + 小花 | 1024²，无缝 | 未开始 | 0 |
 | A10-sky | 黄昏橘粉、晚霞赤红带云、清晨蓝绿薄雾、正午白云蓝天、午后金光 | 2048×512，横向无缝，5 张；只含天空与云 | 未开始 | 0 |
@@ -25,21 +25,31 @@
 
 ## A09-palace-ground 明细
 
-| 名称 / ID | 计划素材路径 | 状态 | 审核轮次 | 截图 | 备注 |
+| 名称 / ID | 素材 | 状态 | 审核轮次 | 截图 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| 白玉淡金纹 `ground_palace_white_marble_03` | `assets/world/ground/ground_palace_white_marble_03.webp` | 制作中 | 0 | — | 沿用已有宫阙 C1 原稿；当前导出 1024²、124,046 B，QA 待完成 |
-| 云纹白玉 `ground_palace_cloud_marble_04` | `assets/world/ground/ground_palace_cloud_marble_04.webp` | 制作中 | 0 | — | 以首款为参考的真实 AI 变体；当前导出 1024²、107,562 B，QA 待完成 |
-| 金丝白玉 `ground_palace_gold_thread_05` | `assets/world/ground/ground_palace_gold_thread_05.webp` | 制作中 | 0 | — | 以首款为参考的真实 AI 变体；当前导出 1024²、106,010 B，QA 待完成 |
+| 白玉淡金纹 `ground_palace_white_marble_03` | [WebP](../assets/world/ground/ground_palace_white_marble_03.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/palace-ground-a09.webp) | 1024² RGB / sRGB；124,046 B；原生 1254²，全画布降采样；沿用真实 AI 宫阙 C1 原稿 |
+| 云纹白玉 `ground_palace_cloud_marble_04` | [WebP](../assets/world/ground/ground_palace_cloud_marble_04.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/palace-ground-a09.webp) | 1024² RGB / sRGB；107,562 B；原生 1254²，全画布降采样；首款的真实 AI 参考变体 |
+| 金丝白玉 `ground_palace_gold_thread_05` | [WebP](../assets/world/ground/ground_palace_gold_thread_05.webp) | 待审 | 1 | [本批审图](../assets/world/reviews/palace-ground-a09.webp) | 1024² RGB / sRGB；106,010 B；原生 1254²，全画布降采样；首款的真实 AI 参考变体 |
+
+用途与材质建议见 [宫阙地面素材说明](../assets/world/ground/palace-ground-a09.README.md)，完整提示词、工具参数、原图 / 成品哈希与来源见 [本批出处记录](../assets/world/ground/palace-ground-a09.provenance.json)。独立检查见 [QA 摘要](../assets/world/ground/palace-ground-a09.qa.md)、[机器报告](../assets/world/ground/palace-ground-a09.qa.json) 与 [方法记录](../assets/world/ground/palace-ground-a09.qa.method.json)。
 
 ### A09-palace-ground 制作与审核记录
 
-2026-10-12 · 制作中，尚未送审；三行审核轮次均为 0、已通过数量为 0。分支以 `4b658b7` 为提交基线，素材来源与预览参数仍依据 `e6e89a9`。首款白玉淡金纹承继已保存的真实 AI 宫阙 C1 原稿；云纹白玉和金丝白玉各通过一次真实 `image_gen` 调用、以首款为参考生成。本批来源为一张既有 AI 原稿与两张 AI 参考变体，来源证据保存在制作 scratch 的 `raw/anchor-call.json` 和 `raw/calls-completed.json`，并非三张独立原稿。
+2026-10-12 · 第 1 轮 **待审**，已通过数量为 0。内部 QA 的 `readyForClaudeReview=true`、`ClaudeDecision=null`，等 Claude 给出正式审核结果；本批由 `codex/3d-world-palace-ground` 准备送审，实际 PR 链接在创建后追加。
 
-三张原生均为 1254² RGB，完整画布经 Lanczos 降采样至 1024²，以 WebP quality 90 / method 6 和固定的 588 B sRGB ICC 导出；当前三件字节数依次为 124,046 / 107,562 / 106,010 B。此为已完成的初导记录，最终候选与视觉 / 接缝 QA 尚未定稿，不代表已经送审或通过。
+首款白玉淡金纹承继已保存的真实 AI 宫阙 C1 原稿，云纹白玉与金丝白玉各通过一次真实 `image_gen` 调用、以首款为参考生成。本批来源为一张既有 AI 原稿与两张新 AI 参考变体；原稿与调用证据归档于 `raw/anchor-call.json` 和 `raw/calls-completed.json`，并纳入上述出处文件。
 
-地面应保留明亮白玉本色与克制淡金纹，配合九重宫阙午后金光。最终导出规格、字节与哈希、平铺 / 边缘检查、材质预览、QA 链接和最不满意的一处在完成后补充。当前表中路径为计划交付路径，制作中记录不代表最终视觉 QA 通过；送审时再将三行改为第 1 轮待审。
+三张实际原生均为 1254² RGB，完整画布等比 Lanczos 降采样至 1024²，WebP quality 90 / method 6、RGB 不透明，使用同一固定 588 B sRGB ICC；无裁切或上采样。成品字节数依次为 124,046 / 107,562 / 106,010 B，最终哈希已冻结于出处与 QA 报告。独立检查以确切 ICC 重新导出三张，3/3 逐字节一致，规格 / 出处核对完成。
 
-本批必需检查已实际完成：根线程在 `4b658b79921838d91f9bde8907df00ba80b9a2fe` 基线上执行 `npm run typecheck && npm test`，退出码 0，68 个测试文件 / 1,019 项测试全部通过；2026-10-12 04:43:24 UTC 开始，测试耗时 30.50 秒，完整日志位于 `/workspace/world-review/palace-ground/required-checks-4b.log`。代码检查不代替素材 QA。本次文档只记录认领与制作进展；最终交付在同一分支、同一个 PR 中更新。
+03 的原稿与解码成品哈希和此前完整图 / 平铺 / 原尺寸边缘证据一致，复用该项既有视觉检查；本轮仍核对当前文件、规格与重导出，并在新三宫阙样板中实际显示。04 / 05 的原稿、最终编码全图、2×2 / 4×4、原尺寸左右 / 上下 / 四角均本轮实看。实际三款都是完整 4×4 石板格，检查位置未见多余半行、双厚灰缝、外框、跨 tile 共同亮度断带或明显整图烘焙方向光；矿物纹可在物理灰缝处自然停止。此为实际显示尺度的视觉判断，不宣称严格数学逐像素无缝。
+
+审核图：[成品 / 2×2 / 4×4 / 边缘总览](../assets/world/reviews/palace-ground-a09.webp)（2048×1024，253,880 B）、[中性白光 / 宫阙午后金光材质样板](../assets/world/reviews/palace-ground-a09-lighting.webp)（2048×1024，90,946 B）。两次实际浏览器捕获均成功，三素材 3/3 加载，页面、请求及 console 错误记录为空；另九张 256² 原生边缘 PNG 按整数窗口独立重组，9/9 RGB 与对应原片全等。参数、九图与冻结记录见 [预览说明](../assets/world/reviews/palace-ground-a09.README.md)。
+
+材质样板为独立 Three.js 预览，白色 MeshStandardMaterial、roughness 0.5 / metalness 0.05、repeat 2×2；白光与午后金光对照保持相机、材质、灯强及方向一致，只改灯色。它用于材质审阅，不代表游戏接入或最终 UV 尺度。素材来源与预览参数依据 `e6e89a9`，独立 QA 比较该基线至 `4b658b7` 的 19 份相关依赖，逐字节相同。
+
+最不满意及保留限制：04 仍有较明显的斜向灰矿物带；细金纹在强光及小视图偏弱，三款差异随缩略变细微；4×4 重复可辨纹簇周期。待 Claude 按宫阙实际视距和铺地 UV 尺度判断。
+
+本批必需检查已实际完成：根线程在 `4b658b79921838d91f9bde8907df00ba80b9a2fe` 基线上执行 `npm run typecheck && npm test`，退出码 0，68 个测试文件 / 1,019 项测试全部通过；2026-10-12 04:43:24 UTC 开始，测试耗时 30.50 秒，完整日志位于 `/workspace/world-review/palace-ground/required-checks-4b.log`。送审前根线程读取的最新主干为 `dea5a2cac40a37c997f487083c3c915daf660d1d`，六份必读文件 blob 与 `4b658b7` 一致；该读取记录不作为在 `dea5a2` 跑过测试的证明。
 
 ## 旧 A 类队列（保留历史）
 
