@@ -1,0 +1,1749 @@
+{
+  "status": "ready_for_Claude_review_with_disclosed_limitations",
+  "errors": [],
+  "provenance_path": "assets/world/skies/sky-panorama-a10-first.provenance.json",
+  "provenance_sha256": "2363f40946fb5e01a0f9ac13d0af96c56710036a3b3f51a397729d6e73ee9b2a",
+  "author_manifest_sha256": "6e3fbda5f8561e07e3369fe2ad08c8b1791252b16300c77a89c7afd586f47418",
+  "checked_author_final_files": [
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first-render.README.md",
+      "bytes": 2952,
+      "sha256": "10d90b8556d3f6fa342fdda2289925f09fa89eddb72595fe64695a69ff435a22"
+    },
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first-render.webp",
+      "bytes": 66554,
+      "sha256": "368ffbc6f8ecdf8ad6af49d342849d2c1923fdf2cf2bc57cabb0c172e13764ad"
+    },
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first.README.md",
+      "bytes": 2523,
+      "sha256": "e2e792210618ad737d2a2ea2ba85dd4c157d279446241142105eca1f84a44902"
+    },
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first.webp",
+      "bytes": 82762,
+      "sha256": "2a09aa49a6cf98cd764f98cb9d9844423eca0e21829c4373001ab4097bc7fa31"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-2x-horizontal.webp",
+      "bytes": 10624,
+      "sha256": "50ca92e3802ce4bc54c116ca0ce220cb2d4b725ea5e3bfbfbb43efac26fca7d7"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-4x-horizontal.webp",
+      "bytes": 20426,
+      "sha256": "3525ea1aab7539381cc9062ea8e010cca22848d1a248ae53a1c2a5fd48364625"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-corners.png",
+      "bytes": 2489,
+      "sha256": "57881631bc5b1e4089e09134d59a760d713b1c94cd5f383d01567e3bf13c34a3"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-lr.png",
+      "bytes": 4104,
+      "sha256": "afc6de009957dce7e1dbf1d52bbdb6105dd74fb3108f38e3d448235084d2e605"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-2x-horizontal.webp",
+      "bytes": 21462,
+      "sha256": "662b65a4815a18393fe82e86c13ca6da269a2287b56d9027968b35f7654e0797"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-4x-horizontal.webp",
+      "bytes": 42018,
+      "sha256": "38b59384a16ef0bd5e3b0c2e2af3dc56a1e1532782cc5ccae4090fc43b7269bb"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-corners.png",
+      "bytes": 5934,
+      "sha256": "9d21ba441f520a2f94e207d29f996058d40a61fd66de4b0ff41d05497b8af950"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-lr.png",
+      "bytes": 13452,
+      "sha256": "a286be4a89f0685cb4aae2b41f3de782d3c3073bf09dd117741ea8531ca174a8"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-2x-horizontal.webp",
+      "bytes": 156730,
+      "sha256": "aa5911f8a2f2a98dfa94ac1b49f4dbaff91231ff8d90097309df966d84d786fc"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-4x-horizontal.webp",
+      "bytes": 312986,
+      "sha256": "1e301ad6855f71df520bb15e8c8fb9cd825bd69262ab9b4cf3046348cff7ccdf"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-corners.png",
+      "bytes": 17305,
+      "sha256": "7ce5123126d1cd86ea5c0e910c19abc29d9ea2112440448c7598b1067d8477ae"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-lr.png",
+      "bytes": 51499,
+      "sha256": "15aad7e83d8e9ca8260fd9d4f9b8e45bec0b17ec62c99e85817dcd4f241071fd"
+    },
+    {
+      "path": "assets/world/skies/sky-panorama-a10-first.README.md",
+      "bytes": 4667,
+      "sha256": "b3279eec5eaf75a7df739a9ff751d91aa163124ed844d18418ed0140abe0ea73"
+    },
+    {
+      "path": "assets/world/skies/sky-panorama-a10-first.provenance.json",
+      "bytes": 217437,
+      "sha256": "2363f40946fb5e01a0f9ac13d0af96c56710036a3b3f51a397729d6e73ee9b2a"
+    },
+    {
+      "path": "assets/world/skies/sky-panorama-a10-first.resource-audit.json",
+      "bytes": 103543,
+      "sha256": "41b759b496326fce26645bfc8103d2268b9857da81a3e368cd1f393f78c4b3c7"
+    },
+    {
+      "path": "assets/world/skies/sky-panorama-a10-first.resource-audit.md",
+      "bytes": 16260,
+      "sha256": "4228e706db0f0d913b826db0eb7bd4a8cb18a6402dee6fed716d642359af6e07"
+    },
+    {
+      "path": "assets/world/skies/sky_dawn_tealmist_03.webp",
+      "bytes": 6600,
+      "sha256": "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4"
+    },
+    {
+      "path": "assets/world/skies/sky_dusk_peach_01.webp",
+      "bytes": 13834,
+      "sha256": "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3"
+    },
+    {
+      "path": "assets/world/skies/sky_sunset_redcloud_02.webp",
+      "bytes": 114444,
+      "sha256": "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7"
+    },
+    {
+      "path": "docs/CREDITS.md",
+      "bytes": 3752,
+      "sha256": "d822c653c60bd850ad5ea0a435011ab1c8d716a7117244ba846bdb2fa093ad5e"
+    },
+    {
+      "path": "docs/WORLD_PROGRESS.md",
+      "bytes": 32252,
+      "sha256": "fdd999a50ca8a677a6bcb71e72753bad1a9483a34e9ea5a11ce9504834c77adf"
+    }
+  ],
+  "image_specs": [
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first-render.webp",
+      "bytes": 66554,
+      "sha256": "368ffbc6f8ecdf8ad6af49d342849d2c1923fdf2cf2bc57cabb0c172e13764ad",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky-panorama-a10-first.webp",
+      "bytes": 82762,
+      "sha256": "2a09aa49a6cf98cd764f98cb9d9844423eca0e21829c4373001ab4097bc7fa31",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-2x-horizontal.webp",
+      "bytes": 10624,
+      "sha256": "50ca92e3802ce4bc54c116ca0ce220cb2d4b725ea5e3bfbfbb43efac26fca7d7",
+      "size": [
+        4096,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-4x-horizontal.webp",
+      "bytes": 20426,
+      "sha256": "3525ea1aab7539381cc9062ea8e010cca22848d1a248ae53a1c2a5fd48364625",
+      "size": [
+        8192,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-corners.png",
+      "bytes": 2489,
+      "sha256": "57881631bc5b1e4089e09134d59a760d713b1c94cd5f383d01567e3bf13c34a3",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-lr.png",
+      "bytes": 4104,
+      "sha256": "afc6de009957dce7e1dbf1d52bbdb6105dd74fb3108f38e3d448235084d2e605",
+      "size": [
+        256,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-2x-horizontal.webp",
+      "bytes": 21462,
+      "sha256": "662b65a4815a18393fe82e86c13ca6da269a2287b56d9027968b35f7654e0797",
+      "size": [
+        4096,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-4x-horizontal.webp",
+      "bytes": 42018,
+      "sha256": "38b59384a16ef0bd5e3b0c2e2af3dc56a1e1532782cc5ccae4090fc43b7269bb",
+      "size": [
+        8192,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-corners.png",
+      "bytes": 5934,
+      "sha256": "9d21ba441f520a2f94e207d29f996058d40a61fd66de4b0ff41d05497b8af950",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-lr.png",
+      "bytes": 13452,
+      "sha256": "a286be4a89f0685cb4aae2b41f3de782d3c3073bf09dd117741ea8531ca174a8",
+      "size": [
+        256,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-2x-horizontal.webp",
+      "bytes": 156730,
+      "sha256": "aa5911f8a2f2a98dfa94ac1b49f4dbaff91231ff8d90097309df966d84d786fc",
+      "size": [
+        4096,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-4x-horizontal.webp",
+      "bytes": 312986,
+      "sha256": "1e301ad6855f71df520bb15e8c8fb9cd825bd69262ab9b4cf3046348cff7ccdf",
+      "size": [
+        8192,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-corners.png",
+      "bytes": 17305,
+      "sha256": "7ce5123126d1cd86ea5c0e910c19abc29d9ea2112440448c7598b1067d8477ae",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-lr.png",
+      "bytes": 51499,
+      "sha256": "15aad7e83d8e9ca8260fd9d4f9b8e45bec0b17ec62c99e85817dcd4f241071fd",
+      "size": [
+        256,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/skies/sky_dawn_tealmist_03.webp",
+      "bytes": 6600,
+      "sha256": "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4",
+      "size": [
+        2048,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/skies/sky_dusk_peach_01.webp",
+      "bytes": 13834,
+      "sha256": "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3",
+      "size": [
+        2048,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    },
+    {
+      "path": "assets/world/skies/sky_sunset_redcloud_02.webp",
+      "bytes": 114444,
+      "sha256": "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7",
+      "size": [
+        2048,
+        512
+      ],
+      "mode": "RGB",
+      "power_of_two": true,
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "icc_sha256": "6ca22e8776c5f3fc1b317d6c7d084051da64ec46769252f2b2202606cded4bc1"
+    }
+  ],
+  "source_export_checks": [
+    {
+      "id": "sky_dusk_peach_01",
+      "source_kind": "third_party_CC0",
+      "raw_path": "/workspace/sky-first-raw/public-candidates/kenney/skybox-morning.png",
+      "raw_size": [
+        4096,
+        2048
+      ],
+      "raw_sha256": "7b445e959e7e65c2aad962028826434fda90d7b21f00f451767344970efa9e1e",
+      "raw_bytes": 899710,
+      "export": "assets/world/skies/sky_dusk_peach_01.webp",
+      "export_sha256": "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3",
+      "export_bytes": 13834,
+      "preencode_size": [
+        2048,
+        512
+      ],
+      "full_export_encoded_byte_equal": true,
+      "encode_q": 90,
+      "encode_method": 6,
+      "preencode_to_webp_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 0.5876935323079427,
+        "max_channel_difference": 16,
+        "different_channels": 1564693
+      },
+      "LR_MAE_actual": 0.3385416666666667,
+      "LR_MAE_3dec": 0.339,
+      "resize_scale_x": 0.5,
+      "resize_scale_y": 0.5,
+      "proportional_resize": true,
+      "crop_ltrb": [
+        0,
+        640,
+        4096,
+        1664
+      ]
+    },
+    {
+      "id": "sky_sunset_redcloud_02",
+      "source_kind": "image_gen_edit_of_prior_AI",
+      "raw_path": "/workspace/generated_images/exec-764cf5fb-b472-4415-85c6-12ab33d9c4a5.png",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_sha256": "3ad38cf7d775f8b10e480fb27ab546a14ad5a06b33a8e8f943be03e463c14009",
+      "raw_bytes": 1839766,
+      "export": "assets/world/skies/sky_sunset_redcloud_02.webp",
+      "export_sha256": "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7",
+      "export_bytes": 114444,
+      "preencode_size": [
+        2048,
+        512
+      ],
+      "full_export_encoded_byte_equal": true,
+      "encode_q": 90,
+      "encode_method": 6,
+      "preencode_to_webp_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 1.8340816497802734,
+        "max_channel_difference": 47,
+        "different_channels": 2431112
+      },
+      "LR_MAE_actual": 1.9544270833333333,
+      "LR_MAE_3dec": 1.954,
+      "resize_scale_x": 0.9429097605893186,
+      "resize_scale_y": 0.7071823204419889,
+      "proportional_resize": false,
+      "crop_ltrb": [
+        0,
+        0,
+        2172,
+        724
+      ]
+    },
+    {
+      "id": "sky_dawn_tealmist_03",
+      "source_kind": "third_party_CC0_standard_HDR_SDR_adaptation",
+      "raw_path": "/workspace/sky-first-raw/cc0-research/ph-misty-band-exp2.png",
+      "raw_size": [
+        2048,
+        512
+      ],
+      "raw_sha256": "98f79edbe5edb51ee3ae344b0296568800195840fc797a4b715aed684865fc5b",
+      "raw_bytes": 312584,
+      "export": "assets/world/skies/sky_dawn_tealmist_03.webp",
+      "export_sha256": "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4",
+      "export_bytes": 6600,
+      "preencode_size": [
+        2048,
+        512
+      ],
+      "full_export_encoded_byte_equal": true,
+      "encode_q": 90,
+      "encode_method": 6,
+      "preencode_to_webp_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 0.48630619049072266,
+        "max_channel_difference": 3,
+        "different_channels": 1437885
+      },
+      "LR_MAE_actual": 0.20572916666666666,
+      "LR_MAE_3dec": 0.206,
+      "resize_scale_x": 1,
+      "resize_scale_y": 1,
+      "proportional_resize": true,
+      "crop_ltrb": [
+        0,
+        0,
+        2048,
+        512
+      ]
+    }
+  ],
+  "native_PNG_checks": [
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-lr.png",
+      "layout": "R128|L128 across all512rows;native1:1",
+      "exact_pixel_check": {
+        "same_pixels": true,
+        "RGB_MAE": 0.0,
+        "max_channel_difference": 0,
+        "different_channels": 0
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-native-corners.png",
+      "layout": "TR|TL above BR|BL;128square each native1:1;no vertical-repeat claim",
+      "exact_pixel_check": {
+        "same_pixels": true,
+        "RGB_MAE": 0.0,
+        "max_channel_difference": 0,
+        "different_channels": 0
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-lr.png",
+      "layout": "R128|L128 across all512rows;native1:1",
+      "exact_pixel_check": {
+        "same_pixels": true,
+        "RGB_MAE": 0.0,
+        "max_channel_difference": 0,
+        "different_channels": 0
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-native-corners.png",
+      "layout": "TR|TL above BR|BL;128square each native1:1;no vertical-repeat claim",
+      "exact_pixel_check": {
+        "same_pixels": true,
+        "RGB_MAE": 0.0,
+        "max_channel_difference": 0,
+        "different_channels": 0
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-lr.png",
+      "layout": "R128|L128 across all512rows;native1:1",
+      "exact_pixel_check": {
+        "same_pixels": true,
+        "RGB_MAE": 0.0,
+        "max_channel_difference": 0,
+        "different_channels": 0
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-native-corners.png",
+      "layout": "TR|TL above BR|BL;128square each native1:1;no vertical-repeat claim",
+      "exact_pixel_check": {
+        "same_pixels": true,
+        "RGB_MAE": 0.0,
+        "max_channel_difference": 0,
+        "different_channels": 0
+      }
+    }
+  ],
+  "horizontal_repeat_checks": [
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-2x-horizontal.webp",
+      "size": [
+        4096,
+        512
+      ],
+      "copies": 2,
+      "resize_before_pasting": false,
+      "encoded_byte_equal": true,
+      "decoded_review_reencoding_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 0.3323205312093099,
+        "max_channel_difference": 11,
+        "different_channels": 1428373
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_dusk_peach_01-4x-horizontal.webp",
+      "size": [
+        8192,
+        512
+      ],
+      "copies": 4,
+      "resize_before_pasting": false,
+      "encoded_byte_equal": true,
+      "decoded_review_reencoding_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 0.3316076596577962,
+        "max_channel_difference": 11,
+        "different_channels": 2850358
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-2x-horizontal.webp",
+      "size": [
+        4096,
+        512
+      ],
+      "copies": 2,
+      "resize_before_pasting": false,
+      "encoded_byte_equal": true,
+      "decoded_review_reencoding_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 1.5926127433776855,
+        "max_channel_difference": 29,
+        "different_channels": 4300730
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_sunset_redcloud_02-4x-horizontal.webp",
+      "size": [
+        8192,
+        512
+      ],
+      "copies": 4,
+      "resize_before_pasting": false,
+      "encoded_byte_equal": true,
+      "decoded_review_reencoding_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 1.6035354137420654,
+        "max_channel_difference": 28,
+        "different_channels": 8609380
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-2x-horizontal.webp",
+      "size": [
+        4096,
+        512
+      ],
+      "copies": 2,
+      "resize_before_pasting": false,
+      "encoded_byte_equal": true,
+      "decoded_review_reencoding_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 0.1294576327006022,
+        "max_channel_difference": 4,
+        "different_channels": 569482
+      }
+    },
+    {
+      "path": "assets/world/reviews/sky_dawn_tealmist_03-4x-horizontal.webp",
+      "size": [
+        8192,
+        512
+      ],
+      "copies": 4,
+      "resize_before_pasting": false,
+      "encoded_byte_equal": true,
+      "decoded_review_reencoding_loss": {
+        "same_pixels": false,
+        "RGB_MAE": 0.1285401185353597,
+        "max_channel_difference": 4,
+        "different_channels": 1131280
+      }
+    }
+  ],
+  "independent_PH_HDR_SDR": {
+    "independent_decoder": {
+      "source": "/workspace/sky-first-raw/public-candidates/polyhaven/kloofendal_misty_morning_puresky_2k.hdr",
+      "source_sha256": "a59683cd08861fb18d69ee8f3938f50ec81c6feda5381e8b8576f340d5a25bb1",
+      "source_md5": "b99e0bb066a0d8134729b9712495d68b",
+      "three_revision": "169",
+      "width": 2048,
+      "height": 1024,
+      "type": 1015,
+      "decoded_bytes": 33554432,
+      "decoded_sha256": "ce705391fcf1ed19f5e183079930efb2b7c3a03723abea8e160ddd7a6c19428b"
+    },
+    "original_HDR_official_MD5_verified": true,
+    "display_transfer": "Reinhard per channel C*2/(1+C*2), standard IEC sRGB piecewise transfer, nearestuint8",
+    "fullwidth_latitude_band_ltrb": [
+      0,
+      0,
+      2048,
+      512
+    ],
+    "native_band_size": [
+      2048,
+      512
+    ],
+    "resize": false,
+    "artistic_grading_or_seam_blend_or_AI": false,
+    "standard_SDR_input_sha256": "98f79edbe5edb51ee3ae344b0296568800195840fc797a4b715aed684865fc5b",
+    "independently_decoded_display_to_SDR_input": {
+      "same_pixels": true,
+      "RGB_MAE": 0.0,
+      "max_channel_difference": 0,
+      "different_channels": 0
+    },
+    "official_identity_scope": "MD5 verifies original HDR only, not standardSDR/WebP derivative"
+  },
+  "actual_8_call_history_checks": [
+    {
+      "id": "sky_dusk_peach_01",
+      "candidate": 1,
+      "operation": "generate",
+      "selected": false,
+      "raw_path": "/workspace/generated_images/exec-632b3f5d-4efa-46e0-a48e-317ada42c55d.png",
+      "raw_sha256": "d4ce26815c89587e1203b3ae4389aaa721be099d8d5ad2318f1ffd5fea1902c6",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1716637,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [],
+      "selection_note": "新规则后的真实公开素材比较发现Kenney现成明亮桃粉天空，优先直接适配；本原稿只留历史，不交付为成品。"
+    },
+    {
+      "id": "sky_sunset_redcloud_02",
+      "candidate": 1,
+      "operation": "generate",
+      "selected": false,
+      "raw_path": "/workspace/generated_images/exec-b8441511-92ca-4e78-b041-da2b18791700.png",
+      "raw_sha256": "b797bc408ce5831578f9500c99601b87418671646b51280a0811f05947a2297c",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1708526,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [],
+      "selection_note": "真实33个公开原素材比较后保留本明亮无太阳赤云方向作fallback祖稿；最终使用后续候选4，祖稿完整留存。"
+    },
+    {
+      "id": "sky_sunset_redcloud_02",
+      "candidate": 2,
+      "operation": "edit",
+      "selected": false,
+      "raw_path": "/workspace/generated_images/exec-86f1e5f2-b4f1-4628-a30d-5a4128253195.png",
+      "raw_sha256": "3759a8c9d91f185db04ac221839be58e8406e143ec02827f90f3f36b1639ae43",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1826447,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [
+        {
+          "path": "/workspace/generated_images/exec-b8441511-92ca-4e78-b041-da2b18791700.png",
+          "sha256": "b797bc408ce5831578f9500c99601b87418671646b51280a0811f05947a2297c"
+        }
+      ],
+      "selection_note": "首次参考编辑仍见硬云枝停点和色阶，LR MAE8.195，弃选但保留全部。"
+    },
+    {
+      "id": "sky_sunset_redcloud_02",
+      "candidate": 3,
+      "operation": "edit",
+      "selected": false,
+      "raw_path": "/workspace/generated_images/exec-d9d2f19c-57ea-4306-a972-20b8a2716272.png",
+      "raw_sha256": "93417bf3247720cef8319bfebcbd62cb7450cd72cfa1b0d248d8df0c9bd06559",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1805319,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [
+        {
+          "path": "/workspace/generated_images/exec-86f1e5f2-b4f1-4628-a30d-5a4128253195.png",
+          "sha256": "3759a8c9d91f185db04ac221839be58e8406e143ec02827f90f3f36b1639ae43"
+        }
+      ],
+      "selection_note": "第二次编辑柔化云枝，但独立正常圆柱发现贯穿云雾的稳定竖阶；LR7.482不代表视觉通过，旧7298阶段完整留存。"
+    },
+    {
+      "id": "sky_sunset_redcloud_02",
+      "candidate": 4,
+      "operation": "edit",
+      "selected": true,
+      "raw_path": "/workspace/generated_images/exec-764cf5fb-b472-4415-85c6-12ab33d9c4a5.png",
+      "raw_sha256": "3ad38cf7d775f8b10e480fb27ab546a14ad5a06b33a8e8f943be03e463c14009",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1839766,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [
+        {
+          "path": "/workspace/generated_images/exec-d9d2f19c-57ea-4306-a972-20b8a2716272.png",
+          "sha256": "93417bf3247720cef8319bfebcbd62cb7450cd72cfa1b0d248d8df0c9bd06559"
+        }
+      ],
+      "selection_note": "独立返修后限定一次真实编辑：两端约15%保持平缓低细节同色。实际全幅导出LR1.954，正常圆柱视觉独立复核，不仅以数值下降判通过。"
+    },
+    {
+      "id": "sky_dawn_tealmist_03",
+      "candidate": 1,
+      "operation": "generate",
+      "selected": false,
+      "raw_path": "/workspace/generated_images/exec-60239121-21b6-4292-96b7-91db857403f7.png",
+      "raw_sha256": "6295d25f731fa2840de034ddd291110b076ca6f33dfed5a74bc74e2b5fc97e30",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1586986,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [],
+      "selection_note": "新规则优先采用真实CC0 PH雾晨原素材为参考；这张旧生成的云量较多，留历史而不再选中。"
+    },
+    {
+      "id": "sky_dawn_tealmist_03",
+      "candidate": 2,
+      "operation": "edit",
+      "selected": false,
+      "raw_path": "/workspace/generated_images/exec-085c3d79-695a-49ad-9705-3bc1f47bb9aa.png",
+      "raw_sha256": "4d980cd12cd20bc84e5190d315f5d310be43eb6d81b3dda1314e93791236de96",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1329507,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [
+        {
+          "path": "/workspace/sky-first-raw/cc0-research/ph-misty-band-exp2.png",
+          "sha256": "98f79edbe5edb51ee3ae344b0296568800195840fc797a4b715aed684865fc5b"
+        }
+      ],
+      "selection_note": "以真实PH标准SDR曝光2全宽上512带编辑为淡蓝绿；独立圆柱实看发现稳定cyan竖阶，弃本候选保留全部来源祖链和旧7298阶段。"
+    },
+    {
+      "id": "sky_dawn_tealmist_03",
+      "candidate": 3,
+      "operation": "edit",
+      "selected": false,
+      "raw_path": "/workspace/generated_images/exec-4893c84b-8da4-48b5-91a7-9345dbce821d.png",
+      "raw_sha256": "99850628e02f48b0ba10f87c9ae4e227dafd9fa581521e37a6ec1075d64dda11",
+      "raw_size": [
+        2172,
+        724
+      ],
+      "raw_bytes": 1437374,
+      "prompt_args_exact": true,
+      "output_hint_bound": true,
+      "references": [
+        {
+          "path": "/workspace/generated_images/exec-085c3d79-695a-49ad-9705-3bc1f47bb9aa.png",
+          "sha256": "4d980cd12cd20bc84e5190d315f5d310be43eb6d81b3dda1314e93791236de96"
+        }
+      ],
+      "selection_note": "限定一次真实参考返修，数值LR3.079下降但两位独立审图者仍在正常圆柱x512/y755..890看出稳定cyan竖阶，视觉失败且未用于最终成品；8call中间图与真调用全部保留。"
+    }
+  ],
+  "public_resource_receipt_checks": {
+    "audit_json_sha256": "41b759b496326fce26645bfc8103d2268b9857da81a3e368cd1f393f78c4b3c7",
+    "audit_md_sha256": "4228e706db0f0d913b826db0eb7bd4a8cb18a6402dee6fed716d642359af6e07",
+    "historical_actualPixelAssessmentCount": 33,
+    "independent_current_receipt_byte_verification_count": 33,
+    "group_counts": {
+      "kenney": 5,
+      "polyhaven": 3,
+      "oga-cloudy": 25
+    },
+    "receipts": [
+      {
+        "name": "skybox-alien.png",
+        "kind": "kenney",
+        "path": "/workspace/sky-first-raw/public-candidates/kenney/skybox-alien.png",
+        "sha256": "b8c549d169f99a23dcad04a2e6806fe14ce1dc0acf7e2988924c7cafdf74b2d7",
+        "bytes": 1410804,
+        "git_blob_sha1": "da1174a55515b7786191e87a5a8401b901294d52",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "skybox-day.png",
+        "kind": "kenney",
+        "path": "/workspace/sky-first-raw/public-candidates/kenney/skybox-day.png",
+        "sha256": "b7d98fe95157e74b3899a1dd468a1e478005bcd1f668b29b5b42a48cb5358fa2",
+        "bytes": 1051605,
+        "git_blob_sha1": "a2feff86883a60827df68a28be0c6b919c4b615b",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "skybox-morning.png",
+        "kind": "kenney",
+        "path": "/workspace/sky-first-raw/public-candidates/kenney/skybox-morning.png",
+        "sha256": "7b445e959e7e65c2aad962028826434fda90d7b21f00f451767344970efa9e1e",
+        "bytes": 899710,
+        "git_blob_sha1": "356211662ac9020e2e59166bff0c7babb7d2c529",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "skybox-night.png",
+        "kind": "kenney",
+        "path": "/workspace/sky-first-raw/public-candidates/kenney/skybox-night.png",
+        "sha256": "2276d9e1adee0db84255fe63e13f172b338d4257e312603a3abba89b512419ba",
+        "bytes": 1099375,
+        "git_blob_sha1": "6ef3f4f74dd620baf7270186bd18d73a742fc809",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "skybox-space.png",
+        "kind": "kenney",
+        "path": "/workspace/sky-first-raw/public-candidates/kenney/skybox-space.png",
+        "sha256": "fc95dd68fa348e7e90d595a5e7abecf5ca563b32c76354e904ca80846d9941a6",
+        "bytes": 278812,
+        "git_blob_sha1": "bed7b25f504d1c660fcc24d17d58f55f94d328bf",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "industrial_sunset_puresky_2k.hdr",
+        "kind": "polyhaven",
+        "path": "/workspace/sky-first-raw/public-candidates/polyhaven/industrial_sunset_puresky_2k.hdr",
+        "sha256": "799e6fa9a58dfbec1426d62486aa87fa097a85cf16bb121c79f9ee1125a54288",
+        "bytes": 4344656,
+        "git_blob_sha1": "b01b3aa6ec820e3f30ca49e8478f43a5a0a8b3e2",
+        "historical_HTTP_status": 200,
+        "actualMD5": "54457ed6fc7e0dcd7fcdcd0603892a7d",
+        "officialMD5": "54457ed6fc7e0dcd7fcdcd0603892a7d",
+        "official_MD5_matches": true
+      },
+      {
+        "name": "kloofendal_misty_morning_puresky_2k.hdr",
+        "kind": "polyhaven",
+        "path": "/workspace/sky-first-raw/public-candidates/polyhaven/kloofendal_misty_morning_puresky_2k.hdr",
+        "sha256": "a59683cd08861fb18d69ee8f3938f50ec81c6feda5381e8b8576f340d5a25bb1",
+        "bytes": 2958072,
+        "git_blob_sha1": "3dd4e6bfd6783957ac30d9362b216a0c146def38",
+        "historical_HTTP_status": 200,
+        "actualMD5": "b99e0bb066a0d8134729b9712495d68b",
+        "officialMD5": "b99e0bb066a0d8134729b9712495d68b",
+        "official_MD5_matches": true
+      },
+      {
+        "name": "cloudy_clear_sunrise.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_sunrise.png",
+        "sha256": "1c7bc9e130c7cbf0796850556dc0b65a17187f87d8a839c13e5b1b1840261fe0",
+        "bytes": 2369119,
+        "git_blob_sha1": "2c48808d97819ec6bc9040a5ff377c978d7884f5",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_clear_sunset.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_sunset.png",
+        "sha256": "bde2de8de67579b2c99632efc0e60e004de12b6c7bb9da6d271cd2f72a0ff8ba",
+        "bytes": 1973455,
+        "git_blob_sha1": "26f9a50b266823fd50cdf6e7c5d927c8ec0d2e88",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_dawn.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_dawn.png",
+        "sha256": "bdc6aa5669f48e1e72ff9c3b6c54b6c55a5b0b5d4049a66c4a26696ee8a48704",
+        "bytes": 2368433,
+        "git_blob_sha1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_early_morning.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_early_morning.png",
+        "sha256": "ef7197cfe4904e620efd5b6a23e55d2697b3f4fa0690e7c860fac1b3c029b167",
+        "bytes": 2486766,
+        "git_blob_sha1": "3ee4f2fb85b87ea946d7d3661c2d19aa5edf4e26",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_green.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_green.png",
+        "sha256": "f739d2317a59d359125b2b65c71ac0a85bacf71d822b01fa89a1cd89cd892e23",
+        "bytes": 2217443,
+        "git_blob_sha1": "48012d5a399f008458fb25e28a9e75fa580da25e",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_hazy.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_hazy.png",
+        "sha256": "7689d3eacb76eb455216ab70fe17d922ba692b045ec496f64a54a973ea849153",
+        "bytes": 2313318,
+        "git_blob_sha1": "f83878c22a2557def1e99f6fbf42b26b9f1c0cb2",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_light_green.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_light_green.png",
+        "sha256": "48f26cdde768f6ea79dbe893be37e1cd9616a525e18e43c595281fe42aafa3a4",
+        "bytes": 2308734,
+        "git_blob_sha1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_mist.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_mist.png",
+        "sha256": "58e005102258fd8dbeecd773a6ded8ec17474cec08801d0cf93e53f3057612d3",
+        "bytes": 1924043,
+        "git_blob_sha1": "084377dad8b4fe9c2f03fd885d641d8f330aca72",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_red.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_red.png",
+        "sha256": "e7ff0166f38c05efb52d03b9cadbbe7a36bb6fb41f5403963f8a3bc92d237ade",
+        "bytes": 1948492,
+        "git_blob_sha1": "d245f8de10271ac636836ac21e752109c17ab08b",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_sunrise.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_sunrise.png",
+        "sha256": "b4f2979a194c62adf7fa2f7fe4d8305daca8aea35724acab57945e10979adb49",
+        "bytes": 2206529,
+        "git_blob_sha1": "3e50e7431970b27d41a3abb930ba4d7fb93bf0ba",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_sunset.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_sunset.png",
+        "sha256": "dcc6410e00c05a7cc1b239764da1fbaf28b67bb33e4dd4bbc4c45c00dbc646a2",
+        "bytes": 2098363,
+        "git_blob_sha1": "63b7a4a3158312bdeff4ef0f740267592de71032",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "belfast_sunset_puresky_2k.hdr",
+        "kind": "polyhaven",
+        "path": "/workspace/sky-first-raw/public-candidates/polyhaven/belfast_sunset_puresky_2k.hdr",
+        "sha256": "273003109ca1cfb798ce6b96e09ac8440f763d0ef0c376bbe77492613540b4a3",
+        "bytes": 4563204,
+        "git_blob_sha1": "8c7be2cc73bef54d1b9cba08cc8fa3a02d91dfc6",
+        "historical_HTTP_status": 200,
+        "actualMD5": "4bb56d6163ef1c7ec762e4a7ef8ede81",
+        "officialMD5": "4bb56d6163ef1c7ec762e4a7ef8ede81",
+        "official_MD5_matches": true
+      },
+      {
+        "name": "cloudy_chaotic.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_chaotic.png",
+        "sha256": "df226c53fbafc5619ca49f5580d163536c081459a463e576026d2c4336058932",
+        "bytes": 2580494,
+        "git_blob_sha1": "9e66483978722ea8b3f12ed608ae99608373a209",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_clear_afternoon.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_afternoon.png",
+        "sha256": "b6f9328bfff8d28d9fe1bd269d630941a412dafc2427883f5ae1f30bb7e84d72",
+        "bytes": 1983725,
+        "git_blob_sha1": "9a6ea5b663df03c8f9e7425920c250ba4a6200c1",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_clear_night.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_night.png",
+        "sha256": "954b458d1b6d39f5cac07eb1f8829ff98a647faecc5a2fe61bcf2c1e6dcd871c",
+        "bytes": 1484920,
+        "git_blob_sha1": "f3b328c529cea99a7aea04d00cc44f79d703a8f4",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_dark_blue.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_dark_blue.png",
+        "sha256": "116430bdd7236ba495dc2867c718a1161510e331872b4c8dbab05f7423f50832",
+        "bytes": 2258157,
+        "git_blob_sha1": "131422c3806ef8831c8cc28de8f6c89641ca48e4",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_dusk.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_dusk.png",
+        "sha256": "74571afb275050ecebdea4db727cfbe003737dc469ceda42a0390a8af68385a3",
+        "bytes": 2942511,
+        "git_blob_sha1": "ce3a78c668f93b465316288c229c7514bf9ee2b2",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_inverted_colors.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_inverted_colors.png",
+        "sha256": "ae494d86e7414a32fd5ece683ce678f7a053f6fc9815e55b81fb9cd1fdd0231a",
+        "bytes": 2678533,
+        "git_blob_sha1": "20586787dad302595704e9abb169710e43a88d7f",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_moody.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_moody.png",
+        "sha256": "1a9af36230ec5008e6248f093343b5f757b5fa2ea67379cf2a36d7a1b391b33a",
+        "bytes": 2341199,
+        "git_blob_sha1": "885492e387be4db3ed6b2330dd69e1ea1cad0c97",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_night.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_night.png",
+        "sha256": "e5cdcf1bbcf2400663a374ac508d35bfc9d8fec4dc05877777b8a10c34808454",
+        "bytes": 1988881,
+        "git_blob_sha1": "ef25ceb4fc88100f48ba8fe273ca7a9e1c99f4f1",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_noon.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_noon.png",
+        "sha256": "e2024231d9f278bc76dc2f8f0bc077c63f0b270b9e50a4b491066f710de37b9d",
+        "bytes": 2428805,
+        "git_blob_sha1": "80aad0c7ee0d795987726d6ff71942c9f76f4b08",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_obscured_sun.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_obscured_sun.png",
+        "sha256": "8770a4a55faaaa596a4dc1ff43a688795f58531ecc95b78550879339d2542924",
+        "bytes": 2266575,
+        "git_blob_sha1": "13408c87eed3537f91644d4f660f05638d2ed177",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_purple.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_purple.png",
+        "sha256": "1ee3c32583af369537e676b81d55f455dfde06c4319d29fab2bc9ce59f482e0e",
+        "bytes": 2338339,
+        "git_blob_sha1": "646d70b492be4e8d2358005b8a68616999b5da4d",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_red_at_night.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_red_at_night.png",
+        "sha256": "bdc6aa5669f48e1e72ff9c3b6c54b6c55a5b0b5d4049a66c4a26696ee8a48704",
+        "bytes": 2368433,
+        "git_blob_sha1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_stormy.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_stormy.png",
+        "sha256": "48f26cdde768f6ea79dbe893be37e1cd9616a525e18e43c595281fe42aafa3a4",
+        "bytes": 2308734,
+        "git_blob_sha1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+        "historical_HTTP_status": 200
+      },
+      {
+        "name": "cloudy_yellow.png",
+        "kind": "oga-cloudy",
+        "path": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_yellow.png",
+        "sha256": "80bbb35ea9592e531814fcaf8d623c8c3959e0f05e205b2fdde0aa4ea95d3851",
+        "bytes": 2623666,
+        "git_blob_sha1": "9adb77dedab36539b1eaccf06b354732f5849e14",
+        "historical_HTTP_status": 200
+      }
+    ],
+    "primary_asset_license": "Kenney official author/OGA Skyboxes CC0; PolyHaven original HDR CC0; onlyred AI fallback after actualpubliccomparison",
+    "official_ZIP_byte_comparison": "Kenney and OGA officialZIPs not acquired/byte-compared; mirrorCastleKitrootLICENSE does not apply toSkyboxes",
+    "network_scope": "Reads preserved public acquisition/primary-license audit and verifies acquired originalbytes; no new public downloads or new HTTP/license retrieval by this reviewer",
+    "33_actual_pixel_assessment_scope": "Preserved source auditor assessment, not this reviewers new33image viewing claim",
+    "OGA_unique_blob_count": 23
+  },
+  "history_preservation": [
+    {
+      "name": "frozen-candidate-7298",
+      "manifest_sha256": "836ed11b41ca7d0991d415c2ab5e8fb8eb14a5d765edbe98d9e1e38594d08d15",
+      "archived_file_count": 25,
+      "changed_archived_files": [],
+      "status": "intermediate_visual_revision_required_by_independent_QA",
+      "former_provenance_sha256": "7298f6abe479a7937cea2e885bd29965835d3e2ccafdf6ecb7c67389ab0a3870"
+    },
+    {
+      "name": "rejected-candidate-8calls",
+      "manifest_sha256": "696605b9ef1c39c63f4f883002782625cd40729e8a8ee3b082f543bd3a48dbb5",
+      "archived_file_count": 17,
+      "changed_archived_files": [],
+      "status": "dawn_visual_revision_failed_pending_root_stock_fallback",
+      "former_provenance_sha256": null
+    }
+  ],
+  "workspace_artifact_records_checked": [
+    {
+      "path": "/workspace/sky-first-raw/export-direct-PH-dawn.py",
+      "bytes": 2816,
+      "sha256": "77ac205979b120964206f0b87a03b7791cfaf646e7b7d5e56410ce253d421c60"
+    },
+    {
+      "path": "/workspace/sky-first-raw/history/rejected-candidate-8calls/history-manifest.json",
+      "bytes": 6429,
+      "sha256": "696605b9ef1c39c63f4f883002782625cd40729e8a8ee3b082f543bd3a48dbb5"
+    },
+    {
+      "path": "/workspace/sky-first-raw/visual-revision-prompts.json",
+      "bytes": 4083,
+      "sha256": "5f86e2cdc2bd43f4523f7ee27f762ccfc81ef7d7690ad470a95ddb664973768c"
+    },
+    {
+      "path": "/workspace/sky-first-raw/visual-revision-calls.json",
+      "bytes": 9149,
+      "sha256": "55fa7c1aa4a47860137acb8e244ed1246c9719fe645c5ce9f5edbd87023105f6"
+    },
+    {
+      "path": "/workspace/sky-first-raw/history/frozen-candidate-7298/history-manifest.json",
+      "bytes": 9556,
+      "sha256": "836ed11b41ca7d0991d415c2ab5e8fb8eb14a5d765edbe98d9e1e38594d08d15"
+    },
+    {
+      "path": "/workspace/sky-first-raw/write-final-provenance.py",
+      "bytes": 20037,
+      "sha256": "860ff962df94edcaed65d8fbe40bbd02d21fb35ad3797f99a950f939965be2bb"
+    },
+    {
+      "path": "/workspace/sky-first-raw/calls.json",
+      "bytes": 15960,
+      "sha256": "11a682f347719f81ea406eedc9f4d6c119ca947284df0956be87d039e5559559"
+    },
+    {
+      "path": "/workspace/sky-first-raw/prompts.json",
+      "bytes": 7123,
+      "sha256": "8aa0b00cb5261e65d9764b924a53376bd495548b1a17d411e8d0aae58c6345de"
+    },
+    {
+      "path": "/workspace/sky-first-raw/native-inspection.json",
+      "bytes": 1334,
+      "sha256": "7ff00b16e5f9c9597bbf65e75bb294236c90ad77d524647ce7a2f519ee62c7fe"
+    },
+    {
+      "path": "/workspace/sky-first-raw/edit-prompts.json",
+      "bytes": 3431,
+      "sha256": "d22693bfc2c2778c58dad87735286a9dc40c5b9ab922182ef0dea2bcf43b86b8"
+    },
+    {
+      "path": "/workspace/sky-first-raw/edit-calls.json",
+      "bytes": 21266,
+      "sha256": "67d8fc4dab75b8257cd73008ecd5cdcaf0dd7804d3bbf4befcfa79adff99b69f"
+    },
+    {
+      "path": "/workspace/sky-first-raw/edit-native-inspection.json",
+      "bytes": 3225,
+      "sha256": "11ae26521de361a88c3a1696a47b98d9c6fba4ef0948cce509b496c228fa7416"
+    },
+    {
+      "path": "/workspace/sky-first-raw/sunset-edit3-call.json",
+      "bytes": 4221,
+      "sha256": "88360ce84b76f61e23b131304c5c9cf947f422721c034680d64dc92c781f84b6"
+    },
+    {
+      "path": "/workspace/sky-first-raw/ai-candidates-export.json",
+      "bytes": 3141,
+      "sha256": "8a57bb9164868792015a3d85c9da50d670fb2ff9207e284ee84f84de2f0bec72"
+    },
+    {
+      "path": "/workspace/sky-first-raw/selected-export.json",
+      "bytes": 9194,
+      "sha256": "baaa52bfed78ac8873fc3df7f02583c47aaff31d82e82930aa002b57f3247c28"
+    },
+    {
+      "path": "/workspace/sky-first-raw/export-candidates.py",
+      "bytes": 1778,
+      "sha256": "6671925cc60859c2013f376f52d8996ce7f8f5df0560fd0c4ca1010441309e03"
+    },
+    {
+      "path": "/workspace/sky-first-raw/export-selected.py",
+      "bytes": 2926,
+      "sha256": "6856aae4a48f9eb0d9e76a707f567d4233583dc2fd22add4b145af4eb4c2bcef"
+    },
+    {
+      "path": "/workspace/sky-first-raw/export-final-selected.py",
+      "bytes": 3765,
+      "sha256": "05fc4ffea642a0ac8f725cafcfa3572082c34a74863ed17b48c6e021ab10f730"
+    },
+    {
+      "path": "/workspace/sky-first-raw/export-selected-reviews.py",
+      "bytes": 2797,
+      "sha256": "4de9f02e022b79b0b6ea803b8ccdc6f3a404d815bc96fcd427cea86bead07e8b"
+    },
+    {
+      "path": "/workspace/sky-first-raw/review-export.json",
+      "bytes": 5994,
+      "sha256": "a117fc9e33d32a50b5340df402d1e135c36c950a0305c2e6fc8ebf032260f3b4"
+    },
+    {
+      "path": "/workspace/sky-first-raw/sky-panorama-a10-first-render.html",
+      "bytes": 6488,
+      "sha256": "1649596d281a525dc6ada33819fb0d9053bef8cb699a85c536ded311bf2a6425"
+    },
+    {
+      "path": "/workspace/sky-first-raw/capture-selected-render.mjs",
+      "bytes": 3427,
+      "sha256": "de0dd9a969ea9cf6432c2f35c7c48b9bc70e34537114b413a96f6b324eb254af"
+    },
+    {
+      "path": "/workspace/sky-first-raw/render-report.json",
+      "bytes": 85739,
+      "sha256": "cc2de56ff92f29870849a78e6584099ef238409c03d7757c1ff18eb803421019"
+    },
+    {
+      "path": "/workspace/sky-first-raw/export-selected-render.py",
+      "bytes": 2278,
+      "sha256": "c80f8449de9d164b25bbb8a76432d5b8bb28b6a2a02a8dd0eec473252e53c3ea"
+    },
+    {
+      "path": "/workspace/sky-first-raw/render-export.json",
+      "bytes": 94206,
+      "sha256": "64a7e7db138eb1ef5791e9fb108276f9d31a1a3879cccbcccf6c49ff6396edc9"
+    },
+    {
+      "path": "/workspace/sky-first-raw/fixed60-merge-report.json",
+      "bytes": 4925,
+      "sha256": "d7e80d80fb507f0ae8558a007c100b5a785d6cf1988567e381fd8e28eb8737c9"
+    },
+    {
+      "path": "/workspace/sky-first-raw/tests-fixed-base.log",
+      "bytes": 6411,
+      "sha256": "fd9adec19d95e5fe88f1434da9e4766f3366ae8507f10eaee2a3aa68cec9cfe4"
+    },
+    {
+      "path": "/workspace/sky-first-raw/tests-fixed60.log",
+      "bytes": 7312,
+      "sha256": "073639dcf23adcf7e52b421da03d41f20cba788f2b5ec72775e35be9548a511a"
+    },
+    {
+      "path": "/workspace/sky-first-raw/cc0-research/hdr-decoder.json",
+      "bytes": 780,
+      "sha256": "a47e07343d68e90939f818cad4fb8bb1e46d2659ae41e82d8608ae9e9ecf497d"
+    },
+    {
+      "path": "/workspace/sky-first-raw/cc0-research/ph-misty-bands.json",
+      "bytes": 2207,
+      "sha256": "8336519b9fbf3025ecdb6107bf50c8d8d6b0082a0dda6b4a5df877bfa86ea2d2"
+    },
+    {
+      "path": "/workspace/sky-first-raw/decode-public-hdr.mjs",
+      "bytes": 1452,
+      "sha256": "a34ca4af5359871ce75274133a17326f88ef0cccf607fc7910e43146e6eb3a12"
+    },
+    {
+      "path": "/workspace/sky-first-raw/preview-public-hdr.py",
+      "bytes": 1042,
+      "sha256": "73f734d30885a436404d18add94325f815c255485c2cdee3f74e62bf8233a733"
+    },
+    {
+      "path": "/workspace/sky-first-raw/public-resource-audit.md",
+      "bytes": 15005,
+      "sha256": "e08edf1ded2f4f912d3244d9177808820c1a12b76b67aeed82c69b5e6438b0b0"
+    },
+    {
+      "path": "/workspace/sky-first-raw/public-resource-audit.json",
+      "bytes": 103543,
+      "sha256": "41b759b496326fce26645bfc8103d2268b9857da81a3e368cd1f393f78c4b3c7"
+    },
+    {
+      "path": "/workspace/sky-first-raw/ai-candidate-history-before-queue0/history-manifest.json",
+      "bytes": 6610,
+      "sha256": "ddb0101a53c464367094b2d215e1103bb205c8647be240d6b2093170988ab884"
+    }
+  ],
+  "independent_GPU_runtime": {
+    "independently_executed": true,
+    "fixture": "ExistingfrozenauthorHTMLread/checked;reviewer-runbrowserinitialload+actualreloadcacheDisabled",
+    "browser": "Chromium/usr/bin/chromium/ANGLESwiftShader",
+    "loads": [
+      {
+        "loaded": 3,
+        "expected": 3,
+        "probe_frames": 216,
+        "featured_frames": 6
+      },
+      {
+        "loaded": 3,
+        "expected": 3,
+        "probe_frames": 216,
+        "featured_frames": 6
+      }
+    ],
+    "HTTP_asset_responses": [
+      {
+        "phase": 1,
+        "url": "http://127.0.0.1:5198/assets/world/skies/sky_dusk_peach_01.webp",
+        "status": 200,
+        "bytes": 13834,
+        "body_sha256": "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3"
+      },
+      {
+        "phase": 1,
+        "url": "http://127.0.0.1:5198/assets/world/skies/sky_sunset_redcloud_02.webp",
+        "status": 200,
+        "bytes": 114444,
+        "body_sha256": "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7"
+      },
+      {
+        "phase": 1,
+        "url": "http://127.0.0.1:5198/assets/world/skies/sky_dawn_tealmist_03.webp",
+        "status": 200,
+        "bytes": 6600,
+        "body_sha256": "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4"
+      },
+      {
+        "phase": 2,
+        "url": "http://127.0.0.1:5198/assets/world/skies/sky_dusk_peach_01.webp",
+        "status": 200,
+        "bytes": 13834,
+        "body_sha256": "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3"
+      },
+      {
+        "phase": 2,
+        "url": "http://127.0.0.1:5198/assets/world/skies/sky_sunset_redcloud_02.webp",
+        "status": 200,
+        "bytes": 114444,
+        "body_sha256": "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7"
+      },
+      {
+        "phase": 2,
+        "url": "http://127.0.0.1:5198/assets/world/skies/sky_dawn_tealmist_03.webp",
+        "status": 200,
+        "bytes": 6600,
+        "body_sha256": "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4"
+      }
+    ],
+    "source_sha256_before": [
+      "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3",
+      "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7",
+      "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4"
+    ],
+    "source_sha256_after": [
+      "09ba14a55b6bb71376446ba5b7fd3dad9021d0b1117cb35abde86d6ac8c94db3",
+      "1e344cc99267542423425b09dda4acda4acf72a1b8646f900d3a788fa0ddbce7",
+      "3f34fde2ce9085aab8d4ea88b47d83d7981685d88c59aa44ad9a9324b0d47fb4"
+    ],
+    "page_errors": [],
+    "console_errors": [],
+    "failed_requests": [],
+    "total_probe_frames": 432,
+    "total_featured_frames": 12,
+    "total_actual_frames": 444,
+    "all_draw_calls_one": true,
+    "actual_parameters": {
+      "three_revision": "169",
+      "canvas": [
+        1024,
+        288
+      ],
+      "geometry": {
+        "type": "CylinderGeometry",
+        "radius_top": 64,
+        "radius_bottom": 64,
+        "height": 100.53096491487338,
+        "radial_segments": 128,
+        "height_segments": 1,
+        "open_ended": true,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "uv": "default CylinderGeometry; u0/u1 join at +Z; no UV edits"
+      },
+      "material": {
+        "type": "MeshBasicMaterial",
+        "color": "#ffffff",
+        "side": "BackSide",
+        "tone_mapped": false,
+        "transparent": false
+      },
+      "texture": {
+        "color_space": "SRGBColorSpace",
+        "repeat": [
+          1,
+          1
+        ],
+        "wrap_s": "RepeatWrapping",
+        "wrap_t": "ClampToEdgeWrapping",
+        "anisotropy": 4,
+        "generate_mipmaps": true,
+        "min_filter": "LinearMipmapLinearFilter",
+        "mag_filter": "LinearFilter"
+      },
+      "camera": {
+        "type": "PerspectiveCamera",
+        "fov": 30,
+        "aspect": 3.5555555555555554,
+        "near": 0.1,
+        "far": 1000,
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "direction_formula": "[sin(yaw)*cos(pitch),sin(pitch),cos(yaw)*cos(pitch)]"
+      },
+      "renderer": {
+        "output_color_space": "SRGBColorSpace",
+        "tone_mapping": "NoToneMapping",
+        "exposure": 1,
+        "antialias": true,
+        "device_pixel_ratio": 1,
+        "bloom": false,
+        "shadows": false
+      },
+      "full_yaw_sweep": {
+        "yaw_degrees": [
+          0,
+          15,
+          30,
+          45,
+          60,
+          75,
+          90,
+          105,
+          120,
+          135,
+          150,
+          165,
+          180,
+          195,
+          210,
+          225,
+          240,
+          255,
+          270,
+          285,
+          300,
+          315,
+          330,
+          345
+        ],
+        "pitch_degrees": [
+          -20,
+          0,
+          20
+        ],
+        "expected_probe_frames": 216
+      },
+      "featured_views": [
+        {
+          "yaw_degrees": 0,
+          "pitch_degrees": 0
+        },
+        {
+          "yaw_degrees": 180,
+          "pitch_degrees": 0
+        }
+      ],
+      "lights": [],
+      "omitted": [
+        "sky dome caps",
+        "fog",
+        "sun disc",
+        "bloom",
+        "color grading",
+        "scene geometry"
+      ]
+    },
+    "all444frame_records_identical_to_current_author": true,
+    "independent_GPU_full_RGBA_vs_current_author": {
+      "same_pixels": true,
+      "RGB_MAE": 0.0,
+      "max_channel_difference": 0,
+      "different_channels": 0
+    },
+    "independent_report_path": "/tmp/sky-independent-final/render-report.json",
+    "independent_report_sha256": "3d82f9194cccf0313d2a29c6e1086fddd77593f768c897899755e1f9de4d8605",
+    "independent_script_sha256": "e5692bf4495315b1b759aae8ac7256c4402a2f12958f2790679e12fc15fdfe33",
+    "independent_screenshot_path": "/tmp/sky-independent-final/sky-panorama-a10-first-render.png",
+    "independent_screenshot_sha256": "6beb7a1500dcb2f6f2bbd4fb18fbbf43558d84271774347741cb7af51d22139f",
+    "current_author_GPU_png_sha256": "6beb7a1500dcb2f6f2bbd4fb18fbbf43558d84271774347741cb7af51d22139f",
+    "current_official_GPU_webp_sha256": "368ffbc6f8ecdf8ad6af49d342849d2c1923fdf2cf2bc57cabb0c172e13764ad",
+    "current_official_GPU_webp_loss": {
+      "same_pixels": false,
+      "RGB_MAE": 0.7657351493835449,
+      "max_channel_difference": 32,
+      "different_channels": 2376692
+    }
+  },
+  "product_validation_attribution": {
+    "performed_by": "/root/world_a09",
+    "command": "npm run typecheck && npm test > /workspace/sky-first-raw/tests-fixed60.log 2>&1",
+    "author_native_exit0": true,
+    "typecheck_author_tool_stdout_exit0": true,
+    "typecheck_separate_log": false,
+    "test_files": 69,
+    "tests": 1035,
+    "test_log_path": "/workspace/sky-first-raw/tests-fixed60.log",
+    "test_log_sha256": "073639dcf23adcf7e52b421da03d41f20cba788f2b5ec72775e35be9548a511a",
+    "independently_read_test_log": true,
+    "independently_reran_product_tests": false,
+    "capture_base": "60bc06577f5d5dd2966a661d2278802bb3e3fcee",
+    "author_merge_head": "274c7f2ce267d613b530878312b7f496f8465a44",
+    "images_only_since_native_check": true
+  },
+  "frozen_input_guard": {
+    "count": 35,
+    "input_snapshot_path": "/tmp/sky-independent-final/frozen-inputs-before.json",
+    "input_snapshot_sha256": "e454983b6d8001e970391e51071743b5884859e7a9fe71371615c4d64754be6c",
+    "changed": [],
+    "dependencies": [
+      {
+        "path": "package.json",
+        "resolved_path": "/workspace/world-sky-first/package.json",
+        "bytes": 1114,
+        "sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+        "current_sha256": "fbe8a73db0a213c74196b4923f472b5efb1c5ef1364ae2daa9326b10f2588e88",
+        "unchanged": true
+      },
+      {
+        "path": "package-lock.json",
+        "resolved_path": "/workspace/world-sky-first/package-lock.json",
+        "bytes": 51766,
+        "sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+        "current_sha256": "91b550c226e9ca8cdc20a8aba63e4d956b7c52fb32473abe0b9a6bcd56b7cc84",
+        "unchanged": true
+      },
+      {
+        "path": "node_modules/three/package.json",
+        "resolved_path": "/workspace/myRepository/node_modules/three/package.json",
+        "bytes": 4373,
+        "sha256": "2dea831b9915a94b23a5c1ecc4bce0433f0cb6bca213401ff660277e85c3fe01",
+        "current_sha256": "2dea831b9915a94b23a5c1ecc4bce0433f0cb6bca213401ff660277e85c3fe01",
+        "unchanged": true
+      },
+      {
+        "path": "node_modules/three/build/three.module.js",
+        "resolved_path": "/workspace/myRepository/node_modules/three/build/three.module.js",
+        "bytes": 1304820,
+        "sha256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+        "current_sha256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+        "unchanged": true
+      },
+      {
+        "path": "node_modules/three/examples/jsm/loaders/RGBELoader.js",
+        "resolved_path": "/workspace/myRepository/node_modules/three/examples/jsm/loaders/RGBELoader.js",
+        "bytes": 11377,
+        "sha256": "f0e87d0008d9484d31358b32befd1bf80e4301f77573cc9a7cf7d871cc3f64b4",
+        "current_sha256": "f0e87d0008d9484d31358b32befd1bf80e4301f77573cc9a7cf7d871cc3f64b4",
+        "unchanged": true
+      }
+    ]
+  },
+  "encoder_versions": {
+    "Pillow": "12.3.0",
+    "WebP": "1.6.0"
+  },
+  "schema_version": 1,
+  "batch": "WORLD-A10-SK1",
+  "reviewer": "/root/review_queue",
+  "created_utc": "2026-10-12T08:05:05.385741+00:00",
+  "decision": "ready",
+  "claude_approved": false,
+  "review_round": 1,
+  "blocking_findings": [],
+  "scope": "Independent final visual review of all17 current delivered images, native source-edge crops and GPU ROI, independent initial-load/reload444-frame execution on frozen existing Three fixture, originalHDR decode+SDR/export reproduction and receipt checks. No product engine integration or extra product tests.",
+  "visual_review": {
+    "actual_view_image_used": true,
+    "actual_current_delivery_files_viewed": [
+      "assets/world/reviews/sky-panorama-a10-first-render.webp",
+      "assets/world/reviews/sky-panorama-a10-first.webp",
+      "assets/world/reviews/sky_dawn_tealmist_03-2x-horizontal.webp",
+      "assets/world/reviews/sky_dawn_tealmist_03-4x-horizontal.webp",
+      "assets/world/reviews/sky_dawn_tealmist_03-native-corners.png",
+      "assets/world/reviews/sky_dawn_tealmist_03-native-lr.png",
+      "assets/world/reviews/sky_dusk_peach_01-2x-horizontal.webp",
+      "assets/world/reviews/sky_dusk_peach_01-4x-horizontal.webp",
+      "assets/world/reviews/sky_dusk_peach_01-native-corners.png",
+      "assets/world/reviews/sky_dusk_peach_01-native-lr.png",
+      "assets/world/reviews/sky_sunset_redcloud_02-2x-horizontal.webp",
+      "assets/world/reviews/sky_sunset_redcloud_02-4x-horizontal.webp",
+      "assets/world/reviews/sky_sunset_redcloud_02-native-corners.png",
+      "assets/world/reviews/sky_sunset_redcloud_02-native-lr.png",
+      "assets/world/skies/sky_dawn_tealmist_03.webp",
+      "assets/world/skies/sky_dusk_peach_01.webp",
+      "assets/world/skies/sky_sunset_redcloud_02.webp"
+    ],
+    "actual_current_delivery_image_count": 17,
+    "extra_current_native_views": [
+      "/tmp/sky-independent-final/sky_dusk_peach_01-R512-L512-native.png",
+      "/tmp/sky-independent-final/sky_sunset_redcloud_02-R512-L512-native.png",
+      "/tmp/sky-independent-final/sky_dawn_tealmist_03-R512-L512-native.png",
+      "/tmp/sky-independent-final/red-gpu-raw-vs-review-native.png",
+      "/tmp/sky-independent-final/dawn-gpu-raw-vs-review-native.png",
+      "/tmp/sky-independent-final/sky-panorama-a10-first-render.png"
+    ],
+    "actual_PH_standard_SDR_input_viewed": "/workspace/sky-first-raw/cc0-research/ph-misty-band-exp2.png",
+    "native_review_scale": "1:1 decodedsourceRGB; no resizing of128column officialedgePNG or reviewer512column sides; GPUROI unscaled",
+    "GPU_ROIs": [
+      {
+        "id": "sky_sunset_redcloud_02",
+        "ltrb": [
+          480,
+          384,
+          544,
+          672
+        ],
+        "finding": "No similarly stable abrupt vertical hue bar observed in actual frozenred4 rawGPU/fullmaterialview/nativeedges; finecolor/cloudphase difference remains measurable."
+      },
+      {
+        "id": "sky_dawn_tealmist_03",
+        "ltrb": [
+          480,
+          720,
+          544,
+          1008
+        ],
+        "finding": "Previously visiblecyan stripe atxabout512/yabout755..890 from failedAIcandidate3 is not observed in currentdirectPH unscaledrawGPU and normalviews. Gray-bluefog is lowcontrast, not mathematicallysameedgepixels."
+      }
+    ],
+    "per_asset_findings": [
+      {
+        "id": "sky_dusk_peach_01",
+        "result": "acceptable_for_review",
+        "finding": "Pale peach/rose clear sky, cloud forms concentrated towardupperarea; nativeLR/corners and 2/4repeat unobtrusive in checked views. Pitch0 materialview mostlysoftpeachhaze; lowfrequencycomposition remains periodic."
+      },
+      {
+        "id": "sky_sunset_redcloud_02",
+        "result": "acceptable_for_review",
+        "finding": "Coral/orange layered clouds distinguishharborsunset; no city/ground or singlediscs; red4 softedges avoidpreviousstablebar atcheckedjoin. Lowfrequencycloudgroups repeatvisibly, finecolor/wispphase differences remain; actual2172x724fullcanvasflattensrelativeheight25%."
+      },
+      {
+        "id": "sky_dawn_tealmist_03",
+        "result": "acceptable_with_palette_limitation",
+        "finding": "StandardoriginalPH fog has gentlegray-bluetone, skyonly; no samecyanverticalbar seen in nativeedges or normalGPU. Greenisweak and cloudsareverysoft; this is an explicitacceptedpalette deviation selectedbyroot, not claimedblue-greenmatch."
+      }
+    ],
+    "metric_policy": "LRMAE diagnostic only. Actualsource/normalGPU visual judgment required; no arbitrarynumericpass threshold, no pixel-perfectseam or continuousallviewsproof."
+  },
+  "accepted_limitations": [
+    "PHdawn is palegray-blue, not prominentlygreen; lowcontrastcloudbody and subduedcolor are leastsatisfying.",
+    "Red4 lowfrequencycloudcomposition visiblycycles on4repeats; fineedgephase differences remain. Onlyred4 uses2172x7243:1 to2048x5124:1nonproportionaldownsample; relativeverticalflattening25%.",
+    "Kenneyclouds primarilyupperband, so pitch0 materialview showsmorerose-peachhaze.",
+    "WebPsource/review/GPU files arelossy: exactbyteexport reproduction does not mean sourceinputorGPUrawRGB matches compressedRGB. NativePNG exactdecodedsource; GPUrawPNG fullRGBA independentlymatched.",
+    "Openendedcylinderfixture coversfiniteyaw/pitch samples and featuredseam/oppositeviews; not a cappedskydome, productintegration,HDRlighting,depthoranimation; no verticalrepeatrequirement.",
+    "Receipt/licensing/public33pixelassessments areattributed to preservedsourceaudit; independentverificationcheckedall33originalfilebytes, not an independentnew33imageassessment or newpublicHTTPsearch.",
+    "KenneyofficialZIPbyteidentity unverified; mirrorrootCastleKitLICENSE notused. OfficialPHMD5 verifiesoriginalHDRonly, notSDR/WebPderivative."
+  ],
+  "mutation_scope": "Only assets/world/skies/sky-panorama-a10-first.qa.md/.json newlywritten. Runtime/decoder/scripts/fullreport/nativecrops savedonly /tmp/sky-independent-final; no authorfiles/source/docs/README/officialcapture or images changed; no commit/push."
+}

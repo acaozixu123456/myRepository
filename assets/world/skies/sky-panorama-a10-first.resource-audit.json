@@ -1,0 +1,2126 @@
+{
+  "schemaVersion": 1,
+  "task": "#116 SKY first-three public resource audit",
+  "auditor": "body_field_review",
+  "createdAtUTC": "2026-10-12T06:46:01.063294+00:00",
+  "scope": "Public source/permission/acquisition/actual-pixel audit only. Product source, official review images, CREDITS, PR, queue and tests not modified by this audit.",
+  "chronology": {
+    "queueRuleCommit": "6fdb7eefe166877b9cb874cb3a8c27f821206519",
+    "queueRuleCommitTimeUTC": "2026-10-12T06:12:57Z",
+    "queueRule": "素材优先公开资源，找不到合适再生成/绘制；PR 列出搜索来源与不合适原因；用到第三方登记 CREDITS",
+    "generation": "Three historical generation calls occurred before the new rule, as confirmed by parent/author; existing calls.json retained. No claim of a source search before those calls.",
+    "thisAudit": "Post-rule supplementary audit; cloud production probes begin 2026-10-12T06:19:16Z, then primary metadata and actual legitimate CC0 mirror downloads. No additional generation performed."
+  },
+  "requirements": {
+    "finalSize": [
+      2048,
+      512
+    ],
+    "wrap": "Full 360-degree horizontal sky/cloud panorama; choose latitude band or document projection mapping",
+    "periods": [
+      "黄昏橘粉",
+      "晚霞赤红带云",
+      "清晨蓝绿薄雾"
+    ],
+    "style": "Bright fresh gentle cartoon-compatible, sky/clouds only, no cities/buildings, avoid large solar focus",
+    "aspectRatioRule": "A 2:1 panorama is not rejected for differing from 4:1 delivery. Full-longitude latitude-band crop/resampling may satisfy the target."
+  },
+  "stageDecision": {
+    "first": "Selected: direct Kenney skybox-morning.png full-width latitude-band crop; author reports replacement completed.",
+    "second": "Selected by root: historical bright red-cloud AI candidate, one real image_gen reference edit to fix independent U0 wrap edge. Author owns edit/export/final source QA.",
+    "third": "Selected by root: exact-official-byte PH Kloofendal Misty Morning 2K HDR, standard SDR full-width band at exposure 2, then one real image_gen light blue-green reference edit preserving original fog layout. This is not programmatic artistic palette grading. Author owns reference edit/export/final source QA.",
+    "selectedSourceStatus": "Direction selected; generated/edit output identities and final GPU/seam validation remain with author and independent patterns_qa. Audit does not claim those final operations are already complete.",
+    "nativeCandidateReasonsForSecond": "Actual acquired OGA red/sunset have dark brown/red lower areas and paired bright disks; PH sunset originals are muted blue/violet/gold rather than red-dominant; root selected historical red candidate for fresh bright red-cloud direction after real source comparison. Not rejected for aspect ratio, names or access failures.",
+    "nativeCandidateReasonsForThird": "Actual PH misty has suitable pure-sky diffuse fog layout and no large solar focus; original palette is pale grey-blue with very little green, so root selected this public source as the basis for light blue-green reference editing.",
+    "decisionOwnedBy": "root + world_a09; patterns_qa verifies final chosen-source exports",
+    "historicalGeneratedFiles": "Preserved before-rule history. New reference-edit actions, if performed by author, occur after the new rule and supplementary public-source search.",
+    "thirdDerivativeIdentity": "AI-edited output is a derivative of the disclosed CC0 reference; it must not be described as unmodified official Poly Haven bytes or as official MD5-matched output. Official MD5 identity only applies to acquired original HDR.",
+    "auditorOperations": "Source audit only; auditor performed no new generation, no artistic palette grading, no product/source/progress edits, commit or PR mutation."
+  },
+  "network": {
+    "runtimeSkillApplied": "cloud-environment:cloud-environment-runtime",
+    "policyMode": "Managed restricted network; inherited proxy retained",
+    "approvedProductionMirrorHost": "raw.githubusercontent.com",
+    "originBlockedHosts": [
+      "ambientcg.com",
+      "docs.ambientcg.com",
+      "polyhaven.com",
+      "api.polyhaven.com",
+      "dl.polyhaven.org",
+      "kenney.nl",
+      "opengameart.org"
+    ],
+    "blockedRequestMeaning": "Proxy CONNECT denial before an origin response; originHTTPStatus is null. No direct connection, environment/proxy removal, host mapping or policy bypass used.",
+    "webConnectorMediaMeaning": "Image opens returned only text placeholders, not ImageContent pixels. Those placeholders are not visual inspection. ZIP unsupported/type and JPG too-large messages are connector errors, not origin 404/403.",
+    "legitimateMirrorPurpose": "Acquire actual openly licensed original production candidates for source selection and reuse; not download remote media to bypass display restrictions."
+  },
+  "validation": {
+    "successfulProductionGETCount": 33,
+    "allHTTP200": true,
+    "allGitBlobSHA1AndBytesExact": true,
+    "kenneyNativeDimensions": [
+      4096,
+      2048
+    ],
+    "ogaNativeDimensions": [
+      2048,
+      1024
+    ],
+    "polyhavenNativeDimensions": [
+      2048,
+      1024
+    ],
+    "polyhavenOriginalOfficialMD5ExactCount": 3,
+    "kenneyOrOGAOfficialZIPByteIdentityVerified": false,
+    "originalCandidateFilesEdited": false,
+    "testsRunByAuditor": false,
+    "finalHorizontalSeamAndMaterialBasicGPUChecks": "Required after author's final export; this source audit is not a final in-engine review.",
+    "actualPixelAssessmentCount": 33,
+    "ogaProductionGETCount": 25,
+    "ogaUniqueBlobCount": 23
+  },
+  "sources": [
+    {
+      "provider": "Kenney",
+      "id": "skyboxes",
+      "officialURL": "https://kenney.nl/assets/skyboxes",
+      "authorHostedOGAURL": "https://opengameart.org/content/skyboxes-1",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "licenseVerifiedFromPrimaryPages": true,
+      "primaryWebHTTPStatus": null,
+      "primaryWebContentRetrieved": true,
+      "officialZIPURLs": [
+        "https://kenney.nl/media/pages/assets/skyboxes/6736ff5c10-1784123473/kenney_skyboxes.zip",
+        "https://opengameart.org/sites/default/files/kenney_skyboxes.zip"
+      ],
+      "officialZIPAcquired": false,
+      "webZIPResult": "Unsupported content-type: application/zip (connector limitation)",
+      "officialDeclaredFiles": 5,
+      "officialFormat": "Panoramic spherical",
+      "mirror": {
+        "repo": "shorepine/kenney",
+        "commit": "3694c6879e487c108f55677be7dd2ca75b07cc3b",
+        "commitDate": "2026-08-30T23:21:53Z",
+        "path": "2d/Skyboxes/Skyboxes/",
+        "readmeURL": "https://github.com/shorepine/kenney/blob/3694c6879e487c108f55677be7dd2ca75b07cc3b/README.md",
+        "readmeOriginStatement": "Mirrors Kenney CC0 library from all-in-one dump",
+        "rootLicenseCaveat": "Root LICENSE.txt names Castle Kit 2.0; it is not treated as this Skyboxes pack-specific license.",
+        "blobSHA1AndBytesVerified": true,
+        "officialZIPByteIdentityVerified": false
+      },
+      "productionReceipts": [
+        "skybox-alien.png",
+        "skybox-day.png",
+        "skybox-morning.png",
+        "skybox-night.png",
+        "skybox-space.png"
+      ],
+      "nativeDimensionsVerified": [
+        4096,
+        2048
+      ],
+      "reuseRecommendation": "Reuse morning for dusk-peach; author reports doing so. Day is reserved for #117; do not reject pack merely because it is 2:1."
+    },
+    {
+      "provider": "OpenGameArt",
+      "id": "cloudy-skyboxes-0",
+      "officialURL": "https://opengameart.org/content/cloudy-skyboxes-0",
+      "author": "Screaming Brain Studios",
+      "publishedDate": "2025-06-01",
+      "license": "CC0-1.0",
+      "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "licenseVerifiedFromPrimaryPage": true,
+      "primaryWebContentRetrieved": true,
+      "primaryWebHTTPStatus": null,
+      "officialZIPURL": "https://opengameart.org/sites/default/files/sbs_-_cloudy_skyboxes_-_panorama_0.zip",
+      "officialZIPAcquired": false,
+      "webZIPResult": "Unsupported content-type: application/zip (connector limitation)",
+      "cloudGETResult": "Proxy CONNECT 403 before origin response",
+      "officialDeclaredPanoramaCount": 25,
+      "officialDeclaredNativeDimensions": [
+        2048,
+        1024
+      ],
+      "officialDescriptionCountCaveat": "Page also says 32 per pack; do not infer ZIP member inventory from that contradictory prose.",
+      "mirror": {
+        "repo": "optimuspryne/open-tabletop",
+        "commit": "2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f",
+        "creditsURL": "https://github.com/optimuspryne/open-tabletop/blob/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/docs/ASSET_CREDITS.md",
+        "path": "public/static_assets/sky/equirect/",
+        "directoryLicenseExceptionVerified": "Cloudy Skyboxes, Screaming Brain Studios, official OGA URL, CC0 explicitly assigned to this directory independently of repository software license",
+        "actualMirrorInventoryCount": 25,
+        "actualDownloadedSubsetCount": 25,
+        "blobSHA1AndBytesVerified": true,
+        "officialZIPByteIdentityVerified": false,
+        "actualMirrorFilesAllDownloaded": true,
+        "duplicatePairs": [
+          [
+            "cloudy_red_at_night.png",
+            "cloudy_dawn.png"
+          ],
+          [
+            "cloudy_stormy.png",
+            "cloudy_light_green.png"
+          ]
+        ]
+      },
+      "mirrorInventory": [
+        {
+          "name": "cloudy_chaotic.png",
+          "path": "public/static_assets/sky/equirect/cloudy_chaotic.png",
+          "bytes": 2580494,
+          "gitBlobSHA1": "9e66483978722ea8b3f12ed608ae99608373a209",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_clear_afternoon.png",
+          "path": "public/static_assets/sky/equirect/cloudy_clear_afternoon.png",
+          "bytes": 1983725,
+          "gitBlobSHA1": "9a6ea5b663df03c8f9e7425920c250ba4a6200c1",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_clear_night.png",
+          "path": "public/static_assets/sky/equirect/cloudy_clear_night.png",
+          "bytes": 1484920,
+          "gitBlobSHA1": "f3b328c529cea99a7aea04d00cc44f79d703a8f4",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_clear_sunrise.png",
+          "path": "public/static_assets/sky/equirect/cloudy_clear_sunrise.png",
+          "bytes": 2369119,
+          "gitBlobSHA1": "2c48808d97819ec6bc9040a5ff377c978d7884f5",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_clear_sunset.png",
+          "path": "public/static_assets/sky/equirect/cloudy_clear_sunset.png",
+          "bytes": 1973455,
+          "gitBlobSHA1": "26f9a50b266823fd50cdf6e7c5d927c8ec0d2e88",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_dark_blue.png",
+          "path": "public/static_assets/sky/equirect/cloudy_dark_blue.png",
+          "bytes": 2258157,
+          "gitBlobSHA1": "131422c3806ef8831c8cc28de8f6c89641ca48e4",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_dawn.png",
+          "path": "public/static_assets/sky/equirect/cloudy_dawn.png",
+          "bytes": 2368433,
+          "gitBlobSHA1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_dusk.png",
+          "path": "public/static_assets/sky/equirect/cloudy_dusk.png",
+          "bytes": 2942511,
+          "gitBlobSHA1": "ce3a78c668f93b465316288c229c7514bf9ee2b2",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_early_morning.png",
+          "path": "public/static_assets/sky/equirect/cloudy_early_morning.png",
+          "bytes": 2486766,
+          "gitBlobSHA1": "3ee4f2fb85b87ea946d7d3661c2d19aa5edf4e26",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_green.png",
+          "path": "public/static_assets/sky/equirect/cloudy_green.png",
+          "bytes": 2217443,
+          "gitBlobSHA1": "48012d5a399f008458fb25e28a9e75fa580da25e",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_hazy.png",
+          "path": "public/static_assets/sky/equirect/cloudy_hazy.png",
+          "bytes": 2313318,
+          "gitBlobSHA1": "f83878c22a2557def1e99f6fbf42b26b9f1c0cb2",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_inverted_colors.png",
+          "path": "public/static_assets/sky/equirect/cloudy_inverted_colors.png",
+          "bytes": 2678533,
+          "gitBlobSHA1": "20586787dad302595704e9abb169710e43a88d7f",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_light_green.png",
+          "path": "public/static_assets/sky/equirect/cloudy_light_green.png",
+          "bytes": 2308734,
+          "gitBlobSHA1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_mist.png",
+          "path": "public/static_assets/sky/equirect/cloudy_mist.png",
+          "bytes": 1924043,
+          "gitBlobSHA1": "084377dad8b4fe9c2f03fd885d641d8f330aca72",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_moody.png",
+          "path": "public/static_assets/sky/equirect/cloudy_moody.png",
+          "bytes": 2341199,
+          "gitBlobSHA1": "885492e387be4db3ed6b2330dd69e1ea1cad0c97",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_night.png",
+          "path": "public/static_assets/sky/equirect/cloudy_night.png",
+          "bytes": 1988881,
+          "gitBlobSHA1": "ef25ceb4fc88100f48ba8fe273ca7a9e1c99f4f1",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_noon.png",
+          "path": "public/static_assets/sky/equirect/cloudy_noon.png",
+          "bytes": 2428805,
+          "gitBlobSHA1": "80aad0c7ee0d795987726d6ff71942c9f76f4b08",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_obscured_sun.png",
+          "path": "public/static_assets/sky/equirect/cloudy_obscured_sun.png",
+          "bytes": 2266575,
+          "gitBlobSHA1": "13408c87eed3537f91644d4f660f05638d2ed177",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_purple.png",
+          "path": "public/static_assets/sky/equirect/cloudy_purple.png",
+          "bytes": 2338339,
+          "gitBlobSHA1": "646d70b492be4e8d2358005b8a68616999b5da4d",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_red.png",
+          "path": "public/static_assets/sky/equirect/cloudy_red.png",
+          "bytes": 1948492,
+          "gitBlobSHA1": "d245f8de10271ac636836ac21e752109c17ab08b",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_red_at_night.png",
+          "path": "public/static_assets/sky/equirect/cloudy_red_at_night.png",
+          "bytes": 2368433,
+          "gitBlobSHA1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_stormy.png",
+          "path": "public/static_assets/sky/equirect/cloudy_stormy.png",
+          "bytes": 2308734,
+          "gitBlobSHA1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_sunrise.png",
+          "path": "public/static_assets/sky/equirect/cloudy_sunrise.png",
+          "bytes": 2206529,
+          "gitBlobSHA1": "3e50e7431970b27d41a3abb930ba4d7fb93bf0ba",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_sunset.png",
+          "path": "public/static_assets/sky/equirect/cloudy_sunset.png",
+          "bytes": 2098363,
+          "gitBlobSHA1": "63b7a4a3158312bdeff4ef0f740267592de71032",
+          "downloadedForProductionAssessment": true
+        },
+        {
+          "name": "cloudy_yellow.png",
+          "path": "public/static_assets/sky/equirect/cloudy_yellow.png",
+          "bytes": 2623666,
+          "gitBlobSHA1": "9adb77dedab36539b1eaccf06b354732f5849e14",
+          "downloadedForProductionAssessment": true
+        }
+      ],
+      "reuseRecommendation": "cloudy_red is an actual red-cloud source; cloudy_mist/light_green/green are actual mist/color candidates. Native darkness or cloud density are concrete adaptation tradeoffs, not proof that public assets cannot fit. All 25 actual mirror files were acquired and visually assessed. No filenames teal/cyan/blue exist; dark_blue and obscured_sun are additional actual cool sources, with disclosed cloud-density/solar-focus tradeoffs."
+    },
+    {
+      "provider": "Poly Haven",
+      "id": "industrial_sunset_puresky",
+      "officialURL": "https://polyhaven.com/a/industrial_sunset_puresky",
+      "apiURL": "https://api.polyhaven.com/files/industrial_sunset_puresky",
+      "license": "CC0-1.0",
+      "licenseURL": "https://polyhaven.com/license",
+      "licenseVerifiedFromPrimaryPages": true,
+      "primaryWebHTTPStatus": null,
+      "primaryWebContentRetrieved": true,
+      "format": "Equirectangular pure sky edited variant; 1K/2K/4K/8K HDR and EXR plus official 8K tonemapped JPG",
+      "groundClaim": "Do not infer ground/city from original source name: this is the explicitly edited Pure Sky variant.",
+      "author": [
+        "Jarod Guest (sky edits)",
+        "Sergej Majboroda (original)"
+      ],
+      "officialAPIManifest": {
+        "apiURL": "https://api.polyhaven.com/files/industrial_sunset_puresky",
+        "assetURL": "https://polyhaven.com/a/industrial_sunset_puresky",
+        "files": {
+          "tonemapped": {
+            "size": 16038282,
+            "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/industrial_sunset_puresky.jpg",
+            "md5": "be98161b9ba68820ae9cd80a41d37d97"
+          },
+          "hdri": {
+            "8k": {
+              "hdr": {
+                "size": 58782680,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/8k/industrial_sunset_puresky_8k.hdr",
+                "md5": "60cb407a76f19a720d8b6dae16e422e2"
+              },
+              "exr": {
+                "size": 279615834,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/8k/industrial_sunset_puresky_8k.exr",
+                "md5": "392a79d2dd18ddeed2aace3a48ddc355"
+              }
+            },
+            "16k": {
+              "hdr": {
+                "size": 191750746,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/16k%2B/industrial_sunset_puresky_16k.hdr",
+                "md5": "3a3d0f63876967079b842d58a6abd1d6"
+              },
+              "exr": {
+                "size": 1085209829,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/16k%2B/industrial_sunset_puresky_16k.exr",
+                "md5": "1b00a2f05976f3e4ccffbcd34be85ead"
+              }
+            },
+            "4k": {
+              "hdr": {
+                "size": 16409672,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/industrial_sunset_puresky_4k.hdr",
+                "md5": "45dde2afb42e42fa7b2f3a3b36bf6a95"
+              },
+              "exr": {
+                "size": 72626722,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/4k/industrial_sunset_puresky_4k.exr",
+                "md5": "e7e03be8255b76d9d157da1fe3ba5961"
+              }
+            },
+            "2k": {
+              "hdr": {
+                "size": 4344656,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/industrial_sunset_puresky_2k.hdr",
+                "md5": "54457ed6fc7e0dcd7fcdcd0603892a7d"
+              },
+              "exr": {
+                "size": 19256272,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/2k/industrial_sunset_puresky_2k.exr",
+                "md5": "1b0cd7f120be24130ba5fec30fcab430"
+              }
+            },
+            "1k": {
+              "hdr": {
+                "size": 1158432,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/industrial_sunset_puresky_1k.hdr",
+                "md5": "622cc98d705210e283318c306089bb2e"
+              },
+              "exr": {
+                "size": 5276991,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/1k/industrial_sunset_puresky_1k.exr",
+                "md5": "940892fee9784f1c9f3ce1197399f235"
+              }
+            }
+          }
+        },
+        "retrievalMethod": "web connector click from official asset page",
+        "originHTTPStatus": null,
+        "retrievedJSON": true
+      },
+      "originalDownloadDomainCloudGET": "CONNECT 403 for tested dl.polyhaven.org endpoints; no origin HTTP response",
+      "actualProductionReceipt": "industrial_sunset_puresky_2k.hdr",
+      "officialAssetMD5AndByteIdentityVerified": true,
+      "actualPixelsViewed": true,
+      "reuseRecommendation": "Actual pale blue-grey with golden horizon; no native red-dominant clouds"
+    },
+    {
+      "provider": "Poly Haven",
+      "id": "belfast_sunset_puresky",
+      "officialURL": "https://polyhaven.com/a/belfast_sunset_puresky",
+      "apiURL": "https://api.polyhaven.com/files/belfast_sunset_puresky",
+      "license": "CC0-1.0",
+      "licenseURL": "https://polyhaven.com/license",
+      "licenseVerifiedFromPrimaryPages": true,
+      "primaryWebHTTPStatus": null,
+      "primaryWebContentRetrieved": true,
+      "format": "Equirectangular pure sky edited variant; 1K/2K/4K/8K HDR and EXR plus official 8K tonemapped JPG",
+      "groundClaim": "Do not infer ground/city from original source name: this is the explicitly edited Pure Sky variant.",
+      "author": [
+        "Dimitrios Savva (photography)",
+        "Greg Zaal (processing)",
+        "Jarod Guest (sky edits)"
+      ],
+      "officialAPIManifest": {
+        "apiURL": "https://api.polyhaven.com/files/belfast_sunset_puresky",
+        "assetURL": "https://polyhaven.com/a/belfast_sunset_puresky",
+        "files": {
+          "tonemapped": {
+            "size": 16150434,
+            "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/belfast_sunset_puresky.jpg",
+            "md5": "5313193c1b09d9776dd3395d08b6beee"
+          },
+          "hdri": {
+            "8k": {
+              "hdr": {
+                "size": 65609474,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/8k/belfast_sunset_puresky_8k.hdr",
+                "md5": "5b41ff9c64101ee024333679d712177a"
+              },
+              "exr": {
+                "size": 282701812,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/8k/belfast_sunset_puresky_8k.exr",
+                "md5": "9a694480036c0bffac2076f722cea49c"
+              }
+            },
+            "16k": {
+              "hdr": {
+                "size": 202202809,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/16k%2B/belfast_sunset_puresky_16k.hdr",
+                "md5": "14c83d45dd2d71901122b114fded6991"
+              },
+              "exr": {
+                "size": 1074717627,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/16k%2B/belfast_sunset_puresky_16k.exr",
+                "md5": "3d3f3b44160de29d9a306bde9720af32"
+              }
+            },
+            "4k": {
+              "hdr": {
+                "size": 17420114,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/belfast_sunset_puresky_4k.hdr",
+                "md5": "52d2339c16069a2aaa7fd37a320d8495"
+              },
+              "exr": {
+                "size": 73122844,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/4k/belfast_sunset_puresky_4k.exr",
+                "md5": "b9581a5489c421cf0cd8745ba8b00ef6"
+              }
+            },
+            "24k": {
+              "hdr": {
+                "size": 435160646,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/16k%2B/belfast_sunset_puresky_24k.hdr",
+                "md5": "e8fd47f400d5336b04bfa734503818b9"
+              },
+              "exr": {
+                "size": 2433925184,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/16k%2B/belfast_sunset_puresky_24k.exr",
+                "md5": "86bab35fcc4becdfe6ea882494de6cdf"
+              }
+            },
+            "2k": {
+              "hdr": {
+                "size": 4563204,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/belfast_sunset_puresky_2k.hdr",
+                "md5": "4bb56d6163ef1c7ec762e4a7ef8ede81"
+              },
+              "exr": {
+                "size": 19394356,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/2k/belfast_sunset_puresky_2k.exr",
+                "md5": "7cebadb7c38bb9aac3d9597b3fc4d7a6"
+              }
+            },
+            "1k": {
+              "hdr": {
+                "size": 1190247,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/belfast_sunset_puresky_1k.hdr",
+                "md5": "38890f597727936a44d17a97f7f73354"
+              },
+              "exr": {
+                "size": 5310274,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/1k/belfast_sunset_puresky_1k.exr",
+                "md5": "f560550314c83d0403d68b95b2c5beea"
+              }
+            }
+          }
+        },
+        "retrievalMethod": "web connector click from official asset page",
+        "originHTTPStatus": null,
+        "retrievedJSON": true
+      },
+      "originalDownloadDomainCloudGET": "CONNECT 403 for tested dl.polyhaven.org endpoints; no origin HTTP response",
+      "actualProductionReceipt": "belfast_sunset_puresky_2k.hdr",
+      "officialAssetMD5AndByteIdentityVerified": true,
+      "actualPixelsViewed": true,
+      "reuseRecommendation": "Actual pale violet-blue/gold dusk source; no native red-dominant clouds"
+    },
+    {
+      "provider": "Poly Haven",
+      "id": "qwantani_dawn_puresky",
+      "officialURL": "https://polyhaven.com/a/qwantani_dawn_puresky",
+      "apiURL": "https://api.polyhaven.com/files/qwantani_dawn_puresky",
+      "license": "CC0-1.0",
+      "licenseURL": "https://polyhaven.com/license",
+      "licenseVerifiedFromPrimaryPages": true,
+      "primaryWebHTTPStatus": null,
+      "primaryWebContentRetrieved": true,
+      "format": "Equirectangular pure sky edited variant; 1K/2K/4K/8K HDR and EXR plus official 8K tonemapped JPG",
+      "groundClaim": "Do not infer ground/city from original source name: this is the explicitly edited Pure Sky variant.",
+      "author": [
+        "Greg Zaal (photography)",
+        "Jarod Guest (processing)"
+      ],
+      "officialAPIManifest": {
+        "apiURL": "https://api.polyhaven.com/files/qwantani_dawn_puresky",
+        "assetURL": "https://polyhaven.com/a/qwantani_dawn_puresky",
+        "files": {
+          "hdri": {
+            "16k": {
+              "exr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/16k%2B/qwantani_dawn_puresky_16k.exr",
+                "md5": "22762f45b93764d631c0952b7da1916c",
+                "size": 1032990394
+              },
+              "hdr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/16k%2B/qwantani_dawn_puresky_16k.hdr",
+                "md5": "f40b32c492a58d3dae2743c089ebbdd8",
+                "size": 212913934
+              }
+            },
+            "24k": {
+              "exr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/16k%2B/qwantani_dawn_puresky_24k.exr",
+                "md5": "cd89599a8d66cb57dfc5c2e83c5e74f8",
+                "size": 2331233723
+              },
+              "hdr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/16k%2B/qwantani_dawn_puresky_24k.hdr",
+                "md5": "606aa53b833a351f35a40dc443d2d464",
+                "size": 452324638
+              }
+            },
+            "1k": {
+              "exr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/1k/qwantani_dawn_puresky_1k.exr",
+                "md5": "625edae634a9ae8b7eb35dc5618bf7e8",
+                "size": 4963259
+              },
+              "hdr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/qwantani_dawn_puresky_1k.hdr",
+                "md5": "ad24f073518565d702b22b354b17db83",
+                "size": 1053221
+              }
+            },
+            "2k": {
+              "exr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/2k/qwantani_dawn_puresky_2k.exr",
+                "md5": "6cba30396a848bccda986ca0e7fdf12f",
+                "size": 18197068
+              },
+              "hdr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/qwantani_dawn_puresky_2k.hdr",
+                "md5": "4cb126e77a8f28c6ea0638f2ca471366",
+                "size": 4257506
+              }
+            },
+            "4k": {
+              "exr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/4k/qwantani_dawn_puresky_4k.exr",
+                "md5": "fd197e5071314d470271b0de7daf654f",
+                "size": 69331560
+              },
+              "hdr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/qwantani_dawn_puresky_4k.hdr",
+                "md5": "72ff80818581b8c72817295b1b0a6321",
+                "size": 16973138
+              }
+            },
+            "8k": {
+              "exr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/8k/qwantani_dawn_puresky_8k.exr",
+                "md5": "ab7e0185592a6277056dc40397164adb",
+                "size": 270057857
+              },
+              "hdr": {
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/8k/qwantani_dawn_puresky_8k.hdr",
+                "md5": "2722990f28345728e93666a802cab0cd",
+                "size": 65647144
+              }
+            }
+          },
+          "tonemapped": {
+            "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/qwantani_dawn_puresky.jpg",
+            "md5": "76d32274a15cd634a0bbae4468c2fa4a",
+            "size": 15842214
+          }
+        },
+        "retrievalMethod": "web connector click from official asset page",
+        "originHTTPStatus": null,
+        "retrievedJSON": true
+      },
+      "originalDownloadDomainCloudGET": "CONNECT 403 for tested dl.polyhaven.org endpoints; no origin HTTP response",
+      "actualProductionReceipt": null,
+      "officialAssetMD5AndByteIdentityVerified": false,
+      "actualPixelsViewed": false,
+      "reuseRecommendation": "Eligible clear dawn source, official API and CC0 verified; no production pixels acquired in this stage, so no pixel-based rejection"
+    },
+    {
+      "provider": "Poly Haven",
+      "id": "kloofendal_misty_morning_puresky",
+      "officialURL": "https://polyhaven.com/a/kloofendal_misty_morning_puresky",
+      "apiURL": "https://api.polyhaven.com/files/kloofendal_misty_morning_puresky",
+      "license": "CC0-1.0",
+      "licenseURL": "https://polyhaven.com/license",
+      "licenseVerifiedFromPrimaryPages": true,
+      "primaryWebHTTPStatus": null,
+      "primaryWebContentRetrieved": true,
+      "format": "Equirectangular pure sky edited variant; 1K/2K/4K/8K HDR and EXR plus official 8K tonemapped JPG",
+      "groundClaim": "Do not infer ground/city from original source name: this is the explicitly edited Pure Sky variant.",
+      "author": [
+        "Greg Zaal"
+      ],
+      "officialAPIManifest": {
+        "apiURL": "https://api.polyhaven.com/files/kloofendal_misty_morning_puresky",
+        "assetURL": "https://polyhaven.com/a/kloofendal_misty_morning_puresky",
+        "files": {
+          "tonemapped": {
+            "size": 11498982,
+            "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/extra/Tonemapped%20JPG/kloofendal_misty_morning_puresky.jpg",
+            "md5": "d4626d7da0a3243929d65f7ea81c3ab3"
+          },
+          "hdri": {
+            "8k": {
+              "hdr": {
+                "size": 50362918,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/8k/kloofendal_misty_morning_puresky_8k.hdr",
+                "md5": "73849feb3a348cf972ddc4b40a0afacd"
+              },
+              "exr": {
+                "size": 329427788,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/8k/kloofendal_misty_morning_puresky_8k.exr",
+                "md5": "c403fec9c089cbdb8ced5759d1283e1e"
+              }
+            },
+            "16k": {
+              "hdr": {
+                "size": 175487404,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/16k%2B/kloofendal_misty_morning_puresky_16k.hdr",
+                "md5": "ff29dbab316a59dc8053f82a81d40d17"
+              },
+              "exr": {
+                "size": 1274171960,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/16k%2B/kloofendal_misty_morning_puresky_16k.exr",
+                "md5": "514431c681cb895cf2f2ab5b330d5e6f"
+              }
+            },
+            "4k": {
+              "hdr": {
+                "size": 12659983,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/kloofendal_misty_morning_puresky_4k.hdr",
+                "md5": "7f0f40b402cd944c599b88000f53e108"
+              },
+              "exr": {
+                "size": 84775626,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/4k/kloofendal_misty_morning_puresky_4k.exr",
+                "md5": "16aa53c20345a641bf7ba9a81555946b"
+              }
+            },
+            "24k": {
+              "hdr": {
+                "size": 379094937,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/16k%2B/kloofendal_misty_morning_puresky_24k.hdr",
+                "md5": "84ad85113aff7fd687314a1e8c0ea774"
+              },
+              "exr": {
+                "size": 2787708752,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/16k%2B/kloofendal_misty_morning_puresky_24k.exr",
+                "md5": "26af15191dd2fad5c81621c6592e4401"
+              }
+            },
+            "2k": {
+              "hdr": {
+                "size": 2958072,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/kloofendal_misty_morning_puresky_2k.hdr",
+                "md5": "b99e0bb066a0d8134729b9712495d68b"
+              },
+              "exr": {
+                "size": 21841368,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/2k/kloofendal_misty_morning_puresky_2k.exr",
+                "md5": "a6b4a6fa198cf898b1476a53ce774953"
+              }
+            },
+            "1k": {
+              "hdr": {
+                "size": 702293,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/kloofendal_misty_morning_puresky_1k.hdr",
+                "md5": "123aa1065716d084bbf31ee50fe8856d"
+              },
+              "exr": {
+                "size": 5662607,
+                "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/1k/kloofendal_misty_morning_puresky_1k.exr",
+                "md5": "07b5b1c30e6b9a3e4d681bdb31f49a26"
+              }
+            }
+          }
+        },
+        "retrievalMethod": "web connector click from official asset page",
+        "originHTTPStatus": null,
+        "retrievedJSON": true
+      },
+      "originalDownloadDomainCloudGET": "CONNECT 403 for tested dl.polyhaven.org endpoints; no origin HTTP response",
+      "actualProductionReceipt": "kloofendal_misty_morning_puresky_2k.hdr",
+      "officialAssetMD5AndByteIdentityVerified": true,
+      "actualPixelsViewed": true,
+      "reuseRecommendation": "Recommended dawn-mist adaptation base, actual low-contrast pale blue-grey pixels"
+    },
+    {
+      "provider": "Poly Haven",
+      "id": "qwantani_morning_puresky",
+      "officialURL": "https://polyhaven.com/a/qwantani_morning_puresky",
+      "license": "CC0-1.0",
+      "licenseURL": "https://polyhaven.com/license",
+      "author": "Jarod Guest",
+      "primaryWebContentRetrieved": true,
+      "officialMetadata": "Pure sky, clear/high contrast morning, cool blues, 24K maximum, 8K tonemapped JPG option",
+      "productionPixelsViewed": false,
+      "decision": "Metadata-only eligible candidate. Clear/high contrast is a likely tradeoff for thin fog, not a confirmed pixel rejection."
+    },
+    {
+      "provider": "ambientCG",
+      "officialSearchURLs": [
+        "https://ambientcg.com/list?type=HDRI",
+        "https://ambientcg.com/api/v3/assets?type=hdri&technique=hdri-bracketed-panorama-horizon-clearing&include=title,url,tags,downloads,dimensions&limit=8"
+      ],
+      "license": "CC0-1.0",
+      "licenseURL": "https://docs.ambientcg.com/license/",
+      "licenseVerifiedFromPrimaryDocs": true,
+      "licenseAppliesTo": "Downloadable asset files and material preview renders",
+      "apiDocsURL": "https://docs.ambientcg.com/api/v3/assets/",
+      "apiDocsContentRetrieved": true,
+      "apiDocsVerifiedTypes": [
+        "hdri",
+        "hdri-element"
+      ],
+      "apiDocsVerifiedSkyTechniques": [
+        "hdri-bracketed-panorama-horizon-clearing",
+        "hdri-panorama-procedural"
+      ],
+      "firstPartyAssetMetadataOrPixelsAcquired": false,
+      "candidates": [
+        {
+          "id": "DaySkyHDRI001A",
+          "officialURL": "https://ambientcg.com/a/DaySkyHDRI001A",
+          "specificDetailsPrimaryVerified": false,
+          "specificDetailsMethod": "Secondary search result only; primary asset/API unavailable through current tools",
+          "decision": "Unresolved candidate, not judged unsuitable"
+        }
+      ],
+      "actualAPIProbeURL": "https://ambientcg.com/api/v3/assets?id=DaySkyHDRI001A&include=downloads&limit=1",
+      "networkResult": "Proxy CONNECT 403; web connector also could not retrieve specific asset/API. Do not translate this into origin 403 or no suitable asset exists."
+    },
+    {
+      "provider": "Kenney",
+      "id": "background-elements",
+      "officialURL": "https://kenney.nl/assets/background-elements",
+      "license": "CC0-1.0",
+      "primaryWebContentRetrieved": true,
+      "officialDeclaredCount": 110,
+      "decision": "Assembly building blocks; available Skyboxes pack is a more direct full-longitude source. This does not rule out composition under CC0."
+    },
+    {
+      "provider": "Kenney",
+      "id": "background-elements-remastered",
+      "officialURL": "https://kenney.nl/assets/background-elements-remastered",
+      "license": "CC0-1.0",
+      "primaryWebContentRetrieved": true,
+      "officialDeclaredCount": 90,
+      "decision": "Assembly building blocks rather than a selected period-specific complete panorama; prefer full-longitude Skyboxes first."
+    },
+    {
+      "provider": "OpenGameArt",
+      "id": "clear-sky-panoramic-texture",
+      "officialURL": "https://opengameart.org/content/clear-sky-panoramic-texture",
+      "author": "_Creature_",
+      "license": "CC0-1.0",
+      "primaryWebContentRetrieved": true,
+      "officialDeclaredNativeDimensions": [
+        1024,
+        512
+      ],
+      "format": "EXR in ZIP",
+      "productionPixelsViewed": false,
+      "decision": "Eligible source, but original 1024-wide file needs upsampling for native 2048 delivery; available 2K/4K sources are preferable. Do not reject because of 2:1 aspect ratio."
+    },
+    {
+      "provider": "OpenGameArt",
+      "id": "cloudy-sky-panoramic-texture",
+      "officialURL": "https://opengameart.org/content/cloudy-sky-panoramic-texture",
+      "author": "_Creature_",
+      "license": "CC0-1.0",
+      "primaryWebContentRetrieved": true,
+      "officialDeclaredNativeDimensions": [
+        1024,
+        512
+      ],
+      "format": "EXR in ZIP",
+      "productionPixelsViewed": false,
+      "decision": "Eligible source, same original-width limitation compared with acquired 2K/4K options."
+    }
+  ],
+  "productionGETReceipts": [
+    {
+      "name": "skybox-alien.png",
+      "url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-alien.png",
+      "expectedGitBlobSHA1": "da1174a55515b7786191e87a5a8401b901294d52",
+      "expectedBytes": 1410804,
+      "acquisitionPurpose": "Original public CC0 production candidate for actual reuse and period/style comparison, not downloading media to bypass display restrictions.",
+      "atUTC": "2026-10-12T06:27:00.266699+00:00",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-alien.png",
+      "bytes": 1410804,
+      "gitBlobSHA1": "da1174a55515b7786191e87a5a8401b901294d52",
+      "sha256": "b8c549d169f99a23dcad04a2e6806fe14ce1dc0acf7e2988924c7cafdf74b2d7",
+      "localPath": "/workspace/sky-first-raw/public-candidates/kenney/skybox-alien.png",
+      "productionGETVerified": true,
+      "size": [
+        4096,
+        2048
+      ],
+      "mode": "P",
+      "format": "PNG"
+    },
+    {
+      "name": "skybox-day.png",
+      "url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-day.png",
+      "expectedGitBlobSHA1": "a2feff86883a60827df68a28be0c6b919c4b615b",
+      "expectedBytes": 1051605,
+      "acquisitionPurpose": "Original public CC0 production candidate for actual reuse and period/style comparison, not downloading media to bypass display restrictions.",
+      "atUTC": "2026-10-12T06:27:00.267335+00:00",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-day.png",
+      "bytes": 1051605,
+      "gitBlobSHA1": "a2feff86883a60827df68a28be0c6b919c4b615b",
+      "sha256": "b7d98fe95157e74b3899a1dd468a1e478005bcd1f668b29b5b42a48cb5358fa2",
+      "localPath": "/workspace/sky-first-raw/public-candidates/kenney/skybox-day.png",
+      "productionGETVerified": true,
+      "size": [
+        4096,
+        2048
+      ],
+      "mode": "P",
+      "format": "PNG"
+    },
+    {
+      "name": "skybox-morning.png",
+      "url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-morning.png",
+      "expectedGitBlobSHA1": "356211662ac9020e2e59166bff0c7babb7d2c529",
+      "expectedBytes": 899710,
+      "acquisitionPurpose": "Original public CC0 production candidate for actual reuse and period/style comparison, not downloading media to bypass display restrictions.",
+      "atUTC": "2026-10-12T06:27:00.267857+00:00",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-morning.png",
+      "bytes": 899710,
+      "gitBlobSHA1": "356211662ac9020e2e59166bff0c7babb7d2c529",
+      "sha256": "7b445e959e7e65c2aad962028826434fda90d7b21f00f451767344970efa9e1e",
+      "localPath": "/workspace/sky-first-raw/public-candidates/kenney/skybox-morning.png",
+      "productionGETVerified": true,
+      "size": [
+        4096,
+        2048
+      ],
+      "mode": "P",
+      "format": "PNG"
+    },
+    {
+      "name": "skybox-night.png",
+      "url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-night.png",
+      "expectedGitBlobSHA1": "6ef3f4f74dd620baf7270186bd18d73a742fc809",
+      "expectedBytes": 1099375,
+      "acquisitionPurpose": "Original public CC0 production candidate for actual reuse and period/style comparison, not downloading media to bypass display restrictions.",
+      "atUTC": "2026-10-12T06:27:00.781693+00:00",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-night.png",
+      "bytes": 1099375,
+      "gitBlobSHA1": "6ef3f4f74dd620baf7270186bd18d73a742fc809",
+      "sha256": "2276d9e1adee0db84255fe63e13f172b338d4257e312603a3abba89b512419ba",
+      "localPath": "/workspace/sky-first-raw/public-candidates/kenney/skybox-night.png",
+      "productionGETVerified": true,
+      "size": [
+        4096,
+        2048
+      ],
+      "mode": "P",
+      "format": "PNG"
+    },
+    {
+      "name": "skybox-space.png",
+      "url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-space.png",
+      "expectedGitBlobSHA1": "bed7b25f504d1c660fcc24d17d58f55f94d328bf",
+      "expectedBytes": 278812,
+      "acquisitionPurpose": "Original public CC0 production candidate for actual reuse and period/style comparison, not downloading media to bypass display restrictions.",
+      "atUTC": "2026-10-12T06:27:00.897891+00:00",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-space.png",
+      "bytes": 278812,
+      "gitBlobSHA1": "bed7b25f504d1c660fcc24d17d58f55f94d328bf",
+      "sha256": "fc95dd68fa348e7e90d595a5e7abecf5ca563b32c76354e904ca80846d9941a6",
+      "localPath": "/workspace/sky-first-raw/public-candidates/kenney/skybox-space.png",
+      "productionGETVerified": true,
+      "size": [
+        4096,
+        2048
+      ],
+      "mode": "P",
+      "format": "PNG"
+    },
+    {
+      "name": "industrial_sunset_puresky_2k.hdr",
+      "kind": "polyhaven",
+      "url": "https://raw.githubusercontent.com/2600th/web-ocean-3d/6496c77d37c12e803108c8f932680a7710a62c1c/public/hdris/industrial_sunset_puresky_2k.hdr",
+      "expectedGitBlobSHA1": "b01b3aa6ec820e3f30ca49e8478f43a5a0a8b3e2",
+      "expectedBytes": 4344656,
+      "atUTC": "2026-10-12T06:35:14.215391+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "application/octet-stream",
+      "finalURL": "https://raw.githubusercontent.com/2600th/web-ocean-3d/6496c77d37c12e803108c8f932680a7710a62c1c/public/hdris/industrial_sunset_puresky_2k.hdr",
+      "bytes": 4344656,
+      "officialMD5": "54457ed6fc7e0dcd7fcdcd0603892a7d",
+      "officialFileURL": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/industrial_sunset_puresky_2k.hdr",
+      "officialByteIdentityVerified": true,
+      "gitBlobSHA1": "b01b3aa6ec820e3f30ca49e8478f43a5a0a8b3e2",
+      "md5": "54457ed6fc7e0dcd7fcdcd0603892a7d",
+      "sha256": "799e6fa9a58dfbec1426d62486aa87fa097a85cf16bb121c79f9ee1125a54288",
+      "localPath": "/workspace/sky-first-raw/public-candidates/polyhaven/industrial_sunset_puresky_2k.hdr",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "format": "Radiance RGBE"
+    },
+    {
+      "name": "kloofendal_misty_morning_puresky_2k.hdr",
+      "kind": "polyhaven",
+      "url": "https://raw.githubusercontent.com/2600th/web-ocean-3d/6496c77d37c12e803108c8f932680a7710a62c1c/public/hdris/kloofendal_misty_morning_puresky_2k.hdr",
+      "expectedGitBlobSHA1": "3dd4e6bfd6783957ac30d9362b216a0c146def38",
+      "expectedBytes": 2958072,
+      "atUTC": "2026-10-12T06:35:14.216059+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "application/octet-stream",
+      "finalURL": "https://raw.githubusercontent.com/2600th/web-ocean-3d/6496c77d37c12e803108c8f932680a7710a62c1c/public/hdris/kloofendal_misty_morning_puresky_2k.hdr",
+      "bytes": 2958072,
+      "officialMD5": "b99e0bb066a0d8134729b9712495d68b",
+      "officialFileURL": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/kloofendal_misty_morning_puresky_2k.hdr",
+      "officialByteIdentityVerified": true,
+      "gitBlobSHA1": "3dd4e6bfd6783957ac30d9362b216a0c146def38",
+      "md5": "b99e0bb066a0d8134729b9712495d68b",
+      "sha256": "a59683cd08861fb18d69ee8f3938f50ec81c6feda5381e8b8576f340d5a25bb1",
+      "localPath": "/workspace/sky-first-raw/public-candidates/polyhaven/kloofendal_misty_morning_puresky_2k.hdr",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "format": "Radiance RGBE"
+    },
+    {
+      "name": "cloudy_clear_sunrise.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_sunrise.png",
+      "expectedGitBlobSHA1": "2c48808d97819ec6bc9040a5ff377c978d7884f5",
+      "expectedBytes": 2369119,
+      "atUTC": "2026-10-12T06:35:14.216442+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_sunrise.png",
+      "bytes": 2369119,
+      "gitBlobSHA1": "2c48808d97819ec6bc9040a5ff377c978d7884f5",
+      "md5": "f19d610b39cba47afcfcf90e4c6e90e8",
+      "sha256": "1c7bc9e130c7cbf0796850556dc0b65a17187f87d8a839c13e5b1b1840261fe0",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_sunrise.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_clear_sunset.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_sunset.png",
+      "expectedGitBlobSHA1": "26f9a50b266823fd50cdf6e7c5d927c8ec0d2e88",
+      "expectedBytes": 1973455,
+      "atUTC": "2026-10-12T06:35:14.216831+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_sunset.png",
+      "bytes": 1973455,
+      "gitBlobSHA1": "26f9a50b266823fd50cdf6e7c5d927c8ec0d2e88",
+      "md5": "4049f59284f7b2f5edef47aca255f6dc",
+      "sha256": "bde2de8de67579b2c99632efc0e60e004de12b6c7bb9da6d271cd2f72a0ff8ba",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_sunset.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_dawn.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_dawn.png",
+      "expectedGitBlobSHA1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+      "expectedBytes": 2368433,
+      "atUTC": "2026-10-12T06:35:14.851184+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_dawn.png",
+      "bytes": 2368433,
+      "gitBlobSHA1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+      "md5": "b0c1963f9dd8ad533bacf55a044dd87d",
+      "sha256": "bdc6aa5669f48e1e72ff9c3b6c54b6c55a5b0b5d4049a66c4a26696ee8a48704",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_dawn.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_early_morning.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_early_morning.png",
+      "expectedGitBlobSHA1": "3ee4f2fb85b87ea946d7d3661c2d19aa5edf4e26",
+      "expectedBytes": 2486766,
+      "atUTC": "2026-10-12T06:35:15.011113+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_early_morning.png",
+      "bytes": 2486766,
+      "gitBlobSHA1": "3ee4f2fb85b87ea946d7d3661c2d19aa5edf4e26",
+      "md5": "8aef0d6f35cf46fc083dbd8335677a89",
+      "sha256": "ef7197cfe4904e620efd5b6a23e55d2697b3f4fa0690e7c860fac1b3c029b167",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_early_morning.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_green.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_green.png",
+      "expectedGitBlobSHA1": "48012d5a399f008458fb25e28a9e75fa580da25e",
+      "expectedBytes": 2217443,
+      "atUTC": "2026-10-12T06:35:15.111542+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_green.png",
+      "bytes": 2217443,
+      "gitBlobSHA1": "48012d5a399f008458fb25e28a9e75fa580da25e",
+      "md5": "88e7f5e8cbaa2bf53395142a24a45d67",
+      "sha256": "f739d2317a59d359125b2b65c71ac0a85bacf71d822b01fa89a1cd89cd892e23",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_green.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_hazy.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_hazy.png",
+      "expectedGitBlobSHA1": "f83878c22a2557def1e99f6fbf42b26b9f1c0cb2",
+      "expectedBytes": 2313318,
+      "atUTC": "2026-10-12T06:35:15.140610+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_hazy.png",
+      "bytes": 2313318,
+      "gitBlobSHA1": "f83878c22a2557def1e99f6fbf42b26b9f1c0cb2",
+      "md5": "396789d54818f0ec03d4d9fee9874aca",
+      "sha256": "7689d3eacb76eb455216ab70fe17d922ba692b045ec496f64a54a973ea849153",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_hazy.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_light_green.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_light_green.png",
+      "expectedGitBlobSHA1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+      "expectedBytes": 2308734,
+      "atUTC": "2026-10-12T06:35:15.453575+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_light_green.png",
+      "bytes": 2308734,
+      "gitBlobSHA1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+      "md5": "7208ec146cdba05dc11fd5f71a65a499",
+      "sha256": "48f26cdde768f6ea79dbe893be37e1cd9616a525e18e43c595281fe42aafa3a4",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_light_green.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_mist.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_mist.png",
+      "expectedGitBlobSHA1": "084377dad8b4fe9c2f03fd885d641d8f330aca72",
+      "expectedBytes": 1924043,
+      "atUTC": "2026-10-12T06:35:15.618943+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_mist.png",
+      "bytes": 1924043,
+      "gitBlobSHA1": "084377dad8b4fe9c2f03fd885d641d8f330aca72",
+      "md5": "738d6e5da94d87959123cb591f6d5e83",
+      "sha256": "58e005102258fd8dbeecd773a6ded8ec17474cec08801d0cf93e53f3057612d3",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_mist.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_red.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_red.png",
+      "expectedGitBlobSHA1": "d245f8de10271ac636836ac21e752109c17ab08b",
+      "expectedBytes": 1948492,
+      "atUTC": "2026-10-12T06:35:15.722253+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_red.png",
+      "bytes": 1948492,
+      "gitBlobSHA1": "d245f8de10271ac636836ac21e752109c17ab08b",
+      "md5": "75b449a617651d86758aaaff0b85487d",
+      "sha256": "e7ff0166f38c05efb52d03b9cadbbe7a36bb6fb41f5403963f8a3bc92d237ade",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_red.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_sunrise.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_sunrise.png",
+      "expectedGitBlobSHA1": "3e50e7431970b27d41a3abb930ba4d7fb93bf0ba",
+      "expectedBytes": 2206529,
+      "atUTC": "2026-10-12T06:35:15.756613+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_sunrise.png",
+      "bytes": 2206529,
+      "gitBlobSHA1": "3e50e7431970b27d41a3abb930ba4d7fb93bf0ba",
+      "md5": "52e71f214e62167a26599d94a55b9fcb",
+      "sha256": "b4f2979a194c62adf7fa2f7fe4d8305daca8aea35724acab57945e10979adb49",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_sunrise.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_sunset.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_sunset.png",
+      "expectedGitBlobSHA1": "63b7a4a3158312bdeff4ef0f740267592de71032",
+      "expectedBytes": 2098363,
+      "atUTC": "2026-10-12T06:35:15.809747+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_sunset.png",
+      "bytes": 2098363,
+      "gitBlobSHA1": "63b7a4a3158312bdeff4ef0f740267592de71032",
+      "md5": "5829dfb6347824437c79c89c2aa1bf06",
+      "sha256": "dcc6410e00c05a7cc1b239764da1fbaf28b67bb33e4dd4bbc4c45c00dbc646a2",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_sunset.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "belfast_sunset_puresky_2k.hdr",
+      "kind": "polyhaven",
+      "url": "https://raw.githubusercontent.com/victorbstan/PanoramaMaker/bbcdd6665b6533f05f0477244483f5dd442e7f2f/assets/hdri/belfast_sunset_puresky_2k.hdr",
+      "expectedGitBlobSHA1": "8c7be2cc73bef54d1b9cba08cc8fa3a02d91dfc6",
+      "expectedBytes": 4563204,
+      "atUTC": "2026-10-12T06:39:20.846920+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "application/octet-stream",
+      "finalURL": "https://raw.githubusercontent.com/victorbstan/PanoramaMaker/bbcdd6665b6533f05f0477244483f5dd442e7f2f/assets/hdri/belfast_sunset_puresky_2k.hdr",
+      "bytes": 4563204,
+      "officialMD5": "4bb56d6163ef1c7ec762e4a7ef8ede81",
+      "officialFileURL": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/belfast_sunset_puresky_2k.hdr",
+      "officialByteIdentityVerified": true,
+      "gitBlobSHA1": "8c7be2cc73bef54d1b9cba08cc8fa3a02d91dfc6",
+      "md5": "4bb56d6163ef1c7ec762e4a7ef8ede81",
+      "sha256": "273003109ca1cfb798ce6b96e09ac8440f763d0ef0c376bbe77492613540b4a3",
+      "localPath": "/workspace/sky-first-raw/public-candidates/polyhaven/belfast_sunset_puresky_2k.hdr",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "format": "Radiance RGBE"
+    },
+    {
+      "name": "cloudy_chaotic.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_chaotic.png",
+      "expectedGitBlobSHA1": "9e66483978722ea8b3f12ed608ae99608373a209",
+      "expectedBytes": 2580494,
+      "atUTC": "2026-10-12T06:43:54.965998+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_chaotic.png",
+      "bytes": 2580494,
+      "gitBlobSHA1": "9e66483978722ea8b3f12ed608ae99608373a209",
+      "md5": "8363c75335bb5ffa4ad8cfa08b9f9a55",
+      "sha256": "df226c53fbafc5619ca49f5580d163536c081459a463e576026d2c4336058932",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_chaotic.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_clear_afternoon.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_afternoon.png",
+      "expectedGitBlobSHA1": "9a6ea5b663df03c8f9e7425920c250ba4a6200c1",
+      "expectedBytes": 1983725,
+      "atUTC": "2026-10-12T06:43:54.966749+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_afternoon.png",
+      "bytes": 1983725,
+      "gitBlobSHA1": "9a6ea5b663df03c8f9e7425920c250ba4a6200c1",
+      "md5": "97a3154121e0c06f968612dbbf9256a3",
+      "sha256": "b6f9328bfff8d28d9fe1bd269d630941a412dafc2427883f5ae1f30bb7e84d72",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_afternoon.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_clear_night.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_night.png",
+      "expectedGitBlobSHA1": "f3b328c529cea99a7aea04d00cc44f79d703a8f4",
+      "expectedBytes": 1484920,
+      "atUTC": "2026-10-12T06:43:54.967216+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_clear_night.png",
+      "bytes": 1484920,
+      "gitBlobSHA1": "f3b328c529cea99a7aea04d00cc44f79d703a8f4",
+      "md5": "7ed3e2ef1a2fd3e371d907adf9892d99",
+      "sha256": "954b458d1b6d39f5cac07eb1f8829ff98a647faecc5a2fe61bcf2c1e6dcd871c",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_clear_night.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_dark_blue.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_dark_blue.png",
+      "expectedGitBlobSHA1": "131422c3806ef8831c8cc28de8f6c89641ca48e4",
+      "expectedBytes": 2258157,
+      "atUTC": "2026-10-12T06:43:54.967891+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_dark_blue.png",
+      "bytes": 2258157,
+      "gitBlobSHA1": "131422c3806ef8831c8cc28de8f6c89641ca48e4",
+      "md5": "4a4d1628da4d24170bc2792f9f9aa025",
+      "sha256": "116430bdd7236ba495dc2867c718a1161510e331872b4c8dbab05f7423f50832",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_dark_blue.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_dusk.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_dusk.png",
+      "expectedGitBlobSHA1": "ce3a78c668f93b465316288c229c7514bf9ee2b2",
+      "expectedBytes": 2942511,
+      "atUTC": "2026-10-12T06:43:55.529492+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_dusk.png",
+      "bytes": 2942511,
+      "gitBlobSHA1": "ce3a78c668f93b465316288c229c7514bf9ee2b2",
+      "md5": "d9d5e81b3664fef4d65bdd5353dbb8ee",
+      "sha256": "74571afb275050ecebdea4db727cfbe003737dc469ceda42a0390a8af68385a3",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_dusk.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_inverted_colors.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_inverted_colors.png",
+      "expectedGitBlobSHA1": "20586787dad302595704e9abb169710e43a88d7f",
+      "expectedBytes": 2678533,
+      "atUTC": "2026-10-12T06:43:55.617572+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_inverted_colors.png",
+      "bytes": 2678533,
+      "gitBlobSHA1": "20586787dad302595704e9abb169710e43a88d7f",
+      "md5": "9a82d80b221ca02aa617eed1635a24eb",
+      "sha256": "ae494d86e7414a32fd5ece683ce678f7a053f6fc9815e55b81fb9cd1fdd0231a",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_inverted_colors.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_moody.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_moody.png",
+      "expectedGitBlobSHA1": "885492e387be4db3ed6b2330dd69e1ea1cad0c97",
+      "expectedBytes": 2341199,
+      "atUTC": "2026-10-12T06:43:55.631231+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_moody.png",
+      "bytes": 2341199,
+      "gitBlobSHA1": "885492e387be4db3ed6b2330dd69e1ea1cad0c97",
+      "md5": "a2c100bffbd872f89a8d1535a01e7cd7",
+      "sha256": "1a9af36230ec5008e6248f093343b5f757b5fa2ea67379cf2a36d7a1b391b33a",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_moody.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_night.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_night.png",
+      "expectedGitBlobSHA1": "ef25ceb4fc88100f48ba8fe273ca7a9e1c99f4f1",
+      "expectedBytes": 1988881,
+      "atUTC": "2026-10-12T06:43:55.751052+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_night.png",
+      "bytes": 1988881,
+      "gitBlobSHA1": "ef25ceb4fc88100f48ba8fe273ca7a9e1c99f4f1",
+      "md5": "24518364e5b8927da173aa699d58af39",
+      "sha256": "e5cdcf1bbcf2400663a374ac508d35bfc9d8fec4dc05877777b8a10c34808454",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_night.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_noon.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_noon.png",
+      "expectedGitBlobSHA1": "80aad0c7ee0d795987726d6ff71942c9f76f4b08",
+      "expectedBytes": 2428805,
+      "atUTC": "2026-10-12T06:43:56.209123+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_noon.png",
+      "bytes": 2428805,
+      "gitBlobSHA1": "80aad0c7ee0d795987726d6ff71942c9f76f4b08",
+      "md5": "aa9e20856bc56173f6f00b8a5e288254",
+      "sha256": "e2024231d9f278bc76dc2f8f0bc077c63f0b270b9e50a4b491066f710de37b9d",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_noon.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_obscured_sun.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_obscured_sun.png",
+      "expectedGitBlobSHA1": "13408c87eed3537f91644d4f660f05638d2ed177",
+      "expectedBytes": 2266575,
+      "atUTC": "2026-10-12T06:43:56.273834+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_obscured_sun.png",
+      "bytes": 2266575,
+      "gitBlobSHA1": "13408c87eed3537f91644d4f660f05638d2ed177",
+      "md5": "c65954f5f9166b46096c570f6323b125",
+      "sha256": "8770a4a55faaaa596a4dc1ff43a688795f58531ecc95b78550879339d2542924",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_obscured_sun.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_purple.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_purple.png",
+      "expectedGitBlobSHA1": "646d70b492be4e8d2358005b8a68616999b5da4d",
+      "expectedBytes": 2338339,
+      "atUTC": "2026-10-12T06:43:56.278601+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_purple.png",
+      "bytes": 2338339,
+      "gitBlobSHA1": "646d70b492be4e8d2358005b8a68616999b5da4d",
+      "md5": "76d386489cdbb9cfbe3e885645d6c1db",
+      "sha256": "1ee3c32583af369537e676b81d55f455dfde06c4319d29fab2bc9ce59f482e0e",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_purple.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_red_at_night.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_red_at_night.png",
+      "expectedGitBlobSHA1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+      "expectedBytes": 2368433,
+      "atUTC": "2026-10-12T06:43:56.395987+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_red_at_night.png",
+      "bytes": 2368433,
+      "gitBlobSHA1": "9d4da397635b25ae391c5d35be33377f1b58c9ec",
+      "md5": "b0c1963f9dd8ad533bacf55a044dd87d",
+      "sha256": "bdc6aa5669f48e1e72ff9c3b6c54b6c55a5b0b5d4049a66c4a26696ee8a48704",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_red_at_night.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_stormy.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_stormy.png",
+      "expectedGitBlobSHA1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+      "expectedBytes": 2308734,
+      "atUTC": "2026-10-12T06:43:56.772286+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_stormy.png",
+      "bytes": 2308734,
+      "gitBlobSHA1": "996fe2a5467eef9e23bf393bc5bb3e7105cce894",
+      "md5": "7208ec146cdba05dc11fd5f71a65a499",
+      "sha256": "48f26cdde768f6ea79dbe893be37e1cd9616a525e18e43c595281fe42aafa3a4",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_stormy.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    },
+    {
+      "name": "cloudy_yellow.png",
+      "kind": "oga-cloudy",
+      "url": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_yellow.png",
+      "expectedGitBlobSHA1": "9adb77dedab36539b1eaccf06b354732f5849e14",
+      "expectedBytes": 2623666,
+      "atUTC": "2026-10-12T06:43:56.817677+00:00",
+      "purpose": "Original openly licensed production candidate for source selection and reuse",
+      "status": 200,
+      "contentType": "image/png",
+      "finalURL": "https://raw.githubusercontent.com/optimuspryne/open-tabletop/2a62a0c9a8ec2f0ab609e62d2c24fd7d8fc24a6f/public/static_assets/sky/equirect/cloudy_yellow.png",
+      "bytes": 2623666,
+      "gitBlobSHA1": "9adb77dedab36539b1eaccf06b354732f5849e14",
+      "md5": "3065bddf794ac1c2c0308acb24d38922",
+      "sha256": "80bbb35ea9592e531814fcaf8d623c8c3959e0f05e205b2fdde0aa4ea95d3851",
+      "localPath": "/workspace/sky-first-raw/public-candidates/oga-cloudy/cloudy_yellow.png",
+      "productionGETVerified": true,
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGBA",
+      "format": "PNG"
+    }
+  ],
+  "pixelInspections": {
+    "skybox-morning.png": {
+      "viewed": true,
+      "palette": "Bright pale peach / warm pink, coral-pink clouds, small white sun high at the right",
+      "fit": "Recommended public source for dusk-peach with full-width latitude-band crop; filename morning is not used to reject its dusk appearance.",
+      "status": "Author reports first skyline switched to this source on 2026-10-12; final source/GPU verification owned by author and independent QA"
+    },
+    "skybox-day.png": {
+      "viewed": true,
+      "palette": "Pale cool blue with soft white clouds and lavender-blue lower sky",
+      "fit": "Recommended candidate for next batch noon-blue-white-clouds; reserved for #117. Does not directly provide green mist or red clouds.",
+      "status": "Reference only for this first-three batch"
+    },
+    "skybox-alien.png": {
+      "viewed": true,
+      "palette": "Pastel purple/pink with peach lower sky; prominent large white solar disk",
+      "fit": "Unmodified hue and focal solar disk are a weak match for these three bright fresh period-specific skies.",
+      "status": "Not selected by author for current first-three batch"
+    },
+    "skybox-night.png": {
+      "viewed": true,
+      "palette": "Dark deep blue, wispy dark clouds, small star specks and bright white disk",
+      "fit": "Native night treatment is outside these three bright dusk/sunset/dawn requirements; useful for a later night task.",
+      "status": "Not selected for this batch"
+    },
+    "skybox-space.png": {
+      "viewed": true,
+      "palette": "Dark navy-to-purple starfield, no terrestrial cloud band",
+      "fit": "Native starfield is outside requested sky-and-clouds dusk/sunset/dawn; later space use possible.",
+      "status": "Not selected for this batch"
+    },
+    "cloudy_red.png": {
+      "viewed": true,
+      "palette": "Red/pink cloud bands over brown-red upper sky, small bright red-white solar point; dark lower hemisphere and mirrored low glow",
+      "fit": "Closest acquired native red-cloud candidate. Keep the full 2048-pixel longitude; choose sky-only latitude band and assess brightness/softness. CC0 permits tonal adaptation.",
+      "status": "Handed to author for actual crop/brightness/GPU comparison; no blanket rejection"
+    },
+    "cloudy_sunset.png": {
+      "viewed": true,
+      "palette": "Orange cloud banks, brown-orange sky, distinct glowing golden solar disk; dark lower hemisphere",
+      "fit": "Native sunset candidate; a full-width upper latitude band can remove dark lower area. Need assess large solar focal spot and bright fresh palette in final view.",
+      "status": "Candidate, not product-selected by this audit"
+    },
+    "cloudy_clear_sunset.png": {
+      "viewed": true,
+      "palette": "Purple upper sky, red-pink thin low cloud band, prominent yellow solar glow",
+      "fit": "Period-appropriate panorama, but stronger purple cast and focal sun than requested; could adapt under CC0.",
+      "status": "Candidate with visible style limitations"
+    },
+    "cloudy_clear_sunrise.png": {
+      "viewed": true,
+      "palette": "Grey-blue with warm gold-white light around conspicuous solar disk",
+      "fit": "Eligible sunrise panorama; native warm grey/gold does not directly equal blue-green fog.",
+      "status": "Candidate with visible style limitations"
+    },
+    "cloudy_sunrise.png": {
+      "viewed": true,
+      "palette": "Cold grey-blue clouds with narrow warm bright horizon, scattered dense cloud forms",
+      "fit": "Eligible morning cloud source; native dense clouds and grey tone need comparison/adaptation.",
+      "status": "Candidate with visible style limitations"
+    },
+    "cloudy_dawn.png": {
+      "viewed": true,
+      "palette": "Grey/violet dawn cloud masses, muted pink horizon and large diffuse white light",
+      "fit": "Native dawn is not clear blue-green mist; dense cloud texture is a visible styling tradeoff.",
+      "status": "Candidate with visible style limitations"
+    },
+    "cloudy_early_morning.png": {
+      "viewed": true,
+      "palette": "Blue upper sky with pink/grey clouds and strong low solar glow",
+      "fit": "Eligible morning panorama; not native green mist.",
+      "status": "Candidate with visible style limitations"
+    },
+    "cloudy_green.png": {
+      "viewed": true,
+      "palette": "Emerald/bright green sky and green clouds, white point light",
+      "fit": "Actual green candidate, but vivid fantasy green is stronger than fresh thin dawn mist. Could desaturate/soften under CC0.",
+      "status": "Candidate requiring palette comparison"
+    },
+    "cloudy_light_green.png": {
+      "viewed": true,
+      "palette": "Muted grey/slate blue-green sky, dense clouds, small warm-white sun; black lower hemisphere",
+      "fit": "Actual native hue is cooler/greyer than filename suggests. Full-width sky band is usable; need brightness and cloud-density comparison.",
+      "status": "Handed to author as possible dawn base"
+    },
+    "cloudy_mist.png": {
+      "viewed": true,
+      "palette": "Cool grey/lavender fog with broad diffuse white light and very little cloud definition",
+      "fit": "Eligible diffuse mist base. CC0 permits a gentle blue-green palette adjustment; white light remains a potential focus.",
+      "status": "Handed to author as possible dawn base"
+    },
+    "cloudy_hazy.png": {
+      "viewed": true,
+      "palette": "Warm brown/grey haze and visible mottled clouds with small white light",
+      "fit": "Haze source is eligible but native warm brown hue is not blue-green morning.",
+      "status": "Candidate with visible style limitations"
+    },
+    "industrial_sunset_puresky_2k.hdr": {
+      "viewed": true,
+      "viewMethod": "Actual HDR decoded with Three.js RGBELoader FloatType; Reinhard exposure 0.1 / 1 / 10 then standard sRGB. Original HDR unchanged.",
+      "palette": "Mostly blue-grey / pale blue clouds; warm gold thin low horizon glow",
+      "fit": "Pure sky and technically reusable. Native acquired colors do not directly supply red-dominant sunset, but CC0 permits tonal adaptation.",
+      "status": "Actual acquired eligible public HDR; not rejected for industrial name or ground assumption"
+    },
+    "kloofendal_misty_morning_puresky_2k.hdr": {
+      "viewed": true,
+      "viewMethod": "Actual HDR decoded with Three.js RGBELoader FloatType; Reinhard exposure 0.1 / 1 / 10 then standard sRGB. Original HDR unchanged.",
+      "palette": "Very low-contrast pale grey-blue mist, no prominent sun disk, very little cloud definition",
+      "fit": "Recommended public dawn-mist base if author can match fresh blue-green direction with exposure and gentle palette adaptation.",
+      "status": "Handed to author for adaptation and actual GPU comparison"
+    },
+    "belfast_sunset_puresky_2k.hdr": {
+      "viewed": true,
+      "viewMethod": "Actual HDR decoded with Three.js RGBELoader FloatType; Reinhard exposure 1 then standard sRGB. Original HDR unchanged.",
+      "palette": "Pale violet-blue/grey wispy clouds and golden-white low horizon glow",
+      "fit": "Pure sky sunset source; native colors are subdued violet-blue rather than red clouds. Dusk alternative with tonal adaptation.",
+      "status": "Actual acquired eligible public HDR"
+    },
+    "cloudy_chaotic.png": {
+      "viewed": true,
+      "palette": "Pale mauve/gold cloudy sky, complex dense cloud forms and diffuse warm light",
+      "fit": "Eligible soft warm source, but no native blue-green mist or red-dominant cloud palette.",
+      "status": "Not selected by audit"
+    },
+    "cloudy_clear_afternoon.png": {
+      "viewed": true,
+      "palette": "Bright cool blue sky with sparse white clouds, sharp glowing near-horizon sun",
+      "fit": "Useful native blue-sky source; no thin fog and an obvious solar focus. Full-width sky-band adaptation is possible.",
+      "status": "Handed to author as additional actual cool source"
+    },
+    "cloudy_clear_night.png": {
+      "viewed": true,
+      "palette": "Near-black/dark grey sky with warm bright disk and sparse clouds",
+      "fit": "Night treatment is outside native bright dusk/dawn targets.",
+      "status": "Not selected for current batch"
+    },
+    "cloudy_dark_blue.png": {
+      "viewed": true,
+      "palette": "Deep blue/lavender sky with large dense white cloud puffs and bright white light",
+      "fit": "Actual blue source, but cloud mass and stronger blue are unlike subtle blue-green thin fog.",
+      "status": "Handed to author; actual pixels evaluated rather than filename rejected"
+    },
+    "cloudy_dusk.png": {
+      "viewed": true,
+      "palette": "Pink/mauve sky with dense turbulent cloud textures",
+      "fit": "Actual dusk source, but native pink-purple and busy cloud texture do not directly match red-dominant fresh sunset.",
+      "status": "Handed to author"
+    },
+    "cloudy_inverted_colors.png": {
+      "viewed": true,
+      "palette": "Grey/black sky, very white clouds, yellow/red horizon stripe",
+      "fit": "Native inverted/high-contrast treatment is unlike gentle fresh current-three direction.",
+      "status": "Not selected for current batch"
+    },
+    "cloudy_moody.png": {
+      "viewed": true,
+      "palette": "Muted grey-violet upper sky with cloudy horizon and small strong light",
+      "fit": "Eligible cloudy source; no native blue-green thin fog.",
+      "status": "Handed to author"
+    },
+    "cloudy_night.png": {
+      "viewed": true,
+      "palette": "Dark blue-violet night clouds and pale warm disk",
+      "fit": "Native night treatment is outside these bright three period targets.",
+      "status": "Not selected for current batch"
+    },
+    "cloudy_noon.png": {
+      "viewed": true,
+      "palette": "Bright blue/white-cloud sky, intensely glowing low sun",
+      "fit": "Useful future noon candidate, but current dawn requires thin fog and softer focus.",
+      "status": "Reference only"
+    },
+    "cloudy_obscured_sun.png": {
+      "viewed": true,
+      "palette": "Soft pale blue-grey sky with white/grey clouds, faint golden horizon and small white light",
+      "fit": "Additional native cool source for dawn comparison; closest newly acquired gentle blue sky, but no native green cast or uniform thin mist.",
+      "status": "Handed to author as possible dawn base"
+    },
+    "cloudy_purple.png": {
+      "viewed": true,
+      "palette": "Strong purple sky with white-grey clouds and white point light",
+      "fit": "Native strong-purple hue is outside requested fresh red/dawn directions; CC0 adaptation is permitted.",
+      "status": "Not selected unmodified for this batch"
+    },
+    "cloudy_red_at_night.png": {
+      "viewed": true,
+      "palette": "Exact same file bytes as cloudy_dawn.png",
+      "fit": "No additional visual variant despite filename.",
+      "status": "Duplicate blob and SHA256 verified"
+    },
+    "cloudy_stormy.png": {
+      "viewed": true,
+      "palette": "Exact same file bytes as cloudy_light_green.png",
+      "fit": "No additional visual variant despite filename.",
+      "status": "Duplicate blob and SHA256 verified"
+    },
+    "cloudy_yellow.png": {
+      "viewed": true,
+      "palette": "Grey-blue/gold clouds with large bright diffuse yellow light",
+      "fit": "Warm light candidate for a later golden-sky task; native yellow does not directly give red cloud or blue-green thin fog.",
+      "status": "Reference only"
+    }
+  },
+  "hdrDisplayEvidence": {
+    "decoder": "Three.js RGBELoader FloatType using current installed Three.js; original HDR preserved",
+    "displayTransfer": "Reinhard(C*exposure) then standard sRGB; explicitly disclosed display conversion, not claimed official tonemapped JPG bytes",
+    "records": [
+      {
+        "id": "industrial_sunset_puresky",
+        "min": 0.10882353037595749,
+        "max": 851.3255004882812,
+        "meanRGB": [
+          0.5587735220154535,
+          0.6491017665033567,
+          0.8233646806031629
+        ],
+        "p50": 0.6274510025978088,
+        "p95": 1.3803921937942505,
+        "renders": [
+          {
+            "path": "/tmp/sky-resource-audit/industrial_sunset_puresky-reinhard-exp0.1.png",
+            "exposure": 0.1,
+            "transfer": "Reinhard(C*exposure) then standard sRGB",
+            "sha256": "e2942fa6003ee7893322516be9028480c6bfb2c8a0eeeefd172f5fa626d12cfc"
+          },
+          {
+            "path": "/tmp/sky-resource-audit/industrial_sunset_puresky-reinhard-exp1.png",
+            "exposure": 1,
+            "transfer": "Reinhard(C*exposure) then standard sRGB",
+            "sha256": "59db29a8dddffb9dccdddb414b18bbb679f32a7ea34f4fcaf5ad245255712767"
+          },
+          {
+            "path": "/tmp/sky-resource-audit/industrial_sunset_puresky-reinhard-exp10.png",
+            "exposure": 10,
+            "transfer": "Reinhard(C*exposure) then standard sRGB",
+            "sha256": "e73f2d8d5f1b8636d5403a55fc5ae1d12d8f9e24740e2e9fe6cc3d3be6f07de6"
+          }
+        ]
+      },
+      {
+        "id": "kloofendal_misty_morning_puresky",
+        "min": 0.2862745225429535,
+        "max": 1.8980392217636108,
+        "meanRGB": [
+          0.7651848690855303,
+          0.8260822533689378,
+          0.9558941905920477
+        ],
+        "p50": 0.7843137383460999,
+        "p95": 1.529411792755127,
+        "renders": [
+          {
+            "path": "/tmp/sky-resource-audit/kloofendal_misty_morning_puresky-reinhard-exp0.1.png",
+            "exposure": 0.1,
+            "transfer": "Reinhard(C*exposure) then standard sRGB",
+            "sha256": "df08a3e182ac3948c72517d1d7cbe920ede4511a68d80f9c9e037ebe5375cb96"
+          },
+          {
+            "path": "/tmp/sky-resource-audit/kloofendal_misty_morning_puresky-reinhard-exp1.png",
+            "exposure": 1,
+            "transfer": "Reinhard(C*exposure) then standard sRGB",
+            "sha256": "f7bf4c26c329d8dee2eb82f198660094388c586626c1c8571e13a8f39a0f216e"
+          },
+          {
+            "path": "/tmp/sky-resource-audit/kloofendal_misty_morning_puresky-reinhard-exp10.png",
+            "exposure": 10,
+            "transfer": "Reinhard(C*exposure) then standard sRGB",
+            "sha256": "5558fee0c707e48acf087096d680722912d553b1409957b85681cc0e30bd3030"
+          }
+        ]
+      },
+      {
+        "id": "belfast_sunset_puresky",
+        "min": 0.15490196645259857,
+        "max": 51.701961517333984,
+        "meanRGB": [
+          1.005205120606405,
+          0.8799737430775281,
+          1.0868022452004595
+        ],
+        "p50": 0.6941176652908325,
+        "p95": 2.2431373596191406,
+        "renders": [
+          {
+            "path": "/tmp/sky-resource-audit/belfast_sunset_puresky-reinhard-exp1.png",
+            "exposure": 1,
+            "transfer": "Reinhard(C*exposure) then standard sRGB",
+            "sha256": "2418cd344829ec3524cd7b471b7f6fe78fe40a44868061e4eb93cf33c0776bf7"
+          }
+        ]
+      }
+    ],
+    "comparisonPaths": [
+      "/tmp/sky-resource-audit/oga-production-comparison.png",
+      "/tmp/sky-resource-audit/ph-production-exposures.png",
+      "/tmp/sky-resource-audit/belfast_sunset_puresky-reinhard-exp1.png",
+      "/tmp/sky-resource-audit/oga-remaining-production-comparison.png"
+    ]
+  },
+  "networkEvidence": {
+    "initialHTTP": [
+      {
+        "id": "polyhaven_hdris",
+        "url": "https://api.polyhaven.com/assets?t=hdris",
+        "atUTC": "2026-10-12T06:19:16.187527+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.04454469680786133
+      },
+      {
+        "id": "polyhaven_license",
+        "url": "https://polyhaven.com/license",
+        "atUTC": "2026-10-12T06:19:16.188771+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.045412302017211914
+      },
+      {
+        "id": "ambientcg_hdri",
+        "url": "https://ambientcg.com/api/v2/full_json?type=HDRI",
+        "atUTC": "2026-10-12T06:19:16.189912+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.04021167755126953
+      },
+      {
+        "id": "ambientcg_license",
+        "url": "https://docs.ambientcg.com/license/",
+        "atUTC": "2026-10-12T06:19:16.190368+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.03591346740722656
+      },
+      {
+        "id": "ambientcg_api",
+        "url": "https://docs.ambientcg.com/api/full-json/",
+        "atUTC": "2026-10-12T06:19:16.191016+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.0312809944152832
+      },
+      {
+        "id": "kenney_sky_search",
+        "url": "https://kenney.nl/assets?q=sky",
+        "atUTC": "2026-10-12T06:19:16.191980+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.03579998016357422
+      },
+      {
+        "id": "kenney_background",
+        "url": "https://kenney.nl/assets/background-elements",
+        "atUTC": "2026-10-12T06:19:16.222323+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.013320446014404297
+      },
+      {
+        "id": "oga_skybox_search",
+        "url": "https://opengameart.org/art-search?keys=skybox&sort_by=count&sort_order=DESC",
+        "atUTC": "2026-10-12T06:19:16.226374+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.012256383895874023
+      },
+      {
+        "id": "oga_sky_search",
+        "url": "https://opengameart.org/art-search?keys=sky%20panorama&sort_by=count&sort_order=DESC",
+        "atUTC": "2026-10-12T06:19:16.227935+00:00",
+        "status": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "elapsedSeconds": 0.0109710693359375
+      }
+    ],
+    "officialProductionProbes": [
+      {
+        "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/industrial_sunset_puresky_2k.hdr",
+        "atUTC": "2026-10-12T06:40:28.957877+00:00",
+        "originHTTPStatus": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "classification": "proxy CONNECT denied before origin response"
+      },
+      {
+        "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/kloofendal_misty_morning_puresky_2k.hdr",
+        "atUTC": "2026-10-12T06:40:28.958564+00:00",
+        "originHTTPStatus": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "classification": "proxy CONNECT denied before origin response"
+      },
+      {
+        "url": "https://opengameart.org/sites/default/files/sbs_-_cloudy_skyboxes_-_panorama_0.zip",
+        "atUTC": "2026-10-12T06:40:28.958931+00:00",
+        "originHTTPStatus": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "classification": "proxy CONNECT denied before origin response"
+      },
+      {
+        "url": "https://ambientcg.com/api/v3/assets?id=DaySkyHDRI001A&include=downloads&limit=1",
+        "atUTC": "2026-10-12T06:40:28.959309+00:00",
+        "originHTTPStatus": null,
+        "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+        "classification": "proxy CONNECT denied before origin response"
+      }
+    ]
+  },
+  "rejectedAcquisitionPath": {
+    "repo": "3DStreet/3dstreet-assets-dist",
+    "candidate": "images/skies/2048-kloofendal_misty_morning_puresky-sdr.jpeg",
+    "reason": "Mirror README applies a broad CC BY-SA default and contradictory Non-Commercial clauses without found asset-specific exception. Reencoded SDR JPEG not compared with official MD5; do not assume clean CC0 for that derivative. Downloaded exact-original HDR from separately documented CC0 mirror instead.",
+    "sourceURL": "https://github.com/3DStreet/3dstreet-assets-dist/blob/main/README.md"
+  },
+  "creditsHandoff": {
+    "action": "Author/root must register every actually used third-party source and derivative path in docs/CREDITS.md; this audit does not edit it",
+    "kenney": [
+      "Kenney, Skyboxes, CC0-1.0",
+      "Official Kenney asset URL + author OGA URL",
+      "Pinned shorepine/kenney mirror commit + exact filename and SHA256",
+      "Latitude band/crop/resample plus any tonal adaptation",
+      "Mirror blob verified; official ZIP was not acquired/byte-compared"
+    ],
+    "oga": [
+      "Screaming Brain Studios, Cloudy Skyboxes, CC0-1.0",
+      "Official OGA URL + pinned optimuspryne/open-tabletop source/credits URL",
+      "Actual used filename + SHA256 + latitude band/tonal adaptation",
+      "Mirror blob verified; original official ZIP was not acquired/byte-compared"
+    ],
+    "polyhaven": [
+      "Exact asset authors + official asset/license/API URLs",
+      "Pinned mirror URL + SHA256; official file size and MD5 matched",
+      "HDR decoding + tone curve/exposure + actual latitude band/palette changes",
+      "If final file is image_gen reference-edited, explicitly record AI derivative, original HDR exact MD5, standard SDR exposure/band reference, preservation/edit intent, and final output SHA256; final pixels are not official original bytes."
+    ],
+    "secondHistoricalAI": "Retain original before-rule generation call; log subsequent real image_gen U0 seam reference edit separately, with exact input/output identities and new post-rule timing."
+  },
+  "searchMethods": {
+    "primaryWeb": "Official HTML pages, license pages, API metadata linked from official asset pages; source HTTP status not exposed by web connector",
+    "github": "Public code search then pinned repository trees, per-directory asset credits and raw source GET; all used mirror binaries compared with Git blob metadata",
+    "queries": [
+      "Kenney skyboxes",
+      "Poly Haven pure sky industrial sunset Belfast dawn misty morning",
+      "OpenGameArt Cloudy Skyboxes Screaming Brain Studios",
+      "Screaming Brain Studios Cloudy Skyboxes GitHub",
+      "kloofendal_misty_morning_puresky",
+      "industrial_sunset_puresky",
+      "belfast_sunset_puresky",
+      "qwantani_dawn_puresky",
+      "ambientCG HDRI and API v3 horizon-cleared skies"
+    ],
+    "unsupportedOrEmptyLookups": "Some public user/search fetch endpoints rejected by connector; switched to supported public file search. No claim of exhaustive internet search."
+  },
+  "finalDirectionRecordedAtUTC": "2026-10-12T06:49:02.430876+00:00",
+  "selectedDawnReferencePreparation": {
+    "path": "/workspace/sky-first-raw/cc0-research/ph-misty-band-exp2.png",
+    "size": [
+      2048,
+      512
+    ],
+    "sha256": "98f79edbe5edb51ee3ae344b0296568800195840fc797a4b715aed684865fc5b",
+    "preparer": "world_a09",
+    "meaning": "Author standard SDR full-width HDR band at exposure 2; input reference, not claimed edited final deliverable",
+    "originalHDRIdentity": {
+      "path": "/workspace/sky-first-raw/public-candidates/polyhaven/kloofendal_misty_morning_puresky_2k.hdr",
+      "officialMD5": "b99e0bb066a0d8134729b9712495d68b",
+      "officialBytes": 2958072
+    }
+  }
+}
