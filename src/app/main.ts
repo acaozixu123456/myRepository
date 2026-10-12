@@ -185,6 +185,7 @@ const ctx: AppCtx = {
   },
 };
 
+if (devGrant) (window as unknown as { __ctx: AppCtx }).__ctx = ctx; // 仅开发 / 试玩版：截图脚本用它直接打开小游戏等弹层
 ctx.loop = new BattleLoop(document.getElementById('cv') as HTMLCanvasElement, {
   state: () => state,
   story: (id) => (params.get('nostory') ? Promise.resolve() : playStoryOnce(ctx, id)),
