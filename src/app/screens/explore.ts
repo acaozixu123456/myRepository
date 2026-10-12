@@ -1,5 +1,6 @@
 // 探索：3D 赛博朋克街区。操控一队猫猫走动，碰到野怪 / 首领就开战（用现有战斗引擎），开宝箱、找向导。
 // 世界渲染在 src/world，规则在 src/game/explore.ts，这里把两者和界面连起来。
+import type * as THREE from 'three';
 import { Explorer } from '../../world/explore';
 import type { Spawn } from '../../world/explore';
 import { WorldView, defaultQuality } from '../../world/engine';
@@ -253,9 +254,24 @@ function drawMini(ctx: AppCtx) {
   const g = cv.getContext('2d')!, W = cv.width, k = W / (rt.st.half * 2);
   const X = (x: number) => (x + rt!.st.half) * k, Z = (z: number) => (z + rt!.st.half) * k;
   g.clearRect(0, 0, W, W);
-  g.fillStyle = '#1a1230'; g.fillRect(0, 0, W, W);
-  g.fillStyle = '#3a2a5a'; g.fillRect(0, Z(-4.5), W, 9 * k); g.fillRect(X(-4.5), 0, 9 * k, W); // 路
-  g.fillStyle = '#0b0818'; for (const c of rt.st.colliders) if (c.x1 - c.x0 > 3) g.fillRect(X(c.x0), Z(c.z0), (c.x1 - c.x0) * k, (c.z1 - c.z0) * k); // 楼
+  const th = rt.st.level.theme ?? 'street';
+  if (th === 'street') {
+    g.fillStyle = '#1a1230'; g.fillRect(0, 0, W, W);
+    g.fillStyle = '#3a2a5a'; g.fillRect(0, Z(-4.5), W, 9 * k); g.fillRect(X(-4.5), 0, 9 * k, W); // 路
+    g.fillStyle = '#0b0818'; for (const c of rt.st.colliders) if (c.x1 - c.x0 > 3) g.fillRect(X(c.x0), Z(c.z0), (c.x1 - c.x0) * k, (c.z1 - c.z0) * k); // 楼
+  } else {
+    // 主题场景：按各自的色调画「地面 + 碰撞物」（水 / 云海是蓝色，其余是该场景的墙与树）
+    const PAL: Record<string, [string, string]> = { market: ['#e8c898', '#a8603a'], harbor: ['#c8b8a0', '#3a7a98'], forest: ['#6aaa5a', '#2a5a30'], cloud: ['#c8e8c0', '#9ab8e8'], palace: ['#f0e8d8', '#b8483a'] };
+    const [bg, fg] = PAL[th] ?? ['#444', '#222'];
+    if (th === 'cloud') {
+      g.fillStyle = '#9ab8e8'; g.fillRect(0, 0, W, W);
+      g.fillStyle = bg; g.beginPath(); g.arc(W / 2, W / 2, 28 * k, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#c86a6a'; for (const c of rt.st.colliders) if (c.x1 - c.x0 < 12 && Math.abs(c.x0) < 27 && Math.abs(c.z0) < 27) g.fillRect(X(c.x0), Z(c.z0), (c.x1 - c.x0) * k, (c.z1 - c.z0) * k);
+    } else {
+      g.fillStyle = bg; g.fillRect(0, 0, W, W);
+      g.fillStyle = fg; for (const c of rt.st.colliders) g.fillRect(X(c.x0), Z(c.z0), (c.x1 - c.x0) * k, (c.z1 - c.z0) * k);
+    }
+  }
   const sn = rt.ex.snapshot();
   const dot = (x: number, z: number, col: string, r: number) => { g.fillStyle = col; g.beginPath(); g.arc(X(x), Z(z), r, 0, Math.PI * 2); g.fill(); };
   for (const e of sn.ents) dot(e.x, e.z, e.kind === 'boss' ? '#ff4a6a' : e.kind === 'enemy' ? '#ff9a4a' : e.kind === 'chest' ? '#ffe27a' : e.kind === 'herb' ? '#6affb0' : e.kind === 'poi' ? '#ffb04a' : '#7ff0ff', e.kind === 'boss' ? 6 : 4);
@@ -270,7 +286,11 @@ export function refreshExploreHud(ctx: AppCtx) {
 /** 搭一个关卡（首次进入 / 通关换章节时调用；旧场景拆掉） */
 function loadLevel(ctx: AppCtx, L: LevelDef) {
   if (!rt) return;
-  if (rt.ex) { rt.ex.dispose(); rt.wv.scene.remove(rt.st.group); }
+  if (rt.ex) {
+    rt.ex.dispose(); rt.wv.scene.remove(rt.st.group);
+    // 释放旧场景的几何体（材质 / 贴图是跨场景缓存的，不能释放），否则来回切场景显存会一直涨
+    rt.st.group.traverse((o) => { (o as THREE.Mesh).geometry?.dispose?.(); });
+  }
   const st = buildStreet(L);
   rt.wv.scene.add(st.group);
   rt.wv.setMood(L.mood);

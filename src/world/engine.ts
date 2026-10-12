@@ -105,7 +105,7 @@ export class WorldView {
         fragmentShader: `uniform vec3 top,mid,hor,disc,sunDir;uniform float size;varying vec3 vD;
         void main(){float h=clamp(vD.y,-0.2,1.0);vec3 c=mix(hor,mid,smoothstep(0.0,0.35,h));c=mix(c,top,smoothstep(0.3,0.95,h));
         float s=max(dot(normalize(vD),normalize(sunDir)),0.0);float halo=pow(s,18.0)*0.45+pow(s,200.0)*0.5;float d=smoothstep(1.0-size*0.12,1.0-size*0.1,s);
-        c+=disc*(halo+d*1.4)*step(0.0,size);gl_FragColor=vec4(c,1.0);}`,
+        c+=disc*(halo*0.8+d*0.9)*step(0.0,size);gl_FragColor=vec4(c,1.0);}`,
       });
       this.sky = new THREE.Mesh(new THREE.SphereGeometry(300, 24, 16), mat);
       this.sky.renderOrder = -20; this.sky.frustumCulled = false; this.sky.userData.noMirror = true;

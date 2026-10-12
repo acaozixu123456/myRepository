@@ -2,6 +2,7 @@
 // 约定同 kit.ts：原点在底部中心，+z 为正面；材质走 kit.std / glowMat 缓存，静态件交给 bakeStatic 合批。
 import * as THREE from 'three';
 import { glowMat, std } from '../kit';
+import { nearFade } from '../bake';
 import { mk, neonSign } from '../tex';
 
 const box = (w: number, h: number, d: number, mat: THREE.Material, x = 0, y = 0, z = 0) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; return m; };
@@ -18,7 +19,7 @@ function tileMat(color: string): THREE.MeshStandardMaterial {
       for (let y = 0; y < 64; y += 8) for (let x = (y / 8) % 2 ? 0 : 8; x < 72; x += 16) { c.strokeStyle = 'rgba(0,0,0,.28)'; c.lineWidth = 2; c.beginPath(); c.arc(x, y, 8, 0, Math.PI); c.stroke(); c.fillStyle = 'rgba(255,255,255,.10)'; c.beginPath(); c.arc(x, y, 6, 0.2, Math.PI - 0.2); c.fill(); }
     }, `tile${color}`);
     const tt = t.clone(); tt.wrapS = tt.wrapT = THREE.RepeatWrapping; tt.repeat.set(5, 4); tt.needsUpdate = true;
-    m = new THREE.MeshStandardMaterial({ map: tt, roughness: 0.55, metalness: 0.12 });
+    m = nearFade(new THREE.MeshStandardMaterial({ map: tt, roughness: 0.55, metalness: 0.12 }), 'tile');
     tileMats.set(color, m);
   }
   return m;

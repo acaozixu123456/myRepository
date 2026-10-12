@@ -1,11 +1,17 @@
 // 主题场景分发：LevelDef.theme → 对应的搭建函数（返回和十字街区一样的 Street）。
 import type { LevelDef } from '../levels';
 import type { Street } from '../street';
+import { buildCloud } from './cloud';
 import { buildForest } from './forest';
+import { buildHarbor } from './harbor';
 import { buildMarket } from './market';
+import { buildPalace } from './palace';
 
 export function buildTheme(L: LevelDef): Street {
   switch (L.theme) {
+    case 'palace': return buildPalace(L);
+    case 'cloud': return buildCloud(L);
+    case 'harbor': return buildHarbor(L);
     case 'market': return buildMarket(L);
     case 'forest': return buildForest(L);
     default: throw new Error(`未实现的场景主题：${L.theme}`);

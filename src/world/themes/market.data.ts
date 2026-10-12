@@ -10,11 +10,11 @@ export const MARKET_STAGE = { z: -29, w: 20, d: 5.4 };
 export const MARKET_WALL_X = 26.5;
 export const MARKET_PLAZA = { x: 0, z: 0, r: 9 };
 const POI: [number, number] = [-9.6, 0];
-const SPAWN: [number, number] = [0, 25];
+const SPAWN: [number, number] = [0, 21];
 const ENEMIES: [number, number][] = [[17, -13], [-17, 15], [-2, 16], [3, 9], [-4, -10], [3, -16]];
 const CHESTS: [number, number][] = [[24, -13], [24, 15], [-24, -13], [-24, 1]];
 const HERBS: [number, number][] = [[-5, 20], [6, 2], [-6, -4], [4, -22], [-4, 22]];
-const NPC: [number, number] = [6, 21];
+const NPC: [number, number] = [6, 18];
 const BOSS: [number, number] = [0, -22];
 
 export function marketSolids(): AABB[] {
@@ -30,7 +30,7 @@ export function marketSolids(): AABB[] {
 
 export function marketLevel(): LevelDef {
   return {
-    id: 'neon-night-market', chapter: 2, name: '霓虹夜市', mood: 'market', half: 32, theme: 'market', weather: 'none',
+    id: 'neon-night-market', chapter: 2, name: '喵洲夜市', mood: 'market', half: 32, theme: 'market', weather: 'none',
     buildings: [], poles: [], props: [], lamps: [], cones: [], arches: [], lanterns: [], tram: false,
     vents: [[-9.6, 1.6, -9], [9.6, 1.6, 9], [-9.6, 1.6, 16], [9.6, 1.6, -16], [-3.4, 1.0, -2]],
     glows: [[0, 0, '#ffb04a', 22], [-9.6, 16, '#ff7a3a', 12], [9.6, -9, '#ffd070', 12], [0, -23, '#ff5a3a', 18]],

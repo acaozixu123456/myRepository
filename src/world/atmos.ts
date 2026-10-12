@@ -34,7 +34,7 @@ export const ATMOS: Record<MoodId, Atmos> = {
   // 港口：赤壁的晚霞，天红水红
   redcliff: {
     dome: true, skyTop: 0x2a2a6a, skyMid: 0xc84060, horizon: 0xff9040, discColor: 0xffc070, discSize: 0.07,
-    fog: 0xe0704c, fogD: 0.0052, hemiSky: 0xffa080, hemiGnd: 0x40242c, hemiI: 0.95, sun: 0xff7a3a, sunI: 2.3, sunPos: [44, 20, -38],
+    fog: 0xe0704c, fogD: 0.0052, hemiSky: 0xffa080, hemiGnd: 0x40242c, hemiI: 0.95, sun: 0xff7a3a, sunI: 2.3, sunPos: [10, 20, -52],
     exposure: 1.1, env: 0.45, bloom: [0.55, 0.5, 0.82], grade: { cool: 0.08, ca: 0.004, vig: 0.9, sat: 1.15, tint: [1.08, 0.96, 0.9] }, keyLight: 1.1, lit: 0.45,
   },
   // 森林：清晨，阳光从树冠漏下来
@@ -46,14 +46,14 @@ export const ATMOS: Record<MoodId, Atmos> = {
   // 云岛：正午，云海之上
   mist: {
     dome: true, skyTop: 0x5a9ae8, skyMid: 0xa8d0ff, horizon: 0xfff4ec, discColor: 0xffffff, discSize: 0.05,
-    fog: 0xe4eeff, fogD: 0.0036, hemiSky: 0xeaf4ff, hemiGnd: 0x9ab0d8, hemiI: 1.35, sun: 0xfff8e8, sunI: 2.5, sunPos: [-22, 70, 30],
-    exposure: 1.02, env: 0.6, bloom: [0.38, 0.5, 0.9], grade: { cool: 0, ca: 0, vig: 0.65, sat: 1.1, tint: [1, 1.01, 1.03] }, keyLight: 0.45, lit: 0.25,
+    fog: 0xe4eeff, fogD: 0.0036, hemiSky: 0xeaf4ff, hemiGnd: 0x9ab0d8, hemiI: 0.7, sun: 0xfff8e8, sunI: 1.35, sunPos: [-22, 70, 30],
+    exposure: 0.92, env: 0.3, bloom: [0.3, 0.5, 0.95], grade: { cool: 0, ca: 0, vig: 0.65, sat: 1.1, tint: [1, 1.01, 1.03] }, keyLight: 0.45, lit: 0.25,
   },
   // 宫阙：午后金光，朱墙金瓦
   palace: {
     dome: true, skyTop: 0x3a86d8, skyMid: 0x8cc8f0, horizon: 0xffecd0, discColor: 0xfff0c0, discSize: 0.05,
-    fog: 0xf0e0c8, fogD: 0.0034, hemiSky: 0xfff0dc, hemiGnd: 0x8a5a4a, hemiI: 1.1, sun: 0xffe8b0, sunI: 2.9, sunPos: [42, 55, 32],
-    exposure: 1.02, env: 0.5, bloom: [0.4, 0.5, 0.9], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.18, tint: [1.04, 1.0, 0.95] }, keyLight: 0.55, lit: 0.3,
+    fog: 0xf0e0c8, fogD: 0.0034, hemiSky: 0xfff0dc, hemiGnd: 0x8a5a4a, hemiI: 0.62, sun: 0xffe8b0, sunI: 1.5, sunPos: [42, 55, 32],
+    exposure: 0.9, env: 0.3, bloom: [0.3, 0.5, 0.96], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.18, tint: [1.04, 1.0, 0.95] }, keyLight: 0.55, lit: 0.3,
   },
 };
 export const atmosOf = (m: string): Atmos => ATMOS[m as MoodId] ?? NEON;

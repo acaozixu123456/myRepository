@@ -74,3 +74,10 @@ export function bakeStatic(root: THREE.Object3D): { before: number; after: numbe
   for (const m of merged) root.add(m);
   return { before, after: before - taken.length + merged.length };
 }
+
+/** 给一个标准材质加「离镜头太近就抖动淡出」（和合批材质同一套），用于不走合批的带贴图大件（瓦面等） */
+export function nearFade(m: THREE.MeshStandardMaterial, key: string): THREE.MeshStandardMaterial {
+  m.onBeforeCompile = (sh) => { sh.fragmentShader = sh.fragmentShader.replace('void main() {', 'void main() {\n  { float fd = length(vViewPosition); if (fd < 16.0) { float k = smoothstep(6.0, 16.0, fd); float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453); if (n > k) discard; } }'); };
+  m.customProgramCacheKey = () => 'nearfade-' + key;
+  return m;
+}

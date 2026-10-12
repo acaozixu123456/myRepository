@@ -196,15 +196,14 @@ describe('场景玩法入口（POI）', () => {
     expect(plan.filter((p) => p.kind === 'poi' && p.game === 'fish')).toHaveLength(1);
     expect(new Set(plan.map((p) => p.id)).size).toBe(plan.length);
   });
-  it('霓虹夜市有拉面屋台（在喵喵拉面店门口）', () => {
+  it('喵洲夜市有拉面屋台（在主街西侧摊位排的空档里，离招财猫广场不远）', () => {
     expect(poisOf(LEVELS[2]).map((p) => p.game)).toContain('ramen');
-    const shop = LEVELS[2].buildings.find((b) => b.spec.shop?.name === '喵喵拉面')!;
     const p = poisOf(LEVELS[2]).find((q) => q.game === 'ramen')!;
-    expect(Math.abs(p.x - shop.x)).toBeLessThan(shop.spec.w / 2 + 2);
-    expect(Math.abs(p.z - shop.z)).toBeLessThan(shop.spec.d / 2 + 3);
+    expect(Math.abs(Math.abs(p.x) - 9.6)).toBeLessThan(1.5); // 摊位排上
+    expect(Math.hypot(p.x, p.z)).toBeLessThan(14);
   });
   it('纸箱街有纸箱寻猫入口', () => { expect(poisOf(LEVELS[1]).map((p) => p.game)).toContain('boxcat'); });
-  it('霓虹森林有蘑菇地入口', () => { expect(poisOf(LEVELS[4]).map((p) => p.game)).toContain('mushroom'); });
+  it('光之森有蘑菇地入口', () => { expect(poisOf(LEVELS[4]).map((p) => p.game)).toContain('mushroom'); });
   it('云端雾岛有风铃架入口', () => { expect(poisOf(LEVELS[5]).map((p) => p.game)).toContain('windchime'); });
   it('九重宫阙有宫灯阵入口，六章都有各自的玩法', () => { expect(poisOf(LEVELS[6]).map((p) => p.game)).toContain('lanterns'); for (let c = 1; c <= 6; c++) expect(poisOf(LEVELS[c]).length, `第 ${c} 章没有玩法入口`).toBeGreaterThan(0); });
   it('钓鱼点贴着水边，离水不超过 3 个单位', () => {

@@ -77,7 +77,7 @@ export function forestSolids(): AABB[] {
 
 export function forestLevel(): LevelDef {
   return {
-    id: 'neon-forest', chapter: 4, name: '霓虹森林', mood: 'forest', half: 32, theme: 'forest', weather: 'none',
+    id: 'neon-forest', chapter: 4, name: '光之森', mood: 'forest', half: 32, theme: 'forest', weather: 'none',
     buildings: [], poles: [], props: [], lamps: [], cones: [], arches: [], lanterns: [], tram: false, vents: [],
     glows: [[0, 18, '#4fe08a', 20], [MUSH_RING[0], MUSH_RING[1], '#ff7ad9', 18], [BOSS[0], BOSS[1], '#7ff0ff', 22]],
     lights: [[0, 6, 20, 0x4fe08a, 70, 24], [MUSH_RING[0], 4, MUSH_RING[1], 0xff7ad9, 60, 20], [RUINS[0], 4, RUINS[1], 0x7ff0ff, 60, 20], [BOSS[0], 5, BOSS[1] + 3, 0xb0ff6a, 70, 22]],

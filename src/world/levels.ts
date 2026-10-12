@@ -1,7 +1,10 @@
 // 关卡数据（纯数据，不依赖 DOM / three：寻路、实体摆放合法性测试、玩法规则都读它）。
 // 一个关卡 = 十字路口街区；楼、道具、灯、电线杆、实体出生点都在这里摆。新增关卡：加一份 LevelDef，必要时在 kit / props 里补新道具。
+import { cloudLevel } from './themes/cloud.data';
 import { forestLevel } from './themes/forest.data';
+import { harborLevel } from './themes/harbor.data';
 import { marketLevel } from './themes/market.data';
+import { palaceLevel } from './themes/palace.data';
 import type { BuildingSpec } from './kit';
 
 export interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
@@ -93,84 +96,17 @@ export const LEVEL_1: LevelDef = {
 // ---------- 关卡 2：霓虹夜市 ----------
 export const LEVEL_2: LevelDef = marketLevel(); // 独立布局，见 themes/market.data.ts
 
-// ---------- 关卡 3：赤壁霓虹港（码头：南面是水，集装箱 + 吊机 + 货轮）----------
-const L3_POLES: [number, number][] = [[-20, -5.2], [-6, -5.2], [6, 5.2], [20, 5.2], [5.2, -18]];
-export const LEVEL_3: LevelDef = {
-  id: 'redcliff-harbor', chapter: 3, name: '赤壁霓虹港', mood: 'redcliff', half: 32,
-  buildings: L1_BUILDINGS.slice(0, 4).map((b, i) => ({ ...b, spec: { ...b.spec, seed: b.spec.seed + 60, style: (['brick', 'dark', 'brick', 'dark'] as const)[i] } })),
-  poles: L3_POLES, props: L1_PROPS.filter((p) => p.z < 9 && p.kind !== 'tree'), lamps: [[-2.5, -7, '#ffb060'], [3, 7, '#ff8a60'], [12, -6.9, '#ffd070'], [-12, 6.8, '#ff6a50']], cones: [[1.5, 4.8], [-1.5, 4.8], [14, 4.8], [-14, -4.8]],
-  glows: [[0, 0, '#ff5a3a', 22], [-12, -6, '#ffb040', 14], [14, 9, '#ff2e5a', 16], [-22, 9, '#ffe27a', 12]],
-  lights: [[0, 5, 0, 0xff5a3a, 90, 26], [-14, 6, -4, 0xffb040, 70, 22], [14, 6, 9, 0xff2e5a, 70, 22]],
-  tram: false, arches: [], lanterns: [],
-  vents: [[-3, 0.5, -7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4]],
-  water: [-31, 12.5, 31, 31],
-  pois: [{ id: 'fish', game: 'fish', x: 10.5, z: 11.4, label: '钓鱼点' }],
-  containers: [[-27, 10, 0, '#d9483b'], [-9, 10.2, 0, '#2a8ac8'], [22, 10, 0, '#e8a23a'], [27, 10, 0, '#4a9a62']],
-  cranes: [[-16, 18, 0], [18, 17, 0]],
-  ships: [[0, 24, 0], [-22, 27, 0.2]],
-  enemySpots: [[12, 0], [-14, -2], [0, -13], [-20, 9.5], [18, 9.5], [2, 10]],
-  chestSpots: [[24, 0], [-2.5, -26], [3, -26], [-26, 5.8]],
-  bossSpot: [0, -23], npcSpot: [6, 5.8], spawn: [0, 8],
-};
+// ---------- 关卡 3：赤壁霓虹港（独立布局，见 themes/harbor.data.ts）----------
+export const LEVEL_3: LevelDef = harborLevel();
 
 // ---------- 关卡 4：霓虹森林（独立布局，见 themes/forest.data.ts）----------
 export const LEVEL_4: LevelDef = forestLevel();
 
 // ---------- 关卡 5：云端雾岛 / 关卡 6：九重宫阙 ----------
-const SPOT_LIST = [...SPOTS.enemySpots, ...SPOTS.chestSpots, SPOTS.bossSpot, SPOTS.npcSpot, SPOTS.spawn];
-/** 在人行道区域撒道具（避开道路、出生点、建筑） */
-function scatter(buildings: Placed[], n: number, seed: number, mk: (i: number, x: number, z: number) => PropDef | null): PropDef[] {
-  const out: PropDef[] = []; let k = seed * 17;
-  for (let tries = 0; out.length < n && tries < n * 12; tries++) {
-    k = (k * 1103515245 + 12345) % 2147483647;
-    const x = ((k % 5800) / 100) - 29, z = (((k >> 7) % 5800) / 100) - 29;
-    if (Math.abs(x) < 6 || Math.abs(z) < 6) continue;
-    if (buildings.some((b) => Math.abs(x - b.x) < b.spec.w / 2 + 2.5 && Math.abs(z - b.z) < b.spec.d / 2 + 2.5)) continue;
-    if (SPOT_LIST.some(([sx, sz]) => Math.hypot(sx - x, sz - z) < 4)) continue;
-    if (out.some((p) => Math.hypot(p.x - x, p.z - z) < 3)) continue;
-    const p = mk(out.length, x, z); if (p) out.push(p);
-  }
-  return out;
-}
-const B5: Placed[] = [
-  { x: -14, z: -12, face: 1, spec: { w: 9, d: 8, floors: 4, style: 'dark', seed: 91, roof: 'tile', shop: { name: '云茶馆', color: '#9ab8ff', awning: ['#e8f0ff', '#6a8ad8'] }, signs: [{ text: '云', color: '#9ab8ff', vertical: true }], neon: '#9ab8ff' } },
-  { x: 14, z: -12, face: 1, spec: { w: 9, d: 8, floors: 5, style: 'teal', seed: 92, roof: 'tile', shop: { name: '星象台', color: '#c08aff', awning: ['#f0e8ff', '#8a5ae0'] }, signs: [{ text: '星', color: '#c08aff', vertical: true }], neon: '#c08aff' } },
-  { x: -14, z: 12, face: -1, spec: { w: 9, d: 8, floors: 4, style: 'cream', seed: 93, roof: 'tank', shop: { name: '风铃铺', color: '#7ff0ff', awning: ['#f0ffff', '#2aa8c8'] }, signs: [{ text: '铃', color: '#7ff0ff', vertical: true }], neon: '#7ff0ff' } },
-  { x: 14, z: 12, face: -1, spec: { w: 9, d: 8, floors: 5, style: 'dark', seed: 94, roof: 'tile', shop: { name: '雾灯屋', color: '#e0e8ff', awning: ['#f4f8ff', '#9ab0e0'] }, signs: [{ text: '灯', color: '#e0e8ff', vertical: true }], neon: '#e0e8ff' } },
-];
-export const LEVEL_5: LevelDef = {
-  id: 'cloud-isle', chapter: 5, name: '云端雾岛', mood: 'mist', half: 32,
-  buildings: B5, poles: [], lamps: [[-5.2, -7, '#c8d8ff'], [5.2, 7, '#e0c8ff'], [-6.8, 12, '#9ab8ff'], [6.8, -12, '#c8d8ff']], cones: [],
-  props: [...scatter(B5, 14, 5, (i, x, z) => ({ kind: i % 3 === 0 ? 'crystalPink' : 'crystal', x, z, arg: 0.9 + (i % 4) * 0.25 })), ...scatter(B5, 8, 9, (_i, x, z) => ({ kind: 'stoneLantern', x, z })), { kind: 'rock', x: -29, z: -3, seed: 3, arg: 1.2 }, { kind: 'rock', x: 29, z: 3, seed: 4, arg: 1.4 }],
-  glows: [[0, 0, '#9ab8ff', 24], [-14, -6, '#c08aff', 16], [14, 6, '#7ff0ff', 16], [0, -18, '#e0e8ff', 14]],
-  lights: [[0, 5, 0, 0x9ab8ff, 90, 26], [-14, 6, -4, 0xc08aff, 70, 22], [14, 6, 4, 0x7ff0ff, 70, 22]],
-  tram: false, arches: [[0, -15, 0, '云梯', '#9ab8ff']], lanterns: [[-4.5, -9, 4.5, -9, 7, '#c8d8ff'], [-4.5, 9, 4.5, 9, 7, '#e0c8ff']],
-  vents: [[-9, 0.5, -7.6], [9, 0.5, 7.6], [-3, 0.5, 8]],
-  pois: [{ id: 'windchime', game: 'windchime', x: -12.5, z: 5.6, label: '风铃架' }],
-  ground: { pave: '#3a4a7a', road: 0x8aa0d0 }, ...SPOTS,
-};
-const B6: Placed[] = [
-  { x: -14, z: -12, face: 1, spec: { w: 10, d: 8, floors: 4, style: 'pink', seed: 101, roof: 'tile', shop: { name: '御膳房', color: '#ffd24a', awning: ['#fff8d8', '#d9a23a'] }, signs: [{ text: '膳', color: '#ffd24a', vertical: true }], neon: '#ffd24a' } },
-  { x: 14, z: -12, face: 1, spec: { w: 10, d: 8, floors: 5, style: 'brick', seed: 102, roof: 'tile', shop: { name: '钦天监', color: '#ff7ad9', awning: ['#fff0f8', '#d9489a'] }, signs: [{ text: '天', color: '#ff7ad9', vertical: true }], neon: '#ff7ad9' } },
-  { x: -14, z: 12, face: -1, spec: { w: 10, d: 8, floors: 4, style: 'brick', seed: 103, roof: 'tile', shop: { name: '藏经阁', color: '#c08aff', awning: ['#f0e8ff', '#8a5ae0'] }, signs: [{ text: '经', color: '#c08aff', vertical: true }], neon: '#c08aff' } },
-  { x: 14, z: 12, face: -1, spec: { w: 10, d: 8, floors: 5, style: 'pink', seed: 104, roof: 'tile', shop: { name: '银库', color: '#ff5a5a', awning: ['#fff0f0', '#c83a3a'] }, signs: [{ text: '银', color: '#ff5a5a', vertical: true }], neon: '#ff5a5a' } },
-];
-export const LEVEL_6: LevelDef = {
-  id: 'nine-palaces', chapter: 6, name: '九重宫阙', mood: 'palace', half: 32,
-  buildings: B6, poles: [], lamps: [[-5.2, -7, '#ffd070'], [5.2, 7, '#ff9ad0'], [-6.8, 12, '#ffd070'], [6.8, -12, '#ffb070']], cones: [],
-  props: [
-    ...[-20, -10].flatMap((z) => [{ kind: 'pillar', x: -7, z, arg: 6 }, { kind: 'pillar', x: 7, z, arg: 6 }]) as PropDef[],
-    { kind: 'stoneCat', x: -6.5, z: -17, ry: 0.3 }, { kind: 'stoneCat', x: 6.5, z: -17, ry: -0.3 },
-    ...scatter(B6, 10, 6, (_i, x, z) => ({ kind: 'stoneLantern', x, z })), ...scatter(B6, 8, 11, (i, x, z) => ({ kind: i % 2 ? 'crystalPink' : 'bush', x, z, seed: i, arg: 0.9 })),
-  ],
-  glows: [[0, 0, '#ffd24a', 24], [-14, -6, '#ff7ad9', 16], [14, 6, '#c08aff', 16], [0, -18, '#ff5a5a', 14]],
-  lights: [[0, 5, 0, 0xffd24a, 90, 26], [-14, 6, -4, 0xff7ad9, 70, 22], [14, 6, 4, 0xc08aff, 70, 22]],
-  tram: false, arches: [[0, -15, 0, '九重宫阙', '#ffd24a'], [0, 17, 0, '午门', '#ff5a5a']],
-  lanterns: [[-4.5, -9, 4.5, -9, 7, '#ff4a3a'], [-4.5, 9, 4.5, 9, 7, '#ffd24a'], [-4.5, -25, 4.5, -25, 7, '#ff4a3a']],
-  vents: [[-9, 0.5, -7.6], [9, 0.5, 7.6]],
-  pois: [{ id: 'lanterns', game: 'lanterns', x: -12.5, z: -5.6, label: '宫灯阵' }],
-  ground: { pave: '#4a2a3a', road: 0xb09070 }, ...SPOTS,
-};
+// 关卡 5：云端雾岛（独立布局，见 themes/cloud.data.ts）
+export const LEVEL_5: LevelDef = cloudLevel();
+// ---------- 关卡 6：九重宫阙（独立布局，见 themes/palace.data.ts）----------
+export const LEVEL_6: LevelDef = palaceLevel();
 
 export const LEVELS: Record<number, LevelDef> = { 1: LEVEL_1, 2: LEVEL_2, 3: LEVEL_3, 4: LEVEL_4, 5: LEVEL_5, 6: LEVEL_6 };
 export const levelOf = (chapter: number): LevelDef => LEVELS[chapter] ?? LEVEL_1;
