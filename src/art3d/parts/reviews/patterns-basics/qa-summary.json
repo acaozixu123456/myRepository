@@ -1,0 +1,1362 @@
+{
+  "dateUTC": "2026-10-12T03:15:01.110Z",
+  "baseline": {
+    "baseline": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+    "beforeSHA": "60a0b1468d7cf216a319ac44df5d598a3ff8e67462b8c81b7ea024140271676e",
+    "afterSHA": "58ff3d8821b43c924cbb766c07977307813d95c52692ac89360204263524f8a2"
+  },
+  "engineSHAs": {
+    "src/art3d/cat3d.ts": "06e44bc80ab32181fc5bc42149ab957fbff0ca4716392f9304620f8f98904e56",
+    "src/art3d/pose.ts": "4ebb282987092cbbd83fe2b35e5319be37d6346fa70bd9c9045270ab3685d265",
+    "src/art3d/toon.ts": "bcb0fcfb3a9011e43d4720e5f2ec6b87f6a931fd7ad31be72c277520968bb837",
+    "src/art3d/renderer.ts": "ae998f612ae070288c81c8cf2c03bf605407718b7d2c89f5b042d169eb8bc3db"
+  },
+  "textures": {
+    "ids": [
+      "wei_xiahoudun",
+      "wei_xuhuang",
+      "shu_liumiaobei",
+      "shu_huangzhong",
+      "wu_huanggai",
+      "wu_luxun",
+      "qun_lvbuding",
+      "qun_diaochan",
+      "man_shamoke",
+      "xian_zhangzhua",
+      "shu_pangmiaotong",
+      "mob_wei_vanguard",
+      "mob_wei_strategist",
+      "mob_shu_guard",
+      "mob_shu_vanguard",
+      "mob_shu_archer",
+      "mob_shu_strategist",
+      "mob_shu_assassin",
+      "mob_qun_archer",
+      "mob_qun_assassin",
+      "mob_xian_strategist"
+    ],
+    "userCounts": {
+      "tabby": 11,
+      "tuxedo": 6,
+      "calico": 4
+    },
+    "targetCases": 42,
+    "coldCanvasCount": 42,
+    "uniqueTextures": 42,
+    "cacheHits": 42,
+    "deterministicEqual": 42,
+    "otherCases": 112,
+    "otherEqual": 112,
+    "changedOther": [],
+    "warmedCalls": 4200,
+    "warmedCanvasAllocations": 0,
+    "keyFields": [
+      {
+        "field": "base",
+        "distinct": true
+      },
+      {
+        "field": "light",
+        "distinct": true
+      },
+      {
+        "field": "accent",
+        "distinct": true
+      },
+      {
+        "field": "stripe",
+        "distinct": true
+      }
+    ],
+    "headBodyDistinct": true,
+    "defaultBody": true,
+    "rgbaBytes": 11010048,
+    "rgbaMipGPUBytesApprox": 14680064,
+    "frontSphere": {
+      "vertex": [
+        -6.106112285990482e-17,
+        0.07473009079694748,
+        0.9972038269042969
+      ],
+      "uv": [
+        0.25,
+        0.523809552192688
+      ],
+      "canvasX": 64,
+      "canvasY": 121.90475463867188
+    },
+    "sampled": [
+      {
+        "id": "shu_liumiaobei",
+        "coat": {
+          "pattern": "tabby",
+          "base": "#ec9a4a",
+          "light": "#fde6c0",
+          "stripe": "#c06a2a"
+        },
+        "samples": {
+          "browMiddle": [
+            192,
+            106,
+            42,
+            255
+          ],
+          "noseBridge": [
+            236,
+            154,
+            74,
+            255
+          ],
+          "chin": [
+            253,
+            230,
+            192,
+            255
+          ],
+          "leftTemple": [
+            236,
+            154,
+            74,
+            255
+          ],
+          "rightTemple": [
+            236,
+            154,
+            74,
+            255
+          ],
+          "back": [
+            236,
+            154,
+            74,
+            255
+          ]
+        }
+      },
+      {
+        "id": "qun_lvbuding",
+        "coat": {
+          "pattern": "tuxedo",
+          "base": "#2c2530",
+          "light": "#f6f2ea"
+        },
+        "samples": {
+          "browMiddle": [
+            246,
+            242,
+            234,
+            255
+          ],
+          "noseBridge": [
+            246,
+            242,
+            234,
+            255
+          ],
+          "chin": [
+            246,
+            242,
+            234,
+            255
+          ],
+          "leftTemple": [
+            44,
+            37,
+            48,
+            255
+          ],
+          "rightTemple": [
+            44,
+            37,
+            48,
+            255
+          ],
+          "back": [
+            44,
+            37,
+            48,
+            255
+          ]
+        }
+      },
+      {
+        "id": "qun_diaochan",
+        "coat": {
+          "pattern": "calico",
+          "base": "#e8944a",
+          "light": "#fbf4e8",
+          "accent": "#34292e"
+        },
+        "samples": {
+          "browMiddle": [
+            251,
+            244,
+            232,
+            255
+          ],
+          "noseBridge": [
+            251,
+            244,
+            232,
+            255
+          ],
+          "chin": [
+            251,
+            244,
+            232,
+            255
+          ],
+          "leftTemple": [
+            232,
+            148,
+            74,
+            255
+          ],
+          "rightTemple": [
+            52,
+            41,
+            46,
+            255
+          ],
+          "back": [
+            232,
+            148,
+            74,
+            255
+          ]
+        }
+      },
+      {
+        "id": "shu_pangmiaotong",
+        "coat": {
+          "pattern": "calico",
+          "base": "#f3a43a",
+          "light": "#fff1d6",
+          "accent": "#8a4a1e"
+        },
+        "samples": {
+          "browMiddle": [
+            255,
+            241,
+            214,
+            255
+          ],
+          "noseBridge": [
+            255,
+            241,
+            214,
+            255
+          ],
+          "chin": [
+            255,
+            241,
+            214,
+            255
+          ],
+          "leftTemple": [
+            243,
+            164,
+            58,
+            255
+          ],
+          "rightTemple": [
+            138,
+            74,
+            30,
+            255
+          ],
+          "back": [
+            243,
+            164,
+            58,
+            255
+          ]
+        }
+      }
+    ],
+    "seam": [
+      {
+        "id": "wei_xiahoudun",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "wei_xiahoudun",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "wei_xuhuang",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "wei_xuhuang",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "shu_liumiaobei",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "shu_liumiaobei",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "shu_huangzhong",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "shu_huangzhong",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "wu_huanggai",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "wu_huanggai",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "wu_luxun",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "wu_luxun",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "qun_lvbuding",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "qun_lvbuding",
+        "part": "body",
+        "mismatchedRows": 1,
+        "maxChannel": 52
+      },
+      {
+        "id": "qun_diaochan",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "qun_diaochan",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "man_shamoke",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "man_shamoke",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "xian_zhangzhua",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "xian_zhangzhua",
+        "part": "body",
+        "mismatchedRows": 1,
+        "maxChannel": 48
+      },
+      {
+        "id": "shu_pangmiaotong",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "shu_pangmiaotong",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_wei_vanguard",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_wei_vanguard",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_wei_strategist",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_wei_strategist",
+        "part": "body",
+        "mismatchedRows": 1,
+        "maxChannel": 29
+      },
+      {
+        "id": "mob_shu_guard",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_guard",
+        "part": "body",
+        "mismatchedRows": 1,
+        "maxChannel": 33
+      },
+      {
+        "id": "mob_shu_vanguard",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_vanguard",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_archer",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_archer",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_strategist",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_strategist",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_assassin",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_shu_assassin",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_qun_archer",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_qun_archer",
+        "part": "body",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_qun_assassin",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_qun_assassin",
+        "part": "body",
+        "mismatchedRows": 1,
+        "maxChannel": 42
+      },
+      {
+        "id": "mob_xian_strategist",
+        "part": "head",
+        "mismatchedRows": 0,
+        "maxChannel": 0
+      },
+      {
+        "id": "mob_xian_strategist",
+        "part": "body",
+        "mismatchedRows": 1,
+        "maxChannel": 40
+      }
+    ]
+  },
+  "geometry": {
+    "results": [
+      {
+        "id": "wei_xiahoudun",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 152060,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "wei_xuhuang",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 148577,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "shu_liumiaobei",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 120225,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "shu_huangzhong",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 32245,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "wu_huanggai",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 31571,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "wu_luxun",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 129040,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "qun_lvbuding",
+        "pattern": "tuxedo",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 153250,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "qun_diaochan",
+        "pattern": "calico",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 127572,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "man_shamoke",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 23797,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "xian_zhangzhua",
+        "pattern": "tuxedo",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 111594,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "shu_pangmiaotong",
+        "pattern": "calico",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 146766,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_wei_vanguard",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 152753,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_wei_strategist",
+        "pattern": "tuxedo",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 120894,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_shu_guard",
+        "pattern": "tuxedo",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 146921,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_shu_vanguard",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 150141,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_shu_archer",
+        "pattern": "calico",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 27616,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_shu_strategist",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 131288,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_shu_assassin",
+        "pattern": "tabby",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 24765,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_qun_archer",
+        "pattern": "calico",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 123879,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_qun_assassin",
+        "pattern": "tuxedo",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 117467,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      },
+      {
+        "id": "mob_xian_strategist",
+        "pattern": "tuxedo",
+        "beforeMeshes": 6,
+        "afterMeshes": 6,
+        "vertices": 113982,
+        "attributesAndIndicesByteEqual": true,
+        "bakedMaterialCacheReused": true
+      }
+    ],
+    "violations": [],
+    "poseNames": [
+      "idle",
+      "ready",
+      "windup",
+      "windupLow",
+      "strike",
+      "thrust",
+      "cast",
+      "castUp",
+      "castFwd",
+      "guard",
+      "hurt",
+      "dash",
+      "victory",
+      "slump"
+    ],
+    "staticCases": 294,
+    "animationCases": 252,
+    "animationTimes": [
+      0,
+      0.4,
+      0.8,
+      1.2
+    ],
+    "finiteFailures": 0,
+    "maximumCoordinateDifference": 0,
+    "newFrameRegressions": [],
+    "inheritedStaticClips": [
+      {
+        "id": "qun_lvbuding",
+        "pose": "idle",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.164182306063025,
+          -0.17400000989437103,
+          -1.2339203921686002
+        ],
+        "max": [
+          1.0033545218191122,
+          3.6623942007194676,
+          0.9933525434048844
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "ready",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.2352361253030948,
+          -0.19104314433153455,
+          -1.216640903506435
+        ],
+        "max": [
+          0.97567234562655,
+          3.6285060462620065,
+          0.9497647634713775
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windup",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.2223323941813127,
+          -0.22183265252157552,
+          -1.3268905619326006
+        ],
+        "max": [
+          1.0854200095342266,
+          3.7115526944260733,
+          1.1725121042086428
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windupLow",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.2366218506007638,
+          -0.17400000989437103,
+          -1.349710459398023
+        ],
+        "max": [
+          1.099877043871825,
+          3.704676657774881,
+          1.2292501216373795
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.7156344404303518,
+          -0.2951290636051632,
+          -1.2386483629439022
+        ],
+        "max": [
+          0.8965290721301951,
+          3.4999351823553515,
+          0.9237533631712214
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "thrust",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.5639720116444717,
+          -0.3242586103685118,
+          -1.3475402734352977
+        ],
+        "max": [
+          0.8723051817945365,
+          3.43990335468565,
+          0.7837910882194958
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "guard",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.3621983393621249,
+          -0.17400000989437103,
+          -1.3029742608276018
+        ],
+        "max": [
+          1.0649197730630449,
+          3.7054841325795524,
+          1.0877777849738204
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "hurt",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.4852049693446716,
+          -0.3619077345062413,
+          -1.7370164886771267
+        ],
+        "max": [
+          0.7352059680893079,
+          3.2200728088645167,
+          0.6942014063793827
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "dash",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.608361904392866,
+          -0.2833483507056227,
+          -1.3006448742088421
+        ],
+        "max": [
+          0.8755957539736795,
+          3.485039757164552,
+          0.8758230893117115
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "victory",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.1533870309748802,
+          -0.17400000989437103,
+          -1.216640903506435
+        ],
+        "max": [
+          0.9773484060822029,
+          3.6232839982474996,
+          1.1216708601104612
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "slump",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.2139110249907694,
+          -0.17400000989437103,
+          -1.3133655409913187
+        ],
+        "max": [
+          1.1027331408406105,
+          3.664408074624468,
+          1.2123999119008468
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      }
+    ],
+    "inheritedAnimationClips": [
+      {
+        "id": "qun_lvbuding",
+        "pose": "idle",
+        "t": 0,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.1585382464585874,
+          -0.17400000989437103,
+          -1.2285265985834348
+        ],
+        "max": [
+          0.9934009922310737,
+          3.60928225517273,
+          0.9836373868033408
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "idle",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.164182306063025,
+          -0.17400000989437103,
+          -1.2339203921686002
+        ],
+        "max": [
+          1.0033545218191122,
+          3.6623942007194676,
+          0.9933525434048844
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "idle",
+        "t": 0.8,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.1672760451426871,
+          -0.17400000989437103,
+          -1.2740703998396075
+        ],
+        "max": [
+          1.0095066349527544,
+          3.6868096257382232,
+          0.9998522106069792
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "idle",
+        "t": 1.2,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.166644788772286,
+          -0.17400000989437103,
+          -1.3655171356932518
+        ],
+        "max": [
+          1.0101071470451553,
+          3.6705285199151003,
+          1.0020000642454958
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windup",
+        "t": 0,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.216663008840694,
+          -0.22183265252157552,
+          -1.3214631314367788
+        ],
+        "max": [
+          1.0740226167871778,
+          3.6642455875125064,
+          1.159320192163437
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windup",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.2223323941813127,
+          -0.22183265252157552,
+          -1.3268905619326006
+        ],
+        "max": [
+          1.0854200095342266,
+          3.7115526944260733,
+          1.1725121042086428
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windup",
+        "t": 0.8,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.2252385071760274,
+          -0.22183265252157552,
+          -1.3301037532937758
+        ],
+        "max": [
+          1.0922151277737648,
+          3.7315579737078237,
+          1.176055637057007
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "windup",
+        "t": 1.2,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.224155783081871,
+          -0.22183265252157552,
+          -1.3300107924865732
+        ],
+        "max": [
+          1.0922990731882438,
+          3.7137352784714834,
+          1.168156247865713
+        ],
+        "clippedBones": [
+          "headTop"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "t": 0,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.7019847005149824,
+          -0.29379166575070925,
+          -1.258130600811887
+        ],
+        "max": [
+          0.8884922079989491,
+          3.4543776189873348,
+          0.9300777538750554
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "t": 0.4,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.7156344404303518,
+          -0.2951290636051632,
+          -1.2386483629439022
+        ],
+        "max": [
+          0.8965290721301951,
+          3.4999351823553515,
+          0.9237533631712214
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "t": 0.8,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.7170932942404527,
+          -0.29342073638389876,
+          -1.3019685773099752
+        ],
+        "max": [
+          0.9017716612441591,
+          3.5248283596178216,
+          0.9268664455479141
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      },
+      {
+        "id": "qun_lvbuding",
+        "pose": "strike",
+        "t": 1.2,
+        "beforeOutside": true,
+        "afterOutside": true,
+        "min": [
+          -1.704656158841078,
+          -0.28782856295563,
+          -1.3767446048308085
+        ],
+        "max": [
+          0.9029629445310906,
+          3.5105556869402776,
+          0.939499193371994
+        ],
+        "clippedBones": [
+          "back"
+        ]
+      }
+    ],
+    "frame": {
+      "x0": -2.2,
+      "x1": 2.2,
+      "y0": -0.25,
+      "y1": 3.6
+    },
+    "yaw": 32
+  },
+  "comparison": {
+    "ids": [
+      "shu_liumiaobei",
+      "wei_xuhuang",
+      "qun_lvbuding",
+      "mob_xian_strategist",
+      "shu_pangmiaotong",
+      "qun_diaochan"
+    ],
+    "actualBaked": true,
+    "pose": "idle",
+    "t": 0.4,
+    "yaw": 32,
+    "canvas": {
+      "width": 250,
+      "height": 219
+    },
+    "mood": "neutral",
+    "sameEngine": true,
+    "baseline": {
+      "baseline": "bf37bd307e8669850af6cd5b502172ad7d7ab102",
+      "beforeSHA": "60a0b1468d7cf216a319ac44df5d598a3ff8e67462b8c81b7ea024140271676e",
+      "afterSHA": "58ff3d8821b43c924cbb766c07977307813d95c52692ac89360204263524f8a2"
+    },
+    "export": {
+      "rawBasename": "before-after.png",
+      "rawSHA256": "a4f2575bd52f1e03d1652112294a2b08e8fb775353ba4eae2ecbeb71587c62a3",
+      "artifactBasename": "before-after.png",
+      "artifactSHA256": "3a612f6f57cee55a752d104e45be672953533d9fa31c63153d52e0fe2dac4d8a",
+      "width": 530,
+      "height": 1484,
+      "mode": "RGB",
+      "bytes": 183019,
+      "maxDecodedChannelDifference": 0,
+      "encoding": "lossless PNG optimize only; no crop, resize, recolor, art repaint or retouch"
+    }
+  },
+  "pageErrors": [],
+  "failedRequests": [],
+  "method": "Actual cached canvas textures and normal baked cats, unchanged bf37 engine, unique temporary snapshot modules with runtime SHA sentinel; all 14 poses t=.4 and idle/windup/strike at four t values; exact attributes/indices and skinned world vertex equality; no new tests or source modification.",
+  "extra": {
+    "opaqueAlpha": {
+      "min": 255,
+      "max": 255,
+      "cases": 42,
+      "pixels": 2752512
+    },
+    "tailSphereRing": [
+      {
+        "z": -0.6,
+        "samples": 36,
+        "expected": "base",
+        "matchingSamples": 36
+      },
+      {
+        "z": 0,
+        "samples": 36,
+        "expected": "stripe",
+        "matchingSamples": 36
+      },
+      {
+        "z": 0.6,
+        "samples": 36,
+        "expected": "base",
+        "matchingSamples": 36
+      }
+    ]
+  },
+  "ssr": {
+    "documentType": "undefined",
+    "users": 77,
+    "cases": 154,
+    "nullCount": 154
+  },
+  "engineMatchesBaseline": {
+    "src/art3d/cat3d.ts": true,
+    "src/art3d/pose.ts": true,
+    "src/art3d/toon.ts": true,
+    "src/art3d/renderer.ts": true
+  },
+  "visualReview": {
+    "reviewedAssets": [
+      "poses.png",
+      "poses-190px.png",
+      "mobs-poses.png",
+      "mobs-poses-190px.png",
+      "front.png",
+      "reverse.png",
+      "back.png",
+      "battle.webp",
+      "before-after.png",
+      "reverse-mobs.png",
+      "back-mobs.png"
+    ],
+    "referencesActuallyViewed": [
+      "assets/heroes/ref/shu_liumiaobei.jpg",
+      "assets/heroes/ref/qun_lvbuding.jpg",
+      "assets/heroes/ref/qun_diaochan.jpg",
+      "assets/heroes/ref/shu_pangmiaotong.jpg"
+    ],
+    "promptDocument": "docs/ART_PROMPTS.md",
+    "views": {
+      "frontYaw": 0,
+      "normalYaw": 32,
+      "reverseYaw": -32,
+      "backYaw": 148
+    },
+    "result": "No source-specific revision requested. Brow and cheek stripes, the centered tuxedo blaze, and asymmetric orange/dark calico patches are readable at reviewed native scale; no obvious hard UV seam in the reviewed angles. Body tuxedo pixel edges are not mathematically equal.",
+    "leastSatisfied": "Pale mob_shu_strategist and dark mob_shu_assassin have weak brow contrast; headgear also covers forehead markings on several users. Thin tail bands are much less clear at battle scale than facial patterns.",
+    "engineLimits": "Current cat3d applies coatTexture to skull, exposed lower legs and tail; sleeve, paw ball, ears, cheek tufts, muzzle and collar use solid colors. Tuxedo paw white already comes from engine. White chest is represented by existing light collar under clothing, not a newly textured bare chest. Calico paw/ear/cheek tufts remain base color; tabby paw stripes cannot be added solely in patterns.ts.",
+    "samplingLimits": "Geometry audit uses all skinned vertices and transforms at 294 static pose cases and 252 finite time samples, yaw32. It does not prove all continuous motion, all camera angles, pixel-perfect UV continuity or face visibility for every frame. No new eye-occlusion ray audit was performed because attributes, indices and posed vertex coordinates are identical to baseline and all target textures are opaque."
+  },
+  "artifactFileBytes": {
+    "back-mobs.png": 296067,
+    "mobs-poses-190px.png": 358924,
+    "front.png": 276020,
+    "reverse.png": 371949,
+    "battle.webp": 381614,
+    "mobs-poses.png": 441585,
+    "poses.png": 462790,
+    "reverse-mobs.png": 360342,
+    "before-after.png": 183019,
+    "poses-190px.png": 377700,
+    "back.png": 301401
+  },
+  "artifactSHA256": {
+    "back-mobs.png": "0f43c0367da0c69eda77baa89cfb2ca4b073b07e8b965d0c6df341d3b51e6592",
+    "mobs-poses-190px.png": "e22733b02dc5ba28f136200d6fd003f732795702c23e8f4927abe2e3ab609796",
+    "front.png": "61f9844eba5a9f9603036ba2abad7d8c533f43c8b41643325e0de5c97fea3416",
+    "reverse.png": "bd537e7feed10120d3b9e1876f064b050ec1aac4b95a9d25ba285631153f4042",
+    "battle.webp": "474f66d96e7ed933ab3498959bb4081762293471eaf2d4ff128fe84c3debeca3",
+    "mobs-poses.png": "39ef1aa6ce81f8aaaa69f35dd83858f115aa229c5b4cef308f1069045f22e693",
+    "poses.png": "59cc46455f14b64309f22eb120ffd36329e56db0bbd4f48f159aa3cf0f135073",
+    "reverse-mobs.png": "5cfc9ad45458d81b88b52def64d18a099a5b58ee01afb3a2dd0c59a58a37e362",
+    "before-after.png": "3a612f6f57cee55a752d104e45be672953533d9fa31c63153d52e0fe2dac4d8a",
+    "poses-190px.png": "8d77b608ca2a7c7db35ef5dc081c2ba0035a4774016ffe964db96c6175454463",
+    "back.png": "4027a3920bca6293f23e9520ff495b5a33da960af7dd61cab67678371c7d985c"
+  }
+}

@@ -1,0 +1,500 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A09",
+  "title": "青灰地砖与连续排水沟盖",
+  "created_date_utc": "2026-10-12",
+  "branch": "codex/3d-world-ground-tiles",
+  "base_branch": "claude/awesome-babbage-ygba4h",
+  "base_commit": "aa24c00af008ce8f33727f627fc3b9243331144d",
+  "brief": "docs/CODEX_WORLD_BRIEF.md",
+  "generator": {
+    "tool": "image_gen.imagegen",
+    "callable_tool": "image_gen__imagegen",
+    "provider": "OpenAI",
+    "model_version": null,
+    "seed": null,
+    "metadata_note": "接口没有返回模型版本与随机种子。每张均真实调用一次生成和一次图像编辑。",
+    "external_reference_images": [],
+    "reference_note": "初稿未使用外部参考；修订只参考本批自己的AI初稿。",
+    "raw_retention": "所有原始PNG仍保存在 raw_output.path 指向的 /workspace/generated_images 路径；单张均超500000 B，依仓库限制未提交原始PNG。"
+  },
+  "review": {
+    "round": 1,
+    "status": "awaiting_claude",
+    "approved_count": 0
+  },
+  "assets": [
+    {
+      "id": "ground_tile_slate_01",
+      "title": "旧青灰方砖",
+      "category": "ground/pavement",
+      "role": "base_color",
+      "path": "assets/world/ground/ground_tile_slate_01.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Generate one square seamless tileable GAME BASE COLOR / ALBEDO texture for an old rain-darkened pavement in a miniature cat-world cyberpunk street. Strict orthographic top-down view of flat paving ONLY, filling the entire image. Exactly eight equal square paving-stone columns and eight equal rows in a straight grid. Muted blue-gray / slate-gray worn concrete tiles with very restrained warm-gray replacement tile variations. Narrow low-contrast dirty gray joints: joints slightly darker than the stone, never luminous white or pitch black. Slightly rough fine aggregate, tiny shallow chipped flecks, restrained hairline wear inside individual tiles, evenly dispersed small soot and mineral discoloration. Damp darker material patches remain subdued and distributed; no bright puddle reflection. Tone should be middle-dark, around subdued slate gray rather than black. No single hero mark or central feature. ALL FOUR BOUNDARIES lie through the CENTER of an identical thin grout joint, each boundary showing HALF a normal interior joint width; joining two copies makes exactly one normal joint. Eight complete tile periods span the image, interior joints precisely at 12.5%, 25%, 37.5%, 50%, 62.5%, 75%, 87.5%. All tile shapes, edge colors and grout positions continue periodically left-to-right and top-to-bottom, no framing stripe, no thin leftover tile fragments. Uniform even diffuse material color only, NO directional light, NO bevel highlight, NO painted edge shadow, NO ambient-occlusion frame, NO specular shine, NO neon cast, NO vignette, NO brightness gradient, NO perspective. The engine supplies all lighting and wet surface response. No text, symbols, road markings, posters, debris objects, leaves, people, cats, faces, material ball or montage. Deliver one 1024x1024 square high-detail texture, not a repeat preview.",
+          "tool_arguments": {
+            "prompt": "Generate one square seamless tileable GAME BASE COLOR / ALBEDO texture for an old rain-darkened pavement in a miniature cat-world cyberpunk street. Strict orthographic top-down view of flat paving ONLY, filling the entire image. Exactly eight equal square paving-stone columns and eight equal rows in a straight grid. Muted blue-gray / slate-gray worn concrete tiles with very restrained warm-gray replacement tile variations. Narrow low-contrast dirty gray joints: joints slightly darker than the stone, never luminous white or pitch black. Slightly rough fine aggregate, tiny shallow chipped flecks, restrained hairline wear inside individual tiles, evenly dispersed small soot and mineral discoloration. Damp darker material patches remain subdued and distributed; no bright puddle reflection. Tone should be middle-dark, around subdued slate gray rather than black. No single hero mark or central feature. ALL FOUR BOUNDARIES lie through the CENTER of an identical thin grout joint, each boundary showing HALF a normal interior joint width; joining two copies makes exactly one normal joint. Eight complete tile periods span the image, interior joints precisely at 12.5%, 25%, 37.5%, 50%, 62.5%, 75%, 87.5%. All tile shapes, edge colors and grout positions continue periodically left-to-right and top-to-bottom, no framing stripe, no thin leftover tile fragments. Uniform even diffuse material color only, NO directional light, NO bevel highlight, NO painted edge shadow, NO ambient-occlusion frame, NO specular shine, NO neon cast, NO vignette, NO brightness gradient, NO perspective. The engine supplies all lighting and wet surface response. No text, symbols, road markings, posters, debris objects, leaves, people, cats, faces, material ball or montage. Deliver one 1024x1024 square high-detail texture, not a repeat preview.",
+            "transparent_background": false
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-40949b6a-d865-4d48-835e-b89e797b4d96.png",
+            "filename": "exec-40949b6a-d865-4d48-835e-b89e797b4d96.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 4024933,
+            "sha256": "5bfc80ce831032a29f7216d0d42f2bf28d5fbce15111588d86c3199f7f058616"
+          },
+          "selection_note": "未采用；砖缝有细碎连续亮唇，边界残余短片需图像工具修订。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Refine the supplied slate-gray paving image as a genuinely seamless GAME ALBEDO texture. Keep the restrained slate-gray palette, fine aggregate, naturally varied stone colors and small scattered wear. Keep exactly 8 by 8 equal-size complete square paving stones. Make every tile flatly colored: remove all continuous light top/left edge lines and dark bottom/right bevel shadows; convert them to ordinary narrow subdued medium-gray mortar material. Mortar must be low contrast, only a little darker than the paving. No relief lighting, no bright mineral line framing every tile, no edge rim, no specular, no ambient occlusion, no globally brighter region. The FOUR IMAGE EDGES must be centered precisely on identical narrow mortar joints, with only HALF the normal internal joint width on each boundary. Eight entire tile columns and rows fit edge to edge; no tiny tile fragment outside the first or last joint. Interior joints are exactly at 12.5% steps. Match left/right and top/bottom edge features so repeated images form one normal joint. Paving variation should read quietly at thumbnail size, no large black damp patches. Very fine dust and small grain detail preserve believable pavement. No perspective, text, symbols, road paint, objects, faces, vignette, image frame or montage. Output one high-detail square texture suitable for downsampling to 1024x1024.",
+          "tool_arguments": {
+            "prompt": "Refine the supplied slate-gray paving image as a genuinely seamless GAME ALBEDO texture. Keep the restrained slate-gray palette, fine aggregate, naturally varied stone colors and small scattered wear. Keep exactly 8 by 8 equal-size complete square paving stones. Make every tile flatly colored: remove all continuous light top/left edge lines and dark bottom/right bevel shadows; convert them to ordinary narrow subdued medium-gray mortar material. Mortar must be low contrast, only a little darker than the paving. No relief lighting, no bright mineral line framing every tile, no edge rim, no specular, no ambient occlusion, no globally brighter region. The FOUR IMAGE EDGES must be centered precisely on identical narrow mortar joints, with only HALF the normal internal joint width on each boundary. Eight entire tile columns and rows fit edge to edge; no tiny tile fragment outside the first or last joint. Interior joints are exactly at 12.5% steps. Match left/right and top/bottom edge features so repeated images form one normal joint. Paving variation should read quietly at thumbnail size, no large black damp patches. Very fine dust and small grain detail preserve believable pavement. No perspective, text, symbols, road paint, objects, faces, vignette, image frame or montage. Output one high-detail square texture suitable for downsampling to 1024x1024.",
+            "referenced_image_paths": [
+              "/workspace/generated_images/exec-40949b6a-d865-4d48-835e-b89e797b4d96.png"
+            ],
+            "transparent_background": false
+          },
+          "references": [
+            "5bfc80ce831032a29f7216d0d42f2bf28d5fbce15111588d86c3199f7f058616"
+          ],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-faaef896-1624-4def-be01-7befb63e478b.png",
+            "filename": "exec-faaef896-1624-4def-be01-7befb63e478b.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3717832,
+            "sha256": "ce5baf74e2b345e2529455b4be240c12c87ccc3852f40e00f4b2100459aa600a"
+          },
+          "selection_note": "采用；AI减弱连续亮唇，保留材料细节，提取外侧灰缝中心之间的完整周期。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "ce5baf74e2b345e2529455b4be240c12c87ccc3852f40e00f4b2100459aa600a",
+        "raw_source_path": "/workspace/generated_images/exec-faaef896-1624-4def-be01-7befb63e478b.png",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          11,
+          8,
+          1245,
+          1243
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          1234,
+          1235
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "crop existing image between outer mortar joint centers",
+          "Lanczos downsample complete material period to 1024x1024",
+          "convert RGB and encode WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": false,
+        "bytes": 413568,
+        "sha256": "db807e9d4c40667f6ab6610460be95de7d29658ed1df544b59e3f990968ac526"
+      },
+      "self_check": {
+        "status": "final_encoded_visual_review_complete",
+        "claude_approved": false,
+        "encoded_repeat_checks": [
+          2,
+          4
+        ],
+        "native_boundary_checks": [
+          "right + left 1:1",
+          "bottom + top 1:1",
+          "four-corner join 1:1"
+        ],
+        "boundary_mae_rgb_0_255": {
+          "left_right": 5.856,
+          "top_bottom": 10.673
+        },
+        "note": "MAE为非零诊断值，不表示边界像素完全相同；结合最终WebP直接平铺与1:1视觉复核。",
+        "visual_findings": "内部自查：平铺未见新增粗边框或明显接缝条，材料颜色没有大幅光照梯度、霓虹光或中心海报式主体。",
+        "review_focus": "原生1:1细颗粒仍有微浅明暗，需评估游戏视距；低对比灰缝与不同替换砖色保留。"
+      }
+    },
+    {
+      "id": "ground_drain_slate_02",
+      "title": "青灰砖地 / 连续排水沟盖",
+      "category": "ground/pavement",
+      "role": "base_color",
+      "path": "assets/world/ground/ground_drain_slate_02.webp",
+      "selected_candidate": 2,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Generate one square seamless tileable GAME BASE COLOR / ALBEDO texture: an old continuous metal drainage channel integrated into muted slate-gray square sidewalk paving, for a rainy miniature cat-world cyberpunk street. Strict orthographic top-down view of flat pavement ONLY filling every pixel. An understated straight graphite-gray slotted drainage strip runs VERTICALLY, uninterrupted from the exact TOP edge to BOTTOM edge. Its parallel sides are exactly at 37.5% and 62.5% of image width (a strip two paving tiles wide), not a standalone central manhole. To each side are three complete columns of subdued blue-gray worn concrete paving stones. Exactly eight evenly spaced paving rows, horizontal joints at 12.5% intervals. The grate is an eight-section repeating strip, with small regular transverse narrow slots and thin solid supporting bars; slot material is very dark desaturated graphite, metal faces dull worn gray with distributed tiny rust speckles. No deep perspective cavities, thick border, object silhouette, bolts at four corners, central logo or concentric pattern. This is ordinary infrastructure receding into a ground surface. All four boundaries must be periodic: left/right boundaries cut through centers of identical thin low-contrast grout joints, showing half a normal joint each; top/bottom boundaries cut through centers of an identical thin transverse paving joint and identical narrow grate support bar, each showing half a normal joint/bar so copies form one complete ordinary junction. Exactly eight repeat sections span image height. Subtle tiny aggregate, restrained chips and material discoloration spread evenly, no unique big stain. Narrow dark-gray paving joints, no white grid. Uniform even diffuse base color with NO directional illumination, NO bright edge rim, NO painted drop shadow, NO ambient occlusion, NO specular shine, NO baked neon reflection, NO vignette or overall gradient. The engine supplies all lighting, metalness and wet reflections. No text, warning label, road marking, people, cats, faces, litter, material sphere, frame, perspective or preview montage. Deliver one 1024x1024 square texture.",
+          "tool_arguments": {
+            "prompt": "Generate one square seamless tileable GAME BASE COLOR / ALBEDO texture: an old continuous metal drainage channel integrated into muted slate-gray square sidewalk paving, for a rainy miniature cat-world cyberpunk street. Strict orthographic top-down view of flat pavement ONLY filling every pixel. An understated straight graphite-gray slotted drainage strip runs VERTICALLY, uninterrupted from the exact TOP edge to BOTTOM edge. Its parallel sides are exactly at 37.5% and 62.5% of image width (a strip two paving tiles wide), not a standalone central manhole. To each side are three complete columns of subdued blue-gray worn concrete paving stones. Exactly eight evenly spaced paving rows, horizontal joints at 12.5% intervals. The grate is an eight-section repeating strip, with small regular transverse narrow slots and thin solid supporting bars; slot material is very dark desaturated graphite, metal faces dull worn gray with distributed tiny rust speckles. No deep perspective cavities, thick border, object silhouette, bolts at four corners, central logo or concentric pattern. This is ordinary infrastructure receding into a ground surface. All four boundaries must be periodic: left/right boundaries cut through centers of identical thin low-contrast grout joints, showing half a normal joint each; top/bottom boundaries cut through centers of an identical thin transverse paving joint and identical narrow grate support bar, each showing half a normal joint/bar so copies form one complete ordinary junction. Exactly eight repeat sections span image height. Subtle tiny aggregate, restrained chips and material discoloration spread evenly, no unique big stain. Narrow dark-gray paving joints, no white grid. Uniform even diffuse base color with NO directional illumination, NO bright edge rim, NO painted drop shadow, NO ambient occlusion, NO specular shine, NO baked neon reflection, NO vignette or overall gradient. The engine supplies all lighting, metalness and wet reflections. No text, warning label, road marking, people, cats, faces, litter, material sphere, frame, perspective or preview montage. Deliver one 1024x1024 square texture.",
+            "transparent_background": false
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-07a08416-85bb-42e1-8892-ee902e533178.png",
+            "filename": "exec-07a08416-85bb-42e1-8892-ee902e533178.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3579169,
+            "sha256": "5ba2dc1031cd2f81aa424bd5fb3b75f135b012cdfbe1a701a27a1e748a8de079"
+          },
+          "selection_note": "未采用；砖缝有细碎连续亮唇，边界残余短片需图像工具修订。"
+        },
+        {
+          "candidate": 2,
+          "operation": "image_gen_edit",
+          "prompt": "Refine the supplied continuous pavement drainage-strip texture into a flat UNLIT seamless GAME BASE COLOR map. Preserve the center vertical graphite metal drain strip extending full height, the slate-gray paving on both sides, fine stone grain and tiny dispersed metal rust speckles. Technical corrections: remove ALL thin light rims along tile top/left edges and shadow rims along bottom/right edges. Every joint should be a narrow low-contrast dull gray material band with no directional relief lighting. Metal slots should be flat near-black material shapes with no highlighted rim or painted cavity shadow. Reduce overall metal/paving contrast a little. Use exactly EIGHT equal-height grate sections and EIGHT equal-height paving rows. Top and bottom image edges cut exactly through centers of the SAME narrow transverse metal separator / mortar joint, each showing HALF an ordinary separator width; no extra partial paving/grate rows and no enlarged final row. All row joints at exactly 12.5% intervals. Grate strip side rails continue at precisely fixed x positions from top to bottom. LEFT and RIGHT image edges cut through centers of the same narrow mortar joint, each showing half a normal mortar joint; no extra thin paving fragments. The material must match periodically on all four edges. Uniform flat diffuse illumination, NO directional light, bevel highlight, neon cast, shine, ambient occlusion, vignette or global color gradient. Keep pavement surface detail and the unassuming municipal drainage character. No manhole, decorative emblem, big bolts, label, text, people, cats, debris objects, perspective, frame or montage. Output one full square high-detail seamless albedo texture.",
+          "tool_arguments": {
+            "prompt": "Refine the supplied continuous pavement drainage-strip texture into a flat UNLIT seamless GAME BASE COLOR map. Preserve the center vertical graphite metal drain strip extending full height, the slate-gray paving on both sides, fine stone grain and tiny dispersed metal rust speckles. Technical corrections: remove ALL thin light rims along tile top/left edges and shadow rims along bottom/right edges. Every joint should be a narrow low-contrast dull gray material band with no directional relief lighting. Metal slots should be flat near-black material shapes with no highlighted rim or painted cavity shadow. Reduce overall metal/paving contrast a little. Use exactly EIGHT equal-height grate sections and EIGHT equal-height paving rows. Top and bottom image edges cut exactly through centers of the SAME narrow transverse metal separator / mortar joint, each showing HALF an ordinary separator width; no extra partial paving/grate rows and no enlarged final row. All row joints at exactly 12.5% intervals. Grate strip side rails continue at precisely fixed x positions from top to bottom. LEFT and RIGHT image edges cut through centers of the same narrow mortar joint, each showing half a normal mortar joint; no extra thin paving fragments. The material must match periodically on all four edges. Uniform flat diffuse illumination, NO directional light, bevel highlight, neon cast, shine, ambient occlusion, vignette or global color gradient. Keep pavement surface detail and the unassuming municipal drainage character. No manhole, decorative emblem, big bolts, label, text, people, cats, debris objects, perspective, frame or montage. Output one full square high-detail seamless albedo texture.",
+            "referenced_image_paths": [
+              "/workspace/generated_images/exec-07a08416-85bb-42e1-8892-ee902e533178.png"
+            ],
+            "transparent_background": false
+          },
+          "references": [
+            "5ba2dc1031cd2f81aa424bd5fb3b75f135b012cdfbe1a701a27a1e748a8de079"
+          ],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-1d543726-01c3-4724-884a-fc0258313d6b.png",
+            "filename": "exec-1d543726-01c3-4724-884a-fc0258313d6b.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGB",
+            "bytes": 3212532,
+            "sha256": "b0a9e16b4e56281d0fc799ade326f96c900240dbd601ee38a9c9f511e14fd9b3"
+          },
+          "selection_note": "采用；AI减弱连续亮唇，保留材料细节，提取外侧灰缝中心之间的完整周期。"
+        }
+      ],
+      "export": {
+        "raw_source_sha256": "b0a9e16b4e56281d0fc799ade326f96c900240dbd601ee38a9c9f511e14fd9b3",
+        "raw_source_path": "/workspace/generated_images/exec-1d543726-01c3-4724-884a-fc0258313d6b.png",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          13,
+          12,
+          1241,
+          1240
+        ],
+        "crop_coordinate_convention": "zero-based half-open: left/top included, right/bottom excluded",
+        "native_period_size": [
+          1228,
+          1228
+        ],
+        "target_size": [
+          1024,
+          1024
+        ],
+        "operations": [
+          "crop existing image between outer mortar joint centers",
+          "Lanczos downsample complete material period to 1024x1024",
+          "convert RGB and encode WebP with embedded sRGB ICC"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": false,
+        "bytes": 318762,
+        "sha256": "adc52519818bbb996547fabe9c103d6cb89df456d2936cf2b395531439ee9418"
+      },
+      "self_check": {
+        "status": "final_encoded_visual_review_complete",
+        "claude_approved": false,
+        "encoded_repeat_checks": [
+          2,
+          4
+        ],
+        "native_boundary_checks": [
+          "right + left 1:1",
+          "bottom + top 1:1",
+          "four-corner join 1:1"
+        ],
+        "boundary_mae_rgb_0_255": {
+          "left_right": 4.782,
+          "top_bottom": 11.882
+        },
+        "note": "MAE为非零诊断值，不表示边界像素完全相同；结合最终WebP直接平铺与1:1视觉复核。",
+        "visual_findings": "内部自查：平铺未见新增粗边框或明显接缝条，材料颜色没有大幅光照梯度、霓虹光或中心海报式主体。",
+        "review_focus": "最后一段沟盖及砖行略短，两侧砖宽不完全相同；1:1颗粒存在微浅明暗，需评估实际视距。"
+      }
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/ground-tiles-a09.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 287386,
+      "sha256": "e052feda37608c4c8b51fcf5afdbe224e0f916419c8cb8be4f786776ac8dfb29",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "method": "single view plus direct 2x2 / 4x4 full texture repetition, Lanczos downsample for review, WebP quality 88 method 6"
+    },
+    {
+      "path": "assets/world/reviews/ground_tile_slate_01-native-edges.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 472366,
+      "sha256": "a305154794e1f4bcb6b9ae0a123ca40e60357e98d6ffb3c6ee3e31d02732ec84",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "method": "assemble 1:1 crops from final encoded WebP without edge blending; preview sheet itself encoded quality 90 method 6"
+    },
+    {
+      "path": "assets/world/reviews/ground_drain_slate_02-native-edges.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 394118,
+      "sha256": "a391fca623b74f1bfe8f6691daf366afbd862a641e05919a9fa7c8dc17550d17",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "method": "assemble 1:1 crops from final encoded WebP without edge blending; preview sheet itself encoded quality 90 method 6"
+    },
+    {
+      "path": "assets/world/reviews/ground-tiles-a09-lighting.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 476746,
+      "sha256": "2fb6bb008f42da844276f8d79bed76e2935f750edecb4dc1d9d275bfd66727ba",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "method": "actual independent Three.js r169 MeshStandardMaterial render of final WebP; left neutral white, right same white plus cyan/magenta point lights; no bloom",
+      "webp_quality": 90,
+      "webp_method": 6,
+      "evidence": {
+        "ready": true,
+        "loaded": 2,
+        "expected": 2,
+        "parameters": {
+          "three_revision": "169",
+          "canvas": [
+            1024,
+            448
+          ],
+          "texture_repeat": [
+            2,
+            2
+          ],
+          "material": {
+            "color": "#ffffff",
+            "roughness": 0.65,
+            "metalness": 0
+          },
+          "camera": {
+            "type": "OrthographicCamera",
+            "left": -7,
+            "right": 7,
+            "top": 3.0625,
+            "bottom": -3.0625,
+            "near": 0.1,
+            "far": 50,
+            "position": [
+              0,
+              9,
+              7
+            ],
+            "look_at": [
+              0,
+              0,
+              0
+            ]
+          },
+          "plane": {
+            "size": [
+              12,
+              12
+            ],
+            "rotation_x": -1.5707963267948966
+          },
+          "renderer": {
+            "output_color_space": "SRGBColorSpace",
+            "tone_mapping": "ACESFilmicToneMapping",
+            "exposure": 1,
+            "antialias": true,
+            "device_pixel_ratio": 1,
+            "bloom": false,
+            "shadows": false
+          },
+          "white_lights": {
+            "hemisphere": {
+              "sky": "#ffffff",
+              "ground": "#777777",
+              "intensity": 0.65
+            },
+            "directional": {
+              "color": "#ffffff",
+              "intensity": 2,
+              "position": [
+                -1,
+                10,
+                4
+              ]
+            }
+          },
+          "extra_lights": {
+            "cyan": {
+              "color": "#20d9ff",
+              "intensity": 45,
+              "distance": 25,
+              "decay": 2,
+              "position": [
+                -3,
+                3,
+                1
+              ]
+            },
+            "magenta": {
+              "color": "#ef42be",
+              "intensity": 45,
+              "distance": 25,
+              "decay": 2,
+              "position": [
+                3,
+                3,
+                -1
+              ]
+            }
+          }
+        },
+        "assets": [
+          {
+            "path": "/assets/world/ground/ground_tile_slate_01.webp",
+            "width": 1024,
+            "height": 1024,
+            "repeat": [
+              2,
+              2
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          },
+          {
+            "path": "/assets/world/ground/ground_drain_slate_02.webp",
+            "width": 1024,
+            "height": 1024,
+            "repeat": [
+              2,
+              2
+            ],
+            "wrap_s": 1000,
+            "wrap_t": 1000
+          }
+        ],
+        "renderers": [
+          {
+            "row": 0,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "calls": 1
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "calls": 1
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "calls": 1
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "calls": 1
+          }
+        ],
+        "page_errors": [],
+        "failed_requests": [],
+        "asset_responses": [
+          {
+            "url": "http://127.0.0.1:5184/assets/world/ground/ground_tile_slate_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5184/assets/world/ground/ground_drain_slate_02.webp",
+            "status": 200
+          }
+        ],
+        "source_sha256_before": [
+          "db807e9d4c40667f6ab6610460be95de7d29658ed1df544b59e3f990968ac526",
+          "adc52519818bbb996547fabe9c103d6cb89df456d2936cf2b395531439ee9418"
+        ],
+        "source_sha256_after": [
+          "db807e9d4c40667f6ab6610460be95de7d29658ed1df544b59e3f990968ac526",
+          "adc52519818bbb996547fabe9c103d6cb89df456d2936cf2b395531439ee9418"
+        ],
+        "source_hashes_unchanged": true,
+        "capture": {
+          "url": "http://127.0.0.1:5184/.a09-lighting-preview.html",
+          "browser": "Chromium /usr/bin/chromium",
+          "viewport": [
+            2048,
+            1024
+          ],
+          "device_scale_factor": 1,
+          "output_png": "/workspace/a09-raw/ground-tiles-a09-lighting.png"
+        },
+        "lighting_pixel_differences": [
+          {
+            "mean_absolute_rgb_difference": 31.702,
+            "changed_pixel_fraction": 1
+          },
+          {
+            "mean_absolute_rgb_difference": 31.052,
+            "changed_pixel_fraction": 1
+          }
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "本批为基色贴图，不含粗糙度、法线、位移或自发光贴图。",
+    "湿润材质与霓虹反射由引擎材质/灯光提供，本批未接入游戏。",
+    "独立QA及Claude审核结论另记；本记录内部筛选不代表审核通过。"
+  ]
+}

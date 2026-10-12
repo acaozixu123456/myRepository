@@ -1,0 +1,1555 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A10-CRACKS-01",
+  "title": "地面裂缝透明贴花 · 首批10张",
+  "created_date_utc": "2026-10-12",
+  "branch": "codex/3d-world-crack-decals",
+  "base_branch": "claude/awesome-babbage-ygba4h",
+  "base_commit": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+  "branch_creation_base_commit": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+  "brief": "docs/CODEX_WORLD_BRIEF.md",
+  "generator": {
+    "tool": "image_gen.imagegen",
+    "callable_tool": "image_gen__imagegen",
+    "provider": "OpenAI",
+    "model_version": null,
+    "seed": null,
+    "metadata_note": "工具未返回模型版本与随机种子；本批每张分别独立生成，共10次真实调用，未修图、复制旋转或程序绘制裂缝。",
+    "external_reference_images": [],
+    "reference_note": "生成没有引用底图、外部参考或之前批次图片。",
+    "raw_retention": "10份1254²原生RGBA PNG保留在 raw_output.path 的 /workspace/generated_images 路径，未删除或覆盖。本批交付标准512² WebP，原始PNG未提交。"
+  },
+  "review": {
+    "round": 1,
+    "status": "awaiting_claude",
+    "approved_count": 0
+  },
+  "assets": [
+    {
+      "id": "decal_crack_branch_fine_01",
+      "title": "细分叉裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_branch_fine_01.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A slender asymmetric branching crack with one slightly diagonal main fissure moving from lower-left toward upper-right, THREE short fine side branches on one side and ONE longer fork on the opposite side. Slight stepped angular turns, very narrow gaps, almost no debris. Fragmented but connected, with open transparent space surrounding all branches.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A slender asymmetric branching crack with one slightly diagonal main fissure moving from lower-left toward upper-right, THREE short fine side branches on one side and ONE longer fork on the opposite side. Slight stepped angular turns, very narrow gaps, almost no debris. Fragmented but connected, with open transparent space surrounding all branches.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-8c832485-8ab0-4721-b991-ae6c1e2bd8d5.png",
+            "filename": "exec-8c832485-8ab0-4721-b991-ae6c1e2bd8d5.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 215404,
+            "sha256": "1e70b4ba2a6f90f59cee284f71f8ed6a1462c90339d0c530917b97b6fe9e309a"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-8c832485-8ab0-4721-b991-ae6c1e2bd8d5.png",
+        "raw_source_sha256": "1e70b4ba2a6f90f59cee284f71f8ed6a1462c90339d0c530917b97b6fe9e309a",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 18416,
+        "sha256": "8a7633c6913c138e8aa62850ad0e7cf696c90299e87db26a8e38bd8ff60073ff",
+        "alpha_resample_sha256": "c9a92e1a9a9bae915caec63c07681d58225b609c0a9a3c8fe7431f3b6c3f8a09",
+        "encoded_alpha_sha256": "c9a92e1a9a9bae915caec63c07681d58225b609c0a9a3c8fe7431f3b6c3f8a09",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.962391,
+          "partial_fraction": 0.035389,
+          "opaque_fraction": 0.00222,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            43,
+            76,
+            473,
+            476
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_transverse_02",
+      "title": "浅横断裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_transverse_02.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. One shallow mostly HORIZONTAL zigzag transverse crack across the middle two-thirds of the canvas, several uneven stepped sharp turns, a tiny kink near the left third, two very short downward hairline offshoots. Ends break into disconnected dark pin traces. This is a long narrow quiet line, not a wide trench or large shattered slab.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. One shallow mostly HORIZONTAL zigzag transverse crack across the middle two-thirds of the canvas, several uneven stepped sharp turns, a tiny kink near the left third, two very short downward hairline offshoots. Ends break into disconnected dark pin traces. This is a long narrow quiet line, not a wide trench or large shattered slab.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-01124f6b-702a-4260-a1a2-dcc99efea006.png",
+            "filename": "exec-01124f6b-702a-4260-a1a2-dcc99efea006.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 119088,
+            "sha256": "d1b3b474a4d4abe9e42523625c526e8a6c552ca6001220cbcf8fa6d4e888ef8c"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-01124f6b-702a-4260-a1a2-dcc99efea006.png",
+        "raw_source_sha256": "d1b3b474a4d4abe9e42523625c526e8a6c552ca6001220cbcf8fa6d4e888ef8c",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 8084,
+        "sha256": "c8bd5b0a6d737d6c5fd6635a9eaeede4a780134e13ca548d7bbe0d001fdc5f60",
+        "alpha_resample_sha256": "32ea74666f8eac5cef52a868ffb55080f4683d1d9c30731e54c985dd87ebc341",
+        "encoded_alpha_sha256": "32ea74666f8eac5cef52a868ffb55080f4683d1d9c30731e54c985dd87ebc341",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.981609,
+          "partial_fraction": 0.018089,
+          "opaque_fraction": 0.000301,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            23,
+            234,
+            486,
+            304
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_repair_edge_03",
+      "title": "旧修补口边裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_repair_edge_03.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. Two thin offset L-SHAPED fissure lines suggesting cracks beside an old repair edge: one longer irregular L near the left and bottom, one much shorter broken opposing corner near upper-right. The implied repair area and the center remain FULLY TRANSPARENT; do not fill a patch or paint repair material. A couple sparse muted gray edge flecks, old dry narrow cracks only.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. Two thin offset L-SHAPED fissure lines suggesting cracks beside an old repair edge: one longer irregular L near the left and bottom, one much shorter broken opposing corner near upper-right. The implied repair area and the center remain FULLY TRANSPARENT; do not fill a patch or paint repair material. A couple sparse muted gray edge flecks, old dry narrow cracks only.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-643dd1df-b198-4b82-83af-d6c73666a7e3.png",
+            "filename": "exec-643dd1df-b198-4b82-83af-d6c73666a7e3.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 292206,
+            "sha256": "5bbc209fb728eb87ee57b455f320ad16e33848e6a146af19afb854574bf57533"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-643dd1df-b198-4b82-83af-d6c73666a7e3.png",
+        "raw_source_sha256": "5bbc209fb728eb87ee57b455f320ad16e33848e6a146af19afb854574bf57533",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 26260,
+        "sha256": "d3e574c5f564e8a8ea556a1e7d7cc89d842cb9e1d5d03206a8a01a6ac03858e1",
+        "alpha_resample_sha256": "d71ba5e446211a3055c4f2790340dc0a2d5fe4d9b3b6caca3ac93a1784a7296f",
+        "encoded_alpha_sha256": "d71ba5e446211a3055c4f2790340dc0a2d5fe4d9b3b6caca3ac93a1784a7296f",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.937222,
+          "partial_fraction": 0.061497,
+          "opaque_fraction": 0.001282,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            39,
+            47,
+            480,
+            476
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_stone_diagonal_04",
+      "title": "石材短斜裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_stone_diagonal_04.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A compact SHORT DIAGONAL stone hairline fracture placed slightly left of center, with a kinked main stroke and five tiny near-perpendicular splinter offshoots of different lengths, two small detached dark fissure dashes at the ends. Restrained jagged angular form, mostly empty canvas, no chips larger than a grain and no broad fracture patch.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A compact SHORT DIAGONAL stone hairline fracture placed slightly left of center, with a kinked main stroke and five tiny near-perpendicular splinter offshoots of different lengths, two small detached dark fissure dashes at the ends. Restrained jagged angular form, mostly empty canvas, no chips larger than a grain and no broad fracture patch.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-fe5a5a73-741b-449f-8129-990ee24a5f83.png",
+            "filename": "exec-fe5a5a73-741b-449f-8129-990ee24a5f83.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 123631,
+            "sha256": "d55bdda024d4e7acfe508208fad5179bbbfc15658afe762173f51f73f830d8fb"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-fe5a5a73-741b-449f-8129-990ee24a5f83.png",
+        "raw_source_sha256": "d55bdda024d4e7acfe508208fad5179bbbfc15658afe762173f51f73f830d8fb",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 8362,
+        "sha256": "86dafd1232e6b8fac7d0d8a9811f8526613dd47aff977801b6c9720eb7458193",
+        "alpha_resample_sha256": "1237567bb942d2558eeeadf2712dd4016e73770c00fc2b14dc1c1714e816804e",
+        "encoded_alpha_sha256": "1237567bb942d2558eeeadf2712dd4016e73770c00fc2b14dc1c1714e816804e",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.982174,
+          "partial_fraction": 0.017342,
+          "opaque_fraction": 0.000484,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            115,
+            159,
+            342,
+            357
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_crazing_05",
+      "title": "网状细龟裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_crazing_05.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A small irregular WEB of very fine shallow crazing fissures forming five or six uneven polygon loops around a mostly open central gap, with two short incomplete branches drifting out at the right. The cells remain genuinely transparent, no filled gray polygon tiles or complete enclosing border. Sparse thin connected dark traces, not a large cracked pavement photograph.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A small irregular WEB of very fine shallow crazing fissures forming five or six uneven polygon loops around a mostly open central gap, with two short incomplete branches drifting out at the right. The cells remain genuinely transparent, no filled gray polygon tiles or complete enclosing border. Sparse thin connected dark traces, not a large cracked pavement photograph.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-17cdc5a9-0ae6-4fd8-87a1-6fa107b835d8.png",
+            "filename": "exec-17cdc5a9-0ae6-4fd8-87a1-6fa107b835d8.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 389612,
+            "sha256": "eb5ee1157da1ab4fca2e18955b7fe150b90dc55811cf4a39b5f72c7190913d08"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-17cdc5a9-0ae6-4fd8-87a1-6fa107b835d8.png",
+        "raw_source_sha256": "eb5ee1157da1ab4fca2e18955b7fe150b90dc55811cf4a39b5f72c7190913d08",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 34734,
+        "sha256": "2a7b37236155e2be219721f80f3420a690f1c3cdcbdb52eb0ad4c8daa5234ce8",
+        "alpha_resample_sha256": "854973f5e366b66320bdd7bf9d25213e0d250f56020cd5aade4002843b1cecd6",
+        "encoded_alpha_sha256": "854973f5e366b66320bdd7bf9d25213e0d250f56020cd5aade4002843b1cecd6",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.919331,
+          "partial_fraction": 0.079353,
+          "opaque_fraction": 0.001316,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            77,
+            62,
+            484,
+            462
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_pit_rim_06",
+      "title": "坑缘碎裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_pit_rim_06.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. An OPEN broken crescent of narrow jagged pit-rim fractures with a few short radial splinters, mainly around lower-left and bottom, ending in disconnected small dark traces. The implied pit center stays FULLY TRANSPARENT: no black filled hole, no 3D crater, no missing chunk, no light bevel. A sparse small arc of fine fracture lines only.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. An OPEN broken crescent of narrow jagged pit-rim fractures with a few short radial splinters, mainly around lower-left and bottom, ending in disconnected small dark traces. The implied pit center stays FULLY TRANSPARENT: no black filled hole, no 3D crater, no missing chunk, no light bevel. A sparse small arc of fine fracture lines only.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-a65c8738-7863-4a9a-9e4a-e6d8eb6af0b8.png",
+            "filename": "exec-a65c8738-7863-4a9a-9e4a-e6d8eb6af0b8.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 353086,
+            "sha256": "281efd846d404d7e18ea73924d347c6819eaa04a95b903fd565f709e1a30db7f"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-a65c8738-7863-4a9a-9e4a-e6d8eb6af0b8.png",
+        "raw_source_sha256": "281efd846d404d7e18ea73924d347c6819eaa04a95b903fd565f709e1a30db7f",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 27918,
+        "sha256": "5882bf5888736b27e46fea402dd0bdb65cf3443b804696adbe78007ae91aeb1b",
+        "alpha_resample_sha256": "d629c868701b351c58bea09b1038d8e2ca0b7c1fb457f99b09017bcaf660b4bb",
+        "encoded_alpha_sha256": "d629c868701b351c58bea09b1038d8e2ca0b7c1fb457f99b09017bcaf660b4bb",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.918041,
+          "partial_fraction": 0.081413,
+          "opaque_fraction": 0.000546,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            35,
+            101,
+            468,
+            479
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_joint_ends_07",
+      "title": "伸缩缝端枝裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_joint_ends_07.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A fine VERTICAL segmented joint-like crack trace through the center half, narrow and irregular, interrupted by a fully transparent small gap at its middle. At the two exposed ends of that gap are small branching fissure clusters, one branching left and the other right. It is a crack decal, NOT a construction joint strip or a rectangular seam material tile.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A fine VERTICAL segmented joint-like crack trace through the center half, narrow and irregular, interrupted by a fully transparent small gap at its middle. At the two exposed ends of that gap are small branching fissure clusters, one branching left and the other right. It is a crack decal, NOT a construction joint strip or a rectangular seam material tile.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-f6ec8b6a-a70a-494d-ab50-b2dad6d05eba.png",
+            "filename": "exec-f6ec8b6a-a70a-494d-ab50-b2dad6d05eba.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 229749,
+            "sha256": "80e86b4bae7cf90281a410d8ce7afc3180887eb2615e1393ff97d54a2bd7862b"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-f6ec8b6a-a70a-494d-ab50-b2dad6d05eba.png",
+        "raw_source_sha256": "80e86b4bae7cf90281a410d8ce7afc3180887eb2615e1393ff97d54a2bd7862b",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 18652,
+        "sha256": "e80ba759edcfc5c8f0a4548337a6442cb43bf7f4b1635a6b6e33aab91c81c006",
+        "alpha_resample_sha256": "61b3b092a802d37f7efc8a0bf6035e49a6682103933df8ae9c6ef0e3e3f17c70",
+        "encoded_alpha_sha256": "61b3b092a802d37f7efc8a0bf6035e49a6682103933df8ae9c6ef0e3e3f17c70",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.952404,
+          "partial_fraction": 0.047112,
+          "opaque_fraction": 0.000484,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            164,
+            14,
+            361,
+            498
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_grout_hair_08",
+      "title": "砖缝发丝裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_grout_hair_08.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A thin OFFSET stepped path mimicking hairline damage following two short perpendicular paving-grout directions: a horizontal fissure turns into a short vertical segment, then splits into two fine diagonal branches. No paving grid or actual grout surface drawn, only the isolated damaged narrow traces. Small subtle charcoal lines with three tiny separated dark specks.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A thin OFFSET stepped path mimicking hairline damage following two short perpendicular paving-grout directions: a horizontal fissure turns into a short vertical segment, then splits into two fine diagonal branches. No paving grid or actual grout surface drawn, only the isolated damaged narrow traces. Small subtle charcoal lines with three tiny separated dark specks.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-f5eb33e5-5de8-422d-b07f-b4884cefb4e8.png",
+            "filename": "exec-f5eb33e5-5de8-422d-b07f-b4884cefb4e8.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 176140,
+            "sha256": "8cfd02a185c7ef3b123b9f369548403a58dd40af0b1792184821bdebe4634374"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-f5eb33e5-5de8-422d-b07f-b4884cefb4e8.png",
+        "raw_source_sha256": "8cfd02a185c7ef3b123b9f369548403a58dd40af0b1792184821bdebe4634374",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 13530,
+        "sha256": "2387097057bb86b38a5d61d335e8beb475e458b7f4d621e6777a45a31cc050e4",
+        "alpha_resample_sha256": "04d2bf38fb754aabc89aab460e2ede6017de0424fbef5e2e67c2eaff6c64ce11",
+        "encoded_alpha_sha256": "04d2bf38fb754aabc89aab460e2ede6017de0424fbef5e2e67c2eaff6c64ce11",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.970127,
+          "partial_fraction": 0.02919,
+          "opaque_fraction": 0.000683,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            94,
+            129,
+            406,
+            407
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_asphalt_long_09",
+      "title": "沥青长走向裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_asphalt_long_09.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A LONG meandering longitudinal asphalt fissure running mostly vertically but wandering in narrow uneven zigzags, with one small double-line split that rejoins halfway and two tiny branching offshoots near the bottom. Ends taper and break before reaching the canvas margin. Slightly broader dark core than the other fine cracks, still a narrow line, no dark asphalt backing.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A LONG meandering longitudinal asphalt fissure running mostly vertically but wandering in narrow uneven zigzags, with one small double-line split that rejoins halfway and two tiny branching offshoots near the bottom. Ends taper and break before reaching the canvas margin. Slightly broader dark core than the other fine cracks, still a narrow line, no dark asphalt backing.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-c18fac10-1902-49ca-b1a4-7068ed3597f0.png",
+            "filename": "exec-c18fac10-1902-49ca-b1a4-7068ed3597f0.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 212238,
+            "sha256": "ca323c8890fb21064c940dae4ad96a8eeb8faff8e02e264c1006be2fc11950f7"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-c18fac10-1902-49ca-b1a4-7068ed3597f0.png",
+        "raw_source_sha256": "ca323c8890fb21064c940dae4ad96a8eeb8faff8e02e264c1006be2fc11950f7",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 16332,
+        "sha256": "53d1ef0b7b07dd64df51adb0f80fc74d63e77561d397ad8490c92360597280ef",
+        "alpha_resample_sha256": "c19e71058d9fb7c6fc35eb57f729e85068a5bb8961d3f93cafaa9232dacc69c3",
+        "encoded_alpha_sha256": "c19e71058d9fb7c6fc35eb57f729e85068a5bb8961d3f93cafaa9232dacc69c3",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.963333,
+          "partial_fraction": 0.035748,
+          "opaque_fraction": 0.000919,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            205,
+            27,
+            325,
+            487
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    },
+    {
+      "id": "decal_crack_threeway_10",
+      "title": "三叉断裂",
+      "category": "decals/cracks",
+      "role": "base_color_alpha",
+      "path": "assets/world/decals/decal_crack_threeway_10.webp",
+      "selected_candidate": 1,
+      "candidates": [
+        {
+          "candidate": 1,
+          "operation": "generate",
+          "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A DISTINCT THREE-WAY Y-SHAPED junction of narrow jagged cracks, off-center toward upper-left, with three uneven arms: one short left arm, one medium upward arm, and one long winding downward-right arm. A few tiny irregular fissure dashes break away from the shortest arm. No broad central hole or starburst debris cloud; transparent empty space around the crack.",
+          "tool_arguments": {
+            "prompt": "Create one square 512x512 RGBA GAME GROUND CRACK DECAL on a TRUE TRANSPARENT BACKGROUND. Strict orthographic top-down view. Show ONLY the narrow jagged fissure / fracture marks and a very sparse few tiny edge chips as flat material color. This decal overlays arbitrary concrete paving or asphalt: do NOT draw the underlying pavement, a stone chunk, square floor tile, substrate plate, background wash, broad dirt stain, dark rectangle, paper, frame, platform, or material sphere. Most of the square stays genuinely transparent, including clear empty space inside every branch and at least 8% margin around all four canvas edges. Crack cores are subdued charcoal-black, irregular widths but thin (about 2-5 pixels wide at final 512 scale), broken tapering ends, fine tiny lateral splinters. Sparse dull neutral gray-brown mineral flecks can sit immediately at a few fissure edges, never a thick bright rim. No raised stone relief, directional highlight/shadow, drop shadow, specular shine, ambient-occlusion mat, neon color, vignette or global lighting gradient. This is an UNLIT base-color + alpha surface overlay for an old rainy cyberpunk miniature street. Do not show holes of large missing ground or a puddle; no text, roadsigns, characters, faces, bones, biological roots, fresh red color, blood, objects, checkerboard painted into the image or review montage. A single independent distinctive fracture design, not a rotated duplicate. A DISTINCT THREE-WAY Y-SHAPED junction of narrow jagged cracks, off-center toward upper-left, with three uneven arms: one short left arm, one medium upward arm, and one long winding downward-right arm. A few tiny irregular fissure dashes break away from the shortest arm. No broad central hole or starburst debris cloud; transparent empty space around the crack.",
+            "transparent_background": true
+          },
+          "references": [],
+          "raw_output": {
+            "path": "/workspace/generated_images/exec-436a5252-c7b7-4a8b-bcde-4ecd76992938.png",
+            "filename": "exec-436a5252-c7b7-4a8b-bcde-4ecd76992938.png",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA",
+            "bytes": 176651,
+            "sha256": "62f4d1be36590ceac85a36816247e711ebde8192c54b996cba89c7c52efd32b3"
+          },
+          "selection_note": "采用；独立细裂线造型清晰，未生成地面底板；工具原生RGBA透明通道保留。"
+        }
+      ],
+      "export": {
+        "raw_source_path": "/workspace/generated_images/exec-436a5252-c7b7-4a8b-bcde-4ecd76992938.png",
+        "raw_source_sha256": "62f4d1be36590ceac85a36816247e711ebde8192c54b996cba89c7c52efd32b3",
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "crop_ltrb": [
+          0,
+          0,
+          1254,
+          1254
+        ],
+        "crop_coordinate_convention": "zero-based half-open; full canvas, no crop",
+        "target_size": [
+          512,
+          512
+        ],
+        "operations": [
+          "retain image_gen native RGBA and full transparent canvas",
+          "proportional Lanczos downsample 1254x1254 to 512x512",
+          "encode RGBA WebP with embedded sRGB ICC; preserve straight alpha"
+        ],
+        "upsampling": false,
+        "artistic_postprocessing": false,
+        "alpha_extraction": false,
+        "alpha_mask_painting": false,
+        "encoder": "Pillow 12.3.0 / libwebp 1.6.0",
+        "webp_quality": 90,
+        "webp_method": 6,
+        "webp_lossless": false,
+        "alpha_quality": 100,
+        "webp_exact": true,
+        "icc_profile": "Pillow ImageCms.createProfile('sRGB'), embedded",
+        "color_space": "sRGB",
+        "alpha": true,
+        "bytes": 15462,
+        "sha256": "57041d18e9240653d362ee935e34b17097d4cb27551ac5bb0ac5329eceda6b51",
+        "alpha_resample_sha256": "09a1f56563ad64412e7604e04a901c1979434d9ea4de5dcd2a75e28b5bdc1a92",
+        "encoded_alpha_sha256": "09a1f56563ad64412e7604e04a901c1979434d9ea4de5dcd2a75e28b5bdc1a92",
+        "alpha_unchanged_after_encoding": true
+      },
+      "self_check": {
+        "status": "final_encoded_alpha_and_surface_composite_review_complete",
+        "claude_approved": false,
+        "alpha_statistics": {
+          "minimum": 0,
+          "maximum": 255,
+          "zero_fraction": 0.965355,
+          "partial_fraction": 0.033592,
+          "opaque_fraction": 0.001053,
+          "border_maximum": 0,
+          "border_mean": 0,
+          "bbox_gt16": [
+            37,
+            29,
+            463,
+            477
+          ]
+        },
+        "alpha_statistics_note": "0=全透明，255=全不透明；bbox_gt16仅为诊断阈值，没有阈值处理或改写交付Alpha。本批10张四边Alpha均为0。",
+        "native_512_composite_checks": [
+          "checkerboard",
+          "grayscale alpha",
+          "A09 slate paving",
+          "A08 wet asphalt"
+        ],
+        "visual_findings": "内部自查：未见矩形底板、黑色填满区域、人物文字或霓虹方向；窄裂线在灰砖可读，在湿沥青上较低对比。",
+        "review_focus": "深色碎粒沥青会掩盖细裂线，需按游戏视距、贴花尺度与地面区域评估；少量灰褐碎屑是材料色细节，不含真实深度。"
+      }
+    }
+  ],
+  "review_backgrounds": [
+    {
+      "id": "tile",
+      "path": "/workspace/world-a09/assets/world/ground/ground_tile_slate_01.webp",
+      "sha256": "db807e9d4c40667f6ab6610460be95de7d29658ed1df544b59e3f990968ac526",
+      "size": [
+        1024,
+        1024
+      ],
+      "scope": "read-only review background; source image not included in this batch",
+      "origin": "PR #100 WORLD-A09 / assets/world/ground/ground_tile_slate_01.webp"
+    },
+    {
+      "id": "asphalt",
+      "path": "/workspace/a10-cracks-raw/ground_asphalt_wet_01.webp",
+      "sha256": "5cb849b916c76d86e80a195169316b6182c4bb3ea37c63aeb467194e2ea2b1f2",
+      "size": [
+        1024,
+        1024
+      ],
+      "scope": "read-only review background; source image not included in this batch",
+      "origin": "PR #98 WORLD-A08 / assets/world/ground/ground_asphalt_wet_01.webp"
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/decal_crack_repair_edge_03-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 188568,
+      "sha256": "b7f03b29fd31dd8b08a8e81efb940f21dc0d22501892504a9f4895b748f5186a",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_joint_ends_07-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 184262,
+      "sha256": "dd66ef27bddccaa636f3ced15221002a8eb615e11e83a5ba819fd2a9d18f8ef8",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_grout_hair_08-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 182838,
+      "sha256": "dc53c214e501017fdaf21a3508e317c4cf7c9ff7783a0dac89bc99b3064826b7",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_stone_diagonal_04-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 179820,
+      "sha256": "4d2c2b2e0de923a61f78343b59ad85039167027e95d0d8a80b4c9aff71167a49",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_transverse_02-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 181028,
+      "sha256": "1aaac4db2666cf5ede066767f93fe1ddd2abcd6a841cf6d4cba3c1755e076794",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/crack-decals-a10.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 202578,
+      "sha256": "9b5125f830abb60ca4c18dd31a1db9425333cd5bd6f3df7db18b5f68ee6c4247",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 82,
+      "method": "10-item overview: final encoded RGBA composited on both reference surfaces, checkerboard and grayscale alpha; Lanczos to 184x184 per panel"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_crazing_05-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 194248,
+      "sha256": "dafb321de5c3dec0679f3fb1a2caf5531bf02e6218e0d87353fc619964c14324",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_asphalt_long_09-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 183478,
+      "sha256": "41f9ddb9c0ea5d51d907b670e4af726d5634a796a7f4b67f07fe5aa18c8aa116",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_pit_rim_06-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 187908,
+      "sha256": "a0c9035356a94a82314dc140cea9057201f7baec5573c4123cd6622f28328bed",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_threeway_10-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 184976,
+      "sha256": "f348c0a008b402a2e7bd2faa2b5e7c4903bf813a961ff58640642f018c71d3d0",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/decal_crack_branch_fine_01-native-alpha.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 187172,
+      "sha256": "82813356c672833fb4a5848d84cbc3bea0e86347795b16c9d47da0c645549e4d",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_method": 6,
+      "webp_quality": 85,
+      "method": "four 512x512 panels at 1:1 spatial scale: checkerboard, grayscale alpha, paving, asphalt; final RGBA alpha unmodified; sheet itself is lossy WebP quality85"
+    },
+    {
+      "path": "assets/world/reviews/crack-decals-a10-overlay.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 435688,
+      "sha256": "c6c9996d479d3fc3df96c5083f0a8b2474909a1bb35d78915b45ea57a1211b06",
+      "color_space": "sRGB ICC",
+      "alpha": false,
+      "webp_quality": 85,
+      "webp_method": 6,
+      "method": "actual independent Three.js r169 transparent MeshStandardMaterial overlays of all ten final encoded cracks, two ground surfaces, identical white light versus cyan/magenta additions; no bloom or source modifications",
+      "evidence": {
+        "ready": true,
+        "expected": 12,
+        "loaded": 12,
+        "parameters": {
+          "three_revision": "169",
+          "canvas": [
+            1024,
+            448
+          ],
+          "camera": {
+            "type": "OrthographicCamera",
+            "left": -10,
+            "right": 10,
+            "top": 4.375,
+            "bottom": -4.375,
+            "near": 0.1,
+            "far": 40,
+            "position": [
+              0,
+              10,
+              0
+            ],
+            "up": [
+              0,
+              0,
+              -1
+            ],
+            "look_at": [
+              0,
+              0,
+              0
+            ]
+          },
+          "ground": {
+            "plane": [
+              20,
+              8.75
+            ],
+            "repeat": [
+              5,
+              2
+            ],
+            "roughness": 0.8,
+            "metalness": 0
+          },
+          "decals": {
+            "plane": [
+              3.45,
+              3.45
+            ],
+            "color": "#ffffff",
+            "roughness": 0.8,
+            "metalness": 0,
+            "transparent": true,
+            "opacity": 1,
+            "alphaTest": 0.01,
+            "depthWrite": false,
+            "depthTest": true,
+            "blending": "NormalBlending",
+            "premultipliedAlpha": false,
+            "polygonOffset": true,
+            "polygonOffsetFactor": -2,
+            "polygonOffsetUnits": -2,
+            "y": 0.01,
+            "texture_wrap": "ClampToEdgeWrapping"
+          },
+          "renderer": {
+            "color_space": "SRGBColorSpace",
+            "tone_mapping": "ACESFilmicToneMapping",
+            "exposure": 1,
+            "device_pixel_ratio": 1,
+            "antialias": true,
+            "bloom": false,
+            "shadows": false
+          },
+          "white_lights": {
+            "hemisphere": {
+              "sky": "#ffffff",
+              "ground": "#777777",
+              "intensity": 0.65
+            },
+            "directional": {
+              "color": "#ffffff",
+              "intensity": 2,
+              "position": [
+                -1,
+                10,
+                4
+              ]
+            }
+          },
+          "extra_lights": {
+            "cyan": {
+              "color": "#20d9ff",
+              "intensity": 55,
+              "distance": 35,
+              "decay": 2,
+              "position": [
+                -5,
+                4,
+                0
+              ]
+            },
+            "magenta": {
+              "color": "#ef42be",
+              "intensity": 55,
+              "distance": 35,
+              "decay": 2,
+              "position": [
+                5,
+                4,
+                0
+              ]
+            }
+          }
+        },
+        "assets": [
+          {
+            "path": "/assets/world/decals/decal_crack_branch_fine_01.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_transverse_02.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_repair_edge_03.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_stone_diagonal_04.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/.tmp-a10-cracks/ground_tile_slate_01.webp",
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "path": "/assets/world/ground/ground_asphalt_wet_01.webp",
+            "width": 1024,
+            "height": 1024
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_crazing_05.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_pit_rim_06.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_joint_ends_07.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_grout_hair_08.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_asphalt_long_09.webp",
+            "width": 512,
+            "height": 512
+          },
+          {
+            "path": "/assets/world/decals/decal_crack_threeway_10.webp",
+            "width": 512,
+            "height": 512
+          }
+        ],
+        "renderers": [
+          {
+            "row": 0,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          },
+          {
+            "row": 0,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          },
+          {
+            "row": 1,
+            "col": 1,
+            "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+            "draw_calls": 11
+          }
+        ],
+        "decal_order": [
+          "decal_crack_branch_fine_01",
+          "decal_crack_transverse_02",
+          "decal_crack_repair_edge_03",
+          "decal_crack_stone_diagonal_04",
+          "decal_crack_crazing_05",
+          "decal_crack_pit_rim_06",
+          "decal_crack_joint_ends_07",
+          "decal_crack_grout_hair_08",
+          "decal_crack_asphalt_long_09",
+          "decal_crack_threeway_10"
+        ],
+        "page_errors": [],
+        "console_errors": [],
+        "failed_requests": [],
+        "asset_responses": [
+          {
+            "url": "http://127.0.0.1:5192/.tmp-a10-cracks/ground_tile_slate_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/ground/ground_asphalt_wet_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_branch_fine_01.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_transverse_02.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_repair_edge_03.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_stone_diagonal_04.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_crazing_05.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_pit_rim_06.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_joint_ends_07.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_grout_hair_08.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_asphalt_long_09.webp",
+            "status": 200
+          },
+          {
+            "url": "http://127.0.0.1:5192/assets/world/decals/decal_crack_threeway_10.webp",
+            "status": 200
+          }
+        ],
+        "source_hashes_unchanged": true,
+        "source_sha256_before": [
+          "8a7633c6913c138e8aa62850ad0e7cf696c90299e87db26a8e38bd8ff60073ff",
+          "c8bd5b0a6d737d6c5fd6635a9eaeede4a780134e13ca548d7bbe0d001fdc5f60",
+          "d3e574c5f564e8a8ea556a1e7d7cc89d842cb9e1d5d03206a8a01a6ac03858e1",
+          "86dafd1232e6b8fac7d0d8a9811f8526613dd47aff977801b6c9720eb7458193",
+          "2a7b37236155e2be219721f80f3420a690f1c3cdcbdb52eb0ad4c8daa5234ce8",
+          "5882bf5888736b27e46fea402dd0bdb65cf3443b804696adbe78007ae91aeb1b",
+          "e80ba759edcfc5c8f0a4548337a6442cb43bf7f4b1635a6b6e33aab91c81c006",
+          "2387097057bb86b38a5d61d335e8beb475e458b7f4d621e6777a45a31cc050e4",
+          "53d1ef0b7b07dd64df51adb0f80fc74d63e77561d397ad8490c92360597280ef",
+          "57041d18e9240653d362ee935e34b17097d4cb27551ac5bb0ac5329eceda6b51"
+        ],
+        "source_sha256_after": [
+          "8a7633c6913c138e8aa62850ad0e7cf696c90299e87db26a8e38bd8ff60073ff",
+          "c8bd5b0a6d737d6c5fd6635a9eaeede4a780134e13ca548d7bbe0d001fdc5f60",
+          "d3e574c5f564e8a8ea556a1e7d7cc89d842cb9e1d5d03206a8a01a6ac03858e1",
+          "86dafd1232e6b8fac7d0d8a9811f8526613dd47aff977801b6c9720eb7458193",
+          "2a7b37236155e2be219721f80f3420a690f1c3cdcbdb52eb0ad4c8daa5234ce8",
+          "5882bf5888736b27e46fea402dd0bdb65cf3443b804696adbe78007ae91aeb1b",
+          "e80ba759edcfc5c8f0a4548337a6442cb43bf7f4b1635a6b6e33aab91c81c006",
+          "2387097057bb86b38a5d61d335e8beb475e458b7f4d621e6777a45a31cc050e4",
+          "53d1ef0b7b07dd64df51adb0f80fc74d63e77561d397ad8490c92360597280ef",
+          "57041d18e9240653d362ee935e34b17097d4cb27551ac5bb0ac5329eceda6b51"
+        ],
+        "capture": {
+          "url": "http://127.0.0.1:5192/.tmp-a10-cracks/preview.html",
+          "browser": "Chromium /usr/bin/chromium",
+          "viewport": [
+            2048,
+            1024
+          ],
+          "device_scale_factor": 1,
+          "output_png": "/workspace/a10-cracks-raw/crack-decals-a10-overlay.png"
+        },
+        "lighting_difference_rgb_mae": [
+          20.856,
+          14.339
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "本批为基色+透明度裂缝贴花，不含法线、深度、粗糙度、位移或自发光。",
+    "深色粗颗粒湿沥青上裂线较低对比，按实际尺度和场景区域评估。",
+    "部分提示词指定的8%空边距未完全满足；07 / 09等纵向裂线靠近边缘，但实际十图四边Alpha均为0，没有截断到边界。",
+    "审图为Pillow合成，不是游戏接入截图；实际GPU样板另附时在对应preview记录。",
+    "工具原生透明度直接保留，无抠底、阈值Alpha清理或手绘遮罩。",
+    "候选选择和独立QA不代表Claude审核通过。"
+  ],
+  "validation": {
+    "base_commit": "aa9afd3270c839b3ba5aa72d2836dec3fe2d0f93",
+    "command": "npm run typecheck && npm test",
+    "performed_by": "root agent",
+    "exit_code": 0,
+    "test_files": 66,
+    "tests": 987,
+    "log_path": "/workspace/scratch/world-cracks-aa9-tests.log",
+    "scope_note": "类型与单元测试通过；图像另经独立视觉/透明度/出处QA，尚待Claude审核。"
+  },
+  "qa_paths": [
+    "assets/world/decals/crack-decals-a10.qa.md",
+    "assets/world/decals/crack-decals-a10.qa.json"
+  ]
+}

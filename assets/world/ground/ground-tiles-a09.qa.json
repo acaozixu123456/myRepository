@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A09",
+  "reviewer": "independent Codex QA agent review_queue",
+  "review_date": "2026-10-12",
+  "decision": "ready_for_claude_review",
+  "claude_approved": false,
+  "blocking_findings": [],
+  "scope": {
+    "read_instructions": [
+      "AGENTS.md",
+      "docs/CODEX_WORLD_BRIEF.md"
+    ],
+    "image_edits": false,
+    "engine_changes": false,
+    "game_integration_tested": false,
+    "typecheck_or_unit_tests_run_by_this_reviewer": false
+  },
+  "visual_inspection": {
+    "tool": "tools.view_image",
+    "viewed": [
+      "both final 1024x1024 textures",
+      "four raw candidate PNGs at original size",
+      "overview and both native-edge review sheets",
+      "both lossless 2x2 and 4x4 scratch repeat previews",
+      "both lossless LR, TB and four-corner scratch PNGs at original size"
+    ],
+    "result": "At inspected scales, no additional broad framing band, broken drain continuation, four-block divide or obvious hard texture-boundary stripe. Narrow gray joints remain visible; not a claim of identical opposite edge pixels.",
+    "limits": [
+      "Repeated stone-color and wear arrangement remains recognizable at 4x4.",
+      "Drain texture repeated across its width produces regularly spaced parallel drainage channels; intended for controlled pavement strips.",
+      "Drain last row is shorter and the side paving widths vary; the texture is not an exact 8x8 mathematical grid.",
+      "Fine aggregate and tiny edge detail retain subtle light/dark relief cues at 1:1; no large directional illumination or baked neon gradient seen.",
+      "No live game lighting, camera or UV-density verification in this independent check."
+    ]
+  },
+  "assets": [
+    {
+      "id": "ground_tile_slate_01",
+      "path": "assets/world/ground/ground_tile_slate_01.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 413568,
+      "sha256": "db807e9d4c40667f6ab6610460be95de7d29658ed1df544b59e3f990968ac526",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "dimensions_power_of_two": true,
+      "maximum_500000_bytes_pass": true,
+      "hash_matches_provenance": true,
+      "selected_candidate": 2,
+      "native_period_size": [
+        1234,
+        1235
+      ],
+      "crop_ltrb": [
+        11,
+        8,
+        1245,
+        1243
+      ],
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-40949b6a-d865-4d48-835e-b89e797b4d96.png",
+          "size_matches": true,
+          "mode_matches": true,
+          "bytes_match": true,
+          "hash_match": true,
+          "prompt_matches_recorded_argument": true
+        },
+        {
+          "candidate": 2,
+          "raw_path": "/workspace/generated_images/exec-faaef896-1624-4def-be01-7befb63e478b.png",
+          "size_matches": true,
+          "mode_matches": true,
+          "bytes_match": true,
+          "hash_match": true,
+          "prompt_matches_recorded_argument": true,
+          "reference_hash_matches_first_candidate": true,
+          "reference_path_matches_first_candidate": true
+        }
+      ],
+      "recorded_export_reproduction_identical_bytes": true,
+      "boundary_mae_rgb_0_255": {
+        "left_right": 5.856445,
+        "top_bottom": 10.672526
+      },
+      "opposite_edges_identical_pixels": false,
+      "interior_neighbor_mae_rgb_0_255": {
+        "horizontal": 11.34416,
+        "vertical": 11.742912
+      },
+      "native_edge_regions": [
+        {
+          "region": "lr",
+          "lossless_scratch_equals_final_decoded_pixels": true,
+          "review_webp_reencoding_pixel_max_diff": 14,
+          "review_webp_reencoding_pixel_mae": 1.464738
+        },
+        {
+          "region": "tb",
+          "lossless_scratch_equals_final_decoded_pixels": true,
+          "review_webp_reencoding_pixel_max_diff": 15,
+          "review_webp_reencoding_pixel_mae": 1.466291
+        },
+        {
+          "region": "corners",
+          "lossless_scratch_equals_final_decoded_pixels": true,
+          "review_webp_reencoding_pixel_max_diff": 14,
+          "review_webp_reencoding_pixel_mae": 1.481019
+        }
+      ]
+    },
+    {
+      "id": "ground_drain_slate_02",
+      "path": "assets/world/ground/ground_drain_slate_02.webp",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 318762,
+      "sha256": "adc52519818bbb996547fabe9c103d6cb89df456d2936cf2b395531439ee9418",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "dimensions_power_of_two": true,
+      "maximum_500000_bytes_pass": true,
+      "hash_matches_provenance": true,
+      "selected_candidate": 2,
+      "native_period_size": [
+        1228,
+        1228
+      ],
+      "crop_ltrb": [
+        13,
+        12,
+        1241,
+        1240
+      ],
+      "candidate_checks": [
+        {
+          "candidate": 1,
+          "raw_path": "/workspace/generated_images/exec-07a08416-85bb-42e1-8892-ee902e533178.png",
+          "size_matches": true,
+          "mode_matches": true,
+          "bytes_match": true,
+          "hash_match": true,
+          "prompt_matches_recorded_argument": true
+        },
+        {
+          "candidate": 2,
+          "raw_path": "/workspace/generated_images/exec-1d543726-01c3-4724-884a-fc0258313d6b.png",
+          "size_matches": true,
+          "mode_matches": true,
+          "bytes_match": true,
+          "hash_match": true,
+          "prompt_matches_recorded_argument": true,
+          "reference_hash_matches_first_candidate": true,
+          "reference_path_matches_first_candidate": true
+        }
+      ],
+      "recorded_export_reproduction_identical_bytes": true,
+      "boundary_mae_rgb_0_255": {
+        "left_right": 4.782227,
+        "top_bottom": 11.882487
+      },
+      "opposite_edges_identical_pixels": false,
+      "interior_neighbor_mae_rgb_0_255": {
+        "horizontal": 9.13247,
+        "vertical": 8.284668
+      },
+      "native_edge_regions": [
+        {
+          "region": "lr",
+          "lossless_scratch_equals_final_decoded_pixels": true,
+          "review_webp_reencoding_pixel_max_diff": 18,
+          "review_webp_reencoding_pixel_mae": 1.268033
+        },
+        {
+          "region": "tb",
+          "lossless_scratch_equals_final_decoded_pixels": true,
+          "review_webp_reencoding_pixel_max_diff": 15,
+          "review_webp_reencoding_pixel_mae": 1.255035
+        },
+        {
+          "region": "corners",
+          "lossless_scratch_equals_final_decoded_pixels": true,
+          "review_webp_reencoding_pixel_max_diff": 15,
+          "review_webp_reencoding_pixel_mae": 1.279917
+        }
+      ]
+    }
+  ],
+  "previews": [
+    {
+      "path": "assets/world/reviews/ground-tiles-a09.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 287386,
+      "sha256": "e052feda37608c4c8b51fcf5afdbe224e0f916419c8cb8be4f786776ac8dfb29",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "size_and_bytes_match_provenance": true,
+      "hash_matches_provenance": true,
+      "maximum_500000_bytes_pass": true
+    },
+    {
+      "path": "assets/world/reviews/ground_tile_slate_01-native-edges.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 472366,
+      "sha256": "a305154794e1f4bcb6b9ae0a123ca40e60357e98d6ffb3c6ee3e31d02732ec84",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "size_and_bytes_match_provenance": true,
+      "hash_matches_provenance": true,
+      "maximum_500000_bytes_pass": true
+    },
+    {
+      "path": "assets/world/reviews/ground_drain_slate_02-native-edges.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 394118,
+      "sha256": "a391fca623b74f1bfe8f6691daf366afbd862a641e05919a9fa7c8dc17550d17",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "size_and_bytes_match_provenance": true,
+      "hash_matches_provenance": true,
+      "maximum_500000_bytes_pass": true
+    },
+    {
+      "path": "assets/world/reviews/ground-tiles-a09-lighting.webp",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 476746,
+      "sha256": "2fb6bb008f42da844276f8d79bed76e2935f750edecb4dc1d9d275bfd66727ba",
+      "icc_bytes": 588,
+      "icc_description": "sRGB built-in",
+      "size_and_bytes_match_provenance": true,
+      "hash_matches_provenance": true,
+      "maximum_500000_bytes_pass": true,
+      "recorded_capture_export_reproduction_identical_bytes": true,
+      "visual_review": "Actually viewed with view_image at original size: same paving/drain layout remains clear; cyan and magenta form local color response, no new broad seam observed.",
+      "evidence_checked_from_existing_capture_record": {
+        "loaded": 2,
+        "expected": 2,
+        "page_errors": [],
+        "failed_requests": [],
+        "asset_response_statuses": [
+          200,
+          200
+        ],
+        "source_hashes_unchanged": true
+      },
+      "reviewer_reexecuted_browser_capture": false
+    }
+  ],
+  "provenance_sha256_at_followup_check": "ade7fbe0d8c6698b724cd983ee1272ceeaa15f595c453b85ac044c5dc8443b61"
+}

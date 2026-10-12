@@ -136,16 +136,42 @@
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR) 等7只 | 底版 | 0 | |
-| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 底版 | 0 | |
-| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR) 等7只 | 底版 | 0 | |
-| `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR) 等5只 + 杂兵×2 | 底版 | 0 | |
-| `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR) 等4只 + 杂兵×2 | 底版 | 0 | |
-| `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR) 等7只 + 杂兵×12 | 底版 | 0 | |
+| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR), `shu_liumiaobei`(UR), `wu_zhoumiaoyu`(UR), `shu_guanyunmiao`(SSR), `qun_dongzhuo`(SR) | 待审 | 1 | 16 网格；交领、金边、压褶；codex/3d-body-regalia |
+| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 待审 | 1 | 18 网格；双层波边裙、蝴蝶腰结；codex/3d-body-regalia |
+| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wei_xuhuang`(SR), `wu_huanggai`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 24 网格；三层金属肩甲、护心镜、五片裙甲；codex/3d-body-regalia |
+| `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR), `xian_yuji`(SSR) + 杂兵×2（`mob_xian_guard`, `mob_xian_strategist`） | 待审 | 1 | 21 网格；宽交领、阴阳纹、符袋；codex/3d-body-robes |
+| `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR), `man_shamoke`(SSR) + 杂兵×2（`mob_man_vanguard`, `mob_man_strategist`） | 待审 | 1 | 24 网格；露毛胸面、骨扣、三片短皮裙；codex/3d-body-robes |
+| `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR), `wei_guojia`(SR), `shu_jiangwei`(SR), `xian_guanlu`(SR), `xian_nanhua`(SR) + 杂兵×12（`mob_wei_strategist`, `mob_wei_healer`, `mob_shu_strategist`, `mob_shu_healer`, `mob_wu_strategist`, `mob_wu_healer`, `mob_qun_strategist`, `mob_qun_healer`, `mob_man_healer`, `mob_xian_vanguard`, `mob_xian_healer`, `mob_xian_assassin`） | 待审 | 1 | 18 网格；短翼领、侧开裾、侧扣；codex/3d-body-robes |
 | `armorLight` | `wei_xuhuchi`(SSR), `wu_sunxiaoba`(SSR), `wu_sunxiangxiang`(SSR) 等5只 + 杂兵×7 | 底版 | 0 | |
 | `armorWei` | `wei_zhangliao`(SSR) + 杂兵×2 | 底版 | 0 | |
 | `vest` | `wu_ganning`(SR), `man_mengyou`(SR) + 杂兵×9 | 底版 | 0 | |
 | `rattan` | `man_wutugu`(SR) + 杂兵×2 | 底版 | 0 | |
+
+### 衣服第 1 批检查
+
+`codex/3d-body-regalia` 交付 `robeSilk / dress / armorHeavy`，第 1 轮待审，共 16 位英雄、无杂兵。原表的 7 / 2 / 7 数量正确，现补齐 ID。配色与造型参考 `ART_PROMPTS.md`、英雄参考 JPG 及已批准的 SP / UR 立绘；领口、裙摆与肩甲只改衣服部件，下摆继续挂在 `hip`。
+
+`npm run typecheck && npm test` 通过：65 个测试文件、980 项测试，退出码 0。三件逻辑网格为 16 / 18 / 24，几何分段最大 24，复用缓存材质，无每帧新增代码。内部修订已解决曲面装饰沉入壳体和裙层被遮挡的问题；已同步主分支 `bf37bd3` 最新大头 / 肉垫 / Toon，增强三层金属肩甲并合批裙甲金边，预算保持不变。同步后的检查和截图重新生成，不增加审核轮次。
+
+独立 QA 覆盖 16×14＝224 姿势和 16×3×12＝576 动画样本。衣服自身出框、眼睛及五个脸部样点遮挡、非有限坐标和新增整猫取景回归均为 0；每眼至少 71 个有效三角投影样本。三姿势 / 全 14 姿势 / 动画的正常蒙皮整猫裁切基线与候选相同，为 13 / 55 / 135；全姿势含背挂旧底裁切 12 与新版大头下既有头饰上裁切 43，动画为 36 / 99。最高 y=3.770092 超过 FRAME 上界 3.6，最低 y=-0.361908 低于下界 -0.25，双方边界完全一致。有限采样不能证明所有连续时刻无交叉；方法和边界见 [QA 摘要](../src/art3d/parts/reviews/body-regalia/qa-summary.md)。
+
+三种裙面在构建时固定腰口 y=0.57，连同裙饰收短至约 -0.20～-0.22，根仍为单位变换；官方三姿势及十猫截图确认肉垫靴露出。
+
+审核图：[三姿势](../src/art3d/parts/reviews/body-regalia/poses.png)、[十猫同屏战斗](../src/art3d/parts/reviews/body-regalia/battle.webp)、[小尺寸三姿势](../src/art3d/parts/reviews/body-regalia/poses-small.png)、[同引擎前后对照](../src/art3d/parts/reviews/body-regalia/before-after.png)、[胖体型与浅色甲](../src/art3d/parts/reviews/body-regalia/boundaries.png)。命令与冻结记录见 [截图说明](../src/art3d/parts/reviews/body-regalia/README.md)。
+
+最不满意：重甲在 190px 游戏尺度下的胸片细节偏简，浅色赵喵云的护心镜对比偏弱；短甲裙与肩饰仍能区别于丝袍。请 Claude 按实际战斗尺度审核。后续按最新固定队列先做毛色花纹，再做英雄专属造型，与 WORLD A10 地面贴花交替推进。
+
+### 衣服第 2 批检查
+
+`codex/3d-body-robes` 交付道袍 / 兽皮 / 文士袍，第 1 轮待审；共 32 使用者（16 英雄 + 16 杂兵），核对原表 5+2 / 4+2 / 7+12 数量正确，已补齐 ID。第 1 批衣服在 #99 待审，本批从主分支 `bf37bd3` 独立制作，保留最新大头比例、大肉垫、毛领、靴子和去除斑点高光的 Toon，不依赖未合并的 #99。
+
+参考 `ART_PROMPTS.md` 和实际英雄 JPG，配色来自 `pal` / `fur` / `light`。道袍用宽交领与长垂带，兽皮用交绑与短皮裙，文士袍用短翼领与侧襟直裾。局部实现放在 `parts/body-robes.ts`，只更新对应三件注册函数，下摆仍挂 hip。
+
+`npm run typecheck && npm test` 通过：65 个测试文件、980 项测试，退出码 0。三件逻辑网格为 21 / 24 / 18，分段最大 24，重复构建复用缓存材质。独立 QA 的 448 全姿势与 1152 动画样本中，衣服自身出框、眼 / 鼻口样点遮挡、非有限坐标及新增整猫取景回归均为 0；每眼最低 71 个有效三角投影样本。普通蒙皮整猫保留与基线相同的头饰上裁切，三姿势 / 全姿势 / 动画为 8 / 27 / 49；最高 y=3.696244，FRAME 上界 3.6，双方采样边界一致。构建时固定腰口 y=0.57，收短裙面至约 -0.214～-0.216，露靴且根变换保持单位。方法、源码冻结与有限观测范围见 [QA 摘要](../src/art3d/parts/reviews/body-robes/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/body-robes/qa-summary.json)。
+
+审核图：[三姿势](../src/art3d/parts/reviews/body-robes/poses.png)、[真实十猫战斗](../src/art3d/parts/reviews/body-robes/battle.webp)、[小尺寸](../src/art3d/parts/reviews/body-robes/poses-small.png)、[最新同引擎前后对照](../src/art3d/parts/reviews/body-robes/before-after.png)、[体宽与深色杂兵](../src/art3d/parts/reviews/body-robes/boundaries.png)。命令和截图版本记录见 [说明](../src/art3d/parts/reviews/body-robes/README.md)；十二帧战斗完成，运行错误 0，单图均 <500000 B。
+
+最不满意：浅色文士袍的小扣在游戏尺度偏弱，兽皮胸面的素色毛色片仍待后续花纹批次统一。后续按最新固定队列先做毛色花纹，再做英雄专属造型，与 A10 地面贴花交替。
 
 ## 披挂（`src/art3d/parts/back.ts`）
 
@@ -180,14 +206,40 @@
 
 | 花纹 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- |
-| `tabby` | 底版 | 0 | |
-| `tuxedo` | 底版 | 0 | |
-| `calico` | 底版 | 0 | |
-| `point` | 底版 | 0 | |
-| `spots` | 底版 | 0 | |
-| `cow` | 底版 | 0 | |
-| `tortie` | 底版 | 0 | |
-| `butterfly` | 底版 | 0 | |
+| `tabby` | 待审 | 1 | 11 使用者（7 英雄 + 4 杂兵）；前脸 u=.25 的额头 M、双颊纹、沿 z 的尾环；codex/3d-patterns-coat-basics |
+| `tuxedo` | 待审 | 1 | 6 使用者（2 英雄 + 4 杂兵）；前脸白鼻梁接下颌，body 白袜；胸领 / 手爪由既有引擎材质提供；codex/3d-patterns-coat-basics |
+| `calico` | 待审 | 1 | 4 使用者（2 英雄 + 2 杂兵）；浅底与橘 / 深块、不对称侧后块；保留实际毛色数据；codex/3d-patterns-coat-basics |
+| `point` | 待审 | 1 | 5 使用者（4 英雄 + 1 杂兵）；前脸渐深面罩，保留嫦喵浅冷蓝；codex/3d-patterns-coat-special |
+| `spots` | 待审 | 1 | 7 使用者（3 英雄 + 4 杂兵）；开口玫瑰环，脸侧留眼周空间；codex/3d-patterns-coat-special |
+| `cow` | 待审 | 1 | 5 使用者（2 英雄 + 3 杂兵）；浅底、不对称大斑，解决 accent=base 时底版斑纹不可见；codex/3d-patterns-coat-special |
+| `tortie` | 待审 | 1 | 孟喵优；深棕底与橙金大斑，不引入白色；codex/3d-patterns-coat-special |
+| `butterfly` | 待审 | 1 | 南华喵；前脸额头四瓣镜像毛色，中央负空间；codex/3d-patterns-coat-special |
+
+### 毛色花纹第 2 批检查
+
+`point / spots / cow / tortie / butterfly` 覆盖 19 使用者（11 英雄 + 8 杂兵），第 1 轮待审，首批三种在 #102 待审。本批从 `aa9afd3` 独立制作，只改五种花纹与审图 / 进度；保留三种首批基线输出、solid / shaded、缓存与 public API，未带入未合并 #102 实现。
+
+参考 11 张实际英雄 JPG 与 `ART_PROMPTS.md`。重点色的前脸渐深面罩保留嫦喵冷浅蓝；豹纹改为开口玫瑰环；奶牛改为浅底大斑，解决既定 accent=base 时底版图案不可见；玳瑁保留深底橘金大块；蝶斑为额心左右四瓣毛色与中央负空间。所有颜色来自既有 coat 字段，按 +z / u=.25 放置正脸。
+
+`npm run typecheck && npm test` 通过，66 文件 / 987 项测试。独立 QA：38 张目标 head/body 纹理均 256²、sRGB、全不透明，缓存 / 独立像素确定性 38/38，116 非目标输出逐 RGBA 或 null 同基线；3800 热调用新增 Canvas 0、全 77 位使用者 SSR 154/154 返回 null。两 mode 的 Canvas 约 9.5 MiB、默认 mipmap GPU 数据约 12.67 MiB，纹理数量 / 尺寸与基线相同，没有新网格或逐帧分配。
+
+266 全姿势静态与 228 三姿势动画样本中，正常烘焙几何属性 / 索引一致、世界坐标最大差 0、非有限 / 新取景回归 0。既有头饰上裁切保留，静态 41 / 动画 38 与基线相同，最高静态 y=3.74145395，FRAME 上界 3.6。边缘像素有 13 张相同 / 25 张非零差，不称数学无缝；实际审核视角未見明显硬缝。方法和有限性见 [QA](../src/art3d/parts/reviews/patterns-special/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/patterns-special/qa-summary.json)。
+
+审核图：[三姿势](../src/art3d/parts/reviews/patterns-special/poses.png)、[真实十猫战斗](../src/art3d/parts/reviews/patterns-special/battle.webp)、[原生小画布](../src/art3d/parts/reviews/patterns-special/poses-small.png)、[边界杂兵](../src/art3d/parts/reviews/patterns-special/boundaries.png)、[正常烘焙前后对照](../src/art3d/parts/reviews/patterns-special/before-after.png)；0 / ±32 / 148° 与真实参数见 [记录](../src/art3d/parts/reviews/patterns-special/README.md)。七次官方截图与十二帧战斗完成，页面运行错误 0，交付图片均 <500000 B、无损导出 RGB 差 0。
+
+最不满意：南华蓝色四瓣的下瓣在战斗尺度偏弱，尾玫瑰环受低分段球面拉伸。耳、爪、胸绒领、袖子仍为引擎独立纯色；重点色末尾仍取 light，ring 尾奇段仍取既有 stripe / fallback。需 Claude 扩展挂接契约才能改变这些部位，本批不改引擎。后续继续 SP 专属造型，与 A10 裂缝贴花交替。
+
+### 毛色花纹第 1 批检查
+
+`tabby / tuxedo / calico` 首批覆盖 21 使用者（11 英雄 + 10 杂兵），第 1 轮待审。参考实际刘喵备、吕布丁、貂蝉喵、庞喵统 JPG 与 `ART_PROMPTS.md`，花纹按球面前脸 u≈0.25 放置；仅改程序化 256² head/body CanvasTexture，不改猫模型、五官、数据或其他五种纹样。
+
+`npm run typecheck && npm test` 通过，65 文件 / 980 项测试。42 张纹理冷缓存创建 42 Canvas，同描述 42/42 命中，独立模块 42/42 像素确定；暖调用 4200 次没有新 Canvas，其余 112 head/body 输出逐 RGBA 与基线相同。全批创建两个 mode 时 RGBA Canvas 约 10.5 MiB、含默认 mipmap 的 GPU 数据约 14 MiB，与原实现纹理数量 / 分辨率相同，没有新增网格或逐帧分配。
+
+独立检查覆盖 294 全姿势静态与 252 三姿势动画样本，正常烘焙几何属性和索引均与基线相同，顶点差 0、非有限 0、新取景回归 0；保留吕布丁已有头饰上裁切 / 背挂下裁切：静态 11 例（头饰 7 / 背挂 4）、动画 12 例（头饰 8 / 背挂 4），与基线相同。具体采样、缓存、UV 和视觉限制见 [QA 摘要](../src/art3d/parts/reviews/patterns-basics/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/patterns-basics/qa-summary.json)。
+
+审核图：[代表三姿势](../src/art3d/parts/reviews/patterns-basics/poses.png)、[真实十猫战斗](../src/art3d/parts/reviews/patterns-basics/battle.webp)、[原生紧凑画布](../src/art3d/parts/reviews/patterns-basics/poses-190px.png)、[边界杂兵](../src/art3d/parts/reviews/patterns-basics/mobs-poses-190px.png)、[前后对照](../src/art3d/parts/reviews/patterns-basics/before-after.png)；正面、反侧与背面、实参和冻结哈希见 [记录](../src/art3d/parts/reviews/patterns-basics/README.md)。七次官方拍图及十二帧战斗已完成，页面运行错误 0，图片均 <500000 B。
+
+最不满意：浅虎斑杂兵 M 对比弱，三花朝橘块的 32° 视角露出深块较少。body 纹理共享小腿与每个尾球 UV，燕尾尾腹浅带 / 三花块面会随尾节重复；手爪、耳和胸绒领仍由引擎独立材质决定。没有把 body 图上的白围兜宣称为实际躯干已重画。燕尾边界有一行抗锯齿差，不称逐像素无缝。继续剩余五种花纹与 A10 贴花，再做专属造型。
 
 ## 英雄专属造型（`src/art3d/heroes.ts` 的 `HERO_PARTS`）
 
