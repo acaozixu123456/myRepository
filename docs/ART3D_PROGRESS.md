@@ -380,3 +380,9 @@ src/art3d/parts/hero-ur-weapons.ts
 - 固定e777的typecheck与68文件 / 1019测试通过；主线随后日期修订的同步和提交前复检由维护者另记。原aa9/e6和fece图与报告完整保留为历史，当前交付使用current-e777，历史数据不充当当前复核。最不满意：strike羽扇仍呈窄斜面；月桂叶脉/月珠及前举侧弓饰在战斗尺度较小。
 
 提交前另同步主线 `29f6a8b` 日期测试修复；相关 art3d/look/actor/player 与 e777 累计变化为0，18源/9图保持原记录。维护者再次实际 typecheck + test 退出0，68文件 / 1019测试全通过。
+
+### SSR 蜀族专属制作中（第0轮，通过0）
+
+`codex/3d-heroes-shu-icons` 公开认领后三位蜀族SSR，仅做 HERO_PARTS 对应 weapon 覆盖与新helper：关云喵 `shu_guanyunmiao` 青龙偃月鱼骨刀、张喵飞 `shu_zhangmiaofei` 圆钝蛇矛、诸葛喵亮 `shu_zhugemiaoliang` 逗猫羽扇。当前仅制作中认领、无成品或通过裁决，不改角色数据或通用武器；魏SSR三位属于另一线程PR #121，已合SP/UR保留，周喵瑜古琴暂不做。
+
+基线 `a01bfc286e1d583f9fd2dad9eb2fcefb88318680`，本工作树认领前实际 `npm run typecheck && npm test` 退出0，76文件 /1072测试。三张原JPG、ART_PROMPTS与实际lore已读，后续按公开资源优先检索、正常190px三姿势/四yaw与真实十猫命中/完整头壳和五官/89非目标验证完成后更新同一PR至第1轮待审；不等待其它PR审核停止本队列。
