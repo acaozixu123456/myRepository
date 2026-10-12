@@ -1,6 +1,6 @@
 // 场景氛围：天空 / 雾 / 光 / 调色 / 泛光的整套参数（纯数据）。每个场景有自己的时间与天气：
 // 街区是赛博雨夜，夜市是黄昏的暖光，港口是晚霞，森林是清晨，云岛是正午，宫阙是午后金光——不再千篇一律都是暗色霓虹。
-export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow' | 'beach';
+export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow' | 'beach' | 'onsen';
 export interface Atmos {
   /** 天空穹顶（false = 沿用纯色背景，街区的暗夜不用穹顶） */
   dome: boolean;
@@ -70,6 +70,13 @@ export const ATMOS: Record<MoodId, Atmos> = {
     fog: 0xd8f0fa, fogD: 0.0034, hemiSky: 0xeaf6ff, hemiGnd: 0xc8a878, hemiI: 0.72, sun: 0xfff2d8, sunI: 1.6, sunPos: [24, 58, 30],
     exposure: 0.95, env: 0.32, bloom: [0.3, 0.5, 0.95], grade: { cool: 0, ca: 0, vig: 0.6, sat: 1.15, tint: [1.02, 1.0, 0.98] }, keyLight: 0.5, lit: 0.28,
     skyBand: 'sky_cloud_noon_cumulus_04',
+  },
+  // 樱汤乡：春天的傍晚，粉色的天，温泉热气被夕阳照成金色
+  onsen: {
+    dome: true, skyTop: 0x6a7ad8, skyMid: 0xf0a8c0, horizon: 0xffe0c8, discColor: 0xffe8c0, discSize: 0.05,
+    fog: 0xf4d0d8, fogD: 0.0042, hemiSky: 0xffe0e8, hemiGnd: 0x6a5a58, hemiI: 0.85, sun: 0xffd0a0, sunI: 1.8, sunPos: [-40, 34, -30],
+    exposure: 1.0, env: 0.35, bloom: [0.38, 0.5, 0.9], grade: { cool: 0, ca: 0, vig: 0.7, sat: 1.12, tint: [1.05, 0.99, 0.98] }, keyLight: 0.6, lit: 0.32,
+    skyBand: 'sky_dusk_peach_01',
   },
   // 宫阙：午后金光，朱墙金瓦
   palace: {

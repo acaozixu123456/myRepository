@@ -9,6 +9,7 @@ import { buildMarket } from './market';
 import { buildPalace } from './palace';
 import { buildSnow } from './snow';
 import { buildBeach } from './beach';
+import { buildOnsen } from './onsen';
 
 export function buildTheme(L: LevelDef): Street {
   switch (L.theme) {
@@ -20,6 +21,7 @@ export function buildTheme(L: LevelDef): Street {
     case 'desert': return buildDesert(L);
     case 'snow': return buildSnow(L);
     case 'beach': return buildBeach(L);
+    case 'onsen': return buildOnsen(L);
     default: throw new Error(`未实现的场景主题：${L.theme}`);
   }
 }
