@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { solid, sphere, toon } from '../toon';
 import type { PartBuilder, PartCtx } from './types';
+import { scholarRobe, taoistRobe, tribalHide } from './body-robes';
 
 /** 车削袍身：y 从下摆(≈-0.36)到领口(≈1.32)。下摆（腰以下）挂在 hip 上，不会跟着上身前倾翻起来：放进 userData.skirt，由 cat3d 挪到 hip。 */
 function robe(c: PartCtx, o: { hem: number; waist: number; chest: number; col?: string; trimCol?: string; collar?: boolean; front?: boolean; sash?: boolean }): THREE.Group {
@@ -123,14 +124,14 @@ function tassets(c: PartCtx, col: string, r: number, n = 7): THREE.Group {
 }
 
 export const BODY: Record<string, PartBuilder> = {
-  robeScholar: (c) => { const g = robe(c, { hem: 0.62, waist: 0.4, chest: 0.5 }); g.add(mantle(c, c.pal.cloth ?? c.pal.sub)); return g; },
-  robeTaoist: (c) => { const g = robe(c, { hem: 0.68, waist: 0.42, chest: 0.5 }); g.add(mantle(c, c.pal.cloth ?? c.pal.sub)); return g; },
+  robeScholar: scholarRobe,
+  robeTaoist: taoistRobe,
   robeSilk: (c) => { const g = robe(c, { hem: 0.72, waist: 0.4, chest: 0.5 }); g.add(mantle(c, c.pal.sub)); return g; },
   dress: (c) => { const g = robe(c, { hem: 0.78, waist: 0.38, chest: 0.48 }); g.add(mantle(c, c.pal.sub)); return g; },
   vest: (c) => robe(c, { hem: 0.5, waist: 0.42, chest: 0.5 }),
   armorWei: (c) => { const g = robe(c, { hem: 0.58, waist: 0.44, chest: 0.54, col: c.pal.main }); g.add(chestPlate(c, c.pal.sub), pauldrons(c, c.pal.main)); (g.userData.skirt as THREE.Group).add(tassets(c, c.pal.sub, 0.55)); return g; },
   armorHeavy: (c) => { const g = robe(c, { hem: 0.6, waist: 0.48, chest: 0.58, col: c.pal.main }); g.add(chestPlate(c, '#667286'), pauldrons(c, '#667286', true)); (g.userData.skirt as THREE.Group).add(tassets(c, '#667286', 0.6)); return g; },
   armorLight: (c) => { const g = robe(c, { hem: 0.55, waist: 0.42, chest: 0.5 }); g.add(chestPlate(c, c.pal.sub, false), pauldrons(c, c.pal.sub)); (g.userData.skirt as THREE.Group).add(tassets(c, c.pal.sub, 0.5, 6)); return g; },
-  tribal: (c) => { const g = robe(c, { hem: 0.5, waist: 0.4, chest: 0.4, col: '#b88a54', trimCol: '#efe6d2', collar: false, front: false }); g.add(mantle(c, '#efe6d2')); return g; },
+  tribal: tribalHide,
   rattan: (c) => { const g = robe(c, { hem: 0.56, waist: 0.44, chest: 0.52, col: '#b08a54' }); g.add(chestPlate(c, '#8a6a3a', false), pauldrons(c, '#8a6a3a')); return g; },
 };

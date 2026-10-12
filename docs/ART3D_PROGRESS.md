@@ -136,16 +136,28 @@
 
 | 部件 | 使用者 | 状态 | 轮次 | 备注 |
 | --- | --- | --- | --- | --- |
-| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR) 等7只 | 底版 | 0 | |
-| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 底版 | 0 | |
-| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR) 等7只 | 底版 | 0 | |
-| `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR) 等5只 + 杂兵×2 | 底版 | 0 | |
-| `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR) 等4只 + 杂兵×2 | 底版 | 0 | |
-| `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR) 等7只 + 杂兵×12 | 底版 | 0 | |
+| `robeSilk` | `wei_simamiyi`(SP), `shu_pangmiaotong`(SP), `wei_caomiaode`(UR), `shu_liumiaobei`(UR), `wu_zhoumiaoyu`(UR), `shu_guanyunmiao`(SSR), `qun_dongzhuo`(SR) | 待审 | 1 | 16 网格；交领、金边、压褶；[#99](https://github.com/acaozixu123456/myRepository/pull/99) 已提交，尚未合并 |
+| `dress` | `xian_changmiao`(SP), `qun_diaochan`(SSR) | 待审 | 1 | 18 网格；双层波边裙、蝴蝶腰结；[#99](https://github.com/acaozixu123456/myRepository/pull/99) 已提交，尚未合并 |
+| `armorHeavy` | `qun_lvbuding`(UR), `wei_xiahoudun`(SSR), `shu_zhangmiaofei`(SSR), `shu_zhaomiaoyun`(SSR), `wei_xuhuang`(SR), `wu_huanggai`(SR), `qun_huaxiong`(SR) | 待审 | 1 | 24 网格；三层金属肩甲、护心镜、五片裙甲；[#99](https://github.com/acaozixu123456/myRepository/pull/99) 已提交，尚未合并 |
+| `robeTaoist` | `xian_zuoci`(UR), `shu_zhugemiaoliang`(SSR), `qun_zhangjiao`(SSR), `xian_zhangzhua`(SSR), `xian_yuji`(SSR) + 杂兵×2（`mob_xian_guard`, `mob_xian_strategist`） | 待审 | 1 | 21 网格；宽交领、阴阳纹、符袋；codex/3d-body-robes |
+| `tribal` | `man_mengmiaohuo`(UR), `man_zhurong`(SSR), `man_mulu`(SSR), `man_shamoke`(SSR) + 杂兵×2（`mob_man_vanguard`, `mob_man_strategist`） | 待审 | 1 | 24 网格；露毛胸面、骨扣、三片短皮裙；codex/3d-body-robes |
+| `robeScholar` | `wu_luxun`(SSR), `qun_huatuo`(SSR), `xian_shuijing`(SSR), `wei_guojia`(SR), `shu_jiangwei`(SR), `xian_guanlu`(SR), `xian_nanhua`(SR) + 杂兵×12（`mob_wei_strategist`, `mob_wei_healer`, `mob_shu_strategist`, `mob_shu_healer`, `mob_wu_strategist`, `mob_wu_healer`, `mob_qun_strategist`, `mob_qun_healer`, `mob_man_healer`, `mob_xian_vanguard`, `mob_xian_healer`, `mob_xian_assassin`） | 待审 | 1 | 18 网格；短翼领、侧开裾、侧扣；codex/3d-body-robes |
 | `armorLight` | `wei_xuhuchi`(SSR), `wu_sunxiaoba`(SSR), `wu_sunxiangxiang`(SSR) 等5只 + 杂兵×7 | 底版 | 0 | |
 | `armorWei` | `wei_zhangliao`(SSR) + 杂兵×2 | 底版 | 0 | |
 | `vest` | `wu_ganning`(SR), `man_mengyou`(SR) + 杂兵×9 | 底版 | 0 | |
 | `rattan` | `man_wutugu`(SR) + 杂兵×2 | 底版 | 0 | |
+
+### 衣服第 2 批检查
+
+`codex/3d-body-robes` 交付道袍 / 兽皮 / 文士袍，第 1 轮待审；共 32 使用者（16 英雄 + 16 杂兵），核对原表 5+2 / 4+2 / 7+12 数量正确，已补齐 ID。第 1 批衣服在 #99 待审，本批从主分支 `bf37bd3` 独立制作，保留最新大头比例、大肉垫、毛领、靴子和去除斑点高光的 Toon，不依赖未合并的 #99。
+
+参考 `ART_PROMPTS.md` 和实际英雄 JPG，配色来自 `pal` / `fur` / `light`。道袍用宽交领与长垂带，兽皮用交绑与短皮裙，文士袍用短翼领与侧襟直裾。局部实现放在 `parts/body-robes.ts`，只更新对应三件注册函数，下摆仍挂 hip。
+
+`npm run typecheck && npm test` 通过：65 个测试文件、980 项测试，退出码 0。三件逻辑网格为 21 / 24 / 18，分段最大 24，重复构建复用缓存材质。独立 QA 的 448 全姿势与 1152 动画样本中，衣服自身出框、眼 / 鼻口样点遮挡、非有限坐标及新增整猫取景回归均为 0；每眼最低 71 个有效三角投影样本。普通蒙皮整猫保留与基线相同的头饰上裁切，三姿势 / 全姿势 / 动画为 8 / 27 / 49；最高 y=3.696244，FRAME 上界 3.6，双方采样边界一致。构建时固定腰口 y=0.57，收短裙面至约 -0.214～-0.216，露靴且根变换保持单位。方法、源码冻结与有限观测范围见 [QA 摘要](../src/art3d/parts/reviews/body-robes/qa-summary.md) / [机器报告](../src/art3d/parts/reviews/body-robes/qa-summary.json)。
+
+审核图：[三姿势](../src/art3d/parts/reviews/body-robes/poses.png)、[真实十猫战斗](../src/art3d/parts/reviews/body-robes/battle.webp)、[小尺寸](../src/art3d/parts/reviews/body-robes/poses-small.png)、[最新同引擎前后对照](../src/art3d/parts/reviews/body-robes/before-after.png)、[体宽与深色杂兵](../src/art3d/parts/reviews/body-robes/boundaries.png)。命令和截图版本记录见 [说明](../src/art3d/parts/reviews/body-robes/README.md)；十二帧战斗完成，运行错误 0，单图均 <500000 B。
+
+最不满意：浅色文士袍的小扣在游戏尺度偏弱，兽皮胸面的素色毛色片仍待后续花纹批次统一。后续按最新固定队列先做毛色花纹，再做英雄专属造型，与 A10 地面贴花交替。
 
 ## 披挂（`src/art3d/parts/back.ts`）
 
