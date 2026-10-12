@@ -65,7 +65,7 @@ function buildEye(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE
     g.add(arc);
     return g;
   }
-  const w = (st.w ?? 1) * 0.15, h = 0.15 * st.h;
+  const w = (st.w ?? 1) * 0.165, h = 0.165 * st.h;
   const white = new THREE.Mesh(sphere(1, w, h, 0.07, 14), toon('#fffaf0'));
   white.position.z = 0.0;
   const iris = new THREE.Mesh(sphere(1, w * 0.82, h * 0.86, 0.07, 14), toon(look.eye.color));
@@ -74,7 +74,11 @@ function buildEye(look: CatLook, side: 1 | -1, fur: string, pink: string): THREE
   pupil.position.z = 0.055;
   const hi = new THREE.Mesh(sphere(1, w * 0.26, w * 0.26, 0.05, 8), toon('#ffffff', { emissive: '#ffffff' }));
   hi.position.set(-w * 0.28 * side, h * 0.3, 0.08);
-  g.add(white, iris, pupil, hi);
+  const glow = new THREE.Mesh(sphere(1, w * 0.55, h * 0.3, 0.07, 10), toon('#' + new THREE.Color(look.eye.color).lerp(new THREE.Color('#ffffff'), 0.55).getHexString()));
+  glow.position.set(0, -h * 0.46, 0.066);
+  const hi2 = new THREE.Mesh(sphere(1, w * 0.12, w * 0.12, 0.05, 6), toon('#ffffff', { emissive: '#ffffff' }));
+  hi2.position.set(w * 0.34 * side, -h * 0.28, 0.085);
+  g.add(white, iris, glow, pupil, hi, hi2);
   // 上眼睑线（让眼神更有精神）
   const lash = new THREE.Mesh(new THREE.TorusGeometry(h * 0.95, 0.02, 5, 14, Math.PI * 0.9), toon('#2a1c22'));
   lash.scale.set(w / h, 1, 1); lash.rotation.z = Math.PI * 0.05; lash.position.set(0, 0.0, 0.06);
@@ -148,9 +152,16 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
     const shin = solid(capsule(0.115, 0.3), furMat);
     shin.position.y = -0.1;
     knee.add(shin);
-    const boot = solid(sphere(0.17, 1, 0.7, 1.45), toon(pal.trim === '#ffffff' ? '#5a3a2a' : '#4a3028'));
-    boot.position.set(0, -0.25, 0.08);
-    knee.add(boot);
+    const bootCol = pal.trim === '#ffffff' ? '#5a3a2a' : '#4a3028';
+    const sole = solid(sphere(0.19, 1.0, 0.6, 1.55), toon(bootCol), 0.02);
+    sole.position.set(0, -0.28, 0.1);
+    const ankle = solid(sphere(0.15, 1, 1, 1), toon(bootCol), 0.02);
+    ankle.position.set(0, -0.16, 0.0);
+    const toe = solid(sphere(0.13, 1, 0.75, 1), toon('#' + new THREE.Color(bootCol).lerp(new THREE.Color('#ffffff'), 0.22).getHexString()), 0.014);
+    toe.position.set(0, -0.29, 0.31);
+    const cuffB = solid(new THREE.TorusGeometry(0.135, 0.032, 6, 14), toon(pal.trim), 0.006);
+    cuffB.rotation.x = Math.PI / 2; cuffB.position.set(0, -0.08, 0);
+    knee.add(sole, ankle, toe, cuffB);
     h.add(knee);
     hip.add(h);
     return { h, knee };
@@ -200,11 +211,26 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
     w.rotation.y = -s * 0.5;
     head.add(w);
   }
+  // 脸颊绒毛：每边三簇向外翘的小毛尖，一眼就是猫（探索里远看也有轮廓）
+  for (const sd of [1, -1]) for (let i = 0; i < 3; i++) {
+    const t = solid(new THREE.ConeGeometry(0.075 - i * 0.008, 0.26 - i * 0.03, 5), toon(fur), 0.012);
+    t.position.set(sd * (0.66 - i * 0.015), -0.12 - i * 0.07, 0.28 - i * 0.04);
+    t.rotation.set(0.1, 0, sd * (-1.25 - i * 0.18));
+    head.add(t);
+  }
   const earL = buildEar(look, 1, fur, pink), earR = buildEar(look, -1, fur, pink);
   head.add(earL, earR);
   const headTop = grp('headTop', 0, 0.14 + 0.6 * headK, 0);
   const face = grp('face', 0, -0.04, 0.63);
   head.add(headTop, face);
+
+  // 胸前绒领：浅色毛球绕脖子一圈，露在领口外面（给袍子和甲都添一点毛茸茸）
+  for (let i = 0; i < 9; i++) {
+    const a = (i / 9) * Math.PI * 2;
+    const f = solid(sphere(0.095, 1, 0.9, 1, 10), lightMat, 0.01);
+    f.position.set(Math.sin(a) * 0.31, 1.3 + (Math.abs(Math.sin(a)) < 0.2 ? 0.02 : 0), Math.cos(a) * 0.31);
+    neck.add(f); f.position.y -= 1.2;
+  }
 
   // ---- 手臂 ----
   const mkArm = (side: 1 | -1) => {
@@ -238,7 +264,8 @@ export function buildCat3D(look: CatLook, heroId?: string): Cat3D {
     const j = grp('tail' + i, i === 0 ? 0 : 0, i === 0 ? 0.15 : 0.0, i === 0 ? -0.4 : -0.2);
     const r = (look.tail === 'bushy' ? 0.15 : 0.1) * (1 - i * 0.06) * (look.tail === 'bushy' && i > 1 ? 1.25 : 1);
     const stripe = look.tail === 'ring' && i % 2 === 1;
-    const seg = solid(sphere(r, 1, 1, 1.55, 12), stripe ? toon(look.coat.stripe ?? '#3a2a24') : furMat, 0.02);
+    const tip = i === nSeg - 1 && look.tail !== 'ring';
+    const seg = solid(sphere(r, 1, 1, 1.55, 12), stripe ? toon(look.coat.stripe ?? '#3a2a24') : tip ? lightMat : furMat, 0.02);
     seg.position.z = -0.08;
     j.add(seg);
     j.rotation.x = i === 0 ? 0.9 : -0.18; // 尾巴先向后上方翘，再逐节上扬

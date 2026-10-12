@@ -29,14 +29,14 @@ export function openBoxCat(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>📦🐱</h3><div class="fish-status"></div><div class="bc-stage"></div><div class="bc-streak"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-bc="main">▶</button><button class="btn blue" data-bc="cash" style="display:none">💰</button><button class="btn ghost" data-bc="close">${icon('close', 22)}</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>📦🐱 找猫猫</h3><div class="fish-status"></div><div class="bc-stage"></div><div class="bc-streak"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-bc="main">▶ 开始</button><button class="btn blue" data-bc="cash" style="display:none">💰 见好就收</button><button class="btn ghost" data-bc="close">${icon('close', 18)} 离开</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const status = q<HTMLElement>('.fish-status'), stage = q<HTMLElement>('.bc-stage'), streakEl = q<HTMLElement>('.bc-streak'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-bc="main"]'), cash = q<HTMLButtonElement>('[data-bc="cash"]');
     let phase: Phase = 'idle', streak = 0, rd: Round, alive = true;
     let boxes: HTMLElement[] = [], slotOf: number[] = [];
 
-    const refresh = () => { info.innerHTML = `🎮 ${gamesLeft(ctx.s)}`; streakEl.innerHTML = streak > 0 ? `${'🔥'.repeat(streak)}<span style="opacity:.35">${'🔥'.repeat(MAX_ROUND - streak)}</span> ${gainIcons(rewardFor(ctx.s, streak), 16)}` : ''; };
+    const refresh = () => { info.innerHTML = `🎮 今日剩余 ${gamesLeft(ctx.s)} 局`; streakEl.innerHTML = streak > 0 ? `${'🔥'.repeat(streak)}<span style="opacity:.35">${'🔥'.repeat(MAX_ROUND - streak)}</span> ${gainIcons(rewardFor(ctx.s, streak), 16)}` : ''; };
     const say = (t: string) => { status.innerHTML = t; };
     const place = () => boxes.forEach((b, i) => { b.style.left = `${((slotOf[i] + 0.5) / rd.boxes) * 100}%`; });
     const build = (r: Round) => {
@@ -48,7 +48,7 @@ export function openBoxCat(ctx: AppCtx, host: Element): Promise<void> {
     const idle = () => {
       phase = 'idle'; refresh(); cash.style.display = 'none'; main.style.display = '';
       const left = gamesLeft(ctx.s) > 0;
-      main.disabled = !left; main.innerHTML = left ? '▶' : '😴';
+      main.disabled = !left; main.innerHTML = left ? '▶ 开始' : '😴 今天玩够啦';
       say(`<span class="mg-big">${left ? '📦🐱 ➜ 🔀 ➜ 👆' : '😴'}</span>`);
       stage.innerHTML = '';
     };
@@ -77,20 +77,20 @@ export function openBoxCat(ctx: AppCtx, host: Element): Promise<void> {
         streak++; recordFound(ctx.s); sfx.coin(); ctx.save();
         if (streak >= MAX_ROUND) { await bank(true); return; }
         say('<span class="mg-big">😸</span>');
-        refresh(); main.style.display = ''; main.disabled = false; main.innerHTML = '⏩'; cash.style.display = '';
+        refresh(); main.style.display = ''; main.disabled = false; main.innerHTML = '⏩ 下一轮'; cash.style.display = '';
       } else {
         sfx.no();
         const g = consolation(ctx.s, streak);
         if (streak > 0) { applyGain(ctx.s, g); ctx.save(); }
         say(`<span class="mg-big">😿</span>${streak > 0 ? gainIcons(g, 20) : ''}`);
-        streak = 0; refresh(); phase = 'over'; main.style.display = ''; main.innerHTML = gamesLeft(ctx.s) > 0 ? '🔁' : '😴'; main.disabled = gamesLeft(ctx.s) <= 0; cash.style.display = 'none';
+        streak = 0; refresh(); phase = 'over'; main.style.display = ''; main.innerHTML = gamesLeft(ctx.s) > 0 ? '🔁 再来一局' : '😴 今天玩够啦'; main.disabled = gamesLeft(ctx.s) <= 0; cash.style.display = 'none';
       }
     };
     const bank = async (perfect = false) => {
       const g = rewardFor(ctx.s, streak);
       applyGain(ctx.s, g); ctx.save(); sfx.up();
       say(`<span class="mg-big">${perfect ? '🏆' : '💰'}</span>${gainIcons(g, 20)}`);
-      streak = 0; refresh(); phase = 'over'; cash.style.display = 'none'; main.style.display = ''; main.innerHTML = gamesLeft(ctx.s) > 0 ? '🔁' : '😴'; main.disabled = gamesLeft(ctx.s) <= 0;
+      streak = 0; refresh(); phase = 'over'; cash.style.display = 'none'; main.style.display = ''; main.innerHTML = gamesLeft(ctx.s) > 0 ? '🔁 再来一局' : '😴 今天玩够啦'; main.disabled = gamesLeft(ctx.s) <= 0;
     };
     const press = () => { if (main.disabled || main.style.display === 'none') return; if (phase === 'idle' || phase === 'over') startGame(); else if (phase === 'decide') void playRound(streak + 1); };
     const close = () => { alive = false; window.removeEventListener('keydown', onKey); ov.remove(); ctx.save(); done(); };

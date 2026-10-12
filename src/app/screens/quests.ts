@@ -74,7 +74,7 @@ function taskHtml(ctx: AppCtx, quest: QuestDef): string {
   const progress = questProgress(ctx.s, quest);
   const category = QUEST_CATEGORIES[quest.id];
   const action = claimed || !available ? '' : ready ? 'qst-claim' : 'qst-go';
-  const label = claimed ? icon('check', 22) : !available ? icon('lock', 20) : ready ? icon('gift', 22) : '➡️';
+  const label = claimed ? `${icon('check', 20)}已领` : !available ? `${icon('lock', 18)}未开放` : ready ? `${icon('gift', 20)}领取` : '➡️ 去完成';
   return `<article class="panel qst-card${claimed ? ' qst-claimed' : !available ? ' qst-unavailable' : ready ? ' qst-ready' : ''}" data-quest-id="${esc(quest.id)}">
     <div class="qst-card-head"><div class="qst-card-title"><h3>${esc(quest.name)}</h3>${category ? `<span class="tag">${esc(category)}</span>` : ''}</div>
       <button class="btn sm ${ready ? 'green' : 'ghost'} qst-action" ${action ? `data-act="${action}" data-id="${esc(quest.id)}"` : 'disabled'}>${label}</button></div>

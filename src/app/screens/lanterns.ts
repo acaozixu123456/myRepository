@@ -26,7 +26,7 @@ export function openLanterns(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>🏮</h3><div class="fish-status"></div><div class="ln-grid"></div><div class="ln-moves"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-ln="main">▶</button><button class="btn blue" data-ln="reset" style="display:none">🔄</button><button class="btn ghost" data-ln="close">${icon('close', 22)}</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🏮 点灯谜题</h3><div class="fish-status"></div><div class="ln-grid"></div><div class="ln-moves"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-ln="main">▶</button><button class="btn blue" data-ln="reset" style="display:none">🔄 重来</button><button class="btn ghost" data-ln="close">${icon('close', 18)} 离开</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const status = q<HTMLElement>('.fish-status'), grid = q<HTMLElement>('.ln-grid'), movesEl = q<HTMLElement>('.ln-moves'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-ln="main"]'), reset = q<HTMLButtonElement>('[data-ln="reset"]');
@@ -36,12 +36,12 @@ export function openLanterns(ctx: AppCtx, host: Element): Promise<void> {
 
     const draw = () => cells.forEach((c, i) => c.classList.toggle('on', lit(state, i)));
     const dots = (cur: number) => `<div class="ln-dots">${Array.from({ length: PUZZLES }, (_, i) => `<b class="${i + 1 < cur ? 'ok' : i + 1 === cur ? 'cur' : ''}">${i + 1 < cur ? '✔' : '●'}</b>`).join('')}</div>`;
-    const refresh = () => { info.innerHTML = `🎮 ${runsLeft(ctx.s)}`; movesEl.innerHTML = phase === 'play' ? `👆 ${moves} <span class="par">/ ⭐ ${puzzle.par}</span>` : ''; };
+    const refresh = () => { info.innerHTML = `🎮 今日剩余 ${runsLeft(ctx.s)} 局`; movesEl.innerHTML = phase === 'play' ? `👆 ${moves} <span class="par">/ ⭐ ${puzzle.par}</span>` : ''; };
     const idle = () => {
       phase = 'idle'; state = 0; draw(); reset.style.display = 'none'; main.style.display = '';
       const left = runsLeft(ctx.s) > 0;
-      main.disabled = !left; main.innerHTML = left ? '▶' : '😴';
-      status.innerHTML = `<span class="mg-big">${left ? '🏮➜🏮🏮🏮' : '😴'}</span>`;
+      main.disabled = !left; main.innerHTML = left ? '▶ 开始' : '😴 今天玩够啦';
+      status.innerHTML = `<span class="mg-big">${left ? '🏮➜🏮🏮🏮' : '😴'}</span>${left ? '<span class="mg-sub">点一盏灯会翻转它和上下左右的灯，把所有灯点亮；步数越少星越多</span>' : ''}`;
       refresh();
     };
     const startPuzzle = () => {
@@ -63,7 +63,7 @@ export function openLanterns(ctx: AppCtx, host: Element): Promise<void> {
     const finish = () => {
       const st = stars(true, extra), g = lanternGain(ctx.s, st);
       applyGain(ctx.s, g); recordSolved(ctx.s, solvedN); ctx.save(); sfx.up();
-      phase = 'result'; reset.style.display = 'none'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴' : '🔁';
+      phase = 'result'; reset.style.display = 'none'; main.style.display = ''; main.disabled = runsLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天玩够啦' : '🔁 再来一局';
       status.innerHTML = `${starsHtml(st)}<div class="mg-sub" style="margin-top:6px">${gainIcons(g, 20)}</div>`;
       state = 0b111111111; draw(); movesEl.innerHTML = extra === 0 ? '🏆' : `➕ ${extra}`; refresh();
     };

@@ -35,18 +35,18 @@ export function openRamen(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>🍜</h3><div class="ramen-body"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-rm="main">🍜</button><button class="btn ghost" data-rm="close">${icon('close', 22)}</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🍜 深夜拉面馆</h3><div class="ramen-body"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-rm="main">🍜 接单</button><button class="btn ghost" data-rm="close">${icon('close', 18)} 离开</button></div></div>`;
     host.appendChild(ov);
     const body = ov.querySelector('.ramen-body') as HTMLElement, info = ov.querySelector('.fish-info') as HTMLElement, main = ov.querySelector('[data-rm="main"]') as HTMLButtonElement;
     let phase: Phase = 'idle', raf = 0, order: Topping[] = [], taps: Topping[] = [], customer = CUSTOMERS[0], t0 = 0;
-    const refreshInfo = () => { info.innerHTML = `🍜 ${ordersLeft(ctx.s)}`; };
+    const refreshInfo = () => { info.innerHTML = `🍜 今日剩余 ${ordersLeft(ctx.s)} 单`; };
     const stop = () => { cancelAnimationFrame(raf); raf = 0; };
     const progress = () => { let i = 0; for (const t of taps) { if (i < order.length && t === order[i]) i++; } return i; };
 
     const idle = () => {
       stop(); phase = 'idle'; refreshInfo();
-      main.style.display = ''; main.disabled = ordersLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴' : '🍜';
-      body.innerHTML = `<div class="ramen-ticket"><span class="mg-big">${main.disabled ? '😴' : '🍜 ➜ 🥩🥚🟩 ➜ 🎯'}</span></div>`;
+      main.style.display = ''; main.disabled = ordersLeft(ctx.s) <= 0; main.innerHTML = main.disabled ? '😴 今天打烊了' : '🍜 接单';
+      body.innerHTML = `<div class="ramen-ticket"><span class="mg-big">${main.disabled ? '😴' : '🍜 ➜ 🥩🥚🟩 ➜ 🎯'}</span>${main.disabled ? '' : '<small>接单 → 按客人点的配料依次加 → 在火候条的绿区按下出锅</small>'}</div>`;
     };
     const chipsHtml = () => { const p = progress(); return order.map((t, i) => `<i class="${i < p ? 'done' : i === p ? 'next' : ''}">${em(t)}</i>`).join('➜'); };
     const startOrder = () => {
@@ -78,7 +78,7 @@ export function openRamen(ctx: AppCtx, host: Element): Promise<void> {
       stop(); phase = 'boil'; t0 = performance.now();
       const lo = (BOIL_ZONE.center - BOIL_ZONE.half) * 100, w = BOIL_ZONE.half * 2 * 100;
       body.innerHTML = `<div class="ramen-ticket"><span class="mg-big">🔥</span></div><div class="ramen-bar"><div class="zone" style="left:${lo}%;width:${w}%"></div><div class="mk"></div></div>`;
-      main.style.display = ''; main.disabled = false; main.innerHTML = '🥢';
+      main.style.display = ''; main.disabled = false; main.innerHTML = '🥢 出锅!';
       const mk = body.querySelector('.mk') as HTMLElement;
       const tick = (now: number) => { if (phase !== 'boil') return; mk.style.left = `${markerPos((now - t0) / 1000) * 100}%`; raf = requestAnimationFrame(tick); };
       raf = requestAnimationFrame(tick);
@@ -95,7 +95,7 @@ export function openRamen(ctx: AppCtx, host: Element): Promise<void> {
       const g = ramenGain(ctx.s, st);
       if (st > 0) { applyGain(ctx.s, g); sfx.coin(); if (st === 3) sfx.up(); } else sfx.no();
       recordBowl(ctx.s, st); ctx.save();
-      phase = 'result'; main.style.display = ''; main.disabled = false; main.innerHTML = ordersLeft(ctx.s) > 0 ? '🔁' : '😴'; if (ordersLeft(ctx.s) <= 0) main.disabled = true;
+      phase = 'result'; main.style.display = ''; main.disabled = false; main.innerHTML = ordersLeft(ctx.s) > 0 ? '🔁 下一单' : '😴 今天打烊了'; if (ordersLeft(ctx.s) <= 0) main.disabled = true;
       const face = !served ? '😾' : boil === 'miss' ? '😿' : st === 3 ? '😻' : '😺';
       body.innerHTML = `<span class="mg-big">${face}</span>${starsHtml(st)}<div style="margin-top:6px">${st > 0 ? gainIcons(g, 20) : ''}</div>`;
       refreshInfo();

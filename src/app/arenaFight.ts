@@ -47,7 +47,7 @@ const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 export async function arenaFight(host: HTMLElement, s: PlayerState, stage: StageDef, chapter: number, speed = 2, banner = '', backdrop: HTMLCanvasElement | null = null): Promise<FightResult> {
   const ov = document.createElement('div');
   ov.className = 'arena-ov';
-  ov.innerHTML = `<canvas></canvas><button class="skip" data-skip>快进 »</button>${banner ? `<div class="arena-banner">${banner}</div>` : ''}`;
+  ov.innerHTML = `<canvas></canvas><button class="skip" data-skip>快进 »</button><button class="skip skip2" data-skipall>跳过 ⏭</button>${banner ? `<div class="arena-banner">${banner}</div>` : ''}`;
   ov.classList.add('wipe-in');
   host.appendChild(ov);
   const canvas = ov.querySelector('canvas') as HTMLCanvasElement;
@@ -60,6 +60,7 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
   player.setSpeed(speed);
   player.scene.start();
   (ov.querySelector('[data-skip]') as HTMLElement).onclick = () => { player.skipping = true; player.setSpeed(8); };
+  (ov.querySelector('[data-skipall]') as HTMLElement).onclick = () => { player.aborted = true; player.skipping = true; player.setSpeed(8); };
   let carry: Record<string, { hpPct: number; energy: number }> | undefined;
   let win = true, damagePct = 0;
   try {
@@ -67,16 +68,18 @@ export async function arenaFight(host: HTMLElement, s: PlayerState, stage: Stage
       const sim = simulate({ seed: (Math.random() * 1e9) | 0, A: lineupSetups(s, carry), B: waveSetups(stage, w), rules: stage.ruleFx });
       const foes = sim.units.filter((u) => u.side === 'B');
       damagePct = foes.reduce((a, u) => a + (u.maxHp - Math.max(0, u.hp)), 0) / Math.max(1, foes.reduce((a, u) => a + u.maxHp, 0));
-      const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
-      await player.setup(start, CHAPTER_THEME[chapter] ?? 'street');
-      if (backdrop) { player.scene.bg = backdrop; player.scene.bgDrift = true; }
-      const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
-      await player.play(evs);
+      if (!player.aborted) {
+        const start = sim.events[0] as Extract<BEvent, { t: 'start' }>;
+        await player.setup(start, CHAPTER_THEME[chapter] ?? 'street');
+        if (backdrop) { player.scene.bg = backdrop; player.scene.bgDrift = true; }
+        const evs = sim.events.slice(1).filter((e) => !(e.t === 'end' && w < stage.waves.length - 1));
+        await player.play(evs);
+      }
       if (sim.winner !== 'A') { win = false; break; }
       carry = {};
       for (const u of sim.units) if (u.side === 'A') carry[u.heroId] = { hpPct: u.alive ? u.hp / u.maxHp : 0, energy: u.energy };
     }
-    await player.sleep(win ? 1.0 : 1.5);
+    if (!player.aborted) await player.sleep(win ? 1.0 : 1.5);
   } catch (e) {
     // 战斗中途出错也要收拾干净：停时钟 / 雨层、拆浮层，否则雨的动画循环会一直跑
     player.scene.stop(); stopRain(); ov.remove();

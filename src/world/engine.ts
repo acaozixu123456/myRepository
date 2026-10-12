@@ -1,4 +1,6 @@
 // 3D 世界渲染：透视「微缩景观」相机 + 泛光（赛博朋克霓虹）+ 雾 + 雨。画布在界面里占满，HUD 用 DOM 叠在上面。
+import { litK } from '../art3d/toon';
+const WORLD_LIT = 0.7;
 import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -186,6 +188,7 @@ export class WorldView {
       const cp = Math.cos(0.2), sp = Math.sin(0.2), d = 26, f = this.focus;
       this.camera.position.set(f.x + Math.sin(yaw) * cp * d, f.y + 1.6 + sp * d * 0.5, f.z + Math.cos(yaw) * cp * d);
       this.camera.lookAt(f.x, f.y + 3.4, f.z);
+      litK.value = WORLD_LIT;
       if (this.composer) this.composer.render(0); else this.renderer.render(this.scene, this.camera);
       const out = document.createElement('canvas'); out.width = w; out.height = h;
       const g = out.getContext('2d')!;
@@ -219,6 +222,7 @@ export class WorldView {
       a.needsUpdate = true;
       this.rain.position.set(Math.round(this.focus.x / 45) * 45 * 0, 0, 0);
     }
+    litK.value = WORLD_LIT;
     if (this.composer) this.composer.render(dt); else this.renderer.render(this.scene, this.camera);
   }
 

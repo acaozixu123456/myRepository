@@ -26,13 +26,13 @@ export function homeHtml(): string {
   <div class="screen home on" data-screen="home">
     <div class="hud" id="hud"></div>
     <div class="stagebar" id="stagebar"></div>
-    <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="autopush" id="autoBtn">⏩</button><button data-act="speed" id="speedBtn">2×</button></div><div class="rule" id="rule"></div></div>
+    <div class="arena"><canvas id="cv"></canvas><div class="stagebadge" id="badge"></div><div class="tools"><button data-act="autopush" id="autoBtn">⏩</button><button data-act="speed" id="speedBtn">2×</button><button data-act="skipfight" title="跳过战斗">⏭</button></div><div class="rule" id="rule"></div></div>
     <div class="teamstrip" id="team" data-act="nav" data-to="lineup"></div>
     <div class="idle panel" id="idle"></div>
     <div class="actions">
-      <button class="btn green" data-act="challenge" id="chBtn">⚔️</button>
-      <button class="btn blue" data-act="autolevel">⬆️</button>
-      <button class="btn pink" data-act="gift" id="giftBtn">🎁</button>
+      <button class="btn green" data-act="challenge" id="chBtn">⚔️ 挑战</button>
+      <button class="btn blue" data-act="autolevel">⬆️ 一键升级</button>
+      <button class="btn pink" data-act="gift" id="giftBtn">🎁 每日礼</button>
     </div>
     <div class="quick" id="quick"></div>
     <div class="tip" id="tip"></div>
@@ -85,7 +85,7 @@ export function updateTicker(ctx: AppCtx) {
 }
 
 export function updateQuick(ctx: AppCtx) {
-  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''} title="${q.label}">${icon(q.ic, 38)}${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
+  $(ctx, '#quick').innerHTML = quickEntries(ctx).map((q) => `<button class="${q.cls ?? ''}" data-act="${q.act}" ${q.to ? `data-to="${q.to}"` : ''} title="${q.label}">${icon(q.ic, 34)}<span class="ql">${q.label}</span>${q.dot ? '<i class="rd"></i>' : ''}</button>`).join('');
 }
 
 export function updateHome(ctx: AppCtx) {
@@ -111,7 +111,7 @@ export function updateHome(ctx: AppCtx) {
   const nx = nextStage(b.chapter, b.index);
   const chBtn = $(ctx, '#chBtn') as HTMLButtonElement;
   chBtn.disabled = !nx;
-  chBtn.textContent = nx ? `⚔️ ${nx.chapter}-${nx.index}` : '🏆';
+  chBtn.textContent = nx ? `⚔️ 挑战 ${nx.chapter}-${nx.index}` : '🏆';
   const nrec = nx ? recommendedPowerOf(nx.chapter, nx.index) : 0;
   const lowPower = nx ? power < nrec * 0.9 : false;
   $(ctx, '#tip').innerHTML = !nx ? '🕊️' : `<div class="xpow ${lowPower ? 'low' : 'ok'}" style="height:18px;max-width:260px;margin:0 auto"><i style="width:${Math.round(Math.min(1, power / nrec) * 100)}%"></i><span>${icon('sword', 14)} ${fmt(power)} / ${fmt(nrec)}</span></div>`;
@@ -127,7 +127,7 @@ export function updateHome(ctx: AppCtx) {
   const taken = s.gift.last > 0 && dayIndex(s.gift.last) >= dayIndex(now);
   const g = $(ctx, '#giftBtn') as HTMLButtonElement;
   g.disabled = taken;
-  g.innerHTML = taken ? `🎁 ✓` : `🎁<small>${icon('bell', 14)} ${icon('ticket', 14)}</small>`;
+  g.innerHTML = taken ? `🎁 今日已领` : `🎁 每日礼<small>${icon('bell', 14)} ${icon('ticket', 14)}</small>`;
 }
 
 export function updateIdle(ctx: AppCtx) {

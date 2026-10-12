@@ -11,7 +11,7 @@ export const FISHING_CSS = `
 .mg-big{display:block;font-size:40px;line-height:1.25}
 .mg-sub{display:block;font-size:13px;font-weight:800;margin-top:2px}
 
-.screen.mg #xui,.screen.mg .xjoy{visibility:hidden}
+.screen.mg #xui,.screen.mg .xjoy,.screen.mg .xfight{visibility:hidden}
 .fish-ov{position:absolute;inset:0;z-index:40;display:grid;place-items:center;background:rgba(6,3,16,.72);animation:xhelpIn .25s ease-out both}
 .fish-card{width:min(340px,90%);padding:16px 18px;border-radius:18px;background:rgba(22,14,44,.97);border:2px solid rgba(255,176,74,.65);box-shadow:0 0 28px rgba(255,160,60,.3);color:#eae4ff;text-align:center}
 .fish-card h3{margin:0 0 8px;font-family:var(--f-d);font-size:20px;color:#ffe9a0;letter-spacing:.06em}
@@ -42,30 +42,30 @@ export function openFishing(ctx: AppCtx, host: Element): Promise<void> {
   return new Promise((done) => {
     const ov = document.createElement('div');
     ov.className = 'fish-ov';
-    ov.innerHTML = `<div class="fish-card"><h3>🎣</h3><div class="fish-pond"><i class="fish-bobber idle"></i></div><div class="fish-status"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-fish="main">🎣</button><button class="btn ghost" data-fish="close">${icon('close', 22)}</button></div></div>`;
+    ov.innerHTML = `<div class="fish-card"><h3>🎣 海边钓鱼</h3><div class="fish-pond"><i class="fish-bobber idle"></i></div><div class="fish-status"></div><div class="fish-info"></div><div class="fish-btns"><button class="btn green" data-fish="main">🎣 抛竿</button><button class="btn ghost" data-fish="close">${icon('close', 18)} 离开</button></div></div>`;
     host.appendChild(ov);
     const q = <T extends Element>(sel: string) => ov.querySelector(sel) as T;
     const bobber = q<HTMLElement>('.fish-bobber'), status = q<HTMLElement>('.fish-status'), info = q<HTMLElement>('.fish-info'), main = q<HTMLButtonElement>('[data-fish="main"]');
     let phase: Phase = 'idle', biteTimer = 0, missTimer = 0, biteAt = 0;
 
-    const refreshInfo = () => { info.innerHTML = `🎣 ${castsLeft(ctx.s)} &nbsp; 📖 ${dexCount(ctx.s)}/${DEX_TOTAL}`; };
+    const refreshInfo = () => { info.innerHTML = `🎣 今日剩余 ${castsLeft(ctx.s)} 竿 &nbsp; 📖 图鉴 ${dexCount(ctx.s)}/${DEX_TOTAL}`; };
     const set = (p: Phase, label: string, text: string, cls = '') => {
       phase = p; main.innerHTML = label; status.className = `fish-status ${cls}`; status.innerHTML = text;
       bobber.className = `fish-bobber ${p === 'result' ? 'idle' : p === 'idle' ? 'idle' : p}`;
       refreshInfo();
     };
     const idle = () => {
-      if (castsLeft(ctx.s) <= 0) { set('idle', '😴', '<span class="mg-big">😴</span>'); main.disabled = true; return; }
-      set('idle', '🎣', '<span class="mg-big">🎣 ➜ 👀 ➜ ❗</span>');
+      if (castsLeft(ctx.s) <= 0) { set('idle', '😴 今天钓够啦', '<span class="mg-big">😴</span><span class="mg-sub">明天再来</span>'); main.disabled = true; return; }
+      set('idle', '🎣 抛竿', '<span class="mg-big">🎣 ➜ 👀 ➜ ❗</span><span class="mg-sub">抛竿后耐心等，浮漂猛沉（出现 ❗）时马上提竿</span>');
     };
-    const fail = (grade: Grade) => set('result', '🔁', `<span class="mg-big">💨</span><span class="mg-sub">${grade === 'early' ? '⏩' : '🐢'}</span>`);
+    const fail = (grade: Grade) => set('result', '🔁 再抛一竿', `<span class="mg-big">💨</span><span class="mg-sub">${grade === 'early' ? '提早了，鱼吓跑了' : '慢了一步，鱼溜了'}</span>`);
     const cast = () => {
       if (!useCast(ctx.s)) { idle(); return; }
       ctx.save();
-      set('wait', '❗', '<span class="mg-big">🌊 …</span>');
+      set('wait', '❗ 提竿', '<span class="mg-big">🌊 …</span><span class="mg-sub">等咬钩，别急</span>');
       biteTimer = window.setTimeout(() => {
         phase = 'bite'; biteAt = performance.now();
-        set('bite', '❗', '<span class="mg-big">❗❗❗</span>', 'bite');
+        set('bite', '❗ 提竿!', '<span class="mg-big">❗❗❗</span>', 'bite');
         alertSfx();
         missTimer = window.setTimeout(() => fail('miss'), BITE_WINDOW * 1000);
       }, biteDelay(Math.random) * 1000);
@@ -79,7 +79,7 @@ export function openFishing(ctx: AppCtx, host: Element): Promise<void> {
       const g = fishGain(ctx.s, f);
       applyGain(ctx.s, g); recordCatch(ctx.s, f); ctx.save();
       f.rarity === 'rare' || f.rarity === 'legend' ? sfx.up() : sfx.coin();
-      set('result', '🔁', `<span class="mg-big">${grade === 'perfect' ? '✨' : ''}${FISH_EMOJI[f.id] ?? '🐟'}${grade === 'perfect' ? '✨' : ''}</span><span class="mg-sub fish-r-${f.rarity}">${f.name}</span>${gainIcons(g, 20)}`);
+      set('result', '🔁 再抛一竿', `<span class="mg-big">${grade === 'perfect' ? '✨' : ''}${FISH_EMOJI[f.id] ?? '🐟'}${grade === 'perfect' ? '✨' : ''}</span><span class="mg-sub fish-r-${f.rarity}">${f.name}</span>${gainIcons(g, 20)}`);
     };
     const press = () => { if (main.disabled) return; if (phase === 'idle' || phase === 'result') cast(); else reel(); };
     const close = () => { clearTimeout(biteTimer); clearTimeout(missTimer); window.removeEventListener('keydown', onKey); ov.remove(); ctx.save(); done(); };

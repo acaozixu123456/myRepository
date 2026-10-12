@@ -43,6 +43,8 @@ export class Player {
   actors = new Map<number, Actor>();
   speed = 1;
   skipping = false;
+  /** 直接跳过战斗回放（结果已由引擎算好）：play() 在下一个事件处停下 */
+  aborted = false;
   onLog: (s: string) => void = () => undefined;
   private lastPassive = new Map<number, number>();
   private bgCache = new Map<string, HTMLCanvasElement>();
@@ -109,6 +111,7 @@ export class Player {
   async play(events: BEvent[]) {
     let i = 0;
     while (i < events.length) {
+      if (this.aborted) return;
       const e = events[i];
       if (e.t === 'act') {
         let j = i + 1;
