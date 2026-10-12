@@ -50,7 +50,7 @@ describe('探索模式规则', () => {
 describe('嫦喵的每日委托', () => {
   it('三项都完成后才能领奖，每天只能领一次，隔天重置', () => {
     const s = newPlayer();
-    const t0 = Date.UTC(2026, 9, 11, 12);
+    const t0 = Date.now(); // killReward / openChest 内部用真实时间，所以这里也用真实时间（写死日期会在跨天后失败）
     expect(dailyReady(s, t0)).toBe(false);
     expect(claimDaily(s, t0)).toBeNull();
     const stage = farmStage(s).stage;
