@@ -1,5 +1,7 @@
 // 程序合成的背景音乐（WebAudio，无音频文件）：五声音阶的八音盒旋律 + 轻柔的和弦垫底，四小节一循环。
 // 第一次用户操作后才会发声；页面不可见时自动静音；设置里可关。
+import { armAudio, audioCtx, unlockAudio, whenAudioReady } from './audio';
+
 export const bgmState = { on: true };
 
 const BPM = 76;
@@ -27,7 +29,6 @@ export function bgmBar(i: number): BgmNote[] {
   return out;
 }
 
-let ac: AudioContext | null = null;
 let gain: GainNode | null = null;
 let timer = 0;
 let nextBarAt = 0;
@@ -35,16 +36,9 @@ let barIndex = 0;
 let armed = false;
 
 function ensure(): AudioContext | null {
-  try {
-    if (!ac) {
-      const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      ac = new AC();
-      gain = ac.createGain();
-      gain.gain.value = 0.07;
-      gain.connect(ac.destination);
-    }
-    return ac;
-  } catch { return null; }
+  const a = audioCtx();
+  if (a && !gain) { gain = a.createGain(); gain.gain.value = 0.07; gain.connect(a.destination); }
+  return a;
 }
 function scheduleBar(a: AudioContext, at: number, i: number) {
   for (const n of bgmBar(i)) {
@@ -58,28 +52,31 @@ function scheduleBar(a: AudioContext, at: number, i: number) {
   }
 }
 function tick() {
-  const a = ac;
-  if (!a || a.state !== 'running') return;
+  const a = audioCtx();
+  if (!a || a.state !== 'running' || !gain) return;
   if (nextBarAt < a.currentTime) nextBarAt = a.currentTime + 0.1;
   while (nextBarAt < a.currentTime + 1.5) { scheduleBar(a, nextBarAt, barIndex++); nextBarAt += BAR_SECONDS; }
 }
 export function startBgm() {
   if (!bgmState.on) return;
   const a = ensure();
-  if (!a) return;
-  if (a.state === 'suspended') void a.resume();
+  if (!a || !gain) return;
+  gain.gain.cancelScheduledValues(a.currentTime); gain.gain.setTargetAtTime(0.07, a.currentTime, 0.1);
+  if (a.state === 'suspended') void a.resume().catch(() => {});
   if (!timer) { timer = window.setInterval(tick, 400); tick(); }
 }
+/** 停背景音乐：只把音乐这一路淡出、停止排音符，不挂起共用的上下文（音效还要用） */
 export function stopBgm() {
   if (timer) { clearInterval(timer); timer = 0; }
-  if (ac && ac.state === 'running') void ac.suspend();
+  const a = audioCtx();
+  if (a && gain) { gain.gain.cancelScheduledValues(a.currentTime); gain.gain.setTargetAtTime(0.0001, a.currentTime, 0.08); }
+  nextBarAt = 0;
 }
-export function setBgmOn(on: boolean) { bgmState.on = on; if (on) startBgm(); else stopBgm(); }
-/** 等第一次用户操作后开始播放；页面隐藏时暂停，回来时继续 */
+export function setBgmOn(on: boolean) { bgmState.on = on; if (on) { unlockAudio(); startBgm(); } else stopBgm(); }
+/** 挂上手势解锁；上下文真正跑起来后开始播放（手机上第一次点屏幕抬手时） */
 export function armBgm() {
   if (armed) return;
   armed = true;
-  const go = () => { startBgm(); document.removeEventListener('pointerdown', go); };
-  document.addEventListener('pointerdown', go);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stopBgm(); else if (bgmState.on && ac) startBgm(); });
+  armAudio();
+  whenAudioReady(() => startBgm());
 }
