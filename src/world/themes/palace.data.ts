@@ -10,6 +10,7 @@ export const PAVILIONS: [number, number][] = [[-14, -4], [14, -4]];
 export const BURNERS: [number, number][] = [[-5.5, 16], [5.5, 16], [-5.5, -8], [5.5, -8]];
 export const HALL = { z0: -33, z1: -19.5, x: 17 };
 const POI: [number, number] = [-14, 14];
+const KITCHEN_POI: [number, number] = [14, 14]; // 东侧御膳房：配菜
 const SPAWN: [number, number] = [0, 23];
 const ENEMIES: [number, number][] = [[10, 17], [4, 23], [-9, -12], [10, -12], [18, 1], [-18, 2]];
 const CHESTS: [number, number][] = [[19, 22], [-19, -14], [19, -14], [-19, 22]];
@@ -38,7 +39,7 @@ export function palaceLevel(): LevelDef {
     lights: [[0, 8, 14, 0xffe8b8, 36, 30], [0, 8, -10, 0xffd890, 36, 28]],
     solids: palaceSolids(),
     enemySpots: ENEMIES, chestSpots: CHESTS, herbSpots: HERBS,
-    pois: [{ id: 'lanterns', game: 'lanterns', x: POI[0], z: POI[1], label: '宫灯阵' }],
+    pois: [{ id: 'lanterns', game: 'lanterns', x: POI[0], z: POI[1], label: '宫灯阵' }, { id: 'kitchen', game: 'kitchen', x: KITCHEN_POI[0], z: KITCHEN_POI[1], label: '御膳房 · 配菜' }],
     bossSpot: BOSS, npcSpot: NPC, spawn: SPAWN,
   };
 }

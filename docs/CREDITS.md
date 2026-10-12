@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | 界面图标（`src/ui/noto.ts`） | [Noto Emoji](https://github.com/googlefonts/noto-emoji)（Google），通过 [@iconify-json/noto](https://www.npmjs.com/package/@iconify-json/noto) 取得 SVG | Apache License 2.0 |
 | 页面文字里的 emoji（`src/ui/emoji.ts` + `emojify.ts` 运行时替换为内嵌矢量图，所有设备长得一样） | 同上 Noto Emoji；emoji → 名称对照用 [unicode-emoji-json](https://www.npmjs.com/package/unicode-emoji-json)（MIT） | Apache-2.0 / MIT |
-| 地面贴图（`assets/world/ground/cc0_*.webp`，已缩到 512²）：云岛草地 Grass005、沙漠风纹沙地 Ground080（森林草地、码头木栈板改用 Codex 的 AI 贴图，更贴合场景色调） | [ambientCG](https://ambientcg.com/)（Lance / Struffel Productions） | CC0（公有领域） |
+| 地面贴图（`assets/world/ground/cc0_*.webp`，已缩到 512²）：云岛草地 Grass005、沙漠风纹沙地 Ground080、雪岭雪地 Snow014（森林草地、码头木栈板改用 Codex 的 AI 贴图，更贴合场景色调） | [ambientCG](https://ambientcg.com/)（Lance / Struffel Productions） | CC0（公有领域） |
 | 3D 库 | [three.js](https://threejs.org/) | MIT |
 | 橘粉黄昏天空（`assets/world/skies/sky_dusk_peach_01.webp`），原稿 `skybox-morning.png` | Kenney，[Skyboxes 官方页面](https://kenney.nl/assets/skyboxes)与[作者 OpenGameArt 页面](https://opengameart.org/content/skyboxes-1)；生产 PNG 取自[固定提交的公开镜像](https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/2d/Skyboxes/Skyboxes/skybox-morning.png) | CC0（公有领域）；全 360° 宽度取天空纬度带后等比缩小 |
 | 浅灰蓝清晨薄雾（`assets/world/skies/sky_dawn_tealmist_03.webp`）的生产原稿 `kloofendal_misty_morning_puresky_2k.hdr` | Greg Zaal，[Poly Haven 原资产](https://polyhaven.com/a/kloofendal_misty_morning_puresky)与[CC0 许可](https://polyhaven.com/license)；原 HDR 取自[固定提交的公开镜像](https://raw.githubusercontent.com/2600th/web-ocean-3d/6496c77d37c12e803108c8f932680a7710a62c1c/public/hdris/kloofendal_misty_morning_puresky_2k.hdr) | CC0；原 HDR → 标准 SDR 天空带 → WebP，最终没有使用 AI 编辑 |

@@ -1,0 +1,2271 @@
+{
+  "schema_version": 1,
+  "batch": "WORLD-A09-NM",
+  "status": "passed_with_visual_observations",
+  "approval_status": "round_1_awaiting_Claude_review",
+  "scope": "Independent asset/provenance/export/visual/material QA; no source, README, progress, commit or PR changes",
+  "date_utc": "2026-10-12",
+  "offline": {
+    "method": "Independent offline reconstruction; embedded export ICC reused for binary identity because profile creation timestamps are nondeterministic",
+    "software": {
+      "pillow": "12.3.0",
+      "webp": "1.6.0"
+    },
+    "calls": [
+      {
+        "id": "ground_market_terracotta_01",
+        "candidate": 1,
+        "operation": "generate",
+        "selected": false,
+        "raw_path": "/workspace/generated_images/exec-a8f9cd30-237b-40e3-9877-91c6fbc6bbac.png",
+        "raw_sha256": "f2b68713a117053d85033d00c340aa6ccca0e49a56f6b0bd08e53434ccea917e",
+        "raw_bytes": 3225756,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "684acae46f9d58527cea113a8c4d2164c46925a994d2525c21da3d3cb5cc2cd2",
+        "prompt_sha256": "9e8cd5e48cd03b27a8788c0db8a68b06b34ce525d0efc9aabcd9eb37b80a5c01",
+        "reference_paths": []
+      },
+      {
+        "id": "ground_market_slate_02",
+        "candidate": 1,
+        "operation": "generate",
+        "selected": true,
+        "raw_path": "/workspace/generated_images/exec-65625477-e429-4092-8825-0d6fa2b11f0e.png",
+        "raw_sha256": "7b035c1297a0aaca5df18d6ace8b98cbbbbbe65ca8944e10fafe2714e3642ef6",
+        "raw_bytes": 3343654,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "f9de477e586ecafb6e32f07a07136658957d13db99a1ac3d6b051f661747591b",
+        "prompt_sha256": "8a1f1ceeaf02a711fce6cda95383947e1ea6ceb7a59ef030a2428ba2c8ea6dcd",
+        "reference_paths": []
+      },
+      {
+        "id": "ground_market_sandstone_weave_03",
+        "candidate": 1,
+        "operation": "generate",
+        "selected": true,
+        "raw_path": "/workspace/generated_images/exec-ffd07d9e-1ace-4c4c-bbfd-a54649c0ec93.png",
+        "raw_sha256": "0b3a304ffc7cae1fa11726045004fcf4b192345a535dcb6e6183c1704ddbdb91",
+        "raw_bytes": 2861654,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "53af3b018813f99719dea1309ec649d8323bf4f186db03f5f8b6d35626668a7e",
+        "prompt_sha256": "8030f1f62697e0b52446e5e6ba6e64e3917a14e5a81c9c6b642d9c13d966fd41",
+        "reference_paths": []
+      },
+      {
+        "id": "ground_market_terracotta_01",
+        "candidate": 2,
+        "operation": "edit",
+        "selected": false,
+        "raw_path": "/workspace/generated_images/exec-0983f297-4aeb-425a-9015-24977dc6fd22.png",
+        "raw_sha256": "7ea57518e3f2ed3af417a2af443efdadd68ff92c792b53cc066aada3d51a2605",
+        "raw_bytes": 2991730,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "4ad538595ee7649c5acd5561955cfc29a96e20935057e1dff9f7808eaef6b227",
+        "prompt_sha256": "a3bc3f27475053689aec495112f994c6a139d2d47991da4cdfed57cec9c4dfb5",
+        "reference_paths": [
+          "/workspace/generated_images/exec-a8f9cd30-237b-40e3-9877-91c6fbc6bbac.png"
+        ]
+      },
+      {
+        "id": "ground_market_terracotta_01",
+        "candidate": 3,
+        "operation": "edit",
+        "selected": true,
+        "raw_path": "/workspace/generated_images/exec-e6a25f63-4bcb-486f-ac73-20972a084081.png",
+        "raw_sha256": "ba1abeb61e9d7355fad71051fca57d86bebb4a2e5a075c0b7d00408911eea24e",
+        "raw_bytes": 2908059,
+        "raw_size": [
+          1254,
+          1254
+        ],
+        "raw_mode": "RGB",
+        "tool_arguments_sha256": "851163a65c6bcbf8145009697b0a7b179346f98684e1185f7943fda1adea7bdc",
+        "prompt_sha256": "4ae61f22e0f07273e2ac4454f211de35cd756a19ceee365ac025f6a00cf5375b",
+        "reference_paths": [
+          "/workspace/nightmarket-ground-raw/terracotta-offset-reference.png"
+        ]
+      }
+    ],
+    "assets": [
+      {
+        "id": "ground_market_terracotta_01",
+        "path": "assets/world/ground/ground_market_terracotta_01.webp",
+        "sha256_before": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223",
+        "sha256_after_offline": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223",
+        "bytes": 252934,
+        "format": "WEBP",
+        "mode": "RGB",
+        "size": [
+          1024,
+          1024
+        ],
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "riff_chunks": [
+          "VP8X",
+          "ICCP",
+          "VP8 "
+        ],
+        "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+        "icc_description": "sRGB built-in",
+        "icc_color_space": "RGB",
+        "selected_raw": {
+          "id": "ground_market_terracotta_01",
+          "candidate": 3,
+          "operation": "edit",
+          "selected": true,
+          "raw_path": "/workspace/generated_images/exec-e6a25f63-4bcb-486f-ac73-20972a084081.png",
+          "raw_sha256": "ba1abeb61e9d7355fad71051fca57d86bebb4a2e5a075c0b7d00408911eea24e",
+          "raw_bytes": 2908059,
+          "raw_size": [
+            1254,
+            1254
+          ],
+          "raw_mode": "RGB",
+          "tool_arguments_sha256": "851163a65c6bcbf8145009697b0a7b179346f98684e1185f7943fda1adea7bdc",
+          "prompt_sha256": "4ae61f22e0f07273e2ac4454f211de35cd756a19ceee365ac025f6a00cf5375b",
+          "reference_paths": [
+            "/workspace/nightmarket-ground-raw/terracotta-offset-reference.png"
+          ]
+        },
+        "export": {
+          "source_rectangle": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "source_size": [
+            1254,
+            1254
+          ],
+          "target_size": [
+            1024,
+            1024
+          ],
+          "filter": "Lanczos",
+          "scale": 0.8165869218500797,
+          "quality": 90,
+          "method": 6,
+          "binary_identity": true,
+          "decoded_rgb_difference_count": 0,
+          "output_sha256": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223"
+        },
+        "edge_diagnostics": {
+          "lr": {
+            "mean_abs_rgb": 6.631184895833333,
+            "max_abs_channel": 63,
+            "p95_abs_channel": 18.0,
+            "different_channel_count": 2890
+          },
+          "tb": {
+            "mean_abs_rgb": 6.064127604166667,
+            "max_abs_channel": 63,
+            "p95_abs_channel": 16.0,
+            "different_channel_count": 2878
+          },
+          "interior_horizontal_neighbor_mean": 5.307707556920007,
+          "interior_vertical_neighbor_mean": 6.529334104655425
+        },
+        "mean_rgb": [
+          202.97828769683838,
+          136.44397926330566,
+          87.42898559570312
+        ],
+        "icc_matches_lcms_srgb_except_creation_timestamp": true,
+        "sha256_after_final": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223"
+      },
+      {
+        "id": "ground_market_slate_02",
+        "path": "assets/world/ground/ground_market_slate_02.webp",
+        "sha256_before": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d",
+        "sha256_after_offline": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d",
+        "bytes": 322152,
+        "format": "WEBP",
+        "mode": "RGB",
+        "size": [
+          1024,
+          1024
+        ],
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "riff_chunks": [
+          "VP8X",
+          "ICCP",
+          "VP8 "
+        ],
+        "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+        "icc_description": "sRGB built-in",
+        "icc_color_space": "RGB",
+        "selected_raw": {
+          "id": "ground_market_slate_02",
+          "candidate": 1,
+          "operation": "generate",
+          "selected": true,
+          "raw_path": "/workspace/generated_images/exec-65625477-e429-4092-8825-0d6fa2b11f0e.png",
+          "raw_sha256": "7b035c1297a0aaca5df18d6ace8b98cbbbbbe65ca8944e10fafe2714e3642ef6",
+          "raw_bytes": 3343654,
+          "raw_size": [
+            1254,
+            1254
+          ],
+          "raw_mode": "RGB",
+          "tool_arguments_sha256": "f9de477e586ecafb6e32f07a07136658957d13db99a1ac3d6b051f661747591b",
+          "prompt_sha256": "8a1f1ceeaf02a711fce6cda95383947e1ea6ceb7a59ef030a2428ba2c8ea6dcd",
+          "reference_paths": []
+        },
+        "export": {
+          "source_rectangle": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "source_size": [
+            1254,
+            1254
+          ],
+          "target_size": [
+            1024,
+            1024
+          ],
+          "filter": "Lanczos",
+          "scale": 0.8165869218500797,
+          "quality": 90,
+          "method": 6,
+          "binary_identity": true,
+          "decoded_rgb_difference_count": 0,
+          "output_sha256": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d"
+        },
+        "edge_diagnostics": {
+          "lr": {
+            "mean_abs_rgb": 10.3046875,
+            "max_abs_channel": 109,
+            "p95_abs_channel": 26.0,
+            "different_channel_count": 2986
+          },
+          "tb": {
+            "mean_abs_rgb": 40.483723958333336,
+            "max_abs_channel": 93,
+            "p95_abs_channel": 70.44999999999982,
+            "different_channel_count": 3065
+          },
+          "interior_horizontal_neighbor_mean": 8.016408413774846,
+          "interior_vertical_neighbor_mean": 8.483616405995438
+        },
+        "mean_rgb": [
+          182.51414585113525,
+          177.3467025756836,
+          154.51845455169678
+        ],
+        "icc_matches_lcms_srgb_except_creation_timestamp": true,
+        "sha256_after_final": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d"
+      },
+      {
+        "id": "ground_market_sandstone_weave_03",
+        "path": "assets/world/ground/ground_market_sandstone_weave_03.webp",
+        "sha256_before": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1",
+        "sha256_after_offline": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1",
+        "bytes": 213164,
+        "format": "WEBP",
+        "mode": "RGB",
+        "size": [
+          1024,
+          1024
+        ],
+        "alpha_min": 255,
+        "alpha_max": 255,
+        "riff_chunks": [
+          "VP8X",
+          "ICCP",
+          "VP8 "
+        ],
+        "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+        "icc_description": "sRGB built-in",
+        "icc_color_space": "RGB",
+        "selected_raw": {
+          "id": "ground_market_sandstone_weave_03",
+          "candidate": 1,
+          "operation": "generate",
+          "selected": true,
+          "raw_path": "/workspace/generated_images/exec-ffd07d9e-1ace-4c4c-bbfd-a54649c0ec93.png",
+          "raw_sha256": "0b3a304ffc7cae1fa11726045004fcf4b192345a535dcb6e6183c1704ddbdb91",
+          "raw_bytes": 2861654,
+          "raw_size": [
+            1254,
+            1254
+          ],
+          "raw_mode": "RGB",
+          "tool_arguments_sha256": "53af3b018813f99719dea1309ec649d8323bf4f186db03f5f8b6d35626668a7e",
+          "prompt_sha256": "8030f1f62697e0b52446e5e6ba6e64e3917a14e5a81c9c6b642d9c13d966fd41",
+          "reference_paths": []
+        },
+        "export": {
+          "source_rectangle": [
+            0,
+            0,
+            1254,
+            1254
+          ],
+          "source_size": [
+            1254,
+            1254
+          ],
+          "target_size": [
+            1024,
+            1024
+          ],
+          "filter": "Lanczos",
+          "scale": 0.8165869218500797,
+          "quality": 90,
+          "method": 6,
+          "binary_identity": true,
+          "decoded_rgb_difference_count": 0,
+          "output_sha256": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1"
+        },
+        "edge_diagnostics": {
+          "lr": {
+            "mean_abs_rgb": 11.46484375,
+            "max_abs_channel": 71,
+            "p95_abs_channel": 30.0,
+            "different_channel_count": 2993
+          },
+          "tb": {
+            "mean_abs_rgb": 8.7578125,
+            "max_abs_channel": 48,
+            "p95_abs_channel": 23.0,
+            "different_channel_count": 2940
+          },
+          "interior_horizontal_neighbor_mean": 4.633557093108505,
+          "interior_vertical_neighbor_mean": 4.631045205074943
+        },
+        "mean_rgb": [
+          212.0275001525879,
+          176.3285312652588,
+          129.72354412078857
+        ],
+        "icc_matches_lcms_srgb_except_creation_timestamp": true,
+        "sha256_after_final": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1"
+      }
+    ],
+    "reviews": [
+      {
+        "path": "assets/world/reviews/ground_market_terracotta_01-native-lr.png",
+        "size": [
+          128,
+          1024
+        ],
+        "sha256": "c26a41e10b282c404ad39918ae37632de560ff39e547d28e930ca24bfe236280",
+        "bytes": 205131,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_terracotta_01-native-tb.png",
+        "size": [
+          1024,
+          128
+        ],
+        "sha256": "13679f0fe9b4c43c631d0da65b41a6ef92749878be122384792bc71a55064f47",
+        "bytes": 201326,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_terracotta_01-native-corners.png",
+        "size": [
+          256,
+          256
+        ],
+        "sha256": "4e939044cea70eb89d96788179fbb8c10faba3caa8f2ad1464998f6ac0257bf7",
+        "bytes": 104728,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_terracotta_01-2x2.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "911c9034290a4d559cff41f5de0dd61548300ff40d1552f411df5d1cf912ec7e",
+        "bytes": 163170,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_terracotta_01-4x4.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "6591fec4d8bdf0bcc96ac4973160536e1b97dc624108fde6cdc2ca84ba5945df",
+        "bytes": 134648,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_slate_02-native-lr.png",
+        "size": [
+          128,
+          1024
+        ],
+        "sha256": "c31414353f74cf0201d59cbd8af3f13273a4956fefdc3e0a221f6f68551ed8a8",
+        "bytes": 221485,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_slate_02-native-tb.png",
+        "size": [
+          1024,
+          128
+        ],
+        "sha256": "f2b3d0fcd05cf1cb73ff57b49f5526284ca7760585220a365059fad4eecc2457",
+        "bytes": 225885,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_slate_02-native-corners.png",
+        "size": [
+          256,
+          256
+        ],
+        "sha256": "a656231ba233939a627e1ae8e5e2957465f6cc75793f479d87300bda418726c7",
+        "bytes": 111957,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_slate_02-2x2.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "194dabd4b7aae7559c6d8424c9893bbe4bb613ab95805308ed4584939f41770a",
+        "bytes": 243170,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_slate_02-4x4.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "6d3d4653f77ecf0195d4f9ba59d655f9cad06196e03c515bba97f608ebdc0a37",
+        "bytes": 197628,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_sandstone_weave_03-native-lr.png",
+        "size": [
+          128,
+          1024
+        ],
+        "sha256": "166a68df5ef7f2b968cd1406f40acedb44b02ac3c58e0099826aa1a57d60433d",
+        "bytes": 187985,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_sandstone_weave_03-native-tb.png",
+        "size": [
+          1024,
+          128
+        ],
+        "sha256": "abbc330a930213e239d51e6b26a2af484808dc28af469a2ae0c96c8ca8cd0a9f",
+        "bytes": 189152,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_sandstone_weave_03-native-corners.png",
+        "size": [
+          256,
+          256
+        ],
+        "sha256": "623a2d28d38a294330a7a69515d42cf27961bc2ceaa1d0f46df09a14a97ab37f",
+        "bytes": 94314,
+        "decoded_rgb_difference_count": 0,
+        "lossless": true,
+        "visible_reviewed_native_1to1": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_sandstone_weave_03-2x2.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "70ca9378697aab5c7fc21d9606d4e27b01e68cbb98869956ddb2de5d681e3302",
+        "bytes": 111114,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      },
+      {
+        "path": "assets/world/reviews/ground_market_sandstone_weave_03-4x4.webp",
+        "size": [
+          1024,
+          1024
+        ],
+        "sha256": "eae54afa50e560932cc791ea9d854af9e9f3f5e20a3d6a52db681a886b33a66b",
+        "bytes": 105412,
+        "binary_reconstruction_identity": true,
+        "lossless": false,
+        "visible_reviewed": true
+      }
+    ],
+    "assertions": [
+      {
+        "name": "call ground_market_terracotta_01 candidate1 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate1 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate1 no transparency",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_slate_02 candidate1 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_slate_02 candidate1 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_slate_02 candidate1 no transparency",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_sandstone_weave_03 candidate1 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_sandstone_weave_03 candidate1 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_sandstone_weave_03 candidate1 no transparency",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate2 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate2 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate2 no transparency",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate3 provenance exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate3 raw exact",
+        "passed": true
+      },
+      {
+        "name": "call ground_market_terracotta_01 candidate3 no transparency",
+        "passed": true
+      },
+      {
+        "name": "AI edit reference is solely exact half-tile cyclic offset",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 export exact bytes",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 opaque RGB POT budget",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 verified sRGB profile",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 native lr exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 native tb exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 native corners exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 2x2 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_market_terracotta_01 4x4 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 export exact bytes",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 opaque RGB POT budget",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 verified sRGB profile",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 native lr exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 native tb exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 native corners exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 2x2 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_market_slate_02 4x4 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 export exact bytes",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 opaque RGB POT budget",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 verified sRGB profile",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 native lr exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 native tb exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 native corners exact pixels",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 2x2 repeat exact reconstruction",
+        "passed": true
+      },
+      {
+        "name": "ground_market_sandstone_weave_03 4x4 repeat exact reconstruction",
+        "passed": true
+      }
+    ],
+    "offset_reference": {
+      "path": "/workspace/nightmarket-ground-raw/terracotta-offset-reference.png",
+      "sha256": "47abd373cf6c032465fccbaa23f2981d1223514d0280ee4732fe49efc2c168be",
+      "shift_xy": [
+        627,
+        627
+      ],
+      "decoded_rgb_difference_count": 0,
+      "used_only_as_edit_reference": true,
+      "final_unroll_applied": false
+    },
+    "summary": {
+      "generation_calls": 3,
+      "edit_calls": 2,
+      "selected_materials": 3,
+      "binary_exact_reexports": 3,
+      "decoded_native_edge_figures_exact": 9,
+      "repeat_figure_reconstruction_exact": 6,
+      "assertions": 40,
+      "failures": 0
+    }
+  },
+  "browser": {
+    "fixture_source": "/workspace/nightmarket-ground-raw/market-ground-a09-nm-lighting.html",
+    "fixture_source_sha256": "88ca8b58a2f934d7b47d3e03708e5ed5ae43946b0dc5a834e9baa2212735262c",
+    "injected_fixture_sha256": "1d2b736ff0b4396f16ee4ea8e01255c3e2b2b7753c183d7600c5bcff2226522b",
+    "instrumentation": "Only MeshStandardMaterial/Texture/Light/WebGLRenderer runtime observation; no rendering or geometry mutations. Query nonce plus CDP cache disable; verify each HTTP body SHA against frozen production source.",
+    "url": "http://127.0.0.1:5194/.tmp-market-ground/preview.html?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+    "loads": [
+      {
+        "declared": {
+          "ready": true,
+          "loaded": 3,
+          "expected": 3,
+          "parameters": {
+            "three_revision": "169",
+            "canvas": [
+              1024,
+              288
+            ],
+            "texture_repeat": [
+              3,
+              1
+            ],
+            "material": {
+              "color": "#ffffff",
+              "roughness": 0.85,
+              "metalness": 0
+            },
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "look_at": [
+                0,
+                0,
+                0
+              ]
+            },
+            "plane": {
+              "size": [
+                18,
+                6
+              ],
+              "rotation_x": -1.5707963267948966
+            },
+            "renderer": {
+              "output_color_space": "SRGBColorSpace",
+              "tone_mapping": "ACESFilmicToneMapping",
+              "exposure": 1.1,
+              "antialias": true,
+              "device_pixel_ratio": 1,
+              "bloom": false,
+              "shadows": false
+            },
+            "neutral_lights": {
+              "hemisphere": {
+                "sky": "#ffffff",
+                "ground": "#777777",
+                "intensity": 1
+              },
+              "directional": {
+                "color": "#ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            },
+            "market_lights": {
+              "hemisphere": {
+                "sky": "#ffc0a0",
+                "ground": "#5a3a48",
+                "intensity": 1
+              },
+              "directional": {
+                "color": "#ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            },
+            "comparison": "only light colors differ; intensities/position/camera/material/exposure fixed",
+            "omitted_market_effects": [
+              "sky dome",
+              "fog",
+              "bloom",
+              "color grading",
+              "lantern point lights"
+            ]
+          },
+          "assets": [
+            {
+              "path": "/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            }
+          ],
+          "renderers": [
+            {
+              "row": 0,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 0,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            }
+          ]
+        },
+        "actual": [
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffc0a0",
+                "ground_color": "5a3a48",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffc0a0",
+                "ground_color": "5a3a48",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffc0a0",
+                "ground_color": "5a3a48",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          }
+        ]
+      },
+      {
+        "declared": {
+          "ready": true,
+          "loaded": 3,
+          "expected": 3,
+          "parameters": {
+            "three_revision": "169",
+            "canvas": [
+              1024,
+              288
+            ],
+            "texture_repeat": [
+              3,
+              1
+            ],
+            "material": {
+              "color": "#ffffff",
+              "roughness": 0.85,
+              "metalness": 0
+            },
+            "camera": {
+              "type": "OrthographicCamera",
+              "left": -10,
+              "right": 10,
+              "top": 2.8125,
+              "bottom": -2.8125,
+              "near": 0.1,
+              "far": 50,
+              "position": [
+                0,
+                12,
+                0
+              ],
+              "up": [
+                0,
+                0,
+                -1
+              ],
+              "look_at": [
+                0,
+                0,
+                0
+              ]
+            },
+            "plane": {
+              "size": [
+                18,
+                6
+              ],
+              "rotation_x": -1.5707963267948966
+            },
+            "renderer": {
+              "output_color_space": "SRGBColorSpace",
+              "tone_mapping": "ACESFilmicToneMapping",
+              "exposure": 1.1,
+              "antialias": true,
+              "device_pixel_ratio": 1,
+              "bloom": false,
+              "shadows": false
+            },
+            "neutral_lights": {
+              "hemisphere": {
+                "sky": "#ffffff",
+                "ground": "#777777",
+                "intensity": 1
+              },
+              "directional": {
+                "color": "#ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            },
+            "market_lights": {
+              "hemisphere": {
+                "sky": "#ffc0a0",
+                "ground": "#5a3a48",
+                "intensity": 1
+              },
+              "directional": {
+                "color": "#ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            },
+            "comparison": "only light colors differ; intensities/position/camera/material/exposure fixed",
+            "omitted_market_effects": [
+              "sky dome",
+              "fog",
+              "bloom",
+              "color grading",
+              "lantern point lights"
+            ]
+          },
+          "assets": [
+            {
+              "path": "/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            },
+            {
+              "path": "/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+              "size": [
+                1024,
+                1024
+              ],
+              "repeat": [
+                3,
+                1
+              ],
+              "wrap_s": 1000,
+              "wrap_t": 1000
+            }
+          ],
+          "renderers": [
+            {
+              "row": 0,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 0,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 1,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 0,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            },
+            {
+              "row": 2,
+              "col": 1,
+              "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+              "draw_calls": 1
+            }
+          ]
+        },
+        "actual": [
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffc0a0",
+                "ground_color": "5a3a48",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffc0a0",
+                "ground_color": "5a3a48",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffffff",
+                "ground_color": "777777",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffffff",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          },
+          {
+            "meshes": [
+              {
+                "material_type": "MeshStandardMaterial",
+                "color": "ffffff",
+                "roughness": 0.85,
+                "metalness": 0,
+                "transparent": false,
+                "opacity": 1,
+                "texture": {
+                  "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+                  "size": [
+                    1024,
+                    1024
+                  ],
+                  "color_space": "srgb",
+                  "wrap_s": 1000,
+                  "wrap_t": 1000,
+                  "repeat": [
+                    3,
+                    1
+                  ],
+                  "offset": [
+                    0,
+                    0
+                  ],
+                  "rotation": 0,
+                  "anisotropy": 4,
+                  "generate_mipmaps": true,
+                  "min_filter": 1008,
+                  "mag_filter": 1006
+                },
+                "geometry": "PlaneGeometry",
+                "rotation_x": -1.5707963267948966
+              }
+            ],
+            "lights": [
+              {
+                "type": "HemisphereLight",
+                "color": "ffc0a0",
+                "ground_color": "5a3a48",
+                "intensity": 1,
+                "position": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              {
+                "type": "DirectionalLight",
+                "color": "ffb070",
+                "intensity": 2.1,
+                "position": [
+                  -50,
+                  26,
+                  -34
+                ]
+              }
+            ],
+            "draw_calls": 1,
+            "output_color_space": "srgb",
+            "tone_mapping": 4,
+            "exposure": 1.1,
+            "shadow_map": false,
+            "dpr": 1
+          }
+        ]
+      }
+    ],
+    "responses": [
+      {
+        "iteration": 1,
+        "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+        "status": 200,
+        "body_sha256": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223"
+      },
+      {
+        "iteration": 1,
+        "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+        "status": 200,
+        "body_sha256": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d"
+      },
+      {
+        "iteration": 1,
+        "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+        "status": 200,
+        "body_sha256": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1"
+      },
+      {
+        "iteration": 2,
+        "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_terracotta_01.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+        "status": 200,
+        "body_sha256": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223"
+      },
+      {
+        "iteration": 2,
+        "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_slate_02.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+        "status": 200,
+        "body_sha256": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d"
+      },
+      {
+        "iteration": 2,
+        "url": "http://127.0.0.1:5194/assets/world/ground/ground_market_sandstone_weave_03.webp?qa=independent-d9c54fe6ea-4dc2e085b9-43e1ac5027",
+        "status": 200,
+        "body_sha256": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1"
+      }
+    ],
+    "page_errors": [],
+    "console_errors": [],
+    "failed_requests": [],
+    "source_sha256_before": [
+      {
+        "id": "ground_market_terracotta_01",
+        "sha256": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223"
+      },
+      {
+        "id": "ground_market_slate_02",
+        "sha256": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d"
+      },
+      {
+        "id": "ground_market_sandstone_weave_03",
+        "sha256": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1"
+      }
+    ],
+    "source_sha256_after": [
+      {
+        "id": "ground_market_terracotta_01",
+        "sha256": "d9c54fe6ead0aa39f56c3faa88309ec5081c7f1f69a59623133f3ba5d0ace223"
+      },
+      {
+        "id": "ground_market_slate_02",
+        "sha256": "4dc2e085b9e5a4cb0f27ef3519171cefdfaae8662f82f56754f8521620b31d3d"
+      },
+      {
+        "id": "ground_market_sandstone_weave_03",
+        "sha256": "43e1ac50275ed427aa612b25b1c9c61bae968c7cc427000bb2cdbc51018974a1"
+      }
+    ],
+    "source_hashes_unchanged": true,
+    "relevant_source_hashes": [
+      {
+        "path": "src/world/atmos.ts",
+        "sha256": "2a1fe0cb8cb10ffb2734c538e63dee439b01cc791a894b4f9febf63535f1422b"
+      },
+      {
+        "path": "src/world/themes/market.ts",
+        "sha256": "d20f5ddfd3e53e0b43c9674383d70becbb7f0b838b3fc612ff640cc224143927"
+      },
+      {
+        "path": "docs/CODEX_QUEUE.md",
+        "sha256": "5aa751b41b4bc76919473c251d1f26186b58af1b98da0e56aa340e325b57f7ee"
+      },
+      {
+        "path": "docs/WORLD3D.md",
+        "sha256": "26b3705629df64cf64cb0564ff534fa60a4a41ab8e011808fd324e7691356fcf"
+      }
+    ],
+    "screenshot": "/tmp/nightmarket-ground-qa/independent-lighting.png",
+    "installed_three_module": {
+      "path": "node_modules/three/build/three.module.js",
+      "sha256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+      "revision": "169"
+    },
+    "actual_runtime_validation": {
+      "page_loads": 2,
+      "texture_downloads": 6,
+      "panel_renders": 12,
+      "http_body_sha_matches": 6,
+      "http200": 6,
+      "runtime_errors": 0,
+      "console_errors": 0,
+      "failed_requests": 0,
+      "actual_white_materials": 12,
+      "actual_srgb_repeat_maps": 12
+    }
+  },
+  "lighting_capture": {
+    "independent_png_path": "/tmp/nightmarket-ground-qa/independent-lighting.png",
+    "independent_png_sha256": "f861f3df3bf9a4bc22f43d9db631c8c22b3c7123d19b11a2f40b8f3c4db77ef8",
+    "author_png_path": "/workspace/nightmarket-ground-raw/market-ground-a09-nm-lighting.png",
+    "author_png_sha256": "f861f3df3bf9a4bc22f43d9db631c8c22b3c7123d19b11a2f40b8f3c4db77ef8",
+    "dimensions": [
+      2048,
+      1024
+    ],
+    "independent_vs_author_decoded_rgb_difference_count": 0,
+    "delivered_webp_path": "assets/world/reviews/market-ground-a09-nm-lighting.webp",
+    "delivered_webp_sha256": "cb6f0ca1d7271fbc66a25febcfb9a8c319204313c0976e0047ed39cb289eb83b",
+    "delivered_webp_bytes": 171564,
+    "delivered_webp_binary_reconstruction_identity": true,
+    "delivered_webp_lossless": false,
+    "quality": 85,
+    "method": 6
+  },
+  "visual_observations": [
+    "Warm bright dusk-market palette; terracotta, pale sage stone and buff sandstone distinguishable by material and paving structure.",
+    "Native edges/corners and 2x2/4x4 review: no obvious extra thick perimeter, doubled grout or large discontinuous boundary color patch at the inspected scales.",
+    "All endpoint RGB differences nonzero; stone TB MAE40.484 crosses a normal grout line and is not proof of a visual break or proof of seamlessness.",
+    "Terracotta course heights vary slightly; initial exact8course/4x4block prompt counts not all met. Basket weave approximately6x6blocks; selected terracotta edit permits changed course count.",
+    "Low-frequency material-color/mineral-grain repetition is visible in 4x4; actual scene UV scale remains to be evaluated.",
+    "Small pores, edge wear and slight edge light/dark detail remain; no large directional cast shadow or neon coloration observed.",
+    "Actual market warm lights shift sage stone and sandstone toward orange-brown; identity remains in their distinct paving structures."
+  ],
+  "limits": [
+    "Saved original tool return records and matching raw files verified; paid imagegen calls not replayed.",
+    "Overview/repeat/lighting WebPs are lossy review figures; exact diagnostics use decoded final production WebP and native lossless PNG strips.",
+    "Finite visual inspection does not establish mathematical pixel-identical periodicity.",
+    "Standalone material samples share each texture across white/warm renderers:6actual texture downloads over2page loads,12panelrenders; do not count12textureloads.",
+    "No game integration; existing main market screenshot is palette context using existing procedural ground. Sky/fog/lantern pointlights/postprocessing/actual scene UVs omitted.",
+    "Root owns repository typecheck/tests and Claude review; those are not independently rerun here."
+  ],
+  "review_file_checks": [
+    {
+      "path": "assets/world/reviews/ground_market_sandstone_weave_03-2x2.webp",
+      "bytes": 111114,
+      "sha256": "70ca9378697aab5c7fc21d9606d4e27b01e68cbb98869956ddb2de5d681e3302",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_sandstone_weave_03-4x4.webp",
+      "bytes": 105412,
+      "sha256": "eae54afa50e560932cc791ea9d854af9e9f3f5e20a3d6a52db681a886b33a66b",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_sandstone_weave_03-native-corners.png",
+      "bytes": 94314,
+      "sha256": "623a2d28d38a294330a7a69515d42cf27961bc2ceaa1d0f46df09a14a97ab37f",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_sandstone_weave_03-native-lr.png",
+      "bytes": 187985,
+      "sha256": "166a68df5ef7f2b968cd1406f40acedb44b02ac3c58e0099826aa1a57d60433d",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_sandstone_weave_03-native-tb.png",
+      "bytes": 189152,
+      "sha256": "abbc330a930213e239d51e6b26a2af484808dc28af469a2ae0c96c8ca8cd0a9f",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_slate_02-2x2.webp",
+      "bytes": 243170,
+      "sha256": "194dabd4b7aae7559c6d8424c9893bbe4bb613ab95805308ed4584939f41770a",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_slate_02-4x4.webp",
+      "bytes": 197628,
+      "sha256": "6d3d4653f77ecf0195d4f9ba59d655f9cad06196e03c515bba97f608ebdc0a37",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_slate_02-native-corners.png",
+      "bytes": 111957,
+      "sha256": "a656231ba233939a627e1ae8e5e2957465f6cc75793f479d87300bda418726c7",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_slate_02-native-lr.png",
+      "bytes": 221485,
+      "sha256": "c31414353f74cf0201d59cbd8af3f13273a4956fefdc3e0a221f6f68551ed8a8",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_slate_02-native-tb.png",
+      "bytes": 225885,
+      "sha256": "f2b3d0fcd05cf1cb73ff57b49f5526284ca7760585220a365059fad4eecc2457",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_terracotta_01-2x2.webp",
+      "bytes": 163170,
+      "sha256": "911c9034290a4d559cff41f5de0dd61548300ff40d1552f411df5d1cf912ec7e",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_terracotta_01-4x4.webp",
+      "bytes": 134648,
+      "sha256": "6591fec4d8bdf0bcc96ac4973160536e1b97dc624108fde6cdc2ca84ba5945df",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_terracotta_01-native-corners.png",
+      "bytes": 104728,
+      "sha256": "4e939044cea70eb89d96788179fbb8c10faba3caa8f2ad1464998f6ac0257bf7",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_terracotta_01-native-lr.png",
+      "bytes": 205131,
+      "sha256": "c26a41e10b282c404ad39918ae37632de560ff39e547d28e930ca24bfe236280",
+      "size": [
+        128,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/ground_market_terracotta_01-native-tb.png",
+      "bytes": 201326,
+      "sha256": "13679f0fe9b4c43c631d0da65b41a6ef92749878be122384792bc71a55064f47",
+      "size": [
+        1024,
+        128
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/market-ground-a09-nm-lighting.webp",
+      "bytes": 171564,
+      "sha256": "cb6f0ca1d7271fbc66a25febcfb9a8c319204313c0976e0047ed39cb289eb83b",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    },
+    {
+      "path": "assets/world/reviews/market-ground-a09-nm.webp",
+      "bytes": 188266,
+      "sha256": "183ea57ff325c570d34c225f3fff247ba9db6bc34726707b3cecd08cefa58e28",
+      "size": [
+        2048,
+        1024
+      ],
+      "mode": "RGB",
+      "power_of_two_dimensions": true,
+      "icc_sha256": "38f70cc4828bc18e1a733ee6f946eb8e20363459af8a1a277ced1e123cebbf57",
+      "actually_viewed": true
+    }
+  ],
+  "provenance_snapshot": {
+    "path": "assets/world/ground/market-ground-a09-nm.provenance.json",
+    "sha256": "4c1881b90b3842d793e880740aba83176f97a831d09e3b2d399a27efc2c6f0e7",
+    "verification": "Frozen final provenance rechecked against primary archived calls and source/export hashes; root test result belongs to provenance, not this independent run"
+  }
+}

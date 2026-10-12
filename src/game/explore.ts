@@ -9,7 +9,7 @@ import { mulberry } from '../fx/util';
 import { ALL_SCENES, BONUS_LEVELS, BONUS_UNLOCK, LEVELS, SAFE_R, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
-export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number }
+export interface ExploreState { scene?: number; day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number; lanternRuns?: number; kartRuns?: number; clawRuns?: number; whackRuns?: number; ringRuns?: number; arrowRuns?: number; fireflyRuns?: number; kiteRuns?: number; kitchenRuns?: number; sledRuns?: number; snowcatRuns?: number }
 export const KILL_CAP = 40; // 每天拿奖励的野怪场数上限
 export const KILL_MUL = 1.5; // 探索里每场野怪胜利 = 挂机胜利奖励 × 1.5（主动玩，比挂机略高）
 
@@ -17,7 +17,7 @@ const dayKey = (now = Date.now()) => Math.floor((now - 5 * 3600_000) / 86400_000
 
 export function ensureExplore(s: PlayerState, now = Date.now()): ExploreState {
   const e = ((s as unknown as { explore?: ExploreState }).explore ??= { day: dayKey(now), kills: 0, chests: [], talked: [] });
-  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; }
+  if (e.day !== dayKey(now)) { e.day = dayKey(now); e.kills = 0; e.chests = []; e.talked = []; e.bossWins = 0; e.claimed = false; e.herbs = []; e.casts = 0; e.orders = 0; e.boxGames = 0; e.mushRuns = 0; e.chimeRuns = 0; e.lanternRuns = 0; e.kartRuns = 0; e.clawRuns = 0; e.whackRuns = 0; e.ringRuns = 0; e.arrowRuns = 0; e.fireflyRuns = 0; e.kiteRuns = 0; e.kitchenRuns = 0; e.sledRuns = 0; e.snowcatRuns = 0; }
   return e;
 }
 
@@ -156,7 +156,7 @@ export function pickHerb(s: PlayerState, id: string, now = Date.now()): Gain | n
 }
 
 // ---------- 探索足迹（长期累计目标）----------
-export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern' | 'kart' | 'claw' | 'whack';
+export type TrailStat = 'kills' | 'chests' | 'herbs' | 'bosses' | 'fish' | 'ramen' | 'found' | 'mush' | 'chime' | 'lantern' | 'kart' | 'claw' | 'whack' | 'ring' | 'arrows' | 'firefly' | 'kite' | 'kitchen' | 'sled' | 'snowcat';
 export interface TrailMilestone { id: string; stat: TrailStat; need: number; label: string; reward: Gain }
 const G = (fish: number, catnip: number, bells: number, exp = 0): Gain => ({ fish, catnip, bells, exp });
 export const TRAIL: TrailMilestone[] = [
@@ -191,6 +191,33 @@ export const TRAIL: TrailMilestone[] = [
   { id: 'kt5', stat: 'kart', need: 5, label: '卡丁车新手 · 跑完 5 场比赛', reward: G(400, 3, 0) },
   { id: 'kt25', stat: 'kart', need: 25, label: '沙漠车手 · 跑完 25 场比赛', reward: G(1500, 10, 30) },
   { id: 'kt80', stat: 'kart', need: 80, label: '日落绿洲车王 · 跑完 80 场比赛', reward: G(4200, 25, 100) },
+  { id: 'cw5', stat: 'claw', need: 5, label: '娃娃机新手 · 抓到 5 个娃娃', reward: G(400, 3, 0) },
+  { id: 'cw30', stat: 'claw', need: 30, label: '街区抓娃娃达人 · 抓到 30 个娃娃', reward: G(1500, 10, 30) },
+  { id: 'cw100', stat: 'claw', need: 100, label: '九命电器常客 · 抓到 100 个娃娃', reward: G(4200, 25, 100) },
+  { id: 'wk60', stat: 'whack', need: 60, label: '网咖新人 · 抓到 60 只鼠标', reward: G(400, 3, 0) },
+  { id: 'wk300', stat: 'whack', need: 300, label: '电竞猫手 · 抓到 300 只鼠标', reward: G(1500, 10, 30) },
+  { id: 'wk900', stat: 'whack', need: 900, label: '赛博网咖传说 · 抓到 900 只鼠标', reward: G(4200, 25, 100) },
+  { id: 'rg10', stat: 'ring', need: 10, label: '套圈新手 · 套中 10 个奖品', reward: G(400, 3, 0) },
+  { id: 'rg50', stat: 'ring', need: 50, label: '夜市套圈王 · 套中 50 个奖品', reward: G(1500, 10, 30) },
+  { id: 'rg150', stat: 'ring', need: 150, label: '摊主见了都发愁 · 套中 150 个奖品', reward: G(4200, 25, 100) },
+  { id: 'ar50', stat: 'arrows', need: 50, label: '借箭新手 · 借到 50 支箭', reward: G(400, 3, 0) },
+  { id: 'ar300', stat: 'arrows', need: 300, label: '草船大丰收 · 借到 300 支箭', reward: G(1500, 10, 30) },
+  { id: 'ar1000', stat: 'arrows', need: 1000, label: '十万支也不在话下 · 借到 1000 支箭', reward: G(4200, 25, 100) },
+  { id: 'ff10', stat: 'firefly', need: 10, label: '萤火学徒 · 记住 10 轮萤火', reward: G(400, 3, 0) },
+  { id: 'ff60', stat: 'firefly', need: 60, label: '遗迹守夜猫 · 记住 60 轮萤火', reward: G(1500, 10, 30) },
+  { id: 'ff200', stat: 'firefly', need: 200, label: '过目不忘 · 记住 200 轮萤火', reward: G(4200, 25, 100) },
+  { id: 'kt20', stat: 'kite', need: 20, label: '初放纸鸢 · 收到 20 样东西', reward: G(400, 3, 0) },
+  { id: 'kt150', stat: 'kite', need: 150, label: '云上风筝客 · 收到 150 样东西', reward: G(1500, 10, 30) },
+  { id: 'kt500', stat: 'kite', need: 500, label: '扶摇直上 · 收到 500 样东西', reward: G(4200, 25, 100) },
+  { id: 'kc20', stat: 'kitchen', need: 20, label: '御膳房帮厨 · 上 20 道菜', reward: G(400, 3, 0) },
+  { id: 'kc120', stat: 'kitchen', need: 120, label: '御膳房掌勺 · 上 120 道菜', reward: G(1500, 10, 30) },
+  { id: 'kc400', stat: 'kitchen', need: 400, label: '满汉全猫席 · 上 400 道菜', reward: G(4200, 25, 100) },
+  { id: 'sd500', stat: 'sled', need: 500, label: '雪橇新手 · 滑行 500 米', reward: G(400, 3, 0) },
+  { id: 'sd3000', stat: 'sled', need: 3000, label: '雪坡飞猫 · 滑行 3000 米', reward: G(1500, 10, 30) },
+  { id: 'sd10000', stat: 'sled', need: 10000, label: '一路向北 · 滑行 10000 米', reward: G(4200, 25, 100) },
+  { id: 'sc20', stat: 'snowcat', need: 20, label: '堆雪学徒 · 叠 20 层雪球', reward: G(400, 3, 0) },
+  { id: 'sc120', stat: 'snowcat', need: 120, label: '雪猫匠人 · 叠 120 层雪球', reward: G(1500, 10, 30) },
+  { id: 'sc400', stat: 'snowcat', need: 400, label: '雪中千层猫 · 叠 400 层雪球', reward: G(4200, 25, 100) },
   { id: 'b3', stat: 'bosses', need: 3, label: '首领克星 · 赢 3 场首领战', reward: G(500, 4, 10, 200) },
   { id: 'b12', stat: 'bosses', need: 12, label: '首领终结者 · 赢 12 场首领战', reward: G(2000, 15, 50, 800) },
   { id: 'b40', stat: 'bosses', need: 40, label: '九命天敌 · 赢 40 场首领战', reward: G(6000, 40, 150, 2500) },

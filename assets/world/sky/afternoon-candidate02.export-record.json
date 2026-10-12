@@ -1,0 +1,69 @@
+{
+  "pr": 117,
+  "id": "sky_palace_afternoon_gold_05",
+  "review_round": 1,
+  "candidate": 2,
+  "tool": "image_gen.imagegen",
+  "tool_arguments": {
+    "prompt": "Edit the supplied ultra-wide afternoon sky panorama. Preserve the same soft fantasy game painting style, blue upper sky, champagne-gold lower clouds, lavender cloud undersides, overall cloud sizes, composition and brightness. This reference is the ORIGINAL SKY shifted horizontally by exactly half a width so that its old left-right wrap junction is now the vertical center of this image. The only repair target is the abrupt local cloud-shape and cream-light / lavender-shadow discontinuity on that CENTER join: especially the cumulus crown and shading where the two halves meet. Repaint a narrow central region into one naturally continuous rounded cloud with coherent cream highlights and softly connected lavender shadows across the center; no straight vertical cut, stripe, blurry blend, smudged stripe, repeated cloned puff or empty blue gap hiding it. Keep the rest of the cloudfield and colors as close as possible, do not redesign the panorama, add new clouds globally, recolor the scene or change its lighting. Also preserve the natural sky continuity at the outer left-right edges of this shifted reference; they are adjacent pieces of the original image's middle. No objects, ground, horizon land, buildings, sun/moon disks, text, borders or watermark. Keep the native 3:1 panoramic aspect of the reference (2172x724 requested, highest native resolution). One opaque sky image filling the whole canvas. The result will be shifted back and cropped to a 4:1 horizontal sky band for a cylindrical wrap, so both the center repair and the unchanged outer-edge continuity must be smooth.",
+    "referenced_image_paths": [
+      "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.png"
+    ],
+    "transparent_background": false
+  },
+  "started_at_utc": "2026-10-12 06:30:21 UTC",
+  "completed_at_utc": "2026-10-12 06:30:56 UTC",
+  "original_path": "/workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png",
+  "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+  "reference_manifest": "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.json",
+  "source_kind": "genuine imagegen edit of halfwrap reference; output native shifted phase",
+  "original_sha256": "129fee9d5daa804e4e6f08bc652df0cc8b2851f72c3ae14704c0d806c1b256b1",
+  "original_dimensions": [
+    2172,
+    724
+  ],
+  "original_mode": "RGB",
+  "original_bytes": 1771323,
+  "archived_copy_path": "/workspace/world-review/sky-daylight/raw/sky_palace_afternoon_gold_05-candidate-02-shifted.png",
+  "archived_copy_sha256": "129fee9d5daa804e4e6f08bc652df0cc8b2851f72c3ae14704c0d806c1b256b1",
+  "reference_path": "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.png",
+  "reference_sha256": "db79bd595dbf63235cca9e3fbe936e3ee163715da9e00ea7f8313d036164bc87",
+  "reference_original_path": "/workspace/generated_images/exec-72d3320d-db05-46c5-98be-6281aa53fe50.png",
+  "reference_original_sha256": "9bfa4708ef5e7d8db3d04ab6720dab912ef8523e714336344af0da4211634de1",
+  "reference_transform": "Exact horizontal cyclic roll by-1086 columns. No resizing, color change, blending or painting. Original left/right join now at x1086. Raw reference only, never a finished texture.",
+  "technical_unshifted_full_path": "/workspace/world-review/sky-daylight/candidate02/sky_palace_afternoon_gold_05-candidate-02-unshifted-full.png",
+  "technical_unshifted_full_sha256": "fdebf04b5edd6154edd362f4a9f6ef6b599b7d55d4a23215d9fb4b753a8caad9",
+  "final_path": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+  "final_sha256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+  "final_bytes": 120818,
+  "final_dimensions": [
+    2048,
+    512
+  ],
+  "export": {
+    "inverse_horizontal_roll_columns": 1086,
+    "native_phase": "halfwrap shifted input/output; rolled back to original phase for final",
+    "crop_box_xyxy": [
+      0,
+      90,
+      2172,
+      633
+    ],
+    "crop_dimensions": [
+      2172,
+      543
+    ],
+    "resize": "Pillow Lanczos2172x543->2048x512",
+    "format": "RGB WebP",
+    "quality": 90,
+    "method": 6,
+    "srgb_icc_bytes": 588,
+    "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+    "srgb_icc_path": "/workspace/world-review/sky-daylight/candidate02/frozen-srgb.icc",
+    "artistic_repaint_in_code": false,
+    "color_edit_in_code": false,
+    "seam_blending_in_code": false,
+    "upsample": false,
+    "aspect_stretch": false
+  }
+}

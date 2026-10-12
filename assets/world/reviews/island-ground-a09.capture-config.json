@@ -1,0 +1,105 @@
+{
+  "candidate": "candidate-island-final",
+  "displayVersion": "候选01 · 源像素冻结",
+  "outputDirectory": "preview-final",
+  "filePrefix": "island-ground-a09",
+  "overviewSuffix": "",
+  "base": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "parameterBase": "67d7bef7b1ad8155b92420daf5f6083289bd97a8",
+  "captureReady": true,
+  "dependencyVerification": "/workspace/world-review/island-ground/preview-final/capture-base-67.json",
+  "sourceVerification": "/workspace/world-review/island-ground/island-ground-a09.provenance.json",
+  "sourceProvenanceSHA256": "31572052b1764926079e39a547c387ab5f3772413ab048d5a55d766ae94da4bd",
+  "sourceSelectionPath": "/workspace/world-review/island-ground/island-ground-a09.selection-at-export.json",
+  "sourceSelectionSHA256": "5daae3a3e06b3324c06fd2e4c9d327728af096654b8965f5b2d651151617efdd",
+  "expectedThreeSHA256": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416",
+  "expectedRoomSHA256": "85869bdd22f7cf0b22e68dcefe6cb710480af0f5c901a76f7a7764fd07fc8014",
+  "assets": [
+    {
+      "id": "ground_island_mint_bloom_01",
+      "label": "薄荷花草",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_mint_bloom_01.webp",
+      "sha256": "bbe226fb0c375e91d8527cb242f38c11022fa773f56b004a24faf1ec270eb040",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 300178,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "7888c9798ab7493741b7964361adbadb7a6703eba47007032364f724ebb3722b",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-5d2c1a87-228a-41cc-8823-5da87d275f23.png",
+      "originalSHA256": "91a061528ed7b70c471318baf921506bba02eb14e99f93fea3fdf80b5825eb1a",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "ground_island_pink_clover_02",
+      "label": "粉色苜蓿",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_pink_clover_02.webp",
+      "sha256": "94534b9fcbc09d21a52a0a9575c0e4d31b67934013101077835342d7c64a9c3e",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 479916,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "be0c0b37b64956af00efbfd4954c4280c9b552f99749ad323a8bda1af35c4727",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-908a0d64-1968-4b68-be90-c06f7c0cb2f0.png",
+      "originalSHA256": "958dbc167e66ee6a120f90445021b718a37e58c1c7bf604c839f2947328ce3cd",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "id": "ground_island_meadow_mix_03",
+      "label": "混合草甸",
+      "theme": "cloud",
+      "source": "/workspace/world-review/island-ground/exports/ground_island_meadow_mix_03.webp",
+      "sha256": "d194e553b897bff729e5ba7290d4df941e43be0ade857a2178c24d0cef38f5ca",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 297664,
+      "roughness": 0.95,
+      "metalness": 0,
+      "RGBSHA256": "3df6f9860594ff6cbca179540ee5e778112117da622032ddd39dd01d2f9ff3d7",
+      "iccBytes": 588,
+      "originalPath": "/workspace/generated_images/exec-04137241-b5a3-4c00-bffc-4c1f000dc3ac.png",
+      "originalSHA256": "1bab0cbe6b0605a96a450039e9a2d355beabf059af45890ac07fb41b240ab496",
+      "originalDimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "actualGameMapping": {
+    "type": "CircleGeometry",
+    "radius": 29.2,
+    "repeat": [
+      5,
+      5
+    ],
+    "roughness": 0.95,
+    "metalness": 0,
+    "approximateWorldUnitsPerTile": 11.68
+  },
+  "sampleMapping": {
+    "plane": [
+      8,
+      8
+    ],
+    "repeat": [
+      2,
+      2
+    ],
+    "worldUnitsPerTile": 4
+  },
+  "preparedAtUTC": "2026-10-12T05:53:29.983Z"
+}

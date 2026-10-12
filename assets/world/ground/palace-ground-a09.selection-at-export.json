@@ -1,0 +1,101 @@
+{
+  "recordedAtUTC": "2026-10-12T04:50:22.679125+00:00",
+  "records": [
+    {
+      "id": "ground_palace_white_marble_03",
+      "native_path": "/workspace/world-review/palace-ground/raw/ground_palace_white_marble_03-candidate-01.png",
+      "native_sha256": "c887452c1ddf3af0140a9d8033845922e61a5da9fb2fbfee7d8afbc89cdf755b",
+      "native_bytes": 2330025,
+      "native_dimensions": [
+        1254,
+        1254
+      ],
+      "original_generator_path": "/workspace/generated_images/exec-3b31523b-78b3-4576-9197-476f1d234cd1.png",
+      "original_generator_sha256": "c887452c1ddf3af0140a9d8033845922e61a5da9fb2fbfee7d8afbc89cdf755b",
+      "candidate": 1,
+      "final_path": "/workspace/world-review/palace-ground/exports/ground_palace_white_marble_03.webp",
+      "final_bytes": 124046,
+      "final_sha256": "388fa1cbb36e80608690734dddb54825f91eeec2c9cf3696dc92488b7a03bd12",
+      "final_dimensions": [
+        1024,
+        1024
+      ],
+      "final_mode": "RGB",
+      "srgb_icc_bytes": 588,
+      "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "crop": null,
+      "upsampling": false,
+      "export": {
+        "resample": "LANCZOS",
+        "quality": 90,
+        "method": 6,
+        "fixed_icc": "/workspace/world-review/palace-ground/frozen-srgb.icc"
+      },
+      "qa_status": "pending independent check"
+    },
+    {
+      "id": "ground_palace_cloud_marble_04",
+      "native_path": "/workspace/world-review/palace-ground/raw/ground_palace_cloud_marble_04-candidate-01.png",
+      "native_sha256": "e3dd8d6feba259293f11ebb15d9ba76249f5f4600fc66474ca95568c3b4ce009",
+      "native_bytes": 2142481,
+      "native_dimensions": [
+        1254,
+        1254
+      ],
+      "original_generator_path": "/workspace/generated_images/exec-5a502ecd-4784-4338-892a-9d7516f82b2e.png",
+      "original_generator_sha256": "e3dd8d6feba259293f11ebb15d9ba76249f5f4600fc66474ca95568c3b4ce009",
+      "candidate": 1,
+      "final_path": "/workspace/world-review/palace-ground/exports/ground_palace_cloud_marble_04.webp",
+      "final_bytes": 107562,
+      "final_sha256": "7e6fef1f33037a9e3ed98a406d77900c11054dcbe5c736c42576fdb4aefa7511",
+      "final_dimensions": [
+        1024,
+        1024
+      ],
+      "final_mode": "RGB",
+      "srgb_icc_bytes": 588,
+      "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "crop": null,
+      "upsampling": false,
+      "export": {
+        "resample": "LANCZOS",
+        "quality": 90,
+        "method": 6,
+        "fixed_icc": "/workspace/world-review/palace-ground/frozen-srgb.icc"
+      },
+      "qa_status": "pending independent check"
+    },
+    {
+      "id": "ground_palace_gold_thread_05",
+      "native_path": "/workspace/world-review/palace-ground/raw/ground_palace_gold_thread_05-candidate-01.png",
+      "native_sha256": "d6d57b6cc4f9640885cc8fce4e1badd1848b2b3bfc734b8273e974f5ec7363ca",
+      "native_bytes": 2150598,
+      "native_dimensions": [
+        1254,
+        1254
+      ],
+      "original_generator_path": "/workspace/generated_images/exec-aa9cd9ff-60c6-4121-8dd3-0e6628566ada.png",
+      "original_generator_sha256": "d6d57b6cc4f9640885cc8fce4e1badd1848b2b3bfc734b8273e974f5ec7363ca",
+      "candidate": 1,
+      "final_path": "/workspace/world-review/palace-ground/exports/ground_palace_gold_thread_05.webp",
+      "final_bytes": 106010,
+      "final_sha256": "ba86b27e037a5f338e9e32165f1cc09da128a94fea42804e9a0d863d2b8585dc",
+      "final_dimensions": [
+        1024,
+        1024
+      ],
+      "final_mode": "RGB",
+      "srgb_icc_bytes": 588,
+      "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "crop": null,
+      "upsampling": false,
+      "export": {
+        "resample": "LANCZOS",
+        "quality": 90,
+        "method": 6,
+        "fixed_icc": "/workspace/world-review/palace-ground/frozen-srgb.icc"
+      },
+      "qa_status": "pending independent check"
+    }
+  ]
+}

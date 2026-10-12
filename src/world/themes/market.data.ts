@@ -10,6 +10,7 @@ export const MARKET_STAGE = { z: -29, w: 20, d: 5.4 };
 export const MARKET_WALL_X = 26.5;
 export const MARKET_PLAZA = { x: 0, z: 0, r: 9 };
 const POI: [number, number] = [-9.6, 0];
+const RING_POI: [number, number] = [9.6, 0]; // 东侧空档：套圈摊
 const SPAWN: [number, number] = [0, 21];
 const ENEMIES: [number, number][] = [[17, -13], [-17, 15], [-2, 16], [3, 9], [-4, -10], [3, -16]];
 const CHESTS: [number, number][] = [[24, -13], [24, 15], [-24, -13], [-24, 1]];
@@ -37,7 +38,7 @@ export function marketLevel(): LevelDef {
     lights: [[0, 5, 0, 0xffb060, 80, 24], [0, 5, 16, 0xff9a50, 60, 20], [0, 5, -16, 0xffc070, 60, 20], [0, 6, -25, 0xff6a40, 60, 20]],
     solids: marketSolids(),
     enemySpots: ENEMIES, chestSpots: CHESTS, herbSpots: HERBS,
-    pois: [{ id: 'ramen', game: 'ramen', x: POI[0], z: POI[1], label: '拉面屋台' }],
+    pois: [{ id: 'ramen', game: 'ramen', x: POI[0], z: POI[1], label: '拉面屋台' }, { id: 'ring', game: 'ring', x: RING_POI[0], z: RING_POI[1], label: '套圈摊' }],
     bossSpot: BOSS, npcSpot: NPC, spawn: SPAWN,
   };
 }

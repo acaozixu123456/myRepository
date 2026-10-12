@@ -1,0 +1,127 @@
+{
+  "capturedUTC": "2026-10-12T06:35:39.754762+00:00",
+  "sources": [
+    {
+      "id": "sky_cloud_noon_cumulus_04",
+      "selectedCandidate": 1,
+      "exportPath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_cloud_noon_cumulus_04.webp",
+      "exportBytes": 83500,
+      "fileSHA256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "decodedRGBSHA256": "f6a9dd3733832031864a726870a00c56307da4994f04e0026a90e16cf8099b0e",
+      "dimensions": [
+        2048,
+        512
+      ],
+      "mode": "RGB",
+      "iccBytes": 588,
+      "iccSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "rawPath": "/workspace/world-review/sky-daylight/raw/sky_cloud_noon_cumulus_04-candidate-01.png",
+      "rawBytes": 1609742,
+      "rawFileSHA256": "3b281de6015b2902e3b81f7c04d53ab8a2935b82087274cecebbb969603a85b2",
+      "rawDimensions": [
+        2172,
+        724
+      ],
+      "nativeProofPhase": "original imagegen phase",
+      "genuineRawPath": "/workspace/world-review/sky-daylight/raw/sky_cloud_noon_cumulus_04-candidate-01.png",
+      "genuineRawFileSHA256": "3b281de6015b2902e3b81f7c04d53ab8a2935b82087274cecebbb969603a85b2",
+      "genuineRawDimensions": [
+        2172,
+        724
+      ],
+      "genuineRawPhase": "original phase",
+      "exportRecipe": {
+        "crop_box_xyxy": [
+          0,
+          90,
+          2172,
+          633
+        ],
+        "crop_dimensions": [
+          2172,
+          543
+        ],
+        "removed_rows_top": 90,
+        "removed_rows_bottom": 91,
+        "removed_left_or_right_columns": 0,
+        "requested_aspect_ratio": "4:1",
+        "actual_native_aspect_ratio": "3:1",
+        "final_aspect_ratio": "4:1",
+        "resize": "Pillow Lanczos full-width centered crop2172x543 ->2048x512",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "srgb_icc_path": "/workspace/world-review/sky-daylight/frozen-srgb.icc",
+        "color_transform": false,
+        "color_edit": false,
+        "artistic_repaint": false,
+        "seam_blending": false,
+        "upsample": false,
+        "aspect_stretch": false
+      },
+      "observedAfterFileSHA256": "dfd75d95dbd6afc4ad5bfd856b3ec3bc9065e07018b38dd82f2f17292ccb10d5",
+      "observedAfterDecodedRGBSHA256": "f6a9dd3733832031864a726870a00c56307da4994f04e0026a90e16cf8099b0e"
+    },
+    {
+      "id": "sky_palace_afternoon_gold_05",
+      "selectedCandidate": 2,
+      "exportPath": "/workspace/world-review/sky-daylight/candidate02/exports/sky_palace_afternoon_gold_05.webp",
+      "exportBytes": 120818,
+      "fileSHA256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "decodedRGBSHA256": "4b732cdbc3c8202f54b4094b2088719b56188e0c26100a376a727243b1867eec",
+      "dimensions": [
+        2048,
+        512
+      ],
+      "mode": "RGB",
+      "iccBytes": 588,
+      "iccSHA256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+      "rawPath": "/workspace/world-review/sky-daylight/candidate02/sky_palace_afternoon_gold_05-candidate-02-unshifted-full.png",
+      "rawBytes": 1693520,
+      "rawFileSHA256": "fdebf04b5edd6154edd362f4a9f6ef6b599b7d55d4a23215d9fb4b753a8caad9",
+      "rawDimensions": [
+        2172,
+        724
+      ],
+      "nativeProofPhase": "technical inverse roll+1086 from genuine shifted-phase AI output; no resampling before native proof",
+      "genuineRawPath": "/workspace/world-review/sky-daylight/raw/sky_palace_afternoon_gold_05-candidate-02-shifted.png",
+      "genuineRawFileSHA256": "129fee9d5daa804e4e6f08bc652df0cc8b2851f72c3ae14704c0d806c1b256b1",
+      "genuineRawDimensions": [
+        2172,
+        724
+      ],
+      "genuineRawPhase": "halfwrap shifted phase",
+      "exportRecipe": {
+        "inverse_horizontal_roll_columns": 1086,
+        "native_phase": "halfwrap shifted input/output; rolled back to original phase for final",
+        "crop_box_xyxy": [
+          0,
+          90,
+          2172,
+          633
+        ],
+        "crop_dimensions": [
+          2172,
+          543
+        ],
+        "resize": "Pillow Lanczos2172x543->2048x512",
+        "format": "RGB WebP",
+        "quality": 90,
+        "method": 6,
+        "srgb_icc_bytes": 588,
+        "srgb_icc_sha256": "36abda2da8f1fbed2f2feee67997812f7ebb1b62b26da313d30de11cdaf35c28",
+        "srgb_icc_path": "/workspace/world-review/sky-daylight/candidate02/frozen-srgb.icc",
+        "artistic_repaint_in_code": false,
+        "color_edit_in_code": false,
+        "seam_blending_in_code": false,
+        "upsample": false,
+        "aspect_stretch": false
+      },
+      "observedAfterFileSHA256": "1758d9562d18843b0a092bfc1d24f92a4b74eedb25a715e42ed9e7d21e583705",
+      "observedAfterDecodedRGBSHA256": "4b732cdbc3c8202f54b4094b2088719b56188e0c26100a376a727243b1867eec"
+    }
+  ],
+  "sourceStayedFrozen": true
+}

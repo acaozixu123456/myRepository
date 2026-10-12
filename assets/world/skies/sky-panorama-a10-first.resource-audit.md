@@ -89,4 +89,3 @@ Web 工具能读官方 HTML/API，但图像点击只返文字 `<<ImageDisplayed>
 4. 作者导出最终 2048 × 512 后再做全宽接缝、平铺、内圆柱正常 MeshBasic/GPU 视图，独立 patterns_qa 复核最终选源。本审计未跑应用 typecheck/tests，也不虚称完成最终 in-engine 检查。
 
 `Kenney Background Elements` / `Remastered` 的 CC0 组件也已查，可供组合；已有完整 Skyboxes 更直接。OGA _Creature_ 的 Clear/Cloudy Panoramic EXR 原宽为 1024，若作 2048 需上采样，优先现有 2K/4K 原图；这是真实分辨率差异，未用 2:1 比例拒绝它们。
-

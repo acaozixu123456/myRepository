@@ -1,0 +1,20 @@
+{
+  "pr": 117,
+  "id": "sky_palace_afternoon_gold_05",
+  "review_round": 1,
+  "candidate": 2,
+  "tool": "image_gen.imagegen",
+  "tool_arguments": {
+    "prompt": "Edit the supplied ultra-wide afternoon sky panorama. Preserve the same soft fantasy game painting style, blue upper sky, champagne-gold lower clouds, lavender cloud undersides, overall cloud sizes, composition and brightness. This reference is the ORIGINAL SKY shifted horizontally by exactly half a width so that its old left-right wrap junction is now the vertical center of this image. The only repair target is the abrupt local cloud-shape and cream-light / lavender-shadow discontinuity on that CENTER join: especially the cumulus crown and shading where the two halves meet. Repaint a narrow central region into one naturally continuous rounded cloud with coherent cream highlights and softly connected lavender shadows across the center; no straight vertical cut, stripe, blurry blend, smudged stripe, repeated cloned puff or empty blue gap hiding it. Keep the rest of the cloudfield and colors as close as possible, do not redesign the panorama, add new clouds globally, recolor the scene or change its lighting. Also preserve the natural sky continuity at the outer left-right edges of this shifted reference; they are adjacent pieces of the original image's middle. No objects, ground, horizon land, buildings, sun/moon disks, text, borders or watermark. Keep the native 3:1 panoramic aspect of the reference (2172x724 requested, highest native resolution). One opaque sky image filling the whole canvas. The result will be shifted back and cropped to a 4:1 horizontal sky band for a cylindrical wrap, so both the center repair and the unchanged outer-edge continuity must be smooth.",
+    "referenced_image_paths": [
+      "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.png"
+    ],
+    "transparent_background": false
+  },
+  "started_at_utc": "2026-10-12 06:30:21 UTC",
+  "completed_at_utc": "2026-10-12 06:30:56 UTC",
+  "original_path": "/workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png",
+  "output_hint": "Generated images are saved to /workspace/generated_images as /workspace/generated_images/exec-2dae1eb4-bffa-45b4-9ff9-9bd472689c1e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+  "reference_manifest": "/workspace/world-review/sky-daylight/references/afternoon-candidate01-halfwrap-reference.json",
+  "source_kind": "genuine imagegen edit of halfwrap reference; output native shifted phase"
+}

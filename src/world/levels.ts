@@ -2,6 +2,7 @@
 // 一个关卡 = 十字路口街区；楼、道具、灯、电线杆、实体出生点都在这里摆。新增关卡：加一份 LevelDef，必要时在 kit / props 里补新道具。
 import { cloudLevel } from './themes/cloud.data';
 import { desertLevel } from './themes/desert.data';
+import { snowLevel } from './themes/snow.data';
 import { forestLevel } from './themes/forest.data';
 import { harborLevel } from './themes/harbor.data';
 import { marketLevel } from './themes/market.data';
@@ -10,11 +11,11 @@ import type { BuildingSpec } from './kit';
 
 export interface Placed { spec: BuildingSpec; x: number; z: number; face: 1 | -1 }
 /** 场景里的玩法入口：走近触发一个小游戏（game 对应 app 层注册的小游戏名） */
-export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace' | 'desert';
+export type ThemeId = 'street' | 'market' | 'harbor' | 'forest' | 'cloud' | 'palace' | 'desert' | 'snow';
 export interface PoiDef { id: string; game: string; x: number; z: number; label: string }
 export interface PropDef { kind: string; x: number; z: number; ry?: number; seed?: number; arg?: number }
 export interface AABB { x0: number; x1: number; z0: number; z1: number }
-export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert';
+export type MoodId = 'neon' | 'street' | 'market' | 'redcliff' | 'forest' | 'mist' | 'palace' | 'meadow' | 'desert' | 'snow';
 export interface LevelDef {
   id: string; chapter: number; name: string; mood: MoodId; half: number;
   /** 场景主题：street = 十字街区（旧逻辑）；其余各有独立布局 / 地面 / 建筑 / 天空（src/world/themes/） */
@@ -90,7 +91,8 @@ export const LEVEL_1: LevelDef = {
   lights: [[0, 5, 0, 0xff2ea8, 90, 26], [-14, 6, -4, 0x7ff0ff, 70, 22], [14, 6, 4, 0x9a7aff, 70, 22]],
   tram: true, arches: [], lanterns: [],
   vents: [[-3, 0.5, -7.6], [3.4, 0.5, 7.6], [-19.5, 0.5, -7.4], [20, 0.5, -7.4], [-8, 0.5, 7.7], [8.5, 0.5, -7.5]],
-  pois: [{ id: 'boxcat', game: 'boxcat', x: -10.5, z: -5.4, label: '纸箱寻猫' }],
+  // 店铺玩法：九命电器门口的夹娃娃机、赛博猫网咖里的鼠标大作战
+  pois: [{ id: 'boxcat', game: 'boxcat', x: -10.5, z: -5.4, label: '纸箱寻猫' }, { id: 'claw', game: 'claw', x: -25, z: -5.8, label: '九命电器 · 夹娃娃' }, { id: 'whack', game: 'whack', x: 25, z: -5.8, label: '赛博猫网咖 · 鼠标大作战' }],
   ...SPOTS,
 };
 
@@ -115,9 +117,11 @@ export const LEVELS: Record<number, LevelDef> = { 1: LEVEL_1, 2: LEVEL_2, 3: LEV
 export const BONUS_BASE = 100;
 /** 沙漠绿洲：卡丁车赛道 + 绿洲钓鱼（见 themes/desert.data.ts） */
 export const LEVEL_DESERT: LevelDef = desertLevel();
-export const BONUS_LEVELS: Record<number, LevelDef> = { 101: LEVEL_DESERT };
+/** 喵雪岭：雪橇 + 叠雪猫（见 themes/snow.data.ts） */
+export const LEVEL_SNOW: LevelDef = snowLevel();
+export const BONUS_LEVELS: Record<number, LevelDef> = { 101: LEVEL_DESERT, 102: LEVEL_SNOW };
 /** 附加场景解锁条件：主线首领所在章节 ≥ 该值 */
-export const BONUS_UNLOCK: Record<number, number> = { 101: 3 };
+export const BONUS_UNLOCK: Record<number, number> = { 101: 3, 102: 5 };
 /** 所有场景（主线 + 附加），测试和场景选择都用它 */
 export const ALL_SCENES: Record<number, LevelDef> = { ...LEVELS, ...BONUS_LEVELS };
 export const isBonusScene = (id: number) => id > BONUS_BASE;
@@ -236,15 +240,22 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
   if (hit) return hit;
   const { N, grid, seen } = reachableCells(L);
   const taken: [number, number][] = [L.spawn, L.bossSpot, L.npcSpot, ...L.enemySpots, ...L.chestSpots, ...herbsOf(L), ...hiddenSpotsOf(L), ...coverSpotsOf(L), ...poisOf(L).map((p): [number, number] => [p.x, p.z])];
-  const cand: [number, number][] = [];
-  for (let cz = 5; cz < N - 5; cz++) for (let cx = 5; cx < N - 5; cx++) {
-    if (!seen[cz * N + cx]) continue;
-    const x = cx + 0.5 - L.half, z = cz + 0.5 - L.half;
-    if (inSafeZone(L, x, z) || taken.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < 6)) continue;
-    let blocked = 0;
-    for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
-    if (blocked <= 4) cand.push([x, z]);
-  }
+  // 候选：走得到、四周不太挤、离其他东西有点距离；挤的场景（夜市主街两侧都是玩法安全区）放宽到 3.5 米
+  const collect = (gap: number) => {
+    const out: [number, number][] = [];
+    for (let cz = 5; cz < N - 5; cz++) for (let cx = 5; cx < N - 5; cx++) {
+      if (!seen[cz * N + cx]) continue;
+      const x = cx + 0.5 - L.half, z = cz + 0.5 - L.half;
+      if (inSafeZone(L, x, z) || taken.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < gap)) continue;
+      let blocked = 0;
+      for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
+      if (blocked <= 4) out.push([x, z]);
+    }
+    return out;
+  };
+  let cand = collect(6);
+  const span = (c: [number, number][]) => { let lo = Infinity, hi = -Infinity; for (const [, z] of c) { lo = Math.min(lo, z); hi = Math.max(hi, z); } return hi - lo; };
+  if (span(cand) < 20) cand = collect(3.5);
   let seed = 3; for (const ch of L.id) seed = (seed * 37 + ch.charCodeAt(0)) >>> 0;
   const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
   let out: [number, number][] = [];
@@ -254,7 +265,8 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
   }
   if (!out.length && cand.length > 1) { // 兜底：取候选里相距最远的一对
     let best = 0;
-    for (let i = 0; i < cand.length; i += 3) for (let j = i + 1; j < cand.length; j += 3) { const d = Math.hypot(cand[i][0] - cand[j][0], cand[i][1] - cand[j][1]); if (d > best) { best = d; out = [cand[i], cand[j]]; } }
+    const step = Math.max(1, Math.floor(cand.length / 400));
+    for (let i = 0; i < cand.length; i += step) for (let j = i + 1; j < cand.length; j++) { const d = Math.hypot(cand[i][0] - cand[j][0], cand[i][1] - cand[j][1]); if (d > best) { best = d; out = [cand[i], cand[j]]; } }
   }
   portalCache.set(L.id, out);
   return out;
@@ -264,7 +276,7 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
 export type ZoneKind = 'wind' | 'tide' | 'slide' | 'sand';
 export interface Zone { x: number; z: number; r: number; kind: ZoneKind; dx: number; dz: number }
 const zoneCache = new Map<string, Zone[]>();
-const ZONE_BY_THEME: Partial<Record<string, ZoneKind>> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand' };
+const ZONE_BY_THEME: Partial<Record<string, ZoneKind>> = { cloud: 'wind', harbor: 'tide', palace: 'slide', desert: 'sand', snow: 'slide' };
 export function zonesOf(L: LevelDef): Zone[] {
   const hit = zoneCache.get(L.id);
   if (hit) return hit;
