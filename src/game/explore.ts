@@ -6,7 +6,7 @@ import { getStage, nextStage, winReward } from './stage';
 import type { Gain } from './stage';
 import type { PlayerState } from './state';
 import { mulberry } from '../fx/util';
-import { herbsOf, levelOf as sceneOf, poisOf } from '../world/levels';
+import { SAFE_R, herbsOf, inSafeZone, levelColliders, levelOf as sceneOf, poisOf } from '../world/levels';
 import type { LevelDef } from '../world/levels';
 
 export interface ExploreState { day: number; kills: number; chests: string[]; talked: string[]; bossWins?: number; claimed?: boolean; herbs?: string[]; casts?: number; orders?: number; boxGames?: number; mushRuns?: number; chimeRuns?: number }
@@ -42,6 +42,16 @@ export const explorerLevel = (s: PlayerState): LevelDef => sceneOf(bossStage(s).
 const unitsOf = (st: StageDef, wave = 0, n = 3): string[] => st.waves[Math.min(wave, st.waves.length - 1)].enemies.slice(0, n).map((e) => e.unit);
 const levelOf = (st: StageDef) => st.waves[0].enemies[0]?.level ?? 1;
 
+/** 野猫刷新点落在安全区里就挪出去：绕原位置一圈圈找最近的、不在安全区 / 建筑里的空位 */
+export function relocateOutOfSafe(L: LevelDef, x: number, z: number): [number, number] {
+  if (!inSafeZone(L, x, z)) return [x, z];
+  const cols = levelColliders(L);
+  const free = (px: number, pz: number) => !inSafeZone(L, px, pz) && Math.abs(px) < L.half - 3 && Math.abs(pz) < L.half - 3 && !cols.some((c) => px >= c.x0 && px <= c.x1 && pz >= c.z0 && pz <= c.z1);
+  for (let r = 1; r <= 14; r += 0.5) for (let k = 0; k < 24; k++) { const a = (k / 24) * Math.PI * 2, px = x + Math.cos(a) * r, pz = z + Math.sin(a) * r; if (free(px, pz)) return [+px.toFixed(1), +pz.toFixed(1)]; }
+  return [x, z];
+}
+export { SAFE_R };
+
 /** 当前地图上的所有实体（死掉的野怪 / 开过的箱子由调用方过滤） */
 export function spawnPlan(s: PlayerState): SpawnDef[] {
   const out: SpawnDef[] = [];
@@ -50,7 +60,8 @@ export function spawnPlan(s: PlayerState): SpawnDef[] {
   const lastWave = boss.stage.waves[boss.stage.waves.length - 1];
   out.push({ id: 'boss', kind: 'boss', x: L.bossSpot[0], z: L.bossSpot[1], units: [lastWave.enemies[0].unit], label: `${boss.stage.id} ${boss.stage.name}`, stageKey: `${boss.chapter}-${boss.index}` });
   const rnd = mulberry(farm.chapter * 100 + farm.index);
-  L.enemySpots.forEach(([x, z], i) => {
+  L.enemySpots.forEach(([sx, sz], i) => {
+    const [x, z] = relocateOutOfSafe(L, sx, sz);
     const w = Math.floor(rnd() * farm.stage.waves.length);
     out.push({ id: `e${i}`, kind: 'enemy', x, z, units: unitsOf(farm.stage, w, 2 + (i % 2)), label: `${farm.stage.name} Lv${levelOf(farm.stage)}`, patrol: 4 + (i % 3), stageKey: `${farm.chapter}-${farm.index}` });
   });

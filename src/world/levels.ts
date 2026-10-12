@@ -53,6 +53,9 @@ const SPOTS = {
 };
 /** 猫薄荷丛默认摆在马路上（所有关卡都空着）；关卡可以用 herbSpots 覆盖 */
 export const DEFAULT_HERBS: [number, number][] = [[9, -2.4], [-2.4, -9], [2.4, 12]];
+/** 玩法入口周围的安全区半径：野猫不会刷在里面，也追不进来；队伍在里面时不会被开战 */
+export const SAFE_R = 8;
+export const inSafeZone = (L: LevelDef, x: number, z: number, r = SAFE_R) => poisOf(L).some((p) => Math.hypot(p.x - x, p.z - z) < r);
 export const poisOf = (L: LevelDef): PoiDef[] => L.pois ?? [];
 export const herbsOf = (L: LevelDef): [number, number][] => L.herbSpots ?? DEFAULT_HERBS;
 const L1_POLES: [number, number][] = [[-20, -5.2], [-6, -5.2], [6, 5.2], [20, 5.2], [-5.2, 18], [5.2, -18]];

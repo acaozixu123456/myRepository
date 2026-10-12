@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { relocateOutOfSafe } from '../src/game/explore';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
-import { LEVELS, herbsOf, levelColliders, poisOf } from '../src/world/levels';
+import { LEVELS, SAFE_R, herbsOf, inSafeZone, levelColliders, poisOf } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 import { PROPS } from '../src/world/props';
 
@@ -211,5 +212,29 @@ describe('场景玩法入口（POI）', () => {
       const dz = Math.max(z0 - p.z, 0, p.z - z1), dx = Math.max(x0 - p.x, 0, p.x - x1);
       expect(Math.hypot(dx, dz), `${L.id} 钓鱼点离水太远`).toBeLessThanOrEqual(3);
     }
+  });
+});
+
+describe('玩法入口安全区', () => {
+  it('每章的野猫刷新点都在安全区外、不在建筑里、在地图内', () => {
+    for (let ch = 1; ch <= 6; ch++) {
+      const s = newPlayer(); s.best = { chapter: ch, index: 1 }; s.stage = { chapter: ch, index: 1, wins: 0 };
+      const L = LEVELS[ch], cols = levelColliders(L);
+      for (const p of spawnPlan(s).filter((q) => q.kind === 'enemy')) {
+        expect(inSafeZone(L, p.x, p.z), `${L.id}:${p.id} 在安全区里`).toBe(false);
+        expect(cols.some((c) => p.x >= c.x0 && p.x <= c.x1 && p.z >= c.z0 && p.z <= c.z1), `${L.id}:${p.id} 在建筑里`).toBe(false);
+        expect(Math.abs(p.x)).toBeLessThan(L.half); expect(Math.abs(p.z)).toBeLessThan(L.half);
+      }
+    }
+  });
+  it('原本在区外的点不动，在区内的点被挪到区外的近处', () => {
+    const L = LEVELS[1], poi = poisOf(L)[0];
+    expect(relocateOutOfSafe(L, 25, 20)).toEqual([25, 20]);
+    const [x, z] = relocateOutOfSafe(L, poi.x + 1, poi.z + 1);
+    expect(Math.hypot(x - poi.x, z - poi.z)).toBeGreaterThanOrEqual(SAFE_R);
+    expect(Math.hypot(x - poi.x, z - poi.z)).toBeLessThan(SAFE_R + 8);
+  });
+  it('入口本身、猫薄荷丛、宝箱都不会被野猫的刷新点占位（入口在安全区中心）', () => {
+    for (const L of Object.values(LEVELS)) for (const p of poisOf(L)) expect(inSafeZone(L, p.x, p.z)).toBe(true);
   });
 });

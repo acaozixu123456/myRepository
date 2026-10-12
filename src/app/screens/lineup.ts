@@ -1,4 +1,3 @@
-import { CHAPTERS } from '../../content/campaign';
 import { FACTIONS, FACTION_ORDER } from '../../data/factions';
 import type { FactionId } from '../../data/factions';
 import { HERO_BY_ID, HEROES } from '../../data/heroes';
@@ -64,20 +63,19 @@ export function lineupHtml(ctx: AppCtx): string {
   }).join('');
   const ef = enemyMainFaction(ctx);
   const counter = ef ? COUNTER_RING[(COUNTER_RING.indexOf(ef) + 5) % 6] : null;
-  const ch = CHAPTERS[s.stage.chapter - 1];
 
   return `
   ${topbar(ctx, '阵容')}
   <div class="scroll">
-    <div class="row" style="margin-bottom:8px"><span class="pwr">${icon('sword', 20)}${fmt(teamPower(s))}<small>总战力</small></span><div class="grow"></div><button class="btn sm blue" data-act="autolineup">一键上阵</button></div>
+    <div class="row" style="margin-bottom:8px"><span class="pwr">${icon('sword', 20)}${fmt(teamPower(s))}</span><div class="grow"></div><button class="btn sm blue" data-act="autolineup" title="一键上阵">✨${icon('team', 20)}</button></div>
     <div class="field"><div class="grid">
-      <div class="col"><div class="lab">后排</div>${slotHtml(ctx, 3)}${slotHtml(ctx, 4)}</div>
-      <div class="col"><div class="lab">前排</div>${slotHtml(ctx, 0)}${slotHtml(ctx, 1)}${slotHtml(ctx, 2)}</div>
+      <div class="col"><div class="lab">${icon('bow', 18)}</div>${slotHtml(ctx, 3)}${slotHtml(ctx, 4)}</div>
+      <div class="col"><div class="lab">${icon('shield', 18)}</div>${slotHtml(ctx, 0)}${slotHtml(ctx, 1)}${slotHtml(ctx, 2)}</div>
     </div></div>
-    <div class="panel" style="margin-top:12px"><h3>阵营与羁绊</h3><div class="syn">${facChips || '<span class="muted">先让猫猫上阵</span>'}${bondChips}</div>
-      ${ef && counter ? `<div class="muted" style="font-size:12px;margin-top:8px;font-weight:700">本关（${ch.name}）敌方以 <span class="tag f" style="--c:${FACTIONS[ef].color}">${FACTIONS[ef].glyph}</span> 为主，<span class="tag f" style="--c:${FACTIONS[counter].color}">${FACTIONS[counter].glyph}</span> 阵营克制它（伤害 +7%）</div>` : ''}</div>
-    <div class="row" style="margin:14px 2px 6px"><div class="title" style="font-size:18px">${lineupState.pickSlot !== null ? '选一只猫上阵' : '我的猫猫'} <span class="muted num" style="font-size:13px">${owned.length}/${HEROES.length}</span></div></div>
-    <div class="seg"><button class="pill" aria-pressed="${filter === 'all'}" data-act="lf" data-f="all">全部</button>${FACTION_ORDER.map((f) => `<button class="pill glyph" style="--c:${FACTIONS[f].color}" aria-pressed="${filter === f}" data-act="lf" data-f="${f}">${FACTIONS[f].glyph}</button>`).join('')}</div>
-    <div class="roster">${list.length ? list.map((h) => heroCard(h.id, { state: h, act: 'hero', badge: s.lineup.includes(h.id) ? '上阵' : undefined })).join('') : '<div class="empty" style="grid-column:1/-1">这个阵营还没有猫猫，去招募看看吧</div>'}</div>
+    <div class="panel" style="margin-top:12px"><div class="syn">${facChips || '<span class="muted">➕</span>'}${bondChips}</div>
+      ${ef && counter ? `<div class="muted" style="font-size:12px;margin-top:8px;font-weight:700">🎯 <span class="tag f" style="--c:${FACTIONS[ef].color}">${FACTIONS[ef].glyph}</span> ➜ <span class="tag f" style="--c:${FACTIONS[counter].color}">${FACTIONS[counter].glyph}</span> <b>+7%</b></div>` : ''}</div>
+    <div class="row" style="margin:14px 2px 6px"><div class="title" style="font-size:18px">${lineupState.pickSlot !== null ? '👆' : '🐱'} <span class="muted num" style="font-size:13px">${owned.length}/${HEROES.length}</span></div></div>
+    <div class="seg"><button class="pill" aria-pressed="${filter === 'all'}" data-act="lf" data-f="all" title="全部">${icon('paw', 18)}</button>${FACTION_ORDER.map((f) => `<button class="pill glyph" style="--c:${FACTIONS[f].color}" aria-pressed="${filter === f}" data-act="lf" data-f="${f}">${FACTIONS[f].glyph}</button>`).join('')}</div>
+    <div class="roster">${list.length ? list.map((h) => heroCard(h.id, { state: h, act: 'hero', badge: s.lineup.includes(h.id) ? '⚔️' : undefined })).join('') : '<div class="empty" style="grid-column:1/-1;font-size:34px">🐾❓</div>'}</div>
   </div>`;
 }

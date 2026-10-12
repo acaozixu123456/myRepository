@@ -31,14 +31,14 @@ function spHtml(ctx: AppCtx): string {
     <div class="banner sp"><div class="rays"></div><img src="${artImgUrl(up.id)}" alt="${up.name}"><span class="up" style="background:linear-gradient(90deg,#ffe27a,#ff9ad8);color:#5a1038">至尊 SP 概率 UP</span><div class="nm"><span>${up.name} · ${up.title}</span></div></div>
     ${poolTabs('sp')}
     <div class="pity">
-      <div class="r"><span>SP 保底</span><div class="bar"><i style="width:${(p.pity.sp / SP_POOL.pity) * 100}%;background:linear-gradient(#ffe27a,#ff6ad0)"></i></div><em class="num">${left} 抽内</em></div>
-      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">本次 SP 概率 ${(rate * 100).toFixed(1)}%${p.pity.upLost ? ' · 下一只 SP 必为 UP' : ''} · 累计 ${p.pulls} 抽 · <a data-act="nav" data-to="pay" style="color:var(--blue-d);text-decoration:underline;cursor:pointer">充值中心</a></div>
+      <div class="r"><span class="rk sp">SP</span><div class="bar"><i style="width:${(p.pity.sp / SP_POOL.pity) * 100}%;background:linear-gradient(#ffe27a,#ff6ad0)"></i></div><em class="num">${left}</em></div>
+      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">SP ${(rate * 100).toFixed(1)}%${p.pity.upLost ? ' · ⬆ UP' : ''} · 🎴 ${p.pulls} · <a data-act="nav" data-to="pay" style="cursor:pointer">${icon('moon', 16)}+</a></div>
     </div>
     <div class="pullbar">
-      <button class="btn blue ${ok1 ? '' : 'dim'}" data-act="pull1">招募 ×1<span class="cost">${icon('moon', 16)}${spCost(s, 1)}</span></button>
-      <button class="btn lg ${ok10 ? '' : 'dim'}" data-act="pull10">招募 ×10<span class="cost">${icon('moon', 16)}${spCost(s, 10)} · 必出 UR+</span></button>
+      <button class="btn blue ${ok1 ? '' : 'dim'}" data-act="pull1">🎴 ×1<span class="cost">${icon('moon', 16)}${spCost(s, 1)}</span></button>
+      <button class="btn lg ${ok10 ? '' : 'dim'}" data-act="pull10">🎴 ×10<span class="cost">${icon('moon', 16)}${spCost(s, 10)} · ✨UR</span></button>
     </div>
-    <div class="note">仅消耗月光珠。至尊猫猫只能在这里获得。<br>SP ${(SP_POOL.rateSp * 100).toFixed(0)}% · UR ${(SP_POOL.rateUr * 100).toFixed(0)}% · SSR ${((1 - SP_POOL.rateSp - SP_POOL.rateUr) * 100).toFixed(0)}% · <a data-act="rates">查看概率与保底说明</a></div>
+    <div class="note">SP ${(SP_POOL.rateSp * 100).toFixed(0)}% · UR ${(SP_POOL.rateUr * 100).toFixed(0)}% · SSR ${((1 - SP_POOL.rateSp - SP_POOL.rateUr) * 100).toFixed(0)}% · <a data-act="rates" title="概率">ℹ️</a></div>
   </div>`;
 }
 
@@ -59,18 +59,18 @@ export function gachaHtml(ctx: AppCtx): string {
   return `
   ${topbar(ctx, '招募', chip('ticket', s.res.tickets))}
   <div class="scroll" style="padding:0 0 18px">
-    <div class="banner"><div class="rays"></div>${imgs}${up ? `<span class="up">UR 概率 UP</span>` : `<span class="up" style="background:var(--r-ssr);color:#fff">全员可出</span>`}<div class="nm"><span>${up ? `${up.name} · ${up.title}` : '常驻招募'}</span></div></div>
+    <div class="banner"><div class="rays"></div>${imgs}${up ? `<span class="up">⬆ UR</span>` : `<span class="up" style="background:var(--r-ssr);color:#fff">🎴</span>`}<div class="nm"><span>${up ? `${up.name} · ${up.title}` : '常驻招募'}</span></div></div>
     ${poolTabs(p.id)}
     <div class="pity">
-      <div class="r"><span>SSR 保底</span><div class="bar"><i style="width:${(s.pity.ssr / p.ssrPity) * 100}%"></i></div><em class="num">${ssrLeft} 抽内</em></div>
-      <div class="r"><span>UR 保底</span><div class="bar"><i style="width:${(s.pity.ur / p.urPity) * 100}%;background:linear-gradient(#ffe08a,#f0a62e)"></i></div><em class="num">${urLeft} 抽内</em></div>
-      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">本次 UR 概率 ${(urRate(p, s.pity.ur) * 100).toFixed(1)}%${s.pity.upLost ? ' · 下一只 UR 必为 UP' : ''} · <a data-act="dex" style="color:var(--blue-d);text-decoration:underline;cursor:pointer">图鉴 ${Object.keys(s.heroes).length}/${TOTAL_HEROES}</a></div>
+      <div class="r"><span class="rk ssr">SSR</span><div class="bar"><i style="width:${(s.pity.ssr / p.ssrPity) * 100}%"></i></div><em class="num">${ssrLeft}</em></div>
+      <div class="r"><span class="rk ur">UR</span><div class="bar"><i style="width:${(s.pity.ur / p.urPity) * 100}%;background:linear-gradient(#ffe08a,#f0a62e)"></i></div><em class="num">${urLeft}</em></div>
+      <div class="muted" style="font-size:11.5px;text-align:center;font-weight:700">UR ${(urRate(p, s.pity.ur) * 100).toFixed(1)}%${s.pity.upLost ? ' · ⬆ UP' : ''} · <a data-act="dex" style="cursor:pointer">📖 ${Object.keys(s.heroes).length}/${TOTAL_HEROES}</a></div>
     </div>
     <div class="pullbar">
-      <button class="btn blue" data-act="pull1">招募 ×1<span class="cost">${icon(c1.ic, 16)}${c1.v}</span></button>
-      <button class="btn lg" data-act="pull10">招募 ×10<span class="cost">${icon(c10.ic, 16)}${c10.v} · 必出 SSR</span></button>
+      <button class="btn blue" data-act="pull1">🎴 ×1<span class="cost">${icon(c1.ic, 16)}${c1.v}</span></button>
+      <button class="btn lg" data-act="pull10">🎴 ×10<span class="cost">${icon(c10.ic, 16)}${c10.v} · ✨SSR</span></button>
     </div>
-    <div class="note">${p.desc}<br>UR 1.5% · SSR 12% · SR 86.5% · <a data-act="rates">查看概率与保底说明</a></div>
+    <div class="note">UR 1.5% · SSR 12% · SR 86.5% · <a data-act="rates" title="概率">ℹ️</a></div>
   </div>`;
 }
 
@@ -115,7 +115,7 @@ const BOX = `<svg viewBox="0 0 230 230" xmlns="http://www.w3.org/2000/svg"><defs
 function resultCard(ctx: AppCtx, r: PullResult, size = 'big') {
   const st = ctx.s.heroes[r.hero.id];
   void size;
-  return heroCard(r.hero.id, { state: st, lvText: r.isNew ? '新获得' : `碎片 +${r.shards}` });
+  return heroCard(r.hero.id, { state: st, lvText: r.isNew ? '🆕' : `🧩 +${r.shards}` });
 }
 
 export async function doPull(ctx: AppCtx, n: 1 | 10) {
@@ -132,7 +132,7 @@ function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void
     const el = document.createElement('div');
     el.className = 'reveal';
     el.style.setProperty('--glow', GLOW[best]);
-    el.innerHTML = `<div class="rays"></div><div class="glowbox"></div><div class="boxwrap shake">${BOX}</div><div class="hint">点击纸箱，或稍等一下</div><div class="flash"></div><button class="btn sm ghost skip" data-r="skip">跳过</button>`;
+    el.innerHTML = `<div class="rays"></div><div class="glowbox"></div><div class="boxwrap shake">${BOX}</div><div class="hint">👆</div><div class="flash"></div><button class="btn sm ghost skip" data-r="skip">跳过</button>`;
     ctx.root.appendChild(el);
     sfx.rumble();
     let stage = 0;
@@ -154,12 +154,12 @@ function playReveal(ctx: AppCtx, results: PullResult[], n: 1 | 10): Promise<void
         body.innerHTML = `<div class="big" style="--c:${FACTIONS[r.hero.faction].color}">${resultCard(ctx, r)}</div>${r.isNew ? '<span class="new">NEW!</span>' : ''}<div class="meta"><b>${r.hero.name}</b><span>${r.hero.title} · ${r.rarity}${r.isNew ? '' : ` · 重复，转化为碎片 +${r.shards}`}</span></div>`;
       } else {
         body.className = 'ten';
-        body.innerHTML = `<div class="title" style="color:#fff6dc;font-size:24px">招募结果</div><div class="grid">${results.map((r, i) => `<div class="cell" data-r="${r.rarity}" style="animation-delay:${i * 0.11}s">${r.isNew ? '<span class="tagn">NEW</span>' : ''}${heroCard(r.hero.id, { state: ctx.s.heroes[r.hero.id] })}<span class="tagd">${r.isNew ? '' : `碎片+${r.shards}`}</span></div>`).join('')}</div>`;
+        body.innerHTML = `<div class="title" style="color:#fff6dc;font-size:30px">🎴</div><div class="grid">${results.map((r, i) => `<div class="cell" data-r="${r.rarity}" style="animation-delay:${i * 0.11}s">${r.isNew ? '<span class="tagn">NEW</span>' : ''}${heroCard(r.hero.id, { state: ctx.s.heroes[r.hero.id] })}<span class="tagd">${r.isNew ? '' : `碎片+${r.shards}`}</span></div>`).join('')}</div>`;
       }
       el.appendChild(body);
       const bar = document.createElement('div');
       bar.className = 'okbar';
-      bar.innerHTML = `<button class="btn blue" data-r="again">再抽${n === 10 ? '十次' : '一次'}</button><button class="btn lg" data-r="ok">确定</button>`;
+      bar.innerHTML = `<button class="btn blue" data-r="again">🔁 ×${n}</button><button class="btn lg" data-r="ok">${icon('check', 26)}</button>`;
       el.appendChild(bar);
     };
     const openBox = () => {

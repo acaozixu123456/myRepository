@@ -94,6 +94,8 @@ export const SCREEN_CSS = `
 .gacha .tabs button[aria-pressed=true]{background:linear-gradient(#ffd27a,#f0a22e);color:#5a2a05;box-shadow:0 4px 0 var(--orange-d),inset 0 2px 0 rgba(255,255,255,.5)}
 .pity{margin:12px 10px 0;display:grid;gap:8px}
 .pity .r{display:grid;grid-template-columns:62px 1fr 56px;gap:8px;align-items:center;font-size:12px;font-weight:700}
+.pity .r .rk{display:inline-block;text-align:center;padding:2px 0;border-radius:999px;color:#fff;font-family:var(--f-d);font-weight:400;font-size:12px;background:var(--r-ssr)}
+.pity .r .rk.ur{background:var(--r-ur);color:#4a3200}.pity .r .rk.sp{background:var(--r-sp)}
 .pity .r em{font-style:normal;text-align:right;color:var(--ink-2)}
 .pullbar{display:grid;grid-template-columns:1fr 1.2fr;gap:10px;margin:14px 10px 0}
 .pullbar .btn{flex-direction:column;gap:0;min-height:58px;padding:6px 8px 10px}

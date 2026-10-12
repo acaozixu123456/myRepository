@@ -8,6 +8,7 @@ import { applyPose } from '../art3d/pose';
 import { lookOf } from '../data/units';
 import type { WorldView } from './engine';
 import type { AABB, Street } from './street';
+import { SAFE_R, inSafeZone } from './levels';
 import { glowTex } from './tex';
 import { glowMat, std } from './kit';
 
@@ -179,6 +180,7 @@ export class Explorer {
         const chashu = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.05, 10), std('#b0603a', 0.8)); chashu.position.set(0.15, 1.52, 0.05); group.add(chashu);
         flag.position.set(0, 2.1, 0);
       }
+      const zone = new THREE.Mesh(new THREE.RingGeometry(SAFE_R - 0.12, SAFE_R, 64), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.22, depthWrite: false, toneMapped: false })); zone.rotation.x = -Math.PI / 2; zone.position.y = 0.05; group.add(zone);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: ramen ? 0xff5a4a : boxcat ? 0xffcf5a : mush ? 0xb06aff : chime ? 0x9ab8ff : 0xffb04a, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); halo.scale.set(5, 5, 1); halo.position.y = 1; group.add(halo);
     } else if (s.kind === 'herb') {
       const m = std('#3fdc8a', 0.6, 0.1);
@@ -203,7 +205,9 @@ export class Explorer {
     this.ents.push(ent);
     return ent;
   }
-  clearSpawns() { for (const e of this.ents) { this.root.remove(e.group); for (const a of e.cats) { this.root.remove(a.shadow); } } this.ents = []; }
+  clearSpawns() { for (const e of this.ents) { this.root.remove(e.group); for (const a of e.cats) { this.root.remove(a.shadow); this.root.remove(a.cat.root); } } this.ents = []; }
+  /** 安全区：玩法入口周围，野猫进不来；队伍在里面时不会被开战 */
+  private inSafe(x: number, z: number): boolean { return inSafeZone(this.street.level, x, z); }
   removeSpawn(id: string) { const e = this.ents.find((x) => x.spawn.id === id); if (e) { e.alive = false; e.group.visible = false; } }
 
   // ---------- 寻路 ----------
@@ -379,7 +383,8 @@ export class Explorer {
     const dist = gp.distanceTo(lp);
     const sight = s.kind === 'boss' ? 0 : 9;
     const was = e.alert;
-    e.alert = sight > 0 && dist < sight && e.cooldown <= 0;
+    const leaderSafe = this.inSafe(lp.x, lp.z);
+    e.alert = sight > 0 && dist < sight && e.cooldown <= 0 && !leaderSafe; // 队伍在安全区里：野猫不追
     if (e.alert && !was) this.hooks.alert?.(s);
     let speed = 0;
     if (e.alert) { e.target.copy(lp); speed = 4.4; }
@@ -392,14 +397,14 @@ export class Explorer {
       const sp = e.alert ? speed : 1.6;
       const nx = gp.x + d.x * sp * dt, nz = gp.z + d.z * sp * dt;
       const [cx, cz] = this.cell(new THREE.Vector3(nx, 0, nz));
-      if (!this.grid[cz * this.N + cx]) { gp.x = nx; gp.z = nz; moved = true; for (const a of e.cats) a.yaw = Math.atan2(d.x, d.z); }
+      if (!this.grid[cz * this.N + cx] && !this.inSafe(nx, nz)) { gp.x = nx; gp.z = nz; moved = true; for (const a of e.cats) a.yaw = Math.atan2(d.x, d.z); }
       else e.target.copy(gp);
     }
     for (const a of e.cats) a.moving = moved ? 1 : 0;
     if (!e.alert && !moved && s.kind === 'enemy') for (const a of e.cats) a.yaw = Math.atan2(lp.x - gp.x, lp.z - gp.z) * 0.0 + a.yaw;
     if (e.mark) e.mark.position.y = (s.kind === 'boss' ? 7.6 : 6.3) + Math.sin(e.t * 4) * 0.25;
     // 触碰 → 战斗
-    if (dist < (s.kind === 'boss' ? 4.2 : 2.9) && e.cooldown <= 0 && !this.busy) void this.startEncounter(e);
+    if (dist < (s.kind === 'boss' ? 4.2 : 2.9) && e.cooldown <= 0 && !this.busy && !leaderSafe) void this.startEncounter(e);
   }
 
   /** 走进玩法入口：世界暂停，等小游戏结束；之后冷却一会儿，免得一出来又被触发 */
