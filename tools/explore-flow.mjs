@@ -47,5 +47,14 @@ const r = await p.evaluate(async () => {
   out.F = { at: [+L.pos.x.toFixed(1), +L.pos.z.toFixed(1)], toB: Math.hypot(L.pos.x - pb[0], L.pos.z - pb[1]) < 0.5 };
   return out;
 });
+// G: 场景机关速度（码头潮汐滩应约为平地的 0.55 倍）
+await p.goto('http://127.0.0.1:5173/world.html?ch=3&t=0', { waitUntil: 'networkidle' });
+await p.waitForFunction(() => window.done, null, { timeout: 90000 });
+r.G = await p.evaluate(() => {
+  const ex = window.ex, z = ex.zones[0]; if (!z) return null;
+  const run = (x, zz) => { for (const a of ex.team) a.pos.set(x, 0.32, zz); ex.zoneNow = null; const x0 = ex.leader.pos.x; for (let i = 0; i < 6; i++) { ex.push(1, 0, 0.02); ex.update(0.02); } return ex.leader.pos.x - x0; };
+  ex.grace = 99;
+  return { kind: z.kind, inZone: +run(z.x - 1, z.z).toFixed(2), outside: +run(ex.leader.pos.x > 0 ? -10 : 10, ex.leader.pos.z).toFixed(2) };
+});
 console.log(JSON.stringify(r));
 await b.close();

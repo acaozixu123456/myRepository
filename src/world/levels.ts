@@ -247,3 +247,38 @@ export function portalSpotsOf(L: LevelDef): [number, number][] {
   portalCache.set(L.id, out);
   return out;
 }
+
+/** 场景机关（地形区）：云岛 = 风口（顺风加速）/ 码头 = 潮汐滩（队伍和追兵都变慢）/ 宫阙 = 琉璃滑地（松手还会滑一段）；其余场景没有 */
+export type ZoneKind = 'wind' | 'tide' | 'slide';
+export interface Zone { x: number; z: number; r: number; kind: ZoneKind; dx: number; dz: number }
+const zoneCache = new Map<string, Zone[]>();
+const ZONE_BY_THEME: Partial<Record<string, ZoneKind>> = { cloud: 'wind', harbor: 'tide', palace: 'slide' };
+export function zonesOf(L: LevelDef): Zone[] {
+  const hit = zoneCache.get(L.id);
+  if (hit) return hit;
+  const kind = ZONE_BY_THEME[L.theme ?? 'street'];
+  const out: Zone[] = [];
+  if (kind) {
+    const { N, grid, seen } = reachableCells(L);
+    const taken: [number, number][] = [L.spawn, L.bossSpot, L.npcSpot, ...L.enemySpots, ...L.chestSpots, ...herbsOf(L), ...hiddenSpotsOf(L), ...coverSpotsOf(L), ...portalSpotsOf(L), ...poisOf(L).map((p): [number, number] => [p.x, p.z])];
+    let seed = 5; for (const ch of L.id) seed = (seed * 41 + ch.charCodeAt(0)) >>> 0;
+    const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+    const cand: [number, number][] = [];
+    for (let cz = 5; cz < N - 5; cz++) for (let cx = 5; cx < N - 5; cx++) {
+      if (!seen[cz * N + cx]) continue;
+      const x = cx + 0.5 - L.half, z = cz + 0.5 - L.half;
+      if (inSafeZone(L, x, z) || taken.some(([ox, oz]) => Math.hypot(ox - x, oz - z) < 6)) continue;
+      let blocked = 0;
+      for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) blocked += grid[(cz + dz) * N + cx + dx];
+      if (blocked <= 3) cand.push([x, z]);
+    }
+    for (let g = 0; g < 300 && out.length < 4 && cand.length; g++) {
+      const [x, z] = cand[Math.floor(rnd() * cand.length)];
+      if (out.some((o) => Math.hypot(o.x - x, o.z - z) < 12)) continue;
+      const a = rnd() * Math.PI * 2;
+      out.push({ x, z, r: 3.2, kind, dx: Math.sin(a), dz: Math.cos(a) });
+    }
+  }
+  zoneCache.set(L.id, out);
+  return out;
+}

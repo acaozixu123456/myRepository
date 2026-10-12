@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { relocateOutOfSafe } from '../src/game/explore';
 import { KILL_CAP, TRAIL, autoKey, killsLeft, pickAutoTarget, bossStage, claimTrail, totals, trailRows, claimDaily, dailyProgress, dailyReady, ensureExplore, farmStage, killReward, openChest, pickHerb, recordBossWin, spawnPlan } from '../src/game/explore';
-import { COVER_R, LEVELS, PORTAL_R, portalSpotsOf, SAFE_R, coverSpotsOf, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
+import { COVER_R, LEVELS, PORTAL_R, portalSpotsOf, zonesOf, SAFE_R, coverSpotsOf, herbsOf, hiddenSpotsOf, inSafeZone, levelColliders, poisOf, reachableCells } from '../src/world/levels';
 import { newPlayer } from '../src/game/state';
 import { PROPS } from '../src/world/props';
 
@@ -322,5 +322,26 @@ describe('传送门', () => {
       expect(Math.hypot(spots[0][0] - spots[1][0], spots[0][1] - spots[1][1])).toBeGreaterThanOrEqual(18);
     }
     expect(PORTAL_R).toBeGreaterThan(1);
+  });
+});
+
+describe('场景机关（风口 / 潮汐滩 / 琉璃滑地）', () => {
+  it('云岛 = 风口、码头 = 潮汐滩、宫阙 = 滑地，各至少 3 处；其他场景没有；都走得到、不在碰撞盒 / 安全区里', () => {
+    const want: Record<string, string | undefined> = { cloud: 'wind', harbor: 'tide', palace: 'slide' };
+    for (const L of Object.values(LEVELS)) {
+      const zs = zonesOf(L), kind = want[L.theme ?? 'street'];
+      expect(zonesOf(L)).toBe(zs);
+      if (!kind) { expect(zs, L.id).toHaveLength(0); continue; }
+      expect(zs.length, L.id).toBeGreaterThanOrEqual(3);
+      const { N, seen } = reachableCells(L);
+      const cols = levelColliders(L);
+      for (const z of zs) {
+        expect(z.kind).toBe(kind);
+        expect(Math.hypot(z.dx, z.dz)).toBeCloseTo(1, 5);
+        expect(seen[Math.floor(z.z + L.half) * N + Math.floor(z.x + L.half)]).toBe(1);
+        for (const c of cols) expect(z.x >= c.x0 && z.x <= c.x1 && z.z >= c.z0 && z.z <= c.z1).toBe(false);
+        expect(inSafeZone(L, z.x, z.z)).toBe(false);
+      }
+    }
   });
 });
