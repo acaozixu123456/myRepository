@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>万世洞天</title>
+<meta name="description" content="一世一世地投胎，把每一世的痕迹留在随身洞天里的放置小游戏。">
+<meta name="theme-color" content="#efe9dc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121418" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="万世洞天">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--BODY-START-->
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-seal" aria-hidden="true">万<br>世</span>
+      <div class="brand-text">
+        <div class="brand-name">万世洞天</div>
+        <div class="brand-sub" id="lifeNo">轮回之间</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="lq-chip" id="lqChip" title="洞天灵气"><span class="lq-dot" aria-hidden="true"></span><span id="lqChipValue">0</span></div>
+      <button class="icon-btn" id="btnSettings" type="button" aria-label="设置">设</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 此世 -->
+    <section class="tab is-active" id="tab-life" aria-label="此世">
+      <div class="empty-life" id="emptyLife" hidden>
+        <p id="emptyText">这一世已经走完了。</p>
+        <button class="primary" id="btnToWheel" type="button">进入轮回</button>
+        <p class="muted">转轮回盘之前，可以先去「洞天」用灵气添置东西。</p>
+      </div>
+
+      <div id="lifeView">
+        <div class="life-card">
+          <div class="life-glyph" id="lifeGlyph" aria-hidden="true">蚁</div>
+          <div class="life-info">
+            <div class="life-name"><span class="tier-tag" id="lifeTier">凡品</span><span id="lifeName">蚂蚁</span></div>
+            <div class="age-row"><span id="ageText">年岁 0 / 20</span><span id="meritText">功德 0</span></div>
+            <div class="bar" aria-hidden="true"><div class="bar-fill" id="ageBar"></div></div>
+          </div>
+        </div>
+
+        <div class="stat-main">
+          <div class="stat-label" id="mainLabel">食</div>
+          <div class="stat-value" id="mainValue">0</div>
+          <div class="stat-rate" id="mainRate">+0 / 秒</div>
+        </div>
+
+        <div class="form-panel" id="formPanel"></div>
+
+        <div class="action-row">
+          <button class="tap-btn" id="tapBtn" type="button"><span class="tap-name" id="tapName">觅食</span><span class="tap-gain" id="tapGain">+1</span></button>
+          <button class="skill-btn" id="skillBtn" type="button"><span class="skill-name" id="skillName">倾巢而出</span><span class="skill-state" id="skillState">就绪</span></button>
+        </div>
+        <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+
+        <div class="goal" id="goalBox">
+          <div class="goal-head"><span class="goal-label">下一个目标</span><span class="goal-name" id="goalName">百蚁</span><span class="goal-merit" id="goalMerit">功德 +1</span></div>
+          <div class="bar" aria-hidden="true"><div class="bar-fill bar-jade" id="goalBar"></div></div>
+          <div class="goal-text" id="goalText">0 / 100</div>
+          <div class="goal-hint" id="goalHint" hidden></div>
+          <div class="ms-chips" id="msChips"></div>
+        </div>
+
+        <div class="section-head">
+          <h2>产业</h2>
+          <button class="buy-mode" id="buyMode" type="button">买 ×1</button>
+        </div>
+        <div class="list" id="genList"></div>
+
+        <div class="section-head"><h2>秘法</h2><span class="section-note" id="upNote"></span></div>
+        <div class="list" id="upList"></div>
+
+        <button class="ghost-btn" id="endLifeBtn" type="button">提前坐化，进入轮回</button>
+      </div>
+    </section>
+
+    <!-- 洞天 -->
+    <section class="tab" id="tab-cave" aria-label="洞天">
+      <div class="between" id="caveBetween" hidden>
+        <p>这一世已经走完了。添置好洞天，就去转轮回盘。</p>
+        <button class="primary" id="btnCaveWheel" type="button">转动轮回盘</button>
+      </div>
+      <div class="cave-frame"><canvas id="caveCanvas" aria-label="你的洞天，一幅水墨浮空岛"></canvas></div>
+      <div class="lq-row">
+        <div><div class="lq-label">灵气</div><div class="lq-value" id="lqValue">0</div></div>
+        <div class="lq-rate" id="lqRate">+0 / 秒</div>
+      </div>
+      <p class="cave-note">沃土、狐火林、小村只能由前世留下；其余的用灵气添置。每样东西都在一直产出灵气，也给以后的每一世加成。</p>
+      <div class="list" id="featList"></div>
+    </section>
+
+    <!-- 前世 -->
+    <section class="tab" id="tab-past" aria-label="前世">
+      <div class="section-head"><h2>生灵图鉴</h2></div>
+      <div class="codex" id="codex"></div>
+      <div class="section-head"><h2>轮回记录</h2></div>
+      <div class="past-stats" id="pastStats"></div>
+      <div class="history" id="history"></div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="页面">
+    <button class="tabbtn is-active" data-tab="life" type="button"><span class="tab-glyph">生</span><span>此世</span></button>
+    <button class="tabbtn" data-tab="cave" type="button"><span class="tab-glyph">天</span><span>洞天</span></button>
+    <button class="tabbtn" data-tab="past" type="button"><span class="tab-glyph">录</span><span>前世</span></button>
+  </nav>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<!--BODY-END-->
+<script src="data.js"></script>
+<script src="core.js"></script>
+<script src="painter.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
