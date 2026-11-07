@@ -16,6 +16,7 @@
     shang: [0, 2, 5, 7, 10],  // 商调，空旷
     zhi: [0, 2, 5, 7, 9],     // 徵调，温和
     yu: [0, 3, 5, 7, 10],     // 羽调，幽静
+    jue: [0, 3, 5, 8, 10],    // 角调，清冷
   };
   // 每种心境：调式、主音（MIDI 音高）、速度、弹奏的疏密、混响多少、摇指的机会、音量补偿（弹得稀的响一点）
   const MOODS = {
@@ -24,6 +25,10 @@
     fox: { mode: 'yu', root: 57, bpm: 70, density: 0.5, wet: 0.45, trem: 0.2, vol: 1.1 },
     'fox-night': { mode: 'yu', root: 57, bpm: 60, density: 0.36, wet: 0.7, bells: true, trem: 0.35, vol: 1.3 },
     human: { mode: 'zhi', root: 55, bpm: 78, density: 0.58, wet: 0.35, doubles: true, trem: 0.15, vol: 1.1 },
+    // 修士：清冷的角调，慢，带磬声；龙：低沉宽阔；仙：高处飘着，混响最长
+    xiu: { mode: 'jue', root: 54, bpm: 64, density: 0.42, wet: 0.5, bells: true, trem: 0.25, vol: 1.2 },
+    dragon: { mode: 'gong', root: 50, bpm: 72, density: 0.5, wet: 0.55, doubles: true, trem: 0.22, vol: 1.1 },
+    xian: { mode: 'yu', root: 64, bpm: 50, density: 0.32, wet: 0.75, bells: true, trem: 0.3, vol: 1.35 },
     // 征战诸天：快一些，配战鼓
     war: { mode: 'shang', root: 50, bpm: 116, density: 0.55, wet: 0.22, doubles: true, trem: 0.1, vol: 0.9, drums: true },
   };
@@ -613,6 +618,48 @@
         case 'lvup':
           gliss(M, 5, 12, t, 0.035, 0.16, sfxBus);
           bell(n(12), t + 0.3, 0.12, 2.6);
+          break;
+        case 'charge':
+          // 首领蓄力：一串越来越急的低鼓，底下一阵往上涌的风声
+          noise(t, 0.9, 180, 1500, 0.12);
+          [0, 0.16, 0.3, 0.42, 0.52].forEach((d, i) => drum(t + d, 0.2 + i * 0.07, 66, sfxBus));
+          break;
+        case 'roar':
+          // 首领的大招落下来
+          drum(t, 0.75, 58, sfxBus);
+          gong(n(0) / 2, t + 0.02, 0.3, 3);
+          noise(t, 0.6, 1400, 220, 0.2);
+          break;
+        case 'break':
+          // 打断：一声脆响
+          drum(t, 0.35, 230, sfxBus);
+          noise(t, 0.12, 4200, 2200, 0.14);
+          bell(n(12), t + 0.01, 0.14, 1.6);
+          bell(n(15), t + 0.07, 0.1, 1.6);
+          break;
+        case 'ascend':
+          // 突破成功
+          gong(n(0) / 2, t, 0.2, 3.5);
+          gliss(M, 0, 12, t + 0.05, 0.03, 0.2, sfxBus);
+          bell(n(14), t + 0.45, 0.14, 3.5);
+          break;
+        case 'fail':
+          // 突破失败、跃门失手
+          noise(t, 0.4, 900, 200, 0.1);
+          [5, 3, 1, -2].forEach((d, i) => pluck(n(d), t + i * 0.12, { bus: sfxBus, vel: 0.17, dur: 1.4, bend: i === 3 }));
+          break;
+        case 'leap':
+          // 鲤鱼跃过龙门
+          drum(t, 0.5, 90, sfxBus);
+          noise(t, 0.5, 600, 3200, 0.14);
+          gliss(M, -3, 10, t + 0.05, 0.025, 0.2, sfxBus);
+          bell(n(12), t + 0.35, 0.12, 2.6);
+          break;
+        case 'peach':
+          // 摘桃
+          pluck(n(7), t, { bus: sfxBus, vel: 0.2, dur: 1.2 });
+          pluck(n(10), t + 0.07, { bus: sfxBus, vel: 0.18, dur: 1.4 });
+          bell(n(14), t + 0.12, 0.08, 1.6);
           break;
         case 'end':
           gong(n(0) / 2, t, 0.3, 5);

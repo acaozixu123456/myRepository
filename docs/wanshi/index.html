@@ -129,7 +129,8 @@
         <div class="war-actions">
           <button class="primary" type="button" id="warFight">挑战</button>
           <div class="war-ctrl" id="warCtrl" hidden>
-            <button class="secondary" type="button" id="warSpeed">×1</button>
+            <button class="secondary" type="button" id="warSpeed">速度 ×1</button>
+            <button class="secondary" type="button" id="warCast">大招 自动</button>
             <button class="secondary" type="button" id="warSkip">跳过</button>
           </div>
           <label class="war-auto"><input type="checkbox" id="warAuto">打赢了接着打下一关</label>
@@ -151,12 +152,13 @@
           <button class="buy-btn" type="button" id="soulUp"><span class="n" id="soulBtnN">修炼</span><span class="c" id="soulCost">250</span></button>
         </div>
 
-        <div class="section-head"><h2>阵容</h2><button class="buy-mode" type="button" id="teamAuto">一键上阵</button></div>
+        <div class="section-head"><h2>阵容</h2><div class="head-btns"><button class="buy-mode" type="button" id="teamAuto">一键上阵</button><button class="buy-mode" type="button" id="relicAuto">一键穿戴</button></div></div>
         <div class="team" id="team">
           <div class="team-row"><span class="team-label">前<br>排</span><div class="team-slots" id="teamFront"></div></div>
           <div class="team-row"><span class="team-label">后<br>排</span><div class="team-slots" id="teamBack"></div></div>
         </div>
         <div class="chip-row syn" id="teamSyn"></div>
+        <button class="relic-bag" type="button" id="relicBag"><span class="rb-glyph" aria-hidden="true">宝</span><span class="rb-main"><b>法宝囊</b><span class="muted" id="relicBagN"></span></span><span class="rb-go" aria-hidden="true">›</span></button>
       </div>
     </section>
 

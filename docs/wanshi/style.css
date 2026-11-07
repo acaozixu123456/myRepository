@@ -546,7 +546,9 @@ main {
 @keyframes stamp { from { opacity: 0; transform: translate(-50%, -50%) rotate(-8deg) scale(2.2); } to { opacity: 1; transform: translate(-50%, -50%) rotate(-8deg) scale(1); } }
 
 .war-actions { display: flex; flex-direction: column; gap: 8px; }
-.war-ctrl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.war-ctrl { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 8px; }
+.war-ctrl .secondary { padding: 0 6px; white-space: nowrap; }
+.war-ctrl .secondary.on { border-color: var(--seal); color: var(--seal); box-shadow: inset 0 0 0 1px var(--seal); }
 .war-ctrl[hidden] { display: none; }
 .war-auto { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; color: var(--ink-2); }
 .war-auto input { width: 18px; height: 18px; accent-color: var(--seal); margin: 0; }
@@ -633,6 +635,137 @@ main {
 .fate-row span { font-size: 14px; }
 .fate-row small { display: block; font-size: 12px; color: var(--ink-3); }
 
+/* 战斗：能放大招、蓄力、护盾、魅惑 */
+.u-hp { position: relative; }
+.u-hp b { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: color-mix(in srgb, var(--azure) 75%, white); transition: width 0.25s; }
+.u-state {
+  position: absolute; left: 50%; top: -8px; transform: translate(-50%, -100%); white-space: nowrap; pointer-events: none;
+  font-size: 11px; line-height: 1.5; padding: 0 6px; border-radius: 6px; color: var(--on-tier); background: var(--gold);
+}
+.u-state:empty { display: none; }
+.unit.s1 .u-state { top: auto; bottom: -6px; transform: translate(-50%, 100%); }
+.unit.charging .u-state { background: var(--seal); color: var(--seal-ink); animation: pulse 0.6s ease-in-out infinite alternate; }
+.unit.charmed .u-state { background: var(--tier3); }
+.unit.ready { cursor: pointer; z-index: 2; }
+.unit.ready .u-glyph {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 35%, transparent), 0 0 16px color-mix(in srgb, var(--gold) 70%, transparent);
+  animation: ready 0.8s ease-in-out infinite alternate;
+}
+.unit.ready.urge .u-glyph { animation-duration: 0.3s; }
+.unit.primed .u-glyph { transform: scale(1.12); box-shadow: 0 0 0 5px var(--gold); }
+.unit.charging .u-glyph {
+  box-shadow: 0 0 0 3px var(--paper-2), 0 0 0 6px var(--seal), 0 0 22px color-mix(in srgb, var(--seal) 70%, transparent);
+  animation: charge 0.5s ease-in-out infinite alternate;
+}
+.unit.shielded .u-glyph { outline: 2px solid color-mix(in srgb, var(--azure) 70%, transparent); outline-offset: 3px; }
+.unit.charmed .u-glyph { filter: saturate(0.4) hue-rotate(250deg); }
+.unit.dead .u-state { display: none; }
+.field.battling .unit.s0:not(.ready) { cursor: default; }
+@keyframes ready { from { transform: scale(1); } to { transform: scale(1.07); } }
+@keyframes charge { from { transform: scale(1); } to { transform: scale(1.1); } }
+@keyframes pulse { from { opacity: 0.75; } to { opacity: 1; } }
+.field.quake { animation: quake 0.32s; }
+.field.quake2 { animation: quake2 0.55s; }
+@keyframes quake { 0%, 100% { transform: none; } 25% { transform: translate(-3px, 2px); } 50% { transform: translate(3px, -2px); } 75% { transform: translate(-2px, -1px); } }
+@keyframes quake2 { 0%, 100% { transform: none; } 15% { transform: translate(-6px, 3px); } 30% { transform: translate(6px, -3px); } 45% { transform: translate(-5px, -2px); } 60% { transform: translate(4px, 3px); } 80% { transform: translate(-2px, 1px); } }
+.w-num.break { font-family: var(--font-display); font-size: 22px; color: var(--seal); font-weight: 400; letter-spacing: 0.1em; }
+.w-num.shield { font-size: 12.5px; color: var(--azure); }
+
+/* 大招：一道墨痕横过战场 */
+.w-cut {
+  position: absolute; left: -4%; right: -4%; top: 50%; height: 74px; margin-top: -37px; z-index: 5;
+  display: flex; align-items: center; gap: 12px; padding: 0 12%;
+  animation: wcut 0.66s cubic-bezier(.2, .8, .3, 1) both;
+}
+.w-cut.s1 { flex-direction: row-reverse; text-align: right; animation-name: wcut1; }
+.w-cut.big { height: 96px; margin-top: -48px; animation-duration: 0.98s; }
+.w-cut.quick { animation-duration: 0.36s; }
+.w-cut.big.quick { animation-duration: 0.5s; }
+.wc-ink {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ink) 88%, transparent) 14%, var(--ink) 50%, color-mix(in srgb, var(--ink) 88%, transparent) 86%, transparent);
+  clip-path: polygon(0 18%, 8% 6%, 30% 12%, 52% 0, 76% 10%, 100% 4%, 97% 86%, 70% 96%, 46% 88%, 22% 100%, 4% 90%);
+}
+.w-cut.s1 .wc-ink { background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--seal) 88%, transparent) 14%, var(--seal) 50%, color-mix(in srgb, var(--seal) 88%, transparent) 86%, transparent); }
+.wc-glyph {
+  flex: none; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-display); font-size: 32px; color: var(--ink); background: var(--paper); border: 3px solid var(--tc, var(--gold));
+}
+.w-cut.s1 .wc-glyph { border-radius: 12px; color: var(--seal); border-color: var(--paper); }
+.w-cut.big .wc-glyph { width: 66px; height: 66px; font-size: 40px; }
+.wc-text { display: flex; flex-direction: column; min-width: 0; color: var(--paper); }
+.wc-text b { font-family: var(--font-display); font-weight: 400; font-size: 30px; letter-spacing: 0.14em; line-height: 1.15; white-space: nowrap; }
+.w-cut.big .wc-text b { font-size: 36px; }
+.wc-text small { font-size: 12px; opacity: 0.8; letter-spacing: 0.06em; }
+@keyframes wcut {
+  0% { opacity: 0; transform: translateX(-40%) skewX(-12deg); }
+  22% { opacity: 1; transform: translateX(0) skewX(0); }
+  78% { opacity: 1; transform: translateX(2%); }
+  100% { opacity: 0; transform: translateX(14%); }
+}
+@keyframes wcut1 {
+  0% { opacity: 0; transform: translateX(40%) skewX(12deg); }
+  22% { opacity: 1; transform: translateX(0) skewX(0); }
+  78% { opacity: 1; transform: translateX(-2%); }
+  100% { opacity: 0; transform: translateX(-14%); }
+}
+/* 战场中间的警示：首领蓄力 */
+.w-warn {
+  position: absolute; left: 10px; right: 10px; top: 50%; transform: translateY(-50%); z-index: 4; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: 1px; text-align: center; padding: 6px 10px; border-radius: 10px;
+  background: var(--paper-2); border: 1.5px solid var(--gold); box-shadow: 0 6px 18px #0002;
+  animation: wwarnIn 0.3s ease-out both, wwarnOut 0.4s ease-in 2.6s forwards;
+}
+.w-warn.hot { border-color: var(--seal); animation: wwarnIn 0.3s ease-out both, wwarnOut 0.4s ease-in 3.4s forwards; }
+.w-warn b { font-family: var(--font-display); font-weight: 400; font-size: 18px; letter-spacing: 0.06em; }
+.w-warn.hot b { color: var(--seal); }
+.w-warn small { font-size: 12px; color: var(--ink-2); line-height: 1.4; }
+@keyframes wwarnIn { from { opacity: 0; transform: translateY(-50%) scale(0.92); } to { opacity: 1; transform: translateY(-50%) scale(1); } }
+@keyframes wwarnOut { to { opacity: 0; transform: translateY(-50%) scale(0.98); } }
+
+/* 法宝 */
+.head-btns { display: flex; gap: 6px; }
+.pcard .pc-relic {
+  position: absolute; bottom: 5px; left: 5px; width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center;
+  font-family: var(--font-display); font-size: 11.5px; background: var(--tc); color: var(--on-tier);
+}
+.relic-bag {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: var(--radius);
+  border: 1px solid var(--line); background: var(--paper-2); font: inherit; color: inherit; text-align: left;
+}
+.rb-glyph { width: 34px; height: 34px; flex: none; border-radius: 8px; display: grid; place-items: center; font-family: var(--font-display); font-size: 19px; background: var(--gold); color: var(--on-tier); }
+.rb-main { display: flex; flex-direction: column; min-width: 0; flex: 1; font-size: 14px; }
+.rb-main .muted { font-size: 12px; }
+.rb-go { font-size: 22px; color: var(--ink-3); }
+.relic-list { display: flex; flex-direction: column; gap: 6px; }
+.relic-row {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px;
+  background: var(--paper-2); border: 1.5px solid var(--tc); min-width: 0;
+}
+.relic-row.empty { --tc: var(--line); border-style: dashed; }
+.rl-glyph {
+  width: 38px; height: 38px; flex: none; border-radius: 10px; display: grid; place-items: center;
+  font-family: var(--font-display); font-size: 22px; background: var(--tc); color: var(--on-tier);
+}
+.relic-row.empty .rl-glyph { background: var(--paper-3); color: var(--ink-3); }
+.rl-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+.rl-name { display: flex; align-items: center; gap: 6px; font-family: var(--font-display); font-size: 16px; }
+.rl-name .tier-tag { font-family: var(--font-body); font-size: 10.5px; padding: 0 5px; line-height: 1.6; }
+.rl-desc { font-size: 12px; color: var(--ink-3); line-height: 1.45; }
+.rl-btns { display: flex; flex-direction: column; gap: 4px; flex: none; }
+.rl-btns .buy-btn { min-width: 64px; height: 34px; }
+.relic-pick { display: block; width: 100%; padding: 0; border: none; background: none; font: inherit; color: inherit; text-align: left; }
+.relic-pick.on .relic-row { box-shadow: 0 0 0 2px var(--tc); }
+.pick-tag.up { color: var(--jade); }
+.pick-tag.down { color: var(--ink-3); }
+.loot { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 14px; background: color-mix(in srgb, var(--gold) 8%, var(--paper-2)); border: 1px solid var(--gold); }
+.loot-title { font-family: var(--font-display); font-size: 16px; text-align: center; color: var(--gold); letter-spacing: 0.1em; }
+.loot .relic-row { animation: lootIn 0.5s cubic-bezier(.2, 1.4, .4, 1) both 0.15s; }
+@keyframes lootIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+.cd-relic { display: flex; flex-direction: column; gap: 8px; }
+.cd-extra { margin: -4px 0 0; font-size: 12.5px; }
+
 @media (prefers-reduced-motion: reduce) {
-  .unit, .w-num, .w-banner, .w-stamp { transition: none; animation-duration: 0.01s; }
+  .unit, .w-num, .w-banner, .w-stamp, .w-cut, .w-warn { transition: none; animation-duration: 0.01s; }
 }
