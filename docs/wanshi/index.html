@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>万世洞天</title>
+<meta name="description" content="一世一世地投胎，把每一世的痕迹留在随身洞天里的放置小游戏。">
+<meta name="theme-color" content="#efe9dc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121418" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="万世洞天">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--BODY-START-->
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-seal" aria-hidden="true">万<br>世</span>
+      <div class="brand-text">
+        <div class="brand-name">万世洞天</div>
+        <div class="brand-sub" id="lifeNo">轮回之间</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="lq-chip" id="lqChip" title="洞天灵气"><span class="lq-dot" aria-hidden="true"></span><span id="lqChipValue">0</span></div>
+      <button class="icon-btn" id="btnSound" type="button" aria-label="声音" aria-pressed="true">声</button>
+      <button class="icon-btn" id="btnSettings" type="button" aria-label="设置">设</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 此世 -->
+    <section class="tab is-active" id="tab-life" aria-label="此世">
+      <div class="empty-life" id="emptyLife" hidden>
+        <p id="emptyText">这一世已经走完了。</p>
+        <button class="primary" id="btnToWheel" type="button">进入轮回</button>
+        <p class="muted">转轮回盘之前，可以先去「洞天」用灵气添置东西。</p>
+      </div>
+
+      <div id="lifeView">
+        <div class="life-card">
+          <div class="life-glyph" id="lifeGlyph" aria-hidden="true">蚁</div>
+          <div class="life-info">
+            <div class="life-name"><span class="tier-tag" id="lifeTier">凡品</span><span id="lifeName">蚂蚁</span></div>
+            <div class="age-row"><span id="ageText">年岁 0 / 20</span><span id="meritText">功德 0</span></div>
+            <div class="bar" aria-hidden="true"><div class="bar-fill" id="ageBar"></div></div>
+          </div>
+        </div>
+
+        <div class="stat-main">
+          <div class="stat-label" id="mainLabel">食</div>
+          <div class="stat-value" id="mainValue">0</div>
+          <div class="stat-rate" id="mainRate">+0 / 秒</div>
+        </div>
+
+        <div class="form-panel" id="formPanel"></div>
+
+        <div class="action-row">
+          <button class="tap-btn" id="tapBtn" type="button"><span class="tap-name" id="tapName">觅食</span><span class="tap-gain" id="tapGain">+1</span></button>
+          <button class="skill-btn" id="skillBtn" type="button"><span class="skill-name" id="skillName">倾巢而出</span><span class="skill-state" id="skillState">就绪</span></button>
+        </div>
+        <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+
+        <div class="goal" id="goalBox">
+          <div class="goal-head"><span class="goal-label">下一个目标</span><span class="goal-name" id="goalName">百蚁</span><span class="goal-merit" id="goalMerit">功德 +1</span></div>
+          <div class="bar" aria-hidden="true"><div class="bar-fill bar-jade" id="goalBar"></div></div>
+          <div class="goal-text" id="goalText">0 / 100</div>
+          <div class="goal-hint" id="goalHint" hidden></div>
+          <div class="ms-chips" id="msChips"></div>
+        </div>
+
+        <div class="section-head">
+          <h2>产业</h2>
+          <button class="buy-mode" id="buyMode" type="button">买 ×1</button>
+        </div>
+        <div class="list" id="genList"></div>
+
+        <div class="section-head"><h2>秘法</h2><span class="section-note" id="upNote"></span></div>
+        <div class="list" id="upList"></div>
+
+        <button class="ghost-btn" id="endLifeBtn" type="button">提前坐化，进入轮回</button>
+      </div>
+    </section>
+
+    <!-- 洞天 -->
+    <section class="tab" id="tab-cave" aria-label="洞天">
+      <div class="between" id="caveBetween" hidden>
+        <p>这一世已经走完了。添置好洞天，就去转轮回盘。</p>
+        <button class="primary" id="btnCaveWheel" type="button">转动轮回盘</button>
+      </div>
+      <div class="cave-frame"><canvas id="caveCanvas" aria-label="你的洞天，一幅水墨浮空岛"></canvas></div>
+      <div class="lq-row">
+        <div><div class="lq-label">灵气</div><div class="lq-value" id="lqValue">0</div></div>
+        <div class="lq-rate" id="lqRate">+0 / 秒</div>
+      </div>
+      <p class="cave-note">沃土、狐火林、小村、丹房、龙潭、琼楼只能由前世留下；其余的用灵气添置。每样东西都在一直产出灵气，也给以后的每一世加成。</p>
+      <div class="list" id="featList"></div>
+    </section>
+
+    <!-- 诸天 -->
+    <section class="tab" id="tab-war" aria-label="诸天">
+      <div class="war-locked" id="warLocked">
+        <div class="war-locked-glyph" aria-hidden="true">战</div>
+        <p>走完第一世，那一世会化作一张前世卡，在这里陪你征战诸天。</p>
+        <p class="muted">蚂蚁守前排，狐狸放狐火，凡人当将帅或谋士，修士御剑，龙横扫，仙护佑全队。那一世做到的越多，卡越强。</p>
+      </div>
+      <div id="warView" hidden>
+        <div class="war-head">
+          <div class="war-title">
+            <div class="war-heaven" id="warHeaven">一重天 · 山野</div>
+            <div class="war-stage"><span id="warStage">第 1-1 关</span><span class="war-fate" id="warFate" hidden></span></div>
+          </div>
+          <div class="war-pips" id="warPips" aria-hidden="true"></div>
+        </div>
+        <div class="field" id="warField">
+          <div class="f-row foe" id="foeBack"></div>
+          <div class="f-row foe" id="foeFront"></div>
+          <div class="f-mid"><span id="foePower"></span><span class="f-round" id="warRound"></span><span id="allyPower"></span></div>
+          <div class="f-row ally" id="allyFront"></div>
+          <div class="f-row ally" id="allyBack"></div>
+          <div class="f-fx" id="warFx" aria-hidden="true"></div>
+        </div>
+        <div class="war-actions">
+          <button class="primary" type="button" id="warFight">挑战</button>
+          <div class="war-ctrl" id="warCtrl" hidden>
+            <button class="secondary" type="button" id="warSpeed">速度 ×1</button>
+            <button class="secondary" type="button" id="warCast">大招 自动</button>
+            <button class="secondary" type="button" id="warSkip">跳过</button>
+          </div>
+          <label class="war-auto"><input type="checkbox" id="warAuto">打赢了接着打下一关</label>
+        </div>
+
+        <div class="war-box">
+          <div class="wb-top">
+            <div class="wb-info"><b>挂机收益</b><span class="muted" id="wbRate"></span><span class="muted" id="wbText"></span></div>
+            <button class="buy-btn jade" type="button" id="wbCollect"><span class="n">收取修为</span><span class="c" id="wbAmt">0</span><span class="n" id="wbLq" hidden></span></button>
+          </div>
+          <div class="bar" aria-hidden="true"><div class="bar-fill bar-jade" id="wbBar"></div></div>
+        </div>
+
+        <div class="soul">
+          <div class="soul-info">
+            <div class="soul-realm"><span id="soulRealm">炼气·一层</span><span class="soul-lv" id="soulLv">魂魄 Lv 1</span></div>
+            <div class="muted">修为 <b id="soulXw">0</b> · 上阵的前世卡都按魂魄的等级出战，不超过各自的上限</div>
+          </div>
+          <button class="buy-btn" type="button" id="soulUp"><span class="n" id="soulBtnN">修炼</span><span class="c" id="soulCost">250</span></button>
+        </div>
+
+        <div class="section-head"><h2>阵容</h2><div class="head-btns"><button class="buy-mode" type="button" id="teamAuto">一键上阵</button><button class="buy-mode" type="button" id="relicAuto">一键穿戴</button></div></div>
+        <div class="team" id="team">
+          <div class="team-row"><span class="team-label">前<br>排</span><div class="team-slots" id="teamFront"></div></div>
+          <div class="team-row"><span class="team-label">后<br>排</span><div class="team-slots" id="teamBack"></div></div>
+        </div>
+        <div class="chip-row syn" id="teamSyn"></div>
+        <button class="relic-bag" type="button" id="relicBag"><span class="rb-glyph" aria-hidden="true">宝</span><span class="rb-main"><b>法宝囊</b><span class="muted" id="relicBagN"></span></span><span class="rb-go" aria-hidden="true">›</span></button>
+      </div>
+    </section>
+
+    <!-- 前世 -->
+    <section class="tab" id="tab-past" aria-label="前世">
+      <div class="section-head"><h2>前世卡</h2><span class="section-note" id="bookNote"></span></div>
+      <div class="book" id="book"></div>
+      <div class="section-head"><h2>生灵图鉴</h2></div>
+      <div class="codex" id="codex"></div>
+      <div class="section-head"><h2>轮回记录</h2></div>
+      <div class="past-stats" id="pastStats"></div>
+      <div class="history" id="history"></div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="页面">
+    <button class="tabbtn is-active" data-tab="life" type="button"><span class="tab-glyph">生</span><span>此世</span></button>
+    <button class="tabbtn" data-tab="cave" type="button"><span class="tab-glyph">天</span><span>洞天</span></button>
+    <button class="tabbtn" data-tab="war" type="button"><span class="tab-glyph">战</span><span>诸天</span><span class="tab-dot" id="warDot" hidden></span></button>
+    <button class="tabbtn" data-tab="past" type="button"><span class="tab-glyph">录</span><span>前世</span></button>
+  </nav>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<!--BODY-END-->
+<script src="data.js"></script>
+<script src="core.js"></script>
+<script src="war.js"></script>
+<script src="painter.js"></script>
+<script src="audio.js"></script>
+<script src="warui.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>

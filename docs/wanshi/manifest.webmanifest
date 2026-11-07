@@ -1,0 +1,17 @@
+{
+  "name": "万世洞天",
+  "short_name": "万世洞天",
+  "description": "一世一世地投胎，把每一世的痕迹留在随身洞天里的放置小游戏。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#efe9dc",
+  "theme_color": "#efe9dc",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
