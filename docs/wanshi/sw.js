@@ -1,13 +1,15 @@
 // 万世洞天的离线缓存。改动任何文件后把版本号加一，手机上下次打开会换成新版本。
-const CACHE = 'wanshi-v2';
+const CACHE = 'wanshi-v3';
 const ASSETS = [
   './',
   'index.html',
   'style.css',
   'data.js',
   'core.js',
+  'war.js',
   'painter.js',
   'audio.js',
+  'warui.js',
   'ui.js',
   'manifest.webmanifest',
   'icons/icon-180.png',

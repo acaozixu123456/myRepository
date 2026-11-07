@@ -3,7 +3,8 @@
  * 背景音乐：五声音阶上的古筝小调（拨弦、按音、摇指、刮奏），配低音、长音和混响。
  *   每个乐句先“问”后“答”：同一个小动机弹两遍，第一遍停在不稳的音上，第二遍落回主音。
  *   蚂蚁、狐狸（白天和夜里）、凡人、轮回之间各有各的调式和速度。
- * 音效：木鱼、拨弦、铃、锣。浏览器要求先点一下页面才能出声，所以第一次点按时才真正启动。
+ * 打仗的时候换成战鼓配古筝。
+ * 音效：木鱼、拨弦、铃、锣、鼓。浏览器要求先点一下页面才能出声，所以第一次点按时才真正启动。
  */
 (function (root) {
   'use strict';
@@ -23,10 +24,12 @@
     fox: { mode: 'yu', root: 57, bpm: 70, density: 0.5, wet: 0.45, trem: 0.2, vol: 1.1 },
     'fox-night': { mode: 'yu', root: 57, bpm: 60, density: 0.36, wet: 0.7, bells: true, trem: 0.35, vol: 1.3 },
     human: { mode: 'zhi', root: 55, bpm: 78, density: 0.58, wet: 0.35, doubles: true, trem: 0.15, vol: 1.1 },
+    // 征战诸天：快一些，配战鼓
+    war: { mode: 'shang', root: 50, bpm: 116, density: 0.55, wet: 0.22, doubles: true, trem: 0.1, vol: 0.9, drums: true },
   };
   const MUSIC_VOL = 0.45, SFX_VOL = 1.1;
   // 同一种音效最短间隔（秒），免得一下子叠成一团
-  const GAP = { tap: 0.045, tick: 0.03 };
+  const GAP = { tap: 0.045, tick: 0.03, hit: 0.06, crit: 0.06 };
 
   const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
   const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -257,6 +260,36 @@
     src.stop(t + dur + 0.05);
   }
 
+  // 堂鼓：一声往下沉的低音，加一点鼓皮的噪声
+  function drum(t, vel, pitch, bus) {
+    bus = bus || musicBus;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime((pitch || 110) * 1.8, t);
+    osc.frequency.exponentialRampToValueAtTime(pitch || 110, t + 0.06);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vel, t + 0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    osc.connect(g);
+    g.connect(bus);
+    osc.start(t);
+    osc.stop(t + 0.5);
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuf;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 900;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(vel * 0.5, t);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+    src.connect(lp);
+    lp.connect(ng);
+    ng.connect(bus);
+    src.start(t, Math.random() * 0.5);
+    src.stop(t + 0.1);
+  }
+
   // 当前心境下的第 i 个音（可以跨八度）
   function note(M, i) {
     const sc = MODES[M.mode];
@@ -289,6 +322,13 @@
   function playStep(M, t, eighth) {
     const beat = step % 16;
     const jt = t + Math.random() * 0.012;
+    if (M.drums) {
+      // 咚 · 咚咚 · 咚，乐句末尾滚一串
+      if (beat === 0 || beat === 8) drum(t, 0.5, 92);
+      else if (beat === 3 || beat === 11) drum(t, 0.3, 120);
+      else if (beat === 6 || beat === 14) drum(t, 0.36, 104);
+      else if (beat === 15) { drum(t, 0.22, 140); drum(t + eighth / 2, 0.28, 130); }
+    }
     if (beat === 0) {
       if (!motif || motifPlays >= 2) { motif = makeMotif(M); motifPlays = 0; }
       motifPlays++;
@@ -531,6 +571,48 @@
           // 投胎：用新一世的调子划一串刮奏
           gliss(M, 0, 7, t, 0.05, 0.18, sfxBus);
           bell(n(10), t + 0.4, 0.1, 3.5);
+          break;
+        case 'drum':
+          drum(t, 0.6, 85, sfxBus);
+          drum(t + 0.18, 0.45, 95, sfxBus);
+          drum(t + 0.36, 0.7, 75, sfxBus);
+          break;
+        case 'hit':
+          drum(t, 0.22, 170 + Math.random() * 40, sfxBus);
+          noise(t, 0.08, 1800, 900, 0.09);
+          break;
+        case 'crit':
+          drum(t, 0.32, 150, sfxBus);
+          noise(t, 0.1, 2600, 1200, 0.12);
+          bell(n(12), t + 0.02, 0.08, 1.2);
+          break;
+        case 'die':
+          drum(t, 0.45, 70, sfxBus);
+          pluck(n(3), t + 0.05, { bus: sfxBus, vel: 0.16, dur: 1.4, bend: true });
+          break;
+        case 'heal':
+          bell(n(10), t, 0.08, 1.8);
+          bell(n(12), t + 0.08, 0.06, 1.8);
+          break;
+        case 'cast':
+          noise(t, 0.35, 400, 2600, 0.14);
+          gliss(M, 3, 8, t + 0.05, 0.03, 0.14, sfxBus);
+          break;
+        case 'win':
+          gliss(M, 0, 10, t, 0.04, 0.2, sfxBus);
+          gong(n(0) / 2, t + 0.1, 0.24, 3.5);
+          bell(n(12), t + 0.45, 0.12, 3);
+          break;
+        case 'lose':
+          [7, 5, 3, 0].forEach((d, i) => pluck(n(d), t + i * 0.22, { bus: sfxBus, vel: 0.18, dur: 2, bend: i === 3 }));
+          break;
+        case 'collect':
+          [7, 9, 12].forEach((d, i) => pluck(n(d), t + i * 0.05, { bus: sfxBus, vel: 0.16, dur: 1.2 }));
+          wood(t, 900, 0.12);
+          break;
+        case 'lvup':
+          gliss(M, 5, 12, t, 0.035, 0.16, sfxBus);
+          bell(n(12), t + 0.3, 0.12, 2.6);
           break;
         case 'end':
           gong(n(0) / 2, t, 0.3, 5);

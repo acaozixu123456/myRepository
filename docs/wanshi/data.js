@@ -6,7 +6,7 @@
   'use strict';
   const WS = root.WS = root.WS || {};
 
-  WS.VERSION = '0.1.1';
+  WS.VERSION = '0.2.0';
 
   // 资质：每一世投胎时转出来的稀有度
   WS.TIERS = [

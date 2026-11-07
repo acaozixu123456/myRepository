@@ -32,6 +32,8 @@
       meritTotal: 0,
       codex,
       history: [],
+      cards: [],
+      war: WS.newWar ? WS.newWar() : null,
       life: null,
       pending: { type: 'wheel', result: null },
       introDone: false,
@@ -462,6 +464,8 @@
       best: best.name, legacy: { id: F.legacy, add, lv: state.feats[F.legacy] },
       lingqi: lq, reason, total: L.totalMain,
     };
+    // 这一世化作一张前世卡，陪你征战诸天
+    if (WS.addCard && state.cards && state.war) summary.card = WS.addCard(state, L, summary).id;
     state.history.unshift(Object.assign({ at: Date.now() }, summary));
     state.history = state.history.slice(0, 30);
     state.pending = { type: 'summary', summary };
@@ -473,9 +477,11 @@
   // ---------- 轮回盘 ----------
   WS.luckFactor = state => 1 + (state.lastMerit || 0) / 40 * (1 + 0.15 * featLv(state, 'terrace'));
 
-  WS.tierOdds = function (state) {
+  // fate：用一张天命符，这一转至少上品
+  WS.tierOdds = function (state, opt) {
     const k = WS.luckFactor(state);
     let w = WS.TIERS.map((t, i) => t.weight * Math.pow(k, 0.6 * i));
+    if (opt && opt.fate) w = w.map((x, i) => (i >= 2 ? x : 0));
     if (state.pity >= WS.PITY - 1) w = w.map((x, i) => (i >= 3 ? x : 0));
     const s = w.reduce((a, b) => a + b, 0);
     return w.map(x => x / s);
@@ -494,9 +500,12 @@
     return fw.map(([f, w]) => [f, w / s]);
   };
 
-  WS.spin = function (state, rand) {
+  WS.canUseFate = state => !!(state.war && state.war.fate > 0);
+  WS.spin = function (state, rand, opt) {
     rand = rand || Math.random;
-    const odds = WS.tierOdds(state);
+    const fate = !!(opt && opt.fate && WS.canUseFate(state));
+    if (fate) state.war.fate -= 1;
+    const odds = WS.tierOdds(state, { fate });
     let r = rand(), acc = 0, tier = odds.length - 1;
     for (let i = 0; i < odds.length; i++) { acc += odds[i]; if (r < acc) { tier = i; break; } }
     const fo = WS.formOdds(state);
@@ -506,7 +515,7 @@
     const isNew = state.codex[form].lives === 0;
     state.guarantee = null;
     state.pity = tier >= 3 ? 0 : state.pity + 1;
-    const result = { tier, form, odds, isNew };
+    const result = { tier, form, odds, isNew, fate };
     state.pending = { type: 'wheel', result };
     return result;
   };
@@ -526,6 +535,7 @@
     const lq = WS.lingqiRate(state) * dt;
     state.lingqi += lq;
     state.lingqiTotal += lq;
+    if (WS.warIdle && state.war) WS.warIdle(state, dt);
     const L = state.life;
     if (!L || L.ended || state.pending) return out;
     const F = WS.FORMS[L.form];
@@ -567,6 +577,7 @@
     let remain = Math.min(realSec, capSec) * (state.speed || 1);
     const info = { realSec, capped, lingqi: 0, main: 0, milestones: [], unlocks: [], ended: null, form: state.life && state.life.form };
     const lq0 = state.lingqi;
+    const xw0 = state.war ? state.war.box.xw : 0;
     const L = state.life;
     if (L && !L.ended && !state.pending) {
       const main0 = L.main + 0;
@@ -588,8 +599,10 @@
       const g = WS.lingqiRate(state) * remain;
       state.lingqi += g;
       state.lingqiTotal += g;
+      if (WS.warIdle && state.war) WS.warIdle(state, remain);
     }
     info.lingqi = state.lingqi - lq0;
+    info.xw = state.war ? state.war.box.xw - xw0 : 0;
     return info;
   };
 

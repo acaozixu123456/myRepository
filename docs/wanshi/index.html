@@ -103,8 +103,67 @@
       <div class="list" id="featList"></div>
     </section>
 
+    <!-- 诸天 -->
+    <section class="tab" id="tab-war" aria-label="诸天">
+      <div class="war-locked" id="warLocked">
+        <div class="war-locked-glyph" aria-hidden="true">战</div>
+        <p>走完第一世，那一世会化作一张前世卡，在这里陪你征战诸天。</p>
+        <p class="muted">蚂蚁守前排，狐狸放狐火，凡人当将帅或谋士。那一世做到的越多，卡越强。</p>
+      </div>
+      <div id="warView" hidden>
+        <div class="war-head">
+          <div class="war-title">
+            <div class="war-heaven" id="warHeaven">一重天 · 山野</div>
+            <div class="war-stage"><span id="warStage">第 1-1 关</span><span class="war-fate" id="warFate" hidden></span></div>
+          </div>
+          <div class="war-pips" id="warPips" aria-hidden="true"></div>
+        </div>
+        <div class="field" id="warField">
+          <div class="f-row foe" id="foeBack"></div>
+          <div class="f-row foe" id="foeFront"></div>
+          <div class="f-mid"><span id="foePower"></span><span class="f-round" id="warRound"></span><span id="allyPower"></span></div>
+          <div class="f-row ally" id="allyFront"></div>
+          <div class="f-row ally" id="allyBack"></div>
+          <div class="f-fx" id="warFx" aria-hidden="true"></div>
+        </div>
+        <div class="war-actions">
+          <button class="primary" type="button" id="warFight">挑战</button>
+          <div class="war-ctrl" id="warCtrl" hidden>
+            <button class="secondary" type="button" id="warSpeed">×1</button>
+            <button class="secondary" type="button" id="warSkip">跳过</button>
+          </div>
+          <label class="war-auto"><input type="checkbox" id="warAuto">打赢了接着打下一关</label>
+        </div>
+
+        <div class="war-box">
+          <div class="wb-top">
+            <div class="wb-info"><b>挂机收益</b><span class="muted" id="wbRate"></span><span class="muted" id="wbText"></span></div>
+            <button class="buy-btn jade" type="button" id="wbCollect"><span class="n">收取修为</span><span class="c" id="wbAmt">0</span><span class="n" id="wbLq" hidden></span></button>
+          </div>
+          <div class="bar" aria-hidden="true"><div class="bar-fill bar-jade" id="wbBar"></div></div>
+        </div>
+
+        <div class="soul">
+          <div class="soul-info">
+            <div class="soul-realm"><span id="soulRealm">炼气·一层</span><span class="soul-lv" id="soulLv">魂魄 Lv 1</span></div>
+            <div class="muted">修为 <b id="soulXw">0</b> · 上阵的前世卡都按魂魄的等级出战，不超过各自的上限</div>
+          </div>
+          <button class="buy-btn" type="button" id="soulUp"><span class="n" id="soulBtnN">修炼</span><span class="c" id="soulCost">250</span></button>
+        </div>
+
+        <div class="section-head"><h2>阵容</h2><button class="buy-mode" type="button" id="teamAuto">一键上阵</button></div>
+        <div class="team" id="team">
+          <div class="team-row"><span class="team-label">前<br>排</span><div class="team-slots" id="teamFront"></div></div>
+          <div class="team-row"><span class="team-label">后<br>排</span><div class="team-slots" id="teamBack"></div></div>
+        </div>
+        <div class="chip-row syn" id="teamSyn"></div>
+      </div>
+    </section>
+
     <!-- 前世 -->
     <section class="tab" id="tab-past" aria-label="前世">
+      <div class="section-head"><h2>前世卡</h2><span class="section-note" id="bookNote"></span></div>
+      <div class="book" id="book"></div>
       <div class="section-head"><h2>生灵图鉴</h2></div>
       <div class="codex" id="codex"></div>
       <div class="section-head"><h2>轮回记录</h2></div>
@@ -116,6 +175,7 @@
   <nav class="tabbar" aria-label="页面">
     <button class="tabbtn is-active" data-tab="life" type="button"><span class="tab-glyph">生</span><span>此世</span></button>
     <button class="tabbtn" data-tab="cave" type="button"><span class="tab-glyph">天</span><span>洞天</span></button>
+    <button class="tabbtn" data-tab="war" type="button"><span class="tab-glyph">战</span><span>诸天</span><span class="tab-dot" id="warDot" hidden></span></button>
     <button class="tabbtn" data-tab="past" type="button"><span class="tab-glyph">录</span><span>前世</span></button>
   </nav>
 </div>
@@ -127,8 +187,10 @@
 <!--BODY-END-->
 <script src="data.js"></script>
 <script src="core.js"></script>
+<script src="war.js"></script>
 <script src="painter.js"></script>
 <script src="audio.js"></script>
+<script src="warui.js"></script>
 <script src="ui.js"></script>
 </body>
 </html>

@@ -56,6 +56,7 @@
 
   // ---------- 声音 ----------
   const Sound = WS.Sound || null;
+  const War = WS.WarUI || null;
   const snd = (name, arg) => { if (Sound) Sound.play(name, arg); };
   function soundPrefs() {
     if (!state.sound || typeof state.sound !== 'object') state.sound = { music: true, sfx: true };
@@ -78,6 +79,7 @@
     const L = state.life;
     let m = 'between';
     if (L && !L.ended && !state.pending) m = L.form === 'fox' && WS.moonInfo(L).night ? 'fox-night' : L.form;
+    if (War && War.battling()) m = 'war';
     const now = Date.now();
     if (m !== moodWant) { moodWant = m; moodSince = now; }
     const foxFlip = moodNow.indexOf('fox') === 0 && m.indexOf('fox') === 0;
@@ -90,6 +92,7 @@
   // ---------- 存档 ----------
   function migrate(s) {
     if (!s || typeof s !== 'object' || s.v !== 1) return null;
+    if (WS.warMigrate) WS.warMigrate(s); // 老存档：把轮回记录里的前世变成卡
     const base = WS.newState();
     for (const k of Object.keys(base)) if (s[k] === undefined) s[k] = base[k];
     WS.FEATURES.forEach(f => { if (typeof s.feats[f.id] !== 'number') s.feats[f.id] = 0; });
@@ -233,27 +236,46 @@
   }
 
   function sheetWheel(sheet) {
-    const odds = WS.tierOdds(state);
+    const fateN = WS.canUseFate(state) ? state.war.fate : 0;
+    const useFate = () => !!(fateN && state.war.useFate);
+    let odds = WS.tierOdds(state, { fate: useFate() });
     const next = state.lifeNo + 1;
     const canShop = state.lingqi >= cheapestFeature();
     sheet.innerHTML = `
       <h3>轮回盘</h3>
       <p class="muted center">${lifeTitle(next)}${state.lifeNo ? ` · 上一世功德 ${WS.fmtMerit(state.lastMerit)}，好资质的机会 ×${WS.luckFactor(state).toFixed(2)}` : ''}</p>
       <div class="wheel-wrap" id="wheelWrap"><canvas width="580" height="580" id="wheelCanvas" role="img" aria-label="轮回盘"></canvas><div class="wheel-pointer" aria-hidden="true"></div></div>
-      <div class="odds">${odds.map((p, i) => (p > 0 ? `<span class="t${i}"><b>${tierName(i)}</b>${pct(p)}</span>` : '')).join('')}</div>
+      <div class="odds" id="oddsRow">${oddsHTML(odds)}</div>
+      ${fateN ? `<div class="fate-row"><span>天命符 ×${fateN}<small>用一张，这一转至少投个上品</small></span><div class="seg" id="fateSeg"><button type="button" data-v="1" class="${useFate() ? 'on' : ''}">用</button><button type="button" data-v="0" class="${useFate() ? '' : 'on'}">不用</button></div></div>` : ''}
       <p class="pity">${pityText()}</p>
       <p class="muted center">${formLine()}</p>
       <button class="primary" type="button" id="spinBtn">转动</button>
       ${canShop ? `<button class="secondary" type="button" id="shopFirst">先去洞天添置（灵气 ${WS.fmt(state.lingqi)}）</button>` : ''}`;
     const cv = $('wheelCanvas');
     drawWheel(cv, odds, 0);
+    if (fateN) {
+      sheet.querySelectorAll('#fateSeg button').forEach(b => {
+        b.onclick = () => {
+          state.war.useFate = b.dataset.v === '1';
+          sheet.querySelectorAll('#fateSeg button').forEach(x => x.classList.toggle('on', x === b));
+          odds = WS.tierOdds(state, { fate: useFate() });
+          $('oddsRow').innerHTML = oddsHTML(odds);
+          drawWheel(cv, odds, 0);
+          snd('toggle');
+          save();
+        };
+      });
+    }
     $('spinBtn').onclick = () => {
       const btn = $('spinBtn');
       btn.disabled = true;
       btn.textContent = '轮回中…';
       const shop = $('shopFirst');
       if (shop) shop.remove();
-      const result = WS.spin(state);
+      const result = WS.spin(state, null, { fate: useFate() });
+      if (result.fate) toast('用了一张天命符', 'gold');
+      const fr = $('fateSeg');
+      if (fr) fr.closest('.fate-row').remove();
       save();
       buzz(10);
       snd('spin');
@@ -268,6 +290,8 @@
       };
     }
   }
+
+  const oddsHTML = odds => odds.map((p, i) => (p > 0 ? `<span class="t${i}"><b>${tierName(i)}</b>${pct(p)}</span>` : '')).join('');
 
   function drawWheel(cv, odds, rot) {
     const ctx = cv.getContext('2d');
@@ -423,13 +447,50 @@
         <li><span>留在洞天</span><b>${feat.name} +${s.legacy.add}<span class="sub">现在 ${s.legacy.lv} 级，${WS.featureEffect(feat.id, s.legacy.lv)}</span></b></li>
         <li><span>洞天灵气</span><b>+${WS.fmt(s.lingqi)}</b></li>
       </ul>
+      ${summaryCard(s)}
       <p class="muted center">灵气可以在「洞天」页添置灵泉、云海、古松这些东西，每一样都会让往后的每一世更强。</p>
       <button class="primary" type="button" id="toWheel">进入轮回</button>`;
+    const sw = $('sumSwap');
+    if (sw) {
+      sw.onclick = () => {
+        const c = WS.findCard(state, s.card);
+        const slot = c ? WS.swapSlotFor(state, c) : -1;
+        if (slot < 0) return;
+        const old = WS.findCard(state, state.war.team[slot]);
+        state.war.team[slot] = c.id;
+        save();
+        snd('toggle');
+        toast(`${WS.cardTitle(c)}换下了${old ? WS.cardTitle(old) : '空位'}`, 'jade');
+        sw.closest('.sum-card-text').querySelector('p').textContent = `已经换上，站在${SLOT_NAMES[slot]}。`;
+        sw.remove();
+      };
+    }
     $('toWheel').onclick = () => {
       state.pending = { type: 'wheel', result: null };
       save();
       swapSheet(renderPending, false);
     };
+  }
+
+  // 一世总结里：这一世化作的前世卡
+  const SLOT_NAMES = ['前排一', '前排二', '后排一', '后排二', '后排三'];
+  function summaryCard(s) {
+    if (!War || s.card == null) return '';
+    const c = WS.findCard(state, s.card);
+    if (!c) return '';
+    const where = state.war.team.indexOf(c.id);
+    let line, btn = '';
+    if (where >= 0) line = `已经上阵，站在${SLOT_NAMES[where]}，去「诸天」看看。`;
+    else {
+      const slot = WS.swapSlotFor(state, c);
+      if (slot >= 0) {
+        const old = WS.findCard(state, state.war.team[slot]);
+        line = `阵容满了。它比阵中的${WS.cardTitle(old)}强。`;
+        btn = '<button class="secondary" type="button" id="sumSwap">换上它</button>';
+      } else line = '阵容满了，它先收进前世卡册。';
+    }
+    const sk = WS.cardSkill(c);
+    return `<div class="sum-card">${War.cardTile(c, { still: true })}<div class="sum-card-text"><b>化作前世卡：${WS.cardTitle(c)}</b><span class="muted">技能「${sk.name}」</span><p>${line}</p>${btn}</div></div>`;
   }
 
   function sheetOffline(sheet, info) {
@@ -439,6 +500,7 @@
     if (info.milestones.length) rows.push(`<li><span>达成</span><b>${info.milestones.map(m => m.name).join('、')}</b></li>`);
     if (info.unlocks.length) rows.push(`<li><span>解锁新生灵</span><b>${info.unlocks.map(f => WS.FORMS[f].name).join('、')}</b></li>`);
     if (info.ended) rows.push('<li><span>这一世</span><b>在你离开时走完了</b></li>');
+    if (info.xw >= 1) rows.push(`<li><span>挂机修为</span><b>+${WS.fmt(info.xw)}<span class="sub">去「诸天」收取</span></b></li>`);
     sheet.innerHTML = `
       <h3>你回来了</h3>
       <p class="muted center">离开了 ${WS.fmtTime(info.realSec)}${info.capped ? `。离开时最多只算 ${WS.offlineCapHours(state)} 小时，洞天里的云海能延长` : ''}</p>
@@ -531,6 +593,7 @@
   function resetAll() {
     try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* 无所谓 */ }
     const keepSound = soundPrefs();
+    if (War) War.reset();
     state = WS.newState();
     state.sound = keepSound;
     pendingQueued = false;
@@ -629,7 +692,9 @@
     renderTop();
     if (tab === 'life') renderLife(force);
     else if (tab === 'cave') renderCave(force);
+    else if (tab === 'war') { if (War) { War.seen(state); War.render(force); } }
     else renderPast(force);
+    if (War) $('warDot').hidden = tab === 'war' || !War.attention(state);
   }
 
   function renderTop() {
@@ -1144,6 +1209,7 @@
   }
 
   function renderPast(force) {
+    if (War) War.renderBook(force);
     $('pastStats').innerHTML = [
       [state.lifeNo, '世轮回'],
       [WS.fmtMerit(state.meritTotal), '累计功德'],
@@ -1234,6 +1300,14 @@
     painter = WS.Painter($('caveCanvas'));
     bindUI();
     applySound();
+    if (War) {
+      War.init({
+        state: () => state,
+        save, render, toast, buzz, snd, queueOverlay, swapSheet, closeSheet, lifeTitle, spd, setTab, syncMood,
+        tab: () => tab,
+        sheetOpen: () => !!current,
+      });
+    }
 
     if (!state.introDone) {
       queueOverlay(sheetIntro, false);
@@ -1258,6 +1332,7 @@
     advance(sec) { advance(sec, true); render(true); },
     save,
     load(s) {
+      if (War) War.reset();
       state = migrate(s);
       applySound();
       built = ''; caveKey = ''; pastKey = '';
