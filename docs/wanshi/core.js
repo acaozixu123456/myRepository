@@ -20,6 +20,7 @@
       created: Date.now(),
       lastSeen: Date.now(),
       speed: 1,
+      sound: { music: true, sfx: true },
       lingqi: 0,
       lingqiTotal: 0,
       feats,
@@ -235,10 +236,52 @@
     return F.ups.some(u => u.eff.auto && L.ups[u.id]);
   };
 
+  // 玩家点了买不起的东西，就记成“攒钱目标”：自动经营先不花钱，攒够了替他买下
+  WS.targetCost = function (state, L) {
+    const t = L.saveFor;
+    if (!t) return 0;
+    const F = WS.FORMS[L.form];
+    if (t.kind === 'up') { const u = F.ups.find(x => x.id === t.id); return u && !L.ups[t.id] ? u.cost : 0; }
+    if (t.kind === 'tail') return L.form === 'fox' && L.tails < 9 ? WS.tailCost(L) : 0;
+    const g = WS.findGen(F, t.id);
+    return g ? WS.genCost(F, g, L.owned[g.id] || 0, t.n || 1) : 0;
+  };
+
+  WS.targetName = function (L) {
+    const t = L.saveFor;
+    if (!t) return '';
+    const F = WS.FORMS[L.form];
+    if (t.kind === 'up') { const u = F.ups.find(x => x.id === t.id); return u ? u.name : ''; }
+    if (t.kind === 'tail') return '下一尾';
+    const g = WS.findGen(F, t.id);
+    return g ? g.name + ((t.n || 1) > 1 ? ' ×' + t.n : '') : '';
+  };
+
+  WS.buyTarget = function (state, L) {
+    const t = L.saveFor;
+    if (!t) return false;
+    if (t.kind === 'up') return WS.buyUp(state, L, t.id);
+    if (t.kind === 'tail') return WS.condenseTail(state, L);
+    return WS.buyGen(state, L, t.id, (t.n || 1) === 10 ? 10 : 1) > 0;
+  };
+
   // 自动经营：先凝尾、学秘法，再从最便宜的产业买起。
   // 下一尾或下一门秘法一分钟内就能攒够时，先攒着不买产业，免得钱总被产业花光。
-  WS.autoBuy = function (state, L, maxIter) {
+  WS.autoBuy = function (state, L, maxIter, out) {
     const F = WS.FORMS[L.form];
+    if (L.saveFor) {
+      const c = WS.targetCost(state, L);
+      if (!c) {
+        L.saveFor = null;
+      } else {
+        if (L.main < c) return 0; // 攒钱中，什么都不买
+        const name = WS.targetName(L);
+        if (!WS.buyTarget(state, L)) return 0;
+        L.saveFor = null;
+        if (out) out.push({ type: 'bought', name });
+        return 1;
+      }
+    }
     const rate = WS.prodRate(state, L, { noSkill: true });
     let n = 0, saveFor = 0;
     if (L.form === 'fox' && L.tails < 9) {
@@ -496,9 +539,9 @@
     if (L.skillActive > 0) L.skillActive = Math.max(0, L.skillActive - dt);
     if (L.skillCd > 0) L.skillCd = Math.max(0, L.skillCd - dt);
 
-    if (WS.hasAuto(L)) {
+    if (WS.hasAuto(L) && !L.autoOff) {
       L.autoAcc += dt;
-      if (L.autoAcc >= 1) { L.autoAcc = 0; WS.autoBuy(state, L); }
+      if (L.autoAcc >= 1) { L.autoAcc = 0; WS.autoBuy(state, L, 80, out); }
     }
 
     if (L.form === 'human' && opt.online && !L.event) {

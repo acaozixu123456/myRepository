@@ -54,6 +54,39 @@
   let started = false;
   const spd = () => state.speed || 1;
 
+  // ---------- 声音 ----------
+  const Sound = WS.Sound || null;
+  const snd = (name, arg) => { if (Sound) Sound.play(name, arg); };
+  function soundPrefs() {
+    if (!state.sound || typeof state.sound !== 'object') state.sound = { music: true, sfx: true };
+    return state.sound;
+  }
+  function applySound() {
+    const S = soundPrefs();
+    const b = $('btnSound');
+    if (!Sound) { if (b) b.hidden = true; return; }
+    Sound.setMusic(S.music);
+    Sound.setSfx(S.sfx);
+    const on = !!(S.music || S.sfx);
+    b.classList.toggle('off', !on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  // 背景音乐跟着此刻的处境换调子；狐狸昼夜交替太快时（加速）不跟着来回切
+  let moodWant = '', moodSince = 0, moodNow = '';
+  function syncMood(force) {
+    if (!Sound) return;
+    const L = state.life;
+    let m = 'between';
+    if (L && !L.ended && !state.pending) m = L.form === 'fox' && WS.moonInfo(L).night ? 'fox-night' : L.form;
+    const now = Date.now();
+    if (m !== moodWant) { moodWant = m; moodSince = now; }
+    const foxFlip = moodNow.indexOf('fox') === 0 && m.indexOf('fox') === 0;
+    if (m !== moodNow && (force || !foxFlip || now - moodSince > 3000)) {
+      moodNow = m;
+      Sound.setMood(m);
+    }
+  }
+
   // ---------- 存档 ----------
   function migrate(s) {
     if (!s || typeof s !== 'object' || s.v !== 1) return null;
@@ -223,6 +256,7 @@
       const result = WS.spin(state);
       save();
       buzz(10);
+      snd('spin');
       spinWheel(cv, result.odds, result.tier, () => swapSheet(s => sheetResult(s, result), false));
     };
     const shop = $('shopFirst');
@@ -303,7 +337,7 @@
     const target = (segStart + odds[tier] * (0.15 + 0.7 * Math.random())) * TAU;
     const final = 6 * TAU + (((-target) % TAU) + TAU) % TAU;
     const dur = reduceMotion() ? 500 : 4200;
-    let t0 = 0, skip = false, done = false;
+    let t0 = 0, skip = false, done = false, peg = 0;
     $('wheelWrap').onclick = () => { skip = true; };
     function tick(now) {
       if (done) return;
@@ -312,6 +346,9 @@
       if (skip) k = 1;
       const e = 1 - Math.pow(1 - k, 4);
       drawWheel(cv, odds, final * e);
+      // 每转过一根“齿”响一下，越转越慢
+      const p = Math.floor(final * e / (TAU / 12));
+      if (p !== peg) { peg = p; snd('tick'); }
       if (k < 1) requestAnimationFrame(tick);
       else { done = true; setTimeout(onDone, 450); }
     }
@@ -356,12 +393,15 @@
       setTimeout(() => f.remove(), 1000);
     }
     buzz(r.tier >= 3 ? [40, 60, 90] : 20);
+    snd('result', r.tier);
     $('bornBtn').onclick = () => {
       WS.startLife(state, r);
       pendingQueued = false;
       save();
       closeSheet();
       setTab('life');
+      syncMood(true);
+      snd('born');
     };
   }
 
@@ -411,6 +451,15 @@
     sheet.innerHTML = `
       <h3>设置</h3>
       <div class="setting">
+        <div><b>背景音乐</b><div class="muted">古筝小调，每种前世一个调子</div></div>
+        <div class="seg" id="musicSeg">${onOff(soundPrefs().music)}</div>
+      </div>
+      <div class="setting">
+        <div><b>音效</b><div class="muted">敲木鱼、购买、转轮回盘的声音</div></div>
+        <div class="seg" id="sfxSeg">${onOff(soundPrefs().sfx)}</div>
+      </div>
+      <p class="muted center small">听不到声音的话，看看手机是不是开了静音或把媒体音量调没了</p>
+      <div class="setting">
         <div><b>试玩加速</b><div class="muted">时间按倍数流逝，用来快速体验一世又一世</div></div>
         <div class="seg" id="speedSeg">${[1, 5, 20].map(v => `<button type="button" data-v="${v}" class="${spd() === v ? 'on' : ''}">×${v}</button>`).join('')}</div>
       </div>
@@ -428,9 +477,22 @@
         render(true);
       };
     });
+    [['musicSeg', 'music'], ['sfxSeg', 'sfx']].forEach(([id, key]) => {
+      sheet.querySelectorAll(`#${id} button`).forEach(b => {
+        b.onclick = () => {
+          soundPrefs()[key] = b.dataset.v === '1';
+          sheet.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('on', x === b));
+          applySound();
+          if (Sound) Sound.unlock();
+          if (key === 'sfx') snd('toggle');
+          save();
+        };
+      });
+    });
     $('resetBtn').onclick = () => swapSheet(sheetReset, true);
     $('setClose').onclick = closeSheet;
   }
+  const onOff = on => `<button type="button" data-v="1" class="${on ? 'on' : ''}">开</button><button type="button" data-v="0" class="${on ? '' : 'on'}">关</button>`;
 
   function sheetReset(sheet) {
     sheet.innerHTML = `
@@ -459,6 +521,8 @@
       if (!WS.endLife(state, 'early')) { closeSheet(); return; }
       save();
       buzz(30);
+      syncMood(true);
+      snd('end');
       pendingQueued = true;
       swapSheet(renderPending, false);
     };
@@ -466,7 +530,9 @@
 
   function resetAll() {
     try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* 无所谓 */ }
+    const keepSound = soundPrefs();
     state = WS.newState();
+    state.sound = keepSound;
     pendingQueued = false;
     queue.length = 0;
     current = null;
@@ -482,13 +548,20 @@
       if (e.type === 'milestone') {
         toast(`达成「${e.name}」· 功德 +${WS.fmtMerit(e.merit)}`, 'gold');
         buzz(15);
+        snd('milestone');
       } else if (e.type === 'unlock') {
         const F = WS.FORMS[e.form];
         toast(`解锁新生灵：${F.name}。下一次轮回必定投胎为${F.name}`, 'jade');
         buzz([20, 40, 20]);
+        snd('unlock');
       } else if (e.type === 'event') {
         const ev = state.life && WS.EVENTS.find(x => x.id === state.life.event);
         if (ev && tab !== 'life') toast(`村里有事：${ev.title}`);
+        snd('event');
+      } else if (e.type === 'bought') {
+        toast(`攒够了，买下${e.name}`, 'gold');
+        buzz(15);
+        snd('bought');
       } else if (e.type === 'end') {
         onLifeEnded();
       }
@@ -498,6 +571,8 @@
   function onLifeEnded() {
     save();
     buzz([30, 60, 30]);
+    syncMood(true);
+    snd('end');
     showPending();
   }
 
@@ -550,6 +625,7 @@
 
   // ---------- 画面 ----------
   function render(force) {
+    syncMood(false);
     renderTop();
     if (tab === 'life') renderLife(force);
     else if (tab === 'cave') renderCave(force);
@@ -605,7 +681,7 @@
 
   function buildFormPanel(L) {
     const p = $('formPanel');
-    const auto = '<span class="chip" id="fpAuto" hidden>自动经营中</span>';
+    const auto = '<button class="chip chip-btn" type="button" id="fpAuto" hidden></button>';
     if (L.form === 'ant') {
       p.innerHTML = `<div class="chip-row"><span class="chip">蚁群 <b id="fpPop">1</b> 只</span>${auto}</div>`;
     } else if (L.form === 'fox') {
@@ -617,13 +693,52 @@
         <div class="chip-row"><span class="chip" id="fpMoon"></span>${auto}</div>`;
       $('fpCondense').onclick = () => {
         const Lx = state.life;
-        if (Lx && WS.condenseTail(state, Lx)) { buzz(25); afterAction(); }
+        if (!Lx || Lx.ended || Lx.tails >= 9) return;
+        if (WS.condenseTail(state, Lx)) {
+          if (isWanted(Lx, 'tail', 'tail')) Lx.saveFor = null;
+          buzz(25);
+          snd('condense');
+          afterAction();
+          return;
+        }
+        wantThis(Lx, { kind: 'tail', id: 'tail' }, '下一尾', WS.tailCost(Lx));
       };
     } else {
       p.innerHTML = `
         <div class="chip-row"><span class="chip" id="fpPeople"></span><span class="chip" id="fpWen"></span><span class="chip" id="fpRank"></span>${auto}</div>
         <div id="fpEvent"></div>`;
     }
+    $('fpAuto').onclick = () => {
+      const Lx = state.life;
+      if (!Lx || Lx.ended) return;
+      Lx.autoOff = !Lx.autoOff;
+      snd('toggle');
+      if (Lx.autoOff) toast('自动经营暂停了，钱都留给你自己花');
+      else toast('自动经营继续', 'jade');
+      save();
+      render(true);
+    };
+  }
+
+  // 点了买不起的东西：开着自动经营时，让它先攒钱买这个；再点一次就取消
+  const isWanted = (L, kind, id) => !!(L.saveFor && L.saveFor.kind === kind && L.saveFor.id === id);
+
+  function wantThis(L, target, name, cost) {
+    const F = WS.FORMS[L.form];
+    if (!WS.hasAuto(L) || L.autoOff) {
+      toast(`${F.mainName}还差 ${WS.fmt(Math.max(0, cost - L.main))}`);
+      return;
+    }
+    snd('want');
+    if (isWanted(L, target.kind, target.id)) {
+      L.saveFor = null;
+      toast('不攒了，自动经营照常花钱');
+    } else {
+      L.saveFor = target;
+      toast(`开始攒钱买${name}，攒够了自动买下`, 'jade');
+    }
+    save();
+    render(true);
   }
 
   function buildEvent(L) {
@@ -642,7 +757,7 @@
     box.querySelectorAll('button').forEach(b => {
       b.onclick = () => {
         const c = WS.resolveEvent(state, state.life, b.dataset.k);
-        if (c) toast(c.label);
+        if (c) { toast(c.label); snd('choose'); }
         afterAction();
       };
     });
@@ -657,7 +772,18 @@
   function renderFormPanel(L) {
     const sp = spd();
     const autoChip = $('fpAuto');
-    if (autoChip) autoChip.hidden = !WS.hasAuto(L);
+    if (autoChip) {
+      const has = WS.hasAuto(L);
+      autoChip.hidden = !has;
+      if (has) {
+        let txt;
+        if (L.autoOff) txt = '自动经营已暂停 · 点这里继续';
+        else if (L.saveFor) txt = `自动经营在攒钱买${WS.targetName(L)} · 点这里暂停`;
+        else txt = '自动经营中 · 点这里暂停';
+        setText(autoChip, txt);
+        setClass(autoChip, 'chip chip-btn' + (L.autoOff ? ' off' : ''));
+      }
+    }
     if (L.form === 'ant') {
       setText($('fpPop'), WS.fmt(WS.antPop(L)));
     } else if (L.form === 'fox') {
@@ -667,7 +793,12 @@
       const cost = WS.tailCost(L);
       setText($('fpTailText'), `${cn(L.tails)}尾 · 月华 ×${fmtMult(Math.pow(WS.FORMS.fox.tail.mult, L.tails - 1))}`);
       setText($('fpTailCost'), full ? '圆满' : WS.fmt(cost));
-      setDisabled($('fpCondense'), full || L.main < cost);
+      const cBtn = $('fpCondense');
+      const cWant = isWanted(L, 'tail', 'tail');
+      const cCan = !full && L.main >= cost;
+      setClass(cBtn, 'buy-btn jade' + (cCan || full ? '' : ' cant') + (cWant ? ' want' : ''));
+      setDisabled(cBtn, full);
+      setText(cBtn.querySelector('.n'), cWant && !cCan ? '攒钱中' : '凝尾');
       const mi = WS.moonInfo(L);
       const left = WS.fmtClock(mi.left / sp);
       let txt, cls = 'chip';
@@ -794,8 +925,16 @@
         btn.setAttribute('aria-label', '购买' + g.name);
         btn.onclick = () => {
           const Lx = state.life;
-          if (!Lx || Lx.ended) return;
-          if (WS.buyGen(state, Lx, g.id, buyMode) > 0) { flash(row); afterAction(); }
+          if (!Lx || Lx.ended || locked) return;
+          if (WS.buyGen(state, Lx, g.id, buyMode) > 0) {
+            if (isWanted(Lx, 'gen', g.id)) Lx.saveFor = null;
+            flash(row);
+            snd('buy');
+            afterAction();
+            return;
+          }
+          const k = buyMode === 10 ? 10 : 1;
+          wantThis(Lx, { kind: 'gen', id: g.id, n: k }, g.name + (k > 1 ? ` ×${k}` : ''), WS.genCost(F, g, Lx.owned[g.id] || 0, k));
         };
         LR.genRows.push({
           g, row, btn, locked,
@@ -815,10 +954,13 @@
       let k = 1;
       if (buyMode === 10) k = 10;
       else if (buyMode === 'max') k = Math.max(1, WS.maxAfford(F, g, owned, L.main));
-      const cost = WS.genCost(F, g, owned, k);
-      setText(r.n, '×' + k);
+      const want = isWanted(L, 'gen', g.id);
+      const cost = want ? WS.targetCost(state, L) : WS.genCost(F, g, owned, k);
+      const can = cost <= L.main * (1 + 1e-9);
+      setText(r.n, want ? (can ? '×' + (L.saveFor.n || 1) : '攒钱中') : '×' + k);
       setText(r.c, WS.fmt(cost));
-      setDisabled(r.btn, r.locked || cost > L.main * (1 + 1e-9));
+      setClass(r.btn, 'buy-btn' + (can ? '' : ' cant') + (want ? ' want' : ''));
+      setDisabled(r.btn, r.locked);
     }
   }
 
@@ -839,15 +981,29 @@
         btn.setAttribute('aria-label', '习得' + u.name);
         btn.onclick = () => {
           const Lx = state.life;
-          if (Lx && WS.buyUp(state, Lx, u.id)) { buzz(15); toast(`习得「${u.name}」`, 'jade'); afterAction(); }
+          if (!Lx || Lx.ended) return;
+          if (WS.buyUp(state, Lx, u.id)) {
+            if (isWanted(Lx, 'up', u.id)) Lx.saveFor = null;
+            buzz(15);
+            snd('learn');
+            toast(`习得「${u.name}」`, 'jade');
+            afterAction();
+            return;
+          }
+          wantThis(Lx, { kind: 'up', id: u.id }, u.name, u.cost);
         };
-        LR.upRows.push({ u, btn });
+        LR.upRows.push({ u, btn, n: btn.querySelector('.n') });
         list.appendChild(row);
       });
       if (learned.length) list.appendChild(h('div', 'learned-line', '已习得：' + learned.map(u => u.name).join('、')));
       setText($('upNote'), `${learned.length} / ${F.ups.length}`);
     }
-    for (const r of LR.upRows) setDisabled(r.btn, L.main < r.u.cost);
+    for (const r of LR.upRows) {
+      const want = isWanted(L, 'up', r.u.id);
+      const can = L.main >= r.u.cost;
+      setClass(r.btn, 'buy-btn jade' + (can ? '' : ' cant') + (want ? ' want' : ''));
+      setText(r.n, want && !can ? '攒钱中' : '习得');
+    }
   }
 
   function renderLife() {
@@ -896,6 +1052,7 @@
     const L = state.life;
     if (!L || L.ended || state.pending) return;
     const g = WS.tap(state, L);
+    snd('tap');
     const b = $('tapBtn').getBoundingClientRect();
     const x = e && e.clientX ? e.clientX + (Math.random() * 24 - 12) : b.left + b.width / 2;
     const y = e && e.clientY ? e.clientY : b.top + b.height / 2;
@@ -910,6 +1067,7 @@
     const before = L.main;
     if (!WS.useSkill(state, L)) { toast(`${F.skill.name}还在冷却`); return; }
     buzz(30);
+    snd('skill');
     if (F.skill.instant) {
       const b = $('skillBtn').getBoundingClientRect();
       floatText('+' + WS.fmt(L.main - before), b.left + b.width / 2, b.top + b.height / 2);
@@ -951,6 +1109,7 @@
         btn.onclick = () => {
           if (!WS.buyFeature(state, f.id)) return;
           buzz(15);
+          snd('feature');
           toast(`洞天添了${f.name}，现在 ${WS.featLv(state, f.id)} 级`, 'jade');
           save();
           render(true);
@@ -1013,6 +1172,22 @@
     document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
     $('lqChip').addEventListener('click', () => setTab('cave'));
     $('btnSettings').addEventListener('click', () => queueOverlay(sheetSettings, true));
+    $('btnSound').addEventListener('click', () => {
+      const S = soundPrefs();
+      const on = !(S.music || S.sfx);
+      S.music = on;
+      S.sfx = on;
+      applySound();
+      if (on && Sound) { Sound.unlock(); snd('toggle'); }
+      toast(on ? '声音开了' : '静音了');
+      save();
+    });
+    // 浏览器只允许在用户点按之后出声：每次点按时看一眼，没开起来就开
+    const wake = () => {
+      const S = soundPrefs();
+      if (Sound && (S.music || S.sfx) && !Sound.ready) Sound.unlock();
+    };
+    ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'].forEach(t => document.addEventListener(t, wake, { capture: true, passive: true }));
     $('btnToWheel').addEventListener('click', showPending);
     $('btnCaveWheel').addEventListener('click', showPending);
 
@@ -1034,7 +1209,10 @@
       if (e.key === 'Escape' && current && current.dismiss) closeSheet();
     });
 
-    document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) save();
+      if (Sound) Sound.setHidden(document.hidden);
+    });
     window.addEventListener('pagehide', save);
     window.addEventListener('resize', () => { if (tab === 'cave') painter.resize(); });
 
@@ -1055,6 +1233,7 @@
     state = s || load() || WS.newState();
     painter = WS.Painter($('caveCanvas'));
     bindUI();
+    applySound();
 
     if (!state.introDone) {
       queueOverlay(sheetIntro, false);
@@ -1080,6 +1259,7 @@
     save,
     load(s) {
       state = migrate(s);
+      applySound();
       built = ''; caveKey = ''; pastKey = '';
       pendingQueued = false;
       queue.length = 0;
