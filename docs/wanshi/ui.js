@@ -98,7 +98,18 @@
     WS.FEATURES.forEach(f => { if (typeof s.feats[f.id] !== 'number') s.feats[f.id] = 0; });
     WS.FORM_ORDER.forEach(f => { if (!s.codex[f]) s.codex[f] = base.codex[f]; });
     if (s.life && !WS.FORMS[s.life.form]) { s.life = null; s.pending = { type: 'wheel', result: null }; }
+    // 修士、龙、仙是后来加的：以前已经达成过解锁条件的，直接解锁
+    const got = WS.unlockByCodex(s);
+    if (got.length) unlockNote = got;
     return s;
+  }
+  let unlockNote = null;
+  function showUnlockNote() {
+    if (!unlockNote || !state) return;
+    const names = unlockNote.map(f => WS.FORMS[f].name).join('、');
+    const g = state.guarantee && WS.FORMS[state.guarantee];
+    toast(`新生灵开放：${names}。${g ? `下一次轮回必定投胎为${g.name}` : ''}`, 'jade');
+    unlockNote = null;
   }
   function load() {
     try { return migrate(JSON.parse(localStorage.getItem(SAVE_KEY) || 'null')); } catch (e) { return null; }
@@ -200,7 +211,7 @@
         <h3>万世洞天</h3>
         <p>你是一缕在轮回里漂了很久的魂魄。每一世活到寿终，都会在随身的洞天里留下一点东西。</p>
       </div>
-      <p class="muted center">这一世也许是只蚂蚁，下一世也许是狐狸，是人。洞天越长越大，往后的每一世都会更顺。</p>
+      <p class="muted center">这一世也许是只蚂蚁，下一世也许是狐狸、是人，再往后修仙、化龙、位列仙班。洞天越长越大，往后的每一世都会更顺。</p>
       <button class="primary" type="button" id="introGo">转动轮回盘</button>`;
     $('introGo').onclick = () => {
       state.introDone = true;
@@ -618,9 +629,16 @@
         buzz([20, 40, 20]);
         snd('unlock');
       } else if (e.type === 'event') {
-        const ev = state.life && WS.EVENTS.find(x => x.id === state.life.event);
-        if (ev && tab !== 'life') toast(`村里有事：${ev.title}`);
+        const ev = WS.currentEvent(state.life);
+        const F = state.life && WS.FORMS[state.life.form];
+        if (ev && tab !== 'life') toast(`${(F && F.eventWhere) || ''}有事：${ev.title}`);
         snd('event');
+      } else if (e.type === 'break') {
+        breakNote(e);
+      } else if (e.type === 'leap') {
+        leapNote(e);
+      } else if (e.type === 'peach') {
+        if (tab === 'life' && !reduceMotion()) peachPop(e);
       } else if (e.type === 'bought') {
         toast(`攒够了，买下${e.name}`, 'gold');
         buzz(15);
@@ -746,6 +764,9 @@
 
   function buildFormPanel(L) {
     const p = $('formPanel');
+    const F = WS.FORMS[L.form];
+    if (leapGame) cancelLeap(true);
+    p.classList.remove('fx-ok', 'fx-bad');
     const auto = '<button class="chip chip-btn" type="button" id="fpAuto" hidden></button>';
     if (L.form === 'ant') {
       p.innerHTML = `<div class="chip-row"><span class="chip">蚁群 <b id="fpPop">1</b> 只</span>${auto}</div>`;
@@ -768,6 +789,39 @@
         }
         wantThis(Lx, { kind: 'tail', id: 'tail' }, '下一尾', WS.tailCost(Lx));
       };
+    } else if (L.form === 'xiu') {
+      p.innerHTML = `
+        <div class="realm-box">
+          <div class="realm-ladder" id="fpRealms" aria-hidden="true">${F.realms.map(r => `<span>${r}</span>`).join('')}</div>
+          <div class="tails-foot"><span id="fpRealmText"></span><button class="buy-btn jade" type="button" id="fpBreak"><span class="n">突破</span><span class="c" id="fpBreakCost"></span></button></div>
+          <div class="realm-odds" id="fpOdds"></div>
+        </div>
+        <div class="chip-row">${auto}</div>
+        <div id="fpEvent"></div>`;
+      $('fpBreak').onclick = doBreak;
+    } else if (L.form === 'dragon') {
+      p.innerHTML = `
+        <div class="leap-box">
+          <div class="leap-head"><span id="fpStageText"></span><span class="muted" id="fpStageNext"></span></div>
+          <div class="leap-river" id="fpRiver" aria-hidden="true"><div class="leap-track">
+            <div class="leap-gate" id="fpGate"><i></i></div>
+            <div class="leap-fish" id="fpFish">鲤</div>
+          </div></div>
+          <div class="tails-foot"><span class="muted" id="fpLeapText"></span><button class="buy-btn jade" type="button" id="fpLeap"><span class="n">跃门</span><span class="c" id="fpLeapCost"></span></button></div>
+        </div>
+        <div class="chip-row">${auto}</div>
+        <div id="fpEvent"></div>`;
+      $('fpLeap').onclick = doLeap;
+      $('fpRiver').addEventListener('pointerdown', e => { if (leapGame) { e.preventDefault(); stopLeap(); } });
+    } else if (L.form === 'xian') {
+      p.innerHTML = `
+        <div class="peach-box">
+          <div class="peach-head"><b>蟠桃园</b><span class="muted" id="fpPeachText"></span></div>
+          <div class="peach-trees" id="fpPeach">${[0, 1, 2].map(i => `<button type="button" class="peach-tree" data-i="${i}" aria-label="桃树${i + 1}"><span class="pt-fruit">桃</span><span class="pt-bar"><b></b></span><span class="pt-text"></span></button>`).join('')}</div>
+        </div>
+        <div class="chip-row"><span class="chip" id="fpDao"></span>${auto}</div>
+        <div id="fpEvent"></div>`;
+      $('fpPeach').querySelectorAll('.peach-tree').forEach(b => { b.onclick = () => doPeach(+b.dataset.i, b); });
     } else {
       p.innerHTML = `
         <div class="chip-row"><span class="chip" id="fpPeople"></span><span class="chip" id="fpWen"></span><span class="chip" id="fpRank"></span>${auto}</div>
@@ -808,8 +862,9 @@
 
   function buildEvent(L) {
     const box = $('fpEvent');
-    if (!L.event) { box.innerHTML = ''; return; }
-    const e = WS.EVENTS.find(x => x.id === L.event);
+    if (!box) return;
+    const e = WS.currentEvent(L);
+    if (!e) { box.innerHTML = ''; return; }
     box.innerHTML = `
       <div class="event-card">
         <div class="event-title">${e.title}</div>
@@ -827,6 +882,152 @@
       };
     });
   }
+
+  // ---------- 修士：突破 ----------
+  let breaking = false;
+  function doBreak() {
+    const L = state.life;
+    if (!L || L.ended || L.form !== 'xiu' || breaking || L.realm >= WS.breakMax()) return;
+    const cost = WS.breakCost(L);
+    if (L.main < cost) { wantThis(L, { kind: 'break', id: 'break' }, '突破' + WS.FORMS.xiu.realms[L.realm + 1], cost); return; }
+    // 先蓄一口气，再揭晓成败
+    const from = L.realm;
+    breaking = true;
+    const btn = $('fpBreak');
+    btn.classList.add('charging');
+    setText(btn.querySelector('.n'), '冲关…');
+    snd('charge');
+    buzz(15);
+    setTimeout(() => {
+      breaking = false;
+      if (btn) btn.classList.remove('charging');
+      const Lx = state.life;
+      if (!Lx || Lx.ended || Lx.form !== 'xiu') return;
+      if (Lx.realm !== from) { render(true); return; } // 这一下已经被自动修炼冲过了
+      const r = WS.breakthrough(state, Lx);
+      if (!r) { render(true); return; }
+      if (isWanted(Lx, 'break', 'break') && r.ok) Lx.saveFor = null;
+      breakNote(r);
+      afterAction();
+    }, reduceMotion() ? 200 : 1100);
+  }
+  function breakNote(r) {
+    const box = $('formPanel');
+    if (r.ok) {
+      toast(`突破成功：${r.name}${r.auto ? '（自动）' : ''} · 真元 ×${WS.FORMS.xiu.breakthrough.mult}，寿元 +${r.years} 年`, 'gold');
+      snd('ascend');
+      buzz([20, 40, 60]);
+      if (box && tab === 'life') ripple(box, 'ok');
+    } else {
+      toast(`突破失败${r.auto ? '（自动）' : ''}：${r.lost ? `真元 -${WS.fmt(r.lost)}，` : ''}下回成功率 ${Math.round(r.next * 100)}%`);
+      snd('fail');
+      buzz(40);
+      if (box && tab === 'life') ripple(box, 'bad');
+    }
+  }
+  function ripple(box, kind) {
+    box.classList.remove('fx-ok', 'fx-bad');
+    void box.offsetWidth;
+    box.classList.add(kind === 'ok' ? 'fx-ok' : 'fx-bad');
+  }
+
+  // ---------- 龙：跃门小游戏 ----------
+  // 点「跃门」后，鲤鱼在河里来回游；游到龙门（正中间的金色那段）时再点一下
+  let leapGame = null;
+  const leapPos = t => { const k = (t % 2 + 2) % 2; return k < 1 ? k : 2 - k; };
+  function doLeap() {
+    const L = state.life;
+    if (!L || L.ended || L.form !== 'dragon' || L.stage >= WS.leapMax()) return;
+    if (leapGame) { stopLeap(); return; }
+    const cost = WS.leapCost(L);
+    if (L.main < cost) { wantThis(L, { kind: 'leap', id: 'leap' }, '跃门', cost); return; }
+    leapGame = { t0: performance.now(), period: WS.leapPeriod(L) * 1000, until: performance.now() + 8000 };
+    $('fpRiver').classList.add('on');
+    snd('toggle');
+    const tick = now => {
+      if (!leapGame) return;
+      if (now > leapGame.until || tab !== 'life' || !state.life || state.life.ended) { cancelLeap(); return; }
+      leapGame.x = leapPos((now - leapGame.t0) / leapGame.period);
+      state.life.leapWait = 0; // 玩家自己在跳，鱼群先别动
+      const fish = $('fpFish');
+      if (fish) fish.style.left = (leapGame.x * 100).toFixed(2) + '%';
+      leapGame.raf = requestAnimationFrame(tick);
+    };
+    leapGame.raf = requestAnimationFrame(tick);
+    render(true);
+  }
+  function cancelLeap(quiet) {
+    if (!leapGame) return;
+    cancelAnimationFrame(leapGame.raf);
+    leapGame = null;
+    const river = $('fpRiver');
+    if (river) river.classList.remove('on');
+    if (!quiet) render(true);
+  }
+  function stopLeap() {
+    const g = leapGame;
+    if (!g) return;
+    cancelAnimationFrame(g.raf);
+    leapGame = null;
+    const L = state.life;
+    const x = leapPos((performance.now() - g.t0) / g.period);
+    const fish = $('fpFish');
+    if (fish) fish.style.left = (x * 100).toFixed(2) + '%';
+    const river = $('fpRiver');
+    if (river) river.classList.remove('on');
+    if (!L || L.ended || L.form !== 'dragon') return;
+    const q = WS.leapJudge(L, x);
+    const r = WS.leap(state, L, q);
+    if (!r) { render(true); return; }
+    if (r.ok && isWanted(L, 'leap', 'leap')) L.saveFor = null;
+    if (fish) {
+      fish.classList.remove('jump', 'drop');
+      void fish.offsetWidth;
+      fish.classList.add(r.ok ? 'jump' : 'drop');
+    }
+    leapNote(r);
+    afterAction();
+  }
+  function leapNote(r) {
+    const box = $('formPanel');
+    if (r.ok) {
+      const P = WS.FORMS.dragon.leap;
+      if (r.perfect) toast(`完美一跃！化为${r.name} · 这一世龙气再 +${Math.round(P.perfectBonus * 100)}%`, 'gold');
+      else toast(`跃过去了，化为${r.name}${r.auto ? '（鱼群带着跳的）' : ''} · 龙气 ×${P.mult}`, 'gold');
+      snd('leap');
+      buzz(r.perfect ? [20, 40, 20, 40, 80] : [20, 40, 60]);
+      if (box && tab === 'life') ripple(box, 'ok');
+    } else {
+      toast(`没踩准，掉回水里：龙气 -${WS.fmt(r.lost)}。等鲤鱼游到金色的龙门再点`);
+      snd('fail');
+      buzz(40);
+      if (box && tab === 'life') ripple(box, 'bad');
+    }
+  }
+
+  // ---------- 仙：蟠桃园 ----------
+  function doPeach(i, btn) {
+    const L = state.life;
+    if (!L || L.ended || L.form !== 'xian') return;
+    const r = WS.pickPeach(state, L, i);
+    if (!r) {
+      const left = Math.max(0, WS.peachGrow(L) - (L.peach[i] || 0));
+      toast(`这棵还要 ${WS.fmtClock(left / spd())} 才熟`);
+      return;
+    }
+    snd('peach');
+    buzz(15);
+    const b = btn.getBoundingClientRect();
+    floatText(`+${WS.fmt(r.gain)} · 寿 +${fmtYears(r.years)}`, b.left + b.width / 2, b.top + 10);
+    afterAction();
+  }
+  function peachPop(e) {
+    const tree = document.querySelector(`.peach-tree[data-i="${e.i}"]`);
+    if (!tree) return;
+    const b = tree.getBoundingClientRect();
+    floatText(`仙童摘桃 +${WS.fmt(e.gain)}`, b.left + b.width / 2, b.top + 10);
+  }
+  const fmtYears = y => (Math.abs(y - Math.round(y)) < 0.05 ? String(Math.round(y)) : y.toFixed(1)) + ' 年';
 
   function rankName(L) {
     let r = '白身';
@@ -876,13 +1077,71 @@
       const m = $('fpMoon');
       setText(m, txt);
       setClass(m, cls);
+    } else if (L.form === 'xiu') {
+      const F = WS.FORMS.xiu, B = F.breakthrough, max = WS.breakMax();
+      const rungs = $('fpRealms').children;
+      for (let i = 0; i < rungs.length; i++) setClass(rungs[i], i < L.realm ? 'done' : i === L.realm ? 'now' : '');
+      const full = L.realm >= max;
+      const cost = full ? 0 : WS.breakCost(L);
+      setText($('fpRealmText'), `${F.realms[L.realm]}期 · 真元 ×${fmtMult(Math.pow(B.mult, L.realm))}`);
+      setText($('fpBreakCost'), full ? '圆满' : WS.fmt(cost));
+      const btn = $('fpBreak');
+      if (!breaking) {
+        const want = isWanted(L, 'break', 'break');
+        const can = !full && L.main >= cost;
+        setClass(btn, 'buy-btn jade' + (can || full ? '' : ' cant') + (want ? ' want' : ''));
+        setDisabled(btn, full);
+        setText(btn.querySelector('.n'), want && !can ? '攒钱中' : '突破');
+      }
+      const odds = WS.breakOdds(state, L);
+      setHTML($('fpOdds'), full ? '已经飞升，此世圆满'
+        : `冲击<b>${F.realms[L.realm + 1]}</b> · 成功率 <b class="${odds >= 0.8 ? 'good' : odds < 0.6 ? 'bad' : ''}">${Math.round(odds * 100)}%</b>` +
+          (L.breakBonus > 0 ? ` <span class="muted">（失败攒下 +${Math.round(L.breakBonus * 100)}%）</span>` : '') +
+          `<br><span class="muted">${L.ups.heart ? '道心坚定：失败也不丢真元' : `失败会丢一半真元，下回成功率 +${Math.round(B.failBonus * 100)}%`}</span>`);
+    } else if (L.form === 'dragon') {
+      const F = WS.FORMS.dragon, P = F.leap, max = WS.leapMax();
+      const full = L.stage >= max;
+      setText($('fpStageText'), `${F.stages[L.stage - 1]} · 龙气 ×${fmtMult(Math.pow(P.mult, L.stage - 1) * (1 + (L.prodBonus || 0)))}`);
+      setText($('fpStageNext'), full ? '已是祖龙' : `下一变：${F.stages[L.stage]}`);
+      setText($('fpFish'), L.stage === 1 ? '鲤' : L.stage === 2 ? '蛟' : L.stage === 3 ? '虬' : '龙');
+      const z = WS.leapZone(L);
+      const gate = $('fpGate');
+      const gw = (z.half * 200).toFixed(1) + '%', pw = (z.perfect / z.half * 100).toFixed(1) + '%';
+      if (gate.style.width !== gw) { gate.style.width = gw; gate.firstElementChild.style.width = pw; }
+      const cost = full ? 0 : WS.leapCost(L);
+      setText($('fpLeapCost'), full ? '圆满' : WS.fmt(cost));
+      const btn = $('fpLeap');
+      const want = isWanted(L, 'leap', 'leap');
+      const can = !full && L.main >= cost;
+      setClass(btn, 'buy-btn jade' + (can || full ? '' : ' cant') + (want ? ' want' : '') + (leapGame ? ' go' : ''));
+      setDisabled(btn, full);
+      setText(btn.querySelector('.n'), leapGame ? '就是现在' : want && !can ? '攒钱中' : '跃门');
+      let txt;
+      if (full) txt = '九变已成';
+      else if (leapGame) txt = '鲤鱼游到金色的龙门时，点河面或按钮';
+      else if (can) txt = WS.hasAuto(L) && !L.autoOff ? `龙气够了，点「跃门」自己跳；${Math.max(0, Math.ceil((WS.LEAP_GRACE - (L.leapWait || 0)) / sp))} 秒后鱼群带你跳` : '龙气够了，点「跃门」，看准时机再点一下';
+      else txt = `踩在正中间是完美一跃，这一世龙气再 +${Math.round(P.perfectBonus * 100)}%`;
+      setText($('fpLeapText'), txt);
+    } else if (L.form === 'xian') {
+      const grow = WS.peachGrow(L);
+      const trees = $('fpPeach').children;
+      for (let i = 0; i < trees.length; i++) {
+        const t = trees[i], g = L.peach[i] || 0, ripe = g >= grow;
+        setClass(t, 'peach-tree' + (ripe ? ' ripe' : ''));
+        const bar = t.querySelector('.pt-bar b');
+        const w = (100 * Math.min(1, g / grow)).toFixed(1) + '%';
+        if (bar.style.width !== w) bar.style.width = w;
+        setText(t.querySelector('.pt-text'), ripe ? '熟了' : WS.fmtClock((grow - g) / sp));
+      }
+      setText($('fpPeachText'), `摘一个：仙气 +${WS.fmt(WS.peachGain(state, L))}，寿元 +${fmtYears(WS.peachYears(L))}${L.ups.boy ? ' · 仙童会替你摘' : ''}`);
+      setHTML($('fpDao'), `道行 <b>${WS.fmt(L.totalMain)}</b> · 摘了 ${L.peaches || 0} 个蟠桃`);
     } else {
       setHTML($('fpPeople'), `人丁 <b>${WS.fmt(L.people)}</b> · 产粮 +${WS.fmt(Math.round(WS.perPeople(L) * L.people * 100))}%`);
       const wr = WS.wenRate(state, L);
       setHTML($('fpWen'), `文气 <b>${WS.fmt(L.wenTotal)}</b>` + (wr > 0 ? ` +${WS.fmt(wr * sp)}/秒` : ' · 盖学堂才有'));
       setHTML($('fpRank'), `功名 <b>${rankName(L)}</b>`);
-      if (LR.eventId !== L.event) { LR.eventId = L.event; buildEvent(L); }
     }
+    if (LR.eventId !== L.event) { LR.eventId = L.event; buildEvent(L); }
   }
 
   function prevThreshold(F, ms) {
@@ -903,6 +1162,12 @@
       const rate = WS.prodRate(state, L, { noSkill: true, noNight: true }) * avgNight;
       const need = WS.tailCost(L) - L.main;
       if (need > 0 && rate > 0 && need / rate > leftSec * 3) return '照现在的速度，这一世凝不出下一尾了。可以提前坐化，带着功德去下一世。';
+      return '';
+    }
+    if (next.stat === 'realm' || next.stat === 'stage') {
+      const rate = WS.prodRate(state, L, { noSkill: true });
+      const need = (next.stat === 'realm' ? WS.breakCost(L) : WS.leapCost(L)) - L.main;
+      if (need > 0 && rate > 0 && need / rate > leftSec * 3) return `照现在的速度，这一世${next.stat === 'realm' ? '冲不到下一个境界' : '跃不过下一道龙门'}了。可以提前坐化，带着功德去下一世。`;
       return '';
     }
     if (L.t - (L.lastMsT || 0) > 0.2 * L.lifespan * F.yearSec) return '进展慢下来了。也可以提前坐化，带着功德去下一世。';
@@ -926,13 +1191,21 @@
         const c = WS.tailCost(L);
         p = L.main / c;
         txt = `月华 ${WS.fmt(L.main)} / ${WS.fmt(c)}，攒够就能凝出第${cn(L.tails + 1)}尾`;
+      } else if (next.stat === 'realm') {
+        const c = WS.breakCost(L);
+        p = L.main / c;
+        txt = `真元 ${WS.fmt(L.main)} / ${WS.fmt(c)}，攒够就能冲击${F.realms[L.realm + 1]}（成功率 ${Math.round(WS.breakOdds(state, L) * 100)}%）`;
+      } else if (next.stat === 'stage') {
+        const c = WS.leapCost(L);
+        p = L.main / c;
+        txt = `龙气 ${WS.fmt(L.main)} / ${WS.fmt(c)}，攒够就能跃门，化为${F.stages[L.stage]}`;
       } else if (next.stat === 'people') {
         p = v / next.at;
         txt = `人丁 ${WS.fmt(v)} / ${WS.fmt(next.at)}`;
       } else {
         const prev = prevThreshold(F, next);
         p = (Math.log(Math.max(1, v)) - Math.log(prev)) / (Math.log(next.at) - Math.log(prev));
-        txt = `${next.stat === 'pop' ? '蚁群' : '文气'} ${WS.fmt(v)} / ${WS.fmt(next.at)}`;
+        txt = `${{ pop: '蚁群', wen: '文气', dao: '道行' }[next.stat] || ''} ${WS.fmt(v)} / ${WS.fmt(next.at)}`;
       }
     }
     setText($('goalName'), name);
@@ -1322,6 +1595,7 @@
     lastTick = Date.now();
     save();
     render(true);
+    showUnlockNote();
     requestAnimationFrame(frame);
   }
 
@@ -1343,6 +1617,7 @@
       showPending();
       save();
       render(true);
+      showUnlockNote();
     },
   };
 

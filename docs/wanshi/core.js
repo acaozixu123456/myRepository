@@ -57,6 +57,11 @@
       wenTotal: 0,
       people: 1,
       tails: 1,
+      realm: 0,        // 修士的境界
+      breakBonus: 0,   // 修士突破失败攒下的成功率
+      stage: 1,        // 龙：第几变
+      leapWait: 0,     // 龙：攒够龙气以后过了多久（自动跃门要先等玩家自己跳）
+      peach: form === 'xian' ? [30, 15, 0] : null, // 仙：每棵桃树长了多久
       owned: {},
       ups: {},
       ms: [],
@@ -152,6 +157,94 @@
     return r;
   };
 
+  // ---------- 修士的突破 ----------
+  WS.breakCost = function (L) {
+    const B = WS.FORMS.xiu.breakthrough;
+    return B.base * Math.pow(B.growth, L.realm || 0);
+  };
+  WS.breakMax = () => WS.FORMS.xiu.breakthrough.odds.length;
+  WS.breakOdds = function (state, L) {
+    const F = WS.FORMS.xiu, B = F.breakthrough;
+    const r = L.realm || 0;
+    if (r >= B.odds.length) return 0;
+    let p = B.odds[r] + B.perTier * L.tier + (L.breakBonus || 0);
+    for (const u of F.ups) if (L.ups[u.id] && u.eff.odds) p += u.eff.odds;
+    return Math.min(Math.max(B.max, B.odds[r]), p);
+  };
+  // 成功：境界 +1，产出 ×1.35，寿元 +15 年。失败：丢一半真元（道心坚定后不丢），下次成功率 +10%
+  WS.breakthrough = function (state, L, rand) {
+    if (!L || L.ended || L.form !== 'xiu' || (L.realm || 0) >= WS.breakMax()) return null;
+    const F = WS.FORMS.xiu, B = F.breakthrough;
+    const cost = WS.breakCost(L);
+    if (L.main < cost * (1 - 1e-9)) return null;
+    const p = WS.breakOdds(state, L);
+    if ((rand || Math.random)() < p) {
+      L.main = Math.max(0, L.main - cost);
+      L.realm = (L.realm || 0) + 1;
+      L.breakBonus = 0;
+      L.lifespan += B.years;
+      return { ok: true, realm: L.realm, name: F.realms[L.realm], years: B.years, p };
+    }
+    const lost = L.ups.heart ? 0 : cost * B.failLoss;
+    L.main = Math.max(0, L.main - lost);
+    L.breakBonus = (L.breakBonus || 0) + B.failBonus;
+    return { ok: false, lost, p, next: WS.breakOdds(state, L) };
+  };
+
+  // ---------- 龙的跃门 ----------
+  WS.leapCost = function (L) {
+    const P = WS.FORMS.dragon.leap;
+    let c = P.base * Math.pow(P.growth, (L.stage || 1) - 1);
+    if (L.ups.blood) c *= 0.5;
+    return c;
+  };
+  WS.leapMax = () => WS.FORMS.dragon.stages.length;
+  // 浪头一来一回的时间：越往后越快
+  WS.leapPeriod = L => WS.FORMS.dragon.leap.period * Math.pow(0.92, (L.stage || 1) - 1);
+  WS.leapZone = function (L) {
+    const P = WS.FORMS.dragon.leap;
+    return { half: (L.ups.secret ? P.wide : P.zone) / 2, perfect: P.perfect / 2 };
+  };
+  // x 是浪头的位置（0 到 1），正中间最好
+  WS.leapJudge = function (L, x) {
+    const z = WS.leapZone(L), d = Math.abs(x - 0.5);
+    return d <= z.perfect ? 'perfect' : d <= z.half ? 'ok' : 'miss';
+  };
+  WS.leap = function (state, L, quality) {
+    if (!L || L.ended || L.form !== 'dragon' || (L.stage || 1) >= WS.leapMax()) return null;
+    const F = WS.FORMS.dragon, P = F.leap;
+    const cost = WS.leapCost(L);
+    if (L.main < cost * (1 - 1e-9)) return null;
+    L.leapWait = 0;
+    if (quality === 'miss') {
+      const lost = cost * P.failLoss;
+      L.main = Math.max(0, L.main - lost);
+      return { ok: false, lost };
+    }
+    L.main = Math.max(0, L.main - cost);
+    L.stage = (L.stage || 1) + 1;
+    const perfect = quality === 'perfect';
+    if (perfect) L.prodBonus = (L.prodBonus || 0) + P.perfectBonus;
+    return { ok: true, stage: L.stage, name: F.stages[L.stage - 1], perfect };
+  };
+
+  // ---------- 仙的蟠桃园 ----------
+  WS.peachGrow = L => (L.ups.graft ? WS.FORMS.xian.peach.fast : WS.FORMS.xian.peach.grow);
+  WS.peachRipe = (L, i) => !!(L.peach && L.peach[i] >= WS.peachGrow(L));
+  WS.peachYears = L => WS.FORMS.xian.peach.years * (L.ups.longevity ? 2 : 1);
+  WS.peachGain = (state, L) => 10 + WS.prodRate(state, L, { noSkill: true }) * WS.FORMS.xian.peach.gain;
+  WS.pickPeach = function (state, L, i) {
+    if (!L || L.ended || L.form !== 'xian' || !WS.peachRipe(L, i)) return null;
+    const g = WS.peachGain(state, L);
+    L.main += g;
+    L.totalMain += g;
+    const years = WS.peachYears(L);
+    L.lifespan += years;
+    L.peach[i] = 0;
+    L.peaches = (L.peaches || 0) + 1;
+    return { gain: g, years };
+  };
+
   // ---------- 产出 ----------
   WS.prodMult = function (state, L, opt) {
     opt = opt || {};
@@ -167,8 +260,10 @@
     if (L.form === 'human') {
       m *= 1 + WS.perPeople(L) * L.people;
       m *= WS.wenMult(L);
-      m *= 1 + (L.prodBonus || 0);
     }
+    if (L.form === 'xiu') m *= Math.pow(F.breakthrough.mult, L.realm || 0);
+    if (L.form === 'dragon') m *= Math.pow(F.leap.mult, (L.stage || 1) - 1);
+    m *= 1 + (L.prodBonus || 0);
     if (!opt.noSkill && L.skillActive > 0 && F.skill.mult) m *= F.skill.mult;
     return m;
   };
@@ -245,6 +340,8 @@
     const F = WS.FORMS[L.form];
     if (t.kind === 'up') { const u = F.ups.find(x => x.id === t.id); return u && !L.ups[t.id] ? u.cost : 0; }
     if (t.kind === 'tail') return L.form === 'fox' && L.tails < 9 ? WS.tailCost(L) : 0;
+    if (t.kind === 'break') return L.form === 'xiu' && L.realm < WS.breakMax() ? WS.breakCost(L) : 0;
+    if (t.kind === 'leap') return L.form === 'dragon' && L.stage < WS.leapMax() ? WS.leapCost(L) : 0;
     const g = WS.findGen(F, t.id);
     return g ? WS.genCost(F, g, L.owned[g.id] || 0, t.n || 1) : 0;
   };
@@ -255,21 +352,40 @@
     const F = WS.FORMS[L.form];
     if (t.kind === 'up') { const u = F.ups.find(x => x.id === t.id); return u ? u.name : ''; }
     if (t.kind === 'tail') return '下一尾';
+    if (t.kind === 'break') return '突破' + F.realms[L.realm + 1];
+    if (t.kind === 'leap') return '跃门';
     const g = WS.findGen(F, t.id);
     return g ? g.name + ((t.n || 1) > 1 ? ' ×' + t.n : '') : '';
   };
 
-  WS.buyTarget = function (state, L) {
+  WS.buyTarget = function (state, L, out, rand) {
     const t = L.saveFor;
     if (!t) return false;
     if (t.kind === 'up') return WS.buyUp(state, L, t.id);
     if (t.kind === 'tail') return WS.condenseTail(state, L);
+    if (t.kind === 'break') return autoBreak(state, L, out, rand);
+    if (t.kind === 'leap') return autoLeap(state, L, out);
     return WS.buyGen(state, L, t.id, (t.n || 1) === 10 ? 10 : 1) > 0;
   };
 
   // 自动经营：先凝尾、学秘法，再从最便宜的产业买起。
   // 下一尾或下一门秘法一分钟内就能攒够时，先攒着不买产业，免得钱总被产业花光。
-  WS.autoBuy = function (state, L, maxIter, out) {
+  // 自动突破、自动跃门：结果放进 out，界面拿去提示
+  function autoBreak(state, L, out, rand) {
+    const r = WS.breakthrough(state, L, rand);
+    if (!r) return false;
+    if (out) out.push(Object.assign({ type: 'break', auto: true }, r));
+    return true;
+  }
+  function autoLeap(state, L, out) {
+    const r = WS.leap(state, L, 'ok');
+    if (!r) return false;
+    if (out) out.push(Object.assign({ type: 'leap', auto: true }, r));
+    return true;
+  }
+  WS.LEAP_GRACE = 20; // 龙气攒够以后，先等玩家自己跳这么多秒，再让鱼群带着跳
+
+  WS.autoBuy = function (state, L, maxIter, out, rand) {
     const F = WS.FORMS[L.form];
     if (L.saveFor) {
       const c = WS.targetCost(state, L);
@@ -277,10 +393,13 @@
         L.saveFor = null;
       } else {
         if (L.main < c) return 0; // 攒钱中，什么都不买
-        const name = WS.targetName(L);
-        if (!WS.buyTarget(state, L)) return 0;
+        const t = L.saveFor, name = WS.targetName(L);
+        const before = L.realm;
+        if (!WS.buyTarget(state, L, out, rand)) return 0;
+        // 突破失败了就接着攒，下回再冲
+        if (t.kind === 'break' && L.realm === before) return 1;
         L.saveFor = null;
-        if (out) out.push({ type: 'bought', name });
+        if (out && t.kind !== 'break' && t.kind !== 'leap') out.push({ type: 'bought', name });
         return 1;
       }
     }
@@ -289,6 +408,14 @@
     if (L.form === 'fox' && L.tails < 9) {
       while (L.tails < 9 && WS.condenseTail(state, L)) n++;
       if (L.tails < 9 && WS.tailCost(L) <= rate * 60) saveFor = WS.tailCost(L);
+    }
+    if (L.form === 'xiu' && L.realm < WS.breakMax()) {
+      for (let k = 0; k < 4 && L.realm < WS.breakMax() && L.main >= WS.breakCost(L); k++) { autoBreak(state, L, out, rand); n++; }
+      if (L.realm < WS.breakMax() && WS.breakCost(L) <= rate * 60) saveFor = WS.breakCost(L);
+    }
+    if (L.form === 'dragon' && L.stage < WS.leapMax()) {
+      if (L.main >= WS.leapCost(L) && (L.leapWait || 0) >= WS.LEAP_GRACE) { autoLeap(state, L, out); n++; }
+      if (L.stage < WS.leapMax() && WS.leapCost(L) <= rate * 60) saveFor = WS.leapCost(L);
     }
     if (!saveFor) {
       const ups = F.ups.filter(u => !L.ups[u.id]).sort((a, b) => a.cost - b.cost);
@@ -339,6 +466,9 @@
     if (stat === 'tails') return L.tails;
     if (stat === 'people') return L.people;
     if (stat === 'wen') return L.wenTotal;
+    if (stat === 'realm') return L.realm || 0;
+    if (stat === 'stage') return L.stage || 1;
+    if (stat === 'dao') return L.totalMain;
     return 0;
   };
 
@@ -367,9 +497,12 @@
     return { name: best, rank };
   };
 
-  // ---------- 凡人的村中事 ----------
+  // ---------- 一世里遇到的事：凡人的村中事、修士的山中事…… ----------
+  WS.formEvents = L => (L && WS.FORMS[L.form] && WS.FORMS[L.form].events) || [];
+  WS.currentEvent = L => (L && L.event ? WS.formEvents(L).find(x => x.id === L.event) || null : null);
   WS.spawnEvent = function (L, rand) {
-    const pool = WS.EVENTS.filter(e => e.id !== L.lastEvent);
+    const pool = WS.formEvents(L).filter(e => e.id !== L.lastEvent);
+    if (!pool.length) return null;
     const e = pool[Math.floor((rand || Math.random)() * pool.length)];
     L.event = e.id;
     L.lastEvent = e.id;
@@ -378,10 +511,18 @@
 
   WS.resolveEvent = function (state, L, which) {
     if (!L || !L.event) return null;
-    const e = WS.EVENTS.find(x => x.id === L.event);
+    const e = WS.currentEvent(L);
+    if (!e) { L.event = null; return null; }
     const choice = e[which];
     const eff = choice.eff;
-    if (eff.grainPct) L.main = Math.max(0, L.main * (1 + eff.grainPct));
+    const mp = eff.mainPct != null ? eff.mainPct : eff.grainPct;
+    if (mp) {
+      const before = L.main;
+      L.main = Math.max(0, L.main * (1 + mp));
+      if (L.main > before) L.totalMain += L.main - before;
+    }
+    if (eff.years) L.lifespan = Math.max(L.age + 1, L.lifespan + eff.years);
+    if (eff.odds) L.breakBonus = (L.breakBonus || 0) + eff.odds;
     if (eff.merit) L.merit += eff.merit * WS.meritMult(state);
     if (eff.people) L.people += eff.people;
     if (eff.peoplePct) L.people = Math.max(1, Math.round(L.people * (1 + eff.peoplePct)));
@@ -429,6 +570,9 @@
       case 'soil': return `蚂蚁产食 +${30 * lv}%`;
       case 'foxwood': return `狐狸月华 +${30 * lv}%`;
       case 'village': return `凡人产粮 +${30 * lv}%`;
+      case 'danfang': return `修士真元 +${30 * lv}%`;
+      case 'longtan': return `龙气 +${30 * lv}%`;
+      case 'qionglou': return `仙气 +${30 * lv}%`;
       case 'spring': return `每一世寿元 +${8 * lv}%`;
       case 'cloud': return `离线最多攒 ${8 + 2 * lv} 小时`;
       case 'peak': return `功德 +${10 * lv}%`;
@@ -474,6 +618,23 @@
 
   WS.canEndEarly = L => !!L && !L.ended && L.age >= L.lifespan / 5;
 
+  // 新生灵是后来加的：以前某一世已经达成过解锁条件的，补上解锁
+  WS.unlockByCodex = function (state) {
+    const got = [];
+    const add = f => { if (WS.FORMS[f] && state.unlocked.indexOf(f) < 0) { state.unlocked.push(f); got.push(f); } };
+    for (const id of WS.FORM_ORDER) {
+      const cx = state.codex && state.codex[id];
+      if (!cx || !(cx.bestRank >= 0)) continue;
+      WS.FORMS[id].milestones.forEach((ms, i) => { if (ms.unlock && i <= cx.bestRank) add(ms.unlock); });
+    }
+    const L = state.life;
+    if (L && !L.ended && WS.FORMS[L.form]) {
+      WS.FORMS[L.form].milestones.forEach(ms => { if (ms.unlock && L.ms.indexOf(ms.id) >= 0) add(ms.unlock); });
+    }
+    if (got.length && !state.guarantee) state.guarantee = got[0];
+    return got;
+  };
+
   // ---------- 轮回盘 ----------
   WS.luckFactor = state => 1 + (state.lastMerit || 0) / 40 * (1 + 0.15 * featLv(state, 'terrace'));
 
@@ -489,7 +650,10 @@
 
   WS.formWeights = function (state) {
     const luck = (state.lastMerit || 0) * (1 + 0.15 * featLv(state, 'terrace'));
-    const base = { ant: 55, fox: 30 * (1 + luck / 60), human: 15 * (1 + luck / 40) };
+    const base = {
+      ant: 55, fox: 30 * (1 + luck / 60), human: 15 * (1 + luck / 40),
+      xiu: 10 * (1 + luck / 30), dragon: 7 * (1 + luck / 25), xian: 5 * (1 + luck / 20),
+    };
     return state.unlocked.map(f => [f, base[f]]);
   };
 
@@ -549,14 +713,27 @@
     if (L.skillActive > 0) L.skillActive = Math.max(0, L.skillActive - dt);
     if (L.skillCd > 0) L.skillCd = Math.max(0, L.skillCd - dt);
 
-    if (WS.hasAuto(L) && !L.autoOff) {
-      L.autoAcc += dt;
-      if (L.autoAcc >= 1) { L.autoAcc = 0; WS.autoBuy(state, L, 80, out); }
+    if (L.form === 'dragon') L.leapWait = L.stage < WS.leapMax() && L.main >= WS.leapCost(L) ? (L.leapWait || 0) + dt : 0;
+    if (L.form === 'xian' && L.peach) {
+      const grow = WS.peachGrow(L);
+      for (let i = 0; i < L.peach.length; i++) {
+        L.peach[i] = Math.min(grow, L.peach[i] + dt);
+        // 仙童侍奉：熟了就替你摘
+        if (L.ups.boy && L.peach[i] >= grow) {
+          const r = WS.pickPeach(state, L, i);
+          if (r) out.push(Object.assign({ type: 'peach', auto: true, i }, r));
+        }
+      }
     }
 
-    if (L.form === 'human' && opt.online && !L.event) {
+    if (WS.hasAuto(L) && !L.autoOff) {
+      L.autoAcc += dt;
+      if (L.autoAcc >= 1) { L.autoAcc = 0; WS.autoBuy(state, L, 80, out, opt.rand); }
+    }
+
+    if (opt.online && !L.event && WS.formEvents(L).length) {
       L.nextEvent -= dt;
-      if (L.nextEvent <= 0) { WS.spawnEvent(L); out.push({ type: 'event' }); }
+      if (L.nextEvent <= 0 && WS.spawnEvent(L)) out.push({ type: 'event' });
     }
 
     WS.checkMilestones(state, L, out);

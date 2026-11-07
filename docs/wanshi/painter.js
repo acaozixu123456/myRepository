@@ -137,6 +137,21 @@
         const [x, y] = at(-0.98, 0.05);
         items.push({ k: 'pine', x, y, s: W * (0.12 + Math.min(5, L('pine')) * 0.008), n: 2 + L('pine') });
       }
+      // 丹房：修士前世留下的，一座小屋带一口丹炉
+      if (L('danfang') > 0) {
+        const [x, y] = at(-0.5, -0.55);
+        items.push({ k: 'danfang', x, y, s: W * (0.055 + Math.min(5, L('danfang')) * 0.004), n: L('danfang') });
+      }
+      // 龙潭：龙前世留下的，一汪深潭，潭里有条龙
+      if (L('longtan') > 0) {
+        const [x, y] = at(-0.42, 0.52);
+        items.push({ k: 'longtan', x, y, rx: rx * (0.15 + Math.min(6, L('longtan')) * 0.012), n: L('longtan'), flat: true });
+      }
+      // 琼楼：仙前世留下的，一座几层高的楼阁，等级越高越高
+      if (L('qionglou') > 0) {
+        const [x, y] = at(-0.08, -0.86);
+        items.push({ k: 'qionglou', x, y, s: W * 0.06, n: Math.min(5, 1 + L('qionglou')) });
+      }
       // 沃土上的嫩芽
       const sprouts = [];
       const ns = Math.min(70, 6 + L('soil') * 7);
@@ -483,6 +498,124 @@
       ctx.restore();
     }
 
+    function danfang(it, t) {
+      const { x, y, s, n } = it;
+      // 小屋
+      ctx.lineWidth = 1;
+      ctx.fillStyle = rgba(P.paper, 1);
+      ctx.strokeStyle = rgba(P.ink, 0.75);
+      ctx.beginPath(); ctx.rect(x - s * 0.55, y - s * 0.55, s * 0.7, s * 0.5); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = rgba(P.ink, 0.88);
+      ctx.beginPath();
+      ctx.moveTo(x - s * 0.78, y - s * 0.5);
+      ctx.lineTo(x - s * 0.42, y - s * 0.88);
+      ctx.lineTo(x + s * 0.06, y - s * 0.88);
+      ctx.lineTo(x + s * 0.32, y - s * 0.5);
+      ctx.closePath(); ctx.fill();
+      // 丹炉：三足鼎，底下有火
+      const fx = x + s * 0.48, fy = y;
+      const f = 0.5 + 0.5 * Math.sin(t * 3.1);
+      const g = ctx.createRadialGradient(fx, fy - s * 0.1, 0, fx, fy - s * 0.1, s * (0.45 + 0.08 * f));
+      g.addColorStop(0, rgba(P.seal, 0.55 + 0.25 * f));
+      g.addColorStop(1, rgba(P.seal, 0));
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(fx, fy - s * 0.1, s * 0.55, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = rgba(P.ink, 0.85); ctx.lineWidth = 1.2;
+      for (const dx of [-0.16, 0, 0.16]) { ctx.beginPath(); ctx.moveTo(fx + dx * s, fy - s * 0.12); ctx.lineTo(fx + dx * s * 1.3, fy); ctx.stroke(); }
+      ctx.fillStyle = rgba(P.gold, 0.9);
+      ctx.beginPath(); ctx.ellipse(fx, fy - s * 0.24, s * 0.24, s * 0.16, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = rgba(P.ink, 0.7); ctx.stroke();
+      ctx.fillStyle = rgba(P.ink, 0.8);
+      ctx.fillRect(fx - s * 0.26, fy - s * 0.4, s * 0.52, s * 0.05);
+      // 炉烟：等级越高，烟越多
+      ctx.strokeStyle = rgba(P.ink, 0.18); ctx.lineWidth = 1.3;
+      for (let k = 0; k < Math.min(3, n); k++) {
+        ctx.beginPath();
+        const sx = fx + (k - 1) * s * 0.1, sy = fy - s * 0.42;
+        for (let j = 0; j <= 12; j++) {
+          const yy = sy - j * s * 0.12;
+          const xx = sx + Math.sin(t * 1.6 + j * 0.6 + k * 2) * s * 0.1 * (j / 12) + j * s * 0.02;
+          if (j) ctx.lineTo(xx, yy); else ctx.moveTo(xx, yy);
+        }
+        ctx.stroke();
+      }
+    }
+
+    function longtan(it, t) {
+      const { x, y, rx, n } = it;
+      const ry = rx * 0.36;
+      ctx.fillStyle = rgba(P.water, 0.85);
+      ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = rgba(P.ink, 0.22);
+      ctx.beginPath(); ctx.ellipse(x, y + ry * 0.1, rx * 0.7, ry * 0.6, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = rgba(P.ink, 0.5); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.stroke();
+      // 龙：一条墨线绕着潭游，身子一起一伏
+      const len = 0.9 + Math.min(4, n) * 0.12;
+      const a0 = t * 0.5;
+      const pts = [];
+      for (let k = 0; k <= 24; k++) {
+        const a = a0 - (k / 24) * len * Math.PI;
+        const lift = Math.sin(k * 0.7 - t * 3) * ry * 0.35;
+        pts.push([x + Math.cos(a) * rx * 0.62, y + Math.sin(a) * ry * 0.62 - ry * 0.25 + lift]);
+      }
+      ctx.save();
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (let k = 0; k < pts.length - 1; k++) {
+        ctx.strokeStyle = rgba(P.ink, 0.88);
+        ctx.lineWidth = Math.max(1.2, rx * 0.075 * (1 - k / pts.length * 0.8));
+        ctx.beginPath(); ctx.moveTo(pts[k][0], pts[k][1]); ctx.lineTo(pts[k + 1][0], pts[k + 1][1]); ctx.stroke();
+      }
+      const [hx, hy] = pts[0];
+      ctx.fillStyle = rgba(P.ink, 0.92);
+      ctx.beginPath(); ctx.ellipse(hx, hy, rx * 0.075, rx * 0.05, a0 + Math.PI / 2, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = rgba(P.ink, 0.6); ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      ctx.moveTo(hx, hy); ctx.quadraticCurveTo(hx + rx * 0.1, hy - rx * 0.08, hx + rx * 0.16, hy - rx * 0.02);
+      ctx.moveTo(hx, hy); ctx.quadraticCurveTo(hx - rx * 0.06, hy - rx * 0.1, hx - rx * 0.1, hy - rx * 0.14);
+      ctx.stroke();
+      ctx.fillStyle = rgba(P.gold, 0.95);
+      ctx.beginPath(); ctx.arc(hx + rx * 0.02, hy - rx * 0.01, Math.max(1, rx * 0.012), 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+
+    function qionglou(it, t) {
+      const { x, y, s, n } = it;
+      // 仙气：楼后一圈淡淡的金光
+      const glow = ctx.createRadialGradient(x, y - s * n * 0.5, 0, x, y - s * n * 0.5, s * (1.2 + n * 0.35));
+      glow.addColorStop(0, rgba(P.gold, 0.18 + 0.05 * Math.sin(t * 1.3)));
+      glow.addColorStop(1, rgba(P.gold, 0));
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(x, y - s * n * 0.5, s * (1.2 + n * 0.35), 0, Math.PI * 2); ctx.fill();
+      let base = y;
+      for (let k = 0; k < n; k++) {
+        const w = s * (0.9 - k * 0.1), hh = s * 0.42;
+        ctx.fillStyle = rgba(P.paper, 1);
+        ctx.strokeStyle = rgba(P.ink, 0.75); ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.rect(x - w * 0.36, base - hh, w * 0.72, hh); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = rgba(P.ink, 0.45);
+        for (const dx of [-0.18, 0, 0.18]) { ctx.beginPath(); ctx.moveTo(x + dx * w, base - hh * 0.15); ctx.lineTo(x + dx * w, base - hh * 0.8); ctx.stroke(); }
+        // 翘起的檐角
+        const ey = base - hh;
+        ctx.fillStyle = rgba(P.ink, 0.9);
+        ctx.beginPath();
+        ctx.moveTo(x - w * 0.62, ey - s * 0.08);
+        ctx.quadraticCurveTo(x - w * 0.42, ey + s * 0.02, x - w * 0.3, ey - s * 0.12);
+        ctx.lineTo(x + w * 0.3, ey - s * 0.12);
+        ctx.quadraticCurveTo(x + w * 0.42, ey + s * 0.02, x + w * 0.62, ey - s * 0.08);
+        ctx.quadraticCurveTo(x, ey - s * 0.02, x - w * 0.62, ey - s * 0.08);
+        ctx.fill();
+        ctx.strokeStyle = rgba(P.gold, 0.85); ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(x - w * 0.6, ey - s * 0.085); ctx.quadraticCurveTo(x, ey - s * 0.03, x + w * 0.6, ey - s * 0.085); ctx.stroke();
+        base = ey - s * 0.1;
+      }
+      // 楼顶的宝珠
+      ctx.strokeStyle = rgba(P.ink, 0.85); ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, base - s * 0.22); ctx.stroke();
+      ctx.fillStyle = rgba(P.gold, 0.95);
+      ctx.beginPath(); ctx.arc(x, base - s * 0.25, Math.max(1.5, s * 0.05), 0, Math.PI * 2); ctx.fill();
+    }
+
     function cranes(t) {
       const n = Math.min(5, L('crane'));
       for (let i = 0; i < n; i++) {
@@ -532,6 +665,7 @@
       sprouts();
       for (const it of layout.items) {
         if (it.k === 'pond') pond(it, t);
+        else if (it.k === 'longtan') longtan(it, t);
       }
       for (const it of layout.items) {
         if (it.k === 'tree') tree(it, t);
@@ -539,6 +673,8 @@
         else if (it.k === 'pavilion') pavilion(it);
         else if (it.k === 'terrace') terrace(it);
         else if (it.k === 'pine') pine(it);
+        else if (it.k === 'danfang') danfang(it, t);
+        else if (it.k === 'qionglou') qionglou(it, t);
       }
       drawClouds(t, false);
       titleAndSeal();

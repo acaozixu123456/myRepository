@@ -27,6 +27,7 @@
   --tier3: #7b4a9c;
   --tier4: #8f6a06;
   --on-tier: #fbf3e6;
+  --peach: #d9705f;
   --font-display: "Kaiti SC", "STKaiti", "KaiTi", "BiauKai", "TW-Kai", "Songti SC", "Noto Serif CJK SC", "Noto Serif SC", serif;
   --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
   --radius: 14px;
@@ -37,7 +38,7 @@
     --paper: #121418; --paper-2: #1a1d23; --paper-3: #262a32; --ink: #ebe4d4; --ink-2: #b3ab9b; --ink-3: #948e81;
     --line: #31353e; --seal: #c0473a; --seal-ink: #fff6ea; --jade: #67b08b; --azure: #6b9fc4; --fire: #5ce0cc;
     --gold: #e0b54a; --water: #35525e; --cloud: #c8d2e2; --cloud-a: 0.13; --moon: #f0e2b6; --scrim: #000000aa;
-    --tier0: #9d9588; --tier1: #67b08b; --tier2: #6b9fc4; --tier3: #ab7fd0; --tier4: #e6b740; --on-tier: #121418;
+    --tier0: #9d9588; --tier1: #67b08b; --tier2: #6b9fc4; --tier3: #ab7fd0; --tier4: #e6b740; --on-tier: #121418; --peach: #ec8f7d;
     color-scheme: dark;
   }
 }
@@ -45,7 +46,7 @@
   --paper: #121418; --paper-2: #1a1d23; --paper-3: #262a32; --ink: #ebe4d4; --ink-2: #b3ab9b; --ink-3: #948e81;
   --line: #31353e; --seal: #c0473a; --seal-ink: #fff6ea; --jade: #67b08b; --azure: #6b9fc4; --fire: #5ce0cc;
   --gold: #e0b54a; --water: #35525e; --cloud: #c8d2e2; --cloud-a: 0.13; --moon: #f0e2b6; --scrim: #000000aa;
-  --tier0: #9d9588; --tier1: #67b08b; --tier2: #6b9fc4; --tier3: #ab7fd0; --tier4: #e6b740; --on-tier: #121418;
+  --tier0: #9d9588; --tier1: #67b08b; --tier2: #6b9fc4; --tier3: #ab7fd0; --tier4: #e6b740; --on-tier: #121418; --peach: #ec8f7d;
   color-scheme: dark;
 }
 
@@ -164,6 +165,75 @@ main {
 .tails .tail:nth-child(odd) { transform: rotate(-6deg); }
 .tails .tail:nth-child(even) { transform: rotate(6deg); }
 .tails-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--ink-2); }
+
+/* 修士：境界阶梯和突破 */
+.realm-box, .leap-box, .peach-box { padding: 12px 14px; border-radius: var(--radius); background: var(--paper-2); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.realm-ladder { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 2px; position: relative; }
+.realm-ladder::before { content: ""; position: absolute; left: 6%; right: 6%; top: 50%; height: 1px; background: var(--line); }
+.realm-ladder span { position: relative; text-align: center; font-size: 12px; line-height: 22px; border-radius: 999px; color: var(--ink-3); background: var(--paper-2); white-space: nowrap; }
+.realm-ladder span.done { color: var(--jade); font-weight: 700; }
+.realm-ladder span.now { background: var(--gold); color: var(--on-tier); font-weight: 700; }
+.realm-odds { font-size: 13px; color: var(--ink-2); text-align: center; line-height: 1.5; }
+.realm-odds b.good { color: var(--jade); }
+.realm-odds b.bad { color: var(--seal); }
+.realm-odds .muted { font-size: 12px; }
+.buy-btn.jade.charging { background: var(--gold); color: var(--on-tier); animation: btnCharge 0.35s ease-in-out infinite alternate; }
+@keyframes btnCharge { from { box-shadow: 0 0 0 0 var(--gold); } to { box-shadow: 0 0 14px 3px var(--gold); } }
+
+/* 龙：跃门小游戏 */
+.leap-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.leap-head span:first-child { font-family: var(--font-display); font-size: 18px; }
+.leap-head .muted { font-size: 12px; }
+.leap-river {
+  height: 46px; border-radius: 23px; padding: 0 20px; border: 1px solid var(--line); touch-action: manipulation;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--water) 55%, var(--paper)), var(--water));
+}
+.leap-river.on { border-color: var(--gold); box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 35%, transparent); cursor: pointer; }
+.leap-track { position: relative; height: 100%; }
+.leap-gate {
+  position: absolute; top: 4px; bottom: 4px; left: 50%; transform: translateX(-50%); width: 24%; border-radius: 6px;
+  background: color-mix(in srgb, var(--gold) 28%, transparent); border-left: 2px solid var(--gold); border-right: 2px solid var(--gold);
+}
+.leap-gate i { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 30%; background: color-mix(in srgb, var(--gold) 60%, transparent); }
+.leap-fish {
+  position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--seal); color: var(--seal-ink); font-family: var(--font-display); font-size: 18px;
+  box-shadow: 0 2px 6px #0003;
+}
+.leap-river:not(.on) .leap-fish { transition: left 0.4s ease-out; }
+.leap-fish.jump { animation: fishJump 0.7s ease-out; }
+.leap-fish.drop { animation: fishDrop 0.6s ease-out; }
+@keyframes fishJump { 0% { transform: translate(-50%, -50%); } 45% { transform: translate(-50%, -150%) rotate(-25deg) scale(1.2); } 100% { transform: translate(-50%, -50%); } }
+@keyframes fishDrop { 0%, 100% { transform: translate(-50%, -50%); } 25% { transform: translate(-50%, -80%) rotate(20deg); } 60% { transform: translate(-50%, -20%) rotate(-12deg); opacity: 0.6; } }
+.buy-btn.jade.go { background: var(--gold); color: var(--on-tier); animation: btnCharge 0.45s ease-in-out infinite alternate; }
+
+/* 仙：蟠桃园 */
+.peach-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.peach-head b { font-family: var(--font-display); font-weight: 400; font-size: 18px; }
+.peach-head .muted { font-size: 12px; text-align: right; }
+.peach-trees { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.peach-tree {
+  display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 9px 4px 7px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--paper); font-family: inherit; color: var(--ink);
+}
+.pt-fruit {
+  width: 40px; height: 40px; border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%; display: grid; place-items: center;
+  font-family: var(--font-display); font-size: 19px; background: var(--paper-3); color: var(--ink-3); transition: background 0.3s, color 0.3s;
+}
+.pt-bar { width: 78%; height: 5px; border-radius: 3px; background: var(--paper-3); overflow: hidden; }
+.pt-bar b { display: block; height: 100%; width: 0; background: var(--jade); }
+.pt-text { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.peach-tree.ripe { border-color: var(--peach); }
+.peach-tree.ripe .pt-fruit { background: var(--peach); color: var(--seal-ink); box-shadow: 0 0 12px color-mix(in srgb, var(--peach) 70%, transparent); animation: peachBob 1.2s ease-in-out infinite; }
+.peach-tree.ripe .pt-bar b { background: var(--peach); }
+.peach-tree.ripe .pt-text { color: var(--peach); font-weight: 700; }
+@keyframes peachBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* 突破、跃门的成败：面板闪一下 */
+.form-panel.fx-ok > :first-child { animation: fxOk 0.9s ease-out; }
+.form-panel.fx-bad > :first-child { animation: fxBad 0.45s ease-out; }
+@keyframes fxOk { 0% { box-shadow: 0 0 0 0 var(--gold); } 40% { box-shadow: 0 0 0 4px var(--gold), 0 0 24px var(--gold); } 100% { box-shadow: 0 0 0 0 transparent; } }
+@keyframes fxBad { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
 
 .event-card {
   padding: 14px; border-radius: var(--radius); background: var(--paper-2); border: 1px solid var(--seal);
