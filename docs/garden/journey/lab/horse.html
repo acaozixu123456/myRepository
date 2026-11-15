@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#cfd8c0;overflow:hidden}</style></head>
+<body><script type="module">
+import * as THREE from 'three';
+import { buildHorseB, makeSkeleton } from '../src/horse/horseB.js';
+const P = new URLSearchParams(location.search);
+const W = +P.get('w') || 1200, H = +P.get('h') || 800;
+const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+r.setSize(W, H); r.setPixelRatio(1); r.shadowMap.enabled = true; r.toneMapping = THREE.ACESFilmicToneMapping;
+document.body.appendChild(r.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#dfe6d2');
+scene.add(new THREE.HemisphereLight('#cfe0ff', '#7a6a50', 1.3));
+const sun = new THREE.DirectionalLight('#ffe2b8', 2.6); sun.position.set(-3, 4, 3); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3 }); scene.add(sun);
+const g = new THREE.Mesh(new THREE.PlaneGeometry(20, 20).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: '#9fb07a' })); g.receiveShadow = true; scene.add(g);
+const t0 = performance.now();
+const geo = buildHorseB();
+const ms = performance.now() - t0;
+const sk = makeSkeleton();
+const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.78 });
+const mesh = new THREE.SkinnedMesh(geo, mat); mesh.castShadow = true;
+mesh.add(sk.bones.body); mesh.bind(new THREE.Skeleton(sk.list));
+scene.add(mesh);
+window.__info = { ms, ...geo.userData };
+const views = (P.get('views') || 'side,front3,back3,head').split(',');
+const cam = new THREE.PerspectiveCamera(30, 1, 0.05, 50);
+const n = views.length, cols = n > 2 ? 2 : n, rows = Math.ceil(n / cols);
+r.setScissorTest(true);
+const VW = W / cols, VH = H / rows; cam.aspect = VW / VH; cam.updateProjectionMatrix();
+const posFor = v => ({ side: [[4.6, 1.15, 0.15], [0, 1.0, 0.15]], sideR: [[-4.6, 1.15, 0.15], [0, 1.0, 0.15]], front3: [[2.8, 1.9, 3.3], [0, 1.05, 0.2]], back3: [[-2.6, 2.4, -3.4], [0, 1.0, -0.1]], head: [[1.2, 1.75, 1.75], [0, 1.6, 1.1]], back: [[0, 2.6, -4.2], [0, 1.1, 0]], top: [[0.01, 6, 0], [0, 0, 0]], front: [[0, 1.4, 4.4], [0, 1.1, 0]] })[v];
+views.forEach((v, i) => {
+  const [p, t] = posFor(v); cam.position.set(...p); cam.lookAt(...t);
+  const x = (i % cols) * VW, y = H - (Math.floor(i / cols) + 1) * VH;
+  r.setViewport(x, y, VW, VH); r.setScissor(x, y, VW, VH); r.render(scene, cam);
+});
+window.__ready = true;
+</script></body></html>

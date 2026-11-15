@@ -5,7 +5,7 @@ export default defineConfig({
   base: './',
   build: {
     target: 'es2022',
-    rollupOptions: { input: { index: resolve(import.meta.dirname, 'index.html'), garden: resolve(import.meta.dirname, 'garden.html') } },
+    rollupOptions: { input: { index: resolve(import.meta.dirname, 'index.html'), garden: resolve(import.meta.dirname, 'garden.html'), journey: resolve(import.meta.dirname, 'journey/index.html') } },
     chunkSizeWarningLimit: 1200,
   },
   server: { host: true },
