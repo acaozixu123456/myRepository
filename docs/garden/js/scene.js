@@ -18,13 +18,13 @@ export const BRIDGE = { x: 3.4, z: 5.0 };
 const SLEEPS_AT_NIGHT = { chick: 1, bunny: 1, deer: 1, bee: 1 };
 
 // 一天里的四种光
-const LIGHT = {
+export const LIGHT = {
   day:   { skyTop: 0x7fc3ef, skyBot: 0xfdf3dc, sun: 0xfff2d6, sunI: 3.2, sunPos: [-14, 22, 10], hemiS: 0xcfe8ff, hemiG: 0x8a7a5a, hemiI: 1.6, night: 0, cloud: 0xffffff, cloudO: 0.85, leaf: 0.2 },
   dusk:  { skyTop: 0x6a6fae, skyBot: 0xffbf8a, sun: 0xffa766, sunI: 2.6, sunPos: [18, 7, -4], hemiS: 0xb7a5d6, hemiG: 0x6b4a3a, hemiI: 1.0, night: 0.45, cloud: 0xffd2b8, cloudO: 0.8, leaf: 0.08 },
   dawn:  { skyTop: 0x86a8dc, skyBot: 0xffd9c2, sun: 0xffc9a0, sunI: 2.4, sunPos: [-18, 8, 8], hemiS: 0xc4d0ee, hemiG: 0x7a6455, hemiI: 1.15, night: 0.25, cloud: 0xffe4d6, cloudO: 0.8, leaf: 0.09 },
   night: { skyTop: 0x0b1636, skyBot: 0x2f3f78, sun: 0x9fb6ff, sunI: 0.95, sunPos: [-10, 20, -12], hemiS: 0x5c70b4, hemiG: 0x23233a, hemiI: 1.15, night: 1, cloud: 0x5a6aa0, cloudO: 0.45, leaf: 0.07 },
 };
-const UI_THEME = {
+export const UI_THEME = {
   day:   { ink: '#2f3b35', glass: 'rgba(255,255,255,.62)', line: 'rgba(255,255,255,.8)', accent: '#e98a6c', accentShadow: 'rgba(233,138,108,.45)' },
   dusk:  { ink: '#3a2d3a', glass: 'rgba(255,238,226,.6)', line: 'rgba(255,240,230,.85)', accent: '#d9715f', accentShadow: 'rgba(217,113,95,.5)' },
   night: { ink: '#eef1ff', glass: 'rgba(30,40,80,.5)', line: 'rgba(160,180,255,.3)', accent: '#f2b65e', accentShadow: 'rgba(242,182,94,.45)' },
