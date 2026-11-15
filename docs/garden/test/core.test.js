@@ -6,19 +6,19 @@ import { ZONES, QUESTS, SKILLS } from '../src/data/index.js';
 test('新开档的数值合理', () => {
   for (const cls of ['cat', 'fox', 'rabbit']) {
     const s = C.newGame(cls), st = C.heroStats(s);
-    assert.equal(s.v, 3); assert.equal(s.hero.hp, st.hp); assert.ok(st.hp > 50);
+    assert.equal(s.v, 4); assert.equal(s.hero.hp, st.hp); assert.ok(st.hp > 50);
     assert.equal(Object.keys(s.hero.skills).length, 1); assert.equal(s.party.length, 2);
   }
 });
 
-test('旧存档 rpg.v1 迁移到 v3 不丢东西', () => {
+test('旧存档 rpg.v1 迁移到 v4 不丢东西', () => {
   const v1 = { v: 1, cls: 'cat', lv: 7, xp: 30, attr: { str: 14, vit: 9, int: 3, agi: 11 }, points: 2, gold: 345, hp: 80, mp: 20,
     gear: { weapon: { slot: 'weapon', name: '结实的溪石刃', icon: 'x', tier: 2, rare: 1, st: { atk: 16, mag: 16 }, price: 53, plus: 2, base: { atk: 14, mag: 14 } }, armor: null, charm: null },
     bag: [{ slot: 'charm', name: '水滴坠', icon: 'y', tier: 2, rare: 0, st: { spd: 7, hp: 21 }, price: 46 }], items: { pill: 4, dew: 2, seed: 1 },
     pets: [{ id: 'mudpig', lv: 5, xp: 3, hp: 60 }, { id: 'chirp', lv: 3, xp: 0, hp: 30 }], active: 1, zone: 'brook', unlocked: 2, quest: 3, qn: 2, qAccepted: true,
     bosses: { tusk: 1 }, seen: { chirp: 1, mudpig: 1, pincer: 1 }, kills: 41, autoBattle: true };
   const s = C.load(v1);
-  assert.equal(s.v, 3); assert.equal(s.hero.lv, 7); assert.equal(s.hero.sp, 6); assert.deepEqual(s.hero.skills, { doubleClaw: 1, rend: 1 }); assert.equal(s.hero.pts, 2); assert.equal(s.wallet.gold, 345);
+  assert.equal(s.v, 4); assert.equal(s.hero.lv, 7); assert.equal(s.hero.sp, 6); assert.deepEqual(s.hero.skills, { doubleClaw: 1, rend: 1 }); assert.equal(s.hero.pts, 2); assert.equal(s.wallet.gold, 345);
   assert.equal(s.hero.gear.weapon.plus, 2); assert.equal(s.hero.gear.weapon.icon, undefined);
   assert.equal(s.bag.gear.length, 1); assert.equal(s.pets.length, 2);
   assert.equal(C.activePet(s).id, 'chirp');
@@ -54,11 +54,11 @@ test('委托能接、能完成、能领奖', () => {
   const got = C.claimQuest(s); assert.ok(got.length > 0); assert.equal(s.quests.main.i, 1); assert.deepEqual(s.quests.done, ['q1']);
 });
 
-test('v2 存档升到 v3：补技能等级和技能点，出战位两个', () => {
+test('v2 存档升到 v4：补技能等级和技能点，出战位两个', () => {
   const v2 = C.newGame('fox'); v2.v = 2; delete v2.hero.skills; delete v2.hero.sp; v2.party = ['p1']; v2.hero.lv = 12;
   v2.pets = [{ uid: 'p1', id: 'chirp', lv: 3, xp: 0, hp: 20 }];
   const s = C.load(JSON.parse(JSON.stringify(v2)));
-  assert.equal(s.v, 3); assert.equal(s.hero.sp, 11); assert.deepEqual(Object.keys(s.hero.skills), ['spark', 'flameRing', 'scorch']);
+  assert.equal(s.v, 4); assert.equal(s.hero.sp, 11); assert.deepEqual(Object.keys(s.hero.skills), ['spark', 'flameRing', 'scorch']);
   assert.deepEqual(s.party, ['p1', null]); assert.equal(s.settings.speed, 1);
 });
 
@@ -119,5 +119,83 @@ test('状态：冰冻跳过、灼烧叠层、睡眠挨打就醒', () => {
   e.fx.freeze = 1; e.av = 999;
   const ev = C.play(b, s, null);
   assert.ok(ev.some(x => x.t === 'skip' && x.who === e.key && x.why === 'freeze'));
+  C.unseedRng();
+});
+
+// ---------- 第三阶段：职业与装备 ----------
+test('v3 存档升到 v4：旧装备换新结构，饰物变项链，转职前的技能点退回', () => {
+  const s3 = C.newGame('fox'); s3.v = 3; s3.hero.lv = 15; s3.hero.sp = 2; s3.hero.skills = { spark: 3, flameRing: 1, scorch: 1, foxMist: 4 }; delete s3.hero.route; delete s3.craft;
+  s3.hero.gear = { weapon: { slot: 'weapon', name: '溪石刃', tier: 2, rare: 1, st: { atk: 20, mag: 20 }, base: { atk: 17, mag: 17 }, price: 40, plus: 2 }, armor: null, charm: { slot: 'charm', name: '水滴坠', tier: 2, rare: 2, st: { spd: 5, hp: 20 }, price: 40, plus: 0 } };
+  s3.bag = { gear: [{ slot: 'armor', name: '草编衣', tier: 1, rare: 0, st: { def: 6, hp: 27 }, price: 20, plus: 0 }], items: { pill: 1 } };
+  const s = C.load(JSON.parse(JSON.stringify(s3)));
+  assert.equal(s.v, 4); assert.equal(s.hero.gear.neck.name, '水滴坠'); assert.equal(s.hero.gear.neck.sockets.length, 1);
+  assert.deepEqual(s.hero.gear.weapon.main, { atk: 17, mag: 17 }); assert.equal(s.hero.gear.weapon.plus, 2);
+  assert.equal(s.hero.skills.foxMist, undefined); assert.equal(s.hero.sp, 5, '狐雾 4 级退回 3 点');
+  assert.equal(s.bag.gear[0].q, 0); assert.ok(s.craft); assert.equal(s.hero.route, null);
+  assert.ok(C.heroStats(s).atk > 0);
+});
+
+test('装备：品质决定词条数，套装和灵石加成算进角色', () => {
+  C.seedRng(21);
+  for (let q = 0; q <= 4; q++) { const g = C.makeGear(2, { q }); assert.equal(g.affix.length, q); assert.equal(g.sockets.length, Math.max(0, q - 1)); assert.equal(!!g.special, q === 4); }
+  const s = C.newGame('cat'), hp0 = C.heroStats(s).hp;
+  for (const slot of ['head', 'armor']) { s.bag.gear.push(C.makeGear(1, { q: 0, slot, set: 'meadow' })); C.equip(s, s.bag.gear.length - 1); }
+  const hp2 = C.heroStats(s).hp; assert.ok(hp2 > hp0);
+  s.hero.gear.ring = C.makeGear(1, { q: 2, slot: 'ring' }); C.addGem(s, 'fire', 2);
+  const atk0 = C.heroStats(s).atk; assert.ok(C.socket(s, s.hero.gear.ring, 0, 'fire', 2)); assert.equal(C.heroStats(s).atk, atk0 + 10);
+  C.unseedRng();
+});
+
+test('强化：+10 以内必成，之后失败只扣材料并累积幸运值', () => {
+  C.seedRng(3);
+  const s = C.newGame('cat'), g = C.makeGear(1, { q: 1, slot: 'weapon' }); s.wallet.gold = 1e6; s.bag.items.stone = 999;
+  for (let i = 0; i < 10; i++) assert.ok(C.enhance(s, g).ok);
+  assert.equal(g.plus, 10);
+  let fails = 0; while (g.plus < 15 && fails < 200) { const r = C.enhance(s, g); if (!r.ok) fails++; }
+  assert.equal(g.plus, 15); assert.equal(C.enhance(s, g), null, '满级了');
+  C.unseedRng();
+});
+
+test('灵石三合一、洗练锁词条、分解和打造', () => {
+  C.seedRng(8);
+  const s = C.newGame('rabbit'); C.addGem(s, 'water', 1, 3); assert.ok(C.fuseGem(s, 'water', 1)); assert.equal(C.gemCount(s, 'water', 2), 1);
+  const g = C.makeGear(3, { q: 3 }); s.bag.items.starSand = 20; const keep = g.affix[0];
+  assert.ok(C.reroll(s, g, [0])); assert.deepEqual(g.affix[0], keep); assert.equal(g.affix.length, 3); assert.equal(s.bag.items.starSand, 16);
+  s.bag.gear.push(g); const got = C.dismantle(s, 0); assert.ok(got.dust > 0); assert.equal(s.bag.gear.length, 0);
+  Object.assign(s.bag.items, { bp_meadow: 1, feather: 9, sprout: 9, dust: 20, focus: 1 }); s.wallet.gold = 999;
+  const made = C.craft(s, 'meadow', 'crit'); assert.ok(made); assert.ok(made.q >= 1); assert.equal(made.set, 'meadow'); assert.ok(made.affix.some(a => a.k === 'crit'));
+  assert.equal(s.bag.items.bp_meadow, 0);
+  C.unseedRng();
+});
+
+test('转职：选路线学技能，换路线花金币并退回技能点；洗点和推荐加点', () => {
+  const s = C.newGame('cat'); s.hero.lv = 26; s.hero.sp = 0;
+  assert.ok(C.chooseRoute(s, 'swift')); assert.deepEqual(C.heroSkills(s).slice(-3), ['shadowClone', 'shadowCombo', 'nightRaid']);
+  s.hero.skills.shadowCombo = 4; s.wallet.gold = 1000;
+  assert.ok(C.chooseRoute(s, 'iron')); assert.equal(s.wallet.gold, 700); assert.equal(s.hero.sp, 3); assert.equal(s.hero.skills.shadowCombo, undefined);
+  s.hero.skills.doubleClaw = 5; C.resetSkills(s); assert.equal(s.hero.sp, 7); assert.equal(s.hero.skills.doubleClaw, 1);
+  C.resetAttr(s); assert.equal(s.hero.pts, 75); C.autoAttr(s); assert.equal(s.hero.pts, 0);
+});
+
+test('林守：嘲讽吸引攻击、扎根不会睡着；影分身一回合动两次；复苏救人；终结技每场一次', () => {
+  C.seedRng(17);
+  const s = C.newGame('deer'); s.hero.lv = 30; s.hero.skills.rootSnare = 1; C.addPet(s, 'chirp', 30);
+  const b = C.startBattle(s, [{ id: 'hopcube', lv: 5 }, { id: 'hopcube', lv: 5 }], false);
+  C.play(b, s, null); C.play(b, s, { type: 'skill', skill: 'rootSnare' });
+  assert.ok(b.units[0].fx.taunt || b.over);
+  assert.ok(b.units[0].st.flags.rooted);
+  // 影分身
+  const c = C.newGame('cat'); c.hero.lv = 30; C.chooseRoute(c, 'swift'); c.hero.mp = 999; c.hero.hp = 999;
+  const b2 = C.startBattle(c, [{ id: 'mudpig', lv: 40 }], false); C.play(b2, c, null);
+  const ev = C.play(b2, c, { type: 'skill', skill: 'shadowClone' });
+  assert.equal(ev.filter(e => e.t === 'yourTurn').length, 1); assert.equal(b2.cur?.key, 'hero');
+  assert.ok(b2.units[0].extra, '影分身后马上再动一次');
+  // 终结技每场一次
+  C.play(b2, c, { type: 'skill', skill: 'thousandClaws' });
+  if (!b2.over) { assert.ok(b2.used.herothousandClaws); }
+  // 复苏
+  const r = C.newGame('rabbit'); r.hero.lv = 30; C.chooseRoute(r, 'priest'); C.addPet(r, 'chirp', 5); r.hero.mp = 999;
+  const b3 = C.startBattle(r, [{ id: 'mudpig', lv: 1 }], false); C.play(b3, r, null); b3.units[1].hp = 0;
+  const ev3 = C.play(b3, r, { type: 'skill', skill: 'revive' }); assert.ok(ev3.some(e => e.t === 'revive' && e.who === 'p0'));
   C.unseedRng();
 });

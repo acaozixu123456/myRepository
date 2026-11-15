@@ -1,7 +1,7 @@
 // 战斗界面：行动顺序条、名牌（血条、状态、破绽条）、指令、飘字，按顺序播放战斗事件。
 // 这部分动画密集，直接操作 DOM。
 import * as C from '../core/index.js';
-import { ITEMS, MONSTERS, ELEMENTS, EL_COLOR, STATUS } from '../data/index.js';
+import { ITEMS, MONSTERS, ELEMENTS, EL_COLOR, STATUS, GEAR, ADVANCE_LV } from '../data/index.js';
 import { store, save, refresh } from './store.js';
 import { ui, setMode, showReport, toast } from './app.js';
 import { iconSvg } from './icons.js';
@@ -68,7 +68,7 @@ function renderCmd() {
   const s = store.s, el = $('cmd'), hero = battle.units[0]; el.classList.toggle('locked', cmdLocked);
   const backBtn = '<button class="opt back" data-c="back" type="button">' + iconSvg('back', 18) + '<b>返回</b></button>';
   if (cmdPage === 'skill') {
-    el.innerHTML = '<div class="list">' + hero.skills.map(k => `<button class="opt" data-c="skill" data-i="${k.id}" ${hero.mp < k.mp ? 'disabled' : ''} type="button">${k.el ? `<span class="el el-${k.el}">${ELEMENTS[k.el]}</span>` : iconSvg('sparkle', 18)}<b>${k.name}<small> Lv.${k.lv}</small></b><span>${k.desc || ''}</span><em>灵气 ${k.mp}</em></button>`).join('') + backBtn + '</div>';
+    el.innerHTML = '<div class="list">' + hero.skills.filter(k => k.kind !== 'passive').map(k => { const cost = C.mpCost(hero, k), used = k.once && battle.used['hero' + k.id]; return `<button class="opt" data-c="skill" data-i="${k.id}" ${hero.mp < cost || used ? 'disabled' : ''} type="button">${k.el ? `<span class="el el-${k.el}">${ELEMENTS[k.el]}</span>` : iconSvg('sparkle', 18)}<b>${k.name}<small> Lv.${k.lv}</small></b><span>${k.desc || ''}</span><em>${used ? '已用过' : '灵气 ' + cost}</em></button>`; }).join('') + backBtn + '</div>';
   } else if (cmdPage === 'item') {
     const bench = C.benchPets(battle, s), slot = swapSlot();
     el.innerHTML = '<div class="list">' + ['pill', 'dew'].map(id => { const it = ITEMS[id], n = s.bag.items[id] || 0; return `<button class="opt" data-c="item" data-i="${id}" ${n ? '' : 'disabled'} type="button"><span class="gi sm item-${id}">${iconSvg(it.icon, 18)}</span><b>${it.name}</b><span>${it.desc}</span><em>×${n}</em></button>`; }).join('')
@@ -150,6 +150,7 @@ async function go(action, fromAuto) {
     else if (e.t === 'act') {
       const color = e.kind === 'heal' ? 0x9dffb0 : e.kind === 'buff' ? 0xffe38a : e.kind === 'debuff' ? 0xc59cff : hex(e.el || u.el);
       if (e.combo) { banner(`连携技 · ${e.name}`, 1400, 'combo'); await view.anim.focus(e.who, 8, 0.3); view.anim.cast(e.combo, color); await view.anim.cast(e.who, color); view.anim.shake(0.5, 0.3); }
+      else if (e.counter) floatText(e.who, '反击', 'txt weak');
       else if (!e.plain) banner(e.name, 900, e.who.startsWith('e') ? 'foe' : '');
       if (e.confused) floatText(e.who, '晕头转向', 'txt');
       if (e.who === 'hero') setMp();
@@ -172,6 +173,9 @@ async function go(action, fromAuto) {
       if (e.crit) view.anim.shake(0.35, 0.22);
       view.anim.hit(e.who, e.dot === 'burn' ? 0xff8a4a : e.dot === 'poison' ? 0xb07cff : e.el && e.el !== 'none' ? hex(e.el) : 0xffffff, e.crit); await sleep(e.dot ? 300 : 240);
     } else if (e.t === 'miss') { floatText(e.who, '闪开了', 'txt'); await sleep(240); }
+    else if (e.t === 'revive') { const p = plates[e.who]; p.el.classList.remove('dead'); setHp(e.who, e.hp); floatText(e.who, '站起来了', 'txt heal'); await view.anim.revive(e.who); await view.anim.heal(e.who); }
+    else if (e.t === 'endure') { floatText(e.who, '撑住了', 'txt weak'); await sleep(300); }
+    else if (e.t === 'cover') { floatText(e.who, '挡在前面', 'txt'); await view.anim.flash(e.who); }
     else if (e.t === 'ko') { const p = plates[e.who]; p.fx = {}; p.shield = 0; p.el.classList.add('dead'); await view.anim.ko(e.who); }
     else if (e.t === 'heal') { setHp(e.who, e.hp); floatText(e.who, '+' + e.n, 'heal'); await view.anim.heal(e.who); }
     else if (e.t === 'mp') { setMp(); floatText(e.who, '灵气 +' + e.n, 'mpc txt'); await sleep(350); }
@@ -205,8 +209,10 @@ async function endBattle() {
     if (l.t === 'reward') return { text: `经验 +${l.xp}　金币 +${l.gold}` };
     if (l.t === 'levelup') return l.who === 'hero' ? { big: 1, text: `升到 ${l.lv} 级，得到 3 点属性点和 1 点技能点${l.skill ? `，学会了「${l.skill}」` : ''}` } : { text: `${l.name}升到 ${l.lv} 级` };
     if (l.t === 'unlock') return { big: 1, text: `新地图开放：${l.zone}` };
-    if (l.t === 'gear') return { text: `捡到 ${l.g.name}（${Object.entries(l.g.st).map(([k, v]) => ({ atk: '攻击', mag: '法术', def: '防御', hp: '生命', spd: '速度' }[k]) + '+' + v).join(' ')}）` };
-    if (l.t === 'item') return { text: `捡到 ${ITEMS[l.id].name}` };
+    if (l.t === 'gear') return { text: `捡到 ${GEAR.quality[l.g.q].name}装备 ${l.g.name}`, q: l.g.q };
+    if (l.t === 'item') return { text: `捡到 ${ITEMS[l.id].name}${l.n > 1 ? ' ×' + l.n : ''}` };
+    if (l.t === 'gem') return { text: `捡到 ${GEAR.gems[l.el].name}` };
+    if (l.t === 'advance') return { big: 1, text: `到了 ${ADVANCE_LV} 级，可以转职了：去角色页的「技能」选一条路线` };
     if (l.t === 'caught') return { big: 1, pet: l.id, text: `${MONSTERS[l.id].name}成了你的伙伴` };
     if (l.t === 'petfull') return { text: `伙伴已经有 ${C.PARTY_MAX} 只，它跑掉了。` };
     return null;

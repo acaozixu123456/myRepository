@@ -1,50 +1,451 @@
 {
  "slots": {
   "weapon": "武器",
-  "armor": "护甲",
-  "charm": "饰物"
+  "head": "头饰",
+  "armor": "衣服",
+  "shoes": "鞋子",
+  "neck": "项链",
+  "ring": "戒指"
  },
  "slotIcon": {
   "weapon": "sword",
+  "head": "crown",
   "armor": "shirt",
-  "charm": "ring"
+  "shoes": "boot",
+  "neck": "gem",
+  "ring": "ring"
  },
- "base": {
+ "main": {
+  "weapon": {
+   "atk": 1,
+   "mag": 1
+  },
+  "head": {
+   "hp": 3.2,
+   "def": 0.25
+  },
+  "armor": {
+   "def": 0.7,
+   "hp": 2
+  },
+  "shoes": {
+   "spd": 0.45,
+   "def": 0.2
+  },
+  "neck": {
+   "mag": 0.8,
+   "hp": 1.2
+  },
+  "ring": {
+   "atk": 0.8,
+   "spd": 0.2
+  }
+ },
+ "names": {
   "weapon": [
    "木枝",
    "溪石刃",
    "红叶杖",
-   "霜星刺"
+   "霜星刺",
+   "雾芦笛",
+   "琉璃剑",
+   "星铁爪",
+   "云鲸骨杖"
+  ],
+  "head": [
+   "花草冠",
+   "水藻帽",
+   "枫叶冠",
+   "雪绒帽",
+   "雾纱巾",
+   "琉璃发簪",
+   "星屑冠",
+   "云羽冠"
   ],
   "armor": [
    "草编衣",
    "苔藓披风",
    "枫纹甲",
-   "星霜袍"
+   "星霜袍",
+   "雾隐衣",
+   "沙金甲",
+   "星落袍",
+   "云海衣"
   ],
-  "charm": [
+  "shoes": [
+   "草鞋",
+   "溪石靴",
+   "红叶靴",
+   "雪地靴",
+   "雾行鞋",
+   "沙行靴",
+   "星步鞋",
+   "踏云靴"
+  ],
+  "neck": [
    "野花环",
    "水滴坠",
    "火纹铃",
-   "星屑戒"
+   "冰晶链",
+   "雾珠串",
+   "琉璃坠",
+   "星辰链",
+   "云珠项链"
+  ],
+  "ring": [
+   "藤戒",
+   "河石戒",
+   "枫火戒",
+   "霜星戒",
+   "雾环",
+   "沙金戒",
+   "星屑戒",
+   "云纹戒"
   ]
  },
- "prefix": [
+ "quality": [
   {
-   "name": "",
-   "mult": 1
+   "name": "普通",
+   "color": "#a7a39c",
+   "affix": 0,
+   "mult": 1,
+   "rate": 55
   },
   {
-   "name": "结实的",
-   "mult": 1.15
+   "name": "精良",
+   "color": "#5db26a",
+   "affix": 1,
+   "mult": 1.12,
+   "rate": 28
   },
   {
-   "name": "精巧的",
-   "mult": 1.3
+   "name": "稀有",
+   "color": "#4a8fe0",
+   "affix": 2,
+   "mult": 1.25,
+   "rate": 12
   },
   {
-   "name": "发光的",
-   "mult": 1.5
+   "name": "珍品",
+   "color": "#9b6bd3",
+   "affix": 3,
+   "mult": 1.4,
+   "rate": 4.5
+  },
+  {
+   "name": "传说",
+   "color": "#f09a2e",
+   "affix": 4,
+   "mult": 1.6,
+   "rate": 0.5
   }
+ ],
+ "affix": {
+  "atkP": {
+   "name": "攻击",
+   "unit": "%",
+   "min": 3,
+   "max": 8
+  },
+  "magP": {
+   "name": "灵力",
+   "unit": "%",
+   "min": 3,
+   "max": 8
+  },
+  "hpP": {
+   "name": "生命",
+   "unit": "%",
+   "min": 3,
+   "max": 9
+  },
+  "def": {
+   "name": "防御",
+   "unit": "",
+   "min": 2,
+   "max": 5,
+   "scale": true
+  },
+  "spd": {
+   "name": "速度",
+   "unit": "",
+   "min": 1,
+   "max": 3,
+   "scale": true
+  },
+  "crit": {
+   "name": "暴击",
+   "unit": "%",
+   "min": 2,
+   "max": 5
+  },
+  "critDmg": {
+   "name": "暴伤",
+   "unit": "%",
+   "min": 6,
+   "max": 15
+  },
+  "hit": {
+   "name": "命中",
+   "unit": "%",
+   "min": 3,
+   "max": 7
+  },
+  "dodge": {
+   "name": "闪避",
+   "unit": "%",
+   "min": 2,
+   "max": 5
+  },
+  "healUp": {
+   "name": "治疗加成",
+   "unit": "%",
+   "min": 4,
+   "max": 10
+  },
+  "resGrass": {
+   "name": "草抗",
+   "unit": "%",
+   "min": 5,
+   "max": 12
+  },
+  "resWater": {
+   "name": "水抗",
+   "unit": "%",
+   "min": 5,
+   "max": 12
+  },
+  "resFire": {
+   "name": "火抗",
+   "unit": "%",
+   "min": 5,
+   "max": 12
+  },
+  "resStar": {
+   "name": "星抗",
+   "unit": "%",
+   "min": 5,
+   "max": 12
+  },
+  "resMist": {
+   "name": "雾抗",
+   "unit": "%",
+   "min": 5,
+   "max": 12
+  },
+  "ailHit": {
+   "name": "异常命中",
+   "unit": "%",
+   "min": 4,
+   "max": 10
+  },
+  "ailRes": {
+   "name": "异常抵抗",
+   "unit": "%",
+   "min": 4,
+   "max": 10
+  },
+  "capture": {
+   "name": "捕捉率",
+   "unit": "%",
+   "min": 3,
+   "max": 8
+  },
+  "gold": {
+   "name": "金币获取",
+   "unit": "%",
+   "min": 5,
+   "max": 12
+  },
+  "xp": {
+   "name": "经验获取",
+   "unit": "%",
+   "min": 4,
+   "max": 10
+  }
+ },
+ "special": {
+  "bondCrit": {
+   "name": "心有灵犀",
+   "desc": "暴击时默契 +10"
+  },
+  "lifesteal": {
+   "name": "汲取",
+   "desc": "造成伤害的 6% 回给自己"
+  },
+  "firstStrike": {
+   "name": "抢先",
+   "desc": "开场行动值 +50%"
+  },
+  "mpSave": {
+   "name": "省灵",
+   "desc": "技能耗灵气 −25%"
+  },
+  "lucky": {
+   "name": "好运",
+   "desc": "掉落装备的品质更高"
+  },
+  "phoenix": {
+   "name": "不屈",
+   "desc": "每场第一次倒下时留 1 点生命"
+  }
+ },
+ "sets": {
+  "meadow": {
+   "name": "青草套",
+   "two": {
+    "desc": "生命 +8%",
+    "stat": {
+     "hpP": 8
+    }
+   },
+   "four": {
+    "desc": "每回合回 3% 生命",
+    "flag": "setRegen"
+   }
+  },
+  "brook": {
+   "name": "溪水套",
+   "two": {
+    "desc": "灵力 +8%",
+    "stat": {
+     "magP": 8
+    }
+   },
+   "four": {
+    "desc": "技能耗灵气 −20%",
+    "flag": "setMp"
+   }
+  },
+  "maple": {
+   "name": "红叶套",
+   "two": {
+    "desc": "攻击 +8%",
+    "stat": {
+     "atkP": 8
+    }
+   },
+   "four": {
+    "desc": "暴击后速升一回合",
+    "flag": "setRush"
+   }
+  },
+  "frost": {
+   "name": "霜星套",
+   "two": {
+    "desc": "防御 +10%",
+    "stat": {
+     "defP": 10
+    }
+   },
+   "four": {
+    "desc": "异常抵抗 +40%",
+    "stat": {
+     "ailRes": 40
+    }
+   }
+  },
+  "mist": {
+   "name": "雾隐套",
+   "two": {
+    "desc": "闪避 +6%",
+    "stat": {
+     "dodge": 6
+    }
+   },
+   "four": {
+    "desc": "闪避后下一击必暴",
+    "flag": "setShadow"
+   }
+  },
+  "glass": {
+   "name": "琉璃套",
+   "two": {
+    "desc": "暴伤 +15%",
+    "stat": {
+     "critDmg": 15
+    }
+   },
+   "four": {
+    "desc": "满血时伤害 +20%",
+    "flag": "setFull"
+   }
+  },
+  "starfall": {
+   "name": "星落套",
+   "two": {
+    "desc": "暴击 +6%",
+    "stat": {
+     "crit": 6
+    }
+   },
+   "four": {
+    "desc": "连携技伤害 +40%",
+    "flag": "setCombo"
+   }
+  },
+  "cloud": {
+   "name": "云海套",
+   "two": {
+    "desc": "速度 +8%",
+    "stat": {
+     "spdP": 8
+    }
+   },
+   "four": {
+    "desc": "开场全队护盾",
+    "flag": "setCloud"
+   }
+  }
+ },
+ "gems": {
+  "grass": {
+   "name": "草灵石",
+   "stat": "hp",
+   "per": 40,
+   "unit": ""
+  },
+  "water": {
+   "name": "水灵石",
+   "stat": "mag",
+   "per": 5,
+   "unit": ""
+  },
+  "fire": {
+   "name": "火灵石",
+   "stat": "atk",
+   "per": 5,
+   "unit": ""
+  },
+  "star": {
+   "name": "星灵石",
+   "stat": "crit",
+   "per": 1.5,
+   "unit": "%"
+  },
+  "mist": {
+   "name": "雾灵石",
+   "stat": "dodge",
+   "per": 1.2,
+   "unit": "%"
+  }
+ },
+ "maxPlus": 15,
+ "plusRate": [
+  100,
+  100,
+  100,
+  100,
+  100,
+  100,
+  100,
+  100,
+  100,
+  100,
+  70,
+  60,
+  50,
+  40,
+  30
  ]
 }

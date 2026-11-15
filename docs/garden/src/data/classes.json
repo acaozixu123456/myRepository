@@ -45,15 +45,67 @@
      "whirl"
     ],
     [
-     13,
-     "shadowStep"
-    ],
-    [
      16,
      "critical"
     ]
    ],
-   "el": "none"
+   "el": "none",
+   "passives": [
+    [
+     1,
+     "catStep"
+    ],
+    [
+     12,
+     "bloodScent"
+    ]
+   ],
+   "routes": {
+    "swift": {
+     "name": "疾影",
+     "desc": "更快、更多段，越打越快。",
+     "skills": [
+      [
+       20,
+       "shadowClone"
+      ],
+      [
+       23,
+       "shadowCombo"
+      ],
+      [
+       26,
+       "nightRaid"
+      ],
+      [
+       30,
+       "thousandClaws"
+      ]
+     ]
+    },
+    "iron": {
+     "name": "铁爪",
+     "desc": "站得住、打得回，以守代攻。",
+     "skills": [
+      [
+       20,
+       "counterStance"
+      ],
+      [
+       23,
+       "boneBreak"
+      ],
+      [
+       26,
+       "steadfast"
+      ],
+      [
+       30,
+       "mountainClaw"
+      ]
+     ]
+    }
+   }
   },
   "fox": {
    "name": "灵火",
@@ -86,15 +138,67 @@
      "scorch"
     ],
     [
-     13,
-     "foxMist"
-    ],
-    [
      17,
      "meteor"
     ]
    ],
-   "el": "fire"
+   "el": "fire",
+   "passives": [
+    [
+     1,
+     "spiritHeart"
+    ],
+    [
+     12,
+     "embers"
+    ]
+   ],
+   "routes": {
+    "blaze": {
+     "name": "焰尊",
+     "desc": "把火烧到最旺，单点爆发。",
+     "skills": [
+      [
+       20,
+       "stokeFlame"
+      ],
+      [
+       23,
+       "redLotus"
+      ],
+      [
+       26,
+       "heartFire"
+      ],
+      [
+       30,
+       "ninetails"
+      ]
+     ]
+    },
+    "illusion": {
+     "name": "幻狐",
+     "desc": "用雾和幻术让敌人自乱阵脚。",
+     "skills": [
+      [
+       20,
+       "foxMist"
+      ],
+      [
+       23,
+       "mistHide"
+      ],
+      [
+       26,
+       "dreamFox"
+      ],
+      [
+       30,
+       "foxParade"
+      ]
+     ]
+    }
+   }
   },
   "rabbit": {
    "name": "月愈",
@@ -129,13 +233,160 @@
     [
      13,
      "tide"
-    ],
-    [
-     15,
-     "fullMoon"
     ]
    ],
-   "el": "water"
+   "el": "water",
+   "passives": [
+    [
+     1,
+     "moonGlow"
+    ],
+    [
+     12,
+     "renewal"
+    ]
+   ],
+   "routes": {
+    "priest": {
+     "name": "满月祭司",
+     "desc": "救人、解状态、全队回满。",
+     "skills": [
+      [
+       20,
+       "revive"
+      ],
+      [
+       23,
+       "purify"
+      ],
+      [
+       26,
+       "fullMoon"
+      ],
+      [
+       30,
+       "moonWish"
+      ]
+     ]
+    },
+    "tidal": {
+     "name": "潮汐使",
+     "desc": "护盾和控场，攒盾再一口气打出去。",
+     "skills": [
+      [
+       20,
+       "tideShield"
+      ],
+      [
+       23,
+       "whirlpool"
+      ],
+      [
+       26,
+       "coldTide"
+      ],
+      [
+       30,
+       "returnTide"
+      ]
+     ]
+    }
+   }
+  },
+  "deer": {
+   "name": "林守",
+   "model": "x:deer",
+   "scale": 1.9,
+   "blurb": "站在最前面的鹿，替大家挡下攻击。",
+   "base": {
+    "str": 5,
+    "vit": 8,
+    "int": 4,
+    "agi": 3
+   },
+   "grow": {
+    "str": 1.0,
+    "vit": 1.2,
+    "int": 0.5,
+    "agi": 0.4
+   },
+   "el": "grass",
+   "skills": [
+    [
+     1,
+     "hornRam"
+    ],
+    [
+     4,
+     "rootSnare"
+    ],
+    [
+     9,
+     "mossArmor"
+    ],
+    [
+     14,
+     "leafStorm"
+    ]
+   ],
+   "passives": [
+    [
+     1,
+     "treeRings"
+    ],
+    [
+     12,
+     "rooted"
+    ]
+   ],
+   "routes": {
+    "elder": {
+     "name": "古木",
+     "desc": "替队友挨打，全队慢慢回血。",
+     "skills": [
+      [
+       20,
+       "shelter"
+      ],
+      [
+       23,
+       "oldBark"
+      ],
+      [
+       26,
+       "lifeRoot"
+      ],
+      [
+       30,
+       "ancientShade"
+      ]
+     ]
+    },
+    "thorn": {
+     "name": "荆棘",
+     "desc": "谁打我谁疼，再给全场下毒。",
+     "skills": [
+      [
+       20,
+       "thornArmor"
+      ],
+      [
+       23,
+       "poisonBloom"
+      ],
+      [
+       26,
+       "vineBind"
+      ],
+      [
+       30,
+       "thornField"
+      ]
+     ]
+    }
+   }
   }
- }
+ },
+ "advanceLv": 20,
+ "rerouteCost": 300
 }

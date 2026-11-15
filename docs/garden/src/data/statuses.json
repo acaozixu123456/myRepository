@@ -91,5 +91,60 @@
   "kind": "debuff",
   "turns": 1,
   "desc": "跳过行动，受到伤害 +50%"
+ },
+ "taunt": {
+  "name": "嘲讽",
+  "kind": "buff",
+  "turns": 2,
+  "desc": "敌人的单体攻击只打它"
+ },
+ "counter": {
+  "name": "反击",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "被物理攻击后反击"
+ },
+ "thorns": {
+  "name": "荆棘",
+  "kind": "buff",
+  "turns": 4,
+  "desc": "反弹三成物理伤害"
+ },
+ "cover": {
+  "name": "庇荫",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "替队友挨单体攻击"
+ },
+ "charge": {
+  "name": "蓄焰",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "下一招伤害翻倍"
+ },
+ "haste": {
+  "name": "分身",
+  "kind": "buff",
+  "turns": 2,
+  "desc": "每回合行动两次"
+ },
+ "guardUp": {
+  "name": "不动",
+  "kind": "buff",
+  "turns": 2,
+  "desc": "受到伤害减半"
+ },
+ "lastStand": {
+  "name": "免死",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "受到致命伤害时留 1 点生命"
+ },
+ "bind": {
+  "name": "定身",
+  "kind": "ailment",
+  "turns": 2,
+  "ctrl": true,
+  "desc": "跳过行动，火烧不掉"
  }
 }

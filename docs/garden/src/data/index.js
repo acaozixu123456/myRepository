@@ -10,11 +10,11 @@ import quests from './quests.json' with { type: 'json' };
 
 export const ELEMENTS = elements.names, BEATS = elements.beats, EL_COLOR = elements.colors;
 export const SKILLS = skills;
-export const CLASSES = classes.list, ATTR_NAME = classes.attrs.names, ATTR_DESC = classes.attrs.desc;
+export const CLASSES = classes.list, ADVANCE_LV = classes.advanceLv, REROUTE_COST = classes.rerouteCost, ATTR_NAME = classes.attrs.names, ATTR_DESC = classes.attrs.desc;
 export const MONSTERS = monsters;
 export const ZONES = zones;
 export const ITEMS = items;
-export const GEAR_SLOTS = gear.slots, GEAR_SLOT_ICON = gear.slotIcon, GEAR_BASE = gear.base, GEAR_PREFIX = gear.prefix;
+export const GEAR = gear, GEAR_SLOTS = gear.slots, GEAR_SLOT_ICON = gear.slotIcon, GEAR_SETS = gear.sets, GEAR_AFFIX = gear.affix, GEAR_SPECIAL = gear.special;
 export const QUESTS = quests;
 import statuses from './statuses.json' with { type: 'json' };
 import combos from './combos.json' with { type: 'json' };

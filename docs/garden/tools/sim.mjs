@@ -14,7 +14,11 @@ function heroAt(cls, lv, zone) {
     s.hero.lv++; s.hero.sp++; const g = CLASSES[cls].grow; for (const k in g) s.hero.attr[k] += g[k];
     const learned = CLASSES[cls].skills.find(([l]) => l === s.hero.lv); if (learned) s.hero.skills[learned[1]] = 1;
   }
-  const main = { cat: 'str', fox: 'int', rabbit: 'int' }[cls]; s.hero.attr[main] += (lv - 1) * 2; s.hero.attr.vit += lv - 1;
+  s.hero.pts = (lv - 1) * 3; C.autoAttr(s);
+  if (lv >= 20) C.chooseRoute(s, Object.keys(CLASSES[cls].routes)[0]);
+  // 均衡配装：本岛档次的 6 件精良
+  const tier = Math.max(1, ZONES.indexOf(zone));
+  for (const slot of ['weapon', 'head', 'armor', 'shoes', 'neck', 'ring']) s.hero.gear[slot] = C.makeGear(tier, { slot, q: 1 });
   // 技能点平均加
   const ids = C.heroSkills(s); for (let i = 0; s.hero.sp > 0 && i < 200; i++) C.raiseSkill(s, ids[i % ids.length]);
   // 两只本地图的伙伴
@@ -34,7 +38,7 @@ for (const z of ZONES.filter(z => z.wild)) for (const cls of Object.keys(CLASSES
   let hits = 0;
   for (let i = 0; i < N; i++) {
     const id = z.wild[i % z.wild.length], b = C.startBattle(s, [{ id, lv }], false), h = b.units[0], m = b.units.at(-1);
-    const sk = cls === 'cat' ? { kind: 'phys', power: 1 } : C.skillAt(CLASSES[cls].skills[0][1], s.hero.skills[CLASSES[cls].skills[0][1]]);
+    const sk = cls === 'cat' || cls === 'deer' ? { kind: 'phys', power: 1 } : C.skillAt(CLASSES[cls].skills[0][1], s.hero.skills[CLASSES[cls].skills[0][1]]);
     let n = 0; while (m.hp > 0 && n < 50) { m.hp -= C.damage(h, m, sk).dmg; n++; }
     hits += n;
   }

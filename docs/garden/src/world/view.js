@@ -276,6 +276,8 @@ export async function createView(canvas, skyEl, starsEl) {
     // 首领倒地
     async down(key) { const o = actors[key]; if (!o) return; const h = o.userData.home; await tween(0.35, k => { o.rotation.z = Math.sin(k * Math.PI / 2) * 0.5; o.position.y = h.y - k * 0.2; }); },
     up(key) { const o = actors[key]; if (!o) return; o.rotation.z = 0; o.position.copy(o.userData.home); },
+    // 倒下的伙伴被复活：重新长出来
+    revive(key) { const o = actors[key]; if (!o) return; o.visible = true; o.rotation.set(0, o.rotation.y, 0); o.position.copy(o.userData.home); return tween(0.4, k => { o.scale.setScalar(Math.max(0.001, k)); }); },
   };
   const v3 = new THREE.Vector3();
   function screenPos(key, top = true) { const o = actors[key]; if (!o) return null; v3.copy(o.userData.home); if (top) v3.y += o.userData.height + 0.35; else v3.y += o.userData.height * 0.5; v3.project(cam); return { x: (v3.x + 1) / 2 * innerWidth, y: (1 - v3.y) / 2 * innerHeight }; }
