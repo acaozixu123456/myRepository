@@ -208,6 +208,7 @@ async function endBattle() {
     if (l.t === 'lose') return { text: `你们都倒下了，灯灵把你接回了小岛。${l.lost ? `路上丢了 ${l.lost} 金币。` : ''}` };
     if (l.t === 'reward') return { text: `经验 +${l.xp}　金币 +${l.gold}` };
     if (l.t === 'levelup') return l.who === 'hero' ? { big: 1, text: `升到 ${l.lv} 级，得到 3 点属性点和 1 点技能点${l.skill ? `，学会了「${l.skill}」` : ''}` } : { text: `${l.name}升到 ${l.lv} 级` };
+    if (l.t === 'epi') return { big: 1, text: l.text };
     if (l.t === 'unlock') return { big: 1, text: `新地图开放：${l.zone}` };
     if (l.t === 'gear') return { text: `捡到 ${GEAR.quality[l.g.q].name}装备 ${l.g.name}`, q: l.g.q };
     if (l.t === 'item') return { text: `捡到 ${ITEMS[l.id].name}${l.n > 1 ? ' ×' + l.n : ''}` };

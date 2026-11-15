@@ -257,5 +257,89 @@
   "price": 150,
   "skill": "stomp",
   "desc": "让伙伴学会「震地」。"
+ },
+ "reedFluff": {
+  "name": "芦花絮",
+  "cat": "mat",
+  "icon": "feather",
+  "zone": "mist",
+  "desc": "雾隐湿地的芦苇花，轻得会飘走。"
+ },
+ "inkStone": {
+  "name": "墨石",
+  "cat": "mat",
+  "icon": "cube",
+  "zone": "mist",
+  "desc": "湿地里的黑石头，泡水会出墨。"
+ },
+ "starDust": {
+  "name": "星屑",
+  "cat": "mat",
+  "icon": "star",
+  "zone": "starfall",
+  "desc": "遗迹地上的亮晶晶的碎屑。"
+ },
+ "oldBrick": {
+  "name": "古砖",
+  "cat": "mat",
+  "icon": "cube",
+  "zone": "starfall",
+  "desc": "遗迹的旧砖，上面刻着看不懂的字。"
+ },
+ "glassBead": {
+  "name": "琉璃珠",
+  "cat": "mat",
+  "icon": "gem",
+  "zone": "glass",
+  "desc": "沙洲上捡的小珠子，对着光是彩色的。"
+ },
+ "sandRose": {
+  "name": "沙玫瑰",
+  "cat": "mat",
+  "icon": "flame",
+  "zone": "glass",
+  "desc": "沙子结成的花，不会谢。"
+ },
+ "cloudSilk": {
+  "name": "云丝",
+  "cat": "mat",
+  "icon": "cloud",
+  "zone": "cloud",
+  "desc": "从云海里抽出来的丝，摸着是凉的。"
+ },
+ "windFeather": {
+  "name": "风羽",
+  "cat": "mat",
+  "icon": "feather",
+  "zone": "cloud",
+  "desc": "风羽鸟掉的羽毛，拿着会被风推着走。"
+ },
+ "bp_mist": {
+  "name": "雾隐套图纸",
+  "cat": "bp",
+  "icon": "scroll",
+  "set": "mist",
+  "desc": "打败首领得到，在工坊打造雾隐套。"
+ },
+ "bp_starfall": {
+  "name": "星落套图纸",
+  "cat": "bp",
+  "icon": "scroll",
+  "set": "starfall",
+  "desc": "打败首领得到，在工坊打造星落套。"
+ },
+ "bp_glass": {
+  "name": "琉璃套图纸",
+  "cat": "bp",
+  "icon": "scroll",
+  "set": "glass",
+  "desc": "打败首领得到，在工坊打造琉璃套。"
+ },
+ "bp_cloud": {
+  "name": "云海套图纸",
+  "cat": "bp",
+  "icon": "scroll",
+  "set": "cloud",
+  "desc": "打败首领得到，在工坊打造云海套。"
  }
 }

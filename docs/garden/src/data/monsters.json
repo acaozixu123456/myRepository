@@ -91,7 +91,8 @@
      "stomp"
     ]
    }
-  ]
+  ],
+  "epi": "獠牙大王哼了一声，转身回坡顶打盹去了。"
  },
  "gnawer": {
   "name": "啃木匠",
@@ -184,7 +185,8 @@
      "trunkSpray"
     ]
    }
-  ]
+  ],
+  "epi": "喷泉象甩甩鼻子，喷出一道彩虹。林子里的水慢慢退了。"
  },
  "embertail": {
   "name": "火尾方",
@@ -278,7 +280,8 @@
      "maneLash"
     ]
    }
-  ]
+  ],
+  "epi": "烈鬃王的鬃毛不再冒火，变成了暖暖的橘红色。"
  },
  "slider": {
   "name": "滑滑鹅",
@@ -381,6 +384,435 @@
      "starGaze"
     ]
    }
-  ]
+  ],
+  "epi": "摘星兽低下长脖子，把一颗小星星放在你手心，又轻轻拿了回去。"
+ },
+ "reedcat": {
+  "name": "芦苇猫",
+  "model": "animal-cat",
+  "el": "grass",
+  "tint": "#b7c98a",
+  "fam": "tiger",
+  "hp": 1,
+  "atk": 1.15,
+  "spd": 1.3,
+  "skills": [
+   "leafCut",
+   "tackle"
+  ],
+  "desc": "在芦苇丛里睡觉，尾巴尖总露在外面。",
+  "def": 0.9
+ },
+ "marshbee": {
+  "name": "沼泽蜂",
+  "model": "animal-bee",
+  "el": "grass",
+  "tint": "#9fb86a",
+  "fam": "bug",
+  "hp": 0.8,
+  "atk": 1.1,
+  "spd": 1.5,
+  "skills": [
+   "spore",
+   "peck"
+  ],
+  "desc": "只采开在水面上的花。",
+  "def": 0.8
+ },
+ "mudcow": {
+  "name": "泥沼牛",
+  "model": "animal-cow",
+  "el": "water",
+  "tint": "#8a7f9a",
+  "fam": "pig",
+  "hp": 1.5,
+  "atk": 1,
+  "spd": 0.6,
+  "skills": [
+   "bubble",
+   "stomp"
+  ],
+  "desc": "走一步陷一步，所以从来不着急。",
+  "def": 1.3
+ },
+ "inkpup": {
+  "name": "墨点犬",
+  "model": "animal-dog",
+  "el": "mist",
+  "tint": "#6e6a8a",
+  "fam": "ink",
+  "hp": 1,
+  "atk": 1.1,
+  "spd": 1.2,
+  "skills": [
+   "inkSplash",
+   "tackle"
+  ],
+  "desc": "摇尾巴的时候会甩出墨点。",
+  "def": 1
+ },
+ "lampmoth": {
+  "name": "灯蛾",
+  "model": "animal-bee",
+  "el": "star",
+  "tint": "#ffd36a",
+  "fam": "moth",
+  "hp": 0.8,
+  "atk": 1.15,
+  "spd": 1.5,
+  "skills": [
+   "starGaze",
+   "lullaby"
+  ],
+  "desc": "追着遗迹里的星光飞，从不往灯上撞。",
+  "def": 0.8
+ },
+ "starcat": {
+  "name": "星斑猫",
+  "model": "animal-cat",
+  "el": "star",
+  "tint": "#4a5a9a",
+  "fam": "tiger",
+  "hp": 1,
+  "atk": 1.2,
+  "spd": 1.4,
+  "skills": [
+   "tackle",
+   "starGaze"
+  ],
+  "desc": "身上的斑点和天上的星位一模一样。",
+  "def": 0.9
+ },
+ "meteorparrot": {
+  "name": "流星鹦",
+  "model": "animal-parrot",
+  "el": "star",
+  "tint": "#ffb04a",
+  "fam": "chirp",
+  "hp": 0.9,
+  "atk": 1.1,
+  "spd": 1.6,
+  "skills": [
+   "peck",
+   "starGaze"
+  ],
+  "desc": "飞起来拖着一道光，落地时很不好意思。",
+  "def": 0.8
+ },
+ "ruindog": {
+  "name": "守遗犬",
+  "model": "animal-dog",
+  "el": "none",
+  "tint": "#c9b48a",
+  "fam": "monkey",
+  "hp": 1.3,
+  "atk": 1.15,
+  "spd": 1,
+  "skills": [
+   "tackle",
+   "roar"
+  ],
+  "desc": "替早就不在的主人守着门，谁来都要吼一声。",
+  "def": 1.2
+ },
+ "glasscrab": {
+  "name": "琉璃蟹",
+  "model": "animal-crab",
+  "el": "water",
+  "tint": "#8fe0e8",
+  "fam": "pincer",
+  "hp": 0.99,
+  "atk": 1.2,
+  "spd": 0.8,
+  "skills": [
+   "bubble",
+   "hide"
+  ],
+  "desc": "壳是透明的，能看见它在想事情。",
+  "def": 1.5
+ },
+ "dunefox": {
+  "name": "沙丘狐",
+  "model": "animal-fox",
+  "el": "fire",
+  "tint": "#f2c98a",
+  "fam": "foxfire",
+  "hp": 0.81,
+  "atk": 1.25,
+  "spd": 1.5,
+  "skills": [
+   "ember",
+   "tackle"
+  ],
+  "desc": "在热沙上跳着走，免得烫脚。",
+  "def": 0.8
+ },
+ "glassfish": {
+  "name": "琉璃鱼",
+  "model": "animal-fish",
+  "el": "water",
+  "tint": "#a8e8ff",
+  "fam": "fish",
+  "hp": 0.81,
+  "atk": 1.2,
+  "spd": 1.4,
+  "skills": [
+   "bubble",
+   "frostBreath"
+  ],
+  "desc": "游在沙洲的浅水里，像一块会动的玻璃。",
+  "def": 0.8
+ },
+ "mistling": {
+  "name": "小雾灵",
+  "model": "animal-bunny",
+  "el": "mist",
+  "tint": "#d8d0ff",
+  "fam": "mist",
+  "hp": 0.81,
+  "atk": 1.15,
+  "spd": 1.4,
+  "skills": [
+   "mistVeil",
+   "lullaby"
+  ],
+  "desc": "一团会蹦的雾，抓住它要趁天还没亮。",
+  "def": 0.9
+ },
+ "cloudcow": {
+  "name": "云团牛",
+  "model": "animal-cow",
+  "el": "none",
+  "tint": "#ffffff",
+  "fam": "pig",
+  "hp": 1.28,
+  "atk": 1.01,
+  "spd": 0.7,
+  "skills": [
+   "stomp",
+   "nap"
+  ],
+  "desc": "嚼着云当草吃，吃饱了自己也变成云。",
+  "def": 1.3
+ },
+ "windbird": {
+  "name": "风羽鸟",
+  "model": "animal-parrot",
+  "el": "none",
+  "tint": "#bfe6ff",
+  "fam": "chirp",
+  "hp": 0.72,
+  "atk": 1.1,
+  "spd": 1.7,
+  "skills": [
+   "peck",
+   "roar"
+  ],
+  "desc": "一辈子没落过地，脚是摆设。",
+  "def": 0.8
+ },
+ "clouddeer": {
+  "name": "云角鹿",
+  "model": "animal-deer",
+  "el": "star",
+  "tint": "#f4f0ff",
+  "fam": "deer",
+  "hp": 0.88,
+  "atk": 1.1,
+  "spd": 1.3,
+  "skills": [
+   "starGaze",
+   "leafCut"
+  ],
+  "desc": "鹿角上挂着小小的云，会下毛毛雨。",
+  "def": 1
+ },
+ "dawnmist": {
+  "name": "晨雾灵",
+  "model": "animal-bunny",
+  "el": "mist",
+  "tint": "#b8c8ff",
+  "fam": "mist",
+  "hp": 0.8,
+  "atk": 1.1,
+  "spd": 1.4,
+  "skills": [
+   "mistVeil",
+   "inkSplash"
+  ],
+  "desc": "只在日出前那一会儿出现，比小雾灵更亮一些。",
+  "def": 1
+ },
+ "inkking": {
+  "name": "山水熊王",
+  "model": "animal-panda",
+  "el": "mist",
+  "tint": "#4a4a6a",
+  "fam": "guard",
+  "hp": 6.5,
+  "atk": 1,
+  "spd": 0.9,
+  "skills": [
+   "inkSplash",
+   "stomp"
+  ],
+  "desc": "湿地深处的大熊，一挥爪就是一幅山水画。",
+  "boss": true,
+  "scale": 2,
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "山水熊王泼出一整片墨，看不清了！",
+    "fx": [
+     "stealth"
+    ],
+    "skills": [
+     "mistVeil",
+     "stomp"
+    ],
+    "summon": [
+     "inkpup"
+    ]
+   },
+   {
+    "at": 0.25,
+    "text": "山水熊王把墨收回身上，变成了水属性！",
+    "el": "water",
+    "skills": [
+     "trunkSpray",
+     "inkSplash"
+    ]
+   }
+  ],
+  "def": 1.25,
+  "epi": "山水熊王收起大笔，雾里的墨一点点淡了。"
+ },
+ "ringlion": {
+  "name": "星环狮",
+  "model": "animal-lion",
+  "el": "star",
+  "tint": "#f2d27a",
+  "fam": "guard",
+  "hp": 5.6,
+  "atk": 0.88,
+  "spd": 1.1,
+  "skills": [
+   "starGaze",
+   "maneLash"
+  ],
+  "desc": "遗迹的守护者，鬃毛上绕着一圈星环。",
+  "boss": true,
+  "scale": 1.9,
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "星环转了起来，星环狮叫来了帮手！",
+    "summon": [
+     "lampmoth"
+    ],
+    "skills": [
+     "starfall",
+     "maneLash"
+    ]
+   },
+   {
+    "at": 0.25,
+    "text": "星环碎了，星环狮的鬃毛烧成了火！",
+    "el": "fire",
+    "skills": [
+     "maneLash",
+     "starfall"
+    ]
+   }
+  ],
+  "def": 1.2,
+  "epi": "星环狮身上的星环停了下来，它让开了去塔顶的路。"
+ },
+ "glassmammoth": {
+  "name": "琉璃象",
+  "model": "animal-elephant",
+  "el": "water",
+  "tint": "#a0e0f0",
+  "fam": "guard",
+  "hp": 6,
+  "atk": 0.88,
+  "spd": 0.8,
+  "skills": [
+   "trunkSpray",
+   "stomp"
+  ],
+  "desc": "整只象都是琉璃，阳光一照满地都是彩虹。",
+  "boss": true,
+  "scale": 2,
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "琉璃象折射出星光，变成了星属性！",
+    "el": "star",
+    "skills": [
+     "starfall",
+     "stomp"
+    ],
+    "shield": 0.15
+   },
+   {
+    "at": 0.25,
+    "text": "琉璃象身上裂开了，碎片四处乱飞！",
+    "skills": [
+     "starfall",
+     "trunkSpray"
+    ],
+    "summon": [
+     "glasscrab"
+    ]
+   }
+  ],
+  "def": 1.35,
+  "epi": "琉璃象慢慢站起来，脚下的沙子亮成一片彩虹。"
+ },
+ "cloudbear": {
+  "name": "云眠巨熊",
+  "model": "animal-polar",
+  "el": "mist",
+  "tint": "#f0f4ff",
+  "fam": "guard",
+  "hp": 5.5,
+  "atk": 0.7,
+  "spd": 0.9,
+  "skills": [
+   "mistVeil",
+   "stomp"
+  ],
+  "desc": "睡在云海最底下的巨熊，翻个身就是一场雨。",
+  "boss": true,
+  "scale": 2.1,
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "云眠巨熊醒了一半，打了个哈欠，雾更浓了！",
+    "fx": [
+     "stealth"
+    ],
+    "skills": [
+     "mistVeil",
+     "inkSplash"
+    ],
+    "summon": [
+     "dawnmist"
+    ]
+   },
+   {
+    "at": 0.25,
+    "text": "云眠巨熊彻底醒了，云海裂开露出星空！",
+    "el": "star",
+    "skills": [
+     "starfall",
+     "starGaze",
+     "stomp"
+    ]
+   }
+  ],
+  "def": 1.3,
+  "epi": "云眠巨熊打了个长长的哈欠，风从云海底下吹了上去。"
  }
 }

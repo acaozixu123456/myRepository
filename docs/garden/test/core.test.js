@@ -235,3 +235,38 @@ test('M3 伙伴：亲密度解锁第四技能槽、技能书、进化、伙伴�
   assert.equal(s.pets.length, n - 1); assert.equal(r.pet.id, 'stripe'); assert.equal(r.pet.lv, 1); assert.equal(s.wallet.gold, 200);
   assert.ok(r.pet.apt.def >= 105 && r.pet.apt.atk >= 101); assert.ok(r.inherit.length >= 1 && r.pet.known.includes(r.inherit[0]));
 });
+
+test('M4 世界：采集每天有上限、宝箱每天一次、首领打败后 NPC 换台词', () => {
+  C.seedRng(9);
+  const s = C.newGame('cat'), day = new Date(2026, 10, 15, 10).getTime(), next = day + 86400000;
+  for (let i = 0; i < C.GATHER_PER_DAY; i++) assert.ok(C.gather(s, 'mist', day));
+  assert.equal(C.gather(s, 'mist', day), null); assert.equal(C.gatherLeft(s, 'mist', next), C.GATHER_PER_DAY);
+  assert.ok((s.bag.items.reedFluff || 0) + (s.bag.items.inkStone || 0) >= C.GATHER_PER_DAY);
+  const g = s.wallet.gold; assert.ok(C.openChest(s, 'mist', day).length >= 3); assert.ok(s.wallet.gold > g);
+  assert.equal(C.openChest(s, 'mist', day), null); assert.ok(C.chestReady(s, 'mist', next)); assert.ok(!C.chestReady(s, 'home', day));
+  assert.equal(C.npcLines(s, 'boatman')[0].includes('墨'), true); s.world.bosses.inkking = 1; assert.ok(C.npcLines(s, 'boatman')[0].includes('雾淡'));
+  assert.deepEqual(C.npcsIn('mist').map(n => n.id), ['boatman']);
+});
+
+test('M4 主线：5 章 40 个，找人说话、交材料、限地图打怪都能推进', () => {
+  assert.equal(QUESTS.length, 40); assert.deepEqual([1, 2, 3, 4, 5].map(c => QUESTS.filter(q => q.ch === c).length), [8, 8, 8, 8, 8]);
+  const s = C.newGame('fox'); s.quests.main.i = 8; s.world.unlocked = 5;
+  C.acceptQuest(s); assert.equal(C.mainTalkNpc(s), 'boatman'); assert.equal(C.npcMark(s, 'boatman'), 'main');
+  C.questProgress(s, 'talk', { npc: 'fisher' }); assert.ok(!C.questDone(s));
+  C.questProgress(s, 'talk', { npc: 'boatman' }); assert.ok(C.questDone(s)); C.claimQuest(s);
+  C.acceptQuest(s); assert.equal(C.currentQuest(s).type, 'collect'); s.bag.items.reedFluff = 7; assert.ok(C.questDone(s)); C.claimQuest(s); assert.equal(s.bag.items.reedFluff, 2);
+  C.acceptQuest(s); C.questProgress(s, 'kill', { mid: 'chirp' }); assert.equal(s.quests.main.n, 0); for (let i = 0; i < 10; i++) C.questProgress(s, 'kill', { mid: 'inkpup' }); assert.ok(C.questDone(s));
+  assert.equal(C.mainDoneCount(s), 2);
+});
+
+test('M4 支线：NPC 一件件给，接下、推进、交付；有的要先打败本岛首领', () => {
+  const s = C.newGame('deer'); s.world.unlocked = 5;
+  assert.equal(C.sideFor(s, 'cloudkeeper'), null);
+  const f = C.sideFor(s, 'shepherd'); assert.equal(f.q.id, 's4'); assert.equal(f.state, 'new'); assert.equal(C.npcMark(s, 'shepherd'), 'new');
+  assert.ok(C.acceptSide(s, 's4')); assert.equal(C.sideFor(s, 'shepherd').state, 'active'); assert.equal(C.npcMark(s, 'shepherd'), null);
+  for (let i = 0; i < 6; i++) C.questProgress(s, 'kill', { mid: 'chirp' });
+  assert.equal(C.sideFor(s, 'shepherd').state, 'ready'); const g = s.wallet.gold, got = C.claimSide(s, 's4'); assert.ok(got.length && s.wallet.gold === g + 60);
+  assert.equal(C.sideFor(s, 'shepherd').q.id, 's5'); C.acceptSide(s, 's5'); C.questProgress(s, 'capture', { id: 'chirp' }); C.claimSide(s, 's5');
+  assert.equal(C.sideFor(s, 'shepherd'), null); s.world.bosses.tusk = 1; assert.equal(C.sideFor(s, 'shepherd').q.id, 's6');
+  assert.equal(C.activeSides(s).length, 0); C.acceptSide(s, 's6'); assert.equal(C.activeSides(s)[0].ready, false);
+});

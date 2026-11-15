@@ -233,6 +233,16 @@
    "spiritRoot",
    "steady",
    "drain"
+  ],
+  "moth": [
+   "spiritRoot",
+   "nimble",
+   "steady"
+  ],
+  "mist": [
+   "nimble",
+   "spiritRoot",
+   "drain"
   ]
  },
  "evo": {
@@ -600,6 +610,374 @@
     "need": {
      "iceShard": 10,
      "snowFluff": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "reedcat": [
+   {
+    "lv": 15,
+    "name": "苇影猫",
+    "tint": "#d6e6a0",
+    "skill": "roar",
+    "need": {
+     "reedFluff": 5,
+     "inkStone": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "风苇猫",
+    "tint": "#e8f0b8",
+    "skill": "leafCut",
+    "need": {
+     "reedFluff": 10,
+     "inkStone": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "marshbee": [
+   {
+    "lv": 15,
+    "name": "莲台蜂",
+    "tint": "#c6e08a",
+    "skill": "lullaby",
+    "need": {
+     "reedFluff": 5,
+     "inkStone": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "花冠蜂",
+    "tint": "#ffe08a",
+    "skill": "spore",
+    "need": {
+     "reedFluff": 10,
+     "inkStone": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "mudcow": [
+   {
+    "lv": 15,
+    "name": "苔角牛",
+    "tint": "#9a9fb0",
+    "skill": "hide",
+    "need": {
+     "reedFluff": 5,
+     "inkStone": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "沼泽王牛",
+    "tint": "#7a8aa8",
+    "skill": "trunkSpray",
+    "need": {
+     "reedFluff": 10,
+     "inkStone": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "inkpup": [
+   {
+    "lv": 15,
+    "name": "泼墨犬",
+    "tint": "#5a5678",
+    "skill": "roar",
+    "need": {
+     "reedFluff": 5,
+     "inkStone": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "水墨犬",
+    "tint": "#3e3a5a",
+    "skill": "mistVeil",
+    "need": {
+     "reedFluff": 10,
+     "inkStone": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "lampmoth": [
+   {
+    "lv": 15,
+    "name": "星蛾",
+    "tint": "#ffe08a",
+    "skill": "spore",
+    "need": {
+     "starDust": 5,
+     "oldBrick": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "银河蛾",
+    "tint": "#c8d4ff",
+    "skill": "starfall",
+    "need": {
+     "starDust": 10,
+     "oldBrick": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "starcat": [
+   {
+    "lv": 15,
+    "name": "星座猫",
+    "tint": "#3a4a8a",
+    "skill": "lullaby",
+    "need": {
+     "starDust": 5,
+     "oldBrick": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "银河猫",
+    "tint": "#2a3270",
+    "skill": "starfall",
+    "need": {
+     "starDust": 10,
+     "oldBrick": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "meteorparrot": [
+   {
+    "lv": 15,
+    "name": "彗星鹦",
+    "tint": "#ffc46a",
+    "skill": "roar",
+    "need": {
+     "starDust": 5,
+     "oldBrick": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "天火鹦",
+    "tint": "#ff9a4a",
+    "skill": "ember",
+    "need": {
+     "starDust": 10,
+     "oldBrick": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "ruindog": [
+   {
+    "lv": 15,
+    "name": "石门犬",
+    "tint": "#b8a478",
+    "skill": "hide",
+    "need": {
+     "starDust": 5,
+     "oldBrick": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "遗迹守卫",
+    "tint": "#a89060",
+    "skill": "stomp",
+    "need": {
+     "starDust": 10,
+     "oldBrick": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "glasscrab": [
+   {
+    "lv": 15,
+    "name": "棱镜蟹",
+    "tint": "#a8eef4",
+    "skill": "tackle",
+    "need": {
+     "glassBead": 5,
+     "sandRose": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "虹甲蟹",
+    "tint": "#d8f6ff",
+    "skill": "starGaze",
+    "need": {
+     "glassBead": 10,
+     "sandRose": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "dunefox": [
+   {
+    "lv": 15,
+    "name": "沙尾狐",
+    "tint": "#f8d8a0",
+    "skill": "spark",
+    "need": {
+     "glassBead": 5,
+     "sandRose": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "烈日狐",
+    "tint": "#ffb070",
+    "skill": "flameRing",
+    "need": {
+     "glassBead": 10,
+     "sandRose": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "glassfish": [
+   {
+    "lv": 15,
+    "name": "彩鳍鱼",
+    "tint": "#c8f0ff",
+    "skill": "tide",
+    "need": {
+     "glassBead": 5,
+     "sandRose": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "虹光鱼",
+    "tint": "#e8faff",
+    "skill": "starGaze",
+    "need": {
+     "glassBead": 10,
+     "sandRose": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "mistling": [
+   {
+    "lv": 15,
+    "name": "雾帘灵",
+    "tint": "#c8c0f8",
+    "skill": "inkSplash",
+    "need": {
+     "glassBead": 5,
+     "sandRose": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "潮雾灵",
+    "tint": "#b0b8f0",
+    "skill": "tide",
+    "need": {
+     "glassBead": 10,
+     "sandRose": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "cloudcow": [
+   {
+    "lv": 15,
+    "name": "积云牛",
+    "tint": "#f4f6ff",
+    "skill": "hide",
+    "need": {
+     "cloudSilk": 5,
+     "windFeather": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "雷云牛",
+    "tint": "#d8dcf0",
+    "skill": "trunkSpray",
+    "need": {
+     "cloudSilk": 10,
+     "windFeather": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "windbird": [
+   {
+    "lv": 15,
+    "name": "疾风鸟",
+    "tint": "#d0eeff",
+    "skill": "tackle",
+    "need": {
+     "cloudSilk": 5,
+     "windFeather": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "天穹鸟",
+    "tint": "#e8f6ff",
+    "skill": "starGaze",
+    "need": {
+     "cloudSilk": 10,
+     "windFeather": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "clouddeer": [
+   {
+    "lv": 15,
+    "name": "霞角鹿",
+    "tint": "#ffe8f4",
+    "skill": "lullaby",
+    "need": {
+     "cloudSilk": 5,
+     "windFeather": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "天光鹿",
+    "tint": "#fff6d8",
+    "skill": "starfall",
+    "need": {
+     "cloudSilk": 10,
+     "windFeather": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "dawnmist": [
+   {
+    "lv": 15,
+    "name": "霞雾灵",
+    "tint": "#d0c8ff",
+    "skill": "lullaby",
+    "need": {
+     "cloudSilk": 5,
+     "windFeather": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "天雾灵",
+    "tint": "#e0e8ff",
+    "skill": "starfall",
+    "need": {
+     "cloudSilk": 10,
+     "windFeather": 8,
      "starSand": 5
     }
    }

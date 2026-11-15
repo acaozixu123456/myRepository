@@ -82,10 +82,10 @@ export async function createView(canvas, skyEl, starsEl) {
   }
   // 进化后的伙伴变大一点并换配色；异色的整体偏色，再挂一圈闪光
   async function monsterActor(id, k = 1, look = null) {
-    if (look && typeof look === 'object') id = look.id;
-    const evo = look?.evo || 0, o = await makeActor(MONSTERS[id].model, 0.62 * (MONSTERS[id].scale || 1) * k * (1 + 0.12 * evo));
-    const tint = look?.shiny ? new THREE.Color(0xb9a6ff) : look?.tint ? new THREE.Color(look.tint) : null;
-    if (tint) o.userData.body.traverse(m => { if (!m.isMesh || m.userData.isOutline) return; const mats = (Array.isArray(m.material) ? m.material : [m.material]).map(x => { const c = x.clone(); c.color = c.color.clone().lerp(tint, look.shiny ? 0.55 : 0.35); if (look.shiny) { c.emissive = new THREE.Color(0x3a2a66); } return c; }); m.material = Array.isArray(m.material) ? mats : mats[0]; });
+    if (look && typeof look === 'object' && look.id) id = look.id;
+    const evo = look?.evo || 0, o = look?.model ? await makeActor(look.model, look.scale || 1) : await makeActor(MONSTERS[id].model, 0.62 * (MONSTERS[id].scale || 1) * k * (1 + 0.12 * evo));
+    const base = look?.tint || MONSTERS[id]?.tint, tint = look?.shiny ? new THREE.Color(0xb9a6ff) : base ? new THREE.Color(base) : null;
+    if (tint) o.userData.body.traverse(m => { if (!m.isMesh || m.userData.isOutline) return; const mats = (Array.isArray(m.material) ? m.material : [m.material]).map(x => { const c = x.clone(); c.color = c.color.clone().lerp(tint, look?.shiny ? 0.55 : 0.35); if (look?.shiny) { c.emissive = new THREE.Color(0x3a2a66); } return c; }); m.material = Array.isArray(m.material) ? mats : mats[0]; });
     if (look?.shiny) { const sp = glow(0xd8c8ff, 1.6, 0.7, starTex); sp.position.y = 1.2; o.add(sp); o.userData.sparkle = sp; }
     return o;
   }
@@ -141,7 +141,7 @@ export async function createView(canvas, skyEl, starsEl) {
   }
 
   // ---------- 地图模式 ----------
-  let grace = 0, world = null, hero = null, petFollower = null, wild = [], bossActor = null, lantern = null, cb = {}, zoneRef = null, mode = 'world';
+  let grace = 0, world = null, hero = null, petFollower = null, wild = [], inter = [], bossActor = null, lantern = null, cb = {}, zoneRef = null, mode = 'world';
   const marker = glow(0xffffff, 1.2, 0, starTex); scene.add(marker);
   const target = { x: 0, z: 0, on: false };
   async function loadZone(zone, look) {
@@ -160,9 +160,46 @@ export async function createView(canvas, skyEl, starsEl) {
       const a = 3.9, bx = Math.cos(a) * R * 0.68, bz = Math.sin(a) * R * 0.68;
       jobs.push(monsterActor(zone.boss).then(o => { o.position.set(bx, world.userData.gy(bx, bz), bz); o.rotation.y = Math.atan2(-bx, -bz); world.add(o); bossActor = o; const ring = glow(0xffd070, 6, 0.55); ring.position.set(bx, 0.6, bz); world.add(ring); o.userData.ring = ring; }));
     }
+    inter = []; jobs.push(placeExtras(zone, cb.extras ? cb.extras(zone) : {}));
     await Promise.all(jobs);
     focus.copy(hero.position); grace = 1;
   }
+  // 岛上能互动的东西：NPC（走近就说话）、采集点（发光的草）、宝箱
+  function freeSpot(minR = 4) {
+    const u = world.userData;
+    for (let i = 0; i < 60; i++) { const a = Math.random() * 6.28, d = minR + Math.random() * (u.R * 0.85 - minR), x = Math.cos(a) * d, z = Math.sin(a) * d; if (u.walk(x, z) && u.solids.every(([sx, sz, sr]) => Math.hypot(x - sx, z - sz) > sr + 1)) return [x, z]; }
+    return [minR, 0];
+  }
+  async function placeExtras(zone, ex) {
+    const u = world.userData, jobs = [];
+    for (const n of ex.npcs || []) jobs.push(monsterActor(null, 1, { id: null, model: n.model, scale: n.scale, tint: n.tint }).then(o => {
+      let [x, z] = n.pos; if (!u.walk(x, z)) [x, z] = freeSpot(3);
+      o.position.set(x, u.gy(x, z), z); o.rotation.y = Math.atan2(-x, -z); world.add(o); u.solids.push([x, z, 0.8]);
+      const mark = glow(0xffe08a, 0.9, 0.9, starTex); mark.position.set(0, 2.4, 0); o.add(mark); o.userData.mark = mark;
+      inter.push({ o, kind: 'npc', id: n.id, r: 1.9 });
+    }));
+    for (let i = 0; i < Math.min(3, ex.gather || 0); i++) jobs.push(model('Plant_1').then(o => {
+      const [x, z] = freeSpot(); o.position.set(x, u.gy(x, z), z); o.scale.setScalar(0.9); const g = glow(0x9dffb0, 1.6, 0.8, starTex); g.position.y = 0.7; o.add(g); o.userData.mark = g; world.add(o);
+      inter.push({ o, kind: 'gather', r: 1.3 });
+    }));
+    if (ex.chest) {
+      const g = new THREE.Group(), wood = new THREE.MeshToonMaterial({ color: 0xa8683a }), gold = new THREE.MeshToonMaterial({ color: 0xf2c14e });
+      const box = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.55, 0.6), wood); box.position.y = 0.28; box.castShadow = true;
+      const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.9, 12, 1, false, 0, Math.PI), wood); lid.rotation.z = Math.PI / 2; lid.position.y = 0.55;
+      const band = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.62, 0.64), gold); band.position.y = 0.32;
+      g.add(box, lid, band); const sp = glow(0xffe08a, 1.8, 0.7, starTex); sp.position.y = 1; g.add(sp); g.userData.mark = sp;
+      const [x, z] = freeSpot(5); g.position.set(x, u.gy(x, z), z); g.rotation.y = Math.random() * 6; world.add(g); u.solids.push([x, z, 0.6]);
+      inter.push({ o: g, kind: 'chest', r: 1.6 });
+    }
+    await Promise.all(jobs);
+  }
+  // NPC 头上的标记：主线要找它（橙）、有新支线（黄）、可以交付（绿），没事就不显示
+  let markClock = 0;
+  const MARK_COLOR = { main: 0xffa04a, new: 0xffe08a, ready: 0x8dffa8 };
+  function refreshMarks() {
+    for (const it of inter) if (it.kind === 'npc') { const k = cb.npcMark ? cb.npcMark(it.id) : 'new', m = it.o.userData.mark; m.visible = !!k; if (k) m.material.color.setHex(MARK_COLOR[k]); }
+  }
+  function removeInter(it) { inter = inter.filter(x => x !== it); world.remove(it.o); const i = world.userData.solids.findIndex(([x, z]) => x === it.o.position.x && z === it.o.position.z); if (i >= 0) world.userData.solids.splice(i, 1); }
   async function setPet(petId) {
     if (petFollower) world.remove(petFollower); petFollower = null; if (!petId) return;
     const o = await monsterActor(petId, 0.8, petId); o.position.copy(hero.position); o.position.x -= 1.2; world.add(o); petFollower = o;
@@ -201,6 +238,13 @@ export async function createView(canvas, skyEl, starsEl) {
       if (!grace && Math.hypot(wp.x - hp.x, wp.z - hp.z) < 1.5) { target.on = false; cb.encounter && cb.encounter(w.userData.id, false, w); return; }
     }
     if (bossActor) { bossActor.userData.ring.material.opacity = 0.4 + 0.2 * Math.sin(t * 2); if (!grace && Math.hypot(bossActor.position.x - hp.x, bossActor.position.z - hp.z) < 2.6) { target.on = false; const dx = hp.x - bossActor.position.x, dz = hp.z - bossActor.position.z, d = Math.hypot(dx, dz) || 1; hp.x = bossActor.position.x + dx / d * 4; hp.z = bossActor.position.z + dz / d * 4; cb.encounter && cb.encounter(zoneRef.boss, true, null); return; } }
+    if ((markClock -= dt) <= 0) { markClock = 0.8; refreshMarks(); }
+    for (const it of inter) {
+      const d = Math.hypot(it.o.position.x - hp.x, it.o.position.z - hp.z);
+      if (it.o.userData.mark) it.o.userData.mark.material.opacity = 0.55 + 0.35 * Math.sin(t * 3);
+      if (d < it.r && !target.on && !it.told) { it.told = true; cb.interact && cb.interact(it); }
+      else if (d > it.r + 1.5) it.told = false;
+    }
     if (lantern && Math.hypot(2.2 - hp.x, -2.2 - hp.z) < 2.1 && target.on === false && !lantern.userData.told) { lantern.userData.told = true; cb.lantern && cb.lantern(); }
     if (lantern && Math.hypot(2.2 - hp.x, -2.2 - hp.z) > 3.5) lantern.userData.told = false;
     focus.lerp(hp, Math.min(1, dt * 5)); focus.y = 0.8;
@@ -311,5 +355,5 @@ export async function createView(canvas, skyEl, starsEl) {
   }
   function setZoom(w, shift = 0) { viewW = worldW = w; shiftY = shift; resize(); }
   resize(); addEventListener('resize', resize);
-  return { loadZone, frame, tap, enterBattle, exitBattle, addActor, swapActor, anim, screenPos, removeWild, setPet, setZoom, on: (k, f) => { cb[k] = f; }, get mode() { return mode; }, heroModelFor: makeActor };
+  return { loadZone, removeInter, frame, tap, enterBattle, exitBattle, addActor, swapActor, anim, screenPos, removeWild, setPet, setZoom, on: (k, f) => { cb[k] = f; }, get mode() { return mode; }, heroModelFor: makeActor };
 }

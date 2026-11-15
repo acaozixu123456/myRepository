@@ -1,0 +1,480 @@
+[
+ {
+  "id": "s1",
+  "npc": "postbird",
+  "title": "迷路的信",
+  "type": "kill",
+  "zone": "meadow",
+  "n": 5,
+  "text": "「我有封信掉在青草坡了，被啾啾团叼走了！帮我打跑 5 只草坡的野怪，它们就会吐出来。」",
+  "done": "「找到了！虽然有点湿……谢谢你。」",
+  "reward": {
+   "gold": 40,
+   "items": {
+    "pill": 2
+   }
+  }
+ },
+ {
+  "id": "s2",
+  "npc": "postbird",
+  "title": "送一颗灵果",
+  "type": "collect",
+  "item": "treat",
+  "n": 2,
+  "text": "「我飞了一整天，饿坏了。你有灵果吗？给我两颗就好。」",
+  "done": "「好吃！你的伙伴肯定也爱吃这个。」",
+  "reward": {
+   "gold": 120,
+   "items": {
+    "seed": 2
+   }
+  }
+ },
+ {
+  "id": "s3",
+  "npc": "postbird",
+  "title": "远方的消息",
+  "type": "level",
+  "n": 30,
+  "text": "「等你再厉害一点，我带你看一封很老很老的信。」（30 级）",
+  "done": "「这封信是写给灯塔的，一直没人收。现在我想，可以给你了。」",
+  "reward": {
+   "gold": 800,
+   "items": {
+    "starSand": 3
+   }
+  }
+ },
+ {
+  "id": "s4",
+  "npc": "shepherd",
+  "title": "羊不见了",
+  "type": "kill",
+  "zone": "meadow",
+  "n": 6,
+  "text": "「有只小羊跑进灌木丛，被野怪围住了。帮我打败 6 只草坡的野怪。」",
+  "done": "「小羊回来了！它还咬着一朵花。」",
+  "reward": {
+   "gold": 60,
+   "items": {
+    "pill": 3
+   }
+  }
+ },
+ {
+  "id": "s5",
+  "npc": "shepherd",
+  "title": "一起放羊",
+  "type": "capture",
+  "zone": "meadow",
+  "n": 1,
+  "text": "「要是有个伙伴帮我看着羊就好了。你能在草坡抓一只吗？让我看看它乖不乖。」",
+  "done": "「它好乖！你要好好带它去看更远的地方。」",
+  "reward": {
+   "gold": 80,
+   "items": {
+    "treat": 2
+   }
+  }
+ },
+ {
+  "id": "s6",
+  "npc": "shepherd",
+  "title": "坡顶的大王",
+  "type": "boss",
+  "boss": "tusk",
+  "text": "「獠牙大王又在坡顶打呼噜了，吵得羊睡不着。再去和它切磋一次吧。」",
+  "done": "「它打完架，睡得比谁都香。羊也睡着了。」",
+  "reward": {
+   "gold": 150,
+   "items": {
+    "stone": 2
+   }
+  },
+  "after": true
+ },
+ {
+  "id": "s7",
+  "npc": "fisher",
+  "title": "鱼饵",
+  "type": "kill",
+  "el": "water",
+  "n": 6,
+  "text": "「水系的野怪总抢我的鱼饵。打跑 6 只水系野怪，我请你吃鱼。」",
+  "done": "「今天钓上来一条大的！给，这是你的。」",
+  "reward": {
+   "gold": 90,
+   "items": {
+    "dew": 2
+   }
+  }
+ },
+ {
+  "id": "s8",
+  "npc": "fisher",
+  "title": "会游泳的朋友",
+  "type": "capture",
+  "zone": "brook",
+  "n": 1,
+  "text": "「我年轻时也有个会游泳的伙伴。你在溪水林抓一只给我看看？」",
+  "done": "「像，真像。它也爱甩尾巴。」",
+  "reward": {
+   "gold": 120,
+   "items": {
+    "treat": 3
+   }
+  }
+ },
+ {
+  "id": "s9",
+  "npc": "fisher",
+  "title": "鼻子里的鱼",
+  "type": "boss",
+  "boss": "spout",
+  "text": "「喷泉象打喷嚏的时候，会把鱼喷到天上去。你再去逗逗它？」",
+  "done": "「哈哈，天上真的掉下来三条鱼。」",
+  "reward": {
+   "gold": 220,
+   "items": {
+    "stone": 2
+   }
+  },
+  "after": true
+ },
+ {
+  "id": "s10",
+  "npc": "painter",
+  "title": "红颜料",
+  "type": "kill",
+  "el": "fire",
+  "n": 8,
+  "text": "「火系野怪身上的红最正。打败 8 只，我从它们掉的毛里调颜色。」",
+  "done": "「就是这个红！三年了，我终于调出来了。」",
+  "reward": {
+   "gold": 200,
+   "items": {
+    "pill": 4
+   }
+  }
+ },
+ {
+  "id": "s11",
+  "npc": "painter",
+  "title": "模特",
+  "type": "capture",
+  "zone": "maple",
+  "n": 1,
+  "text": "「我想画一只伙伴。在红叶谷抓一只来，让它坐一会儿。」",
+  "done": "「它坐不住，不过动起来的样子更好看。这张画送你。」",
+  "reward": {
+   "gold": 250,
+   "items": {
+    "treat": 3
+   }
+  }
+ },
+ {
+  "id": "s12",
+  "npc": "painter",
+  "title": "墨的颜色",
+  "type": "collect",
+  "item": "inkStone",
+  "n": 3,
+  "text": "「听说湿地的墨石磨出来的墨，会自己流动。带 3 块给我。」",
+  "done": "「真的会动！我要画一条会游的鱼。」",
+  "reward": {
+   "gold": 700,
+   "items": {
+    "starSand": 2
+   }
+  }
+ },
+ {
+  "id": "s13",
+  "npc": "stargazer",
+  "title": "数星星",
+  "type": "kill",
+  "zone": "frost",
+  "n": 10,
+  "text": "「野怪太吵，我数到一半就忘了。打败 10 只霜星岭的野怪，让我安静数完。」",
+  "done": "「一千零七颗。比昨天多一颗。」",
+  "reward": {
+   "gold": 300,
+   "items": {
+    "dew": 3
+   }
+  }
+ },
+ {
+  "id": "s14",
+  "npc": "stargazer",
+  "title": "暖手",
+  "type": "collect",
+  "item": "starDust",
+  "n": 3,
+  "text": "「年纪大了，手冷。星屑揣在兜里是暖的，带 3 撮给我。」",
+  "done": "「暖和多了。你也揣一撮，路上不冷。」",
+  "reward": {
+   "gold": 900,
+   "items": {
+    "treat": 4
+   }
+  }
+ },
+ {
+  "id": "s15",
+  "npc": "stargazer",
+  "title": "会发光的伙伴",
+  "type": "capture",
+  "zone": "starfall",
+  "n": 1,
+  "text": "「星落遗迹的伙伴身上有星光。抓一只给婆婆看看。」",
+  "done": "「多好看，像把一颗星星抱在怀里。」",
+  "reward": {
+   "gold": 1000,
+   "items": {
+    "starSand": 2
+   }
+  }
+ },
+ {
+  "id": "s16",
+  "npc": "boatman",
+  "title": "撑船的力气",
+  "type": "level",
+  "n": 24,
+  "text": "「撑船靠的是力气。等你到 24 级，我教你一招。」",
+  "done": "「看好了，腰要沉，手要稳。……其实就是多吃饭。」",
+  "reward": {
+   "gold": 500,
+   "items": {
+    "pill": 6
+   }
+  }
+ },
+ {
+  "id": "s17",
+  "npc": "boatman",
+  "title": "鞋带",
+  "type": "kill",
+  "zone": "mist",
+  "n": 12,
+  "text": "「墨点犬又把我的鞋带咬走了，还是两只脚的。打败 12 只湿地的野怪帮我找找。」",
+  "done": "「找到一根。另一根……算了，我光着一只脚也挺凉快。」",
+  "reward": {
+   "gold": 650,
+   "items": {
+    "stone": 3
+   }
+  }
+ },
+ {
+  "id": "s18",
+  "npc": "boatman",
+  "title": "新船帆",
+  "type": "collect",
+  "item": "reedFluff",
+  "n": 6,
+  "text": "「雾淡了，我想挂个帆。芦花絮织的帆最轻，带 6 团来。」",
+  "done": "「帆鼓起来了！以后渡河不用撑了。」",
+  "reward": {
+   "gold": 800,
+   "items": {
+    "starSand": 2
+   }
+  },
+  "after": true
+ },
+ {
+  "id": "s19",
+  "npc": "archivist",
+  "title": "抄写",
+  "type": "collect",
+  "item": "oldBrick",
+  "n": 4,
+  "text": "「还有几块砖上的字我没抄过。再带 4 块古砖来。」",
+  "done": "「这块写的是：今天星星很亮，适合散步。……原来古人也这样。」",
+  "reward": {
+   "gold": 1000,
+   "items": {
+    "dew": 4
+   }
+  }
+ },
+ {
+  "id": "s20",
+  "npc": "archivist",
+  "title": "灯蛾回家",
+  "type": "kill",
+  "el": "star",
+  "n": 10,
+  "text": "「迷路的灯蛾越来越多。打败 10 只星系野怪，让它们冷静下来，我好给它们指路。」",
+  "done": "「它们都往南飞了。那边，就是它们的家。」",
+  "reward": {
+   "gold": 1100,
+   "items": {
+    "seed": 3
+   }
+  }
+ },
+ {
+  "id": "s21",
+  "npc": "archivist",
+  "title": "让一条路",
+  "type": "boss",
+  "boss": "ringlion",
+  "text": "「星环狮说想再和你比一次。它很久没遇到对手了。」",
+  "done": "「它很高兴。我第一次看见它摇尾巴。」",
+  "reward": {
+   "gold": 1400,
+   "items": {
+    "starSand": 3
+   }
+  },
+  "after": true
+ },
+ {
+  "id": "s22",
+  "npc": "glassmaker",
+  "title": "第一千零一颗",
+  "type": "collect",
+  "item": "glassBead",
+  "n": 5,
+  "text": "「我又想开始捡下一个一千颗了！你先帮我起个头，5 颗。」",
+  "done": "「一千零五！这次我要捡得更快。」",
+  "reward": {
+   "gold": 1500,
+   "items": {
+    "stone": 3
+   }
+  }
+ },
+ {
+  "id": "s23",
+  "npc": "glassmaker",
+  "title": "沙丘狐",
+  "type": "kill",
+  "el": "fire",
+  "n": 10,
+  "text": "「沙丘狐老抢我的琉璃，说是亮闪闪的好看。打败 10 只火系野怪，吓吓它们。」",
+  "done": "「它们现在只敢远远地看了。其实分它们一颗也行。」",
+  "reward": {
+   "gold": 1600,
+   "items": {
+    "dew": 5
+   }
+  }
+ },
+ {
+  "id": "s24",
+  "npc": "glassmaker",
+  "title": "彩虹脚印",
+  "type": "capture",
+  "zone": "glass",
+  "n": 1,
+  "text": "「我想要一个伙伴陪我捡琉璃。你在沙洲帮我抓一只，看看它喜不喜欢这儿。」",
+  "done": "「它喜欢！它刚刚就找到了一颗。」",
+  "reward": {
+   "gold": 1700,
+   "items": {
+    "treat": 5
+   }
+  }
+ },
+ {
+  "id": "s25",
+  "npc": "cloudkeeper",
+  "title": "云上的雨",
+  "type": "kill",
+  "zone": "cloud",
+  "n": 12,
+  "text": "「云团挤在一起，雨就下得太多了。打败 12 只云海的野怪，把它们分开一点。」",
+  "done": "「好，上面的岛今天是晴天。」",
+  "reward": {
+   "gold": 2000,
+   "items": {
+    "dew": 6
+   }
+  }
+ },
+ {
+  "id": "s26",
+  "npc": "cloudkeeper",
+  "title": "织云",
+  "type": "collect",
+  "item": "cloudSilk",
+  "n": 5,
+  "text": "「我在织一条很长的云，从这里一直铺到北坡小岛。带 5 缕云丝来。」",
+  "done": "「又长了一截。等织完了，你就能走着回家了。」",
+  "reward": {
+   "gold": 2200,
+   "items": {
+    "starSand": 3
+   }
+  }
+ },
+ {
+  "id": "s27",
+  "npc": "cloudkeeper",
+  "title": "风的声音",
+  "type": "collect",
+  "item": "windFeather",
+  "n": 5,
+  "text": "「把风羽挂在云角上，风一吹就会唱歌。带 5 根来。」",
+  "done": "「听，它在唱你走过的那几座岛。」",
+  "reward": {
+   "gold": 2400,
+   "items": {
+    "seed": 5
+   }
+  },
+  "after": true
+ },
+ {
+  "id": "s28",
+  "npc": "cloudkeeper",
+  "title": "巨熊的梦",
+  "type": "boss",
+  "boss": "cloudbear",
+  "text": "「巨熊又快睡沉了。陪它玩一会儿，它会睡得更安稳。」",
+  "done": "「它睡着了，在笑。」",
+  "reward": {
+   "gold": 3000,
+   "items": {
+    "starSand": 5
+   }
+  },
+  "after": true
+ },
+ {
+  "id": "s29",
+  "npc": "postbird",
+  "title": "整整一圈",
+  "type": "level",
+  "n": 55,
+  "text": "「你要是到了 55 级，就算是真的走遍这几座岛了。到时候我给你颁个奖。」",
+  "done": "「这是信鸽协会的徽章！虽然协会只有我一个。」",
+  "reward": {
+   "gold": 4000,
+   "items": {
+    "starSand": 6
+   }
+  }
+ },
+ {
+  "id": "s30",
+  "npc": "shepherd",
+  "title": "小羊长大了",
+  "type": "level",
+  "n": 40,
+  "text": "「等你 40 级回来，看看当年那只小羊。」",
+  "done": "「它现在是全坡最大的羊了，还认得你呢。」",
+  "reward": {
+   "gold": 1500,
+   "items": {
+    "treat": 6
+   }
+  }
+ }
+]

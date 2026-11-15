@@ -3,7 +3,7 @@ import { SKILLS, CLASSES, MONSTERS, GEAR_SETS, ADVANCE_LV, REROUTE_COST } from '
 import { gearStats, setCounts } from './gear.js';
 import { petMult, talentBonus } from './pets.js';
 
-export const MAX_LV = 40;
+export const MAX_LV = 60;
 export const xpNeed = lv => Math.round(18 * Math.pow(lv, 1.55));
 
 // 战斗里用到的全部数值。装备、套装、灵石、被动都在这里合起来。

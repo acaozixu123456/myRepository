@@ -167,5 +167,155 @@
    "snowFluff"
   ],
   "set": "frost"
+ },
+ {
+  "id": "mist",
+  "name": "雾隐湿地",
+  "lv": [
+   21,
+   27
+  ],
+  "light": "dawn",
+  "pal": [
+   "#6f8f7a",
+   "#56766a",
+   "#a2b8a6"
+  ],
+  "trees": [
+   "DeadTree_1",
+   "TwistedTree_1",
+   "Pine_3"
+  ],
+  "flowers": [
+   "Grass_Common_Tall",
+   "Fern_1",
+   "Mushroom_Common"
+  ],
+  "pond": true,
+  "wild": [
+   "reedcat",
+   "marshbee",
+   "mudcow",
+   "inkpup"
+  ],
+  "boss": "inkking",
+  "desc": "终年起雾的湿地，墨一样的水里有东西在动。",
+  "mats": [
+   "reedFluff",
+   "inkStone"
+  ],
+  "set": "mist"
+ },
+ {
+  "id": "starfall",
+  "name": "星落遗迹",
+  "lv": [
+   28,
+   34
+  ],
+  "light": "night",
+  "pal": [
+   "#7a7aa6",
+   "#5c5c8a",
+   "#b4b4d6"
+  ],
+  "trees": [
+   "DeadTree_1",
+   "Pine_4",
+   "TwistedTree_3"
+  ],
+  "flowers": [
+   "Rock_Medium_2",
+   "Plant_7",
+   "Grass_Wispy_Short"
+  ],
+  "wild": [
+   "lampmoth",
+   "starcat",
+   "meteorparrot",
+   "ruindog"
+  ],
+  "boss": "ringlion",
+  "desc": "星星掉下来砸出的遗迹，夜里每块砖都在发光。",
+  "mats": [
+   "starDust",
+   "oldBrick"
+  ],
+  "set": "starfall"
+ },
+ {
+  "id": "glass",
+  "name": "琉璃沙洲",
+  "lv": [
+   35,
+   42
+  ],
+  "light": "day",
+  "pal": [
+   "#e3cf96",
+   "#cdb47a",
+   "#f2e6bd"
+  ],
+  "trees": [
+   "Pine_1",
+   "DeadTree_1",
+   "CommonTree_5"
+  ],
+  "flowers": [
+   "Rock_Medium_1",
+   "Plant_1",
+   "Grass_Wispy_Short"
+  ],
+  "pond": true,
+  "wild": [
+   "glasscrab",
+   "dunefox",
+   "glassfish",
+   "mistling"
+  ],
+  "boss": "glassmammoth",
+  "desc": "沙子里混着琉璃，太阳一照到处是彩虹。",
+  "mats": [
+   "glassBead",
+   "sandRose"
+  ],
+  "set": "glass"
+ },
+ {
+  "id": "cloud",
+  "name": "云海之底",
+  "lv": [
+   43,
+   52
+  ],
+  "light": "dusk",
+  "pal": [
+   "#c9cde8",
+   "#a9aed6",
+   "#eef0fb"
+  ],
+  "trees": [
+   "CommonTree_1",
+   "Pine_3",
+   "TwistedTree_1"
+  ],
+  "flowers": [
+   "Flower_3_Group",
+   "Bush_Common_Flowers",
+   "Plant_7_Big"
+  ],
+  "wild": [
+   "cloudcow",
+   "windbird",
+   "clouddeer",
+   "dawnmist"
+  ],
+  "boss": "cloudbear",
+  "desc": "沉在云海下面的岛，抬头是云，低头也是云。",
+  "mats": [
+   "cloudSilk",
+   "windFeather"
+  ],
+  "set": "cloud"
  }
 ]
