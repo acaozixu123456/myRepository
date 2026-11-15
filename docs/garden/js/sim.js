@@ -9,6 +9,7 @@ export const R = 10.5;
 export const POND = { x: 3.6, z: 2.6, r: 3.2, sz: 0.82 };
 export const LANTERN = { x: -0.2, z: 1.0 };
 export const DEAD_TREES = [{ x: -4.2, z: -3.4 }, { x: 5.6, z: -5.2 }];
+export const BRIDGE = { x: 3.4, z: 5.0 };
 export const ROCKS = [{ x: 7.0, z: 5.0 }, { x: -8.0, z: 5.2 }, { x: 3.4, z: -8.0 }];
 export const edgeR = a => R * (1 + 0.06 * Math.sin(a * 3 + 1) + 0.04 * Math.sin(a * 7 + 2) + 0.02 * Math.sin(a * 13));
 export const inIsland = (x, z, margin = 1) => Math.hypot(x, z) < edgeR(Math.atan2(z, x)) - margin;
@@ -101,7 +102,8 @@ export function placeProblem(s, sp, x, z) {
   const r = SPECIES[sp].r;
   if (!inIsland(x, z, 0.9 + r * 0.3)) return '太靠近岛的边缘了';
   if (pondDist(x, z) < POND.r + 0.5 + r * 0.3) return '这里是池塘';
-  if (Math.hypot(x - LANTERN.x, z - LANTERN.z) < 1.1 + r * 0.4) return '离石灯太近了';
+  if (Math.hypot(x - LANTERN.x, z - LANTERN.z) < 1.3 + r * 0.4) return '离石灯太近了';
+  if (Math.abs(z - BRIDGE.z) < 1.0 + r * 0.3 && x > 0.5 - r * 0.3 && x < 6.3 + r * 0.3) return '池塘边这一小块留着有用';
   for (let i = 0; i < s.dead; i++) if (Math.hypot(x - DEAD_TREES[i].x, z - DEAD_TREES[i].z) < 0.8 + r * 0.5) return '这里有一棵枯树';
   for (const k of ROCKS) if (Math.hypot(x - k.x, z - k.z) < 1.3 + r * 0.3) return '这里有块石头';
   for (const p of s.plants) {
@@ -230,6 +232,7 @@ function tick(s, h) {
   if (!s.pond && (v >= 0.1 || s.waterCount >= 2)) { s.pond = true; note(s, tAt(), 'land', pick(rnd, TEXT.pond)); }
   if (s.dead === 2 && v >= 0.35 && (hour < 5 || hour > 21)) { s.dead = 1; note(s, tAt(), 'land', pick(rnd, TEXT.dead1)); }
   else if (s.dead === 1 && v >= 0.6) { s.dead = 0; note(s, tAt(), 'land', TEXT.dead2[0]); }
+  if (!s.bridge && s.pond && v >= 0.5) { s.bridge = 1; note(s, tAt(), 'land', pick(rnd, TEXT.bridge)); }
   const isletAt = [0.3, 0.55, 0.8];
   if (s.islets < 3 && v >= isletAt[s.islets]) { note(s, tAt(), 'land', TEXT.islet[s.islets]); s.islets++; }
 

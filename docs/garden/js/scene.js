@@ -10,9 +10,11 @@ const MODELS = {
   tree: [['CommonTree_1', 1.2], ['CommonTree_2', 1.0], ['CommonTree_3', 0.95], ['CommonTree_5', 1.05], ['TwistedTree_3', 0.3]],
   pine: [['Pine_1', 0.85], ['Pine_3', 0.8], ['Pine_4', 0.7]],
   mush: [['Mushroom_Common', 0.9], ['Mushroom_Laetiporus', 0.6]],
-  mood: [['Flower_3_Single', 1.5], ['Flower_4_Single', 1.3], ['Flower_3_Single', 1.8], ['Flower_4_Single', 1.6]],
+  mood: [['x:moodFlower', 4.2], ['x:moodFlower', 3.6], ['x:moodFlower', 4.6], ['x:moodFlower', 4.0]],
 };
-const ANIMAL_SCALE = { chick: 0.45, bunny: 0.7, deer: 0.8, fox: 0.7, cat: 0.7, fish: 0.35, bee: 0.28 };
+const ANIMAL_SCALE = { chick: 2.0, bunny: 2.2, deer: 2.7, fox: 2.0, cat: 2.3, fish: 2.8, bee: 0.28 };
+const ANIMAL_MODEL = { chick: 'x:bird', bunny: 'x:rabbit', deer: 'x:deer', fox: 'x:fox', cat: 'x:cat', fish: 'x:koi', bee: 'animal-bee' };
+export const BRIDGE = { x: 3.4, z: 5.0 };
 const SLEEPS_AT_NIGHT = { chick: 1, bunny: 1, deer: 1, bee: 1 };
 
 // 一天里的四种光
@@ -169,11 +171,12 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
   pond.rotation.x = -Math.PI / 2; pond.position.set(POND.x, -0.12, POND.z); pond.scale.set(1, POND.sz, 1); pond.receiveShadow = true; pond.visible = false; root.add(pond);
 
   // ---------- 素材 ----------
-  const loader = new GLTFLoader(), cache = {}, leafMats = new Set();
+  const loader = new GLTFLoader(), cache = {}, clips = {}, leafMats = new Set();
   const leafGreen = new THREE.TextureLoader().load('assets/nature/Leaves_NormalTree_C.png'); leafGreen.flipY = false; leafGreen.colorSpace = THREE.SRGBColorSpace;
   async function model(name) {
-    if (!cache[name]) cache[name] = loader.loadAsync(name.startsWith('animal') ? `assets/pets/${name}.glb` : `assets/nature/${name}.gltf`).then(g => {
-      const small = /Grass|Clover|Plant_7|Pebble/.test(name);
+    if (!cache[name]) cache[name] = loader.loadAsync(name.startsWith('x:') ? `assets/extra/${name.slice(2)}.glb` : name.startsWith('animal') ? `assets/pets/${name}.glb` : `assets/nature/${name}.gltf`).then(g => {
+      clips[name] = g.animations;
+      const small = /Grass|Clover|Plant_7|Pebble|lotusLeaf|koi/.test(name);
       g.scene.traverse(m => {
         if (!m.isMesh) return;
         m.castShadow = !small; m.receiveShadow = true;
@@ -205,20 +208,21 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
   })();
   const glow = (color, size, opacity = 1) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending })); s.scale.setScalar(size); return s; };
 
-  // 石灯：素材包里没有，用几何体搭的
-  const lanternGlowMat = new THREE.MeshBasicMaterial({ color: 0x554433 });
+  // 石灯
+  let lanternGlowMat = null;
   const lanternHalo = glow(0xffc070, 2.8, 0), lanternLight = new THREE.PointLight(0xffb45a, 0, 9, 1.6);
   {
-    const stone = new THREE.MeshStandardMaterial({ color: 0xcfc7b6, roughness: 0.92, flatShading: true }), g = new THREE.Group();
-    const add = (geo, y) => { const m = new THREE.Mesh(geo, stone); m.position.y = y; m.castShadow = m.receiveShadow = true; g.add(m); };
-    add(new THREE.CylinderGeometry(0.55, 0.7, 0.25, 6), 0.12); add(new THREE.CylinderGeometry(0.2, 0.26, 1.0, 6), 0.75); add(new THREE.CylinderGeometry(0.62, 0.45, 0.2, 6), 1.33);
-    add(new THREE.BoxGeometry(0.7, 0.6, 0.7), 1.73); add(new THREE.ConeGeometry(0.95, 0.55, 6), 2.32); add(new THREE.SphereGeometry(0.14, 10, 8), 2.66);
-    for (const [dx, dz, ry] of [[0, 0.355, 0], [0.355, 0, Math.PI / 2], [0, -0.355, Math.PI], [-0.355, 0, -Math.PI / 2]]) { const w = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.3), lanternGlowMat); w.position.set(dx, 1.75, dz); w.rotation.y = ry; g.add(w); }
     const y = groundY(LANTERN.x, LANTERN.z) - 0.05;
-    g.position.set(LANTERN.x, y, LANTERN.z); g.rotation.y = 0.2; g.scale.setScalar(1.45); root.add(g);
-    lanternHalo.position.set(LANTERN.x, y + 2.55, LANTERN.z); root.add(lanternHalo);
-    lanternLight.position.set(LANTERN.x, y + 2.6, LANTERN.z); root.add(lanternLight);
+    fixed.push(model('x:stoneLantern').then(o => { place(o, LANTERN.x, LANTERN.z, 3.0, 0.2, y); o.traverse(m => { if (m.isMesh && m.material.name === 'lanternGlow') lanternGlowMat = m.material; }); }));
+    lanternHalo.position.set(LANTERN.x, y + 2.2, LANTERN.z); root.add(lanternHalo);
+    lanternLight.position.set(LANTERN.x, y + 2.4, LANTERN.z); root.add(lanternLight);
   }
+  // 池塘里的荷叶和荷花、池上的小桥：到时候才出现
+  const pondLife = new THREE.Group(), lotusGroup = new THREE.Group(), bridge = new THREE.Group();
+  pondLife.visible = lotusGroup.visible = bridge.visible = false; root.add(pondLife, lotusGroup, bridge);
+  for (const [x, z, sc, ry] of [[4.8, 3.6, 1.7, 0.4], [2.4, 1.6, 1.3, 1.9], [5.6, 1.4, 1.1, 3.1]]) fixed.push(model('x:lotusLeaf').then(o => pondLife.add(place(o, x, z, sc, ry, -0.1))));
+  for (const [x, z, sc, ry, y] of [[4.9, 3.5, 2.4, 0.2, -0.04], [2.3, 1.7, 1.8, 1.0, -0.06]]) fixed.push(model('x:lotus').then(o => lotusGroup.add(place(o, x, z, sc, ry, y))));
+  fixed.push(model('x:archBridge').then(o => bridge.add(place(o, BRIDGE.x, BRIDGE.z, 3.0, 0, groundY(BRIDGE.x, BRIDGE.z) - 0.05))));
 
   // 远处的小浮岛，生机够了才长东西
   const islets = [], isletGeo = topGeo.clone();
@@ -268,8 +272,14 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
     const o = await model(name); o.scale.setScalar(base); holder.add(o);
     if (p.sp === 'mood') {
       const color = new THREE.Color().setHSL(p.hue / 360, 0.85, 0.62), mats = [];
-      o.traverse(m => { if (m.isMesh) { m.material = m.material.clone(); leafMats.delete(m.material); m.material.emissive = color.clone(); m.material.emissiveMap = m.material.map; m.material.emissiveIntensity = 0; mats.push([m.material, /Flower/.test(m.material.name) ? 1 : 0.25]); } });
-      const top = (name.startsWith('Flower_3') ? 1.9 : 2.2) * base;
+      const W = { moodPetal: 0.5, moodCore: 1.4, mote: 1.2 };
+      o.traverse(m => {
+        if (!m.isMesh || !(m.material.name in W)) return;
+        const w = W[m.material.name]; m.material = m.material.clone();
+        if (m.material.name !== 'moodCore') { m.material.emissive = color.clone(); m.material.color = new THREE.Color().setHSL(p.hue / 360, 0.6, 0.82); }
+        m.material.emissiveIntensity = 0; mats.push([m.material, w]);
+      });
+      const top = 0.56 * base;
       const halo = glow(color, 2.4, 0); halo.position.y = top; holder.add(halo);
       const sparks = []; for (let i = 0; i < 7; i++) { const s = glow(color.clone().lerp(new THREE.Color(0xffffff), 0.5), 0.16, 0); s.userData = { a: rnd() * 6.28, r: 0.4 + rnd() * 0.9, y: top - 0.8 + rnd() * 1.6, ph: rnd() * 6 }; holder.add(s); sparks.push(s); }
       Object.assign(holder.userData, { mats, halo, sparks, color, top });
@@ -278,14 +288,16 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
     return holder;
   }
   const animalObj = new Map();
-  const walkable = (x, z) => inIsland(x, z, 1.6) && pondDist(x, z) > POND.r + 0.7 && Math.hypot(x - LANTERN.x, z - LANTERN.z) > 1.5;
+  const walkable = (x, z) => inIsland(x, z, 1.6) && pondDist(x, z) > POND.r + 0.9 && Math.hypot(x - LANTERN.x, z - LANTERN.z) > 1.7 && !(Math.abs(z - BRIDGE.z) < 1.3 && x > 0.2 && x < 6.6);
   function randomSpot() { for (let i = 0; i < 40; i++) { const a = Math.random() * 6.28, d = Math.sqrt(Math.random()) * R, x = Math.cos(a) * d, z = Math.sin(a) * d; if (walkable(x, z)) return [x, z]; } return [-3, 4]; }
   async function makeAnimal(a) {
-    const o = await model('animal-' + a.sp), s = ANIMAL_SCALE[a.sp];
+    const o = await model(ANIMAL_MODEL[a.sp]), s = ANIMAL_SCALE[a.sp];
     const [x, z] = a.sp === 'fish' ? [POND.x, POND.z] : randomSpot();
     const holder = new THREE.Group(); holder.add(o); o.scale.setScalar(s);
     holder.position.set(x, groundY(x, z), z); holder.userData = { a, tx: x, tz: z, wait: Math.random() * 3, ph: Math.random() * 6, hop: 0 };
-    addHit(holder, a.sp === 'bee' || a.sp === 'fish' ? 0.7 : 0.9, s * 0.9, { animal: a, holder });
+    addHit(holder, a.sp === 'bee' || a.sp === 'fish' ? 0.7 : 1.0, a.sp === 'bee' || a.sp === 'fish' ? 0.3 : 1.0, { animal: a, holder });
+    const clip = (clips[ANIMAL_MODEL[a.sp]] || [])[0];
+    if (clip) { holder.userData.mixer = new THREE.AnimationMixer(o); const act = holder.userData.mixer.clipAction(clip); act.time = Math.random() * clip.duration; act.play(); }
     root.add(holder); animalObj.set(a.sp, holder);
   }
 
@@ -298,7 +310,7 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
     for (const p of s.plants) if (!plantObj.has(p.id)) jobs.push(makePlant(p, instant));
     for (const a of s.animals) if (!animalObj.has(a.sp)) { animalObj.set(a.sp, null); jobs.push(makeAnimal(a)); }
     for (let i = 0; i < 2; i++) if (deadTrees[i]) deadTrees[i].visible = i < s.dead;
-    pond.visible = s.pond;
+    pond.visible = pondLife.visible = s.pond; lotusGroup.visible = s.pond && vitality(s, now) >= 0.3; bridge.visible = !!s.bridge;
     islets.forEach((it, i) => {
       if (it.shown || s.islets <= i) return; it.shown = true;
       for (const [n, dx, dz, sc, ry] of it.items) jobs.push(model(n).then(o => scene.add(place(o, it.cx + dx, it.cz + dz, sc, ry, it.cy + 0.02))));
@@ -335,7 +347,7 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
     starsCanvas.style.opacity = Math.max(0, (night - 0.5) * 2);
     for (const c of clouds) { c.material.color.copy(mix(a.cloud, b.cloud, t)); c.material.opacity = L('cloudO'); }
     for (const m of leafMats) m.emissiveIntensity = L('leaf');
-    lanternGlowMat.color.setHex(0xffc56b).multiplyScalar(0.3 + night * 1.6);
+    if (lanternGlowMat) lanternGlowMat.emissiveIntensity = 0.3 + night * 2.6;
     lanternHalo.material.opacity = night; lanternHalo.scale.setScalar(2.8 + night * 1.2); lanternLight.intensity = night * 6;
     const wkey = ka + kb + Math.round(t * 6);
     if (wkey !== lastWater) { lastWater = wkey; const W = { day: 0x6fc6d8, dusk: 0xb7a7d0, dawn: 0x9fc4dc, night: 0x2e4a80 }; paintWater(mix(W[ka], W[kb], t)); pond.material.emissive.copy(mix(W[ka], W[kb], t)); pond.material.emissiveIntensity = 0.05 + night * 0.1; }
@@ -356,17 +368,18 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
       const u = o.userData; if (!u.halo) continue;
       const m = maturity(u.p, now), on = m >= 1 ? 1 : m * 0.25, pulse = 0.85 + 0.15 * Math.sin(tsec * 1.7 + u.p.id);
       const k = on * (0.35 + night * 0.65) * pulse;
-      for (const [mat, w] of u.mats) mat.emissiveIntensity = k * w * (0.6 + night * 1.6);
-      u.halo.material.opacity = Math.min(1, k * 0.9); u.halo.scale.setScalar(2.4 + night * 1.2);
+      for (const [mat, w] of u.mats) mat.emissiveIntensity = k * w * (0.5 + night * 0.5);
+      u.halo.material.opacity = Math.min(1, k * 0.6); u.halo.scale.setScalar(2.4 + night * 1.2);
       for (const s of u.sparks) { const d = s.userData; s.position.set(Math.cos(d.a + tsec * 0.3) * d.r, d.y + Math.sin(tsec * 0.9 + d.ph) * 0.25, Math.sin(d.a + tsec * 0.3) * d.r); s.material.opacity = k * (0.5 + 0.5 * Math.sin(tsec * 2.3 + d.ph)); }
     }
     if (moodLight) { moodPL.position.copy(moodLight.position); moodPL.position.y += moodLight.userData.top; moodPL.color.copy(moodLight.userData.color); moodPL.intensity = 1.2 + night * 5; } else moodPL.intensity = 0;
     // 动物
     for (const h of animalObj.values()) {
       if (!h) continue; const u = h.userData, sp = u.a.sp;
+      if (u.mixer && !(SLEEPS_AT_NIGHT[sp] && night > 0.8)) u.mixer.update(dt);
       if (sp === 'fish') {
         h.visible = !!(state && state.pond); const a = tsec * 0.35 + u.ph;
-        h.position.set(POND.x + Math.cos(a) * 1.5, -0.42 + Math.max(0, Math.sin(tsec * 0.23 + u.ph) - 0.93) * 6, POND.z + Math.sin(a) * 1.5 * POND.sz); h.rotation.y = -a; continue;
+        h.position.set(POND.x + Math.cos(a) * 1.5, -0.2 + Math.max(0, Math.sin(tsec * 0.23 + u.ph) - 0.93) * 6, POND.z + Math.sin(a) * 1.5 * POND.sz); h.rotation.y = -a; continue;
       }
       const asleep = SLEEPS_AT_NIGHT[sp] && night > 0.8;
       if (sp === 'bee') {
@@ -381,11 +394,11 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
       if (d > 0.08 && !asleep) {
         const step = Math.min(d, (sp === 'chick' ? 1.1 : 0.8) * dt), nx = h.position.x + dx / d * step, nz = h.position.z + dz / d * step;
         if (walkable(nx, nz)) { h.position.x = nx; h.position.z = nz; } else { u.tx = h.position.x; u.tz = h.position.z; }
-        h.rotation.y = Math.atan2(dx, dz); hopY = Math.abs(Math.sin(tsec * 9 + u.ph)) * 0.14;
+        h.rotation.y = Math.atan2(dx, dz); hopY = Math.abs(Math.sin(tsec * 9 + u.ph)) * 0.18;
       } else if (!asleep) { u.wait -= dt; if (u.wait <= 0) { [u.tx, u.tz] = randomSpot(); if (Math.hypot(u.tx - h.position.x, u.tz - h.position.z) > 6) { u.tx = h.position.x + (u.tx - h.position.x) * 0.4; u.tz = h.position.z + (u.tz - h.position.z) * 0.4; if (!walkable(u.tx, u.tz)) { u.tx = h.position.x; u.tz = h.position.z; } } u.wait = 3 + Math.random() * 9; } }
       if (u.hop > 0) { u.hop -= dt; hopY += Math.abs(Math.sin(u.hop * 12)) * 0.5 * u.hop; }
       h.position.y = groundY(h.position.x, h.position.z) + hopY;
-      h.children[0].scale.y = ANIMAL_SCALE[sp] * (asleep ? 0.8 : 1 + Math.sin(tsec * 2 + u.ph) * 0.02);
+      h.children[0].scale.y = ANIMAL_SCALE[sp] * (asleep ? 0.85 : 1);
     }
     // 萤火虫、云、雨
     const fv = state ? Math.min(1, vitality(state, now) * 3) : 0;
@@ -414,5 +427,6 @@ export async function createWorld(canvas, starsCanvas, skyEl) {
     drag: dx => { spin += dx * 0.006; spinV = 0; }, fling: v => { spinV = v * 0.006; },
     hop: holder => { holder.userData.hop = 0.6; },
     setClock: f => { clockNow = f; },
+    zoom: k => { cam.zoom = Math.max(1, Math.min(2.6, cam.zoom * k)); cam.updateProjectionMatrix(); },
   };
 }

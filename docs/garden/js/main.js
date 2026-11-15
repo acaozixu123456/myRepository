@@ -115,15 +115,21 @@ async function tapGround(g) {
 // ---- 触摸：拖动旋转小岛，轻点是操作 ----
 let dragging = false, down = null;
 const cv = $('c');
-cv.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, lx: e.clientX, t: performance.now(), moved: false, v: 0 }; cv.setPointerCapture(e.pointerId); world.fling(0); });
+const touches = new Map(); let pinch = 0;
+cv.addEventListener('wheel', e => { e.preventDefault(); world.zoom(Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
+cv.addEventListener('pointerdown', e => { touches.set(e.pointerId, e); if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); down = null; dragging = true; return; }
+  down = { x: e.clientX, y: e.clientY, lx: e.clientX, t: performance.now(), moved: false, v: 0 }; cv.setPointerCapture(e.pointerId); world.fling(0); });
 cv.addEventListener('pointermove', e => {
+  if (touches.has(e.pointerId)) touches.set(e.pointerId, e);
+  if (touches.size === 2) { const [a, b] = [...touches.values()], d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); if (pinch > 0) world.zoom(d / pinch); pinch = d; return; }
   if (!down) return;
   if (!down.moved && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) { down.moved = true; dragging = true; }
   if (down.moved) { const dx = e.clientX - down.lx; world.drag(dx); down.v = dx * 60; }
   down.lx = e.clientX;
 });
 cv.addEventListener('pointerup', e => {
-  if (!down) return; const d = down; down = null; dragging = false;
+  touches.delete(e.pointerId); if (touches.size < 2) pinch = 0;
+  if (!down) { dragging = false; return; } const d = down; down = null; dragging = false;
   if (d.moved) { world.fling(d.v); return; }
   const p = world.pick(e.clientX, e.clientY);
   if (placing) { if (p.ground) tapGround(p.ground); else toast('点在岛上才行'); return; }
@@ -136,7 +142,7 @@ cv.addEventListener('pointerup', e => {
     toast(`${ANIMAL_NAME[a.sp]}<small>来了 ${days} 天</small>`, 1800);
   }
 });
-cv.addEventListener('pointercancel', () => { down = null; dragging = false; });
+cv.addEventListener('pointercancel', e => { touches.delete(e.pointerId); pinch = 0; down = null; dragging = false; });
 
 // ---- 播种 ----
 const SEED_ICON = { grass: '🌱', flower: '🌼', bush: '🌿', tree: '🌳', pine: '🌲' };
@@ -189,14 +195,14 @@ $('noteChip').addEventListener('click', openNotes);
 
 // ---- 收藏 ----
 const PLANT_ICON = { grass: '🌱', flower: '🌼', bush: '🌿', tree: '🌳', pine: '🌲', mush: '🍄', mood: '💗' };
-const ANIMAL_ICON = { chick: '🐥', bee: '🐝', bunny: '🐰', fish: '🐟', deer: '🦌', fox: '🦊', cat: '🐱' };
+const ANIMAL_ICON = { chick: '🐦', bee: '🐝', bunny: '🐰', fish: '🐟', deer: '🦌', fox: '🦊', cat: '🐱' };
 let resetArmed = 0;
 $('bBook').addEventListener('click', () => {
   const t = now(), count = {}; state.plants.forEach(p => { count[p.sp] = (count[p.sp] || 0) + 1; });
   const card = (icon, name, sub, ok) => `<div class="card${ok ? '' : ' no'}"><i>${ok ? icon : '❔'}</i>${ok ? name : '还没见过'}<small>${ok ? sub : '&nbsp;'}</small></div>`;
   $('bookList').innerHTML = `<h3>植物</h3><div class="grid">${Object.keys(PLANT_ICON).map(sp => card(PLANT_ICON[sp], PLANT_NAME[sp], `现在有 ${count[sp] || 0}`, count[sp] || state.found[sp])).join('')}</div>`
     + `<h3>住下来的动物</h3><div class="grid">${Object.keys(ANIMAL_ICON).map(sp => { const a = state.animals.find(x => x.sp === sp); return card(ANIMAL_ICON[sp], ANIMAL_NAME[sp], a ? `第 ${S.dayNumber(state, a.since)} 天来的` : '', a); }).join('')}</div>`
-    + `<h3>这块地</h3><div class="grid">${card('💧', '池塘', '有水了', state.pond)}${card('🏝️', '远处的小岛', `${state.islets} / 3 座绿了`, state.islets)}${card('✨', '写下的话', `${count.mood || 0} 句`, count.mood)}</div>`
+    + `<h3>这块地</h3><div class="grid">${card('💧', '池塘', '有水了', state.pond)}${card('🌉', '小桥', '架在池塘上', state.bridge)}${card('🏝️', '远处的小岛', `${state.islets} / 3 座绿了`, state.islets)}${card('✨', '写下的话', `${count.mood || 0} 句`, count.mood)}</div>`
     + `<button type="button" class="reset" id="reset">重新开始（清空这块地）</button>`;
   resetArmed = 0; sheet('sheetBook'); void t;
 });
