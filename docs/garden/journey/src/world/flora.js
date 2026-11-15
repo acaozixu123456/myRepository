@@ -1,0 +1,396 @@
+// 植被：树、灌木、草、花、石头。近处用真模型（按距离动态挑实例），远处的树用替身贴片。
+import * as THREE from 'three';
+import { DOM, CENTER, bankW } from './land.js';
+import { ROAD, STREAM, SPOTS } from './route.js';
+import { patch, U, FOG_FN } from './atmo.js';
+import { rng, fbm, vnoise, sstep, clamp } from './noise.js';
+
+// ---------- 读取打包好的模型 ----------
+export async function loadFlora(base) {
+  const [meta, bin] = await Promise.all([fetch(base + 'flora.json').then(r => r.json()), fetch(base + 'flora.bin').then(r => r.arrayBuffer())]);
+  const models = {};
+  for (const [name, m] of Object.entries(meta)) {
+    models[name] = { parts: m.parts.map(p => ({ mat: p.mat, geo: decode(bin, p) })), min: m.min, max: m.max };
+  }
+  return models;
+}
+function decode(bin, p) {
+  const n = p.count;
+  const qp = new Uint16Array(bin, p.pos, n * 3), qn = new Int8Array(bin, p.nor, n * 4), qu = new Uint16Array(bin, p.uv, n * 2);
+  const pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2);
+  for (let i = 0; i < n; i++) {
+    for (let k = 0; k < 3; k++) { pos[i * 3 + k] = p.pmin[k] + qp[i * 3 + k] / 65535 * p.pext[k]; nor[i * 3 + k] = qn[i * 4 + k] / 127; }
+    uv[i * 2] = p.umin[0] + qu[i * 2] / 65535 * p.uext[0]; uv[i * 2 + 1] = p.umin[1] + qu[i * 2 + 1] / 65535 * p.uext[1];
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  g.setIndex(new THREE.BufferAttribute(new Uint16Array(bin, p.idx, p.icount).slice(), 1));
+  g.computeBoundingSphere();
+  return g;
+}
+// 树冠法线改成“球面”法线：光影像一团团柔软的叶子，而不是一片片纸
+function softenCanopy(geo, amount = 0.75) {
+  geo.computeBoundingBox();
+  const c = new THREE.Vector3(); geo.boundingBox.getCenter(c); c.y -= (geo.boundingBox.max.y - geo.boundingBox.min.y) * 0.08;
+  const P = geo.attributes.position, N = geo.attributes.normal, v = new THREE.Vector3(), n = new THREE.Vector3();
+  for (let i = 0; i < P.count; i++) {
+    v.fromBufferAttribute(P, i).sub(c).normalize(); n.fromBufferAttribute(N, i);
+    n.lerp(v, amount).normalize(); N.setXYZ(i, n.x, n.y, n.z);
+  }
+  N.needsUpdate = true;
+}
+
+// ---------- 材质 ----------
+export async function floraMaterials(base, fadeU) {
+  const L = new THREE.TextureLoader();
+  const files = ['leaf.png', 'pine.png', 'bark.jpg', 'flowers.png', 'atlas.png', 'grass.png', 'mush.jpg', 'rock.jpg', 'pebble.jpg'];
+  const loaded = Object.fromEntries(await Promise.all(files.map(async f => [f, await L.loadAsync(base + f)])));
+  const tex = (f, srgb = true) => { const t = loaded[f]; t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.anisotropy = 4; return t; };
+  const M = {};
+  const mk = (key, map, o, matOpts = {}) => {
+    const m = new THREE.MeshLambertMaterial({ map, ...matOpts });
+    patch(m, o);
+    M[key] = m;
+  };
+  const near = { uniforms: { uFadeR: fadeU.trees } };
+  mk('leaf', tex('leaf.png'), { wind: 'tree', gobo: false, sss: 0.55, fadeOut: true, ...near }, { alphaTest: 0.42, side: THREE.DoubleSide });
+  mk('pine', tex('pine.png'), { wind: 'tree', gobo: false, sss: 0.35, fadeOut: true, ...near }, { alphaTest: 0.42, side: THREE.DoubleSide });
+  mk('bark', tex('bark.jpg'), { wind: 'tree', gobo: false, fadeOut: true, ...near });
+  // 灌木：和树共用叶子贴图，但不淡出（它们有自己的显示半径）
+  M.bushLeaf = new THREE.MeshLambertMaterial({ map: M.leaf.map, alphaTest: 0.42, side: THREE.DoubleSide });
+  patch(M.bushLeaf, { wind: 'grass', gobo: true, sss: 0.45, fadeOut: true, uniforms: { uFadeR: fadeU.bush } });
+  M.bushFlower = new THREE.MeshLambertMaterial({ map: tex('flowers.png'), alphaTest: 0.5, side: THREE.DoubleSide });
+  patch(M.bushFlower, { wind: 'grass', gobo: true, fadeOut: true, uniforms: { uFadeR: fadeU.bush } });
+  const small = { uniforms: { uFadeR: fadeU.small } };
+  mk('atlas', tex('atlas.png'), { wind: 'grass', gobo: true, sss: 0.4, fadeOut: true, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
+  mk('flowers', M.bushFlower.map, { wind: 'grass', gobo: true, sss: 0.3, fadeOut: true, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
+  mk('grass', tex('grass.png'), { wind: 'grass', gobo: true, sss: 0.5, fadeOut: true, ...small }, { side: THREE.DoubleSide });
+  mk('mush', tex('mush.jpg'), { gobo: true, fadeOut: true, ...small });
+  const rockU = { uniforms: { uFadeR: fadeU.rock } };
+  mk('rock', tex('rock.jpg'), { gobo: true, fadeOut: true, ...rockU });
+  mk('pebble', tex('pebble.jpg'), { gobo: true, fadeOut: true, ...small });
+  // 这套石头贴图偏暗偏绿，提亮成暖灰
+  M.bark.color.setRGB(1.2, 1.1, 1.02);
+  return M;
+}
+
+// ---------- 动态实例层：所有实例按 24 米格子分桶，每隔一会儿挑出镜头附近、视野里的 ----------
+const _f = new THREE.Frustum(), _m4 = new THREE.Matrix4(), _sph = new THREE.Sphere();
+export class ScatterLayer {
+  // parts: [{geo, mat}], items: Float32Array [x,y,z,ry,s,r,g,b] * n
+  constructor(name, parts, items, opts = {}) {
+    this.name = name; this.r = opts.radius || 50; this.rMin = opts.rMin || 0; this.cull = opts.cull !== false;
+    this.n = items.length / 8; this.items = items;
+    this.cell = 24; this.buckets = new Map();
+    for (let i = 0; i < this.n; i++) {
+      const k = Math.floor(items[i * 8] / this.cell) + ',' + Math.floor(items[i * 8 + 2] / this.cell);
+      let b = this.buckets.get(k); if (!b) this.buckets.set(k, b = { list: [], cx: (Math.floor(items[i * 8] / this.cell) + 0.5) * this.cell, cz: (Math.floor(items[i * 8 + 2] / this.cell) + 0.5) * this.cell, y: items[i * 8 + 1] });
+      b.list.push(i);
+    }
+    this.maxR = opts.maxScale || 2;
+    const cap = Math.min(this.n, opts.cap || 4000);
+    this.meshes = parts.map(p => {
+      const m = new THREE.InstancedMesh(p.geo, p.mat, cap);
+      m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      m.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3); m.instanceColor.setUsage(THREE.DynamicDrawUsage);
+      m.count = 0; m.frustumCulled = false; m.castShadow = !!opts.shadow; m.receiveShadow = opts.receive !== false;
+      m.name = name;
+      return m;
+    });
+    this.cap = cap; this.last = new THREE.Vector3(1e9, 0, 0); this.t = 0;
+    this.group = new THREE.Group(); this.group.name = name; for (const m of this.meshes) this.group.add(m);
+  }
+  update(camera, focus, dt, force) {
+    this.t -= dt;
+    if (!force && this.t > 0 && focus.distanceToSquared(this.last) < 4) return;
+    this.t = 0.25; this.last.copy(focus);
+    if (this.cull) { _m4.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse); _f.setFromProjectionMatrix(_m4); }
+    const r = this.r, r2 = r * r, rm2 = this.rMin * this.rMin, cx = camera.position.x, cz = camera.position.z, it = this.items;
+    const mat = this.meshes[0].instanceMatrix.array, col = this.meshes[0].instanceColor.array;
+    let c = 0;
+    const half = this.cell * 0.75;
+    for (const b of this.buckets.values()) {
+      const dx = b.cx - cx, dz = b.cz - cz;
+      if (dx * dx + dz * dz > (r + half) * (r + half)) continue;
+      if (this.cull) { _sph.center.set(b.cx, b.y + 4, b.cz); _sph.radius = half + 8; if (!_f.intersectsSphere(_sph)) continue; }
+      for (const i of b.list) {
+        const o = i * 8, x = it[o], z = it[o + 2], ex = x - cx, ez = z - cz, d2 = ex * ex + ez * ez;
+        if (d2 > r2 || d2 < rm2 || c >= this.cap) continue;
+        const s = it[o + 4], cs = Math.cos(it[o + 3]) * s, sn = Math.sin(it[o + 3]) * s, m = c * 16;
+        mat[m] = cs; mat[m + 1] = 0; mat[m + 2] = -sn; mat[m + 3] = 0;
+        mat[m + 4] = 0; mat[m + 5] = s; mat[m + 6] = 0; mat[m + 7] = 0;
+        mat[m + 8] = sn; mat[m + 9] = 0; mat[m + 10] = cs; mat[m + 11] = 0;
+        mat[m + 12] = x; mat[m + 13] = it[o + 1]; mat[m + 14] = z; mat[m + 15] = 1;
+        col[c * 3] = it[o + 5]; col[c * 3 + 1] = it[o + 6]; col[c * 3 + 2] = it[o + 7];
+        c++;
+      }
+    }
+    for (let k = 0; k < this.meshes.length; k++) {
+      const m = this.meshes[k];
+      if (k > 0) { m.instanceMatrix.array.set(mat.subarray(0, c * 16)); m.instanceColor.array.set(col.subarray(0, c * 3)); }
+      m.count = c;
+      m.instanceMatrix.clearUpdateRanges(); m.instanceMatrix.addUpdateRange(0, c * 16); m.instanceMatrix.needsUpdate = true;
+      m.instanceColor.clearUpdateRanges(); m.instanceColor.addUpdateRange(0, c * 3); m.instanceColor.needsUpdate = true;
+    }
+    this.visible = c;
+  }
+}
+
+// ---------- 摆放 ----------
+const TREE_TYPES = ['CommonTree_1', 'CommonTree_3', 'CommonTree_5', 'Pine_2'];
+export function placeFlora(land, farHeight, quality) {
+  const R = rng(20251115);
+  const trees = [];            // {t, x, z, s, ry, far}
+  const occ = new Map();       // 树之间留距离
+  const okSpace = (x, z, d) => {
+    const c = 6, gx = Math.floor(x / c), gz = Math.floor(z / c);
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) {
+      const a = occ.get((gx + i) + ',' + (gz + j)); if (!a) continue;
+      for (const q of a) if ((q[0] - x) ** 2 + (q[1] - z) ** 2 < d * d) return false;
+    }
+    return true;
+  };
+  const mark = (x, z) => { const k = Math.floor(x / 6) + ',' + Math.floor(z / 6); let a = occ.get(k); if (!a) occ.set(k, a = []); a.push([x, z]); };
+  const shore = (x, z) => { if (!land.inside(x, z)) return 99; const q = STREAM.nearest(x, z, 20); return q.dist === Infinity ? 99 : q.dist - bankW(q.s); };
+  const camp = ROAD.at(SPOTS.camp), view = ROAD.at(SPOTS.view), bridge = ROAD.at(SPOTS.bridge);
+  const clear = (x, z) => Math.hypot(x - camp.x - 2, z - camp.z + 3) > 17 && Math.hypot(x - view.x + 4, z - view.z) > 9 && Math.hypot(x - 62, z + 118) > 13 && Math.hypot(x - bridge.x, z - bridge.z) > 13;
+  const addTree = (t, x, z, s, minD = 4.2) => {
+    if (!land.inside(x, z) || land.roadDist(x, z) < 3.4 || shore(x, z) < 1.5 || !clear(x, z) || !okSpace(x, z, minD)) return false;
+    trees.push({ t, x, z, s, ry: R() * 6.283, y: land.heightExact(x, z) - 0.06 }); mark(x, z); return true;
+  };
+  const decid = () => TREE_TYPES[Math.floor(R() * 3)];
+  // 1) 路边两片树林：树冠伸到路上，地上有斑驳的光影
+  for (const gs of SPOTS.grove) {
+    for (let i = 0; i < 70; i++) {
+      const s = gs + (R() - 0.5) * 46, p = ROAD.at(s), side = R() < 0.5 ? -1 : 1, d = 3.6 + Math.pow(R(), 1.4) * 18;
+      addTree(decid(), p.x - p.tz * side * d, p.z + p.tx * side * d, 0.85 + R() * 0.4);
+    }
+  }
+  // 2) 观景台旁边一棵大树
+  addTree('CommonTree_1', view.x - 1.5, view.z + 5.5, 1.3, 2);
+  // 3) 溪边的树
+  for (let s = 0; s < STREAM.length; s += 7) {
+    if (R() < 0.45) continue;
+    const p = STREAM.at(s), side = R() < 0.5 ? -1 : 1, d = bankW(s) + 3 + R() * 7;
+    addTree(decid(), p.x - p.tz * side * d, p.z + p.tx * side * d, 0.8 + R() * 0.45);
+  }
+  // 4) 山坡上的林子：噪声决定疏密，高处多松树
+  for (let i = 0; i < 26000; i++) {
+    const x = DOM.x0 + R() * DOM.w, z = DOM.z0 + R() * DOM.d;
+    const h = land.height(x, z), rd = land.roadDist(x, z);
+    if (rd < 22) continue;
+    const m = sstep(0.46, 0.6, fbm(x * 0.011 + 5, z * 0.011 - 2, 3)) * (0.35 + 0.65 * sstep(3, 14, h)) + 0.25 * sstep(-250, -320, z);
+    if (R() > m * 0.9) continue;
+    const pine = h > 17 || z < -262 ? R() < 0.75 : R() < 0.1;
+    addTree(pine ? 'Pine_2' : decid(), x, z, pine ? 1.0 + R() * 0.6 : 0.85 + R() * 0.45, 4.6);
+  }
+  // 5) 草地上零星几棵
+  for (let i = 0; i < 400; i++) {
+    const x = DOM.x0 + R() * DOM.w, z = DOM.z0 + R() * DOM.d;
+    if (land.roadDist(x, z) < 9 || fbm(x * 0.02, z * 0.02, 2) < 0.52) continue;
+    addTree(decid(), x, z, 0.95 + R() * 0.45, 12);
+  }
+  const nearCount = trees.length;
+  // 6) 近景范围外的远处林子（只用替身）
+  for (let gx = -680; gx <= 680; gx += 9) for (let gz = -680; gz <= 680; gz += 9) {
+    const x = CENTER.x + gx + (R() - 0.5) * 8, z = CENTER.z + gz + (R() - 0.5) * 8;
+    if (land.inside(x, z)) continue;
+    const r = Math.hypot(x - CENTER.x, z - CENTER.z); if (r > 680) continue;
+    const h = farHeight(x, z);
+    const n1 = fbm(x * 0.006 + 3, z * 0.006, 3);
+    if (n1 < 0.45 || h > 260 || R() > sstep(0.45, 0.6, n1) * 0.9) continue;
+    trees.push({ t: h > 60 || R() < 0.3 ? 'Pine_2' : decid(), x, z, s: 1.0 + R() * 0.5, ry: 0, far: true, y: h });
+  }
+  // 7) 灌木、草、花、蕨、蘑菇、石头（只放在路两边 70 米内）
+  const L = {};
+  const push = (name, x, y, z, s, tint = 1, hueJ = 0.06) => {
+    const a = L[name] || (L[name] = []);
+    const v = 1 + (R() - 0.5) * hueJ * 2;
+    a.push(x, y, z, R() * 6.283, s, tint * v, tint * (1 + (R() - 0.5) * hueJ), tint * v * (1 - (R() - 0.3) * hueJ));
+  };
+  const treeNear = (x, z, r) => { const c = 6, gx = Math.floor(x / c), gz = Math.floor(z / c); let n = 0; for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) { const a = occ.get((gx + i) + ',' + (gz + j)); if (a) for (const q of a) if ((q[0] - x) ** 2 + (q[1] - z) ** 2 < r * r) n++; } return n; };
+  const dens = quality === 'low' ? 0.55 : quality === 'mid' ? 0.8 : 1;
+  // 营地篝火周围和观景台长椅前是踩出来的空地（篝火位置和 props.js 里一致）
+  const fireX = camp.x + 3.2 * camp.tz + 1.5 * camp.tx, fireZ = camp.z - 3.2 * camp.tx + 1.5 * camp.tz;
+  const trodden = (x, z) => {
+    const cd = Math.hypot(x - fireX, z - fireZ), bd = Math.hypot(x - view.x + 4.2, z - view.z + 0.6);
+    return (cd < 6.2 && R() > (cd - 3.4) / 2.8) || (bd < 2.6 && R() > (bd - 1.2) / 1.4);
+  };
+  const step = 1.3;
+  for (let gz = DOM.z0 + 1; gz < DOM.z0 + DOM.d - 1; gz += step) for (let gx = DOM.x0 + 1; gx < DOM.x0 + DOM.w - 1; gx += step) {
+    const x = gx + (R() - 0.5) * step, z = gz + (R() - 0.5) * step;
+    const rd = land.roadDist(x, z); if (rd > 70 || trodden(x, z)) continue;
+    const sh = land.streamDist(x, z) < 30 ? shore(x, z) : 99;
+    if (sh < 0.35) continue;
+    const y = land.heightExact(x, z);
+    const nrm = land.normal(x, z); const steep = 1 - nrm[1];
+    const tn = treeNear(x, z, 5);
+    const flowerM = sstep(0.5, 0.68, fbm(x * 0.02 + 40, z * 0.02, 3));
+    const u = R();
+    if (rd < 1.15) { if (u < 0.05 * dens) push('Pebble_Round_2', x, y, z, 0.5 + R() * 0.8, 1, 0.1); continue; }
+    if (rd < 2.6 && u < 0.6 * dens) { push(R() < 0.7 ? 'Grass_Common_Short' : 'Grass_Wispy_Tall', x, y - 0.02, z, 0.3 + R() * 0.2, 1, 0.08); continue; }
+    if (sh < 2.2 && u < 0.35 * dens) { push(R() < 0.5 ? 'Grass_Wispy_Tall' : 'Plant_1', x, y, z, 0.32 + R() * 0.2, 0.95); continue; }
+    if (steep > 0.35 && u < 0.05) { push(R() < 0.5 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, y - 0.15, z, 0.25 + R() * 0.45, 1, 0.08); continue; }
+    if (tn > 0) {
+      if (u < 0.12 * dens) push('Fern_1', x, y, z, 0.11 + R() * 0.07, 0.95);
+      else if (u < 0.16 * dens) push('Clover_2', x, y, z, 0.35 + R() * 0.15);
+      else if (u < 0.165) push('Mushroom_Common', x, y, z, 0.35 + R() * 0.25, 1, 0.1);
+      else if (u < 0.19 && rd > 4) push(R() < 0.6 ? 'Bush_Common' : 'Bush_Common_Flowers', x, y, z, 0.55 + R() * 0.45, 0.95);
+      continue;
+    }
+    if (u < 0.006 && rd > 4) { push(R() < 0.5 ? 'Bush_Common' : 'Bush_Common_Flowers', x, y, z, 0.5 + R() * 0.5); continue; }
+    if (u < 0.006 + 0.07 * flowerM * dens) { push(R() < 0.55 ? 'Flower_4_Group' : 'Flower_3_Group', x, y, z, 0.26 + R() * 0.14, 1, 0.04); continue; }
+    if (u < 0.05 + 0.03 * dens) { push('Grass_Common_Short', x, y - 0.02, z, 0.28 + R() * 0.2, 1, 0.08); continue; }
+    if (u < 0.2 && R() < 0.35 * dens) { push(R() < 0.6 ? 'Clover_1' : 'Grass_Wispy_Tall', x, y, z, R() < 0.6 ? 0.32 : 0.26 + R() * 0.12); continue; }
+    if (u < 0.205) { push('Rock_Medium_2', x, y - 0.1, z, 0.12 + R() * 0.2, 1, 0.1); continue; }
+  }
+  // 草丛：路两边 34 米内很密，再往外稀一些
+  const tufts = [[], [], []];
+  const ts = 0.78;
+  for (let gz = DOM.z0 + 1; gz < DOM.z0 + DOM.d - 1; gz += ts) for (let gx = DOM.x0 + 1; gx < DOM.x0 + DOM.w - 1; gx += ts) {
+    const x = gx + (R() - 0.5) * ts, z = gz + (R() - 0.5) * ts;
+    const rd = land.roadDist(x, z); if (rd > 62 || rd < 1.05 || trodden(x, z)) continue;
+    const keep = (rd < 34 ? 0.85 : 0.35) * dens * (rd < 1.6 ? 0.6 : 1);
+    if (R() > keep) continue;
+    if (land.streamDist(x, z) < 12 && shore(x, z) < 0.5) continue;
+    const y = land.heightExact(x, z) - 0.03;
+    const k = rd < 2.2 ? (R() < 0.5 ? 1 : 0) : R() < 0.55 ? 0 : R() < 0.6 ? 2 : 1;
+    const sc = (0.8 + R() * 0.55) * (rd < 2.2 ? 1.15 : 1);
+    tufts[k].push(x, y, z, R() * 6.283, sc, 1, 1, 1);
+  }
+  // 溪里溪边的石头
+  for (let s = 0; s < STREAM.length; s += 2.2) {
+    if (R() < 0.55) continue;
+    const p = STREAM.at(s); if (!land.inside(p.x, p.z)) continue;
+    const side = R() < 0.5 ? -1 : 1, d = bankW(s) * (0.4 + R() * 0.75);
+    const x = p.x - p.tz * side * d, z = p.z + p.tx * side * d;
+    push(R() < 0.5 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, land.heightExact(x, z) - 0.05, z, 0.15 + R() * 0.3, 1, 0.08);
+  }
+  return { trees, nearCount, small: Object.fromEntries(Object.entries(L).map(([k, v]) => [k, new Float32Array(v)])), tufts: tufts.map(a => new Float32Array(a)) };
+}
+
+// 树冠遮挡图（给地面上的叶影用）+ 林下地面
+export function canopyTexture(trees, land) {
+  const S = 512, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, S, S);
+  const sx = S / DOM.w, sz = S / DOM.d;
+  const grd = (x, y, r) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(255,255,255,0.95)'); gr.addColorStop(0.7, 'rgba(255,255,255,0.6)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); return gr; };
+  for (const t of trees) {
+    if (t.far) continue;
+    const x = (t.x - DOM.x0) * sx, y = (t.z - DOM.z0) * sz, r = 3.4 * t.s * sx * (t.t === 'Pine_2' ? 0.8 : 1);
+    g.fillStyle = grd(x, y, r); g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.NoColorSpace; t.flipY = false;
+  // 林下：写进分区纹理的 A 通道
+  return { tex: t, canvas: c };
+}
+export function forestFloor(splat, trees, land) {
+  const NX = land.NX, NZ = land.NZ, d = splat.image.data;
+  for (const t of trees) {
+    if (t.far) continue;
+    const r = 4.2 * t.s, gx0 = Math.max(0, Math.floor((t.x - r - DOM.x0) / DOM.cell)), gx1 = Math.min(NX - 1, Math.ceil((t.x + r - DOM.x0) / DOM.cell));
+    const gz0 = Math.max(0, Math.floor((t.z - r - DOM.z0) / DOM.cell)), gz1 = Math.min(NZ - 1, Math.ceil((t.z + r - DOM.z0) / DOM.cell));
+    for (let gz = gz0; gz <= gz1; gz++) for (let gx = gx0; gx <= gx1; gx++) {
+      const x = DOM.x0 + gx * DOM.cell, z = DOM.z0 + gz * DOM.cell, q = Math.hypot(x - t.x, z - t.z) / r;
+      if (q >= 1) continue;
+      const k = (gz * NX + gx) * 4 + 3; d[k] = Math.min(255, d[k] + (1 - q * q) * 150);
+    }
+  }
+  splat.needsUpdate = true;
+}
+
+// ---------- 远处的替身树：启动时把四种树从侧面画进一张图集 ----------
+export function buildImpostors(renderer, models, mats, trees, fadeU) {
+  const cellPx = 256, types = TREE_TYPES, atlasW = cellPx * types.length;
+  const rt = new THREE.WebGLRenderTarget(atlasW, cellPx, { samples: 0 });
+  rt.texture.colorSpace = THREE.SRGBColorSpace;
+  const scene = new THREE.Scene();
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+  const info = [];
+  const prevClear = renderer.getClearColor(new THREE.Color()), prevAlpha = renderer.getClearAlpha(), prevTM = renderer.toneMapping;
+  renderer.setClearColor(0x000000, 0);
+  rt.viewport.set(0, 0, atlasW, cellPx); rt.scissorTest = false;
+  renderer.setRenderTarget(rt); renderer.clear();
+  renderer.toneMapping = THREE.NoToneMapping;
+  types.forEach((t, i) => {
+    const m = models[t];
+    const w = Math.max(m.max[0] - m.min[0], m.max[2] - m.min[2]) * 1.02, h = (m.max[1] - m.min[1]) * 1.02;
+    const half = Math.max(w, h) / 2, cy = (m.max[1] + m.min[1]) / 2;
+    info.push({ w: half * 2, h: half * 2, cy, bottom: cy - half });
+    scene.clear();
+    for (const p of m.parts) {
+      const src = mats[p.mat];
+      const bm = new THREE.MeshBasicMaterial({ map: src.map, alphaTest: 0.42, side: THREE.DoubleSide, color: p.mat === 'bark' ? 0x9a8a7a : 0xd8d8d8 });
+      scene.add(new THREE.Mesh(p.geo, bm));
+    }
+    cam.left = -half; cam.right = half; cam.top = half; cam.bottom = -half; cam.position.set(0, cy, 50); cam.lookAt(0, cy, 0); cam.updateProjectionMatrix();
+    rt.viewport.set(i * cellPx, 0, cellPx, cellPx); rt.scissor.set(i * cellPx, 0, cellPx, cellPx); rt.scissorTest = true;
+    renderer.setRenderTarget(rt);
+    renderer.render(scene, cam);
+  });
+  rt.scissorTest = false; rt.viewport.set(0, 0, atlasW, cellPx);
+  renderer.setRenderTarget(null); renderer.setClearColor(prevClear, prevAlpha); renderer.toneMapping = prevTM;
+  rt.texture.generateMipmaps = false;
+
+  // 实例：每个一个面向镜头的竖片
+  const n = trees.length;
+  const geo = new THREE.InstancedBufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute([-0.5, 0, 0, 0.5, 0, 0, 0.5, 1, 0, -0.5, 1, 0], 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1], 2));
+  geo.setIndex([0, 1, 2, 0, 2, 3]);
+  const a0 = new Float32Array(n * 4), a1 = new Float32Array(n * 4);
+  trees.forEach((t, i) => {
+    const ti = types.indexOf(t.t), I = info[ti];
+    a0[i * 4] = t.x; a0[i * 4 + 1] = t.y + I.bottom * t.s; a0[i * 4 + 2] = t.z; a0[i * 4 + 3] = I.w * t.s;
+    a1[i * 4] = ti; a1[i * 4 + 1] = I.h * t.s; a1[i * 4 + 2] = 0.9 + ((i * 7919) % 100) / 500; a1[i * 4 + 3] = t.far ? 1 : 0;
+  });
+  geo.setAttribute('aPos', new THREE.InstancedBufferAttribute(a0, 4));
+  geo.setAttribute('aInfo', new THREE.InstancedBufferAttribute(a1, 4));
+  geo.instanceCount = n;
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { ...U, uAtlas: { value: rt.texture }, uCount: { value: types.length }, uFadeR: fadeU.trees, uAmb: { value: new THREE.Color('#9fb0c8') }, uAmbG: { value: new THREE.Color('#6a6a40') } },
+    vertexShader: /* glsl */`
+      attribute vec4 aPos; attribute vec4 aInfo;
+      uniform float uTime; uniform float uWind;
+      varying vec2 vUv; varying vec3 vWP; varying float vTint; varying vec3 vRight; varying float vType;
+      void main() {
+        vec3 base = aPos.xyz;
+        vec3 toCam = cameraPosition - base; toCam.y = 0.0; toCam = normalize( toCam + vec3( 1e-4, 0.0, 0.0 ) );
+        vec3 right = vec3( toCam.z, 0.0, -toCam.x );
+        float sway = sin( uTime * 1.2 + base.x * 0.3 + base.z * 0.2 ) * 0.03 * position.y * uWind;
+        vec3 wp = base + right * ( position.x * aPos.w + sway * aInfo.y ) + vec3( 0.0, position.y * aInfo.y, 0.0 );
+        vWP = wp; vRight = right; vTint = aInfo.z; vType = aInfo.x;
+        vUv = vec2( ( aInfo.x + uv.x ) / ${types.length.toFixed(1)}, uv.y );
+        gl_Position = projectionMatrix * viewMatrix * vec4( wp, 1.0 );
+      }`,
+    fragmentShader: /* glsl */`
+      uniform sampler2D uAtlas; uniform float uFadeR; uniform vec3 uSunColor; uniform vec3 uAmb; uniform vec3 uAmbG;
+      varying vec2 vUv; varying vec3 vWP; varying float vTint; varying vec3 vRight; varying float vType;
+      #include <common>
+      ${FOG_FN}
+      float jDither() { return fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ); }
+      void main() {
+        float fd = length( vWP.xz - cameraPosition.xz ) - uFadeR;
+        if ( fd < ( jDither() - 0.5 ) * 6.0 ) discard;
+        vec4 c = texture2D( uAtlas, vUv );
+        if ( c.a < 0.45 ) discard;
+        // 假装是一团球形树冠来打光
+        vec2 q = vec2( fract( vUv.x * ${types.length.toFixed(1)} ) * 2.0 - 1.0, vUv.y * 2.0 - 1.15 );
+        vec3 toCam = normalize( vec3( -vRight.z, 0.0, vRight.x ) );
+        vec3 n = normalize( vRight * q.x + vec3( 0.0, 1.0, 0.0 ) * q.y + toCam * sqrt( max( 0.0, 1.0 - dot( q, q ) * 0.6 ) ) );
+        float ndl = max( dot( n, uSunDir ), 0.0 );
+        vec3 alb = c.rgb * vTint;
+        vec3 col = alb * ( mix( uAmbG, uAmb, n.y * 0.5 + 0.5 ) * 0.95 + uSunColor * ndl * 1.6 );
+        vec3 vd = normalize( vWP - cameraPosition );
+        col += uSunColor * alb * pow( max( dot( vd, uSunDir ), 0.0 ), 3.0 ) * 0.5;
+        col = jFog( col, vWP );
+        gl_FragColor = vec4( col, 1.0 );
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+    side: THREE.DoubleSide,
+  });
+  return { geo, mat, info, rt };
+}

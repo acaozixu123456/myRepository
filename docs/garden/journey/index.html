@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="旅途">
+<meta name="theme-color" content="#e9c9a0">
+<title>旅途</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="res/icon-180.png">
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body class="loading">
+<canvas id="c"></canvas>
+<div id="vignette"></div>
+<div id="fade"></div>
+
+<div id="hud">
+  <div class="top">
+    <div class="place"><b id="placeName"></b><small id="placeSub"></small></div>
+    <button id="perf" type="button" aria-label="画质">-- fps</button>
+  </div>
+  <div id="progress"><i></i></div>
+  <div id="banner"><b></b><small></small></div>
+  <div class="bottom">
+    <div class="gaits" id="gaits">
+      <button type="button" data-g="0">慢步</button><button type="button" data-g="1" class="on">快走</button><button type="button" data-g="2">小跑</button>
+    </div>
+    <div class="hint" id="hint">按住屏幕前进</div>
+    <div class="tools">
+      <button type="button" id="bAuto">自动</button>
+      <button type="button" id="bCam">俯视</button>
+      <button type="button" id="bHorse">换马</button>
+      <button type="button" id="bSound">声音</button>
+    </div>
+  </div>
+</div>
+
+<div id="start">
+  <div class="card">
+    <h1>旅途</h1>
+    <p class="sub">第一段 · 暖光谷地</p>
+    <div class="horses" id="horsePick">
+      <button type="button" data-h="b" class="on"><b>麦芽</b><small>自己捏的圆润小马</small></button>
+      <button type="button" data-h="a"><b>栗子</b><small>免费素材马</small></button>
+    </div>
+    <button id="go" type="button" disabled>准备中…</button>
+    <p class="tips">按住屏幕前进，松开就停。左右拖动看风景，双指捏合切换俯视。</p>
+    <p class="load" id="loadText">正在铺路…</p>
+    <button class="link" id="creditsBtn" type="button">音乐与素材</button>
+  </div>
+</div>
+
+<div id="summary" hidden>
+  <div class="card">
+    <h2>今晚在山口扎营</h2>
+    <p id="sumText"></p>
+    <div class="row"><button type="button" id="again">再走一遍</button><button type="button" id="againSwap">换匹马再走</button></div>
+  </div>
+</div>
+
+<div id="credits" hidden>
+  <div class="card">
+    <h2>音乐与素材</h2>
+    <p>音乐：“Morning” Kevin MacLeod (incompetech.com)<br>Licensed under Creative Commons: By Attribution 4.0<br>creativecommons.org/licenses/by/4.0/</p>
+    <p>环境声与马蹄声：Mixkit 免费音效</p>
+    <p>树木花草：Quaternius Stylized Nature MegaKit（CC0）<br>素材马：Quaternius Ultimate Animated Animals（CC0）<br>骑手：KayKit Adventurers（CC0）</p>
+    <p>小马“麦芽”、地形、天空、水和木桥由代码生成。</p>
+    <button type="button" id="creditsClose">好</button>
+  </div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
