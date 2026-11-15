@@ -13,6 +13,7 @@ import { Journey, Colliders, GAITS, START_TOD } from './game/journey.js';
 import { Quality, TIERS } from './game/quality.js';
 import { initUI } from './game/ui.js';
 import { DayLight, periodOf } from './world/daytime.js';
+import { SKY } from './world/sky.js';
 import { makeFireflies } from './world/fireflies.js';
 import { loadSave, writeSave, clearSave } from './game/save.js';
 
@@ -65,6 +66,7 @@ const focus = new THREE.Vector3();
 function applyTier(tier) {
   const T = TIERS[tier];
   renderer.setPixelRatio(Math.min(devicePixelRatio, T.pr)); setSize();
+  SKY.uDpr.value = renderer.getPixelRatio();
   sun.shadow.mapSize.set(T.shadow, T.shadow);
   if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
   const c = sun.shadow.camera; c.left = c.bottom = -T.shadowR; c.right = c.top = T.shadowR; c.updateProjectionMatrix();

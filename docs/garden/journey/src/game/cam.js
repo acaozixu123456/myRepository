@@ -99,11 +99,12 @@ export function viewpointShot(yaw0) {
   };
 }
 // 营地：在篝火边慢慢来回转，马、火、坐着的骑手和帐篷都在画面里
-export function campShot(fireAt, camera) {
+// a0：镜头在火的哪一边（度），swing：慢慢左右摆多少度
+export function campShot(fireAt, camera, a0 = 270, swing = 42) {
   return {
     dur: 1e9, blend: 3, hold: true,
     pos: t => {
-      const a = THREE.MathUtils.degToRad(270 + 42 * Math.sin(0.03 * t - 1.2)), R = camera.aspect < 1 ? 8.2 : 6.6;
+      const a = THREE.MathUtils.degToRad(a0 + swing * Math.sin(0.03 * t - 1.2)), R = camera.aspect < 1 ? 8.2 : 6.6;
       return new THREE.Vector3(fireAt.x - Math.sin(a) * R, fireAt.y + 2.3 + Math.sin(t * 0.2) * 0.2, fireAt.z + Math.cos(a) * R);
     },
     look: () => new THREE.Vector3(fireAt.x, fireAt.y + 0.8, fireAt.z),
