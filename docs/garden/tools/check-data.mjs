@@ -1,5 +1,5 @@
 // 构建前检查内容数据里的引用是否都对得上，写错一个 id 就让构建失败。
-import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE } from '../src/data/index.js';
+import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE, PETS } from '../src/data/index.js';
 const errs = [], need = (ok, msg) => { if (!ok) errs.push(msg); };
 for (const [k, c] of Object.entries(CLASSES)) { for (const [, id] of c.skills) need(SKILLS[id], `职业 ${k} 的技能 ${id} 不存在`); need(ELEMENTS[c.el], `职业 ${k} 的元素 ${c.el} 不存在`); }
 for (const [k, m] of Object.entries(MONSTERS)) {
@@ -18,5 +18,9 @@ for (const q of QUESTS) { need(!ids.has(q.id), `委托 id 重复：${q.id}`); id
 for (const slot in GEAR_SLOTS) need(GEAR.names[slot]?.length === 8 && GEAR.main[slot], `装备部位 ${slot} 的名字或主属性不全`);
 for (const [k, c] of Object.entries(CLASSES)) { for (const [, id] of [...(c.passives || []), ...Object.values(c.routes || {}).flatMap(r => r.skills)]) need(SKILLS[id], `职业 ${k} 的技能 ${id} 不存在`); }
 for (const z of ZONES) { for (const m of z.mats || []) need(ITEMS[m], `地图 ${z.id} 的材料 ${m} 不存在`); need(!z.set || (GEAR.sets[z.set] && ITEMS['bp_' + z.set]), `地图 ${z.id} 的套装或图纸不对`); }
+// 伙伴：每种野怪都有两段进化，进化材料、技能、天赋、技能书都存在
+for (const z of ZONES) for (const id of z.wild || []) { const e = PETS.evo[id]; need(e?.length === 2, `野怪 ${id} 没有两段进化`); for (const s of e || []) { need(SKILLS[s.skill], `${id} 进化技能 ${s.skill} 不存在`); for (const k in s.need) need(ITEMS[k], `${id} 进化材料 ${k} 不存在`); } need(PETS.famTalents[MONSTERS[id].fam]?.every(t => PETS.talents[t]), `野怪 ${id} 的科别没有天赋`); }
+for (const id of PETS.books) need(SKILLS[id] && ITEMS['book_' + id]?.skill === id, `技能书 ${id} 不对`);
+for (const n of Object.values(PETS.natures)) need(n.up !== n.down, `性格 ${n.name} 增减同一项`);
 if (errs.length) { console.error('数据检查没通过：\n' + errs.join('\n')); process.exit(1); }
 console.log(`数据检查通过：${Object.keys(CLASSES).length} 职业，${Object.keys(SKILLS).length} 技能，${Object.keys(STATUS).length} 状态，${Object.keys(COMBO).length} 连携，${Object.keys(MONSTERS).length} 怪物，${ZONES.length} 张地图，${QUESTS.length} 个委托`);

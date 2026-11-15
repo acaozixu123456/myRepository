@@ -24,7 +24,7 @@ export { flash };
 // 名牌上的状态按事件一步步更新，不直接读战斗的最终结果（否则会剧透）
 function buildPlate(u) {
   const d = document.createElement('div'); d.className = 'plate' + (u.boss ? ' boss' : '') + (u.side === 'a' ? ' ally' : ''); d.dataset.k = u.key;
-  d.innerHTML = (u.side === 'a' ? `<img class="pp" src="${portraitOf(u)}" alt="">` : '') + `<div class="pn">${u.side === 'b' || u.key !== 'hero' ? `<span class="el el-${u.el}">${ELEMENTS[u.el]}</span>` : ''}${u.name}${u.lv ? `<small>Lv.${u.lv}</small>` : ''}</div>`
+  d.innerHTML = (u.side === 'a' ? `<img class="pp${u.shiny ? ' shiny' : ''}" src="${portraitOf(u)}" alt="">` : '') + `<div class="pn">${u.side === 'b' || u.key !== 'hero' ? `<span class="el el-${u.el}">${ELEMENTS[u.el]}</span>` : ''}${u.name}${u.lv ? `<small>Lv.${u.lv}</small>` : ''}</div>`
     + `<div class="gauge hp"><i></i><b class="sh"></b></div>${u.key === 'hero' ? '<div class="gauge mp"><i></i></div>' : ''}${u.boss ? '<div class="gauge brk"><i></i></div>' : ''}<div class="chips"></div>`;
   // 我方的状态放在底部一排卡片里，不挡住模型；敌方的名牌跟着头顶走
   const box = $(u.side === 'a' ? 'party' : 'plates'), old = box.querySelector(`[data-k="${u.key}"]`);
@@ -60,7 +60,7 @@ function banner(text, ms = 900, cls = '') { const b = $('banner'); b.textContent
 // ---------- 行动顺序条 ----------
 function drawOrder(order, now) {
   const list = [now, ...order].filter(Boolean).slice(0, 8);
-  $('order').innerHTML = list.map((k, i) => { const u = unitOf(k); if (!u) return ''; return `<span class="o ${u.side === 'a' ? 'a' : 'b'}${i === 0 ? ' now' : ''}${u.boss ? ' boss' : ''}"><img src="${portraitOf(u)}" alt="">${i === 0 ? '<em>行动</em>' : ''}</span>`; }).join('');
+  $('order').innerHTML = list.map((k, i) => { const u = unitOf(k); if (!u) return ''; return `<span class="o ${u.side === 'a' ? 'a' : 'b'}${i === 0 ? ' now' : ''}${u.boss ? ' boss' : ''}"><img class="${u.shiny ? 'shiny' : ''}" src="${portraitOf(u)}" alt="">${i === 0 ? '<em>行动</em>' : ''}</span>`; }).join('');
 }
 
 // ---------- 指令 ----------
@@ -117,7 +117,7 @@ export function initBattle(v) {
   $('bAuto').addEventListener('click', () => { const s = store.s; setAuto(!s.settings.auto); if (s.settings.auto && battle && !cmdLocked) go(C.autoHeroAction(battle, s)); });
   $('bSpeed').addEventListener('click', () => setSpeed(speed > 1 ? 1 : 2));
 }
-export const look = () => { const s = store.s, p = C.activePet(s); return { cls: s.hero.cls, pet: p ? p.id : null }; };
+export const look = () => { const s = store.s, p = C.activePet(s); return { cls: s.hero.cls, pet: p ? { id: p.id, evo: p.evo || 0, shiny: !!p.shiny, tint: C.petTint(p) } : null }; };
 
 export async function startEncounter(id, isBoss, wildObj) {
   const s = store.s; if (ui.busy || !s || ui.sheet) return; ui.busy = true; wildRef = wildObj;
@@ -213,8 +213,9 @@ async function endBattle() {
     if (l.t === 'item') return { text: `捡到 ${ITEMS[l.id].name}${l.n > 1 ? ' ×' + l.n : ''}` };
     if (l.t === 'gem') return { text: `捡到 ${GEAR.gems[l.el].name}` };
     if (l.t === 'advance') return { big: 1, text: `到了 ${ADVANCE_LV} 级，可以转职了：去角色页的「技能」选一条路线` };
-    if (l.t === 'caught') return { big: 1, pet: l.id, text: `${MONSTERS[l.id].name}成了你的伙伴` };
-    if (l.t === 'petfull') return { text: `伙伴已经有 ${C.PARTY_MAX} 只，它跑掉了。` };
+    if (l.t === 'caught') return { big: 1, pet: l.id, text: `${l.shiny ? '异色的' : ''}${MONSTERS[l.id].name}成了你的伙伴（资质 ${'★'.repeat(l.stars || 1)}）${l.home ? '，随身已满，先住进伙伴屋' : ''}` };
+    if (l.t === 'love') return { text: `和${l.name}更亲近了：亲密度 ${l.lv} 级${l.lv === 5 ? '，解锁第四个技能槽' : ''}` };
+    if (l.t === 'petfull') return { text: '随身和伙伴屋都满了，它跑掉了。可以用星砂扩建伙伴屋。' };
     return null;
   }).filter(Boolean);
   const leave = async () => {

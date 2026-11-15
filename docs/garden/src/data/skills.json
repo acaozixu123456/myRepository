@@ -429,7 +429,8 @@
   "mp": 0,
   "kind": "phys",
   "target": "one",
-  "power": 1.2
+  "power": 1.2,
+  "desc": "用身体撞过去。"
  },
  "peck": {
   "name": "连啄",
@@ -437,7 +438,8 @@
   "kind": "phys",
   "target": "one",
   "power": 0.55,
-  "hits": 3
+  "hits": 3,
+  "desc": "快速啄两下。"
  },
  "leafCut": {
   "name": "飞叶",
@@ -445,7 +447,8 @@
   "kind": "magic",
   "el": "grass",
   "target": "one",
-  "power": 1.35
+  "power": 1.35,
+  "desc": "甩出锋利的叶片。"
  },
  "spore": {
   "name": "毒孢子",
@@ -459,7 +462,8 @@
     "type": "poison",
     "chance": 0.8
    }
-  ]
+  ],
+  "desc": "喷出毒孢子，可能中毒。"
  },
  "bubble": {
   "name": "水泡",
@@ -467,7 +471,8 @@
   "kind": "magic",
   "el": "water",
   "target": "one",
-  "power": 1.35
+  "power": 1.35,
+  "desc": "吐出一串水泡。"
  },
  "frostBreath": {
   "name": "寒气",
@@ -481,7 +486,8 @@
     "type": "freeze",
     "chance": 0.35
    }
-  ]
+  ],
+  "desc": "吹出寒气，可能冻住。"
  },
  "ember": {
   "name": "火星",
@@ -495,7 +501,8 @@
     "type": "burn",
     "chance": 0.25
    }
-  ]
+  ],
+  "desc": "喷出一点火星。"
  },
  "roar": {
   "name": "怒吼",
@@ -506,21 +513,24 @@
    {
     "type": "defDown"
    }
-  ]
+  ],
+  "desc": "吼一声，敌人全体攻击降低。"
  },
  "stomp": {
   "name": "震地",
   "mp": 6,
   "kind": "phys",
   "target": "all",
-  "power": 0.95
+  "power": 0.95,
+  "desc": "跺地震伤所有敌人。"
  },
  "nap": {
   "name": "打盹",
   "mp": 4,
   "kind": "heal",
   "target": "self",
-  "power": 1.2
+  "power": 1.2,
+  "desc": "打个盹，回一些生命。"
  },
  "mimic": {
   "name": "学舌",
@@ -532,7 +542,8 @@
     "type": "confuse",
     "chance": 0.3
    }
-  ]
+  ],
+  "desc": "学对方说话，扰乱敌人。"
  },
  "lullaby": {
   "name": "摇篮曲",
@@ -544,7 +555,8 @@
     "type": "sleep",
     "chance": 0.6
    }
-  ]
+  ],
+  "desc": "唱摇篮曲，可能让敌人睡着。"
  },
  "inkSplash": {
   "name": "泼墨",
@@ -558,7 +570,8 @@
     "type": "blind",
     "chance": 0.5
    }
-  ]
+  ],
+  "desc": "泼墨，可能让敌人看不清。"
  },
  "hide": {
   "name": "缩壳",
@@ -570,7 +583,8 @@
     "type": "defUp"
    }
   ],
-  "shield": 0.5
+  "shield": 0.5,
+  "desc": "缩起来，防御升高。"
  },
  "thornStomp": {
   "name": "荆棘踏",
@@ -617,7 +631,8 @@
   "kind": "magic",
   "el": "water",
   "target": "one",
-  "power": 1.7
+  "power": 1.7,
+  "desc": "鼻子喷出一大股水。"
  },
  "wildfire": {
   "name": "燎原",
@@ -639,7 +654,8 @@
   "kind": "phys",
   "el": "fire",
   "target": "one",
-  "power": 1.6
+  "power": 1.6,
+  "desc": "甩动着火的鬃毛。"
  },
  "starfall": {
   "name": "摘星落",
@@ -661,7 +677,8 @@
     "type": "sleep",
     "chance": 0.3
    }
-  ]
+  ],
+  "desc": "凝聚星光打出去。"
  },
  "mistVeil": {
   "name": "雾幕",

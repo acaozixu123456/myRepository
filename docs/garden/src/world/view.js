@@ -80,7 +80,15 @@ export async function createView(canvas, skyEl, starsEl) {
     const A = actor && actor.userData.acts; if (!A || !A.walk) return; const want = moving ? 'walk' : 'idle'; if (A.cur === want) return;
     const from = A[A.cur], to = A[want]; to.reset().play(); from.crossFadeTo(to, 0.18, false); A.cur = want;
   }
-  const monsterActor = (id, k = 1) => makeActor(MONSTERS[id].model, 0.62 * (MONSTERS[id].scale || 1) * k);
+  // 进化后的伙伴变大一点并换配色；异色的整体偏色，再挂一圈闪光
+  async function monsterActor(id, k = 1, look = null) {
+    if (look && typeof look === 'object') id = look.id;
+    const evo = look?.evo || 0, o = await makeActor(MONSTERS[id].model, 0.62 * (MONSTERS[id].scale || 1) * k * (1 + 0.12 * evo));
+    const tint = look?.shiny ? new THREE.Color(0xb9a6ff) : look?.tint ? new THREE.Color(look.tint) : null;
+    if (tint) o.userData.body.traverse(m => { if (!m.isMesh || m.userData.isOutline) return; const mats = (Array.isArray(m.material) ? m.material : [m.material]).map(x => { const c = x.clone(); c.color = c.color.clone().lerp(tint, look.shiny ? 0.55 : 0.35); if (look.shiny) { c.emissive = new THREE.Color(0x3a2a66); } return c; }); m.material = Array.isArray(m.material) ? mats : mats[0]; });
+    if (look?.shiny) { const sp = glow(0xd8c8ff, 1.6, 0.7, starTex); sp.position.y = 1.2; o.add(sp); o.userData.sparkle = sp; }
+    return o;
+  }
 
   // ---------- 浮岛 ----------
   function buildIsland(R, pal, opts = {}) {
@@ -145,7 +153,7 @@ export async function createView(canvas, skyEl, starsEl) {
     const jobs = [decorate(world, zone, zone.home ? 0.7 : 1)];
     hero = await makeActor(CLASSES[look.cls].model, CLASSES[look.cls].scale); world.add(hero); hero.position.set(0, world.userData.gy(0, 0), 0); target.on = false;
     petFollower = null;
-    if (look.pet) { petFollower = await monsterActor(look.pet, 0.8); world.add(petFollower); petFollower.position.set(-1.2, 0, 0.8); }
+    if (look.pet) { petFollower = await monsterActor(look.pet, 0.8, look.pet); world.add(petFollower); petFollower.position.set(-1.2, 0, 0.8); }
     if (zone.home) jobs.push(model('x:stoneLantern').then(o => { o.position.set(2.2, world.userData.gy(2.2, -2.2) - 0.05, -2.2); o.scale.setScalar(3); world.add(o); lantern = o; world.userData.solids.push([2.2, -2.2, 0.9]); const h = glow(0xffc070, 3, 0.5); h.position.set(2.2, 2.3, -2.2); world.add(h); }));
     else {
       for (let i = 0; i < 7; i++) jobs.push(spawnWild());
@@ -157,7 +165,7 @@ export async function createView(canvas, skyEl, starsEl) {
   }
   async function setPet(petId) {
     if (petFollower) world.remove(petFollower); petFollower = null; if (!petId) return;
-    const o = await monsterActor(petId, 0.8); o.position.copy(hero.position); o.position.x -= 1.2; world.add(o); petFollower = o;
+    const o = await monsterActor(petId, 0.8, petId); o.position.copy(hero.position); o.position.x -= 1.2; world.add(o); petFollower = o;
   }
   async function spawnWild() {
     const z = zoneRef, id = z.wild[Math.floor(Math.random() * z.wild.length)], u = world.userData;
@@ -218,8 +226,8 @@ export async function createView(canvas, skyEl, starsEl) {
   function slotPos(side, i, n) { const sgn = side === 'a' ? -1 : 1, row = n > 2 ? (i % 2 === 1 ? 0 : 1) : 0, sp = n > 3 ? 2.1 : 2.9; return AX.clone().multiplyScalar(sgn * (2.3 + row * 0.9)).add(DZ.clone().multiplyScalar((i - (n - 1) / 2) * sp)); }
   async function placeActor(u, pos, look) {
     const sgn = u.side === 'a' ? -1 : 1;
-    const o = await (u.key === 'hero' ? makeActor(CLASSES[look.cls].model, CLASSES[look.cls].scale) : monsterActor(u.mid, u.side === 'a' ? 1 : u.boss ? 1.25 : 1.1));
-    o.position.copy(pos); o.rotation.y = Math.atan2(-sgn * AX.x, -sgn * AX.z); o.userData.home = pos.clone(); o.userData.height = u.key === 'hero' ? 2.2 : 1.5 * (MONSTERS[u.mid].scale || 1) * (u.boss ? 1.15 : 1);
+    const o = await (u.key === 'hero' ? makeActor(CLASSES[look.cls].model, CLASSES[look.cls].scale) : monsterActor(u.mid, u.side === 'a' ? 1 : u.boss ? 1.25 : 1.1, { id: u.mid, evo: u.evo, shiny: u.shiny, tint: u.tint }));
+    o.position.copy(pos); o.rotation.y = Math.atan2(-sgn * AX.x, -sgn * AX.z); o.userData.home = pos.clone(); o.userData.height = u.key === 'hero' ? 2.2 : 1.5 * (MONSTERS[u.mid].scale || 1) * (u.boss ? 1.15 : 1) * (1 + 0.12 * (u.evo || 0));
     arena.add(o); actors[u.key] = o; return o;
   }
   // 首领叫来的帮手：站到后排空位，从地里冒出来

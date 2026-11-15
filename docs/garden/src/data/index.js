@@ -16,6 +16,8 @@ export const ZONES = zones;
 export const ITEMS = items;
 export const GEAR = gear, GEAR_SLOTS = gear.slots, GEAR_SLOT_ICON = gear.slotIcon, GEAR_SETS = gear.sets, GEAR_AFFIX = gear.affix, GEAR_SPECIAL = gear.special;
 export const QUESTS = quests;
+import pets from './pets.json' with { type: 'json' };
+export const PETS = pets;
 import statuses from './statuses.json' with { type: 'json' };
 import combos from './combos.json' with { type: 'json' };
 export const STATUS = statuses;

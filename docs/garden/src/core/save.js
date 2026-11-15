@@ -1,19 +1,22 @@
 // 存档 v3：结构、新开档、从旧版迁移、导出导入存档码。
 // v2→v3（第二阶段）：两只伙伴出战、技能等级和技能点、战斗倍速。
 // v3→v4（第三阶段）：6 个装备部位和新装备结构、转职路线、灵石、打造等级、伙伴饰品。
+// v4→v5（第四阶段）：伙伴资质、性格、天赋、异色、亲密度、技能槽、进化、伙伴屋。
 import { CLASSES, ZONES, MONSTERS, GEAR_SLOTS } from '../data/index.js';
 import { heroStats, petStats } from './stats.js';
+import { newPetTraits, fitSkills, CARRY_MAX } from './pets.js';
+import { PETS } from '../data/index.js';
 
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 export const ACTIVE_MAX = 2; // 同时出战的伙伴
-export const PARTY_MAX = 6; // 随身伙伴上限
+export const PARTY_MAX = CARRY_MAX; // 随身伙伴上限，多的住伙伴屋
 
 export function newGame(cls, now = Date.now()) {
   const c = CLASSES[cls];
   const s = {
     v: SAVE_VERSION, created: new Date(now).toISOString(), lastSeen: new Date(now).toISOString(), nextUid: 1,
     hero: { cls, lv: 1, xp: 0, attr: { ...c.base }, pts: 0, sp: 0, skills: {}, route: null, hp: 0, mp: 0, gear: emptyGear() },
-    pets: [], party: [null, null],
+    pets: [], party: [null, null], houseCap: PETS.houseBase,
     bag: { gear: [], items: { pill: 3, dew: 1, seed: 0 }, gems: {} },
     craft: { lv: 1, xp: 0 },
     wallet: { gold: 20 },
@@ -28,10 +31,12 @@ export function newGame(cls, now = Date.now()) {
 }
 
 const emptyGear = () => Object.fromEntries(Object.keys(GEAR_SLOTS).map(k => [k, null]));
-export function addPet(s, id, lv) {
-  const p = { uid: 'p' + s.nextUid++, id, lv, xp: 0, hp: 0, charm: null };
+export function addPet(s, id, lv, opts = {}) {
+  const home = opts.home ?? s.pets.filter(x => !x.home).length >= CARRY_MAX;
+  const p = { uid: 'p' + s.nextUid++, id, lv, xp: 0, hp: 0, charm: null, ...newPetTraits(id, opts.shiny), home };
   p.hp = petStats(p).hp; s.pets.push(p);
-  const free = s.party.indexOf(null); if (free >= 0) s.party[free] = p.uid;
+  const free = s.party.indexOf(null); if (free >= 0 && !home) s.party[free] = p.uid;
+  if (p.shiny) s.world.shiny = { ...s.world.shiny, [id]: 1 };
   s.world.dex[id] = 'caught';
   return p;
 }
@@ -84,10 +89,17 @@ export function migrateV3(o) {
   return s;
 }
 
-// 读档：接受 v1/v2/v3/v4 对象，返回可用的 v4，不认识就返回 null
+// v4 → v5：每只伙伴补上随机资质、性格、天赋，技能槽从种族技能开始；伙伴屋 20 格
+export function migrateV4(o) {
+  const s = { ...o, v: 5, houseCap: o.houseCap || PETS.houseBase };
+  s.pets = (o.pets || []).filter(p => MONSTERS[p.id]).map(p => { const np = { ...newPetTraits(p.id), ...p }; fitSkills(np); return np; });
+  return s;
+}
+
+// 读档：接受 v1 到 v5 的对象，返回可用的 v5，不认识就返回 null
 export function load(o) {
   if (!o || typeof o !== 'object') return null;
-  let s = o.v === SAVE_VERSION ? o : o.v === 3 ? migrateV3(o) : o.v === 2 ? migrateV3(migrateV2(o)) : (o.v === 1 || !o.v) && o.cls ? migrateV3(migrateV2(migrateV1(o))) : null;
+  let s = o.v === SAVE_VERSION ? o : o.v === 4 ? migrateV4(o) : o.v === 3 ? migrateV4(migrateV3(o)) : o.v === 2 ? migrateV4(migrateV3(migrateV2(o))) : (o.v === 1 || !o.v) && o.cls ? migrateV4(migrateV3(migrateV2(migrateV1(o)))) : null;
   if (!s || !CLASSES[s.hero?.cls] || !ZONES.some(z => z.id === s.world?.zone)) return null;
   s.pets = s.pets.filter(p => MONSTERS[p.id]);
   s.party = s.party.map(u => (s.pets.some(p => p.uid === u) ? u : null));

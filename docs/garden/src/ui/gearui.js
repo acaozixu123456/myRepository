@@ -50,7 +50,7 @@ function GemPick({ g, idx, done }) {
 function PetPick({ i }) {
   const s = store.s;
   if (!s.pets.length) return html`<p class="hint">还没有伙伴。</p>`;
-  return html`<div class="chipsel">${s.pets.map(p => html`<button type="button" class="petb" onClick=${() => { if (C.equipPet(s, p.uid, i)) { save(); toast(`${MONSTERS[p.id].name}戴上了`); back(); } }}><${Portrait} id=${p.id} s=${30} />${MONSTERS[p.id].name}${p.charm ? html`<small>换下 ${p.charm.name}</small>` : null}</button>`)}</div>`;
+  return html`<div class="chipsel">${s.pets.map(p => html`<button type="button" class="petb" onClick=${() => { if (C.equipPet(s, p.uid, i)) { save(); toast(`${C.petName(p)}戴上了`); back(); } }}><${Portrait} id=${p.id} s=${30} />${C.petName(p)}${p.charm ? html`<small>换下 ${p.charm.name}</small>` : null}</button>`)}</div>`;
 }
 function gearPage() {
   const s = store.s, g = selGear(), sel = ui.gearSel || {};
@@ -102,8 +102,8 @@ function bagPage() {
       : html`<p class="hint">还没有多余的装备。打怪有机会掉落，首领一定会掉。</p>`}
       ${junk ? html`<button type="button" class=${'primary ghost' + (sure ? ' warn' : '')} onClick=${() => { if (!sure) return setSure(true); const r = C.dismantleJunk(s, 1); setSure(false); save(); toast(`分解了 ${r.n} 件`, `灵尘 +${r.dust}${r.stone ? `　强化石 +${r.stone}` : ''}`); }}><${Icon} n="hammer" s=${16} /> ${sure ? `确定分解 ${junk} 件普通和精良` : '一键分解普通和精良'}</button>` : null}`;
   } else if (tab === 'items') {
-    body = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'use').map(id => { const it = ITEMS[id], n = s.bag.items[id] || 0;
-      return html`<div class="row"><${ItemIcon} id=${id} /><div class="mid"><b>${it.name}<small> ×${n}</small></b><small>${it.desc}</small></div>${it.use !== 'capture' ? html`<${Btn} disabled=${!n} onClick=${() => useItem(id)}>使用</${Btn}>` : null}</div>`; });
+    body = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'use' || (ITEMS[id].cat === 'book' && s.bag.items[id] > 0)).map(id => { const it = ITEMS[id], n = s.bag.items[id] || 0;
+      return html`<div class="row"><${ItemIcon} id=${id} /><div class="mid"><b>${it.name}<small> ×${n}</small></b><small>${it.desc}</small></div>${it.use === 'hp' || it.use === 'mp' ? html`<${Btn} disabled=${!n} onClick=${() => useItem(id)}>使用</${Btn}>` : null}</div>`; });
   } else if (tab === 'mats') {
     const ids = Object.keys(ITEMS).filter(id => (ITEMS[id].cat === 'mat' || ITEMS[id].cat === 'bp') && (s.bag.items[id] || 0) > 0);
     body = ids.length ? html`<div class="mgrid">${ids.map(id => html`<div class="mtile"><${ItemIcon} id=${id} /><b>${ITEMS[id].name}</b><small>×${s.bag.items[id]}</small></div>`)}</div><p class="hint">材料用来强化、洗练和在工坊打造。</p>` : html`<p class="hint">还没有材料。打怪会掉羽毛、河石这类东西，分解装备得到灵尘。</p>`;
@@ -187,23 +187,6 @@ function shopPage() {
     return html`<div class="row"><${ItemIcon} id=${id} /><div class="mid"><b>${it.name}<small>　有 ${s.bag.items[id] || 0} 个</small></b><small>${it.desc}</small></div><${Btn} disabled=${!can} onClick=${() => { if (C.buy(s, id)) save(); }}>${star ? html`<${Icon} n="star" s=${12} />${it.starPrice}` : html`<${Coin} s=${12} />${it.price}`}</${Btn}></div>`; })}</div>`;
 }
 
-// ---------- 伙伴 ----------
-function FreeBtn({ p }) {
-  const [sure, setSure] = useState(false);
-  return html`<${Btn} ghost cls=${sure ? 'warn' : ''} onClick=${() => { if (!sure) return setSure(true); const name = MONSTERS[p.id].name; C.removePet(store.s, p.uid); save(); hooks.setPet(); toast(`${name}回到了野外。`); }}>${sure ? '确定放生' : '放生'}</${Btn}>`;
-}
-function setActive(uid, on) { const s = store.s; if (on) { const i = s.party.indexOf(null); if (i >= 0) s.party[i] = uid; } else s.party = s.party.map(u => (u === uid ? null : u)); save(); hooks.setPet(); }
-function petsPage() {
-  const s = store.s;
-  if (!s.pets.length) return html`<${Head} title="伙伴" right=${`0/${C.PARTY_MAX}`} /><div class="talk">你还没有伙伴。<small>战斗里把野怪打到虚弱，再用「捕捉」丢出灵种，它就可能跟你走。血越少越容易成功，首领抓不了。</small></div>`;
-  return html`<${Head} title="伙伴" right=${`${s.pets.length}/${C.PARTY_MAX}`} />
-    <p class="hint">最多两只一起出战，拿九成经验；其余的在家待命，拿一半经验。每只伙伴能戴一件项链或戒指。</p>
-    <div class="scroll">${s.pets.map(p => { const m = MONSTERS[p.id], st = C.petStats(p), on = s.party.includes(p.uid), full = !s.party.includes(null);
-      return html`<div class=${'row' + (on ? ' on' : '')}><${Portrait} id=${p.id} s=${52} /><div class="mid"><b>${m.name}<small>　Lv.${p.lv}</small> <${El} el=${m.el} /></b><${Bar} v=${p.hp} max=${st.hp} kind="hp" /><small>攻击 ${st.atk} · 防御 ${st.def} · 速度 ${st.spd} · 技能 ${m.skills.map(id => SKILLS[id].name).join('、')}</small>
-          <button type="button" class=${'charm' + (p.charm ? ' q' + p.charm.q : '')} onClick=${() => (p.charm ? openGear({ from: 'pet', uid: p.uid }) : toast('在背包里点一件项链或戒指', '选「给伙伴」。'))}><${GearIcon} g=${p.charm} slot="neck" s=${16} />${p.charm ? gearName(p.charm) : '饰品空着'}</button></div>
-        <div class="acts">${on ? html`<${Btn} ghost onClick=${() => setActive(p.uid, false)}>休息</${Btn}>` : html`<${Btn} disabled=${full} onClick=${() => setActive(p.uid, true)}>${full ? '满了' : '出战'}</${Btn}>`}<${FreeBtn} p=${p} /></div></div>`; })}</div>`;
-}
-
-export const gearPages = { gear: gearPage, bag: bagPage, hero: heroPage, craft: craftPage, shop: shopPage, pets: petsPage };
+export const gearPages = { gear: gearPage, bag: bagPage, hero: heroPage, craft: craftPage, shop: shopPage };
 export const routeHint = s => s.hero.lv >= ADVANCE_LV && !s.hero.route;
 export { ELEMENTS };
