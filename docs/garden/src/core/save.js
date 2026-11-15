@@ -2,12 +2,14 @@
 // v2→v3（第二阶段）：两只伙伴出战、技能等级和技能点、战斗倍速。
 // v3→v4（第三阶段）：6 个装备部位和新装备结构、转职路线、灵石、打造等级、伙伴饰品。
 // v4→v5（第四阶段）：伙伴资质、性格、天赋、异色、亲密度、技能槽、进化、伙伴屋。
+// v5→v6（第五阶段）：家园（田地、打工、料理加成、每日、心情册）。
 import { CLASSES, ZONES, MONSTERS, GEAR_SLOTS } from '../data/index.js';
 import { heroStats, petStats } from './stats.js';
 import { newPetTraits, fitSkills, CARRY_MAX } from './pets.js';
 import { PETS } from '../data/index.js';
+import { newHome } from './home.js';
 
-export const SAVE_VERSION = 5;
+export const SAVE_VERSION = 6;
 export const ACTIVE_MAX = 2; // 同时出战的伙伴
 export const PARTY_MAX = CARRY_MAX; // 随身伙伴上限，多的住伙伴屋
 
@@ -24,6 +26,7 @@ export function newGame(cls, now = Date.now()) {
     quests: { main: { i: 0, accepted: false, n: 0 }, done: [], side: {} },
     stats: { kills: 0 },
     settings: { auto: false, speed: 1 },
+    home: newHome(),
   };
   for (const [lv, id] of c.skills) if (lv <= 1) s.hero.skills[id] = 1;
   const st = heroStats(s); s.hero.hp = st.hp; s.hero.mp = st.mp;
@@ -96,10 +99,14 @@ export function migrateV4(o) {
   return s;
 }
 
-// 读档：接受 v1 到 v5 的对象，返回可用的 v5，不认识就返回 null
+// v5 → v6：补上空的家园，支线记录
+export function migrateV5(o) { return { ...o, v: 6, home: o.home || newHome(), quests: { side: {}, ...o.quests } }; }
+
+// 读档：接受 v1 到 v6 的对象，返回可用的 v5，不认识就返回 null
 export function load(o) {
   if (!o || typeof o !== 'object') return null;
-  let s = o.v === SAVE_VERSION ? o : o.v === 4 ? migrateV4(o) : o.v === 3 ? migrateV4(migrateV3(o)) : o.v === 2 ? migrateV4(migrateV3(migrateV2(o))) : (o.v === 1 || !o.v) && o.cls ? migrateV4(migrateV3(migrateV2(migrateV1(o)))) : null;
+  const up = o.v === SAVE_VERSION ? o : o.v === 5 ? o : o.v === 4 ? migrateV4(o) : o.v === 3 ? migrateV4(migrateV3(o)) : o.v === 2 ? migrateV4(migrateV3(migrateV2(o))) : (o.v === 1 || !o.v) && o.cls ? migrateV4(migrateV3(migrateV2(migrateV1(o)))) : null;
+  let s = up && up.v === 5 ? migrateV5(up) : up;
   if (!s || !CLASSES[s.hero?.cls] || !ZONES.some(z => z.id === s.world?.zone)) return null;
   s.pets = s.pets.filter(p => MONSTERS[p.id]);
   s.party = s.party.map(u => (s.pets.some(p => p.uid === u) ? u : null));

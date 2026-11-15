@@ -160,7 +160,7 @@ export async function createView(canvas, skyEl, starsEl) {
       const a = 3.9, bx = Math.cos(a) * R * 0.68, bz = Math.sin(a) * R * 0.68;
       jobs.push(monsterActor(zone.boss).then(o => { o.position.set(bx, world.userData.gy(bx, bz), bz); o.rotation.y = Math.atan2(-bx, -bz); world.add(o); bossActor = o; const ring = glow(0xffd070, 6, 0.55); ring.position.set(bx, 0.6, bz); world.add(ring); o.userData.ring = ring; }));
     }
-    inter = []; jobs.push(placeExtras(zone, cb.extras ? cb.extras(zone) : {}));
+    inter = []; farm = null; jobs.push(placeExtras(zone, cb.extras ? cb.extras(zone) : {}));
     await Promise.all(jobs);
     focus.copy(hero.position); grace = 1;
   }
@@ -182,6 +182,7 @@ export async function createView(canvas, skyEl, starsEl) {
       const [x, z] = freeSpot(); o.position.set(x, u.gy(x, z), z); o.scale.setScalar(0.9); const g = glow(0x9dffb0, 1.6, 0.8, starTex); g.position.y = 0.7; o.add(g); o.userData.mark = g; world.add(o);
       inter.push({ o, kind: 'gather', r: 1.3 });
     }));
+    if (ex.farm) placeFarm();
     if (ex.chest) {
       const g = new THREE.Group(), wood = new THREE.MeshToonMaterial({ color: 0xa8683a }), gold = new THREE.MeshToonMaterial({ color: 0xf2c14e });
       const box = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.55, 0.6), wood); box.position.y = 0.28; box.castShadow = true;
@@ -192,6 +193,36 @@ export async function createView(canvas, skyEl, starsEl) {
       inter.push({ o: g, kind: 'chest', r: 1.6 });
     }
     await Promise.all(jobs);
+  }
+  // 家园的田地：一块块土，种了东西就长出彩色的小作物，熟了的会发光。点田边打开家园页
+  let farm = null, farmSig = '';
+  const dirt = new THREE.MeshToonMaterial({ color: 0x9a6a43 }), leafM = new THREE.MeshToonMaterial({ color: 0x6cbf5a });
+  function placeFarm() {
+    // 找一块 4×3 格都能走、不压着树和石头的空地，离主角近一点
+    const u = world.userData, cells = [];
+    for (let i = 0; i < 12; i++) cells.push([(i % 4 - 1.5) * 1.05, (Math.floor(i / 4) - 1) * 1.05]);
+    const ok = (x, z) => cells.every(([dx, dz]) => u.walk(x + dx, z + dz) && u.solids.every(([sx, sz, sr]) => Math.hypot(x + dx - sx, z + dz - sz) > sr + 0.7));
+    let spot = null, best = 1e9;
+    for (let x = -7; x <= 7; x += 0.5) for (let z = -6; z <= 7; z += 0.5) { const d = Math.hypot(x + 3, z - 3.5); if (d < best && Math.hypot(x, z) > 2.5 && ok(x, z)) { best = d; spot = [x, z]; } }
+    if (!spot) return;
+    const [cx, cz] = spot;
+    farm = new THREE.Group(); farm.position.set(cx, u.gy(cx, cz), cz); world.add(farm); farmSig = '';
+    inter.push({ o: farm, kind: 'farm', r: 2.4 }); drawFarm();
+  }
+  function drawFarm() {
+    if (!farm || !cb.farm) return; const plots = cb.farm(), sig = JSON.stringify(plots); if (sig === farmSig) return; farmSig = sig;
+    farm.clear();
+    plots.forEach((p, i) => {
+      const x = (i % 4 - 1.5) * 1.05, z = (Math.floor(i / 4) - 1) * 1.05, g = new THREE.Group(); g.position.set(x, 0, z);
+      const soil = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.16, 0.9), dirt); soil.position.y = 0.06; soil.receiveShadow = true; g.add(soil);
+      if (p) {
+        const k = p.ripe ? 1 : 0.35 + 0.5 * p.k, fruit = new THREE.Mesh(new THREE.SphereGeometry(0.2 * k + 0.05, 12, 10), new THREE.MeshToonMaterial({ color: new THREE.Color(p.color) }));
+        fruit.position.y = 0.2 + 0.15 * k; fruit.castShadow = true; g.add(fruit);
+        for (const a of [0.6, 2.7, 4.8]) { const lf = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.3 * k + 0.1, 5), leafM); lf.position.set(Math.cos(a) * 0.1, 0.32 + 0.3 * k, Math.sin(a) * 0.1); lf.rotation.set(Math.sin(a) * 0.5, 0, Math.cos(a) * 0.5); g.add(lf); }
+        if (p.ripe) { const sp = glow(0xffe08a, 1, 0.7, starTex); sp.position.y = 0.8; g.add(sp); }
+      }
+      farm.add(g);
+    });
   }
   // NPC 头上的标记：主线要找它（橙）、有新支线（黄）、可以交付（绿），没事就不显示
   let markClock = 0;
@@ -238,7 +269,7 @@ export async function createView(canvas, skyEl, starsEl) {
       if (!grace && Math.hypot(wp.x - hp.x, wp.z - hp.z) < 1.5) { target.on = false; cb.encounter && cb.encounter(w.userData.id, false, w); return; }
     }
     if (bossActor) { bossActor.userData.ring.material.opacity = 0.4 + 0.2 * Math.sin(t * 2); if (!grace && Math.hypot(bossActor.position.x - hp.x, bossActor.position.z - hp.z) < 2.6) { target.on = false; const dx = hp.x - bossActor.position.x, dz = hp.z - bossActor.position.z, d = Math.hypot(dx, dz) || 1; hp.x = bossActor.position.x + dx / d * 4; hp.z = bossActor.position.z + dz / d * 4; cb.encounter && cb.encounter(zoneRef.boss, true, null); return; } }
-    if ((markClock -= dt) <= 0) { markClock = 0.8; refreshMarks(); }
+    if ((markClock -= dt) <= 0) { markClock = 0.8; refreshMarks(); drawFarm(); }
     for (const it of inter) {
       const d = Math.hypot(it.o.position.x - hp.x, it.o.position.z - hp.z);
       if (it.o.userData.mark) it.o.userData.mark.material.opacity = 0.55 + 0.35 * Math.sin(t * 3);
@@ -355,5 +386,5 @@ export async function createView(canvas, skyEl, starsEl) {
   }
   function setZoom(w, shift = 0) { viewW = worldW = w; shiftY = shift; resize(); }
   resize(); addEventListener('resize', resize);
-  return { loadZone, removeInter, frame, tap, enterBattle, exitBattle, addActor, swapActor, anim, screenPos, removeWild, setPet, setZoom, on: (k, f) => { cb[k] = f; }, get mode() { return mode; }, heroModelFor: makeActor };
+  return { get farmAt() { return farm && [farm.position.x, farm.position.z]; }, loadZone, removeInter, frame, tap, enterBattle, exitBattle, addActor, swapActor, anim, screenPos, removeWild, setPet, setZoom, on: (k, f) => { cb[k] = f; }, get mode() { return mode; }, heroModelFor: makeActor };
 }

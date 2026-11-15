@@ -26,3 +26,5 @@ import npcs from './npcs.json' with { type: 'json' };
 export const NPCS = npcs;
 import sidequests from './sidequests.json' with { type: 'json' };
 export const SIDE_QUESTS = sidequests;
+import home from './home.json' with { type: 'json' };
+export const HOME = home, CROPS = home.crops, DISHES = home.dishes, JOBS = home.jobs;

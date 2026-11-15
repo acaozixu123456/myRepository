@@ -341,5 +341,217 @@
   "icon": "scroll",
   "set": "cloud",
   "desc": "打败首领得到，在工坊打造云海套。"
+ },
+ "radish": {
+  "name": "圆萝卜",
+  "cat": "crop",
+  "price": 14,
+  "desc": "家园田里种的，1 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "greens": {
+  "name": "小青菜",
+  "cat": "crop",
+  "price": 18,
+  "desc": "家园田里种的，1.5 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "potato": {
+  "name": "胖土豆",
+  "cat": "crop",
+  "price": 26,
+  "desc": "家园田里种的，2 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "corn": {
+  "name": "甜玉米",
+  "cat": "crop",
+  "price": 40,
+  "desc": "家园田里种的，3 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "tomato": {
+  "name": "小番茄",
+  "cat": "crop",
+  "price": 44,
+  "desc": "家园田里种的，3 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "pumpkin": {
+  "name": "南瓜",
+  "cat": "crop",
+  "price": 62,
+  "desc": "家园田里种的，4 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "berry": {
+  "name": "星莓",
+  "cat": "crop",
+  "price": 70,
+  "desc": "家园田里种的，4 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "rice": {
+  "name": "云米",
+  "cat": "crop",
+  "price": 78,
+  "desc": "家园田里种的，5 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "melon": {
+  "name": "琉璃瓜",
+  "cat": "crop",
+  "price": 105,
+  "desc": "家园田里种的，6 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "mint": {
+  "name": "雾薄荷",
+  "cat": "crop",
+  "price": 34,
+  "desc": "家园田里种的，2 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "chili": {
+  "name": "火椒",
+  "cat": "crop",
+  "price": 48,
+  "desc": "家园田里种的，3 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "peach": {
+  "name": "月桃",
+  "cat": "crop",
+  "price": 160,
+  "desc": "家园田里种的，8 小时成熟。可以做料理、交悬赏，也可以卖掉。",
+  "icon": "sprout"
+ },
+ "salad": {
+  "name": "青青沙拉",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "清清爽爽。",
+  "icon": "heart"
+ },
+ "mash": {
+  "name": "土豆泥",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "软乎乎的，吃完很踏实。",
+  "icon": "heart"
+ },
+ "cornsoup": {
+  "name": "玉米浓汤",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "暖到脚尖。",
+  "icon": "heart"
+ },
+ "omelet": {
+  "name": "番茄蛋包",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "酸酸甜甜，打怪有劲。",
+  "icon": "heart"
+ },
+ "pumpkinpie": {
+  "name": "南瓜派",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "一大块，能分给伙伴。",
+  "icon": "heart"
+ },
+ "berryjam": {
+  "name": "星莓果酱饼干",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "伙伴最爱的零食。",
+  "icon": "heart"
+ },
+ "riceball": {
+  "name": "云米饭团",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "出门带两个，走得更远。",
+  "icon": "heart"
+ },
+ "melonice": {
+  "name": "琉璃瓜冰",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "冰得透亮。",
+  "icon": "heart"
+ },
+ "minttea": {
+  "name": "雾薄荷茶",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "喝完脚步都轻了。",
+  "icon": "heart"
+ },
+ "hotpot": {
+  "name": "火椒小锅",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "辣得冒汗。",
+  "icon": "heart"
+ },
+ "peachbun": {
+  "name": "月桃包",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "月愈们最爱。",
+  "icon": "heart"
+ },
+ "fishsoup": {
+  "name": "河石鱼汤",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "用鳞片熬的，别问。",
+  "icon": "heart"
+ },
+ "lucky": {
+  "name": "幸运炒饭",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "吃完捡钱都多。",
+  "icon": "heart"
+ },
+ "starcake": {
+  "name": "星屑蛋糕",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "会闪光的蛋糕。",
+  "icon": "heart"
+ },
+ "cloudpudding": {
+  "name": "云丝布丁",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "轻得像要飘走。",
+  "icon": "heart"
+ },
+ "feast": {
+  "name": "浮岛大餐",
+  "cat": "dish",
+  "price": 30,
+  "use": "dish",
+  "desc": "把一路的收获都端上桌。",
+  "icon": "heart"
  }
 }

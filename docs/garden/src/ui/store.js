@@ -32,7 +32,7 @@ export async function boot() {
   // 两份都在就用较新的那份
   let s = a && b ? (a.lastSeen >= b.lastSeen ? a : b) : a || b;
   if (!s) { s = C.load(parse(localStorage.getItem(OLD))); if (s) console.info('旧存档 rpg.v1 已迁移到 v2'); }
-  store.s = s;
+  store.s = s; store.prevSeen = s ? Date.parse(s.lastSeen) : 0;
   if (s) save();
   addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); });
   addEventListener('pagehide', saveNow);

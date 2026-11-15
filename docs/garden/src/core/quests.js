@@ -2,6 +2,7 @@
 // 类型：kill 打怪（可限元素 el 或地图 zone）、capture 抓伙伴、boss 首领、level 等级、talk 找人说话、collect 交材料。
 import { QUESTS, SIDE_QUESTS, MONSTERS, ITEMS, ZONES, NPCS } from '../data/index.js';
 import { makeGear } from './gear.js';
+import { bountyEvent } from './home.js';
 
 export const CHAPTERS = ['北坡的灯', '雾里的墨', '落下的星', '琉璃灯罩', '云海之底'];
 const zoneOfMon = mid => ZONES.find(z => z.wild?.includes(mid) || z.boss === mid)?.id;
@@ -48,6 +49,7 @@ function pay(s, q) {
 export const currentQuest = s => QUESTS[s.quests.main.i] || null;
 export function questProgress(s, type, ev) {
   const q = currentQuest(s), m = s.quests.main; if (q && m.accepted) bump(q, m, type, ev);
+  bountyEvent(s, type, ev);
   const a = side(s); for (const id in a) { const sq = sideById(id); if (sq) bump(sq, a[id], type, ev); }
 }
 export function questDone(s) { const q = currentQuest(s), m = s.quests.main; return !!(q && m.accepted && met(s, q, m)); }

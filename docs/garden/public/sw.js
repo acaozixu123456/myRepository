@@ -1,5 +1,5 @@
 // 离线缓存。页面和脚本优先走网络（这样更新能及时到），模型和贴图优先走缓存。
-const CACHE = 'garden-v6';
+const CACHE = 'garden-v7';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('garden-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {

@@ -6,3 +6,4 @@ export * from './world.js';
 export * from './quests.js';
 export * from './battle.js';
 export * from './save.js';
+export * from './home.js';
