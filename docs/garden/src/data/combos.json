@@ -1,0 +1,202 @@
+{
+ "style": {
+  "cat": {
+   "kind": "phys",
+   "word": "爪"
+  },
+  "fox": {
+   "kind": "magic",
+   "el": "fire",
+   "word": "焰"
+  },
+  "rabbit": {
+   "kind": "magic",
+   "el": "water",
+   "word": "月",
+   "heal": 0.1
+  }
+ },
+ "list": {
+  "chirp": {
+   "name": "羽风连啄",
+   "target": "one",
+   "power": 0.8,
+   "hits": 3,
+   "desc": "一起连啄三下。"
+  },
+  "pig": {
+   "name": "泥浆冲锋",
+   "target": "all",
+   "power": 1.3,
+   "fx": [
+    {
+     "type": "defDown"
+    }
+   ],
+   "desc": "冲过敌阵，全体破甲。"
+  },
+  "bug": {
+   "name": "叶刃风暴",
+   "target": "all",
+   "power": 1.35,
+   "fx": [
+    {
+     "type": "poison",
+     "chance": 0.6
+    }
+   ],
+   "desc": "全体伤害，可能中毒。"
+  },
+  "hop": {
+   "name": "弹跳重压",
+   "target": "one",
+   "power": 2.8,
+   "party": [
+    {
+     "type": "spdUp"
+    }
+   ],
+   "desc": "重压一个敌人，我方提速。"
+  },
+  "gnaw": {
+   "name": "筑坝",
+   "target": "one",
+   "power": 1.8,
+   "shield": 1.2,
+   "desc": "打一下并给全队加护盾。"
+  },
+  "pincer": {
+   "name": "双钳断甲",
+   "target": "one",
+   "power": 2.5,
+   "fx": [
+    {
+     "type": "defDown",
+     "turns": 4
+    }
+   ],
+   "desc": "重击并长时间破甲。"
+  },
+  "fish": {
+   "name": "泡泡雾爆",
+   "names": {
+    "fox": "蒸汽爆炸"
+   },
+   "target": "all",
+   "power": 1.45,
+   "fx": [
+    {
+     "type": "blind",
+     "chance": 0.6
+    }
+   ],
+   "desc": "全体伤害并致盲。"
+  },
+  "monkey": {
+   "name": "乱拳捣蛋",
+   "target": "all",
+   "power": 1.2,
+   "fx": [
+    {
+     "type": "confuse",
+     "chance": 0.45
+    }
+   ],
+   "desc": "全体伤害，可能混乱。"
+  },
+  "foxfire": {
+   "name": "狐火连舞",
+   "target": "all",
+   "power": 1.5,
+   "fx": [
+    {
+     "type": "burn",
+     "chance": 0.7
+    }
+   ],
+   "desc": "全体伤害，大概率灼烧。"
+  },
+  "tiger": {
+   "name": "猛虎扑击",
+   "target": "one",
+   "power": 3.0,
+   "critBonus": 0.5,
+   "desc": "单体重击，很容易暴击。"
+  },
+  "deer": {
+   "name": "枫叶回旋",
+   "target": "all",
+   "power": 1.3,
+   "party": [
+    {
+     "type": "regen"
+    }
+   ],
+   "desc": "全体伤害，我方回春。"
+  },
+  "bear": {
+   "name": "冰封熊抱",
+   "target": "one",
+   "power": 2.2,
+   "fx": [
+    {
+     "type": "freeze",
+     "chance": 0.8
+    }
+   ],
+   "desc": "单体伤害，大概率冰冻。"
+  },
+  "goose": {
+   "name": "冰刀滑行",
+   "target": "all",
+   "power": 1.35,
+   "party": [
+    {
+     "type": "spdUp"
+    }
+   ],
+   "desc": "全体伤害，我方提速。"
+  },
+  "ink": {
+   "name": "泼墨山水",
+   "target": "all",
+   "power": 1.35,
+   "fx": [
+    {
+     "type": "blind",
+     "chance": 0.7
+    }
+   ],
+   "desc": "全体伤害，大概率致盲。"
+  },
+  "moth": {
+   "name": "星尘鳞粉",
+   "target": "all",
+   "power": 1.4,
+   "fx": [
+    {
+     "type": "sleep",
+     "chance": 0.4
+    }
+   ],
+   "desc": "全体伤害，可能睡着。"
+  },
+  "mist": {
+   "name": "雾隐突袭",
+   "target": "all",
+   "power": 1.2,
+   "party": [
+    {
+     "type": "stealth"
+    }
+   ],
+   "desc": "全体伤害，我方隐身一回合。"
+  },
+  "guard": {
+   "name": "守护之力",
+   "target": "all",
+   "power": 1.9,
+   "desc": "首领的力量，全体重击。"
+  }
+ }
+}

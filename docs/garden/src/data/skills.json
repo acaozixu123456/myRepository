@@ -6,7 +6,22 @@
   "target": "one",
   "power": 0.75,
   "hits": 2,
-  "desc": "快速抓两下。"
+  "desc": "快速抓两下。",
+  "up": {
+   "5": {
+    "hits": 3,
+    "power": 0.62
+   },
+   "10": {
+    "hits": 3,
+    "power": 0.62,
+    "lastCrit": true
+   }
+  },
+  "upText": {
+   "5": "变成三段",
+   "10": "第三段必定暴击"
+  }
  },
  "rend": {
   "name": "破甲",
@@ -14,11 +29,35 @@
   "kind": "phys",
   "target": "one",
   "power": 1.1,
-  "effect": {
-   "type": "defDown",
-   "turns": 3
+  "fx": [
+   {
+    "type": "defDown"
+   }
+  ],
+  "desc": "造成伤害并让对方破甲三回合。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "defDown",
+      "turns": 4
+     }
+    ]
+   },
+   "10": {
+    "power": 1.5,
+    "fx": [
+     {
+      "type": "defDown",
+      "turns": 4
+     }
+    ]
+   }
   },
-  "desc": "造成伤害并让对方防御下降三回合。"
+  "upText": {
+   "5": "破甲延长到四回合",
+   "10": "伤害大幅提高"
+  }
  },
  "whirl": {
   "name": "旋风扫",
@@ -26,7 +65,26 @@
   "kind": "phys",
   "target": "all",
   "power": 0.9,
-  "desc": "攻击所有敌人。"
+  "desc": "攻击所有敌人。",
+  "up": {
+   "5": {
+    "power": 1.05
+   },
+   "10": {
+    "power": 1.05,
+    "fx": [
+     {
+      "type": "defDown",
+      "turns": 2,
+      "chance": 0.5
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "伤害提高",
+   "10": "一半几率附带破甲"
+  }
  },
  "critical": {
   "name": "会心一击",
@@ -34,7 +92,70 @@
   "kind": "phys",
   "target": "one",
   "power": 2.3,
-  "desc": "蓄力后的全力一击。"
+  "critBonus": 0.15,
+  "desc": "蓄力后的全力一击，容易暴击。",
+  "up": {
+   "5": {
+    "critBonus": 0.4
+   },
+   "10": {
+    "critBonus": 1
+   }
+  },
+  "upText": {
+   "5": "暴击率大幅提高",
+   "10": "必定暴击"
+  }
+ },
+ "shadowStep": {
+  "name": "影步",
+  "mp": 8,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "stealth",
+    "turns": 1
+   },
+   {
+    "type": "spdUp"
+   }
+  ],
+  "desc": "隐入影子：一回合不会被单体技能选中，并提速。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "stealth",
+      "turns": 1
+     },
+     {
+      "type": "spdUp"
+     },
+     {
+      "type": "atkUp"
+     }
+    ]
+   },
+   "10": {
+    "fx": [
+     {
+      "type": "stealth",
+      "turns": 2
+     },
+     {
+      "type": "spdUp"
+     },
+     {
+      "type": "atkUp"
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "同时攻升",
+   "10": "隐身延长到两回合"
+  }
  },
  "spark": {
   "name": "火花",
@@ -42,8 +163,32 @@
   "kind": "magic",
   "el": "fire",
   "target": "one",
-  "power": 1.45,
-  "desc": "一小团狐火。"
+  "power": 1.2,
+  "desc": "一小团狐火。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "burn",
+      "chance": 0.3
+     }
+    ]
+   },
+   "10": {
+    "hits": 2,
+    "power": 0.9,
+    "fx": [
+     {
+      "type": "burn",
+      "chance": 0.3
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "三成几率灼烧",
+   "10": "变成两发"
+  }
  },
  "flameRing": {
   "name": "烈焰环",
@@ -52,7 +197,30 @@
   "el": "fire",
   "target": "all",
   "power": 1,
-  "desc": "火环扫过所有敌人。"
+  "desc": "火环扫过所有敌人。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "burn",
+      "chance": 0.3
+     }
+    ]
+   },
+   "10": {
+    "power": 1.3,
+    "fx": [
+     {
+      "type": "burn",
+      "chance": 0.3
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "三成几率灼烧",
+   "10": "伤害大幅提高"
+  }
  },
  "scorch": {
   "name": "灼烧",
@@ -61,11 +229,77 @@
   "el": "fire",
   "target": "one",
   "power": 0.9,
-  "effect": {
-   "type": "burn",
-   "turns": 3
+  "fx": [
+   {
+    "type": "burn"
+   }
+  ],
+  "desc": "点燃对方，持续三回合。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "burn",
+      "stacks": 2
+     }
+    ]
+   },
+   "10": {
+    "fx": [
+     {
+      "type": "burn",
+      "stacks": 2,
+      "turns": 5
+     }
+    ]
+   }
   },
-  "desc": "点燃对方，持续三回合。"
+  "upText": {
+   "5": "一次叠两层",
+   "10": "持续五回合"
+  }
+ },
+ "foxMist": {
+  "name": "狐雾",
+  "mp": 9,
+  "kind": "magic",
+  "el": "mist",
+  "target": "all",
+  "power": 0.6,
+  "fx": [
+   {
+    "type": "confuse",
+    "chance": 0.35
+   }
+  ],
+  "desc": "放出迷雾，敌人可能混乱。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "confuse",
+      "chance": 0.5
+     }
+    ]
+   },
+   "10": {
+    "power": 0.9,
+    "fx": [
+     {
+      "type": "confuse",
+      "chance": 0.55
+     },
+     {
+      "type": "blind",
+      "chance": 0.5
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "混乱几率提高",
+   "10": "还会致盲"
+  }
  },
  "meteor": {
   "name": "狐火流星",
@@ -74,15 +308,20 @@
   "el": "fire",
   "target": "one",
   "power": 2.6,
-  "desc": "从天而降的大火球。"
- },
- "moonlight": {
-  "name": "月光",
-  "mp": 5,
-  "kind": "heal",
-  "target": "ally",
-  "power": 1.6,
-  "desc": "为血量最少的同伴疗伤。"
+  "desc": "从天而降的大火球。",
+  "up": {
+   "5": {
+    "power": 3.0
+   },
+   "10": {
+    "power": 3.0,
+    "splash": 0.5
+   }
+  },
+  "upText": {
+   "5": "伤害提高",
+   "10": "其他敌人受到一半溅射"
+  }
  },
  "waterShot": {
   "name": "水弹",
@@ -90,27 +329,92 @@
   "kind": "magic",
   "el": "water",
   "target": "one",
-  "power": 1.35,
-  "desc": "凝出一颗水弹打出去。"
+  "power": 1.15,
+  "desc": "凝出一颗水弹打出去。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "freeze",
+      "chance": 0.15
+     }
+    ]
+   },
+   "10": {
+    "hits": 2,
+    "power": 0.85,
+    "fx": [
+     {
+      "type": "freeze",
+      "chance": 0.15
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "小几率冰冻",
+   "10": "变成两发"
+  }
+ },
+ "moonlight": {
+  "name": "月光",
+  "mp": 5,
+  "kind": "heal",
+  "target": "ally",
+  "power": 1.6,
+  "desc": "为血量最少的同伴疗伤。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "regen"
+     }
+    ]
+   },
+   "10": {
+    "power": 2.0,
+    "fx": [
+     {
+      "type": "regen"
+     }
+    ],
+    "cleanse": true
+   }
+  },
+  "upText": {
+   "5": "附带回春",
+   "10": "还能解除异常"
+  }
  },
  "ward": {
   "name": "护佑",
   "mp": 8,
   "kind": "buff",
   "target": "party",
-  "effect": {
-   "type": "defUp",
-   "turns": 3
+  "fx": [
+   {
+    "type": "defUp"
+   }
+  ],
+  "desc": "我方全体防升三回合。",
+  "up": {
+   "5": {
+    "shield": 0.6
+   },
+   "10": {
+    "shield": 0.9,
+    "fx": [
+     {
+      "type": "defUp",
+      "turns": 5
+     }
+    ]
+   }
   },
-  "desc": "我方全体防御上升三回合。"
- },
- "fullMoon": {
-  "name": "满月",
-  "mp": 16,
-  "kind": "heal",
-  "target": "party",
-  "power": 1.3,
-  "desc": "治疗我方全体。"
+  "upText": {
+   "5": "附带护盾",
+   "10": "护盾加厚，持续五回合"
+  }
  },
  "tide": {
   "name": "潮涌",
@@ -119,7 +423,56 @@
   "el": "water",
   "target": "all",
   "power": 1.05,
-  "desc": "一道浪打向所有敌人。"
+  "desc": "一道浪打向所有敌人。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "spdDown",
+      "chance": 0.5
+     }
+    ]
+   },
+   "10": {
+    "power": 1.3,
+    "fx": [
+     {
+      "type": "spdDown",
+      "chance": 0.6
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "一半几率减速",
+   "10": "伤害提高"
+  }
+ },
+ "fullMoon": {
+  "name": "满月",
+  "mp": 16,
+  "kind": "heal",
+  "target": "party",
+  "power": 1.3,
+  "desc": "治疗我方全体。",
+  "up": {
+   "5": {
+    "cleanse": true
+   },
+   "10": {
+    "power": 1.6,
+    "cleanse": true,
+    "fx": [
+     {
+      "type": "regen"
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "同时解除异常",
+   "10": "附带回春"
+  }
  },
  "tackle": {
   "name": "冲撞",
@@ -127,6 +480,14 @@
   "kind": "phys",
   "target": "one",
   "power": 1.2
+ },
+ "peck": {
+  "name": "连啄",
+  "mp": 3,
+  "kind": "phys",
+  "target": "one",
+  "power": 0.55,
+  "hits": 3
  },
  "leafCut": {
   "name": "飞叶",
@@ -136,6 +497,20 @@
   "target": "one",
   "power": 1.35
  },
+ "spore": {
+  "name": "毒孢子",
+  "mp": 5,
+  "kind": "magic",
+  "el": "grass",
+  "target": "one",
+  "power": 0.8,
+  "fx": [
+   {
+    "type": "poison",
+    "chance": 0.8
+   }
+  ]
+ },
  "bubble": {
   "name": "水泡",
   "mp": 3,
@@ -144,23 +519,44 @@
   "target": "one",
   "power": 1.35
  },
+ "frostBreath": {
+  "name": "寒气",
+  "mp": 6,
+  "kind": "magic",
+  "el": "water",
+  "target": "one",
+  "power": 1.0,
+  "fx": [
+   {
+    "type": "freeze",
+    "chance": 0.35
+   }
+  ]
+ },
  "ember": {
   "name": "火星",
   "mp": 3,
   "kind": "magic",
   "el": "fire",
   "target": "one",
-  "power": 1.35
+  "power": 1.35,
+  "fx": [
+   {
+    "type": "burn",
+    "chance": 0.25
+   }
+  ]
  },
  "roar": {
   "name": "怒吼",
   "mp": 5,
   "kind": "debuff",
   "target": "all",
-  "effect": {
-   "type": "defDown",
-   "turns": 3
-  }
+  "fx": [
+   {
+    "type": "defDown"
+   }
+  ]
  },
  "stomp": {
   "name": "震地",
@@ -175,5 +571,160 @@
   "kind": "heal",
   "target": "self",
   "power": 1.2
+ },
+ "mimic": {
+  "name": "学舌",
+  "mp": 5,
+  "kind": "debuff",
+  "target": "all",
+  "fx": [
+   {
+    "type": "confuse",
+    "chance": 0.3
+   }
+  ]
+ },
+ "lullaby": {
+  "name": "摇篮曲",
+  "mp": 6,
+  "kind": "debuff",
+  "target": "one",
+  "fx": [
+   {
+    "type": "sleep",
+    "chance": 0.6
+   }
+  ]
+ },
+ "inkSplash": {
+  "name": "泼墨",
+  "mp": 5,
+  "kind": "magic",
+  "el": "mist",
+  "target": "all",
+  "power": 0.7,
+  "fx": [
+   {
+    "type": "blind",
+    "chance": 0.5
+   }
+  ]
+ },
+ "hide": {
+  "name": "缩壳",
+  "mp": 4,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "defUp"
+   }
+  ],
+  "shield": 0.5
+ },
+ "thornStomp": {
+  "name": "荆棘踏",
+  "mp": 0,
+  "kind": "phys",
+  "el": "grass",
+  "target": "all",
+  "power": 1.05,
+  "fx": [
+   {
+    "type": "poison",
+    "chance": 0.5
+   }
+  ]
+ },
+ "rally": {
+  "name": "鼓劲",
+  "mp": 0,
+  "kind": "buff",
+  "target": "party",
+  "fx": [
+   {
+    "type": "atkUp"
+   }
+  ]
+ },
+ "geyser": {
+  "name": "间歇泉",
+  "mp": 0,
+  "kind": "magic",
+  "el": "water",
+  "target": "all",
+  "power": 1.1,
+  "fx": [
+   {
+    "type": "freeze",
+    "chance": 0.25
+   }
+  ]
+ },
+ "trunkSpray": {
+  "name": "鼻水炮",
+  "mp": 0,
+  "kind": "magic",
+  "el": "water",
+  "target": "one",
+  "power": 1.7
+ },
+ "wildfire": {
+  "name": "燎原",
+  "mp": 0,
+  "kind": "magic",
+  "el": "fire",
+  "target": "all",
+  "power": 1.1,
+  "fx": [
+   {
+    "type": "burn",
+    "chance": 0.6
+   }
+  ]
+ },
+ "maneLash": {
+  "name": "鬃火鞭",
+  "mp": 0,
+  "kind": "phys",
+  "el": "fire",
+  "target": "one",
+  "power": 1.6
+ },
+ "starfall": {
+  "name": "摘星落",
+  "mp": 0,
+  "kind": "magic",
+  "el": "star",
+  "target": "all",
+  "power": 1.05
+ },
+ "starGaze": {
+  "name": "凝星",
+  "mp": 0,
+  "kind": "magic",
+  "el": "star",
+  "target": "one",
+  "power": 1.9,
+  "fx": [
+   {
+    "type": "sleep",
+    "chance": 0.3
+   }
+  ]
+ },
+ "mistVeil": {
+  "name": "雾幕",
+  "mp": 0,
+  "kind": "magic",
+  "el": "mist",
+  "target": "all",
+  "power": 0.9,
+  "fx": [
+   {
+    "type": "blind",
+    "chance": 0.5
+   }
+  ]
  }
 }

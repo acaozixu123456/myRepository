@@ -66,7 +66,7 @@ function QuestChip() {
 }
 const NAV = [['bag', 'bag', '背包'], ['hero', 'hero', '角色'], ['pets', 'paw', '伙伴'], ['quests', 'scroll', '任务'], ['more', 'more', '更多']];
 function Nav() {
-  const s = store.s, badge = { hero: s.hero.pts || '', bag: s.bag.gear.length || '', quests: !s.quests.main.accepted && C.currentQuest(s) || C.questDone(s) ? '!' : '' };
+  const s = store.s, badge = { hero: (s.hero.pts + s.hero.sp) || '', bag: s.bag.gear.length || '', quests: !s.quests.main.accepted && C.currentQuest(s) || C.questDone(s) ? '!' : '' };
   return html`<nav class="nav panel">${NAV.map(([k, ic, label]) => html`<button type="button" class=${ui.sheet === k ? 'on' : ''} onClick=${() => (ui.sheet === k ? closeSheet() : openSheet(k))}><${Icon} n=${ic} s=${24} /><span>${label}</span>${badge[k] ? html`<em>${badge[k]}</em>` : null}</button>`)}</nav>`;
 }
 
@@ -101,18 +101,22 @@ const pages = {
           if (!g) return html`<div class="row slim dim"><${GearIcon} slot=${k} /><div class="mid"><b>${GEAR_SLOTS[k]}</b><small>空着</small></div></div>`;
           const cost = C.enhanceCost(g), max = (g.plus || 0) >= C.MAX_PLUS;
           return html`<div class=${'row slim r' + g.rare}><${GearIcon} g=${g} /><div class="mid"><b>${gearName(g)}</b><small>${GEAR_SLOTS[k]}　${gearText(g)}</small></div><${Btn} disabled=${max || s.wallet.gold < cost} onClick=${() => { if (C.enhance(s, k)) save(); }}>${max ? '已满级' : html`强化 <${Coin} s=${12} />${cost}`}</${Btn}></div>`; })}
-        <h3>技能</h3>
-        ${c.skills.map(([lv, id]) => { const k = SKILLS[id], has = h.lv >= lv; return html`<div class=${'row slim' + (has ? '' : ' dim')}><span class="gi"><${Icon} n="sparkle" s=${22} /></span><div class="mid"><b>${k.name}<small>　灵气 ${k.mp}</small></b><small>${has ? k.desc : `${lv} 级学会。${k.desc}`}</small></div></div>`; })}
+        <h3>技能 · 剩 ${h.sp} 点技能点</h3>
+        <p class="hint">每升一级给 1 点。技能每升一级威力 +8%，5 级和 10 级各有一次变化。</p>
+        ${c.skills.map(([lv, id]) => { const has = h.lv >= lv, n = C.skillLv(s, id), k = C.skillAt(id, n), base = SKILLS[id], max = n >= C.SKILL_MAX;
+          const nextUp = n < 5 ? ['5', base.upText?.['5']] : n < 10 ? ['10', base.upText?.['10']] : null;
+          return html`<div class=${'row slim' + (has ? '' : ' dim')}><span class="gi">${k.el ? html`<${El} el=${k.el} />` : html`<${Icon} n="sparkle" s=${22} />`}</span><div class="mid"><b>${k.name}<small>　${has ? `Lv.${n}` : `${lv} 级学会`} · 灵气 ${k.mp}</small></b><small>${base.desc}${has && nextUp?.[1] ? `　${nextUp[0]} 级：${nextUp[1]}` : ''}</small></div>
+            ${has ? html`<${Btn} disabled=${max || h.sp <= 0} onClick=${() => { if (C.raiseSkill(s, id)) save(); }}>${max ? '满级' : '升级'}</${Btn}>` : null}</div>`; })}
       </div>`;
   },
   pets() {
     const s = store.s;
     if (!s.pets.length) return html`<${Head} title="伙伴" right=${`0/${C.PARTY_MAX}`} /><div class="talk">你还没有伙伴。<small>战斗里把野怪打到虚弱，再用「捕捉」丢出灵种，它就可能跟你走。血越少越容易成功，首领抓不了。</small></div>`;
     return html`<${Head} title="伙伴" right=${`${s.pets.length}/${C.PARTY_MAX}`} />
-      <p class="hint">出战的伙伴会跟着你一起战斗、一起升级。</p>
-      <div class="scroll">${s.pets.map(p => { const m = MONSTERS[p.id], st = C.petStats(p), on = s.party[0] === p.uid;
-        return html`<div class=${'row' + (on ? ' on' : '')}><${Portrait} id=${p.id} s=${52} /><div class="mid"><b>${m.name}<small>　Lv.${p.lv}</small> <${El} el=${m.el} /></b><${Bar} v=${p.hp} max=${st.hp} kind="hp" /><small>攻击 ${st.atk} · 防御 ${st.def} · 速度 ${st.spd}${m.skill ? ` · 技能 ${SKILLS[m.skill].name}` : ''}</small></div>
-          <div class="acts">${on ? html`<${Btn} ghost onClick=${() => setActive(null)}>休息</${Btn}>` : html`<${Btn} onClick=${() => setActive(p.uid)}>出战</${Btn}>`}<${FreeBtn} p=${p} /></div></div>`; })}</div>`;
+      <p class="hint">最多两只一起出战，拿九成经验；其余的在家待命，拿一半经验。战斗里也能用「道具」换伙伴。</p>
+      <div class="scroll">${s.pets.map(p => { const m = MONSTERS[p.id], st = C.petStats(p), on = s.party.includes(p.uid), full = !s.party.includes(null);
+        return html`<div class=${'row' + (on ? ' on' : '')}><${Portrait} id=${p.id} s=${52} /><div class="mid"><b>${m.name}<small>　Lv.${p.lv}</small> <${El} el=${m.el} /></b><${Bar} v=${p.hp} max=${st.hp} kind="hp" /><small>攻击 ${st.atk} · 防御 ${st.def} · 速度 ${st.spd} · 技能 ${m.skills.map(id => SKILLS[id].name).join('、')}</small></div>
+          <div class="acts">${on ? html`<${Btn} ghost onClick=${() => setActive(p.uid, false)}>休息</${Btn}>` : html`<${Btn} disabled=${full} onClick=${() => setActive(p.uid, true)}>${full ? '满了' : '出战'}</${Btn}>`}<${FreeBtn} p=${p} /></div></div>`; })}</div>`;
   },
   quests() {
     const s = store.s, q = C.currentQuest(s), m = s.quests.main;
@@ -175,7 +179,7 @@ function FreeBtn({ p }) {
   const [sure, setSure] = useState(false);
   return html`<${Btn} ghost cls=${sure ? 'warn' : ''} onClick=${() => { if (!sure) return setSure(true); const name = MONSTERS[p.id].name; C.removePet(store.s, p.uid); save(); hooks.setPet(); toast(`${name}回到了野外。`); }}>${sure ? '确定放生' : '放生'}</${Btn}>`;
 }
-function setActive(uid) { store.s.party[0] = uid; save(); hooks.setPet(); }
+function setActive(uid, on) { const s = store.s; if (on) { const i = s.party.indexOf(null); if (i >= 0) s.party[i] = uid; } else s.party = s.party.map(u => (u === uid ? null : u)); save(); hooks.setPet(); }
 function useItem(id) {
   const s = store.s, it = ITEMS[id], st = C.heroStats(s), h = s.hero;
   if (it.use === 'hp') {
