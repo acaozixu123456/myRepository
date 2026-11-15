@@ -1,0 +1,25 @@
+{
+ "pill": {
+  "name": "草药丸",
+  "icon": "herb",
+  "price": 12,
+  "desc": "恢复一名同伴 45% 生命。",
+  "use": "hp",
+  "amount": 0.45
+ },
+ "dew": {
+  "name": "灵泉露",
+  "icon": "drop",
+  "price": 18,
+  "desc": "恢复自己 50% 灵气。",
+  "use": "mp",
+  "amount": 0.5
+ },
+ "seed": {
+  "name": "灵种",
+  "icon": "seed",
+  "price": 25,
+  "desc": "丢向虚弱的野怪，有机会让它变成伙伴。",
+  "use": "capture"
+ }
+}

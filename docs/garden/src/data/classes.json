@@ -1,0 +1,133 @@
+{
+ "attrs": {
+  "names": {
+   "str": "力量",
+   "vit": "体质",
+   "int": "灵力",
+   "agi": "敏捷"
+  },
+  "desc": {
+   "str": "提高物理伤害",
+   "vit": "提高生命和防御",
+   "int": "提高法术、治疗和灵气上限",
+   "agi": "提高出手速度和闪避"
+  }
+ },
+ "list": {
+  "cat": {
+   "name": "影爪",
+   "model": "x:cat",
+   "scale": 2,
+   "blurb": "动作快、出手重，靠爪子说话。",
+   "base": {
+    "str": 6,
+    "vit": 5,
+    "int": 2,
+    "agi": 6
+   },
+   "grow": {
+    "str": 1.2,
+    "vit": 0.8,
+    "int": 0.2,
+    "agi": 0.8
+   },
+   "skills": [
+    [
+     1,
+     "doubleClaw"
+    ],
+    [
+     5,
+     "rend"
+    ],
+    [
+     10,
+     "whirl"
+    ],
+    [
+     16,
+     "critical"
+    ]
+   ],
+   "el": "none"
+  },
+  "fox": {
+   "name": "灵火",
+   "model": "x:fox",
+   "scale": 1.9,
+   "blurb": "操纵狐火的法师，怕被近身。",
+   "base": {
+    "str": 2,
+    "vit": 4,
+    "int": 8,
+    "agi": 5
+   },
+   "grow": {
+    "str": 0.2,
+    "vit": 0.6,
+    "int": 1.4,
+    "agi": 0.8
+   },
+   "skills": [
+    [
+     1,
+     "spark"
+    ],
+    [
+     6,
+     "flameRing"
+    ],
+    [
+     11,
+     "scorch"
+    ],
+    [
+     17,
+     "meteor"
+    ]
+   ],
+   "el": "fire"
+  },
+  "rabbit": {
+   "name": "月愈",
+   "model": "x:rabbit",
+   "scale": 2,
+   "blurb": "会疗伤也会水法，打得慢但很稳。",
+   "base": {
+    "str": 3,
+    "vit": 6,
+    "int": 7,
+    "agi": 3
+   },
+   "grow": {
+    "str": 0.3,
+    "vit": 1,
+    "int": 1.2,
+    "agi": 0.5
+   },
+   "skills": [
+    [
+     1,
+     "waterShot"
+    ],
+    [
+     2,
+     "moonlight"
+    ],
+    [
+     8,
+     "ward"
+    ],
+    [
+     13,
+     "tide"
+    ],
+    [
+     15,
+     "fullMoon"
+    ]
+   ],
+   "el": "water"
+  }
+ }
+}

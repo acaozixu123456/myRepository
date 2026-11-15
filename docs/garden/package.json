@@ -1,0 +1,21 @@
+{
+  "name": "fudao-qiyu",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node tools/check-data.mjs && vite build",
+    "preview": "vite preview",
+    "test": "node --test test/*.test.js",
+    "sim": "node tools/sim.mjs",
+    "portraits": "node tools/render-portraits.mjs"
+  },
+  "dependencies": {
+    "htm": "3.1.1",
+    "preact": "10.27.2",
+    "three": "0.170.0"
+  },
+  "devDependencies": {
+    "vite": "7.3.0"
+  }
+}

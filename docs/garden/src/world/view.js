@@ -1,14 +1,15 @@
 // 画面：可以走动的浮岛地图，和回合制战斗的小舞台。
 import * as THREE from 'three';
-import { GLTFLoader } from '../vendor/GLTFLoader.js';
-import { LIGHT, UI_THEME } from '../js/scene.js';
-import { MONSTERS, CLASSES } from './data.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { LIGHT, UI_THEME } from './light.js';
+import { MONSTERS, CLASSES } from '../data/index.js';
+import { toonify, toonFromParams, setRim, outline } from './toon.js';
 
 const noise2 = (x, z) => Math.sin(x * 0.9 + 1.3) * Math.cos(z * 0.7 - 0.4) * 0.5 + Math.sin(x * 2.1 + z * 1.7) * 0.25 + Math.cos(x * 3.7 - z * 2.9) * 0.12;
-const EL_COLOR = { none: 0xffffff, grass: 0x8fe36a, water: 0x6cc8ff, fire: 0xff8a4a };
 function seeded(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
 
 export async function createView(canvas, skyEl, starsEl) {
+  // look：{ cls, pet }，画面只需要知道主角是什么职业、跟着哪只伙伴
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setClearColor(0, 0); renderer.shadowMap.enabled = !/[?&]fast/.test(location.search); renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
@@ -19,10 +20,11 @@ export async function createView(canvas, skyEl, starsEl) {
   const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000);
   const CAM_OFF = new THREE.Vector3(30, 36, 30), focus = new THREE.Vector3();
   let viewW = 14, worldW = 14;
+  let shiftY = 0; // 让主角往上挪，给底部面板让位（选人时用）
   function resize() {
     const W = innerWidth, H = innerHeight, aspect = W / H;
     const w = Math.max(viewW, viewW * 1.5 * aspect), h = w / aspect;
-    cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix();
+    cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2 - shiftY * h; cam.bottom = -h / 2 - shiftY * h; cam.updateProjectionMatrix(); outline.aspect.value = aspect;
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(W, H, false);
     const d = Math.min(devicePixelRatio, 2); starsEl.width = W * d; starsEl.height = H * d;
     const x = starsEl.getContext('2d'); x.scale(d, d); const r = seeded(3);
@@ -35,7 +37,9 @@ export async function createView(canvas, skyEl, starsEl) {
     hemi.color.setHex(a.hemiS); hemi.groundColor.setHex(a.hemiG); hemi.intensity = a.hemiI * (key === 'night' ? 2.6 : key === 'dusk' ? 1.3 : 1);
     starsEl.style.opacity = key === 'night' ? 1 : 0; night = a.night;
     leafI = a.leaf * 2 + 0.12; for (const m of leafMats) m.emissiveIntensity = leafI;
-    const th = UI_THEME[key === 'dawn' ? 'day' : key]; for (const k in th) document.documentElement.style.setProperty('--' + k, th[k]);
+    setRim(a.rim[0], a.rim[1]);
+    const th = UI_THEME[key]; for (const k in th) document.documentElement.style.setProperty('--' + k, th[k]);
+    document.documentElement.dataset.light = key;
   }
   const sunDir = new THREE.Vector3(-14, 22, 10); let night = 0, leafI = 0.4;
 
@@ -51,7 +55,8 @@ export async function createView(canvas, skyEl, starsEl) {
         if (/^Bush/.test(name) && /Leaves/.test(mat.name)) mat.map = leafGreen;
         if (/Leaves|Leaf|Grass/.test(mat.name) && mat.map) { mat.emissive = new THREE.Color(0xffffff); mat.emissiveMap = mat.map; mat.emissiveIntensity = leafI; leafMats.add(mat); m.receiveShadow = false; }
       });
-      return g.scene;
+      // 角色、怪物、石头、灯笼加描边；草叶树叶不加
+      return toonify(g.scene, /^animal|^x:|Rock|Mushroom|Bush/.test(name));
     });
     return (await cache[name]).clone(true);
   }
@@ -62,10 +67,18 @@ export async function createView(canvas, skyEl, starsEl) {
   // 一个会动的角色：模型 + 待机动画 + 影子
   async function makeActor(modelName, scale) {
     const o = await model(modelName), holder = new THREE.Group(); o.scale.setScalar(scale); holder.add(o);
-    const clip = (clips[modelName] || [])[0];
-    if (clip) { holder.userData.mixer = new THREE.AnimationMixer(o); const a = holder.userData.mixer.clipAction(clip); a.time = Math.random() * clip.duration; a.play(); }
+    const list = clips[modelName] || [], idle = list.find(c => c.name === 'idle') || list.find(c => c.name !== 'static'), walk = list.find(c => c.name === 'walk');
+    if (idle) {
+      const mx = holder.userData.mixer = new THREE.AnimationMixer(o), a = mx.clipAction(idle); a.time = Math.random() * idle.duration; a.play();
+      holder.userData.acts = { idle: a, walk: walk ? mx.clipAction(walk) : null, cur: 'idle' };
+    }
     holder.userData.body = o; holder.userData.scale = scale; holder.userData.ph = Math.random() * 6;
     return holder;
+  }
+  // 走路和待机动作之间淡入淡出
+  function setGait(actor, moving) {
+    const A = actor && actor.userData.acts; if (!A || !A.walk) return; const want = moving ? 'walk' : 'idle'; if (A.cur === want) return;
+    const from = A[A.cur], to = A[want]; to.reset().play(); from.crossFadeTo(to, 0.18, false); A.cur = want;
   }
   const monsterActor = (id, k = 1) => makeActor(MONSTERS[id].model, 0.62 * (MONSTERS[id].scale || 1) * k);
 
@@ -86,7 +99,7 @@ export async function createView(canvas, skyEl, starsEl) {
       }
       for (let r = 0; r < rings; r++) for (let s = 0; s < seg; s++) { const a = r * (seg + 1) + s, b = a + seg + 1; idx.push(a, a + 1, b, b, a + 1, b + 1); }
       const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); geo.setIndex(idx); geo.computeVertexNormals();
-      const top = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95 })); top.receiveShadow = true; g.add(top); g.userData.top = top; }
+      const top = new THREE.Mesh(geo, toonFromParams({ vertexColors: true })); top.receiveShadow = true; g.add(top); g.userData.top = top; }
     { const seg = 72, rows = 18, depth = R * 1.05, pos = [], col = [], idx = [];
       const c1 = new THREE.Color(0x8a6646), c2 = new THREE.Color(0xb98d5f), c3 = new THREE.Color(0x6e5a4e), c4 = new THREE.Color(0x4e4250);
       for (let r = 0; r <= rows; r++) for (let s = 0; s <= seg; s++) {
@@ -123,16 +136,16 @@ export async function createView(canvas, skyEl, starsEl) {
   let grace = 0, world = null, hero = null, petFollower = null, wild = [], bossActor = null, lantern = null, cb = {}, zoneRef = null, mode = 'world';
   const marker = glow(0xffffff, 1.2, 0, starTex); scene.add(marker);
   const target = { x: 0, z: 0, on: false };
-  async function loadZone(zone, state) {
+  async function loadZone(zone, look) {
     if (world) scene.remove(world);
     zoneRef = zone; wild = []; bossActor = null; lantern = null; mode = 'world';
     const R = zone.home ? 11 : 15;
     world = buildIsland(R, zone.pal, { seed: 11 + zone.id.length * 7 + zone.id.charCodeAt(0), pond: zone.pond || zone.home, night: zone.light === 'night' });
     scene.add(world); setLight(zone.light);
     const jobs = [decorate(world, zone, zone.home ? 0.7 : 1)];
-    hero = await makeActor(CLASSES[state.cls].model, CLASSES[state.cls].scale); world.add(hero); hero.position.set(0, world.userData.gy(0, 0), 0); target.on = false;
-    petFollower = null; const p = state.pets[state.active];
-    if (p) { petFollower = await monsterActor(p.id, 0.8); world.add(petFollower); petFollower.position.set(-1.2, 0, 0.8); }
+    hero = await makeActor(CLASSES[look.cls].model, CLASSES[look.cls].scale); world.add(hero); hero.position.set(0, world.userData.gy(0, 0), 0); target.on = false;
+    petFollower = null;
+    if (look.pet) { petFollower = await monsterActor(look.pet, 0.8); world.add(petFollower); petFollower.position.set(-1.2, 0, 0.8); }
     if (zone.home) jobs.push(model('x:stoneLantern').then(o => { o.position.set(2.2, world.userData.gy(2.2, -2.2) - 0.05, -2.2); o.scale.setScalar(3); world.add(o); lantern = o; world.userData.solids.push([2.2, -2.2, 0.9]); const h = glow(0xffc070, 3, 0.5); h.position.set(2.2, 2.3, -2.2); world.add(h); }));
     else {
       for (let i = 0; i < 7; i++) jobs.push(spawnWild());
@@ -142,9 +155,9 @@ export async function createView(canvas, skyEl, starsEl) {
     await Promise.all(jobs);
     focus.copy(hero.position); grace = 1;
   }
-  async function setPet(state) {
-    if (petFollower) world.remove(petFollower); petFollower = null; const p = state.pets[state.active]; if (!p) return;
-    const o = await monsterActor(p.id, 0.8); o.position.copy(hero.position); o.position.x -= 1.2; world.add(o); petFollower = o;
+  async function setPet(petId) {
+    if (petFollower) world.remove(petFollower); petFollower = null; if (!petId) return;
+    const o = await monsterActor(petId, 0.8); o.position.copy(hero.position); o.position.x -= 1.2; world.add(o); petFollower = o;
   }
   async function spawnWild() {
     const z = zoneRef, id = z.wild[Math.floor(Math.random() * z.wild.length)], u = world.userData;
@@ -166,16 +179,16 @@ export async function createView(canvas, skyEl, starsEl) {
         hero.rotation.y = Math.atan2(dx, dz);
       }
     }
-    hp.y = u.gy(hp.x, hp.z) + (moving ? Math.abs(Math.sin(t * 11)) * 0.22 : 0);
+    setGait(hero, moving); hp.y = u.gy(hp.x, hp.z) + (moving && !hero.userData.acts?.walk ? Math.abs(Math.sin(t * 11)) * 0.22 : 0);
     marker.material.opacity = target.on ? 0.5 + 0.4 * Math.sin(t * 6) : Math.max(0, marker.material.opacity - dt * 3); marker.material.rotation = t;
     if (petFollower) {
       const pp = petFollower.position, dx = hp.x - pp.x, dz = hp.z - pp.z, d = Math.hypot(dx, dz);
-      if (d > 1.7) { const s = Math.min(d - 1.6, 6 * dt); pp.x += dx / d * s; pp.z += dz / d * s; petFollower.rotation.y = Math.atan2(dx, dz); pp.y = u.gy(pp.x, pp.z) + Math.abs(Math.sin(t * 10 + 1)) * 0.18; } else pp.y = u.gy(pp.x, pp.z);
+      setGait(petFollower, d > 1.7); if (d > 1.7) { const s = Math.min(d - 1.6, 6 * dt); pp.x += dx / d * s; pp.z += dz / d * s; petFollower.rotation.y = Math.atan2(dx, dz); pp.y = u.gy(pp.x, pp.z) + Math.abs(Math.sin(t * 10 + 1)) * 0.18; } else pp.y = u.gy(pp.x, pp.z);
     }
     grace = Math.max(0, grace - dt);
     for (const w of wild) {
       const d = w.userData, wp = w.position, dx = d.tx - wp.x, dz = d.tz - wp.z, dist = Math.hypot(dx, dz);
-      if (dist > 0.1) { const s = Math.min(dist, 1.3 * dt), nx = wp.x + dx / dist * s, nz = wp.z + dz / dist * s; if (!blocked(nx, nz)) { wp.x = nx; wp.z = nz; } else { d.tx = wp.x; d.tz = wp.z; } w.rotation.y = Math.atan2(dx, dz); wp.y = u.gy(wp.x, wp.z) + Math.abs(Math.sin(t * 8 + d.ph)) * 0.15; }
+      setGait(w, dist > 0.1); if (dist > 0.1) { const s = Math.min(dist, 1.3 * dt), nx = wp.x + dx / dist * s, nz = wp.z + dz / dist * s; if (!blocked(nx, nz)) { wp.x = nx; wp.z = nz; } else { d.tx = wp.x; d.tz = wp.z; } w.rotation.y = Math.atan2(dx, dz); wp.y = u.gy(wp.x, wp.z) + Math.abs(Math.sin(t * 8 + d.ph)) * 0.15; }
       else { wp.y = u.gy(wp.x, wp.z); d.wait -= dt; if (d.wait <= 0) { const a = Math.random() * 6.28, r = 1.5 + Math.random() * 4; d.tx = wp.x + Math.cos(a) * r; d.tz = wp.z + Math.sin(a) * r; if (blocked(d.tx, d.tz)) { d.tx = wp.x; d.tz = wp.z; } d.wait = 2 + Math.random() * 6; } }
       if (!grace && Math.hypot(wp.x - hp.x, wp.z - hp.z) < 1.5) { target.on = false; cb.encounter && cb.encounter(w.userData.id, false, w); return; }
     }
@@ -189,7 +202,7 @@ export async function createView(canvas, skyEl, starsEl) {
   const arena = new THREE.Group(); arena.visible = false; scene.add(arena);
   const AX = new THREE.Vector3(1, 0, -1).normalize(), DZ = new THREE.Vector3(1, 0, 1).normalize();
   let actors = {}, tweens = [], fxSprites = [];
-  async function enterBattle(battle, state) {
+  async function enterBattle(battle, look) {
     mode = 'battle'; world.visible = false; arena.clear(); arena.visible = true; actors = {}; tweens = [];
     const isl = buildIsland(8.5, zoneRef.pal, { seed: 5 }); arena.add(isl);
     const rs = seeded(9), jobs = [];
@@ -199,7 +212,7 @@ export async function createView(canvas, skyEl, starsEl) {
     for (const u of battle.units) {
       const i = sideIdx[u.side]++, n = sideCount[u.side], sgn = u.side === 'a' ? -1 : 1;
       const pos = AX.clone().multiplyScalar(sgn * (2.5 + (n - 1 - i) * 0.9)).add(DZ.clone().multiplyScalar((i - (n - 1) / 2) * 2.3));
-      jobs.push((u.key === 'hero' ? makeActor(CLASSES[state.cls].model, CLASSES[state.cls].scale) : monsterActor(u.mid, u.key === 'pet' ? 1 : 1.1)).then(o => {
+      jobs.push((u.key === 'hero' ? makeActor(CLASSES[look.cls].model, CLASSES[look.cls].scale) : monsterActor(u.mid, u.key === 'pet' ? 1 : 1.1)).then(o => {
         o.position.copy(pos); o.rotation.y = Math.atan2(-sgn * AX.x, -sgn * AX.z); o.userData.home = pos.clone(); o.userData.height = u.key === 'hero' ? 2.2 : 1.5 * (MONSTERS[u.mid].scale || 1);
         arena.add(o); actors[u.key] = o;
       }));
@@ -248,7 +261,7 @@ export async function createView(canvas, skyEl, starsEl) {
     const hit = ray.intersectObject(world.userData.top, false)[0];
     if (hit) walkTo(hit.point.x, hit.point.z);
   }
-  function setZoom(w) { viewW = worldW = w; resize(); }
+  function setZoom(w, shift = 0) { viewW = worldW = w; shiftY = shift; resize(); }
   resize(); addEventListener('resize', resize);
   return { loadZone, frame, tap, enterBattle, exitBattle, anim, screenPos, removeWild, setPet, setZoom, on: (k, f) => { cb[k] = f; }, get mode() { return mode; }, heroModelFor: makeActor };
 }
