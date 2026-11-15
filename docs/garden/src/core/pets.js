@@ -1,4 +1,5 @@
 // 伙伴：资质、性格、天赋、异色、亲密度、技能槽、进化、融合、伙伴屋。
+import { tally } from './tally.js';
 import { MONSTERS, PETS, SKILLS, ITEMS } from '../data/index.js';
 import { rnd, ri, pick } from './rng.js';
 
@@ -63,7 +64,7 @@ export function canEvolve(s, p) {
 export function evolve(s, uid) {
   const p = s.pets.find(x => x.uid === uid); if (!p || !canEvolve(s, p)) return null;
   const e = nextEvo(p); for (const [k, n] of Object.entries(e.need)) s.bag.items[k] -= n;
-  p.evo = (p.evo || 0) + 1;
+  p.evo = (p.evo || 0) + 1; tally(s, 'evolve');
   if (e.skill && !p.known.includes(e.skill)) { p.known.push(e.skill); if (p.skills.length < skillSlots(p)) p.skills.push(e.skill); }
   return e;
 }
@@ -94,7 +95,7 @@ export function fusePreview(a, b) {
 }
 export function fuse(s, uidA, uidB, makePet) {
   const a = s.pets.find(x => x.uid === uidA), b = s.pets.find(x => x.uid === uidB); if (!canFuse(s, a, b)) return null;
-  s.wallet.gold -= PETS.fuseCost;
+  s.wallet.gold -= PETS.fuseCost; tally(s, 'fuse');
   const apt = {}; for (const k of APT_KEYS) apt[k] = Math.max(60, Math.min(120, Math.round(Math.max(a.apt[k], b.apt[k]) * (0.92 + rnd() * 0.16))));
   const pool = b.known.filter(id => !MONSTERS[a.id].skills.includes(id)), give = [];
   for (let i = 0, n = ri(1, 2); i < n && pool.length; i++) give.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);

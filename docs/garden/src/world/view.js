@@ -11,7 +11,8 @@ function seeded(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647
 export async function createView(canvas, skyEl, starsEl) {
   // look：{ cls, pet }，画面只需要知道主角是什么职业、跟着哪只伙伴
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setClearColor(0, 0); renderer.shadowMap.enabled = !/[?&]fast/.test(location.search); renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.setClearColor(0, 0); const saver = /[?&]fast/.test(location.search) || (() => { try { return localStorage.getItem('fudao.saver') === '1'; } catch { return false; } })();
+  renderer.shadowMap.enabled = !saver; if (saver) renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
   const scene = new THREE.Scene();
   const hemi = new THREE.HemisphereLight(0xffffff, 0x888888, 1); scene.add(hemi);
   const sun = new THREE.DirectionalLight(0xffffff, 3); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
@@ -183,6 +184,8 @@ export async function createView(canvas, skyEl, starsEl) {
       inter.push({ o, kind: 'gather', r: 1.3 });
     }));
     if (ex.farm) placeFarm();
+    // 搬来住的守护兽：在小岛上慢慢转悠
+    for (const id of ex.guardians || []) jobs.push(monsterActor(id, 0.55).then(o => { const [x, z] = freeSpot(3); o.position.set(x, u.gy(x, z), z); o.rotation.y = Math.random() * 6.28; world.add(o); u.solids.push([x, z, 1]); inter.push({ o, kind: 'guardian', id, r: 2 }); }));
     if (ex.chest) {
       const g = new THREE.Group(), wood = new THREE.MeshToonMaterial({ color: 0xa8683a }), gold = new THREE.MeshToonMaterial({ color: 0xf2c14e });
       const box = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.55, 0.6), wood); box.position.y = 0.28; box.castShadow = true;

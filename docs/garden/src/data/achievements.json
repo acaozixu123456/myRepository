@@ -1,0 +1,888 @@
+[
+ {
+  "id": "kill0",
+  "cat": "冒险",
+  "name": "初出茅庐",
+  "desc": "打败 10 只野怪",
+  "check": {
+   "stat": "kills",
+   "n": 10
+  },
+  "sand": 1
+ },
+ {
+  "id": "kill1",
+  "cat": "冒险",
+  "name": "小有名气",
+  "desc": "打败 100 只野怪",
+  "check": {
+   "stat": "kills",
+   "n": 100
+  },
+  "sand": 1
+ },
+ {
+  "id": "kill2",
+  "cat": "冒险",
+  "name": "岛上常客",
+  "desc": "打败 500 只野怪",
+  "check": {
+   "stat": "kills",
+   "n": 500
+  },
+  "sand": 2
+ },
+ {
+  "id": "kill3",
+  "cat": "冒险",
+  "name": "野怪都认识你",
+  "desc": "打败 2000 只野怪",
+  "check": {
+   "stat": "kills",
+   "n": 2000
+  },
+  "sand": 3
+ },
+ {
+  "id": "kill4",
+  "cat": "冒险",
+  "name": "云海传说",
+  "desc": "打败 5000 只野怪",
+  "check": {
+   "stat": "kills",
+   "n": 5000
+  },
+  "sand": 5
+ },
+ {
+  "id": "lv5",
+  "cat": "冒险",
+  "name": "5 级",
+  "desc": "角色升到 5 级",
+  "check": {
+   "lv": 5
+  },
+  "sand": 1
+ },
+ {
+  "id": "lv10",
+  "cat": "冒险",
+  "name": "10 级",
+  "desc": "角色升到 10 级",
+  "check": {
+   "lv": 10
+  },
+  "sand": 1
+ },
+ {
+  "id": "lv20",
+  "cat": "冒险",
+  "name": "20 级",
+  "desc": "角色升到 20 级",
+  "check": {
+   "lv": 20
+  },
+  "sand": 2
+ },
+ {
+  "id": "lv30",
+  "cat": "冒险",
+  "name": "30 级",
+  "desc": "角色升到 30 级",
+  "check": {
+   "lv": 30
+  },
+  "sand": 2
+ },
+ {
+  "id": "lv40",
+  "cat": "冒险",
+  "name": "40 级",
+  "desc": "角色升到 40 级",
+  "check": {
+   "lv": 40
+  },
+  "sand": 3
+ },
+ {
+  "id": "lv50",
+  "cat": "冒险",
+  "name": "50 级",
+  "desc": "角色升到 50 级",
+  "check": {
+   "lv": 50
+  },
+  "sand": 3
+ },
+ {
+  "id": "lv60",
+  "cat": "冒险",
+  "name": "60 级",
+  "desc": "角色升到 60 级",
+  "check": {
+   "lv": 60
+  },
+  "sand": 5
+ },
+ {
+  "id": "main0",
+  "cat": "冒险",
+  "name": "第一章完",
+  "desc": "完成主线第 1 章",
+  "check": {
+   "main": 8
+  },
+  "sand": 2
+ },
+ {
+  "id": "main1",
+  "cat": "冒险",
+  "name": "墨散了",
+  "desc": "完成主线第 2 章",
+  "check": {
+   "main": 16
+  },
+  "sand": 2
+ },
+ {
+  "id": "main2",
+  "cat": "冒险",
+  "name": "灯塔的记忆",
+  "desc": "完成主线第 3 章",
+  "check": {
+   "main": 24
+  },
+  "sand": 2
+ },
+ {
+  "id": "main3",
+  "cat": "冒险",
+  "name": "琉璃灯罩",
+  "desc": "完成主线第 4 章",
+  "check": {
+   "main": 32
+  },
+  "sand": 2
+ },
+ {
+  "id": "main4",
+  "cat": "冒险",
+  "name": "回家的灯",
+  "desc": "完成主线第 5 章",
+  "check": {
+   "main": 40
+  },
+  "sand": 5
+ },
+ {
+  "id": "side0",
+  "cat": "冒险",
+  "name": "热心肠",
+  "desc": "完成 5 个支线",
+  "check": {
+   "side": 5
+  },
+  "sand": 1
+ },
+ {
+  "id": "side1",
+  "cat": "冒险",
+  "name": "岛上的好邻居",
+  "desc": "完成 15 个支线",
+  "check": {
+   "side": 15
+  },
+  "sand": 2
+ },
+ {
+  "id": "side2",
+  "cat": "冒险",
+  "name": "谁都认识你",
+  "desc": "完成 30 个支线",
+  "check": {
+   "side": 30
+  },
+  "sand": 3
+ },
+ {
+  "id": "boss1",
+  "cat": "冒险",
+  "name": "第一位守护兽",
+  "desc": "打败任意一个首领",
+  "check": {
+   "stat": "boss",
+   "n": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "bossAll",
+  "cat": "冒险",
+  "name": "八方安宁",
+  "desc": "八个首领全部打败过",
+  "check": {
+   "bossAll": 1
+  },
+  "sand": 5
+ },
+ {
+  "id": "boss20",
+  "cat": "冒险",
+  "name": "老朋友",
+  "desc": "累计打败首领 20 次",
+  "check": {
+   "stat": "boss",
+   "n": 20
+  },
+  "sand": 2
+ },
+ {
+  "id": "route",
+  "cat": "冒险",
+  "name": "另一条路",
+  "desc": "完成转职",
+  "check": {
+   "route": 1
+  },
+  "sand": 2
+ },
+ {
+  "id": "gold5k",
+  "cat": "冒险",
+  "name": "小金库",
+  "desc": "同时有 5000 金币",
+  "check": {
+   "gold": 5000
+  },
+  "sand": 1
+ },
+ {
+  "id": "gold50k",
+  "cat": "冒险",
+  "name": "大金库",
+  "desc": "同时有 50000 金币",
+  "check": {
+   "gold": 50000
+  },
+  "sand": 3
+ },
+ {
+  "id": "pets0",
+  "cat": "伙伴",
+  "name": "第一个伙伴",
+  "desc": "拥有 1 只伙伴",
+  "check": {
+   "pets": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "pets1",
+  "cat": "伙伴",
+  "name": "一队人",
+  "desc": "拥有 6 只伙伴",
+  "check": {
+   "pets": 6
+  },
+  "sand": 1
+ },
+ {
+  "id": "pets2",
+  "cat": "伙伴",
+  "name": "热闹起来",
+  "desc": "拥有 15 只伙伴",
+  "check": {
+   "pets": 15
+  },
+  "sand": 2
+ },
+ {
+  "id": "pets3",
+  "cat": "伙伴",
+  "name": "伙伴屋快满了",
+  "desc": "拥有 30 只伙伴",
+  "check": {
+   "pets": 30
+  },
+  "sand": 3
+ },
+ {
+  "id": "cap0",
+  "cat": "伙伴",
+  "name": "抓抓抓",
+  "desc": "抓到 10 只伙伴",
+  "check": {
+   "stat": "capture",
+   "n": 10
+  },
+  "sand": 1
+ },
+ {
+  "id": "cap1",
+  "cat": "伙伴",
+  "name": "灵种专家",
+  "desc": "抓到 50 只伙伴",
+  "check": {
+   "stat": "capture",
+   "n": 50
+  },
+  "sand": 2
+ },
+ {
+  "id": "cap2",
+  "cat": "伙伴",
+  "name": "灵种大师",
+  "desc": "抓到 150 只伙伴",
+  "check": {
+   "stat": "capture",
+   "n": 150
+  },
+  "sand": 3
+ },
+ {
+  "id": "shiny1",
+  "cat": "伙伴",
+  "name": "闪闪发光",
+  "desc": "抓到一只异色伙伴",
+  "check": {
+   "shiny": 1
+  },
+  "sand": 3
+ },
+ {
+  "id": "shiny3",
+  "cat": "伙伴",
+  "name": "异色收藏家",
+  "desc": "拥有 3 只异色伙伴",
+  "check": {
+   "shiny": 3
+  },
+  "sand": 5
+ },
+ {
+  "id": "evo1",
+  "cat": "伙伴",
+  "name": "长大了",
+  "desc": "让伙伴进化一次",
+  "check": {
+   "stat": "evolve",
+   "n": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "evo2",
+  "cat": "伙伴",
+  "name": "完全体",
+  "desc": "拥有一只两段都进化完的伙伴",
+  "check": {
+   "evoMax": 1
+  },
+  "sand": 2
+ },
+ {
+  "id": "evo10",
+  "cat": "伙伴",
+  "name": "进化研究员",
+  "desc": "累计进化 10 次",
+  "check": {
+   "stat": "evolve",
+   "n": 10
+  },
+  "sand": 3
+ },
+ {
+  "id": "love5",
+  "cat": "伙伴",
+  "name": "默契",
+  "desc": "一只伙伴亲密度到 5 级",
+  "check": {
+   "love": 5
+  },
+  "sand": 1
+ },
+ {
+  "id": "love10",
+  "cat": "伙伴",
+  "name": "形影不离",
+  "desc": "一只伙伴亲密度到 10 级",
+  "check": {
+   "love": 10
+  },
+  "sand": 3
+ },
+ {
+  "id": "star5",
+  "cat": "伙伴",
+  "name": "天生不凡",
+  "desc": "拥有一只五星资质的伙伴",
+  "check": {
+   "stars5": 1
+  },
+  "sand": 2
+ },
+ {
+  "id": "fuse1",
+  "cat": "伙伴",
+  "name": "合二为一",
+  "desc": "融合一次伙伴",
+  "check": {
+   "stat": "fuse",
+   "n": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "fuse10",
+  "cat": "伙伴",
+  "name": "融合老手",
+  "desc": "累计融合 10 次",
+  "check": {
+   "stat": "fuse",
+   "n": 10
+  },
+  "sand": 3
+ },
+ {
+  "id": "house",
+  "cat": "伙伴",
+  "name": "大房子",
+  "desc": "伙伴屋扩到 40 格",
+  "check": {
+   "house": 40
+  },
+  "sand": 2
+ },
+ {
+  "id": "pat50",
+  "cat": "伙伴",
+  "name": "摸头杀",
+  "desc": "累计摸伙伴 50 次",
+  "check": {
+   "stat": "pat",
+   "n": 50
+  },
+  "sand": 1
+ },
+ {
+  "id": "gift20",
+  "cat": "伙伴",
+  "name": "投喂",
+  "desc": "累计送料理 20 次",
+  "check": {
+   "stat": "gift",
+   "n": 20
+  },
+  "sand": 1
+ },
+ {
+  "id": "dex10",
+  "cat": "收集",
+  "name": "图鉴 10",
+  "desc": "图鉴里抓到过 10 种",
+  "check": {
+   "caught": 10
+  },
+  "sand": 1
+ },
+ {
+  "id": "dex20",
+  "cat": "收集",
+  "name": "图鉴 20",
+  "desc": "图鉴里抓到过 20 种",
+  "check": {
+   "caught": 20
+  },
+  "sand": 2
+ },
+ {
+  "id": "dex30",
+  "cat": "收集",
+  "name": "图鉴 30",
+  "desc": "图鉴里抓到过 30 种",
+  "check": {
+   "caught": 30
+  },
+  "sand": 3
+ },
+ {
+  "id": "dex36",
+  "cat": "收集",
+  "name": "图鉴 36",
+  "desc": "图鉴里抓到过 36 种",
+  "check": {
+   "caught": 36
+  },
+  "sand": 5
+ },
+ {
+  "id": "q2",
+  "cat": "收集",
+  "name": "稀有货",
+  "desc": "得到一件稀有装备",
+  "check": {
+   "quality": 2
+  },
+  "sand": 1
+ },
+ {
+  "id": "q3",
+  "cat": "收集",
+  "name": "珍品",
+  "desc": "得到一件珍品装备",
+  "check": {
+   "quality": 3
+  },
+  "sand": 2
+ },
+ {
+  "id": "q4",
+  "cat": "收集",
+  "name": "传说",
+  "desc": "得到一件传说装备",
+  "check": {
+   "quality": 4
+  },
+  "sand": 3
+ },
+ {
+  "id": "p10",
+  "cat": "收集",
+  "name": "+10",
+  "desc": "把一件装备强化到 +10",
+  "check": {
+   "plus": 10
+  },
+  "sand": 2
+ },
+ {
+  "id": "p15",
+  "cat": "收集",
+  "name": "+15",
+  "desc": "把一件装备强化到 +15",
+  "check": {
+   "plus": 15
+  },
+  "sand": 5
+ },
+ {
+  "id": "set4",
+  "cat": "收集",
+  "name": "整整齐齐",
+  "desc": "穿齐一套四件套装",
+  "check": {
+   "set4": 1
+  },
+  "sand": 2
+ },
+ {
+  "id": "craft1",
+  "cat": "收集",
+  "name": "亲手打造",
+  "desc": "在工坊打造一件装备",
+  "check": {
+   "stat": "craft",
+   "n": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "craft20",
+  "cat": "收集",
+  "name": "工坊常客",
+  "desc": "累计打造 20 件",
+  "check": {
+   "stat": "craft",
+   "n": 20
+  },
+  "sand": 2
+ },
+ {
+  "id": "enh100",
+  "cat": "收集",
+  "name": "敲敲打打",
+  "desc": "累计强化成功 100 次",
+  "check": {
+   "stat": "enhanceOk",
+   "n": 100
+  },
+  "sand": 2
+ },
+ {
+  "id": "harv0",
+  "cat": "家园",
+  "name": "第一次收获",
+  "desc": "收获 1 次",
+  "check": {
+   "stat": "harvest",
+   "n": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "harv1",
+  "cat": "家园",
+  "name": "小农场",
+  "desc": "收获 50 次",
+  "check": {
+   "stat": "harvest",
+   "n": 50
+  },
+  "sand": 1
+ },
+ {
+  "id": "harv2",
+  "cat": "家园",
+  "name": "丰收",
+  "desc": "收获 300 次",
+  "check": {
+   "stat": "harvest",
+   "n": 300
+  },
+  "sand": 2
+ },
+ {
+  "id": "harv3",
+  "cat": "家园",
+  "name": "老农",
+  "desc": "收获 1000 次",
+  "check": {
+   "stat": "harvest",
+   "n": 1000
+  },
+  "sand": 3
+ },
+ {
+  "id": "cook0",
+  "cat": "家园",
+  "name": "下厨",
+  "desc": "做 1 份料理",
+  "check": {
+   "stat": "cook",
+   "n": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "cook1",
+  "cat": "家园",
+  "name": "小厨师",
+  "desc": "做 30 份料理",
+  "check": {
+   "stat": "cook",
+   "n": 30
+  },
+  "sand": 1
+ },
+ {
+  "id": "cook2",
+  "cat": "家园",
+  "name": "大厨",
+  "desc": "做 150 份料理",
+  "check": {
+   "stat": "cook",
+   "n": 150
+  },
+  "sand": 2
+ },
+ {
+  "id": "bounty3",
+  "cat": "家园",
+  "name": "悬赏 3",
+  "desc": "完成 3 条悬赏",
+  "check": {
+   "stat": "bounty",
+   "n": 3
+  },
+  "sand": 1
+ },
+ {
+  "id": "bounty30",
+  "cat": "家园",
+  "name": "悬赏 30",
+  "desc": "完成 30 条悬赏",
+  "check": {
+   "stat": "bounty",
+   "n": 30
+  },
+  "sand": 2
+ },
+ {
+  "id": "bounty100",
+  "cat": "家园",
+  "name": "悬赏 100",
+  "desc": "完成 100 条悬赏",
+  "check": {
+   "stat": "bounty",
+   "n": 100
+  },
+  "sand": 3
+ },
+ {
+  "id": "days1",
+  "cat": "家园",
+  "name": "第 1 天",
+  "desc": "和灯灵打招呼累计 1 天",
+  "check": {
+   "days": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "days7",
+  "cat": "家园",
+  "name": "第 7 天",
+  "desc": "和灯灵打招呼累计 7 天",
+  "check": {
+   "days": 7
+  },
+  "sand": 2
+ },
+ {
+  "id": "days30",
+  "cat": "家园",
+  "name": "第 30 天",
+  "desc": "和灯灵打招呼累计 30 天",
+  "check": {
+   "days": 30
+  },
+  "sand": 3
+ },
+ {
+  "id": "days100",
+  "cat": "家园",
+  "name": "第 100 天",
+  "desc": "和灯灵打招呼累计 100 天",
+  "check": {
+   "days": 100
+  },
+  "sand": 5
+ },
+ {
+  "id": "mood0",
+  "cat": "家园",
+  "name": "心情花",
+  "desc": "种下 1 颗心情种子",
+  "check": {
+   "mood": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "mood1",
+  "cat": "家园",
+  "name": "一小片花田",
+  "desc": "种下 10 颗心情种子",
+  "check": {
+   "mood": 10
+  },
+  "sand": 1
+ },
+ {
+  "id": "mood2",
+  "cat": "家园",
+  "name": "心情册",
+  "desc": "种下 50 颗心情种子",
+  "check": {
+   "mood": 50
+  },
+  "sand": 3
+ },
+ {
+  "id": "chest10",
+  "cat": "家园",
+  "name": "灯火通明",
+  "desc": "开 10 个灯火宝箱",
+  "check": {
+   "stat": "lampChest",
+   "n": 10
+  },
+  "sand": 2
+ },
+ {
+  "id": "plots",
+  "cat": "家园",
+  "name": "十二块地",
+  "desc": "田地扩到 12 块",
+  "check": {
+   "plots": 12
+  },
+  "sand": 2
+ },
+ {
+  "id": "work100",
+  "cat": "家园",
+  "name": "打工伙伴",
+  "desc": "伙伴累计打工 100 小时",
+  "check": {
+   "stat": "workHours",
+   "n": 100
+  },
+  "sand": 2
+ },
+ {
+  "id": "lose1",
+  "cat": "奇怪",
+  "name": "没关系",
+  "desc": "第一次在战斗里倒下",
+  "check": {
+   "stat": "lose",
+   "n": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "lose20",
+  "cat": "奇怪",
+  "name": "越挫越勇",
+  "desc": "倒下 20 次",
+  "check": {
+   "stat": "lose",
+   "n": 20
+  },
+  "sand": 2
+ },
+ {
+  "id": "flee10",
+  "cat": "奇怪",
+  "name": "溜了溜了",
+  "desc": "逃跑 10 次",
+  "check": {
+   "stat": "flee",
+   "n": 10
+  },
+  "sand": 1
+ },
+ {
+  "id": "fail10",
+  "cat": "奇怪",
+  "name": "手气不好",
+  "desc": "强化失败 10 次",
+  "check": {
+   "stat": "enhanceFail",
+   "n": 10
+  },
+  "sand": 1
+ },
+ {
+  "id": "broke",
+  "cat": "奇怪",
+  "name": "两手空空",
+  "desc": "金币花到只剩 0",
+  "check": {
+   "broke": 1
+  },
+  "sand": 1
+ },
+ {
+  "id": "tusk10",
+  "cat": "奇怪",
+  "name": "獠牙的老对手",
+  "desc": "打败獠牙大王 10 次",
+  "check": {
+   "stat": "boss_tusk",
+   "n": 10
+  },
+  "sand": 2
+ }
+]

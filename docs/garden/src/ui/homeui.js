@@ -1,7 +1,7 @@
 // 家园页：今日（签到、灯火值、悬赏、心情种子）、田地、打工、厨房、心情册。
 import { useState, useEffect } from 'preact/hooks';
 import * as C from '../core/index.js';
-import { HOME, CROPS, DISHES, JOBS, ITEMS } from '../data/index.js';
+import { HOME, CROPS, DISHES, JOBS, ITEMS, MONSTERS } from '../data/index.js';
 import { store, save, refresh } from './store.js';
 import { html, Icon, Coin, Portrait, Btn, Head, Gold, Tabs, ui, openSheet, toast, showReport } from './app.js';
 
@@ -28,7 +28,15 @@ function Today() {
     <h3>心情种子</h3>
     ${d.mood ? html`<div class="moodcard" style=${`--h:${C.home(s).mood[0].hue}`}><span class="flower"></span><div><b>今天种下了</b><small>「${C.home(s).mood[0].text}」　今天打怪经验 +5%</small></div></div>`
       : html`<p class="hint">写下今天的一句话，它会长成一朵花，颜色由这句话决定。今天打怪经验 +5%。</p><textarea rows="2" maxlength="60" placeholder="今天……" value=${text} onInput=${e => setText(e.target.value)}></textarea>
-        <button type="button" class="primary ghost" disabled=${!text.trim()} onClick=${() => { const m = C.plantMood(s, text); if (m) { save(); setText(''); toast('心情花开了', '去心情册里能翻到它。'); } }}><${Icon} n="sprout" s=${18} /> 种下</button>`}`;
+        <button type="button" class="primary ghost" disabled=${!text.trim()} onClick=${() => { const m = C.plantMood(s, text); if (m) { save(); setText(''); toast('心情花开了', '去心情册里能翻到它。'); } }}><${Icon} n="sprout" s=${18} /> 种下</button>`}
+    <${Guardians} />`;
+}
+
+const BONUS_NAME = { hpP: '生命', atkP: '攻击', magP: '法术', def: '防御', dodge: '闪避', crit: '暴击', healUp: '治疗', xp: '经验' };
+function Guardians() {
+  const s = store.s, ids = Object.keys(HOME.guardians);
+  return html`<h3>守护兽<small>　同一个首领打败 ${HOME.guardianWins} 次，它就愿意搬来住</small></h3>${ids.map(id => { const st = C.guardianState(s, id), g = HOME.guardians[id], b = Object.entries(g.bonus).map(([k, v]) => `${BONUS_NAME[k] || k} +${v}${k === 'def' ? '' : '%'}`).join(' ');
+    return html`<div class=${'row slim' + (st === 'away' ? ' dim' : st === 'ready' ? ' on' : '')}><${Portrait} id=${id} s=${40} dim=${!s.world.bosses[id]} /><div class="mid"><b>${s.world.bosses[id] ? MONSTERS[id].name : '？？？'}<small>　${b}</small></b><small>${st === 'home' ? g.line : st === 'ready' ? '它愿意跟你回家了。' : s.world.bosses[id] ? `再陪它打 ${HOME.guardianWins - C.bossWins(s, id)} 次` : '还没见过'}</small></div>${st === 'ready' ? html`<${Btn} onClick=${() => { C.inviteGuardian(s, id); save(); toast(`${MONSTERS[id].name}搬来北坡小岛了`, '回小岛就能看到它。'); }}>邀请</${Btn}>` : st === 'home' ? html`<span class="tag">住在岛上</span>` : null}</div>`; })}`;
 }
 
 function Farm() {

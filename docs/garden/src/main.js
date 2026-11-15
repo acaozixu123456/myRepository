@@ -1,7 +1,7 @@
 // 入口：读档、建画面、挂界面、接上点按和遇敌。
 import './ui/style.css';
 import * as C from './core/index.js';
-import { ZONES, ITEMS, CROPS } from './data/index.js';
+import { ZONES, ITEMS, CROPS, MONSTERS, HOME } from './data/index.js';
 import { createView } from './world/view.js';
 import { store, boot, save, setState } from './ui/store.js';
 import { mountUI, ui, setMode, openSheet, closeSheet, toast, showReport, hooks } from './ui/app.js';
@@ -35,12 +35,13 @@ mountUI($('ui'), {
   c.addEventListener('pointerup', e => { if (down && !ui.busy && !ui.sheet && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 12) view.tap(e.clientX, e.clientY); down = null; }); }
 view.on('encounter', startEncounter);
 // 岛上的采集点、宝箱、NPC
-view.on('extras', zone => { const s = store.s; if (!s || !zone.lv && !zone.home) return {}; return { npcs: C.npcsIn(zone.id), gather: zone.lv ? C.gatherLeft(s, zone.id) : 0, chest: C.chestReady(s, zone.id), farm: !!zone.home }; });
+view.on('extras', zone => { const s = store.s; if (!s || !zone.lv && !zone.home) return {}; return { npcs: C.npcsIn(zone.id), gather: zone.lv ? C.gatherLeft(s, zone.id) : 0, chest: C.chestReady(s, zone.id), farm: !!zone.home, guardians: zone.home ? C.home(s).guardians || [] : [] }; });
 view.on('farm', () => { const s = store.s, now = Date.now(); return s ? C.home(s).plots.map(p => p && { color: CROPS[p.crop].color, ripe: now >= p.ready, k: Math.round(Math.min(1, (now - p.at) / (p.ready - p.at)) * 4) / 4 }) : []; });
 view.on('interact', it => {
   const s = store.s; if (!s || ui.busy || ui.sheet) { it.told = false; return; }
   if (it.kind === 'npc') { ui.talk = { id: it.id, i: 0 }; openSheet('talk'); }
   else if (it.kind === 'gather') { const got = C.gather(s, s.world.zone); view.removeInter(it); if (!got) return toast('今天这里采得差不多了'); save(); toast(`采到 ${got.map(([id, n]) => `${ITEMS[id].name} ×${n}`).join('、')}`, `今天还能采 ${C.gatherLeft(s, s.world.zone)} 次`); }
+  else if (it.kind === 'guardian') toast(MONSTERS[it.id].name, HOME.guardians[it.id].line);
   else if (it.kind === 'farm') { ui.homeTab = 'farm'; openSheet('home'); }
   else if (it.kind === 'chest') { const out = C.openChest(s, s.world.zone); view.removeInter(it); if (!out) return; save(); showReport('打开了宝箱', out, null); }
 });
