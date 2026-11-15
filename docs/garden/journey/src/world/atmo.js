@@ -19,6 +19,8 @@ export const U = {
   uShadowCenter: { value: new THREE.Vector3() },
   uShadowRadius: { value: 26 },
   uWind: { value: 1 },
+  // 看穿：xyz 是旅人胸口，w 是强度（0 关）。镜头身边、镜头到人之间的枝叶用点阵挖掉
+  uSee: { value: new THREE.Vector4(0, -1e4, 0, 0) },
 };
 
 // 统一调色：ACES 之后再做一点暖色和饱和度（常量，编进所有着色器）
@@ -57,7 +59,8 @@ vec3 jFog( vec3 col, vec3 wp ) {
 }`;
 export { FOG_FN };
 
-// opts: { gobo, fog, rim, wind: 'tree'|'grass'|null, shadowFade, sss, fadeOut, fadeIn, uniforms }
+// opts: { gobo, fog, rim, wind: 'tree'|'grass'|null, shadowFade, sss, fadeOut, fadeIn, seeThrough, uniforms }
+// seeThrough: 挡在镜头和旅人之间、或贴着镜头的部分按 uSee 挖掉（树、灌木用）
 // fadeOut/fadeIn: 用 uniforms 里的 uFadeR（米）按距离抖动淡出/淡入，和远处的替身树衔接
 export function patch(mat, opts = {}) {
   const o = { gobo: true, fog: true, rim: 0, wind: null, shadowFade: true, sss: 0, fadeOut: false, fadeIn: false, ...opts };
@@ -99,7 +102,7 @@ export function patch(mat, opts = {}) {
     fs = fs.replace('#include <common>', `#include <common>
       varying vec3 vWP; uniform float uTime;
       uniform sampler2D uGobo; uniform sampler2D uCanopy; uniform vec4 uCanopyBox; uniform float uGoboStrength; uniform vec3 uSunColor;
-      uniform vec3 uShadowCenter; uniform float uShadowRadius; uniform float uFadeR;
+      uniform vec3 uShadowCenter; uniform float uShadowRadius; uniform float uFadeR; uniform vec4 uSee;
       float jDither() { return fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ); }
       ${FOG_FN}`);
     if (o.fadeOut || o.fadeIn) {
@@ -108,6 +111,19 @@ export function patch(mat, opts = {}) {
           float fd = length( vWP.xz - cameraPosition.xz ) - uFadeR;
           float th = ( jDither() - 0.5 ) * 6.0;
           ${o.fadeOut ? 'if ( fd > th ) discard;' : 'if ( fd < th ) discard;'}
+        }`);
+    }
+    if (o.seeThrough) {
+      fs = fs.replace('#include <clipping_planes_fragment>', `#include <clipping_planes_fragment>
+        if ( uSee.w > 0.0 ) {
+          vec3 pc = vWP - cameraPosition, cd = uSee.xyz - cameraPosition;
+          float t = dot( pc, cd ) / max( dot( cd, cd ), 1e-2 );
+          float dl = length( pc - cd * clamp( t, 0.0, 1.0 ) );
+          float a = smoothstep( 1.0, 2.6, length( pc ) );
+          float R = mix( 0.5, 1.2, clamp( t, 0.0, 1.0 ) );
+          float tube = 1.0 - smoothstep( 0.92, 1.02, t );
+          if ( t > 0.0 ) a = min( a, mix( 1.0, smoothstep( R * 0.55, R, dl ), tube ) );
+          if ( jDither() > mix( 1.0, a, uSee.w ) ) discard;
         }`);
     }
     if (o.shadowFade) {

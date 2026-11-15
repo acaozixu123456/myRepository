@@ -167,10 +167,14 @@ document.addEventListener('visibilitychange', () => {
 document.addEventListener('touchend', () => { if (sound?.ctx && sound.ctx.state !== 'running' && document.visibilityState === 'visible') sound.ctx.resume(); }, { passive: true });
 
 // ---------- 每帧 ----------
+const _chest = new THREE.Vector3();
 function step(dt) {
   U.uTime.value += dt;
   J.keys(dt, ui.keysTurn(), ui.keysClimb());
   J.update(dt);
+  // 挡在镜头和人之间的枝叶变透（远景镜头时关掉）
+  J.T.bones.spine_03.getWorldPosition(_chest);
+  U.uSee.value.set(_chest.x, _chest.y, _chest.z, 1 - (cam.shotW || 0));
   // 植被和阴影围着人；俯视时往前挪一点
   const k = 7 * (1 - cam.zoom);
   focus.set(J.p.x + Math.sin(J.yaw) * k, J.mode === 'fly' ? J.p.y : J.p.y, J.p.z + Math.cos(J.yaw) * k);
@@ -256,6 +260,7 @@ async function load() {
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
   J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders });
+  if (P.has('debug')) window.__J = J;   // 调试：测试脚本读状态
   J.onCamp = showSummary;
   const k0 = P.get('mount'); if (k0 && mounts[k0]) J.startWith(k0);
   ui.setPick(J.mountKey);
