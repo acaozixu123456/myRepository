@@ -1,9 +1,10 @@
 // 存档 v3：结构、新开档、从旧版迁移、导出导入存档码。
 // v2→v3（第二阶段）：两只伙伴出战、技能等级和技能点、战斗倍速。
-import { CLASSES, ZONES, MONSTERS } from '../data/index.js';
+// v3→v4（第三阶段）：6 个装备部位和新装备结构、转职路线、灵石、打造等级、伙伴饰品。
+import { CLASSES, ZONES, MONSTERS, GEAR_SLOTS } from '../data/index.js';
 import { heroStats, petStats } from './stats.js';
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 export const ACTIVE_MAX = 2; // 同时出战的伙伴
 export const PARTY_MAX = 6; // 随身伙伴上限
 
@@ -11,9 +12,10 @@ export function newGame(cls, now = Date.now()) {
   const c = CLASSES[cls];
   const s = {
     v: SAVE_VERSION, created: new Date(now).toISOString(), lastSeen: new Date(now).toISOString(), nextUid: 1,
-    hero: { cls, lv: 1, xp: 0, attr: { ...c.base }, pts: 0, sp: 0, skills: {}, hp: 0, mp: 0, gear: { weapon: null, armor: null, charm: null } },
+    hero: { cls, lv: 1, xp: 0, attr: { ...c.base }, pts: 0, sp: 0, skills: {}, route: null, hp: 0, mp: 0, gear: emptyGear() },
     pets: [], party: [null, null],
-    bag: { gear: [], items: { pill: 3, dew: 1, seed: 0 } },
+    bag: { gear: [], items: { pill: 3, dew: 1, seed: 0 }, gems: {} },
+    craft: { lv: 1, xp: 0 },
     wallet: { gold: 20 },
     world: { zone: 'home', unlocked: 1, bosses: {}, dex: {} },
     quests: { main: { i: 0, accepted: false, n: 0 }, done: [] },
@@ -25,8 +27,9 @@ export function newGame(cls, now = Date.now()) {
   return s;
 }
 
+const emptyGear = () => Object.fromEntries(Object.keys(GEAR_SLOTS).map(k => [k, null]));
 export function addPet(s, id, lv) {
-  const p = { uid: 'p' + s.nextUid++, id, lv, xp: 0, hp: 0 };
+  const p = { uid: 'p' + s.nextUid++, id, lv, xp: 0, hp: 0, charm: null };
   p.hp = petStats(p).hp; s.pets.push(p);
   const free = s.party.indexOf(null); if (free >= 0) s.party[free] = p.uid;
   s.world.dex[id] = 'caught';
@@ -41,7 +44,7 @@ export function removePet(s, uid) {
 export function migrateV1(o) {
   const s = newGame(o.cls);
   Object.assign(s.hero, { lv: o.lv, xp: o.xp, attr: o.attr, pts: o.points || 0, hp: o.hp, mp: o.mp });
-  for (const k of ['weapon', 'armor', 'charm']) s.hero.gear[k] = o.gear?.[k] ? fixGear(o.gear[k]) : null;
+  s.hero.gear = {}; for (const k of ['weapon', 'armor', 'charm']) s.hero.gear[k] = o.gear?.[k] ? fixGear(o.gear[k]) : null;
   s.bag.gear = (o.bag || []).map(fixGear);
   s.bag.items = { pill: 0, dew: 0, seed: 0, ...o.items };
   s.wallet.gold = o.gold || 0;
@@ -51,7 +54,7 @@ export function migrateV1(o) {
   s.quests.main = { i: o.quest || 0, accepted: !!o.qAccepted, n: o.qn || 0 };
   s.quests.done = (o.quest ? Array.from({ length: o.quest }, (_, i) => 'q' + (i + 1)) : []);
   s.stats.kills = o.kills || 0; s.settings.auto = !!o.autoBattle;
-  s.v = 2; delete s.hero.sp; delete s.hero.skills; s.party = [s.party[0]];
+  s.v = 2; delete s.hero.sp; delete s.hero.skills; delete s.hero.route; delete s.craft; delete s.bag.gems; s.party = [s.party[0]];
   return s;
 }
 function fixGear(g) { const { icon, ...rest } = g; return { plus: 0, ...rest }; }
@@ -66,13 +69,31 @@ export function migrateV2(o) {
   return s;
 }
 
-// 读档：接受 v1/v2/v3 对象，返回可用的 v3，不认识就返回 null
+// v3 → v4：旧装备换成新结构（饰物变成项链），补上新部位、转职、灵石、打造；
+// 不再属于基础技能的（影步、狐雾、满月挪进了转职路线）退回技能点
+export function migrateV3(o) {
+  const s = { ...o, v: 4 }, h = s.hero = { ...o.hero }, c = CLASSES[h.cls];
+  const conv = g => { if (!g) return null; const q = Math.min(3, g.rare || 0); return { slot: g.slot === 'charm' ? 'neck' : g.slot, tier: g.tier || 1, q, main: { ...(g.base || g.st) }, plus: Math.min(15, g.plus || 0), luck: 0, name: g.name, affix: [], sockets: Array(Math.max(0, q - 1)).fill(null), price: g.price || 20 }; };
+  const old = o.hero.gear || {}; h.gear = emptyGear(); h.gear.weapon = conv(old.weapon); h.gear.armor = conv(old.armor); h.gear.neck = conv(old.charm);
+  s.bag = { ...o.bag, gear: (o.bag?.gear || []).map(conv), gems: {} };
+  h.route = null;
+  const baseIds = new Set(c.skills.map(([, id]) => id)); h.skills = { ...h.skills };
+  for (const id in h.skills) if (!baseIds.has(id)) { h.sp += h.skills[id] - 1; delete h.skills[id]; }
+  s.craft = { lv: 1, xp: 0 };
+  s.pets = (o.pets || []).map(p => ({ charm: null, ...p }));
+  return s;
+}
+
+// 读档：接受 v1/v2/v3/v4 对象，返回可用的 v4，不认识就返回 null
 export function load(o) {
   if (!o || typeof o !== 'object') return null;
-  let s = o.v === SAVE_VERSION ? o : o.v === 2 ? migrateV2(o) : (o.v === 1 || !o.v) && o.cls ? migrateV2(migrateV1(o)) : null;
+  let s = o.v === SAVE_VERSION ? o : o.v === 3 ? migrateV3(o) : o.v === 2 ? migrateV3(migrateV2(o)) : (o.v === 1 || !o.v) && o.cls ? migrateV3(migrateV2(migrateV1(o))) : null;
   if (!s || !CLASSES[s.hero?.cls] || !ZONES.some(z => z.id === s.world?.zone)) return null;
   s.pets = s.pets.filter(p => MONSTERS[p.id]);
   s.party = s.party.map(u => (s.pets.some(p => p.uid === u) ? u : null));
+  // 旧档换算后上限可能变小，血和灵气不能超过上限
+  const st = heroStats(s); s.hero.hp = Math.min(s.hero.hp, st.hp); s.hero.mp = Math.min(s.hero.mp, st.mp);
+  for (const p of s.pets) p.hp = Math.min(p.hp, petStats(p).hp);
   return s;
 }
 

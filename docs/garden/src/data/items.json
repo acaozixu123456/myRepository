@@ -5,7 +5,8 @@
   "price": 12,
   "desc": "恢复一名同伴 45% 生命。",
   "use": "hp",
-  "amount": 0.45
+  "amount": 0.45,
+  "cat": "use"
  },
  "dew": {
   "name": "灵泉露",
@@ -13,13 +14,160 @@
   "price": 18,
   "desc": "恢复自己 50% 灵气。",
   "use": "mp",
-  "amount": 0.5
+  "amount": 0.5,
+  "cat": "use"
  },
  "seed": {
   "name": "灵种",
   "icon": "seed",
   "price": 25,
   "desc": "丢向虚弱的野怪，有机会让它变成伙伴。",
-  "use": "capture"
+  "use": "capture",
+  "cat": "use"
+ },
+ "stone": {
+  "name": "强化石",
+  "icon": "cube",
+  "price": 30,
+  "cat": "mat",
+  "desc": "强化装备用。分解装备也能得到。"
+ },
+ "dust": {
+  "name": "灵尘",
+  "icon": "sparkle",
+  "cat": "mat",
+  "desc": "分解装备得到，打造会用到。"
+ },
+ "starSand": {
+  "name": "星砂",
+  "icon": "star",
+  "cat": "mat",
+  "desc": "首领掉落的星星碎屑，用来洗练。"
+ },
+ "focus": {
+  "name": "定向符",
+  "icon": "scroll",
+  "starPrice": 5,
+  "cat": "mat",
+  "desc": "打造时锁定一条词条的种类。"
+ },
+ "feather": {
+  "name": "软羽毛",
+  "icon": "feather",
+  "cat": "mat",
+  "zone": "meadow",
+  "desc": "青草坡的野怪身上掉的。"
+ },
+ "sprout": {
+  "name": "嫩芽",
+  "icon": "sprout",
+  "cat": "mat",
+  "zone": "meadow",
+  "desc": "青草坡的野怪身上掉的。"
+ },
+ "pebble": {
+  "name": "河石",
+  "icon": "cube",
+  "cat": "mat",
+  "zone": "brook",
+  "desc": "溪水林的野怪身上掉的。"
+ },
+ "scale": {
+  "name": "鳞片",
+  "icon": "drop",
+  "cat": "mat",
+  "zone": "brook",
+  "desc": "溪水林的野怪身上掉的。"
+ },
+ "mapleLeaf": {
+  "name": "红枫叶",
+  "icon": "leaf",
+  "cat": "mat",
+  "zone": "maple",
+  "desc": "红叶谷的野怪身上掉的。"
+ },
+ "tinder": {
+  "name": "火绒",
+  "icon": "flame",
+  "cat": "mat",
+  "zone": "maple",
+  "desc": "红叶谷的野怪身上掉的。"
+ },
+ "iceShard": {
+  "name": "冰晶",
+  "icon": "gem",
+  "cat": "mat",
+  "zone": "frost",
+  "desc": "霜星岭的野怪身上掉的。"
+ },
+ "snowFluff": {
+  "name": "雪绒",
+  "icon": "cloud",
+  "cat": "mat",
+  "zone": "frost",
+  "desc": "霜星岭的野怪身上掉的。"
+ },
+ "bp_meadow": {
+  "name": "青草套图纸",
+  "icon": "scroll",
+  "cat": "bp",
+  "set": "meadow",
+  "desc": "在工坊打造一件青草套装备。獠牙大王掉落。"
+ },
+ "bp_brook": {
+  "name": "溪水套图纸",
+  "icon": "scroll",
+  "cat": "bp",
+  "set": "brook",
+  "desc": "在工坊打造一件溪水套装备。喷泉象掉落。"
+ },
+ "bp_maple": {
+  "name": "红叶套图纸",
+  "icon": "scroll",
+  "cat": "bp",
+  "set": "maple",
+  "desc": "在工坊打造一件红叶套装备。烈鬃王掉落。"
+ },
+ "bp_frost": {
+  "name": "霜星套图纸",
+  "icon": "scroll",
+  "cat": "bp",
+  "set": "frost",
+  "desc": "在工坊打造一件霜星套装备。摘星兽掉落。"
+ },
+ "gem_grass": {
+  "name": "草灵石",
+  "icon": "gem",
+  "cat": "gem",
+  "el": "grass",
+  "desc": "镶嵌到有孔的装备上。三颗同级合成高一级。"
+ },
+ "gem_water": {
+  "name": "水灵石",
+  "icon": "gem",
+  "cat": "gem",
+  "el": "water",
+  "desc": "镶嵌到有孔的装备上。三颗同级合成高一级。"
+ },
+ "gem_fire": {
+  "name": "火灵石",
+  "icon": "gem",
+  "cat": "gem",
+  "el": "fire",
+  "desc": "镶嵌到有孔的装备上。三颗同级合成高一级。"
+ },
+ "gem_star": {
+  "name": "星灵石",
+  "icon": "gem",
+  "cat": "gem",
+  "el": "star",
+  "desc": "镶嵌到有孔的装备上。三颗同级合成高一级。"
+ },
+ "gem_mist": {
+  "name": "雾灵石",
+  "icon": "gem",
+  "cat": "gem",
+  "el": "mist",
+  "desc": "镶嵌到有孔的装备上。三颗同级合成高一级。"
  }
 }

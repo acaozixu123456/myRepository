@@ -27,7 +27,7 @@ export function claimQuest(s) {
   const q = currentQuest(s), r = q.reward, got = [];
   s.wallet.gold += r.gold; got.push(`${r.gold} 金币`);
   for (const k in r.items || {}) { s.bag.items[k] = (s.bag.items[k] || 0) + r.items[k]; got.push(`${ITEMS[k].name} ×${r.items[k]}`); }
-  if (r.gear) { let g = makeGear(r.gear); for (let i = 0; i < 4 && g.rare < 1; i++) g = makeGear(r.gear); s.bag.gear.push(g); got.push(g.name); }
+  if (r.gear) { const g = makeGear(r.gear, { minQ: 1 }); s.bag.gear.push(g); got.push(g.name); }
   s.quests.done.push(q.id); s.quests.main = { i: s.quests.main.i + 1, accepted: false, n: 0 };
   return got;
 }

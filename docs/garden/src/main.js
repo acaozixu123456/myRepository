@@ -46,5 +46,5 @@ if (s0) { await view.loadZone(C.zoneOf(s0), look()); setMode('world'); ui.busy =
 else { view.setZoom(9, 0.27); await view.loadZone(ZONES[0], { cls: ui.pickCls, pet: null }); setMode('pick'); openSheet('pick', { lock: true }); ui.busy = false; }
 requestAnimationFrame(loop);
 $('loading').classList.add('done'); window.__ready = true;
-window.__game = { get s() { return store.s; }, get battle() { return getBattle(); }, view, save, ui, encounter: startEncounter, openSheet };
+window.__game = { get s() { return store.s; }, get battle() { return getBattle(); }, view, save, ui, encounter: startEncounter, openSheet, C };
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});

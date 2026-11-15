@@ -107,56 +107,6 @@
    "10": "必定暴击"
   }
  },
- "shadowStep": {
-  "name": "影步",
-  "mp": 8,
-  "kind": "buff",
-  "target": "self",
-  "fx": [
-   {
-    "type": "stealth",
-    "turns": 1
-   },
-   {
-    "type": "spdUp"
-   }
-  ],
-  "desc": "隐入影子：一回合不会被单体技能选中，并提速。",
-  "up": {
-   "5": {
-    "fx": [
-     {
-      "type": "stealth",
-      "turns": 1
-     },
-     {
-      "type": "spdUp"
-     },
-     {
-      "type": "atkUp"
-     }
-    ]
-   },
-   "10": {
-    "fx": [
-     {
-      "type": "stealth",
-      "turns": 2
-     },
-     {
-      "type": "spdUp"
-     },
-     {
-      "type": "atkUp"
-     }
-    ]
-   }
-  },
-  "upText": {
-   "5": "同时攻升",
-   "10": "隐身延长到两回合"
-  }
- },
  "spark": {
   "name": "火花",
   "mp": 4,
@@ -726,5 +676,605 @@
     "chance": 0.5
    }
   ]
+ },
+ "hornRam": {
+  "name": "角撞",
+  "mp": 3,
+  "kind": "phys",
+  "target": "one",
+  "power": 1.4,
+  "desc": "低头撞过去。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "spdDown",
+      "chance": 0.4
+     }
+    ]
+   },
+   "10": {
+    "power": 1.75,
+    "fx": [
+     {
+      "type": "spdDown",
+      "chance": 0.6
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "可能减速",
+   "10": "伤害提高"
+  }
+ },
+ "rootSnare": {
+  "name": "根须缠绕",
+  "mp": 5,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "taunt",
+    "turns": 2
+   },
+   {
+    "type": "defUp"
+   }
+  ],
+  "desc": "嘲讽敌人两回合，自己防升。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "taunt",
+      "turns": 3
+     },
+     {
+      "type": "defUp"
+     }
+    ]
+   },
+   "10": {
+    "fx": [
+     {
+      "type": "taunt",
+      "turns": 3
+     },
+     {
+      "type": "defUp"
+     },
+     {
+      "type": "regen"
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "嘲讽三回合",
+   "10": "同时回春"
+  }
+ },
+ "mossArmor": {
+  "name": "苔甲",
+  "mp": 6,
+  "kind": "buff",
+  "target": "self",
+  "shield": 1.4,
+  "desc": "给自己一层厚护盾。",
+  "up": {
+   "5": {
+    "shield": 1.9
+   },
+   "10": {
+    "shield": 2.4,
+    "fx": [
+     {
+      "type": "regen"
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "护盾加厚",
+   "10": "附带回春"
+  }
+ },
+ "leafStorm": {
+  "name": "落叶阵",
+  "mp": 10,
+  "kind": "magic",
+  "el": "grass",
+  "target": "all",
+  "power": 0.95,
+  "desc": "落叶刮过所有敌人。",
+  "up": {
+   "5": {
+    "fx": [
+     {
+      "type": "blind",
+      "chance": 0.3
+     }
+    ]
+   },
+   "10": {
+    "power": 1.2,
+    "fx": [
+     {
+      "type": "blind",
+      "chance": 0.4
+     }
+    ]
+   }
+  },
+  "upText": {
+   "5": "可能致盲",
+   "10": "伤害提高"
+  }
+ },
+ "catStep": {
+  "name": "猫步",
+  "kind": "passive",
+  "desc": "闪避 +8%。",
+  "stat": {
+   "dodge": 8
+  }
+ },
+ "bloodScent": {
+  "name": "嗅血",
+  "kind": "passive",
+  "desc": "对半血以下的敌人伤害 +20%。",
+  "flag": "execute"
+ },
+ "spiritHeart": {
+  "name": "灵心",
+  "kind": "passive",
+  "desc": "每回合回 5% 灵气。",
+  "flag": "mpRegen"
+ },
+ "embers": {
+  "name": "余烬",
+  "kind": "passive",
+  "desc": "灼烧最多能叠到 5 层。",
+  "flag": "embers"
+ },
+ "moonGlow": {
+  "name": "月华",
+  "kind": "passive",
+  "desc": "治疗可以暴击。",
+  "flag": "healCrit"
+ },
+ "renewal": {
+  "name": "回春",
+  "kind": "passive",
+  "desc": "我方全体每回合回 2% 生命。",
+  "flag": "teamRegen"
+ },
+ "treeRings": {
+  "name": "年轮",
+  "kind": "passive",
+  "desc": "血越少防御越高，最多 +50%。",
+  "flag": "rings"
+ },
+ "rooted": {
+  "name": "扎根",
+  "kind": "passive",
+  "desc": "不会睡着，也不会混乱。",
+  "flag": "rooted"
+ },
+ "shadowClone": {
+  "name": "影分身",
+  "mp": 10,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "haste",
+    "turns": 2
+   },
+   {
+    "type": "stealth",
+    "turns": 1
+   }
+  ],
+  "desc": "两回合内每回合行动两次，并隐身一回合。"
+ },
+ "shadowCombo": {
+  "name": "绝影连击",
+  "mp": 12,
+  "kind": "phys",
+  "target": "one",
+  "power": 0.6,
+  "hits": 4,
+  "desc": "四段连击。"
+ },
+ "nightRaid": {
+  "name": "夜袭",
+  "mp": 9,
+  "kind": "phys",
+  "target": "one",
+  "power": 1.5,
+  "forceCrit": true,
+  "desc": "必定暴击的偷袭。"
+ },
+ "thousandClaws": {
+  "name": "千爪乱舞",
+  "mp": 24,
+  "kind": "phys",
+  "target": "all",
+  "power": 0.45,
+  "hits": 6,
+  "once": true,
+  "desc": "终结技：对全体抓六下，每场一次。"
+ },
+ "counterStance": {
+  "name": "反击架势",
+  "mp": 7,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "counter",
+    "turns": 3
+   }
+  ],
+  "desc": "三回合内被物理攻击就反击。"
+ },
+ "boneBreak": {
+  "name": "碎骨",
+  "mp": 9,
+  "kind": "phys",
+  "target": "one",
+  "power": 1.3,
+  "fx": [
+   {
+    "type": "defDown",
+    "turns": 4
+   },
+   {
+    "type": "spdDown"
+   }
+  ],
+  "desc": "重击并大幅破甲、减速。"
+ },
+ "steadfast": {
+  "name": "不动",
+  "mp": 10,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "guardUp",
+    "turns": 2
+   },
+   {
+    "type": "counter",
+    "turns": 2
+   },
+   {
+    "type": "taunt",
+    "turns": 2
+   }
+  ],
+  "desc": "两回合减伤一半、嘲讽并反击。"
+ },
+ "mountainClaw": {
+  "name": "山崩一爪",
+  "mp": 22,
+  "kind": "phys",
+  "target": "one",
+  "power": 2.2,
+  "defScale": 2.2,
+  "once": true,
+  "desc": "终结技：按自身防御加伤的一爪，每场一次。"
+ },
+ "stokeFlame": {
+  "name": "蓄焰",
+  "mp": 6,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "charge",
+    "turns": 3
+   }
+  ],
+  "desc": "下一招伤害翻倍。"
+ },
+ "redLotus": {
+  "name": "赤莲",
+  "mp": 12,
+  "kind": "magic",
+  "el": "fire",
+  "target": "all",
+  "power": 0.7,
+  "detonate": 0.6,
+  "desc": "引爆所有敌人身上的灼烧，层数越多越疼。"
+ },
+ "heartFire": {
+  "name": "焚心",
+  "mp": 11,
+  "kind": "magic",
+  "el": "fire",
+  "target": "one",
+  "power": 1.9,
+  "pierce": 0.5,
+  "desc": "无视一半防御和抗性。"
+ },
+ "ninetails": {
+  "name": "九尾天火",
+  "mp": 28,
+  "kind": "magic",
+  "el": "fire",
+  "target": "all",
+  "power": 2.2,
+  "fx": [
+   {
+    "type": "burn",
+    "stacks": 2
+   }
+  ],
+  "once": true,
+  "desc": "终结技：九道天火落下，全体灼烧两层，每场一次。"
+ },
+ "mistHide": {
+  "name": "雾隐",
+  "mp": 6,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "stealth",
+    "turns": 2
+   },
+   {
+    "type": "spdUp"
+   }
+  ],
+  "desc": "隐身两回合并提速。"
+ },
+ "dreamFox": {
+  "name": "幻梦",
+  "mp": 8,
+  "kind": "debuff",
+  "target": "one",
+  "fx": [
+   {
+    "type": "sleep",
+    "chance": 0.8
+   }
+  ],
+  "desc": "让一个敌人睡着。"
+ },
+ "foxParade": {
+  "name": "千狐夜行",
+  "mp": 26,
+  "kind": "magic",
+  "el": "mist",
+  "target": "all",
+  "power": 1.6,
+  "fx": [
+   {
+    "type": "confuse",
+    "chance": 0.6
+   }
+  ],
+  "once": true,
+  "desc": "终结技：千只狐影穿过敌阵，全体雾伤并混乱，每场一次。"
+ },
+ "revive": {
+  "name": "复苏",
+  "mp": 14,
+  "kind": "revive",
+  "target": "ally",
+  "power": 0.4,
+  "desc": "让倒下的同伴带着四成生命站起来。"
+ },
+ "purify": {
+  "name": "净化",
+  "mp": 7,
+  "kind": "heal",
+  "target": "party",
+  "power": 0.3,
+  "cleanse": true,
+  "desc": "解除我方全体的异常，并回一点血。"
+ },
+ "moonWish": {
+  "name": "圆月之愿",
+  "mp": 30,
+  "kind": "heal",
+  "target": "party",
+  "power": 9,
+  "fx": [
+   {
+    "type": "lastStand",
+    "turns": 3
+   }
+  ],
+  "revive": true,
+  "once": true,
+  "desc": "终结技：全队回满、复活倒下的同伴，三回合内免死一次，每场一次。"
+ },
+ "tideShield": {
+  "name": "潮盾",
+  "mp": 9,
+  "kind": "buff",
+  "target": "party",
+  "shield": 0.9,
+  "desc": "给我方全体护盾。"
+ },
+ "whirlpool": {
+  "name": "漩涡",
+  "mp": 12,
+  "kind": "magic",
+  "el": "water",
+  "target": "all",
+  "power": 1.0,
+  "fx": [
+   {
+    "type": "spdDown",
+    "chance": 0.7
+   }
+  ],
+  "desc": "群体水伤并减速。"
+ },
+ "coldTide": {
+  "name": "寒潮",
+  "mp": 10,
+  "kind": "magic",
+  "el": "water",
+  "target": "one",
+  "power": 1.1,
+  "fx": [
+   {
+    "type": "freeze",
+    "chance": 0.7
+   }
+  ],
+  "desc": "大概率冰冻一个敌人。"
+ },
+ "returnTide": {
+  "name": "归潮",
+  "mp": 24,
+  "kind": "magic",
+  "el": "water",
+  "target": "all",
+  "power": 0.8,
+  "shieldScale": 1.2,
+  "once": true,
+  "desc": "终结技：我方护盾越厚伤害越高，每场一次。"
+ },
+ "shelter": {
+  "name": "庇荫",
+  "mp": 8,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "cover",
+    "turns": 3
+   },
+   {
+    "type": "defUp",
+    "turns": 3
+   }
+  ],
+  "desc": "三回合内替队友挨单体攻击。"
+ },
+ "oldBark": {
+  "name": "千年树皮",
+  "mp": 9,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "guardUp",
+    "turns": 2
+   },
+   {
+    "type": "regen"
+   }
+  ],
+  "shield": 1.0,
+  "desc": "减伤、回春并加护盾。"
+ },
+ "lifeRoot": {
+  "name": "生命之根",
+  "mp": 12,
+  "kind": "buff",
+  "target": "party",
+  "fx": [
+   {
+    "type": "regen",
+    "turns": 4
+   }
+  ],
+  "desc": "我方全体回春四回合。"
+ },
+ "ancientShade": {
+  "name": "古树之荫",
+  "mp": 26,
+  "kind": "buff",
+  "target": "party",
+  "fx": [
+   {
+    "type": "regen",
+    "turns": 4
+   },
+   {
+    "type": "defUp",
+    "turns": 4
+   }
+  ],
+  "shield": 2.2,
+  "once": true,
+  "desc": "终结技：全队厚护盾、防升、回春，每场一次。"
+ },
+ "thornArmor": {
+  "name": "荆棘甲",
+  "mp": 8,
+  "kind": "buff",
+  "target": "self",
+  "fx": [
+   {
+    "type": "thorns",
+    "turns": 4
+   },
+   {
+    "type": "taunt",
+    "turns": 2
+   }
+  ],
+  "desc": "四回合内反弹三成物理伤害，并嘲讽。"
+ },
+ "poisonBloom": {
+  "name": "毒孢",
+  "mp": 10,
+  "kind": "magic",
+  "el": "grass",
+  "target": "all",
+  "power": 0.6,
+  "fx": [
+   {
+    "type": "poison",
+    "chance": 0.85
+   }
+  ],
+  "desc": "全体中毒。"
+ },
+ "vineBind": {
+  "name": "缠藤",
+  "mp": 9,
+  "kind": "debuff",
+  "target": "one",
+  "fx": [
+   {
+    "type": "bind",
+    "chance": 0.85,
+    "turns": 2
+   }
+  ],
+  "desc": "定身一个敌人两回合（火烧不掉）。"
+ },
+ "thornField": {
+  "name": "万刺丛生",
+  "mp": 26,
+  "kind": "magic",
+  "el": "grass",
+  "target": "all",
+  "power": 1.7,
+  "fx": [
+   {
+    "type": "poison"
+   }
+  ],
+  "selfFx": [
+   {
+    "type": "thorns",
+    "turns": 4
+   }
+  ],
+  "once": true,
+  "desc": "终结技：全场长出尖刺，全体中毒，自己荆棘四回合，每场一次。"
  }
 }

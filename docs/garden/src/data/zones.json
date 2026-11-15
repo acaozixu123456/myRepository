@@ -49,7 +49,12 @@
    "hopcube"
   ],
   "boss": "tusk",
-  "desc": "离家最近的草坡，适合练手。"
+  "desc": "离家最近的草坡，适合练手。",
+  "mats": [
+   "feather",
+   "sprout"
+  ],
+  "set": "meadow"
  },
  {
   "id": "brook",
@@ -82,7 +87,12 @@
   ],
   "boss": "spout",
   "pond": true,
-  "desc": "林子里到处是水声。"
+  "desc": "林子里到处是水声。",
+  "mats": [
+   "pebble",
+   "scale"
+  ],
+  "set": "brook"
  },
  {
   "id": "maple",
@@ -114,7 +124,12 @@
    "antler"
   ],
   "boss": "mane",
-  "desc": "一年四季都是秋天。"
+  "desc": "一年四季都是秋天。",
+  "mats": [
+   "mapleLeaf",
+   "tinder"
+  ],
+  "set": "maple"
  },
  {
   "id": "frost",
@@ -146,6 +161,11 @@
    "dozer"
   ],
   "boss": "starneck",
-  "desc": "离星星最近的地方，夜里很亮。"
+  "desc": "离星星最近的地方，夜里很亮。",
+  "mats": [
+   "iceShard",
+   "snowFluff"
+  ],
+  "set": "frost"
  }
 ]
