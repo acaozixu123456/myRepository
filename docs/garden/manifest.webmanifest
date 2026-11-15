@@ -1,0 +1,14 @@
+{
+  "name": "荒地复苏",
+  "short_name": "荒地复苏",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#7fc3ef",
+  "theme_color": "#7fc3ef",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
