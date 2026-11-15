@@ -1,11 +1,11 @@
 // 自由旅行：步行、骑马、飞行三种走法，在谷地里随意走。按住屏幕往前，左右拖动转向（飞的时候上下拖动爬升、下降）。
 // 在山路上不拖动时会自动顺着路走；谷地里有十处地方（第一次到会出地名横幅，记进旅行手记）；
-// 第一次到望远台有一段远景；在山口营地可以坐下烤火，看这一路的手记。太阳随时间慢慢落下。
+// 第一次到望远台有一段远景；在山口营地可以坐下烤火，看这一路的手记。
+// 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
 import * as THREE from 'three';
 import { ROAD, STREAM, SPOTS } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL } from '../world/land.js';
-import { U } from '../world/atmo.js';
-import { SKY } from '../world/sky.js';
+import { PERIODS } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 
 export const GAITS = {
@@ -19,15 +19,10 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
 const DEG = Math.PI / 180;
-const DUSK_TIME = 600;   // 走 10 分钟太阳落到山口
-
-// 黄昏：太阳高度和颜色（0 = 下午晚些，1 = 落到山口，1.25 = 营地天黑一点）
-const C = (a, b) => [new THREE.Color(a), new THREE.Color(b)];
-const DUSK = {
-  sun: C('#ffd9a8', '#ffa66a'), fogSun: C('#ffcf98', '#ffae7c'), fogFar: C('#b4c0dc', '#b2aed0'),
-  zenith: C('#6c98d4', '#5b7ec2'), mid: C('#a8bde0', '#b4b2d8'), glow: C('#ffc98a', '#ffa46e'),
-  cloudLit: C('#fff1dc', '#ffd2ae'), cloudShade: C('#b5a8c4', '#a898bc'), hemiSky: C('#bfd0f2', '#b6b8e2'), hemiGround: C('#94844f', '#8a6e4c'),
-};
+// 时间：新的旅程从下午四点半出发；平常一个钟头 75 秒
+export const START_TOD = 16.6;
+const HOUR = 75;
+const isNightH = h => h >= 20 || h < 5;
 // 骑手盆骨相对马鞍挂点的微调（每种坐骑不一样）
 const SEAT = { b: [0, 0.07, -0.04], a: [0, 0.09, -0.02], w: [0, 0.09, -0.02], d: [0, 0.07, 0.0] };
 
@@ -36,7 +31,7 @@ export function makePlaces() {
   const st = at(SPOTS.start), br = at(SPOTS.bridge), gr = at(SPOTS.grove[0] + 6), vw = at(SPOTS.view), cp = at(SPOTS.camp);
   return [
     { id: 'valley', name: '暖光谷地', sub: '沿着小溪，往山口去', where: '出发的地方', x: st.x, z: st.z - 6, r: 20 },
-    { id: 'east', name: '东坡花田', sub: '一坡的花，在夕阳里晃', where: '出发后往右手边（东边）的山坡走', x: 75, z: -25, r: 26 },
+    { id: 'east', name: '东坡花田', sub: '一坡的花，在风里晃', where: '出发后往右手边（东边）的山坡走', x: 75, z: -25, r: 26 },
     { id: 'bridge', name: '溪上木桥', sub: '水声近了', where: '顺着山路往前，过溪的地方', x: br.x, z: br.z, r: 9 },
     { id: 'mill', name: '风车坡', sub: '风车慢慢转，坡下就是小溪', where: '木桥右前方的山坡上', x: 62, z: -118, r: 16 },
     { id: 'shoal', name: '浅滩', sub: '溪水漫过圆石，可以蹚水过去', where: '从木桥往左，沿着小溪往上游走', x: SHOAL.x, z: SHOAL.z, r: 14 },
@@ -53,7 +48,7 @@ const _h = [new THREE.Vector3(), new THREE.Vector3()], _bit = [new THREE.Vector3
 const _p = {};
 
 export class Journey {
-  // o: { land, bridge, camp, mounts: {b, a, w, d}, traveler, wings, reins, cam, sound, ui, camera, sun, hemi, colliders }
+  // o: { land, bridge, camp, mounts: {b, a, w, d}, traveler, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight }
   constructor(o) {
     Object.assign(this, o);
     this.T = o.traveler;
@@ -71,7 +66,8 @@ export class Journey {
     this.p = new THREE.Vector3(); this.vy = 0;
     this.t = 0;
     this.reset();
-    this.dusk = 0; this.applyDusk(0);
+    this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.night = 0; this.owlT = 20;
+    this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));
   }
   get mount() { return this.mounts[this.mountKey]; }
@@ -237,10 +233,9 @@ export class Journey {
     this.camTick(dt);
     if (playing) this.story(dt);
     if (this.sitting) this.campTick(dt);
+    this.clockTick(dt, playing);
+    this.applyDay(dt);
     this.campfire(dt);
-    // 黄昏：随旅行时间慢慢落下；在营地坐下时再暗一点
-    const duskT = this.sitting ? 1.25 : Math.max(this.dusk, Math.min(1, this.travelT / DUSK_TIME));
-    if (Math.abs(duskT - this.dusk) > 1e-4) { this.dusk = damp(this.dusk, duskT, this.sitting ? 0.25 : 0.8, dt); this.applyDusk(this.dusk); }
     this.mix(dt);
     this.snortT -= dt;
     if (this.snortT < 0) { this.snortT = 22 + Math.random() * 35; if (this.mode === 'ride' && this.phase !== 'intro' && this.speed < 2) this.sound.snort(); }
@@ -545,7 +540,7 @@ export class Journey {
         const was = this.inPlace.has(P.id);
         if (inside && !was) {
           this.inPlace.add(P.id);
-          if (!this.visited.includes(P.id)) { this.visited.push(P.id); this.ui.banner(P.name, P.sub); this.labelT = 5; this.ui.place(''); this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length); }
+          if (!this.visited.includes(P.id)) { this.visited.push(P.id); this.ui.banner(P.name, P.sub); this.labelT = 5; this.ui.place(''); this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length); this.onVisit?.(P); }
           else { this.ui.place(P.name); this.labelT = 0; }
           this.lastPlace = P;
           if (P.id === 'bridge' && !this.glanceDone && this.mode !== 'fly') { this.glanceDone = true; this.glance = { t: 0, dur: 7, x: 62, z: -118 }; }
@@ -591,7 +586,7 @@ export class Journey {
   }
   campTick(dt) {
     this.campT += dt;
-    if (this.campT > 7 && !this.summaryShown) { this.summaryShown = true; this.onCamp?.(); }
+    if (this.campT > 7 && this.sitTo === null && !this.summaryShown) { this.summaryShown = true; this.onCamp?.(); }
   }
   campfire(dt) {
     if (this.sitPending !== undefined && this.sitPending !== null) {
@@ -599,28 +594,30 @@ export class Journey {
       if (this.sitPending <= 0) { this.sitPending = null; this.doSit(); }
     }
     const fire = this.camp.userData.fire;
-    this.lit = damp(this.lit, this.sitting || this.fireKept ? 1 : 0, 1.2, dt);
+    this.lit = damp(this.lit, this.sitting || this.fireKept || this.night > 0.45 ? 1 : 0, 1.2, dt);
     fire.visible = this.lit > 0.02; fire.scale.setScalar(0.35 + 0.65 * this.lit);
     fire.userData.update(this.t, this.lit);
     this.camp.userData.lanLight.intensity = 1.8 * this.lit;
   }
   doSit() {
     const c = this.camp.userData, seat = c.seat, fire = c.fireAt;
-    // 坐骑停到帐篷旁边吃草
     const M = this.mount;
-    if (this.mode === 'ride') {
+    // 坐骑停到帐篷旁边吃草（走路来的、坐骑落在远处的，也让它跟过来）
+    if (this.mode === 'ride' || !M.st.shown || M.st.p.distanceTo(this.p) > 12) {
+      M.st.goal = null;
       const yaw = c.yaw; const px = seat.x + Math.cos(yaw) * -3.6 + Math.sin(yaw) * 2.2, pz = seat.z - Math.sin(yaw) * -3.6 + Math.cos(yaw) * 2.2;
       M.st.p.set(px, this.groundAt(px, pz), pz); M.st.yaw = yaw + 2.2; M.st.speed = 0; M.st.shown = true; M.root.visible = true;
     }
     this.mode = 'foot'; this.speed = 0; this.trans = null;
     this.sitting = true; this.campT = 0; this.fireKept = true;
+    // 坐下以后时间快进到夜里（已经是夜里就不用了）
+    this.ff = null; this.sitTo = this.tod >= 5.5 && this.tod < 21.2 ? 21.2 : null;
     this.sitYaw = Math.atan2(fire.x - seat.x, fire.z - seat.z);
     this.p.set(seat.x, this.groundAt(seat.x, seat.z), seat.z); this.yaw = this.yawT = this.sitYaw;
     this.T.set('sit', 50);
     this.T.A.Sitting_Enter.time = this.T.A.Sitting_Enter.getClip().duration; this.T.sitStage = 'idle';
     const shot = campShot(fire.clone().lerp(M.root.position, 0.35).setY(fire.y), this.camera); shot.blend = 0.01;
     this.cam.play(shot);
-    this.sound.musicLevel(0.3);
     this.ui.fade(false);
   }
   // 结尾卡片之后：站起来继续走
@@ -631,16 +628,101 @@ export class Journey {
     const f = this.camp.userData.fireAt;
     this.yaw = this.yawT = Math.atan2(this.p.x - f.x, this.p.z - f.z);
     releaseShot(this.cam, 2.5);
-    this.sound.musicLevel(0.42);
+  }
+  // 结尾卡片之后：夜里就睡一觉，到第二天清晨再上路
+  wakeUp() {
+    if (this.tod > 6 || this.tod < 5) this.dayN++;
+    this.tod = 6.0; this.ff = null; this.sitTo = null; this.fireKept = false;
+    this.standUp();
+    this.applyDay(0);
+  }
+  // 开始卡片上选了“从头开始”：回到出发点，还没出发
+  fresh() {
+    this.sitting = false; this.fireKept = false;
+    this.reset();
+    this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.applyDay(0);
+    this.cam.inited = false; this.cam.play(introShot(() => this.yaw));
+    this.ui.place(''); this.ui.progress(0); this.ui.journal?.(0, this.places.length);
   }
   // 从头再来
   restart() {
     this.sitting = false; this.fireKept = false; this.T.set('ride', 50);
     this.reset();
     this.cam.shot = null; this.cam.inited = false; this.cam.zoom = this.cam.zoomTarget;
-    this.phase = 'play'; this.dusk = 0; this.applyDusk(0);
+    this.phase = 'play';
+    this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.applyDay(0);
     this.ui.place(''); this.ui.progress(0); this.ui.journal?.(0, this.places.length);
-    this.sound.musicLevel(0.42);
+  }
+
+  // ---------- 时间 ----------
+  // 清晨和黄昏走得慢一点（多看一会儿），夜里快一点；坐下烤火时快进；时间按钮跳到下一个时辰
+  clockTick(dt, playing) {
+    let adv = 0;
+    if (this.ff) {
+      const rem = (this.ff.to - this.tod + 24) % 24;
+      adv = Math.min(rem, this.ff.rate * dt);
+      if (rem - adv < 1e-3) { adv = rem; this.ff = null; }
+    } else if (this.sitting && this.sitTo !== null) {
+      const rem = (this.sitTo - this.tod + 24) % 24;
+      adv = Math.min(rem, Math.max(0.9, rem / 6) * dt);
+      if (rem - adv < 1e-3) { adv = rem; this.sitTo = null; }
+    } else if (playing && !this.sitting) {
+      const h = this.tod;
+      const k = (h > 5.2 && h < 7.6) || (h > 16.8 && h < 19.6) ? 0.55 : isNightH(h) && h > 20.4 || h < 4.6 ? 1.6 : 1;
+      adv = dt * k / HOUR;
+    }
+    if (adv <= 0) return;
+    const t = this.tod + adv;
+    if ((this.tod < 5 && t >= 5) || t >= 29) this.dayN++;     // 天亮算新的一天
+    this.tod = t % 24;
+  }
+  // 跳到下一个时辰（快进过去）；返回那个时辰的名字
+  skipTime() {
+    if (this.sitting) return null;
+    const from = this.ff ? this.ff.to : this.tod;
+    const next = PERIODS.find(p => p.at > from + 0.05) || PERIODS[0];
+    this.ff = { to: next.at, rate: 3.2 };
+    return next.name;
+  }
+  get isNight() { return isNightH(this.tod); }
+  applyDay(dt) {
+    if (!this.daylight) return;
+    this.daylight.apply(this.tod, this.p, dt);
+    this.night = this.daylight.night;
+  }
+
+  // ---------- 存档 ----------
+  snapshot() {
+    const mode = this.mode === 'fly' || this.uiMode === 'fly' ? 'foot' : this.uiMode === 'ride' ? 'ride' : 'foot';
+    const r = v => Math.round(v * 100) / 100;
+    return {
+      mount: this.mountKey, mode, x: r(this.p.x), z: r(this.p.z), yaw: r(this.yaw), tod: r(this.tod), day: this.dayN,
+      visited: [...this.visited], dist: { foot: Math.round(this.dist.foot), ride: Math.round(this.dist.ride), fly: Math.round(this.dist.fly) },
+      travelT: Math.round(this.travelT), gaits: { ...this.gaits }, viewDone: this.viewDone, glanceDone: this.glanceDone,
+    };
+  }
+  restore(s) {
+    if (s.mount && this.mounts[s.mount]) this.startWith(s.mount);
+    // 不在近景范围里（飞得太远）或者在水里，就回到最近去过的地方
+    const m = 14, inside = (x, z) => x > DOM.x0 + m && x < DOM.x0 + DOM.w - m && z > DOM.z0 + m && z < DOM.z0 + DOM.d - m;
+    let x = +s.x, z = +s.z, yaw = +s.yaw || 0;
+    if (!Number.isFinite(x) || !Number.isFinite(z) || !inside(x, z) || this.waterDepth(x, z) > 0.25) {
+      const P = (s.visited || []).map(id => this.places.find(p => p.id === id && p.x !== undefined)).filter(Boolean)
+        .sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
+      if (P) { x = P.x; z = P.z; } else { ROAD.at(SPOTS.start, _p); x = _p.x; z = _p.z; }
+    }
+    this.teleport(x, z, yaw, s.mode === 'ride' ? 'ride' : 'foot');
+    this.phase = 'intro';
+    this.tod = Number.isFinite(+s.tod) ? ((+s.tod % 24) + 24) % 24 : START_TOD;
+    this.dayN = Math.max(1, s.day | 0);
+    this.visited = (s.visited || []).filter(id => this.places.some(p => p.id === id));
+    if (s.dist) for (const k of ['foot', 'ride', 'fly']) this.dist[k] = +s.dist[k] || 0;
+    this.travelT = +s.travelT || 0;
+    if (s.gaits) for (const k of ['foot', 'ride', 'fly']) if (s.gaits[k] >= 0 && s.gaits[k] <= 2) this.gaits[k] = s.gaits[k] | 0;
+    this.viewDone = !!s.viewDone; this.glanceDone = !!s.glanceDone;
+    this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length);
+    this.applyDay(0);
+    this.cam.play(introShot(() => this.yaw));
   }
 
   // ---------- 声音 ----------
@@ -666,24 +748,18 @@ export class Journey {
       pan = clamp((dx * _w.x + dz * _w.z) / Math.max(2, Math.hypot(dx, dz)), -0.8, 0.8);
     }
     const trees = this.colliders.count(hp.x, hp.z, 16);
-    const birds = (0.3 + 0.7 * sstep(2, 10, trees)) * (1 - 0.7 * Math.min(1, this.dusk)) * (this.mode === 'fly' ? 1 - sstep(10, 40, this.alt) : 1);
+    const low = this.mode === 'fly' ? 1 - sstep(10, 40, this.alt) : 1;
+    const birds = (0.3 + 0.7 * sstep(2, 10, trees)) * (this.daylight?.st.birds ?? 1) * low;
+    const crickets = sstep(0.15, 0.7, this.night) * (this.mode === 'fly' ? 1 - sstep(6, 30, this.alt) : 1) * (0.55 + 0.45 * sstep(0, 6, trees));
     const wind = this.mode === 'fly' ? 0.45 + 0.55 * sstep(6, 18, this.speed) : 0.22 + 0.45 * sstep(1.5, 30, hp.y) + (this.phase === 'view' ? 0.25 : 0);
     const fire = this.lit * (1 - sstep(3, 26, cp.distanceTo(this.camp.userData.fireAt)));
-    this.sound.update({ river, birds, wind, fire, riverPan: pan });
-  }
-
-  applyDusk(d) {
-    const k = clamp(d / 1.25, 0, 1);
-    const el = (14 - 6.8 * d) * DEG, az = -16 * DEG;
-    U.uSunDir.value.set(Math.sin(az) * Math.cos(el), Math.sin(el), -Math.cos(az) * Math.cos(el));
-    const set = (c, [a, b]) => c.copy(a).lerp(b, k);
-    set(U.uSunColor.value, DUSK.sun); set(U.uFogSun.value, DUSK.fogSun); set(U.uFogFar.value, DUSK.fogFar);
-    set(SKY.uZenith.value, DUSK.zenith); set(SKY.uMid.value, DUSK.mid); set(SKY.uSunGlow.value, DUSK.glow);
-    set(SKY.uCloudLit.value, DUSK.cloudLit); set(SKY.uCloudShade.value, DUSK.cloudShade);
-    set(this.hemi.color, DUSK.hemiSky); set(this.hemi.groundColor, DUSK.hemiGround);
-    this.sun.color.copy(U.uSunColor.value);
-    this.sun.intensity = lerp(3.1, 2.45, k);
-    this.hemi.intensity = lerp(1.3, 0.95, k);
+    this.sound.update({ river, birds, wind, fire, crickets, riverPan: pan });
+    // 音乐：坐下时轻一点，夜里也轻一点
+    const music = (this.sitting ? 0.3 : 0.42) * (1 - 0.45 * this.night);
+    if (Math.abs(music - (this.musicNow ?? -1)) > 0.01) { this.musicNow = music; this.sound.musicLevel(music); }
+    // 夜里树林边偶尔有猫头鹰
+    this.owlT -= 0.2;
+    if (this.owlT < 0) { this.owlT = 28 + Math.random() * 50; if (this.night > 0.6 && trees > 2 && low > 0.5) this.sound.owl?.(0.35 + Math.random() * 0.3, Math.random() * 1.4 - 0.7); }
   }
 }
 

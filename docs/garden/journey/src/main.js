@@ -9,9 +9,12 @@ import { makeTraveler } from './actors/traveler.js';
 import { makeWings } from './actors/wings.js';
 import { CamRig } from './game/cam.js';
 import { Sound } from './game/audio.js';
-import { Journey, Colliders, GAITS } from './game/journey.js';
+import { Journey, Colliders, GAITS, START_TOD } from './game/journey.js';
 import { Quality, TIERS } from './game/quality.js';
 import { initUI } from './game/ui.js';
+import { DayLight, periodOf } from './world/daytime.js';
+import { makeFireflies } from './world/fireflies.js';
+import { loadSave, writeSave, clearSave } from './game/save.js';
 
 const P = new URLSearchParams(location.search);
 // 无头截图模式：?shot=1&place=地点|x=&z=&ry=朝向&mode=foot|ride|fly&mount=a|b|w|d&trav=m|f&v=速度&alt=高度&sim=秒&cam=travel|top|intro|side|front|close
@@ -51,9 +54,11 @@ function setSize() {
 addEventListener('resize', setSize);
 setSize();
 
-let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, playing = false;
+let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, playing = false;
 const travelers = {};          // m / f：选到哪个才加载哪个
-let travKey = P.get('trav') === 'f' ? 'f' : 'm';
+// 存档：截图模式不读不写
+const saved = SHOT || P.has('fresh') ? null : loadSave();
+let travKey = P.get('trav') === 'f' || (!P.has('trav') && saved?.trav === 'f') ? 'f' : 'm';
 const focus = new THREE.Vector3();
 
 // ---------- 画质 ----------
@@ -108,9 +113,22 @@ const ui = initUI({
   places: () => J ? J.places.map(p => ({ name: p.name, sub: p.sub, where: p.where, seen: J.visited.includes(p.id) })) : [],
   again: restart => {
     ui.summaryOff();
-    if (!restart) { J.standUp(); ui.hint('按住屏幕前进'); return; }
+    if (!restart) {
+      if (!J.isNight) { J.standUp(); ui.hint('按住屏幕前进'); save(); return; }
+      // 夜里：睡一觉，第二天清晨接着走
+      ui.fade(true);
+      setTimeout(() => { J.wakeUp(); ui.fade(false); ui.banner(`第 ${J.dayN} 天`, '天亮了，接着上路'); ui.hint('按住屏幕前进'); save(); }, 1100);
+      return;
+    }
     ui.fade(true);
-    setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.hint(J.auto ? '' : '按住屏幕前进'); }, 800);
+    clearSave();
+    setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.hint(J.auto ? '' : '按住屏幕前进'); save(); }, 800);
+  },
+  skipTime: () => { if (J && playing) J.skipTime(); },
+  // 开始卡片上的“从头开始”：不用存档
+  fresh: () => {
+    if (!J || playing) return;
+    clearSave(); J.fresh(); ui.resume(null); ui.setPick(J.mountKey);
   },
 });
 ui.tool('bSound', true);
@@ -127,6 +145,18 @@ function syncUI() {
     shownGait = -1;
   }
   if (J.gait !== shownGait) { shownGait = J.gait; ui.gait(J.gait); }
+  ui.time(periodOf(J.ff ? J.ff.to : J.tod).name, !!J.ff || (J.sitting && J.sitTo !== null));
+}
+
+// ---------- 存档 ----------
+let saveT = 0;
+function save() {
+  if (!J || SHOT || !playing || J.phase === 'intro') return;
+  writeSave({ ...J.snapshot(), trav: travKey });
+}
+function resumeText(s) {
+  const n = (s.visited || []).length;
+  return `第 ${Math.max(1, s.day | 0)} 天 · ${periodOf(+s.tod || START_TOD).name}${n ? ` · 到过 ${n} 个地方` : ''}`;
 }
 
 function start() {
@@ -163,6 +193,8 @@ document.addEventListener('visibilitychange', () => {
     if (playing) wake();
   } else { sound.music?.pause(); sound.ctx.suspend?.(); }
 });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') save(); });
+addEventListener('pagehide', () => save());
 // iPhone 有时需要再点一下才恢复声音
 document.addEventListener('touchend', () => { if (sound?.ctx && sound.ctx.state !== 'running' && document.visibilityState === 'visible') sound.ctx.resume(); }, { passive: true });
 
@@ -181,7 +213,12 @@ function step(dt) {
   placeSun(focus);
   W.update(camera, focus, dt);
   windmill.userData.update(dt);
+  // 萤火虫：夜里才有
+  const px = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
+  fireflies.userData.update(J.p, Math.min(1, Math.max(0, (J.night - 0.3) / 0.5)), px);
   syncUI();
+  saveT += dt;
+  if (saveT > 15) { saveT = 0; save(); }
 }
 const clock = new THREE.Clock();
 function frame() {
@@ -229,6 +266,8 @@ async function load() {
   const horseP = loadAnimal(RES + 'horseA.glb').catch(e => { console.warn('[j] horse', e); return null; });
   const donkeyP = loadAnimal(RES + 'donkey.glb').catch(e => { console.warn('[j] donkey', e); return null; });
   W = await buildWorld(renderer, scene, q0, say, { yieldFn: nextFrame });
+  const daylight = new DayLight({ sun, hemi, renderer, water: W.stream });
+  fireflies = makeFireflies(W.land); scene.add(fireflies);
   say('正在搭桥、种栅栏…');
   await nextFrame();
   const bridge = buildBridge(W.land); scene.add(bridge.mesh);
@@ -259,9 +298,11 @@ async function load() {
   quality = new Quality(applyTier, q0);
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
-  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders });
-  if (P.has('debug')) window.__J = J;   // 调试：测试脚本读状态
+  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight });
+  if (P.has('debug')) { window.__J = J; window.__scene = scene; }   // 调试：测试脚本读状态
   J.onCamp = showSummary;
+  J.onVisit = () => save();
+  if (saved) { try { J.restore(saved); ui.resume(resumeText(saved)); } catch (e) { console.warn('[j] restore', e); clearSave(); } }
   const k0 = P.get('mount'); if (k0 && mounts[k0]) J.startWith(k0);
   ui.setPick(J.mountKey);
   for (const b of document.querySelectorAll('#whoPick button')) b.classList.toggle('on', b.dataset.t === travKey);
@@ -295,6 +336,9 @@ function shotSetup() {
     const list = mode === 'ride' ? J.mount.gaits : GAITS[mode].map(g => g.v);
     J.gait = list.findIndex(g => g >= v - 0.01); if (J.gait < 0) J.gait = 2;
   }
+  // 时间：tod=钟点（0~24）；dusk=0~1 是以前的黄昏参数（下午四点半到六点半）
+  if (P.has('dusk')) { J.tod = START_TOD + +P.get('dusk') * 1.9; J.applyDay(0); }
+  if (P.has('tod')) { J.tod = +P.get('tod'); J.applyDay(0); }
   if (P.get('act') === 'takeoff') J.setMode('fly');
   if (P.get('act') === 'land') J.setMode('foot');
   if (P.get('act') === 'dismount') J.setMode('foot');
@@ -304,7 +348,6 @@ function shotSetup() {
   if (P.get('auto')) J.auto = true;
   if (P.has('yaw')) { cam.yawOff = +P.get('yaw'); cam.yawHold = 1e9; }
   if (P.has('pitch')) { cam.pitchOff = +P.get('pitch'); cam.pitchHold = 1e9; }
-  if (P.has('dusk')) { J.travelT = +P.get('dusk') * 600; J.dusk = +P.get('dusk'); J.applyDusk(J.dusk); }
   const sim = +(P.get('sim') || 2.5);
   const act2 = P.get('act2'), at2 = +(P.get('at2') || 1);
   let did2 = false;

@@ -1,4 +1,5 @@
 // 声音：一首曲子 + 流水、鸟叫、风、篝火的环境声（按离溪远近、地形高低自动调音量）+ 马蹄声、脚步、翅膀、口哨。
+// 夜里有合成的虫鸣（几只蟋蟀，各自的音高和节奏）和偶尔的猫头鹰。
 // iPhone：必须在点击里创建/恢复 AudioContext；把 audioSession 设成 playback，静音键打开时也能出声。
 
 export class Sound {
@@ -31,8 +32,8 @@ export class Sound {
         ...names.map(n => load(n + '.mp3')), load('hooves.mp3'), load('snort1.mp3'), load('snort2.mp3'),
         fetch(this.base + 'audio/hooves.json').then(r => r.json()),
       ]);
-      const bufs = { river, birds, wind, fire };
-      for (const n of names) {
+      const bufs = { river, birds, wind, fire, crickets: this.makeCrickets() };
+      for (const n of [...names, 'crickets']) {
         const src = ctx.createBufferSource(); src.buffer = bufs[n]; src.loop = true;
         const g = ctx.createGain(); g.gain.value = 0;
         const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
@@ -59,7 +60,7 @@ export class Sound {
   update(mix) {
     if (!this.ready) return;
     const t = this.ctx.currentTime;
-    const target = { river: 0.85 * mix.river, birds: 0.5 * mix.birds, wind: 0.45 * mix.wind, fire: 0.9 * mix.fire };
+    const target = { river: 0.85 * mix.river, birds: 0.5 * mix.birds, wind: 0.45 * mix.wind, fire: 0.9 * mix.fire, crickets: 0.8 * (mix.crickets || 0) };
     for (const [n, L] of Object.entries(this.loops)) {
       L.g.gain.setTargetAtTime(target[n] || 0, t, 0.6);
       if (n === 'river' && L.pan) L.pan.pan.setTargetAtTime(mix.riverPan || 0, t, 0.3);
@@ -112,6 +113,44 @@ export class Sound {
       o.type = 'sine'; o.frequency.setValueAtTime(fa, t); o.frequency.exponentialRampToValueAtTime(fb, t + 0.16);
       g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
       o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t + 0.22);
+    }
+  }
+  // 虫鸣：6 秒一段循环。每只蟋蟀一个音高，几下短促的“唧”连成一声，隔一会儿再叫
+  makeCrickets() {
+    const ctx = this.ctx, sr = ctx.sampleRate, D = 6, len = Math.floor(sr * D), b = ctx.createBuffer(2, len, sr);
+    const L = b.getChannelData(0), R = b.getChannelData(1);
+    for (let k = 0; k < 8; k++) {
+      const f = 3800 + Math.random() * 1700, n = Math.max(2, Math.round(D / (0.5 + Math.random() * 0.9))), per = D / n;
+      const pulses = 2 + ((Math.random() * 3) | 0), pl = 0.012 + Math.random() * 0.012, gap = 0.016 + Math.random() * 0.014;
+      const vol = (k < 3 ? 0.11 : 0.045) * (0.6 + Math.random() * 0.4), pan = Math.random() * 1.6 - 0.8, off = Math.random() * per;
+      for (let c = 0; c < n; c++) {
+        if (Math.random() < 0.15) continue;           // 偶尔停一下
+        const t0 = off + c * per + (Math.random() - 0.5) * 0.05;
+        for (let p = 0; p < pulses; p++) {
+          const i0 = Math.floor((t0 + p * (pl + gap)) * sr), m = Math.floor(pl * sr);
+          for (let i = 0; i < m; i++) {
+            const j = (i0 + i) % len, e = Math.sin(Math.PI * i / m) ** 2;
+            const v = (Math.sin(2 * Math.PI * f * i / sr) + 0.25 * Math.sin(4 * Math.PI * f * i / sr)) * e * vol;
+            L[j] += v * (0.6 - pan * 0.4); R[j] += v * (0.6 + pan * 0.4);
+          }
+        }
+      }
+    }
+    return b;
+  }
+  // 远处的猫头鹰：“咕——咕咕咕”
+  owl(v = 0.5, pan = 0) {
+    if (!this.ready || this.muted) return;
+    const ctx = this.ctx, t0 = ctx.currentTime + 0.05;
+    const out = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900;
+    if (out) { out.pan.value = pan; lp.connect(out); out.connect(this.ambGain); } else lp.connect(this.ambGain);
+    for (const [dt, dur, a] of [[0, 0.5, 1], [0.82, 0.17, 0.75], [1.06, 0.17, 0.75], [1.3, 0.55, 0.9]]) {
+      const t = t0 + dt, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'triangle'; o.frequency.setValueAtTime(400, t); o.frequency.linearRampToValueAtTime(372, t + dur * 0.4); o.frequency.linearRampToValueAtTime(352, t + dur);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12 * v * a, t + 0.06);
+      g.gain.setValueAtTime(0.12 * v * a, t + dur * 0.55); g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.12);
+      o.connect(g); g.connect(lp); o.start(t); o.stop(t + dur + 0.2);
     }
   }
   snort() {

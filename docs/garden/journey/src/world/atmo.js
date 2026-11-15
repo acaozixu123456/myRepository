@@ -21,6 +21,9 @@ export const U = {
   uWind: { value: 1 },
   // 看穿：xyz 是旅人胸口，w 是强度（0 关）。镜头身边、镜头到人之间的枝叶用点阵挖掉
   uSee: { value: new THREE.Vector4(0, -1e4, 0, 0) },
+  // 远处替身树的环境光（天和地两头），跟着一天的光变
+  uAmb: { value: new THREE.Color('#9fb0c8') },
+  uAmbG: { value: new THREE.Color('#6a6a40') },
 };
 
 // 统一调色：ACES 之后再做一点暖色和饱和度（常量，编进所有着色器）

@@ -23,6 +23,7 @@
     <div class="place"><b id="placeName"></b><small id="placeSub"></small></div>
     <div class="topr">
       <button id="perf" type="button" aria-label="画质">-- fps</button>
+      <button id="bTime" type="button" aria-label="跳到下一个时辰">午后</button>
       <button id="journal" type="button">手记 0/10</button>
     </div>
   </div>
@@ -67,13 +68,14 @@
 <div id="start">
   <div class="card">
     <h1>旅途</h1>
-    <p class="sub">暖光谷地 · 随便走走</p>
+    <p class="sub" id="startSub">暖光谷地 · 随便走走</p>
     <div class="who" id="whoPick">
       <button type="button" data-t="m" class="on">旅人 · 他</button><button type="button" data-t="f">旅人 · 她</button>
     </div>
     <div class="mounts" id="horsePick"></div>
     <button id="go" type="button" disabled>准备中…</button>
-    <p class="tips">按住屏幕往前，左右拖动转向。下面随时换成步行、骑马或者飞。</p>
+    <button class="link" id="fresh" type="button" hidden>不接着走了，从头开始</button>
+    <p class="tips">按住屏幕往前，左右拖动转向。下面随时换成步行、骑马或者飞；点右上角的时辰可以快进到下一段。</p>
     <p class="load" id="loadText">正在铺路…</p>
     <button class="link" id="creditsBtn" type="button">音乐与素材</button>
   </div>
@@ -93,7 +95,7 @@
     <p>音乐：“Morning” Kevin MacLeod (incompetech.com)<br>Licensed under Creative Commons: By Attribution 4.0<br>creativecommons.org/licenses/by/4.0/</p>
     <p>环境声与马蹄声：Mixkit 免费音效</p>
     <p>树木花草：Quaternius Stylized Nature MegaKit（CC0）<br>马和小毛驴：Quaternius Ultimate Animated Animals（CC0）<br>旅人：Quaternius Modular Character Outfits – Fantasy、Universal Base Characters，动作：Universal Animation Library 1、2（都是 CC0）</p>
-    <p>小马“麦芽”、翅膀、地形、天空、水和木桥由代码生成。</p>
+    <p>小马“麦芽”、翅膀、地形、天空和星空、水、木桥，还有夜里的虫鸣和猫头鹰，都由代码生成。</p>
     <button type="button" id="creditsClose">好</button>
   </div>
 </div>

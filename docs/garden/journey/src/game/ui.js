@@ -9,7 +9,16 @@ export function initUI(h) {
   // ---------- 开始卡片 ----------
   const go = $('go'), pick = $('horsePick'), who = $('whoPick');
   ui.loading = t => { $('loadText').textContent = t; };
-  ui.ready = () => { go.disabled = false; go.textContent = '出发'; $('loadText').textContent = ''; };
+  let goLabel = '出发';
+  ui.ready = () => { go.disabled = false; go.textContent = goLabel; $('loadText').textContent = ''; };
+  // 有存档：按钮改成“接着走”，下面可以选从头开始
+  ui.resume = (sub) => {
+    goLabel = sub ? '接着走' : '出发';
+    $('startSub').textContent = sub || '暖光谷地 · 随便走走';
+    $('fresh').hidden = !sub;
+    if (!go.disabled) go.textContent = goLabel;
+  };
+  $('fresh').addEventListener('click', () => h.fresh?.());
   ui.busy = t => { go.disabled = true; go.textContent = t; };
   ui.failed = t => { go.disabled = true; go.textContent = '加载失败'; $('loadText').textContent = t; };
   // 坐骑卡片（开始卡片和换坐骑面板共用）
@@ -56,6 +65,10 @@ export function initUI(h) {
   const perf = $('perf');
   ui.perf = t => { perf.textContent = t; };
   perf.addEventListener('click', () => h.cycleQuality());
+  // 时辰：点一下快进到下一个时辰
+  const bTime = $('bTime');
+  bTime.addEventListener('click', () => h.skipTime?.());
+  ui.time = (name, ff) => { if (bTime.textContent !== name) bTime.textContent = name; bTime.classList.toggle('ff', !!ff); };
   // 横幅：进入一个新地方时显示几秒
   const banner = $('banner'); let bannerT = 0;
   ui.banner = (name, sub = '', dur = 4.5) => {
@@ -133,6 +146,7 @@ export function initUI(h) {
     if (e.code === 'KeyR') h.mode('ride');
     if (e.code === 'KeyG') h.mode('foot');
     if (e.code === 'KeyA' && e.shiftKey) h.toggleAuto();
+    if (e.code === 'KeyN') h.skipTime?.();
     if (e.code === 'Digit1' || e.code === 'Digit2' || e.code === 'Digit3') h.gait(+e.code.slice(5) - 1);
   });
   addEventListener('keyup', e => {
