@@ -616,9 +616,26 @@ export class Journey {
     this.p.set(seat.x, this.groundAt(seat.x, seat.z), seat.z); this.yaw = this.yawT = this.sitYaw;
     this.T.set('sit', 50);
     this.T.A.Sitting_Enter.time = this.T.A.Sitting_Enter.getClip().duration; this.T.sitStage = 'idle';
-    const shot = campShot(fire.clone().lerp(M.root.position, 0.35).setY(fire.y), this.camera); shot.blend = 0.01;
+    const target = fire.clone().lerp(M.st.p, 0.35).setY(fire.y);   // 用坐骑的逻辑位置（刚挪过来时模型还没跟上）
+    const shot = campShot(target, this.camera, this.clearAngle(target, this.camera.aspect < 1 ? 8.2 : 6.6, 24), 24); shot.blend = 0.01;
     this.cam.play(shot);
     this.ui.fade(false);
+  }
+  // 围着某个点找一个方向（度），从那里看过去中间没有树冠挡着（从 270 度往两边找）
+  clearAngle(c, R, swing) {
+    let best = 270, bestS = -1;
+    const clear = (ax, az, bx, bz) => Math.min(this.colliders.firstHit(ax, az, bx, bz), this.colliders.firstHit(bx, bz, ax, az));
+    for (let k = 0; k < 24; k++) {
+      const a0 = 270 + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 15;
+      let s = 0;
+      for (const da of [-swing, 0, swing]) {
+        const a = (a0 + da) * DEG;
+        s += clear(c.x - Math.sin(a) * R, c.z + Math.cos(a) * R, c.x, c.z);
+      }
+      if (s > bestS + 1e-3) { bestS = s; best = a0; }
+      if (s > 3 - 1e-3) break;
+    }
+    return best;
   }
   // 结尾卡片之后：站起来继续走
   standUp() {
