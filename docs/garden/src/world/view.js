@@ -206,21 +206,35 @@ export async function createView(canvas, skyEl, starsEl) {
     mode = 'battle'; world.visible = false; arena.clear(); arena.visible = true; actors = {}; tweens = [];
     const isl = buildIsland(8.5, zoneRef.pal, { seed: 5 }); arena.add(isl);
     const rs = seeded(9), jobs = [];
-    for (let i = 0; i < 7; i++) { const a = 3.2 + i * 0.42, r = 6.3 + rs() * 1, n = zoneRef.trees[i % zoneRef.trees.length]; jobs.push(model(n).then(o => { o.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); o.scale.setScalar((/Twisted/.test(n) ? 0.3 : /Dead/.test(n) ? 0.5 : /Pine/.test(n) ? 0.8 : 1) * 0.9); isl.add(o); })); }
+    for (let i = 0; i < 7; i++) { const a = 3.2 + i * 0.42, r = 7.2 + rs() * 0.8, n = zoneRef.trees[i % zoneRef.trees.length]; jobs.push(model(n).then(o => { o.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); o.scale.setScalar((/Twisted/.test(n) ? 0.3 : /Dead/.test(n) ? 0.5 : /Pine/.test(n) ? 0.8 : 1) * 0.9); isl.add(o); })); }
     for (let i = 0; i < 26; i++) { const a = rs() * 6.28, r = 1 + rs() * 6.5, n = zoneRef.flowers[i % zoneRef.flowers.length]; jobs.push(model(n).then(o => { o.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); o.scale.setScalar((/Fern/.test(n) ? 0.16 : 0.55)); o.rotation.y = rs() * 6; isl.add(o); })); }
     const sideCount = { a: battle.units.filter(u => u.side === 'a').length, b: battle.units.filter(u => u.side === 'b').length }, sideIdx = { a: 0, b: 0 };
-    for (const u of battle.units) {
-      const i = sideIdx[u.side]++, n = sideCount[u.side], sgn = u.side === 'a' ? -1 : 1;
-      const pos = AX.clone().multiplyScalar(sgn * (2.5 + (n - 1 - i) * 0.9)).add(DZ.clone().multiplyScalar((i - (n - 1) / 2) * 2.3));
-      jobs.push((u.key === 'hero' ? makeActor(CLASSES[look.cls].model, CLASSES[look.cls].scale) : monsterActor(u.mid, u.key === 'pet' ? 1 : 1.1)).then(o => {
-        o.position.copy(pos); o.rotation.y = Math.atan2(-sgn * AX.x, -sgn * AX.z); o.userData.home = pos.clone(); o.userData.height = u.key === 'hero' ? 2.2 : 1.5 * (MONSTERS[u.mid].scale || 1);
-        arena.add(o); actors[u.key] = o;
-      }));
-    }
+    for (const u of battle.units) jobs.push(placeActor(u, slotPos(u.side, sideIdx[u.side]++, sideCount[u.side]), look));
     await Promise.all(jobs);
-    viewW = 10.5; resize(); focus.set(0, 1.4, 0);
+    viewW = baseW = 12; resize(); focus.copy(FOCUS0);
   }
-  function exitBattle() { mode = 'world'; viewW = worldW; resize(); arena.visible = false; arena.clear(); actors = {}; world.visible = true; focus.copy(hero.position); grace = 2.5; }
+  const FOCUS0 = new THREE.Vector3(0, 1.4, 0); let baseW = 12, shakeT = 0, shakeP = 0;
+  // 站位：我方在左下，敌方在右上，前排在前
+  function slotPos(side, i, n) { const sgn = side === 'a' ? -1 : 1, row = n > 2 ? (i % 2 === 1 ? 0 : 1) : 0, sp = n > 3 ? 2.1 : 2.9; return AX.clone().multiplyScalar(sgn * (2.3 + row * 0.9)).add(DZ.clone().multiplyScalar((i - (n - 1) / 2) * sp)); }
+  async function placeActor(u, pos, look) {
+    const sgn = u.side === 'a' ? -1 : 1;
+    const o = await (u.key === 'hero' ? makeActor(CLASSES[look.cls].model, CLASSES[look.cls].scale) : monsterActor(u.mid, u.side === 'a' ? 1 : u.boss ? 1.25 : 1.1));
+    o.position.copy(pos); o.rotation.y = Math.atan2(-sgn * AX.x, -sgn * AX.z); o.userData.home = pos.clone(); o.userData.height = u.key === 'hero' ? 2.2 : 1.5 * (MONSTERS[u.mid].scale || 1) * (u.boss ? 1.15 : 1);
+    arena.add(o); actors[u.key] = o; return o;
+  }
+  // 首领叫来的帮手：站到后排空位，从地里冒出来
+  async function addActor(u) {
+    const n = Object.keys(actors).filter(k => k.startsWith('e')).length, pos = AX.clone().multiplyScalar(4.4 + (n % 2) * 0.6).add(DZ.clone().multiplyScalar(((n % 3) - 1) * 2.4));
+    const o = await placeActor(u, pos, {}); o.scale.multiplyScalar(0.01); const full = o.scale.x * 100;
+    await tween(0.35, k => o.scale.setScalar(full * Math.max(0.01, k)));
+  }
+  // 换伙伴：旧的缩回去，新的站在同一个位置
+  async function swapActor(u) {
+    const old = actors[u.key], pos = old ? old.userData.home.clone() : slotPos('a', 2, 3);
+    if (old) { await tween(0.2, k => old.scale.setScalar(Math.max(0.001, 1 - k))); arena.remove(old); }
+    const o = await placeActor(u, pos, {}); const full = o.scale.x; await tween(0.25, k => o.scale.setScalar(full * Math.max(0.01, k)));
+  }
+  function exitBattle() { mode = 'world'; shakeT = 0; viewW = worldW; resize(); arena.visible = false; arena.clear(); actors = {}; world.visible = true; focus.copy(hero.position); grace = 2.5; }
   const tween = (dur, fn, done) => new Promise(res => tweens.push({ t: 0, dur, fn, done: () => { done && done(); res(); } }));
   const anim = {
     async lunge(key, toKey) { const o = actors[key], t = actors[toKey]; if (!o) return; const from = o.userData.home, to = t ? from.clone().lerp(t.userData.home, 0.62) : from.clone().add(AX.clone().multiplyScalar(key.startsWith('e') ? -1.2 : 1.2));
@@ -239,6 +253,29 @@ export async function createView(canvas, skyEl, starsEl) {
       if (ok) { await tween(0.3, k => { s.scale.setScalar(2.9 + k * 3); s.material.opacity = 1 - k; }); o.visible = false; } else await tween(0.25, k => { o.scale.setScalar(0.05 + k * 0.95); s.material.opacity = 1 - k; });
       arena.remove(s); },
     flash(key) { const o = actors[key]; if (!o) return; return tween(0.3, k => { o.position.y = o.userData.home.y + Math.sin(k * Math.PI) * 0.6; }); },
+    shake(p = 0.35, t = 0.25) { shakeP = p; shakeT = t; },
+    // 镜头推近某个角色再拉回来
+    async focus(key, w = 8.2, dur = 0.35) { const o = actors[key]; if (!o) return; const from = focus.clone(), to = FOCUS0.clone().lerp(o.userData.home, 0.45); to.y = 1.4;
+      await tween(dur, k => { const e = 1 - (1 - k) * (1 - k); focus.lerpVectors(from, to, e); viewW = baseW + (w - baseW) * e; resize(); }); },
+    async unfocus(dur = 0.3) { const from = focus.clone(), w0 = viewW; await tween(dur, k => { focus.lerpVectors(from, FOCUS0, k); viewW = w0 + (baseW - w0) * k; resize(); }); },
+    // 法术飞弹：从施法者飞到目标
+    async bolt(fromKey, toKey, color, big = false) { const a = actors[fromKey], b = actors[toKey]; if (!a || !b) return; const p0 = a.userData.home.clone(), p1 = b.userData.home.clone(); p0.y += a.userData.height * 0.6; p1.y += b.userData.height * 0.5;
+      const s = glow(color, big ? 1.6 : 1.1, 1), core = glow(0xffffff, big ? 0.7 : 0.45, 0.9); arena.add(s, core); const trail = [];
+      await tween(0.32, k => { const p = new THREE.Vector3().lerpVectors(p0, p1, k); p.y += Math.sin(k * Math.PI) * 1.2; s.position.copy(p); core.position.copy(p);
+        if (trail.length < 9 && Math.random() < 0.8) { const t = glow(color, 0.6, 0.6); t.position.copy(p); arena.add(t); trail.push(t); }
+        trail.forEach(t => { t.material.opacity *= 0.86; t.scale.multiplyScalar(0.94); }); });
+      arena.remove(s, core); trail.forEach(t => arena.remove(t)); },
+    // 全体技：敌方脚下扩散的一圈
+    async wave(side, color) { const c = AX.clone().multiplyScalar(side === 'b' ? 3.2 : -3.2); const ring = glow(color, 1, 0.9); ring.position.copy(c); ring.position.y = 0.6; arena.add(ring);
+      const parts = []; for (let i = 0; i < 10; i++) { const g = glow(color, 0.5, 0.8, starTex); g.position.set(c.x + (Math.random() - 0.5) * 5, 0.4, c.z + (Math.random() - 0.5) * 5); arena.add(g); parts.push(g); }
+      await tween(0.45, k => { ring.scale.setScalar(1 + k * 9); ring.material.opacity = 0.9 * (1 - k); parts.forEach((g, i) => { g.position.y = 0.4 + k * (1.5 + i % 3); g.material.opacity = 0.8 * (1 - k); g.material.rotation = k * 4; }); });
+      arena.remove(ring); parts.forEach(g => arena.remove(g)); },
+    // 增益：脚下往上冒光点
+    async buff(key, color) { const o = actors[key]; if (!o) return; const parts = []; for (let i = 0; i < 6; i++) { const g = glow(color, 0.45, 0.9, starTex); const a = i / 6 * 6.28; g.position.set(o.userData.home.x + Math.cos(a) * 0.7, 0.2, o.userData.home.z + Math.sin(a) * 0.7); arena.add(g); parts.push(g); }
+      await tween(0.45, k => parts.forEach((g, i) => { g.position.y = 0.2 + k * o.userData.height * (1 + (i % 2) * 0.3); g.material.opacity = 0.9 * (1 - k * 0.9); })); parts.forEach(g => arena.remove(g)); },
+    // 首领倒地
+    async down(key) { const o = actors[key]; if (!o) return; const h = o.userData.home; await tween(0.35, k => { o.rotation.z = Math.sin(k * Math.PI / 2) * 0.5; o.position.y = h.y - k * 0.2; }); },
+    up(key) { const o = actors[key]; if (!o) return; o.rotation.z = 0; o.position.copy(o.userData.home); },
   };
   const v3 = new THREE.Vector3();
   function screenPos(key, top = true) { const o = actors[key]; if (!o) return null; v3.copy(o.userData.home); if (top) v3.y += o.userData.height + 0.35; else v3.y += o.userData.height * 0.5; v3.project(cam); return { x: (v3.x + 1) / 2 * innerWidth, y: (1 - v3.y) / 2 * innerHeight }; }
@@ -251,6 +288,7 @@ export async function createView(canvas, skyEl, starsEl) {
     for (const tw of tweens) { tw.t += dt; const k = Math.min(1, tw.t / tw.dur); tw.fn(k); if (k >= 1) tw.done(); }
     tweens = tweens.filter(tw => tw.t < tw.dur);
     cam.position.copy(focus).add(CAM_OFF); cam.lookAt(focus);
+    if (shakeT > 0) { shakeT -= dt; const a = shakeP * Math.max(0, shakeT) * 4; cam.position.x += (Math.random() - 0.5) * a; cam.position.y += (Math.random() - 0.5) * a; }
     sun.position.copy(focus).add(sunDir); sun.target.position.copy(focus);
     renderer.render(scene, cam);
   }
@@ -263,5 +301,5 @@ export async function createView(canvas, skyEl, starsEl) {
   }
   function setZoom(w, shift = 0) { viewW = worldW = w; shiftY = shift; resize(); }
   resize(); addEventListener('resize', resize);
-  return { loadZone, frame, tap, enterBattle, exitBattle, anim, screenPos, removeWild, setPet, setZoom, on: (k, f) => { cb[k] = f; }, get mode() { return mode; }, heroModelFor: makeActor };
+  return { loadZone, frame, tap, enterBattle, exitBattle, addActor, swapActor, anim, screenPos, removeWild, setPet, setZoom, on: (k, f) => { cb[k] = f; }, get mode() { return mode; }, heroModelFor: makeActor };
 }

@@ -1,23 +1,26 @@
-// 存档 v2：结构、新开档、从 v1 迁移、导出导入存档码。
+// 存档 v3：结构、新开档、从旧版迁移、导出导入存档码。
+// v2→v3（第二阶段）：两只伙伴出战、技能等级和技能点、战斗倍速。
 import { CLASSES, ZONES, MONSTERS } from '../data/index.js';
 import { heroStats, petStats } from './stats.js';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
+export const ACTIVE_MAX = 2; // 同时出战的伙伴
 export const PARTY_MAX = 6; // 随身伙伴上限
 
 export function newGame(cls, now = Date.now()) {
   const c = CLASSES[cls];
   const s = {
     v: SAVE_VERSION, created: new Date(now).toISOString(), lastSeen: new Date(now).toISOString(), nextUid: 1,
-    hero: { cls, lv: 1, xp: 0, attr: { ...c.base }, pts: 0, hp: 0, mp: 0, gear: { weapon: null, armor: null, charm: null } },
-    pets: [], party: [null],
+    hero: { cls, lv: 1, xp: 0, attr: { ...c.base }, pts: 0, sp: 0, skills: {}, hp: 0, mp: 0, gear: { weapon: null, armor: null, charm: null } },
+    pets: [], party: [null, null],
     bag: { gear: [], items: { pill: 3, dew: 1, seed: 0 } },
     wallet: { gold: 20 },
     world: { zone: 'home', unlocked: 1, bosses: {}, dex: {} },
     quests: { main: { i: 0, accepted: false, n: 0 }, done: [] },
     stats: { kills: 0 },
-    settings: { auto: false },
+    settings: { auto: false, speed: 1 },
   };
+  for (const [lv, id] of c.skills) if (lv <= 1) s.hero.skills[id] = 1;
   const st = heroStats(s); s.hero.hp = st.hp; s.hero.mp = st.mp;
   return s;
 }
@@ -25,7 +28,7 @@ export function newGame(cls, now = Date.now()) {
 export function addPet(s, id, lv) {
   const p = { uid: 'p' + s.nextUid++, id, lv, xp: 0, hp: 0 };
   p.hp = petStats(p).hp; s.pets.push(p);
-  if (!s.party[0]) s.party[0] = p.uid;
+  const free = s.party.indexOf(null); if (free >= 0) s.party[free] = p.uid;
   s.world.dex[id] = 'caught';
   return p;
 }
@@ -48,16 +51,28 @@ export function migrateV1(o) {
   s.quests.main = { i: o.quest || 0, accepted: !!o.qAccepted, n: o.qn || 0 };
   s.quests.done = (o.quest ? Array.from({ length: o.quest }, (_, i) => 'q' + (i + 1)) : []);
   s.stats.kills = o.kills || 0; s.settings.auto = !!o.autoBattle;
+  s.v = 2; delete s.hero.sp; delete s.hero.skills; s.party = [s.party[0]];
   return s;
 }
 function fixGear(g) { const { icon, ...rest } = g; return { plus: 0, ...rest }; }
 
-// 读档：接受 v1 或 v2 对象，返回可用的 v2，不认识就返回 null
+// v2 → v3：补技能等级（已学会的都算 1 级）和技能点（每升一级 1 点），出战位扩成两个
+export function migrateV2(o) {
+  const s = { ...o, v: 3 }, h = s.hero = { ...o.hero };
+  h.skills = {}; for (const [lv, id] of CLASSES[h.cls]?.skills || []) if (h.lv >= lv) h.skills[id] = 1;
+  h.sp = Math.max(0, h.lv - 1);
+  s.party = [o.party?.[0] || null, o.party?.[1] || null];
+  s.settings = { speed: 1, ...o.settings };
+  return s;
+}
+
+// 读档：接受 v1/v2/v3 对象，返回可用的 v3，不认识就返回 null
 export function load(o) {
   if (!o || typeof o !== 'object') return null;
-  let s = o.v === SAVE_VERSION ? o : (o.v === 1 || !o.v) && o.cls ? migrateV1(o) : null;
+  let s = o.v === SAVE_VERSION ? o : o.v === 2 ? migrateV2(o) : (o.v === 1 || !o.v) && o.cls ? migrateV2(migrateV1(o)) : null;
   if (!s || !CLASSES[s.hero?.cls] || !ZONES.some(z => z.id === s.world?.zone)) return null;
   s.pets = s.pets.filter(p => MONSTERS[p.id]);
+  s.party = s.party.map(u => (s.pets.some(p => p.uid === u) ? u : null));
   return s;
 }
 

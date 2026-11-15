@@ -3,17 +3,23 @@
   "none": "无",
   "grass": "草",
   "water": "水",
-  "fire": "火"
+  "fire": "火",
+  "star": "星",
+  "mist": "雾"
  },
  "beats": {
   "grass": "water",
   "water": "fire",
-  "fire": "grass"
+  "fire": "grass",
+  "star": "mist",
+  "mist": "star"
  },
  "colors": {
   "none": "#cfc8bd",
   "grass": "#7bcb5a",
   "water": "#56b8f0",
-  "fire": "#f57b45"
+  "fire": "#f57b45",
+  "star": "#f2bf3a",
+  "mist": "#9b8fc9"
  }
 }

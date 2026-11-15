@@ -7,8 +7,11 @@
   "atk": 0.8,
   "def": 0.7,
   "spd": 1.2,
-  "skill": null,
-  "desc": "圆滚滚的小鸟，看见什么都想啄一下。"
+  "desc": "圆滚滚的小鸟，看见什么都想啄一下。",
+  "skills": [
+   "peck"
+  ],
+  "fam": "chirp"
  },
  "mudpig": {
   "name": "泥泥猪",
@@ -18,8 +21,11 @@
   "atk": 0.9,
   "def": 1,
   "spd": 0.7,
-  "skill": "nap",
-  "desc": "在泥里打滚打出了一身硬壳。"
+  "desc": "在泥里打滚打出了一身硬壳。",
+  "skills": [
+   "nap"
+  ],
+  "fam": "pig"
  },
  "leafbug": {
   "name": "叶叶虫",
@@ -29,8 +35,12 @@
   "atk": 1,
   "def": 0.8,
   "spd": 0.9,
-  "skill": "leafCut",
-  "desc": "把自己吃过的叶子都记在身上的节里。"
+  "desc": "把自己吃过的叶子都记在身上的节里。",
+  "skills": [
+   "leafCut",
+   "spore"
+  ],
+  "fam": "bug"
  },
  "hopcube": {
   "name": "蹦蹦方",
@@ -40,21 +50,48 @@
   "atk": 1,
   "def": 0.8,
   "spd": 1.4,
-  "skill": "tackle",
-  "desc": "停不下来，连睡觉都在蹦。"
+  "desc": "停不下来，连睡觉都在蹦。",
+  "skills": [
+   "tackle"
+  ],
+  "fam": "hop"
  },
  "tusk": {
   "name": "獠牙大王",
   "model": "animal-hog",
   "el": "grass",
-  "hp": 4.2,
-  "atk": 1.25,
+  "hp": 3.4,
+  "atk": 1.05,
   "def": 1.1,
   "spd": 0.9,
-  "skill": "stomp",
   "boss": true,
   "scale": 1.7,
-  "desc": "青草坡的老大，脾气和牙一样硬。"
+  "desc": "青草坡的老大，脾气和牙一样硬。",
+  "skills": [
+   "stomp",
+   "tackle"
+  ],
+  "fam": "guard",
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "獠牙大王被惹恼了，叫来了帮手！",
+    "summon": [
+     "mudpig"
+    ],
+    "fx": [
+     "atkUp"
+    ]
+   },
+   {
+    "at": 0.25,
+    "text": "獠牙大王踏碎地面，长出了荆棘！",
+    "skills": [
+     "thornStomp",
+     "stomp"
+    ]
+   }
+  ]
  },
  "gnawer": {
   "name": "啃木匠",
@@ -64,8 +101,12 @@
   "atk": 1,
   "def": 1.2,
   "spd": 0.8,
-  "skill": "tackle",
-  "desc": "把整片林子都当成了自己的工地。"
+  "desc": "把整片林子都当成了自己的工地。",
+  "skills": [
+   "tackle",
+   "hide"
+  ],
+  "fam": "gnaw"
  },
  "pincer": {
   "name": "钳钳",
@@ -75,8 +116,12 @@
   "atk": 1.2,
   "def": 1.3,
   "spd": 0.8,
-  "skill": "bubble",
-  "desc": "横着走，夹人的时候倒是很直接。"
+  "desc": "横着走，夹人的时候倒是很直接。",
+  "skills": [
+   "bubble",
+   "hide"
+  ],
+  "fam": "pincer"
  },
  "bubfish": {
   "name": "泡泡鱼",
@@ -86,8 +131,11 @@
   "atk": 1.1,
   "def": 0.7,
   "spd": 1.3,
-  "skill": "bubble",
-  "desc": "离了水也能游，靠的是一肚子泡泡。"
+  "desc": "离了水也能游，靠的是一肚子泡泡。",
+  "skills": [
+   "bubble"
+  ],
+  "fam": "fish"
  },
  "prank": {
   "name": "捣蛋猴",
@@ -97,8 +145,11 @@
   "atk": 1.1,
   "def": 0.8,
   "spd": 1.5,
-  "skill": "roar",
-  "desc": "偷过所有旅人的午饭。"
+  "desc": "偷过所有旅人的午饭。",
+  "skills": [
+   "roar"
+  ],
+  "fam": "monkey"
  },
  "spout": {
   "name": "喷泉象",
@@ -108,10 +159,32 @@
   "atk": 1.3,
   "def": 1.2,
   "spd": 0.7,
-  "skill": "stomp",
   "boss": true,
   "scale": 1.8,
-  "desc": "溪水林的守林者，鼻子一甩就是一场雨。"
+  "desc": "溪水林的守林者，鼻子一甩就是一场雨。",
+  "skills": [
+   "trunkSpray",
+   "stomp"
+  ],
+  "fam": "guard",
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "喷泉象喷出水幕护住了自己。",
+    "shield": 0.25,
+    "summon": [
+     "bubfish"
+    ]
+   },
+   {
+    "at": 0.25,
+    "text": "喷泉象把整片地面变成了间歇泉！",
+    "skills": [
+     "geyser",
+     "trunkSpray"
+    ]
+   }
+  ]
  },
  "embertail": {
   "name": "火尾方",
@@ -121,8 +194,11 @@
   "atk": 1.2,
   "def": 0.8,
   "spd": 1.4,
-  "skill": "ember",
-  "desc": "尾巴尖上永远有一点没灭的火。"
+  "desc": "尾巴尖上永远有一点没灭的火。",
+  "skills": [
+   "ember"
+  ],
+  "fam": "foxfire"
  },
  "stripe": {
   "name": "斑斑虎",
@@ -132,8 +208,11 @@
   "atk": 1.3,
   "def": 0.9,
   "spd": 1.1,
-  "skill": "tackle",
-  "desc": "条纹是晒太阳晒出来的，它自己这么说。"
+  "desc": "条纹是晒太阳晒出来的，它自己这么说。",
+  "skills": [
+   "tackle"
+  ],
+  "fam": "tiger"
  },
  "echo": {
   "name": "学舌鸟",
@@ -143,8 +222,11 @@
   "atk": 1.1,
   "def": 0.7,
   "spd": 1.6,
-  "skill": "roar",
-  "desc": "会把你喊的招式名原样喊回来。"
+  "desc": "会把你喊的招式名原样喊回来。",
+  "skills": [
+   "mimic"
+  ],
+  "fam": "chirp"
  },
  "antler": {
   "name": "红叶鹿",
@@ -154,21 +236,49 @@
   "atk": 1,
   "def": 1,
   "spd": 1.2,
-  "skill": "leafCut",
-  "desc": "角上挂着去年的红叶，舍不得摘。"
+  "desc": "角上挂着去年的红叶，舍不得摘。",
+  "skills": [
+   "leafCut"
+  ],
+  "fam": "deer"
  },
  "mane": {
   "name": "烈鬃王",
   "model": "animal-lion",
   "el": "fire",
-  "hp": 5,
-  "atk": 1.4,
+  "hp": 7,
+  "atk": 1.1,
   "def": 1.1,
   "spd": 1.1,
-  "skill": "roar",
   "boss": true,
   "scale": 1.8,
-  "desc": "红叶谷的王，鬃毛像一圈落日。"
+  "desc": "红叶谷的王，鬃毛像一圈落日。",
+  "skills": [
+   "maneLash",
+   "roar"
+  ],
+  "fam": "guard",
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "烈鬃王的鬃毛烧得更旺了！",
+    "fx": [
+     "spdUp",
+     "atkUp"
+    ],
+    "summon": [
+     "embertail"
+    ]
+   },
+   {
+    "at": 0.25,
+    "text": "烈鬃王点燃了整座山谷！",
+    "skills": [
+     "wildfire",
+     "maneLash"
+    ]
+   }
+  ]
  },
  "slider": {
   "name": "滑滑鹅",
@@ -178,8 +288,12 @@
   "atk": 1.1,
   "def": 1,
   "spd": 1.3,
-  "skill": "bubble",
-  "desc": "走路靠滑，刹车靠撞。"
+  "desc": "走路靠滑，刹车靠撞。",
+  "skills": [
+   "bubble",
+   "frostBreath"
+  ],
+  "fam": "goose"
  },
  "snowbear": {
   "name": "雪团熊",
@@ -189,19 +303,27 @@
   "atk": 1.3,
   "def": 1.2,
   "spd": 0.7,
-  "skill": "stomp",
-  "desc": "睡着的时候和雪堆分不出来。"
+  "desc": "睡着的时候和雪堆分不出来。",
+  "skills": [
+   "stomp",
+   "frostBreath"
+  ],
+  "fam": "bear"
  },
  "inkball": {
   "name": "墨团",
   "model": "animal-panda",
-  "el": "grass",
+  "el": "mist",
   "hp": 1.4,
   "atk": 1.1,
   "def": 1.3,
   "spd": 0.6,
-  "skill": "nap",
-  "desc": "黑的地方是墨，白的地方也是墨，只是还没干。"
+  "desc": "黑的地方是墨，白的地方也是墨，只是还没干。",
+  "skills": [
+   "inkSplash",
+   "nap"
+  ],
+  "fam": "ink"
  },
  "dozer": {
   "name": "抱树懒",
@@ -211,20 +333,54 @@
   "atk": 0.9,
   "def": 1.4,
   "spd": 0.5,
-  "skill": "leafCut",
-  "desc": "一年里醒着的时间加起来不到一顿饭。"
+  "desc": "一年里醒着的时间加起来不到一顿饭。",
+  "skills": [
+   "lullaby",
+   "leafCut"
+  ],
+  "fam": "pig"
  },
  "starneck": {
   "name": "摘星兽",
   "model": "animal-giraffe",
-  "el": "none",
-  "hp": 6,
-  "atk": 1.5,
+  "el": "star",
+  "hp": 7,
+  "atk": 1.02,
   "def": 1.25,
   "spd": 1,
-  "skill": "stomp",
   "boss": true,
   "scale": 1.9,
-  "desc": "霜星岭顶上的巨兽，据说脖子够得着星星。"
+  "desc": "霜星岭顶上的巨兽，据说脖子够得着星星。",
+  "skills": [
+   "starGaze",
+   "stomp"
+  ],
+  "fam": "guard",
+  "phases": [
+   {
+    "at": 0.6,
+    "text": "摘星兽隐入雾中，变成了雾属性！",
+    "el": "mist",
+    "fx": [
+     "stealth"
+    ],
+    "skills": [
+     "mistVeil",
+     "stomp"
+    ],
+    "summon": [
+     "inkball"
+    ]
+   },
+   {
+    "at": 0.25,
+    "text": "摘星兽把星星全摘了下来！",
+    "el": "star",
+    "skills": [
+     "starfall",
+     "starGaze"
+    ]
+   }
+  ]
  }
 }

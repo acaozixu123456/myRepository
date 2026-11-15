@@ -1,0 +1,95 @@
+{
+ "atkUp": {
+  "name": "攻升",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "攻击和法术 +25%"
+ },
+ "defUp": {
+  "name": "防升",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "防御 +25%"
+ },
+ "spdUp": {
+  "name": "速升",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "速度 +25%"
+ },
+ "shield": {
+  "name": "护盾",
+  "kind": "buff",
+  "turns": 99,
+  "desc": "吸收伤害，打破为止"
+ },
+ "regen": {
+  "name": "回春",
+  "kind": "buff",
+  "turns": 3,
+  "desc": "每回合回 6% 生命"
+ },
+ "stealth": {
+  "name": "隐身",
+  "kind": "buff",
+  "turns": 1,
+  "desc": "不会被单体技能选中"
+ },
+ "defDown": {
+  "name": "破甲",
+  "kind": "debuff",
+  "turns": 3,
+  "desc": "防御 −30%"
+ },
+ "spdDown": {
+  "name": "减速",
+  "kind": "debuff",
+  "turns": 2,
+  "desc": "速度 −25%"
+ },
+ "burn": {
+  "name": "灼烧",
+  "kind": "ailment",
+  "turns": 3,
+  "desc": "每回合掉 5% 生命，最多叠 3 层"
+ },
+ "poison": {
+  "name": "中毒",
+  "kind": "ailment",
+  "turns": 4,
+  "desc": "每回合掉 4% 生命，受到治疗减半"
+ },
+ "freeze": {
+  "name": "冰冻",
+  "kind": "ailment",
+  "turns": 1,
+  "ctrl": true,
+  "desc": "跳过行动，受到火伤立即解除"
+ },
+ "sleep": {
+  "name": "睡眠",
+  "kind": "ailment",
+  "turns": 3,
+  "ctrl": true,
+  "desc": "跳过行动，挨打就醒"
+ },
+ "confuse": {
+  "name": "混乱",
+  "kind": "ailment",
+  "turns": 2,
+  "ctrl": true,
+  "desc": "40% 会打自己人"
+ },
+ "blind": {
+  "name": "致盲",
+  "kind": "ailment",
+  "turns": 2,
+  "desc": "命中 −40%"
+ },
+ "broken": {
+  "name": "倒地",
+  "kind": "debuff",
+  "turns": 1,
+  "desc": "跳过行动，受到伤害 +50%"
+ }
+}
