@@ -1,21 +1,24 @@
-// 旅途 · 第一段「暖光谷地」：入口。加载世界、道具、两匹马和骑手，接上界面、声音、画质和每帧循环。
+// 旅途 · 第一段「暖光谷地」：入口。加载世界、道具、几匹坐骑、旅人和翅膀，接上界面、声音、画质和每帧循环。
 import * as THREE from 'three';
 import { U, installGrade } from './world/atmo.js';
-import { SPOTS } from './world/route.js';
+import { ROAD, SPOTS } from './world/route.js';
 import { buildWorld, RES } from './world/world.js';
 import { buildBridge, buildWindmill, buildFences, buildCamp } from './world/props.js';
-import { makeHorseA, makeHorseB, makeRider, makeReins } from './actors/actors.js';
-import { CamRig, introShot } from './game/cam.js';
+import { makeHorseB, makeHorseA, loadAnimal, makeReins, MOUNT_INFO } from './actors/actors.js';
+import { makeTraveler } from './actors/traveler.js';
+import { makeWings } from './actors/wings.js';
+import { CamRig } from './game/cam.js';
 import { Sound } from './game/audio.js';
-import { Ride } from './game/ride.js';
+import { Journey, Colliders, GAITS } from './game/journey.js';
 import { Quality, TIERS } from './game/quality.js';
 import { initUI } from './game/ui.js';
 
 const P = new URLSearchParams(location.search);
-const SHOT = P.has('shot');   // 无头截图模式：?shot=1&s=路程&cam=travel|top|intro|side&horse=a|b&phase=view|camp&v=速度&sim=秒
+// 无头截图模式：?shot=1&place=地点|x=&z=&ry=朝向&mode=foot|ride|fly&mount=a|b|w|d&trav=m|f&v=速度&alt=高度&sim=秒&cam=travel|top|intro|side|front|close
+const SHOT = P.has('shot');
 if (SHOT) document.body.classList.add('shot');
 const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
-const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const MOUNT_ORDER = ['b', 'a', 'w', 'd'];
 
 installGrade();
 const canvas = document.getElementById('c');
@@ -48,7 +51,9 @@ function setSize() {
 addEventListener('resize', setSize);
 setSize();
 
-let W = null, ride = null, cam = null, sound = null, quality = null, windmill = null, playing = false;
+let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, playing = false;
+const travelers = {};          // m / f：选到哪个才加载哪个
+let travKey = P.get('trav') === 'f' ? 'f' : 'm';
 const focus = new THREE.Vector3();
 
 // ---------- 画质 ----------
@@ -63,7 +68,7 @@ function applyTier(tier) {
 }
 const showPerf = () => ui.perf(`${Math.round(quality.fps) || '--'} fps · ${quality.label}`);
 
-// 阴影跟着马走；把中心对齐到阴影贴图的像素格子，走动时阴影边不闪
+// 阴影跟着人走；把中心对齐到阴影贴图的像素格子，走动时阴影边不闪
 const _sx = new THREE.Vector3(), _sy = new THREE.Vector3(), _sz = new THREE.Vector3(), _sc = new THREE.Vector3();
 function placeSun(center) {
   const T = TIERS[quality.tier], texel = 2 * T.shadowR / T.shadow;
@@ -78,53 +83,74 @@ function placeSun(center) {
 // ---------- 界面回调 ----------
 let hintTimer = 0;
 const ui = initUI({
-  pickHorse: k => ride?.swap(k),
+  pickMount: k => {
+    if (!J || !J.mounts[k]) return;
+    if (!playing) { J.startWith(k); return; }
+    J.pickMount(k);
+  },
+  pickTraveler: k => { if (!playing) useTraveler(k); },
   go: () => start(),
   hold: on => {
-    if (!ride) return;
-    ride.holding = on;
+    if (!J) return;
+    J.holding = on;
     if (on && playing && !hintTimer) hintTimer = setTimeout(() => ui.hint(''), 1800);
   },
-  look: (dx, dy) => { if (!cam) return; cam.yawOff = clamp(cam.yawOff + dx * 2.4, -1.5, 1.5); cam.pitchOff = clamp(cam.pitchOff + dy * 3.2, -1.2, 3); cam.yawHold = 2.5; },
+  look: (dx, dy) => J?.look(dx, dy),
   zoom: () => cam?.zoomTarget ?? 0,
   setZoom: (z, done) => { if (!cam) return; cam.zoomTarget = z; if (done) ui.tool('bCam', z > 0.5); },
-  gait: i => { if (!ride) return; ride.gait = i; ui.gait(i); },
-  toggleAuto: () => { if (!ride) return; ride.auto = !ride.auto; ui.tool('bAuto', ride.auto); if (ride.auto) ui.hint(''); },
+  gait: i => { if (!J) return; J.gait = i; ui.gait(i); },
+  mode: m => { if (J && playing) J.setMode(m); },
+  action: t => { if (t === '坐下烤火') J?.sitAtCamp(); },
+  toggleAuto: () => { if (!J) return; J.auto = !J.auto; ui.tool('bAuto', J.auto); if (J.auto) ui.hint(''); },
   toggleCam: () => { if (!cam) return; cam.zoomTarget = cam.zoomTarget > 0.5 ? 0 : 1; ui.tool('bCam', cam.zoomTarget > 0.5); },
-  swapHorse: () => {
-    if (!ride?.swap()) return;
-    ui.setPick(ride.horse.kind);
-    ui.banner(ride.horse.name, ride.horse.kind === 'a' ? '免费素材马' : '自己捏的圆润小马', 2.6);
-  },
   toggleSound: () => { if (!sound) return; sound.setMuted(!sound.muted); ui.tool('bSound', !sound.muted); },
   cycleQuality: () => { if (!quality) return; quality.cycle(); showPerf(); },
-  again: swap => {
-    ui.summaryOff(); ui.fade(true);
-    setTimeout(() => {
-      if (swap) { ride.swap(); ui.setPick(ride.horse.kind); }
-      ride.restart(); quality.samples.length = 0;
-      ui.fade(false); ui.hint(ride.auto ? '' : '按住屏幕前进');
-    }, 800);
+  places: () => J ? J.places.map(p => ({ name: p.name, sub: p.sub, where: p.where, seen: J.visited.includes(p.id) })) : [],
+  again: restart => {
+    ui.summaryOff();
+    if (!restart) { J.standUp(); ui.hint('按住屏幕前进'); return; }
+    ui.fade(true);
+    setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.hint(J.auto ? '' : '按住屏幕前进'); }, 800);
   },
 });
 ui.tool('bSound', true);
 
+// 走法、步态名字和坐骑在界面上同步（切换要过渡一会儿，所以每帧看一下）
+let shownMode = '', shownMount = '', shownGait = -1;
+function syncUI() {
+  const m = J.uiMode, k = J.mountKey;
+  if (m !== shownMode || k !== shownMount) {
+    shownMode = m; shownMount = k;
+    ui.mode(m);
+    ui.gaitNames(m === 'ride' ? J.mount.gaitNames : GAITS[m].map(g => g.name));
+    ui.mountChanged(k);
+    shownGait = -1;
+  }
+  if (J.gait !== shownGait) { shownGait = J.gait; ui.gait(J.gait); }
+}
+
 function start() {
-  if (playing || !ride) return;
+  if (playing || !J) return;
   playing = true;
   sound.start();                    // 必须在点击里：iPhone 只允许这时候开声音
-  ui.playing(true); ride.begin();
+  ui.playing(true); J.begin();
   quality.recording = true;
   ui.hint('按住屏幕前进');
   wake();
 }
 
 function showSummary() {
-  const t = ride.rideT, m = Math.floor(t / 60), s = Math.round(t % 60);
-  const dist = Math.round(ride.stopS - SPOTS.start), st = quality.stats();
+  const t = J.travelT, m = Math.floor(t / 60), s = Math.round(t % 60), st = quality.stats();
+  const d = J.dist, parts = [];
+  if (d.foot > 20) parts.push(`走了 ${Math.round(d.foot)} 米`);
+  if (d.ride > 20) parts.push(`骑马 ${Math.round(d.ride)} 米`);
+  if (d.fly > 20) parts.push(`飞了 ${Math.round(d.fly)} 米`);
+  const seen = J.visited.map(id => J.places.find(p => p.id === id)?.name).filter(Boolean);
   ui.summary('今晚在山口扎营',
-    `${ride.horse.name}陪你走了 ${dist} 米，用了 ${m} 分 ${s} 秒。<br>过了溪上的木桥，看了山坡上的风车，<br>穿过林荫小道，在望远台回头看了看来路。` +
-    (st ? `<br><span class="perf">这一路平均 ${st.avg} fps，最卡的时候 ${st.low} fps（画质：${quality.label}）</span>` : ''));
+    `这一路 ${m} 分 ${s} 秒${parts.length ? '，' + parts.join('，') : ''}。<br>` +
+    (seen.length ? `到过：${seen.join('、')}。<br>` : '') +
+    (seen.length < J.places.length ? `还有 ${J.places.length - seen.length} 个地方没去，明天接着走吧。` : '谷地里的地方都去过了。') +
+    (st ? `<br><span class="perf">平均 ${st.avg} fps，最卡的时候 ${st.low} fps（画质：${quality.label}）</span>` : ''));
 }
 
 // ---------- 屏幕常亮、切后台 ----------
@@ -143,14 +169,15 @@ document.addEventListener('touchend', () => { if (sound?.ctx && sound.ctx.state 
 // ---------- 每帧 ----------
 function step(dt) {
   U.uTime.value += dt;
-  const kl = ui.keysLook();
-  if (kl) { cam.yawOff = clamp(cam.yawOff - kl * dt * 1.3, -1.5, 1.5); cam.yawHold = 1; }
-  ride.update(dt);
-  const hp = ride.horse.root.position, k = 7 * (1 - cam.zoom);
-  focus.set(hp.x + Math.sin(ride.yaw) * k, hp.y, hp.z + Math.cos(ride.yaw) * k);
+  J.keys(dt, ui.keysTurn(), ui.keysClimb());
+  J.update(dt);
+  // 植被和阴影围着人；俯视时往前挪一点
+  const k = 7 * (1 - cam.zoom);
+  focus.set(J.p.x + Math.sin(J.yaw) * k, J.mode === 'fly' ? J.p.y : J.p.y, J.p.z + Math.cos(J.yaw) * k);
   placeSun(focus);
   W.update(camera, focus, dt);
   windmill.userData.update(dt);
+  syncUI();
 }
 const clock = new THREE.Clock();
 function frame() {
@@ -161,107 +188,176 @@ function frame() {
   if (quality.frame(rdt)) showPerf();
 }
 
+// ---------- 旅人 ----------
+// 翅膀挂在上背（spine_03），按身体的方向摆正
+function attachWings(T) {
+  const sp = T.bones.spine_03;
+  T.root.position.set(0, 0, 0); T.root.quaternion.identity(); T.root.updateMatrixWorld(true);
+  const qb = sp.getWorldQuaternion(new THREE.Quaternion()), pb = sp.getWorldPosition(new THREE.Vector3()), sb = sp.getWorldScale(new THREE.Vector3());
+  sp.add(wings.group);
+  wings.group.quaternion.copy(qb).invert();
+  wings.group.position.copy(sp.worldToLocal(pb.clone().add(new THREE.Vector3(0, 0.04, -0.13))));
+  wings.base = 1 / sb.x;
+  wings.group.scale.setScalar(wings.base * 0.35);
+}
+async function loadTraveler(k) {
+  if (!travelers[k]) travelers[k] = makeTraveler(RES + `traveler-${k}.glb`);
+  return travelers[k];
+}
+async function useTraveler(k) {
+  if (k === travKey && J?.T === await travelers[k]) return;
+  travKey = k;
+  ui.busy('正在换人…');
+  try {
+    const T = await loadTraveler(k);
+    if (travKey !== k) return;
+    if (J && J.T !== T) { scene.remove(J.T.root); scene.add(T.root); attachWings(T); J.setTraveler(T); }
+  } catch (e) { console.warn('[j] traveler', e); }
+  ui.ready();
+}
+
 // ---------- 加载 ----------
 async function load() {
   const say = t => ui.loading(t);
   const q0 = P.get('q') || 'high';
+  // 先开始下载人和坐骑
+  const travP = loadTraveler(travKey);
+  const horseP = loadAnimal(RES + 'horseA.glb').catch(e => { console.warn('[j] horse', e); return null; });
+  const donkeyP = loadAnimal(RES + 'donkey.glb').catch(e => { console.warn('[j] donkey', e); return null; });
   W = await buildWorld(renderer, scene, q0, say, { yieldFn: nextFrame });
   say('正在搭桥、种栅栏…');
   await nextFrame();
   const bridge = buildBridge(W.land); scene.add(bridge.mesh);
   windmill = buildWindmill(W.land); scene.add(windmill);
-  scene.add(buildFences(W.land));
+  const fences = buildFences(W.land); scene.add(fences);
   const campP = buildCamp(W.land, RES);
-  const aP = makeHorseA(RES + 'horseA.glb').catch(e => { console.warn('[j] horseA', e); return null; });
-  const rP = makeRider(RES + 'rider.glb');
   say('正在牵马…');
   await nextFrame();
-  const horseB = makeHorseB();
-  const [camp, horseA, rider] = await Promise.all([campP, aP, rP]);
-  scene.add(camp, horseB.root, rider.root);
-  if (horseA) scene.add(horseA.root); else document.querySelector('#horsePick [data-h="a"]').disabled = true;
+  const [camp, horseG, donkeyG, T] = await Promise.all([campP, horseP, donkeyP, travP]);
+  const mounts = { b: makeHorseB(), a: null, w: null, d: null };
+  if (horseG) { mounts.a = makeHorseA(horseG, 'a'); mounts.w = makeHorseA(horseG, 'w'); }
+  if (donkeyG) mounts.d = makeHorseA(donkeyG, 'd');
+  scene.add(camp, T.root);
+  for (const M of Object.values(mounts)) if (M) scene.add(M.root);
+  ui.setMounts(MOUNT_ORDER.filter(k => mounts[k]).map(k => ({ key: k, name: MOUNT_INFO[k].name, desc: MOUNT_INFO[k].desc })));
+  wings = makeWings(); attachWings(T);
   const reins = makeReins(); scene.add(reins);
+  // 挡路的东西：树干、风车、营地、栅栏
+  const colliders = new Colliders();
+  for (const t of W.placed.trees) if (!t.far) { const pine = t.t === 'Pine_2'; colliders.addCircle(t.x, t.z, (pine ? 0.32 : 0.4) * t.s, 7 * t.s, (pine ? 1.7 : 0.75) * t.s); }
+  colliders.addCircle(62, -118, 2.5, 11);
+  for (const [x, z, r] of camp.userData.blocks) colliders.addCircle(x, z, r, 2);
+  for (const [ax, az, bx, bz] of fences.userData.segs) colliders.addSeg(ax, az, bx, bz, 0.08, 1.2);
+  for (const [x, z, r] of fences.userData.posts) colliders.addCircle(x, z, r, 2);
   cam = new CamRig(camera, (x, z) => W.land.height(x, z));
+  cam.blocker = (ax, az, bx, bz) => colliders.firstHit(ax, az, bx, bz);
   sound = new Sound(RES);
   quality = new Quality(applyTier, q0);
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
-  ride = new Ride({ land: W.land, bridge, camp, horses: { a: horseA, b: horseB }, rider, reins, cam, sound, ui, camera, sun, hemi });
-  ride.onCamp = showSummary;
-  // 先跑几步让马、镜头和植被就位，再提前编译着色器（免得一开始卡一下）
+  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders });
+  J.onCamp = showSummary;
+  const k0 = P.get('mount'); if (k0 && mounts[k0]) J.startWith(k0);
+  ui.setPick(J.mountKey);
+  for (const b of document.querySelectorAll('#whoPick button')) b.classList.toggle('on', b.dataset.t === travKey);
+  // 先跑几步让人、马、镜头和植被就位，再提前编译着色器（免得一开始卡一下）
   for (let i = 0; i < 6; i++) step(1 / 30);
   W.update(camera, focus, 0, true);
   say('正在准备画面…');
+  wings.group.visible = true;    // 翅膀的着色器也提前编译
   try { await renderer.compileAsync(scene, camera); } catch { renderer.compile(scene, camera); }
+  wings.group.visible = false;
 }
 
 // 截图模式：直接摆到指定位置，模拟几秒，渲染三帧
 function shotSetup() {
   document.body.classList.add('playing');
   if (P.get('hud') === '0') document.getElementById('hud').style.display = 'none';
-  const mode = P.get('cam') || 'travel';
-  if (P.get('horse') === 'a') ride.swap('a');
-  if (mode !== 'intro') { ride.begin(); cam.shot = null; }
-  ride.s = +(P.get('s') || SPOTS.start); ride.yaw = null; cam.inited = false;
+  const view = P.get('cam') || 'travel';
+  if (view !== 'intro') { playing = true; J.begin(); cam.shot = null; }
+  // 位置：某个地点、坐标，或者路上的路程 s
+  const pl = P.get('place') && J.places.find(p => p.id === P.get('place'));
+  let x = J.p.x, z = J.p.z, yaw = J.yaw;
+  if (pl && pl.x !== undefined) { x = pl.x; z = pl.z; }
+  if (P.has('s')) { const p = ROAD.at(+P.get('s'), {}); x = p.x; z = p.z; yaw = Math.atan2(p.tx, p.tz); }
+  if (P.has('x')) x = +P.get('x'); if (P.has('z')) z = +P.get('z');
+  if (P.has('ry')) yaw = +P.get('ry') * Math.PI / 180;
+  const mode = P.get('mode') || 'ride';
+  J.teleport(x, z, yaw, mode, +(P.get('alt') || 30));
   const v = +(P.get('v') || 0);
-  if (v) { ride.holding = true; ride.gait = v > 2.5 ? 2 : v > 1.4 ? 1 : 0; }
-  if (mode === 'top') cam.zoom = cam.zoomTarget = 1;
-  if (P.get('phase') === 'view') { ride.s = SPOTS.view - 3; ride.holding = true; }
-  if (P.get('phase') === 'camp') { ride.s = ride.stopS - 0.4; ride.holding = true; ride.viewDone = true; }
-  if (P.get('auto')) ride.auto = true;
+  if (v) {
+    J.holding = true;
+    const list = mode === 'ride' ? J.mount.gaits : GAITS[mode].map(g => g.v);
+    J.gait = list.findIndex(g => g >= v - 0.01); if (J.gait < 0) J.gait = 2;
+  }
+  if (P.get('act') === 'takeoff') J.setMode('fly');
+  if (P.get('act') === 'land') J.setMode('foot');
+  if (P.get('act') === 'dismount') J.setMode('foot');
+  if (P.get('act') === 'call') { J.setMode('foot'); }
+  if (P.get('act') === 'sit') J.doSit();
+  if (view === 'top') cam.zoom = cam.zoomTarget = 1;
+  if (P.get('auto')) J.auto = true;
   if (P.has('yaw')) { cam.yawOff = +P.get('yaw'); cam.yawHold = 1e9; }
-  if (P.has('dusk')) { ride.applyDusk(+P.get('dusk')); }
+  if (P.has('pitch')) { cam.pitchOff = +P.get('pitch'); cam.pitchHold = 1e9; }
+  if (P.has('dusk')) { J.travelT = +P.get('dusk') * 600; J.dusk = +P.get('dusk'); J.applyDusk(J.dusk); }
   const sim = +(P.get('sim') || 2.5);
-  for (let t = 0; t < sim; t += 1 / 30) step(1 / 30);
+  const act2 = P.get('act2'), at2 = +(P.get('at2') || 1);
+  let did2 = false;
+  // strip=0.5,1,2：在这几个时刻各拍一张，拼成一张图（看动作过程）
+  const strip = P.get('strip') ? P.get('strip').split(',').map(Number) : null;
+  let sc = null, sctx = null, si = 0;
+  if (strip) {
+    sc = document.createElement('canvas'); sc.width = innerWidth; sc.height = innerHeight;
+    Object.assign(sc.style, { position: 'fixed', left: 0, top: 0, width: '100%', height: '100%', zIndex: 99 });
+    document.body.appendChild(sc); sctx = sc.getContext('2d');
+  }
+  const cols = strip ? Math.ceil(Math.sqrt(strip.length)) : 1, rows = strip ? Math.ceil(strip.length / cols) : 1;
+  const end = strip ? Math.max(...strip) + 1e-3 : sim;
+  for (let t = 0; t < end; t += 1 / 30) {
+    if (act2 && !did2 && t >= at2) { did2 = true; if (act2 === 'release') J.holding = false; else if (act2.startsWith('mount:')) J.pickMount(act2.slice(6)); else J.setMode(act2); }
+    step(1 / 30);
+    if (strip && si < strip.length && t + 1 / 30 >= strip[si]) {
+      W.update(camera, focus, 0, true); renderer.render(scene, camera);
+      const w = innerWidth / cols, h = innerHeight / rows, x = (si % cols) * w, y = Math.floor(si / cols) * h;
+      sctx.drawImage(renderer.domElement, x, y, w, h);
+      sctx.fillStyle = '#fff'; sctx.font = '14px sans-serif'; sctx.fillText(`${strip[si]}s ${J.mode}${J.trans ? '/' + J.trans.kind : ''} y=${(J.alt || 0).toFixed(1)}`, x + 6, y + 18);
+      si++;
+    }
+  }
   W.update(camera, focus, 0, true);
   if (P.has('bench')) {   // 测 CPU：每帧逻辑、植被刷新各要多久
     let t0 = performance.now(); for (let i = 0; i < 60; i++) step(1 / 60); const stepMs = (performance.now() - t0) / 60;
     t0 = performance.now(); for (let i = 0; i < 10; i++) W.update(camera, focus, 0, true); const layerMs = (performance.now() - t0) / 10;
-    t0 = performance.now(); for (let i = 0; i < 60; i++) ride.update(1 / 60); const rideMs = (performance.now() - t0) / 60;
-    const per = {};
-    for (const L of W.layers) for (const m of L.meshes) { const g = m.geometry, t = (g.index ? g.index.count : g.attributes.position.count) / 3; per[L.name.replace(/:.*/, '')] = (per[L.name.replace(/:.*/, '')] || 0) + Math.round(m.count * t / 1000); }
-    window.__bench = { stepMs: +stepMs.toFixed(2), layerMs: +layerMs.toFixed(2), rideMs: +rideMs.toFixed(2), ktris: per };
+    t0 = performance.now(); for (let i = 0; i < 60; i++) J.update(1 / 60); const jMs = (performance.now() - t0) / 60;
+    window.__bench = { stepMs: +stepMs.toFixed(2), layerMs: +layerMs.toFixed(2), journeyMs: +jMs.toFixed(2) };
   }
-  if (mode === 'side' || mode === 'front' || mode === 'close') {
-    const hp = ride.horse.root.position, a = ride.yaw, f = new THREE.Vector3(Math.sin(a), 0, Math.cos(a)), r = new THREE.Vector3(-f.z, 0, f.x);
-    const d = mode === 'close' ? 2.6 : 3.6;
-    if (mode === 'front') camera.position.copy(hp).addScaledVector(f, d).addScaledVector(r, 1.2).add(new THREE.Vector3(0, 1.3, 0));
-    else camera.position.copy(hp).addScaledVector(r, mode === 'close' ? -d : d).addScaledVector(f, 0.2).add(new THREE.Vector3(0, 1.25, 0));
-    camera.lookAt(hp.x, hp.y + 0.95, hp.z); camera.updateMatrixWorld();
+  // 特写机位：从旁边、前面看人（和坐骑）
+  if (view === 'side' || view === 'front' || view === 'close' || view === 'back') {
+    const hp = J.T.root.position.clone(); if (J.mode === 'fly') hp.copy(J.p);
+    const a = J.yaw, f = new THREE.Vector3(Math.sin(a), 0, Math.cos(a)), r = new THREE.Vector3(-f.z, 0, f.x);
+    const d = +(P.get('d') || (view === 'close' ? 2.6 : 3.8)), up = J.mode === 'ride' ? 1.25 : 1.0;
+    if (view === 'front') camera.position.copy(hp).addScaledVector(f, d).addScaledVector(r, 1.2).add(new THREE.Vector3(0, up + 0.2, 0));
+    else if (view === 'back') camera.position.copy(hp).addScaledVector(f, -d).addScaledVector(r, 0.8).add(new THREE.Vector3(0, up + 0.5, 0));
+    else camera.position.copy(hp).addScaledVector(r, view === 'close' ? -d : d).addScaledVector(f, 0.2).add(new THREE.Vector3(0, up, 0));
+    camera.lookAt(hp.x, hp.y + (J.mode === 'fly' ? 0 : up - 0.3), hp.z); camera.updateMatrixWorld();
   }
-  if (mode === 'sit') {
-    const c = ride.camp.userData.seat, f = ride.camp.userData.fireAt;
+  if (view === 'sit') {
+    const c = J.camp.userData.seat, f = J.camp.userData.fireAt;
     const d = new THREE.Vector3().subVectors(f, c).setY(0).normalize(), r = new THREE.Vector3(-d.z, 0, d.x);
     camera.position.copy(c).addScaledVector(d, 1.6).addScaledVector(r, 1.4).add(new THREE.Vector3(0, 1.0, 0));
     camera.lookAt(c.x, c.y + 0.45, c.z); camera.updateMatrixWorld();
-  }
-  // 调试：从一个点往六个方向看（grid=view 在观景台，grid=camp 绕篝火）
-  const grid = P.get('grid');
-  if (grid) {
-    const c = grid === 'camp' ? ride.camp.userData.fireAt.clone() : ride.horse.root.position.clone();
-    const R0 = +(P.get('r') || (grid === 'camp' ? 7 : 0)), hgt = +(P.get('h') || 2.5);
-    const sz = new THREE.Vector2(); renderer.getSize(sz);
-    const cols = 3, rows = 2, w = sz.x / cols, h = sz.y / rows;
-    camera.aspect = w / h; camera.fov = +(P.get('fov') || 60); camera.updateProjectionMatrix();
-    renderer.setScissorTest(true);
-    for (let i = 0; i < 6; i++) {
-      const a = (i * 60 + +(P.get('a0') || 0)) * Math.PI / 180, d = new THREE.Vector3(Math.sin(a), 0, -Math.cos(a));
-      if (grid === 'camp') { camera.position.copy(c).addScaledVector(d, -R0).add(new THREE.Vector3(0, hgt, 0)); camera.lookAt(c.x, c.y + 0.9, c.z); }
-      else { camera.position.copy(c).add(new THREE.Vector3(0, hgt, 0)); camera.lookAt(camera.position.clone().add(d.clone().multiplyScalar(10)).add(new THREE.Vector3(0, -0.8, 0))); }
-      camera.updateMatrixWorld();
-      U.uShadowCenter.value.copy(camera.position); W.update(camera, camera.position, 0, true);
-      const x = (i % cols) * w, y = sz.y - (Math.floor(i / cols) + 1) * h;
-      renderer.setViewport(x, y, w, h); renderer.setScissor(x, y, w, h); renderer.render(scene, camera);
-    }
-    window.__ready = true; return;
   }
   let n = 0;
   const one = () => {
     renderer.render(scene, camera);
     if (++n < 3) requestAnimationFrame(one);
-    else { const V = o => { const v = new THREE.Vector3(); o.getWorldPosition(v); return v.toArray().map(x => +x.toFixed(2)); };
-      window.__info = { bench: window.__bench, calls: renderer.info.render.calls, tris: renderer.info.render.triangles, s: +ride.s.toFixed(1), phase: ride.phase,
-        horse: V(ride.horse.root), seat: V(ride.horse.seat), bits: ride.horse.bit.map(V), hands: [V(ride.rider.bones['hand.l']), V(ride.rider.bones['hand.r'])], rider: V(ride.rider.root) }; window.__ready = true; }
+    else {
+      const V = o => { const v = new THREE.Vector3(); o.getWorldPosition(v); return v.toArray().map(x => +x.toFixed(2)); };
+      window.__info = { flora: { trees: W.stats.trees, small: Object.values(W.stats.small).reduce((a, b) => a + b, 0), tufts: W.placed.tufts.reduce((a, t) => a + t.length / 8, 0) }, bench: window.__bench, calls: renderer.info.render.calls, tris: renderer.info.render.triangles, mode: J.mode, trans: J.trans?.kind || null,
+        p: J.p.toArray().map(x => +x.toFixed(2)), yaw: +J.yaw.toFixed(2), speed: +J.speed.toFixed(2), alt: +(J.alt || 0).toFixed(1), mount: J.mountKey,
+        mountAt: J.mount ? V(J.mount.root) : null, pelvis: J.T.pelvis(new THREE.Vector3()).toArray().map(x => +x.toFixed(2)), visited: J.visited, cam: camera.position.toArray().map(x => +x.toFixed(1)) };
+      window.__ready = true;
+    }
   };
   one();
 }

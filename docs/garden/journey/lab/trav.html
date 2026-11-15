@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>旅人姿势</title>
+<style>html,body{margin:0;background:#7f8c8d;overflow:hidden}canvas{display:block}#t{position:fixed;left:6px;top:4px;font:12px sans-serif;color:#fff;text-shadow:0 1px 2px #000}</style>
+</head>
+<body>
+<div id="t"></div>
+<script type="module">
+// 开发用：看旅人在游戏里的几种姿势（用 traveler.js，和游戏里一样）。?t=m|f &pose=ride|fly|loco|sit &v=速度 &sim=秒 &views=front,side,back,q &wings=1
+import * as THREE from 'three';
+import { makeTraveler } from '../src/actors/traveler.js';
+import { makeWings } from '../src/actors/wings.js';
+const P = new URLSearchParams(location.search);
+const views = (P.get('views') || 'front,side,back,q').split(',');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.setScissorTest(true);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#9fb3c4');
+scene.add(new THREE.HemisphereLight('#dfe8ff', '#6a5a40', 1.6));
+const sun = new THREE.DirectionalLight('#ffe2c0', 2.6); sun.position.set(3, 5, 4); scene.add(sun);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(3, 32), new THREE.MeshLambertMaterial({ color: '#6f7d4f' })); ground.rotation.x = -Math.PI / 2; scene.add(ground);
+const T = await makeTraveler('../../public/journey/res/traveler-' + (P.get('t') || 'm') + '.glb');
+scene.add(T.root);
+const pose = P.get('pose') || 'ride';
+T.set(pose, 50);
+const pitch = +(P.get('pitch') || 70) * Math.PI / 180;
+let W = null;
+if (P.get('wings')) {
+  W = makeWings();
+  const sp = T.bones.spine_03; T.root.updateMatrixWorld(true);
+  const qb = sp.getWorldQuaternion(new THREE.Quaternion()), pb = sp.getWorldPosition(new THREE.Vector3()), sb = sp.getWorldScale(new THREE.Vector3());
+  sp.add(W.group); W.group.quaternion.copy(qb).invert();
+  W.group.position.copy(sp.worldToLocal(pb.clone().add(new THREE.Vector3(0, 0.04, -0.13)))); W.base = 1 / sb.x;
+  W.show(true);
+}
+if (pose === 'fly') T.root.rotation.set(pitch, 0, 0, 'YXZ');
+const sim = +(P.get('sim') || 2), v = +(P.get('v') || 0), flap = +(P.get('flap') || 0);
+for (let t = 0; t < sim; t += 1 / 30) {
+  T.update(1 / 30, { speed: v, ride: { lean: 0.05, spread: 1 }, fly: { pitch, bank: 0, flap } });
+  W?.update(1 / 30, { flap, glide: !flap });
+}
+if (pose === 'fly') { T.root.updateMatrixWorld(true); const p = T.pelvis(new THREE.Vector3()); T.root.position.y += 1.0 - p.y; }
+T.root.updateMatrixWorld(true);
+const box = new THREE.Box3().setFromObject(T.root);
+const sph = box.getBoundingSphere(new THREE.Sphere()), H = Math.max(1.2, sph.radius * 2 * +(P.get('zoom') || 1)), cy = sph.center.y;
+const cam = new THREE.PerspectiveCamera(30, 1, 0.05, 100);
+const dirs = { front: [0, 0, 1], side: [-1, 0, 0], right: [-1, 0, 0], left: [1, 0, 0], back: [0, 0, -1], q: [0.8, 0.25, 0.9], top: [0, 1, 0.01], fq: [-0.6, 0.15, 1], under: [0, -1, 0.01] };
+const n = views.length, cols = n > 2 ? 2 : n, rows = Math.ceil(n / cols);
+const Wd = innerWidth / cols, Hh = innerHeight / rows;
+views.forEach((vw, i) => {
+  const d = new THREE.Vector3(...(dirs[vw] || dirs.front)).normalize();
+  cam.aspect = Wd / Hh; cam.updateProjectionMatrix();
+  const dist = H * 1.05 / Math.tan(THREE.MathUtils.degToRad(15)) / 2;
+  cam.position.set(sph.center.x, cy, sph.center.z).addScaledVector(d, dist); cam.lookAt(sph.center.x, cy, sph.center.z);
+  const x = (i % cols) * Wd, y = innerHeight - (Math.floor(i / cols) + 1) * Hh;
+  renderer.setViewport(x, y, Wd, Hh); renderer.setScissor(x, y, Wd, Hh);
+  renderer.render(scene, cam);
+});
+document.getElementById('t').textContent = pose + ' ' + views.join(',');
+window.__info = { w: T.w }; window.__ready = true;
+</script>
+</body>
+</html>

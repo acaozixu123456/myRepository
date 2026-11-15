@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>角色检查</title>
+<style>html,body{margin:0;background:#7f8c8d;overflow:hidden}canvas{display:block}#t{position:fixed;left:6px;top:4px;font:12px sans-serif;color:#fff;text-shadow:0 1px 2px #000}</style>
+</head>
+<body>
+<div id="t"></div>
+<script type="module">
+// 开发用：看角色模型和动作。?f=模型 &anim=动作库 &clip=动作名 &t=秒 &views=front,side,back,q
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
+const P = new URLSearchParams(location.search);
+const f = P.get('f') || 'tmp/Male_Ranger.gltf';
+const views = (P.get('views') || 'front,side,back,q').split(',');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.setScissorTest(true);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#9fb3c4');
+scene.add(new THREE.HemisphereLight('#dfe8ff', '#6a5a40', 1.6));
+const sun = new THREE.DirectionalLight('#ffe2c0', 2.6); sun.position.set(3, 5, 4); scene.add(sun);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(3, 32), new THREE.MeshLambertMaterial({ color: '#6f7d4f' })); ground.rotation.x = -Math.PI / 2; scene.add(ground);
+const L = new GLTFLoader();
+const g = await L.loadAsync(f);
+const root = g.scene; scene.add(root);
+if (P.get('s')) root.scale.setScalar(+P.get('s'));
+if (P.get('crease')) root.traverse(o => { if (o.isMesh) o.geometry = toCreasedNormals(o.geometry, +P.get('crease') * Math.PI / 180); });
+let mixer = null;
+const info = { meshes: [], bones: 0 };
+root.traverse(o => { if (o.isMesh) { info.meshes.push(o.name + ':' + o.geometry.attributes.position.count); } if (o.isBone) info.bones++; });
+if (P.get('anim')) {
+  const a = await L.loadAsync(P.get('anim'));
+  const clip = a.animations.find(c => c.name === (P.get('clip') || 'Idle_Loop')) || a.animations[0];
+  mixer = new THREE.AnimationMixer(root);
+  mixer.clipAction(clip).play();
+  mixer.update(+(P.get('t') || 0.4));
+}
+root.updateMatrixWorld(true);
+const box = new THREE.Box3().setFromObject(root);
+info.box = [box.min.toArray().map(v => +v.toFixed(3)), box.max.toArray().map(v => +v.toFixed(3))];
+const H = box.max.y - box.min.y, cy = box.min.y + H * (+(P.get('cy') || 0.55)), zoom = +(P.get('zoom') || 1);
+const cam = new THREE.PerspectiveCamera(30, 1, 0.05, 100);
+const dirs = { front: [0, 0, 1], side: [1, 0, 0], back: [0, 0, -1], q: [0.8, 0.25, 0.9], left: [-1, 0, 0], top: [0, 1, 0.01], fq: [-0.6, 0.15, 1] };
+const n = views.length, cols = n > 2 ? 2 : n, rows = Math.ceil(n / cols);
+const W = innerWidth / cols, Hh = innerHeight / rows;
+views.forEach((v, i) => {
+  const d = new THREE.Vector3(...(dirs[v] || dirs.front)).normalize();
+  cam.aspect = W / Hh; cam.updateProjectionMatrix();
+  const dist = H * 1.15 / Math.tan(THREE.MathUtils.degToRad(15)) / 2 / zoom;
+  cam.position.set(0, cy, 0).addScaledVector(d, dist); cam.lookAt(0, cy, 0);
+  const x = (i % cols) * W, y = innerHeight - (Math.floor(i / cols) + 1) * Hh;
+  renderer.setViewport(x, y, W, Hh); renderer.setScissor(x, y, W, Hh);
+  renderer.render(scene, cam);
+});
+document.getElementById('t').textContent = f + ' ' + (P.get('clip') || '');
+window.__info = info; window.__ready = true;
+</script>
+</body>
+</html>

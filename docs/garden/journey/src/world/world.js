@@ -62,8 +62,12 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
     if (name.startsWith('Bush')) return p.mat === 'flowers' ? mats.bushFlower : mats.bushLeaf;
     return mats[p.mat];
   };
+  // 花的变色版：把花瓣的贴图坐标挪到图集里另一朵花上（名字后面带 @y 黄、@p 杏色、@r 红）
+  const UVSHIFT = { y: [0.05, -0.566], p: [-0.537, 0], r: [-0.303, -0.273] };
+  const shifted = (geo, [du, dv]) => { const g = geo.clone(), uv = g.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) + du, uv.getY(i) + dv); return g; };
   for (const [name, items] of Object.entries(placed.small)) {
-    const parts = models[name].parts.map(p => ({ geo: p.geo, mat: smallMat(name)(p) }));
+    const [base, vr] = name.split('@');
+    const parts = models[base].parts.map(p => ({ geo: vr && p.mat === 'flowers' ? shifted(p.geo, UVSHIFT[vr]) : p.geo, mat: smallMat(base)(p) }));
     const rad = name.startsWith('Bush') ? r.bush + 4 : name.startsWith('Rock') ? r.rock + 4 : r.small + 4;
     W.layers.push(new ScatterLayer(name, parts, items, { radius: rad, cap: 5000 }));
   }
