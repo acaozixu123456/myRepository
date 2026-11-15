@@ -54,15 +54,15 @@ export async function floraMaterials(base, fadeU) {
     patch(m, o);
     M[key] = m;
   };
-  const near = { uniforms: { uFadeR: fadeU.trees } };
+  const near = { seeThrough: true, uniforms: { uFadeR: fadeU.trees } };
   mk('leaf', tex('leaf.png'), { wind: 'tree', gobo: false, sss: 0.55, fadeOut: true, ...near }, { alphaTest: 0.42, side: THREE.DoubleSide });
   mk('pine', tex('pine.png'), { wind: 'tree', gobo: false, sss: 0.35, fadeOut: true, ...near }, { alphaTest: 0.42, side: THREE.DoubleSide });
   mk('bark', tex('bark.jpg'), { wind: 'tree', gobo: false, fadeOut: true, ...near });
   // 灌木：和树共用叶子贴图，但不淡出（它们有自己的显示半径）
   M.bushLeaf = new THREE.MeshLambertMaterial({ map: M.leaf.map, alphaTest: 0.42, side: THREE.DoubleSide });
-  patch(M.bushLeaf, { wind: 'grass', gobo: true, sss: 0.45, fadeOut: true, uniforms: { uFadeR: fadeU.bush } });
+  patch(M.bushLeaf, { wind: 'grass', gobo: true, sss: 0.45, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
   M.bushFlower = new THREE.MeshLambertMaterial({ map: tex('flowers.png'), alphaTest: 0.5, side: THREE.DoubleSide });
-  patch(M.bushFlower, { wind: 'grass', gobo: true, fadeOut: true, uniforms: { uFadeR: fadeU.bush } });
+  patch(M.bushFlower, { wind: 'grass', gobo: true, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
   const small = { uniforms: { uFadeR: fadeU.small } };
   mk('atlas', tex('atlas.png'), { wind: 'grass', gobo: true, sss: 0.4, fadeOut: true, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
   mk('flowers', M.bushFlower.map, { wind: 'grass', gobo: true, sss: 0.3, fadeOut: true, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
@@ -73,6 +73,8 @@ export async function floraMaterials(base, fadeU) {
   mk('pebble', tex('pebble.jpg'), { gobo: true, fadeOut: true, ...small });
   // 这套石头贴图偏暗偏绿，提亮成暖灰
   M.bark.color.setRGB(1.2, 1.1, 1.02);
+  // 松针背光时几乎是黑的：加一点自发光（按贴图本身的颜色）
+  M.pine.emissive.setScalar(0.1); M.pine.emissiveMap = M.pine.map;
   return M;
 }
 
@@ -160,7 +162,11 @@ export function placeFlora(land, farHeight, quality) {
   const meadowK = (x, z) => sstep(MEADOW.r, MEADOW.r * 0.6, Math.hypot(x - MEADOW.x, z - MEADOW.z));
   const clear = (x, z) => Math.hypot(x - camp.x - 2, z - camp.z + 3) > 17 && Math.hypot(x - view.x + 4, z - view.z) > 9 && Math.hypot(x - 62, z + 118) > 13 && Math.hypot(x - bridge.x, z - bridge.z) > 13
     && Math.hypot(x - MEADOW.x, z - MEADOW.z) > MEADOW.r - 4 && Math.hypot(x - SHOAL.x, z - SHOAL.z) > 10;
-  const addTree = (t, x, z, s, minD = 4.2) => {
+  // 西岭松林只种自己的树（别的步骤不往里塞），林子中间留一块空地
+  const GROVE = { x: -150, z: -165 };
+  const inGrove = (x, z) => Math.hypot((x - GROVE.x) / 1.2, z - GROVE.z) < 40;
+  const addTree = (t, x, z, s, minD = 4.2, grove = false) => {
+    if (!grove && inGrove(x, z)) return false;
     if (!land.inside(x, z) || land.roadDist(x, z) < 3.4 || shore(x, z) < 1.5 || !clear(x, z) || !okSpace(x, z, minD)) return false;
     trees.push({ t, x, z, s, ry: R() * 6.283, y: land.heightExact(x, z) - 0.06 }); mark(x, z); return true;
   };
@@ -175,10 +181,11 @@ export function placeFlora(land, farHeight, quality) {
   // 2) 观景台旁边一棵大树；花田上坡也有一棵
   addTree('CommonTree_1', view.x - 1.5, view.z + 5.5, 1.3, 2);
   { const x = MEADOW.x + 14, z = MEADOW.z - 12; trees.push({ t: 'CommonTree_1', x, z, s: 1.45, ry: 1.1, y: land.heightExact(x, z) - 0.06 }); mark(x, z); }
-  // 2b) 西岭松林：溪西边的山坡上一片密密的松树
-  for (let i = 0; i < 160; i++) {
-    const a = R() * 6.283, d = Math.sqrt(R()) * 34, x = -150 + Math.cos(a) * d * 1.2, z = -165 + Math.sin(a) * d;
-    addTree(R() < 0.88 ? 'Pine_2' : decid(), x, z, 1.05 + R() * 0.55, 6.2);   // 留出空隙，林子里有光斑
+  // 2b) 西岭松林：溪西边山坡上的松树林。松树下面的枝子很宽（半径三米多），树要隔开八九米人和马才走得过去
+  for (let i = 0; i < 260; i++) {
+    const a = R() * 6.283, d = 7 + Math.sqrt(R()) * 31, x = GROVE.x + Math.cos(a) * d * 1.2, z = GROVE.z + Math.sin(a) * d;
+    const pine = R() < 0.85;
+    addTree(pine ? 'Pine_2' : 'CommonTree_3', x, z, pine ? 1.0 + R() * 0.5 : 0.95 + R() * 0.3, d < 14 ? 9.5 : 8.4, true);
   }
   // 3) 溪边的树
   for (let s = 0; s < STREAM.length; s += 7) {

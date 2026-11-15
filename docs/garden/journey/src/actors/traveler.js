@@ -29,6 +29,9 @@ export async function makeTraveler(url) {
     o.material = n;
   });
   const bones = {}; model.traverse(o => { if (o.isBone) bones[o.name] = o; });
+  // 腿的绑定姿势（直直并着）：飞的时候往这个姿势靠，免得站姿里一前一后的腿放平后像在空中跑步
+  const LEGS = ['thigh_l', 'thigh_r', 'calf_l', 'calf_r', 'foot_l', 'foot_r'];
+  const rest = Object.fromEntries(LEGS.filter(n => bones[n]).map(n => [n, bones[n].quaternion.clone()]));
   const root = new THREE.Group(); root.add(model); root.name = 'traveler';
   const mixer = new THREE.AnimationMixer(model);
   const A = {};
@@ -126,6 +129,12 @@ export async function makeTraveler(url) {
     foot(i, out) { return bones[i ? 'foot_r' : 'foot_l'].getWorldPosition(out); },
   };
 
+  // 把一根骨头的局部朝向往 q 靠（k=1 就是 q）；和 turn 一样记下原值，下一帧还原
+  function toward(name, q, k) {
+    const b = bones[name]; if (!b || k <= 0) return;
+    if (!touched.has(b)) { touched.add(b); let o = orig.get(b); if (!o) orig.set(b, o = new THREE.Quaternion()); o.copy(b.quaternion); }
+    b.quaternion.slerp(q, Math.min(1, k));
+  }
   // 绕世界坐标里的轴转一根骨头（axis 是角色自己的方向，先转到世界里）
   const rq = new THREE.Quaternion();
   const orig = new Map(), touched = new Set();
@@ -160,6 +169,7 @@ export async function makeTraveler(url) {
   // 飞：身体放平（整体由外面转），这里把头抬起来看前方，手臂往后、略张开，腿并拢伸直
   function flyPose(w, f, dt) {
     const flap = f.flap || 0;
+    for (const n in rest) toward(n, rest[n], 0.9 * w);
     turn('spine_02', X, -10 * DEG * w); turn('spine_03', X, -8 * DEG * w);
     turn('neck_01', X, -(f.pitch || 70 * DEG) * 0.45 * w); turn('Head', X, -(f.pitch || 70 * DEG) * 0.35 * w);
     turn('upperarm_l', Z, (30 - 6 * flap) * DEG * w); turn('upperarm_r', Z, (-30 + 6 * flap) * DEG * w);
@@ -167,7 +177,7 @@ export async function makeTraveler(url) {
     turn('lowerarm_l', Z, 10 * DEG * w); turn('lowerarm_r', Z, -10 * DEG * w);
     turn('thigh_l', X, 6 * DEG * w); turn('thigh_r', X, 6 * DEG * w);
     turn('thigh_l', Z, 4 * DEG * w); turn('thigh_r', Z, -4 * DEG * w);
-    turn('calf_l', X, 16 * DEG * w * (0.6 + 0.4 * Math.sin(T._ft = (T._ft || 0) + dt * 1.3))); turn('calf_r', X, 12 * DEG * w * (0.6 + 0.4 * Math.sin(T._ft + 1.7)));
+    turn('calf_l', X, 10 * DEG * w * (0.7 + 0.3 * Math.sin(T._ft = (T._ft || 0) + dt * 1.3))); turn('calf_r', X, 10 * DEG * w * (0.7 + 0.3 * Math.sin(T._ft + 0.9)));
     turn('foot_l', X, 35 * DEG * w); turn('foot_r', X, 35 * DEG * w);
     turn('spine_01', Z, (f.bank || 0) * 0.4 * w);
   }
