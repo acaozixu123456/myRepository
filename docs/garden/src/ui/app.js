@@ -6,6 +6,7 @@ import * as C from '../core/index.js';
 import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, ELEMENTS } from '../data/index.js';
 import { ICON_PATHS } from './icons.js';
 import { gearPages, routeHint } from './gearui.js';
+import { petPages } from './petui.js';
 import { store, subscribe, refresh, save, setState, wipe } from './store.js';
 
 export const html = htm.bind(h);
@@ -27,7 +28,8 @@ export function showReport(title, lines, done) { ui.report = { title, lines, don
 // ---------- 小部件 ----------
 export const Icon = ({ n, s = 22 }) => html`<svg class="ic" width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=${ICON_PATHS[n] || ICON_PATHS.star} /></svg>`;
 export const Coin = ({ s = 16 }) => html`<svg class="coin" width=${s} height=${s} viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="#f5c64f" stroke="#c99124" stroke-width="2" /><circle cx="12" cy="12" r="5" fill="none" stroke="#e0a832" stroke-width="2" /></svg>`;
-export const Portrait = ({ id, s = 44, dim }) => html`<span class=${'pt' + (dim ? ' dim' : '')} style=${`width:${s}px;height:${s}px`}><img src=${`portraits/${id}.png`} alt="" loading="lazy" draggable="false" /></span>`;
+// 伙伴头像：进化后的偏一点色，异色的换色并加星光
+export const Portrait = ({ id, s = 44, dim, p }) => html`<span class=${'pt' + (dim ? ' dim' : '') + (p?.shiny ? ' shiny' : '') + (p?.evo ? ' evo' + p.evo : '')} style=${`width:${s}px;height:${s}px`}><img src=${`portraits/${id}.png`} alt="" loading="lazy" draggable="false" /></span>`;
 export const El = ({ el }) => html`<span class=${'el el-' + el}>${ELEMENTS[el]}</span>`;
 export const Bar = ({ v, max, kind, text }) => html`<div class=${'gauge ' + kind}><i style=${`width:${Math.max(0, Math.min(100, v / max * 100))}%`}></i>${text !== false && html`<span>${v}/${max}</span>`}</div>`;
 export const Btn = ({ onClick, ghost, disabled, children, cls = '' }) => html`<button type="button" class=${`mini ${ghost ? 'ghost' : ''} ${cls}`} disabled=${disabled} onClick=${onClick}>${children}</button>`;
@@ -72,6 +74,7 @@ export const Gold = () => html`<span class="gold"><${Coin} />${store.s.wallet.go
 
 const pages = {
   ...gearPages,
+  ...petPages,
   quests() {
     const s = store.s, q = C.currentQuest(s), m = s.quests.main;
     let card;
@@ -122,7 +125,7 @@ const pages = {
       <button type="button" class="primary" onClick=${() => hooks.startGame(k)}>就选${c.name}</button>`;
   },
 };
-const TALL = new Set(['bag', 'hero', 'pets', 'quests', 'map', 'shop', 'dex', 'settings', 'gear', 'craft']);
+const TALL = new Set(['bag', 'hero', 'pets', 'quests', 'map', 'shop', 'dex', 'settings', 'gear', 'craft', 'pet', 'fuse']);
 
 export function useItem(id) {
   const s = store.s, it = ITEMS[id], st = C.heroStats(s), h = s.hero;

@@ -1,11 +1,12 @@
 // 战斗 2.0：行动条回合制。纯规则，返回事件列表，画面按顺序播放。
 // 每个单位的行动值按速度增长，满 1000 出手；轮到英雄时停下来等指令。
-import { MONSTERS, ZONES, ITEMS, BEATS, STATUS, COMBO, COMBO_STYLE, CLASSES } from '../data/index.js';
+import { MONSTERS, ZONES, ITEMS, BEATS, STATUS, COMBO, COMBO_STYLE, CLASSES, PETS } from '../data/index.js';
 import { makeGear, addItem, addGem } from './gear.js';
 import { rnd, ri, pick } from './rng.js';
 import { heroStats, monsterStats, petStats, heroSkills, skillAt, skillLv, activePets, gainXp, fullHeal } from './stats.js';
 import { questProgress } from './quests.js';
-import { addPet, PARTY_MAX, ACTIVE_MAX } from './save.js';
+import { addPet, ACTIVE_MAX } from './save.js';
+import { petName, petTint, loveLv, addLove, roomFor, aptStars } from './pets.js';
 
 export const BAR = 1000, BOND_MAX = 100, ENEMY_MAX = 5;
 const PLAIN = { id: 'attack', name: '攻击', kind: 'phys', target: 'one', power: 1, mp: 0 };
@@ -16,6 +17,7 @@ export function makeEncounter(zone, leaderId, isBoss) {
   if (isBoss) return [{ id: zone.boss, lv: hi + 1 }, { id: pick(zone.wild), lv: hi }];
   const n = rnd() < 0.45 ? 1 : rnd() < 0.75 ? 2 : 3, out = [{ id: leaderId, lv: ri(lo, hi) }];
   while (out.length < n) out.push({ id: pick(zone.wild), lv: ri(lo, Math.max(lo, hi - 1)) });
+  for (const e of out) if (rnd() < PETS.shinyRate) e.shiny = true; // 异色：很少见
   return out;
 }
 
@@ -25,23 +27,25 @@ const petSkillLv = lv => Math.min(10, 1 + Math.floor(lv / 5));
 const mobSkillLv = lv => Math.min(10, 1 + Math.floor(lv / 6));
 function petUnit(p, key) {
   const m = MONSTERS[p.id];
-  return unit({ key, side: 'a', name: m.name, st: petStats(p), hp: p.hp, mp: 99, el: m.el, skills: m.skills.map(id => skillAt(id, petSkillLv(p.lv))), mid: p.id, uid: p.uid, fam: m.fam });
+  return unit({ key, side: 'a', name: petName(p), st: petStats(p), hp: p.hp, mp: 99, el: m.el, skills: (p.skills || m.skills).map(id => skillAt(id, petSkillLv(p.lv))), mid: p.id, uid: p.uid, fam: m.fam, evo: p.evo || 0, shiny: !!p.shiny, tint: petTint(p), love: loveLv(p) });
 }
-function enemyUnit(id, lv, key) {
+function enemyUnit(id, lv, key, shiny) {
   const m = MONSTERS[id], st = monsterStats(id, lv);
-  return unit({ key, side: 'b', name: m.name, st, hp: st.hp, mp: st.mp, el: m.el, skills: m.skills.map(k => skillAt(k, mobSkillLv(lv))), mid: id, lv, boss: !!m.boss, brk: 0, ctrlRes: m.boss ? 0.8 : 1, phase: 0, fam: m.fam });
+  return unit({ key, side: 'b', shiny: !!shiny, name: (shiny ? '异色·' : '') + m.name, st, hp: st.hp, mp: st.mp, el: m.el, skills: m.skills.map(k => skillAt(k, mobSkillLv(lv))), mid: id, lv, boss: !!m.boss, brk: 0, ctrlRes: m.boss ? 0.8 : 1, phase: 0, fam: m.fam });
 }
 
 export function startBattle(s, enemies, isBoss) {
   const h = s.hero, units = [];
   units.push(unit({ key: 'hero', side: 'a', name: CLASSES[h.cls].name, st: heroStats(s), hp: Math.max(1, h.hp), mp: h.mp, el: CLASSES[h.cls].el || 'none', skills: heroSkills(s).map(id => skillAt(id, skillLv(s, id))) }));
   activePets(s).filter(p => p.hp > 0).slice(0, ACTIVE_MAX).forEach((p, i) => units.push(petUnit(p, 'p' + i)));
-  enemies.forEach((e, i) => units.push(enemyUnit(e.id, e.lv, 'e' + i)));
+  enemies.forEach((e, i) => units.push(enemyUnit(e.id, e.lv, 'e' + i, e.shiny)));
   for (const u of units) if (u.side === 'b' && !s.world.dex[u.mid]) s.world.dex[u.mid] = 'seen';
   const hero = units[0], fl = hero.st.flags || {};
-  if (fl.firstStrike) hero.av += BAR * 0.5;
+  for (const u of units) if (u.side === 'a' && u.st.flags?.firstStrike) u.av += BAR * 0.5;
   if (fl.setCloud) for (const u of units) if (u.side === 'a') { u.shield = Math.round(u.st.hp * 0.15); u.fx.shield = 99; }
-  return { units, turn: 0, over: null, isBoss, captured: null, bond: 0, cur: null, actor: null, used: {}, nextE: enemies.length, nextP: units.filter(u => u.side === 'a').length - 1 };
+  // 亲密度高的伙伴在场，开场就有一些默契
+  const bond0 = Math.min(30, 3 * Math.max(0, ...units.filter(u => u.love).map(u => u.love - 1)));
+  return { units, turn: 0, over: null, isBoss, captured: null, bond: bond0, cur: null, actor: null, used: {}, nextE: enemies.length, nextP: units.filter(u => u.side === 'a').length - 1 };
 }
 export const alive = (b, side) => b.units.filter(u => u.side === side && u.hp > 0);
 const other = side => (side === 'a' ? 'b' : 'a');
@@ -273,14 +277,14 @@ function aiAction(b, u) {
 
 // 连携技：英雄 + 第一只出战伙伴，科别定效果、职业定伤害类型
 export function comboFor(b, s) {
-  const pet = alive(b, 'a').find(u => u.key !== 'hero'), hero = b.units[0]; if (!pet || hero.hp <= 0) return null;
+  const pet = alive(b, 'a').filter(u => u.key !== 'hero').sort((x, y) => (y.love || 0) - (x.love || 0))[0], hero = b.units[0]; if (!pet || hero.hp <= 0) return null;
   const t = COMBO[pet.fam] || COMBO.guard, st = COMBO_STYLE[s.hero.cls];
   const els = [pet.el, st.el].filter(e => e && e !== 'none');
   return { ...t, id: 'combo', combo: true, pet: pet.key, kind: st.kind, els: els.length ? els : ['none'], name: t.names?.[s.hero.cls] || `${st.word}·${t.name}`, add: stat(pet, 'atk') * 0.6, mp: 0, healAll: st.heal };
 }
 export const canCombo = (b, s) => b.bond >= BOND_MAX && !!comboFor(b, s);
 // 可以换上场的伙伴
-export const benchPets = (b, s) => s.pets.filter(p => p.hp > 0 && !b.units.some(u => u.uid === p.uid));
+export const benchPets = (b, s) => s.pets.filter(p => !p.home && p.hp > 0 && !b.units.some(u => u.uid === p.uid));
 
 // 自动战斗时英雄的选择
 export function autoHeroAction(b, s) {
@@ -314,7 +318,7 @@ function heroTurn(b, s, a, ev) {
     const calm = t.fx.sleep || t.fx.freeze ? 1.5 : 1;
     const chance = t.boss ? 0 : Math.min(0.95, (0.08 + (1 - t.hp / t.st.hp) * 0.85) * calm * (1 + (u.st.capture || 0) / 100));
     const ok = rnd() < chance; ev.push({ t: 'capture', who: t.key, ok, boss: t.boss });
-    if (ok) { t.hp = 0; t.caught = true; b.captured = { id: t.mid, lv: t.lv }; }
+    if (ok) { t.hp = 0; t.caught = true; b.captured = { id: t.mid, lv: t.lv, shiny: !!t.shiny }; }
     return;
   }
   if (a.type === 'swap') { // 换伙伴：耗掉英雄这一次行动
@@ -398,9 +402,11 @@ export function finishBattle(b, s) {
   const hs = heroStats(s); gold = Math.round(gold * (1 + (hs.gold || 0) / 100)); xp = Math.round(xp * (1 + (hs.xp || 0) / 100));
   s.wallet.gold += gold; log.push({ t: 'reward', xp, gold });
   gainXp(s, h, xp, log);
-  for (const p of s.pets) { // 出战的拿九成经验，待命的拿一半
+  for (const p of s.pets) { // 出战的拿九成经验和亲密度，随身待命的拿一半经验，伙伴屋里的不拿
+    if (p.home) continue;
     const fought = b.units.some(u => u.uid === p.uid && u.hp > 0);
     if (fought || (p.hp > 0 && !b.units.some(u => u.uid === p.uid))) gainXp(s, p, Math.round(xp * (fought ? 0.9 : 0.5)), log);
+    if (fought && addLove(p, b.isBoss ? 15 : 6)) log.push({ t: 'love', name: petName(p), lv: loveLv(p) });
   }
   // 掉落：装备（首领必掉、一半是本岛套装）、本岛材料、强化石、灵石、图纸、星砂
   const bonus = hs.flags?.lucky ? 3 : 0, drop = (id, n = 1) => { addItem(s, id, n); log.push({ t: 'item', id, n }); };
@@ -411,7 +417,8 @@ export function finishBattle(b, s) {
   if (b.isBoss && zone.set) { const first = !s.world.bossKills?.[zone.boss]; drop('starSand', first ? 10 : 3); if (first || rnd() < 0.35) drop('bp_' + zone.set); s.world.bossKills = { ...s.world.bossKills, [zone.boss]: (s.world.bossKills?.[zone.boss] || 0) + 1 }; }
   if (rnd() < 0.22) drop(pick(['pill', 'pill', 'dew', 'seed']));
   if (b.captured) {
-    if (s.pets.length < PARTY_MAX) { const p = addPet(s, b.captured.id, b.captured.lv); log.push({ t: 'caught', id: p.id }); questProgress(s, 'capture'); }
+    const room = roomFor(s);
+    if (room) { const p = addPet(s, b.captured.id, b.captured.lv, { shiny: b.captured.shiny, home: room === 'home' }); log.push({ t: 'caught', id: p.id, home: p.home, shiny: p.shiny, stars: aptStars(p) }); questProgress(s, 'capture'); }
     else log.push({ t: 'petfull' });
   }
   h.hp = Math.min(h.hp, heroStats(s).hp);

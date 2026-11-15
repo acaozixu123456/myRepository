@@ -6,7 +6,7 @@ import { ZONES, QUESTS, SKILLS } from '../src/data/index.js';
 test('新开档的数值合理', () => {
   for (const cls of ['cat', 'fox', 'rabbit']) {
     const s = C.newGame(cls), st = C.heroStats(s);
-    assert.equal(s.v, 4); assert.equal(s.hero.hp, st.hp); assert.ok(st.hp > 50);
+    assert.equal(s.v, C.SAVE_VERSION); assert.equal(s.hero.hp, st.hp); assert.ok(st.hp > 50);
     assert.equal(Object.keys(s.hero.skills).length, 1); assert.equal(s.party.length, 2);
   }
 });
@@ -18,7 +18,7 @@ test('旧存档 rpg.v1 迁移到 v4 不丢东西', () => {
     pets: [{ id: 'mudpig', lv: 5, xp: 3, hp: 60 }, { id: 'chirp', lv: 3, xp: 0, hp: 30 }], active: 1, zone: 'brook', unlocked: 2, quest: 3, qn: 2, qAccepted: true,
     bosses: { tusk: 1 }, seen: { chirp: 1, mudpig: 1, pincer: 1 }, kills: 41, autoBattle: true };
   const s = C.load(v1);
-  assert.equal(s.v, 4); assert.equal(s.hero.lv, 7); assert.equal(s.hero.sp, 6); assert.deepEqual(s.hero.skills, { doubleClaw: 1, rend: 1 }); assert.equal(s.hero.pts, 2); assert.equal(s.wallet.gold, 345);
+  assert.equal(s.v, C.SAVE_VERSION); assert.equal(s.hero.lv, 7); assert.equal(s.hero.sp, 6); assert.deepEqual(s.hero.skills, { doubleClaw: 1, rend: 1 }); assert.equal(s.hero.pts, 2); assert.equal(s.wallet.gold, 345);
   assert.equal(s.hero.gear.weapon.plus, 2); assert.equal(s.hero.gear.weapon.icon, undefined);
   assert.equal(s.bag.gear.length, 1); assert.equal(s.pets.length, 2);
   assert.equal(C.activePet(s).id, 'chirp');
@@ -58,7 +58,7 @@ test('v2 存档升到 v4：补技能等级和技能点，出战位两个', () =>
   const v2 = C.newGame('fox'); v2.v = 2; delete v2.hero.skills; delete v2.hero.sp; v2.party = ['p1']; v2.hero.lv = 12;
   v2.pets = [{ uid: 'p1', id: 'chirp', lv: 3, xp: 0, hp: 20 }];
   const s = C.load(JSON.parse(JSON.stringify(v2)));
-  assert.equal(s.v, 4); assert.equal(s.hero.sp, 11); assert.deepEqual(Object.keys(s.hero.skills), ['spark', 'flameRing', 'scorch']);
+  assert.equal(s.v, C.SAVE_VERSION); assert.equal(s.hero.sp, 11); assert.deepEqual(Object.keys(s.hero.skills), ['spark', 'flameRing', 'scorch']);
   assert.deepEqual(s.party, ['p1', null]); assert.equal(s.settings.speed, 1);
 });
 
@@ -128,7 +128,7 @@ test('v3 存档升到 v4：旧装备换新结构，饰物变项链，转职前�
   s3.hero.gear = { weapon: { slot: 'weapon', name: '溪石刃', tier: 2, rare: 1, st: { atk: 20, mag: 20 }, base: { atk: 17, mag: 17 }, price: 40, plus: 2 }, armor: null, charm: { slot: 'charm', name: '水滴坠', tier: 2, rare: 2, st: { spd: 5, hp: 20 }, price: 40, plus: 0 } };
   s3.bag = { gear: [{ slot: 'armor', name: '草编衣', tier: 1, rare: 0, st: { def: 6, hp: 27 }, price: 20, plus: 0 }], items: { pill: 1 } };
   const s = C.load(JSON.parse(JSON.stringify(s3)));
-  assert.equal(s.v, 4); assert.equal(s.hero.gear.neck.name, '水滴坠'); assert.equal(s.hero.gear.neck.sockets.length, 1);
+  assert.equal(s.v, C.SAVE_VERSION); assert.equal(s.hero.gear.neck.name, '水滴坠'); assert.equal(s.hero.gear.neck.sockets.length, 1);
   assert.deepEqual(s.hero.gear.weapon.main, { atk: 17, mag: 17 }); assert.equal(s.hero.gear.weapon.plus, 2);
   assert.equal(s.hero.skills.foxMist, undefined); assert.equal(s.hero.sp, 5, '狐雾 4 级退回 3 点');
   assert.equal(s.bag.gear[0].q, 0); assert.ok(s.craft); assert.equal(s.hero.route, null);
@@ -198,4 +198,40 @@ test('林守：嘲讽吸引攻击、扎根不会睡着；影分身一回合动�
   const b3 = C.startBattle(r, [{ id: 'mudpig', lv: 1 }], false); C.play(b3, r, null); b3.units[1].hp = 0;
   const ev3 = C.play(b3, r, { type: 'skill', skill: 'revive' }); assert.ok(ev3.some(e => e.t === 'revive' && e.who === 'p0'));
   C.unseedRng();
+});
+
+test('M3 伙伴：资质星级、性格、天赋、异色保底、v4 存档迁移', () => {
+  C.seedRng(3);
+  const s = C.newGame('cat'), p = C.addPet(s, 'chirp', 10);
+  for (const k of C.APT_KEYS) assert.ok(p.apt[k] >= 60 && p.apt[k] <= 120);
+  assert.ok(C.aptStars(p) >= 1 && C.aptStars(p) <= 5); assert.ok(p.nature && p.talent && p.known.length && p.skills.length);
+  for (let i = 0; i < 30; i++) assert.ok(C.aptStars(C.addPet(s, 'chirp', 5, { shiny: true, home: true })) >= 3);
+  const lo = { ...p, apt: { hp: 60, atk: 60, def: 60, spd: 60, mag: 60 }, talent: 'keenEye' }, hi = { ...p, apt: { hp: 120, atk: 120, def: 120, spd: 120, mag: 120 }, talent: 'keenEye' };
+  assert.ok(C.petStats(hi).atk > C.petStats(lo).atk * 1.7); assert.equal(C.petStats(hi).crit, 8);
+  const old = { ...C.newGame('fox'), v: 4, pets: [{ uid: 'p9', id: 'bubfish', lv: 12, xp: 0, hp: 50, charm: null }] }; delete old.houseCap;
+  const m = C.load(old); assert.equal(m.v, C.SAVE_VERSION); assert.equal(m.houseCap, 20);
+  assert.ok(m.pets[0].apt && m.pets[0].nature); assert.deepEqual(m.pets[0].skills, ['bubble']); assert.equal(m.pets[0].hp, 50);
+});
+
+test('M3 伙伴：亲密度解锁第四技能槽、技能书、进化、伙伴屋、融合', () => {
+  C.seedRng(5);
+  const s = C.newGame('rabbit'), p = C.addPet(s, 'embertail', 15);
+  assert.equal(C.skillSlots(p), 3); C.addLove(p, 400); assert.equal(C.loveLv(p), 5); assert.equal(C.skillSlots(p), 4);
+  s.bag.items.treat = 2; assert.ok(C.feed(s, p.uid)); assert.equal(p.love, 430);
+  s.bag.items.book_bubble = 1; assert.ok(C.learnBook(s, p.uid, 'book_bubble')); assert.ok(p.skills.includes('bubble')); assert.ok(!C.learnBook(s, p.uid, 'book_bubble'));
+  assert.ok(C.unequipPetSkill(p, 'bubble')); assert.ok(C.equipPetSkill(p, 'bubble'));
+  assert.ok(!C.canEvolve(s, p)); s.bag.items.mapleLeaf = 5; s.bag.items.tinder = 3; assert.ok(C.canEvolve(s, p));
+  const before = C.petStats(p).mag; C.evolve(s, p.uid); assert.equal(p.evo, 1); assert.equal(C.petName(p), '二尾狐'); assert.ok(C.petStats(p).mag > before); assert.ok(p.known.includes('spark'));
+  const b = C.startBattle(s, [{ id: 'hopcube', lv: 3 }], false); assert.equal(b.units[1].name, '二尾狐'); assert.ok(b.bond >= 12);
+  // 伙伴屋：随身满 6 只以后抓到的住进去，不分经验
+  for (let i = 0; i < 6; i++) C.addPet(s, 'chirp', 3);
+  assert.equal(C.carried(s).length, 6); assert.equal(C.housed(s).length, 1); assert.ok(!C.setHome(s, C.housed(s)[0].uid, false));
+  assert.ok(C.setHome(s, p.uid, true)); assert.ok(!s.party.includes(p.uid)); assert.ok(C.benchPets(C.startBattle(s, [{ id: 'hopcube', lv: 3 }], false), s).every(x => !x.home));
+  s.bag.items.starSand = 10; assert.ok(C.expandHouse(s)); assert.equal(C.houseCap(s), 25);
+  // 融合：两只 20 级以上，变成第一只的种类，1 级重新养，资质不低于较高值的 92%
+  const a = C.addPet(s, 'stripe', 22, { home: true }), c = C.addPet(s, 'antler', 21, { home: true }); s.wallet.gold = 500;
+  a.apt = { hp: 100, atk: 110, def: 70, spd: 90, mag: 60 }; c.apt = { hp: 80, atk: 70, def: 115, spd: 100, mag: 100 };
+  const n = s.pets.length, r = C.fuse(s, a.uid, c.uid, C.addPet);
+  assert.equal(s.pets.length, n - 1); assert.equal(r.pet.id, 'stripe'); assert.equal(r.pet.lv, 1); assert.equal(s.wallet.gold, 200);
+  assert.ok(r.pet.apt.def >= 105 && r.pet.apt.atk >= 101); assert.ok(r.inherit.length >= 1 && r.pet.known.includes(r.inherit[0]));
 });

@@ -1,6 +1,7 @@
 // 角色、怪物、伙伴的数值和升级。
 import { SKILLS, CLASSES, MONSTERS, GEAR_SETS, ADVANCE_LV, REROUTE_COST } from '../data/index.js';
 import { gearStats, setCounts } from './gear.js';
+import { petMult, talentBonus } from './pets.js';
 
 export const MAX_LV = 40;
 export const xpNeed = lv => Math.round(18 * Math.pow(lv, 1.55));
@@ -40,7 +41,9 @@ export function monsterStats(id, lv) {
 }
 export function petStats(p) {
   const st = monsterStats(p.id, p.lv); if (!MONSTERS[p.id].boss) { st.hp = Math.round(st.hp * 0.95); st.atk = st.mag = Math.round(st.atk * 0.8); }
-  return finishStats(st, gearStats(p.charm, {}));
+  const k = petMult(p); for (const key of ['hp', 'atk', 'def', 'spd', 'mag']) st[key] = Math.round(st[key] * k[key]);
+  const t = talentBonus(p), bonus = gearStats(p.charm, {}); for (const [key, v] of Object.entries(t.stat)) bonus[key] = (bonus[key] || 0) + v;
+  return finishStats(st, bonus, t.flags);
 }
 // 能用的主动技能：基础 4 个 + 转职路线里够等级的
 export const routeOf = s => (s.hero.route && CLASSES[s.hero.cls].routes?.[s.hero.route]) || null;

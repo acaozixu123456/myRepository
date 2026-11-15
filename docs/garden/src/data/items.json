@@ -169,5 +169,93 @@
   "cat": "gem",
   "el": "mist",
   "desc": "镶嵌到有孔的装备上。三颗同级合成高一级。"
+ },
+ "treat": {
+  "name": "灵果",
+  "cat": "use",
+  "icon": "heart",
+  "price": 15,
+  "use": "treat",
+  "desc": "喂给伙伴，亲密度 +30。"
+ },
+ "book_leafCut": {
+  "name": "技能书·飞叶",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "leafCut",
+  "desc": "让伙伴学会「飞叶」。"
+ },
+ "book_bubble": {
+  "name": "技能书·水泡",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "bubble",
+  "desc": "让伙伴学会「水泡」。"
+ },
+ "book_ember": {
+  "name": "技能书·火星",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "ember",
+  "desc": "让伙伴学会「火星」。"
+ },
+ "book_frostBreath": {
+  "name": "技能书·寒气",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "frostBreath",
+  "desc": "让伙伴学会「寒气」。"
+ },
+ "book_spore": {
+  "name": "技能书·毒孢子",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "spore",
+  "desc": "让伙伴学会「毒孢子」。"
+ },
+ "book_lullaby": {
+  "name": "技能书·摇篮曲",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "lullaby",
+  "desc": "让伙伴学会「摇篮曲」。"
+ },
+ "book_roar": {
+  "name": "技能书·怒吼",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "roar",
+  "desc": "让伙伴学会「怒吼」。"
+ },
+ "book_hide": {
+  "name": "技能书·缩壳",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "hide",
+  "desc": "让伙伴学会「缩壳」。"
+ },
+ "book_inkSplash": {
+  "name": "技能书·泼墨",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "inkSplash",
+  "desc": "让伙伴学会「泼墨」。"
+ },
+ "book_stomp": {
+  "name": "技能书·震地",
+  "cat": "book",
+  "icon": "book",
+  "price": 150,
+  "skill": "stomp",
+  "desc": "让伙伴学会「震地」。"
  }
 }

@@ -1,0 +1,631 @@
+{
+ "natures": {
+  "sleepy": {
+   "name": "贪睡",
+   "up": "hp",
+   "down": "spd",
+   "food": "蜂蜜面包",
+   "job": "看家"
+  },
+  "hasty": {
+   "name": "急性子",
+   "up": "spd",
+   "down": "def",
+   "food": "烤玉米",
+   "job": "送信"
+  },
+  "tidy": {
+   "name": "爱干净",
+   "up": "def",
+   "down": "atk",
+   "food": "清汤",
+   "job": "打扫"
+  },
+  "timid": {
+   "name": "胆小",
+   "up": "spd",
+   "down": "atk",
+   "food": "莓果",
+   "job": "采药"
+  },
+  "reckless": {
+   "name": "莽撞",
+   "up": "atk",
+   "down": "def",
+   "food": "烤肉串",
+   "job": "砍柴"
+  },
+  "curious": {
+   "name": "好奇",
+   "up": "mag",
+   "down": "hp",
+   "food": "星星糖",
+   "job": "寻宝"
+  },
+  "mellow": {
+   "name": "温吞",
+   "up": "hp",
+   "down": "atk",
+   "food": "南瓜粥",
+   "job": "种田"
+  },
+  "proud": {
+   "name": "傲气",
+   "up": "atk",
+   "down": "mag",
+   "food": "鱼排",
+   "job": "巡逻"
+  },
+  "clingy": {
+   "name": "黏人",
+   "up": "def",
+   "down": "spd",
+   "food": "奶糕",
+   "job": "陪伴"
+  },
+  "singer": {
+   "name": "爱唱歌",
+   "up": "mag",
+   "down": "def",
+   "food": "花蜜",
+   "job": "唱歌"
+  },
+  "greedy": {
+   "name": "馋嘴",
+   "up": "hp",
+   "down": "mag",
+   "food": "果酱饼干",
+   "job": "做饭"
+  },
+  "earnest": {
+   "name": "认真",
+   "up": "atk",
+   "down": "spd",
+   "food": "饭团",
+   "job": "打铁"
+  }
+ },
+ "talents": {
+  "hardShell": {
+   "name": "硬壳",
+   "desc": "防御 +12%",
+   "stat": {
+    "defP": 12
+   }
+  },
+  "thickFur": {
+   "name": "厚毛",
+   "desc": "生命 +12%",
+   "stat": {
+    "hpP": 12
+   }
+  },
+  "sharpFang": {
+   "name": "尖牙",
+   "desc": "攻击 +10%",
+   "stat": {
+    "atkP": 10
+   }
+  },
+  "spiritRoot": {
+   "name": "灵根",
+   "desc": "法术 +10%",
+   "stat": {
+    "magP": 10
+   }
+  },
+  "lightStep": {
+   "name": "轻身",
+   "desc": "速度 +10%",
+   "stat": {
+    "spdP": 10
+   }
+  },
+  "nimble": {
+   "name": "机灵",
+   "desc": "闪避 +8%",
+   "stat": {
+    "dodge": 8
+   }
+  },
+  "keenEye": {
+   "name": "锐眼",
+   "desc": "暴击 +8%",
+   "stat": {
+    "crit": 8
+   }
+  },
+  "steady": {
+   "name": "定心",
+   "desc": "异常抵抗 +25%",
+   "stat": {
+    "ailRes": 25
+   }
+  },
+  "drain": {
+   "name": "汲取",
+   "desc": "造成伤害的 6% 回给自己",
+   "flag": "lifesteal"
+  },
+  "stubborn": {
+   "name": "不屈",
+   "desc": "每场第一次倒下时留 1 点生命",
+   "flag": "phoenix"
+  },
+  "quick": {
+   "name": "抢先",
+   "desc": "开场行动值 +50%",
+   "flag": "firstStrike"
+  },
+  "cheer": {
+   "name": "打气",
+   "desc": "暴击时默契 +10",
+   "flag": "bondCrit"
+  }
+ },
+ "famTalents": {
+  "chirp": [
+   "lightStep",
+   "keenEye",
+   "cheer"
+  ],
+  "pig": [
+   "thickFur",
+   "stubborn",
+   "hardShell"
+  ],
+  "bug": [
+   "spiritRoot",
+   "steady",
+   "drain"
+  ],
+  "hop": [
+   "lightStep",
+   "nimble",
+   "quick"
+  ],
+  "gnaw": [
+   "hardShell",
+   "thickFur",
+   "steady"
+  ],
+  "pincer": [
+   "hardShell",
+   "sharpFang",
+   "stubborn"
+  ],
+  "fish": [
+   "spiritRoot",
+   "nimble",
+   "lightStep"
+  ],
+  "monkey": [
+   "quick",
+   "nimble",
+   "cheer"
+  ],
+  "foxfire": [
+   "spiritRoot",
+   "keenEye",
+   "quick"
+  ],
+  "tiger": [
+   "sharpFang",
+   "keenEye",
+   "drain"
+  ],
+  "deer": [
+   "thickFur",
+   "lightStep",
+   "steady"
+  ],
+  "goose": [
+   "nimble",
+   "spiritRoot",
+   "quick"
+  ],
+  "bear": [
+   "thickFur",
+   "sharpFang",
+   "stubborn"
+  ],
+  "ink": [
+   "spiritRoot",
+   "steady",
+   "drain"
+  ]
+ },
+ "evo": {
+  "chirp": [
+   {
+    "lv": 15,
+    "name": "羽球啾",
+    "tint": "#fff1b8",
+    "skill": "peck",
+    "need": {
+     "feather": 5,
+     "sprout": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "风铃鸟",
+    "tint": "#bfe6ff",
+    "skill": "tackle",
+    "need": {
+     "feather": 10,
+     "sprout": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "mudpig": [
+   {
+    "lv": 15,
+    "name": "苔背猪",
+    "tint": "#cfe8b0",
+    "skill": "stomp",
+    "need": {
+     "feather": 5,
+     "sprout": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "山丘猪",
+    "tint": "#b9a27a",
+    "skill": "leafCut",
+    "need": {
+     "feather": 10,
+     "sprout": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "leafbug": [
+   {
+    "lv": 15,
+    "name": "卷叶茧",
+    "tint": "#d7efa4",
+    "skill": "hide",
+    "need": {
+     "feather": 5,
+     "sprout": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "花翅蝶",
+    "tint": "#ffc9e6",
+    "skill": "lullaby",
+    "need": {
+     "feather": 10,
+     "sprout": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "hopcube": [
+   {
+    "lv": 15,
+    "name": "弹弹兔",
+    "tint": "#ffe0ef",
+    "skill": "peck",
+    "need": {
+     "feather": 5,
+     "sprout": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "云跳兔",
+    "tint": "#e9f2ff",
+    "skill": "stomp",
+    "need": {
+     "feather": 10,
+     "sprout": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "gnawer": [
+   {
+    "lv": 15,
+    "name": "筑坝师",
+    "tint": "#d9b98f",
+    "skill": "stomp",
+    "need": {
+     "pebble": 5,
+     "scale": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "河湾老爷",
+    "tint": "#a7c7e0",
+    "skill": "bubble",
+    "need": {
+     "pebble": 10,
+     "scale": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "pincer": [
+   {
+    "lv": 15,
+    "name": "盾钳蟹",
+    "tint": "#ffb7a0",
+    "skill": "tackle",
+    "need": {
+     "pebble": 5,
+     "scale": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "潮将军",
+    "tint": "#8fc1ff",
+    "skill": "tide",
+    "need": {
+     "pebble": 10,
+     "scale": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "bubfish": [
+   {
+    "lv": 15,
+    "name": "云锦鲤",
+    "tint": "#ffd2c2",
+    "skill": "waterShot",
+    "need": {
+     "pebble": 5,
+     "scale": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "飞瀑鲤",
+    "tint": "#bfe3ff",
+    "skill": "tide",
+    "need": {
+     "pebble": 10,
+     "scale": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "prank": [
+   {
+    "lv": 15,
+    "name": "摘果猴",
+    "tint": "#ffd59a",
+    "skill": "tackle",
+    "need": {
+     "pebble": 5,
+     "scale": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "云游猴",
+    "tint": "#e6e0ff",
+    "skill": "roar",
+    "need": {
+     "pebble": 10,
+     "scale": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "embertail": [
+   {
+    "lv": 15,
+    "name": "二尾狐",
+    "tint": "#ffc08a",
+    "skill": "spark",
+    "need": {
+     "mapleLeaf": 5,
+     "tinder": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "灯笼狐",
+    "tint": "#ffe28a",
+    "skill": "flameRing",
+    "need": {
+     "mapleLeaf": 10,
+     "tinder": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "stripe": [
+   {
+    "lv": 15,
+    "name": "晒斑虎",
+    "tint": "#ffcf8a",
+    "skill": "roar",
+    "need": {
+     "mapleLeaf": 5,
+     "tinder": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "焰纹虎",
+    "tint": "#ff9f7a",
+    "skill": "maneLash",
+    "need": {
+     "mapleLeaf": 10,
+     "tinder": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "echo": [
+   {
+    "lv": 15,
+    "name": "回声鹦",
+    "tint": "#c9f0b8",
+    "skill": "peck",
+    "need": {
+     "mapleLeaf": 5,
+     "tinder": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "百灵鹦",
+    "tint": "#ffe7a8",
+    "skill": "lullaby",
+    "need": {
+     "mapleLeaf": 10,
+     "tinder": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "antler": [
+   {
+    "lv": 15,
+    "name": "枫角鹿",
+    "tint": "#ffb98a",
+    "skill": "stomp",
+    "need": {
+     "mapleLeaf": 5,
+     "tinder": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "秋客鹿",
+    "tint": "#e9c27a",
+    "skill": "spore",
+    "need": {
+     "mapleLeaf": 10,
+     "tinder": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "slider": [
+   {
+    "lv": 15,
+    "name": "冰刀鹅",
+    "tint": "#d6f0ff",
+    "skill": "tackle",
+    "need": {
+     "iceShard": 5,
+     "snowFluff": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "雪幕鹅",
+    "tint": "#ffffff",
+    "skill": "tide",
+    "need": {
+     "iceShard": 10,
+     "snowFluff": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "snowbear": [
+   {
+    "lv": 15,
+    "name": "冰原熊",
+    "tint": "#dff3ff",
+    "skill": "roar",
+    "need": {
+     "iceShard": 5,
+     "snowFluff": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "霜甲熊",
+    "tint": "#b8dcff",
+    "skill": "trunkSpray",
+    "need": {
+     "iceShard": 10,
+     "snowFluff": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "inkball": [
+   {
+    "lv": 15,
+    "name": "泼墨熊",
+    "tint": "#c9c2e8",
+    "skill": "lullaby",
+    "need": {
+     "iceShard": 5,
+     "snowFluff": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "山水熊",
+    "tint": "#a8c8c0",
+    "skill": "starGaze",
+    "need": {
+     "iceShard": 10,
+     "snowFluff": 8,
+     "starSand": 5
+    }
+   }
+  ],
+  "dozer": [
+   {
+    "lv": 15,
+    "name": "苔衣树懒",
+    "tint": "#cfe8b0",
+    "skill": "spore",
+    "need": {
+     "iceShard": 5,
+     "snowFluff": 3
+    }
+   },
+   {
+    "lv": 30,
+    "name": "古木树懒",
+    "tint": "#b9a27a",
+    "skill": "stomp",
+    "need": {
+     "iceShard": 10,
+     "snowFluff": 8,
+     "starSand": 5
+    }
+   }
+  ]
+ },
+ "books": [
+  "leafCut",
+  "bubble",
+  "ember",
+  "frostBreath",
+  "spore",
+  "lullaby",
+  "roar",
+  "hide",
+  "inkSplash",
+  "stomp"
+ ],
+ "carry": 6,
+ "houseBase": 20,
+ "houseMax": 100,
+ "houseStep": 5,
+ "houseCost": 10,
+ "fuseLv": 20,
+ "fuseCost": 300,
+ "loveStep": 100,
+ "loveMax": 10,
+ "slot4Love": 5,
+ "shinyRate": 0.005
+}
