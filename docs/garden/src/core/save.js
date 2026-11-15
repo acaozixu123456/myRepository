@@ -21,7 +21,7 @@ export function newGame(cls, now = Date.now()) {
     craft: { lv: 1, xp: 0 },
     wallet: { gold: 20 },
     world: { zone: 'home', unlocked: 1, bosses: {}, dex: {} },
-    quests: { main: { i: 0, accepted: false, n: 0 }, done: [] },
+    quests: { main: { i: 0, accepted: false, n: 0 }, done: [], side: {} },
     stats: { kills: 0 },
     settings: { auto: false, speed: 1 },
   };

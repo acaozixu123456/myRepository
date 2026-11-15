@@ -663,7 +663,8 @@
   "kind": "magic",
   "el": "star",
   "target": "all",
-  "power": 1.05
+  "power": 1.05,
+  "desc": "星星落在所有敌人身上。"
  },
  "starGaze": {
   "name": "凝星",
@@ -692,7 +693,8 @@
     "type": "blind",
     "chance": 0.5
    }
-  ]
+  ],
+  "desc": "放出雾幕，敌人全体可能看不清。"
  },
  "hornRam": {
   "name": "角撞",

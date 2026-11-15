@@ -395,6 +395,7 @@ export function finishBattle(b, s) {
     xp += Math.round((6 + f.lv * 4) * (f.boss ? 5 : 1)); gold += Math.round((3 + f.lv * 1.6) * (f.boss ? 6 : 1) * (0.8 + rnd() * 0.4));
     if (!f.caught) { s.stats.kills++; questProgress(s, 'kill', f); }
     if (f.boss && !f.caught) {
+      if (!s.world.bosses[f.mid] && MONSTERS[f.mid].epi) log.push({ t: 'epi', text: MONSTERS[f.mid].epi });
       s.world.bosses[f.mid] = 1; questProgress(s, 'boss', f);
       if (s.world.unlocked <= zi && zi < ZONES.length - 1) { s.world.unlocked = zi + 1; log.push({ t: 'unlock', zone: ZONES[zi + 1].name }); }
     }
@@ -418,7 +419,7 @@ export function finishBattle(b, s) {
   if (rnd() < 0.22) drop(pick(['pill', 'pill', 'dew', 'seed']));
   if (b.captured) {
     const room = roomFor(s);
-    if (room) { const p = addPet(s, b.captured.id, b.captured.lv, { shiny: b.captured.shiny, home: room === 'home' }); log.push({ t: 'caught', id: p.id, home: p.home, shiny: p.shiny, stars: aptStars(p) }); questProgress(s, 'capture'); }
+    if (room) { const p = addPet(s, b.captured.id, b.captured.lv, { shiny: b.captured.shiny, home: room === 'home' }); log.push({ t: 'caught', id: p.id, home: p.home, shiny: p.shiny, stars: aptStars(p) }); questProgress(s, 'capture', { id: p.id }); }
     else log.push({ t: 'petfull' });
   }
   h.hp = Math.min(h.hp, heroStats(s).hp);

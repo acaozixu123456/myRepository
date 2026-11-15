@@ -3,14 +3,14 @@ import { h, render } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import htm from 'htm';
 import * as C from '../core/index.js';
-import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, ELEMENTS } from '../data/index.js';
+import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, ELEMENTS, NPCS, QUESTS } from '../data/index.js';
 import { ICON_PATHS } from './icons.js';
 import { gearPages, routeHint } from './gearui.js';
 import { petPages } from './petui.js';
 import { store, subscribe, refresh, save, setState, wipe } from './store.js';
 
 export const html = htm.bind(h);
-const ZONE_ICON = ['home', 'sprout', 'drop', 'herb', 'star'];
+const ZONE_ICON = ['home', 'sprout', 'drop', 'herb', 'star', 'cloud', 'sparkle', 'gem', 'cloud'];
 
 // ---------- 界面状态 ----------
 export const ui = { mode: 'loading', sheet: null, stack: [], lock: false, toast: null, report: null, pickCls: 'cat', busy: true };
@@ -82,8 +82,11 @@ const pages = {
     else if (!m.accepted) card = html`<div class="talk"><b>${q.title}</b>${q.text}<small>奖励：${C.rewardText(q.reward)}</small></div><button type="button" class="primary" onClick=${() => { C.acceptQuest(s); save(); closeSheet(); toast(C.questDone(s) ? '已经做到了' : '委托接下了', C.questDone(s) ? '再点一次委托领奖励。' : '点右上角的地图出发。'); }}>接下委托</button>`;
     else if (C.questDone(s)) card = html`<div class="talk"><b>${q.title}</b>${q.done}<small>奖励：${C.rewardText(q.reward)}</small></div><button type="button" class="primary" onClick=${claim}>领取奖励</button>`;
     else card = html`<div class="talk"><b>${q.title}</b>${q.text}<div class="prog"><span>进度</span><b>${C.questProgressText(s)}</b></div><small>奖励：${C.rewardText(q.reward)}</small></div>`;
-    const done = s.quests.done.length;
-    return html`<${Head} title="任务" right=${`主线 ${done}/8`} /><div class="scroll"><h3>灯灵的委托</h3>${card}${done ? html`<h3>已完成</h3>${s.quests.done.map(id => html`<div class="row slim dim"><span class="gi"><${Icon} n="star" s=${20} /></span><div class="mid"><b>${(C.questById(id) || {}).title || id}</b></div></div>`)}` : null}</div>`;
+    const done = C.mainDoneCount(s), ch = q ? q.ch : 5, sides = C.activeSides(s);
+    const doneCh = [1, 2, 3, 4, 5].map(c => QUESTS.filter(x => x.ch === c && s.quests.done.includes(x.id))).filter(l => l.length);
+    return html`<${Head} title="任务" right=${`主线 ${done}/${QUESTS.length}`} /><div class="scroll"><h3>第 ${ch} 章 · ${C.CHAPTERS[ch - 1]}</h3>${card}
+      <h3>支线</h3>${sides.length ? sides.map(({ q: x, ready, prog }) => html`<div class=${'row slim' + (ready ? ' on' : '')}><span class=${'gi z' + ZONES.findIndex(z => z.id === NPCS[x.npc].zone)}><${Icon} n="chat" s=${20} /></span><div class="mid"><b>${x.title}</b><small>${NPCS[x.npc].name}　${ready ? '做到了，回去找它' : prog}</small></div></div>`) : html`<p class="hint">岛上的居民头顶亮着黄光，说明有事找你帮忙。</p>`}
+      ${doneCh.length ? html`<h3>已完成</h3>${doneCh.map(l => html`<details class="chap"><summary>第 ${l[0].ch} 章 · ${C.CHAPTERS[l[0].ch - 1]}<small>${l.length}/${QUESTS.filter(x => x.ch === l[0].ch).length}</small></summary>${l.map(x => html`<div class="row slim dim"><span class="gi"><${Icon} n="star" s=${20} /></span><div class="mid"><b>${x.title}</b></div></div>`)}</details>`)}` : null}</div>`;
   },
   more() {
     const go = (k, push = true) => () => openSheet(k, { push });
@@ -112,6 +115,20 @@ const pages = {
       <button type="button" class="primary ghost" disabled=${!imp.trim()} onClick=${() => { const s = C.importCode(imp); if (!s) return toast('存档码不对', '要以 FDQY2: 开头。'); setState(s); location.reload(); }}><${Icon} n="inbox" s=${18} /> 导入，覆盖当前存档</button>
       <h3>重新开始</h3><button type="button" class="reset" onClick=${() => (sure ? wipe() : setSure(true))}>${sure ? '再点一次，确认删除存档' : '删除存档，重新开始'}</button>
     </div>`;
+  },
+  talk() {
+    const s = store.s, t = ui.talk, n = NPCS[t.id];
+    // 主线正好要找这个人：它说的就是委托的回话，说到就算完成
+    if (!t.lines) { const mq = C.mainTalkNpc(s) === t.id ? C.currentQuest(s) : null; t.lines = mq ? [mq.done] : C.npcLines(s, t.id); if (mq) { C.questProgress(s, 'talk', { npc: t.id }); save(); t.main = true; } }
+    const last = t.i >= t.lines.length - 1, f = last ? C.sideFor(s, t.id) : null;
+    const bye = () => { closeSheet(); if (t.main) toast('主线委托完成了', '回小岛点石灯，找灯灵领奖励。'); };
+    const head = html`<div class="talkhead"><span class=${'gi z' + ZONES.findIndex(z => z.id === n.zone)}><${Icon} n="chat" s=${22} /></span><h2 class="rh">${n.name}</h2></div><div class="talk big">${t.lines[t.i]}</div>`;
+    if (!last) return html`${head}<button type="button" class="primary" onClick=${() => { t.i++; refresh(); }}>继续</button>`;
+    if (!f) return html`${head}<button type="button" class="primary" onClick=${bye}>再见</button>`;
+    const q = f.q, card = html`<div class="talk side"><b><span class="tag">支线</span>${q.title}</b>${q.text}${f.state === 'new' ? null : html`<div class="prog"><span>进度</span><b>${f.prog}</b></div>`}<small>奖励：${C.rewardText(q.reward)}</small></div>`;
+    if (f.state === 'new') return html`${head}${card}<div class="duo"><button type="button" class="primary ghost" onClick=${bye}>以后再说</button><button type="button" class="primary" onClick=${() => { C.acceptSide(s, q.id); save(); bye(); toast('接下了支线', q.title); }}>接下</button></div>`;
+    if (f.state === 'ready') return html`${head}${card}<button type="button" class="primary" onClick=${() => { const got = C.claimSide(s, q.id); save(); closeSheet(); showReport('支线完成：' + q.title, [{ text: q.done, big: 1 }, ...got.map(text => ({ text }))], null); }}>${q.type === 'collect' ? '交给它' : '完成了'}</button>`;
+    return html`${head}${card}<button type="button" class="primary" onClick=${bye}>再见</button>`;
   },
   report() {
     const r = ui.report;

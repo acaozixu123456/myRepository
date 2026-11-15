@@ -22,3 +22,7 @@ import statuses from './statuses.json' with { type: 'json' };
 import combos from './combos.json' with { type: 'json' };
 export const STATUS = statuses;
 export const COMBO = combos.list, COMBO_STYLE = combos.style;
+import npcs from './npcs.json' with { type: 'json' };
+export const NPCS = npcs;
+import sidequests from './sidequests.json' with { type: 'json' };
+export const SIDE_QUESTS = sidequests;

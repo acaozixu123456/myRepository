@@ -1,5 +1,5 @@
 // 构建前检查内容数据里的引用是否都对得上，写错一个 id 就让构建失败。
-import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE, PETS } from '../src/data/index.js';
+import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE, PETS, NPCS, SIDE_QUESTS } from '../src/data/index.js';
 const errs = [], need = (ok, msg) => { if (!ok) errs.push(msg); };
 for (const [k, c] of Object.entries(CLASSES)) { for (const [, id] of c.skills) need(SKILLS[id], `职业 ${k} 的技能 ${id} 不存在`); need(ELEMENTS[c.el], `职业 ${k} 的元素 ${c.el} 不存在`); }
 for (const [k, m] of Object.entries(MONSTERS)) {
@@ -22,5 +22,11 @@ for (const z of ZONES) { for (const m of z.mats || []) need(ITEMS[m], `地图 ${
 for (const z of ZONES) for (const id of z.wild || []) { const e = PETS.evo[id]; need(e?.length === 2, `野怪 ${id} 没有两段进化`); for (const s of e || []) { need(SKILLS[s.skill], `${id} 进化技能 ${s.skill} 不存在`); for (const k in s.need) need(ITEMS[k], `${id} 进化材料 ${k} 不存在`); } need(PETS.famTalents[MONSTERS[id].fam]?.every(t => PETS.talents[t]), `野怪 ${id} 的科别没有天赋`); }
 for (const id of PETS.books) need(SKILLS[id] && ITEMS['book_' + id]?.skill === id, `技能书 ${id} 不对`);
 for (const n of Object.values(PETS.natures)) need(n.up !== n.down, `性格 ${n.name} 增减同一项`);
+// 委托和 NPC：类型对得上，要找的人、要交的东西、限定的地图都存在
+const qOk = (q, w) => { need(['kill', 'capture', 'boss', 'level', 'talk', 'collect'].includes(q.type), `${w} ${q.id} 类型 ${q.type} 不对`); need(q.type !== 'talk' || NPCS[q.npc], `${w} ${q.id} 找的 ${q.npc} 不存在`); need(q.type !== 'collect' || ITEMS[q.item] && q.n > 0, `${w} ${q.id} 要交的 ${q.item} 不对`); need(!q.zone || ZONES.some(z => z.id === q.zone), `${w} ${q.id} 的地图 ${q.zone} 不存在`); need(q.text && q.done && q.reward?.gold > 0, `${w} ${q.id} 缺文字或奖励`); for (const k in q.reward?.items || {}) need(ITEMS[k], `${w} ${q.id} 奖励 ${k} 不存在`); };
+for (const q of QUESTS) { qOk(q, '主线'); need(q.ch >= 1 && q.ch <= 5, `主线 ${q.id} 没有章节`); }
+for (const q of SIDE_QUESTS) { qOk(q, '支线'); need(!ids.has(q.id), `委托 id 重复：${q.id}`); ids.add(q.id); need(NPCS[q.npc], `支线 ${q.id} 的 NPC ${q.npc} 不存在`); need(q.type !== 'boss' || MONSTERS[q.boss]?.boss, `支线 ${q.id} 的首领不对`); }
+for (const [id, n] of Object.entries(NPCS)) { need(ZONES.some(z => z.id === n.zone), `NPC ${id} 的地图不存在`); need(n.lines?.length && n.model && n.pos?.length === 2, `NPC ${id} 缺台词、模型或位置`); }
+for (const z of ZONES) if (z.boss) need(MONSTERS[z.boss].epi, `首领 ${z.boss} 没有后日谈`);
 if (errs.length) { console.error('数据检查没通过：\n' + errs.join('\n')); process.exit(1); }
-console.log(`数据检查通过：${Object.keys(CLASSES).length} 职业，${Object.keys(SKILLS).length} 技能，${Object.keys(STATUS).length} 状态，${Object.keys(COMBO).length} 连携，${Object.keys(MONSTERS).length} 怪物，${ZONES.length} 张地图，${QUESTS.length} 个委托`);
+console.log(`数据检查通过：${Object.keys(CLASSES).length} 职业，${Object.keys(SKILLS).length} 技能，${Object.keys(STATUS).length} 状态，${Object.keys(COMBO).length} 连携，${Object.keys(MONSTERS).length} 怪物，${ZONES.length} 张地图，${QUESTS.length} 个主线、${SIDE_QUESTS.length} 个支线、${Object.keys(NPCS).length} 个居民`);

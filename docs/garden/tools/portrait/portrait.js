@@ -16,9 +16,11 @@ const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
 const loader = new GLTFLoader();
 const path = n => n.startsWith('x:') ? `/assets/extra/${n.slice(2)}.glb` : n.startsWith('animal') ? `/assets/pets/${n}.glb` : `/assets/nature/${n}.gltf`;
 
-async function shot(modelName) {
+async function shot(modelName, tint) {
   const g = await loader.loadAsync(path(modelName));
   const o = toonify(g.scene, true);
+  // 同一个身体换色做出的新怪物，头像也跟着换色（和 world/view.js 的做法一致）
+  if (tint) { const c = new THREE.Color(tint); o.traverse(m => { if (!m.isMesh || m.userData.isOutline) return; const f = x => { const n = x.clone(); n.color = n.color.clone().lerp(c, 0.35); return n; }; m.material = Array.isArray(m.material) ? m.material.map(f) : f(m.material); }); }
   // 停在待机第一帧
   const clip = g.animations.find(c => c.name === 'idle') || g.animations.find(c => c.name !== 'static');
   if (clip) { const mx = new THREE.AnimationMixer(o); mx.clipAction(clip).play(); mx.update(0.01); }
@@ -35,7 +37,7 @@ async function shot(modelName) {
 window.renderAll = async () => {
   const out = {};
   for (const [k, v] of Object.entries(CLASSES)) out[k] = await shot(v.model);
-  for (const [k, v] of Object.entries(MONSTERS)) out[k] = await shot(v.model);
+  for (const [k, v] of Object.entries(MONSTERS)) out[k] = await shot(v.model, v.tint);
   return out;
 };
 window.portraitReady = true;
