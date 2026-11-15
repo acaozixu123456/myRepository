@@ -5,6 +5,7 @@ import { rnd, ri, pick } from './rng.js';
 import { addItem, addGem } from './gear.js';
 import { today } from './world.js';
 import { addLove, loveLv, petName } from './pets.js';
+import { tally } from './tally.js';
 
 const H = 3600000;
 export const newHome = () => ({ plots: Array(HOME.plotsStart).fill(null), jobs: {}, mood: [], days: 0, day: null, buff: null, log: [] });
@@ -31,7 +32,7 @@ export function greet(s, now) {
 }
 export function lampChest(s, now) {
   const d = day(s, now); if (d.chest || lampPoints(s, now) < HOME.daily.full) return null;
-  d.chest = true; const top = topZone(s), out = [];
+  d.chest = true; tally(s, 'lampChest'); const top = topZone(s), out = [];
   const gold = 100 + top.lv[1] * 10; s.wallet.gold += gold; out.push(`${gold} 金币`);
   const sand = ri(2, 3); addItem(s, 'starSand', sand); out.push(`星砂 ×${sand}`);
   for (const m of top.mats) { const n = ri(1, 2); addItem(s, m, n); out.push(`${ITEMS[m].name} ×${n}`); }
@@ -42,7 +43,7 @@ export function lampChest(s, now) {
 // 摸摸伙伴：每只每天一次，亲密度 +5
 export function pat(s, uid, now) {
   const d = day(s, now), p = s.pets.find(x => x.uid === uid); if (!p || d.pat.includes(uid)) return null;
-  d.pat.push(uid); const up = addLove(p, 5); return { up, lv: loveLv(p) };
+  d.pat.push(uid); tally(s, 'pat'); const up = addLove(p, 5); return { up, lv: loveLv(p) };
 }
 export const patted = (s, uid, now) => day(s, now).pat.includes(uid);
 
@@ -59,7 +60,7 @@ export function water(s, i, now = Date.now()) {
 }
 export function harvest(s, i, now = Date.now()) {
   const h = home(s), p = h.plots[i]; if (plotState(p, now) !== 'ripe') return null;
-  const n = ri(2, 3) + (p.water ? 1 : 0); addItem(s, p.crop, n); h.plots[i] = null; day(s, now).harvest = true;
+  const n = ri(2, 3) + (p.water ? 1 : 0); addItem(s, p.crop, n); h.plots[i] = null; tally(s, 'harvest'); day(s, now).harvest = true;
   return [p.crop, n];
 }
 export function harvestAll(s, now = Date.now()) { const got = {}; home(s).plots.forEach((p, i) => { const r = harvest(s, i, now); if (r) got[r[0]] = (got[r[0]] || 0) + r[1]; }); return got; }
@@ -93,7 +94,7 @@ export function collectWork(s, now = Date.now()) {
   for (const uid of Object.keys(h.jobs)) {
     const w = h.jobs[uid], p = s.pets.find(x => x.uid === uid); if (!p || s.party.includes(uid)) { delete h.jobs[uid]; continue; }
     const n = workHours(w, now); if (!n) continue;
-    const times = likesJob(p, w.job) ? Math.round(n * 1.5) : n; for (let i = 0; i < times; i++) workOnce(s, p, w.job, out);
+    tally(s, 'workHours', n); const times = likesJob(p, w.job) ? Math.round(n * 1.5) : n; for (let i = 0; i < times; i++) workOnce(s, p, w.job, out);
     w.since = n >= HOME.workCapH ? now : w.since + n * H;
   }
   if (Object.keys(out).length) day(s, now).harvest = true;
@@ -102,7 +103,7 @@ export function collectWork(s, now = Date.now()) {
 
 // ---------- 厨房 ----------
 export const canCook = (s, id, n = 1) => Object.entries(DISHES[id].need).every(([k, v]) => (s.bag.items[k] || 0) >= v * n);
-export function cook(s, id) { const d = DISHES[id]; if (!d || !canCook(s, id)) return false; for (const [k, v] of Object.entries(d.need)) s.bag.items[k] -= v; addItem(s, id, 1); return true; }
+export function cook(s, id) { const d = DISHES[id]; if (!d || !canCook(s, id)) return false; for (const [k, v] of Object.entries(d.need)) s.bag.items[k] -= v; addItem(s, id, 1); tally(s, 'cook'); return true; }
 // 吃一份：30 分钟加成，新的顶掉旧的
 export function eat(s, id, now = Date.now()) {
   if (!DISHES[id] || !(s.bag.items[id] > 0)) return false;
@@ -113,7 +114,7 @@ export const buffStat = (s, now) => { const b = activeBuff(s, now); return b ? D
 // 送给伙伴：最爱吃的翻倍
 export function gift(s, uid, id) {
   const p = s.pets.find(x => x.uid === uid), d = DISHES[id]; if (!p || !d || !(s.bag.items[id] > 0) || loveLv(p) >= PETS.loveMax) return null;
-  s.bag.items[id]--; const fav = PETS.natures[p.nature]?.food === id, up = addLove(p, d.love * (fav ? 2 : 1));
+  s.bag.items[id]--; tally(s, 'gift'); const fav = PETS.natures[p.nature]?.food === id, up = addLove(p, d.love * (fav ? 2 : 1));
   return { up, fav, lv: loveLv(p) };
 }
 
@@ -148,7 +149,7 @@ export function bountyEvent(s, type, ev = {}, now) {
 export function claimBounty(s, i, now) {
   const d = day(s, now), b = d.bounties[i]; if (!b || !bountyReady(s, b)) return null;
   if (bountyDeliver(b)) s.bag.items[b.item] -= b.n;
-  b.done = true; s.wallet.gold += b.gold; const got = [`${b.gold} 金币`]; if (b.sand) { addItem(s, 'starSand', 1); got.push('星砂 ×1'); }
+  b.done = true; tally(s, 'bounty'); s.wallet.gold += b.gold; const got = [`${b.gold} 金币`]; if (b.sand) { addItem(s, 'starSand', 1); got.push('星砂 ×1'); }
   return got;
 }
 // 不喜欢可以免费换一次
@@ -167,6 +168,7 @@ export const moodToday = (s, now) => day(s, now).mood;
 export function homeBonus(s, now = Date.now()) {
   const out = {}; const b = buffStat(s, now); if (b) for (const [k, v] of Object.entries(b)) out[k] = (out[k] || 0) + v;
   if (s.home?.day?.date === today(now) && s.home.day.mood) out.xp = (out.xp || 0) + 5;
+  for (const id of s.home?.guardians || []) for (const [k, v] of Object.entries(HOME.guardians[id]?.bonus || {})) out[k] = (out[k] || 0) + v;
   return out;
 }
 

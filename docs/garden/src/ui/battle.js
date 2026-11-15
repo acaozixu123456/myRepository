@@ -1,5 +1,6 @@
 // 战斗界面：行动顺序条、名牌（血条、状态、破绽条）、指令、飘字，按顺序播放战斗事件。
 // 这部分动画密集，直接操作 DOM。
+import { sfx } from './sound.js';
 import * as C from '../core/index.js';
 import { ITEMS, MONSTERS, ELEMENTS, EL_COLOR, STATUS, GEAR, ADVANCE_LV } from '../data/index.js';
 import { store, save, refresh } from './store.js';
@@ -171,13 +172,14 @@ async function go(action, fromAuto) {
       if (e.dmg || !e.absorbed) floatText(e.who, dotTxt + '-' + e.dmg, e.crit ? 'crit' : e.eff > 0 ? 'weak' : e.dot ? 'dot' : '');
       if (e.eff > 0) setTimeout(() => floatText(e.who, '克制', 'txt weak'), 120 / speed); else if (e.eff < 0) setTimeout(() => floatText(e.who, '抵抗', 'txt'), 120 / speed);
       if (e.crit) view.anim.shake(0.35, 0.22);
+      sfx(e.crit ? 'crit' : 'hit');
       view.anim.hit(e.who, e.dot === 'burn' ? 0xff8a4a : e.dot === 'poison' ? 0xb07cff : e.el && e.el !== 'none' ? hex(e.el) : 0xffffff, e.crit); await sleep(e.dot ? 300 : 240);
     } else if (e.t === 'miss') { floatText(e.who, '闪开了', 'txt'); await sleep(240); }
     else if (e.t === 'revive') { const p = plates[e.who]; p.el.classList.remove('dead'); setHp(e.who, e.hp); floatText(e.who, '站起来了', 'txt heal'); await view.anim.revive(e.who); await view.anim.heal(e.who); }
     else if (e.t === 'endure') { floatText(e.who, '撑住了', 'txt weak'); await sleep(300); }
     else if (e.t === 'cover') { floatText(e.who, '挡在前面', 'txt'); await view.anim.flash(e.who); }
     else if (e.t === 'ko') { const p = plates[e.who]; p.fx = {}; p.shield = 0; p.el.classList.add('dead'); await view.anim.ko(e.who); }
-    else if (e.t === 'heal') { setHp(e.who, e.hp); floatText(e.who, '+' + e.n, 'heal'); await view.anim.heal(e.who); }
+    else if (e.t === 'heal') { sfx('heal'); setHp(e.who, e.hp); floatText(e.who, '+' + e.n, 'heal'); await view.anim.heal(e.who); }
     else if (e.t === 'mp') { setMp(); floatText(e.who, '灵气 +' + e.n, 'mpc txt'); await sleep(350); }
     else if (e.t === 'fx') { const p = plates[e.who]; p.fx[e.fx] = e.stacks || 1; drawPlate(e.who); floatText(e.who, STATUS[e.fx].name, 'txt fx-' + STATUS[e.fx].kind); await sleep(200); }
     else if (e.t === 'fxEnd') { const p = plates[e.who]; if (p) { delete p.fx[e.fx]; if (e.fx === 'shield') p.shield = 0; if (e.fx === 'broken') view.anim.up(e.who); drawPlate(e.who); } }
@@ -204,6 +206,7 @@ async function go(action, fromAuto) {
 async function endBattle() {
   await sleep(450);
   const s = store.s, over = battle.over, zoneBefore = s.world.zone, log = C.finishBattle(battle, s); save();
+  sfx(over === 'lose' ? 'lose' : over === 'win' ? (log.some(l => l.t === 'levelup' && l.who === 'hero') ? 'level' : log.some(l => l.t === 'caught') ? 'capture' : 'win') : 'open');
   const lines = log.map(l => {
     if (l.t === 'lose') return { text: `你们都倒下了，灯灵把你接回了小岛。${l.lost ? `路上丢了 ${l.lost} 金币。` : ''}` };
     if (l.t === 'reward') return { text: `经验 +${l.xp}　金币 +${l.gold}` };

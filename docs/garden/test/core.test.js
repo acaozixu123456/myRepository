@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as C from '../src/core/index.js';
-import { ZONES, QUESTS, SKILLS, MONSTERS } from '../src/data/index.js';
+import { ZONES, QUESTS, SKILLS, MONSTERS, ACHIEVEMENTS } from '../src/data/index.js';
 
 test('新开档的数值合理', () => {
   for (const cls of ['cat', 'fox', 'rabbit']) {
@@ -305,4 +305,19 @@ test('M5 厨房和日常：做饭吃饭加成、送礼、签到、悬赏、摸�
   const m = C.plantMood(s, '今天天气很好', t0); assert.equal(m.hue, C.hueOf('今天天气很好')); assert.equal(C.plantMood(s, '再写一句', t0), null);
   assert.ok(C.awayNotes(s, t0 - 5 * 3600000, t0).length >= 1); assert.equal(C.awayNotes(s, t0 - 60000, t0), null);
   const old = { ...C.newGame('cat'), v: 5 }; delete old.home; const up = C.load(JSON.parse(JSON.stringify(old))); assert.equal(up.v, 6); assert.equal(up.home.plots.length, 6); assert.deepEqual(up.quests.side, {});
+});
+
+test('M6 成就和守护兽：做到了才能领，领一次；同一首领打 3 次能请回家园，加成算进属性', () => {
+  const s = C.newGame('cat'), sand = () => s.bag.items.starSand || 0;
+  const a = ACHIEVEMENTS.find(x => x.check.stat === 'kills' && x.check.n === 10);
+  assert.equal(C.achvState(s, a), 'locked'); assert.equal(C.claimAchv(s, a.id), null);
+  s.stats.kills = 10; assert.equal(C.achvState(s, a), 'ready'); assert.ok(C.achvReady(s).some(x => x.id === a.id));
+  const b = sand(); assert.ok(C.claimAchv(s, a.id)); assert.equal(sand(), b + a.sand); assert.equal(C.claimAchv(s, a.id), null); assert.equal(C.achvState(s, a), 'claimed');
+  for (const x of ACHIEVEMENTS) C.achvState(s, x);
+  const boss = ZONES.find(z => z.boss).boss;
+  assert.equal(C.guardianState(s, boss), 'away'); assert.ok(!C.inviteGuardian(s, boss));
+  for (let i = 0; i < 3; i++) C.tally(s, 'boss_' + boss);
+  assert.equal(C.guardianState(s, boss), 'ready'); const hp = C.heroStats(s);
+  assert.ok(C.inviteGuardian(s, boss)); assert.equal(C.guardianState(s, boss), 'home'); assert.ok(!C.inviteGuardian(s, boss));
+  const after = C.heroStats(s); assert.ok(Object.keys(after).some(k => after[k] > hp[k]));
 });

@@ -400,5 +400,56 @@
     1
    ]
   }
- ]
+ ],
+ "guardianWins": 3,
+ "guardians": {
+  "tusk": {
+   "bonus": {
+    "hpP": 3
+   },
+   "line": "獠牙大王在坡上挖了个坑，舒舒服服地趴了进去。"
+  },
+  "spout": {
+   "bonus": {
+    "healUp": 4
+   },
+   "line": "喷泉象每天早上给田地浇一遍水。"
+  },
+  "mane": {
+   "bonus": {
+    "atkP": 3
+   },
+   "line": "烈鬃王蹲在石灯旁边，鬃毛暖烘烘的。"
+  },
+  "starneck": {
+   "bonus": {
+    "magP": 3
+   },
+   "line": "摘星兽晚上把一颗小星星挂在屋檐下。"
+  },
+  "inkking": {
+   "bonus": {
+    "dodge": 3
+   },
+   "line": "山水熊王在池塘边画小画，画完就送你。"
+  },
+  "ringlion": {
+   "bonus": {
+    "crit": 3
+   },
+   "line": "星环狮绕着小岛巡逻，尾巴叮叮当当响。"
+  },
+  "glassmammoth": {
+   "bonus": {
+    "def": 6
+   },
+   "line": "琉璃象站在岛边，太阳一照，满地彩虹。"
+  },
+  "cloudbear": {
+   "bonus": {
+    "xp": 5
+   },
+   "line": "云眠巨熊在小岛下面的云里睡觉，翻身就下一阵小雨。"
+  }
+ }
 }

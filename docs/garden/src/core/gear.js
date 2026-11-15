@@ -1,4 +1,5 @@
 // 装备：生成、属性计算、强化、镶嵌、洗练、分解、打造、商店。
+import { tally } from './tally.js';
 import { GEAR, ITEMS, ZONES } from '../data/index.js';
 import { rnd, ri, pick } from './rng.js';
 
@@ -97,7 +98,7 @@ export function enhance(s, g) {
   if (!g || (g.plus || 0) >= MAX_PLUS) return null; const c = enhanceCost(g);
   if (s.wallet.gold < c.gold || (s.bag.items.stone || 0) < c.stone) return null;
   s.wallet.gold -= c.gold; s.bag.items.stone -= c.stone;
-  const ok = rnd() * 100 < enhanceRate(g);
+  const ok = rnd() * 100 < enhanceRate(g); tally(s, ok ? 'enhanceOk' : 'enhanceFail');
   if (ok) { g.plus = (g.plus || 0) + 1; g.luck = 0; } else g.luck = (g.luck || 0) + 10; // 失败只扣材料，累积幸运值保底
   return { ok };
 }
@@ -138,6 +139,7 @@ export function craft(s, set, focus = null) {
   if (!canCraft(s, set)) return null; if (focus && !(s.bag.items.focus > 0)) return null;
   const c = craftCost(set); s.wallet.gold -= c.gold; for (const [k, n] of Object.entries(c.items)) s.bag.items[k] -= n;
   if (focus) s.bag.items.focus--;
+  tally(s, 'craft');
   const cr = s.craft; const g = makeGear(tierOfSet(set), { set, minQ: 1, bonus: 2 + cr.lv * 1.5, focus });
   bag(s).push(g);
   cr.xp++; if (cr.lv < CRAFT_MAX && cr.xp >= cr.lv * 2) { cr.xp = 0; cr.lv++; }

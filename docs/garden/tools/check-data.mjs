@@ -1,5 +1,5 @@
 // 构建前检查内容数据里的引用是否都对得上，写错一个 id 就让构建失败。
-import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE, PETS, NPCS, SIDE_QUESTS, HOME, CROPS, DISHES, JOBS } from '../src/data/index.js';
+import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE, PETS, NPCS, SIDE_QUESTS, HOME, CROPS, DISHES, JOBS, ACHIEVEMENTS } from '../src/data/index.js';
 const errs = [], need = (ok, msg) => { if (!ok) errs.push(msg); };
 for (const [k, c] of Object.entries(CLASSES)) { for (const [, id] of c.skills) need(SKILLS[id], `职业 ${k} 的技能 ${id} 不存在`); need(ELEMENTS[c.el], `职业 ${k} 的元素 ${c.el} 不存在`); }
 for (const [k, m] of Object.entries(MONSTERS)) {
@@ -32,5 +32,10 @@ for (const z of ZONES) if (z.boss) need(MONSTERS[z.boss].epi, `首领 ${z.boss} 
 for (const d of Object.values(DISHES)) { for (const k in d.need) need(ITEMS[k], `料理 ${d.id} 的食材 ${k} 不存在`); need(ITEMS[d.id]?.cat === 'dish', `料理 ${d.id} 没进道具表`); }
 for (const c of Object.values(CROPS)) need(ITEMS[c.id]?.cat === 'crop' && c.hours > 0 && c.sell > c.seed, `作物 ${c.id} 不对`);
 for (const n of Object.values(PETS.natures)) need(DISHES[n.food] && JOBS[n.job], `性格 ${n.name} 的爱吃或擅长不对`);
+// 成就：id 不重复、分类和条件认得、奖励星砂；守护兽都是首领
+const ACH_KEYS = ['stat', 'lv', 'main', 'side', 'bossAll', 'route', 'gold', 'broke', 'pets', 'shiny', 'evoMax', 'love', 'stars5', 'house', 'caught', 'quality', 'plus', 'set4', 'days', 'mood', 'plots'];
+const aIds = new Set();
+for (const a of ACHIEVEMENTS) { need(!aIds.has(a.id), `成就 id 重复：${a.id}`); aIds.add(a.id); need(['冒险', '伙伴', '收集', '家园', '奇怪'].includes(a.cat), `成就 ${a.id} 分类不对`); need(Object.keys(a.check).some(k => ACH_KEYS.includes(k)), `成就 ${a.id} 条件不认得`); need(a.sand > 0 && a.name && a.desc, `成就 ${a.id} 缺名字或奖励`); }
+for (const [id, g] of Object.entries(HOME.guardians)) need(MONSTERS[id]?.boss && g.line && Object.keys(g.bonus).length, `守护兽 ${id} 不对`);
 if (errs.length) { console.error('数据检查没通过：\n' + errs.join('\n')); process.exit(1); }
-console.log(`数据检查通过：${Object.keys(CLASSES).length} 职业，${Object.keys(SKILLS).length} 技能，${Object.keys(STATUS).length} 状态，${Object.keys(COMBO).length} 连携，${Object.keys(MONSTERS).length} 怪物，${ZONES.length} 张地图，${QUESTS.length} 个主线、${SIDE_QUESTS.length} 个支线、${Object.keys(NPCS).length} 个居民`);
+console.log(`数据检查通过：${Object.keys(CLASSES).length} 职业，${Object.keys(SKILLS).length} 技能，${Object.keys(STATUS).length} 状态，${Object.keys(COMBO).length} 连携，${Object.keys(MONSTERS).length} 怪物，${ZONES.length} 张地图，${QUESTS.length} 个主线、${SIDE_QUESTS.length} 个支线、${Object.keys(NPCS).length} 个居民、${ACHIEVEMENTS.length} 个成就`);

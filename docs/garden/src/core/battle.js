@@ -1,5 +1,6 @@
 // 战斗 2.0：行动条回合制。纯规则，返回事件列表，画面按顺序播放。
 // 每个单位的行动值按速度增长，满 1000 出手；轮到英雄时停下来等指令。
+import { tally } from './tally.js';
 import { MONSTERS, ZONES, ITEMS, BEATS, STATUS, COMBO, COMBO_STYLE, CLASSES, PETS } from '../data/index.js';
 import { makeGear, addItem, addGem } from './gear.js';
 import { rnd, ri, pick } from './rng.js';
@@ -385,10 +386,10 @@ export function finishBattle(b, s) {
   h.hp = Math.max(1, heroU.hp); h.mp = heroU.mp;
   for (const u of b.units) if (u.uid) { const p = s.pets.find(x => x.uid === u.uid); if (p) p.hp = u.hp; }
   if (b.over === 'lose') { // 输了：回家，丢一点金币
-    const lost = Math.round(s.wallet.gold * 0.1); s.wallet.gold -= lost; s.world.zone = 'home'; fullHeal(s);
+    tally(s, 'lose'); const lost = Math.round(s.wallet.gold * 0.1); s.wallet.gold -= lost; s.world.zone = 'home'; fullHeal(s);
     log.push({ t: 'lose', lost }); return log;
   }
-  if (b.over === 'flee') return log;
+  if (b.over === 'flee') { tally(s, 'flee'); return log; }
   const zone = zoneOf(s), zi = ZONES.indexOf(zone), tier = Math.max(1, zi);
   let xp = 0, gold = 0; const foes = b.units.filter(u => u.side === 'b');
   for (const f of foes) {
@@ -396,7 +397,7 @@ export function finishBattle(b, s) {
     if (!f.caught) { s.stats.kills++; questProgress(s, 'kill', f); }
     if (f.boss && !f.caught) {
       if (!s.world.bosses[f.mid] && MONSTERS[f.mid].epi) log.push({ t: 'epi', text: MONSTERS[f.mid].epi });
-      s.world.bosses[f.mid] = 1; questProgress(s, 'boss', f);
+      s.world.bosses[f.mid] = 1; tally(s, 'boss'); tally(s, 'boss_' + f.mid); questProgress(s, 'boss', f);
       if (s.world.unlocked <= zi && zi < ZONES.length - 1) { s.world.unlocked = zi + 1; log.push({ t: 'unlock', zone: ZONES[zi + 1].name }); }
     }
   }
@@ -419,7 +420,7 @@ export function finishBattle(b, s) {
   if (rnd() < 0.22) drop(pick(['pill', 'pill', 'dew', 'seed']));
   if (b.captured) {
     const room = roomFor(s);
-    if (room) { const p = addPet(s, b.captured.id, b.captured.lv, { shiny: b.captured.shiny, home: room === 'home' }); log.push({ t: 'caught', id: p.id, home: p.home, shiny: p.shiny, stars: aptStars(p) }); questProgress(s, 'capture', { id: p.id }); }
+    if (room) { const p = addPet(s, b.captured.id, b.captured.lv, { shiny: b.captured.shiny, home: room === 'home' }); log.push({ t: 'caught', id: p.id, home: p.home, shiny: p.shiny, stars: aptStars(p) }); questProgress(s, 'capture', { id: p.id }); tally(s, 'capture'); }
     else log.push({ t: 'petfull' });
   }
   h.hp = Math.min(h.hp, heroStats(s).hp);

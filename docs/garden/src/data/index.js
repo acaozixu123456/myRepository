@@ -28,3 +28,5 @@ import sidequests from './sidequests.json' with { type: 'json' };
 export const SIDE_QUESTS = sidequests;
 import home from './home.json' with { type: 'json' };
 export const HOME = home, CROPS = home.crops, DISHES = home.dishes, JOBS = home.jobs;
+import achievements from './achievements.json' with { type: 'json' };
+export const ACHIEVEMENTS = achievements;

@@ -7,3 +7,5 @@ export * from './quests.js';
 export * from './battle.js';
 export * from './save.js';
 export * from './home.js';
+export * from './achieve.js';
+export { tally } from './tally.js';

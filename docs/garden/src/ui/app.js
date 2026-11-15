@@ -3,11 +3,12 @@ import { h, render } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import htm from 'htm';
 import * as C from '../core/index.js';
-import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, ELEMENTS, NPCS, QUESTS } from '../data/index.js';
+import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, ELEMENTS, NPCS, QUESTS, ACHIEVEMENTS } from '../data/index.js';
 import { ICON_PATHS } from './icons.js';
 import { gearPages, routeHint } from './gearui.js';
 import { petPages } from './petui.js';
 import { homePages, homeBadge } from './homeui.js';
+import { sfx, setSound, bindTaps } from './sound.js';
 import { store, subscribe, refresh, save, setState, wipe } from './store.js';
 
 export const html = htm.bind(h);
@@ -66,7 +67,7 @@ function QuestChip() {
 }
 const NAV = [['bag', 'bag', '背包'], ['hero', 'hero', '角色'], ['pets', 'paw', '伙伴'], ['quests', 'scroll', '任务'], ['more', 'more', '更多']];
 function Nav() {
-  const s = store.s, badge = { hero: routeHint(s) ? '!' : (s.hero.pts + s.hero.sp) || '', bag: s.bag.gear.length || '', quests: !s.quests.main.accepted && C.currentQuest(s) || C.questDone(s) ? '!' : '' };
+  const s = store.s, badge = { hero: routeHint(s) ? '!' : (s.hero.pts + s.hero.sp) || '', bag: s.bag.gear.length || '', quests: !s.quests.main.accepted && C.currentQuest(s) || C.questDone(s) || C.achvReady(s).length ? '!' : '' };
   return html`<nav class="nav panel">${NAV.map(([k, ic, label]) => html`<button type="button" class=${ui.sheet === k ? 'on' : ''} onClick=${() => (ui.sheet === k ? closeSheet() : openSheet(k))}><${Icon} n=${ic} s=${24} /><span>${label}</span>${badge[k] ? html`<em>${badge[k]}</em>` : null}</button>`)}</nav>`;
 }
 
@@ -74,11 +75,7 @@ function Nav() {
 export const Head = ({ title, right }) => html`<div class="head">${ui.stack.length ? html`<button type="button" class="hb" aria-label="返回" onClick=${back}><${Icon} n="back" /></button>` : null}<h2>${title}</h2><div class="hr">${right}</div>${!ui.lock ? html`<button type="button" class="hb" aria-label="关闭" onClick=${closeSheet}><${Icon} n="close" /></button>` : null}</div>`;
 export const Gold = () => html`<span class="gold"><${Coin} />${store.s.wallet.gold}</span>`;
 
-const pages = {
-  ...gearPages,
-  ...petPages,
-  ...homePages,
-  quests() {
+function questList(bar) {
     const s = store.s, q = C.currentQuest(s), m = s.quests.main;
     let card;
     if (!q) card = html`<div class="talk"><b>灯灵</b>「往后这几座岛，你想去哪就去哪。」<small>所有委托都完成了。首领可以反复挑战，伙伴和装备可以继续练。</small></div>`;
@@ -87,9 +84,33 @@ const pages = {
     else card = html`<div class="talk"><b>${q.title}</b>${q.text}<div class="prog"><span>进度</span><b>${C.questProgressText(s)}</b></div><small>奖励：${C.rewardText(q.reward)}</small></div>`;
     const done = C.mainDoneCount(s), ch = q ? q.ch : 5, sides = C.activeSides(s);
     const doneCh = [1, 2, 3, 4, 5].map(c => QUESTS.filter(x => x.ch === c && s.quests.done.includes(x.id))).filter(l => l.length);
-    return html`<${Head} title="任务" right=${`主线 ${done}/${QUESTS.length}`} /><div class="scroll"><h3>第 ${ch} 章 · ${C.CHAPTERS[ch - 1]}</h3>${card}
+    return html`<${Head} title="任务" right=${`主线 ${done}/${QUESTS.length}`} />${bar}<div class="scroll"><h3>第 ${ch} 章 · ${C.CHAPTERS[ch - 1]}</h3>${card}
       <h3>支线</h3>${sides.length ? sides.map(({ q: x, ready, prog }) => html`<div class=${'row slim' + (ready ? ' on' : '')}><span class=${'gi z' + ZONES.findIndex(z => z.id === NPCS[x.npc].zone)}><${Icon} n="chat" s=${20} /></span><div class="mid"><b>${x.title}</b><small>${NPCS[x.npc].name}　${ready ? '做到了，回去找它' : prog}</small></div></div>`) : html`<p class="hint">岛上的居民头顶亮着黄光，说明有事找你帮忙。</p>`}
       ${doneCh.length ? html`<h3>已完成</h3>${doneCh.map(l => html`<details class="chap"><summary>第 ${l[0].ch} 章 · ${C.CHAPTERS[l[0].ch - 1]}<small>${l.length}/${QUESTS.filter(x => x.ch === l[0].ch).length}</small></summary>${l.map(x => html`<div class="row slim dim"><span class="gi"><${Icon} n="star" s=${20} /></span><div class="mid"><b>${x.title}</b></div></div>`)}</details>`)}` : null}</div>`;
+  }
+
+const ACH_CATS = ['冒险', '伙伴', '收集', '家园', '奇怪'];
+function achvList(bar) {
+  const s = store.s, ready = C.achvReady(s);
+  const claimOne = a => () => { const r = C.claimAchv(s, a.id); if (!r) return; save(); sfx('coin'); toast(`成就：${r.name}`, `得到 星砂 ×${r.sand}`); };
+  const claimAll = () => { let n = 0; ready.forEach(a => { const r = C.claimAchv(s, a.id); if (r) n += r.sand; }); save(); sfx('coin'); toast(`领了 ${ready.length} 个成就`, `一共 星砂 ×${n}`); };
+  return html`<${Head} title="任务" right=${`成就 ${C.achvCount(s)}/${ACHIEVEMENTS.length}`} />${bar}<div class="scroll">
+    ${ready.length > 1 ? html`<button type="button" class="primary" onClick=${claimAll}>全部领取（${ready.length}）</button>` : null}
+    ${ACH_CATS.map(cat => { const l = ACHIEVEMENTS.filter(a => a.cat === cat), got = l.filter(a => C.achvState(s, a) === 'claimed').length;
+      return html`<h3>${cat}<small>　${got}/${l.length}</small></h3>${l.map(a => { const st = C.achvState(s, a), secret = cat === '奇怪' && st === 'locked';
+        return html`<div class=${'row slim' + (st === 'ready' ? ' on' : st === 'locked' ? ' dim' : '')}><span class="gi"><${Icon} n=${st === 'claimed' ? 'star' : st === 'ready' ? 'sparkle' : 'lock'} s=${20} /></span><div class="mid"><b>${secret ? '？？？' : a.name}</b><small>${secret ? '做点奇怪的事就会知道' : a.desc}　星砂 ×${a.sand}</small></div>${st === 'ready' ? html`<${Btn} onClick=${claimOne(a)}>领取</${Btn}>` : st === 'claimed' ? html`<span class="tag">已领</span>` : null}</div>`; })}`; })}
+  </div>`;
+}
+
+const pages = {
+  ...gearPages,
+  ...petPages,
+  ...homePages,
+  quests() {
+    const [tab, setTab] = useState(ui.questTab || 'q'), set = k => { ui.questTab = k; setTab(k); };
+    const n = C.achvReady(store.s).length, tabs = [['q', '委托'], ['a', n ? `成就 · ${n}` : '成就']];
+    const bar = html`<${Tabs} tab=${tab} set=${set} list=${tabs} />`;
+    return tab === 'a' ? achvList(bar) : questList(bar);
   },
   more() {
     const go = (k, push = true) => () => openSheet(k, { push });
@@ -110,7 +131,11 @@ const pages = {
   },
   settings() {
     const [code, setCode] = useState(''), [imp, setImp] = useState(''), [sure, setSure] = useState(false);
+    const st = store.s.settings, saver = (() => { try { return localStorage.getItem('fudao.saver') === '1'; } catch { return false; } })();
     return html`<${Head} title="设置" /><div class="scroll">
+      <h3>声音和画面</h3>
+      <div class="row slim"><span class="gi"><${Icon} n="sparkle" s=${20} /></span><div class="mid"><b>音效</b><small>按钮、打击、升级的小声音</small></div><${Btn} ghost=${st.sound === false} onClick=${() => { st.sound = st.sound === false; setSound(st.sound); save(); sfx('open'); }}>${st.sound === false ? '关' : '开'}</${Btn}></div>
+      <div class="row slim"><span class="gi"><${Icon} n="cloud" s=${20} /></span><div class="mid"><b>省电画质</b><small>关掉阴影、降低分辨率，手机不容易发烫。改完重新打开生效</small></div><${Btn} ghost=${!saver} onClick=${() => { try { localStorage.setItem('fudao.saver', saver ? '0' : '1'); } catch { /* */ } location.reload(); }}>${saver ? '开' : '关'}</${Btn}></div>
       <h3>存档码</h3><p class="hint">存档存在这台手机的浏览器里。把存档码复制到备忘录，换手机或数据被清掉时可以导回来。</p>
       <button type="button" class="primary ghost" onClick=${() => { const c = C.exportCode(store.s); setCode(c); navigator.clipboard?.writeText(c).then(() => toast('存档码已复制'), () => {}); }}><${Icon} n="copy" s=${18} /> 生成并复制存档码</button>
       ${code && html`<textarea readonly rows="3" onFocus=${e => e.target.select()}>${code}</textarea>`}
@@ -174,5 +199,5 @@ function App() {
   return html`${world && html`<${Hud} />`}${world && !ui.sheet && html`<${QuestChip} />`}${world && html`<${Nav} />`}${ui.sheet && html`<${Sheet} />`}${ui.toast && html`<${Toast} />`}`;
 }
 
-export function mountUI(el, h) { hooks = h; render(html`<${App} />`, el); }
+export function mountUI(el, h) { hooks = h; bindTaps(el); setSound(store.s?.settings?.sound !== false); render(html`<${App} />`, el); }
 export const setMode = m => { ui.mode = m; document.body.dataset.mode = m; refresh(); };
