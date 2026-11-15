@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="荒地复苏">
+<meta name="theme-color" content="#7fc3ef">
+<title>荒地复苏</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+</head>
+<body>
+<div id="sky"></div>
+<canvas id="stars"></canvas>
+<canvas id="c"></canvas>
+
+<div id="loading"><div class="spin"></div><p>正在走向那块荒地…</p></div>
+
+<header class="ui top">
+  <div class="chip"><div class="sub" id="dayLabel">第 1 天</div><div class="title">北坡小岛</div></div>
+  <div class="chip vit"><div class="sub">生机</div><b id="vit">0%</b></div>
+</header>
+
+<div class="ui place" id="placeBar" hidden><div class="chip"><span id="placeText">点一下岛上的空地</span><button id="placeCancel" type="button">取消</button></div></div>
+
+<button class="ui note" id="noteChip" type="button"><div class="chip"><small><span id="noteHead">观察笔记</span><i id="unread" hidden></i></small><span id="noteText"></span></div></button>
+
+<nav class="ui bar">
+  <button class="chip btn" id="bSeed" type="button"><i>🌱</i>播种<em id="seedCount"></em></button>
+  <button class="chip btn" id="bWater" type="button"><i>💧</i>浇水</button>
+  <button class="btn main" id="bMood" type="button"><i>✍️</i>写心情</button>
+  <button class="chip btn" id="bNotes" type="button"><i>📖</i>笔记</button>
+  <button class="chip btn" id="bBook" type="button"><i>🎒</i>收藏</button>
+</nav>
+
+<div id="toast" hidden></div>
+
+<div id="scrim" hidden></div>
+<section class="sheet" id="sheetSeed" hidden>
+  <h2>播种</h2><p class="hint" id="seedHint"></p>
+  <div class="seeds" id="seedList"></div>
+</section>
+<section class="sheet" id="sheetMood" hidden>
+  <h2>写下一句话</h2><p class="hint">它会被种进土里，大约十个小时后长成一朵会发光的花。</p>
+  <textarea id="moodText" maxlength="40" rows="3" placeholder="今天想说点什么"></textarea>
+  <button class="primary" id="moodGo" type="button">种下这句话</button>
+</section>
+<section class="sheet tall" id="sheetNotes" hidden>
+  <h2>观察笔记</h2><div class="scroll" id="noteList"></div>
+</section>
+<section class="sheet tall" id="sheetBook" hidden>
+  <h2>收藏</h2><div class="scroll" id="bookList"></div>
+</section>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
