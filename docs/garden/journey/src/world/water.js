@@ -6,10 +6,10 @@ import { U, FOG_FN } from './atmo.js';
 import { SKY } from './sky.js';
 
 const VS = /* glsl */`
-attribute float aDepth;
-varying vec2 vUv; varying vec3 vWP; varying float vDepth;
+attribute float aDepth; attribute float aSlope;
+varying vec2 vUv; varying vec3 vWP; varying float vDepth; varying float vSlope;
 void main() {
-  vUv = uv; vDepth = aDepth;
+  vUv = uv; vDepth = aDepth; vSlope = aSlope;
   vec4 w = modelMatrix * vec4( position, 1.0 ); vWP = w.xyz;
   gl_Position = projectionMatrix * viewMatrix * w;
 }`;
@@ -17,7 +17,7 @@ const FS = /* glsl */`
 uniform float uTime; uniform vec3 uSunColor; uniform vec3 uZenith; uniform vec3 uMid;
 uniform vec3 uShallow; uniform vec3 uDeep; uniform vec3 uFoam;
 ${FOG_FN}
-varying vec2 vUv; varying vec3 vWP; varying float vDepth;
+varying vec2 vUv; varying vec3 vWP; varying float vDepth; varying float vSlope;
 float h21( vec2 p ) { p = fract( p * vec2( 123.34, 456.21 ) ); p += dot( p, p + 45.32 ); return fract( p.x * p.y ); }
 float vn( vec2 p ) { vec2 i = floor( p ), f = fract( p ); f = f * f * ( 3.0 - 2.0 * f );
   return mix( mix( h21( i ), h21( i + vec2( 1, 0 ) ), f.x ), mix( h21( i + vec2( 0, 1 ) ), h21( i + 1.0 ), f.x ), f.y ); }
@@ -25,11 +25,13 @@ void main() {
   float t = uTime;
   float depth = clamp( vDepth / 0.75, 0.0, 1.0 );
   vec3 col = mix( uShallow, uDeep, smoothstep( 0.0, 0.9, depth ) );
+  // 山涧：坡越陡水越急，跌水的地方全是白沫
+  float rapid = smoothstep( 0.05, 0.22, vSlope ), fall = smoothstep( 0.3, 0.7, vSlope );
   // 水流：两层噪声顺着溪往下游走
-  vec2 fp = vec2( vUv.x * 0.42 - t * 0.9, vUv.y * 1.6 );
+  vec2 fp = vec2( vUv.x * 0.42 - t * ( 0.9 + 1.6 * rapid ), vUv.y * 1.6 );
   float n1 = vn( fp * vec2( 1.0, 2.0 ) );
   float n2 = vn( fp * vec2( 2.6, 4.0 ) + vec2( 13.0 - t * 0.5, 4.0 ) );
-  float n3 = vn( vec2( vUv.x * 2.4 - t * 1.6, vUv.y * 9.0 ) );
+  float n3 = vn( vec2( vUv.x * 2.4 - t * ( 1.6 + 3.0 * rapid ), vUv.y * 9.0 ) );
   vec3 N = normalize( vec3( ( n1 - 0.5 ) * 0.5 + ( n3 - 0.5 ) * 0.25, 1.0, ( n2 - 0.5 ) * 0.5 ) );
   vec3 V = normalize( cameraPosition - vWP );
   // 天空倒影（菲涅耳）
@@ -47,8 +49,10 @@ void main() {
   // 岸边白沫
   float foam = ( 1.0 - smoothstep( 0.02, 0.16, vDepth ) ) * smoothstep( 0.35, 0.75, n2 + n3 * 0.4 );
   col = mix( col, uFoam, foam * 0.75 );
+  float white = clamp( rapid * ( 0.25 + 0.55 * smoothstep( 0.35, 0.75, n1 * 0.5 + n3 * 0.5 ) ) + fall * ( 0.55 + 0.4 * n3 ), 0.0, 1.0 );
+  col = mix( col, uFoam, white );
   float a = mix( 0.35, 0.94, smoothstep( 0.0, 0.5, depth ) );
-  a = max( a, foam * 0.8 );
+  a = max( a, max( foam * 0.8, white * 0.95 ) );
   a *= smoothstep( -0.02, 0.04, vDepth );
   col = jFog( col, vWP );
   gl_FragColor = vec4( col, a );
@@ -57,7 +61,7 @@ void main() {
 }`;
 
 export function buildStream(land) {
-  const pos = [], uv = [], dep = [], idx = [];
+  const pos = [], uv = [], dep = [], slope = [], idx = [];
   const p = {};
   const M = 40, x0 = DOM.x0 - M, x1 = DOM.x0 + DOM.w + M, z0 = DOM.z0 - M, z1 = DOM.z0 + DOM.d + M;
   const cols = [-1, -0.62, -0.3, 0, 0.3, 0.62, 1];
@@ -66,10 +70,11 @@ export function buildStream(land) {
     STREAM.at(s, p);
     if (p.x < x0 || p.x > x1 || p.z < z0 || p.z > z1) { if (rows) break; else continue; }
     const W = waterY(s), half = bankW(s) + 1.0, nx = -p.tz, nz = p.tx;
+    const sl = (waterY(s - 1.2) - waterY(s + 1.2)) / 2.4;
     for (const u of cols) {
       const x = p.x + nx * u * half, z = p.z + nz * u * half;
       pos.push(x, W, z); uv.push(s, u * half);
-      dep.push(W - land.height(x, z));
+      dep.push(W - land.ground(x, z)); slope.push(sl);
     }
     if (rows) { const a = (rows - 1) * cols.length, b = rows * cols.length; for (let i = 0; i < cols.length - 1; i++) idx.push(a + i, b + i, a + i + 1, a + i + 1, b + i, b + i + 1); }
     rows++;
@@ -78,6 +83,7 @@ export function buildStream(land) {
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   geo.setAttribute('aDepth', new THREE.Float32BufferAttribute(dep, 1));
+  geo.setAttribute('aSlope', new THREE.Float32BufferAttribute(slope, 1));
   geo.setIndex(idx); geo.computeBoundingSphere();
   // 三角形朝上
   {

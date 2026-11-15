@@ -22,6 +22,10 @@ export class Path {
       this.tx[i] = dx / l; this.tz[i] = dz / l;
     }
     this.n = n; this.length = acc;
+    // 外框：离得太远的点直接不用找
+    let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+    for (let i = 0; i <= n; i++) { x0 = Math.min(x0, this.x[i]); x1 = Math.max(x1, this.x[i]); z0 = Math.min(z0, this.z[i]); z1 = Math.max(z1, this.z[i]); }
+    this.box = [x0, x1, z0, z1];
     // 空间网格加速最近点查询
     this.cell = 8; this.grid = new Map();
     for (let i = 0; i < n; i++) {
@@ -47,6 +51,8 @@ export class Path {
   }
   // 最近点：返回 {d: 带符号横向距离（右正）, s: 路程, dist: 距离}；超出搜索半径返回 dist=Infinity
   nearest(x, z, maxR = 40, out = {}) {
+    const B = this.box;
+    if (x < B[0] - maxR || x > B[1] + maxR || z < B[2] - maxR || z > B[3] + maxR) { out.dist = Infinity; out.d = Infinity; out.s = 0; return out; }
     let best = Infinity, bi = -1, bt = 0;
     const r = Math.ceil(maxR / this.cell);
     const cx = Math.floor(x / this.cell), cz = Math.floor(z / this.cell);
@@ -76,7 +82,25 @@ export class Path {
 // ---- 第一段：暖光谷地 ----
 // 骑行方向大致朝北（-Z），太阳在西北偏西、离地平线不高
 export const ROAD = new Path([[0, 30], [0, 8], [2, -18], [-2, -42], [-6, -64], [-3, -88], [4, -110], [6, -132], [0, -154], [-8, -173], [-11, -193], [-5, -212], [3, -228], [9, -242], [12, -256]], 1);
-export const STREAM = new Path([[-330, -360], [-250, -300], [-180, -240], [-135, -180], [-95, -130], [-50, -102], [-3, -88], [38, -80], [80, -60], [125, -46], [190, -16], [280, 20]], 1.5);
+// 溪水从西北山上的冰湖流出来：先是一段陡陡的山涧（雪原山口），到红叶谷变缓，再一路流过谷地
+export const STREAM = new Path([[-431, -500], [-421, -478], [-404, -452], [-384, -428], [-364, -401], [-346, -378], [-330, -360], [-250, -300], [-180, -240], [-135, -180], [-95, -130], [-50, -102], [-3, -88], [38, -80], [80, -60], [125, -46], [190, -16], [280, 20]], 1.5);
+// 冰湖：一个椭圆，长轴方向 (ax, az)；y（冰面高度）在 land.js 里按溪水源头算出来
+export const LAKE = { x: -446, z: -524, a: 40, b: 27, ax: 0.816, az: -0.577, y: 0 };
+// 山涧的起点（以前溪水的源头），往上就是山涧
+export const CREEK_END = STREAM.nearest(-330, -360, 5).s;
+// 溪边小路：从浅滩的西岸沿着小溪往上游，过红叶谷、顺着山涧爬上去，到冰湖边（走在溪的西南岸）
+export const TRAIL = (() => {
+  const s1 = STREAM.nearest(-96, -131, 40).s - 4, pts = [], p = {};
+  for (let s = 9; s < s1; s += 6) {
+    STREAM.at(s, p);
+    const off = (s < CREEK_END - 10 ? 7.5 : 9.5) + 1.6 * Math.sin(s * 0.031) - 3.5 * Math.max(0, 1 - (s1 - s) / 30);
+    pts.push([p.x - p.tz * off, p.z + p.tx * off]);
+  }
+  STREAM.at(s1 + 3, p); pts.push([p.x - p.tz * 5.5, p.z + p.tx * 5.5]);
+  // 拐弯处顺一顺
+  for (let it = 0; it < 3; it++) for (let i = 1; i < pts.length - 1; i++) pts[i] = [(pts[i - 1][0] + pts[i][0] * 2 + pts[i + 1][0]) / 4, (pts[i - 1][1] + pts[i][1] * 2 + pts[i + 1][1]) / 4];
+  return new Path(pts, 1);
+})();
 
 // 路上的地点（用路程 s 表示），加载后算出来
 export const SPOTS = {};

@@ -1,9 +1,9 @@
 // 自由旅行：步行、骑马、飞行三种走法，在谷地里随意走。按住屏幕往前，左右拖动转向（飞的时候上下拖动爬升、下降）。
-// 在山路上不拖动时会自动顺着路走；谷地里有十处地方（第一次到会出地名横幅，记进旅行手记）；
+// 在山路上不拖动时会自动顺着路走；谷地里有十处地方，往西北还有红叶谷、叠水、雪原山口和冰湖（第一次到会出地名横幅，记进旅行手记）；
 // 第一次到望远台有一段远景；在山口营地可以坐下烤火，看这一路的手记。
 // 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
 import * as THREE from 'three';
-import { ROAD, STREAM, SPOTS } from '../world/route.js';
+import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL } from '../world/land.js';
 import { PERIODS } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
@@ -29,6 +29,9 @@ const SEAT = { b: [0, 0.07, -0.04], a: [0, 0.09, -0.02], w: [0, 0.09, -0.02], d:
 export function makePlaces() {
   const at = s => ROAD.at(s, {});
   const st = at(SPOTS.start), br = at(SPOTS.bridge), gr = at(SPOTS.grove[0] + 6), vw = at(SPOTS.view), cp = at(SPOTS.camp);
+  // 溪边小路上离溪水某一段最近的点
+  const tr = s => { const p = STREAM.at(s, {}), q = TRAIL.nearest(p.x, p.z, 40); return TRAIL.at(q.s, {}); };
+  const au = tr(CREEK_END + 90), fa = tr(112), ps = tr(45);
   return [
     { id: 'valley', name: '暖光谷地', sub: '沿着小溪，往山口去', where: '出发的地方', x: st.x, z: st.z - 6, r: 20 },
     { id: 'east', name: '东坡花田', sub: '一坡的花，在风里晃', where: '出发后往右手边（东边）的山坡走', x: 75, z: -25, r: 26 },
@@ -39,13 +42,17 @@ export function makePlaces() {
     { id: 'grove', name: '林荫小道', sub: '树影一道一道落在路上', where: '过了木桥，山路两边的树林', x: gr.x, z: gr.z, r: 14 },
     { id: 'view', name: '望远台', sub: '回头看看，走过的溪谷都在脚下', where: '山路快到头，有一张长椅', x: vw.x - 3, z: vw.z, r: 9 },
     { id: 'camp', name: '山口营地', sub: '今晚在这里歇脚', where: '山路尽头，可以坐下烤火', x: cp.x, z: cp.z, r: 14 },
+    { id: 'autumn', name: '红叶谷', sub: '满山的红叶，落叶在风里打旋', where: '浅滩对岸有条溪边小路，顺着小溪往上游走', x: au.x, z: au.z, r: 30 },
+    { id: 'falls', name: '叠水', sub: '山涧一级一级跳下来，水声哗哗的', where: '红叶谷走到头，小路顺着山涧往上爬', x: fa.x, z: fa.z, r: 24 },
+    { id: 'pass', name: '雪原山口', sub: '风一下子凉了，脚下踩着雪', where: '顺着山涧一直往上，走到有雪的地方', x: ps.x, z: ps.z, r: 20 },
+    { id: 'lake', name: '冰湖', sub: '湖面冻得结结实实，可以走上去', where: '过了雪原山口，小溪就是从这个湖里流出来的', x: LAKE.x, z: LAKE.z, r: 46 },
     { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '点“飞”，一直往上飞', alt: 50 },
   ];
 }
 
 const _v = new THREE.Vector3(), _w = new THREE.Vector3(), _o = new THREE.Vector3(), _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion();
 const _h = [new THREE.Vector3(), new THREE.Vector3()], _bit = [new THREE.Vector3(), new THREE.Vector3()], _cr = new THREE.Vector3(), _e = new THREE.Euler();
-const _p = {};
+const _p = {}, _qr = {};
 
 export class Journey {
   // o: { land, bridge, camp, mounts: {b, a, w, d}, traveler, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight }
@@ -285,14 +292,15 @@ export class Journey {
   // 在路上、没有手动转向时，慢慢顺着路走
   followRoad(dt) {
     if (this.steerT > 0 || this.speed < 0.25) return;
-    const q = ROAD.nearest(this.p.x, this.p.z, 8);
-    if (!(q.dist < 4.5)) return;
-    ROAD.at(q.s, _p);
+    // 山路，或者溪边小路（窄一些）
+    let P = ROAD, q = ROAD.nearest(this.p.x, this.p.z, 8, _qr);
+    if (!(q.dist < 4.5)) { P = TRAIL; q = TRAIL.nearest(this.p.x, this.p.z, 6, _qr); if (!(q.dist < 3)) return; }
+    P.at(q.s, _p);
     let ry = Math.atan2(_p.tx, _p.tz), dir = 1;
     if (Math.abs(wrap(ry - this.yaw)) > Math.PI / 2) { ry = wrap(ry + Math.PI); dir = -1; }
     if (Math.abs(wrap(ry - this.yaw)) > 1.0) return;
     // 往前看几米的路，弯道上提前转
-    ROAD.at(q.s + dir * 4, _p);
+    P.at(q.s + dir * 4, _p);
     const ahead = Math.atan2(_p.x - this.p.x, _p.z - this.p.z);
     const lat = Math.abs(q.d) > 0.5 ? q.d - Math.sign(q.d) * 0.5 : 0;
     const want = wrap(lerp(ry, ry + wrap(ahead - ry), 0.6) + clamp(lat * 0.1 * dir, -0.3, 0.3));
@@ -329,9 +337,9 @@ export class Journey {
     let nx = this.p.x + fx * this.speed * dt, nz = this.p.z + fz * this.speed * dt, ny = this.p.y + this.vy * dt;
     // 飞得低时躲开树干和风车
     if (alt < 10) { const r = this.colliders.resolve(nx, nz, 0.6, alt); nx = r[0]; nz = r[1]; }
-    // 范围：离谷地中心 620 米以内
+    // 范围：离谷地中心 780 米以内（冰湖在西北差不多 600 米远）
     const dx = nx - CENTER.x, dz = nz - CENTER.z, rr = Math.hypot(dx, dz);
-    if (rr > 600) { this.yawT = this.yaw + wrap(Math.atan2(-dx, -dz) - this.yaw) * 0.04; this.steerT = 0.5; this.hintOnce('再往外云太厚了，往回飞'); }
+    if (rr > 780) { this.yawT = this.yaw + wrap(Math.atan2(-dx, -dz) - this.yaw) * 0.04; this.steerT = 0.5; this.hintOnce('再往外云太厚了，往回飞'); }
     const ng = this.land.height(nx, nz);
     const floor = ng + 1.05, ceil = Math.min(ng + 160, 260);
     if (ny < floor) { ny = floor; this.vy = Math.max(0, this.vy); if (descending || (!flap && this.speed < 7.5)) this.touchdown(); }
@@ -766,9 +774,11 @@ export class Journey {
     }
     const trees = this.colliders.count(hp.x, hp.z, 16);
     const low = this.mode === 'fly' ? 1 - sstep(10, 40, this.alt) : 1;
-    const birds = (0.3 + 0.7 * sstep(2, 10, trees)) * (this.daylight?.st.birds ?? 1) * low;
-    const crickets = sstep(0.15, 0.7, this.night) * (this.mode === 'fly' ? 1 - sstep(6, 30, this.alt) : 1) * (0.55 + 0.45 * sstep(0, 6, trees));
-    const wind = this.mode === 'fly' ? 0.45 + 0.55 * sstep(6, 18, this.speed) : 0.22 + 0.45 * sstep(1.5, 30, hp.y) + (this.phase === 'view' ? 0.25 : 0);
+    // 雪地里鸟和虫子都少，风大
+    const snow = this.land.snow(hp.x, hp.z);
+    const birds = (0.3 + 0.7 * sstep(2, 10, trees)) * (this.daylight?.st.birds ?? 1) * low * (1 - 0.8 * snow);
+    const crickets = sstep(0.15, 0.7, this.night) * (this.mode === 'fly' ? 1 - sstep(6, 30, this.alt) : 1) * (0.55 + 0.45 * sstep(0, 6, trees)) * (1 - snow);
+    const wind = (this.mode === 'fly' ? 0.45 + 0.55 * sstep(6, 18, this.speed) : 0.22 + 0.45 * sstep(1.5, 30, hp.y) + (this.phase === 'view' ? 0.25 : 0)) + 0.35 * snow;
     const fire = this.lit * (1 - sstep(3, 26, cp.distanceTo(this.camp.userData.fireAt)));
     this.sound.update({ river, birds, wind, fire, crickets, riverPan: pan });
     // 音乐：坐下时轻一点，夜里也轻一点

@@ -1,9 +1,10 @@
 // 植被：树、灌木、草、花、石头。近处用真模型（按距离动态挑实例），远处的树用替身贴片。
 import * as THREE from 'three';
-import { DOM, CENTER, bankW, SHOAL } from './land.js';
-import { ROAD, STREAM, SPOTS } from './route.js';
+import { DOM, CENTER, bankW, SHOAL, lakeQ, ICE_Q } from './land.js';
+import { ROAD, STREAM, SPOTS, CREEK_END } from './route.js';
 import { patch, U, FOG_FN } from './atmo.js';
 import { rng, fbm, vnoise, sstep, clamp } from './noise.js';
+import { autumnTint, snowLine } from './regions.js';
 
 // ---------- 读取打包好的模型 ----------
 export async function loadFlora(base) {
@@ -71,6 +72,18 @@ export async function floraMaterials(base, fadeU) {
   const rockU = { uniforms: { uFadeR: fadeU.rock } };
   mk('rock', tex('rock.jpg'), { gobo: true, fadeOut: true, ...rockU });
   mk('pebble', tex('pebble.jpg'), { gobo: true, fadeOut: true, ...small });
+  // 雪松：朝上的松针上落着雪
+  M.pineS = new THREE.MeshLambertMaterial({ map: M.pine.map, alphaTest: 0.42, side: THREE.DoubleSide });
+  M.pineS.onBeforeCompile = sh => {
+    sh.fragmentShader = sh.fragmentShader.replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+      {
+        vec3 wn = normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz );
+        float sn = smoothstep( 0.0, 0.45, wn.y + 0.16 * sin( vWP.x * 3.1 + vWP.z * 2.3 + vWP.y * 5.0 ) + 0.1 * sin( vWP.y * 9.0 ) );
+        diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.86, 0.9, 0.96 ), sn * 0.9 );
+      }`);
+  };
+  patch(M.pineS, { wind: 'tree', gobo: false, sss: 0.2, fadeOut: true, ...near });
+  M.pineS.emissive.setScalar(0.06); M.pineS.emissiveMap = M.pine.map;
   // 这套石头贴图偏暗偏绿，提亮成暖灰
   M.bark.color.setRGB(1.2, 1.1, 1.02);
   // 松针背光时几乎是黑的：加一点自发光（按贴图本身的颜色）
@@ -96,7 +109,8 @@ export class ScatterLayer {
     this.meshes = parts.map(p => {
       const m = new THREE.InstancedMesh(p.geo, p.mat, cap);
       m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-      m.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3); m.instanceColor.setUsage(THREE.DynamicDrawUsage);
+      // 树皮不跟着叶子的颜色变（秋天的树叶子是红的，树干还是褐色）
+      if (p.tint !== false) { m.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3); m.instanceColor.setUsage(THREE.DynamicDrawUsage); }
       m.count = 0; m.frustumCulled = false; m.castShadow = !!opts.shadow; m.receiveShadow = opts.receive !== false;
       m.name = name;
       return m;
@@ -110,7 +124,8 @@ export class ScatterLayer {
     this.t = 0.25; this.last.copy(focus);
     if (this.cull) { _m4.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse); _f.setFromProjectionMatrix(_m4); }
     const r = this.r, r2 = r * r, rm2 = this.rMin * this.rMin, cx = camera.position.x, cz = camera.position.z, it = this.items;
-    const mat = this.meshes[0].instanceMatrix.array, col = this.meshes[0].instanceColor.array;
+    if (!this.col) this.col = new Float32Array(this.cap * 3);
+    const mat = this.meshes[0].instanceMatrix.array, col = this.col;
     let c = 0;
     const half = this.cell * 0.75;
     for (const b of this.buckets.values()) {
@@ -131,10 +146,13 @@ export class ScatterLayer {
     }
     for (let k = 0; k < this.meshes.length; k++) {
       const m = this.meshes[k];
-      if (k > 0) { m.instanceMatrix.array.set(mat.subarray(0, c * 16)); m.instanceColor.array.set(col.subarray(0, c * 3)); }
+      if (k > 0) m.instanceMatrix.array.set(mat.subarray(0, c * 16));
       m.count = c;
       m.instanceMatrix.clearUpdateRanges(); m.instanceMatrix.addUpdateRange(0, c * 16); m.instanceMatrix.needsUpdate = true;
-      m.instanceColor.clearUpdateRanges(); m.instanceColor.addUpdateRange(0, c * 3); m.instanceColor.needsUpdate = true;
+      if (m.instanceColor) {
+        m.instanceColor.array.set(col.subarray(0, c * 3));
+        m.instanceColor.clearUpdateRanges(); m.instanceColor.addUpdateRange(0, c * 3); m.instanceColor.needsUpdate = true;
+      }
     }
     this.visible = c;
   }
@@ -165,11 +183,22 @@ export function placeFlora(land, farHeight, quality) {
   // 西岭松林只种自己的树（别的步骤不往里塞），林子中间留一块空地
   const GROVE = { x: -150, z: -165 };
   const inGrove = (x, z) => Math.hypot((x - GROVE.x) / 1.2, z - GROVE.z) < 40;
+  const onLake = (x, z) => lakeQ(x, z) < ICE_Q + 0.12;
   const addTree = (t, x, z, s, minD = 4.2, grove = false) => {
     if (!grove && inGrove(x, z)) return false;
-    if (!land.inside(x, z) || land.roadDist(x, z) < 3.4 || shore(x, z) < 1.5 || !clear(x, z) || !okSpace(x, z, minD)) return false;
-    trees.push({ t, x, z, s, ry: R() * 6.283, y: land.heightExact(x, z) - 0.06 }); mark(x, z); return true;
+    if (!land.inside(x, z) || land.roadDist(x, z) < 3.4 || shore(x, z) < 1.5 || !clear(x, z) || onLake(x, z) || !okSpace(x, z, minD)) return false;
+    const y = land.heightExact(x, z);
+    // 树线：比雪线高十几米就不长树了；雪里只有松树（落着雪），红叶谷的阔叶树是红黄色的
+    if (y > snowLine(x, z) + 14) return false;
+    const sn = land.snow(x, z);
+    let tint = null;
+    if (t === 'Pine_2') { if (sn > 0.25) t = 'Pine_2@s'; }
+    else if (sn > 0.3) return false;
+    else if (R() < land.autumn(x, z) * 1.2) tint = autumnTint(R);
+    trees.push({ t, x, z, s, ry: R() * 6.283, y: y - 0.06, tint }); mark(x, z); return true;
   };
+  // 原来的谷地（新扩出来的山里林子稀一点、草也少一点）
+  const oldDom = (x, z) => x > -192 && z > -336;
   const decid = () => TREE_TYPES[Math.floor(R() * 3)];
   // 1) 路边两片树林：树冠伸到路上，地上有斑驳的光影
   for (const gs of SPOTS.grove) {
@@ -193,18 +222,19 @@ export function placeFlora(land, farHeight, quality) {
     const p = STREAM.at(s), side = R() < 0.5 ? -1 : 1, d = bankW(s) + 3 + R() * 7;
     addTree(decid(), p.x - p.tz * side * d, p.z + p.tx * side * d, 0.8 + R() * 0.45);
   }
-  // 4) 山坡上的林子：噪声决定疏密，高处多松树
-  for (let i = 0; i < 26000; i++) {
+  // 4) 山坡上的林子：噪声决定疏密，高处多松树；红叶谷满坡都是阔叶树
+  const nForest = Math.round(26000 * DOM.w * DOM.d / (360 * 432));
+  for (let i = 0; i < nForest; i++) {
     const x = DOM.x0 + R() * DOM.w, z = DOM.z0 + R() * DOM.d;
-    const h = land.height(x, z), rd = land.roadDist(x, z);
+    const h = land.height(x, z), rd = land.mainRoadDist(x, z), au = land.autumn(x, z);
     if (rd < 22) continue;
-    const m = sstep(0.46, 0.6, fbm(x * 0.011 + 5, z * 0.011 - 2, 3)) * (0.35 + 0.65 * sstep(3, 14, h)) + 0.25 * sstep(-250, -320, z);
+    const m = sstep(0.46, 0.6, fbm(x * 0.011 + 5, z * 0.011 - 2, 3)) * (0.35 + 0.65 * sstep(3, 14, h)) + 0.25 * sstep(-250, -320, z) + 0.4 * au;
     if (R() > m * 0.9) continue;
-    const pine = h > 17 || z < -262 ? R() < 0.75 : R() < 0.1;
-    addTree(pine ? 'Pine_2' : decid(), x, z, pine ? 1.0 + R() * 0.6 : 0.85 + R() * 0.45, 4.6);
+    const pine = au > 0.25 ? R() < 0.16 : h > 17 || z < -262 ? R() < 0.75 : R() < 0.1;
+    addTree(pine ? 'Pine_2' : decid(), x, z, pine ? 1.0 + R() * 0.6 : 0.85 + R() * 0.45, au > 0.25 ? 5.8 : 4.6);
   }
   // 5) 草地上零星几棵
-  for (let i = 0; i < 400; i++) {
+  for (let i = 0; i < 1250; i++) {
     const x = DOM.x0 + R() * DOM.w, z = DOM.z0 + R() * DOM.d;
     if (land.roadDist(x, z) < 9 || fbm(x * 0.02, z * 0.02, 2) < 0.52) continue;
     addTree(decid(), x, z, 0.95 + R() * 0.45, 12);
@@ -218,7 +248,8 @@ export function placeFlora(land, farHeight, quality) {
     const h = farHeight(x, z);
     const n1 = fbm(x * 0.006 + 3, z * 0.006, 3);
     if (n1 < 0.45 || h > 260 || R() > sstep(0.45, 0.6, n1) * 0.9) continue;
-    trees.push({ t: h > 60 || R() < 0.3 ? 'Pine_2' : decid(), x, z, s: 1.0 + R() * 0.5, ry: 0, far: true, y: h });
+    const sl = snowLine(x, z); if (h > sl + 14) continue;
+    trees.push({ t: h > sl - 6 ? 'Pine_2@s' : h > 60 || R() < 0.3 ? 'Pine_2' : decid(), x, z, s: 1.0 + R() * 0.5, ry: 0, far: true, y: h });
   }
   // 7) 灌木、草、花、蕨、蘑菇、石头（只放在路两边 70 米内）
   const L = {};
@@ -227,6 +258,9 @@ export function placeFlora(land, farHeight, quality) {
     const v = 1 + (R() - 0.5) * hueJ * 2;
     a.push(x, y, z, R() * 6.283, s, tint * v, tint * (1 + (R() - 0.5) * hueJ), tint * v * (1 - (R() - 0.3) * hueJ));
   };
+  // 带颜色的（秋天的蕨和灌木）
+  const pushC = (name, x, y, z, s, c) => { const a = L[name] || (L[name] = []); const v = 0.9 + R() * 0.2; a.push(x, y, z, R() * 6.283, s, c[0] * v, c[1] * v, c[2] * v); };
+  const FERN_AUT = [[3.0, 1.0, 0.45], [3.4, 0.72, 0.4], [2.4, 1.1, 0.45]], GRASS_AUT = [1.6, 1.15, 0.5];
   const treeNear = (x, z, r) => { const c = 6, gx = Math.floor(x / c), gz = Math.floor(z / c); let n = 0; for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) { const a = occ.get((gx + i) + ',' + (gz + j)); if (a) for (const q of a) if ((q[0] - x) ** 2 + (q[1] - z) ** 2 < r * r) n++; } return n; };
   const dens = quality === 'low' ? 0.55 : quality === 'mid' ? 0.8 : 1;
   // 营地篝火周围和观景台长椅前是踩出来的空地（篝火位置和 props.js 里一致）
@@ -240,15 +274,29 @@ export function placeFlora(land, farHeight, quality) {
     const x = gx + (R() - 0.5) * step, z = gz + (R() - 0.5) * step;
     const rd = land.roadDist(x, z); if (trodden(x, z)) continue;
     const far = rd > 70 && meadowK(x, z) < 0.01;  // 离路远的地方稀一点（但不是光秃秃的；花田不算）
-    if (far && R() > 0.55) continue;
+    if (far && R() > (oldDom(x, z) ? 0.55 : 0.3)) continue;
     const sh = land.streamDist(x, z) < 30 ? shore(x, z) : 99;
-    if (sh < 0.35) continue;
+    if (sh < 0.35 || onLake(x, z)) continue;
     const y = land.heightExact(x, z);
     const nrm = land.normal(x, z); const steep = 1 - nrm[1];
+    // 雪地里只有几块石头
+    const sn = land.snow(x, z);
+    if (sn > 0.45) { if (R() < 0.012 && rd > 3.5) push(R() < 0.5 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, y - 0.12, z, 0.2 + R() * 0.5, 1.05, 0.06); continue; }
     const tn = treeNear(x, z, 5);
-    const mk = meadowK(x, z);
-    const flowerM = Math.max(sstep(0.5, 0.68, fbm(x * 0.02 + 40, z * 0.02, 3)), mk);
+    const mk = meadowK(x, z), au = land.autumn(x, z);
+    const flowerM = Math.max(sstep(0.5, 0.68, fbm(x * 0.02 + 40, z * 0.02, 3)), mk) * (1 - au) * (1 - sn);
     const u = R();
+    if (au > 0.3 && R() < au) {
+      // 红叶谷：枯黄的蕨、红灌木、蘑菇
+      if (rd < 1.15) { if (u < 0.05 * dens) push('Pebble_Round_2', x, y, z, 0.5 + R() * 0.8, 1, 0.1); continue; }
+      if (rd < 2.6 && u < 0.5 * dens) { pushC('Grass_Wispy_Tall', x, y - 0.02, z, 0.28 + R() * 0.2, GRASS_AUT); continue; }
+      if (steep > 0.35 && u < 0.05) { push(R() < 0.5 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, y - 0.15, z, 0.25 + R() * 0.45, 1, 0.08); continue; }
+      if (u < (tn > 0 ? 0.16 : 0.07) * dens) { pushC('Fern_1', x, y, z, 0.11 + R() * 0.08, FERN_AUT[Math.floor(R() * 3)]); continue; }
+      if (u < (tn > 0 ? 0.185 : 0.08) && rd > 4) { pushC('Bush_Common', x, y, z, 0.5 + R() * 0.5, autumnTint(R)); continue; }
+      if (tn > 0 && u < 0.2) { push('Mushroom_Common', x, y, z, 0.35 + R() * 0.25, 1, 0.1); continue; }
+      if (u < 0.24 * dens) { pushC('Grass_Wispy_Tall', x, y, z, 0.26 + R() * 0.14, GRASS_AUT); continue; }
+      continue;
+    }
     if (rd < 1.15) { if (u < 0.05 * dens) push('Pebble_Round_2', x, y, z, 0.5 + R() * 0.8, 1, 0.1); continue; }
     if (rd < 2.6 && u < 0.6 * dens) { push(R() < 0.7 ? 'Grass_Common_Short' : 'Grass_Wispy_Tall', x, y - 0.02, z, 0.3 + R() * 0.2, 1, 0.08); continue; }
     if (sh < 2.2 && u < 0.35 * dens) { push(R() < 0.5 ? 'Grass_Wispy_Tall' : 'Plant_1', x, y, z, 0.32 + R() * 0.2, 0.95); continue; }
@@ -277,9 +325,10 @@ export function placeFlora(land, farHeight, quality) {
   for (let gz = DOM.z0 + 1; gz < DOM.z0 + DOM.d - 1; gz += ts) for (let gx = DOM.x0 + 1; gx < DOM.x0 + DOM.w - 1; gx += ts) {
     const x = gx + (R() - 0.5) * ts, z = gz + (R() - 0.5) * ts;
     const rd = land.roadDist(x, z); if (rd < 1.05 || trodden(x, z)) continue;
-    const keep = (rd < 34 ? 0.85 : rd < 62 ? 0.35 : 0.24) * dens * (rd < 1.6 ? 0.6 : 1) * (1 - 0.5 * meadowK(x, z));
+    const keep = (rd < 34 ? 0.85 : rd < 62 ? 0.35 : oldDom(x, z) ? 0.24 : 0.12) * dens * (rd < 1.6 ? 0.6 : 1) * (1 - 0.5 * meadowK(x, z));
     if (R() > keep) continue;
     if (land.streamDist(x, z) < 12 && shore(x, z) < 0.5) continue;
+    if (R() < land.snow(x, z) * 2.2 - 0.3 || onLake(x, z)) continue;
     const y = land.heightExact(x, z) - 0.03;
     const k = rd < 2.2 ? (R() < 0.5 ? 1 : 0) : R() < 0.55 ? 0 : R() < 0.6 ? 2 : 1;
     const sc = (0.8 + R() * 0.55) * (rd < 2.2 ? 1.15 : 1);
@@ -292,9 +341,9 @@ export function placeFlora(land, farHeight, quality) {
     const k = R(), peb = k > 0.75;
     push(peb ? 'Pebble_Round_2' : k < 0.4 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, land.heightExact(x, z) - 0.04, z, peb ? 0.6 + R() * 0.8 : 0.12 + R() * 0.22, 1, 0.08);
   }
-  // 溪里溪边的石头
+  // 溪里溪边的石头（山涧里多一些）
   for (let s = 0; s < STREAM.length; s += 2.2) {
-    if (R() < 0.55) continue;
+    if (R() < (s < CREEK_END ? 0.2 : 0.55)) continue;
     const p = STREAM.at(s); if (!land.inside(p.x, p.z)) continue;
     const side = R() < 0.5 ? -1 : 1, d = bankW(s) * (0.4 + R() * 0.75);
     const x = p.x - p.tz * side * d, z = p.z + p.tx * side * d;
@@ -305,13 +354,13 @@ export function placeFlora(land, farHeight, quality) {
 
 // 树冠遮挡图（给地面上的叶影用）+ 林下地面
 export function canopyTexture(trees, land) {
-  const S = 512, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
+  const S = 1024, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
   g.fillStyle = '#000'; g.fillRect(0, 0, S, S);
   const sx = S / DOM.w, sz = S / DOM.d;
   const grd = (x, y, r) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(255,255,255,0.95)'); gr.addColorStop(0.7, 'rgba(255,255,255,0.6)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); return gr; };
   for (const t of trees) {
     if (t.far) continue;
-    const x = (t.x - DOM.x0) * sx, y = (t.z - DOM.z0) * sz, r = 3.4 * t.s * sx * (t.t === 'Pine_2' ? 0.8 : 1);
+    const x = (t.x - DOM.x0) * sx, y = (t.z - DOM.z0) * sz, r = 3.4 * t.s * sx * (t.t.startsWith('Pine') ? 0.8 : 1);
     g.fillStyle = grd(x, y, r); g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
   }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.NoColorSpace; t.flipY = false;
@@ -335,7 +384,7 @@ export function forestFloor(splat, trees, land) {
 
 // ---------- 远处的替身树：启动时把四种树从侧面画进一张图集 ----------
 export function buildImpostors(renderer, models, mats, trees, fadeU) {
-  const cellPx = 256, types = TREE_TYPES, atlasW = cellPx * types.length;
+  const cellPx = 256, types = [...TREE_TYPES, 'Pine_2@s'], atlasW = cellPx * types.length;
   const rt = new THREE.WebGLRenderTarget(atlasW, cellPx, { samples: 0 });
   rt.texture.colorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
@@ -347,7 +396,8 @@ export function buildImpostors(renderer, models, mats, trees, fadeU) {
   renderer.setRenderTarget(rt); renderer.clear();
   renderer.toneMapping = THREE.NoToneMapping;
   types.forEach((t, i) => {
-    const m = models[t];
+    const [base, vr] = t.split('@');
+    const m = models[base];
     const w = Math.max(m.max[0] - m.min[0], m.max[2] - m.min[2]) * 1.02, h = (m.max[1] - m.min[1]) * 1.02;
     const half = Math.max(w, h) / 2, cy = (m.max[1] + m.min[1]) / 2;
     info.push({ w: half * 2, h: half * 2, cy, bottom: cy - half });
@@ -355,6 +405,12 @@ export function buildImpostors(renderer, models, mats, trees, fadeU) {
     for (const p of m.parts) {
       const src = mats[p.mat];
       const bm = new THREE.MeshBasicMaterial({ map: src.map, alphaTest: 0.42, side: THREE.DoubleSide, color: p.mat === 'bark' ? 0x9a8a7a : 0xd8d8d8 });
+      // 雪松：朝上的松针白一些（和近处的真树一样）
+      if (vr === 's' && p.mat === 'pine') bm.onBeforeCompile = sh => {
+        sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vSn; varying vec3 vSp;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvSn = normal; vSp = position;');
+        sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vSn; varying vec3 vSp;').replace('#include <alphatest_fragment>', `#include <alphatest_fragment>
+          diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.86, 0.9, 0.96 ), 0.9 * smoothstep( 0.0, 0.45, normalize( vSn ).y + 0.16 * sin( vSp.x * 3.1 + vSp.z * 2.3 + vSp.y * 5.0 ) + 0.1 * sin( vSp.y * 9.0 ) ) );`);
+      };
       scene.add(new THREE.Mesh(p.geo, bm));
     }
     cam.left = -half; cam.right = half; cam.top = half; cam.bottom = -half; cam.position.set(0, cy, 50); cam.lookAt(0, cy, 0); cam.updateProjectionMatrix();
@@ -372,34 +428,36 @@ export function buildImpostors(renderer, models, mats, trees, fadeU) {
   geo.setAttribute('position', new THREE.Float32BufferAttribute([-0.5, 0, 0, 0.5, 0, 0, 0.5, 1, 0, -0.5, 1, 0], 3));
   geo.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1], 2));
   geo.setIndex([0, 1, 2, 0, 2, 3]);
-  const a0 = new Float32Array(n * 4), a1 = new Float32Array(n * 4);
+  const a0 = new Float32Array(n * 4), a1 = new Float32Array(n * 4), a2 = new Float32Array(n * 3).fill(1);
   trees.forEach((t, i) => {
     const ti = types.indexOf(t.t), I = info[ti];
     a0[i * 4] = t.x; a0[i * 4 + 1] = t.y + I.bottom * t.s; a0[i * 4 + 2] = t.z; a0[i * 4 + 3] = I.w * t.s;
     a1[i * 4] = ti; a1[i * 4 + 1] = I.h * t.s; a1[i * 4 + 2] = 0.9 + ((i * 7919) % 100) / 500; a1[i * 4 + 3] = t.far ? 1 : 0;
+    if (t.tint) a2.set(t.tint, i * 3);
   });
   geo.setAttribute('aPos', new THREE.InstancedBufferAttribute(a0, 4));
   geo.setAttribute('aInfo', new THREE.InstancedBufferAttribute(a1, 4));
+  geo.setAttribute('aTint', new THREE.InstancedBufferAttribute(a2, 3));
   geo.instanceCount = n;
   const mat = new THREE.ShaderMaterial({
     uniforms: { ...U, uAtlas: { value: rt.texture }, uCount: { value: types.length }, uFadeR: fadeU.trees },
     vertexShader: /* glsl */`
-      attribute vec4 aPos; attribute vec4 aInfo;
+      attribute vec4 aPos; attribute vec4 aInfo; attribute vec3 aTint;
       uniform float uTime; uniform float uWind;
-      varying vec2 vUv; varying vec3 vWP; varying float vTint; varying vec3 vRight; varying float vType;
+      varying vec2 vUv; varying vec3 vWP; varying float vTint; varying vec3 vRight; varying float vType; varying vec3 vTint3;
       void main() {
         vec3 base = aPos.xyz;
         vec3 toCam = cameraPosition - base; toCam.y = 0.0; toCam = normalize( toCam + vec3( 1e-4, 0.0, 0.0 ) );
         vec3 right = vec3( toCam.z, 0.0, -toCam.x );
         float sway = sin( uTime * 1.2 + base.x * 0.3 + base.z * 0.2 ) * 0.03 * position.y * uWind;
         vec3 wp = base + right * ( position.x * aPos.w + sway * aInfo.y ) + vec3( 0.0, position.y * aInfo.y, 0.0 );
-        vWP = wp; vRight = right; vTint = aInfo.z; vType = aInfo.x;
+        vWP = wp; vRight = right; vTint = aInfo.z; vType = aInfo.x; vTint3 = aTint;
         vUv = vec2( ( aInfo.x + uv.x ) / ${types.length.toFixed(1)}, uv.y );
         gl_Position = projectionMatrix * viewMatrix * vec4( wp, 1.0 );
       }`,
     fragmentShader: /* glsl */`
       uniform sampler2D uAtlas; uniform float uFadeR; uniform vec3 uSunColor; uniform vec3 uAmb; uniform vec3 uAmbG;
-      varying vec2 vUv; varying vec3 vWP; varying float vTint; varying vec3 vRight; varying float vType;
+      varying vec2 vUv; varying vec3 vWP; varying float vTint; varying vec3 vRight; varying float vType; varying vec3 vTint3;
       #include <common>
       ${FOG_FN}
       float jDither() { return fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ); }
@@ -413,7 +471,8 @@ export function buildImpostors(renderer, models, mats, trees, fadeU) {
         vec3 toCam = normalize( vec3( -vRight.z, 0.0, vRight.x ) );
         vec3 n = normalize( vRight * q.x + vec3( 0.0, 1.0, 0.0 ) * q.y + toCam * sqrt( max( 0.0, 1.0 - dot( q, q ) * 0.6 ) ) );
         float ndl = max( dot( n, uSunDir ), 0.0 );
-        vec3 alb = c.rgb * vTint;
+        // 秋天的树：只给绿色的叶子上色（树干不变）
+        vec3 alb = c.rgb * vTint * mix( vec3( 1.0 ), vTint3, smoothstep( 0.005, 0.04, c.g - c.r ) );
         vec3 col = alb * ( mix( uAmbG, uAmb, n.y * 0.5 + 0.5 ) * 0.95 + uSunColor * ndl * 1.6 );
         vec3 vd = normalize( vWP - cameraPosition );
         col += uSunColor * alb * pow( max( dot( vd, uSunDir ), 0.0 ), 3.0 ) * 0.5;
