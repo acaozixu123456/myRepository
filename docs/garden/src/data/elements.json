@@ -1,0 +1,19 @@
+{
+ "names": {
+  "none": "无",
+  "grass": "草",
+  "water": "水",
+  "fire": "火"
+ },
+ "beats": {
+  "grass": "water",
+  "water": "fire",
+  "fire": "grass"
+ },
+ "colors": {
+  "none": "#cfc8bd",
+  "grass": "#7bcb5a",
+  "water": "#56b8f0",
+  "fire": "#f57b45"
+ }
+}

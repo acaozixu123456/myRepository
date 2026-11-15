@@ -1,0 +1,151 @@
+[
+ {
+  "id": "home",
+  "name": "北坡小岛",
+  "home": true,
+  "light": "day",
+  "pal": [
+   "#6aa83a",
+   "#4f8f34",
+   "#9cc24e"
+  ],
+  "trees": [
+   "CommonTree_1",
+   "CommonTree_3"
+  ],
+  "flowers": [
+   "Flower_3_Group",
+   "Flower_4_Group",
+   "Plant_7_Big"
+  ],
+  "desc": "你的家。回到这里会恢复体力。"
+ },
+ {
+  "id": "meadow",
+  "name": "青草坡",
+  "lv": [
+   1,
+   5
+  ],
+  "light": "day",
+  "pal": [
+   "#7cba42",
+   "#5c9c38",
+   "#b4d45a"
+  ],
+  "trees": [
+   "CommonTree_2",
+   "CommonTree_5"
+  ],
+  "flowers": [
+   "Flower_3_Group",
+   "Clover_1",
+   "Grass_Common_Short"
+  ],
+  "wild": [
+   "chirp",
+   "mudpig",
+   "leafbug",
+   "hopcube"
+  ],
+  "boss": "tusk",
+  "desc": "离家最近的草坡，适合练手。"
+ },
+ {
+  "id": "brook",
+  "name": "溪水林",
+  "lv": [
+   5,
+   10
+  ],
+  "light": "dawn",
+  "pal": [
+   "#4f9a55",
+   "#3b7f4c",
+   "#7fbf7a"
+  ],
+  "trees": [
+   "Pine_1",
+   "Pine_3",
+   "CommonTree_1"
+  ],
+  "flowers": [
+   "Fern_1",
+   "Plant_1",
+   "Mushroom_Common"
+  ],
+  "wild": [
+   "gnawer",
+   "pincer",
+   "bubfish",
+   "prank"
+  ],
+  "boss": "spout",
+  "pond": true,
+  "desc": "林子里到处是水声。"
+ },
+ {
+  "id": "maple",
+  "name": "红叶谷",
+  "lv": [
+   10,
+   15
+  ],
+  "light": "dusk",
+  "pal": [
+   "#a9a23c",
+   "#8a7f30",
+   "#d0b050"
+  ],
+  "trees": [
+   "TwistedTree_1",
+   "TwistedTree_3",
+   "CommonTree_3"
+  ],
+  "flowers": [
+   "Flower_4_Group",
+   "Mushroom_Laetiporus",
+   "Grass_Wispy_Short"
+  ],
+  "wild": [
+   "embertail",
+   "stripe",
+   "echo",
+   "antler"
+  ],
+  "boss": "mane",
+  "desc": "一年四季都是秋天。"
+ },
+ {
+  "id": "frost",
+  "name": "霜星岭",
+  "lv": [
+   15,
+   20
+  ],
+  "light": "night",
+  "pal": [
+   "#7fa7a0",
+   "#5f8a8f",
+   "#b8d6d0"
+  ],
+  "trees": [
+   "Pine_4",
+   "Pine_1",
+   "DeadTree_1"
+  ],
+  "flowers": [
+   "Plant_7",
+   "Grass_Wispy_Short",
+   "Mushroom_Common"
+  ],
+  "wild": [
+   "slider",
+   "snowbear",
+   "inkball",
+   "dozer"
+  ],
+  "boss": "starneck",
+  "desc": "离星星最近的地方，夜里很亮。"
+ }
+]

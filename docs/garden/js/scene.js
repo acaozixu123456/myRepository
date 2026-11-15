@@ -1,6 +1,6 @@
 // 画面：浮岛、植物、动物和昼夜光照。只读状态，不改状态。
 import * as THREE from 'three';
-import { GLTFLoader } from '../vendor/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { R, POND, LANTERN, DEAD_TREES, ROCKS, SPECIES, edgeR, inIsland, pondDist, maturity, vitality, HOUR } from './sim.js';
 
 const MODELS = {

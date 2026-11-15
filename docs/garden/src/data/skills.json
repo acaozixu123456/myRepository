@@ -1,0 +1,179 @@
+{
+ "doubleClaw": {
+  "name": "连爪",
+  "mp": 4,
+  "kind": "phys",
+  "target": "one",
+  "power": 0.75,
+  "hits": 2,
+  "desc": "快速抓两下。"
+ },
+ "rend": {
+  "name": "破甲",
+  "mp": 6,
+  "kind": "phys",
+  "target": "one",
+  "power": 1.1,
+  "effect": {
+   "type": "defDown",
+   "turns": 3
+  },
+  "desc": "造成伤害并让对方防御下降三回合。"
+ },
+ "whirl": {
+  "name": "旋风扫",
+  "mp": 10,
+  "kind": "phys",
+  "target": "all",
+  "power": 0.9,
+  "desc": "攻击所有敌人。"
+ },
+ "critical": {
+  "name": "会心一击",
+  "mp": 14,
+  "kind": "phys",
+  "target": "one",
+  "power": 2.3,
+  "desc": "蓄力后的全力一击。"
+ },
+ "spark": {
+  "name": "火花",
+  "mp": 4,
+  "kind": "magic",
+  "el": "fire",
+  "target": "one",
+  "power": 1.45,
+  "desc": "一小团狐火。"
+ },
+ "flameRing": {
+  "name": "烈焰环",
+  "mp": 10,
+  "kind": "magic",
+  "el": "fire",
+  "target": "all",
+  "power": 1,
+  "desc": "火环扫过所有敌人。"
+ },
+ "scorch": {
+  "name": "灼烧",
+  "mp": 8,
+  "kind": "magic",
+  "el": "fire",
+  "target": "one",
+  "power": 0.9,
+  "effect": {
+   "type": "burn",
+   "turns": 3
+  },
+  "desc": "点燃对方，持续三回合。"
+ },
+ "meteor": {
+  "name": "狐火流星",
+  "mp": 18,
+  "kind": "magic",
+  "el": "fire",
+  "target": "one",
+  "power": 2.6,
+  "desc": "从天而降的大火球。"
+ },
+ "moonlight": {
+  "name": "月光",
+  "mp": 5,
+  "kind": "heal",
+  "target": "ally",
+  "power": 1.6,
+  "desc": "为血量最少的同伴疗伤。"
+ },
+ "waterShot": {
+  "name": "水弹",
+  "mp": 4,
+  "kind": "magic",
+  "el": "water",
+  "target": "one",
+  "power": 1.35,
+  "desc": "凝出一颗水弹打出去。"
+ },
+ "ward": {
+  "name": "护佑",
+  "mp": 8,
+  "kind": "buff",
+  "target": "party",
+  "effect": {
+   "type": "defUp",
+   "turns": 3
+  },
+  "desc": "我方全体防御上升三回合。"
+ },
+ "fullMoon": {
+  "name": "满月",
+  "mp": 16,
+  "kind": "heal",
+  "target": "party",
+  "power": 1.3,
+  "desc": "治疗我方全体。"
+ },
+ "tide": {
+  "name": "潮涌",
+  "mp": 12,
+  "kind": "magic",
+  "el": "water",
+  "target": "all",
+  "power": 1.05,
+  "desc": "一道浪打向所有敌人。"
+ },
+ "tackle": {
+  "name": "冲撞",
+  "mp": 0,
+  "kind": "phys",
+  "target": "one",
+  "power": 1.2
+ },
+ "leafCut": {
+  "name": "飞叶",
+  "mp": 3,
+  "kind": "magic",
+  "el": "grass",
+  "target": "one",
+  "power": 1.35
+ },
+ "bubble": {
+  "name": "水泡",
+  "mp": 3,
+  "kind": "magic",
+  "el": "water",
+  "target": "one",
+  "power": 1.35
+ },
+ "ember": {
+  "name": "火星",
+  "mp": 3,
+  "kind": "magic",
+  "el": "fire",
+  "target": "one",
+  "power": 1.35
+ },
+ "roar": {
+  "name": "怒吼",
+  "mp": 5,
+  "kind": "debuff",
+  "target": "all",
+  "effect": {
+   "type": "defDown",
+   "turns": 3
+  }
+ },
+ "stomp": {
+  "name": "震地",
+  "mp": 6,
+  "kind": "phys",
+  "target": "all",
+  "power": 0.95
+ },
+ "nap": {
+  "name": "打盹",
+  "mp": 4,
+  "kind": "heal",
+  "target": "self",
+  "power": 1.2
+ }
+}

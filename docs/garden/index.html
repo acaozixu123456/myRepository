@@ -10,50 +10,25 @@
 <title>浮岛奇遇</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="rpg/rpg.css">
-<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 </head>
-<body>
+<body data-mode="loading">
 <div id="sky"></div>
 <canvas id="stars"></canvas>
 <canvas id="c"></canvas>
 
-<div id="loading"><div class="spin"></div><p id="loadText">正在飞往浮岛…</p></div>
-
-<header class="ui top" id="hud">
-  <button class="chip me" id="bMe" type="button">
-    <b id="hName"></b>
-    <div class="gauge hp"><i id="hHp"></i><span id="hHpT"></span></div>
-    <div class="gauge mp"><i id="hMp"></i><span id="hMpT"></span></div>
-    <div class="xp"><i id="hXp"></i></div>
-  </button>
-  <div class="chip vit"><div class="sub" id="zoneName"></div><b>🪙 <span id="gold">0</span></b></div>
-</header>
-
-<button class="ui note" id="questChip" type="button"><div class="chip"><small>委托</small><span id="questText"></span></div></button>
-
-<nav class="ui bar" id="nav">
-  <button class="chip btn" data-sheet="map" type="button"><i>🗺️</i>地图</button>
-  <button class="chip btn" data-sheet="pets" type="button"><i>🐾</i>伙伴</button>
-  <button class="chip btn" data-sheet="bag" type="button"><i>🎒</i>背包<em id="bagCount"></em></button>
-  <button class="chip btn" data-sheet="hero" type="button"><i>⭐</i>角色<em id="ptCount"></em></button>
-  <button class="chip btn" data-sheet="shop" type="button"><i>🛒</i>商店</button>
-</nav>
+<div id="loading"><div class="spin"></div><p>正在飞往浮岛…</p></div>
 
 <div id="battle" hidden>
-  <div class="ui top"><div class="chip"><div class="sub" id="bZone"></div><div class="title" id="bRound">第 1 回合</div></div>
-    <button class="chip auto" id="bAuto" type="button">自动 关</button></div>
+  <div class="btop"><div class="panel"><small id="bZone"></small><b id="bRound">第 1 回合</b></div>
+    <button class="panel auto" id="bAuto" type="button">自动 关</button></div>
   <div id="plates"></div>
   <div id="banner" hidden></div>
-  <div class="ui cmd" id="cmd"></div>
+  <div class="cmd" id="cmd"></div>
 </div>
 
+<div id="ui"></div>
 <div id="flash"></div>
-<div id="toast" hidden></div>
-<div id="scrim" hidden></div>
-<section class="sheet tall" id="sheet" hidden></section>
 
-<script type="module" src="rpg/ui.js"></script>
+<script type="module" src="./src/main.js"></script>
 </body>
 </html>
