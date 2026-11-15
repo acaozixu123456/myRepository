@@ -3,8 +3,7 @@
 
 来源（下载方法见项目记忆 journey-game）：
   NATURE  Quaternius Stylized Nature MegaKit（CC0）的 glTF 目录
-  UAA     Quaternius Ultimate Animated Animal Pack 的 Horse.gltf（CC0）
-  KK      KayKit Adventurers 的 Ranger.glb（CC0）
+  （马和小毛驴改由 tools/pack-animals.mjs 打包，旅人由 tools/build-traveler.mjs 生成）
   EXTRA   项目文件 assets-extra/（Kenney CC0 道具、粒子贴图）
   MUSIC   Kevin MacLeod “Morning”（CC BY 4.0）
   SFX     Mixkit 免费音效（编号见下）
@@ -187,7 +186,6 @@ def pack_horse():
     print('horseA.glb', len(glb), [a['name'] for a in g['animations']])
 
 def pack_misc():
-    shutil.copy(os.path.join(KK, 'Ranger.glb'), os.path.join(OUT, 'rider.glb'))
     pd = os.path.join(OUT, 'props'); os.makedirs(pd, exist_ok=True)
     for f in ['campfire_stones.glb', 'log_stack.glb', 'stump_round.glb']:
         shutil.copy(os.path.join(EXTRA, 'kenney', f), os.path.join(pd, f))
@@ -269,7 +267,7 @@ def pack_hooves():
     print('hooves ok', len(slots))
 
 if __name__ == '__main__':
-    what = sys.argv[1:] or ['flora', 'tex', 'horse', 'misc', 'audio', 'hooves']
+    what = sys.argv[1:] or ['flora', 'tex', 'misc', 'audio', 'hooves']   # 'horse' 是旧做法，现在用 tools/pack-animals.mjs
     if 'flora' in what: pack_flora()
     if 'tex' in what: pack_textures()
     if 'horse' in what: pack_horse()

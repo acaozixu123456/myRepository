@@ -1,6 +1,6 @@
 // 植被：树、灌木、草、花、石头。近处用真模型（按距离动态挑实例），远处的树用替身贴片。
 import * as THREE from 'three';
-import { DOM, CENTER, bankW } from './land.js';
+import { DOM, CENTER, bankW, SHOAL } from './land.js';
 import { ROAD, STREAM, SPOTS } from './route.js';
 import { patch, U, FOG_FN } from './atmo.js';
 import { rng, fbm, vnoise, sstep, clamp } from './noise.js';
@@ -155,7 +155,11 @@ export function placeFlora(land, farHeight, quality) {
   const mark = (x, z) => { const k = Math.floor(x / 6) + ',' + Math.floor(z / 6); let a = occ.get(k); if (!a) occ.set(k, a = []); a.push([x, z]); };
   const shore = (x, z) => { if (!land.inside(x, z)) return 99; const q = STREAM.nearest(x, z, 20); return q.dist === Infinity ? 99 : q.dist - bankW(q.s); };
   const camp = ROAD.at(SPOTS.camp), view = ROAD.at(SPOTS.view), bridge = ROAD.at(SPOTS.bridge);
-  const clear = (x, z) => Math.hypot(x - camp.x - 2, z - camp.z + 3) > 17 && Math.hypot(x - view.x + 4, z - view.z) > 9 && Math.hypot(x - 62, z + 118) > 13 && Math.hypot(x - bridge.x, z - bridge.z) > 13;
+  // 东坡花田：一大片空地开满花，只留一棵大树
+  const MEADOW = { x: 75, z: -25, r: 30 };
+  const meadowK = (x, z) => sstep(MEADOW.r, MEADOW.r * 0.6, Math.hypot(x - MEADOW.x, z - MEADOW.z));
+  const clear = (x, z) => Math.hypot(x - camp.x - 2, z - camp.z + 3) > 17 && Math.hypot(x - view.x + 4, z - view.z) > 9 && Math.hypot(x - 62, z + 118) > 13 && Math.hypot(x - bridge.x, z - bridge.z) > 13
+    && Math.hypot(x - MEADOW.x, z - MEADOW.z) > MEADOW.r - 4 && Math.hypot(x - SHOAL.x, z - SHOAL.z) > 10;
   const addTree = (t, x, z, s, minD = 4.2) => {
     if (!land.inside(x, z) || land.roadDist(x, z) < 3.4 || shore(x, z) < 1.5 || !clear(x, z) || !okSpace(x, z, minD)) return false;
     trees.push({ t, x, z, s, ry: R() * 6.283, y: land.heightExact(x, z) - 0.06 }); mark(x, z); return true;
@@ -168,8 +172,14 @@ export function placeFlora(land, farHeight, quality) {
       addTree(decid(), p.x - p.tz * side * d, p.z + p.tx * side * d, 0.85 + R() * 0.4);
     }
   }
-  // 2) 观景台旁边一棵大树
+  // 2) 观景台旁边一棵大树；花田上坡也有一棵
   addTree('CommonTree_1', view.x - 1.5, view.z + 5.5, 1.3, 2);
+  { const x = MEADOW.x + 14, z = MEADOW.z - 12; trees.push({ t: 'CommonTree_1', x, z, s: 1.45, ry: 1.1, y: land.heightExact(x, z) - 0.06 }); mark(x, z); }
+  // 2b) 西岭松林：溪西边的山坡上一片密密的松树
+  for (let i = 0; i < 160; i++) {
+    const a = R() * 6.283, d = Math.sqrt(R()) * 34, x = -150 + Math.cos(a) * d * 1.2, z = -165 + Math.sin(a) * d;
+    addTree(R() < 0.88 ? 'Pine_2' : decid(), x, z, 1.05 + R() * 0.55, 6.2);   // 留出空隙，林子里有光斑
+  }
   // 3) 溪边的树
   for (let s = 0; s < STREAM.length; s += 7) {
     if (R() < 0.45) continue;
@@ -221,13 +231,16 @@ export function placeFlora(land, farHeight, quality) {
   const step = 1.3;
   for (let gz = DOM.z0 + 1; gz < DOM.z0 + DOM.d - 1; gz += step) for (let gx = DOM.x0 + 1; gx < DOM.x0 + DOM.w - 1; gx += step) {
     const x = gx + (R() - 0.5) * step, z = gz + (R() - 0.5) * step;
-    const rd = land.roadDist(x, z); if (rd > 70 || trodden(x, z)) continue;
+    const rd = land.roadDist(x, z); if (trodden(x, z)) continue;
+    const far = rd > 70 && meadowK(x, z) < 0.01;  // 离路远的地方稀一点（但不是光秃秃的；花田不算）
+    if (far && R() > 0.55) continue;
     const sh = land.streamDist(x, z) < 30 ? shore(x, z) : 99;
     if (sh < 0.35) continue;
     const y = land.heightExact(x, z);
     const nrm = land.normal(x, z); const steep = 1 - nrm[1];
     const tn = treeNear(x, z, 5);
-    const flowerM = sstep(0.5, 0.68, fbm(x * 0.02 + 40, z * 0.02, 3));
+    const mk = meadowK(x, z);
+    const flowerM = Math.max(sstep(0.5, 0.68, fbm(x * 0.02 + 40, z * 0.02, 3)), mk);
     const u = R();
     if (rd < 1.15) { if (u < 0.05 * dens) push('Pebble_Round_2', x, y, z, 0.5 + R() * 0.8, 1, 0.1); continue; }
     if (rd < 2.6 && u < 0.6 * dens) { push(R() < 0.7 ? 'Grass_Common_Short' : 'Grass_Wispy_Tall', x, y - 0.02, z, 0.3 + R() * 0.2, 1, 0.08); continue; }
@@ -241,7 +254,12 @@ export function placeFlora(land, farHeight, quality) {
       continue;
     }
     if (u < 0.006 && rd > 4) { push(R() < 0.5 ? 'Bush_Common' : 'Bush_Common_Flowers', x, y, z, 0.5 + R() * 0.5); continue; }
-    if (u < 0.006 + 0.07 * flowerM * dens) { push(R() < 0.55 ? 'Flower_4_Group' : 'Flower_3_Group', x, y, z, 0.26 + R() * 0.14, 1, 0.04); continue; }
+    if (u < 0.006 + (0.07 + 0.5 * mk) * flowerM * dens) {
+      // 花的颜色一小片一小片地变：紫、黄、杏色（大花）；粉、红（小花）
+      const c = vnoise(x * 0.06 + 9, z * 0.06 - 3), big = R() < 0.55;
+      const name = big ? (c < 0.4 ? 'Flower_4_Group' : c < 0.62 ? 'Flower_4_Group@y' : 'Flower_4_Group@p') : (c < 0.5 ? 'Flower_3_Group' : 'Flower_3_Group@r');
+      push(name, x, y, z, 0.26 + R() * 0.14 + mk * 0.06, 1, 0.04); continue;
+    }
     if (u < 0.05 + 0.03 * dens) { push('Grass_Common_Short', x, y - 0.02, z, 0.28 + R() * 0.2, 1, 0.08); continue; }
     if (u < 0.2 && R() < 0.35 * dens) { push(R() < 0.6 ? 'Clover_1' : 'Grass_Wispy_Tall', x, y, z, R() < 0.6 ? 0.32 : 0.26 + R() * 0.12); continue; }
     if (u < 0.205) { push('Rock_Medium_2', x, y - 0.1, z, 0.12 + R() * 0.2, 1, 0.1); continue; }
@@ -251,14 +269,21 @@ export function placeFlora(land, farHeight, quality) {
   const ts = 0.78;
   for (let gz = DOM.z0 + 1; gz < DOM.z0 + DOM.d - 1; gz += ts) for (let gx = DOM.x0 + 1; gx < DOM.x0 + DOM.w - 1; gx += ts) {
     const x = gx + (R() - 0.5) * ts, z = gz + (R() - 0.5) * ts;
-    const rd = land.roadDist(x, z); if (rd > 62 || rd < 1.05 || trodden(x, z)) continue;
-    const keep = (rd < 34 ? 0.85 : 0.35) * dens * (rd < 1.6 ? 0.6 : 1);
+    const rd = land.roadDist(x, z); if (rd < 1.05 || trodden(x, z)) continue;
+    const keep = (rd < 34 ? 0.85 : rd < 62 ? 0.35 : 0.24) * dens * (rd < 1.6 ? 0.6 : 1) * (1 - 0.5 * meadowK(x, z));
     if (R() > keep) continue;
     if (land.streamDist(x, z) < 12 && shore(x, z) < 0.5) continue;
     const y = land.heightExact(x, z) - 0.03;
     const k = rd < 2.2 ? (R() < 0.5 ? 1 : 0) : R() < 0.55 ? 0 : R() < 0.6 ? 2 : 1;
     const sc = (0.8 + R() * 0.55) * (rd < 2.2 ? 1.15 : 1);
     tufts[k].push(x, y, z, R() * 6.283, sc, 1, 1, 1);
+  }
+  // 浅滩里的圆石：一路踩着过去
+  for (let i = 0; i < 70; i++) {
+    const s = SHOAL.s + (R() - 0.5) * 22, p = STREAM.at(s), w = bankW(s), d = (R() * 2 - 1) * w * 0.95;
+    const x = p.x - p.tz * d, z = p.z + p.tx * d;
+    const k = R(), peb = k > 0.75;
+    push(peb ? 'Pebble_Round_2' : k < 0.4 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, land.heightExact(x, z) - 0.04, z, peb ? 0.6 + R() * 0.8 : 0.12 + R() * 0.22, 1, 0.08);
   }
   // 溪里溪边的石头
   for (let s = 0; s < STREAM.length; s += 2.2) {

@@ -20,6 +20,10 @@ body.playing #hud { opacity: 1; }
 .place.show { opacity: 1; }
 .place b { font-size: 19px; font-weight: 600; letter-spacing: 3px; }
 .place small { font-size: 12px; opacity: 0.9; letter-spacing: 1px; }
+#hud .topr { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+#journal { pointer-events: auto; font-size: 11px; letter-spacing: 1px; padding: 3px 8px; border-radius: 10px; background: var(--pill); color: #fff8ee; }
+#journal.pop { animation: pop 1.2s ease; }
+@keyframes pop { 0% { transform: scale(1); } 20% { transform: scale(1.25); background: rgba(255, 220, 170, 0.85); color: var(--ink); } 100% { transform: scale(1); } }
 #perf { pointer-events: auto; background: var(--pill); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 12px; padding: 4px 9px; font-size: 11px; font-variant-numeric: tabular-nums; color: #fff8ee; }
 #progress { position: absolute; top: calc(var(--sat) + 4px); left: 30%; right: 30%; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); overflow: hidden; }
 #progress i { display: block; height: 100%; width: 0; background: rgba(255, 236, 200, 0.95); border-radius: 2px; }
@@ -33,7 +37,13 @@ body.playing #hud { opacity: 1; }
 .gaits { flex-direction: column; }
 .gaits button, .tools button { background: var(--pill); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #fff8ee; border-radius: 16px; padding: 7px 12px; font-size: 13px; min-width: 58px; transition: background 0.25s, color 0.25s; }
 .gaits button.on, .tools button.on { background: var(--pillOn); color: var(--ink); }
-.hint { align-self: flex-end; margin-bottom: 6px; font-size: 13px; letter-spacing: 2px; opacity: 0.85; text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); transition: opacity 1s; }
+.mid { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
+.modes { display: flex; pointer-events: auto; background: var(--pill); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 18px; padding: 3px; gap: 2px; }
+.modes button { background: none; color: #fff8ee; border-radius: 15px; padding: 7px 13px; font-size: 14px; letter-spacing: 2px; transition: background 0.25s, color 0.25s; }
+.modes button.on { background: var(--pillOn); color: var(--ink); }
+#act { pointer-events: auto; background: rgba(255, 226, 180, 0.94); color: var(--ink); border-radius: 18px; padding: 9px 18px; font-size: 15px; letter-spacing: 3px; box-shadow: 0 4px 16px rgba(80, 40, 10, 0.3); animation: breathe 2.4s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: scale(1.05); } }
+.hint { margin-bottom: 0; font-size: 13px; letter-spacing: 2px; opacity: 0.85; text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); transition: opacity 1s; }
 .hint.off { opacity: 0; }
 
 /* ---------- 开始、结尾、署名 ---------- */
@@ -47,11 +57,26 @@ body.playing #start { opacity: 0; pointer-events: none; }
 .card h2 { margin: 0 0 10px; font-size: 20px; letter-spacing: 4px; font-weight: 600; }
 .card .sub { margin: 4px 0 16px; font-size: 14px; letter-spacing: 4px; opacity: 0.75; }
 .card p { font-size: 13px; line-height: 1.7; margin: 8px 0; }
-.horses { display: flex; gap: 10px; margin-bottom: 14px; }
-.horses button { flex: 1; background: rgba(120, 80, 50, 0.08); border-radius: 14px; padding: 10px 6px; display: flex; flex-direction: column; gap: 3px; border: 2px solid transparent; }
-.horses button.on { border-color: #c98a4a; background: rgba(230, 170, 110, 0.18); }
-.horses b { font-size: 16px; }
-.horses small { font-size: 11px; opacity: 0.7; }
+.mounts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.mounts button { background: rgba(120, 80, 50, 0.08); border-radius: 14px; padding: 9px 6px; display: flex; flex-direction: column; gap: 2px; border: 2px solid transparent; color: var(--ink); }
+.mounts button.on { border-color: #c98a4a; background: rgba(230, 170, 110, 0.18); }
+.mounts b { font-size: 16px; }
+.mounts small { font-size: 11px; opacity: 0.7; }
+.who { display: flex; gap: 8px; margin-bottom: 10px; }
+.who button { flex: 1; background: rgba(120, 80, 50, 0.08); border-radius: 12px; padding: 8px 6px; font-size: 14px; color: var(--ink); border: 2px solid transparent; }
+.who button.on { border-color: #c98a4a; background: rgba(230, 170, 110, 0.18); }
+#mountSheet { position: fixed; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding: 0 18px calc(var(--sab) + 90px); background: rgba(40, 24, 20, 0.25); }
+#mountSheet .card { padding: 16px 16px 8px; }
+#mountSheet .mounts { margin-bottom: 6px; }
+#journalSheet { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 18px; background: rgba(40, 24, 20, 0.3); }
+#journalSheet .card { padding: 16px 16px 8px; max-height: 80vh; overflow-y: auto; }
+.places { list-style: none; margin: 0 0 6px; padding: 0; text-align: left; }
+.places li { display: flex; gap: 10px; align-items: baseline; padding: 6px 4px; border-bottom: 1px solid rgba(120, 80, 50, 0.12); font-size: 14px; }
+.places li:last-child { border-bottom: 0; }
+.places li i { font-style: normal; width: 16px; color: #c4773a; flex: none; }
+.places li b { font-weight: 600; flex: none; }
+.places li small { font-size: 12px; opacity: 0.7; }
+.places li.todo b { opacity: 0.55; }
 #go, .row button, #creditsClose { width: 100%; background: #c4773a; color: #fff8ee; border-radius: 16px; padding: 13px; font-size: 18px; letter-spacing: 6px; box-shadow: 0 4px 14px rgba(160, 80, 30, 0.35); }
 #go:disabled { background: #b9a48c; box-shadow: none; letter-spacing: 2px; font-size: 15px; }
 .row { display: flex; gap: 10px; margin-top: 12px; }
@@ -66,6 +91,8 @@ body.playing #start { opacity: 0; pointer-events: none; }
   .card { max-width: 440px; padding: 14px 18px 10px; }
   .card h1 { font-size: 30px; }
   .tips { display: none; }
+  .mounts { grid-template-columns: repeat(4, 1fr); }
+  #mountSheet { padding-bottom: calc(var(--sab) + 20px); }
 }
 /* 无头截图模式：去掉毛玻璃和过渡，软件渲染下合成太慢 */
 body.shot * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; transition: none !important; }

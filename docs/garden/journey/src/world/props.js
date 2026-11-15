@@ -138,7 +138,7 @@ export function buildWindmill(land) {
 export function buildFences(land) {
   const R = rng(31), k = new Kit();
   const runs = [[26, 96, 1, 3.4], [128, 140, -1, 3.2], [200, 226, 1, 3.6], [246, 268, -1, 3.5]];
-  const p = {};
+  const p = {}, segs = [], posts = [];
   for (const [a, b, side, off] of runs) {
     let prev = null;
     for (let s = a; s <= b; s += 2.6) {
@@ -146,6 +146,7 @@ export function buildFences(land) {
       const x = p.x - p.tz * o, z = p.z + p.tx * o, y = land.height(x, z);
       k.cyl(0.06, 0.075, 1.15, 6, M4(x, y + 0.45, z, (R() - 0.5) * 0.08, R() * 3, (R() - 0.5) * 0.08), '#6e5038', 0.12, R);
       if (prev && R() > 0.06) {
+        segs.push([prev[0], prev[2], x, z]);
         for (const h of [0.42, 0.82]) {
           const dx = x - prev[0], dz = z - prev[2], dy = (y - prev[1]), len = Math.hypot(dx, dz);
           k.box(0.06, 0.07, Math.hypot(len, dy) + 0.2, M4((x + prev[0]) / 2, (y + prev[1]) / 2 + h + (R() - 0.5) * 0.05, (z + prev[2]) / 2, -Math.atan2(dy, len), Math.atan2(dx, dz)), '#86664a', 0.12, R);
@@ -157,10 +158,11 @@ export function buildFences(land) {
   // 路牌
   ROAD.at(SPOTS.start + 12, p);
   { const x = p.x + p.tz * 2.2, z = p.z - p.tx * 2.2, y = land.height(x, z), yaw = Math.atan2(p.tx, p.tz);
-    k.cyl(0.07, 0.08, 1.9, 6, M4(x, y + 0.85, z), '#5e4430', 0.08, R);
+    k.cyl(0.07, 0.08, 1.9, 6, M4(x, y + 0.85, z), '#5e4430', 0.08, R); posts.push([x, z, 0.12]);
     k.box(0.9, 0.22, 0.05, M4(x + Math.cos(yaw) * 0.25, y + 1.55, z - Math.sin(yaw) * 0.25, 0, yaw + Math.PI / 2 - 0.15), '#a8865c', 0.06, R);
     k.box(0.75, 0.2, 0.05, M4(x - Math.cos(yaw) * 0.2, y + 1.25, z + Math.sin(yaw) * 0.2, 0, yaw + Math.PI / 2 + 0.25), '#9a7a52', 0.06, R); }
   const m = k.mesh(); m.name = 'fences';
+  m.userData.segs = segs; m.userData.posts = posts;   // 给碰撞用
   return m;
 }
 
@@ -301,5 +303,8 @@ export async function buildCamp(land, base) {
   flames.visible = false;
   g.userData.lanLight = lanLight;
   g.userData.yaw = yaw;
+  // 挡路的东西（给碰撞用）：[x, z, 半径]
+  const xz = (dx, dz) => { const q = at(dx, dz); return [q[0], q[2]]; };
+  g.userData.blocks = [[...xz(0, 0), 0.7], [...xz(-1.1, 1.5), 0.32], [...xz(3.3, -2.4), 1.55], [...xz(1.2, -2.2), 0.12], [bx, bz, 0.8], [v.x - 2.4, v.z + 1.6, 0.45]];
   return g;
 }

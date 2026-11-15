@@ -1,65 +1,83 @@
-// 镜头：身后的旅行镜头（看得到夕阳和远山）、俯视镜头（双指捏合切换）、观景点和营地的自动远景。
+// 镜头：身后的旅行镜头（看得到夕阳和远山；步行、骑马、飞行机位不同）、俯视镜头（双指捏合切换）、观景点和营地的自动远景。
 import * as THREE from 'three';
-import { ROAD } from '../world/route.js';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
-const _v = new THREE.Vector3(), _w = new THREE.Vector3(), _p = {}, _q = {};
+const _v = new THREE.Vector3(), _w = new THREE.Vector3();
 
 export class CamRig {
   constructor(camera, groundAt) {
     this.cam = camera; this.groundAt = groundAt;
     this.zoom = 0; this.zoomTarget = 0;   // 0 = 身后，1 = 俯视
-    this.yawOff = 0; this.yawHold = 0;    // 手指左右拖动看风景
-    this.pitchOff = 0;
+    this.yawOff = 0; this.yawHold = 0;    // 过桥时侧头看风车之类
+    this.pitchOff = 0; this.pitchHold = 0;
     this.pos = new THREE.Vector3(); this.look = new THREE.Vector3();
     this.fwd = new THREE.Vector3(0, 0, -1);
     this.shot = null; this.shotW = 0;      // 自动远景
     this.inited = false;
+    // 不同走法的机位：离身后多远、多高、看前面多远、看的高度
+    this.par = { back: 6.6, up: 2.35, ahead: 11, lookH: 1.75 };
   }
   // 远景镜头：{ dur, pos(t)->Vector3, look(t)->Vector3 }
   play(shot) { this.shot = { ...shot, t: 0 }; }
   get busy() { return !!this.shot; }
-  update(dt, horsePos, s, speed) {
-    const cam = this.cam;
-    // 前方方向：取路前面一段的平均切线，弯道上镜头不晃
-    _v.set(0, 0, 0);
-    for (const k of [2, 6, 10, 14]) { ROAD.at(s + k, _p); _v.x += _p.tx; _v.z += _p.tz; }
-    _v.normalize();
+  // focus：跟着的点（马或人脚下 / 飞的时候是身体），yaw：朝向，o: { mode, speed, vy, alt }
+  update(dt, focus, yaw, o = {}) {
+    const cam = this.cam, mode = o.mode || 'ride';
+    const P = MODES[mode] || MODES.ride;
+    const kp0 = this.inited ? 1 - Math.exp(-dt * 2.2) : 1;
+    for (const k in P) this.par[k] += (P[k] - this.par[k]) * kp0;
+    // 朝向慢慢跟上
+    _v.set(Math.sin(yaw), 0, Math.cos(yaw));
     if (!this.inited) this.fwd.copy(_v);
-    this.fwd.lerp(_v, 1 - Math.exp(-dt * 1.2)).normalize();
+    this.fwd.lerp(_v, 1 - Math.exp(-dt * (mode === 'fly' ? 1.6 : mode === 'foot' ? 2.6 : 1.8))).normalize();
     this.zoom = damp(this.zoom, this.zoomTarget, 3.0, dt);
-    if (this.yawHold > 0) this.yawHold -= dt; else { this.yawOff = damp(this.yawOff, 0, 0.9, dt); this.pitchOff = damp(this.pitchOff, 0, 0.9, dt); }
-    const z = sstep(0, 1, this.zoom);
-    // 旅行镜头：在马身后偏左一点，低机位，能看到地平线上的太阳
-    const yaw = this.yawOff;
-    const f = _w.copy(this.fwd).applyAxisAngle(THREE.Object3D.DEFAULT_UP, yaw);
-    const back = THREE.MathUtils.lerp(6.6, 10, z), up = THREE.MathUtils.lerp(2.35, 21, z);
-    const tx = horsePos.x - f.x * back + f.z * 0.6 * (1 - z), tz = horsePos.z - f.z * back - f.x * 0.6 * (1 - z);
-    let ty = horsePos.y + up;
+    if (this.yawHold > 0) this.yawHold -= dt; else this.yawOff = damp(this.yawOff, 0, 0.9, dt);
+    if (this.pitchHold > 0) this.pitchHold -= dt; else this.pitchOff = damp(this.pitchOff, 0, 0.6, dt);
+    const z = sstep(0, 1, this.zoom), par = this.par;
+    const f = _w.copy(this.fwd).applyAxisAngle(THREE.Object3D.DEFAULT_UP, this.yawOff);
+    const back = THREE.MathUtils.lerp(par.back + (o.speed || 0) * (mode === 'fly' ? 0.09 : 0.05), 10, z);
+    const up = THREE.MathUtils.lerp(par.up - (mode === 'fly' ? (o.vy || 0) * 0.25 : 0), 21, z);
+    const side = mode === 'fly' ? 0 : 0.6 * (1 - z);
+    let tx = focus.x - f.x * back + f.z * side, tz = focus.z - f.z * back - f.x * side;
+    let ty = focus.y + up;
+    // 身后有树（松树枝很低）：镜头拉近一点、抬高一点，不钻进树冠里
+    if (this.blocker && z < 0.5 && (mode !== 'fly' || (o.alt || 0) < 12)) {
+      const t = this.blocker(focus.x, focus.z, tx, tz);
+      this.blockT = damp(this.blockT ?? 1, t, t < (this.blockT ?? 1) ? 8 : 1.5, dt);
+      const k = Math.max(this.blockT, 1.9 / Math.max(2, back));
+      tx = focus.x + (tx - focus.x) * k; tz = focus.z + (tz - focus.z) * k; ty += (1 - k) * 1.4;
+    }
     const gy = this.groundAt(tx, tz); ty = Math.max(ty, gy + 1.2);
-    const lookAhead = THREE.MathUtils.lerp(11, 2.5, z);
-    const lx = horsePos.x + f.x * lookAhead, lz = horsePos.z + f.z * lookAhead;
-    const ly = horsePos.y + THREE.MathUtils.lerp(1.75, 0.4, z) + this.pitchOff;
+    const lookAhead = THREE.MathUtils.lerp(par.ahead, 2.5, z);
+    const lx = focus.x + f.x * lookAhead, lz = focus.z + f.z * lookAhead;
+    const ly = focus.y + THREE.MathUtils.lerp(par.lookH, 0.4, z) + this.pitchOff + (mode === 'fly' ? (o.vy || 0) * 0.5 : 0);
     if (!this.inited) { this.pos.set(tx, ty, tz); this.look.set(lx, ly, lz); this.inited = true; }
-    const kp = 4.5, kl = 6;
+    const kp = mode === 'fly' ? 3.2 : 4.5, kl = 6;
     this.pos.set(damp(this.pos.x, tx, kp, dt), damp(this.pos.y, ty, kp * 0.8, dt), damp(this.pos.z, tz, kp, dt));
+    // 地面以下不行（镜头跟得慢时也不穿地）
+    this.pos.y = Math.max(this.pos.y, this.groundAt(this.pos.x, this.pos.z) + 0.6);
     this.look.set(damp(this.look.x, lx, kl, dt), damp(this.look.y, ly, kl, dt), damp(this.look.z, lz, kl, dt));
-    let P = this.pos, L = this.look;
+    let Pp = this.pos, L = this.look;
     // 远景镜头混进来
     if (this.shot) {
       const sh = this.shot; sh.t += dt;
       const w = sstep(0, sh.blend || 2.2, sh.t) * (1 - sstep(sh.dur - (sh.blend || 2.2), sh.dur, sh.t));
       this.shotW = w;
-      const sp = sh.pos(sh.t, horsePos), sl = sh.look(sh.t, horsePos);
-      P = _v.copy(this.pos).lerp(sp, w); L = new THREE.Vector3().copy(this.look).lerp(sl, w);
+      const sp = sh.pos(sh.t, focus), sl = sh.look(sh.t, focus);
+      Pp = _v.copy(this.pos).lerp(sp, w); L = new THREE.Vector3().copy(this.look).lerp(sl, w);
       if (sh.t >= sh.dur) { if (sh.onEnd) sh.onEnd(); if (!sh.hold) this.shot = null; else sh.t = sh.dur - (sh.blend || 2.2); }
     } else this.shotW = 0;
-    cam.position.copy(P);
+    cam.position.copy(Pp);
     cam.lookAt(L);
     cam.updateMatrixWorld();
   }
 }
+const MODES = {
+  foot: { back: 4.4, up: 1.75, ahead: 7, lookH: 1.45 },
+  ride: { back: 6.6, up: 2.35, ahead: 11, lookH: 1.75 },
+  fly: { back: 6.2, up: 1.7, ahead: 16, lookH: 0.7 },
+};
 
 // 观景台：镜头从马身后升起，从右边绕到马的前上方，回头看走过的溪谷（被夕阳照着），停一会儿再绕回来
 export function viewpointShot(yaw0) {

@@ -20,7 +20,11 @@ const _q = {};
 export const STREAM_CROSS = (() => { const p = ROAD.at(SPOTS.bridge); return STREAM.nearest(p.x, p.z, 30).s; })();
 const WC = -0.9;
 export function waterY(s) { const ds = s - STREAM_CROSS; return ds < 0 ? WC - ds * 0.03 : WC - ds * 0.012; }
-export function bankW(s) { return 2.05 + 0.45 * Math.sin(s * 0.045) + 0.28 * Math.sin(s * 0.13 + 1.0); }
+// 浅滩：桥上游一段溪水变宽变浅，可以蹚水过去（去西边松林）
+export const SHOAL = { x: -96, z: -131 };
+SHOAL.s = STREAM.nearest(SHOAL.x, SHOAL.z, 40).s;
+const shoalK = s => Math.exp(-(((s - SHOAL.s) / 10) ** 2));
+export function bankW(s) { return 2.05 + 0.45 * Math.sin(s * 0.045) + 0.28 * Math.sin(s * 0.13 + 1.0) + 1.3 * shoalK(s); }
 const DEPTH = 0.72;
 
 // 远山：一圈手摆的山峰。参数是 [方位角(从正北顺时针,度), 距离, 仰角(度), 宽度]。
@@ -77,7 +81,7 @@ function channel(h, dS, sS) {
   if (dS > bw + 7) return h;
   const W = waterY(sS);
   let c;
-  if (dS < bw) { const t = dS / bw; c = W - DEPTH * (1 - t * t) - 0.05; }
+  if (dS < bw) { const t = dS / bw; c = W - DEPTH * (1 - 0.7 * shoalK(sS)) * (1 - t * t) - 0.05; }
   else { const e = dS - bw; c = W - 0.05 + 0.62 * sstep(0, 1.7, e) + 0.14 * Math.max(0, e - 1.2) ** 2; }
   return Math.min(h, c);
 }
