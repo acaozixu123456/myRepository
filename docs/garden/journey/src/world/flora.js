@@ -382,7 +382,7 @@ export function buildImpostors(renderer, models, mats, trees, fadeU) {
   geo.setAttribute('aInfo', new THREE.InstancedBufferAttribute(a1, 4));
   geo.instanceCount = n;
   const mat = new THREE.ShaderMaterial({
-    uniforms: { ...U, uAtlas: { value: rt.texture }, uCount: { value: types.length }, uFadeR: fadeU.trees, uAmb: { value: new THREE.Color('#9fb0c8') }, uAmbG: { value: new THREE.Color('#6a6a40') } },
+    uniforms: { ...U, uAtlas: { value: rt.texture }, uCount: { value: types.length }, uFadeR: fadeU.trees },
     vertexShader: /* glsl */`
       attribute vec4 aPos; attribute vec4 aInfo;
       uniform float uTime; uniform float uWind;
