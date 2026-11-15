@@ -105,7 +105,7 @@ function bagPage() {
     body = Object.keys(ITEMS).filter(id => ITEMS[id].cat === 'use' || (ITEMS[id].cat === 'book' && s.bag.items[id] > 0)).map(id => { const it = ITEMS[id], n = s.bag.items[id] || 0;
       return html`<div class="row"><${ItemIcon} id=${id} /><div class="mid"><b>${it.name}<small> ×${n}</small></b><small>${it.desc}</small></div>${it.use === 'hp' || it.use === 'mp' ? html`<${Btn} disabled=${!n} onClick=${() => useItem(id)}>使用</${Btn}>` : null}</div>`; });
   } else if (tab === 'mats') {
-    const ids = Object.keys(ITEMS).filter(id => (ITEMS[id].cat === 'mat' || ITEMS[id].cat === 'bp') && (s.bag.items[id] || 0) > 0);
+    const ids = Object.keys(ITEMS).filter(id => ['mat', 'bp', 'crop', 'dish'].includes(ITEMS[id].cat) && (s.bag.items[id] || 0) > 0);
     body = ids.length ? html`<div class="mgrid">${ids.map(id => html`<div class="mtile"><${ItemIcon} id=${id} /><b>${ITEMS[id].name}</b><small>×${s.bag.items[id]}</small></div>`)}</div><p class="hint">材料用来强化、洗练和在工坊打造。</p>` : html`<p class="hint">还没有材料。打怪会掉羽毛、河石这类东西，分解装备得到灵尘。</p>`;
   } else {
     const gems = Object.entries(s.bag.gems || {}).filter(([, n]) => n > 0).map(([k, n]) => { const [el, lv] = k.split(':'); return { el, lv: +lv, n }; }).sort((a, b) => a.el.localeCompare(b.el) || a.lv - b.lv);

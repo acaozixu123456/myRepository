@@ -359,3 +359,24 @@ details.chap{background:var(--card);border-radius:14px;margin-bottom:8px;padding
 details.chap summary{display:flex;justify-content:space-between;padding:10px 4px;font-weight:600;font-size:14px;cursor:pointer;list-style:none}
 details.chap summary small{color:var(--ink2);font-weight:400}
 .report p.big{white-space:normal}
+
+/* ---------- M5 家园 ---------- */
+.round{position:relative}.round em.dot{position:absolute;top:4px;right:4px;width:10px;height:10px;border-radius:50%;background:#ef6f5e;border:2px solid var(--card)}
+.crop{display:inline-block;flex:none;border-radius:50% 50% 46% 46%;background:radial-gradient(circle at 35% 30%,#fff8 0 18%,transparent 19%),var(--c);box-shadow:inset 0 -3px 0 #0002;position:relative}
+.crop::after{content:'';position:absolute;left:42%;top:-18%;width:22%;height:30%;border-radius:50% 50% 0 50%;background:#6cbf5a}
+.plots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.plot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:96px;border-radius:16px;background:#c99b6d22;border:2px dashed #c99b6d88;color:var(--ink2);padding:8px 4px}
+.plot.growing{background:#a8794a2e;border-style:solid;border-color:#a8794a55}.plot.ripe{background:#f6d77b44;border:2px solid #e9b949;color:var(--ink)}
+.plot small{font-size:13px;color:var(--ink)}.plot em{font-style:normal;font-size:11px;color:var(--ink2);text-align:center}
+.lamp{background:var(--card);border-radius:18px;padding:14px 16px;box-shadow:0 2px 8px var(--shade);margin-bottom:6px}
+.lamptop{display:flex;gap:10px;align-items:center;color:var(--accent)}.lamptop .mid b{color:var(--ink)}.lamptop small{display:block;font-size:12px;color:var(--ink2)}
+.xp.big{height:10px;border-radius:6px;margin:10px 0}
+.chk{display:flex;align-items:center;gap:10px;padding:6px 2px;font-size:14px}.chk i{width:20px;height:20px;border-radius:50%;border:2px solid var(--track);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;color:#fff}
+.chk.ok i{background:#7cc36a;border-color:#7cc36a}.chk.ok span{color:var(--ink2);text-decoration:line-through}.chk small{margin-left:auto;color:var(--accent);font-size:12px}
+h3 small{font-weight:400;font-size:12px;color:var(--ink2)}
+.moodcard{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:0 2px 8px var(--shade)}
+.moodcard b{display:block;font-size:14px}.moodcard small{display:block;font-size:13px;color:var(--ink2);line-height:1.6}
+.flower{flex:none;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle,#ffe9a8 0 22%,transparent 23%),conic-gradient(from 0deg,hsl(var(--h) 75% 72%) 0 12.5%,hsl(var(--h) 70% 82%) 0 25%,hsl(var(--h) 75% 72%) 0 37.5%,hsl(var(--h) 70% 82%) 0 50%,hsl(var(--h) 75% 72%) 0 62.5%,hsl(var(--h) 70% 82%) 0 75%,hsl(var(--h) 75% 72%) 0 87.5%,hsl(var(--h) 70% 82%) 0);-webkit-mask:radial-gradient(circle,#000 62%,transparent 64%);mask:radial-gradient(circle,#000 62%,transparent 64%)}
+.like{color:#e07a4f}
+.gi.item-dish{background:#fde4e4;color:#e0707a}
+.hudBtns{display:flex;flex-direction:column;gap:8px}

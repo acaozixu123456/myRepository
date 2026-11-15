@@ -7,6 +7,7 @@ import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, ELEMENTS, NPCS, QUESTS } from 
 import { ICON_PATHS } from './icons.js';
 import { gearPages, routeHint } from './gearui.js';
 import { petPages } from './petui.js';
+import { homePages, homeBadge } from './homeui.js';
 import { store, subscribe, refresh, save, setState, wipe } from './store.js';
 
 export const html = htm.bind(h);
@@ -47,7 +48,8 @@ function Hud() {
     </button>
     <div class="hudR">
       <div class="panel where"><small>${z.name}</small><b><${Coin} s=${17} />${s.wallet.gold}</b></div>
-      <button type="button" class="panel round" aria-label="地图" onClick=${() => openSheet('map')}><${Icon} n="map" /></button>
+      <div class="hudBtns"><button type="button" class="panel round" aria-label="地图" onClick=${() => openSheet('map')}><${Icon} n="map" /></button>
+      <button type="button" class="panel round" aria-label="家园" onClick=${() => openSheet('home')}><${Icon} n="home" />${homeBadge(s) ? html`<em class="dot"></em>` : null}</button></div>
     </div>
   </header>`;
 }
@@ -75,6 +77,7 @@ export const Gold = () => html`<span class="gold"><${Coin} />${store.s.wallet.go
 const pages = {
   ...gearPages,
   ...petPages,
+  ...homePages,
   quests() {
     const s = store.s, q = C.currentQuest(s), m = s.quests.main;
     let card;
@@ -90,7 +93,7 @@ const pages = {
   },
   more() {
     const go = (k, push = true) => () => openSheet(k, { push });
-    const tiles = [['map', 'map', '地图', '去别的岛'], ['craft', 'hammer', '工坊', `打造 Lv.${store.s.craft.lv}`], ['shop', 'shop', '商店', '药、强化石'], ['dex', 'book', '图鉴', `${Object.keys(store.s.world.dex).length}/${Object.keys(MONSTERS).length}`], ['settings', 'settings', '设置', '存档码']];
+    const tiles = [['home', 'home', '家园', '田地、打工、厨房'], ['map', 'map', '地图', '去别的岛'], ['craft', 'hammer', '工坊', `打造 Lv.${store.s.craft.lv}`], ['shop', 'shop', '商店', '药、强化石'], ['dex', 'book', '图鉴', `${Object.keys(store.s.world.dex).length}/${Object.keys(MONSTERS).length}`], ['settings', 'settings', '设置', '存档码']];
     return html`<${Head} title="更多" /><div class="tiles">${tiles.map(([k, ic, t, sub]) => html`<button type="button" class="tile" onClick=${go(k)}><${Icon} n=${ic} s=${28} /><b>${t}</b><small>${sub}</small></button>`)}<a class="tile" href="garden.html"><${Icon} n="sprout" s=${28} /><b>旧花园</b><small>以前种的</small></a></div>`;
   },
   map() {
@@ -142,7 +145,7 @@ const pages = {
       <button type="button" class="primary" onClick=${() => hooks.startGame(k)}>就选${c.name}</button>`;
   },
 };
-const TALL = new Set(['bag', 'hero', 'pets', 'quests', 'map', 'shop', 'dex', 'settings', 'gear', 'craft', 'pet', 'fuse']);
+const TALL = new Set(['home', 'gift', 'bag', 'hero', 'pets', 'quests', 'map', 'shop', 'dex', 'settings', 'gear', 'craft', 'pet', 'fuse']);
 
 export function useItem(id) {
   const s = store.s, it = ITEMS[id], st = C.heroStats(s), h = s.hero;

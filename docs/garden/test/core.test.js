@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as C from '../src/core/index.js';
-import { ZONES, QUESTS, SKILLS } from '../src/data/index.js';
+import { ZONES, QUESTS, SKILLS, MONSTERS } from '../src/data/index.js';
 
 test('新开档的数值合理', () => {
   for (const cls of ['cat', 'fox', 'rabbit']) {
@@ -269,4 +269,40 @@ test('M4 支线：NPC 一件件给，接下、推进、交付；有的要先打�
   assert.equal(C.sideFor(s, 'shepherd').q.id, 's5'); C.acceptSide(s, 's5'); C.questProgress(s, 'capture', { id: 'chirp' }); C.claimSide(s, 's5');
   assert.equal(C.sideFor(s, 'shepherd'), null); s.world.bosses.tusk = 1; assert.equal(C.sideFor(s, 'shepherd').q.id, 's6');
   assert.equal(C.activeSides(s).length, 0); C.acceptSide(s, 's6'); assert.equal(C.activeSides(s)[0].ready, false);
+});
+
+test('M5 家园：种地浇水收菜、扩建、打工离线最多 12 小时、性格喜欢的工作多产', () => {
+  C.seedRng(3);
+  const s = C.newGame('cat'), t0 = new Date(2026, 10, 15, 9).getTime(), H = 3600000; s.wallet.gold = 2000;
+  assert.equal(s.v, 6); assert.equal(s.home.plots.length, 6);
+  assert.ok(C.plant(s, 0, 'corn', t0)); assert.ok(!C.plant(s, 0, 'radish', t0)); assert.equal(C.plotState(s.home.plots[0], t0 + H), 'growing');
+  assert.ok(C.water(s, 0, t0)); assert.ok(!C.water(s, 0, t0)); assert.equal(C.plotState(s.home.plots[0], t0 + 2.3 * H), 'ripe');
+  const r = C.harvest(s, 0, t0 + 2.3 * H); assert.equal(r[0], 'corn'); assert.ok(r[1] >= 3); assert.equal(s.home.plots[0], null);
+  assert.ok(C.buyPlot(s)); assert.equal(s.home.plots.length, 7);
+  const p = C.addPet(s, 'chirp', 10, { home: true }), q = C.addPet(s, 'hopcube', 5); assert.ok(s.party.includes(q.uid)); assert.ok(!C.assign(s, q.uid, 'shop', t0));
+  assert.ok(C.assign(s, p.uid, 'shop', t0)); const g = s.wallet.gold, out = C.collectWork(s, t0 + 30 * H);
+  const per = Math.round(8 + 10 * 0.6), hours = C.likesJob(p, 'shop') ? 18 : 12; assert.equal(out.gold, per * hours); assert.equal(s.wallet.gold, g + per * hours);
+  assert.equal(C.workHours(C.workers(s)[0], t0 + 30 * H), 0);
+});
+
+test('M5 厨房和日常：做饭吃饭加成、送礼、签到、悬赏、摸伙伴、灯火宝箱、心情种子、旧档迁移', () => {
+  C.seedRng(4);
+  const s = C.newGame('fox'), t0 = Date.now(); s.world.unlocked = 3;
+  s.bag.items.greens = 2; s.bag.items.radish = 1; assert.ok(C.canCook(s, 'salad')); assert.ok(C.cook(s, 'salad')); assert.equal(s.bag.items.salad, 1);
+  const hp = C.heroStats(s).hp; assert.ok(C.eat(s, 'salad', Date.now())); assert.ok(C.heroStats(s).hp > hp);
+  s.home.buff.until = Date.now() - 1; assert.equal(C.heroStats(s).hp, hp);
+  const p = C.addPet(s, 'chirp', 5); s.bag.items.mash = 1;
+  const before = p.love; assert.ok(C.gift(s, p.uid, 'mash')); assert.ok(p.love > before);
+  assert.equal(C.lampPoints(s, t0), 0); const g = C.greet(s, t0); assert.equal(g.days, 1); assert.ok(!C.greet(s, t0));
+  const d = C.todayOf(s, t0); assert.equal(d.bounties.length, 3);
+  for (const b of d.bounties) { if (C.bountyDeliver(b)) s.bag.items[b.item] = 10; }
+  const wild = b => ZONES.find(z => z.id === b.zone).wild[0], elMon = el => ZONES.flatMap(z => z.wild || []).find(id => MONSTERS[id].el === el);
+  for (const b of d.bounties) for (let i = 0; i < b.n; i++) { if (b.type === 'kill' || b.type === 'capture') C.questProgress(s, b.type, { mid: wild(b), id: wild(b) }); if (b.type === 'killEl') C.questProgress(s, 'kill', { mid: elMon(b.el) }); }
+  d.bounties.forEach((b, i) => assert.ok(C.claimBounty(s, i, t0), C.bountyText(b)));
+  for (const x of [p, C.addPet(s, 'hopcube', 3), C.addPet(s, 'slider', 3)]) assert.ok(C.pat(s, x.uid, t0));
+  assert.ok(!C.pat(s, p.uid, t0)); C.harvestAll(s, t0); d.harvest = true;
+  assert.equal(C.lampPoints(s, t0), 100); assert.ok(C.lampChest(s, t0).length >= 3); assert.equal(C.lampChest(s, t0), null);
+  const m = C.plantMood(s, '今天天气很好', t0); assert.equal(m.hue, C.hueOf('今天天气很好')); assert.equal(C.plantMood(s, '再写一句', t0), null);
+  assert.ok(C.awayNotes(s, t0 - 5 * 3600000, t0).length >= 1); assert.equal(C.awayNotes(s, t0 - 60000, t0), null);
+  const old = { ...C.newGame('cat'), v: 5 }; delete old.home; const up = C.load(JSON.parse(JSON.stringify(old))); assert.equal(up.v, 6); assert.equal(up.home.plots.length, 6); assert.deepEqual(up.quests.side, {});
 });

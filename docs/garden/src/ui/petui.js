@@ -1,7 +1,7 @@
 // 伙伴列表、伙伴详情（资质五边形、性格天赋、亲密度、技能槽、进化）、融合。
 import { useState } from 'preact/hooks';
 import * as C from '../core/index.js';
-import { SKILLS, MONSTERS, ITEMS, PETS } from '../data/index.js';
+import { SKILLS, MONSTERS, ITEMS, PETS, DISHES, JOBS } from '../data/index.js';
 import { store, save } from './store.js';
 import { html, Icon, Coin, Portrait, El, Bar, Btn, Head, Tabs, ui, openSheet, back, toast, hooks } from './app.js';
 import { GearIcon, gearName, openGear } from './gearui.js';
@@ -82,8 +82,8 @@ function petPage() {
   return html`<${Head} title=${C.petName(p)} />
     <div class="scroll">
       <div class="pethead"><${Portrait} id=${p.id} s=${72} p=${p} /><div class="mid"><b>${C.petName(p)}<small>　Lv.${p.lv}</small> <${El} el=${m.el} />${p.shiny ? html`<span class="tag shinytag">异色</span>` : null}</b>
-        <small><${Stars} n=${C.aptStars(p)} />　性格：${natureText(p)}</small><small>天赋：<b>${t?.name}</b>　${t?.desc}</small>
-        <div class="loveline"><${Icon} n="heart" s=${14} /><span>亲密度 ${lv}</span><div class="xp"><i style=${`width:${C.loveProgress(p) * 100}%`}></i></div><${Btn} disabled=${!(s.bag.items.treat > 0) || lv >= PETS.loveMax} onClick=${() => { const r = C.feed(s, p.uid); if (r) { save(); toast(r.up ? `亲密度升到 ${r.lv} 级` : `${C.petName(p)}很开心`, r.up && r.lv === PETS.slot4Love ? '第四个技能槽开了' : `还剩 ${s.bag.items.treat} 个灵果`); } }}>喂灵果 ${s.bag.items.treat || 0}</${Btn}></div></div></div>
+        <small><${Stars} n=${C.aptStars(p)} />　性格：${natureText(p)}</small><small>天赋：<b>${t?.name}</b>　${t?.desc}</small><small>爱吃${DISHES[PETS.natures[p.nature]?.food]?.name || '—'}，擅长${JOBS[PETS.natures[p.nature]?.job]?.name || '—'}</small>
+        <div class="loveline"><${Icon} n="heart" s=${14} /><span>亲密度 ${lv}</span><div class="xp"><i style=${`width:${C.loveProgress(p) * 100}%`}></i></div><${Btn} disabled=${!(s.bag.items.treat > 0) || lv >= PETS.loveMax} onClick=${() => { const r = C.feed(s, p.uid); if (r) { save(); toast(r.up ? `亲密度升到 ${r.lv} 级` : `${C.petName(p)}很开心`, r.up && r.lv === PETS.slot4Love ? '第四个技能槽开了' : `还剩 ${s.bag.items.treat} 个灵果`); } }}>喂灵果 ${s.bag.items.treat || 0}</${Btn}><${Btn} ghost disabled=${C.patted(s, p.uid)} onClick=${() => { const r = C.pat(s, p.uid); if (r) { save(); toast(`摸了摸${C.petName(p)}`, r.up ? `亲密度升到 ${r.lv} 级` : '它眯起了眼睛。'); } }}>${C.patted(s, p.uid) ? '摸过了' : '摸摸'}</${Btn}></div></div></div>
       <div class="gacts">${p.home ? null : on ? html`<${Btn} ghost onClick=${() => setActive(p.uid, false)}>休息</${Btn}>` : html`<${Btn} disabled=${full} onClick=${() => setActive(p.uid, true)}>${full ? '出战满了' : '出战'}</${Btn}>`}
         <${Btn} ghost disabled=${!p.home && C.housed(s).length >= C.houseCap(s) || p.home && C.carried(s).length >= C.CARRY_MAX} onClick=${() => { if (C.setHome(s, p.uid, !p.home)) { save(); refreshLook(); toast(p.home ? '住进伙伴屋了' : '跟着你走了'); } }}>${p.home ? '带在身上' : '放进伙伴屋'}</${Btn}>
         <${Btn} ghost disabled=${p.lv < PETS.fuseLv} onClick=${() => { ui.fuseA = p.uid; ui.fuseB = null; openSheet('fuse', { push: true }); }}>${p.lv < PETS.fuseLv ? `${PETS.fuseLv} 级可融合` : '融合'}</${Btn}><${FreeBtn} p=${p} /></div>

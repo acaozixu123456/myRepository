@@ -1,4 +1,5 @@
 // 角色、怪物、伙伴的数值和升级。
+import { homeBonus } from './home.js';
 import { SKILLS, CLASSES, MONSTERS, GEAR_SETS, ADVANCE_LV, REROUTE_COST } from '../data/index.js';
 import { gearStats, setCounts } from './gear.js';
 import { petMult, talentBonus } from './pets.js';
@@ -29,6 +30,7 @@ export function heroStats(s) {
     for (const part of [n >= 2 && d.two, n >= 4 && d.four]) if (part) { for (const [k, v] of Object.entries(part.stat || {})) add(k, v); if (part.flag) flags[part.flag] = 1; }
   }
   for (const g of Object.values(h.gear)) if (g?.special) flags[g.special] = 1;
+  for (const [k, v] of Object.entries(homeBonus(s))) add(k, v);
   for (const id of heroPassives(s)) { const p = SKILLS[id]; for (const [k, v] of Object.entries(p.stat || {})) add(k, v); if (p.flag) flags[p.flag] = 1; }
   return finishStats({
     hp: 40 + a.vit * 11 + h.lv * 6, mp: Math.round(16 + a.int * 5 + h.lv * 2),

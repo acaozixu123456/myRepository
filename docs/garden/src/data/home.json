@@ -1,0 +1,404 @@
+{
+ "plotsStart": 6,
+ "plotsMax": 12,
+ "plotCost": 400,
+ "waterCut": 0.25,
+ "workers": 4,
+ "workCapH": 12,
+ "buffMin": 30,
+ "daily": {
+  "greet": 20,
+  "harvest": 20,
+  "bounty": 15,
+  "pat": 15,
+  "patNeed": 3,
+  "full": 100
+ },
+ "crops": {
+  "radish": {
+   "id": "radish",
+   "name": "圆萝卜",
+   "hours": 1,
+   "seed": 8,
+   "sell": 14,
+   "color": "#f2a7b8"
+  },
+  "greens": {
+   "id": "greens",
+   "name": "小青菜",
+   "hours": 1.5,
+   "seed": 10,
+   "sell": 18,
+   "color": "#7cc36a"
+  },
+  "potato": {
+   "id": "potato",
+   "name": "胖土豆",
+   "hours": 2,
+   "seed": 14,
+   "sell": 26,
+   "color": "#d8b27a"
+  },
+  "corn": {
+   "id": "corn",
+   "name": "甜玉米",
+   "hours": 3,
+   "seed": 20,
+   "sell": 40,
+   "color": "#f4d35e"
+  },
+  "tomato": {
+   "id": "tomato",
+   "name": "小番茄",
+   "hours": 3,
+   "seed": 22,
+   "sell": 44,
+   "color": "#ef6f5e"
+  },
+  "pumpkin": {
+   "id": "pumpkin",
+   "name": "南瓜",
+   "hours": 4,
+   "seed": 30,
+   "sell": 62,
+   "color": "#f19a3e"
+  },
+  "berry": {
+   "id": "berry",
+   "name": "星莓",
+   "hours": 4,
+   "seed": 34,
+   "sell": 70,
+   "color": "#9a7ff0"
+  },
+  "rice": {
+   "id": "rice",
+   "name": "云米",
+   "hours": 5,
+   "seed": 36,
+   "sell": 78,
+   "color": "#f3efe0"
+  },
+  "melon": {
+   "id": "melon",
+   "name": "琉璃瓜",
+   "hours": 6,
+   "seed": 48,
+   "sell": 105,
+   "color": "#7fd6c8"
+  },
+  "mint": {
+   "id": "mint",
+   "name": "雾薄荷",
+   "hours": 2,
+   "seed": 18,
+   "sell": 34,
+   "color": "#a8e0c8"
+  },
+  "chili": {
+   "id": "chili",
+   "name": "火椒",
+   "hours": 3,
+   "seed": 24,
+   "sell": 48,
+   "color": "#e2483d"
+  },
+  "peach": {
+   "id": "peach",
+   "name": "月桃",
+   "hours": 8,
+   "seed": 70,
+   "sell": 160,
+   "color": "#ffc2b0"
+  }
+ },
+ "dishes": {
+  "salad": {
+   "id": "salad",
+   "name": "青青沙拉",
+   "need": {
+    "greens": 2,
+    "radish": 1
+   },
+   "buff": {
+    "hpP": 5
+   },
+   "love": 10,
+   "desc": "清清爽爽。"
+  },
+  "mash": {
+   "id": "mash",
+   "name": "土豆泥",
+   "need": {
+    "potato": 2
+   },
+   "buff": {
+    "def": 6
+   },
+   "love": 10,
+   "desc": "软乎乎的，吃完很踏实。"
+  },
+  "cornsoup": {
+   "id": "cornsoup",
+   "name": "玉米浓汤",
+   "need": {
+    "corn": 2,
+    "potato": 1
+   },
+   "buff": {
+    "hpP": 8
+   },
+   "love": 15,
+   "desc": "暖到脚尖。"
+  },
+  "omelet": {
+   "id": "omelet",
+   "name": "番茄蛋包",
+   "need": {
+    "tomato": 2,
+    "feather": 1
+   },
+   "buff": {
+    "atkP": 6
+   },
+   "love": 15,
+   "desc": "酸酸甜甜，打怪有劲。"
+  },
+  "pumpkinpie": {
+   "id": "pumpkinpie",
+   "name": "南瓜派",
+   "need": {
+    "pumpkin": 2,
+    "rice": 1
+   },
+   "buff": {
+    "hpP": 10,
+    "def": 5
+   },
+   "love": 20,
+   "desc": "一大块，能分给伙伴。"
+  },
+  "berryjam": {
+   "id": "berryjam",
+   "name": "星莓果酱饼干",
+   "need": {
+    "berry": 2,
+    "rice": 1
+   },
+   "buff": {
+    "magP": 8
+   },
+   "love": 25,
+   "desc": "伙伴最爱的零食。"
+  },
+  "riceball": {
+   "id": "riceball",
+   "name": "云米饭团",
+   "need": {
+    "rice": 2,
+    "greens": 1
+   },
+   "buff": {
+    "xp": 10
+   },
+   "love": 15,
+   "desc": "出门带两个，走得更远。"
+  },
+  "melonice": {
+   "id": "melonice",
+   "name": "琉璃瓜冰",
+   "need": {
+    "melon": 1,
+    "iceShard": 1
+   },
+   "buff": {
+    "spd": 8
+   },
+   "love": 20,
+   "desc": "冰得透亮。"
+  },
+  "minttea": {
+   "id": "minttea",
+   "name": "雾薄荷茶",
+   "need": {
+    "mint": 2
+   },
+   "buff": {
+    "dodge": 5
+   },
+   "love": 10,
+   "desc": "喝完脚步都轻了。"
+  },
+  "hotpot": {
+   "id": "hotpot",
+   "name": "火椒小锅",
+   "need": {
+    "chili": 2,
+    "potato": 1,
+    "greens": 1
+   },
+   "buff": {
+    "atkP": 10
+   },
+   "love": 20,
+   "desc": "辣得冒汗。"
+  },
+  "peachbun": {
+   "id": "peachbun",
+   "name": "月桃包",
+   "need": {
+    "peach": 1,
+    "rice": 1
+   },
+   "buff": {
+    "healUp": 12
+   },
+   "love": 30,
+   "desc": "月愈们最爱。"
+  },
+  "fishsoup": {
+   "id": "fishsoup",
+   "name": "河石鱼汤",
+   "need": {
+    "scale": 2,
+    "greens": 1
+   },
+   "buff": {
+    "def": 8,
+    "hpP": 5
+   },
+   "love": 15,
+   "desc": "用鳞片熬的，别问。"
+  },
+  "lucky": {
+   "id": "lucky",
+   "name": "幸运炒饭",
+   "need": {
+    "rice": 2,
+    "corn": 1,
+    "tomato": 1
+   },
+   "buff": {
+    "gold": 15
+   },
+   "love": 15,
+   "desc": "吃完捡钱都多。"
+  },
+  "starcake": {
+   "id": "starcake",
+   "name": "星屑蛋糕",
+   "need": {
+    "berry": 1,
+    "rice": 1,
+    "starDust": 1
+   },
+   "buff": {
+    "crit": 6
+   },
+   "love": 25,
+   "desc": "会闪光的蛋糕。"
+  },
+  "cloudpudding": {
+   "id": "cloudpudding",
+   "name": "云丝布丁",
+   "need": {
+    "peach": 1,
+    "cloudSilk": 1
+   },
+   "buff": {
+    "magP": 12
+   },
+   "love": 30,
+   "desc": "轻得像要飘走。"
+  },
+  "feast": {
+   "id": "feast",
+   "name": "浮岛大餐",
+   "need": {
+    "pumpkin": 1,
+    "melon": 1,
+    "peach": 1,
+    "chili": 1
+   },
+   "buff": {
+    "atkP": 8,
+    "magP": 8,
+    "hpP": 8
+   },
+   "love": 40,
+   "desc": "把一路的收获都端上桌。"
+  }
+ },
+ "jobs": {
+  "farm": {
+   "name": "种地",
+   "icon": "sprout",
+   "desc": "每小时收一份作物"
+  },
+  "fish": {
+   "name": "钓鱼",
+   "icon": "drop",
+   "desc": "每小时一份鳞片或河石，偶尔有金币"
+  },
+  "mine": {
+   "name": "采矿",
+   "icon": "gem",
+   "desc": "每小时一份灵尘，偶尔有强化石或灵石"
+  },
+  "shop": {
+   "name": "看店",
+   "icon": "shop",
+   "desc": "每小时一些金币，等级越高越多"
+  }
+ },
+ "bounties": [
+  {
+   "type": "kill",
+   "text": "在{zone}打败 {n} 只野怪",
+   "n": [
+    6,
+    10
+   ]
+  },
+  {
+   "type": "killEl",
+   "text": "打败 {n} 只{el}系野怪",
+   "n": [
+    5,
+    8
+   ]
+  },
+  {
+   "type": "capture",
+   "text": "在{zone}抓 1 只伙伴",
+   "n": [
+    1,
+    1
+   ]
+  },
+  {
+   "type": "collect",
+   "text": "交 {n} 个{item}",
+   "n": [
+    3,
+    5
+   ]
+  },
+  {
+   "type": "crop",
+   "text": "交 {n} 个{item}",
+   "n": [
+    2,
+    4
+   ]
+  },
+  {
+   "type": "dish",
+   "text": "交 1 份{item}",
+   "n": [
+    1,
+    1
+   ]
+  }
+ ]
+}

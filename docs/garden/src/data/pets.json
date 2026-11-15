@@ -4,85 +4,85 @@
    "name": "贪睡",
    "up": "hp",
    "down": "spd",
-   "food": "蜂蜜面包",
-   "job": "看家"
+   "food": "mash",
+   "job": "shop"
   },
   "hasty": {
    "name": "急性子",
    "up": "spd",
    "down": "def",
-   "food": "烤玉米",
-   "job": "送信"
+   "food": "cornsoup",
+   "job": "fish"
   },
   "tidy": {
    "name": "爱干净",
    "up": "def",
    "down": "atk",
-   "food": "清汤",
-   "job": "打扫"
+   "food": "minttea",
+   "job": "fish"
   },
   "timid": {
    "name": "胆小",
    "up": "spd",
    "down": "atk",
-   "food": "莓果",
-   "job": "采药"
+   "food": "salad",
+   "job": "farm"
   },
   "reckless": {
    "name": "莽撞",
    "up": "atk",
    "down": "def",
-   "food": "烤肉串",
-   "job": "砍柴"
+   "food": "hotpot",
+   "job": "mine"
   },
   "curious": {
    "name": "好奇",
    "up": "mag",
    "down": "hp",
-   "food": "星星糖",
-   "job": "寻宝"
+   "food": "starcake",
+   "job": "mine"
   },
   "mellow": {
    "name": "温吞",
    "up": "hp",
    "down": "atk",
-   "food": "南瓜粥",
-   "job": "种田"
+   "food": "pumpkinpie",
+   "job": "farm"
   },
   "proud": {
    "name": "傲气",
    "up": "atk",
    "down": "mag",
-   "food": "鱼排",
-   "job": "巡逻"
+   "food": "fishsoup",
+   "job": "shop"
   },
   "clingy": {
    "name": "黏人",
    "up": "def",
    "down": "spd",
-   "food": "奶糕",
-   "job": "陪伴"
+   "food": "peachbun",
+   "job": "shop"
   },
   "singer": {
    "name": "爱唱歌",
    "up": "mag",
    "down": "def",
-   "food": "花蜜",
-   "job": "唱歌"
+   "food": "cloudpudding",
+   "job": "farm"
   },
   "greedy": {
    "name": "馋嘴",
    "up": "hp",
    "down": "mag",
-   "food": "果酱饼干",
-   "job": "做饭"
+   "food": "berryjam",
+   "job": "farm"
   },
   "earnest": {
    "name": "认真",
    "up": "atk",
    "down": "spd",
-   "food": "饭团",
-   "job": "打铁"
+   "food": "riceball",
+   "job": "mine"
   }
  },
  "talents": {

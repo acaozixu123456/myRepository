@@ -1,5 +1,5 @@
 // 构建前检查内容数据里的引用是否都对得上，写错一个 id 就让构建失败。
-import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE, PETS, NPCS, SIDE_QUESTS } from '../src/data/index.js';
+import { SKILLS, CLASSES, MONSTERS, ZONES, ITEMS, QUESTS, GEAR, GEAR_SLOTS, ELEMENTS, STATUS, COMBO, COMBO_STYLE, PETS, NPCS, SIDE_QUESTS, HOME, CROPS, DISHES, JOBS } from '../src/data/index.js';
 const errs = [], need = (ok, msg) => { if (!ok) errs.push(msg); };
 for (const [k, c] of Object.entries(CLASSES)) { for (const [, id] of c.skills) need(SKILLS[id], `职业 ${k} 的技能 ${id} 不存在`); need(ELEMENTS[c.el], `职业 ${k} 的元素 ${c.el} 不存在`); }
 for (const [k, m] of Object.entries(MONSTERS)) {
@@ -28,5 +28,9 @@ for (const q of QUESTS) { qOk(q, '主线'); need(q.ch >= 1 && q.ch <= 5, `主线
 for (const q of SIDE_QUESTS) { qOk(q, '支线'); need(!ids.has(q.id), `委托 id 重复：${q.id}`); ids.add(q.id); need(NPCS[q.npc], `支线 ${q.id} 的 NPC ${q.npc} 不存在`); need(q.type !== 'boss' || MONSTERS[q.boss]?.boss, `支线 ${q.id} 的首领不对`); }
 for (const [id, n] of Object.entries(NPCS)) { need(ZONES.some(z => z.id === n.zone), `NPC ${id} 的地图不存在`); need(n.lines?.length && n.model && n.pos?.length === 2, `NPC ${id} 缺台词、模型或位置`); }
 for (const z of ZONES) if (z.boss) need(MONSTERS[z.boss].epi, `首领 ${z.boss} 没有后日谈`);
+// 家园：料理的食材、性格爱吃的和擅长的都存在
+for (const d of Object.values(DISHES)) { for (const k in d.need) need(ITEMS[k], `料理 ${d.id} 的食材 ${k} 不存在`); need(ITEMS[d.id]?.cat === 'dish', `料理 ${d.id} 没进道具表`); }
+for (const c of Object.values(CROPS)) need(ITEMS[c.id]?.cat === 'crop' && c.hours > 0 && c.sell > c.seed, `作物 ${c.id} 不对`);
+for (const n of Object.values(PETS.natures)) need(DISHES[n.food] && JOBS[n.job], `性格 ${n.name} 的爱吃或擅长不对`);
 if (errs.length) { console.error('数据检查没通过：\n' + errs.join('\n')); process.exit(1); }
 console.log(`数据检查通过：${Object.keys(CLASSES).length} 职业，${Object.keys(SKILLS).length} 技能，${Object.keys(STATUS).length} 状态，${Object.keys(COMBO).length} 连携，${Object.keys(MONSTERS).length} 怪物，${ZONES.length} 张地图，${QUESTS.length} 个主线、${SIDE_QUESTS.length} 个支线、${Object.keys(NPCS).length} 个居民`);
