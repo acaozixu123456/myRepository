@@ -4,7 +4,7 @@
 // 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
 import * as THREE from 'three';
 import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END } from '../world/route.js';
-import { DOM, CENTER, waterY, SHOAL } from '../world/land.js';
+import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ } from '../world/land.js';
 import { PERIODS } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 
@@ -53,6 +53,7 @@ export function makePlaces() {
 const _v = new THREE.Vector3(), _w = new THREE.Vector3(), _o = new THREE.Vector3(), _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion();
 const _h = [new THREE.Vector3(), new THREE.Vector3()], _bit = [new THREE.Vector3(), new THREE.Vector3()], _cr = new THREE.Vector3(), _e = new THREE.Euler();
 const _p = {}, _qr = {};
+const MILL = { x: 62, z: -118 };   // 风车（props.js buildWindmill）
 
 export class Journey {
   // o: { land, bridge, camp, mounts: {b, a, w, d}, traveler, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight }
@@ -74,6 +75,9 @@ export class Journey {
     this.t = 0;
     this.reset();
     this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.night = 0; this.owlT = 20;
+    // 声音：三道叠水的位置、阵风、冰鸣、换曲用的区域（带一点滞后，免得在边界上来回切）
+    this.fallsAt = FALLS.map(([s, h]) => { const q = STREAM.at(s, {}); return { x: q.x, z: q.z, k: h / 4 }; });
+    this.gust = 1; this.gustTo = 1; this.gustT = 0; this.iceT = 6; this.millT = 3; this.region = 'valley'; this.highUp = false; this.nightMusic = false;
     this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));
   }
@@ -314,6 +318,12 @@ export class Journey {
     const s = this.land.sample(this.land.strS, x, z);
     return Math.max(0, waterY(s) - this.land.heightExact(x, z));
   }
+  // 脚下是什么：水、冰、雪还是土
+  surface(x, z, wet) {
+    if (this.waterDepth(x, z) > wet) return 'water';
+    if (this.land.height(x, z) - this.land.ground(x, z) > 0.02) return 'ice';
+    return this.land.snow(x, z) > 0.45 ? 'snow' : 'dirt';
+  }
 
   // ---------- 飞 ----------
   flyMove(dt) {
@@ -514,7 +524,7 @@ export class Journey {
       this.footC = fc;
       if (this.mode === 'foot' && !tr && this.speed > 0.3 && !this.sitting && this.phase !== 'intro') {
         const x = this.p.x, z = this.p.z, wood = this.bridge.heightAt(x, z) !== null;
-        this.sound.foot(wood ? 'wood' : this.waterDepth(x, z) > 0.05 ? 'water' : 'dirt', sstep(2.5, 4.5, this.speed));
+        this.sound.foot(wood ? 'wood' : this.surface(x, z, 0.05), sstep(2.5, 4.5, this.speed));
       }
     }
     // 缰绳
@@ -756,8 +766,26 @@ export class Journey {
     const near = M === this.mount && this.mode === 'ride' ? 1 : Math.max(0, 1 - pos.distanceTo(this.camera.position) / 30);
     if (near < 0.05) return;
     const wood = this.bridge.heightAt(pos.x, pos.z) !== null;
-    const wet = this.waterDepth(pos.x, pos.z) > 0.08;
-    this.sound.step(wood ? 'wood' : wet ? 'water' : 'dirt', g, (leg[1] === 'F' ? 1 : 0.75) * near);
+    this.sound.step(wood ? 'wood' : this.surface(pos.x, pos.z, 0.08), g, (leg[1] === 'F' ? 1 : 0.75) * near);
+  }
+  // 现在该放哪种曲子：营地烤火 > 夜里 > 飞得很高 > 雪原冰湖 / 红叶谷 / 谷地（谷地黄昏换一首）
+  musicMood() {
+    const hp = this.p, au = this.land.autumn(hp.x, hp.z);
+    const cold = Math.max(this.land.snow(hp.x, hp.z), 1 - sstep(1.4, 2.6, lakeQ(hp.x, hp.z)));
+    let r = this.region;
+    if (cold > 0.45) r = 'snow';
+    else if (r === 'snow' && cold > 0.2) r = 'snow';
+    else if (au > 0.4) r = 'autumn';
+    else if (r === 'autumn' && au > 0.15) r = 'autumn';
+    else r = 'valley';
+    this.region = r;
+    if (this.mode === 'fly' && this.alt > 40) this.highUp = true; else if (this.mode !== 'fly' || this.alt < 22) this.highUp = false;
+    if (this.night > 0.6) this.nightMusic = true; else if (this.night < 0.35) this.nightMusic = false;
+    if (this.sitting && this.lit > 0.3) return 'camp';
+    if (this.nightMusic) return 'night';
+    if (this.highUp) return 'sky';
+    if (r === 'valley' && this.tod >= 17.2) return 'dusk';
+    return r;
   }
   mix(dt) {
     this.mixT -= dt; if (this.mixT > 0 || !this.sound.ready) return;
@@ -774,16 +802,57 @@ export class Journey {
     }
     const trees = this.colliders.count(hp.x, hp.z, 16);
     const low = this.mode === 'fly' ? 1 - sstep(10, 40, this.alt) : 1;
-    // 雪地里鸟和虫子都少，风大
-    const snow = this.land.snow(hp.x, hp.z);
-    const birds = (0.3 + 0.7 * sstep(2, 10, trees)) * (this.daylight?.st.birds ?? 1) * low * (1 - 0.8 * snow);
+    // 一阵一阵的风：每两三秒换一个目标，慢慢靠过去
+    this.gustT -= 0.2;
+    if (this.gustT < 0) { this.gustT = 1.5 + Math.random() * 3.5; this.gustTo = 0.45 + Math.random() * 1.1; }
+    this.gust += (this.gustTo - this.gust) * 0.12;
+    // 雪地里鸟和虫子都少，风大；红叶谷里树叶沙沙响，跟着风一阵一阵的
+    const snow = this.land.snow(hp.x, hp.z), au = this.land.autumn(hp.x, hp.z);
+    const birds = (0.3 + 0.7 * sstep(2, 10, trees)) * (this.daylight?.st.birds ?? 1) * low * (1 - 0.8 * snow) * (1 - 0.3 * au);
     const crickets = sstep(0.15, 0.7, this.night) * (this.mode === 'fly' ? 1 - sstep(6, 30, this.alt) : 1) * (0.55 + 0.45 * sstep(0, 6, trees)) * (1 - snow);
-    const wind = (this.mode === 'fly' ? 0.45 + 0.55 * sstep(6, 18, this.speed) : 0.22 + 0.45 * sstep(1.5, 30, hp.y) + (this.phase === 'view' ? 0.25 : 0)) + 0.35 * snow;
+    const windy = Math.max(snow, this.mode === 'fly' ? sstep(10, 50, this.alt) : sstep(30, 80, hp.y));
+    const wind = ((this.mode === 'fly' ? 0.45 + 0.55 * sstep(6, 18, this.speed) : 0.22 + 0.45 * sstep(1.5, 30, hp.y) + (this.phase === 'view' ? 0.25 : 0)) + 0.35 * snow)
+      * (1 + (this.gust - 1) * (0.25 + 0.6 * windy));
+    const leaves = sstep(0.1, 0.6, au) * low * (0.35 + 0.65 * this.gust) * (0.4 + 0.6 * sstep(1, 6, trees));
     const fire = this.lit * (1 - sstep(3, 26, cp.distanceTo(this.camp.userData.fireAt)));
-    this.sound.update({ river, birds, wind, fire, crickets, riverPan: pan });
-    // 音乐：坐下时轻一点，夜里也轻一点
-    const music = (this.sitting ? 0.3 : 0.42) * (1 - 0.45 * this.night);
+    // 叠水：最近的一道，越近越响、跌得越高越响，左右跟着方向
+    let falls = 0, fallsPan = 0;
+    for (const f of this.fallsAt) {
+      const dx = f.x - cp.x, dz = f.z - cp.z, d = Math.min(Math.hypot(dx, dz), Math.hypot(f.x - hp.x, f.z - hp.z)) + (this.mode === 'fly' ? this.alt * 0.5 : 0);
+      const v = f.k * (1 - sstep(4, 60, d));
+      if (v > falls) {
+        falls = v;
+        _w.set(1, 0, 0).applyQuaternion(this.camera.quaternion);
+        fallsPan = clamp((dx * _w.x + dz * _w.z) / Math.max(2, Math.hypot(dx, dz)), -0.8, 0.8);
+      }
+    }
+    this.sound.update({ river, birds, wind, fire, crickets, leaves, falls, riverPan: pan, fallsPan });
+    // 冰湖上和湖边：隔一阵冰面“啾——”一声，偶尔深处闷闷地“咚”
+    const lq = lakeQ(hp.x, hp.z);
+    this.iceT -= 0.2;
+    if (this.iceT < 0) {
+      this.iceT = 5 + Math.random() * 14;
+      const near = 1 - sstep(0.9, 2.4, lq);
+      if (near > 0.05 && low > 0.3) {
+        if (Math.random() < 0.18) this.sound.iceBoom?.((0.4 + 0.4 * Math.random()) * near, Math.random() * 1.2 - 0.6);
+        else this.sound.iceSing?.((0.45 + 0.55 * Math.random()) * near, Math.random() * 1.4 - 0.7);
+      }
+    }
+    // 风车坡：风车转着，木头偶尔吱呀一声
+    this.millT -= 0.2;
+    if (this.millT < 0) {
+      this.millT = 4 + Math.random() * 6;
+      const dx = MILL.x - cp.x, dz = MILL.z - cp.z, d = Math.hypot(dx, dz);
+      if (d < 50) {
+        _w.set(1, 0, 0).applyQuaternion(this.camera.quaternion);
+        this.sound.creak?.((0.5 + 0.5 * Math.random()) * (1 - sstep(8, 50, d)), clamp((dx * _w.x + dz * _w.z) / Math.max(2, d), -0.8, 0.8));
+      }
+    }
+    // 音乐：坐下时轻一点，夜里也轻一点，叠水旁边让一让
+    const mood = this.musicMood();
+    const music = (mood === 'camp' ? 0.36 : 0.42 * (1 - 0.3 * this.night)) * (1 - 0.3 * falls);
     if (Math.abs(music - (this.musicNow ?? -1)) > 0.01) { this.musicNow = music; this.sound.musicLevel(music); }
+    this.sound.wantMood?.(mood, 0.2);
     // 夜里树林边偶尔有猫头鹰
     this.owlT -= 0.2;
     if (this.owlT < 0) { this.owlT = 28 + Math.random() * 50; if (this.night > 0.6 && trees > 2 && low > 0.5) this.sound.owl?.(0.35 + Math.random() * 0.3, Math.random() * 1.4 - 0.7); }

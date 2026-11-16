@@ -165,7 +165,7 @@ function resumeText(s) {
 function start() {
   if (playing || !J) return;
   playing = true;
-  sound.start();                    // 必须在点击里：iPhone 只允许这时候开声音
+  sound.start(J.musicMood());       // 必须在点击里：iPhone 只允许这时候开声音
   ui.playing(true); J.begin();
   quality.recording = true;
   ui.hint('按住屏幕前进');
@@ -192,9 +192,9 @@ async function wake() { try { lock = await navigator.wakeLock?.request('screen')
 document.addEventListener('visibilitychange', () => {
   if (!sound?.ctx) return;
   if (document.visibilityState === 'visible') {
-    sound.ctx.resume?.(); if (!sound.muted) sound.music?.play().catch(() => {});
+    sound.ctx.resume?.(); sound.resumeMusic();
     if (playing) wake();
-  } else { sound.music?.pause(); sound.ctx.suspend?.(); }
+  } else { sound.pauseMusic(); sound.ctx.suspend?.(); }
 });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') save(); });
 addEventListener('pagehide', () => save());
