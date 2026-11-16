@@ -1,6 +1,7 @@
 // 大气与光：所有材质共享的太阳、雾（朝太阳方向偏暖）、树影 gobo、阴影边缘渐隐、角色轮廓光、风。
 // 用 onBeforeCompile 给 three 的标准材质打补丁，不额外加全屏后期，手机上省一遍像素。
 import * as THREE from 'three';
+import { FX } from './fx.js';
 
 export const U = {
   uTime: { value: 0 },
@@ -154,7 +155,26 @@ export function patch(mat, opts = {}) {
       fs = fs.replace('getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowIntensity, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] )',
         'mix( 1.0, getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowIntensity, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] ), 1.0 - smoothstep( uShadowRadius * 0.62, uShadowRadius * 0.95, length( vWP.xz - uShadowCenter.xz ) ) )');
     }
+    // 实验（角色）：颜色提亮提纯一点；背光面按天光补一层，不再是一团黑；轮廓光加强
+    const toon = FX.c && o.rim > 0;
+    if (toon) fs = fs.replace('#include <color_fragment>', `#include <color_fragment>
+      {
+        vec3 c0 = diffuseColor.rgb; float l0 = dot( c0, vec3( 0.2126, 0.7152, 0.0722 ) );
+        vec3 c1 = mix( vec3( l0 ), c0, 1.25 );
+        diffuseColor.rgb = max( mix( c1, sqrt( max( c1, 0.0 ) ) * 0.62, 0.5 ), 0.0 );
+      }`);
     let post = '';
+    if (toon) post += `
+      {
+        vec3 sunV = normalize( ( viewMatrix * vec4( uSunDir, 0.0 ) ).xyz );
+        float nl = dot( normal, sunV );
+        // 明暗分成柔和的两层（手绘感），暗面有天光托着
+        float band = smoothstep( -0.05, 0.3, nl );
+        reflectedLight.directDiffuse *= mix( 0.75, 1.12, band );
+        reflectedLight.indirectDiffuse *= 1.0 + 0.55 * ( 1.0 - band );
+        float up = normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz ).y;
+        reflectedLight.indirectDiffuse += diffuseColor.rgb * uSunColor * 0.1 * smoothstep( 0.2, -0.8, up );
+      }`;
     if (o.gobo) post += `
       {
         vec2 cuv = ( vWP.xz - uCanopyBox.xy ) / uCanopyBox.zw;
@@ -170,7 +190,7 @@ export function patch(mat, opts = {}) {
         float ndv = clamp( dot( normal, geometryViewDir ), 0.0, 1.0 );
         float rim = pow( 1.0 - ndv, 3.0 );
         float back = smoothstep( -0.3, 0.8, dot( -geometryViewDir, sunV ) );
-        reflectedLight.directDiffuse += uSunColor * rim * ( 0.12 + 0.9 * back ) * ${o.rim.toFixed(2)} * diffuseColor.rgb * 2.0;
+        reflectedLight.directDiffuse += uSunColor * rim * ( 0.12 + 0.9 * back ) * ${(o.rim * (toon ? 1.7 : 1)).toFixed(2)} * diffuseColor.rgb * 2.0;
       }`;
     if (o.sss) post += `
       {
@@ -183,7 +203,7 @@ export function patch(mat, opts = {}) {
       gl_FragColor.rgb = jFog( gl_FragColor.rgb, vWP );`);
     sh.vertexShader = vs; sh.fragmentShader = fs;
   };
-  const key = 'j' + JSON.stringify(o, (k, v) => (k === 'uniforms' ? undefined : v)) + (prev ? prev.toString().length : 0);
+  const key = 'j' + (FX.c ? 'c' : '') + JSON.stringify(o, (k, v) => (k === 'uniforms' ? undefined : v)) + (prev ? prev.toString().length : 0);
   mat.customProgramCacheKey = () => key;
   mat.needsUpdate = true;
   return mat;

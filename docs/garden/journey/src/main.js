@@ -1,4 +1,6 @@
 // 旅途 · 第一段「暖光谷地」：入口。加载世界、道具、几匹坐骑、旅人和翅膀，接上界面、声音、画质和每帧循环。
+import { FX } from './world/fx.js';
+import { Post } from './world/post.js';
 import * as THREE from 'three';
 import { U, installGrade } from './world/atmo.js';
 import { ROAD, SPOTS, TRAIL } from './world/route.js';
@@ -40,11 +42,14 @@ const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
 const MOUNT_ORDER = ['b', 'a', 'w', 'd'];
 
 installGrade();
+let post = null;
+const draw = () => { if (post) post.render(scene, camera); else renderer.render(scene, camera); };
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: SHOT });
 renderer.toneMapping = THREE.CustomToneMapping;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+if (FX.p) post = new Post(renderer);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.3, 7000);
@@ -370,9 +375,9 @@ function frame() {
   if (DEBUG && window.__freeze) return;     // 测试截图用：停在当前画面
   if (mapView?.isOpen) { mapView.tick(); return; }
   // 拍照：游戏停着，只摆镜头（风、水、火还在动）
-  if (photo?.active) { U.uTime.value += dt; photo.frame(); J.campfire(dt); W.update(camera, focus, dt); renderer.render(scene, camera); return; }
+  if (photo?.active) { U.uTime.value += dt; photo.frame(); J.campfire(dt); W.update(camera, focus, dt); draw(); return; }
   step(dt);
-  renderer.render(scene, camera);
+  draw();
   if (quality.frame(rdt)) showPerf();
 }
 
@@ -467,7 +472,7 @@ async function load() {
   wildlife.onFlee = () => { if (!fleeTold && playing && J.speed > 1) { fleeTold = true; setTimeout(() => ui.hint('动物怕快的东西，下次换成「散步」慢慢走过去'), 1200); J.hintT = 5; } };
   // 截图：先把动物和人的模型下载好（wild=1）
   if (SHOT && P.has('wild')) { wildlife.preload(); wildlife.load('snowfox'); folk.load('m'); folk.load('f'); await Promise.all([...Object.values(wildlife.loading), ...Object.values(folk.loading)]); }
-  if (P.has('debug')) { window.__step = (dt, n = 1) => { for (let i = 0; i < n; i++) step(dt); W.update(camera, focus, 0, true); renderer.render(scene, camera); }; window.__wild = wildlife; window.__birds = birds; window.__folk = folk; window.__sky = skyfx; }   // 截图沿用老镜头，参数好复现
+  if (P.has('debug')) { window.__step = (dt, n = 1) => { for (let i = 0; i < n; i++) step(dt); W.update(camera, focus, 0, true); draw(); }; window.__wild = wildlife; window.__birds = birds; window.__folk = folk; window.__sky = skyfx; }   // 截图沿用老镜头，参数好复现
   if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; }   // 调试：测试脚本读状态
   beacon = makeBeacon(); scene.add(beacon);
   mapView = new MapView({
@@ -591,7 +596,7 @@ function shotSetup() {
     if (act2 && !did2 && t >= at2) { did2 = true; if (act2 === 'release') J.holding = false; else if (act2.startsWith('mount:')) J.pickMount(act2.slice(6)); else J.setMode(act2); }
     step(1 / 30);
     if (strip && si < strip.length && t + 1 / 30 >= strip[si]) {
-      W.update(camera, focus, 0, true); renderer.render(scene, camera);
+      W.update(camera, focus, 0, true); draw();
       const w = innerWidth / cols, h = innerHeight / rows, x = (si % cols) * w, y = Math.floor(si / cols) * h;
       sctx.drawImage(renderer.domElement, x, y, w, h);
       sctx.fillStyle = '#fff'; sctx.font = '14px sans-serif'; sctx.fillText(`${strip[si]}s ${J.mode}${J.trans ? '/' + J.trans.kind : ''} y=${(J.alt || 0).toFixed(1)}`, x + 6, y + 18);
@@ -642,7 +647,7 @@ function shotSetup() {
   }
   let n = 0;
   const one = () => {
-    renderer.render(scene, camera);
+    draw();
     if (++n < 3) requestAnimationFrame(one);
     else {
       const V = o => { const v = new THREE.Vector3(); o.getWorldPosition(v); return v.toArray().map(x => +x.toFixed(2)); };
