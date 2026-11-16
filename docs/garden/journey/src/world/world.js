@@ -92,7 +92,7 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   }
   // 草丛（颜色取自地面）
   const tm = W.tuftMat = tuftMaterial(tuni, fadeU.small);
-  const tuftGeos = [makeTuftGeo(11, 12, 0.3), makeTuftGeo(23, 9, 0.42), makeTuftGeo(37, 14, 0.24)];
+  const tuftGeos = [makeTuftGeo(11, 16, 0.3), makeTuftGeo(23, 13, 0.4), makeTuftGeo(37, 18, 0.24)];
   tuftGeos.forEach((g, i) => {
     const items = placed.tufts[i]; if (!items || !items.length) return;
     W.layers.push(new ScatterLayer('tuft' + i, [{ geo: g, mat: tm }], items, { radius: r.small + 4, cap: 9000 }));

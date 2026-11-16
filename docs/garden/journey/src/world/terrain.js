@@ -76,36 +76,54 @@ export function makeDetailTex(S = 512) {
   t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.needsUpdate = true;
   return t;
 }
-// 土路纹理：暖色土、小石子、细裂纹
+
+// 土路纹理（手绘感）：大块的笔触明暗，嵌在土里的扁石头（背光一侧有厚度和影子，顶上一抹亮），零星小石子
 export function makeDirtTex(S = 512) {
   const r = rng(9);
-  // 先在 JS 里算出大块明暗，再在画布上画颗粒和石子
   const blot = blurWrap(grayLayer(S, '#808080', g => {
-    const L = Array.from({ length: 260 }, () => ({ x: r() * S, y: r() * S, rad: 12 + r() * 50, rot: r() * 3, v: r() < 0.5 ? 200 : 60 }));
-    batched(g, L, b => `rgba(${b.v},${b.v},${b.v},0.25)`, b => { for (const [px, py] of wrapPts(S, b.x, b.y, b.rad)) { g.moveTo(px + b.rad, py); g.ellipse(px, py, b.rad, b.rad * 0.6, b.rot, 0, 6.283); } }, true);
-  }), S, 6, 2);
+    const L = Array.from({ length: 200 }, () => ({ x: r() * S, y: r() * S, rad: 18 + r() * 60, rot: r() * 3, v: r() < 0.5 ? 205 : 55 }));
+    batched(g, L, b => `rgba(${b.v},${b.v},${b.v},0.28)`, b => { for (const [px, py] of wrapPts(S, b.x, b.y, b.rad)) { g.moveTo(px + b.rad, py); g.ellipse(px, py, b.rad, b.rad * 0.55, b.rot, 0, 6.283); } }, true);
+  }), S, 5, 2);
   const c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
   const img = g.createImageData(S, S);
-  const base = [179, 144, 101];
-  for (let i = 0; i < S * S; i++) { const k = (blot[i] - 128) / 128; img.data[i * 4] = base[0] * (1 + 0.22 * k); img.data[i * 4 + 1] = base[1] * (1 + 0.24 * k); img.data[i * 4 + 2] = base[2] * (1 + 0.28 * k); img.data[i * 4 + 3] = 255; }
+  const base = [186, 148, 100];
+  for (let i = 0; i < S * S; i++) { const k = (blot[i] - 128) / 128; img.data[i * 4] = base[0] * (1 + 0.2 * k); img.data[i * 4 + 1] = base[1] * (1 + 0.25 * k); img.data[i * 4 + 2] = base[2] * (1 + 0.34 * k); img.data[i * 4 + 3] = 255; }
   g.putImageData(img, 0, 0);
-  // 细碎颗粒
-  const grit = Array.from({ length: 9000 }, () => ({ x: r() * S, y: r() * S, s: 1 + r() * 1.5, dark: r() < 0.5 }));
-  batched(g, grit, p => p.dark ? 'rgba(90,66,44,0.35)' : 'rgba(232,208,168,0.35)', p => g.rect(p.x, p.y, p.s, p.s), true);
-  // 小石子（亮顶暗底）
-  const pebbles = Array.from({ length: 420 }, () => { const w = 2 + r() * 5.5; return { x: r() * S, y: r() * S, w, h: w * (0.55 + r() * 0.35), rot: r() * 3, tone: Math.round((150 + r() * 70) / 20) * 20 }; });
-  const peb = (dx, dy, sc) => p => { for (const [px, py] of wrapPts(S, p.x, p.y, 12)) { g.moveTo(px + dx + p.w * sc, py + dy); g.ellipse(px + dx, py + dy, p.w * sc, p.h * sc, p.rot, 0, 6.283); } };
-  batched(g, pebbles, () => 'rgba(70,50,34,0.45)', peb(1.2, 1.4, 1), true);
-  batched(g, pebbles, p => `rgb(${p.tone},${p.tone - 12},${p.tone - 30})`, peb(0, 0, 1), true);
-  batched(g, pebbles, () => 'rgba(255,246,226,0.3)', p => { for (const [px, py] of wrapPts(S, p.x, p.y, 12)) { const x = px - p.w * 0.3, y = py - p.h * 0.35; g.moveTo(x + p.w * 0.45, y); g.ellipse(x, y, p.w * 0.45, p.h * 0.35, p.rot, 0, 6.283); } }, true);
-  // 浅浅的裂纹
-  g.strokeStyle = 'rgba(96,70,46,0.35)'; g.lineWidth = 1; g.beginPath();
-  for (let i = 0; i < 40; i++) { let x = r() * S, y = r() * S; g.moveTo(x, y); for (let k = 0; k < 6; k++) { x += (r() - 0.5) * 22; y += (r() - 0.5) * 22; g.lineTo(x, y); } }
-  g.stroke();
-  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  // 顺着一个方向的宽笔触
+  g.lineCap = 'round';
+  for (let i = 0; i < 520; i++) {
+    const x = r() * S, y = r() * S, a = 0.35 + (r() - 0.5) * 1.3, len = 18 + r() * 46, lt = r() < 0.5;
+    g.strokeStyle = lt ? 'rgba(236,206,160,0.12)' : 'rgba(112,78,50,0.12)'; g.lineWidth = 3 + r() * 7;
+    for (const [px, py] of wrapPts(S, x, y, 70)) { g.beginPath(); g.moveTo(px, py); g.quadraticCurveTo(px + Math.cos(a) * len * 0.5 + (r() - 0.5) * 8, py + Math.sin(a) * len * 0.5 + (r() - 0.5) * 8, px + Math.cos(a) * len, py + Math.sin(a) * len); g.stroke(); }
+  }
+  // 嵌在土里的扁石头
+  const stones = []; let tries = 0;
+  while (stones.length < 34 && tries++ < 4000) {
+    const st = { x: r() * S, y: r() * S, w: 6 + r() * r() * 17, rot: r() * 3, tone: 150 + r() * 60, n: 6 + Math.floor(r() * 3), seed: r() };
+    if (stones.some(o => { let dx = Math.abs(o.x - st.x), dy = Math.abs(o.y - st.y); dx = Math.min(dx, S - dx); dy = Math.min(dy, S - dy); return Math.hypot(dx, dy) < (o.w + st.w) * 1.25; })) continue;
+    stones.push(st);
+  }
+  const shape = (st, px, py, sc, ox = 0, oy = 0) => {
+    let q = st.seed * 1e4; const rr = () => { q = (q * 16807 + 11) % 2147483647; return q / 2147483647; };
+    g.beginPath();
+    const pts = []; for (let k = 0; k < st.n; k++) { const a = st.rot + k / st.n * 6.283, rad = st.w * sc * (0.72 + rr() * 0.4); pts.push([px + ox + Math.cos(a) * rad, py + oy + Math.sin(a) * rad * 0.74]); }
+    for (let k = 0; k < st.n; k++) { const a = pts[k], b = pts[(k + 1) % st.n], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; if (!k) g.moveTo(m[0], m[1]); const c2 = pts[(k + 2) % st.n], m2 = [(b[0] + c2[0]) / 2, (b[1] + c2[1]) / 2]; g.quadraticCurveTo(b[0], b[1], m2[0], m2[1]); }
+    g.closePath();
+  };
+  for (const st of stones) for (const [px, py] of wrapPts(S, st.x, st.y, 40)) {
+    // 明暗不带方向（镜头会转，画死的高光阴影有一半时候是反的）：一圈贴地的暗边，顶面，中间鼓起来的地方亮一点；朝哪边亮交给凹凸光影
+    const t = st.tone;
+    g.fillStyle = 'rgba(70,46,30,0.38)'; shape(st, px, py, 1.14); g.fill();
+    g.fillStyle = `rgb(${t - 30},${t - 44},${t - 60})`; shape(st, px, py, 1); g.fill();
+    g.fillStyle = `rgb(${t},${t - 12},${t - 32})`; shape(st, px, py, 0.84); g.fill();
+    g.fillStyle = 'rgba(255,244,220,0.3)'; shape(st, px, py, 0.5); g.fill();
+  }
+  // 一点点小石子和草屑
+  const grit = Array.from({ length: 260 }, () => ({ x: r() * S, y: r() * S, s: 1.6 + r() * 2.4, dark: r() < 0.45 }));
+  batched(g, grit, p => p.dark ? 'rgba(92,64,42,0.5)' : 'rgba(236,216,180,0.6)', p => { g.moveTo(p.x + p.s, p.y); g.ellipse(p.x, p.y, p.s, p.s * 0.7, 0, 0, 6.283); }, true);
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
   return t;
 }
-
 // ---------- 分区数据纹理：R 路距离，G 岸距离，B 花草地，A 林下 ----------
 export function makeSplat(land) {
   const NX = land.NX, NZ = land.NZ, data = new Uint8Array(NX * NZ * 4);
@@ -161,7 +179,8 @@ vec3 jGrass( vec2 xz, vec4 sp, vec3 dA, vec4 bi ) {
   vec3 g = mix( uGrass0, uGrass1, smoothstep( 0.3, 0.7, dC.g ) );
   g = mix( g, uGrass2, smoothstep( 0.52, 0.8, dB.g ) * 0.6 * ( 0.4 + 0.6 * sp.b ) );
   g = mix( g, uGrass3, smoothstep( 0.5, 0.85, dC.b ) * 0.55 );
-  g *= 0.8 + 0.4 * dA.r;
+  // 草皮：不要细碎的明暗，按大块笔触深浅，再带几片晒黄的
+  g *= 0.93 + 0.14 * dA.r; g *= 0.86 + 0.3 * smoothstep( 0.35, 0.65, dB.b ); g = mix( g, g * vec3( 1.12, 1.1, 0.8 ), smoothstep( 0.55, 0.75, dC.r ) * 0.5 );
   g = mix( g, uForestC * ( 0.85 + 0.3 * dA.g ), sp.a * 0.8 );
   if ( bi.r > 0.01 ) {
     // 秋天：草黄了，林下铺满落叶
@@ -274,7 +293,7 @@ const TERRAIN_COLOR = /* glsl */`
   // 土路：边缘被草啃得参差，中间被踩得浅一点
   float en = ( dA.b - 0.5 ) * 0.6 + ( dB.g - 0.5 ) * 0.7;
   float road = 1.0 - smoothstep( 1.0 + en, 1.45 + en, dRoad );
-  vec3 dirt = texture2D( uDirt, vWP.xz * 0.3 ).rgb * mix( 0.9, 1.08, dB.r );
+  vec3 dirt = texture2D( uDirt, vWP.xz * 0.21 ).rgb * mix( 0.9, 1.08, dB.r );
   dirt *= 1.0 + 0.1 * ( 1.0 - smoothstep( 0.0, 0.9, dRoad ) );
   float edge = smoothstep( 0.9, 1.5, dRoad ) * ( 1.0 - smoothstep( 1.5, 2.6, dRoad ) );
   g *= 1.0 - 0.16 * edge;
@@ -385,7 +404,8 @@ export function tuftMaterial(uni, fadeU) {
           vec3 g = jGrass( vWP.xz, sp, dA, jBiome( vWP.xz ) );
           // 顶点色：r = 高度比例（0 根 1 尖），g = 亮度扰动
           float t = vColor.r;
-          diffuseColor.rgb = g * mix( 0.66, 1.14, t ) * ( 0.88 + 0.24 * vColor.g );
+          // 根上和地皮一个颜色，往叶尖亮起来、偏一点暖黄
+          diffuseColor.rgb = g * mix( 0.9, 1.3, t * t ) * ( 0.95 + 0.1 * vColor.g ); diffuseColor.rgb = mix( diffuseColor.rgb, diffuseColor.rgb * vec3( 1.18, 1.12, 0.7 ), smoothstep( 0.55, 1.0, t ) * 0.6 );
           diffuseColor.rgb *= 1.0 - 0.3 * step( 0.6, 1.0 - smoothstep( 1.0, 1.4, sp.r * 10.0 ) );
           // 天气：雨里草色深一点；下雪时草根埋在雪里，叶尖上也挂一点
           diffuseColor.rgb *= 1.0 - 0.14 * uWet;
@@ -401,14 +421,14 @@ export function makeTuftGeo(seed, blades = 8, h0 = 0.42) {
   let a = seed; const R = () => ((a = (a * 16807) % 2147483647) / 2147483647);
   const pos = [], col = [], nor = [], idx = [];
   for (let b = 0; b < blades; b++) {
-    const ang = R() * Math.PI * 2, rr = R() * 0.16, h = h0 * (0.55 + R() * 0.6), w = 0.03 + R() * 0.02;
+    const ang = R() * Math.PI * 2, rr = R() * 0.3, h = h0 * (0.55 + R() * 0.6) * 0.82, w = 0.055 + R() * 0.035;
     const lean = 0.25 + R() * 0.45, ox = Math.cos(ang) * rr, oz = Math.sin(ang) * rr, face = ang + Math.PI / 2 + (R() - 0.5);
     const fx = Math.cos(face), fz = Math.sin(face), dx = Math.cos(ang), dz = Math.sin(ang);
     const bright = R();
     const base = pos.length / 3;
     const segs = 3;
     for (let k = 0; k <= segs; k++) {
-      const t = k / segs, y = h * t, bend = lean * h * t * t, ww = w * (1 - t * 0.92);
+      const t = k / segs, y = h * t, bend = lean * h * t * t, ww = w * (1 - t * t * 0.95);
       const cx = ox + dx * bend, cz = oz + dz * bend;
       pos.push(cx - fx * ww, y, cz - fz * ww, cx + fx * ww, y, cz + fz * ww);
       col.push(t, bright, 0, t, bright, 0);
