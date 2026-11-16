@@ -1,4 +1,4 @@
-// 实验：一遍后期。场景先画进高动态范围的画布，亮的地方（太阳、水面反光、被照亮的云）往外晕一圈柔光，再加一点暗角，最后统一调色。
+// 一遍后期：场景先画进高动态范围的画布，亮的地方（太阳、水面反光、被照亮的云）往外晕一圈柔光，再加一点暗角，最后统一调色。
 import * as THREE from 'three';
 
 const VS = /* glsl */`varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4( position.xy, 0.0, 1.0 ); }`;
@@ -7,6 +7,10 @@ const mk = (fs, uniforms, extra = {}) => new THREE.ShaderMaterial({ vertexShader
 export class Post {
   constructor(renderer) {
     this.r = renderer;
+    // 要能往半浮点画布上画（老设备没有这个扩展就不开后期）
+    const gl = renderer.getContext();
+    this.ok = !!(renderer.capabilities.isWebGL2 !== false && (gl.getExtension('EXT_color_buffer_half_float') || gl.getExtension('EXT_color_buffer_float')));
+    if (!this.ok) return;
     const o = { type: THREE.HalfFloatType, depthBuffer: false, magFilter: THREE.LinearFilter, minFilter: THREE.LinearFilter };
     this.rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4, depthBuffer: true });
     this.mips = [0, 1, 2, 3].map(() => new THREE.WebGLRenderTarget(4, 4, o));
@@ -41,6 +45,12 @@ export class Post {
     this.w = v.x; this.h = v.y; this.rt.setSize(v.x, v.y);
     this.mips.forEach((m, i) => m.setSize(Math.max(2, v.x >> (i + 2)), Math.max(2, v.y >> (i + 2))));
     this.ups.forEach((m, i) => m.setSize(Math.max(2, v.x >> (i + 2)), Math.max(2, v.y >> (i + 2))));
+    if (this.checked) return;
+    // 头一回：确认这几块画布这台设备真的能用，不行就永久关掉（外面会改回直接画）
+    this.checked = true;
+    const gl = this.r.getContext();
+    for (const t of [this.rt, this.mips[0]]) { this.r.setRenderTarget(t); if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) this.ok = false; }
+    this.r.setRenderTarget(null);
   }
   pass(mat, src, dst, extra) {
     const k = dst.width > src.width ? 1 : 0.5;
@@ -50,6 +60,7 @@ export class Post {
   }
   render(scene, camera) {
     const r = this.r; this.size();
+    if (!this.ok) { r.render(scene, camera); return; }
     r.setRenderTarget(this.rt); r.render(scene, camera);
     const sa = r.shadowMap.autoUpdate; r.shadowMap.autoUpdate = false;
     const m = this.mips, u = this.ups;
