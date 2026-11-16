@@ -23,6 +23,12 @@ body.playing #hud { opacity: 1; }
 #hud .topr { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
 #journal { pointer-events: auto; font-size: 11px; letter-spacing: 1px; padding: 3px 8px; border-radius: 10px; background: var(--pill); color: #fff8ee; }
 #journal.pop { animation: pop 1.2s ease; }
+#bMap { pointer-events: auto; font-size: 11px; letter-spacing: 2px; padding: 3px 9px; border-radius: 10px; background: var(--pill); color: #fff8ee; }
+#way { position: absolute; top: calc(var(--sat) + 12px); left: 50%; transform: translateX(-50%); pointer-events: auto; display: flex; align-items: center; gap: 6px; max-width: 46%;
+  background: var(--pill); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #fff8ee; border-radius: 14px; padding: 4px 11px 4px 7px; font-size: 12px; white-space: nowrap; }
+#way i { width: 16px; height: 16px; flex: none; background: no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.5 13.5 13 8 10.4 2.5 13Z' fill='%23ffd27a' stroke='%23fff8ee' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+#way b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+#way small { opacity: 0.85; font-variant-numeric: tabular-nums; }
 #bTime { pointer-events: auto; font-size: 11px; letter-spacing: 2px; padding: 3px 9px; border-radius: 10px; background: var(--pill); color: #fff8ee; transition: background 0.3s, color 0.3s; }
 #bTime.ff { background: var(--pillOn); color: var(--ink); }
 @keyframes pop { 0% { transform: scale(1); } 20% { transform: scale(1.25); background: rgba(255, 220, 170, 0.85); color: var(--ink); } 100% { transform: scale(1); } }
@@ -47,6 +53,24 @@ body.playing #hud { opacity: 1; }
 @keyframes breathe { 50% { transform: scale(1.05); } }
 .hint { margin-bottom: 0; font-size: 13px; letter-spacing: 2px; opacity: 0.85; text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); transition: opacity 1s; }
 .hint.off { opacity: 0; }
+
+/* ---------- 地图 ---------- */
+#mapSheet { position: fixed; inset: 0; background: #d9c7a4; z-index: 5; }
+#mapCv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.mapTop { position: absolute; top: 0; left: 0; right: 0; padding: calc(var(--sat) + 10px) calc(var(--sar) + 12px) 10px calc(var(--sal) + 16px); display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(217, 199, 164, 0.96) 60%, rgba(217, 199, 164, 0)); color: var(--ink); pointer-events: none; }
+.mapTop b { font-size: 20px; letter-spacing: 6px; font-weight: 600; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+.mapTop small { margin-left: 10px; font-size: 12px; letter-spacing: 1px; opacity: 0.7; }
+.mapTop button, #mapMe { pointer-events: auto; background: rgba(255, 246, 230, 0.9); color: var(--ink); border-radius: 16px; padding: 7px 14px; font-size: 14px; letter-spacing: 2px; box-shadow: 0 2px 8px rgba(80, 50, 20, 0.2); }
+#mapMe { position: absolute; right: calc(var(--sar) + 12px); bottom: calc(var(--sab) + 18px); font-size: 13px; }
+#mapCard { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(var(--sab) + 62px); width: calc(100% - 28px); max-width: 380px; padding: 14px 16px 12px; text-align: left; }
+#mapCard b { display: block; font-size: 18px; letter-spacing: 3px; font-weight: 600; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+#mapCard small { display: block; margin-top: 4px; font-size: 12.5px; line-height: 1.5; opacity: 0.75; }
+#mapCard .row { margin-top: 10px; }
+#mapCard .row button { background: #c4773a; color: #fff8ee; border-radius: 14px; padding: 10px 6px; font-size: 15px; letter-spacing: 2px; box-shadow: 0 3px 10px rgba(160, 80, 30, 0.3); width: 100%; }
+#mapCard .row button + button { background: rgba(120, 80, 50, 0.14); color: var(--ink); box-shadow: none; }
+#mapCard .row button:disabled { background: rgba(120, 80, 50, 0.1); color: rgba(59, 42, 30, 0.6); box-shadow: none; }
+.places li.go { cursor: pointer; }
 
 /* ---------- 开始、结尾、署名 ---------- */
 #start, #summary, #credits { position: fixed; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding: 0 18px calc(var(--sab) + 28px); transition: opacity 0.9s; }

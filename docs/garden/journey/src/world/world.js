@@ -4,7 +4,7 @@ import { U, makeGobo } from './atmo.js';
 import { buildLand, DOM } from './land.js';
 import { makeDetailTex, makeDirtTex, makeSplat, makeBiome, terrainMaterial, terrainUniforms, tuftMaterial, makeTuftGeo, buildNear, buildFar, blurWrap } from './terrain.js';
 import { makeSky } from './sky.js';
-import { buildStream } from './water.js';
+import { buildStream, buildMist } from './water.js';
 import { buildIce } from './ice.js';
 import { loadFlora, floraMaterials, ScatterLayer, placeFlora, canopyTexture, forestFloor, buildImpostors } from './flora.js';
 
@@ -33,10 +33,11 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   const tuni = W.terrainUni = terrainUniforms(splat, detail, dirt, biome);
   const tmat = W.terrainMat = terrainMaterial(tuni);
   scene.add(W.near = buildNear(land, tmat)); lap('near');
-  const far = W.far = buildFar(); lap('far');
+  const far = W.far = buildFar(tuni, land); lap('far');
   scene.add(far);
   scene.add(W.sky = makeSky());
   scene.add(W.stream = buildStream(land));
+  scene.add(W.mist = buildMist(land));
   scene.add(W.ice = buildIce());
   await opts.yieldFn?.();
 
@@ -44,7 +45,7 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   const models = await floraP; t0 = performance.now();
   const r = RADII[quality];
   const fadeU = W.fadeU = { trees: { value: r.trees }, bush: { value: r.bush }, small: { value: r.small }, rock: { value: r.rock } };
-  const mats = W.floraMats = await floraMaterials(RES, fadeU);
+  const mats = W.floraMats = await floraMaterials(RES, fadeU, tuni);
   // 树冠用球面法线
   for (const t of ['CommonTree_1', 'CommonTree_3', 'CommonTree_5', 'Pine_2', 'Bush_Common', 'Bush_Common_Flowers'])
     for (const p of models[t].parts) if (p.mat === 'leaf' || p.mat === 'pine') softenCanopy(p.geo, t.startsWith('Bush') ? 0.6 : 0.78);
@@ -100,7 +101,7 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   scene.add(W.impostors);
   W.stats = { trees: placed.nearCount, farTrees: placed.trees.length - placed.nearCount, small: Object.fromEntries(Object.entries(placed.small).map(([k, v]) => [k, v.length / 8])) };
 
-  W.update = (camera, focus, dt, force) => { for (const L of W.layers) L.update(camera, focus, dt, force); W.near.userData.update(camera); };
+  W.update = (camera, focus, dt, force) => { for (const L of W.layers) L.update(camera, focus, dt, force); W.near.userData.update(camera, force); };
   W.setQuality = q => {
     const rr = RADII[q]; W.quality = q;
     fadeU.trees.value = rr.trees; fadeU.bush.value = rr.bush; fadeU.small.value = rr.small; fadeU.rock.value = rr.rock;

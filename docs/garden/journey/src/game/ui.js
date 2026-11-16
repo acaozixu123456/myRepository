@@ -57,9 +57,23 @@ export function initUI(h) {
   const jSheet = $('journalSheet');
   journal.addEventListener('click', () => {
     const list = h.places?.() || [];
-    $('placeList').innerHTML = list.map(p => `<li class="${p.seen ? 'seen' : 'todo'}"><i>${p.seen ? '✓' : '·'}</i><b>${p.name}</b><small>${p.seen ? p.sub : p.where}</small></li>`).join('');
+    $('placeList').innerHTML = list.map(p => `<li class="${p.seen ? 'seen' : 'todo'}${p.x !== undefined ? ' go' : ''}" data-id="${p.id}"><i>${p.seen ? '✓' : '·'}</i><b>${p.name}</b><small>${p.seen ? p.sub : p.where}</small></li>`).join('');
     jSheet.hidden = false;
   });
+  // 点手记里的地方：在地图上看
+  $('placeList').addEventListener('click', e => { const li = e.target.closest('li.go'); if (!li) return; jSheet.hidden = true; h.openMap?.(li.dataset.id); });
+  $('bMap').addEventListener('click', () => h.openMap?.());
+  // 标记点：屏幕上方一个小箭头指着方向，点一下打开地图
+  const way = $('way'), wayArrow = $('wayArrow'), wayName = $('wayName'), wayDist = $('wayDist');
+  let wayShown = null, wayAng = 1e9, wayD = '';
+  way.addEventListener('click', () => h.openMap?.());
+  ui.way = (w, ang, d) => {
+    if (!w) { if (wayShown) { way.hidden = true; wayShown = null; } return; }
+    if (wayShown !== w) { wayShown = w; way.hidden = false; wayName.textContent = w.name; wayAng = 1e9; }
+    if (Math.abs(ang - wayAng) > 0.02) { wayAng = ang; wayArrow.style.transform = `rotate(${ang.toFixed(3)}rad)`; }
+    const t = d < 1000 ? `${Math.max(1, Math.round(d / 5) * 5)} 米` : `${(d / 1000).toFixed(1)} 千米`;
+    if (t !== wayD) { wayD = t; wayDist.textContent = t; }
+  };
   $('journalClose').addEventListener('click', () => { jSheet.hidden = true; });
   jSheet.addEventListener('click', e => { if (e.target === jSheet) jSheet.hidden = true; });
   const perf = $('perf');
@@ -147,6 +161,7 @@ export function initUI(h) {
     if (e.code === 'KeyG') h.mode('foot');
     if (e.code === 'KeyA' && e.shiftKey) h.toggleAuto();
     if (e.code === 'KeyN') h.skipTime?.();
+    if (e.code === 'KeyM') h.openMap?.();
     if (e.code === 'Digit1' || e.code === 'Digit2' || e.code === 'Digit3') h.gait(+e.code.slice(5) - 1);
   });
   addEventListener('keyup', e => {

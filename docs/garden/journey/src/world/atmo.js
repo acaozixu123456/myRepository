@@ -18,6 +18,8 @@ export const U = {
   uGoboStrength: { value: 0.85 },
   uShadowCenter: { value: new THREE.Vector3() },
   uShadowRadius: { value: 26 },
+  // 画质「低」时关掉地面凹凸、岩壁贴图这些细活（手机上省一截）
+  uFine: { value: 1 },
   uWind: { value: 1 },
   // 看穿：xyz 是旅人胸口，w 是强度（0 关）。镜头身边、镜头到人之间的枝叶用点阵挖掉
   uSee: { value: new THREE.Vector4(0, -1e4, 0, 0) },
@@ -108,6 +110,22 @@ export function patch(mat, opts = {}) {
       uniform vec3 uShadowCenter; uniform float uShadowRadius; uniform float uFadeR; uniform vec4 uSee;
       float jDither() { return fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ); }
       ${FOG_FN}`);
+    // 草叶：两面都按偏向朝上的法线打光（背对镜头的那一面不会黑成一条）
+    if (o.grassN) fs = fs.replace('#include <normal_fragment_begin>', `#include <normal_fragment_begin>
+      normal = normalize( mix( normalize( vNormal ), normalize( ( viewMatrix * vec4( 0.0, 1.0, 0.0, 0.0 ) ).xyz ), ${o.grassN.toFixed(2)} ) );`);
+    // 石头顶上：谷地里长青苔，红叶谷落着叶子，雪线上积着雪
+    if (o.cover) fs = fs.replace('#include <common>', '#include <common>\nuniform sampler2D uBiome; uniform vec4 uDom;')
+      .replace('#include <color_fragment>', `#include <color_fragment>
+      {
+        vec3 wn = normalize( ( vec4( normalize( vNormal ), 0.0 ) * viewMatrix ).xyz );
+        vec4 bi = texture2D( uBiome, ( vWP.xz - uDom.xy ) / uDom.zw );
+        float nn = 0.5 + 0.25 * sin( vWP.x * 5.3 + vWP.z * 3.1 + vWP.y * 2.0 ) + 0.25 * sin( vWP.z * 7.7 - vWP.y * 6.0 + vWP.x * 1.3 );
+        float top = smoothstep( 0.42, 0.82, wn.y + ( nn - 0.5 ) * 0.4 );
+        vec3 cover = mix( vec3( 0.34, 0.44, 0.17 ), vec3( 0.66, 0.33, 0.12 ), smoothstep( 0.2, 0.6, bi.r ) ) * ( 0.8 + 0.4 * nn );
+        float sn = smoothstep( 0.2, 0.5, bi.g );
+        cover = mix( cover, vec3( 0.9, 0.93, 0.97 ), sn );
+        diffuseColor.rgb = mix( diffuseColor.rgb, cover, top * mix( 0.6, 0.95, sn ) );
+      }`);
     if (o.fadeOut || o.fadeIn) {
       fs = fs.replace('#include <clipping_planes_fragment>', `#include <clipping_planes_fragment>
         {
