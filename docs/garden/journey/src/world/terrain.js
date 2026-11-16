@@ -306,8 +306,10 @@ export function buildNear(land, mat) {
     N[k * 3] = nx / l; N[k * 3 + 1] = ny / l; N[k * 3 + 2] = nz / l;
   }
   // 每块三套三角形：近处 1 格、远一点 2 格、更远 4 格一个三角形；每块四周挂一圈往下的裙边，
-  // 粗细不同的两块拼在一起时，接缝的小缝被裙边挡住
-  const LOD = [1, 2, 4];
+  // 粗细不同的两块拼在一起时，接缝的小缝被裙边挡住。
+  // 所有块的顶点放在同一个网格里，按每块现在用哪一套拼出一份索引，整片近景地面只画一次（手机上少几十次绘制）
+  const LOD = [1, 2, 4], chunks = [];
+  let totalV = 0;
   for (let cz = 0; cz < DOM.nz; cz += C) for (let cx = 0; cx < DOM.nx; cx += C) {
     const w = Math.min(C, DOM.nx - cx), d = Math.min(C, DOM.nz - cz);
     // 一圈边上的格点（顺着走一圈）
@@ -316,8 +318,15 @@ export function buildNear(land, mat) {
     for (let j = 1; j <= d; j++) ring.push([w, j]);
     for (let i = w - 1; i >= 0; i--) ring.push([i, d]);
     for (let j = d - 1; j >= 0; j--) ring.push([0, j]);
-    const nv = (w + 1) * (d + 1), pos = new Float32Array((nv + ring.length) * 3), nor = new Float32Array(pos.length);
-    let v = 0;
+    const nv = (w + 1) * (d + 1);
+    chunks.push({ cx, cz, w, d, ring, nv, base: totalV, level: 2,
+      x: DOM.x0 + (cx + w / 2) * DOM.cell, z: DOM.z0 + (cz + d / 2) * DOM.cell });
+    totalV += nv + ring.length;
+  }
+  const pos = new Float32Array(totalV * 3), nor = new Float32Array(totalV * 3);
+  for (const ch of chunks) {
+    const { cx, cz, w, d, ring, nv } = ch;
+    let v = ch.base * 3;
     for (let j = 0; j <= d; j++) for (let i = 0; i <= w; i++) {
       const gx = cx + i, gz = cz + j, k = gz * NX + gx;
       pos[v] = DOM.x0 + gx * DOM.cell; pos[v + 1] = H[k]; pos[v + 2] = DOM.z0 + gz * DOM.cell;
@@ -328,9 +337,8 @@ export function buildNear(land, mat) {
       pos[v] = DOM.x0 + (cx + i) * DOM.cell; pos[v + 1] = H[k] - 1.6; pos[v + 2] = DOM.z0 + (cz + j) * DOM.cell;
       nor[v] = N[k * 3]; nor[v + 1] = N[k * 3 + 1]; nor[v + 2] = N[k * 3 + 2]; v += 3;
     }
-    const idx = [], ranges = [];
-    for (const st of LOD) {
-      const s0 = idx.length;
+    ch.lod = LOD.map(st => {
+      const idx = [];
       for (let j = 0; j < d; j += st) for (let i = 0; i < w; i += st) {
         const a = j * (w + 1) + i, b = a + st, c = a + st * (w + 1), e = c + st;
         idx.push(a, c, b, b, c, e);
@@ -347,28 +355,41 @@ export function buildNear(land, mat) {
         }
         prev = rr;
       }
-      ranges.push([s0, idx.length - s0]);
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
-    geo.setIndex(idx); geo.computeBoundingSphere(); geo.computeBoundingBox();
-    geo.setDrawRange(ranges[0][0], ranges[0][1]);
-    const m = new THREE.Mesh(geo, mat); m.receiveShadow = true; m.matrixAutoUpdate = false;
-    m.userData.lod = ranges; m.userData.level = 0;
-    m.userData.c = new THREE.Vector3(); geo.boundingBox.getCenter(m.userData.c);
-    group.add(m);
+      return Uint16Array.from(idx);
+    });
   }
-  // 按离镜头的远近换粗细（留一点余量，免得在边界上来回跳）
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  let cap = 0, arr = null, iAttr = null;
+  const rebuild = () => {
+    let n = 0; for (const ch of chunks) n += ch.lod[ch.level].length;
+    if (n > cap) {
+      cap = Math.ceil(n * 1.3); arr = new Uint32Array(cap);
+      iAttr = new THREE.BufferAttribute(arr, 1); iAttr.setUsage(THREE.DynamicDrawUsage); geo.setIndex(iAttr);
+    }
+    let o = 0;
+    for (const ch of chunks) { const src = ch.lod[ch.level], b = ch.base; for (let i = 0; i < src.length; i++) arr[o++] = b + src[i]; }
+    iAttr.clearUpdateRanges(); iAttr.addUpdateRange(0, o); iAttr.needsUpdate = true;
+    geo.setDrawRange(0, o);
+  };
+  rebuild();
+  geo.computeBoundingSphere();
+  const mesh = new THREE.Mesh(geo, mat); mesh.receiveShadow = true; mesh.matrixAutoUpdate = false;
+  group.add(mesh);
+  // 按离镜头的远近换粗细（留一点余量，免得在边界上来回跳）；有一块变了就重拼索引，
+  // 飞得快时一秒里会变很多次，最多 0.2 秒拼一次
+  let pending = false, lastT = -1e9;
   group.userData.update = camera => {
     const px = camera.position.x, pz = camera.position.z;
-    for (const m of group.children) {
-      const L = m.userData.lod; if (!L) continue;
-      const c = m.userData.c, dd = Math.max(0, Math.hypot(c.x - px, c.z - pz) - 50), cur = m.userData.level;
+    for (const ch of chunks) {
+      const dd = Math.max(0, Math.hypot(ch.x - px, ch.z - pz) - 50), cur = ch.level;
       let lv = dd < 120 ? 0 : dd < 280 ? 1 : 2;
       if (lv > cur && dd < [120, 280][cur] + 12) lv = cur;
-      if (lv !== cur) { m.userData.level = lv; m.geometry.setDrawRange(L[lv][0], L[lv][1]); }
+      if (lv !== cur) { ch.level = lv; pending = true; }
     }
+    const now = performance.now();
+    if (pending && now - lastT > 200) { rebuild(); pending = false; lastT = now; }
   };
   // 四周裙边，遮住和远景网格之间的细缝
   {
