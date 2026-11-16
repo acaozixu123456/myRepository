@@ -19,6 +19,9 @@ import { makeFalling } from './world/particles.js';
 import { loadSave, writeSave, clearSave } from './game/save.js';
 import { MapView } from './game/map.js';
 import { makeBeacon } from './world/beacon.js';
+import { Album } from './game/photos.js';
+import { Journal } from './game/journal.js';
+import { PhotoMode } from './game/photo.js';
 
 const P = new URLSearchParams(location.search);
 // 无头截图模式：?shot=1&place=地点|x=&z=&ry=朝向&mode=foot|ride|fly&mount=a|b|w|d&trav=m|f&v=速度&alt=高度&sim=秒&cam=travel|top|intro|side|front|close
@@ -59,7 +62,11 @@ addEventListener('resize', setSize);
 setSize();
 
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
-let mapView = null, beacon = null;
+let mapView = null, beacon = null, journal = null, photo = null;
+const album = new Album();
+// 每个地方的封面照片（没设就用第一张）；照片和封面都不跟着“从头再来”清掉
+let covers = {};
+try { covers = JSON.parse(localStorage.getItem('journey.covers') || '{}') || {}; } catch {}
 const travelers = {};          // m / f：选到哪个才加载哪个
 // 存档：截图模式不读不写
 const saved = SHOT || P.has('fresh') ? null : loadSave();
@@ -117,24 +124,29 @@ const ui = initUI({
   setZoom: (z, done) => { if (!cam) return; cam.zoomTarget = z; if (done) ui.tool('bCam', z > 0.5); },
   gait: i => { if (!J) return; J.gait = i; ui.gait(i); },
   mode: m => { if (J && playing) J.setMode(m); },
-  action: t => { if (t === '坐下烤火') J?.sitAtCamp(); },
+  action: t => { if (t === '坐下烤火' || t === '点起篝火') J?.sitAtCamp(); },
   toggleAuto: () => { if (!J) return; J.auto = !J.auto; ui.tool('bAuto', J.auto); if (J.auto) ui.hint(''); },
   toggleCam: () => { if (!cam) return; cam.zoomTarget = cam.zoomTarget > 0.5 ? 0 : 1; ui.tool('bCam', cam.zoomTarget > 0.5); },
   toggleSound: () => { if (!sound) return; sound.setMuted(!sound.muted); ui.tool('bSound', !sound.muted); },
   cycleQuality: () => { if (!quality) return; quality.cycle(); showPerf(); },
-  places: () => J ? J.places.map(p => ({ name: p.name, sub: p.sub, where: p.where, seen: J.visited.includes(p.id) })) : [],
-  again: restart => {
-    ui.summaryOff();
-    if (!restart) {
-      if (!J.isNight) { J.standUp(); ui.hint(ui.goHint()); save(); return; }
-      // 夜里：睡一觉，第二天清晨接着走
-      ui.fade(true);
-      setTimeout(() => { J.wakeUp(); ui.fade(false); ui.banner(`第 ${J.dayN} 天`, '天亮了，接着上路'); ui.hint(ui.goHint()); save(); }, 1100);
+  // 手记、拍照、营地歇脚
+  openJournal: () => { if (!J || !playing || !journal || photo?.active) return; if (journal.isOpen) { journal.close(); return; } if (mapView?.isOpen) mapView.close(); J.holding = false; journal.open(); },
+  photo: () => { if (!photo) return; if (photo.active) { photo.exit(); return; } if (!J || !playing || J.phase === 'intro' || mapView?.isOpen) return; ui.photo(); },
+  restUntil: at => {
+    if (!J?.sitting || J.sitTo !== null || sleeping) return;
+    if (at < 6 && (J.tod >= 19.5 || J.tod < 5)) {
+      // 夜里选清晨：暗下来睡一觉
+      sleeping = true; ui.fade(true);
+      setTimeout(() => { J.sleep(); ui.fade(false); sleeping = false; ui.banner(`第 ${J.dayN} 天`, '天亮了，火还温着', 3.5); save(); }, 1100);
       return;
     }
-    ui.fade(true);
-    clearSave();
-    setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.hint(J.auto ? '' : ui.goHint()); save(); }, 800);
+    J.restUntil(at);
+  },
+  restAct: a => {
+    if (!J?.sitting) return;
+    if (a === 'photo') return ui.photo();
+    if (a === 'journal') return journal.open();
+    if (a === 'up') { ui.rest(null); J.standUp(); ui.hint(ui.goHint()); save(); }
   },
   skipTime: () => { if (J && playing) J.skipTime(); },
   // 地图：打开时游戏停下来（不画 3D），关上接着走
@@ -146,6 +158,7 @@ const ui = initUI({
   },
 });
 ui.tool('bSound', true);
+let sleeping = false;
 // 操作方式：默认方向盘，记在本机
 function setCtl(c, user) {
   c = c === 'hold' ? 'hold' : 'stick';
@@ -174,6 +187,17 @@ function syncUI() {
     ui.stickGait(names?.[J.gait] || '');
   }
   ui.time(periodOf(J.ff ? J.ff.to : J.tod).name, !!J.ff || (J.sitting && J.sitTo !== null));
+  // 坐在火边：下面一张小卡片，选歇到什么时候、拍照、看手记、起身
+  ui.rest(J.sitting && J.campT > 1.2 && !photo?.active && !journal?.isOpen ? restState() : null);
+}
+const REST_TO = [{ name: '清晨', at: 5.7 }, { name: '正午', at: 12 }, { name: '黄昏', at: 17.6 }, { name: '夜里', at: 20.8 }];
+let campMsg = null;
+function restState() {
+  const S = J.site, P = J.places.find(p => p.id === S.id), cur = J.tod, busy = J.sitTo !== null || sleeping;
+  const ahead = o => (o.at - cur + 24) % 24;
+  const times = REST_TO.filter(o => ahead(o) > 0.6 && ahead(o) < 23.4).sort((a, b) => ahead(a) - ahead(b))
+    .map(o => ({ name: o.name, at: o.at, sleep: o.at < 6 && (cur >= 19.5 || cur < 5) }));
+  return { name: P ? P.name : '营地', sub: `第 ${J.dayN} 天 · ${periodOf(cur).name}${busy ? ' · 时间慢慢过去…' : ''}`, msg: campMsg && campMsg.id === S.id ? campMsg.t : '', times, busy };
 }
 
 // ---------- 存档 ----------
@@ -206,20 +230,6 @@ function start() {
   quality.recording = true;
   ui.hint(ui.goHint());
   wake();
-}
-
-function showSummary() {
-  const t = J.travelT, m = Math.floor(t / 60), s = Math.round(t % 60), st = quality.stats();
-  const d = J.dist, parts = [];
-  if (d.foot > 20) parts.push(`走了 ${Math.round(d.foot)} 米`);
-  if (d.ride > 20) parts.push(`骑马 ${Math.round(d.ride)} 米`);
-  if (d.fly > 20) parts.push(`飞了 ${Math.round(d.fly)} 米`);
-  const seen = J.visited.map(id => J.places.find(p => p.id === id)?.name).filter(Boolean);
-  ui.summary('今晚在山口扎营',
-    `这一路 ${m} 分 ${s} 秒${parts.length ? '，' + parts.join('，') : ''}。<br>` +
-    (seen.length ? `到过：${seen.join('、')}。<br>` : '') +
-    (seen.length < J.places.length ? `还有 ${J.places.length - seen.length} 个地方没去，明天接着走吧。` : '谷地里的地方都去过了。') +
-    (st ? `<br><span class="perf">平均 ${st.avg} fps，最卡的时候 ${st.low} fps（画质：${quality.label}）</span>` : ''));
 }
 
 // ---------- 屏幕常亮、切后台 ----------
@@ -274,8 +284,10 @@ const clock = new THREE.Clock();
 function frame() {
   requestAnimationFrame(frame);
   const rdt = clock.getDelta(), dt = Math.min(rdt, 1 / 20);
-  if (mapView?.isOpen) { mapView.tick(); return; }
   if (DEBUG && window.__freeze) return;     // 测试截图用：停在当前画面
+  if (mapView?.isOpen) { mapView.tick(); return; }
+  // 拍照：游戏停着，只摆镜头（风、水、火还在动）
+  if (photo?.active) { U.uTime.value += dt; photo.frame(); J.campfire(dt); W.update(camera, focus, dt); renderer.render(scene, camera); return; }
   step(dt);
   renderer.render(scene, camera);
   if (quality.frame(rdt)) showPerf();
@@ -357,7 +369,7 @@ async function load() {
   beacon = makeBeacon(); scene.add(beacon);
   mapView = new MapView({
     land: W.land, trees: W.placed.trees, explored: J.explored,
-    places: () => J.places.map(p => ({ ...p, seen: J.visited.includes(p.id) })),
+    places: () => J.places.map(p => ({ ...p, seen: J.visited.includes(p.id), lit: J.camps.has(p.id) })),
     player: () => ({ x: J.p.x, z: J.p.z, yaw: J.yaw }),
     // 坐骑：不骑着、也不在身边的时候在地图上标出来
     mountAt: () => { const M = J.mount; if (!M || !M.st.shown || J.mode === 'ride' || M.st.p.distanceTo(J.p) < 6) return null; return { x: M.st.p.x, z: M.st.p.z, name: M.name }; },
@@ -366,7 +378,31 @@ async function load() {
     onClose: () => { clock.getDelta(); ui.hint(''); },
   });
   if (P.has('debug')) window.__map = mapView;
-  J.onCamp = showSummary;
+  J.onCampLit = S => { campMsg = { id: S.id, t: S.id === 'camp' ? '' : '篝火点起来了。以后夜里路过，这堆火都亮着；地图上也能一键回到这儿。' }; save(); };
+  // 手记
+  journal = new Journal({
+    J, album, covers: () => covers,
+    setCover: (place, id) => { covers[place] = id; try { localStorage.setItem('journey.covers', JSON.stringify(covers)); } catch {} },
+    openMap: id => { if (!mapView.isOpen) mapView.open(id); },
+    travel: P => travel(P), canTravel: () => J.canTravel(),
+    restart: () => {
+      ui.fade(true); clearSave();
+      setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.rest(null); ui.hint(J.auto ? '' : ui.goHint()); save(); }, 800);
+    },
+    onClose: () => { clock.getDelta(); },
+  });
+  // 拍照
+  photo = new PhotoMode({
+    J, renderer, scene, camera, album, canvas, setSize,
+    openAlbum: () => journal.open('album'),
+    onShot: (m, first, saved) => {
+      photo.toast(!saved ? '拍好了。这个浏览器存不住照片，记得在手记里存到手机' : first ? `「${m.name}」的第一张照片，成了手记里的封面` : `收进相册了 · ${m.name}`, 3);
+      save();
+    },
+    onExit: () => { clock.getDelta(); },
+  });
+  ui.photo = () => { journal.close(); ui.rest(null); photo.enter(); };
+  if (P.has('debug')) { window.__photo = photo; window.__journal = journal; window.__album = album; }
   J.onVisit = () => save();
   if (saved) { try { J.restore(saved); ui.resume(resumeText(saved)); } catch (e) { console.warn('[j] restore', e); clearSave(); } }
   const k0 = P.get('mount'); if (k0 && mounts[k0]) J.startWith(k0);
@@ -409,6 +445,7 @@ function shotSetup() {
   if (P.get('act') === 'land') J.setMode('foot');
   if (P.get('act') === 'dismount') J.setMode('foot');
   if (P.get('act') === 'call') { J.setMode('foot'); }
+  if (P.get('site')) { const S = J.sites.find(s => s.id === P.get('site')); if (S) { J.site = S; J.teleport(S.fireAt.x - Math.sin(S.yaw) * 3, S.fireAt.z - Math.cos(S.yaw) * 3, S.yaw, mode); } }
   if (P.get('act') === 'sit') J.doSit();
   if (view === 'top') cam.zoom = cam.zoomTarget = 1;
   if (P.get('auto')) J.auto = true;

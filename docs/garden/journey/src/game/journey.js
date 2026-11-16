@@ -4,9 +4,9 @@
 // 第一次到望远台有一段远景；在山口营地可以坐下烤火，看这一路的手记。
 // 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
 import * as THREE from 'three';
-import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END } from '../world/route.js';
+import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ } from '../world/land.js';
-import { PERIODS } from '../world/daytime.js';
+import { PERIODS, periodOf } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 import { Explored } from './map.js';
 
@@ -43,12 +43,14 @@ export function makePlaces() {
     { id: 'west', name: '西岭松林', sub: '松针的味道，风从山口吹来', where: '浅滩对岸，西边山坡上', x: -150, z: -165, r: 26 },
     { id: 'grove', name: '林荫小道', sub: '树影一道一道落在路上', where: '过了木桥，山路两边的树林', x: gr.x, z: gr.z, r: 14 },
     { id: 'view', name: '望远台', sub: '回头看看，走过的溪谷都在脚下', where: '山路快到头，有一张长椅', x: vw.x - 3, z: vw.z, r: 9 },
-    { id: 'camp', name: '山口营地', sub: '今晚在这里歇脚', where: '山路尽头，可以坐下烤火', x: cp.x, z: cp.z, r: 14 },
+    { id: 'camp', kind: 'camp', name: '山口营地', sub: '今晚在这里歇脚', where: '山路尽头，可以坐下烤火', x: cp.x, z: cp.z, r: 14 },
     { id: 'autumn', name: '红叶谷', sub: '满山的红叶，落叶在风里打旋', where: '浅滩对岸有条溪边小路，顺着小溪往上游走', x: au.x, z: au.z, r: 30 },
     { id: 'falls', name: '叠水', sub: '山涧一级一级跳下来，水声哗哗的', where: '红叶谷走到头，小路顺着山涧往上爬', x: fa.x, z: fa.z, r: 24 },
     { id: 'pass', name: '雪原山口', sub: '风一下子凉了，脚下踩着雪', where: '顺着山涧一直往上，走到有雪的地方', x: ps.x, z: ps.z, r: 20 },
     { id: 'lake', name: '冰湖', sub: '湖面冻得结结实实，可以走上去', where: '过了雪原山口，小溪就是从这个湖里流出来的', x: LAKE.x, z: LAKE.z, r: 46 },
     { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '点“飞”，一直往上飞', alt: 50 },
+    // 野外营地：第一次到会出横幅，坐下就点起篝火（以后夜里那堆火都亮着），地图上可以一键过去
+    ...CAMP_SITES.map(c => ({ id: c.id, kind: 'camp', name: c.name, sub: c.sub, where: c.where, x: c.x, z: c.z, r: 11 })),
   ];
 }
 
@@ -63,6 +65,10 @@ export class Journey {
     Object.assign(this, o);
     this.T = o.traveler;
     this.places = makePlaces();
+    // 营地：sites[0] 是山口营地；site 是现在坐着的（或者最近的）那一处
+    this.sites = this.camp.userData.sites; this.site = this.sites[0];
+    for (const S of this.sites) S.lit = 0;
+    this.lightSite = null;
     this.groundAt = (x, z) => { const b = this.bridge.heightAt(x, z); return b === null ? this.land.heightExact(x, z) : b; };
     for (const [k, M] of Object.entries(this.mounts)) {
       if (!M) continue;
@@ -188,9 +194,11 @@ export class Journey {
     this.visited = []; this.inPlace = new Set(); this.placeT = 0; this.labelT = 0;
     this.explored.clear(); this.waypoint = null; this.exT = 0;
     this.viewDone = false; this.glanceDone = false; this.glance = null;
-    this.sitting = false; this.lit = 0; this.campT = 0; this.summaryShown = false;
+    this.sitting = false; this.campT = 0; this.site = this.sites[0];
+    this.camps = new Set(['camp']);   // 点过篝火的营地（山口营地本来就有人生火）
+    this.log = [];                    // 手记里的日记：[{ d 第几天, h 钟点, k 事情, id 地方, p 照片 }]
     this.snortT = 18 + Math.random() * 20; this.mixT = 0; this.hintT = 0; this.edgeT = 0;
-    this.camp.userData.fire.visible = false;
+    for (const S of this.sites) { S.lit = 0; S.fire.visible = false; }
     for (const M of Object.values(this.mounts)) if (M) { M.root.visible = false; M.st.shown = false; M.st.goal = null; }
     const M = this.mount;
     M.st.p.copy(this.p); M.st.yaw = this.yaw; M.st.shown = true; M.root.visible = true;
@@ -556,7 +564,7 @@ export class Journey {
     // 先定朝向，再算动作，最后把盆骨挪到该在的位置
     let pelvisTarget = null;
     if (this.sitting) {
-      const c = this.camp.userData;
+      const c = this.site;
       T.root.rotation.set(0, this.sitYaw, 0);
       T.update(dt, { speed: 0, lookAt: _cr.copy(c.fireAt).setY(c.fireAt.y + 0.4), lookW: 0.6 });
       T.root.updateMatrixWorld(true);
@@ -642,7 +650,7 @@ export class Journey {
         const was = this.inPlace.has(P.id);
         if (inside && !was) {
           this.inPlace.add(P.id);
-          if (!this.visited.includes(P.id)) { this.visited.push(P.id); this.ui.banner(P.name, P.sub); this.labelT = 5; this.ui.place(''); this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length); this.onVisit?.(P); }
+          if (!this.visited.includes(P.id)) { this.visited.push(P.id); this.note('visit', P.id); this.ui.banner(P.name, P.sub); this.labelT = 5; this.ui.place(''); this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length); this.onVisit?.(P); }
           else { this.ui.place(P.name); this.labelT = 0; }
           this.lastPlace = P;
           if (P.id === 'bridge' && !this.glanceDone && this.mode !== 'fly') { this.glanceDone = true; this.glance = { t: 0, dur: 7, x: 62, z: -118 }; }
@@ -681,49 +689,65 @@ export class Journey {
       this.cam.play(shot);
     }
     // 营地：走近篝火时可以坐下
-    const f = this.camp.userData.fireAt;
-    const nearFire = !this.sitting && this.mode !== 'fly' && !this.trans && Math.hypot(this.p.x - f.x, this.p.z - f.z) < 7;
-    this.ui.action?.(nearFire ? '坐下烤火' : '');
+    let nearS = null;
+    if (!this.sitting && this.mode !== 'fly' && !this.trans) for (const S of this.sites) if (Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z) < 7) nearS = S;
+    if (!this.sitting && nearS && nearS !== this.site) { this.site = nearS; this.fireKept = false; }
+    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : '');
     // 提示
     if (this.hintT > 0) { this.hintT -= dt; if (this.hintT <= 0) this.ui.hint(''); }
   }
   hintOnce(t) { if (this.hintT > 0) return; this.ui.hint(t); this.hintT = 3; }
 
-  // 坐下烤火：一暗一亮之间换到树桩上
+  // 坐下烤火：一暗一亮之间换到树桩上（离得最近的那处营地）
   sitAtCamp() {
     if (this.sitting || this.trans) return;
-    const c = this.camp.userData;
+    let best = null, bd = 9;
+    for (const S of this.sites) { const d = Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z); if (d < bd) { bd = d; best = S; } }
+    if (!best) return;
+    this.site = best;
     this.ui.fade(true);
     this.sitPending = 0.9;
   }
-  campTick(dt) {
-    this.campT += dt;
-    if (this.campT > 7 && this.sitTo === null && !this.summaryShown) { this.summaryShown = true; this.onCamp?.(); }
-  }
+  campTick(dt) { this.campT += dt; }
+  // 篝火：坐着的那堆、刚坐过的那堆、点过的营地夜里都亮着；离得太远的不画。火光只有一盏，挂在最近那堆亮着的火边上
   campfire(dt) {
     if (this.sitPending !== undefined && this.sitPending !== null) {
       this.sitPending -= dt;
       if (this.sitPending <= 0) { this.sitPending = null; this.doSit(); }
     }
-    const fire = this.camp.userData.fire;
-    this.lit = damp(this.lit, this.sitting || this.fireKept || this.night > 0.45 ? 1 : 0, 1.2, dt);
-    fire.visible = this.lit > 0.02; fire.scale.setScalar(0.35 + 0.65 * this.lit);
-    fire.userData.update(this.t, this.lit);
-    this.camp.userData.lanLight.intensity = 1.8 * this.lit;
+    const cp = this.camera.position;
+    let light = null, ld = 60;
+    for (const S of this.sites) {
+      const mine = S === this.site && (this.sitting || this.fireKept);
+      const on = mine || (this.camps.has(S.id) && this.night > 0.45);
+      S.lit = damp(S.lit, on ? 1 : 0, 1.2, dt);
+      const d = Math.hypot(cp.x - S.fireAt.x, cp.z - S.fireAt.z);
+      S.fire.visible = S.lit > 0.02 && d < 260;
+      if (S.fire.visible) { S.fire.scale.setScalar(0.35 + 0.65 * S.lit); S.fire.userData.update(this.t, S.lit); }
+      const pd = Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z);
+      if (S.lit > 0.02 && pd < ld) { ld = pd; light = S; }
+    }
+    const L = this.camp.userData.lanLight;
+    if (light) { L.position.copy(light.lightAt); L.intensity = (light.id === 'camp' ? 1.8 : 2.4) * light.lit; } else L.intensity = 0;
+    this.lightSite = light;
   }
+  get lit() { return this.site.lit; }
   doSit() {
-    const c = this.camp.userData, seat = c.seat, fire = c.fireAt;
+    const c = this.site, seat = c.seat, fire = c.fireAt;
     const M = this.mount;
-    // 坐骑停到帐篷旁边吃草（走路来的、坐骑落在远处的，也让它跟过来）
+    // 坐骑停到营地旁边吃草（走路来的、坐骑落在远处的，也让它跟过来）
     if (this.mode === 'ride' || !M.st.shown || M.st.p.distanceTo(this.p) > 12) {
       M.st.goal = null;
-      const yaw = c.yaw; const px = seat.x + Math.cos(yaw) * -3.6 + Math.sin(yaw) * 2.2, pz = seat.z - Math.sin(yaw) * -3.6 + Math.cos(yaw) * 2.2;
-      M.st.p.set(px, this.groundAt(px, pz), pz); M.st.yaw = yaw + 2.2; M.st.speed = 0; M.st.shown = true; M.root.visible = true;
+      let px, pz, my;
+      if (c.id === 'camp') { const yaw = c.yaw; px = seat.x + Math.cos(yaw) * -3.6 + Math.sin(yaw) * 2.2; pz = seat.z - Math.sin(yaw) * -3.6 + Math.cos(yaw) * 2.2; my = yaw + 2.2; }
+      else { const fx = Math.sin(c.yaw), fz = Math.cos(c.yaw); px = fire.x - fx * 2.4 + fz * 4.4; pz = fire.z - fz * 2.4 - fx * 4.4; my = c.yaw + 1.9; [px, pz] = this.colliders.resolve(px, pz, 1.0, 0); }
+      M.st.p.set(px, this.groundAt(px, pz), pz); M.st.yaw = my; M.st.speed = 0; M.st.shown = true; M.root.visible = true;
     }
     this.mode = 'foot'; this.speed = 0; this.trans = null;
     this.sitting = true; this.campT = 0; this.fireKept = true;
-    // 坐下以后时间快进到夜里（已经是夜里就不用了）
-    this.ff = null; this.sitTo = this.tod >= 5.5 && this.tod < 21.2 ? 21.2 : null;
+    this.ff = null; this.sitTo = null;
+    if (!this.camps.has(c.id)) { this.camps.add(c.id); this.note('camp', c.id); this.onCampLit?.(c); }
+    else this.note('rest', c.id);
     this.sitYaw = Math.atan2(fire.x - seat.x, fire.z - seat.z);
     this.p.set(seat.x, this.groundAt(seat.x, seat.z), seat.z); this.yaw = this.yawT = this.sitYaw;
     this.T.set('sit', 50);
@@ -732,6 +756,34 @@ export class Journey {
     const shot = campShot(target, this.camera, this.clearAngle(target, this.camera.aspect < 1 ? 8.2 : 6.6, 24), 24); shot.blend = 0.01;
     this.cam.play(shot);
     this.ui.fade(false);
+  }
+  // 歇到某个时辰：火边快进过去（要过夜的由 main.js 先暗下来睡一觉）
+  restUntil(at) {
+    if (!this.sitting) return false;
+    this.sitTo = at; this.ff = null;
+    return true;
+  }
+  // 睡一觉到清晨（还坐在火边）
+  sleep() {
+    if (this.tod > 6 || this.tod < 5) this.dayN++;
+    this.tod = 5.9; this.ff = null; this.sitTo = null;
+    this.applyDay(0);
+    this.note('sleep', this.site.id);
+  }
+  // 记一笔日记（同一件事同一个钟头里只记一次）
+  note(k, id = null, p = null) {
+    const last = this.log[this.log.length - 1];
+    if (last && last.k === k && last.id === id && last.d === this.dayN && Math.abs(last.h - this.tod) < 1 && !p) return;
+    this.log.push({ d: this.dayN, h: Math.round(this.tod * 100) / 100, k, id, ...(p ? { p } : {}) });
+    if (this.log.length > 500) this.log.splice(0, this.log.length - 500);
+  }
+  // 拍照时在哪：正在某个地方里就是那儿，不然找最近的（离得太远就算“路上”）
+  placeHere() {
+    if (this.lastPlace && this.inPlace.has(this.lastPlace.id)) return this.lastPlace;
+    if (this.mode === 'fly' && this.alt > 50) return this.places.find(P => P.id === 'sky');
+    let best = null, bd = Infinity;
+    for (const P of this.places) { if (P.x === undefined) continue; const d = Math.hypot(this.p.x - P.x, this.p.z - P.z) / (P.r + 20); if (d < bd) { bd = d; best = P; } }
+    return bd < 1.6 ? best : null;
   }
   // 围着某个点找一个方向（度），从那里看过去中间没有树冠挡着（从 270 度往两边找）
   clearAngle(c, R, swing) {
@@ -754,7 +806,7 @@ export class Journey {
     if (!this.sitting) return;
     this.sitting = false; this.summaryShown = false;
     this.T.set('loco', 3);
-    const f = this.camp.userData.fireAt;
+    const f = this.site.fireAt;
     this.yaw = this.yawT = Math.atan2(this.p.x - f.x, this.p.z - f.z);
     releaseShot(this.cam, 2.5);
   }
@@ -829,6 +881,7 @@ export class Journey {
       visited: [...this.visited], dist: { foot: Math.round(this.dist.foot), ride: Math.round(this.dist.ride), fly: Math.round(this.dist.fly) },
       travelT: Math.round(this.travelT), gaits: { ...this.gaits }, viewDone: this.viewDone, glanceDone: this.glanceDone,
       ex: this.explored.encode(), way: this.waypoint ? { ...this.waypoint } : null,
+      camps: [...this.camps], log: this.log.slice(-500),
     };
   }
   restore(s) {
@@ -850,6 +903,8 @@ export class Journey {
     this.travelT = +s.travelT || 0;
     if (s.gaits) for (const k of ['foot', 'ride', 'fly']) if (s.gaits[k] >= 0 && s.gaits[k] <= 2) this.gaits[k] = s.gaits[k] | 0;
     this.viewDone = !!s.viewDone; this.glanceDone = !!s.glanceDone;
+    this.camps = new Set(['camp', ...(Array.isArray(s.camps) ? s.camps : []).filter(id => this.sites.some(S => S.id === id))]);
+    this.log = Array.isArray(s.log) ? s.log.filter(e => e && typeof e.k === 'string').slice(-500) : [];
     // 地图：老存档没有记走过哪里，就把去过的地方周围亮出来
     this.explored.clear();
     if (!(typeof s.ex === 'string' && this.explored.decode(s.ex)))
@@ -883,7 +938,7 @@ export class Journey {
     this.region = r;
     if (this.mode === 'fly' && this.alt > 40) this.highUp = true; else if (this.mode !== 'fly' || this.alt < 22) this.highUp = false;
     if (this.night > 0.6) this.nightMusic = true; else if (this.night < 0.35) this.nightMusic = false;
-    if (this.sitting && this.lit > 0.3) return 'camp';
+    if (this.sitting && this.site.lit > 0.3) return 'camp';
     if (this.nightMusic) return 'night';
     if (this.highUp) return 'sky';
     if (r === 'valley' && this.tod >= 17.2) return 'dusk';
@@ -916,7 +971,7 @@ export class Journey {
     const wind = ((this.mode === 'fly' ? 0.45 + 0.55 * sstep(6, 18, this.speed) : 0.22 + 0.45 * sstep(1.5, 30, hp.y) + (this.phase === 'view' ? 0.25 : 0)) + 0.35 * snow)
       * (1 + (this.gust - 1) * (0.25 + 0.6 * windy));
     const leaves = sstep(0.1, 0.6, au) * low * (0.35 + 0.65 * this.gust) * (0.4 + 0.6 * sstep(1, 6, trees));
-    const fire = this.lit * (1 - sstep(3, 26, cp.distanceTo(this.camp.userData.fireAt)));
+    const fs = this.lightSite, fire = fs ? fs.lit * (1 - sstep(3, 26, cp.distanceTo(fs.fireAt))) : 0;
     // 叠水：最近的一道，越近越响、跌得越高越响，左右跟着方向
     let falls = 0, fallsPan = 0;
     for (const f of this.fallsAt) {

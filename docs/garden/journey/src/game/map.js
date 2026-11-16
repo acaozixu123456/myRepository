@@ -382,10 +382,13 @@ export class MapView {
       const [x, y] = this.toScreen(P.x, P.z);
       if (x < -60 || x > W + 60 || y < -40 || y > H + 40) continue;
       const on = this.sel?.kind === 'place' && this.sel.P.id === P.id, r = (on ? 7.5 : 5.5) * Math.min(1.2, k);
-      g.beginPath(); g.arc(x, y, r + 2, 0, 6.283); g.fillStyle = 'rgba(255, 250, 238, 0.95)'; g.fill();
-      g.beginPath(); g.arc(x, y, r, 0, 6.283);
-      if (P.seen) { g.fillStyle = '#c4773a'; g.fill(); }
-      else { g.lineWidth = 1.6; g.strokeStyle = INK; g.stroke(); g.beginPath(); g.arc(x, y, 1.6, 0, 6.283); g.fillStyle = INK; g.fill(); }
+      if (P.kind === 'camp') this.campIcon(x, y, r * 1.25, P.seen, P.lit);
+      else {
+        g.beginPath(); g.arc(x, y, r + 2, 0, 6.283); g.fillStyle = 'rgba(255, 250, 238, 0.95)'; g.fill();
+        g.beginPath(); g.arc(x, y, r, 0, 6.283);
+        if (P.seen) { g.fillStyle = '#c4773a'; g.fill(); }
+        else { g.lineWidth = 1.6; g.strokeStyle = INK; g.stroke(); g.beginPath(); g.arc(x, y, 1.6, 0, 6.283); g.fillStyle = INK; g.fill(); }
+      }
       g.font = `${on ? 600 : 500} ${Math.round(12.5 * Math.min(1.15, k))}px "Songti SC", "STSong", "Noto Serif SC", serif`;
       g.lineJoin = 'round'; g.lineWidth = 3.5; g.strokeStyle = 'rgba(250, 243, 226, 0.92)';
       g.strokeText(P.name, x, y + r + 4);
@@ -417,6 +420,20 @@ export class MapView {
     g.strokeStyle = INK; g.lineWidth = 1.5; g.beginPath(); g.moveTo(bx, by - 4); g.lineTo(bx, by); g.lineTo(bx + len, by); g.lineTo(bx + len, by - 4); g.stroke();
     g.font = '500 11px -apple-system, "PingFang SC", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillStyle = INK;
     g.fillText(`${meters} 米`, bx + len / 2, by - 5);
+  }
+  // 营地：一个小帐篷；点过篝火的帐篷前有一团火
+  campIcon(x, y, s, seen, lit) {
+    const g = this.ctx;
+    g.beginPath(); g.arc(x, y, s + 3, 0, 6.283); g.fillStyle = 'rgba(255, 250, 238, 0.95)'; g.fill();
+    g.beginPath(); g.moveTo(x - s * 0.95, y + s * 0.62); g.lineTo(x, y - s * 0.85); g.lineTo(x + s * 0.95, y + s * 0.62); g.closePath();
+    g.lineJoin = 'round'; g.lineWidth = 1.5; g.strokeStyle = INK;
+    if (seen) { g.fillStyle = '#8f6a45'; g.fill(); } g.stroke();
+    g.beginPath(); g.moveTo(x, y - s * 0.85); g.lineTo(x, y + s * 0.62); g.strokeStyle = seen ? '#f3e3c4' : INK; g.lineWidth = 1; g.stroke();
+    if (lit) {
+      const fx = x + s * 0.95, fy = y + s * 0.55;
+      g.beginPath(); g.moveTo(fx, fy - s * 0.95); g.quadraticCurveTo(fx + s * 0.55, fy - s * 0.2, fx, fy + s * 0.1); g.quadraticCurveTo(fx - s * 0.55, fy - s * 0.2, fx, fy - s * 0.95);
+      g.fillStyle = '#f08a2c'; g.fill(); g.lineWidth = 1; g.strokeStyle = '#fff8ee'; g.stroke();
+    }
   }
   diamond(x, y, s, ghost) {
     const g = this.ctx;

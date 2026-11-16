@@ -44,6 +44,7 @@
       </div>
     </div>
     <div class="tools">
+      <button type="button" id="bPhoto" class="cam">拍照</button>
       <button type="button" id="bAuto">自动</button>
       <button type="button" id="bCam">俯视</button>
       <button type="button" id="bMount">坐骑</button>
@@ -61,12 +62,57 @@
 </div>
 
 <div id="journalSheet" hidden>
-  <div class="card">
-    <h2>旅行手记</h2>
-    <ul class="places" id="placeList"></ul>
-    <div class="ctl"><span>怎么走</span><div class="ctlPick"><button type="button" data-c="stick">方向盘</button><button type="button" data-c="hold">按住屏幕</button></div></div>
-    <button type="button" class="link" id="journalClose">接着走</button>
+  <div class="jPage">
+    <div class="jHead"><div><b>旅行手记</b><small id="jStats"></small></div><button type="button" id="journalClose">接着走</button></div>
+    <div class="jTabs" id="jTabs"><button type="button" data-t="places" class="on">地方</button><button type="button" data-t="album">相册</button><button type="button" data-t="diary">日记</button></div>
+    <div class="jBody" id="jBody"></div>
+    <div class="jFoot">
+      <div class="ctl"><span>怎么走</span><div class="ctlPick"><button type="button" data-c="stick">方向盘</button><button type="button" data-c="hold">按住屏幕</button></div></div>
+      <button type="button" class="link" id="jRestart">从头再来</button>
+    </div>
   </div>
+  <div id="jDetail" hidden></div>
+  <div id="viewer" hidden>
+    <div id="vImgBox"><img id="vImg" alt=""></div>
+    <p id="vCap"></p>
+    <div class="vRow">
+      <button type="button" data-a="prev" id="vPrev" aria-label="上一张">‹</button>
+      <button type="button" data-a="save">存到手机</button>
+      <button type="button" data-a="cover">设为封面</button>
+      <button type="button" data-a="del">删掉</button>
+      <button type="button" data-a="next" id="vNext" aria-label="下一张">›</button>
+    </div>
+    <button type="button" class="vClose" data-a="close">关上</button>
+  </div>
+</div>
+
+<div id="rest" hidden>
+  <div class="card">
+    <b id="restName"></b><small id="restSub"></small>
+    <p id="restMsg"></p>
+    <div class="restTimes" id="restTimes"></div>
+    <div class="restRow"><button type="button" data-a="photo">拍张照</button><button type="button" data-a="journal">看看手记</button><button type="button" data-a="up">起身上路</button></div>
+  </div>
+</div>
+
+<div id="photo" hidden>
+  <div id="photoTouch"></div>
+  <div class="pTop">
+    <button type="button" id="pClose">返回</button>
+    <div class="pWhere"><b id="pPlace"></b><small id="pTime"></small></div>
+    <div class="pToggles"><button type="button" id="pWho" class="on">人物</button><button type="button" id="pStamp" class="on">落款</button></div>
+  </div>
+  <div class="pHint" id="pHint">拖动转镜头，双指拉远拉近</div>
+  <div class="pBottom">
+    <div class="pFilters" id="pFilters"></div>
+    <div class="pRow">
+      <button type="button" id="pView">环绕</button>
+      <button type="button" id="pShot" aria-label="按快门"><i></i></button>
+      <button type="button" id="pAlbum" aria-label="相册"><img id="pLast" alt="" hidden><span>相册</span></button>
+    </div>
+  </div>
+  <div id="pFlash"></div>
+  <div id="pToast"></div>
 </div>
 
 <div id="mapSheet" hidden>
@@ -87,17 +133,9 @@
     <div class="ctl"><span>怎么走</span><div class="ctlPick"><button type="button" data-c="stick">方向盘</button><button type="button" data-c="hold">按住屏幕</button></div></div>
     <button id="go" type="button" disabled>准备中…</button>
     <button class="link" id="fresh" type="button" hidden>不接着走了，从头开始</button>
-    <p class="tips">左下角的方向盘往哪推就往哪走，推得越远走得越快；屏幕其他地方拖动转镜头看风景（也可以换回“按住屏幕走”）。下面随时换成步行、骑马或者飞；点右上角的时辰可以快进到下一段，点「地图」看看去过哪儿、想去哪儿。<br>新开了西北边的红叶谷和冰湖：过浅滩，顺着溪边小路往上游走。每个地方的曲子和声音都不一样，戴上耳机更好听。</p>
+    <p class="tips">左下角的方向盘往哪推就往哪走，推得越远走得越快；屏幕其他地方拖动转镜头看风景（也可以换回“按住屏幕走”）。下面随时换成步行、骑马或者飞；点右上角的时辰可以快进到下一段，点「地图」看看去过哪儿、想去哪儿。<br>新的：野外多了四处营地，坐下就点起篝火，可以歇到清晨、正午、黄昏或者夜里；看到好看的点「拍照」，照片收进「手记」，每个地方第一张照片就是它的封面。</p>
     <p class="load" id="loadText">正在铺路…</p>
     <button class="link" id="creditsBtn" type="button">音乐与素材</button>
-  </div>
-</div>
-
-<div id="summary" hidden>
-  <div class="card">
-    <h2>旅行手记</h2>
-    <p id="sumText"></p>
-    <div class="row"><button type="button" id="again">继续旅行</button><button type="button" id="againSwap">从头再来</button></div>
   </div>
 </div>
 
