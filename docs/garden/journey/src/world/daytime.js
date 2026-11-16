@@ -2,7 +2,6 @@
 // 天黑以后由月光接手（主光换成月亮方向）。太阳被远山挡住时（清晨刚出山之前）直射光变弱。
 import * as THREE from 'three';
 import { U } from './atmo.js';
-import { FX } from './fx.js';
 const _cool = new THREE.Color('#8f9cf0');
 import { SKY } from './sky.js';
 import { farH } from './land.js';
@@ -145,8 +144,8 @@ export class DayLight {
     SKY.uCloudCover.value = st.cloud; SKY.uStars.value = st.stars; SKY.uSunVis.value = vis; SKY.uMoonI.value = sstep(0, 8, mel) * Math.max(st.stars, this.night * 0.8);
     this.sun.color.copy(st.sun); this.sun.intensity = sunI;
     this.hemi.color.copy(st.hemiSky); this.hemi.groundColor.copy(st.hemiGround); this.hemi.intensity = st.hemiI;
-    // 实验（阴影颜色）：天光更亮更偏蓝紫，影子里是冷色而不是一片深褐；主光稍微收一点保持总亮度
-    if (FX.l) { const d = 1 - this.night; this.hemi.color.lerp(_cool, 0.35 * d); this.hemi.intensity *= 1 + 0.38 * d; this.sun.intensity *= 1 - 0.06 * d; }
+    // 天光更亮更偏蓝紫：影子里透着冷色，而不是一片深褐；主光稍微收一点保持总亮度（夜里不动）
+    { const d = 1 - this.night; this.hemi.color.lerp(_cool, 0.35 * d); this.hemi.intensity *= 1 + 0.38 * d; this.sun.intensity *= 1 - 0.06 * d; }
     const a = U.uAmb.value, g = U.uAmbG.value, hs = st.hemiSky, hg = st.hemiGround, hi = st.hemiI;
     a.setRGB(hs.r * hi * this.kA.x, hs.g * hi * this.kA.y, hs.b * hi * this.kA.z); g.setRGB(hg.r * hi * this.kG.x, hg.g * hi * this.kG.y, hg.b * hi * this.kG.z);
     if (this.renderer) this.renderer.toneMappingExposure = st.exp;

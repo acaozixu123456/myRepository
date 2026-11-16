@@ -92,7 +92,8 @@ const focus = new THREE.Vector3();
 // ---------- 画质 ----------
 function applyTier(tier) {
   const T = TIERS[tier];
-  renderer.setPixelRatio(Math.min(devicePixelRatio, T.pr)); setSize();
+  // 清晰度：自动模式下帧数不够只减草木和阴影，画面不变糊；只有手动选「中」「低」才降
+  renderer.setPixelRatio(Math.min(devicePixelRatio, quality?.mode === 'auto' ? TIERS.high.pr : T.pr)); setSize();
   SKY.uDpr.value = renderer.getPixelRatio();
   sun.shadow.mapSize.set(T.shadow, T.shadow);
   if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }

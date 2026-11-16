@@ -1,7 +1,6 @@
 // 大气与光：所有材质共享的太阳、雾（朝太阳方向偏暖）、树影 gobo、阴影边缘渐隐、角色轮廓光、风。
 // 用 onBeforeCompile 给 three 的标准材质打补丁，不额外加全屏后期，手机上省一遍像素。
 import * as THREE from 'three';
-import { FX } from './fx.js';
 
 export const U = {
   uTime: { value: 0 },
@@ -155,8 +154,8 @@ export function patch(mat, opts = {}) {
       fs = fs.replace('getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowIntensity, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] )',
         'mix( 1.0, getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowIntensity, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] ), 1.0 - smoothstep( uShadowRadius * 0.62, uShadowRadius * 0.95, length( vWP.xz - uShadowCenter.xz ) ) )');
     }
-    // 实验（角色）：颜色提亮提纯一点；背光面按天光补一层，不再是一团黑；轮廓光加强
-    const toon = FX.c && o.rim > 0;
+    // 人和动物（带轮廓光的材质）：颜色提亮提纯一点；背光面按天光补一层，不再是一团黑；轮廓光加强
+    const toon = o.rim > 0;
     if (toon) fs = fs.replace('#include <color_fragment>', `#include <color_fragment>
       {
         vec3 c0 = diffuseColor.rgb; float l0 = dot( c0, vec3( 0.2126, 0.7152, 0.0722 ) );
@@ -203,7 +202,7 @@ export function patch(mat, opts = {}) {
       gl_FragColor.rgb = jFog( gl_FragColor.rgb, vWP );`);
     sh.vertexShader = vs; sh.fragmentShader = fs;
   };
-  const key = 'j' + (FX.c ? 'c' : '') + JSON.stringify(o, (k, v) => (k === 'uniforms' ? undefined : v)) + (prev ? prev.toString().length : 0);
+  const key = 'j' + JSON.stringify(o, (k, v) => (k === 'uniforms' ? undefined : v)) + (prev ? prev.toString().length : 0);
   mat.customProgramCacheKey = () => key;
   mat.needsUpdate = true;
   return mat;
