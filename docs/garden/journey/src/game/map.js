@@ -3,6 +3,7 @@
 // 风景点、自己、坐骑、标记点、风车桥营地这些小图标每次重画，放大缩小都清楚。
 // 点风景点：去过的可以“去这里”（一暗一亮直接过去），没去过的可以“标记”，屏幕上方会指方向，远处立一道光。
 import { DOM, bankW, lakeQ, ICE_Q, FALLS } from '../world/land.js';
+import { SEA, coastCT } from '../world/route.js';
 import { ROAD, STREAM, LAKE, SPOTS } from '../world/route.js';
 import { fbm } from '../world/noise.js';
 
@@ -51,6 +52,7 @@ export class Explored {
 function treeColor(t) {
   if (t.t === 'Pine_2@s') return [118, 146, 140];
   if (t.t === 'Pine_2') return [72, 112, 82];
+  if (t.t === 'Bamboo') return [138, 172, 80];
   if (t.tint) { const g = t.tint[1]; return g < 0.3 ? [196, 82, 58] : g < 0.6 ? [212, 108, 60] : g < 1 ? [222, 142, 66] : g < 1.9 ? [224, 182, 82] : [190, 186, 88]; }
   return [104, 146, 84];
 }
@@ -84,7 +86,7 @@ export class MapBake {
       return true;
     }
     const { land, S, img } = this, D = img.data, NX = land.NX, NZ = land.NZ, cell = DOM.cell, mpp = DOM.w / S;
-    const H = land.H, GX = this.GX, GZ = this.GZ, AU = land.AU, SN = land.SN, RD = land.roadD, TD = land.trD, TS = land.trS, SD = land.strD, SS = land.strS;
+    const H = land.H, GX = this.GX, GZ = this.GZ, AU = land.AU, SN = land.SN, SA = land.SA, RD = land.roadD, TD = land.trD, TS = land.trS, SD = land.strD, SS = land.strS;
     const WC = this.WC, Q = this.Q;
     const Lx = -0.47, Ly = 0.75, Lz = -0.47, E = 1.7;
     const r1 = Math.min(S, this.row + rows);
@@ -110,6 +112,9 @@ export class MapBake {
         r += (186 - r) * rk; g += (174 - g) * rk; b += (156 - b) * rk;
         if (au > 0.01) { const a = sst(0, 0.75, au) * 0.85; r += (230 - r) * a; g += (172 - g) * a; b += (106 - b) * a; }
         if (sn > 0.01) { const a = sst(0.2, 0.6, sn); r += (244 - r) * a; g += (247 - g) * a; b += (250 - b) * a; }
+        // 沙滩：暖黄
+        const sa = SA ? (SA[k] * w0 + SA[k1] * w1 + SA[k2] * w2 + SA[k3] * w3) / 255 : 0;
+        if (sa > 0.01) { const a = sst(0.1, 0.6, sa) * (1 - rk * 0.8); r += (240 - r) * a; g += (222 - g) * a; b += (172 - b) * a; }
         // 山影（西北来光，竖直方向夸大一些）+ 背阴处偏一点蓝
         const nx = -gx * E, nz = -gz * E, nl = Math.sqrt(nx * nx + 1 + nz * nz);
         const rel = (nx * Lx + Ly + nz * Lz) / nl / Ly;
@@ -129,6 +134,13 @@ export class MapBake {
             const idx = Math.round(c) % 5 === 0, a = (1 - dd / 1.2) * (idx ? 0.36 : 0.17) * (1 - 0.6 * sst(0.4, 0.8, sn));
             r += (112 - r) * a; g += (84 - g) * a; b += (58 - b) * a;
           }
+        }
+        // 海：浅的地方青绿，越深越蓝，岸边一道白浪
+        if (h < SEA.y + 0.15 && x < -300 && coastCT(x, z)[0] > -60) {
+          const dep = SEA.y - h, d = sst(0, 12, dep), sea = sst(0.15, -0.25, h - SEA.y);
+          const sr = (150 - 64 * d) * pg, sg = (206 - 58 * d) * pg, sb = (204 - 20 * d) * pg;
+          const foam = sst(0.9, 0, dep) * 0.55;
+          r += (sr + (246 - sr) * foam - r) * sea; g += (sg + (248 - sg) * foam - g) * sea; b += (sb + (240 - sb) * foam - b) * sea;
         }
         // 冰湖
         if (Math.abs(x - LAKE.x) < 90 && Math.abs(z - LAKE.z) < 90 && h < LAKE.y + 0.05) {

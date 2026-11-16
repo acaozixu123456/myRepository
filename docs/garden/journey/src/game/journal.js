@@ -92,6 +92,7 @@ export class Journal {
       if (e.k === 'visit') { const t = P?.sub || ''; return `到了<b>${esc(name(e.id))}</b>。${esc(t)}${t && !/[。！？…]$/.test(t) ? '。' : ''}`; }
       if (e.k === 'camp') return `在<b>${esc(name(e.id))}</b>点起了篝火。`;
       if (e.k === 'rest') return `在<b>${esc(name(e.id))}</b>坐下来烤了会儿火。`;
+      if (e.k === 'weather') return { cloudy: '云慢慢多了起来。', rain: '下起了小雨。', fog: '起雾了，远处的山看不见了。', snow: '飘起了雪。', clear: '天晴了。' }[e.id] || '';
       if (e.k === 'sleep') return `在<b>${esc(name(e.id))}</b>的火边睡了一觉。`;
       if (e.k === 'photo') { const p = A.get(e.p); return `在<b>${esc(name(e.id))}</b>拍了张照片。${p ? `<button type="button" class="dthumb" data-photo="${p.id}" data-set="all"><img src="${p.url}" alt=""></button>` : ''}`; }
       return '';

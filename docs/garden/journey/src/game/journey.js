@@ -1,10 +1,11 @@
 // 自由旅行：步行、骑马、飞行三种走法，在谷地里随意走。默认左下角方向盘走（往哪推往哪走，推远走快），拖屏幕转镜头；
 // 也可以换回老操作：按住屏幕往前，左右拖动转向（飞的时候上下拖动爬升、下降）。
-// 在山路上不拖动时会自动顺着路走；谷地里有十处地方，往西北还有红叶谷、叠水、雪原山口和冰湖（第一次到会出地名横幅，记进旅行手记）；
+// 在山路上不拖动时会自动顺着路走；谷地里有十处地方，往西北还有红叶谷、叠水、雪原山口和冰湖，往西是竹林山坳、西湾沙滩和海角灯塔（第一次到会出地名横幅，记进旅行手记）；
 // 第一次到望远台有一段远景；在山口营地可以坐下烤火，看这一路的手记。
 // 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
+// 天气过一阵会变（晴、多云、小雨、起雾、下雪，world/weather.js），也可以在右上角定住。
 import * as THREE from 'three';
-import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES } from '../world/route.js';
+import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ } from '../world/land.js';
 import { PERIODS, periodOf } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
@@ -34,6 +35,7 @@ export function makePlaces() {
   // 溪边小路上离溪水某一段最近的点
   const tr = s => { const p = STREAM.at(s, {}), q = TRAIL.nearest(p.x, p.z, 40); return TRAIL.at(q.s, {}); };
   const au = tr(CREEK_END + 90), fa = tr(112), ps = tr(45);
+  const bm = SEAWAY.at(205, {}), cv = SEAWAY.at(SEAWAY.length - 2, {});
   return [
     { id: 'valley', name: '暖光谷地', sub: '沿着小溪，往山口去', where: '出发的地方', x: st.x, z: st.z - 6, r: 20 },
     { id: 'east', name: '东坡花田', sub: '一坡的花，在风里晃', where: '出发后往右手边（东边）的山坡走', x: 75, z: -25, r: 26 },
@@ -48,6 +50,9 @@ export function makePlaces() {
     { id: 'falls', name: '叠水', sub: '山涧一级一级跳下来，水声哗哗的', where: '红叶谷走到头，小路顺着山涧往上爬', x: fa.x, z: fa.z, r: 24 },
     { id: 'pass', name: '雪原山口', sub: '风一下子凉了，脚下踩着雪', where: '顺着山涧一直往上，走到有雪的地方', x: ps.x, z: ps.z, r: 20 },
     { id: 'lake', name: '冰湖', sub: '湖面冻得结结实实，可以走上去', where: '过了雪原山口，小溪就是从这个湖里流出来的', x: LAKE.x, z: LAKE.z, r: 46 },
+    { id: 'bamboo', name: '竹林山坳', sub: '竹子比人高好多，风一过沙沙响', where: '出发的地方往西，顺着海边小路走', x: bm.x, z: bm.z, r: 34 },
+    { id: 'cove', name: '西湾沙滩', sub: '浪一层一层推上沙滩', where: '竹林里的小路走到头，就是海', x: cv.x - 17, z: cv.z - 5, r: 30 },
+    { id: 'cape', name: '海角灯塔', sub: '天一暗，灯就亮了', where: '沙滩往南，顺着崖上的小路爬上海角', x: LIGHTHOUSE.x + 4, z: LIGHTHOUSE.z + 6, r: 18 },
     { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '点“飞”，一直往上飞', alt: 50 },
     // 野外营地：第一次到会出横幅，坐下就点起篝火（以后夜里那堆火都亮着），地图上可以一键过去
     ...CAMP_SITES.map(c => ({ id: c.id, kind: 'camp', name: c.name, sub: c.sub, where: c.where, x: c.x, z: c.z, r: 11 })),
@@ -90,6 +95,9 @@ export class Journey {
     // 声音：三道叠水的位置、阵风、冰鸣、换曲用的区域（带一点滞后，免得在边界上来回切）
     this.fallsAt = FALLS.map(([s, h]) => { const q = STREAM.at(s, {}); return { x: q.x, z: q.z, k: h / 4 }; });
     this.gust = 1; this.gustTo = 1; this.gustT = 0; this.iceT = 6; this.millT = 3; this.region = 'valley'; this.highUp = false; this.nightMusic = false;
+    this.knockT = 4; this.thunderT = 30; this.rainMusic = false;
+    // 天气（main.js 建好传进来）：换天气记一笔日记
+    if (this.weather) this.weather.onChange = k => this.note('weather', k === 'rain' && this.weather.local.snow > 0.45 ? 'snow' : k);
     this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));
   }
@@ -144,12 +152,16 @@ export class Journey {
   // 地图上点“去这里”：落在离那个地方最近的路上（或者地方边上），面朝那里；飞着的就飞到那儿上空
   arrival(P) {
     let best = null;
-    for (const path of [ROAD, TRAIL]) {
+    for (const path of [ROAD, TRAIL, SEAWAY, CAPEWAY]) {
       const q = path.nearest(P.x, P.z, P.r + 25, {});
       if (q.dist < (best ? best.dist : Infinity)) best = { dist: q.dist, p: path.at(q.s, {}) };
     }
     let x, z, yaw;
-    if (best) {
+    if (best && best.dist > P.r + 4) {
+      // 路离那儿太远（比如沙滩上的营地）：从路那边走过去，停在它边上
+      const dx = best.p.x - P.x, dz = best.p.z - P.z, l = Math.hypot(dx, dz) || 1, k = Math.min(8, P.r * 0.6);
+      x = P.x + dx / l * k; z = P.z + dz / l * k; yaw = Math.atan2(P.x - x, P.z - z);
+    } else if (best) {
       x = best.p.x; z = best.p.z;
       yaw = best.dist > 2.5 ? Math.atan2(P.x - x, P.z - z) : Math.atan2(best.p.tx, best.p.tz);
     } else {
@@ -370,7 +382,8 @@ export class Journey {
       if (grade > maxG) { nx = this.p.x; nz = this.p.z; this.speed *= 0.6; this.hintOnce('太陡了，换个方向'); }
       else if (grade > 0.3) this.speed *= 1 - (grade - 0.3) * dt * 1.5;
       // 太深的水不进去（步行）
-      if (!riding && this.waterDepth(nx, nz) > 0.62) { nx = this.p.x; nz = this.p.z; this.speed *= 0.5; this.hintOnce('水太深了，走桥或者浅滩'); }
+      if (!riding && this.waterDepth(nx, nz) > 0.62) { nx = this.p.x; nz = this.p.z; this.speed *= 0.5; this.hintOnce(this.land.seaDepth(nx, nz) > 0.3 ? '再往前就是深海了' : '水太深了，走桥或者浅滩'); }
+      if (riding && this.land.seaDepth(nx, nz) > 1.1) { nx = this.p.x; nz = this.p.z; this.speed *= 0.5; this.hintOnce('再往前就是深海了'); }
     }
     // 树、风车、帐篷这些挡路的东西
     const R = riding ? 0.75 : 0.32;
@@ -390,7 +403,11 @@ export class Journey {
     if (this.steerT > 0 || this.speed < 0.25) return;
     // 山路，或者溪边小路（窄一些）
     let P = ROAD, q = ROAD.nearest(this.p.x, this.p.z, 8, _qr);
-    if (!(q.dist < 4.5)) { P = TRAIL; q = TRAIL.nearest(this.p.x, this.p.z, 6, _qr); if (!(q.dist < 3)) return; }
+    if (!(q.dist < 4.5)) {
+      P = null;
+      for (const W of [TRAIL, SEAWAY, CAPEWAY]) { const r = W.nearest(this.p.x, this.p.z, 6, _qr); if (r.dist < 3) { P = W; q = r; break; } }
+      if (!P) return;
+    }
     P.at(q.s, _p);
     let ry = Math.atan2(_p.tx, _p.tz), dir = 1;
     if (Math.abs(wrap(ry - this.yaw)) > Math.PI / 2) { ry = wrap(ry + Math.PI); dir = -1; }
@@ -404,6 +421,8 @@ export class Journey {
     this.yawT = this.yaw + wrap(want - this.yaw) * Math.min(1, dt * 3 * k + 0.02);
   }
   waterDepth(x, z) {
+    const sea = this.land.seaDepth(x, z);
+    if (sea > 0) return sea;
     const sd = this.land.streamDist(x, z);
     if (sd > 5) return 0;
     if (this.bridge.heightAt(x, z) !== null) return 0;
@@ -414,7 +433,8 @@ export class Journey {
   surface(x, z, wet) {
     if (this.waterDepth(x, z) > wet) return 'water';
     if (this.land.height(x, z) - this.land.ground(x, z) > 0.02) return 'ice';
-    return this.land.snow(x, z) > 0.45 ? 'snow' : 'dirt';
+    // 沙滩上的沙子踩起来和雪差不多，软软的
+    return this.land.snow(x, z) > 0.45 || this.land.sand(x, z) > 0.5 ? 'snow' : 'dirt';
   }
 
   // ---------- 飞 ----------
@@ -431,7 +451,7 @@ export class Journey {
     const dy = clamp(wrap(this.yawT - this.yaw), -maxTurn * dt, maxTurn * dt);
     this.yaw += dy;
     this.turn = damp(this.turn, dy / Math.max(dt, 1e-3), 3, dt);
-    const g = this.land.height(this.p.x, this.p.z), alt = this.p.y - g;
+    const g = this.land.surfaceY(this.p.x, this.p.z), alt = this.p.y - g;
     let vyT = lifting ? 5 : flap ? 0.6 + this.climb * 7 : -1.4 + this.climb * 4.5;
     if (descending) vyT = -Math.min(6, 1.5 + alt * 0.6);
     this.vy = damp(this.vy, vyT, 1.6, dt);
@@ -442,7 +462,7 @@ export class Journey {
     // 范围：离谷地中心 780 米以内（冰湖在西北差不多 600 米远）
     const dx = nx - CENTER.x, dz = nz - CENTER.z, rr = Math.hypot(dx, dz);
     if (rr > 780) { this.yawT = this.yaw + wrap(Math.atan2(-dx, -dz) - this.yaw) * 0.04; this.steerT = 0.5; this.hintOnce('再往外云太厚了，往回飞'); }
-    const ng = this.land.height(nx, nz);
+    const ng = this.land.surfaceY(nx, nz);
     const floor = ng + 1.05, ceil = Math.min(ng + 160, 260);
     if (ny < floor) { ny = floor; this.vy = Math.max(0, this.vy); if (descending || (!flap && this.speed < 7.5)) this.touchdown(); }
     if (ny > ceil) { ny = ceil; this.vy = Math.min(0, this.vy); }
@@ -452,7 +472,7 @@ export class Journey {
     const pitchT = lerp(58, 76, sstep(6, 16, this.speed)) * DEG - this.vy * 2.2 * DEG;
     this.flyPitch = damp(this.flyPitch || pitchT, pitchT, 3, dt);
     this.bank = damp(this.bank, clamp(-this.turn * 0.55, -0.6, 0.6), 3, dt);
-    this.alt = this.p.y - this.land.height(this.p.x, this.p.z);
+    this.alt = this.p.y - this.land.surfaceY(this.p.x, this.p.z);
   }
   touchdown() {
     if (this.trans?.kind === 'land') return;
@@ -853,6 +873,7 @@ export class Journey {
       adv = dt * k / HOUR;
     }
     if (adv <= 0) return;
+    this.weather?.tick(adv, this.tod);
     const t = this.tod + adv;
     if ((this.tod < 5 && t >= 5) || t >= 29) this.dayN++;     // 天亮算新的一天
     this.tod = t % 24;
@@ -870,6 +891,14 @@ export class Journey {
     if (!this.daylight) return;
     this.daylight.apply(this.tod, this.p, dt);
     this.night = this.daylight.night;
+    const W = this.weather;
+    if (W) {
+      // 雪原上下的是雪；海边容易起雾
+      const x = this.p.x, z = this.p.z;
+      W.local.snow = Math.max(this.land.snow(x, z), 1 - sstep(1.4, 2.6, lakeQ(x, z)));
+      W.local.coast = sstep(-120, -40, coastCT(x, z)[0]);
+      W.apply(this.daylight, dt, this.focus || this.p, this.px);
+    }
   }
 
   // ---------- 存档 ----------
@@ -881,7 +910,7 @@ export class Journey {
       visited: [...this.visited], dist: { foot: Math.round(this.dist.foot), ride: Math.round(this.dist.ride), fly: Math.round(this.dist.fly) },
       travelT: Math.round(this.travelT), gaits: { ...this.gaits }, viewDone: this.viewDone, glanceDone: this.glanceDone,
       ex: this.explored.encode(), way: this.waypoint ? { ...this.waypoint } : null,
-      camps: [...this.camps], log: this.log.slice(-500),
+      camps: [...this.camps], log: this.log.slice(-500), wx: this.weather?.snapshot(),
     };
   }
   restore(s) {
@@ -913,6 +942,7 @@ export class Journey {
     const w = s.way;
     this.waypoint = w && Number.isFinite(+w.x) && Number.isFinite(+w.z) ? { id: w.id || null, name: String(w.name || '标记的地方').slice(0, 20), x: +w.x, z: +w.z, r: Math.min(30, Math.max(6, +w.r || 8)) } : null;
     this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length);
+    if (this.weather && s.wx) this.weather.restore(s.wx);
     this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));
   }
@@ -929,17 +959,26 @@ export class Journey {
   musicMood() {
     const hp = this.p, au = this.land.autumn(hp.x, hp.z);
     const cold = Math.max(this.land.snow(hp.x, hp.z), 1 - sstep(1.4, 2.6, lakeQ(hp.x, hp.z)));
+    const coast = coastCT(hp.x, hp.z)[0], bam = this.land.bamboo(hp.x, hp.z);
     let r = this.region;
     if (cold > 0.45) r = 'snow';
     else if (r === 'snow' && cold > 0.2) r = 'snow';
     else if (au > 0.4) r = 'autumn';
     else if (r === 'autumn' && au > 0.15) r = 'autumn';
+    else if (coast > -75) r = 'coast';
+    else if (r === 'coast' && coast > -100) r = 'coast';
+    else if (bam > 0.4) r = 'bamboo';
+    else if (r === 'bamboo' && bam > 0.12) r = 'bamboo';
     else r = 'valley';
     this.region = r;
     if (this.mode === 'fly' && this.alt > 40) this.highUp = true; else if (this.mode !== 'fly' || this.alt < 22) this.highUp = false;
     if (this.night > 0.6) this.nightMusic = true; else if (this.night < 0.35) this.nightMusic = false;
     if (this.sitting && this.site.lit > 0.3) return 'camp';
     if (this.nightMusic) return 'night';
+    // 下雨天换一首安静的（雨停一会儿再换回去）
+    const rk = this.weather?.k.r || 0;
+    if (rk > 0.5) this.rainMusic = true; else if (rk < 0.15) this.rainMusic = false;
+    if (this.rainMusic && !this.highUp) return 'rain';
     if (this.highUp) return 'sky';
     if (r === 'valley' && this.tod >= 17.2) return 'dusk';
     return r;
@@ -983,7 +1022,20 @@ export class Journey {
         fallsPan = clamp((dx * _w.x + dz * _w.z) / Math.max(2, Math.hypot(dx, dz)), -0.8, 0.8);
       }
     }
-    this.sound.update({ river, birds, wind, fire, crickets, leaves, falls, riverPan: pan, fallsPan });
+    // 海浪：离海岸越近越响，从海那边传过来；竹林里竹叶沙沙（跟着风）；下雨的沙沙声
+    const cst = coastCT(cp.x, cp.z)[0], surf = 1 - sstep(8, 110, -cst + (this.mode === 'fly' ? this.alt * 0.6 : 0));
+    _w.set(1, 0, 0).applyQuaternion(this.camera.quaternion);
+    const surfPan = clamp(SEA.nx * _w.x + SEA.nz * _w.z, -0.75, 0.75);
+    const bam = this.land.bamboo(hp.x, hp.z), bamboo = sstep(0.1, 0.6, bam) * low * (0.35 + 0.65 * this.gust);
+    const wk = this.weather?.k || { r: 0, s: 0 };
+    const rain = wk.r * (this.sitting ? 0.7 : 1);
+    this.sound.update({ river, birds: birds * (1 - 0.7 * wk.r), wind: wind * (1 + 0.4 * wk.r + 0.3 * wk.s), fire, crickets: crickets * (1 - 0.8 * wk.r), leaves, falls, bamboo, surf, rain, riverPan: pan, fallsPan, surfPan });
+    // 竹林里：竹竿被风吹得互相碰一下，“笃”
+    this.knockT -= 0.2;
+    if (this.knockT < 0) { this.knockT = 2 + Math.random() * 5 / (0.5 + this.gust); if (bamboo > 0.2) this.sound.knock?.((0.3 + 0.5 * Math.random()) * bamboo, Math.random() * 1.4 - 0.7); }
+    // 雨下得大的时候，远处偶尔闷雷
+    this.thunderT -= 0.2;
+    if (this.thunderT < 0) { this.thunderT = 35 + Math.random() * 70; if (wk.r > 0.8) this.sound.thunder?.(0.4 + 0.4 * Math.random(), Math.random() * 1.4 - 0.7); }
     // 冰湖上和湖边：隔一阵冰面“啾——”一声，偶尔深处闷闷地“咚”
     const lq = lakeQ(hp.x, hp.z);
     this.iceT -= 0.2;

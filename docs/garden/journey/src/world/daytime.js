@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { U } from './atmo.js';
 import { SKY } from './sky.js';
 import { farH } from './land.js';
+import { SEA_U } from './sea.js';
 
 const DEG = Math.PI / 180;
 const _k = new THREE.Vector3();
@@ -146,6 +147,7 @@ export class DayLight {
     a.setRGB(hs.r * hi * this.kA.x, hs.g * hi * this.kA.y, hs.b * hi * this.kA.z); g.setRGB(hg.r * hi * this.kG.x, hg.g * hi * this.kG.y, hg.b * hi * this.kG.z);
     if (this.renderer) this.renderer.toneMappingExposure = st.exp;
     if (this.water && this.wBase) { const u = this.water.material.uniforms, b = this.wBase; u.uShallow.value.copy(b.s).multiplyScalar(st.water); u.uDeep.value.copy(b.d).multiplyScalar(st.water); u.uFoam.value.copy(b.f).multiplyScalar(st.water * st.water); }
+    SEA_U.uDay.value = st.water;
     this.h = h;
     return st;
   }

@@ -17,6 +17,7 @@ export const SKY = {
   uCloudCover: { value: 0.5 },
   uSunPos: { value: U.uSunDir.value.clone() },
   uMoonDir: { value: new THREE.Vector3(0, -1, 0) },
+  uOvercast: { value: 0 },
   uStars: { value: 0 }, uSunVis: { value: 1 }, uMoonI: { value: 0 }, uDpr: { value: 1 },
   uMwN: { value: MW_N }, uMwA: { value: MW_A }, uMwB: { value: MW_B },
 };
@@ -30,7 +31,7 @@ void main() {
 }`;
 const FS = /* glsl */`
 uniform float uTime; uniform vec3 uSunColor;
-uniform vec3 uZenith; uniform vec3 uMid; uniform vec3 uCloudLit; uniform vec3 uCloudShade; uniform vec3 uSunGlow; uniform float uCloudCover; uniform float uFine;
+uniform vec3 uZenith; uniform vec3 uMid; uniform vec3 uCloudLit; uniform vec3 uCloudShade; uniform vec3 uSunGlow; uniform float uCloudCover; uniform float uFine; uniform float uOvercast;
 uniform vec3 uSunPos; uniform vec3 uMoonDir; uniform float uStars; uniform float uMoonI; uniform float uDpr;
 uniform vec3 uMwN; uniform vec3 uMwA; uniform vec3 uMwB;
 ${FOG_FN}
@@ -63,8 +64,8 @@ void main() {
   vec3 hor = jFogColor( dir );
   vec3 col = mix( hor, uMid, smoothstep( 0.0, 0.18, el ) );
   col = mix( col, uZenith, smoothstep( 0.12, 0.75, el ) );
-  // 太阳周围的暖光
-  col += uSunGlow * ( pow( sd, 6.0 ) * 0.35 + pow( sd, 40.0 ) * 0.6 );
+  // 太阳周围的暖光（阴天被云挡住）
+  col += uSunGlow * ( pow( sd, 6.0 ) * 0.35 + pow( sd, 40.0 ) * 0.6 ) * ( 1.0 - 0.85 * uOvercast );
   // 夜空：星星、银河、月亮（在云的后面）
   float md = dot( dir, uMoonDir );
   if ( uStars > 0.01 && el > -0.05 ) {
@@ -128,10 +129,13 @@ void main() {
     float rim = pow( kd, 10.0 ) * ( 1.0 - smoothstep( 0.4, 1.0, cov ) ) * cov;
     cc += uSunColor * rim * 2.2 + uSunGlow * pow( sd, 4.0 ) * 0.25;
     col = mix( col, cc, cov * 0.94 );
+    // 阴天：整片天蒙上一层灰云（云团还隐约看得出来）
+    float ov = uOvercast * smoothstep( -0.02, 0.12, el );
+    col = mix( col, mix( uCloudShade, uCloudLit, 0.35 + 0.3 * n ) * 0.95, ov * 0.7 );
   }
   // 太阳本体
   float disc = smoothstep( 0.99935, 0.99965, sd );
-  col += vec3( 1.0, 0.92, 0.78 ) * disc * 9.0 + uSunColor * pow( sd, 900.0 ) * 3.0 * step( 0.0, dot( uSunDir, uSunPos ) - 0.9 );
+  col += ( vec3( 1.0, 0.92, 0.78 ) * disc * 9.0 + uSunColor * pow( sd, 900.0 ) * 3.0 * step( 0.0, dot( uSunDir, uSunPos ) - 0.9 ) ) * ( 1.0 - smoothstep( 0.35, 0.8, uOvercast ) );
   gl_FragColor = vec4( col, 1.0 );
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

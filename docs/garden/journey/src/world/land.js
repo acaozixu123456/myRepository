@@ -1,8 +1,8 @@
 // 地形高度场：一张 1.5 米格子的近景高度图（路和溪都“刻”进去），外面是粗格子的远景山。
 // 纯数学，不依赖 three，Node 里也能跑（tools 里用它画俯视检查图）。
-import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL, CAMP_SITES } from './route.js';
+import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL, CAMP_SITES, SEAWAY, CAPEWAY, SEA, coastCT, STACKS, LIGHTHOUSE } from './route.js';
 import { fbm, vnoise, sstep, lerp, clamp } from './noise.js';
-import { autumnK, snowK } from './regions.js';
+import { autumnK, snowK, bambooK, sandK } from './regions.js';
 
 // 近景区域（四边对齐 8 米，远景网格在这里接缝）。西北角往外扩到了冰湖
 export const DOM = { x0: -528, z0: -600, w: 696, d: 696, cell: 1.5 };
@@ -120,12 +120,45 @@ function channel(h, dS, sS) {
   return Math.min(h, c);
 }
 
+// ---- 海湾：离海岸越近地面压得越低（中间是缓缓的沙滩，两边是海崖），海里是越来越深的海底，再加几根礁石柱子 ----
+export function coastE(x, z) {
+  const [c, t] = coastCT(x, z);
+  // 海岸线弯弯曲曲
+  // 岬角那边起伏大一些（一个个小海湾、突出去的崖）
+  const k = Math.exp(-((t / 90) ** 2));
+  return [-(c + (7 + 16 * (1 - k)) * (vnoise(t * 0.022 + 5.1, 0.7) - 0.5) + (3 + 6 * (1 - k)) * (vnoise(t * 0.07 - 2.3, 4.1) - 0.5)), t];
+}
+export function coastProfile(e, t) {
+  const k = Math.exp(-((t / 78) ** 2));              // 1 = 海湾正中，0 = 两边的岬角
+  if (e < 0) return Math.max(SEA.y - 16, SEA.y + 0.3 + 0.05 * e - 0.0006 * e * e);
+  const Lb = 4 + 32 * k, Kc = 1.15 + (0.11 - 1.15) * k;
+  return SEA.y + 0.3 + 0.05 * e + (e > Lb ? Kc * Math.pow(e - Lb, 1.25) : 0);
+}
+export function coastCarve(h, x, z) {
+  const [e, t] = coastE(x, z);
+  if (e > 420) return h;
+  // 平滑地取小（崖顶不是一道折痕）
+  const p = coastProfile(e, t), kk = 7, d = Math.abs(h - p);
+  return Math.min(h, p) - (d < kk ? (kk - d) * (kk - d) / (4 * kk) : 0);
+}
+function stacks(h, x, z) {
+  for (const [sx, sz, r, sh] of STACKS) {
+    const dx = x - sx, dz = z - sz, d2 = dx * dx + dz * dz;
+    if (d2 > r * r * 4) continue;
+    const q = Math.sqrt(d2) / r * (1 + 0.18 * (vnoise(Math.atan2(dz, dx) * 2 + sx, 0.3) - 0.5));
+    const top = SEA.y + sh * (1 - 0.12 * q) + 1.2 * (vnoise(x * 0.4, z * 0.4) - 0.5);
+    h = Math.max(h, SEA.y - 6 + (top - SEA.y + 6) * Math.exp(-(q ** 6)));
+  }
+  return h;
+}
+export const seaFloor = (x, z) => stacks(coastCarve(rawH(x, z), x, z), x, z);
+
 // 远景用的整体高度（粗略处理溪谷，不含路）
 export function farH(x, z) {
   let h = rawH(x, z);
   const q = STREAM.nearest(x, z, VALLEY_MAX, _q);
   if (q.dist < VALLEY_MAX) h = valley(h, q.dist, q.s);
-  return lakeCarve(h, x, z);
+  return stacks(coastCarve(lakeCarve(h, x, z), x, z), x, z);
 }
 
 // ---- 构建近景高度场 ----
@@ -163,6 +196,12 @@ export function buildLand() {
   stamp(ROAD, 76, roadD, roadS, true);
   stamp(STREAM, s => valleyR(s) + 3, strD, strS, false, 3);
   stamp(TRAIL, 12, trD, trS, false, 2);
+  // 西边的小路（竹林山坳 → 海湾）和海角小路：两边一大片压成一道缓缓的山坳
+  const WAYS = [{ P: SEAWAY, R: 34, g: 0.145 }, { P: CAPEWAY, R: 18, g: 0.15 }];
+  for (const w of WAYS) {
+    w.D = new Float32Array(N).fill(99); w.S = new Float32Array(N);
+    stamp(w.P, w.R + 2, w.D, w.S, false, 2);
+  }
 
   // 路面纵断面：沿路取样、平滑，过桥处抬到桥面高度
   const RL = Math.ceil(ROAD.length) + 1, prof = new Float32Array(RL);
@@ -196,16 +235,39 @@ export function buildLand() {
   }
   const trailY = s => { s = clamp(s, 0, TL - 1.001); const i = Math.floor(s), f = s - i; return tprof[i] + (tprof[i + 1] - tprof[i]) * f; };
 
+  // 新小路的纵断面：沿路取（海边压低过的）地面，抹平，坡度不超过 g
+  const wayBase = (x, z) => { let h = coastCarve(rawH(x, z), x, z); const q = STREAM.nearest(x, z, VALLEY_MAX, _q); if (q.dist < VALLEY_MAX) h = valley(h, q.dist, q.s); return h; };
+  for (const w of WAYS) {
+    const L = Math.ceil(w.P.length) + 1, pr = new Float32Array(L), tm = new Float32Array(L);
+    for (let i = 0; i < L; i++) { w.P.at(i, p); pr[i] = wayBase(p.x, p.z); }
+    for (let pass = 0; pass < 4; pass++) {
+      for (let i = 0; i < L; i++) { let a = 0, n = 0; for (let k = -10; k <= 10; k++) { a += pr[Math.min(L - 1, Math.max(0, i + k))]; n++; } tm[i] = a / n; }
+      pr.set(tm);
+    }
+    // 只往下挖、不往上垫：坡太陡的地方从两头往中间削
+    for (let i = 1; i < L; i++) pr[i] = Math.min(pr[i], pr[i - 1] + w.g);
+    for (let i = L - 2; i >= 0; i--) pr[i] = Math.min(pr[i], pr[i + 1] + w.g);
+    for (let i = 1; i < L - 1; i++) tm[i] = (pr[i - 1] + pr[i] * 2 + pr[i + 1]) / 4; tm[0] = pr[0]; tm[L - 1] = pr[L - 1]; pr.set(tm);
+    w.prof = pr; w.y = s => { s = clamp(s, 0, L - 1.001); const i = Math.floor(s), f = s - i; return pr[i] + (pr[i + 1] - pr[i]) * f; };
+  }
+  // 海角小路接在西边小路上：起点高度对齐
+  { const q = SEAWAY.nearest(CAPEWAY.x[0], CAPEWAY.z[0], 20, {}); const dy = WAYS[0].y(q.s) - WAYS[1].prof[0]; for (let i = 0; i < WAYS[1].prof.length; i++) WAYS[1].prof[i] += dy * Math.max(0, 1 - i / 40); }
+  const wayY = (x, z) => { let best = null; for (const w of WAYS) { const q = w.P.nearest(x, z, w.R, {}); if (q.dist < (best ? best.d : Infinity)) best = { d: q.dist, y: w.y(q.s) }; } return best; };
+
   // 需要压平的地点
   const flats = [];
   const atS = s => ROAD.at(s, {});
   { const c = atS(SPOTS.camp); flats.push({ x: c.x + 2, z: c.z - 3, r0: 9, r1: 16, y: roadY(SPOTS.camp) }); }
   { const v = atS(SPOTS.view); flats.push({ x: v.x - 3.5, z: v.z - 1, r0: 3.5, r1: 8, y: roadY(SPOTS.view) + 0.05 }); }
   flats.push({ x: 62, z: -118, r0: 4.5, r1: 9, y: null });
+  // 海角上灯塔那一块平地（和海角小路的尽头一样高）
+  flats.push({ x: LIGHTHOUSE.x, z: LIGHTHOUSE.z, r0: 8, r1: 15, y: WAYS[1].y(CAPEWAY.length) + 0.15 });
   // 野外营地：贴着小路的和小路一样高，其他的按溪谷里原来的地面
   for (const c of CAMP_SITES) {
     let y;
     if (c.ts !== undefined) y = trailY(c.ts) + 0.05;
+    else if (c.way === 'beach') y = wayBase(c.x, c.z) + 0.05;
+    else if (c.way) { const w = wayY(c.x, c.z); y = (w && w.d < 30 ? w.y + 0.12 * Math.max(0, w.d - 4) : wayBase(c.x, c.z)) + 0.05; }
     else { const q = STREAM.nearest(c.x, c.z, VALLEY_MAX, {}); y = rawH(c.x, c.z); if (q.dist < VALLEY_MAX) y = valley(y, q.dist, q.s); }
     flats.push({ x: c.x, z: c.z, r0: 5.5, r1: 13, y });
   }
@@ -223,6 +285,12 @@ export function buildLand() {
         const ry = roadY(roadS[k]) - 0.06 * Math.max(0, 1 - (dR / 2.2) ** 2);
         h = lerp(ry, h, sstep(2.4, 10.5, dR));
       }
+      // 新小路两边的山坳
+      for (const w of WAYS) {
+        const d = w.D[k]; if (d >= w.R) continue;
+        h = lerp(h, w.y(w.S[k]) + 0.004 * d * d, (1 - sstep(4, w.R, d)) * sstep(2.4, 11, dR));
+      }
+      h = coastCarve(h, x, z);
       for (const f of flats) {
         const d = Math.hypot(x - f.x, z - f.z);
         if (d < f.r1) { if (f.y === null) f.y = rawH(f.x, f.z); h = lerp(f.y, h, sstep(f.r0, f.r1, d)); }
@@ -232,21 +300,28 @@ export function buildLand() {
       // 溪边小路最后刻（跌水旁边河岸陡，小路自己是顺的）
       const dT = trD[k];
       if (dT < 5) h = lerp(trailY(trS[k]) - 0.04 * Math.max(0, 1 - (dT / 1.1) ** 2), h, sstep(1.3, 4.6, dT));
+      for (const w of WAYS) { const d = w.D[k]; if (d < 5) h = lerp(w.y(w.S[k]) - 0.04 * Math.max(0, 1 - (d / 1.1) ** 2), h, sstep(1.3, 4.6, d)); }
+      h = stacks(h, x, z);
       H[k] = h;
     }
   }
   // 区域权重（0~255）：红叶、积雪
-  const AU = new Uint8Array(N), SN = new Uint8Array(N);
+  const AU = new Uint8Array(N), SN = new Uint8Array(N), BA = new Uint8Array(N), SA = new Uint8Array(N);
+  const sw = WAYS[0];
   for (let gz = 0; gz < NZ; gz++) {
     const z = z0 + gz * cell;
     for (let gx = 0; gx < NX; gx++) {
       const x = x0 + gx * cell, k = gz * NX + gx;
       AU[k] = autumnK(x, z, H[k], strS[k], strD[k]) * 255;
       SN[k] = snowK(x, z, H[k]) * 255;
+      BA[k] = bambooK(x, z, H[k], sw.S[k], sw.D[k]) * 255;
+      SA[k] = sandK(x, z, H[k]) * 255;
     }
   }
+  // 新小路也算“小路”（离路多远、地图上的虚线、地面的土路都用同一份）
+  for (const w of WAYS) for (let k = 0; k < N; k++) if (w.D[k] < trD[k]) { trD[k] = w.D[k]; trS[k] = w.S[k] + 1000 * (w.P === CAPEWAY); }
   const land = new Land(H, roadD, roadS, strD, strS, prof, BR, (typeof performance !== 'undefined' ? performance : Date).now() - t0);
-  land.trD = trD; land.trS = trS; land.AU = AU; land.SN = SN;
+  land.trD = trD; land.trS = trS; land.AU = AU; land.SN = SN; land.BA = BA; land.SA = SA; land.ways = WAYS.map(w => ({ P: w.P, y: w.y }));
   return land;
 }
 
@@ -285,6 +360,11 @@ export class Land {
   // 红叶、积雪（0~1）
   autumn(x, z) { return this.inside(x, z) ? this.sample(this.AU, x, z) / 255 : 0; }
   snow(x, z) { return this.inside(x, z) ? this.sample(this.SN, x, z) / 255 : snowK(x, z, farH(x, z)); }
+  bamboo(x, z) { return this.inside(x, z) ? this.sample(this.BA, x, z) / 255 : 0; }
+  sand(x, z) { return this.inside(x, z) ? this.sample(this.SA, x, z) / 255 : 0; }
+  // 海水有多深（岸上是 0）；水面高度（地面和海面取高的那个，飞的时候、镜头用）
+  seaDepth(x, z) { return Math.max(0, SEA.y - this.heightExact(x, z)); }
+  surfaceY(x, z) { return Math.max(this.height(x, z), SEA.y); }
   roadDist(x, z) { return this.inside(x, z) ? Math.min(Math.abs(this.sample(this.roadD, x, z)), this.sample(this.trD, x, z) + 0.55) : 99; }
   mainRoadDist(x, z) { return this.inside(x, z) ? Math.abs(this.sample(this.roadD, x, z)) : 99; }
   streamDist(x, z) { return this.inside(x, z) ? this.sample(this.strD, x, z) : 999; }

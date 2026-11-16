@@ -1,6 +1,6 @@
 // 俯视检查图：高度着色 + 山体阴影，路和溪叠上去
 import { buildLand, DOM, waterY, farH } from '../src/world/land.js';
-import { ROAD, STREAM, SPOTS } from '../src/world/route.js';
+import { ROAD, STREAM, SPOTS, SEA, LIGHTHOUSE } from '../src/world/route.js';
 import { writeFileSync } from 'node:fs';
 const L = buildLand();
 console.log('land ms', L.ms.toFixed(0), 'bridge', L.bridge, 'spots', JSON.stringify(SPOTS));
@@ -21,6 +21,11 @@ for (let j = 0; j < Hh; j++) for (let i = 0; i < W; i++) {
   const rd = L.roadDist(x, z), sdist = L.streamDist(x, z);
   if (!far && rd < 1.5) c = [200, 170, 120];
   if (!far && L.inside(x, z)) { const q = STREAM.nearest(x, z, 8); if (q.dist < 8 && h < waterY(q.s)) c = [60, 120, 200]; }
+  if (L.inside(x, z) && L.sand(x, z) > 0.4) c = [225, 205, 150];
+  if (L.inside(x, z) && L.bamboo(x, z) > 0.4) c = [120, 190, 60];
+  if (!far && L.inside(x, z) && L.trD && L.sample(L.trD, x, z) < 1.2) c = [230, 140, 80];
+  if (h < SEA.y) { const dd = Math.min(1, (SEA.y - h) / 10); c = [70 - 40 * dd, 150 - 60 * dd, 200 - 40 * dd]; }
+  if (Math.hypot(x - LIGHTHOUSE.x, z - LIGHTHOUSE.z) < (far ? 20 : 3)) c = [255, 255, 255];
   // 等高线
   const band = Math.abs((h / (far ? 25 : 2)) % 1) < (far ? 0.03 : 0.04) ? 0.75 : 1;
   for (let k = 0; k < 3; k++) img[(j * W + i) * 3 + k] = Math.min(255, c[k] * sh * band);
