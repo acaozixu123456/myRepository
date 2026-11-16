@@ -124,21 +124,44 @@ function channel(h, dS, sS) {
 export function coastE(x, z) {
   const [c, t] = coastCT(x, z);
   // 海岸线弯弯曲曲
-  // 岬角那边起伏大一些（一个个小海湾、突出去的崖）
-  const k = Math.exp(-((t / 90) ** 2));
-  return [-(c + (7 + 16 * (1 - k)) * (vnoise(t * 0.022 + 5.1, 0.7) - 0.5) + (3 + 6 * (1 - k)) * (vnoise(t * 0.07 - 2.3, 4.1) - 0.5)), t];
+  // 岬角那边起伏大一些（一个个小海湾、突出去的崖），崖壁上再有一道道小沟和石棱
+  const k = Math.exp(-((t / 90) ** 2)), M = cliffMask(x, z, t);
+  return [-(c + (7 + 16 * (1 - k)) * (vnoise(t * 0.022 + 5.1, 0.7) - 0.5) + (3 + 6 * (1 - k)) * (vnoise(t * 0.07 - 2.3, 4.1) - 0.5) + M * 7 * (vnoise(t * 0.16 + 9.7, 2.2) - 0.5)), t, M];
 }
-export function coastProfile(e, t) {
+// 海崖“打散”的程度：海湾里、灯塔和崖上小路、望海坡附近都是 0（那里的地形不动），远处的崖是 1
+const _cq = {};
+function cliffMask(x, z, t) {
+  let m = sstep(70, 115, Math.abs(t));
+  if (m <= 0) return 0;
+  m *= sstep(45, 80, Math.hypot(x - LIGHTHOUSE.x, z - LIGHTHOUSE.z)) * sstep(30, 60, Math.hypot(x + 370, z - 6));
+  if (m <= 0) return 0;
+  return m * sstep(25, 50, CAPEWAY.nearest(x, z, 50, _cq).dist);
+}
+export function coastProfile(e, t, M = 0) {
   const k = Math.exp(-((t / 78) ** 2));              // 1 = 海湾正中，0 = 两边的岬角
   if (e < 0) return Math.max(SEA.y - 16, SEA.y + 0.3 + 0.05 * e - 0.0006 * e * e);
-  const Lb = 4 + 32 * k, Kc = 1.15 + (0.11 - 1.15) * k;
-  return SEA.y + 0.3 + 0.05 * e + (e > Lb ? Kc * Math.pow(e - Lb, 1.25) : 0);
+  const Lb = 4 + 32 * k, Kc = (1.15 + (0.11 - 1.15) * k) * (1 + M * (1.1 * vnoise(t * 0.021 + 7.3, 1.3) - 0.5));
+  let p = SEA.y + 0.3 + 0.05 * e + (e > Lb ? Kc * Math.pow(e - Lb, 1.25) : 0);
+  // 远处的崖不再一刀切到山顶：崖高 Hc（沿着海岸 25~70 米变化），崖壁一层一层（岩层、窄平台），
+  // 崖顶往里是缓一些的草坡、岩坡，再慢慢退上山去
+  if (M > 0 && e > Lb) {
+    const Hc = 25 + 45 * vnoise(t * 0.008 + 2.1, 3.3), ec = Lb + Math.pow(Hc / Kc, 0.8);
+    let q = p;
+    if (e < ec) {
+      const H = 6 + 3 * vnoise(t * 0.03 + 1.7, 5.5), r = (q - SEA.y) / H, f = r - Math.floor(r);
+      q = lerp(q, SEA.y + H * (Math.floor(r) + sstep(0.3, 0.8, f)), 0.55 * sstep(Lb, Lb + 4, e) * sstep(ec, ec - 3, e));
+    } else q = SEA.y + 0.3 + 0.05 * e + Hc + 0.42 * Math.pow(e - ec, 1.12);
+    p = lerp(p, q, M);
+  }
+  return p;
 }
 export function coastCarve(h, x, z) {
-  const [e, t] = coastE(x, z);
+  const [e, t, M] = coastE(x, z);
   if (e > 420) return h;
+  // 崖顶不再是一样高的平台：靠海一带鼓起几座小山包、凹下几处垭口，崖被切出高高低低的轮廓
+  if (M > 0) h += M * sstep(-5, 15, e) * sstep(230, 90, e) * (22 * vnoise(t * 0.011 + 3.3, e * 0.009 + 0.7) + 9 * vnoise(x * 0.027, z * 0.027) - 14);
   // 平滑地取小（崖顶不是一道折痕）
-  const p = coastProfile(e, t), kk = 7, d = Math.abs(h - p);
+  const p = coastProfile(e, t, M), kk = 7, d = Math.abs(h - p);
   return Math.min(h, p) - (d < kk ? (kk - d) * (kk - d) / (4 * kk) : 0);
 }
 function stacks(h, x, z) {

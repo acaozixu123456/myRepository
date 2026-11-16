@@ -257,10 +257,19 @@ const TERRAIN_COLOR = /* glsl */`
     float rip = sin( dot( vWP.xz, vec2( -0.94, 0.342 ) ) * 3.6 + dA.b * 5.0 + dB.r * 3.0 ) * 0.5 + 0.5;
     float wet = 1.0 - smoothstep( uSeaY + 0.2, uSeaY + 0.6 + 0.15 * dA.g, vWP.y );
     float fresh = 1.0 - smoothstep( uSeaY + uTide, uSeaY + uTide + 0.35, vWP.y );
-    sc *= 1.0 - 0.06 * rip * ( 1.0 - wet );
+    // 第二层细一点、方向偏一点的沙纹，两层交错才像风吹的
+    float rip2 = sin( dot( vWP.xz, vec2( -0.8, 0.6 ) ) * 7.3 + dB.g * 7.0 + rip * 1.5 ) * 0.5 + 0.5;
+    float fade = 1.0 - smoothstep( 12.0, 45.0, length( vViewPosition ) );
+    sc *= 1.0 - ( 0.12 * rip + 0.07 * rip2 * fade ) * ( 1.0 - wet );
+    // 涨潮线：一道弯弯曲曲的深色海草、碎贝壳
+    float tl = uSeaY + 0.95 + 0.25 * ( dA.g - 0.5 ) + 0.12 * sin( dot( vWP.xz, vec2( 0.342, 0.94 ) ) * 0.35 );
+    float wrack = ( 1.0 - smoothstep( 0.0, 0.07, abs( vWP.y - tl ) ) ) * smoothstep( 0.35, 0.6, dB.b );
+    sc = mix( sc, vec3( 0.36, 0.33, 0.24 ), wrack * 0.55 * ( 1.0 - wet ) );
     sc = mix( sc, sc * vec3( 0.62, 0.6, 0.58 ), max( wet * 0.85, fresh ) );
+    // 湿沙上映一点天光
+    sc += vec3( 0.05, 0.06, 0.07 ) * wet * ( 1.0 - fresh * 0.5 );
     g = mix( g, sc, sk );
-    jBH = mix( jBH, rip * 0.35 + dA.r * 0.15, sk ); jBK = mix( jBK, 0.02, sk );
+    jBH = mix( jBH, rip * 0.45 + rip2 * 0.18 * fade + dA.r * 0.15, sk ); jBK = mix( jBK, 0.05, sk );
   }
   // 土路：边缘被草啃得参差，中间被踩得浅一点
   float en = ( dA.b - 0.5 ) * 0.6 + ( dB.g - 0.5 ) * 0.7;
@@ -557,6 +566,10 @@ if ( uFine < 0.5 ) {
   c = mix( c, c * ( 0.62 + 0.6 * n1.b ), fo * 0.85 );
   float strata = 0.5 + 0.5 * sin( vWP.y * 0.3 + n3.g * 5.0 + n1.r * 3.0 );
   c = mix( c, c * ( 0.74 + 0.4 * strata ), vFar.y * 0.85 );
+  // 岩壁上一道道竖着的水痕、石棱；贴着海面的一截被浪打湿，颜色深
+  float streak = texture2D( uDetail, vec2( ( vWP.x - vWP.z ) * 0.035, vWP.y * 0.005 ) + vec2( 0.41, 0.73 ) ).g;
+  c = mix( c, c * ( 0.78 + 0.45 * streak ), vFar.y * 0.7 );
+  c *= mix( 0.72, 1.0, smoothstep( -0.8, 2.5, vWP.y ) );
   float sn = smoothstep( 0.44, 0.56, vFar.z + ( n3.r - 0.5 ) * 0.4 + ( n1.g - 0.5 ) * 0.3 );
   c = mix( c, vec3( 0.9, 0.93, 0.97 ) * ( 0.93 + 0.1 * n3.g ), sn );
   diffuseColor.rgb = c;
@@ -594,16 +607,17 @@ const FAR_COL = {
 };
 export function buildFar(tuni, land) {
   // 坐标：近景范围内 8 米一格（和近景边界对齐），往外按比例变稀
-  const axis = (a0, a1, lo, hi) => {
+  // fineL/fineR：这一边有海崖，头 fine 米里格子变稀得慢一些（崖壁的轮廓才看得出来）
+  const axis = (a0, a1, lo, hi, fineL = 0, fineR = 0) => {
     const out = [];
     for (let v = a0; v <= a1 + 1e-6; v += 8) out.push(v);
-    let s = 8, v = a0; const left = []; while (v > lo) { s *= 1.16; v -= s; left.push(Math.max(v, lo)); }
-    s = 8; v = a1; const right = []; while (v < hi) { s *= 1.16; v += s; right.push(Math.min(v, hi)); }
+    let s = 8, v = a0; const left = []; while (v > lo) { s *= a0 - v < fineL ? 1.035 : 1.16; v -= s; left.push(Math.max(v, lo)); }
+    s = 8; v = a1; const right = []; while (v < hi) { s *= v - a1 < fineR ? 1.035 : 1.16; v += s; right.push(Math.min(v, hi)); }
     return [...left.reverse(), ...out, ...right];
   };
   const R = 3400;
-  const xs = axis(DOM.x0, DOM.x0 + DOM.w, CENTER.x - R, CENTER.x + R);
-  const zs = axis(DOM.z0, DOM.z0 + DOM.d, CENTER.z - R, CENTER.z + R);
+  const xs = axis(DOM.x0, DOM.x0 + DOM.w, CENTER.x - R, CENTER.x + R, 260, 0);
+  const zs = axis(DOM.z0, DOM.z0 + DOM.d, CENTER.z - R, CENTER.z + R, 260, 260);
   const nx = xs.length, nz = zs.length;
   const pos = new Float32Array(nx * nz * 3), nor = new Float32Array(nx * nz * 3), col = new Float32Array(nx * nz * 3), mix3 = new Float32Array(nx * nz * 3);
   const hs = new Float32Array(nx * nz);
