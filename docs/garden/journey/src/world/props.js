@@ -6,31 +6,94 @@ import { ROAD, SPOTS, CAMP_SITES } from './route.js';
 import { U, patch } from './atmo.js';
 import { rng } from './noise.js';
 
-// 把一堆盒子/圆柱合成一个网格（顶点色），一次绘制
+// 手绘木纹（只有明暗，颜色还是用顶点色）：顺着 u 方向的长笔触、深浅年轮带、几个木节；v 在 0.86 以上是一条纯白，给不是木头的东西用
+let _wood = null;
+function woodTex() {
+  if (_wood) return _wood;
+  const S = 256, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
+  let a = 41; const r = () => ((a = (a * 16807) % 2147483647) / 2147483647);
+  g.fillStyle = '#e6e6e6'; g.fillRect(0, 0, S, S);
+  g.lineCap = 'round';
+  for (let i = 0; i < 150; i++) {
+    const y = r() * S * 0.84, x = r() * S, len = 40 + r() * 150, lt = r() < 0.45;
+    g.strokeStyle = lt ? `rgba(255,255,255,${0.25 + r() * 0.3})` : `rgba(96,80,70,${0.14 + r() * 0.2})`; g.lineWidth = 1 + r() * 4.5;
+    for (const dx of [-S, 0, S]) { g.beginPath(); g.moveTo(x + dx, y); g.bezierCurveTo(x + dx + len * 0.3, y + (r() - 0.5) * 5, x + dx + len * 0.7, y + (r() - 0.5) * 5, x + dx + len, y + (r() - 0.5) * 3); g.stroke(); }
+  }
+  for (let i = 0; i < 5; i++) {
+    const x = r() * S, y = 12 + r() * S * 0.72, w = 5 + r() * 6;
+    for (const dx of [-S, 0, S]) { g.fillStyle = 'rgba(84,66,56,0.5)'; g.beginPath(); g.ellipse(x + dx, y, w, w * 0.45, 0, 0, 6.283); g.fill(); g.strokeStyle = 'rgba(90,72,62,0.3)'; g.lineWidth = 1.2; g.beginPath(); g.ellipse(x + dx, y, w * 1.8, w * 0.9, 0, 0, 6.283); g.stroke(); }
+  }
+  g.fillStyle = '#ffffff'; g.fillRect(0, Math.floor(S * 0.86), S, S);
+  const t = new THREE.CanvasTexture(c); t.wrapS = THREE.RepeatWrapping; t.wrapT = THREE.ClampToEdgeWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return (_wood = t);
+}
+// 木头颜色（偏棕）才画木纹、加厚；石头、帆布、铁件不动
+const _c = new THREE.Color();
+const isWood = color => { _c.set(color); return _c.r > _c.g && _c.g > _c.b && (_c.r - _c.b) / _c.r > 0.62 && _c.r < 0.75; };
+// 棱角削掉一圈的盒子：每个面中间是平的，靠边一圈往里斜下去（三个方向各分三段）
+function chamferBox(w, h, d, c) {
+  const g = new THREE.BoxGeometry(w, h, d, 3, 3, 3), P = g.attributes.position, N = g.attributes.normal, H = [w / 2, h / 2, d / 2], v = [0, 0, 0];
+  for (let i = 0; i < P.count; i++) {
+    v[0] = P.getX(i); v[1] = P.getY(i); v[2] = P.getZ(i);
+    const n = Math.abs(N.getX(i)) > 0.5 ? 0 : Math.abs(N.getY(i)) > 0.5 ? 1 : 2;
+    let edge = 0;
+    for (let k = 0; k < 3; k++) if (k !== n) { if (Math.abs(Math.abs(v[k]) - H[k]) < 1e-6) edge++; else v[k] = Math.sign(v[k]) * (H[k] - c); }
+    if (edge) { const m = edge === 2 ? c * 0.667 : c * 0.5; for (let k = 0; k < 3; k++) if (k === n || Math.abs(Math.abs(v[k]) - H[k]) < 1e-6) v[k] = Math.sign(v[k]) * (H[k] - m); }
+    P.setXYZ(i, v[0], v[1], v[2]);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+// 把一堆盒子/圆柱合成一个网格（顶点色 + 木纹明暗），一次绘制
 class Kit {
   constructor() { this.geos = []; }
-  add(geo, m, color, jitter = 0.06, r = Math.random) {
+  add(geo, m, color, jitter = 0.06, r = Math.random, uv = null) {
     geo = geo.index ? geo.toNonIndexed() : geo;
+    const n = geo.attributes.position.count;
+    // 贴图坐标要在摆位置之前按本身的尺寸算；不是木头的统一指到那条纯白上
+    const UV = new Float32Array(n * 2);
+    for (let i = 0; i < n; i++) { if (uv) uv(geo, i, UV); else { UV[i * 2] = 0.5; UV[i * 2 + 1] = 0.95; } }
     geo.applyMatrix4(m);
-    const c = new THREE.Color(color), n = geo.attributes.position.count, col = new Float32Array(n * 3);
+    const c = new THREE.Color(color), col = new Float32Array(n * 3);
     for (let i = 0; i < n; i += 3) { const k = 1 + (r() - 0.5) * jitter; for (let j = 0; j < 3; j++) { col[(i + j) * 3] = c.r * k; col[(i + j) * 3 + 1] = c.g * k; col[(i + j) * 3 + 2] = c.b * k; } }
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'color'].includes(k)) geo.deleteAttribute(k);
+    geo.setAttribute('uv', new THREE.BufferAttribute(UV, 2));
+    for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'color', 'uv'].includes(k)) geo.deleteAttribute(k);
     this.geos.push(geo);
     return this;
   }
-  box(w, h, d, m, color, jitter, r) { return this.add(new THREE.BoxGeometry(w, h, d), m, color, jitter, r); }
-  cyl(r0, r1, h, seg, m, color, jitter, r) { return this.add(new THREE.CylinderGeometry(r0, r1, h, seg), m, color, jitter, r); }
+  box(w, h, d, m, color, jitter, r = Math.random) {
+    const wood = isWood(color), D = [w, h, d];
+    // 木料加粗一点（细的那两个方向），看着厚实
+    const L = w >= h && w >= d ? 0 : h >= d ? 1 : 2;
+    if (wood) for (let k = 0; k < 3; k++) if (k !== L && D[k] < 0.26) D[k] *= 1.32;
+    const mn = Math.min(D[0], D[1], D[2]);
+    if (mn < 0.012) return this.add(new THREE.BoxGeometry(w, h, d), m, color, jitter, r);
+    const geo = chamferBox(D[0], D[1], D[2], Math.min(mn * 0.24, 0.035));
+    if (!wood) return this.add(geo, m, color, jitter, r);
+    const u0 = r(), v0 = 0.06 + r() * 0.5, A = (L + 1) % 3, B = (L + 2) % 3, P = geo.attributes.position, q = [0, 0, 0];
+    return this.add(geo, m, color, jitter, r, (g, i, UV) => {
+      const p = g.attributes.position; q[0] = p.getX(i); q[1] = p.getY(i); q[2] = p.getZ(i);
+      UV[i * 2] = u0 + q[L] * 0.55; UV[i * 2 + 1] = Math.min(0.82, Math.max(0.02, v0 + (q[A] + q[B]) * 0.35));
+    });
+  }
+  cyl(r0, r1, h, seg, m, color, jitter, r = Math.random) {
+    const wood = isWood(color), f = wood && Math.max(r0, r1) < 0.13 ? 1.28 : 1;
+    const geo = new THREE.CylinderGeometry(r0 * f, r1 * f, h, seg);
+    if (!wood) return this.add(geo, m, color, jitter, r);
+    const u0 = r(), v0 = 0.06 + r() * 0.45, src = geo.toNonIndexed();
+    return this.add(src, m, color, jitter, r, (g, i, UV) => { UV[i * 2] = u0 + g.attributes.position.getY(i) * 0.55; UV[i * 2 + 1] = v0 + g.attributes.uv.getX(i) * 0.3; });
+  }
   mesh(opts = {}) {
     const g = mergeGeometries(this.geos); g.computeBoundingSphere();
-    const mat = new THREE.MeshLambertMaterial({ vertexColors: true, ...opts.mat });
+    const mat = new THREE.MeshLambertMaterial({ vertexColors: true, map: woodTex(), ...opts.mat });
     patch(mat, { gobo: true, fog: true, ...opts.patch });
     const m = new THREE.Mesh(g, mat); m.castShadow = opts.cast !== false; m.receiveShadow = true;
     return m;
   }
 }
 const M4 = (x, y, z, rx = 0, ry = 0, rz = 0) => new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, rz, 'YXZ')), new THREE.Vector3(1, 1, 1));
-const WOOD = ['#8a5c38', '#7a5032', '#946640', '#6f4a2e'];
+const WOOD = ['#a06c40', '#8e5e38', '#ac7848', '#825634'];
 
 // ---------- 木桥：沿路架在溪上，桥面微微拱起 ----------
 export function buildBridge(land) {
@@ -54,14 +117,14 @@ export function buildBridge(land) {
       const off = side * (width / 2 + 0.06);
       const ax = a.x + na[0] * off, az = a.z + na[1] * off, bx = b.x + na[0] * off, bz = b.z + na[1] * off;
       const len = Math.hypot(bx - ax, bz - az, yb - ya), yaw = Math.atan2(bx - ax, bz - az), pitch = -Math.atan2(yb - ya, Math.hypot(bx - ax, bz - az));
-      k.box(0.16, 0.24, len + 0.02, M4((ax + bx) / 2, (ya + yb) / 2 - 0.14, (az + bz) / 2, pitch, yaw), '#5e3e26', 0.08, R);
-      k.box(0.1, 0.1, len + 0.02, M4((ax + bx) / 2, (ya + yb) / 2 + 0.82, (az + bz) / 2, pitch, yaw), '#7a5234', 0.08, R);
-      k.box(0.07, 0.07, len + 0.02, M4((ax + bx) / 2, (ya + yb) / 2 + 0.45, (az + bz) / 2, pitch, yaw), '#6e4a2e', 0.08, R);
+      k.box(0.16, 0.24, len + 0.02, M4((ax + bx) / 2, (ya + yb) / 2 - 0.14, (az + bz) / 2, pitch, yaw), '#6e4a2c', 0.08, R);
+      k.box(0.1, 0.1, len + 0.02, M4((ax + bx) / 2, (ya + yb) / 2 + 0.82, (az + bz) / 2, pitch, yaw), '#8c6038', 0.08, R);
+      k.box(0.07, 0.07, len + 0.02, M4((ax + bx) / 2, (ya + yb) / 2 + 0.45, (az + bz) / 2, pitch, yaw), '#80583a', 0.08, R);
     }
     for (let i = 0; i <= 5; i++) {
       const s = s0 + (s1 - s0) * i / 5; ROAD.at(s, p); const y = deck(s);
       const off = side * (width / 2 + 0.06);
-      k.cyl(0.075, 0.09, 1.0, 7, M4(p.x - p.tz * off, y + 0.36, p.z + p.tx * off), '#5a3a22', 0.08, R);
+      k.cyl(0.075, 0.09, 1.0, 7, M4(p.x - p.tz * off, y + 0.36, p.z + p.tx * off), '#6a4628', 0.08, R);
       if (i === 0 || i === 5) k.cyl(0.11, 0.11, 0.09, 8, M4(p.x - p.tz * off, y + 0.9, p.z + p.tx * off), '#4d331f', 0.05, R);
       // 桥墩
       if (i > 0 && i < 5) {

@@ -1,7 +1,7 @@
 // 地面：近景分块网格（路、溪岸、草地、坡上岩石在着色器里按距离场混色）+ 远景粗网格（顶点色：草、林、岩、雪）
 import * as THREE from 'three';
 import { DOM, CENTER, farH, bankW } from './land.js';
-import { snowK } from './regions.js';
+import { snowLine as regionSnowLine } from './regions.js';
 import { patch, U } from './atmo.js';
 import { SEA_U } from './sea.js';
 import { fbm, vnoise, sstep, clamp, rng } from './noise.js';
@@ -590,7 +590,7 @@ if ( uFine < 0.5 ) {
   float streak = texture2D( uDetail, vec2( ( vWP.x - vWP.z ) * 0.035, vWP.y * 0.005 ) + vec2( 0.41, 0.73 ) ).g;
   c = mix( c, c * ( 0.78 + 0.45 * streak ), vFar.y * 0.7 );
   c *= mix( 0.72, 1.0, smoothstep( -0.8, 2.5, vWP.y ) );
-  float sn = smoothstep( 0.44, 0.56, vFar.z + ( n3.r - 0.5 ) * 0.4 + ( n1.g - 0.5 ) * 0.3 );
+  float sn = smoothstep( 0.42, 0.58, vFar.z + ( n3.r - 0.5 ) * 0.5 + ( n1.g - 0.5 ) * 0.45 );
   c = mix( c, vec3( 0.9, 0.93, 0.97 ) * ( 0.93 + 0.1 * n3.g ), sn );
   diffuseColor.rgb = c;
   jBH = n1.g * 0.7 + n3.g * 0.35 + n2.b * 0.6;
@@ -654,7 +654,8 @@ export function buildFar(tuni, land) {
     nor[k * 3] = -dx / l; nor[k * 3 + 1] = ny; nor[k * 3 + 2] = -dz / l;
     // 颜色：低处草地/树林斑块，陡处岩石，高处雪
     const n1 = fbm(x * 0.006 + 3, z * 0.006, 3), n2 = vnoise(x * 0.03, z * 0.03);
-    const sk = snowK(x, z, h);   // 西北冰湖那边雪线低
+    // 西北冰湖那边雪线低。远山网格粗，雪线在这里放成很宽的一条带子，真正的雪边由像素里的噪声去咬（不然缓坡上雪边是一格格的锯齿）
+    const SL = regionSnowLine(x, z), sk = SL > 9e3 ? 0 : sstep(SL - 18, SL + 26, h);
     c.copy(FAR_COL.grass).lerp(FAR_COL.dry, sstep(0.55, 0.75, n2) * 0.5);
     const fo = sstep(0.42, 0.56, n1) * sstep(1200, 300, h) * (1 - sk);
     c.lerp(n2 > 0.5 ? FAR_COL.forest : FAR_COL.forest2, fo);
