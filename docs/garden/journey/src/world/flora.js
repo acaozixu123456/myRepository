@@ -44,10 +44,35 @@ function softenCanopy(geo, amount = 0.75) {
   N.needsUpdate = true;
 }
 
+// 树皮贴图（现画，可以上下左右接上）：一道道竖着的深裂和亮棱，像用宽笔刷出来的
+function barkTexture() {
+  const W = 256, H = 512, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  let a = 19; const r = () => ((a = (a * 16807) % 2147483647) / 2147483647);
+  g.fillStyle = '#a8663f'; g.fillRect(0, 0, W, H);
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  const stroke = (col, wd, n, amp) => {
+    for (let i = 0; i < n; i++) {
+      const x = r() * W, y = r() * H, len = 70 + r() * 220, w = wd * (0.5 + r()), ph = r() * 6.3, f = 0.02 + r() * 0.03;
+      g.strokeStyle = col(r()); g.lineWidth = w;
+      for (const dx of [-W, 0, W]) for (const dy of [-H, 0, H]) {
+        g.beginPath();
+        for (let t = 0; t <= len; t += 10) { const px = x + dx + Math.sin(ph + t * f) * amp, py = y + dy + t; if (t === 0) g.moveTo(px, py); else g.lineTo(px, py); }
+        g.stroke();
+      }
+    }
+  };
+  stroke(k => `rgba(226,150,98,${0.2 + k * 0.25})`, 12, 46, 5);     // 宽的亮面
+  stroke(k => `rgba(92,48,30,${0.3 + k * 0.3})`, 4, 60, 6);         // 深裂
+  stroke(k => `rgba(246,184,128,${0.18 + k * 0.22})`, 2.5, 50, 4);  // 细亮棱
+  stroke(k => `rgba(60,30,20,${0.3 + k * 0.25})`, 1.5, 40, 5);      // 细缝
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return t;
+}
+
 // ---------- 材质 ----------
 export async function floraMaterials(base, fadeU, tuni) {
   const L = new THREE.TextureLoader();
-  const files = ['leaf.png', 'pine.png', 'bark.jpg', 'flowers.png', 'atlas.png', 'grass.png', 'mush.jpg', 'rock.jpg', 'pebble.jpg'];
+  const files = ['leaf.png', 'pine.png', 'flowers.png', 'atlas.png', 'grass.png', 'mush.jpg', 'rock.jpg', 'pebble.jpg'];
   const loaded = Object.fromEntries(await Promise.all(files.map(async f => [f, await L.loadAsync(base + f)])));
   const tex = (f, srgb = true) => { const t = loaded[f]; t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.anisotropy = 4; return t; };
   const M = {};
@@ -59,7 +84,7 @@ export async function floraMaterials(base, fadeU, tuni) {
   const near = { seeThrough: true, uniforms: { uFadeR: fadeU.trees } };
   mk('leaf', tex('leaf.png'), { wind: 'tree', gobo: false, sss: 0.55, fadeOut: true, ...near }, { alphaTest: 0.42, side: THREE.DoubleSide });
   mk('pine', tex('pine.png'), { wind: 'tree', gobo: false, sss: 0.35, fadeOut: true, ...near }, { alphaTest: 0.42, side: THREE.DoubleSide });
-  mk('bark', tex('bark.jpg'), { wind: 'tree', gobo: false, fadeOut: true, ...near });
+  mk('bark', barkTexture(), { wind: 'tree', gobo: false, fadeOut: true, ...near });
   // 灌木：和树共用叶子贴图，但不淡出（它们有自己的显示半径）
   M.bushLeaf = new THREE.MeshLambertMaterial({ map: M.leaf.map, alphaTest: 0.42, side: THREE.DoubleSide });
   patch(M.bushLeaf, { wind: 'grass', gobo: true, sss: 0.45, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
