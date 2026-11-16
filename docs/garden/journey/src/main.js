@@ -1,5 +1,4 @@
 // 旅途 · 第一段「暖光谷地」：入口。加载世界、道具、几匹坐骑、旅人和翅膀，接上界面、声音、画质和每帧循环。
-import { FX } from './world/fx.js';
 import { Post } from './world/post.js';
 import * as THREE from 'three';
 import { U, installGrade } from './world/atmo.js';
@@ -42,14 +41,15 @@ const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
 const MOUNT_ORDER = ['b', 'a', 'w', 'd'];
 
 installGrade();
-let post = null;
-const draw = () => { if (post) post.render(scene, camera); else renderer.render(scene, camera); };
+// 柔光和暗角（后期）：只在画质「高」（手动选「中」也算）时开；手机不支持或帧数不够降档了就直接画，不多这一遍
+let post = null, postOn = false;
+const draw = () => { if (post && postOn) post.render(scene, camera); else renderer.render(scene, camera); };
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: SHOT });
 renderer.toneMapping = THREE.CustomToneMapping;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-if (FX.p) post = new Post(renderer);
+if (P.get('fx') !== '0') { post = new Post(renderer); if (!post.ok) post = null; }
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.3, 7000);
@@ -99,6 +99,7 @@ function applyTier(tier) {
   if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
   const c = sun.shadow.camera; c.left = c.bottom = -T.shadowR; c.right = c.top = T.shadowR; c.updateProjectionMatrix();
   U.uShadowRadius.value = T.shadowR; U.uFine.value = tier === 'low' ? 0 : 1;
+  postOn = tier === 'high' || (tier === 'mid' && quality?.mode !== 'auto');
   if (W) { W.setQuality(tier); W.update(camera, focus, 0, true); }
 }
 const showPerf = () => ui.perf(`${Math.round(quality.fps) || '--'} fps · ${quality.label}`);
@@ -512,7 +513,7 @@ async function load() {
   });
   // 拍照
   photo = new PhotoMode({
-    J, renderer, scene, camera, album, canvas, setSize, subjects,
+    J, renderer, scene, camera, album, canvas, setSize, subjects, draw,
     openAlbum: () => journal.open('album'),
     onShot: (m, first, saved) => {
       // 拍到了动物、人、彩虹：没遇见过的算遇见，第一张当见闻里的图

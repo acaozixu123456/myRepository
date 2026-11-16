@@ -144,7 +144,7 @@ export class PhotoMode {
     try {
       if (hi > pr0) { renderer.setPixelRatio(hi); renderer.setSize(innerWidth, innerHeight, false); }
       this.frame();
-      renderer.render(scene, camera);
+      if (this.h.draw) this.h.draw(); else renderer.render(scene, camera);
       const P = J.placeHere(), d = J.dayN, h = J.tod;
       const stamp = this.stamp ? `旅途 · ${P ? P.name : '路上'} · 第${d}天 ${periodOf(h).name}` : '';
       const shotP = makePhoto(renderer.domElement, this.filter, stamp);   // 画布在这一刻就复制走了
