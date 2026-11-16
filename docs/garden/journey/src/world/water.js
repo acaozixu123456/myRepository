@@ -40,6 +40,11 @@ void main() {
   vec3 sky = mix( hz, uMid, smoothstep( 0.05, 0.4, R.y ) );
   // 贴着水面看过去，倒映的是对岸的草木和石头，不是白蒙蒙的天
   sky = mix( vec3( 0.26, 0.33, 0.22 ) * dot( hz, vec3( 0.3, 0.5, 0.2 ) ), sky, smoothstep( 0.03, 0.28, R.y ) );
+  // 浅水里河床上晃动的光网（焦散）：两层噪声取“等高线”叠起来，越深越淡
+  vec2 cp = vWP.xz * 1.7;
+  float c1 = vn( cp + vec2( t * 0.6, t * 0.35 ) + n2 * 0.8 ), c2 = vn( cp * 1.37 + vec2( -t * 0.45, t * 0.5 ) + 7.0 );
+  float cau = pow( 1.0 - abs( c1 - c2 ) * 2.4, 6.0 );
+  col += uSunColor * vec3( 0.9, 1.0, 0.95 ) * cau * 0.22 * ( 1.0 - smoothstep( 0.15, 0.85, depth ) ) * ( 1.0 - rapid );
   float fres = 0.05 + 0.95 * pow( 1.0 - max( dot( V, N ), 0.0 ), 4.0 );
   col = mix( col, sky, clamp( fres, 0.0, 1.0 ) * 0.75 );
   // 水纹亮线

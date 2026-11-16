@@ -6,6 +6,7 @@ import { toCreasedNormals, mergeGeometries } from 'three/addons/utils/BufferGeom
 import { buildHorseB, makeSkeleton, X } from '../horse/horseB.js';
 import { HorseRigB } from '../horse/rigB.js';
 import { patch } from '../world/atmo.js';
+import { groomHorse, roundBox } from './groom.js';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -69,6 +70,17 @@ function makeTack(r, blanket) {
     add(new THREE.BoxGeometry(0.03, 0.44, 0.012), '#3e2818', M(x, y - 0.22, 0.03));      // 镫带
     const st = new THREE.TorusGeometry(0.055, 0.011, 4, 10); st.rotateY(Math.PI / 2);
     add(st, '#8a8478', M(x, y - 0.47, 0.03));                                            // 马镫
+    // 鞍后两边挂的皮鞍袋（圆鼓鼓的），袋盖颜色深一点，再一根扣带
+    const b = 70 * D, bx = s * (r + 0.05) * Math.sin(b), by = cy + (r + 0.05) * Math.cos(b) - 0.1;
+    add(roundBox(0.075, 0.17, 0.23), '#7a5532', M(bx, by, -0.34));
+    add(roundBox(0.085, 0.07, 0.24), '#5a3b22', M(bx + s * 0.004, by + 0.065, -0.34));
+    add(new THREE.BoxGeometry(0.02, 0.16, 0.03), '#3e2818', M(bx + s * 0.06, by - 0.01, -0.34));
+  }
+  // 鞍后横着绑一卷铺盖，两道皮带
+  {
+    const len = 2 * (r + 0.07), roll = new THREE.CylinderGeometry(0.075, 0.075, len, 12); roll.rotateZ(Math.PI / 2);
+    add(roll, '#4f6b3a', M(0, 0.05, -0.32));
+    for (const s of [1, -1]) { const band = new THREE.CylinderGeometry(0.079, 0.079, 0.03, 12); band.rotateZ(Math.PI / 2); add(band, '#3e2818', M(s * len * 0.28, 0.05, -0.32)); }
   }
   const g = mergeGeometries(geos); g.computeBoundingSphere();
   const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85, side: THREE.DoubleSide });
@@ -151,6 +163,8 @@ export function makeHorseA(gltf, key = 'a') {
     o.position.set(0.055 * s * S / 0.43, nose.y * S - 0.07, nose.z * S - 0.13);
     head.attach(o); bit.push(o);
   }
+  // 鬃毛、尾巴、马笼头和身上的花色（groom.js；放在量马背、鼻尖之后）
+  groomHorse(gltf, model, key);
   // 动作原速：走 1.0 米/秒、跑 3.6 米/秒（按模型大小换算）
   const vWalk = 1.0 * S / 0.43, vGal = 3.6 * S / 0.43;
   // 用动画相位估算落蹄：走路一个循环 4 次，跑 4 次

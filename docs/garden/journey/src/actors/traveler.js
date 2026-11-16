@@ -5,6 +5,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { patch } from '../world/atmo.js';
+import { roundBox } from './groom.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
@@ -51,9 +53,14 @@ export async function makeTraveler(url) {
     return p;
   };
   const sitPelvis = pelvisIn('Sitting_Idle_Loop');
+  // 背包按站姿量后背的位置（绑定姿势是 T 字，胸口和动画里不一样）
+  for (const a of Object.values(A)) a.setEffectiveWeight(0);
+  A.Idle_Loop.setEffectiveWeight(1); A.Idle_Loop.time = 0; mixer.update(0);
+  const pack = makePack(model, bones);
+  A.Idle_Loop.setEffectiveWeight(0);
 
   const T = {
-    root, model, bones, mixer, A,
+    root, model, bones, mixer, A, pack,
     height: 1.78,
     sitPelvis,
     w: { loco: 1, ride: 0, sit: 0, fly: 0 },        // 各组当前权重
@@ -119,6 +126,7 @@ export async function makeTraveler(url) {
       if (W.fly > 0.01) flyPose(W.fly, st.fly || {}, dt);
       if (W.loco > 0.01 && v > 0.1) leanPose(W.loco * sstep(0.1, 1.5, v), st.turn || 0, st.slope || 0, v);
       headLook(dt, st.lookAt || null, st.lookW ?? 1);
+      if (pack) pack.visible = W.fly < 0.3;   // 飞的时候背上是翅膀
     },
     pelvis(out) { return bones.pelvis.getWorldPosition(out); },
     hand(i, out) {
@@ -208,4 +216,37 @@ export async function makeTraveler(url) {
   A.Idle_Loop.setEffectiveWeight(1);
   T.update(0);
   return T;
+}
+
+// 背上的小行囊：帆布包、包盖、上面横绑一卷铺盖。按绑定姿势量出后背的位置，挂在 spine_03 上跟着身体动
+function makePack(model, bones) {
+  const sp = bones.spine_03; if (!sp) return null;
+  model.updateMatrixWorld(true);
+  const c = sp.getWorldPosition(new THREE.Vector3());
+  // 后背最靠后的点（模型面朝 +Z，后背是 -Z）
+  let back = Infinity; const v = new THREE.Vector3();
+  model.traverse(o => {
+    if (!o.isSkinnedMesh) return;
+    const p = o.geometry.attributes.position;
+    for (let i = 0; i < p.count; i++) { o.getVertexPosition(i, v).applyMatrix4(o.matrixWorld); if (Math.abs(v.x - c.x) < 0.1 && Math.abs(v.y - c.y) < 0.12) back = Math.min(back, v.z); }
+  });
+  if (!isFinite(back)) return null;
+  const geos = [];
+  const add = (g, color, x, y, z, rz = 0) => {
+    g = g.index ? g.toNonIndexed() : g; if (rz) g.rotateZ(rz); g.translate(x, y, z);
+    const k = new THREE.Color(color), n = g.attributes.position.count, a = new Float32Array(n * 3); for (let i = 0; i < n; i++) a.set([k.r, k.g, k.b], i * 3);
+    g.setAttribute('color', new THREE.BufferAttribute(a, 3)); for (const key of Object.keys(g.attributes)) if (!['position', 'normal', 'color'].includes(key)) g.deleteAttribute(key); geos.push(g);
+  };
+  const y0 = c.y - 0.02, z0 = back - 0.06;
+  add(roundBox(0.2, 0.24, 0.1), '#7a6a4c', c.x, y0, z0);
+  add(roundBox(0.21, 0.085, 0.11), '#5a3b22', c.x, y0 + 0.1, z0 - 0.004);
+  add(new THREE.BoxGeometry(0.025, 0.15, 0.115), '#3e2818', c.x + 0.055, y0 - 0.01, z0 - 0.006);
+  add(new THREE.BoxGeometry(0.025, 0.15, 0.115), '#3e2818', c.x - 0.055, y0 - 0.01, z0 - 0.006);
+  add(new THREE.CylinderGeometry(0.05, 0.05, 0.32, 12), '#4f6b3a', c.x, y0 + 0.19, z0 + 0.01, Math.PI / 2);
+  const g = mergeGeometries(geos);
+  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.88, name: 'pack' });
+  patch(mat, { rim: 0.45, gobo: true, fog: true });
+  const mesh = new THREE.Mesh(g, mat); mesh.name = 'pack'; mesh.castShadow = true; mesh.receiveShadow = true; mesh.frustumCulled = false;
+  model.add(mesh); sp.attach(mesh);
+  return mesh;
 }
