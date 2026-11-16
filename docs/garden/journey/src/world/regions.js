@@ -1,6 +1,6 @@
 // 区域：红叶谷（溪的上游两岸，秋天的颜色）和雪线（西北冰湖周围的高处有雪）。
 // 都是 0~1 的权重，近景地面按格子算一次存起来，远景、植被、粒子都用同一套。
-import { LAKE, CREEK_END } from './route.js';
+import { LAKE, CREEK_END, SEA, coastCT } from './route.js';
 import { fbm, vnoise, sstep } from './noise.js';
 
 // 红叶：沿着溪的路程 s 和离溪的距离 d 决定（谷底到两边山坡），太高了就让给雪
@@ -30,4 +30,19 @@ export const AUTUMN_TINTS = [[5.0, 0.2, 1], [5.6, 0.42, 1], [6.0, 0.8, 1], [6.4,
 export function autumnTint(R) {
   const u = R();
   return AUTUMN_TINTS[u < 0.17 ? 0 : u < 0.38 ? 1 : u < 0.63 ? 2 : u < 0.89 ? 3 : 4];
+}
+
+// 竹林：西边小路翻山那一段（路程 s 大约 105~300 米）两边的山坳里，边上参差
+export const BAMBOO_S = [105, 300];
+export function bambooK(x, z, h, s, d) {
+  if (!(d < 46)) return 0;
+  const n = fbm(x * 0.03 + 21, z * 0.03 - 4, 3);
+  const band = sstep(BAMBOO_S[0] - 25, BAMBOO_S[0] + 10, s) * sstep(BAMBOO_S[1] + 15, BAMBOO_S[1] - 25, s);
+  return Math.min(1, band * sstep(44, 26, d + (n - 0.5) * 22) * 1.3);
+}
+// 沙滩：海边低处（海岸线往里几十米，比海面高不了几米）；水下也是沙
+export function sandK(x, z, h) {
+  const [c] = coastCT(x, z);
+  if (c < -110) return 0;
+  return sstep(SEA.y + 3.6, SEA.y + 2.0, h + 1.4 * (fbm(x * 0.05, z * 0.05, 2) - 0.5)) * sstep(-110, -70, c);
 }

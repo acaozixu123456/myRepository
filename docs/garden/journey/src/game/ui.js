@@ -75,6 +75,10 @@ export function initUI(h) {
   const bTime = $('bTime');
   bTime.addEventListener('click', () => h.skipTime?.());
   ui.time = (name, ff) => { if (bTime.textContent !== name) bTime.textContent = name; bTime.classList.toggle('ff', !!ff); };
+  // 天气：平常跟着天变（显示现在的天气），点一下依次定成 晴 → 多云 → 小雨 → 起雾 → 下雪 → 再回到随天
+  const bWx = $('bWx');
+  bWx.addEventListener('click', () => h.cycleWeather?.());
+  ui.weather = (name, lock) => { const t = lock ? name + '·定' : name; if (bWx.textContent !== t) bWx.textContent = t; bWx.classList.toggle('lock', !!lock); };
   // 横幅：进入一个新地方时显示几秒
   const banner = $('banner'); let bannerT = 0;
   ui.banner = (name, sub = '', dur = 4.5) => {

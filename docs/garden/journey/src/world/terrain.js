@@ -2,7 +2,8 @@
 import * as THREE from 'three';
 import { DOM, CENTER, farH, bankW } from './land.js';
 import { snowK } from './regions.js';
-import { patch } from './atmo.js';
+import { patch, U } from './atmo.js';
+import { SEA_U } from './sea.js';
 import { fbm, vnoise, sstep, clamp, rng } from './noise.js';
 
 // ---------- 画布纹理 ----------
@@ -121,7 +122,7 @@ export function makeSplat(land) {
   return t;
 }
 
-// 区域纹理：R 红叶，G 积雪，B 凹凸（高度减去周围五六米的平均：洼地、沟里小于 0.5，坡脊上大于 0.5）
+// 区域纹理：R 红叶，G 积雪，B 凹凸（高度减去周围五六米的平均：洼地、沟里小于 0.5，坡脊上大于 0.5），A 沙滩
 export function makeBiome(land) {
   const NX = land.NX, NZ = land.NZ, data = new Uint8Array(NX * NZ * 4), H = land.H;
   const a = Float32Array.from(H), b = new Float32Array(NX * NZ), R = 3;
@@ -131,7 +132,7 @@ export function makeBiome(land) {
   }
   for (let k = 0; k < NX * NZ; k++) {
     data[k * 4] = land.AU[k]; data[k * 4 + 1] = land.SN[k];
-    data[k * 4 + 2] = 128 + clamp((H[k] - a[k]) / 1.1, -1, 1) * 127; data[k * 4 + 3] = 255;
+    data[k * 4 + 2] = 128 + clamp((H[k] - a[k]) / 1.1, -1, 1) * 127; data[k * 4 + 3] = land.SA[k];
   }
   const t = new THREE.DataTexture(data, NX, NZ, THREE.RGBAFormat);
   t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearFilter; t.needsUpdate = true;
@@ -144,12 +145,14 @@ export const PALETTE = {
   // 秋天的草地：金黄、赭石、带绿的枯草；落叶：橙红、深红
   aut0: '#b59a52', aut1: '#a67d48', aut2: '#8e9244', leaf0: '#b8541e', leaf1: '#8a3a1c',
   snow: '#e2e8f0', straw: '#c9bd8e',
+  sand: '#e3cf9f',
 };
 
 export const TERRAIN_GLSL = /* glsl */`
 uniform sampler2D uSplat; uniform sampler2D uDetail; uniform sampler2D uDirt; uniform vec4 uDom;
 uniform vec3 uGrass0; uniform vec3 uGrass1; uniform vec3 uGrass2; uniform vec3 uGrass3; uniform vec3 uForestC;
 uniform vec3 uRock; uniform vec3 uBank; uniform vec3 uPebble; uniform vec3 uBed; uniform float uFine;
+uniform vec3 uSand; uniform float uSeaY; uniform float uTide; uniform float uWet; uniform float uSnowCover;
 uniform sampler2D uBiome; uniform vec3 uAut0; uniform vec3 uAut1; uniform vec3 uAut2; uniform vec3 uLeaf0; uniform vec3 uLeaf1; uniform vec3 uSnow; uniform vec3 uStraw;
 // 草地的颜色（地面和草丛共用，草丛看起来就像是从地里长出来的）；bi：区域（r 红叶，g 积雪）
 vec3 jGrass( vec2 xz, vec4 sp, vec3 dA, vec4 bi ) {
@@ -247,6 +250,18 @@ const TERRAIN_COLOR = /* glsl */`
   g = mix( g, uBank * ( 0.85 + 0.3 * dA.r ), 1.0 - smoothstep( 0.4 + bankN, 1.8 + bankN, shore ) );
   g = mix( g, uPebble * ( 0.7 + 0.6 * dA.b ), ( 1.0 - smoothstep( -0.2, 0.9 + bankN, shore ) ) * smoothstep( -1.0, 0.0, shore ) * 0.8 );
   g = mix( g, uBed * ( 0.8 + 0.4 * dA.g ), 1.0 - smoothstep( -1.2, -0.2, shore ) );
+  // 沙滩：暖色的沙，靠水的一溜是湿的（深一点），浪退下去的地方刚湿；风吹出来的沙纹
+  if ( bi.a > 0.01 ) {
+    float sk = smoothstep( 0.05, 0.6, bi.a ) * ( 1.0 - rk * 0.85 );
+    vec3 sc = uSand * ( 0.86 + 0.14 * dA.r + 0.1 * ( dB.g - 0.5 ) ) * ( 0.94 + 0.08 * dA.b );
+    float rip = sin( dot( vWP.xz, vec2( -0.94, 0.342 ) ) * 3.6 + dA.b * 5.0 + dB.r * 3.0 ) * 0.5 + 0.5;
+    float wet = 1.0 - smoothstep( uSeaY + 0.2, uSeaY + 0.6 + 0.15 * dA.g, vWP.y );
+    float fresh = 1.0 - smoothstep( uSeaY + uTide, uSeaY + uTide + 0.35, vWP.y );
+    sc *= 1.0 - 0.06 * rip * ( 1.0 - wet );
+    sc = mix( sc, sc * vec3( 0.62, 0.6, 0.58 ), max( wet * 0.85, fresh ) );
+    g = mix( g, sc, sk );
+    jBH = mix( jBH, rip * 0.35 + dA.r * 0.15, sk ); jBK = mix( jBK, 0.02, sk );
+  }
   // 土路：边缘被草啃得参差，中间被踩得浅一点
   float en = ( dA.b - 0.5 ) * 0.6 + ( dB.g - 0.5 ) * 0.7;
   float road = 1.0 - smoothstep( 1.0 + en, 1.45 + en, dRoad );
@@ -282,6 +297,23 @@ const TERRAIN_COLOR = /* glsl */`
     jBH = mix( jBH, ( dS.g * 0.7 + dA.r * 0.15 ) * ( 1.0 - smoothstep( 30.0, 80.0, vd ) ) + dS2.g * 2.2, sn ); jBK = mix( jBK, 0.14, sn );
     jSnowK = sn;
   }
+  // 天气：下雨地面湿了颜色发深，路上平的地方积起小水洼；下雪平地上慢慢盖一层薄雪（陡坡、树下少）
+  if ( uWet > 0.01 ) {
+    float ny = normalize( vWN ).y;
+    g *= 1.0 - 0.26 * uWet * ( 1.0 - jSnowK );
+    float pud = road * smoothstep( 0.56, 0.7, dB.b + ( dA.r - 0.5 ) * 0.25 ) * smoothstep( 0.93, 0.99, ny ) * uWet;
+    g = mix( g, g * 0.5 + vec3( 0.025, 0.03, 0.035 ), pud );
+    jBK *= 1.0 - 0.85 * pud;
+  }
+  if ( uSnowCover > 0.01 && vWP.y > uSeaY + 0.4 ) {
+    float ny = normalize( vWN ).y;
+    float th = 0.62 - uSnowCover * 0.65;
+    float dust = smoothstep( th, th + 0.18, dB.g * 0.6 + dA.b * 0.4 ) * smoothstep( 0.74, 0.9, ny + ( dA.r - 0.5 ) * 0.1 ) * ( 1.0 - 0.6 * sp.a ) * min( 1.0, uSnowCover * 2.0 );
+    dust *= 1.0 - 0.45 * road;
+    g = mix( g, uSnow * ( 0.86 + 0.1 * dA.r ) * mix( 1.0, 0.85, road ), dust );
+    jBH = mix( jBH, dA.r * 0.2 + dB.g * 0.4, dust ); jBK = mix( jBK, 0.05, dust );
+    jSnowK = max( jSnowK, dust );
+  }
   diffuseColor.rgb *= g;
   // 远处不要细碎的起伏（会闪）；雪面的大雪堆远处也看得见
   jBK *= 1.0 - smoothstep( 30.0, 80.0, vd ) * 0.85 * ( 1.0 - jSnowK );
@@ -306,6 +338,8 @@ export function terrainUniforms(splat, detail, dirt, biome) {
   for (const [k, v] of Object.entries({ uGrass0: 'grass0', uGrass1: 'grass1', uGrass2: 'grass2', uGrass3: 'grass3', uForestC: 'forest', uRock: 'rock', uBank: 'bank', uPebble: 'pebble', uBed: 'bed',
     uAut0: 'aut0', uAut1: 'aut1', uAut2: 'aut2', uLeaf0: 'leaf0', uLeaf1: 'leaf1', uSnow: 'snow', uStraw: 'straw' }))
     uni[k] = { value: new THREE.Color(PALETTE[v]) };
+  uni.uSand = { value: new THREE.Color(PALETTE.sand) };
+  uni.uSeaY = SEA_U.uSeaY; uni.uTide = SEA_U.uTide; uni.uWet = U.uWet; uni.uSnowCover = U.uSnowCover;
   return uni;
 }
 
@@ -344,6 +378,9 @@ export function tuftMaterial(uni, fadeU) {
           float t = vColor.r;
           diffuseColor.rgb = g * mix( 0.66, 1.14, t ) * ( 0.88 + 0.24 * vColor.g );
           diffuseColor.rgb *= 1.0 - 0.3 * step( 0.6, 1.0 - smoothstep( 1.0, 1.4, sp.r * 10.0 ) );
+          // 天气：雨里草色深一点；下雪时草根埋在雪里，叶尖上也挂一点
+          diffuseColor.rgb *= 1.0 - 0.14 * uWet;
+          diffuseColor.rgb = mix( diffuseColor.rgb, uSnow * 0.92, uSnowCover * ( 0.85 * ( 1.0 - smoothstep( 0.15, 0.6, t ) ) + 0.25 ) );
         }`);
   };
   patch(m, { wind: 'grass', gobo: true, sss: 0.55, fadeOut: true, uniforms: { uFadeR: fadeU } });
@@ -525,15 +562,17 @@ if ( uFine < 0.5 ) {
   diffuseColor.rgb = c;
   jBH = n1.g * 0.7 + n3.g * 0.35 + n2.b * 0.6;
   jBK = 10.0 * ( 1.0 - 0.5 * sn );
-}`;
+}
+// 下雪天远山也白了一层（岩壁上少）
+diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.88, 0.9, 0.94 ), uSnowCover * 0.6 * ( 1.0 - vFar.y * 0.7 ) * step( 0.0, vWP.y + 0.8 ) );`;
 function farMaterial(tuni) {
   const m = new THREE.MeshLambertMaterial({ vertexColors: true });
   m.onBeforeCompile = sh => {
-    sh.uniforms.uDetail = tuni.uDetail;
+    sh.uniforms.uDetail = tuni.uDetail; sh.uniforms.uSnowCover = U.uSnowCover;
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute vec3 aFar; varying vec3 vFar;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFar = aFar;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
-      uniform sampler2D uDetail; uniform float uFine; varying vec3 vFar;
+      uniform sampler2D uDetail; uniform float uFine; uniform float uSnowCover; varying vec3 vFar;
       float jBH = 0.0; float jBK = 0.0;
       vec3 jBumpN( vec3 N, vec3 P, float h, float k ) {
         vec3 dpx = dFdx( P ), dpy = dFdy( P );

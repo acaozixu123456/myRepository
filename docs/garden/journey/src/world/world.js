@@ -6,6 +6,8 @@ import { makeDetailTex, makeDirtTex, makeSplat, makeBiome, terrainMaterial, terr
 import { makeSky } from './sky.js';
 import { buildStream, buildMist } from './water.js';
 import { buildIce } from './ice.js';
+import { buildSea } from './sea.js';
+import { makeBambooModel } from './bamboo.js';
 import { loadFlora, floraMaterials, ScatterLayer, placeFlora, canopyTexture, forestFloor, buildImpostors } from './flora.js';
 
 export const RES = 'res/';
@@ -39,10 +41,12 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   scene.add(W.stream = buildStream(land));
   scene.add(W.mist = buildMist(land));
   scene.add(W.ice = buildIce());
+  scene.add(W.sea = buildSea(land));
   await opts.yieldFn?.();
 
   say('正在种树…');
   const models = await floraP; t0 = performance.now();
+  models.Bamboo = makeBambooModel();
   const r = RADII[quality];
   const fadeU = W.fadeU = { trees: { value: r.trees }, bush: { value: r.bush }, small: { value: r.small }, rock: { value: r.rock } };
   const mats = W.floraMats = await floraMaterials(RES, fadeU, tuni);
@@ -113,7 +117,7 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   };
   return W;
 }
-const TREES = ['CommonTree_1', 'CommonTree_3', 'CommonTree_5', 'Pine_2', 'Pine_2@s'];
+const TREES = ['CommonTree_1', 'CommonTree_3', 'CommonTree_5', 'Pine_2', 'Pine_2@s', 'Bamboo'];
 
 function softenCanopy(geo, amount) {
   geo.computeBoundingBox();

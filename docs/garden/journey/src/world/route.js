@@ -102,6 +102,21 @@ export const TRAIL = (() => {
   return new Path(pts, 1);
 })();
 
+// 西边的小路：出发的地方往左手边（西边）拐，翻过西岭中间的竹林山坳，一路下到西南的海湾沙滩
+export const SEAWAY = new Path([[-2, 5], [-30, 7], [-62, 3], [-95, -5], [-128, -13], [-160, -16], [-192, -12], [-222, -18], [-252, -30], [-284, -42], [-318, -50], [-350, -56], [-378, -60], [-398, -63]], 1);
+// 海湾：海在西南边。海岸是一条朝海那边张开的抛物线（中间是沙滩海湾，两边的岬角是海崖），远处一直到天边都是海。
+// c = 往海那边离海岸多远（米，岸上为负）；t = 沿着海岸的位置（北边为负）
+export const SEA = { y: -1.2, x: -430, z: -60, nx: -0.94, nz: 0.342, R: 500 };
+export function coastCT(x, z) {
+  const dx = x - SEA.x, dz = z - SEA.z, t = dx * SEA.nz - dz * SEA.nx;
+  return [dx * SEA.nx + dz * SEA.nz - t * t / (2 * SEA.R), t];
+}
+// 海角上的小路：从快下到沙滩的那段坡上岔出去，顺着崖顶往北走到灯塔
+export const CAPEWAY = new Path([[-300, -45], [-318, -66], [-340, -90], [-366, -113], [-394, -134], [-420, -152], [-440, -164], [-449, -168]], 1);
+export const LIGHTHOUSE = { x: -455, z: -172 };
+// 海湾南边海里的几根礁石柱子：[x, z, 半径, 露出水面多高]
+export const STACKS = [[-448, 48, 7, 17], [-428, 72, 5, 11], [-476, 31, 4, 8]];
+
 // 路上的地点（用路程 s 表示），加载后算出来
 export const SPOTS = {};
 {
@@ -135,5 +150,11 @@ export const CAMP_SITES = [];
     { id: 'campMeadow', name: '花田营地', sub: '躺在花里看云', where: '东坡花田靠溪的那一头', ...face({ x: 47, z: -35 }, 75, -25) },
     { id: 'campAutumn', name: '红叶营地', sub: '红叶落在火堆边上', where: '红叶谷里，溪边小路旁的坡上', ...byTrail(CREEK_END + 90, 7.5) },
     { id: 'campLake', name: '冰湖营地', sub: '湖边很静，夜里星星特别多', where: '冰湖的出水口旁边', ...face(byTrail(9, 13), LAKE.x, LAKE.z) },
+  );
+  // 竹林里海边小路旁的一块空地；沙滩上面朝大海
+  SEAWAY.at(190, p);
+  CAMP_SITES.push(
+    { id: 'campBamboo', name: '竹林营地', sub: '竹叶沙沙的，火光一晃一晃', where: '竹林山坳里，海边小路旁边', way: true, ...face({ x: p.x + p.tz * 9, z: p.z - p.tx * 9 }, p.x, p.z) },
+    { id: 'campBeach', name: '海边营地', sub: '听着浪声，看太阳掉进海里', where: '西湾沙滩上，靠竹林那一头', way: 'beach', ...face({ x: -405, z: -42.5 }, -405 - 0.94 * 20, -42.5 + 0.342 * 20) },
   );
 }

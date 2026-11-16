@@ -1,7 +1,8 @@
 // 植被：树、灌木、草、花、石头。近处用真模型（按距离动态挑实例），远处的树用替身贴片。
 import * as THREE from 'three';
 import { DOM, CENTER, bankW, SHOAL, lakeQ, ICE_Q } from './land.js';
-import { ROAD, STREAM, SPOTS, CREEK_END, CAMP_SITES } from './route.js';
+import { ROAD, STREAM, SPOTS, CREEK_END, CAMP_SITES, SEA, SEAWAY, LIGHTHOUSE, STACKS } from './route.js';
+import { bambooTextures } from './bamboo.js';
 import { patch, U, FOG_FN } from './atmo.js';
 import { rng, fbm, vnoise, sstep, clamp } from './noise.js';
 import { autumnTint, snowLine } from './regions.js';
@@ -84,6 +85,10 @@ export async function floraMaterials(base, fadeU, tuni) {
   };
   patch(M.pineS, { wind: 'tree', gobo: false, sss: 0.2, fadeOut: true, ...near });
   M.pineS.emissive.setScalar(0.06); M.pineS.emissiveMap = M.pine.map;
+  // 竹子：竹竿和竹叶（贴图现画）
+  const bt = bambooTextures();
+  mk('bcane', bt.cane, { wind: 'tree', gobo: false, fadeOut: true, ...near });
+  mk('bleaf', bt.leaf, { wind: 'tree', gobo: false, sss: 0.6, fadeOut: true, ...near }, { alphaTest: 0.4, side: THREE.DoubleSide });
   // 这套石头贴图偏暗偏绿，提亮成暖灰
   M.bark.color.setRGB(1.2, 1.1, 1.02);
   // 松针背光时几乎是黑的：加一点自发光（按贴图本身的颜色）
@@ -189,12 +194,17 @@ export function placeFlora(land, farHeight, quality) {
     if (!grove && inGrove(x, z)) return false;
     if (!land.inside(x, z) || land.roadDist(x, z) < 3.4 || shore(x, z) < 1.5 || !clear(x, z) || onLake(x, z) || !okSpace(x, z, minD)) return false;
     const y = land.heightExact(x, z);
+    // 沙滩上、海边太低的地方不长树；竹林里只有竹子
+    if (y < SEA.y + 1.2 || land.sand(x, z) > 0.3 || land.normal(x, z)[1] < 0.8) return false;
+    if ((t === 'Bamboo') !== (land.bamboo(x, z) > 0.2) && !(t === 'Bamboo' && grove)) return false;
+    if (Math.hypot(x - LIGHTHOUSE.x, z - LIGHTHOUSE.z) < 14) return false;
     // 树线：比雪线高十几米就不长树了；雪里只有松树（落着雪），红叶谷的阔叶树是红黄色的
     if (y > snowLine(x, z) + 14) return false;
     const sn = land.snow(x, z);
     let tint = null;
     if (t === 'Pine_2') { if (sn > 0.25) t = 'Pine_2@s'; }
     else if (sn > 0.3) return false;
+    else if (t === 'Bamboo') { trees.push({ t, x, z, s, ry: 0, y: y - 0.06 }); mark(x, z); return true; }
     else if (R() < land.autumn(x, z) * 1.2) tint = autumnTint(R);
     trees.push({ t, x, z, s, ry: R() * 6.283, y: y - 0.06, tint }); mark(x, z); return true;
   };
@@ -240,6 +250,18 @@ export function placeFlora(land, farHeight, quality) {
     if (land.roadDist(x, z) < 9 || fbm(x * 0.02, z * 0.02, 2) < 0.52) continue;
     addTree(decid(), x, z, 0.95 + R() * 0.45, 12);
   }
+  // 5b) 竹林山坳：西边小路两边，一丛一丛的竹子（另用一个随机数，不打乱别处的树）
+  {
+    const RB = rng(8808);
+    for (let i = 0; i < 4200; i++) {
+      const x = -345 + RB() * 280, z = -85 + RB() * 140;
+      const b = land.bamboo(x, z);
+      if (RB() > b * 1.15) continue;
+      const before = trees.length;
+      addTree('Bamboo', x, z, 0.85 + RB() * 0.35, 3.3, true);
+      if (trees.length > before) trees[trees.length - 1].ry = RB() * 6.283;
+    }
+  }
   const nearCount = trees.length;
   // 6) 近景范围外的远处林子（只用替身）
   for (let gx = -680; gx <= 680; gx += 9) for (let gz = -680; gz <= 680; gz += 9) {
@@ -247,6 +269,7 @@ export function placeFlora(land, farHeight, quality) {
     if (land.inside(x, z)) continue;
     const r = Math.hypot(x - CENTER.x, z - CENTER.z); if (r > 680) continue;
     const h = farHeight(x, z);
+    if (h < SEA.y + 2) continue;
     const n1 = fbm(x * 0.006 + 3, z * 0.006, 3);
     if (n1 < 0.45 || h > 260 || R() > sstep(0.45, 0.6, n1) * 0.9) continue;
     const sl = snowLine(x, z); if (h > sl + 14) continue;
@@ -285,7 +308,28 @@ export function placeFlora(land, farHeight, quality) {
     // 雪地里只有几块石头
     const sn = land.snow(x, z);
     if (sn > 0.45) { if (R() < 0.012 && rd > 3.5) push(R() < 0.5 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, y - 0.12, z, 0.2 + R() * 0.5, 1.05, 0.06); continue; }
+    // 海里不长东西；沙滩上只有零星的石子、贝壳一样的小石头，靠里有几丛被海风吹黄的草
+    if (y < SEA.y + 0.15) continue;
+    const sa = land.sand(x, z);
+    if (sa > 0.35) {
+      const u2 = R();
+      if (u2 < 0.012) push('Pebble_Round_2', x, y, z, 0.35 + R() * 0.6, 1.08, 0.1);
+      else if (u2 < 0.016 && y > SEA.y + 0.6) push('Rock_Medium_2', x, y - 0.1, z, 0.12 + R() * 0.25, 1.05, 0.08);
+      else if (u2 < 0.05 && y > SEA.y + 1.5 && sa < 0.85) pushC('Grass_Wispy_Tall', x, y, z, 0.28 + R() * 0.16, [1.5, 1.25, 0.62]);
+      continue;
+    }
     const tn = treeNear(x, z, 5);
+    const bb = land.bamboo(x, z);
+    if (bb > 0.3) {
+      // 竹林底下：落了一层竹叶，蕨和矮草少少的
+      const u2 = R();
+      if (rd < 1.15) { if (u2 < 0.04 * dens) push('Pebble_Round_2', x, y, z, 0.5 + R() * 0.8, 1, 0.1); continue; }
+      if (rd < 2.4 && u2 < 0.35 * dens) { push('Grass_Common_Short', x, y - 0.02, z, 0.28 + R() * 0.18, 0.9, 0.08); continue; }
+      if (u2 < 0.07 * dens) { push('Fern_1', x, y, z, 0.1 + R() * 0.07, 1.0); continue; }
+      if (u2 < 0.09 * dens) { push('Clover_2', x, y, z, 0.3 + R() * 0.15, 0.95); continue; }
+      if (steep > 0.35 && u2 < 0.12) { push(R() < 0.5 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, y - 0.15, z, 0.25 + R() * 0.45, 1, 0.08); continue; }
+      continue;
+    }
     const mk = meadowK(x, z), au = land.autumn(x, z);
     const flowerM = Math.max(sstep(0.5, 0.68, fbm(x * 0.02 + 40, z * 0.02, 3)), mk) * (1 - au) * (1 - sn);
     const u = R();
@@ -333,6 +377,7 @@ export function placeFlora(land, farHeight, quality) {
     if (land.streamDist(x, z) < 12 && shore(x, z) < 0.5) continue;
     if (R() < land.snow(x, z) * 2.2 - 0.3 || onLake(x, z)) continue;
     const y = land.heightExact(x, z) - 0.03;
+    if (y < SEA.y + 0.4 || land.sand(x, z) > 0.3 || (land.bamboo(x, z) > 0.35 && rd > 2.2)) continue;
     const k = rd < 2.2 ? (R() < 0.5 ? 1 : 0) : R() < 0.55 ? 0 : R() < 0.6 ? 2 : 1;
     const sc = (0.8 + R() * 0.55) * (rd < 2.2 ? 1.15 : 1);
     tufts[k].push(x, y, z, R() * 6.283, sc, 1, 1, 1);
@@ -387,7 +432,7 @@ export function forestFloor(splat, trees, land) {
 
 // ---------- 远处的替身树：启动时把四种树从侧面画进一张图集 ----------
 export function buildImpostors(renderer, models, mats, trees, fadeU) {
-  const cellPx = 256, types = [...TREE_TYPES, 'Pine_2@s'], atlasW = cellPx * types.length;
+  const cellPx = 256, types = [...TREE_TYPES, 'Pine_2@s', 'Bamboo'], atlasW = cellPx * types.length;
   const rt = new THREE.WebGLRenderTarget(atlasW, cellPx, { samples: 0 });
   rt.texture.colorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();

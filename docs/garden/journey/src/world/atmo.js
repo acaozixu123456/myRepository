@@ -21,6 +21,9 @@ export const U = {
   // 画质「低」时关掉地面凹凸、岩壁贴图这些细活（手机上省一截）
   uFine: { value: 1 },
   uWind: { value: 1 },
+  // 天气：地面湿了多少（下雨）
+  uWet: { value: 0 },
+  uSnowCover: { value: 0 },      // 下雪：地上积了多少（0~0.8）
   // 看穿：xyz 是旅人胸口，w 是强度（0 关）。镜头身边、镜头到人之间的枝叶用点阵挖掉
   uSee: { value: new THREE.Vector4(0, -1e4, 0, 0) },
   // 远处替身树的环境光（天和地两头），跟着一天的光变
@@ -114,7 +117,7 @@ export function patch(mat, opts = {}) {
     if (o.grassN) fs = fs.replace('#include <normal_fragment_begin>', `#include <normal_fragment_begin>
       normal = normalize( mix( normalize( vNormal ), normalize( ( viewMatrix * vec4( 0.0, 1.0, 0.0, 0.0 ) ).xyz ), ${o.grassN.toFixed(2)} ) );`);
     // 石头顶上：谷地里长青苔，红叶谷落着叶子，雪线上积着雪
-    if (o.cover) fs = fs.replace('#include <common>', '#include <common>\nuniform sampler2D uBiome; uniform vec4 uDom;')
+    if (o.cover) fs = fs.replace('#include <common>', '#include <common>\nuniform sampler2D uBiome; uniform vec4 uDom; uniform float uSnowCover;')
       .replace('#include <color_fragment>', `#include <color_fragment>
       {
         vec3 wn = normalize( ( vec4( normalize( vNormal ), 0.0 ) * viewMatrix ).xyz );
@@ -122,7 +125,7 @@ export function patch(mat, opts = {}) {
         float nn = 0.5 + 0.25 * sin( vWP.x * 5.3 + vWP.z * 3.1 + vWP.y * 2.0 ) + 0.25 * sin( vWP.z * 7.7 - vWP.y * 6.0 + vWP.x * 1.3 );
         float top = smoothstep( 0.42, 0.82, wn.y + ( nn - 0.5 ) * 0.4 );
         vec3 cover = mix( vec3( 0.34, 0.44, 0.17 ), vec3( 0.66, 0.33, 0.12 ), smoothstep( 0.2, 0.6, bi.r ) ) * ( 0.8 + 0.4 * nn );
-        float sn = smoothstep( 0.2, 0.5, bi.g );
+        float sn = max( smoothstep( 0.2, 0.5, bi.g ), min( 1.0, uSnowCover * 1.2 ) );
         cover = mix( cover, vec3( 0.9, 0.93, 0.97 ), sn );
         diffuseColor.rgb = mix( diffuseColor.rgb, cover, top * mix( 0.6, 0.95, sn ) );
       }`);

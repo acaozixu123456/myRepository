@@ -12,6 +12,9 @@ const MUSIC = {
   night: ['starry.m4a'],            // 夜里
   sky: ['skye-cuillin.m4a'],        // 飞得很高
   camp: ['midnight-tale.m4a'],      // 营地烤火
+  coast: ['almost-bliss.m4a'],      // 西湾沙滩、海角
+  bamboo: ['ascending-vale.m4a'],   // 竹林山坳
+  rain: ['dreamer.m4a'],            // 下雨天
 };
 const FADE = 4;                     // 换曲时交叉过渡几秒
 
@@ -66,8 +69,9 @@ export class Sound {
         fetch(this.base + 'audio/hooves.json').then(r => r.json()),
       ]);
       // 名字：[声音, 播放速度, 低通频率]。叠水的轰响 = 流水放慢、去掉尖的
+      const leavesB = this.makeLeaves();
       const defs = { river: [river], birds: [birds], wind: [wind], fire: [fire], crickets: [this.makeCrickets()],
-        falls: [river, 0.6, 1300], leaves: [this.makeLeaves()] };
+        falls: [river, 0.6, 1300], leaves: [leavesB], bamboo: [leavesB, 1.3, 5200], surf: [this.makeSurf()], rain: [this.makeRain()] };
       for (const [n, [buf, rate = 1, lp = 0]] of Object.entries(defs)) {
         const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true; src.playbackRate.value = rate;
         const g = ctx.createGain(); g.gain.value = 0;
@@ -111,10 +115,10 @@ export class Sound {
     if (!this.ready) return;
     const t = this.ctx.currentTime;
     const target = { river: 0.85 * mix.river, birds: 0.5 * mix.birds, wind: 0.45 * mix.wind, fire: 0.9 * mix.fire, crickets: 0.8 * (mix.crickets || 0),
-      falls: 1.1 * (mix.falls || 0), leaves: 0.6 * (mix.leaves || 0) };
+      falls: 1.1 * (mix.falls || 0), leaves: 0.6 * (mix.leaves || 0), bamboo: 0.55 * (mix.bamboo || 0), surf: 0.9 * (mix.surf || 0), rain: 0.75 * (mix.rain || 0) };
     for (const [n, L] of Object.entries(this.loops)) {
       L.g.gain.setTargetAtTime(target[n] || 0, t, n === 'wind' ? 1.1 : 0.6);
-      const p = n === 'river' ? mix.riverPan : n === 'falls' ? mix.fallsPan : null;
+      const p = n === 'river' ? mix.riverPan : n === 'falls' ? mix.fallsPan : n === 'surf' ? mix.surfPan : null;
       if (L.pan && p != null) L.pan.pan.setTargetAtTime(p, t, 0.3);
     }
   }
@@ -235,6 +239,81 @@ export class Sound {
       }
     }
     return b;
+  }
+  // 海浪：12 秒一段循环，两层浪：低沉的涌起来、哗地拍上沙滩，再沙沙地退回去（碎石子、泡沫的细响）
+  makeSurf() {
+    const ctx = this.ctx, sr = ctx.sampleRate, D = 12, len = Math.floor(sr * D), b = ctx.createBuffer(2, len, sr);
+    const L = b.getChannelData(0), R = b.getChannelData(1);
+    // 每道浪的包络：慢慢涌起，到顶拍下，拖一条长长的尾巴
+    const wave = (t, t0, dur) => { let u = (t - t0) / dur; u -= Math.floor(u); return u < 0.42 ? Math.pow(u / 0.42, 2.2) : Math.exp(-(u - 0.42) * 5.5); };
+    let lo1 = 0, lo2 = 0, hiP = 0, lo3 = 0, lo4 = 0;
+    for (let i = 0; i < len; i++) {
+      const t = i / sr;
+      const e1 = wave(t, 0, 6), e2 = wave(t, 3.3, 6);
+      const w = Math.random() * 2 - 1, w2 = Math.random() * 2 - 1;
+      lo1 += (w - lo1) * 0.035; lo2 += (lo1 - lo2) * 0.08;      // 低沉的轰
+      lo3 += (w2 - lo3) * 0.25; lo4 += (w2 - lo4) * 0.5;
+      const hiss = lo4 - lo3; hiP = w;                         // 沙沙（中高频）
+      const body = lo2 * 3.2, crash = lo3 * 1.1;
+      const vL = body * (0.35 + 0.65 * e1) * 0.6 + crash * e1 * 0.32 + hiss * Math.pow(e1, 0.6) * 0.18;
+      const vR = body * (0.35 + 0.65 * e2) * 0.6 + crash * e2 * 0.32 + hiss * Math.pow(e2, 0.6) * 0.18;
+      L[i] = vL * 0.75 + vR * 0.25; R[i] = vR * 0.75 + vL * 0.25;
+    }
+    // 循环接口处抹平
+    const fade = Math.floor(sr * 0.05);
+    for (let i = 0; i < fade; i++) { const k = i / fade; L[i] = L[i] * k + L[len - fade + i] * (1 - k); R[i] = R[i] * k + R[len - fade + i] * (1 - k); }
+    return b;
+  }
+  // 雨：一层软软的沙沙（粉红噪声），上面撒满了细小的滴答（落在叶子、地上）
+  makeRain() {
+    const ctx = this.ctx, sr = ctx.sampleRate, D = 6, len = Math.floor(sr * D), b = ctx.createBuffer(2, len, sr);
+    const L = b.getChannelData(0), R = b.getChannelData(1);
+    let b0 = 0, b1 = 0, b2 = 0, c0 = 0, c1 = 0, c2 = 0;
+    for (let i = 0; i < len; i++) {
+      const w = Math.random() * 2 - 1, v = Math.random() * 2 - 1;
+      b0 = 0.99765 * b0 + w * 0.099; b1 = 0.963 * b1 + w * 0.2965; b2 = 0.57 * b2 + w * 1.0527;
+      c0 = 0.99765 * c0 + v * 0.099; c1 = 0.963 * c1 + v * 0.2965; c2 = 0.57 * c2 + v * 1.0527;
+      L[i] = (b0 + b1 + b2 + w * 0.1848) * 0.035; R[i] = (c0 + c1 + c2 + v * 0.1848) * 0.035;
+    }
+    for (let k = 0; k < 2600; k++) {
+      const i0 = Math.floor(Math.random() * len), m = Math.floor((0.002 + Math.random() * 0.006) * sr);
+      const f = 1800 + Math.random() * 4500, vol = 0.03 * Math.pow(Math.random(), 2), pan = Math.random() * 1.6 - 0.8;
+      for (let i = 0; i < m; i++) {
+        const j = (i0 + i) % len, v = Math.sin(2 * Math.PI * f * i / sr) * Math.exp(-i / (m * 0.25)) * vol;
+        L[j] += v * (0.6 - pan * 0.4); R[j] += v * (0.6 + pan * 0.4);
+      }
+    }
+    return b;
+  }
+  // 竹子被风吹得互相碰一下：空空的“笃、笃”两三声
+  knock(v = 0.5, pan = 0) {
+    if (!this.ready || this.muted) return;
+    const ctx = this.ctx, t0 = ctx.currentTime + 0.02, n = 1 + ((Math.random() * 3) | 0), f = 380 + Math.random() * 360;
+    const p = ctx.createStereoPanner ? ctx.createStereoPanner() : null, out = ctx.createGain(); out.gain.value = 1;
+    if (p) { p.pan.value = pan; out.connect(p); p.connect(this.ambGain); } else out.connect(this.ambGain);
+    for (let k = 0; k < n; k++) {
+      const t = t0 + k * (0.13 + Math.random() * 0.12), ff = f * (1 + (Math.random() - 0.5) * 0.15);
+      const o = ctx.createOscillator(), g = ctx.createGain(), o2 = ctx.createOscillator(), g2 = ctx.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(ff * 1.12, t); o.frequency.exponentialRampToValueAtTime(ff, t + 0.03);
+      o2.type = 'sine'; o2.frequency.value = ff * 2.7;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16 * v, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+      g2.gain.setValueAtTime(0.0001, t); g2.gain.exponentialRampToValueAtTime(0.05 * v, t + 0.002); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+      o.connect(g); g.connect(out); o2.connect(g2); g2.connect(out);
+      o.start(t); o.stop(t + 0.2); o2.start(t); o2.stop(t + 0.08);
+    }
+  }
+  // 远处一声闷闷的雷（下大雨时偶尔）
+  thunder(v = 0.5, pan = 0) {
+    if (!this.ready || this.muted) return;
+    const ctx = this.ctx, t = ctx.currentTime + 0.05, dur = 3 + Math.random() * 2.5;
+    const src = ctx.createBufferSource(); src.buffer = this.noise(); src.loop = true;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(380, t); lp.frequency.exponentialRampToValueAtTime(60, t + dur);
+    const g = ctx.createGain(), p = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5 * v, t + 0.35); g.gain.setValueAtTime(0.5 * v, t + 0.8);
+    g.gain.exponentialRampToValueAtTime(0.25 * v, t + 1.4); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(lp); lp.connect(g);
+    if (p) { p.pan.value = pan; g.connect(p); p.connect(this.ambGain); } else g.connect(this.ambGain);
+    src.start(t); src.stop(t + dur + 0.1);
   }
   // 冰鸣：冰面受力时“啾——”一声从高往低滑下去（像激光枪），在冰上来回传几下，回声一次比一次闷
   iceSing(v = 0.5, pan = 0) {

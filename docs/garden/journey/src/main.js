@@ -4,6 +4,8 @@ import { U, installGrade } from './world/atmo.js';
 import { ROAD, SPOTS, TRAIL } from './world/route.js';
 import { buildWorld, RES } from './world/world.js';
 import { buildBridge, buildWindmill, buildFences, buildCamp } from './world/props.js';
+import { buildLighthouse } from './world/lighthouse.js';
+import { Weather, WEATHERS, wxName } from './world/weather.js';
 import { makeHorseB, makeHorseA, loadAnimal, makeReins, MOUNT_INFO } from './actors/actors.js';
 import { makeTraveler } from './actors/traveler.js';
 import { makeWings } from './actors/wings.js';
@@ -61,6 +63,7 @@ function setSize() {
 addEventListener('resize', setSize);
 setSize();
 
+let lighthouse = null, weather = null;
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 let mapView = null, beacon = null, journal = null, photo = null;
 const album = new Album();
@@ -149,6 +152,17 @@ const ui = initUI({
     if (a === 'up') { ui.rest(null); J.standUp(); ui.hint(ui.goHint()); save(); }
   },
   skipTime: () => { if (J && playing) J.skipTime(); },
+  // 天气：随天 → 晴 → 多云 → 小雨 → 起雾 → 下雪 → 随天
+  cycleWeather: () => {
+    if (!J || !playing || !weather) return;
+    const ids = [null, ...WEATHERS.map(w => w.id)], i = ids.indexOf(weather.lock);
+    const next = ids[(i + 1) % ids.length];
+    weather.set(next);
+    if (!next) weather.nextH = 1.5 + Math.random() * 2;
+    ui.hint(next ? `天气定成了「${wxName(next)}」，再点换一种` : '天气又跟着天变了');
+    clearTimeout(cycleHintT); cycleHintT = setTimeout(() => ui.hint(''), 2600);
+    save();
+  },
   // 地图：打开时游戏停下来（不画 3D），关上接着走
   openMap: id => { if (!J || !playing || !mapView) return; if (mapView.isOpen) { mapView.close(); return; } J.holding = false; mapView.open(id); },
   // 开始卡片上的“从头开始”：不用存档
@@ -172,6 +186,7 @@ ui.ctl(ctlPref === 'hold' ? 'hold' : 'stick');
 
 // 走法、步态名字和坐骑在界面上同步（切换要过渡一会儿，所以每帧看一下）
 let shownMode = '', shownMount = '', shownGait = -1;
+let cycleHintT = 0;
 function syncUI() {
   const m = J.uiMode, k = J.mountKey;
   if (m !== shownMode || k !== shownMount) {
@@ -187,6 +202,7 @@ function syncUI() {
     ui.stickGait(names?.[J.gait] || '');
   }
   ui.time(periodOf(J.ff ? J.ff.to : J.tod).name, !!J.ff || (J.sitting && J.sitTo !== null));
+  if (weather) ui.weather(wxName(weather.id), !!weather.lock);
   // 坐在火边：下面一张小卡片，选歇到什么时候、拍照、看手记、起身
   ui.rest(J.sitting && J.campT > 1.2 && !photo?.active && !journal?.isOpen ? restState() : null);
 }
@@ -262,8 +278,10 @@ function step(dt) {
   placeSun(focus);
   W.update(camera, focus, dt);
   windmill.userData.update(dt);
+  W.sea.userData.update(U.uTime.value);
+  lighthouse.userData.update(dt, Math.min(1, Math.max(0, (0.1 - J.daylight.sunPos.y) / 0.16)), Math.max(weather.k.f, weather.k.r * 0.8, weather.k.o * 0.5));
   // 萤火虫：夜里才有
-  const px = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
+  const px = J.px = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
   fireflies.userData.update(J.p, Math.min(1, Math.max(0, (J.night - 0.3) / 0.5)) * (1 - W.land.snow(J.p.x, J.p.z)), px);
   // 红叶谷的落叶、雪线上的雪花
   falling.userData.update(J.p, px, dt);
@@ -338,6 +356,8 @@ async function load() {
   const bridge = buildBridge(W.land); scene.add(bridge.mesh);
   windmill = buildWindmill(W.land); scene.add(windmill);
   const fences = buildFences(W.land); scene.add(fences);
+  lighthouse = buildLighthouse(W.land); scene.add(lighthouse);
+  weather = new Weather(); scene.add(weather.group);
   const campP = buildCamp(W.land, RES);
   say('正在牵马…');
   await nextFrame();
@@ -352,9 +372,10 @@ async function load() {
   const reins = makeReins(); scene.add(reins);
   // 挡路的东西：树干、风车、营地、栅栏
   const colliders = new Colliders();
-  for (const t of W.placed.trees) if (!t.far) { const pine = t.t.startsWith('Pine'); colliders.addCircle(t.x, t.z, (pine ? 0.32 : 0.4) * t.s, 7 * t.s, (pine ? 1.7 : 0.75) * t.s); }
+  for (const t of W.placed.trees) if (!t.far) { const pine = t.t.startsWith('Pine'), bam = t.t === 'Bamboo'; colliders.addCircle(t.x, t.z, (bam ? 0.62 : pine ? 0.32 : 0.4) * t.s, (bam ? 9 : 7) * t.s, (bam ? 1.1 : pine ? 1.7 : 0.75) * t.s); }
   colliders.addCircle(62, -118, 2.5, 11);
   for (const [x, z, r] of camp.userData.blocks) colliders.addCircle(x, z, r, 2);
+  for (const [x, z, r] of lighthouse.userData.blocks) colliders.addCircle(x, z, r, 16);
   for (const [ax, az, bx, bz] of fences.userData.segs) colliders.addSeg(ax, az, bx, bz, 0.08, 1.2);
   for (const [x, z, r] of fences.userData.posts) colliders.addCircle(x, z, r, 2);
   cam = new CamRig(camera, (x, z) => W.land.height(x, z));
@@ -363,7 +384,7 @@ async function load() {
   quality = new Quality(applyTier, q0);
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
-  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight });
+  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight, weather, focus });
   J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);   // 截图沿用老镜头，参数好复现
   if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; }   // 调试：测试脚本读状态
   beacon = makeBeacon(); scene.add(beacon);
@@ -441,6 +462,8 @@ function shotSetup() {
   // 时间：tod=钟点（0~24）；dusk=0~1 是以前的黄昏参数（下午四点半到六点半）
   if (P.has('dusk')) { J.tod = START_TOD + +P.get('dusk') * 1.9; J.applyDay(0); }
   if (P.has('tod')) { J.tod = +P.get('tod'); J.applyDay(0); }
+  // 天气：wx=clear|cloudy|rain|fog|snow，直接到位
+  if (P.get('wx')) { weather.set(P.get('wx')); J.applyDay(0); weather.settle(); J.applyDay(0); }
   if (P.get('act') === 'takeoff') J.setMode('fly');
   if (P.get('act') === 'land') J.setMode('foot');
   if (P.get('act') === 'dismount') J.setMode('foot');
