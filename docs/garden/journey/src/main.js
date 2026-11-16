@@ -1,7 +1,7 @@
 // 旅途 · 第一段「暖光谷地」：入口。加载世界、道具、几匹坐骑、旅人和翅膀，接上界面、声音、画质和每帧循环。
 import * as THREE from 'three';
 import { U, installGrade } from './world/atmo.js';
-import { ROAD, SPOTS } from './world/route.js';
+import { ROAD, SPOTS, TRAIL } from './world/route.js';
 import { buildWorld, RES } from './world/world.js';
 import { buildBridge, buildWindmill, buildFences, buildCamp } from './world/props.js';
 import { makeHorseB, makeHorseA, loadAnimal, makeReins, MOUNT_INFO } from './actors/actors.js';
@@ -15,6 +15,7 @@ import { initUI } from './game/ui.js';
 import { DayLight, periodOf } from './world/daytime.js';
 import { SKY } from './world/sky.js';
 import { makeFireflies } from './world/fireflies.js';
+import { makeFalling } from './world/particles.js';
 import { loadSave, writeSave, clearSave } from './game/save.js';
 
 const P = new URLSearchParams(location.search);
@@ -55,7 +56,7 @@ function setSize() {
 addEventListener('resize', setSize);
 setSize();
 
-let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, playing = false;
+let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 const travelers = {};          // m / f：选到哪个才加载哪个
 // 存档：截图模式不读不写
 const saved = SHOT || P.has('fresh') ? null : loadSave();
@@ -217,7 +218,9 @@ function step(dt) {
   windmill.userData.update(dt);
   // 萤火虫：夜里才有
   const px = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
-  fireflies.userData.update(J.p, Math.min(1, Math.max(0, (J.night - 0.3) / 0.5)), px);
+  fireflies.userData.update(J.p, Math.min(1, Math.max(0, (J.night - 0.3) / 0.5)) * (1 - W.land.snow(J.p.x, J.p.z)), px);
+  // 红叶谷的落叶、雪线上的雪花
+  falling.userData.update(J.p, px, dt);
   syncUI();
   saveT += dt;
   if (saveT > 15) { saveT = 0; save(); }
@@ -270,6 +273,7 @@ async function load() {
   W = await buildWorld(renderer, scene, q0, say, { yieldFn: nextFrame });
   const daylight = new DayLight({ sun, hemi, renderer, water: W.stream });
   fireflies = makeFireflies(W.land); scene.add(fireflies);
+  falling = makeFalling(W.land); scene.add(falling);
   say('正在搭桥、种栅栏…');
   await nextFrame();
   const bridge = buildBridge(W.land); scene.add(bridge.mesh);
@@ -289,7 +293,7 @@ async function load() {
   const reins = makeReins(); scene.add(reins);
   // 挡路的东西：树干、风车、营地、栅栏
   const colliders = new Colliders();
-  for (const t of W.placed.trees) if (!t.far) { const pine = t.t === 'Pine_2'; colliders.addCircle(t.x, t.z, (pine ? 0.32 : 0.4) * t.s, 7 * t.s, (pine ? 1.7 : 0.75) * t.s); }
+  for (const t of W.placed.trees) if (!t.far) { const pine = t.t.startsWith('Pine'); colliders.addCircle(t.x, t.z, (pine ? 0.32 : 0.4) * t.s, 7 * t.s, (pine ? 1.7 : 0.75) * t.s); }
   colliders.addCircle(62, -118, 2.5, 11);
   for (const [x, z, r] of camp.userData.blocks) colliders.addCircle(x, z, r, 2);
   for (const [ax, az, bx, bz] of fences.userData.segs) colliders.addSeg(ax, az, bx, bz, 0.08, 1.2);
@@ -301,7 +305,7 @@ async function load() {
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
   J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight });
-  if (P.has('debug')) { window.__J = J; window.__scene = scene; }   // 调试：测试脚本读状态
+  if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; }   // 调试：测试脚本读状态
   J.onCamp = showSummary;
   J.onVisit = () => save();
   if (saved) { try { J.restore(saved); ui.resume(resumeText(saved)); } catch (e) { console.warn('[j] restore', e); clearSave(); } }
@@ -403,7 +407,7 @@ function shotSetup() {
     if (++n < 3) requestAnimationFrame(one);
     else {
       const V = o => { const v = new THREE.Vector3(); o.getWorldPosition(v); return v.toArray().map(x => +x.toFixed(2)); };
-      window.__info = { flora: { trees: W.stats.trees, small: Object.values(W.stats.small).reduce((a, b) => a + b, 0), tufts: W.placed.tufts.reduce((a, t) => a + t.length / 8, 0) }, bench: window.__bench, calls: renderer.info.render.calls, tris: renderer.info.render.triangles, mode: J.mode, trans: J.trans?.kind || null,
+      window.__info = { ms: W.ms, flora: { trees: W.stats.trees, small: Object.values(W.stats.small).reduce((a, b) => a + b, 0), tufts: W.placed.tufts.reduce((a, t) => a + t.length / 8, 0) }, bench: window.__bench, calls: renderer.info.render.calls, tris: renderer.info.render.triangles, mode: J.mode, trans: J.trans?.kind || null,
         p: J.p.toArray().map(x => +x.toFixed(2)), yaw: +J.yaw.toFixed(2), speed: +J.speed.toFixed(2), alt: +(J.alt || 0).toFixed(1), mount: J.mountKey,
         mountAt: J.mount ? V(J.mount.root) : null, pelvis: J.T.pelvis(new THREE.Vector3()).toArray().map(x => +x.toFixed(2)), visited: J.visited, cam: camera.position.toArray().map(x => +x.toFixed(1)) };
       window.__ready = true;

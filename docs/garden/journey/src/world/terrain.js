@@ -1,6 +1,7 @@
 // 地面：近景分块网格（路、溪岸、草地、坡上岩石在着色器里按距离场混色）+ 远景粗网格（顶点色：草、林、岩、雪）
 import * as THREE from 'three';
 import { DOM, CENTER, farH, bankW } from './land.js';
+import { snowK } from './regions.js';
 import { patch } from './atmo.js';
 import { fbm, vnoise, sstep, clamp, rng } from './noise.js';
 
@@ -109,7 +110,7 @@ export function makeSplat(land) {
   const NX = land.NX, NZ = land.NZ, data = new Uint8Array(NX * NZ * 4);
   for (let gz = 0; gz < NZ; gz++) for (let gx = 0; gx < NX; gx++) {
     const k = gz * NX + gx, x = DOM.x0 + gx * DOM.cell, z = DOM.z0 + gz * DOM.cell;
-    data[k * 4] = clamp(Math.abs(land.roadD[k]) / 10, 0, 1) * 255;
+    data[k * 4] = clamp(Math.min(Math.abs(land.roadD[k]), land.trD[k] + 0.55) / 10, 0, 1) * 255;
     const e = land.strD[k] - bankW(land.strS[k]);
     data[k * 4 + 1] = clamp((e + 4) / 24, 0, 1) * 255;
     data[k * 4 + 2] = sstep(0.5, 0.68, fbm(x * 0.02 + 40, z * 0.02, 3)) * 255;
@@ -120,26 +121,51 @@ export function makeSplat(land) {
   return t;
 }
 
+// 区域纹理：R 红叶，G 积雪
+export function makeBiome(land) {
+  const NX = land.NX, NZ = land.NZ, data = new Uint8Array(NX * NZ * 4);
+  for (let k = 0; k < NX * NZ; k++) { data[k * 4] = land.AU[k]; data[k * 4 + 1] = land.SN[k]; data[k * 4 + 3] = 255; }
+  const t = new THREE.DataTexture(data, NX, NZ, THREE.RGBAFormat);
+  t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearFilter; t.needsUpdate = true;
+  return t;
+}
+
 export const PALETTE = {
   grass0: '#86a03f', grass1: '#a4b04a', grass2: '#cdbb63', grass3: '#56803a', forest: '#5a5a32',
   rock: '#8f8574', bank: '#6e5c45', pebble: '#a49a86', bed: '#5d6a52',
+  // 秋天的草地：金黄、赭石、带绿的枯草；落叶：橙红、深红
+  aut0: '#b59a52', aut1: '#a67d48', aut2: '#8e9244', leaf0: '#b8541e', leaf1: '#8a3a1c',
+  snow: '#e2e8f0', straw: '#c9bd8e',
 };
 
 export const TERRAIN_GLSL = /* glsl */`
 uniform sampler2D uSplat; uniform sampler2D uDetail; uniform sampler2D uDirt; uniform vec4 uDom;
 uniform vec3 uGrass0; uniform vec3 uGrass1; uniform vec3 uGrass2; uniform vec3 uGrass3; uniform vec3 uForestC;
 uniform vec3 uRock; uniform vec3 uBank; uniform vec3 uPebble; uniform vec3 uBed;
-// 草地的颜色（地面和草丛共用，草丛看起来就像是从地里长出来的）
-vec3 jGrass( vec2 xz, vec4 sp, vec3 dA ) {
+uniform sampler2D uBiome; uniform vec3 uAut0; uniform vec3 uAut1; uniform vec3 uAut2; uniform vec3 uLeaf0; uniform vec3 uLeaf1; uniform vec3 uSnow; uniform vec3 uStraw;
+// 草地的颜色（地面和草丛共用，草丛看起来就像是从地里长出来的）；bi：区域（r 红叶，g 积雪）
+vec3 jGrass( vec2 xz, vec4 sp, vec3 dA, vec4 bi ) {
   vec3 dB = texture2D( uDetail, xz * 0.031 + vec2( 0.37, 0.71 ) ).rgb;
   vec3 dC = texture2D( uDetail, xz * 0.0072 + vec2( 0.11, 0.53 ) ).rgb;
   vec3 g = mix( uGrass0, uGrass1, smoothstep( 0.3, 0.7, dC.g ) );
   g = mix( g, uGrass2, smoothstep( 0.52, 0.8, dB.g ) * 0.6 * ( 0.4 + 0.6 * sp.b ) );
   g = mix( g, uGrass3, smoothstep( 0.5, 0.85, dC.b ) * 0.55 );
   g *= 0.8 + 0.4 * dA.r;
-  return mix( g, uForestC * ( 0.85 + 0.3 * dA.g ), sp.a * 0.8 );
+  g = mix( g, uForestC * ( 0.85 + 0.3 * dA.g ), sp.a * 0.8 );
+  if ( bi.r > 0.01 ) {
+    // 秋天：草黄了，林下铺满落叶
+    vec3 a = mix( uAut0, uAut1, smoothstep( 0.35, 0.7, dC.g ) );
+    a = mix( a, uAut2, smoothstep( 0.5, 0.85, dC.b ) * 0.6 );
+    a *= 0.8 + 0.4 * dA.r;
+    vec3 lit = mix( uLeaf0, uLeaf1, smoothstep( 0.35, 0.75, dA.g ) ) * ( 0.8 + 0.4 * dA.b );
+    a = mix( a, lit, clamp( sp.a * 1.2 + smoothstep( 0.6, 0.8, dB.g ) * 0.35, 0.0, 1.0 ) );
+    g = mix( g, a, smoothstep( 0.0, 0.7, bi.r ) * 0.88 );
+  }
+  // 雪线附近的草干枯发白
+  return mix( g, uStraw * ( 0.85 + 0.3 * dA.r ), smoothstep( 0.05, 0.6, bi.g ) * 0.7 );
 }
 vec4 jSplat( vec2 xz ) { return texture2D( uSplat, ( xz - uDom.xy ) / uDom.zw ); }
+vec4 jBiome( vec2 xz ) { return texture2D( uBiome, ( xz - uDom.xy ) / uDom.zw ); }
 `;
 const TERRAIN_VS = /* glsl */`varying vec3 vWN;`;
 const TERRAIN_COLOR = /* glsl */`
@@ -148,11 +174,13 @@ const TERRAIN_COLOR = /* glsl */`
   float dRoad = sp.r * 10.0, shore = sp.g * 24.0 - 4.0;
   vec3 dA = texture2D( uDetail, vWP.xz * 0.13 ).rgb;
   vec3 dB = texture2D( uDetail, vWP.xz * 0.031 + vec2( 0.37, 0.71 ) ).rgb;
-  vec3 g = jGrass( vWP.xz, sp, dA );
+  vec4 bi = jBiome( vWP.xz );
+  vec3 g = jGrass( vWP.xz, sp, dA, bi );
   // 坡上露出岩石
   float slope = 1.0 - normalize( vWN ).y;
   float rk = smoothstep( 0.3, 0.46, slope + ( dB.r - 0.5 ) * 0.22 );
-  g = mix( g, uRock * ( 0.75 + 0.5 * dA.g ), rk );
+  // 雪山上的岩石冷一些、暗一些
+  g = mix( g, mix( uRock, vec3( 0.36, 0.38, 0.42 ), bi.g * 0.75 ) * ( 0.75 + 0.5 * dA.g ), rk );
   // 溪岸：卵石滩、湿土，水下是河床
   float bankN = ( dA.b - 0.5 ) * 0.8;
   g = mix( g, uBank * ( 0.85 + 0.3 * dA.r ), 1.0 - smoothstep( 0.4 + bankN, 1.8 + bankN, shore ) );
@@ -165,16 +193,32 @@ const TERRAIN_COLOR = /* glsl */`
   dirt *= 1.0 + 0.1 * ( 1.0 - smoothstep( 0.0, 0.9, dRoad ) );
   float edge = smoothstep( 0.9, 1.5, dRoad ) * ( 1.0 - smoothstep( 1.5, 2.6, dRoad ) );
   g *= 1.0 - 0.16 * edge;
-  diffuseColor.rgb *= mix( g, dirt, road );
+  g = mix( g, dirt, road );
+  // 积雪：陡的岩壁上挂不住，树下少，小路上被踩得发灰
+  if ( bi.g > 0.01 ) {
+    float ny = normalize( vWN ).y;
+    float sn = smoothstep( 0.3, 0.62, bi.g + ( dB.g - 0.5 ) * 0.45 + ( dA.b - 0.5 ) * 0.2 );
+    // 雪厚的地方陡坡上也挂得住，只露出一道道岩石
+    float th = mix( 0.72, 0.5, smoothstep( 0.5, 1.0, bi.g ) );
+    sn *= smoothstep( th - 0.1, th + 0.08, ny + ( dB.r - 0.5 ) * 0.22 + ( dA.g - 0.5 ) * 0.1 );
+    sn *= 1.0 - 0.45 * sp.a;
+    // 雪面：风吹出来的一道道雪垄，背阴处带点蓝
+    vec3 dS = texture2D( uDetail, vWP.xz * 0.05 + vec2( 0.2, 0.6 ) ).rgb;
+    vec3 sc = uSnow * ( 0.88 + 0.08 * dA.r + 0.08 * dS.g );
+    sc = mix( sc, sc * vec3( 0.84, 0.91, 1.0 ), smoothstep( 0.42, 0.72, dS.b ) * 0.55 );
+    g = mix( g, sc * mix( 1.0, 0.86, road ), sn );
+  }
+  diffuseColor.rgb *= g;
 }
 `;
 
-export function terrainUniforms(splat, detail, dirt) {
+export function terrainUniforms(splat, detail, dirt, biome) {
   const uni = {
-    uSplat: { value: splat }, uDetail: { value: detail }, uDirt: { value: dirt },
+    uSplat: { value: splat }, uDetail: { value: detail }, uDirt: { value: dirt }, uBiome: { value: biome },
     uDom: { value: new THREE.Vector4(DOM.x0, DOM.z0, DOM.w, DOM.d) },
   };
-  for (const [k, v] of Object.entries({ uGrass0: 'grass0', uGrass1: 'grass1', uGrass2: 'grass2', uGrass3: 'grass3', uForestC: 'forest', uRock: 'rock', uBank: 'bank', uPebble: 'pebble', uBed: 'bed' }))
+  for (const [k, v] of Object.entries({ uGrass0: 'grass0', uGrass1: 'grass1', uGrass2: 'grass2', uGrass3: 'grass3', uForestC: 'forest', uRock: 'rock', uBank: 'bank', uPebble: 'pebble', uBed: 'bed',
+    uAut0: 'aut0', uAut1: 'aut1', uAut2: 'aut2', uLeaf0: 'leaf0', uLeaf1: 'leaf1', uSnow: 'snow', uStraw: 'straw' }))
     uni[k] = { value: new THREE.Color(PALETTE[v]) };
   return uni;
 }
@@ -201,11 +245,13 @@ export function tuftMaterial(uni, fadeU) {
   m.onBeforeCompile = sh => {
     Object.assign(sh.uniforms, uni);
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\n' + TERRAIN_GLSL)
+      // 草叶两面都按朝上的法线打光（不然背面朝着镜头的叶子是黑的）
+      .replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\nnormal = normalize( vNormal );')
       .replace('#include <color_fragment>', `
         {
           vec4 sp = jSplat( vWP.xz );
           vec3 dA = texture2D( uDetail, vWP.xz * 0.13 ).rgb;
-          vec3 g = jGrass( vWP.xz, sp, dA );
+          vec3 g = jGrass( vWP.xz, sp, dA, jBiome( vWP.xz ) );
           // 顶点色：r = 高度比例（0 根 1 尖），g = 亮度扰动
           float t = vColor.r;
           diffuseColor.rgb = g * mix( 0.5, 1.1, t ) * ( 0.9 + 0.2 * vColor.g );
@@ -259,27 +305,92 @@ export function buildNear(land, mat) {
     const nx = (hl - hr), nz = (hd - hu), ny = 2 * DOM.cell, l = Math.hypot(nx, ny, nz);
     N[k * 3] = nx / l; N[k * 3 + 1] = ny / l; N[k * 3 + 2] = nz / l;
   }
+  // 每块三套三角形：近处 1 格、远一点 2 格、更远 4 格一个三角形；每块四周挂一圈往下的裙边，
+  // 粗细不同的两块拼在一起时，接缝的小缝被裙边挡住。
+  // 所有块的顶点放在同一个网格里，按每块现在用哪一套拼出一份索引，整片近景地面只画一次（手机上少几十次绘制）
+  const LOD = [1, 2, 4], chunks = [];
+  let totalV = 0;
   for (let cz = 0; cz < DOM.nz; cz += C) for (let cx = 0; cx < DOM.nx; cx += C) {
     const w = Math.min(C, DOM.nx - cx), d = Math.min(C, DOM.nz - cz);
-    const pos = new Float32Array((w + 1) * (d + 1) * 3), nor = new Float32Array(pos.length);
-    let v = 0;
+    // 一圈边上的格点（顺着走一圈）
+    const ring = [];
+    for (let i = 0; i <= w; i++) ring.push([i, 0]);
+    for (let j = 1; j <= d; j++) ring.push([w, j]);
+    for (let i = w - 1; i >= 0; i--) ring.push([i, d]);
+    for (let j = d - 1; j >= 0; j--) ring.push([0, j]);
+    const nv = (w + 1) * (d + 1);
+    chunks.push({ cx, cz, w, d, ring, nv, base: totalV, level: 2,
+      x: DOM.x0 + (cx + w / 2) * DOM.cell, z: DOM.z0 + (cz + d / 2) * DOM.cell });
+    totalV += nv + ring.length;
+  }
+  const pos = new Float32Array(totalV * 3), nor = new Float32Array(totalV * 3);
+  for (const ch of chunks) {
+    const { cx, cz, w, d, ring, nv } = ch;
+    let v = ch.base * 3;
     for (let j = 0; j <= d; j++) for (let i = 0; i <= w; i++) {
       const gx = cx + i, gz = cz + j, k = gz * NX + gx;
       pos[v] = DOM.x0 + gx * DOM.cell; pos[v + 1] = H[k]; pos[v + 2] = DOM.z0 + gz * DOM.cell;
       nor[v] = N[k * 3]; nor[v + 1] = N[k * 3 + 1]; nor[v + 2] = N[k * 3 + 2]; v += 3;
     }
-    const idx = [];
-    for (let j = 0; j < d; j++) for (let i = 0; i < w; i++) {
-      const a = j * (w + 1) + i, b = a + 1, c = a + w + 1, e = c + 1;
-      idx.push(a, c, b, b, c, e);
+    for (const [i, j] of ring) {
+      const k = (cz + j) * NX + cx + i;
+      pos[v] = DOM.x0 + (cx + i) * DOM.cell; pos[v + 1] = H[k] - 1.6; pos[v + 2] = DOM.z0 + (cz + j) * DOM.cell;
+      nor[v] = N[k * 3]; nor[v + 1] = N[k * 3 + 1]; nor[v + 2] = N[k * 3 + 2]; v += 3;
     }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
-    geo.setIndex(idx); geo.computeBoundingSphere(); geo.computeBoundingBox();
-    const m = new THREE.Mesh(geo, mat); m.receiveShadow = true; m.matrixAutoUpdate = false;
-    group.add(m);
+    ch.lod = LOD.map(st => {
+      const idx = [];
+      for (let j = 0; j < d; j += st) for (let i = 0; i < w; i += st) {
+        const a = j * (w + 1) + i, b = a + st, c = a + st * (w + 1), e = c + st;
+        idx.push(a, c, b, b, c, e);
+      }
+      // 裙边：只连这一档用到的边上格点（两面都画）
+      const on = ring.map(([i, j]) => (i % st === 0 && j % st === 0));
+      let prev = -1;
+      for (let r = 0; r <= ring.length; r++) {
+        const rr = r % ring.length; if (!on[rr]) continue;
+        if (prev >= 0) {
+          const [ia, ja] = ring[prev], [ib, jb] = ring[rr];
+          const ta = ja * (w + 1) + ia, tb = jb * (w + 1) + ib, ba = nv + prev, bb = nv + rr;
+          idx.push(ta, ba, tb, tb, ba, bb, ta, tb, ba, tb, bb, ba);
+        }
+        prev = rr;
+      }
+      return Uint16Array.from(idx);
+    });
   }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  let cap = 0, arr = null, iAttr = null;
+  const rebuild = () => {
+    let n = 0; for (const ch of chunks) n += ch.lod[ch.level].length;
+    if (n > cap) {
+      cap = Math.ceil(n * 1.3); arr = new Uint32Array(cap);
+      iAttr = new THREE.BufferAttribute(arr, 1); iAttr.setUsage(THREE.DynamicDrawUsage); geo.setIndex(iAttr);
+    }
+    let o = 0;
+    for (const ch of chunks) { const src = ch.lod[ch.level], b = ch.base; for (let i = 0; i < src.length; i++) arr[o++] = b + src[i]; }
+    iAttr.clearUpdateRanges(); iAttr.addUpdateRange(0, o); iAttr.needsUpdate = true;
+    geo.setDrawRange(0, o);
+  };
+  rebuild();
+  geo.computeBoundingSphere();
+  const mesh = new THREE.Mesh(geo, mat); mesh.receiveShadow = true; mesh.matrixAutoUpdate = false;
+  group.add(mesh);
+  // 按离镜头的远近换粗细（留一点余量，免得在边界上来回跳）；有一块变了就重拼索引，
+  // 飞得快时一秒里会变很多次，最多 0.2 秒拼一次
+  let pending = false, lastT = -1e9;
+  group.userData.update = camera => {
+    const px = camera.position.x, pz = camera.position.z;
+    for (const ch of chunks) {
+      const dd = Math.max(0, Math.hypot(ch.x - px, ch.z - pz) - 50), cur = ch.level;
+      let lv = dd < 120 ? 0 : dd < 280 ? 1 : 2;
+      if (lv > cur && dd < [120, 280][cur] + 12) lv = cur;
+      if (lv !== cur) { ch.level = lv; pending = true; }
+    }
+    const now = performance.now();
+    if (pending && now - lastT > 200) { rebuild(); pending = false; lastT = now; }
+  };
   // 四周裙边，遮住和远景网格之间的细缝
   {
     const pos = [], nor = [], idx = [];
@@ -336,12 +447,14 @@ export function buildFar() {
     nor[k * 3] = -dx / l; nor[k * 3 + 1] = ny; nor[k * 3 + 2] = -dz / l;
     // 颜色：低处草地/树林斑块，陡处岩石，高处雪
     const n1 = fbm(x * 0.006 + 3, z * 0.006, 3), n2 = vnoise(x * 0.03, z * 0.03);
+    const sk = snowK(x, z, h);   // 西北冰湖那边雪线低
     c.copy(FAR_COL.grass).lerp(FAR_COL.dry, sstep(0.55, 0.75, n2) * 0.5);
-    c.lerp(n2 > 0.5 ? FAR_COL.forest : FAR_COL.forest2, sstep(0.42, 0.56, n1) * sstep(1200, 300, h));
+    c.lerp(n2 > 0.5 ? FAR_COL.forest : FAR_COL.forest2, sstep(0.42, 0.56, n1) * sstep(1200, 300, h) * (1 - sk));
     c.lerp(FAR_COL.rock, sstep(0.55, 0.75, 1 - ny) * 0.9);
     c.lerp(FAR_COL.rockDark, sstep(120, 320, h) * 0.6);
     const snowLine = 250 + 60 * (n1 - 0.5) + 80 * (1 - ny);
-    c.lerp(FAR_COL.snow, sstep(snowLine, snowLine + 50, h) * (ny > 0.55 ? 1 : 0.7));
+    // 很陡的岩壁上挂不住雪，露出一道道岩石
+    c.lerp(FAR_COL.snow, Math.max(sstep(snowLine, snowLine + 50, h) * (ny > 0.55 ? 1 : 0.7), sk * sstep(0.3, 0.62, ny + 0.14 * (n2 - 0.5))));
     col[k * 3] = c.r; col[k * 3 + 1] = c.g; col[k * 3 + 2] = c.b;
     if (inside) h -= 6;
     pos[k * 3] = x; pos[k * 3 + 1] = h; pos[k * 3 + 2] = z;
