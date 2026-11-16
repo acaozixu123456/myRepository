@@ -1,6 +1,6 @@
 // 地形高度场：一张 1.5 米格子的近景高度图（路和溪都“刻”进去），外面是粗格子的远景山。
 // 纯数学，不依赖 three，Node 里也能跑（tools 里用它画俯视检查图）。
-import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL } from './route.js';
+import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL, CAMP_SITES } from './route.js';
 import { fbm, vnoise, sstep, lerp, clamp } from './noise.js';
 import { autumnK, snowK } from './regions.js';
 
@@ -202,6 +202,13 @@ export function buildLand() {
   { const c = atS(SPOTS.camp); flats.push({ x: c.x + 2, z: c.z - 3, r0: 9, r1: 16, y: roadY(SPOTS.camp) }); }
   { const v = atS(SPOTS.view); flats.push({ x: v.x - 3.5, z: v.z - 1, r0: 3.5, r1: 8, y: roadY(SPOTS.view) + 0.05 }); }
   flats.push({ x: 62, z: -118, r0: 4.5, r1: 9, y: null });
+  // 野外营地：贴着小路的和小路一样高，其他的按溪谷里原来的地面
+  for (const c of CAMP_SITES) {
+    let y;
+    if (c.ts !== undefined) y = trailY(c.ts) + 0.05;
+    else { const q = STREAM.nearest(c.x, c.z, VALLEY_MAX, {}); y = rawH(c.x, c.z); if (q.dist < VALLEY_MAX) y = valley(y, q.dist, q.s); }
+    flats.push({ x: c.x, z: c.z, r0: 5.5, r1: 13, y });
+  }
 
   const H = new Float32Array(N);
   for (let gz = 0; gz < NZ; gz++) {

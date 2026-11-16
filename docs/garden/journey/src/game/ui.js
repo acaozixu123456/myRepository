@@ -54,15 +54,8 @@ export function initUI(h) {
   ui.progress = f => { bar.style.width = (Math.max(0, Math.min(1, f)) * 100).toFixed(1) + '%'; };
   const journal = $('journal');
   ui.journal = (n, N) => { journal.textContent = `手记 ${n}/${N}`; journal.classList.remove('pop'); void journal.offsetWidth; if (n) journal.classList.add('pop'); };
-  // 手记：去过的地方打勾，没去过的写怎么走
-  const jSheet = $('journalSheet');
-  journal.addEventListener('click', () => {
-    const list = h.places?.() || [];
-    $('placeList').innerHTML = list.map(p => `<li class="${p.seen ? 'seen' : 'todo'}${p.x !== undefined ? ' go' : ''}" data-id="${p.id}"><i>${p.seen ? '✓' : '·'}</i><b>${p.name}</b><small>${p.seen ? p.sub : p.where}</small></li>`).join('');
-    jSheet.hidden = false;
-  });
-  // 点手记里的地方：在地图上看
-  $('placeList').addEventListener('click', e => { const li = e.target.closest('li.go'); if (!li) return; jSheet.hidden = true; h.openMap?.(li.dataset.id); });
+  // 手记（journal.js 画）
+  journal.addEventListener('click', () => h.openJournal?.());
   $('bMap').addEventListener('click', () => h.openMap?.());
   // 标记点：屏幕上方一个小箭头指着方向，点一下打开地图
   const way = $('way'), wayArrow = $('wayArrow'), wayName = $('wayName'), wayDist = $('wayDist');
@@ -75,8 +68,6 @@ export function initUI(h) {
     const t = d < 1000 ? `${Math.max(1, Math.round(d / 5) * 5)} 米` : `${(d / 1000).toFixed(1)} 千米`;
     if (t !== wayD) { wayD = t; wayDist.textContent = t; }
   };
-  $('journalClose').addEventListener('click', () => { jSheet.hidden = true; });
-  jSheet.addEventListener('click', e => { if (e.target === jSheet) jSheet.hidden = true; });
   const perf = $('perf');
   ui.perf = t => { perf.textContent = t; };
   perf.addEventListener('click', () => h.cycleQuality());
@@ -106,14 +97,23 @@ export function initUI(h) {
   act.addEventListener('click', () => h.action(actText));
   ui.action = t => { if (t === actText) return; actText = t; act.textContent = t; act.hidden = !t; };
   const tool = (id, f) => $(id).addEventListener('click', f);
-  tool('bAuto', () => h.toggleAuto()); tool('bCam', () => h.toggleCam()); tool('bMount', () => { sheet.hidden = !sheet.hidden; }); tool('bSound', () => h.toggleSound());
+  tool('bPhoto', () => h.photo?.()); tool('bAuto', () => h.toggleAuto()); tool('bCam', () => h.toggleCam()); tool('bMount', () => { sheet.hidden = !sheet.hidden; }); tool('bSound', () => h.toggleSound());
   ui.tool = (id, on, text) => { const b = $(id); b.classList.toggle('on', !!on); if (text) b.textContent = text; };
 
-  // ---------- 结尾 ----------
-  ui.summary = (title, html) => { const s = $('summary'); s.querySelector('h2').textContent = title; $('sumText').innerHTML = html; s.hidden = false; };
-  ui.summaryOff = () => { $('summary').hidden = true; };
-  $('again').addEventListener('click', () => h.again(false));
-  $('againSwap').addEventListener('click', () => h.again(true));
+  // ---------- 营地歇脚 ----------
+  // st: { name, sub, msg, times: [{ name, at, sleep }], busy } 或 null（不显示）
+  const rest = $('rest'); let restKey = '';
+  ui.rest = st => {
+    const k = st ? JSON.stringify(st) : '';
+    if (k === restKey) return; restKey = k;
+    rest.hidden = !st; body.classList.toggle('resting', !!st); if (!st) return;
+    $('restName').textContent = st.name; $('restSub').textContent = st.sub;
+    $('restMsg').textContent = st.msg || ''; $('restMsg').hidden = !st.msg;
+    rest.classList.toggle('busy', !!st.busy);
+    $('restTimes').innerHTML = st.times.map(t => `<button type="button" data-at="${t.at}"${st.busy ? ' disabled' : ''}>${t.sleep ? '睡到' : '歇到'}${t.name}</button>`).join('');
+  };
+  $('restTimes').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.disabled) h.restUntil(+b.dataset.at); });
+  rest.querySelector('.restRow').addEventListener('click', e => { const b = e.target.closest('button'); if (b) h.restAct(b.dataset.a); });
   ui.fade = (on) => body.classList.toggle('dim', on);
 
   // ---------- 手势 ----------
@@ -210,6 +210,8 @@ export function initUI(h) {
     if (e.code === 'KeyA' && e.shiftKey) h.toggleAuto();
     if (e.code === 'KeyN') h.skipTime?.();
     if (e.code === 'KeyM') h.openMap?.();
+    if (e.code === 'KeyP') h.photo?.();
+    if (e.code === 'KeyJ') h.openJournal?.();
     if (e.code === 'Digit1' || e.code === 'Digit2' || e.code === 'Digit3') h.gait(+e.code.slice(5) - 1);
   });
   addEventListener('keyup', e => {

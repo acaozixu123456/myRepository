@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { ROAD, SPOTS } from './route.js';
+import { ROAD, SPOTS, CAMP_SITES } from './route.js';
 import { U, patch } from './atmo.js';
 import { rng } from './noise.js';
 
@@ -268,6 +268,9 @@ export async function buildCamp(land, base) {
     o.traverse(m => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; const old = m.material; m.material = new THREE.MeshLambertMaterial({ color: old.color, map: old.map, vertexColors: !!m.geometry.attributes.color }); patch(m.material, { gobo: true, fog: true }); } });
     return o;
   };
+  // 先换好材质，野外营地直接复制（共用网格和材质）
+  prep(stones); prep(logs); prep(stump); prep(lantern);
+  const cp = (o, s) => { const c = o.clone(); c.scale.setScalar(s); return c; };
   const R = rng(3);
   const g = new THREE.Group(); g.name = 'camp';
   const c = ROAD.at(SPOTS.camp, {});
@@ -276,18 +279,19 @@ export async function buildCamp(land, base) {
   const fx = c.x - c.tz * -3.2 + c.tx * 1.5, fz = c.z + c.tx * -3.2 + c.tz * 1.5;
   const at = (dx, dz) => { const x = fx + Math.cos(yaw) * dx + Math.sin(yaw) * dz, z = fz - Math.sin(yaw) * dx + Math.cos(yaw) * dz; return [x, land.height(x, z), z]; };
   const place = (o, dx, dz, ry = 0, dy = 0) => { const [x, y, z] = at(dx, dz); o.position.set(x, y + dy, z); o.rotation.y = yaw + ry; g.add(o); return o; };
-  const fire = place(prep(stones, 1.1), 0, 0);
-  const logsO = place(prep(logs, 0.9), 0, 0.02, 0.4, 0.02); logsO.scale.setScalar(0.55);
+  place(cp(stones, 1.1), 0, 0);
+  const logsO = place(cp(logs, 0.55), 0, 0.02, 0.4, 0.02);
   const flames = buildFire(sparkTex); place(flames, 0, 0, 0, 0.12);
   // 坐标：dx 往路的左边（离路更远），dz 沿路往前
-  const seatO = place(prep(stump.clone(), 1.3), 1.7, 0.5, 0.3);
-  place(prep(stump, 1.1), -1.1, 1.5, 1.2);
+  const seatO = place(cp(stump, 1.3), 1.7, 0.5, 0.3);
+  place(cp(stump, 1.1), -1.1, 1.5, 1.2);
   const tent = buildTent(R); place(tent, 3.3, -2.4, -0.5);
   // 挂灯的杆子
   const pole = new Kit().cyl(0.04, 0.05, 2.2, 6, M4(0, 1.1, 0), '#5a3e28').box(0.5, 0.04, 0.04, M4(0.22, 2.1, 0), '#5a3e28').mesh();
   place(pole, 1.2, -2.2, 0.2);
-  const lan = prep(lantern, 1.0); place(lan, 1.2 + 0.22 * Math.cos(0.2), -2.2 - 0.22 * Math.sin(0.2), 0.2, 1.75);
-  const lanLight = new THREE.PointLight('#ffc47a', 0, 6, 1.8); lanLight.position.set(0, 0.0, 0); lan.add(lanLight);
+  const lan = cp(lantern, 1.0); place(lan, 1.2 + 0.22 * Math.cos(0.2), -2.2 - 0.22 * Math.sin(0.2), 0.2, 1.75);
+  // 火光：整个世界只有一盏点光源，跟着最近那堆亮着的火走（多几盏会让所有材质都变慢）
+  const lanLight = new THREE.PointLight('#ffc47a', 0, 7, 1.8); g.add(lanLight);
   // 观景台：长椅朝着溪谷和夕阳
   const v = ROAD.at(SPOTS.view, {});
   const bx = v.x - 4.2, bz = v.z - 0.6;
@@ -296,15 +300,39 @@ export async function buildCamp(land, base) {
   const cairn = new Kit();
   for (let i = 0; i < 5; i++) cairn.add(new THREE.DodecahedronGeometry(0.28 - i * 0.04, 0), M4(0, 0.15 + i * 0.2, 0, R(), R(), R()).scale(new THREE.Vector3(1.2, 0.7, 1)), ['#a59c8e', '#8f877b', '#b5ad9f'][i % 3], 0.1, R);
   const cm = cairn.mesh(); cm.position.set(v.x - 2.4, land.height(v.x - 2.4, v.z + 1.6), v.z + 1.6); g.add(cm);
-  g.userData.fire = flames; g.userData.fireAt = new THREE.Vector3(...at(0, 0));
-  g.userData.seat = new THREE.Vector3(...at(1.7, 0.5));
   g.updateMatrixWorld(true);
-  g.userData.seatTop = new THREE.Box3().setFromObject(seatO).max.y;
-  flames.visible = false;
-  g.userData.lanLight = lanLight;
-  g.userData.yaw = yaw;
-  // 挡路的东西（给碰撞用）：[x, z, 半径]
   const xz = (dx, dz) => { const q = at(dx, dz); return [q[0], q[2]]; };
-  g.userData.blocks = [[...xz(0, 0), 0.7], [...xz(-1.1, 1.5), 0.32], [...xz(3.3, -2.4), 1.55], [...xz(1.2, -2.2), 0.12], [bx, bz, 0.8], [v.x - 2.4, v.z + 1.6, 0.45]];
+  // 每处营地：{ id, fire（火焰）, fireAt, seat, seatTop, yaw, lightAt（火光放哪）, blocks（挡路的 [x, z, 半径]）}
+  const main = {
+    id: 'camp', fire: flames, fireAt: new THREE.Vector3(...at(0, 0)), seat: new THREE.Vector3(...at(1.7, 0.5)),
+    seatTop: new THREE.Box3().setFromObject(seatO).max.y, yaw, lightAt: new THREE.Vector3(...at(1.2, -2.2)).add(new THREE.Vector3(0, 1.55, 0)),
+    blocks: [[...xz(0, 0), 0.7], [...xz(-1.1, 1.5), 0.32], [...xz(3.3, -2.4), 1.55], [...xz(1.2, -2.2), 0.12]],
+  };
+  // 野外营地：一圈石头的火堆、两个树桩、一摞柴、一卷铺盖
+  const sites = [main];
+  for (const S of CAMP_SITES) {
+    const f = [S.fx, S.fz], r = [-S.fz, S.fx];
+    const wp = (a, b) => { const x = S.x + f[0] * a + r[0] * b, z = S.z + f[1] * a + r[1] * b; return new THREE.Vector3(x, land.height(x, z), z); };
+    const put = (o, a, b, ry = 0, dy = 0) => { const p = wp(a, b); o.position.set(p.x, p.y + dy, p.z); o.rotation.y = Math.atan2(S.fx, S.fz) + ry; g.add(o); return o; };
+    put(cp(stones, 1.05), 0, 0, R() * 6);
+    put(cp(logs, 0.5), 0, 0, R() * 6, 0.02);
+    const fl = buildFire(sparkTex); put(fl, 0, 0, 0, 0.12); fl.visible = false;
+    const seat = put(cp(stump, 1.3), -1.7, 0.25, R() * 6);
+    put(cp(stump, 1.05), -0.3, 1.6, R() * 6);
+    put(cp(logs, 0.85), -3.1, -2.0, 1.2);
+    const roll = new Kit().cyl(0.17, 0.17, 1.1, 10, M4(0, 0.17, 0, 0, 0, Math.PI / 2), '#8c4a36', 0.05, R).cyl(0.175, 0.175, 0.06, 10, M4(0.3, 0.17, 0, 0, 0, Math.PI / 2), '#d9c49c', 0.02, R).cyl(0.175, 0.175, 0.06, 10, M4(-0.3, 0.17, 0, 0, 0, Math.PI / 2), '#d9c49c', 0.02, R).mesh();
+    put(roll, -2.6, 1.6, 0.4);
+    g.updateMatrixWorld(true);
+    const sp = wp(-1.7, 0.25), fp = wp(0, 0);
+    sites.push({
+      id: S.id, fire: fl, fireAt: fp, seat: sp, seatTop: new THREE.Box3().setFromObject(seat).max.y, yaw: Math.atan2(S.fx, S.fz),
+      lightAt: fp.clone().add(new THREE.Vector3(0, 1.1, 0)),
+      blocks: [[fp.x, fp.z, 0.7], ...[wp(-0.3, 1.6), wp(-3.1, -2.0)].map((p, i) => [p.x, p.z, i ? 0.55 : 0.32])],
+    });
+  }
+  flames.visible = false;
+  Object.assign(g.userData, { sites, fire: flames, fireAt: main.fireAt, seat: main.seat, seatTop: main.seatTop, lanLight, yaw });
+  // 挡路的东西（给碰撞用）：[x, z, 半径]
+  g.userData.blocks = [...sites.flatMap(s => s.blocks), [bx, bz, 0.8], [v.x - 2.4, v.z + 1.6, 0.45]];
   return g;
 }

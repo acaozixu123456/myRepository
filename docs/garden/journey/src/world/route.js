@@ -116,3 +116,24 @@ export const SPOTS = {};
   SPOTS.camp = near(8, -238);
   SPOTS.end = Math.min(ROAD.length - 6, SPOTS.camp + 4);
 }
+
+// 野外的营地（山口营地以外的几处）：篝火的位置 (x, z)，f 是坐着的人看出去的方向（隔着火看溪、湖或花田）。
+// ts：贴着溪边小路的营地，地面压平到小路那一段的高度；没有 ts 的按那里原来的地面压平。
+// 位置是按地形挑的比较平、离水不太近的地方（见 land.js flats、flora.js 清空地、props.js 摆东西）。
+export const CAMP_SITES = [];
+{
+  const p = {}, q = {};
+  const face = (c, tx, tz) => { const dx = tx - c.x, dz = tz - c.z, l = Math.hypot(dx, dz) || 1; c.fx = dx / l; c.fz = dz / l; return c; };
+  // 溪边小路上，离溪水某一段最近的地方，往山坡那边（离开溪水）再挪 off 米
+  const byTrail = (ss, off) => {
+    STREAM.at(ss, q); const t = TRAIL.nearest(q.x, q.z, 40); TRAIL.at(t.s, p);
+    const c = { x: p.x - p.tz * off, z: p.z + p.tx * off, ts: t.s };
+    return face(c, q.x, q.z);
+  };
+  CAMP_SITES.push(
+    { id: 'campShoal', name: '溪边营地', sub: '水声就在旁边，适合打个盹', where: '浅滩靠木桥这一边的岸上', ...face({ x: -91, z: -143 }, -101, -137) },
+    { id: 'campMeadow', name: '花田营地', sub: '躺在花里看云', where: '东坡花田靠溪的那一头', ...face({ x: 47, z: -35 }, 75, -25) },
+    { id: 'campAutumn', name: '红叶营地', sub: '红叶落在火堆边上', where: '红叶谷里，溪边小路旁的坡上', ...byTrail(CREEK_END + 90, 7.5) },
+    { id: 'campLake', name: '冰湖营地', sub: '湖边很静，夜里星星特别多', where: '冰湖的出水口旁边', ...face(byTrail(9, 13), LAKE.x, LAKE.z) },
+  );
+}
