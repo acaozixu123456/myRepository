@@ -5,11 +5,12 @@
 // 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
 // 天气过一阵会变（晴、多云、小雨、起雾、下雪，world/weather.js），也可以在右上角定住。
 import * as THREE from 'three';
-import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT } from '../world/route.js';
+import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT, VISTAS } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ } from '../world/land.js';
 import { PERIODS, periodOf } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 import { Explored } from './map.js';
+import { findOf } from './finds.js';
 
 export const GAITS = {
   foot: [{ name: '散步', v: 1.15 }, { name: '快走', v: 1.8 }, { name: '跑', v: 4.4 }],
@@ -56,6 +57,8 @@ export function makePlaces() {
     { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '点“飞”，一直往上飞', alt: 50 },
     // 野外营地：第一次到会出横幅，坐下就点起篝火（以后夜里那堆火都亮着），地图上可以一键过去
     ...CAMP_SITES.map(c => ({ id: c.id, kind: 'camp', name: c.name, sub: c.sub, where: c.where, x: c.x, z: c.z, r: 11 })),
+    // 藏起来的观景点：地图上一开始没有，走上去（或者有人告诉过你、在别的观景点望见过）才标出来
+    ...VISTAS.map(v => ({ id: v.id, kind: 'vista', hidden: true, name: v.name, sub: v.sub, where: v.hint, x: v.x, z: v.z, r: 7, f: v.f })),
   ];
 }
 
@@ -209,6 +212,8 @@ export class Journey {
     this.sitting = false; this.campT = 0; this.site = this.sites[0];
     this.camps = new Set(['camp']);   // 点过篝火的营地（山口营地本来就有人生火）
     this.log = [];                    // 手记里的日记：[{ d 第几天, h 钟点, k 事情, id 地方, p 照片 }]
+    this.found = {};                  // 见闻：{ id: { d, h, n 打过几次招呼, photo 照片 id } }
+    this.tips = new Set();            // 听人说起过、或者在观景点望见过的（地图上标出来）
     this.snortT = 18 + Math.random() * 20; this.mixT = 0; this.hintT = 0; this.edgeT = 0;
     for (const S of this.sites) { S.lit = 0; S.fire.visible = false; }
     for (const M of Object.values(this.mounts)) if (M) { M.root.visible = false; M.st.shown = false; M.st.goal = null; }
@@ -670,7 +675,7 @@ export class Journey {
         const was = this.inPlace.has(P.id);
         if (inside && !was) {
           this.inPlace.add(P.id);
-          if (!this.visited.includes(P.id)) { this.visited.push(P.id); this.note('visit', P.id); this.ui.banner(P.name, P.sub); this.labelT = 5; this.ui.place(''); this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length); this.onVisit?.(P); }
+          if (!this.visited.includes(P.id)) { this.visited.push(P.id); this.note('visit', P.id); this.ui.banner(P.name, P.sub); this.labelT = 5; this.ui.place(''); this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length); if (P.kind === 'vista') this.atVista(P); this.onVisit?.(P); }
           else { this.ui.place(P.name); this.labelT = 0; }
           this.lastPlace = P;
           if (P.id === 'bridge' && !this.glanceDone && this.mode !== 'fly') { this.glanceDone = true; this.glance = { t: 0, dur: 7, x: 62, z: -118 }; }
@@ -712,11 +717,42 @@ export class Journey {
     let nearS = null;
     if (!this.sitting && this.mode !== 'fly' && !this.trans) for (const S of this.sites) if (Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z) < 7) nearS = S;
     if (!this.sitting && nearS && nearS !== this.site) { this.site = nearS; this.fireKept = false; }
-    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : '');
+    this.nearFolk = !nearS && !this.sitting && this.mode !== 'fly' && !this.trans ? this.folk?.nearest(this.p) : null;
+    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : this.nearFolk ? '打个招呼' : '');
     // 提示
     if (this.hintT > 0) { this.hintT -= dt; if (this.hintT <= 0) this.ui.hint(''); }
   }
   hintOnce(t) { if (this.hintT > 0) return; this.ui.hint(t); this.hintT = 3; }
+
+  // ---------- 见闻 ----------
+  // 第一次遇见：记下来、出一张小卡片（quiet 不出卡片）
+  discover(id, quiet, at) {
+    if (this.found[id]) return false;
+    const F = findOf(id); if (!F) return false;
+    this.found[id] = { d: this.dayN, h: Math.round(this.tod * 100) / 100, ...(at ? { x: Math.round(at.x), z: Math.round(at.z) } : {}) };
+    this.tips.delete(id);
+    if (F.kind !== 'vista') this.note('find', id);
+    if (!quiet) { this.ui.found?.(F); this.sound.chime?.(0.6); }
+    this.onFind?.(F);
+    return true;
+  }
+  // 听说了：地图上标出来（已经见过的不算）；返回新听说了几样
+  tip(ids) { let n = 0; for (const id of ids) if (!this.found[id] && !this.tips.has(id)) { this.tips.add(id); n++; } return n; }
+  // 走上观景点：望见一大片（地图亮出来），附近藏着的东西标出来，镜头升起来转一圈
+  atVista(P) {
+    this.discover(P.id, true);
+    this.sound.chime?.(0.8);
+    this.explored.reveal(P.x, P.z, 260);
+    const seen = this.nearFinds?.(P.x, P.z, 420) || [];
+    const n = this.tip(seen);
+    if (n) setTimeout(() => this.ui.hint(`从这儿望见了 ${n} 处有意思的地方，地图上标出来了`), 5200), this.hintT = 9.5;
+    if (this.mode !== 'fly' && !this.trans) {
+      this.phase = 'view';
+      const shot = viewpointShot(P.f * DEG + Math.PI);
+      shot.onEnd = () => { if (this.phase === 'view') this.phase = 'play'; };
+      this.cam.play(shot);
+    }
+  }
 
   // 坐下烤火：一暗一亮之间换到树桩上（离得最近的那处营地）
   sitAtCamp() {
@@ -911,6 +947,7 @@ export class Journey {
       travelT: Math.round(this.travelT), gaits: { ...this.gaits }, viewDone: this.viewDone, glanceDone: this.glanceDone,
       ex: this.explored.encode(), way: this.waypoint ? { ...this.waypoint } : null,
       camps: [...this.camps], log: this.log.slice(-500), wx: this.weather?.snapshot(),
+      found: this.found, tips: [...this.tips],
     };
   }
   restore(s) {
@@ -934,6 +971,9 @@ export class Journey {
     this.viewDone = !!s.viewDone; this.glanceDone = !!s.glanceDone;
     this.camps = new Set(['camp', ...(Array.isArray(s.camps) ? s.camps : []).filter(id => this.sites.some(S => S.id === id))]);
     this.log = Array.isArray(s.log) ? s.log.filter(e => e && typeof e.k === 'string').slice(-500) : [];
+    this.found = {};
+    if (s.found && typeof s.found === 'object') for (const [id, f] of Object.entries(s.found)) if (findOf(id) && f) this.found[id] = { d: f.d | 0 || 1, h: +f.h || 0, ...(f.n ? { n: f.n | 0 } : {}), ...(typeof f.photo === 'string' ? { photo: f.photo } : {}), ...(Number.isFinite(f.x) && Number.isFinite(f.z) ? { x: f.x, z: f.z } : {}) };
+    this.tips = new Set((Array.isArray(s.tips) ? s.tips : []).filter(id => findOf(id) && !this.found[id]));
     // 地图：老存档没有记走过哪里，就把去过的地方周围亮出来
     this.explored.clear();
     if (!(typeof s.ex === 'string' && this.explored.decode(s.ex)))

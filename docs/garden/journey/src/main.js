@@ -24,6 +24,13 @@ import { makeBeacon } from './world/beacon.js';
 import { Album } from './game/photos.js';
 import { Journal } from './game/journal.js';
 import { PhotoMode } from './game/photo.js';
+import { Wildlife } from './world/wildlife.js';
+import { Birds } from './world/birds.js';
+import { buildVistas } from './world/vistas.js';
+import { makeSkyFx } from './world/skyfx.js';
+import { Folk } from './game/folk.js';
+import { FINDS, findOf } from './game/finds.js';
+import { VISTAS } from './world/route.js';
 
 const P = new URLSearchParams(location.search);
 // 无头截图模式：?shot=1&place=地点|x=&z=&ry=朝向&mode=foot|ride|fly&mount=a|b|w|d&trav=m|f&v=速度&alt=高度&sim=秒&cam=travel|top|intro|side|front|close
@@ -66,6 +73,7 @@ setSize();
 let lighthouse = null, weather = null;
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 let mapView = null, beacon = null, journal = null, photo = null;
+let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null;
 const album = new Album();
 // 每个地方的封面照片（没设就用第一张）；照片和封面都不跟着“从头再来”清掉
 let covers = {};
@@ -127,7 +135,7 @@ const ui = initUI({
   setZoom: (z, done) => { if (!cam) return; cam.zoomTarget = z; if (done) ui.tool('bCam', z > 0.5); },
   gait: i => { if (!J) return; J.gait = i; ui.gait(i); },
   mode: m => { if (J && playing) J.setMode(m); },
-  action: t => { if (t === '坐下烤火' || t === '点起篝火') J?.sitAtCamp(); },
+  action: t => { if (t === '坐下烤火' || t === '点起篝火') J?.sitAtCamp(); else if (t === '打个招呼') greet(); },
   toggleAuto: () => { if (!J) return; J.auto = !J.auto; ui.tool('bAuto', J.auto); if (J.auto) ui.hint(''); },
   toggleCam: () => { if (!cam) return; cam.zoomTarget = cam.zoomTarget > 0.5 ? 0 : 1; ui.tool('bCam', cam.zoomTarget > 0.5); },
   toggleSound: () => { if (!sound) return; sound.setMuted(!sound.muted); ui.tool('bSound', !sound.muted); },
@@ -216,6 +224,54 @@ function restState() {
   return { name: P ? P.name : '营地', sub: `第 ${J.dayN} 天 · ${periodOf(cur).name}${busy ? ' · 时间慢慢过去…' : ''}`, msg: campMsg && campMsg.id === S.id ? campMsg.t : '', times, busy };
 }
 
+// ---------- 见闻 ----------
+// 某样见闻在地图上的位置：观景点、人待的地方、动物第一次遇见的地方（没遇见过就是它常去的第一处）
+function markOf(id) {
+  const F = findOf(id); if (!F || !J) return null;
+  if (F.kind === 'vista') return VISTAS.find(v => v.id === id);
+  if (F.kind === 'folk') { const P = folk?.list.find(f => f.id === id); return P ? (P.path ? folk.where({ ...P, o: null }) : P) : null; }
+  if (F.kind !== 'animal') return null;
+  const f = J.found[id]; if (f && Number.isFinite(f.x)) return f;
+  if (id === 'birds') return birds?.flocks[0];
+  if (id === 'gull') return birds?.coasts[0];
+  return wildlife?.habitats.find(H => H.sp === id) || null;
+}
+// 某处附近藏着的见闻（在观景点上望见）
+function nearFinds(x, z, R) {
+  const out = [];
+  for (const F of FINDS) {
+    if (F.kind === 'sky' || J.found[F.id]) continue;
+    const spots = F.kind === 'animal' ? (F.id === 'birds' ? birds.flocks : F.id === 'gull' ? birds.coasts : wildlife.habitats.filter(H => H.sp === F.id)) : [markOf(F.id)];
+    if (spots.some(m => m && Math.hypot(m.x - x, m.z - z) < R && Math.hypot(m.x - x, m.z - z) > 12)) out.push(F.id);
+  }
+  return out;
+}
+// 走到人跟前打招呼：第一次两句话都说完（顺便告诉你哪里有好东西），以后随便说一句
+function greet() {
+  const F = J?.nearFolk; if (!F || !F.o) return;
+  const f0 = J.found[F.id], n = f0?.n || 0;
+  let line = folk.greet(F, n === 0 ? 0 : 1);
+  if (n === 0) line = F.lines.join('');
+  J.discover(F.id, true, F.path ? folk.where(F) : F);
+  J.found[F.id].n = n + 1;
+  let note = '';
+  const k = J.tip(F.tips);
+  if (k) note = F.tips.some(id => !J.found[id] && findOf(id)?.kind !== 'sky') ? '他说的地方，地图上标出来了' : '记进了手记的「见闻」';
+  if (n === 0) note = '新的见闻 · 偶遇的人' + (note ? ' · ' + note : '');
+  ui.talk(findOf(F.id).name, line, note);
+  sound.chime?.(0.35);
+  save();
+}
+// 拍照：画面里有哪些动物、人，还有彩虹
+function subjects(camera) {
+  const out = new Set();
+  wildlife?.inView(camera)?.forEach(id => out.add(id));
+  birds?.inView(camera, out); folk?.inView(camera, out);
+  if (skyfx && skyfx.userData.rainbow > 0.35) { const f = new THREE.Vector3(); camera.getWorldDirection(f); if (f.dot(_anti.copy(J.daylight.sunPos).negate().normalize()) > 0.45) out.add('rainbow'); }
+  return out;
+}
+const _anti = new THREE.Vector3();
+
 // ---------- 存档 ----------
 let saveT = 0;
 function save() {
@@ -245,6 +301,7 @@ function start() {
   ui.playing(true); J.begin();
   quality.recording = true;
   ui.hint(ui.goHint());
+  setTimeout(() => wildlife?.preload(), 4000);
   wake();
 }
 
@@ -292,6 +349,14 @@ function step(dt) {
     ui.way(w, Math.atan2(dx * -f.z + dz * f.x, dx * f.x + dz * f.z), Math.hypot(dx, dz));
   } else ui.way(null);
   beacon.userData.update(w, W.land, camera.position, dt);
+  // 路上的动物、鸟、人、观景点的灯、彩虹和流星
+  {
+    const f = cam.fwd3 || (cam.fwd3 = new THREE.Vector3()); camera.getWorldDirection(f);
+    const wx = weather.id, ctx = { p: J.p, speed: J.mode === 'fly' ? 0 : J.speed, fly: J.mode === 'fly', alt: J.alt || 0, tod: J.tod, wx, camPos: camera.position, camFwd: f, onScare: () => sound.flutter?.(0.6) };
+    if (J.phase !== 'intro') { wildlife.update(dt, ctx); birds.update(dt, ctx); folk.update(dt, ctx); }
+    vistas.userData.update(Math.min(1, Math.max(0, (0.12 - J.daylight.sunPos.y) / 0.18)));
+    skyfx.userData.update({ camera, sunPos: J.daylight.sunPos, night: J.night, wx: weather, dt, camFwd: f, often: J.sitting || ['cape', 'lake', 'campLake', 'campBeach', 'vSnow', 'vCove'].includes(J.lastPlace?.id) });
+  }
   // 地图底图趁空闲一点点画好
   if (playing && J.t > 3) mapView.idle();
   syncUI();
@@ -357,6 +422,8 @@ async function load() {
   windmill = buildWindmill(W.land); scene.add(windmill);
   const fences = buildFences(W.land); scene.add(fences);
   lighthouse = buildLighthouse(W.land); scene.add(lighthouse);
+  vistas = buildVistas(W.land); scene.add(vistas);
+  skyfx = makeSkyFx(); scene.add(skyfx);
   weather = new Weather(); scene.add(weather.group);
   const campP = buildCamp(W.land, RES);
   say('正在牵马…');
@@ -376,6 +443,7 @@ async function load() {
   colliders.addCircle(62, -118, 2.5, 11);
   for (const [x, z, r] of camp.userData.blocks) colliders.addCircle(x, z, r, 2);
   for (const [x, z, r] of lighthouse.userData.blocks) colliders.addCircle(x, z, r, 16);
+  for (const [x, z, r] of vistas.userData.blocks) colliders.addCircle(x, z, r, 3);
   for (const [ax, az, bx, bz] of fences.userData.segs) colliders.addSeg(ax, az, bx, bz, 0.08, 1.2);
   for (const [x, z, r] of fences.userData.posts) colliders.addCircle(x, z, r, 2);
   cam = new CamRig(camera, (x, z) => W.land.height(x, z));
@@ -385,12 +453,35 @@ async function load() {
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
   J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight, weather, focus });
-  J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);   // 截图沿用老镜头，参数好复现
+  J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);
+  // 路上的动物、鸟、偶遇的人
+  const water = (x, z) => J.waterDepth(x, z);
+  wildlife = new Wildlife({ res: RES, groundAt: J.groundAt, water, colliders, places: J.places }); scene.add(wildlife.group);
+  birds = new Birds({ groundAt: J.groundAt, water, places: J.places }); scene.add(birds.group);
+  folk = new Folk({ res: RES, groundAt: J.groundAt, places: J.places, colliders }); scene.add(folk.group);
+  J.folk = folk; J.nearFinds = nearFinds; J.onFind = () => save();
+  const seen = (id, A) => { if (playing && J.phase !== 'intro') J.discover(id, false, A?.p); };
+  wildlife.onSeen = seen; birds.onSeen = id => seen(id, id === 'birds' ? birds.flocks.reduce((a, F) => F.seen && !a ? F : a, null) : null);
+  skyfx.userData.onSeen = id => seen(id);
+  let fleeTold = false;
+  wildlife.onFlee = () => { if (!fleeTold && playing && J.speed > 1) { fleeTold = true; setTimeout(() => ui.hint('动物怕快的东西，下次换成「散步」慢慢走过去'), 1200); J.hintT = 5; } };
+  // 截图：先把动物和人的模型下载好（wild=1）
+  if (SHOT && P.has('wild')) { wildlife.preload(); wildlife.load('snowfox'); folk.load('m'); folk.load('f'); await Promise.all([...Object.values(wildlife.loading), ...Object.values(folk.loading)]); }
+  if (P.has('debug')) { window.__step = (dt, n = 1) => { for (let i = 0; i < n; i++) step(dt); W.update(camera, focus, 0, true); renderer.render(scene, camera); }; window.__wild = wildlife; window.__birds = birds; window.__folk = folk; window.__sky = skyfx; }   // 截图沿用老镜头，参数好复现
   if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; }   // 调试：测试脚本读状态
   beacon = makeBeacon(); scene.add(beacon);
   mapView = new MapView({
     land: W.land, trees: W.placed.trees, explored: J.explored,
-    places: () => J.places.map(p => ({ ...p, seen: J.visited.includes(p.id), lit: J.camps.has(p.id) })),
+    places: () => [
+      ...J.places.filter(p => !p.hidden || J.visited.includes(p.id) || J.tips.has(p.id)).map(p => ({ ...p, g: '望', seen: J.visited.includes(p.id), lit: J.camps.has(p.id) })),
+      // 见过、或者听说过的动物和人
+      ...FINDS.filter(F => (F.kind === 'animal' || F.kind === 'folk') && (J.found[F.id] || J.tips.has(F.id))).map(F => {
+        const m = markOf(F.id); if (!m) return null;
+        const f = J.found[F.id];
+        return { id: F.id, kind: 'mark', g: F.g, name: F.name, sub: f ? F.sub : '听说：' + F.hint, x: m.x, z: m.z, r: 10, seen: !!f };
+      }).filter(Boolean),
+    ],
+    total: () => J.places.length,
     player: () => ({ x: J.p.x, z: J.p.z, yaw: J.yaw }),
     // 坐骑：不骑着、也不在身边的时候在地图上标出来
     mountAt: () => { const M = J.mount; if (!M || !M.st.shown || J.mode === 'ride' || M.st.p.distanceTo(J.p) < 6) return null; return { x: M.st.p.x, z: M.st.p.z, name: M.name }; },
@@ -405,6 +496,7 @@ async function load() {
     J, album, covers: () => covers,
     setCover: (place, id) => { covers[place] = id; try { localStorage.setItem('journey.covers', JSON.stringify(covers)); } catch {} },
     openMap: id => { if (!mapView.isOpen) mapView.open(id); },
+    markOf: id => markOf(id),
     travel: P => travel(P), canTravel: () => J.canTravel(),
     restart: () => {
       ui.fade(true); clearSave();
@@ -414,9 +506,17 @@ async function load() {
   });
   // 拍照
   photo = new PhotoMode({
-    J, renderer, scene, camera, album, canvas, setSize,
+    J, renderer, scene, camera, album, canvas, setSize, subjects,
     openAlbum: () => journal.open('album'),
     onShot: (m, first, saved) => {
+      // 拍到了动物、人、彩虹：没遇见过的算遇见，第一张当见闻里的图
+      let got = null;
+      for (const id of m.subj || []) {
+        if (!J.found[id]) J.discover(id, true);
+        const f = J.found[id];
+        if (f && !f.photo) { f.photo = m.id; got = got || findOf(id); }
+      }
+      if (got && saved) { photo.toast(`拍到了${got.name}，收进了手记的「见闻」`, 3.2); save(); return; }
       photo.toast(!saved ? '拍好了。这个浏览器存不住照片，记得在手记里存到手机' : first ? `「${m.name}」的第一张照片，成了手记里的封面` : `收进相册了 · ${m.name}`, 3);
       save();
     },
@@ -498,6 +598,13 @@ function shotSetup() {
       si++;
     }
   }
+  // 截图：把一只动物摆到人前面 put 米（侧着身子）
+  if (P.has('put') && wildlife.live.length) {
+    const A = wildlife.live.find(A => !P.get('sp') || A.sp === P.get('sp')) || wildlife.live[0], d = +P.get('put'), a = J.yaw + (+(P.get('pa') || 0)) * Math.PI / 180;
+    const x = J.p.x + Math.sin(a) * d, z = J.p.z + Math.cos(a) * d;
+    A.p.set(x, J.groundAt(x, z), z); A.yaw = J.yaw + Math.PI / 2; A.state = P.get('st') || 'graze'; A.t = 10;
+    for (let i = 0; i < 20; i++) step(1 / 30);
+  }
   W.update(camera, focus, 0, true);
   if (P.has('bench')) {   // 测 CPU：每帧逻辑、植被刷新各要多久
     let t0 = performance.now(); for (let i = 0; i < 60; i++) step(1 / 60); const stepMs = (performance.now() - t0) / 60;
@@ -515,6 +622,18 @@ function shotSetup() {
     else camera.position.copy(hp).addScaledVector(r, view === 'close' ? -d : d).addScaledVector(f, 0.2).add(new THREE.Vector3(0, up, 0));
     camera.lookAt(hp.x, hp.y + (J.mode === 'fly' ? 0 : up - 0.3), hp.z); camera.updateMatrixWorld();
   }
+  // 看某只动物 / 某个人（look=wild|folk，d=距离）：镜头摆在它斜前方
+  if (P.get('look')) {
+    const k = P.get('look'), d = +(P.get('d') || 5);
+    const A = k === 'folk' ? folk.list.find(F => F.o) : wildlife.live.find(A => !P.get('sp') || A.sp === P.get('sp'));
+    const o = A && (A.o ? A.o.root : A.root);
+    if (o) {
+      o.updateMatrixWorld(true);
+      const yaw = o.rotation.y + (+(P.get('la') || 40)) * Math.PI / 180, c = o.position;
+      camera.position.set(c.x + Math.sin(yaw) * d, c.y + 1.2 + d * 0.12, c.z + Math.cos(yaw) * d);
+      camera.lookAt(c.x, c.y + 0.7, c.z); camera.updateMatrixWorld();
+    }
+  }
   if (view === 'sit') {
     const c = J.camp.userData.seat, f = J.camp.userData.fireAt;
     const d = new THREE.Vector3().subVectors(f, c).setY(0).normalize(), r = new THREE.Vector3(-d.z, 0, d.x);
@@ -529,7 +648,8 @@ function shotSetup() {
       const V = o => { const v = new THREE.Vector3(); o.getWorldPosition(v); return v.toArray().map(x => +x.toFixed(2)); };
       window.__info = { ms: W.ms, flora: { trees: W.stats.trees, small: Object.values(W.stats.small).reduce((a, b) => a + b, 0), tufts: W.placed.tufts.reduce((a, t) => a + t.length / 8, 0) }, bench: window.__bench, calls: renderer.info.render.calls, tris: renderer.info.render.triangles, mode: J.mode, trans: J.trans?.kind || null,
         p: J.p.toArray().map(x => +x.toFixed(2)), yaw: +J.yaw.toFixed(2), speed: +J.speed.toFixed(2), alt: +(J.alt || 0).toFixed(1), mount: J.mountKey,
-        mountAt: J.mount ? V(J.mount.root) : null, pelvis: J.T.pelvis(new THREE.Vector3()).toArray().map(x => +x.toFixed(2)), visited: J.visited, cam: camera.position.toArray().map(x => +x.toFixed(1)) };
+        mountAt: J.mount ? V(J.mount.root) : null, pelvis: J.T.pelvis(new THREE.Vector3()).toArray().map(x => +x.toFixed(2)), visited: J.visited, cam: camera.position.toArray().map(x => +x.toFixed(1)),
+        wild: wildlife.live.map(A => [A.sp, A.state, A.cur, A.p.toArray().map(x => +x.toFixed(1)), A.root.visible]), folk: folk.list.filter(F => F.o).map(F => [F.id, F.o.root.position.toArray().map(x => +x.toFixed(1))]), found: Object.keys(J.found) };
       window.__ready = true;
     }
   };

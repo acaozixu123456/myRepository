@@ -400,6 +400,26 @@ export class Sound {
       o.connect(g); g.connect(lp); o.start(t); o.stop(t + dur + 0.2);
     }
   }
+  // 发现新东西：一串轻轻的风铃（五声音阶里随便挑三四个音）
+  chime(v = 0.5) {
+    if (!this.ready || this.muted) return;
+    const ctx = this.ctx, t0 = ctx.currentTime + 0.05, notes = [1046.5, 1174.7, 1318.5, 1568, 1760, 2093];
+    const n = 3 + (Math.random() < 0.5 ? 1 : 0);
+    for (let i = 0; i < n; i++) {
+      const t = t0 + i * (0.13 + Math.random() * 0.08), f = notes[(Math.random() * notes.length) | 0];
+      for (const [mul, a] of [[1, 1], [2.76, 0.25]]) {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.value = f * mul;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.07 * v * a, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6 / mul);
+        o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t + 1.7);
+      }
+    }
+  }
+  // 一群鸟扑棱棱飞起来：很多下短短的翅膀声
+  flutter(v = 0.5) {
+    if (!this.ready || this.muted) return;
+    for (let i = 0; i < 14; i++) this.burst({ f0: 1400 + Math.random() * 1200, f1: 700, q: 0.9, a: 0.004, d: 0.05 + Math.random() * 0.04, vol: 0.12 * v * (1 - i / 18), delay: i * 0.035 + Math.random() * 0.05 });
+  }
   snort() {
     if (!this.ready || this.muted) return;
     const src = this.ctx.createBufferSource(); src.buffer = this.snorts[(Math.random() * 2) | 0];

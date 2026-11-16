@@ -271,3 +271,22 @@ body.pvig #vignette { background: radial-gradient(ellipse 80% 70% at 50% 46%, rg
 .vRow #vPrev, .vRow #vNext { font-size: 20px; padding: 4px 14px; }
 .vClose { align-self: center; margin-top: 8px; background: none; color: #fff8ee; opacity: 0.7; font-size: 13px; text-decoration: underline; }
 body.shot #photo *, body.shot #journalSheet * { animation: none !important; }
+
+/* 见闻：新遇见的东西（左上角小卡片）、和人说话（底下的卡片） */
+#found { position: absolute; top: calc(var(--sat) + 62px); left: calc(var(--sal) + 12px); max-width: 62%; padding: 8px 14px 9px 12px; border-radius: 14px; background: rgba(255, 246, 228, 0.9); color: var(--ink); box-shadow: 0 4px 16px rgba(60, 30, 10, 0.25);
+  border-left: 3px solid #c4773a; opacity: 0; transform: translateX(-14px); transition: opacity 0.9s, transform 0.9s; pointer-events: none; }
+#found.show { opacity: 1; transform: none; }
+#found i { display: block; font-style: normal; font-size: 11px; letter-spacing: 2px; color: #a5602c; }
+#found b { display: block; margin-top: 2px; font-size: 17px; letter-spacing: 3px; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+#found small { display: block; margin-top: 2px; font-size: 12px; opacity: 0.75; line-height: 1.45; }
+#talk { position: absolute; left: 50%; bottom: calc(var(--sab) + 150px); width: min(86%, 420px); transform: translate(-50%, 10px); padding: 11px 16px 12px; border-radius: 16px; background: rgba(255, 248, 234, 0.95); color: var(--ink);
+  box-shadow: 0 6px 22px rgba(60, 30, 10, 0.3); opacity: 0; transition: opacity 0.6s, transform 0.6s; pointer-events: none; }
+#talk.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+#talk b { font-size: 13px; letter-spacing: 2px; color: #a5602c; }
+#talk p { margin: 4px 0 0; font-size: 15px; line-height: 1.6; letter-spacing: 0.5px; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+#talk small { display: block; margin-top: 6px; font-size: 12px; opacity: 0.65; }
+body.photo #found, body.photo #talk, body.resting #talk { display: none; }
+.pc.find .ph { aspect-ratio: 16 / 11; }
+.pc.find .ph i.g { font-size: 30px; opacity: 0.5; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+.pc.find.todo .ph i.g { opacity: 0.22; }
+.pc.find .tip { color: #a5602c; opacity: 0.9; }
