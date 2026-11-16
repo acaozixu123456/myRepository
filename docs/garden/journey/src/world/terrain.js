@@ -121,10 +121,18 @@ export function makeSplat(land) {
   return t;
 }
 
-// 区域纹理：R 红叶，G 积雪
+// 区域纹理：R 红叶，G 积雪，B 凹凸（高度减去周围五六米的平均：洼地、沟里小于 0.5，坡脊上大于 0.5）
 export function makeBiome(land) {
-  const NX = land.NX, NZ = land.NZ, data = new Uint8Array(NX * NZ * 4);
-  for (let k = 0; k < NX * NZ; k++) { data[k * 4] = land.AU[k]; data[k * 4 + 1] = land.SN[k]; data[k * 4 + 3] = 255; }
+  const NX = land.NX, NZ = land.NZ, data = new Uint8Array(NX * NZ * 4), H = land.H;
+  const a = Float32Array.from(H), b = new Float32Array(NX * NZ), R = 3;
+  for (let it = 0; it < 2; it++) {
+    for (let j = 0; j < NZ; j++) { const row = j * NX; for (let i = 0; i < NX; i++) { let s = 0, n = 0; for (let d = -R; d <= R; d++) { const ii = i + d; if (ii >= 0 && ii < NX) { s += a[row + ii]; n++; } } b[row + i] = s / n; } }
+    for (let j = 0; j < NZ; j++) for (let i = 0; i < NX; i++) { let s = 0, n = 0; for (let d = -R; d <= R; d++) { const jj = j + d; if (jj >= 0 && jj < NZ) { s += b[jj * NX + i]; n++; } } a[j * NX + i] = s / n; }
+  }
+  for (let k = 0; k < NX * NZ; k++) {
+    data[k * 4] = land.AU[k]; data[k * 4 + 1] = land.SN[k];
+    data[k * 4 + 2] = 128 + clamp((H[k] - a[k]) / 1.1, -1, 1) * 127; data[k * 4 + 3] = 255;
+  }
   const t = new THREE.DataTexture(data, NX, NZ, THREE.RGBAFormat);
   t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearFilter; t.needsUpdate = true;
   return t;
@@ -141,7 +149,7 @@ export const PALETTE = {
 export const TERRAIN_GLSL = /* glsl */`
 uniform sampler2D uSplat; uniform sampler2D uDetail; uniform sampler2D uDirt; uniform vec4 uDom;
 uniform vec3 uGrass0; uniform vec3 uGrass1; uniform vec3 uGrass2; uniform vec3 uGrass3; uniform vec3 uForestC;
-uniform vec3 uRock; uniform vec3 uBank; uniform vec3 uPebble; uniform vec3 uBed;
+uniform vec3 uRock; uniform vec3 uBank; uniform vec3 uPebble; uniform vec3 uBed; uniform float uFine;
 uniform sampler2D uBiome; uniform vec3 uAut0; uniform vec3 uAut1; uniform vec3 uAut2; uniform vec3 uLeaf0; uniform vec3 uLeaf1; uniform vec3 uSnow; uniform vec3 uStraw;
 // 草地的颜色（地面和草丛共用，草丛看起来就像是从地里长出来的）；bi：区域（r 红叶，g 积雪）
 vec3 jGrass( vec2 xz, vec4 sp, vec3 dA, vec4 bi ) {
@@ -165,6 +173,15 @@ vec3 jGrass( vec2 xz, vec4 sp, vec3 dA, vec4 bi ) {
   return mix( g, uStraw * ( 0.85 + 0.3 * dA.r ), smoothstep( 0.05, 0.6, bi.g ) * 0.7 );
 }
 vec4 jSplat( vec2 xz ) { return texture2D( uSplat, ( xz - uDom.xy ) / uDom.zw ); }
+// 凹凸光影：按屏幕导数把一张“高度”扰到法线上（P、N 都在视图空间；k 是高度 1 对应多少米）
+float jBH = 0.0; float jBK = 0.0; float jSnowK = 0.0;
+vec3 jBumpN( vec3 N, vec3 P, float h, float k ) {
+  vec3 dpx = dFdx( P ), dpy = dFdy( P );
+  vec3 r1 = cross( dpy, N ), r2 = cross( N, dpx );
+  float det = dot( dpx, r1 );
+  vec3 grad = sign( det ) * ( dFdx( h ) * k * r1 + dFdy( h ) * k * r2 );
+  return normalize( abs( det ) * N - grad );
+}
 vec4 jBiome( vec2 xz ) { return texture2D( uBiome, ( xz - uDom.xy ) / uDom.zw ); }
 `;
 const TERRAIN_VS = /* glsl */`varying vec3 vWN;`;
@@ -176,11 +193,55 @@ const TERRAIN_COLOR = /* glsl */`
   vec3 dB = texture2D( uDetail, vWP.xz * 0.031 + vec2( 0.37, 0.71 ) ).rgb;
   vec4 bi = jBiome( vWP.xz );
   vec3 g = jGrass( vWP.xz, sp, dA, bi );
+  // 近处一丝丝的细草纹（远了淡掉，免得闪）；洼地里草深一点绿一点，坡脊上晒得发黄发亮
+  float vd = length( vViewPosition ), nearK = 1.0 - smoothstep( 12.0, 42.0, vd );
+  // 只有近处才取细草纹（导数在分支外算好，分支里用 textureGrad）
+  vec3 dF = vec3( 0.5 );
+  vec2 uA = vWP.xy, uB = vWP.zy, aX = vec2( 0.0 ), aY = aX, bX = aX, bY = aX;
+  if ( uFine > 0.5 ) {
+    vec2 uvF = vec2( vWP.x * 0.41 + vWP.z * 0.09, vWP.z * 0.41 - vWP.x * 0.09 ) + vec2( 0.53, 0.19 );
+    vec2 fX = dFdx( uvF ), fY = dFdy( uvF );
+    if ( nearK > 0.0 ) dF = textureGrad( uDetail, uvF, fX, fY ).rgb;
+    aX = dFdx( uA ); aY = dFdy( uA ); bX = dFdx( uB ); bY = dFdy( uB );
+  }
+  float cav = ( bi.b - 0.5 ) * 2.0;
+  g *= 1.0 + 0.15 * cav;
+  g = mix( g, g * vec3( 1.1, 1.03, 0.78 ), smoothstep( 0.15, 0.8, cav ) * 0.45 * ( 1.0 - bi.g ) );
+  g *= mix( 1.0, 0.8 + 0.4 * dF.r, nearK * 0.75 );
+  jBH = dA.r * 0.32 + dF.r * 0.22 * nearK + dB.b * 0.5 + dA.g * 0.22;
+  jBK = 0.034;
   // 坡上露出岩石
   float slope = 1.0 - normalize( vWN ).y;
   float rk = smoothstep( 0.3, 0.46, slope + ( dB.r - 0.5 ) * 0.22 );
-  // 雪山上的岩石冷一些、暗一些
-  g = mix( g, mix( uRock, vec3( 0.36, 0.38, 0.42 ), bi.g * 0.75 ) * ( 0.75 + 0.5 * dA.g ), rk );
+  if ( rk > 0.004 && uFine < 0.5 ) {
+    g = mix( g, mix( uRock, vec3( 0.36, 0.38, 0.42 ), bi.g * 0.75 ) * ( 0.75 + 0.5 * dA.g ), rk );
+    jBH = mix( jBH, dB.r * 0.9 + dA.g * 0.5 + dA.b * 0.3, rk ); jBK = mix( jBK, 0.16, rk );
+  } else if ( rk > 0.004 ) {
+    // 岩壁：贴着壁面取纹理（从上往下投会拉成一道道竖条，像抹的水泥），一层层的岩层、裂缝
+    // 朝南北的壁按 xy 取，朝东西的按 zy 取，中间混合（跟着法线转投影方向，世界坐标一大就满屏乱跳）
+    vec3 wn = normalize( vWN );
+    float bx = smoothstep( 0.35, 0.65, abs( wn.x ) / ( abs( wn.x ) + abs( wn.z ) + 1e-4 ) );
+    const vec2 s1 = vec2( 0.07, 0.2 ), o2 = vec2( 0.3, 0.8 );
+    vec3 dW, dW2;
+    // 大多数地方只朝一个方向，取两次就够；转角处才两边都取再混
+    if ( bx < 0.03 ) {
+      dW = textureGrad( uDetail, uA * s1, aX * s1, aY * s1 ).rgb; dW2 = textureGrad( uDetail, uA * 0.33 + o2, aX * 0.33, aY * 0.33 ).rgb;
+    } else if ( bx > 0.97 ) {
+      dW = textureGrad( uDetail, uB * s1, bX * s1, bY * s1 ).rgb; dW2 = textureGrad( uDetail, uB * 0.33 + o2, bX * 0.33, bY * 0.33 ).rgb;
+    } else {
+      dW = mix( textureGrad( uDetail, uA * s1, aX * s1, aY * s1 ).rgb, textureGrad( uDetail, uB * s1, bX * s1, bY * s1 ).rgb, bx );
+      dW2 = mix( textureGrad( uDetail, uA * 0.33 + o2, aX * 0.33, aY * 0.33 ).rgb, textureGrad( uDetail, uB * 0.33 + o2, bX * 0.33, bY * 0.33 ).rgb, bx );
+    }
+    float strat = sin( vWP.y * 2.2 + dW.r * 5.0 ) * 0.5 + 0.5;
+    // 裂缝线越远越宽一点（不闪），远了淡掉
+    float crack = ( 1.0 - smoothstep( 0.0, 0.05 + vd * 0.0016, abs( dW2.r - 0.5 ) ) ) * ( 1.0 - smoothstep( 14.0, 40.0, vd ) );
+    // 雪山上的岩石冷一些、暗一些
+    vec3 rc = mix( uRock, vec3( 0.36, 0.38, 0.42 ), bi.g * 0.75 );
+    rc *= ( 0.6 + 0.45 * dW.g + 0.16 * strat ) * ( 0.86 + 0.28 * dW2.b ) * ( 1.0 - 0.42 * crack );
+    g = mix( g, rc, rk );
+    // 起伏只用低频的（高频的屏幕导数是 2×2 一块，会出棋盘格）
+    jBH = mix( jBH, dW.g * 1.1 + dW2.b * 0.25 + strat * 0.3, rk ); jBK = mix( jBK, 0.15, rk );
+  }
   // 溪岸：卵石滩、湿土，水下是河床
   float bankN = ( dA.b - 0.5 ) * 0.8;
   g = mix( g, uBank * ( 0.85 + 0.3 * dA.r ), 1.0 - smoothstep( 0.4 + bankN, 1.8 + bankN, shore ) );
@@ -194,23 +255,48 @@ const TERRAIN_COLOR = /* glsl */`
   float edge = smoothstep( 0.9, 1.5, dRoad ) * ( 1.0 - smoothstep( 1.5, 2.6, dRoad ) );
   g *= 1.0 - 0.16 * edge;
   g = mix( g, dirt, road );
+  // 路面：小石子凸起来
+  jBH = mix( jBH, dot( dirt, vec3( 0.5, 0.4, 0.1 ) ) * 1.8 + dB.r * 0.3, road ); jBK = mix( jBK, 0.016, road );
   // 积雪：陡的岩壁上挂不住，树下少，小路上被踩得发灰
   if ( bi.g > 0.01 ) {
     float ny = normalize( vWN ).y;
-    float sn = smoothstep( 0.3, 0.62, bi.g + ( dB.g - 0.5 ) * 0.45 + ( dA.b - 0.5 ) * 0.2 );
-    // 雪厚的地方陡坡上也挂得住，只露出一道道岩石
-    float th = mix( 0.72, 0.5, smoothstep( 0.5, 1.0, bi.g ) );
-    sn *= smoothstep( th - 0.1, th + 0.08, ny + ( dB.r - 0.5 ) * 0.22 + ( dA.g - 0.5 ) * 0.1 );
+    float sn0 = smoothstep( 0.3, 0.62, bi.g + ( dB.g - 0.5 ) * 0.45 + ( dA.b - 0.5 ) * 0.2 );
+    // 雪厚的地方陡坡上也挂得住；山脊上的雪被风吹走，陡壁上一层层岩台露出来
+    float th = mix( 0.76, 0.6, smoothstep( 0.5, 1.0, bi.g ) );
+    float strata = sin( vWP.y * 0.55 + dB.r * 6.0 + dA.g * 1.5 ) * 0.5 + 0.5;
+    float ledge = smoothstep( 0.52, 0.74, ( 1.0 - dB.g ) * 0.7 + dA.b * 0.3 + ( strata - 0.5 ) * 0.3 ) * ( 1.0 - smoothstep( 0.8, 0.95, ny ) );
+    th += smoothstep( 0.2, 0.8, cav ) * 0.12 * smoothstep( 0.35, 0.65, dB.b ) + ledge * 0.22;
+    float sn = sn0 * smoothstep( th - 0.1, th + 0.08, ny + ( dB.r - 0.5 ) * 0.22 + ( dA.g - 0.5 ) * 0.1 );
+    // 雪里露出来的岩石：冷灰，比草坡上的石头暗
+    float bare = ( sn0 - sn ) * ( 1.0 - road ) * ( 1.0 - rk * 0.6 );
+    g = mix( g, vec3( 0.31, 0.33, 0.37 ) * ( 0.72 + 0.5 * dA.g ) * ( 0.85 + 0.3 * dB.r ), bare );
+    jBH = mix( jBH, dB.r * 0.9 + dA.g * 0.5 + dA.b * 0.3, bare ); jBK = mix( jBK, 0.16, bare );
     sn *= 1.0 - 0.45 * sp.a;
     // 雪面：风吹出来的一道道雪垄，背阴处带点蓝
     vec3 dS = texture2D( uDetail, vWP.xz * 0.05 + vec2( 0.2, 0.6 ) ).rgb;
-    vec3 sc = uSnow * ( 0.88 + 0.08 * dA.r + 0.08 * dS.g );
+    vec3 dS2 = uFine > 0.5 ? texture2D( uDetail, vWP.xz * 0.011 + vec2( 0.7, 0.15 ) ).rgb : vec3( 0.5 );
+    vec3 sc = uSnow * ( 0.84 + 0.08 * dA.r + 0.08 * dS.g ) * ( 0.95 + 0.08 * dS2.g );
     sc = mix( sc, sc * vec3( 0.84, 0.91, 1.0 ), smoothstep( 0.42, 0.72, dS.b ) * 0.55 );
     g = mix( g, sc * mix( 1.0, 0.86, road ), sn );
+    // 雪面：风吹的雪垄和大的雪堆（法线起伏），近处有闪闪的雪粒
+    jBH = mix( jBH, ( dS.g * 0.7 + dA.r * 0.15 ) * ( 1.0 - smoothstep( 30.0, 80.0, vd ) ) + dS2.g * 2.2, sn ); jBK = mix( jBK, 0.14, sn );
+    jSnowK = sn;
   }
   diffuseColor.rgb *= g;
+  // 远处不要细碎的起伏（会闪）；雪面的大雪堆远处也看得见
+  jBK *= 1.0 - smoothstep( 30.0, 80.0, vd ) * 0.85 * ( 1.0 - jSnowK );
 }
 `;
+// 雪粒的闪光：几厘米一格，个别格子在朝着太阳的角度上亮一下
+const SNOW_GLINT = /* glsl */`
+if ( uFine > 0.5 && jSnowK > 0.05 && length( vViewPosition ) < 22.0 ) {
+  vec2 gc = floor( vWP.xz * 26.0 );
+  float hs = fract( sin( dot( gc, vec2( 12.9898, 78.233 ) ) ) * 43758.5453 );
+  vec3 V = normalize( cameraPosition - vWP ), Hh = normalize( V + uSunDir );
+  vec3 wn = normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz );
+  float gl = step( 0.993, hs ) * pow( max( dot( wn, Hh ), 0.0 ), 4.0 ) * ( 1.0 - smoothstep( 6.0, 22.0, length( vViewPosition ) ) );
+  reflectedLight.directDiffuse += uSunColor * gl * jSnowK * 3.0;
+}`;
 
 export function terrainUniforms(splat, detail, dirt, biome) {
   const uni = {
@@ -232,7 +318,9 @@ export function terrainMaterial(uni) {
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\n' + TERRAIN_VS)
       .replace('#include <beginnormal_vertex>', '#include <beginnormal_vertex>\nvWN = objectNormal;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\n' + TERRAIN_VS + TERRAIN_GLSL)
-      .replace('#include <map_fragment>', TERRAIN_COLOR);
+      .replace('#include <map_fragment>', TERRAIN_COLOR)
+      .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nif ( uFine > 0.5 ) normal = jBumpN( normal, -vViewPosition, jBH, jBK );')
+      .replace('#include <lights_fragment_end>', '#include <lights_fragment_end>\n' + SNOW_GLINT);
   };
   patch(m, { gobo: true, fog: true, shadowFade: true });
   m.customProgramCacheKey = () => 'terrain';
@@ -254,7 +342,7 @@ export function tuftMaterial(uni, fadeU) {
           vec3 g = jGrass( vWP.xz, sp, dA, jBiome( vWP.xz ) );
           // 顶点色：r = 高度比例（0 根 1 尖），g = 亮度扰动
           float t = vColor.r;
-          diffuseColor.rgb = g * mix( 0.5, 1.1, t ) * ( 0.9 + 0.2 * vColor.g );
+          diffuseColor.rgb = g * mix( 0.66, 1.14, t ) * ( 0.88 + 0.24 * vColor.g );
           diffuseColor.rgb *= 1.0 - 0.3 * step( 0.6, 1.0 - smoothstep( 1.0, 1.4, sp.r * 10.0 ) );
         }`);
   };
@@ -380,7 +468,8 @@ export function buildNear(land, mat) {
   // 按离镜头的远近换粗细（留一点余量，免得在边界上来回跳）；有一块变了就重拼索引，
   // 飞得快时一秒里会变很多次，最多 0.2 秒拼一次
   let pending = false, lastT = -1e9;
-  group.userData.update = camera => {
+  // force：瞬移、截图时马上拼好（不然那一帧脚下还是粗网格，溪边会翘起一块）
+  group.userData.update = (camera, force) => {
     const px = camera.position.x, pz = camera.position.z;
     for (const ch of chunks) {
       const dd = Math.max(0, Math.hypot(ch.x - px, ch.z - pz) - 50), cur = ch.level;
@@ -389,7 +478,7 @@ export function buildNear(land, mat) {
       if (lv !== cur) { ch.level = lv; pending = true; }
     }
     const now = performance.now();
-    if (pending && now - lastT > 200) { rebuild(); pending = false; lastT = now; }
+    if (pending && (force || now - lastT > 200)) { rebuild(); pending = false; lastT = now; }
   };
   // 四周裙边，遮住和远景网格之间的细缝
   {
@@ -415,11 +504,56 @@ export function buildNear(land, mat) {
 }
 
 // ---------- 远景网格 ----------
+// 远山的材质：顶点色是草、林、岩石的底色；aFar = (树林, 岩石, 积雪)。像素里加上一团团树冠、岩层、
+// 边缘清楚的积雪（沟里存雪、山脊露石头），再用大尺度的噪声扰一下法线，山坡上有起伏的光影
+const FAR_FS = /* glsl */`
+if ( uFine < 0.5 ) {
+  // 画质「低」：只按顶点上的积雪量铺雪，不取细节纹理
+  diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.9, 0.93, 0.97 ), smoothstep( 0.4, 0.6, vFar.z ) );
+} else {
+  vec2 xz = vWP.xz;
+  vec3 n1 = texture2D( uDetail, xz * 0.0028 + vec2( 0.31, 0.12 ) ).rgb;
+  vec3 n2 = texture2D( uDetail, xz * 0.0011 + vec2( 0.62, 0.81 ) ).rgb;
+  vec3 n3 = texture2D( uDetail, xz * 0.011 + vec2( 0.23, 0.44 ) ).rgb;
+  vec3 c = diffuseColor.rgb * ( 0.9 + 0.2 * n2.g );
+  float fo = smoothstep( 0.2, 0.6, vFar.x + ( n1.g - 0.5 ) * 0.5 );
+  c = mix( c, c * ( 0.62 + 0.6 * n1.b ), fo * 0.85 );
+  float strata = 0.5 + 0.5 * sin( vWP.y * 0.3 + n3.g * 5.0 + n1.r * 3.0 );
+  c = mix( c, c * ( 0.74 + 0.4 * strata ), vFar.y * 0.85 );
+  float sn = smoothstep( 0.44, 0.56, vFar.z + ( n3.r - 0.5 ) * 0.4 + ( n1.g - 0.5 ) * 0.3 );
+  c = mix( c, vec3( 0.9, 0.93, 0.97 ) * ( 0.93 + 0.1 * n3.g ), sn );
+  diffuseColor.rgb = c;
+  jBH = n1.g * 0.7 + n3.g * 0.35 + n2.b * 0.6;
+  jBK = 10.0 * ( 1.0 - 0.5 * sn );
+}`;
+function farMaterial(tuni) {
+  const m = new THREE.MeshLambertMaterial({ vertexColors: true });
+  m.onBeforeCompile = sh => {
+    sh.uniforms.uDetail = tuni.uDetail;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute vec3 aFar; varying vec3 vFar;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvFar = aFar;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
+      uniform sampler2D uDetail; uniform float uFine; varying vec3 vFar;
+      float jBH = 0.0; float jBK = 0.0;
+      vec3 jBumpN( vec3 N, vec3 P, float h, float k ) {
+        vec3 dpx = dFdx( P ), dpy = dFdy( P );
+        vec3 r1 = cross( dpy, N ), r2 = cross( N, dpx );
+        float det = dot( dpx, r1 );
+        vec3 grad = sign( det ) * ( dFdx( h ) * k * r1 + dFdy( h ) * k * r2 );
+        return normalize( abs( det ) * N - grad );
+      }`)
+      .replace('#include <color_fragment>', '#include <color_fragment>\n' + FAR_FS)
+      .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nif ( uFine > 0.5 ) normal = jBumpN( normal, -vViewPosition, jBH, jBK );');
+  };
+  patch(m, { gobo: false, fog: true, shadowFade: false });
+  m.customProgramCacheKey = () => 'terrainFar';
+  return m;
+}
 const FAR_COL = {
   grass: new THREE.Color('#7d9440'), dry: new THREE.Color('#a4a252'), forest: new THREE.Color('#41592c'), forest2: new THREE.Color('#34502e'),
   rock: new THREE.Color('#8a7e70'), rockDark: new THREE.Color('#6b6474'), snow: new THREE.Color('#f4f1ec'),
 };
-export function buildFar() {
+export function buildFar(tuni, land) {
   // 坐标：近景范围内 8 米一格（和近景边界对齐），往外按比例变稀
   const axis = (a0, a1, lo, hi) => {
     const out = [];
@@ -432,7 +566,7 @@ export function buildFar() {
   const xs = axis(DOM.x0, DOM.x0 + DOM.w, CENTER.x - R, CENTER.x + R);
   const zs = axis(DOM.z0, DOM.z0 + DOM.d, CENTER.z - R, CENTER.z + R);
   const nx = xs.length, nz = zs.length;
-  const pos = new Float32Array(nx * nz * 3), nor = new Float32Array(nx * nz * 3), col = new Float32Array(nx * nz * 3);
+  const pos = new Float32Array(nx * nz * 3), nor = new Float32Array(nx * nz * 3), col = new Float32Array(nx * nz * 3), mix3 = new Float32Array(nx * nz * 3);
   const hs = new Float32Array(nx * nz);
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) hs[j * nx + i] = farH(xs[i], zs[j]);
   const c = new THREE.Color();
@@ -449,14 +583,28 @@ export function buildFar() {
     const n1 = fbm(x * 0.006 + 3, z * 0.006, 3), n2 = vnoise(x * 0.03, z * 0.03);
     const sk = snowK(x, z, h);   // 西北冰湖那边雪线低
     c.copy(FAR_COL.grass).lerp(FAR_COL.dry, sstep(0.55, 0.75, n2) * 0.5);
-    c.lerp(n2 > 0.5 ? FAR_COL.forest : FAR_COL.forest2, sstep(0.42, 0.56, n1) * sstep(1200, 300, h) * (1 - sk));
-    c.lerp(FAR_COL.rock, sstep(0.55, 0.75, 1 - ny) * 0.9);
+    const fo = sstep(0.42, 0.56, n1) * sstep(1200, 300, h) * (1 - sk);
+    c.lerp(n2 > 0.5 ? FAR_COL.forest : FAR_COL.forest2, fo);
+    const rk = sstep(0.55, 0.75, 1 - ny) * 0.9;
+    c.lerp(FAR_COL.rock, rk);
     c.lerp(FAR_COL.rockDark, sstep(120, 320, h) * 0.6);
     const snowLine = 250 + 60 * (n1 - 0.5) + 80 * (1 - ny);
-    // 很陡的岩壁上挂不住雪，露出一道道岩石
-    c.lerp(FAR_COL.snow, Math.max(sstep(snowLine, snowLine + 50, h) * (ny > 0.55 ? 1 : 0.7), sk * sstep(0.3, 0.62, ny + 0.14 * (n2 - 0.5))));
+    // 积雪在着色器里逐像素算（边缘才清楚）；很陡的岩壁上挂不住雪，露出一道道岩石
+    const snow = Math.max(sstep(snowLine - 10, snowLine + 50, h) * (ny > 0.55 ? 1 : 0.7), sk * sstep(0.3, 0.62, ny + 0.14 * (n2 - 0.5)));
     col[k * 3] = c.r; col[k * 3 + 1] = c.g; col[k * 3 + 2] = c.b;
-    if (inside) h -= 6;
+    mix3[k * 3] = fo; mix3[k * 3 + 1] = Math.max(rk, sstep(120, 320, h) * 0.6); mix3[k * 3 + 2] = snow;
+    if (inside) {
+      h -= 6;
+      // 近景里挖下去的溪槽、湖盆比粗网格低得多：这一格四周最低的近景地面再往下压，免得粗网格从溪边冒出来挡住水面
+      if (land) {
+        const r = 8 / DOM.cell + 1, fx = (x - DOM.x0) / DOM.cell, fz = (z - DOM.z0) / DOM.cell;
+        const gx0 = Math.max(0, Math.floor(fx - r)), gx1 = Math.min(land.NX - 1, Math.ceil(fx + r));
+        const gz0 = Math.max(0, Math.floor(fz - r)), gz1 = Math.min(land.NZ - 1, Math.ceil(fz + r));
+        let m = Infinity;
+        for (let gz = gz0; gz <= gz1; gz++) for (let gx = gx0; gx <= gx1; gx++) m = Math.min(m, land.H[gz * land.NX + gx]);
+        h = Math.min(h, m - 2);
+      }
+    }
     pos[k * 3] = x; pos[k * 3 + 1] = h; pos[k * 3 + 2] = z;
   }
   const idx = new Uint32Array((nx - 1) * (nz - 1) * 6); let p = 0;
@@ -468,9 +616,9 @@ export function buildFar() {
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
   geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  geo.setAttribute('aFar', new THREE.BufferAttribute(mix3, 3));
   geo.setIndex(new THREE.BufferAttribute(idx, 1));
-  const mat = new THREE.MeshLambertMaterial({ vertexColors: true });
-  patch(mat, { gobo: false, fog: true, shadowFade: false });
+  const mat = farMaterial(tuni);
   const mesh = new THREE.Mesh(geo, mat); mesh.name = 'terrainFar'; mesh.matrixAutoUpdate = false; mesh.renderOrder = 1;
   mesh.userData.stats = { verts: nx * nz };
   // 和网格一致的高度查询（远处的替身树要贴着这张粗网格）

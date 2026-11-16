@@ -17,10 +17,12 @@ import { SKY } from './world/sky.js';
 import { makeFireflies } from './world/fireflies.js';
 import { makeFalling } from './world/particles.js';
 import { loadSave, writeSave, clearSave } from './game/save.js';
+import { MapView } from './game/map.js';
+import { makeBeacon } from './world/beacon.js';
 
 const P = new URLSearchParams(location.search);
 // 无头截图模式：?shot=1&place=地点|x=&z=&ry=朝向&mode=foot|ride|fly&mount=a|b|w|d&trav=m|f&v=速度&alt=高度&sim=秒&cam=travel|top|intro|side|front|close
-const SHOT = P.has('shot');
+const SHOT = P.has('shot'), DEBUG = P.has('debug');
 if (SHOT) document.body.classList.add('shot');
 const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
 const MOUNT_ORDER = ['b', 'a', 'w', 'd'];
@@ -57,6 +59,7 @@ addEventListener('resize', setSize);
 setSize();
 
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
+let mapView = null, beacon = null;
 const travelers = {};          // m / f：选到哪个才加载哪个
 // 存档：截图模式不读不写
 const saved = SHOT || P.has('fresh') ? null : loadSave();
@@ -71,7 +74,7 @@ function applyTier(tier) {
   sun.shadow.mapSize.set(T.shadow, T.shadow);
   if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
   const c = sun.shadow.camera; c.left = c.bottom = -T.shadowR; c.right = c.top = T.shadowR; c.updateProjectionMatrix();
-  U.uShadowRadius.value = T.shadowR;
+  U.uShadowRadius.value = T.shadowR; U.uFine.value = tier === 'low' ? 0 : 1;
   if (W) { W.setQuality(tier); W.update(camera, focus, 0, true); }
 }
 const showPerf = () => ui.perf(`${Math.round(quality.fps) || '--'} fps · ${quality.label}`);
@@ -128,6 +131,8 @@ const ui = initUI({
     setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.hint(J.auto ? '' : '按住屏幕前进'); save(); }, 800);
   },
   skipTime: () => { if (J && playing) J.skipTime(); },
+  // 地图：打开时游戏停下来（不画 3D），关上接着走
+  openMap: id => { if (!J || !playing || !mapView) return; if (mapView.isOpen) { mapView.close(); return; } J.holding = false; mapView.open(id); },
   // 开始卡片上的“从头开始”：不用存档
   fresh: () => {
     if (!J || playing) return;
@@ -156,6 +161,17 @@ let saveT = 0;
 function save() {
   if (!J || SHOT || !playing || J.phase === 'intro') return;
   writeSave({ ...J.snapshot(), trav: travKey });
+}
+// 地图上点“去这里”：一暗一亮，直接过去
+function travel(place) {
+  if (!J.canTravel()) return;
+  ui.fade(true);
+  setTimeout(() => {
+    if (!J.travelTo(place)) { ui.fade(false); return; }
+    for (let i = 0; i < 4; i++) step(1 / 30);
+    W.update(camera, focus, 0, true);
+    ui.fade(false); ui.banner(place.name, place.sub, 3.5); save();
+  }, 850);
 }
 function resumeText(s) {
   const n = (s.visited || []).length;
@@ -221,6 +237,15 @@ function step(dt) {
   fireflies.userData.update(J.p, Math.min(1, Math.max(0, (J.night - 0.3) / 0.5)) * (1 - W.land.snow(J.p.x, J.p.z)), px);
   // 红叶谷的落叶、雪线上的雪花
   falling.userData.update(J.p, px, dt);
+  // 标记点：屏幕上方的箭头（相对镜头朝向）和远处的光柱
+  const w = playing ? J.waypoint : null;
+  if (w) {
+    const dx = w.x - J.p.x, dz = w.z - J.p.z, f = cam.fwd;
+    ui.way(w, Math.atan2(dx * -f.z + dz * f.x, dx * f.x + dz * f.z), Math.hypot(dx, dz));
+  } else ui.way(null);
+  beacon.userData.update(w, W.land, camera.position, dt);
+  // 地图底图趁空闲一点点画好
+  if (playing && J.t > 3) mapView.idle();
   syncUI();
   saveT += dt;
   if (saveT > 15) { saveT = 0; save(); }
@@ -229,6 +254,8 @@ const clock = new THREE.Clock();
 function frame() {
   requestAnimationFrame(frame);
   const rdt = clock.getDelta(), dt = Math.min(rdt, 1 / 20);
+  if (mapView?.isOpen) { mapView.tick(); return; }
+  if (DEBUG && window.__freeze) return;     // 测试截图用：停在当前画面
   step(dt);
   renderer.render(scene, camera);
   if (quality.frame(rdt)) showPerf();
@@ -305,7 +332,19 @@ async function load() {
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
   J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight });
-  if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; }   // 调试：测试脚本读状态
+  if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; }   // 调试：测试脚本读状态
+  beacon = makeBeacon(); scene.add(beacon);
+  mapView = new MapView({
+    land: W.land, trees: W.placed.trees, explored: J.explored,
+    places: () => J.places.map(p => ({ ...p, seen: J.visited.includes(p.id) })),
+    player: () => ({ x: J.p.x, z: J.p.z, yaw: J.yaw }),
+    // 坐骑：不骑着、也不在身边的时候在地图上标出来
+    mountAt: () => { const M = J.mount; if (!M || !M.st.shown || J.mode === 'ride' || M.st.p.distanceTo(J.p) < 6) return null; return { x: M.st.p.x, z: M.st.p.z, name: M.name }; },
+    getWay: () => J.waypoint, setWay: w => { J.waypoint = w; save(); },
+    canTravel: () => J.canTravel(), travel: place => travel(place),
+    onClose: () => { clock.getDelta(); ui.hint(''); },
+  });
+  if (P.has('debug')) window.__map = mapView;
   J.onCamp = showSummary;
   J.onVisit = () => save();
   if (saved) { try { J.restore(saved); ui.resume(resumeText(saved)); } catch (e) { console.warn('[j] restore', e); clearSave(); } }

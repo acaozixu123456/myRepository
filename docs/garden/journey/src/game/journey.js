@@ -7,6 +7,7 @@ import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ } from '../world/land.js';
 import { PERIODS } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
+import { Explored } from './map.js';
 
 export const GAITS = {
   foot: [{ name: '散步', v: 1.15 }, { name: '快走', v: 1.8 }, { name: '跑', v: 4.4 }],
@@ -73,6 +74,8 @@ export class Journey {
     this.auto = false; this.holding = false;
     this.p = new THREE.Vector3(); this.vy = 0;
     this.t = 0;
+    // 地图：走过的地方（4 米一格）和标记点
+    this.explored = new Explored(); this.waypoint = null; this.exT = 0;
     this.reset();
     this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.night = 0; this.owlT = 20;
     // 声音：三道叠水的位置、阵风、冰鸣、换曲用的区域（带一点滞后，免得在边界上来回切）
@@ -129,6 +132,47 @@ export class Journey {
     this.cam.inited = false;
   }
 
+  // 地图上点“去这里”：落在离那个地方最近的路上（或者地方边上），面朝那里；飞着的就飞到那儿上空
+  arrival(P) {
+    let best = null;
+    for (const path of [ROAD, TRAIL]) {
+      const q = path.nearest(P.x, P.z, P.r + 25, {});
+      if (q.dist < (best ? best.dist : Infinity)) best = { dist: q.dist, p: path.at(q.s, {}) };
+    }
+    let x, z, yaw;
+    if (best) {
+      x = best.p.x; z = best.p.z;
+      yaw = best.dist > 2.5 ? Math.atan2(P.x - x, P.z - z) : Math.atan2(best.p.tx, best.p.tz);
+    } else {
+      // 不在路边：站在这个地方靠谷地那一侧，面朝它
+      const dx = CENTER.x - P.x, dz = CENTER.z - P.z, l = Math.hypot(dx, dz) || 1, k = Math.min(12, P.r * 0.5);
+      x = P.x + dx / l * k; z = P.z + dz / l * k; yaw = Math.atan2(P.x - x, P.z - z);
+    }
+    // 别落在水里、树里
+    if (this.waterDepth(x, z) > 0.08) {
+      let bx = x, bz = z, bd = Infinity;
+      for (let r = 1.5; r <= 18 && bd === Infinity; r += 1.5) for (let a = 0; a < 6.283; a += 0.4) {
+        const tx = x + Math.cos(a) * r, tz = z + Math.sin(a) * r;
+        if (this.waterDepth(tx, tz) <= 0.02) { bx = tx; bz = tz; bd = r; break; }
+      }
+      x = bx; z = bz;
+    }
+    [x, z] = this.colliders.resolve(x, z, 0.8, 0);
+    return { x, z, yaw };
+  }
+  canTravel() { return !this.sitting && this.phase !== 'intro'; }
+  travelTo(P) {
+    if (!this.canTravel()) return false;
+    const a = this.arrival(P), fly = this.mode === 'fly';
+    this.teleport(a.x, a.z, a.yaw, fly ? 'fly' : this.mode === 'ride' ? 'ride' : 'foot', 22);
+    if (fly) { this.alt = 22; this.climb = 0; }
+    this.phase = 'play'; this.holding = false; this.glance = null;
+    this.inPlace.clear(); this.placeT = 0; this.ui.place('');
+    this.explored.reveal(a.x, a.z, 46);
+    if (this.waypoint && this.waypoint.id === P.id) this.waypoint = null;
+    return true;
+  }
+
   reset() {
     ROAD.at(SPOTS.start, _p);
     this.p.set(_p.x, 0, _p.z); this.p.y = this.groundAt(this.p.x, this.p.z);
@@ -139,6 +183,7 @@ export class Journey {
     this.steerT = 0; this.idleT = 0; this.travelT = 0;
     this.dist = { foot: 0, ride: 0, fly: 0 };
     this.visited = []; this.inPlace = new Set(); this.placeT = 0; this.labelT = 0;
+    this.explored.clear(); this.waypoint = null; this.exT = 0;
     this.viewDone = false; this.glanceDone = false; this.glance = null;
     this.sitting = false; this.lit = 0; this.campT = 0; this.summaryShown = false;
     this.snortT = 18 + Math.random() * 20; this.mixT = 0; this.hintT = 0; this.edgeT = 0;
@@ -569,6 +614,16 @@ export class Journey {
       }
     }
     if (this.labelT > 0) { this.labelT -= dt; if (this.labelT <= 0 && this.lastPlace && this.inPlace.has(this.lastPlace.id)) this.ui.place(this.lastPlace.name); }
+    // 地图：走过的地方亮起来（飞得越高看得越远）；走到标记点附近就算到了
+    this.exT -= dt;
+    if (this.exT <= 0) {
+      this.exT = 0.5;
+      this.explored.reveal(this.p.x, this.p.z, 46 + (this.mode === 'fly' ? Math.min(120, (this.alt || 0) * 1.5) : 0));
+      const w = this.waypoint;
+      if (w && Math.hypot(this.p.x - w.x, this.p.z - w.z) < w.r + (this.mode === 'fly' ? 10 : 0)) {
+        this.waypoint = null; this.ui.hint(`到了：${w.name}`); this.hintT = 3;
+      }
+    }
     // 过桥时侧头看一眼风车
     if (this.glance) {
       const g = this.glance, c = this.cam; g.t += dt;
@@ -734,6 +789,7 @@ export class Journey {
       mount: this.mountKey, mode, x: r(this.p.x), z: r(this.p.z), yaw: r(this.yaw), tod: r(this.tod), day: this.dayN,
       visited: [...this.visited], dist: { foot: Math.round(this.dist.foot), ride: Math.round(this.dist.ride), fly: Math.round(this.dist.fly) },
       travelT: Math.round(this.travelT), gaits: { ...this.gaits }, viewDone: this.viewDone, glanceDone: this.glanceDone,
+      ex: this.explored.encode(), way: this.waypoint ? { ...this.waypoint } : null,
     };
   }
   restore(s) {
@@ -755,6 +811,13 @@ export class Journey {
     this.travelT = +s.travelT || 0;
     if (s.gaits) for (const k of ['foot', 'ride', 'fly']) if (s.gaits[k] >= 0 && s.gaits[k] <= 2) this.gaits[k] = s.gaits[k] | 0;
     this.viewDone = !!s.viewDone; this.glanceDone = !!s.glanceDone;
+    // 地图：老存档没有记走过哪里，就把去过的地方周围亮出来
+    this.explored.clear();
+    if (!(typeof s.ex === 'string' && this.explored.decode(s.ex)))
+      for (const id of this.visited) { const P = this.places.find(p => p.id === id && p.x !== undefined); if (P) this.explored.reveal(P.x, P.z, P.r + 46); }
+    this.explored.reveal(this.p.x, this.p.z, 46);
+    const w = s.way;
+    this.waypoint = w && Number.isFinite(+w.x) && Number.isFinite(+w.z) ? { id: w.id || null, name: String(w.name || '标记的地方').slice(0, 20), x: +w.x, z: +w.z, r: Math.min(30, Math.max(6, +w.r || 8)) } : null;
     this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length);
     this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));

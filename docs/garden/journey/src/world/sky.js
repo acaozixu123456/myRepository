@@ -30,7 +30,7 @@ void main() {
 }`;
 const FS = /* glsl */`
 uniform float uTime; uniform vec3 uSunColor;
-uniform vec3 uZenith; uniform vec3 uMid; uniform vec3 uCloudLit; uniform vec3 uCloudShade; uniform vec3 uSunGlow; uniform float uCloudCover;
+uniform vec3 uZenith; uniform vec3 uMid; uniform vec3 uCloudLit; uniform vec3 uCloudShade; uniform vec3 uSunGlow; uniform float uCloudCover; uniform float uFine;
 uniform vec3 uSunPos; uniform vec3 uMoonDir; uniform float uStars; uniform float uMoonI; uniform float uDpr;
 uniform vec3 uMwN; uniform vec3 uMwA; uniform vec3 uMwB;
 ${FOG_FN}
@@ -95,26 +95,39 @@ void main() {
       col = mix( col, mc, disc * min( 1.0, uMoonI * 1.4 ) );
     }
   }
-  // 云
+  // 云：高处一层被风拉长的卷云，下面是一团团积云
   if ( el > -0.02 ) {
-    vec2 p = dir.xz / ( el + 0.16 ) * 1.25;
     vec2 drift = vec2( uTime * 0.006, uTime * 0.0025 );
+    // 卷云：很薄，一丝丝的（画质「低」时不画，省两次噪声）
+    if ( uFine > 0.5 ) {
+      vec2 pc = dir.xz / ( el + 0.06 ) * 0.42 + drift * 1.7;
+      float cw = fbm4( pc * 0.8 + 21.0 );
+      float ci = fbm4( vec2( pc.x * 0.55 + pc.y * 0.3, pc.y * 2.6 - pc.x * 0.4 ) + cw * 1.3 );
+      float cir = smoothstep( 0.56, 0.8, ci ) * smoothstep( 0.03, 0.3, el ) * ( 0.28 + 0.2 * uCloudCover );
+      col = mix( col, mix( uCloudLit, hor, 0.25 ) + uSunGlow * pow( sd, 5.0 ) * 0.3, cir );
+    }
+    vec2 p = dir.xz / ( el + 0.16 ) * 1.25;
     vec2 q = p + drift;
     float warp = fbm4( q * 0.5 + 3.0 );
     float n = fbm4( q + warp * 0.9 );
+    // 边上被侵蚀出一个个小卷，边缘清楚一些
+    float nd = 0.5, ew = 0.17;
+    if ( uFine > 0.5 ) { nd = fbm4( q * 3.3 + warp * 1.6 + 11.0 ); ew = 0.075; }
     float band = 1.0 - smoothstep( 0.05, 0.5, el );
-    float cov = smoothstep( 0.62 - uCloudCover * 0.3, 0.8 - uCloudCover * 0.25, n + band * 0.12 - 0.06 );
+    float base = n + band * 0.12 - 0.06, th0 = 0.62 - uCloudCover * 0.3;
+    float cov = smoothstep( th0, th0 + ew, base + ( nd - 0.5 ) * 0.17 );
     cov *= smoothstep( -0.01, 0.07, el );
-    // 朝太阳一侧亮：沿太阳方向偏移再取一次，算出“厚度差”
+    // 朝太阳一侧亮：沿太阳方向偏移再取一次，算出“厚度差”；云厚的地方底下暗一点
     vec2 sOff = normalize( uSunDir.xz + 1e-4 ) * 0.22;
     float n2 = fbm4( q + sOff + warp * 0.9 );
-    float lit = clamp( 0.55 + ( n - n2 ) * 3.5, 0.0, 1.0 );
-    vec3 cc = mix( uCloudShade, uCloudLit, lit );
+    float lit = clamp( 0.55 + ( n - n2 ) * 3.5 + ( nd - 0.5 ) * 0.5, 0.0, 1.0 );
+    float thick = smoothstep( th0 + 0.05, th0 + 0.3, base );
+    vec3 cc = mix( uCloudShade, uCloudLit, lit ) * ( 1.0 - 0.14 * thick );
     cc = mix( cc, hor, 0.35 * ( 1.0 - smoothstep( 0.0, 0.2, el ) ) );
     // 太阳附近的云边发亮（银边）
     float rim = pow( kd, 10.0 ) * ( 1.0 - smoothstep( 0.4, 1.0, cov ) ) * cov;
     cc += uSunColor * rim * 2.2 + uSunGlow * pow( sd, 4.0 ) * 0.25;
-    col = mix( col, cc, cov * 0.92 );
+    col = mix( col, cc, cov * 0.94 );
   }
   // 太阳本体
   float disc = smoothstep( 0.99935, 0.99965, sd );

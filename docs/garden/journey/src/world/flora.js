@@ -44,7 +44,7 @@ function softenCanopy(geo, amount = 0.75) {
 }
 
 // ---------- 材质 ----------
-export async function floraMaterials(base, fadeU) {
+export async function floraMaterials(base, fadeU, tuni) {
   const L = new THREE.TextureLoader();
   const files = ['leaf.png', 'pine.png', 'bark.jpg', 'flowers.png', 'atlas.png', 'grass.png', 'mush.jpg', 'rock.jpg', 'pebble.jpg'];
   const loaded = Object.fromEntries(await Promise.all(files.map(async f => [f, await L.loadAsync(base + f)])));
@@ -65,12 +65,12 @@ export async function floraMaterials(base, fadeU) {
   M.bushFlower = new THREE.MeshLambertMaterial({ map: tex('flowers.png'), alphaTest: 0.5, side: THREE.DoubleSide });
   patch(M.bushFlower, { wind: 'grass', gobo: true, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
   const small = { uniforms: { uFadeR: fadeU.small } };
-  mk('atlas', tex('atlas.png'), { wind: 'grass', gobo: true, sss: 0.4, fadeOut: true, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
-  mk('flowers', M.bushFlower.map, { wind: 'grass', gobo: true, sss: 0.3, fadeOut: true, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
-  mk('grass', tex('grass.png'), { wind: 'grass', gobo: true, sss: 0.5, fadeOut: true, ...small }, { side: THREE.DoubleSide });
+  mk('atlas', tex('atlas.png'), { wind: 'grass', gobo: true, sss: 0.4, fadeOut: true, grassN: 0.45, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
+  mk('flowers', M.bushFlower.map, { wind: 'grass', gobo: true, sss: 0.3, fadeOut: true, grassN: 0.35, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
+  mk('grass', tex('grass.png'), { wind: 'grass', gobo: true, sss: 0.5, fadeOut: true, grassN: 0.6, ...small }, { side: THREE.DoubleSide });
   mk('mush', tex('mush.jpg'), { gobo: true, fadeOut: true, ...small });
-  const rockU = { uniforms: { uFadeR: fadeU.rock } };
-  mk('rock', tex('rock.jpg'), { gobo: true, fadeOut: true, ...rockU });
+  const rockU = { uniforms: { uFadeR: fadeU.rock, uBiome: tuni.uBiome, uDom: tuni.uDom } };
+  mk('rock', tex('rock.jpg'), { gobo: true, fadeOut: true, cover: true, ...rockU });
   mk('pebble', tex('pebble.jpg'), { gobo: true, fadeOut: true, ...small });
   // 雪松：朝上的松针上落着雪
   M.pineS = new THREE.MeshLambertMaterial({ map: M.pine.map, alphaTest: 0.42, side: THREE.DoubleSide });
