@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+const wrapA = a => Math.atan2(Math.sin(a), Math.cos(a));
 const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
 const _v = new THREE.Vector3(), _w = new THREE.Vector3();
 
@@ -15,9 +16,13 @@ export class CamRig {
     this.fwd = new THREE.Vector3(0, 0, -1);
     this.shot = null; this.shotW = 0;      // 自动远景
     this.inited = false;
+    // 方向盘操作时镜头自己有朝向（yawC）：拖屏幕转镜头，走起来才慢慢转到身后；按住屏幕的老操作镜头一直跟着人
+    this.free = false; this.yawC = 0; this.dragT = 0;
     // 不同走法的机位：离身后多远、多高、看前面多远、看的高度
     this.par = { back: 6.6, up: 2.35, ahead: 11, lookH: 1.75 };
   }
+  // 镜头现在看的方向（含侧头看风景的偏移）
+  get viewYaw() { return this.yawC + this.yawOff; }
   // 远景镜头：{ dur, pos(t)->Vector3, look(t)->Vector3 }
   play(shot) { this.shot = { ...shot, t: 0 }; }
   get busy() { return !!this.shot; }
@@ -28,9 +33,23 @@ export class CamRig {
     const kp0 = this.inited ? 1 - Math.exp(-dt * 2.2) : 1;
     for (const k in P) this.par[k] += (P[k] - this.par[k]) * kp0;
     // 朝向慢慢跟上
-    _v.set(Math.sin(yaw), 0, Math.cos(yaw));
-    if (!this.inited) this.fwd.copy(_v);
-    this.fwd.lerp(_v, 1 - Math.exp(-dt * (mode === 'fly' ? 1.6 : mode === 'foot' ? 2.6 : 1.8))).normalize();
+    if (this.free) {
+      if (!this.inited) this.yawC = yaw;
+      if (this.dragT > 0) this.dragT -= dt;
+      else {
+        // 走起来镜头慢慢回到身后；拿方向盘往侧面、往回走时几乎不跟，人就绕着镜头走、朝镜头走，不会打转
+        const rel = wrapA(yaw - this.yawC);
+        let k = (mode === 'fly' ? 1.3 : mode === 'foot' ? 1.6 : 1.3) * sstep(0.3, 1.4, o.speed || 0);
+        if (o.steer) { const c = Math.cos(rel); k *= 0.1 * sstep(-0.3, 0.1, c) + 0.9 * Math.max(0, c) ** 2; }
+        this.yawC = wrapA(this.yawC + rel * (1 - Math.exp(-k * dt)));
+      }
+      this.fwd.set(Math.sin(this.yawC), 0, Math.cos(this.yawC));
+    } else {
+      _v.set(Math.sin(yaw), 0, Math.cos(yaw));
+      if (!this.inited) this.fwd.copy(_v);
+      this.fwd.lerp(_v, 1 - Math.exp(-dt * (mode === 'fly' ? 1.6 : mode === 'foot' ? 2.6 : 1.8))).normalize();
+      this.yawC = Math.atan2(this.fwd.x, this.fwd.z);
+    }
     this.zoom = damp(this.zoom, this.zoomTarget, 3.0, dt);
     if (this.yawHold > 0) this.yawHold -= dt; else this.yawOff = damp(this.yawOff, 0, 0.9, dt);
     if (this.pitchHold > 0) this.pitchHold -= dt; else this.pitchOff = damp(this.pitchOff, 0, 0.6, dt);

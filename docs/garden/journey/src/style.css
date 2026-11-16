@@ -123,3 +123,35 @@ body.playing #start { opacity: 0; pointer-events: none; }
 /* 无头截图模式：去掉毛玻璃和过渡，软件渲染下合成太慢 */
 body.shot * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; transition: none !important; }
 body.shot #start, body.shot #fade { display: none !important; }
+
+/* ---------- 方向盘 ---------- */
+/* 左下这一片都能按：方向盘跟到手指下；按钮在它上面（DOM 在后），点得到 */
+#stickZone { position: absolute; left: 0; bottom: 0; width: min(48vw, 230px); height: min(46vh, 330px); pointer-events: none; touch-action: none; display: none; }
+body.stick #stickZone { display: block; pointer-events: auto; }
+#stick { position: absolute; left: calc(var(--sal) + 18px); bottom: calc(var(--sab) + 16px); width: 112px; height: 112px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 246, 230, 0.06) 0 34%, rgba(40, 28, 20, 0.2) 35% 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 246, 230, 0.42), 0 2px 14px rgba(60, 30, 10, 0.18);
+  opacity: 0.72; transition: opacity 0.3s, transform 0.18s ease-out; }
+/* 四个小箭头，像方向键 */
+#stick::before { content: ""; position: absolute; inset: 8px; background: no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96' fill='none' stroke='%23fff8ee' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' opacity='0.7'%3E%3Cpath d='M42 9 48 3 54 9M42 87 48 93 54 87M9 42 3 48 9 54M87 42 93 48 87 54'/%3E%3C/svg%3E"); }
+#knob { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(255, 250, 240, 0.98), rgba(255, 228, 190, 0.92));
+  box-shadow: 0 3px 10px rgba(70, 35, 10, 0.35), inset 0 -2px 4px rgba(170, 110, 60, 0.25); }
+body.sticking #stick { opacity: 1; transition: opacity 0.15s; }
+#stickGait { position: absolute; left: calc(var(--sal) + 18px); width: 112px; bottom: calc(var(--sab) + 134px); text-align: center; font-size: 12px; font-weight: 500; letter-spacing: 3px;
+  text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+body.sticking #stickGait { opacity: 0.92; }
+/* 方向盘模式：步态由推多远决定，不用左边那列；模式按钮收窄一点让出位置 */
+body.stick .gaits { display: none; }
+body.stick #hud .bottom { left: calc(var(--sal) + 138px); }
+body.stick .modes button { padding: 7px 8px; letter-spacing: 1px; }
+body.stick .hint { text-align: center; white-space: pre-line; line-height: 1.5; }
+body.holdctl #stickZone { display: none; }
+
+/* 开始卡片和手记里的“怎么走” */
+.ctl { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 0 12px; font-size: 13px; color: var(--ink); }
+.ctl span { opacity: 0.6; }
+.ctlPick { display: flex; background: rgba(120, 80, 50, 0.12); border-radius: 15px; padding: 2px; gap: 2px; }
+.ctlPick button { background: none; color: var(--ink); border-radius: 13px; padding: 5px 12px; font-size: 13px; }
+.ctlPick button.on { background: rgba(255, 252, 245, 0.95); box-shadow: 0 1px 4px rgba(80, 40, 10, 0.18); }
+#journalSheet .ctl { margin: 10px 0 2px; }

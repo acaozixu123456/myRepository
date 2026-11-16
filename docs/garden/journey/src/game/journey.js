@@ -1,4 +1,5 @@
-// 自由旅行：步行、骑马、飞行三种走法，在谷地里随意走。按住屏幕往前，左右拖动转向（飞的时候上下拖动爬升、下降）。
+// 自由旅行：步行、骑马、飞行三种走法，在谷地里随意走。默认左下角方向盘走（往哪推往哪走，推远走快），拖屏幕转镜头；
+// 也可以换回老操作：按住屏幕往前，左右拖动转向（飞的时候上下拖动爬升、下降）。
 // 在山路上不拖动时会自动顺着路走；谷地里有十处地方，往西北还有红叶谷、叠水、雪原山口和冰湖（第一次到会出地名横幅，记进旅行手记）；
 // 第一次到望远台有一段远景；在山口营地可以坐下烤火，看这一路的手记。
 // 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
@@ -72,6 +73,8 @@ export class Journey {
     this.mountKey = 'b';
     this.gaits = { foot: 1, ride: 1, fly: 1 };
     this.auto = false; this.holding = false;
+    // 方向盘：stick = { x, y } 推的方向（右、上为正，长度 0~1），null 是没碰；ctl = 'stick' 方向盘 / 'hold' 按住屏幕走
+    this.stick = null; this.ctl = 'stick'; this.stickGait = -1;
     this.p = new THREE.Vector3(); this.vy = 0;
     this.t = 0;
     // 地图：走过的地方（4 米一格）和标记点
@@ -199,9 +202,44 @@ export class Journey {
   look(dx, dy) {
     if (this.phase === 'view' && this.cam.shot) { releaseShot(this.cam, 1.6); this.phase = 'play'; }
     if (this.sitting) return;
+    if (this.ctl === 'stick') {
+      // 方向盘操作：拖屏幕只转镜头（推着方向盘时人跟着镜头转）；飞的时候上下拖还是爬升、下降
+      this.cam.yawC -= dx * 2.6; this.cam.dragT = 1.6;
+      if (this.mode === 'fly') { this.climb = clamp(this.climb - dy * 5, -1, 1); this.steerT = 1.4; }
+      else { this.cam.pitchOff = clamp(this.cam.pitchOff + dy * 3.2, -1.2, 3); this.cam.pitchHold = 2.5; if (this.stick) this.steerT = 0.8; }
+      return;
+    }
     if (this.mode === 'fly') { this.yawT -= dx * 2.3; this.climb = clamp(this.climb - dy * 5, -1, 1); }
     else { this.yawT -= dx * 2.6; this.cam.pitchOff = clamp(this.cam.pitchOff + dy * 3.2, -1.2, 3); this.cam.pitchHold = 2; }
     this.steerT = 1.4;
+  }
+  setCtl(c) { this.ctl = c === 'hold' ? 'hold' : 'stick'; this.cam.free = this.ctl === 'stick'; this.setStick(null); }
+  setStick(v) {
+    this.stick = v;
+    if (!v) { this.holding = false; this.stickGait = -1; return; }
+    if (this.phase === 'view' && this.cam.shot) { releaseShot(this.cam, 1.2); this.phase = 'play'; }
+  }
+  // 方向盘：往哪推就往哪走（相对镜头），推得越远走得越快（三档步态）
+  stickDrive() {
+    const st = this.stick;
+    if (!st || this.sitting) return false;
+    const m = Math.hypot(st.x, st.y);
+    if (m < 0.18) { this.holding = false; return true; }
+    // 档位带一点回差，推在边界上不会来回跳
+    const g = this.stickGait, up = [0.55, 0.9], dn = [0.47, 0.82];
+    let gi = g < 0 ? (m >= up[1] ? 2 : m >= up[0] ? 1 : 0) : g;
+    if (gi < 2 && m >= up[gi]) gi = m >= up[1] ? 2 : 1;
+    if (gi > 0 && m < dn[gi - 1]) gi = m < dn[0] ? 0 : 1;
+    this.stickGait = gi; this.gaits[this.uiMode] = gi;
+    this.holding = true;
+    const rel = Math.atan2(st.x, st.y);
+    // 正往前推时交给“顺着路走”，偏了才自己掌方向
+    if (this.mode === 'fly') this.yawT = this.cam.viewYaw - rel;   // 飞的时候 steerT 管爬升回平，不碰它
+    else if (Math.abs(rel) > 0.14 || this.steerT > 0) {
+      this.yawT = this.cam.viewYaw - rel;
+      this.steerT = Math.max(this.steerT, 0.4);
+    } else if (Math.abs(wrap(this.cam.viewYaw - this.yaw)) > 0.35) this.yawT = this.cam.viewYaw;
+    return true;
   }
   keys(dt, turnKey, climbKey) {
     if (turnKey) { this.yawT -= turnKey * dt * (this.mode === 'fly' ? 1.2 : 1.9); this.steerT = 1.0; }
@@ -277,6 +315,7 @@ export class Journey {
     if (playing && !this.sitting) this.travelT += dt;
     this.steerT = Math.max(0, this.steerT - dt);
     // yawT 不要离当前朝向太远
+    if (this.ctl === 'stick' && this.phase !== 'intro') this.stickDrive();
     this.yawT = this.yaw + wrap(this.yawT - this.yaw);
     if (this.trans) this.transTick(dt);
     if (!this.trans && this.pendingMode) { const m = this.pendingMode; this.pendingMode = null; if (m !== this.uiMode) this.setMode(m); }
@@ -589,7 +628,7 @@ export class Journey {
   // ---------- 镜头 ----------
   camTick(dt) {
     const focus = _cr.copy(this.mode === 'ride' && !this.trans ? this.mount.root.position : this.p);
-    this.cam.update(dt, focus, this.yaw, { mode: this.trans?.kind === 'takeoff' && this.mode !== 'fly' ? 'foot' : this.mode, speed: this.speed, vy: this.vy, alt: this.alt || 0 });
+    this.cam.update(dt, focus, this.yaw, { mode: this.trans?.kind === 'takeoff' && this.mode !== 'fly' ? 'foot' : this.mode, speed: this.speed, vy: this.vy, alt: this.alt || 0, steer: !!this.stick });
   }
 
   // ---------- 地点、远景、营地 ----------

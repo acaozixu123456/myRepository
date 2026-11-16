@@ -107,6 +107,12 @@ const ui = initUI({
     if (on && playing && !hintTimer) hintTimer = setTimeout(() => ui.hint(''), 1800);
   },
   look: (dx, dy) => J?.look(dx, dy),
+  stick: v => {
+    if (!J || !playing) return;
+    J.setStick(v);
+    if (v && !hintTimer) hintTimer = setTimeout(() => ui.hint(''), 1800);
+  },
+  setCtl: c => setCtl(c, true),
   zoom: () => cam?.zoomTarget ?? 0,
   setZoom: (z, done) => { if (!cam) return; cam.zoomTarget = z; if (done) ui.tool('bCam', z > 0.5); },
   gait: i => { if (!J) return; J.gait = i; ui.gait(i); },
@@ -120,15 +126,15 @@ const ui = initUI({
   again: restart => {
     ui.summaryOff();
     if (!restart) {
-      if (!J.isNight) { J.standUp(); ui.hint('按住屏幕前进'); save(); return; }
+      if (!J.isNight) { J.standUp(); ui.hint(ui.goHint()); save(); return; }
       // 夜里：睡一觉，第二天清晨接着走
       ui.fade(true);
-      setTimeout(() => { J.wakeUp(); ui.fade(false); ui.banner(`第 ${J.dayN} 天`, '天亮了，接着上路'); ui.hint('按住屏幕前进'); save(); }, 1100);
+      setTimeout(() => { J.wakeUp(); ui.fade(false); ui.banner(`第 ${J.dayN} 天`, '天亮了，接着上路'); ui.hint(ui.goHint()); save(); }, 1100);
       return;
     }
     ui.fade(true);
     clearSave();
-    setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.hint(J.auto ? '' : '按住屏幕前进'); save(); }, 800);
+    setTimeout(() => { J.restart(); quality.samples.length = 0; ui.fade(false); ui.hint(J.auto ? '' : ui.goHint()); save(); }, 800);
   },
   skipTime: () => { if (J && playing) J.skipTime(); },
   // 地图：打开时游戏停下来（不画 3D），关上接着走
@@ -140,6 +146,16 @@ const ui = initUI({
   },
 });
 ui.tool('bSound', true);
+// 操作方式：默认方向盘，记在本机
+function setCtl(c, user) {
+  c = c === 'hold' ? 'hold' : 'stick';
+  if (user) try { localStorage.setItem('journey.ctl', c); } catch {}
+  J?.setCtl(c); ui.ctl(c);
+  if (user && playing && J && !J.auto) { clearTimeout(hintTimer); hintTimer = 0; ui.hint(ui.goHint()); }
+}
+let ctlPref = 'stick';
+try { ctlPref = localStorage.getItem('journey.ctl') || 'stick'; } catch {}
+ui.ctl(ctlPref === 'hold' ? 'hold' : 'stick');
 
 // 走法、步态名字和坐骑在界面上同步（切换要过渡一会儿，所以每帧看一下）
 let shownMode = '', shownMount = '', shownGait = -1;
@@ -152,7 +168,11 @@ function syncUI() {
     ui.mountChanged(k);
     shownGait = -1;
   }
-  if (J.gait !== shownGait) { shownGait = J.gait; ui.gait(J.gait); }
+  if (J.gait !== shownGait) {
+    shownGait = J.gait; ui.gait(J.gait);
+    const names = m === 'ride' ? J.mount.gaitNames : GAITS[m].map(g => g.name);
+    ui.stickGait(names?.[J.gait] || '');
+  }
   ui.time(periodOf(J.ff ? J.ff.to : J.tod).name, !!J.ff || (J.sitting && J.sitTo !== null));
 }
 
@@ -184,7 +204,7 @@ function start() {
   sound.start(J.musicMood());       // 必须在点击里：iPhone 只允许这时候开声音
   ui.playing(true); J.begin();
   quality.recording = true;
-  ui.hint('按住屏幕前进');
+  ui.hint(ui.goHint());
   wake();
 }
 
@@ -332,6 +352,7 @@ async function load() {
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
   J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight });
+  J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);   // 截图沿用老镜头，参数好复现
   if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; }   // 调试：测试脚本读状态
   beacon = makeBeacon(); scene.add(beacon);
   mapView = new MapView({
