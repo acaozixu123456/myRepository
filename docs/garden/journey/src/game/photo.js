@@ -148,11 +148,12 @@ export class PhotoMode {
       const P = J.placeHere(), d = J.dayN, h = J.tod;
       const stamp = this.stamp ? `旅途 · ${P ? P.name : '路上'} · 第${d}天 ${periodOf(h).name}` : '';
       const shotP = makePhoto(renderer.domElement, this.filter, stamp);   // 画布在这一刻就复制走了
+      const subj = [...(this.h.subjects?.(camera) || [])];                // 画面里拍到的动物、人、彩虹
       if (hi > pr0) { renderer.setPixelRatio(pr0); renderer.setSize(innerWidth, innerHeight, false); }
       const ph = await shotP;
       const id = 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
       const first = P ? album.of(P.id).length === 0 : false;
-      const rec = { id, t: Date.now(), d, h: Math.round(h * 100) / 100, place: P ? P.id : null, name: P ? P.name : '路上', w: ph.w, h2: ph.h, f: this.filter.id, blob: ph.blob, thumb: ph.thumb };
+      const rec = { id, t: Date.now(), d, h: Math.round(h * 100) / 100, place: P ? P.id : null, name: P ? P.name : '路上', w: ph.w, h2: ph.h, f: this.filter.id, blob: ph.blob, thumb: ph.thumb, ...(subj.length ? { subj } : {}) };
       const r = await album.add(rec);
       J.note('photo', rec.place, id);
       this.lastThumb();

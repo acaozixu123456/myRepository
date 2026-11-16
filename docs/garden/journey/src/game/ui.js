@@ -86,6 +86,25 @@ export function initUI(h) {
     banner.classList.add('show'); clearTimeout(bannerT); bannerT = setTimeout(() => banner.classList.remove('show'), dur * 1000);
   };
   ui.bannerOff = () => { clearTimeout(bannerT); banner.classList.remove('show'); };
+  // 新的见闻：左上角一张小卡片
+  const found = $('found'); let foundT = 0;
+  const KIND = { animal: '路上的动物', folk: '偶遇的人', vista: '观景点', sky: '天上的' };
+  ui.found = (F, dur = 5) => {
+    found.querySelector('i').textContent = '新的见闻 · ' + (KIND[F.kind] || '');
+    found.querySelector('b').textContent = F.name; found.querySelector('small').textContent = F.sub;
+    found.classList.remove('show'); void found.offsetWidth; found.classList.add('show');
+    clearTimeout(foundT); foundT = setTimeout(() => found.classList.remove('show'), dur * 1000);
+  };
+  // 说话：底下一张卡片，点一下收起来
+  const talk = $('talk'); let talkT = 0;
+  ui.talk = (name, text, note = '') => {
+    if (!name) { talk.classList.remove('show'); return; }
+    talk.querySelector('b').textContent = name; talk.querySelector('p').textContent = text;
+    const sm = talk.querySelector('small'); sm.textContent = note; sm.hidden = !note;
+    talk.classList.add('show'); clearTimeout(talkT);
+    talkT = setTimeout(() => talk.classList.remove('show'), Math.max(6, text.length * 0.2 + (note ? 2 : 0)) * 1000);
+  };
+  talk.addEventListener('click', () => { clearTimeout(talkT); talk.classList.remove('show'); });
   const hint = $('hint'); let hintText = null;
   ui.hint = (t) => { if (t === hintText) return; hintText = t; if (t) hint.textContent = t; hint.classList.toggle('off', !t); };
 

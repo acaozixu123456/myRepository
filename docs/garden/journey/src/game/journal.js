@@ -1,6 +1,7 @@
 // 旅行手记：三页 ——「地方」（去过的地方和营地，第一张照片当封面）、「相册」（拍过的照片）、「日记」（每天去了哪、在哪歇脚、拍了什么，自动写的）。
 // 点地方看详情（照片、第一次去是哪天、在地图上看、一键过去）；点照片看大图（存到手机、设为封面、删掉）。
 import { periodOf } from '../world/daytime.js';
+import { FINDS, FIND_KINDS, findOf } from './finds.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -15,14 +16,16 @@ export class Journal {
     $('jTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) this.show(b.dataset.t); });
     this.body.addEventListener('click', e => {
       const c = e.target.closest('[data-place]'); if (c) return this.openPlace(c.dataset.place);
+      const f = e.target.closest('[data-find]'); if (f) return this.openFind(f.dataset.find);
       const p = e.target.closest('[data-photo]'); if (p) return this.openPhoto(p.dataset.photo, p.dataset.set || null);
     });
     this.detail.addEventListener('click', e => {
       if (e.target === this.detail) return this.closePlace();
       const p = e.target.closest('[data-photo]'); if (p) return this.openPhoto(p.dataset.photo, p.dataset.set || null);
       const b = e.target.closest('button[data-a]'); if (!b) return;
+      if (b.dataset.a === 'close') return this.closePlace();
+      if (b.dataset.a === 'fmap') { const id = this.detailId; this.close(); this.h.openMap(id); return; }
       const P = this.placeOf(this.detailId);
-      if (b.dataset.a === 'close') this.closePlace();
       if (b.dataset.a === 'map') { this.close(); this.h.openMap(P.id); }
       if (b.dataset.a === 'go') { this.close(); this.h.travel(P); }
     });
@@ -57,9 +60,11 @@ export class Journal {
     const seen = J.places.filter(p => J.visited.includes(p.id)).length, camps = J.camps.size;
     const d = J.dist, km = v => v >= 1000 ? (v / 1000).toFixed(1) + ' 千米' : Math.round(v) + ' 米';
     const total = d.foot + d.ride + d.fly;
-    $('jStats').textContent = `第 ${J.dayN} 天 · 到过 ${seen}/${J.places.length} 处 · 点过 ${camps} 堆篝火 · ${A.list.length} 张照片${total > 50 ? ' · 一共走了 ' + km(total) : ''}`;
+    const nf = Object.keys(J.found).length;
+    $('jStats').textContent = `第 ${J.dayN} 天 · 到过 ${seen}/${J.places.length} 处 · 见闻 ${nf}/${FINDS.length} · 点过 ${camps} 堆篝火 · ${A.list.length} 张照片${total > 50 ? ' · 一共走了 ' + km(total) : ''}`;
     if (this.tab === 'places') this.body.innerHTML = this.placesHTML();
     else if (this.tab === 'album') this.body.innerHTML = this.albumHTML();
+    else if (this.tab === 'finds') this.body.innerHTML = this.findsHTML();
     else this.body.innerHTML = this.diaryHTML();
   }
   placesHTML() {
@@ -72,7 +77,7 @@ export class Journal {
         <span class="ph">${c ? `<img src="${c.url}" alt="">` : `<i>${seen ? '还没拍照' : '？'}</i>`}${n > 1 ? `<em>${n}</em>` : ''}${lit ? '<s title="篝火点过了"></s>' : ''}</span>
         <b>${esc(P.name)}</b><small>${esc(line)}</small></button>`;
     };
-    const spots = J.places.filter(p => p.kind !== 'camp'), camps = J.places.filter(p => p.kind === 'camp');
+    const spots = J.places.filter(p => p.kind !== 'camp' && p.kind !== 'vista'), camps = J.places.filter(p => p.kind === 'camp');
     return `<h3>风景</h3><div class="grid">${spots.map(card).join('')}</div><h3>营地 <small>坐下烤火就点起篝火，夜里远远就看得见</small></h3><div class="grid">${camps.map(card).join('')}</div>`;
   }
   albumHTML() {
@@ -93,6 +98,12 @@ export class Journal {
       if (e.k === 'camp') return `在<b>${esc(name(e.id))}</b>点起了篝火。`;
       if (e.k === 'rest') return `在<b>${esc(name(e.id))}</b>坐下来烤了会儿火。`;
       if (e.k === 'weather') return { cloudy: '云慢慢多了起来。', rain: '下起了小雨。', fog: '起雾了，远处的山看不见了。', snow: '飘起了雪。', clear: '天晴了。' }[e.id] || '';
+      if (e.k === 'find') {
+        const F = findOf(e.id); if (!F) return '';
+        if (F.kind === 'folk') return `碰到一位<b>${esc(F.name)}</b>，聊了几句。`;
+        if (F.kind === 'sky') return `看到了<b>${esc(F.name)}</b>！${esc(F.sub)}。`;
+        return `遇见了<b>${esc(F.name)}</b>。${esc(F.sub)}。`;
+      }
       if (e.k === 'sleep') return `在<b>${esc(name(e.id))}</b>的火边睡了一觉。`;
       if (e.k === 'photo') { const p = A.get(e.p); return `在<b>${esc(name(e.id))}</b>拍了张照片。${p ? `<button type="button" class="dthumb" data-photo="${p.id}" data-set="all"><img src="${p.url}" alt=""></button>` : ''}`; }
       return '';
@@ -100,10 +111,45 @@ export class Journal {
     return [...days.entries()].sort((a, b) => b[0] - a[0]).map(([d, es]) =>
       `<section class="day"><h3>第 ${d} 天</h3><ul>${es.map(e => `<li><i>${periodOf(e.h).name}</i><span>${line(e)}</span></li>`).join('')}</ul></section>`).join('');
   }
+  // ---------- 见闻 ----------
+  findPhoto(id) { const f = this.h.J.found[id]; return f?.photo ? this.h.album.get(f.photo) : null; }
+  findsHTML() {
+    const J = this.h.J;
+    const card = F => {
+      const f = J.found[F.id], ph = this.findPhoto(F.id) || (F.kind === 'vista' && f ? this.cover(F.id) : null), told = J.tips.has(F.id);
+      const line = f ? `${when(f.d, f.h)}${F.kind === 'vista' ? ' 上去过' : ' 遇见'}` : (told ? '听说：' : '') + F.hint;
+      return `<button type="button" class="pc find ${f ? 'seen' : 'todo'}" data-find="${F.id}">
+        <span class="ph">${ph ? `<img src="${ph.url}" alt="">` : `<i class="g">${f ? F.g : '？'}</i>`}</span>
+        <b>${esc(f ? F.name : F.kind === 'folk' || F.kind === 'vista' ? '？？？' : F.name)}</b><small class="${!f && told ? 'tip' : ''}">${esc(line)}</small></button>`;
+    };
+    return FIND_KINDS.map(K => {
+      const L = FINDS.filter(F => F.kind === K.id), n = L.filter(F => J.found[F.id]).length;
+      return `<h3>${K.name} ${n}/${L.length} <small>${esc(K.sub)}</small></h3><div class="grid">${L.map(card).join('')}</div>`;
+    }).join('');
+  }
+  openFind(id) {
+    const J = this.h.J, F = findOf(id); if (!F) return;
+    this.detailId = id; this.detailKind = 'find';
+    const f = J.found[id], told = J.tips.has(id);
+    const ps = this.h.album.list.filter(p => (p.subj || []).includes(id) || (F.kind === 'vista' && p.place === id));
+    const big = this.findPhoto(id) || ps[0];
+    const onMap = this.h.markOf?.(id);
+    const btns = onMap && (f || told) ? [['fmap', '在地图上看']] : [];
+    this.detail.innerHTML = `<div class="card">
+      <div class="big">${big ? `<img src="${big.url}" alt="">` : `<i>${f ? '还没拍到照片' : '还没遇见'}</i>`}</div>
+      <b>${esc(f || F.kind === 'animal' || F.kind === 'sky' ? F.name : '？？？')}</b>
+      <small>${esc(f ? F.sub : (told ? '听说：' : '线索：') + F.hint)}</small>
+      <small>${f ? when(f.d, f.h) + (F.kind === 'vista' ? ' 第一次上来' : ' 第一次遇见') + (f.n ? ` · 打过 ${f.n} 次招呼` : '') : told ? '地图上标出来了' : ''}${ps.length ? ` · ${ps.length} 张照片` : ''}</small>
+      ${ps.length ? `<div class="strip">${ps.map(p => `<button type="button" data-photo="${p.id}" data-set="all"><img src="${p.url}" alt=""></button>`).join('')}</div>` : ''}
+      <div class="row">${btns.map(([a, t]) => `<button type="button" data-a="${a}">${t}</button>`).join('')}</div>
+      <button type="button" class="link" data-a="close">回到手记</button></div>`;
+    this.detail.hidden = false;
+  }
   // ---------- 地方详情 ----------
+  refreshDetail() { if (!this.detailId) return; if (this.detailKind === 'find') this.openFind(this.detailId); else this.openPlace(this.detailId); }
   openPlace(id) {
     const J = this.h.J, P = this.placeOf(id); if (!P) return;
-    this.detailId = id;
+    this.detailId = id; this.detailKind = 'place';
     const seen = J.visited.includes(id), ps = this.h.album.of(id), c = this.cover(id);
     const fv = this.firstVisit(id), camp = P.kind === 'camp';
     const btns = [];
@@ -130,13 +176,13 @@ export class Journal {
       if (a === 'prev' || a === 'next') return this.stepPhoto(a === 'next' ? 1 : -1);
       if (!p) return;
       if (a === 'save') return this.savePhoto(p);
-      if (a === 'cover') { this.h.setCover(p.place, p.id); b.textContent = '已设为封面'; b.disabled = true; if (this.detailId) this.openPlace(this.detailId); return; }
+      if (a === 'cover') { this.h.setCover(p.place, p.id); b.textContent = '已设为封面'; b.disabled = true; this.refreshDetail(); return; }
       if (a === 'del') {
         if (!b.classList.contains('arm')) { b.classList.add('arm'); b.textContent = '再点一下删掉'; return; }
         const set = this.vSet, i = set.indexOf(p.id);
         await this.h.album.remove(p.id);
         this.vSet = set.filter(id => id !== p.id);
-        if (this.detailId) this.openPlace(this.detailId);
+        this.refreshDetail();
         if (!this.vSet.length) return this.closePhoto();
         this.showPhoto(this.vSet[Math.min(i, this.vSet.length - 1)]);
       }

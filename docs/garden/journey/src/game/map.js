@@ -238,8 +238,8 @@ export class MapView {
     this.view.cx = P ? P.x : me.x; this.view.cz = P ? P.z : me.z;
     this.clampView();
     this.select(P ? { kind: 'place', P } : null);
-    const list = this.h.places(), seen = list.filter(p => p.seen).length;
-    this.sub.textContent = `到过 ${seen}/${list.length} 处`;
+    const list = this.h.places().filter(p => p.kind !== 'mark'), seen = list.filter(p => p.seen).length;
+    this.sub.textContent = `到过 ${seen}/${this.h.total?.() ?? list.length} 处`;
     this.dirty = true; this.h.onOpen?.();
   }
   close() { if (!this.isOpen) return; this.isOpen = false; this.el.hidden = true; this.select(null); this.h.onClose?.(); }
@@ -322,8 +322,8 @@ export class MapView {
     const dist = (x, z) => { const d = Math.hypot(x - me.x, z - me.z); return d < 15 ? '就在这儿' : `离你 ${d < 1000 ? Math.round(d / 10) * 10 : (d / 1000).toFixed(1) + ' 千'} 米`; };
     if (s.kind === 'place') {
       const P = s.P, marked = way && way.id === P.id;
-      name = P.name; text = (P.seen ? P.sub : '还没去过 · ' + P.where) + ' · ' + dist(P.x, P.z);
-      if (P.seen) btns.push(this.h.canTravel() ? ['go', '去这里'] : ['', '坐着呢，先站起来']);
+      name = P.name; text = (P.kind === 'mark' ? P.sub : P.seen ? P.sub : '还没去过 · ' + P.where) + ' · ' + dist(P.x, P.z);
+      if (P.seen && P.kind !== 'mark') btns.push(this.h.canTravel() ? ['go', '去这里'] : ['', '坐着呢，先站起来']);
       btns.push(marked ? ['unmark', '取消标记'] : ['mark', '标记']);
     } else if (s.kind === 'way') {
       name = way.name; text = '标记的地方 · ' + dist(way.x, way.z); btns.push(['unmark', '取消标记']);
@@ -395,6 +395,7 @@ export class MapView {
       if (x < -60 || x > W + 60 || y < -40 || y > H + 40) continue;
       const on = this.sel?.kind === 'place' && this.sel.P.id === P.id, r = (on ? 7.5 : 5.5) * Math.min(1.2, k);
       if (P.kind === 'camp') this.campIcon(x, y, r * 1.25, P.seen, P.lit);
+      else if (P.kind === 'mark' || P.kind === 'vista') this.glyph(x, y, r * 1.2, P.g, P.seen, P.kind === 'vista');
       else {
         g.beginPath(); g.arc(x, y, r + 2, 0, 6.283); g.fillStyle = 'rgba(255, 250, 238, 0.95)'; g.fill();
         g.beginPath(); g.arc(x, y, r, 0, 6.283);
@@ -432,6 +433,22 @@ export class MapView {
     g.strokeStyle = INK; g.lineWidth = 1.5; g.beginPath(); g.moveTo(bx, by - 4); g.lineTo(bx, by); g.lineTo(bx + len, by); g.lineTo(bx + len, by - 4); g.stroke();
     g.font = '500 11px -apple-system, "PingFang SC", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillStyle = INK;
     g.fillText(`${meters} 米`, bx + len / 2, by - 5);
+  }
+  // 见闻的记号：一个小圆牌子写一个字（鹿、狐、灯……）；观景点是一面小旗；还没见过的是虚线圈
+  glyph(x, y, s, ch, seen, flag) {
+    const g = this.ctx;
+    g.beginPath(); g.arc(x, y, s + 2.5, 0, 6.283); g.fillStyle = seen ? '#fff6e4' : 'rgba(255, 250, 238, 0.85)'; g.fill();
+    g.beginPath(); g.arc(x, y, s, 0, 6.283); g.lineWidth = 1.5; g.strokeStyle = seen ? '#a5602c' : INK;
+    if (!seen) g.setLineDash([2.5, 2.5]); g.stroke(); g.setLineDash([]);
+    if (flag) {
+      g.beginPath(); g.moveTo(x - s * 0.35, y + s * 0.6); g.lineTo(x - s * 0.35, y - s * 0.65); g.lineWidth = 1.4; g.strokeStyle = INK; g.stroke();
+      g.beginPath(); g.moveTo(x - s * 0.35, y - s * 0.65); g.quadraticCurveTo(x + s * 0.2, y - s * 0.75, x + s * 0.7, y - s * 0.25); g.quadraticCurveTo(x + s * 0.15, y - s * 0.2, x - s * 0.35, y - s * 0.1);
+      g.fillStyle = seen ? '#c8462e' : 'rgba(74, 52, 36, 0.4)'; g.fill();
+    } else {
+      g.font = `600 ${Math.round(s * 1.15)}px "Songti SC", "STSong", "Noto Serif SC", serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillStyle = seen ? '#8a4c22' : 'rgba(74, 52, 36, 0.55)'; g.fillText(seen ? ch : '？', x, y + 0.5);
+      g.textBaseline = 'top';
+    }
   }
   // 营地：一个小帐篷；点过篝火的帐篷前有一团火
   campIcon(x, y, s, seen, lit) {
