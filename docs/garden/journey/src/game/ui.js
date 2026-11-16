@@ -1,5 +1,6 @@
 // 界面和操作：开始卡片（选旅人、选坐骑）、顶部地名和手记、横幅、步态 / 走法 / 工具按钮、换坐骑面板、结尾手记；
-// 手势：按住前进、左右拖动转向（飞的时候上下拖动爬升下降）、双指捏合切换俯视。
+// 手势：默认左下角方向盘走（相对镜头的方向，推远走快），屏幕其他地方拖动转镜头；老操作是按住前进、左右拖动转向
+// （飞的时候上下拖动爬升下降）；双指捏合切换俯视。
 // 电脑上：空格/W/↑ 前进，A/D/←/→ 转向，Q/E 下降/爬升，F 飞，R 骑马，G 步行，T 俯视，1/2/3 步态。
 const $ = id => document.getElementById(id);
 
@@ -120,7 +121,8 @@ export function initUI(h) {
   const pts = new Map();
   let pinch = null, multi = false;
   const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
-  const sync = () => h.hold(pts.size === 1 && !multi);
+  let ctl = 'stick';
+  const sync = () => { if (ctl === 'hold') h.hold(pts.size === 1 && !multi); };
   canvas.addEventListener('pointerdown', e => {
     try { canvas.setPointerCapture(e.pointerId); } catch {}
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -148,6 +150,52 @@ export function initUI(h) {
   for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
   document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
   canvas.addEventListener('contextmenu', e => e.preventDefault());
+  // ---------- 方向盘 ----------
+  // 平时停在左下角；在左下这一片按下去，方向盘就挪到手指下（不用对准）。另一只手指可以同时拖屏幕转镜头。
+  const zone = $('stickZone'), stick = $('stick'), knob = $('knob'), sGait = $('stickGait');
+  const R = 42;   // 小圆点最多推出去多远（px）
+  let sId = null, c0 = null;
+  const restC = () => { const q = stick.getBoundingClientRect(); return { x: q.left + q.width / 2, y: q.top + q.height / 2 }; };
+  const knobAt = (dx, dy) => { knob.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`; };
+  zone.addEventListener('pointerdown', e => {
+    if (sId !== null || ctl !== 'stick') return;
+    sId = e.pointerId;
+    try { zone.setPointerCapture(e.pointerId); } catch {}
+    const rc = restC();
+    // 离方向盘远：方向盘跟过来；就在上面：原地用
+    const off = Math.hypot(e.clientX - rc.x, e.clientY - rc.y) > 56;
+    c0 = off ? { x: e.clientX, y: e.clientY } : { x: rc.x, y: rc.y };
+    if (off) stick.style.transform = `translate(${(e.clientX - rc.x).toFixed(1)}px, ${(e.clientY - rc.y).toFixed(1)}px)`;
+    body.classList.add('sticking');
+    move(e); e.preventDefault();
+  });
+  const move = e => {
+    if (e.pointerId !== sId) return;
+    let dx = e.clientX - c0.x, dy = e.clientY - c0.y; const d = Math.hypot(dx, dy);
+    if (d > R) { dx *= R / d; dy *= R / d; }
+    knobAt(dx, dy);
+    h.stick({ x: dx / R, y: -dy / R });
+  };
+  zone.addEventListener('pointermove', move);
+  const sUp = e => {
+    if (e.pointerId !== sId) return;
+    sId = null; knobAt(0, 0); stick.style.transform = ''; body.classList.remove('sticking');
+    h.stick(null);
+  };
+  zone.addEventListener('pointerup', sUp); zone.addEventListener('pointercancel', sUp); zone.addEventListener('lostpointercapture', sUp);
+  zone.addEventListener('contextmenu', e => e.preventDefault());
+  ui.stickGait = t => { if (sGait.textContent !== t) sGait.textContent = t; };
+  // 操作方式：方向盘 / 按住屏幕（开始卡片和手记里都能换）
+  const ctlBtns = [...document.querySelectorAll('.ctlPick button')];
+  ui.ctl = c => {
+    ctl = c; body.classList.toggle('stick', c === 'stick'); body.classList.toggle('holdctl', c === 'hold');
+    for (const b of ctlBtns) b.classList.toggle('on', b.dataset.c === c);
+    if (sId !== null) { sId = null; knobAt(0, 0); stick.style.transform = ''; body.classList.remove('sticking'); h.stick(null); }
+    pts.clear(); multi = false; pinch = null; h.hold(false);
+  };
+  for (const b of ctlBtns) b.addEventListener('click', () => h.setCtl(b.dataset.c));
+  ui.goHint = () => ctl === 'stick' ? '左下角推着走\n拖屏幕转镜头' : '按住屏幕前进';
+
   // 键盘
   const keys = new Set();
   const FWD = ['Space', 'ArrowUp', 'KeyW'];
@@ -166,7 +214,7 @@ export function initUI(h) {
   });
   addEventListener('keyup', e => {
     keys.delete(e.code);
-    if (FWD.includes(e.code) && !FWD.some(k => keys.has(k))) h.hold(pts.size === 1);
+    if (FWD.includes(e.code) && !FWD.some(k => keys.has(k))) h.hold(ctl === 'hold' && pts.size === 1);
   });
   ui.keysTurn = () => ((keys.has('ArrowLeft') || keys.has('KeyA')) ? -1 : 0) + ((keys.has('ArrowRight') || keys.has('KeyD')) ? 1 : 0);
   ui.keysClimb = () => (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);

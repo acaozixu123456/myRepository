@@ -31,13 +31,14 @@
   <div id="progress"><i></i></div>
   <button id="way" type="button" hidden><i id="wayArrow"></i><b id="wayName"></b><small id="wayDist"></small></button>
   <div id="banner"><b></b><small></small></div>
+  <div id="stickZone"><div id="stick"><i id="knob"></i></div><b id="stickGait"></b></div>
   <div class="bottom">
     <div class="gaits" id="gaits">
       <button type="button" data-g="0">慢步</button><button type="button" data-g="1" class="on">小跑</button><button type="button" data-g="2">奔跑</button>
     </div>
     <div class="mid">
       <button type="button" id="act" hidden>坐下烤火</button>
-      <div class="hint" id="hint">按住屏幕前进</div>
+      <div class="hint" id="hint"></div>
       <div class="modes" id="modes">
         <button type="button" data-m="foot">步行</button><button type="button" data-m="ride" class="on">骑马</button><button type="button" data-m="fly">飞</button>
       </div>
@@ -63,6 +64,7 @@
   <div class="card">
     <h2>旅行手记</h2>
     <ul class="places" id="placeList"></ul>
+    <div class="ctl"><span>怎么走</span><div class="ctlPick"><button type="button" data-c="stick">方向盘</button><button type="button" data-c="hold">按住屏幕</button></div></div>
     <button type="button" class="link" id="journalClose">接着走</button>
   </div>
 </div>
@@ -82,9 +84,10 @@
       <button type="button" data-t="m" class="on">旅人 · 他</button><button type="button" data-t="f">旅人 · 她</button>
     </div>
     <div class="mounts" id="horsePick"></div>
+    <div class="ctl"><span>怎么走</span><div class="ctlPick"><button type="button" data-c="stick">方向盘</button><button type="button" data-c="hold">按住屏幕</button></div></div>
     <button id="go" type="button" disabled>准备中…</button>
     <button class="link" id="fresh" type="button" hidden>不接着走了，从头开始</button>
-    <p class="tips">按住屏幕往前，左右拖动转向。下面随时换成步行、骑马或者飞；点右上角的时辰可以快进到下一段，点「地图」看看去过哪儿、想去哪儿。<br>新开了西北边的红叶谷和冰湖：过浅滩，顺着溪边小路往上游走。每个地方的曲子和声音都不一样，戴上耳机更好听。</p>
+    <p class="tips">左下角的方向盘往哪推就往哪走，推得越远走得越快；屏幕其他地方拖动转镜头看风景（也可以换回“按住屏幕走”）。下面随时换成步行、骑马或者飞；点右上角的时辰可以快进到下一段，点「地图」看看去过哪儿、想去哪儿。<br>新开了西北边的红叶谷和冰湖：过浅滩，顺着溪边小路往上游走。每个地方的曲子和声音都不一样，戴上耳机更好听。</p>
     <p class="load" id="loadText">正在铺路…</p>
     <button class="link" id="creditsBtn" type="button">音乐与素材</button>
   </div>
