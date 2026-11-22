@@ -405,8 +405,8 @@ function attachWings(T) {
   wings.group.scale.setScalar(wings.base * 0.35);
 }
 async function loadTraveler(k) {
-  // ?trav=b：换成用代码捏的旅人小样（试看用，默认还是原来的）
-  if (!travelers[k]) travelers[k] = makeTraveler(RES + `traveler-${k}.glb`, { sculpt: P.get('trav') === 'b' });
+  // 旅人默认是用代码捏的（actors/sculpt.js）；?sculpt=0 换回原来的素材模型
+  if (!travelers[k]) travelers[k] = makeTraveler(RES + `traveler-${k}.glb`, { sculpt: P.get('sculpt') !== '0', who: k });
   return travelers[k];
 }
 async function useTraveler(k) {

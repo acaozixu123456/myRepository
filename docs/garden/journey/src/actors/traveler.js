@@ -19,12 +19,12 @@ const GROUPS = ['loco', 'ride', 'sit', 'fly'];
 const _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _q3 = new THREE.Quaternion(), _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _ax = new THREE.Vector3();
 const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
 
-// opts.sculpt：换成用代码捏的旅人小样（sculpt.js），骨骼和动作不变
+// opts.sculpt：用代码捏的旅人（sculpt.js，现在的默认），骨骼和动作还是模型文件里那套；opts.who：m|f 两套造型
 export async function makeTraveler(url, opts = {}) {
   const gltf = await new GLTFLoader().loadAsync(url);
   const model = gltf.scene;
-  if (opts.sculpt) (await import('./sculpt.js')).sculptTraveler(model);
-  else model.traverse(o => {
+  const sculpt = opts.sculpt ? (await import('./sculpt.js')).sculptTraveler(model, { who: opts.who }) : null;
+  if (!sculpt) model.traverse(o => {
     if (!o.isMesh) return;
     o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
     const m = o.material, eyes = /Eye/.test(m.name);
@@ -60,6 +60,8 @@ export async function makeTraveler(url, opts = {}) {
   for (const a of Object.values(A)) a.setEffectiveWeight(0);
   A.Idle_Loop.setEffectiveWeight(1); A.Idle_Loop.time = 0; mixer.update(0);
   const pack = makePack(model, bones);
+  // 捏的旅人：围巾背后那一截搭过铺盖卷、垂在行囊后面
+  if (sculpt && pack) { const k = pack.userData.at; sculpt.userData.drape(r => [r, [k.x + 0.04, k.y + 0.255, k.z - 0.005], [k.x + 0.052, k.y + 0.18, k.z - 0.064], [k.x + 0.058, k.y + 0.04, k.z - 0.088], [k.x + 0.052, k.y - 0.09, k.z - 0.096]]); }
   A.Idle_Loop.setEffectiveWeight(0);
 
   const T = {
@@ -133,6 +135,7 @@ export async function makeTraveler(url, opts = {}) {
     },
     // 人摆到位之后再调：背上的行囊慢半拍地颠（走路一步一颠，跑起来、骑马小跑时颠得更欢）
     after(dt) {
+      sculpt?.userData.sway(dt, T.swayGain);
       if (!pack || !pack.visible) return;
       const sp = bones.spine_03, R = pack.userData.rest;
       const o = packLag.update(dt, sp.getWorldPosition(_v));
@@ -273,5 +276,6 @@ function makePack(model, bones) {
   mesh.position.copy(pv);
   model.add(mesh); sp.attach(mesh);
   mesh.userData.rest = { p: mesh.position.clone(), q: mesh.quaternion.clone() };
+  mesh.userData.at = { x: c.x, y: y0, z: z0 };      // 包身中心（量的时候的姿势、世界坐标）
   return mesh;
 }
