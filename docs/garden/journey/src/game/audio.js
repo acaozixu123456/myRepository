@@ -385,6 +385,16 @@ export class Sound {
     }
     return b;
   }
+  // 踩在软伞盖上被弹起来：“嘣”的一声，音往上滑
+  boing(v = 1) {
+    if (!this.ready || this.muted) return;
+    const ctx = this.ctx, t = ctx.currentTime, k = 0.9 + Math.random() * 0.25;
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine';
+    o.frequency.setValueAtTime(150 * k, t); o.frequency.exponentialRampToValueAtTime(150 * k * (1.9 + 0.5 * v), t + 0.16); o.frequency.exponentialRampToValueAtTime(190 * k, t + 0.5);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+    o.connect(g); g.connect(this.sfxGain); o.start(t); o.stop(t + 0.55);
+    this.burst({ f0: 500, f1: 220, q: 1.2, d: 0.1, vol: 0.12 });
+  }
   // 云鲸的叫声：很低很长的一声，慢慢滑上去再落下来，后面跟一声更高更轻的
   whale(v = 0.5, pan = 0) {
     if (!this.ready || this.muted) return;

@@ -23,6 +23,7 @@ import { makeFalling } from './world/particles.js';
 import { Tread } from './world/tread.js';
 import { makeThermals } from './world/thermals.js';
 import { ISLES, ISLE_THERMALS, isleTop } from './world/isles.js';
+import { buildShrooms, SHROOM_U } from './world/shrooms.js';
 import { makeForage, makePot } from './world/forage.js';
 import { CookUI } from './game/cookui.js';
 import { Feathers, WISHES, canGive, give, wishText } from './game/feathers.js';
@@ -109,7 +110,7 @@ setSize();
 let lighthouse = null, weather = null;
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 let mapView = null, beacon = null, journal = null, photo = null;
-let springs = null, wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null, thermals = null, forage = null, cookUI = null, quests = null;
+let shrooms = null, springs = null, wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null, thermals = null, forage = null, cookUI = null, quests = null;
 const album = new Album();
 // 每个地方的封面照片（没设就用第一张）；照片和封面都不跟着“从头再来”清掉
 let covers = {};
@@ -132,6 +133,7 @@ function applyTier(tier) {
   U.uShadowRadius.value = T.shadowR; U.uFine.value = tier === 'low' ? 0 : 1;
   U.uGust.value.z = (tier === 'ultra' || tier === 'high') && P.get('gust') !== '0' ? 1 : 0;
   postOn = tier === 'ultra' || tier === 'high' || (tier === 'mid' && quality?.mode !== 'auto');
+  U.uPostOn.value = postOn ? 1 : 0;
   // 极高：远处的真影子、贴地的暗
   if (post) { post.setAO(!!T.ao && P.get('ao') !== '0'); post.aoDebug = P.get('ao') === 'show'; post.setWater(!!T.water && P.get('ssr') !== '0'); }
   if (W) { if (P.get('meadow') === '0') W.meadowOff = true; W.farShadow.set(!!T.far && farOK && P.get('far') !== '0', T.far?.R, T.far?.size); W.setQuality(tier); W.update(camera, focus, 0, true); }
@@ -417,6 +419,8 @@ function step(dt) {
   // 浮岛和云鲸：鲸一直在游；离得不远、镜头又朝着它，就算看见了；隔一阵叫一声
   W.isles.userData.mistColor.setScalar(0.1 + 0.72 * (1 - J.night));
   W.whale.userData.update(dt);
+  // 萤光菇林：天黑了蘑菇亮起来；被踩的伞盖晃几下
+  SHROOM_U.uGlow.value = 0.05 + 0.95 * J.night; shrooms.userData.update(dt);
   if (playing && J.phase === 'play' && !J.told.has('isles') && J.p.y < ISLES[0].y - 20 && Math.hypot(J.p.x + 37, J.p.z + 399) < 45) J.tell('isles', '抬头看，天上飘着几座岛\n岸边有一股上升的风：起飞，张着翅膀在里面绕圈，让它托上去', 7);
   {
     const wp = W.whale.position, d = wp.distanceTo(camera.position);
@@ -556,6 +560,7 @@ async function load() {
   vistas = buildVistas(W.land); scene.add(vistas);
   const mirrorProps = buildMirrorProps(W.land); scene.add(mirrorProps);
   springs = buildSprings(W.land); scene.add(springs);
+  shrooms = buildShrooms(W.land); scene.add(shrooms);
   skyfx = makeSkyFx(); scene.add(skyfx);
   thermals = makeThermals(W.land, ISLE_THERMALS); scene.add(thermals);
   weather = new Weather(); scene.add(weather.group); if (P.get('clouds') === '0') weather.cloudShadow = false;
@@ -579,6 +584,7 @@ async function load() {
   for (const [x, z, r] of lighthouse.userData.blocks) colliders.addCircle(x, z, r, 16);
   for (const [x, z, r] of vistas.userData.blocks) colliders.addCircle(x, z, r, 3);
   for (const [x, z, r] of [...mirrorProps.userData.blocks, ...springs.userData.blocks]) colliders.addCircle(x, z, r, 3);
+  for (const [x, z, r, h] of shrooms.userData.blocks) colliders.addCircle(x, z, r, h);
   // 这些东西脚下不长细草
   W.meadow.userData.clear(62, -118, 3);
   for (const [x, z, r] of [...camp.userData.blocks, ...lighthouse.userData.blocks, ...vistas.userData.blocks]) if (r > 0.5) W.meadow.userData.clear(x, z, r);
@@ -598,10 +604,11 @@ async function load() {
   J.stamina.free = freePref || (SHOT && !P.has('stamina'));
   // 路上能摘的东西、做饭的锅
   forage = makeForage(W.land, J.places); scene.add(forage); J.forage = forage;
+  J.shrooms = shrooms;
   J.pot = makePot(); scene.add(J.pot);
   J.onItem = I => ui.found({ kind: 'item', name: I.name, sub: I.where }, 5);
   // 风羽：高处的羽毛、风环、风铃、石灯
-  quests = new Feathers({ land: W.land, places: J.places, thermals: thermals.userData.list, sites: J.sites }); scene.add(quests.group); J.quests = quests; quests.refresh(J);
+  quests = new Feathers({ land: W.land, places: J.places, thermals: thermals.userData.list, sites: J.sites, shroomTop: shrooms.userData.top }); scene.add(quests.group); J.quests = quests; quests.refresh(J);
   J.onFeather = () => save();
   cookUI = new CookUI({ J, sound, onChange: () => save(), onClose: () => document.body.classList.remove('cooking') });
   J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);

@@ -7,7 +7,7 @@
 // 探索：步行时陡坡和崖壁可以爬、深水可以游、可以跳；从高处跳出去张开翅膀就是滑翔，扇一下翅膀往上蹿一截，
 // 滑进上升的风里会被托起来（world/thermals.js）。跑、爬、游、扇翅膀都要用气力（game/stamina.js）。
 import * as THREE from 'three';
-import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT, VISTAS, MIRROR, SPRINGS } from '../world/route.js';
+import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT, VISTAS, MIRROR, SPRINGS, SHROOM } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ, springDepth, mirrorE } from '../world/land.js';
 import { PERIODS, periodOf } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
@@ -16,6 +16,9 @@ import { findOf } from './finds.js';
 import { ITEMS, BUFFS, BUFF_K, itemOf, dishOf, cookDish, dishEffect, effectText } from './cook.js';
 import { Stamina, PIP } from './stamina.js';
 import { ISLES, isleTop, isleSpan, isleWater } from '../world/isles.js';
+import { capTop } from '../world/shrooms.js';
+// 悬在半空、能站人的东西：浮岛的岛面，或者大蘑菇的伞盖（y 是人现在多高）
+const skyTop = (x, z, y) => { const t = isleTop(x, z); return t !== null ? t : capTop(x, z, y); };
 
 export const GAITS = {
   foot: [{ name: '散步', v: 1.15 }, { name: '快走', v: 1.8 }, { name: '跑', v: 4.4 }],
@@ -67,6 +70,7 @@ export function makePlaces() {
     { id: 'cape', name: '海角灯塔', sub: '天一暗，灯就亮了', where: '沙滩往南，顺着崖上的小路爬上海角', x: LIGHTHOUSE.x + 4, z: LIGHTHOUSE.z + 6, r: 18 },
     { id: 'mirror', name: '镜之原', sub: '天在脚下，云从蹄子边上飘过去', where: '山口营地往北有条小路，一直爬到头', x: MIRROR.x + 8, z: MIRROR.z + 38, r: 24 },
     { id: 'isles', isle: true, name: '云上浮岛', sub: '草地飘在天上，底下是一整片镜子', where: '镜之原南岸有一股上升的风，张着翅膀让它托上去', x: ISLES[2].x, z: ISLES[2].z, r: 16 },
+    { id: 'shroom', name: '萤光菇林', sub: '天一黑，蘑菇自己亮起来', where: '出发的地方往东南走，山坡上的林子里', x: SHROOM.x, z: SHROOM.z, r: 22 },
     { id: 'springs', name: '冰湖温泉', sub: '冒着白汽的池子，泡进去就不冷了', where: '冰湖营地往西几步，湖岸边上', x: SPRINGS.x, z: SPRINGS.z, r: 9 },
     { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '找一股上升的风，张着翅膀让它托上去', alt: 50 },
     // 野外营地：第一次到会出横幅，坐下就点起篝火（以后夜里那堆火都亮着），地图上可以一键过去
@@ -93,7 +97,7 @@ export class Journey {
     this.lightSite = null;
     this.landAt = (x, z) => { const b = this.bridge.heightAt(x, z); return b === null ? this.land.heightExact(x, z) : b; };
     // 浮岛（world/isles.js）：人在岛面那么高、或者更高的时候，脚下的“地”是岛面；在岛下面就还是地上
-    this.groundAt = (x, z) => { const t = isleTop(x, z); return t !== null && this.p.y > t - 1.5 ? t : this.landAt(x, z); };
+    this.groundAt = (x, z) => { const t = skyTop(x, z, this.p.y); return t !== null && this.p.y > t - 1.5 ? t : this.landAt(x, z); };
     for (const [k, M] of Object.entries(this.mounts)) {
       if (!M) continue;
       M.key = k; M.st = { p: new THREE.Vector3(), yaw: 0, speed: 0, turn: 0, slope: 0, idleT: 0, goal: null, shown: false };
@@ -512,7 +516,8 @@ export class Journey {
         else { this.speed *= 0.6; this.hintOnce('没力气爬了，歇一会儿'); }
       } else if (grade > 0.3) this.speed *= 1 - (grade - 0.3) * dt * 1.5;
     }
-    const res = this.colliders.resolve(nx, nz, 0.32, 0);
+    // 站在浮岛、大伞盖上的时候，底下地面上的树干伞柄挡不着
+    const res = this.onIsle(x, z) ? [nx, nz] : this.colliders.resolve(nx, nz, 0.32, 0);
     [nx, nz] = this.bound(res[0], res[1]);
     this.dist.foot += Math.hypot(nx - x, nz - z);
     const g1 = this.groundAt(nx, nz);
@@ -578,9 +583,23 @@ export class Journey {
     this.yaw += clamp(wrap(this.yawT - this.yaw), -1.8 * dt, 1.8 * dt); this.faceYaw = this.yaw;
     this.turn = damp(this.turn, 0, 5, dt);
     if (!go) this.speed *= Math.exp(-0.6 * dt);
+    // 被蘑菇弹起来以后，在空中也能往前挪一点（好落到下一朵上）
+    else if (this.bounceT > 0 && this.speed < 3.4) this.speed = damp(this.speed, 3.4, 3.5, dt);
+    if (this.bounceT > 0) this.bounceT -= dt;
     const fx = Math.sin(this.yaw), fz = Math.cos(this.yaw);
     let nx = x + fx * this.speed * dt, nz = z + fz * this.speed * dt;
     const ny = this.p.y + this.vy * dt;
+    // 落在软伞盖上：弹起来（world/shrooms.js）
+    if (this.vy < 0 && this.shrooms) {
+      const m = this.shrooms.userData.hit(nx, nz, this.p.y, ny);
+      if (m) {
+        this.p.set(nx, m.top, nz); this.vy = m.v; this.bounceT = 4; this.bounces = (this.bounces || 0) + 1;
+        this.shrooms.userData.boing(m); this.sound.boing?.(m.v / 13);
+        this.T.play('Jump_Start', 0.7, 0.05);
+        this.tell('bounce', '伞盖是软的，会把人弹起来\n在空中推方向，落到更高的那朵上去', 5.5);
+        return;
+      }
+    }
     const res = this.colliders.resolve(nx, nz, 0.32, ny - this.groundAt(x, z));
     [nx, nz] = this.bound(res[0], res[1]);
     let g = this.groundAt(nx, nz);
@@ -699,7 +718,7 @@ export class Journey {
     this.yawT = this.yaw + wrap(want - this.yaw) * Math.min(1, dt * 3 * k + 0.02);
   }
   // 是不是站在（或者飞在）浮岛上面
-  onIsle(x = this.p.x, z = this.p.z) { const t = isleTop(x, z); return t !== null && this.p.y > t - 1.5; }
+  onIsle(x = this.p.x, z = this.p.z) { const t = skyTop(x, z, this.p.y); return t !== null && this.p.y > t - 1.5; }
   // 这一点是不是在岛的石头里面（头顶算 1.9 米）
   inRock(x, y, z) { const s = isleSpan(x, z); return !!s && y < s[1] - 1.5 && y + 1.9 > s[0]; }
   waterDepth(x, z) {
@@ -765,7 +784,7 @@ export class Journey {
       if (!this.inRock(nx, this.p.y, nz)) { ny = this.p.y; this.vy = Math.min(this.vy, 0); }
       else { nx = this.p.x; nz = this.p.z; this.speed *= 0.6; if (this.inRock(nx, ny, nz)) { ny = this.p.y; this.vy = 0; } this.hintOnce('前面是岛的石头，绕一下，或者飞高一点'); }
     }
-    const ng = this.land.surfaceY(nx, nz), it = isleTop(nx, nz), isle = it !== null && Math.max(ny, this.p.y) > it - 1.5;
+    const ng = this.land.surfaceY(nx, nz), it = skyTop(nx, nz, Math.max(ny, this.p.y)), isle = it !== null && Math.max(ny, this.p.y) > it - 1.5;
     const floor = (isle ? it : ng) + 1.05, ceil = Math.min(ng + 160, 260);
     if (ny < floor) { ny = floor; this.vy = Math.max(0, this.vy); if (descending || !this.flapping) this.touchdown(); }
     if (ny > ceil) { ny = ceil; this.vy = Math.min(0, this.vy); }
@@ -1007,13 +1026,14 @@ export class Journey {
       this.placeT = 0.3;
       const alt = this.mode === 'fly' ? this.alt : 0;
       for (const P of this.places) {
-        const inside = P.isle ? this.mode !== 'fly' && !this.air && this.onIsle() : P.alt ? alt > P.alt : Math.hypot(this.p.x - P.x, this.p.z - P.z) < P.r;
+        const inside = P.isle ? this.mode !== 'fly' && !this.air && isleTop(this.p.x, this.p.z) !== null && this.onIsle() : P.alt ? alt > P.alt : Math.hypot(this.p.x - P.x, this.p.z - P.z) < P.r;
         const was = this.inPlace.has(P.id);
         if (inside && !was) {
           this.inPlace.add(P.id);
           if (!this.visited.includes(P.id)) { this.visited.push(P.id); this.note('visit', P.id); this.ui.banner(P.name, P.sub); this.labelT = 5; this.ui.place(''); this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length); if (P.kind === 'vista') this.atVista(P); this.onVisit?.(P); }
           else { this.ui.place(P.name); this.labelT = 0; }
           this.lastPlace = P;
+          if (P.id === 'shroom') { this.hintT = 0; this.tell('shroomIn', '矮蘑菇的伞盖是软的\n跳到上面试试', 6); }
           if (P.id === 'bridge' && !this.glanceDone && this.mode !== 'fly') { this.glanceDone = true; this.glance = { t: 0, dur: 7, x: 62, z: -118 }; }
         } else if (!inside && was) {
           const far = P.isle ? !this.onIsle() : P.alt ? alt < P.alt - 8 : Math.hypot(this.p.x - P.x, this.p.z - P.z) > P.r * 1.3;
@@ -1399,7 +1419,7 @@ export class Journey {
         .sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
       if (P) { x = P.x; z = P.z; } else { ROAD.at(SPOTS.start, _p); x = _p.x; z = _p.z; }
     }
-    this.teleport(x, z, yaw, s.mode === 'ride' ? 'ride' : 'foot', 30, !!s.isle && isleTop(x, z) !== null);
+    this.teleport(x, z, yaw, s.mode === 'ride' ? 'ride' : 'foot', 30, !!s.isle && skyTop(x, z, 1e4) !== null);
     this.phase = 'intro';
     this.tod = Number.isFinite(+s.tod) ? ((+s.tod % 24) + 24) % 24 : START_TOD;
     this.dayN = Math.max(1, s.day | 0);
