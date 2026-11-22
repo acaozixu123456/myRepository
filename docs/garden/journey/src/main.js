@@ -22,6 +22,7 @@ import { makeFireflies } from './world/fireflies.js';
 import { makeFalling } from './world/particles.js';
 import { Tread } from './world/tread.js';
 import { makeThermals } from './world/thermals.js';
+import { ISLES, ISLE_THERMALS, isleTop } from './world/isles.js';
 import { makeForage, makePot } from './world/forage.js';
 import { CookUI } from './game/cookui.js';
 import { Feathers, WISHES, canGive, give, wishText } from './game/feathers.js';
@@ -339,6 +340,7 @@ function subjects(camera) {
   birds?.inView(camera, out); folk?.inView(camera, out);
   if (skyfx && skyfx.userData.aurora > 0.5) { const f = new THREE.Vector3(); camera.getWorldDirection(f); if (f.z < -0.2 && f.y > -0.3) out.add('aurora'); }
   if (J.starsea) out.add('starsea');
+  if (W.whale.position.distanceTo(camera.position) < 140) { const f = new THREE.Vector3(); camera.getWorldDirection(f); if (f.dot(W.whale.position.clone().sub(camera.position).normalize()) > 0.75) out.add('whale'); }
   if (skyfx && skyfx.userData.rainbow > 0.35) { const f = new THREE.Vector3(); camera.getWorldDirection(f); if (f.dot(_anti.copy(J.daylight.sunPos).negate().normalize()) > 0.45) out.add('rainbow'); }
   return out;
 }
@@ -394,6 +396,7 @@ document.addEventListener('touchend', () => { if (sound?.ctx && sound.ctx.state 
 
 // ---------- 每帧 ----------
 const _chest = new THREE.Vector3();
+let whaleT = 8;
 function step(dt) {
   U.uTime.value += dt;
   J.keys(dt, ui.keysTurn(), ui.keysClimb());
@@ -411,6 +414,21 @@ function step(dt) {
   // 镜之原：没风的时候水面几乎是平的；阴天、下雨、下雪就皱起来；温泉的白汽夜里暗下来
   MIRROR_U.uRough.value = 0.012 + 0.03 * weather.k.o + 0.07 * Math.max(weather.k.r, weather.k.s * 0.6); MIRROR_U.uRain.value = weather.k.r;
   springs.userData.steamColor.setScalar(0.1 + 0.87 * (1 - J.night));
+  // 浮岛和云鲸：鲸一直在游；离得不远、镜头又朝着它，就算看见了；隔一阵叫一声
+  W.isles.userData.mistColor.setScalar(0.1 + 0.72 * (1 - J.night));
+  W.whale.userData.update(dt);
+  if (playing && J.phase === 'play' && !J.told.has('isles') && J.p.y < ISLES[0].y - 20 && Math.hypot(J.p.x + 37, J.p.z + 399) < 45) J.tell('isles', '抬头看，天上飘着几座岛\n岸边有一股上升的风：起飞，张着翅膀在里面绕圈，让它托上去', 7);
+  {
+    const wp = W.whale.position, d = wp.distanceTo(camera.position);
+    if (playing && d < 300 && (whaleT -= dt) <= 0) {
+      whaleT = 26 + Math.random() * 30;
+      const f = cam.fwd; sound.whale?.(Math.min(1, 60 / Math.max(d, 30)), f ? Math.max(-0.8, Math.min(0.8, ((wp.x - camera.position.x) * -f.z + (wp.z - camera.position.z) * f.x) / d)) : 0);
+    }
+    if (playing && d < 95 && !J.found.whale && J.phase !== 'intro') {
+      const f = _chest.copy(wp).sub(camera.position).normalize(), c = cam.fwd3;
+      if (c && f.dot(c) > 0.8) J.discover('whale', false, wp);
+    }
+  }
   lighthouse.userData.update(dt, Math.min(1, Math.max(0, (0.1 - J.daylight.sunPos.y) / 0.16)), Math.max(weather.k.f, weather.k.r * 0.8, weather.k.o * 0.5));
   // 萤火虫：夜里才有
   const px = J.px = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
@@ -539,7 +557,7 @@ async function load() {
   const mirrorProps = buildMirrorProps(W.land); scene.add(mirrorProps);
   springs = buildSprings(W.land); scene.add(springs);
   skyfx = makeSkyFx(); scene.add(skyfx);
-  thermals = makeThermals(W.land); scene.add(thermals);
+  thermals = makeThermals(W.land, ISLE_THERMALS); scene.add(thermals);
   weather = new Weather(); scene.add(weather.group); if (P.get('clouds') === '0') weather.cloudShadow = false;
   const campP = buildCamp(W.land, RES);
   say('正在牵马…');
@@ -555,7 +573,7 @@ async function load() {
   const reins = makeReins(); scene.add(reins);
   // 挡路的东西：树干、风车、营地、栅栏
   const colliders = new Colliders();
-  for (const t of W.placed.trees) if (!t.far) { const pine = t.t.startsWith('Pine'), bam = t.t === 'Bamboo'; colliders.addCircle(t.x, t.z, (bam ? 0.62 : pine ? 0.32 : 0.4) * t.s, (bam ? 9 : 7) * t.s, (bam ? 1.1 : pine ? 1.7 : 0.75) * t.s); }
+  for (const t of W.placed.trees) if (!t.far && !t.isle) { const pine = t.t.startsWith('Pine'), bam = t.t === 'Bamboo'; colliders.addCircle(t.x, t.z, (bam ? 0.62 : pine ? 0.32 : 0.4) * t.s, (bam ? 9 : 7) * t.s, (bam ? 1.1 : pine ? 1.7 : 0.75) * t.s); }
   colliders.addCircle(62, -118, 2.5, 11);
   for (const [x, z, r] of camp.userData.blocks) colliders.addCircle(x, z, r, 2);
   for (const [x, z, r] of lighthouse.userData.blocks) colliders.addCircle(x, z, r, 16);
@@ -566,7 +584,7 @@ async function load() {
   for (const [x, z, r] of [...camp.userData.blocks, ...lighthouse.userData.blocks, ...vistas.userData.blocks]) if (r > 0.5) W.meadow.userData.clear(x, z, r);
   for (const [ax, az, bx, bz] of fences.userData.segs) colliders.addSeg(ax, az, bx, bz, 0.08, 1.2);
   for (const [x, z, r] of fences.userData.posts) colliders.addCircle(x, z, r, 2);
-  cam = new CamRig(camera, (x, z) => W.land.height(x, z));
+  cam = new CamRig(camera, (x, z) => { const t = isleTop(x, z); return t !== null && J && J.p.y > t - 1.5 ? t : W.land.height(x, z); });
   cam.blocker = (ax, az, bx, bz) => colliders.firstHit(ax, az, bx, bz);
   sound = new Sound(RES);
   quality = new Quality(applyTier, q0);
@@ -589,9 +607,9 @@ async function load() {
   J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);
   // 路上的动物、鸟、偶遇的人
   const water = (x, z) => J.waterDepth(x, z);
-  wildlife = new Wildlife({ res: RES, groundAt: J.groundAt, water, colliders, places: J.places }); scene.add(wildlife.group);
-  birds = new Birds({ groundAt: J.groundAt, water, places: J.places }); scene.add(birds.group);
-  folk = new Folk({ res: RES, groundAt: J.groundAt, places: J.places, colliders, sculpt: P.get('sculpt') !== '0' && P.get('folkold') !== '1' }); scene.add(folk.group);
+  wildlife = new Wildlife({ res: RES, groundAt: J.landAt, water, colliders, places: J.places }); scene.add(wildlife.group);
+  birds = new Birds({ groundAt: J.landAt, water, places: J.places }); scene.add(birds.group);
+  folk = new Folk({ res: RES, groundAt: J.landAt, places: J.places, colliders, sculpt: P.get('sculpt') !== '0' && P.get('folkold') !== '1' }); scene.add(folk.group);
   J.folk = folk; J.nearFinds = nearFinds; J.onFind = () => save();
   const seen = (id, A) => { if (playing && J.phase !== 'intro') J.discover(id, false, A?.p); };
   wildlife.onSeen = seen; birds.onSeen = id => seen(id, id === 'birds' ? birds.flocks.reduce((a, F) => F.seen && !a ? F : a, null) : null);
@@ -689,7 +707,11 @@ async function shotSetup() {
   const fk = P.get('folk') && folk.list.find(f => f.id === P.get('folk'));
   if (fk) { const w = folk.where(fk); x = w.x + 3; z = w.z + 3; }
   const mode = P.get('mode') || 'ride';
-  J.teleport(x, z, yaw, mode, +(P.get('alt') || 30));
+  // isle=岛的序号：站到那座岛上（可以再用 x、z 挪位置）；whalet=秒：把云鲸拨到这一刻的位置
+  const isl = P.has('isle') ? ISLES[+P.get('isle')] : null;
+  if (isl) { if (!P.has('x')) { x = isl.x; z = isl.z; } J.teleport(x, z, yaw, mode === 'fly' ? 'fly' : 'foot', +(P.get('alt') || 30), mode !== 'fly'); if (mode === 'fly') J.p.y = isl.y + +(P.get('alt') || 30); }
+  else J.teleport(x, z, yaw, mode, +(P.get('alt') || 30));
+  if (P.has('whalet')) { W.whale.userData.t = +P.get('whalet'); for (let i = 0; i < 60; i++) W.whale.userData.update(0.2); }
   const v = +(P.get('v') || 0);
   if (v) {
     J.holding = true;
@@ -765,7 +787,7 @@ async function shotSetup() {
   // 看某只动物 / 某个人（look=wild|folk，d=距离）：镜头摆在它斜前方
   if (P.get('look')) {
     const k = P.get('look'), d = +(P.get('d') || 5);
-    const A = k === 'folk' ? folk.list.find(F => F.o && (!fk || F === fk)) : wildlife.live.find(A => !P.get('sp') || A.sp === P.get('sp'));
+    const A = k === 'whale' ? { root: W.whale } : k === 'folk' ? folk.list.find(F => F.o && (!fk || F === fk)) : wildlife.live.find(A => !P.get('sp') || A.sp === P.get('sp'));
     const o = A && (A.o ? A.o.root : A.root);
     if (o) {
       o.updateMatrixWorld(true);

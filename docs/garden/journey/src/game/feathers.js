@@ -7,6 +7,7 @@
 //   folk  心愿 —— 偶遇的人想要点什么（材料或者做好的菜），带给他
 // 这里管位置、模型、每帧的判断；拿到了记在 Journey 里（J.feathers、J.lamps，随存档）。
 import * as THREE from 'three';
+import { ISLE_TOP, isleTop } from '../world/isles.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { U, patch } from '../world/atmo.js';
 import { rng } from '../world/noise.js';
@@ -88,6 +89,7 @@ export class Feathers {
     high('hStack', '最高的礁石', '西湾海里最高的那根礁石顶上', STACKS[0][0], top(STACKS[0][0], STACKS[0][1]) + 1.5, STACKS[0][1]);
     high('hStack2', '靠岸的礁石', '西湾靠岸近一点的那根礁石顶上，游过去爬上去也行', STACKS[1][0], top(STACKS[1][0], STACKS[1][1]) + 1.5, STACKS[1][1]);
     high('hLight', '灯塔尖', '海角灯塔的塔尖上面', LIGHTHOUSE.x, top(LIGHTHOUSE.x, LIGHTHOUSE.z) + 19.5, LIGHTHOUSE.z);
+    { const E = ISLE_TOP, x = E.x - 3, z = E.z - 2; high('hIsle', '最高的浮岛', '镜之原上空最高的那座岛上。乘着风，一座一座上去', x, isleTop(x, z) + 1.5, z); }
     high('hLake', '冰湖中央', '冰湖正中间的冰面上。路远，上面冷，带点热的再去', LAKE.x, top(LAKE.x, LAKE.z) + 1.6, LAKE.z);
 
     // ---- 风环 ----

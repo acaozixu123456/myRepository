@@ -131,7 +131,8 @@ export class ScatterLayer {
     this.cell = 24; this.buckets = new Map();
     for (let i = 0; i < this.n; i++) {
       const k = Math.floor(items[i * 8] / this.cell) + ',' + Math.floor(items[i * 8 + 2] / this.cell);
-      let b = this.buckets.get(k); if (!b) this.buckets.set(k, b = { list: [], cx: (Math.floor(items[i * 8] / this.cell) + 0.5) * this.cell, cz: (Math.floor(items[i * 8 + 2] / this.cell) + 0.5) * this.cell, y: items[i * 8 + 1] });
+      let b = this.buckets.get(k); if (!b) this.buckets.set(k, b = { list: [], cx: (Math.floor(items[i * 8] / this.cell) + 0.5) * this.cell, cz: (Math.floor(items[i * 8 + 2] / this.cell) + 0.5) * this.cell, y: items[i * 8 + 1], y1: items[i * 8 + 1] });
+      b.y = Math.min(b.y, items[i * 8 + 1]); b.y1 = Math.max(b.y1, items[i * 8 + 1]);
       b.list.push(i);
     }
     this.maxR = opts.maxScale || 2;
@@ -173,7 +174,7 @@ export class ScatterLayer {
       if (dx * dx + dz * dz > (r + half) * (r + half)) continue;
       const nearB = passes === 2 && (b.cx - fx) ** 2 + (b.cz - fz) ** 2 < (this.castR + half) ** 2;
       if (pass === 0 && passes === 2 && !nearB) continue;
-      if (this.cull && !nearB) { _sph.center.set(b.cx, b.y + 4, b.cz); _sph.radius = half + 8; if (!_f.intersectsSphere(_sph)) continue; }
+      if (this.cull && !nearB) { _sph.center.set(b.cx, (b.y + b.y1) / 2 + 4, b.cz); _sph.radius = half + 8 + (b.y1 - b.y) / 2; if (!_f.intersectsSphere(_sph)) continue; }
       for (const i of b.list) {
         const o = i * 8, x = it[o], z = it[o + 2], ex = x - cx, ez = z - cz, d2 = ex * ex + ez * ez;
         if (d2 > r2 || d2 < rm2 || c >= this.cap) continue;

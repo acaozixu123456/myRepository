@@ -385,6 +385,27 @@ export class Sound {
     }
     return b;
   }
+  // 云鲸的叫声：很低很长的一声，慢慢滑上去再落下来，后面跟一声更高更轻的
+  whale(v = 0.5, pan = 0) {
+    if (!this.ready || this.muted) return;
+    const ctx = this.ctx, t0 = ctx.currentTime + 0.05;
+    const out = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+    if (out) { out.pan.value = pan; lp.connect(out); out.connect(this.ambGain); } else lp.connect(this.ambGain);
+    for (const [dt, dur, f0, f1, f2, a] of [[0, 3.2, 92, 150, 110, 1], [2.9, 2.4, 180, 265, 150, 0.55], [5.6, 3.6, 120, 96, 78, 0.8]]) {
+      const t = t0 + dt, g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.2 * v * a, t + dur * 0.3);
+      g.gain.setValueAtTime(0.2 * v * a, t + dur * 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      g.connect(lp);
+      for (const [k, type, amp] of [[1, 'sine', 1], [2.01, 'sine', 0.3], [3.02, 'triangle', 0.08]]) {
+        const o = ctx.createOscillator(), og = ctx.createGain(); o.type = type; og.gain.value = amp;
+        o.frequency.setValueAtTime(f0 * k, t); o.frequency.exponentialRampToValueAtTime(f1 * k, t + dur * 0.45); o.frequency.exponentialRampToValueAtTime(f2 * k, t + dur);
+        // 一点颤音
+        const l = ctx.createOscillator(), lg = ctx.createGain(); l.frequency.value = 4.5; lg.gain.value = f0 * k * 0.012; l.connect(lg); lg.connect(o.frequency);
+        o.connect(og); og.connect(g); o.start(t); o.stop(t + dur + 0.1); l.start(t); l.stop(t + dur + 0.1);
+      }
+    }
+  }
   // 远处的猫头鹰：“咕——咕咕咕”
   owl(v = 0.5, pan = 0) {
     if (!this.ready || this.muted) return;
