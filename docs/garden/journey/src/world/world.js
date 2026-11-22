@@ -9,11 +9,14 @@ import { buildIce } from './ice.js';
 import { buildSea } from './sea.js';
 import { makeBambooModel } from './bamboo.js';
 import { loadFlora, floraMaterials, ScatterLayer, placeFlora, canopyTexture, forestFloor, buildImpostors } from './flora.js';
+import { FarShadow, makeTreeShadowCards } from './shadows.js';
 
 export const RES = 'res/';
 
 // 不同画质的显示半径（米）
 export const RADII = {
+  // 极高（电脑）：真树、草、石头都画得远得多；cast 是灌木和石头投影子的半径
+  ultra: { trees: 150, shadowTrees: 42, bush: 120, small: 80, rock: 150, cast: 40 },
   high: { trees: 62, shadowTrees: 30, bush: 70, small: 42, rock: 90 },
   mid: { trees: 50, shadowTrees: 24, bush: 55, small: 32, rock: 70 },
   low: { trees: 38, shadowTrees: 0, bush: 40, small: 22, rock: 50 },
@@ -72,9 +75,9 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
     const [base, vr] = type.split('@');
     const parts = models[base].parts.map(p => ({ geo: p.geo, mat: vr === 's' && p.mat === 'pine' ? mats.pineS : mats[p.mat], tint: p.mat !== 'bark' }));
     if (r.shadowTrees > 0) {
-      W.layers.push(new ScatterLayer(type + ':s', parts, items, { radius: r.shadowTrees, shadow: true, cull: false, cap: 400 }));
-      W.layers.push(new ScatterLayer(type + ':m', parts, items, { radius: r.trees + 4, rMin: r.shadowTrees, cap: 600 }));
-    } else W.layers.push(new ScatterLayer(type, parts, items, { radius: r.trees + 4, cap: 600 }));
+      W.layers.push(new ScatterLayer(type + ':s', parts, items, { radius: r.shadowTrees, shadow: true, cull: false, cap: 500 }));
+      W.layers.push(new ScatterLayer(type + ':m', parts, items, { radius: r.trees + 4, rMin: r.shadowTrees, cap: 1800 }));
+    } else W.layers.push(new ScatterLayer(type, parts, items, { radius: r.trees + 4, cap: 1800 }));
   }
   // 灌木、草花、石头
   const smallMat = name => p => {
@@ -88,14 +91,14 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
     const [base, vr] = name.split('@');
     const parts = models[base].parts.map(p => ({ geo: vr && p.mat === 'flowers' ? shifted(p.geo, UVSHIFT[vr]) : p.geo, mat: smallMat(base)(p) }));
     const rad = name.startsWith('Bush') ? r.bush + 4 : name.startsWith('Rock') ? r.rock + 4 : r.small + 4;
-    W.layers.push(new ScatterLayer(name, parts, items, { radius: rad, cap: 5000 }));
+    W.layers.push(new ScatterLayer(name, parts, items, { radius: rad, cap: 14000 }));
   }
   // 草丛（颜色取自地面）
   const tm = W.tuftMat = tuftMaterial(tuni, fadeU.small);
   const tuftGeos = [makeTuftGeo(11, 16, 0.3), makeTuftGeo(23, 13, 0.4), makeTuftGeo(37, 18, 0.24)];
   tuftGeos.forEach((g, i) => {
     const items = placed.tufts[i]; if (!items || !items.length) return;
-    W.layers.push(new ScatterLayer('tuft' + i, [{ geo: g, mat: tm }], items, { radius: r.small + 4, cap: 9000 }));
+    W.layers.push(new ScatterLayer('tuft' + i, [{ geo: g, mat: tm }], items, { radius: r.small + 4, cap: 34000 }));
   });
   for (const L of W.layers) scene.add(L.group);
   // 远处替身
@@ -103,13 +106,21 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   const imp = buildImpostors(renderer, models, mats, placed.trees, fadeU); lap('imp');
   W.impostors = new THREE.Mesh(imp.geo, imp.mat); W.impostors.frustumCulled = false; W.impostors.name = 'impostors';
   scene.add(W.impostors);
+  // 远影（只在画质「极高」开）：远处树的剪影片往一张大影子图里投影。
+  // 地形自己不投影：试过，山坡一挡整条山谷都在影子里，红叶和草全暗下来，不好看（太阳被远山挡住本来就另有一套变暗）
+  const FS = W.farShadow = new FarShadow(scene);
+  const cards = W.shadowCards = makeTreeShadowCards(imp.geo, imp.mat.uniforms.uAtlas.value, imp.mat.uniforms.uCount.value);
+  scene.add(cards);
+  FS.addFarOnly(cards);
   W.stats = { trees: placed.nearCount, farTrees: placed.trees.length - placed.nearCount, small: Object.fromEntries(Object.entries(placed.small).map(([k, v]) => [k, v.length / 8])) };
 
   W.update = (camera, focus, dt, force) => { for (const L of W.layers) L.update(camera, focus, dt, force); W.near.userData.update(camera, force); };
   W.setQuality = q => {
     const rr = RADII[q]; W.quality = q;
     fadeU.trees.value = rr.trees; fadeU.bush.value = rr.bush; fadeU.small.value = rr.small; fadeU.rock.value = rr.rock;
+    cards.customDepthMaterial.uniforms.uSkip.value = Math.max(0, rr.shadowTrees - 3);
     for (const L of W.layers) {
+      if (L.name.startsWith('Bush') || L.name.startsWith('Rock')) L.castR = rr.cast || 0;
       if (L.name.endsWith(':s')) L.r = rr.shadowTrees; else if (L.name.endsWith(':m')) { L.r = rr.trees + 4; L.rMin = rr.shadowTrees; }
       else if (L.name.startsWith('Bush')) L.r = rr.bush + 4; else if (L.name.startsWith('Rock')) L.r = rr.rock + 4;
       else if (TREES.includes(L.name)) L.r = rr.trees + 4; else L.r = rr.small + 4;
