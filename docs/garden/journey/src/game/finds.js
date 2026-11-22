@@ -24,6 +24,8 @@ export const FINDS = [
   { id: 'keeper', g: '塔', kind: 'folk', name: '守灯人', sub: '天黑了就去点灯', hint: '傍晚以后，海角灯塔下面' },
   ...VISTAS.map(v => ({ id: v.id, g: '望', kind: 'vista', name: v.name, sub: v.sub, hint: v.hint })),
   { id: 'rainbow', g: '虹', kind: 'sky', name: '彩虹', sub: '雨刚停，背对着太阳', hint: '白天雨停了、太阳出来的时候，背对太阳看' },
+  { id: 'aurora', g: '极', kind: 'sky', name: '极光', sub: '绿色的光帘在北边天上慢慢地摆', hint: '晴天的夜里往北看。在冰湖边、泡在温泉里的时候天天有，别处要碰运气' },
+  { id: 'starsea', g: '镜', kind: 'sky', name: '星星落进水里', sub: '天上一条银河，脚下也是一条', hint: '晴天的夜里，站到镜之原的水里去' },
   { id: 'meteor', g: '星', kind: 'sky', name: '流星', sub: '一眨眼就划过去了', hint: '晴天的夜里，抬头多看一会儿' },
 ];
 export const findOf = id => FINDS.find(f => f.id === id);

@@ -1,6 +1,6 @@
 // 地形高度场：一张 1.5 米格子的近景高度图（路和溪都“刻”进去），外面是粗格子的远景山。
 // 纯数学，不依赖 three，Node 里也能跑（tools 里用它画俯视检查图）。
-import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL, CAMP_SITES, SEAWAY, CAPEWAY, SEA, coastCT, STACKS, LIGHTHOUSE } from './route.js';
+import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL, CAMP_SITES, SEAWAY, CAPEWAY, SEA, coastCT, STACKS, LIGHTHOUSE, MIRROR, NORTHWAY, SPRINGS } from './route.js';
 import { fbm, vnoise, sstep, lerp, clamp } from './noise.js';
 import { autumnK, snowK, bambooK, sandK } from './regions.js';
 
@@ -59,6 +59,45 @@ function lakeCarve(h, x, z) {
 }
 export const ICE_Q = 1.15;
 export const onIce = (x, z, h) => (h < LAKE.y && Math.abs(x - LAKE.x) < LAKE.a * ICE_Q + 1 && Math.abs(z - LAKE.z) < LAKE.a * ICE_Q + 1 && lakeQ(x, z) < ICE_Q) ? LAKE.y : h;
+
+// ---- 镜之原：椭圆形的一片盐原，整片压到同一个高度（南边垫起来、北边挖下去），岸边是缓缓的盐滩；
+// 水面只比盐底高几厘米，人和马都是蹚着水走。中间留一个小盐洲（露出水面一点点）
+export const mirrorQ = (x, z) => Math.hypot((x - MIRROR.x) / MIRROR.a, (z - MIRROR.z) / MIRROR.b);
+const mirrorQn = (x, z) => mirrorQ(x, z) * (1 + 0.14 * (vnoise(x * 0.03 + 71, z * 0.03 - 23) - 0.5) + 0.05 * (vnoise(x * 0.11 + 5, z * 0.11 + 9) - 0.5));
+// 离岸大约多少米（正的在岸上，负的在水里）
+export function mirrorE(x, z) { const q = mirrorQn(x, z); return Math.hypot(x - MIRROR.x, z - MIRROR.z) * (1 - 1 / Math.max(q, 1e-3)); }
+MIRROR.y = 27;
+export const MIRROR_DEPTH = 0.07;
+function mirrorCarve(h, x, z) {
+  if (mirrorQ(x, z) > 2.2) return h;
+  const e = mirrorE(x, z);
+  if (e > 46) return h;
+  let bed;
+  if (e <= 0) {
+    bed = MIRROR.y - MIRROR_DEPTH - 0.03 * sstep(0, -25, e) + 0.012 * (vnoise(x * 0.5, z * 0.5) - 0.5);
+    // 小盐洲
+    const d = Math.hypot(x - MIRROR.isle.x, z - MIRROR.isle.z) / MIRROR.isle.r;
+    if (d < 1.6) bed += 0.34 * sstep(1.3, 0.75, d * (1 + 0.3 * (vnoise(x * 0.25 + 3, z * 0.25) - 0.5)));
+  } else bed = MIRROR.y - MIRROR_DEPTH + 0.05 * e + 0.004 * e * e;
+  return lerp(bed, h, sstep(4, 46, e));
+}
+// 盐（0~1）：水里和岸边一圈是白的盐壳
+export const saltK = (x, z) => mirrorQ(x, z) > 2 ? 0 : sstep(13, 4, mirrorE(x, z) + 5 * (vnoise(x * 0.09, z * 0.09 + 40) - 0.5));
+// ---- 温泉：一小块压平的石滩上挖几个浅池子 ----
+SPRINGS.y = LAKE.y + 0.55;
+const springFlat = (h, x, z) => { const d = Math.hypot(x - SPRINGS.x, z - SPRINGS.z); return d < 16 ? lerp(SPRINGS.y + 0.12 + 0.05 * (vnoise(x * 0.6, z * 0.6) - 0.5), h, sstep(7.5, 16, d)) : h; };
+function springCarve(h, x, z) {
+  for (const [px, pz, r] of SPRINGS.pools) {
+    const d = Math.hypot(x - px, z - pz) * (1 + 0.16 * (vnoise(Math.atan2(z - pz, x - px) * 1.5 + px, 0.7) - 0.5));
+    if (d < r + 1.2) h = Math.min(h, SPRINGS.y - 0.42 * sstep(r + 0.3, r - 1.3, d) + 0.14 * sstep(r - 0.2, r + 1.2, d));
+  }
+  return h;
+}
+export function springDepth(x, z, h) {
+  if (Math.abs(x - SPRINGS.x) > 12 || Math.abs(z - SPRINGS.z) > 12 || h >= SPRINGS.y) return 0;
+  for (const [px, pz, r] of SPRINGS.pools) if (Math.hypot(x - px, z - pz) < r + 1.5) return SPRINGS.y - h;
+  return 0;
+}
 
 // 远山：一圈手摆的山峰。参数是 [方位角(从正北顺时针,度), 距离, 仰角(度), 宽度]。
 // 夕阳在北偏西（方位 -16°、仰角从 14° 落到 7°），那个方向的山压低，留出一个山口让太阳落进去。
@@ -181,7 +220,7 @@ export function farH(x, z) {
   let h = rawH(x, z);
   const q = STREAM.nearest(x, z, VALLEY_MAX, _q);
   if (q.dist < VALLEY_MAX) h = valley(h, q.dist, q.s);
-  return stacks(coastCarve(lakeCarve(h, x, z), x, z), x, z);
+  return stacks(coastCarve(mirrorCarve(lakeCarve(h, x, z), x, z), x, z), x, z);
 }
 
 // ---- 构建近景高度场 ----
@@ -220,7 +259,7 @@ export function buildLand() {
   stamp(STREAM, s => valleyR(s) + 3, strD, strS, false, 3);
   stamp(TRAIL, 12, trD, trS, false, 2);
   // 西边的小路（竹林山坳 → 海湾）和海角小路：两边一大片压成一道缓缓的山坳
-  const WAYS = [{ P: SEAWAY, R: 34, g: 0.145 }, { P: CAPEWAY, R: 18, g: 0.15 }];
+  const WAYS = [{ P: SEAWAY, R: 34, g: 0.145 }, { P: CAPEWAY, R: 18, g: 0.15 }, { P: NORTHWAY, R: 16, g: 0.2, ramp: true }];
   for (const w of WAYS) {
     w.D = new Float32Array(N).fill(99); w.S = new Float32Array(N);
     stamp(w.P, w.R + 2, w.D, w.S, false, 2);
@@ -263,6 +302,8 @@ export function buildLand() {
   for (const w of WAYS) {
     const L = Math.ceil(w.P.length) + 1, pr = new Float32Array(L), tm = new Float32Array(L);
     for (let i = 0; i < L; i++) { w.P.at(i, p); pr[i] = wayBase(p.x, p.z); }
+    // 往北的小路是一道匀匀的上坡（从山路尽头一直垫到镜之原的岸上）
+    if (w.ramp) { const y0 = roadY(ROAD.length), y1 = MIRROR.y + 0.25; for (let i = 0; i < L; i++) pr[i] = lerp(y0, y1, sstep(0, L - 6, i) * 0.5 + 0.5 * Math.min(1, i / (L - 6))); w.prof = pr; w.y = s => { s = clamp(s, 0, L - 1.001); const i = Math.floor(s), f = s - i; return pr[i] + (pr[i + 1] - pr[i]) * f; }; continue; }
     for (let pass = 0; pass < 4; pass++) {
       for (let i = 0; i < L; i++) { let a = 0, n = 0; for (let k = -10; k <= 10; k++) { a += pr[Math.min(L - 1, Math.max(0, i + k))]; n++; } tm[i] = a / n; }
       pr.set(tm);
@@ -290,6 +331,7 @@ export function buildLand() {
     let y;
     if (c.ts !== undefined) y = trailY(c.ts) + 0.05;
     else if (c.way === 'beach') y = wayBase(c.x, c.z) + 0.05;
+    else if (c.way === 'mirror') y = mirrorCarve(rawH(c.x, c.z), c.x, c.z) + 0.05;
     else if (c.way) { const w = wayY(c.x, c.z); y = (w && w.d < 30 ? w.y + 0.12 * Math.max(0, w.d - 4) : wayBase(c.x, c.z)) + 0.05; }
     else { const q = STREAM.nearest(c.x, c.z, VALLEY_MAX, {}); y = rawH(c.x, c.z); if (q.dist < VALLEY_MAX) y = valley(y, q.dist, q.s); }
     flats.push({ x: c.x, z: c.z, r0: 5.5, r1: 13, y });
@@ -314,10 +356,12 @@ export function buildLand() {
         h = lerp(h, w.y(w.S[k]) + 0.004 * d * d, (1 - sstep(4, w.R, d)) * sstep(2.4, 11, dR));
       }
       h = coastCarve(h, x, z);
+      h = mirrorCarve(h, x, z);
       for (const f of flats) {
         const d = Math.hypot(x - f.x, z - f.z);
         if (d < f.r1) { if (f.y === null) f.y = rawH(f.x, f.z); h = lerp(f.y, h, sstep(f.r0, f.r1, d)); }
       }
+      h = springFlat(h, x, z);
       h = lakeCarve(h, x, z);
       h = channel(h, dS, sS);
       // 溪边小路最后刻（跌水旁边河岸陡，小路自己是顺的）
@@ -325,7 +369,7 @@ export function buildLand() {
       if (dT < 5) h = lerp(trailY(trS[k]) - 0.04 * Math.max(0, 1 - (dT / 1.1) ** 2), h, sstep(1.3, 4.6, dT));
       for (const w of WAYS) { const d = w.D[k]; if (d < 5) h = lerp(w.y(w.S[k]) - 0.04 * Math.max(0, 1 - (d / 1.1) ** 2), h, sstep(1.3, 4.6, d)); }
       h = stacks(h, x, z);
-      H[k] = h;
+      H[k] = springCarve(h, x, z);
     }
   }
   // 区域权重（0~255）：红叶、积雪
@@ -338,11 +382,11 @@ export function buildLand() {
       AU[k] = autumnK(x, z, H[k], strS[k], strD[k]) * 255;
       SN[k] = snowK(x, z, H[k]) * 255;
       BA[k] = bambooK(x, z, H[k], sw.S[k], sw.D[k]) * 255;
-      SA[k] = sandK(x, z, H[k]) * 255;
+      SA[k] = Math.max(sandK(x, z, H[k]), saltK(x, z)) * 255;
     }
   }
   // 新小路也算“小路”（离路多远、地图上的虚线、地面的土路都用同一份）
-  for (const w of WAYS) for (let k = 0; k < N; k++) if (w.D[k] < trD[k]) { trD[k] = w.D[k]; trS[k] = w.S[k] + 1000 * (w.P === CAPEWAY); }
+  for (const w of WAYS) for (let k = 0; k < N; k++) if (w.D[k] < trD[k]) { trD[k] = w.D[k]; trS[k] = w.S[k] + 1000 * (w.P === CAPEWAY) + 2000 * (w.P === NORTHWAY); }
   const land = new Land(H, roadD, roadS, strD, strS, prof, BR, (typeof performance !== 'undefined' ? performance : Date).now() - t0);
   land.trD = trD; land.trS = trS; land.AU = AU; land.SN = SN; land.BA = BA; land.SA = SA; land.ways = WAYS.map(w => ({ P: w.P, y: w.y }));
   return land;
@@ -386,6 +430,13 @@ export class Land {
   bamboo(x, z) { return this.inside(x, z) ? this.sample(this.BA, x, z) / 255 : 0; }
   sand(x, z) { return this.inside(x, z) ? this.sample(this.SA, x, z) / 255 : 0; }
   // 海水有多深（岸上是 0）；水面高度（地面和海面取高的那个，飞的时候、镜头用）
+  salt(x, z) { return saltK(x, z); }
+  // 镜之原那层薄水、温泉池子有多深
+  poolDepth(x, z) {
+    const h = this.heightExact(x, z);
+    if (h < MIRROR.y && mirrorQ(x, z) < 1.3) return MIRROR.y - h;
+    return springDepth(x, z, h);
+  }
   seaDepth(x, z) { return Math.max(0, SEA.y - this.heightExact(x, z)); }
   surfaceY(x, z) { return Math.max(this.height(x, z), SEA.y); }
   roadDist(x, z) { return this.inside(x, z) ? Math.min(Math.abs(this.sample(this.roadD, x, z)), this.sample(this.trD, x, z) + 0.55) : 99; }

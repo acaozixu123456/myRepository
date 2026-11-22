@@ -5,8 +5,8 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { U, patch } from './atmo.js';
 import { rng } from './noise.js';
-import { DOM, lakeQ, ICE_Q } from './land.js';
-import { SEA, CAMP_SITES, VISTAS } from './route.js';
+import { DOM, lakeQ, ICE_Q, mirrorE } from './land.js';
+import { SEA, CAMP_SITES, VISTAS, MIRROR, SPRINGS } from './route.js';
 import { ITEMS } from '../game/cook.js';
 
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _c = new THREE.Color();
@@ -94,6 +94,13 @@ function models() {
     for (let i = 0; i < 8; i++) { const a = i * 0.82, r = 0.3 + 0.05 * (i % 2); fruit.push(part(ball(0.06), i % 2 ? '#3f9fe6' : '#6fc4ff', { p: [Math.cos(a) * r * 1.12, 0.17 + 0.05 * (i % 3), Math.sin(a) * r] })); }
     M.frost = { base, fruit, glint: 0.65 };
   }
+  // 盐花：浅水里长出来的一簇方方的白色结晶，有几块带一点粉
+  {
+    const cube = (x, y, z, r, col, rx, rz) => part(new THREE.BoxGeometry(r, r, r), col, { p: [x, y, z], r: [rx, x * 9 + z * 5, rz] });
+    const base = [part(cyl(0.34, 0.42, 0.07, 9), '#e9e6e0', { p: [0, 0.075, 0] }), cube(0.2, 0.13, 0.12, 0.13, '#f1eeea', 0.3, 0.2), cube(-0.22, 0.12, -0.08, 0.11, '#ece4e2', 0.2, 0.5)];
+    const fruit = [cube(0, 0.24, 0, 0.26, '#fbfaf6', 0.5, 0.35), cube(0.13, 0.19, -0.14, 0.17, '#f6e9e6', 0.2, 0.7), cube(-0.14, 0.2, 0.12, 0.18, '#f7f5f0', 0.75, 0.15), cube(0.03, 0.4, 0.03, 0.14, '#fdf3f0', 0.4, 0.5)];
+    M.salt = { base, fruit, glint: 0.7 };
+  }
   return M;
 }
 
@@ -110,13 +117,14 @@ function rules(land) {
     chestnut: { n: 8, zones: [['autumn', 80]], ok: (x, z) => land.autumn(x, z) > 0.45 },
     shoot: { n: 7, zones: [['bamboo', 62]], ok: (x, z) => land.bamboo(x, z) > 0.4 },
     shell: { n: 8, zones: [['cove', 75]], ok: (x, z, h) => land.sand(x, z) > 0.6 && h > SEA.y + 0.35 && h < SEA.y + 3.2 },
+    salt: { n: 9, zones: [[[MIRROR.x, MIRROR.z], 80]], ok: (x, z) => { const e = mirrorE(x, z); return e < -2.5 && e > -34 && Math.hypot(x - MIRROR.isle.x, z - MIRROR.isle.z) > 9; } },
     frost: { n: 8, zones: [['pass', 45], ['lake', 85], ['campLake', 40]], ok: (x, z) => land.snow(x, z) > 0.6 && lakeQ(x, z) > ICE_Q + 0.25 },
   };
 }
 
 export function makeSpots(land, places) {
   const R = rules(land), spots = [];
-  const keep = [...CAMP_SITES.map(c => [c.x, c.z, 7]), ...VISTAS.map(v => [v.x, v.z, 4]), ...places.filter(p => p.id === 'camp').map(p => [p.x, p.z, 10])];
+  const keep = [[SPRINGS.x, SPRINGS.z, 11], ...CAMP_SITES.map(c => [c.x, c.z, 7]), ...VISTAS.map(v => [v.x, v.z, 4]), ...places.filter(p => p.id === 'camp').map(p => [p.x, p.z, 10])];
   ITEMS.forEach((I, ki) => {
     const rule = R[I.id], rnd = rng(7001 + ki * 131);
     let got = 0;

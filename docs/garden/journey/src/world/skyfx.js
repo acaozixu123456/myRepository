@@ -2,6 +2,7 @@
 // 都是跟着镜头的远处一片面（不写深度），按方向算颜色，画在天空之后、地形之前：远山会挡住彩虹的下半截。
 import * as THREE from 'three';
 import { U } from './atmo.js';
+import { SKY } from './sky.js';
 
 const D = 1600;    // 离镜头多远
 
@@ -58,10 +59,11 @@ export function makeSkyFx() {
   mt.frustumCulled = false; mt.renderOrder = -4; mt.visible = false;
   g.add(mt);
   const pos = mg.attributes.position;
-  let rbK = 0, meteorT = 18, m = null;
+  let rbK = 0, meteorT = 18, m = null, auK = 0, auDay = -1, auRoll = 0, auForce = false;
   g.userData = {
     rainbow: 0, onSeen: null,
     fire() { meteorT = 0; },          // 调试：马上来一颗流星
+    aurora: 0, lights(on = true) { auForce = on; },   // 调试：极光亮起来
     // c: { camera, sunPos 太阳方向（单位向量）, night 0~1, wx: weather（k、wet）, dt, often 流星多一点（坐在火边、在海角、湖边） }
     update(c) {
       const { camera, sunPos, dt } = c, W = c.wx, k = W.k;
@@ -81,6 +83,12 @@ export function makeSkyFx() {
         rbU.uK.value = rbK;
         if (rbK > 0.45 && c.camFwd.dot(_f) > 0.35) g.userData.onSeen?.('rainbow');
       }
+      // 极光：晴天的夜里。在雪原、冰湖那一带天天有；别的地方看运气（大约三夜里有一夜）
+      if (c.day !== undefined && c.day !== auDay) { auDay = c.day; auRoll = Math.random(); }
+      const auWant = auForce || (c.night > 0.85 && k.o < 0.4 && k.f < 0.35 && k.r < 0.05 && (c.cold || auRoll < 0.35)) ? 1 : 0;
+      auK += (auWant - auK) * (1 - Math.exp(-dt / (auWant ? 9 : 5)));
+      g.userData.aurora = auK; SKY.uAurora.value = auK * (0.75 + 0.25 * Math.sin(U.uTime.value * 0.13));
+      if (auK > 0.6 && c.camFwd.z < -0.2 && c.camFwd.y > -0.25) g.userData.onSeen?.('aurora');
       // 流星
       const clearNight = c.night > 0.7 && k.o < 0.35 && k.f < 0.35 && k.r < 0.05 && k.s < 0.05;
       if (!m) {

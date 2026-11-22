@@ -38,6 +38,8 @@ import { Wildlife } from './world/wildlife.js';
 import { Birds } from './world/birds.js';
 import { buildVistas } from './world/vistas.js';
 import { makeSkyFx } from './world/skyfx.js';
+import { MIRROR_U, buildMirrorProps } from './world/mirror.js';
+import { buildSprings } from './world/springs.js';
 import { Folk } from './game/folk.js';
 import { FINDS, findOf } from './game/finds.js';
 import { VISTAS } from './world/route.js';
@@ -53,7 +55,11 @@ installGrade();
 const farOK = installShadows();
 // 柔光和暗角（后期）：只在画质「高」（手动选「中」也算）时开；手机不支持或帧数不够降档了就直接画，不多这一遍
 let post = null, postOn = false;
-const draw = () => { if (post && postOn) post.render(scene, camera); else renderer.render(scene, camera); };
+const draw = () => {
+  // 镜之原的倒影：看得见那片水的时候，先从水面下面把世界画一遍
+  if (W?.mirror) W.mirror.userData.update(renderer, scene, camera, quality?.tier !== 'low' && P.get('mirror') !== '0', quality?.tier === 'ultra' ? 0.75 : 0.6);
+  if (post && postOn) post.render(scene, camera); else renderer.render(scene, camera);
+};
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: SHOT });
 renderer.toneMapping = THREE.CustomToneMapping;
@@ -89,7 +95,7 @@ setSize();
 let lighthouse = null, weather = null;
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 let mapView = null, beacon = null, journal = null, photo = null;
-let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null, thermals = null, forage = null, cookUI = null, quests = null;
+let springs = null, wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null, thermals = null, forage = null, cookUI = null, quests = null;
 const album = new Album();
 // 每个地方的封面照片（没设就用第一张）；照片和封面都不跟着“从头再来”清掉
 let covers = {};
@@ -318,6 +324,8 @@ function subjects(camera) {
   const out = new Set();
   wildlife?.inView(camera)?.forEach(id => out.add(id));
   birds?.inView(camera, out); folk?.inView(camera, out);
+  if (skyfx && skyfx.userData.aurora > 0.5) { const f = new THREE.Vector3(); camera.getWorldDirection(f); if (f.z < -0.2 && f.y > -0.3) out.add('aurora'); }
+  if (J.starsea) out.add('starsea');
   if (skyfx && skyfx.userData.rainbow > 0.35) { const f = new THREE.Vector3(); camera.getWorldDirection(f); if (f.dot(_anti.copy(J.daylight.sunPos).negate().normalize()) > 0.45) out.add('rainbow'); }
   return out;
 }
@@ -387,6 +395,9 @@ function step(dt) {
   W.update(camera, focus, dt);
   windmill.userData.update(dt);
   W.sea.userData.update(U.uTime.value);
+  // 镜之原：没风的时候水面几乎是平的；阴天、下雨、下雪就皱起来；温泉的白汽夜里暗下来
+  MIRROR_U.uRough.value = 0.012 + 0.03 * weather.k.o + 0.07 * Math.max(weather.k.r, weather.k.s * 0.6); MIRROR_U.uRain.value = weather.k.r;
+  springs.userData.steamColor.setScalar(0.1 + 0.87 * (1 - J.night));
   lighthouse.userData.update(dt, Math.min(1, Math.max(0, (0.1 - J.daylight.sunPos.y) / 0.16)), Math.max(weather.k.f, weather.k.r * 0.8, weather.k.o * 0.5));
   // 萤火虫：夜里才有
   const px = J.px = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
@@ -421,7 +432,9 @@ function step(dt) {
       for (const F of folk.list) if (F.o && F.o.root.visible) fx.tread.stamp(F.o.root.position.x, F.o.root.position.z, 0.45, 0.85);
     }
     vistas.userData.update(Math.min(1, Math.max(0, (0.12 - J.daylight.sunPos.y) / 0.18)));
-    skyfx.userData.update({ camera, sunPos: J.daylight.sunPos, night: J.night, wx: weather, dt, camFwd: f, often: J.sitting || ['cape', 'lake', 'campLake', 'campBeach', 'vSnow', 'vCove'].includes(J.lastPlace?.id) });
+    if (playing && skyfx.userData.aurora > 0.5 && !J.found.aurora) J.tell('aurora', '北边的天上亮起来了，抬头看看', 6);
+    skyfx.userData.update({ camera, sunPos: J.daylight.sunPos, night: J.night, wx: weather, dt, camFwd: f, often: J.sitting || ['cape', 'lake', 'campLake', 'campBeach', 'vSnow', 'vCove', 'mirror', 'campMirror', 'springs'].includes(J.lastPlace?.id),
+      day: J.dayN, cold: W.land.snow(J.p.x, J.p.z) > 0.4 || J.soaking });
   }
   // 地图底图趁空闲一点点画好
   if (playing && J.t > 3) mapView.idle();
@@ -497,6 +510,8 @@ async function load() {
   const fences = buildFences(W.land); scene.add(fences);
   lighthouse = buildLighthouse(W.land); scene.add(lighthouse);
   vistas = buildVistas(W.land); scene.add(vistas);
+  const mirrorProps = buildMirrorProps(W.land); scene.add(mirrorProps);
+  springs = buildSprings(W.land); scene.add(springs);
   skyfx = makeSkyFx(); scene.add(skyfx);
   thermals = makeThermals(W.land); scene.add(thermals);
   weather = new Weather(); scene.add(weather.group); if (P.get('clouds') === '0') weather.cloudShadow = false;
@@ -519,6 +534,7 @@ async function load() {
   for (const [x, z, r] of camp.userData.blocks) colliders.addCircle(x, z, r, 2);
   for (const [x, z, r] of lighthouse.userData.blocks) colliders.addCircle(x, z, r, 16);
   for (const [x, z, r] of vistas.userData.blocks) colliders.addCircle(x, z, r, 3);
+  for (const [x, z, r] of [...mirrorProps.userData.blocks, ...springs.userData.blocks]) colliders.addCircle(x, z, r, 3);
   // 这些东西脚下不长细草
   W.meadow.userData.clear(62, -118, 3);
   for (const [x, z, r] of [...camp.userData.blocks, ...lighthouse.userData.blocks, ...vistas.userData.blocks]) if (r > 0.5) W.meadow.userData.clear(x, z, r);
@@ -657,6 +673,7 @@ async function shotSetup() {
   if (P.has('tod')) { J.tod = +P.get('tod'); J.applyDay(0); }
   // 天气：wx=clear|cloudy|rain|fog|snow，直接到位
   if (P.get('wx')) { weather.set(P.get('wx')); J.applyDay(0); weather.settle(); J.applyDay(0); }
+  if (P.has('aurora')) { skyfx.userData.lights(true); for (let i = 0; i < 40; i++) skyfx.userData.update({ camera, sunPos: J.daylight.sunPos, night: J.night, wx: weather, dt: 1, camFwd: new THREE.Vector3(0, 0, 1) }); }
   if (P.get('act') === 'takeoff') J.setMode('fly');
   if (P.get('act') === 'land') J.setMode('foot');
   if (P.get('act') === 'dismount') J.setMode('foot');

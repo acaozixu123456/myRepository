@@ -4,6 +4,7 @@ import { DOM, CENTER, farH, bankW } from './land.js';
 import { snowLine as regionSnowLine } from './regions.js';
 import { patch, U } from './atmo.js';
 import { SEA_U } from './sea.js';
+import { MIRROR } from './route.js';
 import { fbm, vnoise, sstep, clamp, rng } from './noise.js';
 
 // ---------- 画布纹理 ----------
@@ -170,7 +171,7 @@ export const TERRAIN_GLSL = /* glsl */`
 uniform sampler2D uSplat; uniform sampler2D uDetail; uniform sampler2D uDirt; uniform vec4 uDom;
 uniform vec3 uGrass0; uniform vec3 uGrass1; uniform vec3 uGrass2; uniform vec3 uGrass3; uniform vec3 uForestC;
 uniform vec3 uRock; uniform vec3 uBank; uniform vec3 uPebble; uniform vec3 uBed; uniform float uFine;
-uniform vec3 uSand; uniform float uSeaY; uniform float uTide; uniform float uWet; uniform float uSnowCover;
+uniform vec3 uSand; uniform vec4 uSalt; uniform float uSeaY; uniform float uTide; uniform float uWet; uniform float uSnowCover;
 uniform sampler2D uBiome; uniform vec3 uAut0; uniform vec3 uAut1; uniform vec3 uAut2; uniform vec3 uLeaf0; uniform vec3 uLeaf1; uniform vec3 uSnow; uniform vec3 uStraw;
 // 草地的颜色（地面和草丛共用，草丛看起来就像是从地里长出来的）；bi：区域（r 红叶，g 积雪）
 vec3 jGrass( vec2 xz, vec4 sp, vec3 dA, vec4 bi ) {
@@ -273,13 +274,16 @@ const TERRAIN_COLOR = /* glsl */`
   if ( bi.a > 0.01 ) {
     float sk = smoothstep( 0.05, 0.6, bi.a ) * ( 1.0 - rk * 0.85 );
     vec3 sc = uSand * ( 0.86 + 0.14 * dA.r + 0.1 * ( dB.g - 0.5 ) ) * ( 0.94 + 0.08 * dA.b );
+    // 镜之原的岸：不是沙，是发白的盐壳，一块一块微微发灰发粉
+    float salt = 1.0 - smoothstep( 1.3, 1.75, length( ( vWP.xz - uSalt.xy ) / uSalt.zw ) );
+    sc = mix( sc, vec3( 0.9, 0.89, 0.87 ) * ( 0.88 + 0.12 * dA.r ) * mix( vec3( 1.0 ), vec3( 1.02, 0.97, 0.95 ), dB.b ), salt );
     float rip = sin( dot( vWP.xz, vec2( -0.94, 0.342 ) ) * 3.6 + dA.b * 5.0 + dB.r * 3.0 ) * 0.5 + 0.5;
     float wet = 1.0 - smoothstep( uSeaY + 0.2, uSeaY + 0.6 + 0.15 * dA.g, vWP.y );
     float fresh = 1.0 - smoothstep( uSeaY + uTide, uSeaY + uTide + 0.35, vWP.y );
     // 第二层细一点、方向偏一点的沙纹，两层交错才像风吹的
     float rip2 = sin( dot( vWP.xz, vec2( -0.8, 0.6 ) ) * 7.3 + dB.g * 7.0 + rip * 1.5 ) * 0.5 + 0.5;
     float fade = 1.0 - smoothstep( 12.0, 45.0, length( vViewPosition ) );
-    sc *= 1.0 - ( 0.12 * rip + 0.07 * rip2 * fade ) * ( 1.0 - wet );
+    sc *= 1.0 - ( 0.12 * rip + 0.07 * rip2 * fade ) * ( 1.0 - wet ) * ( 1.0 - salt * 0.8 );
     // 涨潮线：一道弯弯曲曲的深色海草、碎贝壳
     float tl = uSeaY + 0.95 + 0.25 * ( dA.g - 0.5 ) + 0.12 * sin( dot( vWP.xz, vec2( 0.342, 0.94 ) ) * 0.35 );
     float wrack = ( 1.0 - smoothstep( 0.0, 0.07, abs( vWP.y - tl ) ) ) * smoothstep( 0.35, 0.6, dB.b );
@@ -367,6 +371,7 @@ export function terrainUniforms(splat, detail, dirt, biome) {
     uAut0: 'aut0', uAut1: 'aut1', uAut2: 'aut2', uLeaf0: 'leaf0', uLeaf1: 'leaf1', uSnow: 'snow', uStraw: 'straw' }))
     uni[k] = { value: new THREE.Color(PALETTE[v]) };
   uni.uSand = { value: new THREE.Color(PALETTE.sand) };
+  uni.uSalt = { value: new THREE.Vector4(MIRROR.x, MIRROR.z, MIRROR.a, MIRROR.b) };
   uni.uSeaY = SEA_U.uSeaY; uni.uTide = SEA_U.uTide; uni.uWet = U.uWet; uni.uSnowCover = U.uSnowCover;
   return uni;
 }

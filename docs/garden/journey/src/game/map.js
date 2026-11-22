@@ -2,9 +2,9 @@
 // （开始旅行后趁空闲分几十帧画好，第一次打开就不用等）；没去过的地方蒙一层纸色，走到哪里亮到哪里。
 // 风景点、自己、坐骑、标记点、风车桥营地这些小图标每次重画，放大缩小都清楚。
 // 点风景点：去过的可以“去这里”（一暗一亮直接过去），没去过的可以“标记”，屏幕上方会指方向，远处立一道光。
-import { DOM, bankW, lakeQ, ICE_Q, FALLS } from '../world/land.js';
+import { DOM, bankW, lakeQ, ICE_Q, FALLS, mirrorE } from '../world/land.js';
 import { SEA, coastCT } from '../world/route.js';
-import { ROAD, STREAM, LAKE, SPOTS } from '../world/route.js';
+import { ROAD, STREAM, LAKE, SPOTS, MIRROR } from '../world/route.js';
 import { fbm } from '../world/noise.js';
 
 const sst = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -149,6 +149,18 @@ export class MapBake {
             const st = 0.5 + 0.5 * Math.sin((x * 0.8 + z * 0.35) * 0.35 + wc * 9);
             r = 214 + 22 * st; g = 234 + 14 * st; b = 242 + 10 * st;
             const e = sst(ICE_Q - 0.08, ICE_Q, q); r += (128 - r) * e * 0.7; g += (170 - g) * e * 0.7; b += (196 - b) * e * 0.7;
+          }
+        }
+        // 镜之原：岸边一圈白盐，水里是映着天的淡蓝，一道道横的反光
+        if (Math.abs(x - MIRROR.x) < 130 && Math.abs(z - MIRROR.z) < 100) {
+          const e = mirrorE(x, z);
+          if (e < 13) {
+            const a = sst(13, 5, e) * (e > 0 ? 1 : 0.999); r += (247 * pg - r) * a; g += (244 * pg - g) * a; b += (238 * pg - b) * a;
+            if (e < 0 && h < MIRROR.y) {
+              const st = 0.5 + 0.5 * Math.sin(z * 0.9 + wc * 14), w = sst(0, -3, e);
+              r += (198 + 26 * st - r) * w; g += (222 + 18 * st - g) * w; b += (242 + 8 * st - b) * w;
+              const ed = sst(-1.4, 0, e) * 0.5; r += (150 - r) * ed; g += (176 - g) * ed; b += (200 - b) * ed;
+            }
           }
         }
         // 溪水：中间深一点，岸边一道深色描边

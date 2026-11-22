@@ -7,8 +7,8 @@
 // 探索：步行时陡坡和崖壁可以爬、深水可以游、可以跳；从高处跳出去张开翅膀就是滑翔，扇一下翅膀往上蹿一截，
 // 滑进上升的风里会被托起来（world/thermals.js）。跑、爬、游、扇翅膀都要用气力（game/stamina.js）。
 import * as THREE from 'three';
-import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT, VISTAS } from '../world/route.js';
-import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ } from '../world/land.js';
+import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT, VISTAS, MIRROR, SPRINGS } from '../world/route.js';
+import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ, springDepth, mirrorE } from '../world/land.js';
 import { PERIODS, periodOf } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 import { Explored } from './map.js';
@@ -64,6 +64,8 @@ export function makePlaces() {
     { id: 'bamboo', name: '竹林山坳', sub: '竹子比人高好多，风一过沙沙响', where: '出发的地方往西，顺着海边小路走', x: bm.x, z: bm.z, r: 34 },
     { id: 'cove', name: '西湾沙滩', sub: '浪一层一层推上沙滩', where: '竹林里的小路走到头，就是海', x: cv.x - 17, z: cv.z - 5, r: 30 },
     { id: 'cape', name: '海角灯塔', sub: '天一暗，灯就亮了', where: '沙滩往南，顺着崖上的小路爬上海角', x: LIGHTHOUSE.x + 4, z: LIGHTHOUSE.z + 6, r: 18 },
+    { id: 'mirror', name: '镜之原', sub: '天在脚下，云从蹄子边上飘过去', where: '山口营地往北有条小路，一直爬到头', x: MIRROR.x + 8, z: MIRROR.z + 38, r: 24 },
+    { id: 'springs', name: '冰湖温泉', sub: '冒着白汽的池子，泡进去就不冷了', where: '冰湖营地往西几步，湖岸边上', x: SPRINGS.x, z: SPRINGS.z, r: 9 },
     { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '找一股上升的风，张着翅膀让它托上去', alt: 50 },
     // 野外营地：第一次到会出横幅，坐下就点起篝火（以后夜里那堆火都亮着），地图上可以一键过去
     ...CAMP_SITES.map(c => ({ id: c.id, kind: 'camp', name: c.name, sub: c.sub, where: c.where, x: c.x, z: c.z, r: 11 })),
@@ -684,6 +686,8 @@ export class Journey {
   waterDepth(x, z) {
     const sea = this.land.seaDepth(x, z);
     if (sea > 0) return sea;
+    const pool = this.land.poolDepth(x, z);
+    if (pool > 0) return pool;
     const sd = this.land.streamDist(x, z);
     if (sd > 5) return 0;
     if (this.bridge.heightAt(x, z) !== null) return 0;
@@ -1265,6 +1269,18 @@ export class Journey {
     }
     const snowy = this.land.snow(this.p.x, this.p.z) > 0.5 && this.p.y - this.land.height(this.p.x, this.p.z) < 30;
     const lit = this.lightSite && Math.hypot(this.p.x - this.lightSite.fireAt.x, this.p.z - this.lightSite.fireAt.z) < 7;
+    // 泡温泉：站在池子里不骑马，身上就暖和了，气力很快回满；泡过以后暖和劲儿还能管好一阵
+    const soak = this.phase === 'play' && this.mode === 'foot' && !this.air && springDepth(this.p.x, this.p.z, this.land.heightExact(this.p.x, this.p.z)) > 0.12;
+    if (soak) {
+      this.soakT = (this.soakT || 0) + dt;
+      this.buffs.warm = Math.max(this.buffs.warm || 0, Math.min(480, 120 + this.soakT * 30));
+      { const S = this.stamina; S.v = Math.min(S.max, S.v + dt * 30); if (S.v > S.max * 0.3) S.spent = false; }
+      if (!this.soaking) { this.tell('soak', '泡在温泉里，身上一下子就暖和了\n气力回得很快；晴天的夜里，抬头往北看看', 6.5); this.note('soak', 'springs'); }
+    } else this.soakT = 0;
+    this.soaking = soak;
+    // 镜之原的夜：晴天夜里站在水里，脚下就是星空
+    this.starsea = this.phase === 'play' && this.night > 0.85 && this.weather && this.weather.k.o < 0.35 && this.weather.k.f < 0.3 && this.weather.k.r < 0.05 && this.mode !== 'fly' && mirrorE(this.p.x, this.p.z) < -6;
+    if (this.starsea) this.discover('starsea', false, this.p);
     this.cold = snowy && !(this.buffs.warm > 0) && !lit && !this.stamina.free;
     this.stamina.rate = this.cold ? 0.35 : 1;
     if (this.cold && this.phase === 'play' && this.mode !== 'fly') this.tell('cold', '雪地里冷，气力回得慢\n吃点热的，或者到篝火边烤一烤，就暖和了', 6.5);

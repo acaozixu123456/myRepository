@@ -7,6 +7,7 @@ import { makeSky } from './sky.js';
 import { buildStream, buildMist } from './water.js';
 import { buildIce } from './ice.js';
 import { buildSea } from './sea.js';
+import { buildMirror } from './mirror.js';
 import { makeBambooModel } from './bamboo.js';
 import { loadFlora, floraMaterials, ScatterLayer, placeFlora, canopyTexture, forestFloor, buildImpostors } from './flora.js';
 import { FarShadow, makeTreeShadowCards } from './shadows.js';
@@ -47,6 +48,7 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   scene.add(W.mist = buildMist(land));
   scene.add(W.ice = buildIce());
   scene.add(W.sea = buildSea(land));
+  scene.add(W.mirror = buildMirror());
   await opts.yieldFn?.();
 
   say('正在种树…');

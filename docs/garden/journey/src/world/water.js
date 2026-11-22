@@ -148,7 +148,7 @@ export function buildStream(land) {
 }
 
 // 跌水脚下的水雾：一团团软软的白，慢慢往上飘、散开
-const MIST_VS = /* glsl */`
+export const MIST_VS = /* glsl */`
 attribute float aSeed; uniform float uTime; uniform float uScale;
 varying float vA;
 void main() {
@@ -159,7 +159,7 @@ void main() {
   gl_PointSize = ( 1.1 + 2.2 * ph ) * uScale / max( 1.0, -mv.z );
   vA = sin( ph * 3.14159 ) * 0.17 * smoothstep( 1.5, 4.0, -mv.z ) * ( 1.0 - smoothstep( 60.0, 110.0, -mv.z ) );
 }`;
-const MIST_FS = /* glsl */`
+export const MIST_FS = /* glsl */`
 uniform vec3 uColor; varying float vA;
 void main() {
   vec2 d = gl_PointCoord - 0.5; float r = dot( d, d ) * 4.0;
