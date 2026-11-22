@@ -3,6 +3,7 @@
 import { periodOf } from '../world/daytime.js';
 import { FINDS, FIND_KINDS, findOf } from './finds.js';
 import { ITEMS, DISHES, BUFFS, itemOf, dishOf, effectText, mmss } from './cook.js';
+import { FEATHER_KINDS, wishText } from './feathers.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -107,6 +108,7 @@ export class Journal {
         if (F.kind === 'sky') return `看到了<b>${esc(F.name)}</b>！${esc(F.sub)}。`;
         return `遇见了<b>${esc(F.name)}</b>。${esc(F.sub)}。`;
       }
+      if (e.k === 'feather') { const F = this.h.quests?.()?.of(e.id); return `拿到一根<b>风羽</b>${F ? `（${esc(F.name)}）` : ''}。`; }
       if (e.k === 'cook') { const D = dishOf(e.p); return D ? `在<b>${esc(name(e.id))}</b>做了一份<b>${esc(D.name)}</b>。` : ''; }
       if (e.k === 'sleep') return `在<b>${esc(name(e.id))}</b>的火边睡了一觉。`;
       if (e.k === 'photo') { const p = A.get(e.p); return `在<b>${esc(name(e.id))}</b>拍了张照片。${p ? `<button type="button" class="dthumb" data-photo="${p.id}" data-set="all"><img src="${p.url}" alt=""></button>` : ''}`; }
@@ -130,10 +132,24 @@ export class Journal {
     const rec = known.map(D => `<li><b>${esc(D.name)}</b>${D.need.map(id => itemOf(id).name).join(' + ')}<small>${esc(effectText({ id: D.id, s: 1 }))}</small></li>`).join('')
       + todo.filter(D => D.clue).map(D => `<li class="no"><b>？？？</b><small>听说：${esc(D.clue)}</small></li>`).join('')
       + (todo.some(D => !D.clue) ? `<li class="no"><small>还有 ${todo.filter(D => !D.clue).length} 道只用一样材料的没做过</small></li>` : '');
-    return `${this.ate ? `<p class="bagNote">${esc(this.ate)}</p>` : ''}<h3>现在</h3><div class="buffRow">${now.map(t => `<span>${esc(t)}</span>`).join('')}</div>
+    return `${this.ate ? `<p class="bagNote">${esc(this.ate)}</p>` : ''}<h3>现在</h3><div class="buffRow">${now.map(t => `<span>${esc(t)}</span>`).join('')}</div>${this.feathersHTML()}
       <h3>吃的 ${J.dishes.length}/12 <small>路上随时可以吃</small></h3>${dishes}
       <h3>材料 <small>路上一闪一闪的小亮光，走过去摘；第二天又长出来</small></h3><div class="bagGrid">${mats}</div><p class="bagNote">${where}</p>
       <h3>菜谱 ${known.length}/${DISHES.length} <small>同一种多放几个是加料，更顶用</small></h3><ul class="recipes">${rec}</ul>`;
+  }
+  // 风羽：拿到几根、每一种的线索
+  feathersHTML() {
+    const J = this.h.J, Q = this.h.quests?.(); if (!Q) return '';
+    const n = J.feathers.size, all = Q.list.length;
+    const row = F => {
+      const got = J.feathers.has(F.id);
+      let clue = F.clue, name = got ? F.name : '？？？';
+      if (F.kind === 'folk') { if (got || J.wishes.has(F.id)) { name = F.name; clue = got ? '给过了' : `他想要${wishText(F.wish)}`; } }
+      else if (F.kind === 'lamp') { const k = F.lamps.filter(L => J.lamps.has(L.lid)).length; if (!got && k) { name = F.name; clue += `（亮了 ${k}/${F.lamps.length}）`; } }
+      return `<li class="${got ? 'got' : 'no'}"><b>${got ? '✓ ' : ''}${esc(name)}</b><small>${esc(got && F.kind !== 'folk' ? '拿到了' : clue)}</small></li>`;
+    };
+    return `<h3>风羽 ${n}/${all} <small>每攒三根，气力多一格${n % 3 ? `（还差 ${3 - n % 3} 根）` : ''}</small></h3>`
+      + FEATHER_KINDS.map(K => { const L = Q.list.filter(F => F.kind === K.id); return `<details class="fk"><summary>${K.name} ${L.filter(F => J.feathers.has(F.id)).length}/${L.length}<small>${esc(K.sub)}</small></summary><ul class="recipes">${L.map(row).join('')}</ul></details>`; }).join('');
   }
   // ---------- 见闻 ----------
   findPhoto(id) { const f = this.h.J.found[id]; return f?.photo ? this.h.album.get(f.photo) : null; }

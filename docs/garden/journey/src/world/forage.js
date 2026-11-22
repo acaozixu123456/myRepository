@@ -12,7 +12,7 @@ import { ITEMS } from '../game/cook.js';
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _c = new THREE.Color();
 
 // 一块带颜色的零件：几何体摆到位、写上顶点色（折角的硬边，和石头木头一个味道）
-function part(geo, color, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1] } = {}) {
+export function part(geo, color, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1] } = {}) {
   const g = geo.index ? geo.toNonIndexed() : geo.clone();
   g.deleteAttribute('uv');
   _m.compose(_p.set(...p), _q.setFromEuler(_e.set(...r)), _s.set(...(Array.isArray(s) ? s : [s, s, s])));
@@ -22,10 +22,10 @@ function part(geo, color, { p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1] } = {}) 
   g.setAttribute('color', new THREE.BufferAttribute(col, 3));
   return g;
 }
-const ico = (r, d = 0) => new THREE.IcosahedronGeometry(r, d);
-const ball = r => new THREE.SphereGeometry(r, 7, 5);
-const cone = (r, h, n = 6) => new THREE.ConeGeometry(r, h, n);
-const cyl = (a, b, h, n = 6) => new THREE.CylinderGeometry(a, b, h, n);
+export const ico = (r, d = 0) => new THREE.IcosahedronGeometry(r, d);
+export const ball = r => new THREE.SphereGeometry(r, 7, 5);
+export const cone = (r, h, n = 6) => new THREE.ConeGeometry(r, h, n);
+export const cyl = (a, b, h, n = 6) => new THREE.CylinderGeometry(a, b, h, n);
 const cap = r => new THREE.SphereGeometry(r, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2);
 
 // 每一种长什么样：{ base（摘完还留着的部分，可以没有）, fruit（摘走的部分）, glint（小亮光多高） }
