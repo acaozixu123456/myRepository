@@ -63,6 +63,7 @@ if (P.get('fx') !== '0') { post = new Post(renderer); if (!post.ok) post = null;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.3, 7000);
+camera.layers.enable(1);      // 第 1 层：水和排在水后面画的东西（极高画质时分两遍画，见 world/post.js）
 scene.add(camera);
 const hemi = new THREE.HemisphereLight('#bfd0f2', '#94844f', 1.3);
 const sun = new THREE.DirectionalLight('#ffd9a8', 3.1);
@@ -112,7 +113,7 @@ function applyTier(tier) {
   U.uGust.value.z = (tier === 'ultra' || tier === 'high') && P.get('gust') !== '0' ? 1 : 0;
   postOn = tier === 'ultra' || tier === 'high' || (tier === 'mid' && quality?.mode !== 'auto');
   // 极高：远处的真影子、贴地的暗
-  if (post) { post.setAO(!!T.ao && P.get('ao') !== '0'); post.aoDebug = P.get('ao') === 'show'; }
+  if (post) { post.setAO(!!T.ao && P.get('ao') !== '0'); post.aoDebug = P.get('ao') === 'show'; post.setWater(!!T.water && P.get('ssr') !== '0'); }
   if (W) { if (P.get('meadow') === '0') W.meadowOff = true; W.farShadow.set(!!T.far && farOK && P.get('far') !== '0', T.far?.R, T.far?.size); W.setQuality(tier); W.update(camera, focus, 0, true); }
   // 极高：林间光柱（要有远影那张图才做得出来）
   if (post && W) { post.setRays(!!T.rays && W.farShadow.on && P.get('rays') !== '0', W.farShadow.light); post.rayDebug = P.get('rays') === 'show'; if (P.has('rayk')) post.rayK = +P.get('rayk'); if (P.has('rayb')) post.rayBase = +P.get('rayb'); }

@@ -5,6 +5,7 @@ import { DOM, waterY, bankW, FALLS } from './land.js';
 import { U, FOG_FN } from './atmo.js';
 import { SKY } from './sky.js';
 import { RIPPLE_GLSL } from './ripples.js';
+import { SSRU, SSR_GLSL } from './ssr.js';
 
 const VS = /* glsl */`
 attribute float aDepth; attribute float aSlope; attribute float aU; attribute float aFoam;
@@ -19,14 +20,13 @@ uniform float uTime; uniform vec3 uSunColor; uniform vec3 uZenith; uniform vec3 
 uniform vec3 uShallow; uniform vec3 uDeep; uniform vec3 uFoam;
 ${FOG_FN}
 ${RIPPLE_GLSL}
+${SSR_GLSL}
 varying vec2 vUv; varying vec3 vWP; varying float vDepth; varying float vSlope; varying float vU; varying float vFoam;
 float h21( vec2 p ) { p = fract( p * vec2( 123.34, 456.21 ) ); p += dot( p, p + 45.32 ); return fract( p.x * p.y ); }
 float vn( vec2 p ) { vec2 i = floor( p ), f = fract( p ); f = f * f * ( 3.0 - 2.0 * f );
   return mix( mix( h21( i ), h21( i + vec2( 1, 0 ) ), f.x ), mix( h21( i + vec2( 0, 1 ) ), h21( i + 1.0 ), f.x ), f.y ); }
 void main() {
   float t = uTime;
-  float depth = clamp( vDepth / 0.75, 0.0, 1.0 );
-  vec3 col = mix( uShallow, uDeep, smoothstep( 0.0, 0.9, depth ) );
   // 山涧：坡越陡水越急，跌水的地方全是白沫
   float rapid = smoothstep( 0.05, 0.22, vSlope ), fall = smoothstep( 0.3, 0.7, vSlope );
   // 水流：两层噪声顺着溪往下游走
@@ -40,12 +40,27 @@ void main() {
   N = normalize( N + vec3( rp.x, 0.0, rp.y ) * 0.7 );
   float ring = clamp( rp.z, 0.0, 1.0 );
   vec3 V = normalize( cameraPosition - vWP );
+  // 水有多深：平时按河床算；极高画质时再看画面上这一点原来的东西（水里的石头、蹚水的腿），离水面近就算浅
+  float wd = vDepth; vec4 bed = vec4( 0.0 ); vec3 Pv = vec3( 0.0 );
+  if ( uSSon > 0.5 ) {
+    Pv = ( viewMatrix * vec4( vWP, 1.0 ) ).xyz;
+    bed = jSSbed( gl_FragCoord.xy / uSSres, Pv, N.xz * 0.06 );
+    wd = min( vDepth + 0.05, bed.a * max( V.y, 0.3 ) );
+  }
+  float depth = clamp( wd / 0.75, 0.0, 1.0 );
+  vec3 col = mix( uShallow, uDeep, smoothstep( 0.0, 0.9, depth ) );
   // 天空倒影（菲涅耳）
   vec3 R = reflect( -V, N );
   vec3 hz = jFogColor( normalize( vec3( R.x, max( R.y, 0.0 ), R.z ) ) );
   vec3 sky = mix( hz, uMid, smoothstep( 0.05, 0.4, R.y ) );
   // 贴着水面看过去，倒映的是对岸的草木和石头，不是白蒙蒙的天
   sky = mix( vec3( 0.26, 0.33, 0.22 ) * dot( hz, vec3( 0.3, 0.5, 0.2 ) ), sky, smoothstep( 0.03, 0.28, R.y ) );
+  // 极高画质：真的倒影（对岸的树、石头、人和马、天上的云）
+  if ( uSSon > 0.5 ) {
+    vec3 Nr = normalize( mix( vec3( 0.0, 1.0, 0.0 ), N, 0.4 ) );
+    vec4 rf = jSSR( Pv, normalize( ( viewMatrix * vec4( reflect( -V, Nr ), 0.0 ) ).xyz ), fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ) );
+    sky = mix( sky, rf.rgb, rf.a );
+  }
   // 浅水里河床上晃动的光网（焦散）：两层噪声取“等高线”叠起来，越深越淡
   vec2 cp = vWP.xz * 1.7;
   float c1 = vn( cp + vec2( t * 0.6, t * 0.35 ) + n2 * 0.8 ), c2 = vn( cp * 1.37 + vec2( -t * 0.45, t * 0.5 ) + 7.0 );
@@ -61,7 +76,7 @@ void main() {
   float glint = step( 0.9, vn( vWP.xz * 5.0 + vec2( t * 2.0, -t * 1.3 ) ) );
   col += uSunColor * ( sp * 2.2 + sp * glint * 6.0 );
   // 岸边白沫
-  float foam = ( 1.0 - smoothstep( 0.02, 0.16, vDepth ) ) * smoothstep( 0.35, 0.75, n2 + n3 * 0.4 );
+  float foam = ( 1.0 - smoothstep( 0.02, 0.16, wd ) ) * smoothstep( 0.35, 0.75, n2 + n3 * 0.4 );
   col = mix( col, uFoam, foam * 0.75 );
   col = mix( col, uFoam, ring * 0.6 );
   // 急流：白浪一条条的，中间露出青绿的水，不是一整片灰白
@@ -81,6 +96,8 @@ void main() {
   a = mix( a, ( 0.7 + 0.28 * smoothstep( 0.3, 0.7, sheet ) ) * edgeA, fall );
   a *= smoothstep( -0.02, 0.04, vDepth );
   col = jFog( col, vWP );
+  // 极高画质：水下的东西自己取来、跟着水波晃（不靠半透明叠在上面）；贴着岸和石头的那一圈软软地淡掉
+  if ( uSSon > 0.5 ) { col = mix( bed.rgb, col, a ); a = smoothstep( 0.0, 0.05, bed.a ); }
   gl_FragColor = vec4( col, a );
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -123,7 +140,7 @@ export function buildStream(land) {
     if (n.y < 0) { for (let i = 0; i < idx.length; i += 3) { const t = idx[i + 1]; idx[i + 1] = idx[i + 2]; idx[i + 2] = t; } geo.setIndex(idx); }
   }
   const mat = new THREE.ShaderMaterial({
-    uniforms: { ...U, uZenith: SKY.uZenith, uMid: SKY.uMid, uShallow: { value: new THREE.Color('#7fae9c') }, uDeep: { value: new THREE.Color('#2e6670') }, uFoam: { value: new THREE.Color('#f4f1e6') } },
+    uniforms: { ...U, ...SSRU, uZenith: SKY.uZenith, uMid: SKY.uMid, uShallow: { value: new THREE.Color('#7fae9c') }, uDeep: { value: new THREE.Color('#2e6670') }, uFoam: { value: new THREE.Color('#f4f1e6') } },
     vertexShader: VS, fragmentShader: FS, transparent: true, depthWrite: false,
   });
   const mesh = new THREE.Mesh(geo, mat); mesh.name = 'stream'; mesh.renderOrder = 2; mesh.matrixAutoUpdate = false;
