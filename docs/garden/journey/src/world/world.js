@@ -10,13 +10,14 @@ import { buildSea } from './sea.js';
 import { makeBambooModel } from './bamboo.js';
 import { loadFlora, floraMaterials, ScatterLayer, placeFlora, canopyTexture, forestFloor, buildImpostors } from './flora.js';
 import { FarShadow, makeTreeShadowCards } from './shadows.js';
+import { buildMeadow } from './meadow.js';
 
 export const RES = 'res/';
 
 // 不同画质的显示半径（米）
 export const RADII = {
   // 极高（电脑）：真树、草、石头都画得远得多；cast 是灌木和石头投影子的半径
-  ultra: { trees: 150, shadowTrees: 42, bush: 120, small: 80, rock: 150, cast: 40 },
+  ultra: { trees: 150, shadowTrees: 42, bush: 120, small: 80, rock: 150, cast: 40, meadow: true },
   high: { trees: 62, shadowTrees: 30, bush: 70, small: 42, rock: 90 },
   mid: { trees: 50, shadowTrees: 24, bush: 55, small: 32, rock: 70 },
   low: { trees: 38, shadowTrees: 0, bush: 40, small: 22, rock: 50 },
@@ -102,6 +103,8 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
     W.layers.push(new ScatterLayer('tuft' + i, [{ geo: g, mat: tm }], items, { radius: r.small + 4, cap: 34000 }));
   });
   for (const L of W.layers) scene.add(L.group);
+  // 细草（只在画质「极高」画）
+  scene.add(W.meadow = buildMeadow(land, tuni, placed.grassMask)); lap('meadow');
   // 远处替身
   lap('layers');
   const imp = buildImpostors(renderer, models, mats, placed.trees, fadeU); lap('imp');
@@ -115,9 +118,10 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   FS.addFarOnly(cards);
   W.stats = { trees: placed.nearCount, farTrees: placed.trees.length - placed.nearCount, small: Object.fromEntries(Object.entries(placed.small).map(([k, v]) => [k, v.length / 8])) };
 
-  W.update = (camera, focus, dt, force) => { for (const L of W.layers) L.update(camera, focus, dt, force); W.near.userData.update(camera, force); };
+  W.update = (camera, focus, dt, force) => { for (const L of W.layers) L.update(camera, focus, dt, force); W.near.userData.update(camera, force); W.meadow.userData.update(camera); };
   W.setQuality = q => {
     const rr = RADII[q]; W.quality = q;
+    W.meadow.visible = !!rr.meadow && W.meadowOff !== true;
     fadeU.trees.value = rr.trees; fadeU.bush.value = rr.bush; fadeU.small.value = rr.small; fadeU.rock.value = rr.rock;
     cards.customDepthMaterial.uniforms.uSkip.value = Math.max(0, rr.shadowTrees - 3);
     for (const L of W.layers) {
