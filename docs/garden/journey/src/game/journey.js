@@ -13,6 +13,7 @@ import { PERIODS, periodOf } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 import { Explored } from './map.js';
 import { findOf } from './finds.js';
+import { ITEMS, BUFFS, BUFF_K, itemOf, dishOf, cookDish, dishEffect, effectText } from './cook.js';
 import { Stamina } from './stamina.js';
 
 export const GAITS = {
@@ -103,6 +104,9 @@ export class Journey {
     // 地图：走过的地方（4 米一格）和标记点
     this.explored = new Explored(); this.waypoint = null; this.exT = 0;
     this.stamina = new Stamina(); this.shore = { x: 0, z: 0 }; this.told = new Set();
+    // 行囊：bag 材料 { id: 个数 }，dishes 做好带着的菜 [{ id, s 分量 }]，recipes 做出来过的菜谱，buffs 吃了以后一阵子的好处 { k: 还剩几秒 }
+    // picked：今天摘过的地方 Map(第几处 → 哪一天)，第二天又长出来；items 摘到过的种类
+    this.bag = {}; this.dishes = []; this.recipes = new Set(); this.buffs = {}; this.picked = new Map(); this.items = new Set();
     this.reset();
     this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.night = 0; this.owlT = 20;
     // 声音：三道叠水的位置、阵风、冰鸣、换曲用的区域（带一点滞后，免得在边界上来回切）
@@ -218,6 +222,8 @@ export class Journey {
     this.clearFoot(); this.faceYaw = this.yaw; this.liftT = 0; this.flapT = 0; this.flapHeld = false; this.inThermal = false;
     this.stamina.bonus = 0; this.stamina.extra = 0; this.stamina.fill();
     this.shore.x = this.p.x; this.shore.z = this.p.z; this.told.clear();
+    this.bag = {}; this.dishes = []; this.recipes.clear(); this.buffs = {}; this.picked.clear(); this.items.clear(); this.cold = false; this.nearSpot = null; this.forageDay = -1;
+    if (this.pot) this.pot.visible = false;
     this.steerT = 0; this.idleT = 0; this.travelT = 0;
     this.dist = { foot: 0, ride: 0, fly: 0 };
     this.visited = []; this.inPlace = new Set(); this.placeT = 0; this.labelT = 0;
@@ -320,7 +326,7 @@ export class Journey {
     if (this.mode === 'foot' && this.phase === 'play') this.callMount();
   }
   takeoff() {
-    if (!this.stamina.use(COST.takeoff)) { this.say('没力气起飞了，歇一会儿'); return; }
+    if (!this.stamina.use(COST.takeoff * this.costK('wind'))) { this.say('没力气起飞了，歇一会儿'); return; }
     const fromRide = this.mode === 'ride';
     if (fromRide) this.park(this.mount);
     this.trans = { kind: 'takeoff', t: 0, dur: 0.75, from: fromRide ? 'ride' : 'foot', p0: this.pelvisNow() };
@@ -371,6 +377,7 @@ export class Journey {
     if (!tk || tk === 'descend' || tk === 'swap' || (tk === 'takeoff' && this.mode === 'fly')) {
       if (this.mode === 'fly') this.flyMove(dt); else if (!this.sitting) this.groundMove(dt);
     }
+    this.bodyTick(dt);
     // 气力：站在地上（或者骑着马、坐着）没在用就慢慢回；爬着、游着、在天上不回
     this.stamina.tick(dt, this.sitting || this.mode === 'ride' || (this.mode === 'foot' && !this.air && !this.climbing && !this.swimming && !this.sliding));
     this.mountsTick(dt);
@@ -469,7 +476,7 @@ export class Journey {
     if (gi === 2 && S.spent) gi = 1;
     let target = go ? GAITS.foot[gi].v : 0;
     if (depth > 0.12) target *= clamp(1.06 - depth * 0.5, 0.55, 1);
-    if (go && gi === 2 && this.speed > 2.6) S.drain(COST.run, dt);
+    if (go && gi === 2 && this.speed > 2.6) S.drain(COST.run * this.costK('light'), dt);
     this.speed = damp(this.speed, target, target > this.speed ? 2.5 : 4, dt);
     if (target < 0.01 && this.speed < 0.03) this.speed = 0;
     this.idleT = this.speed > 0.05 ? 0 : this.idleT + dt;
@@ -510,7 +517,7 @@ export class Journey {
     const fast = this.gaits.foot === 2, wet = (this.weather?.k.r || 0) > 0.4;
     if (go) {
       const rate = (dir > 0.35 ? COST.climbUp : dir < -0.35 ? COST.climbDown : COST.climbSide) * (fast ? 1.45 : 1) * (wet ? 1.5 : 1);
-      if (!S.drain(rate, dt)) { this.climbing = false; this.sliding = true; this.slideV = 0.5; this.slideT = 0; this.say('没力气了，滑下去歇一歇'); return; }
+      if (!S.drain(rate * this.costK('grip'), dt)) { this.climbing = false; this.sliding = true; this.slideV = 0.5; this.slideT = 0; this.say('没力气了，滑下去歇一歇'); return; }
       if (wet) this.tell('wet', '下雨石头滑，爬起来更费气力');
     }
     this.speed = damp(this.speed, go ? (fast ? 1.75 : 1.25) * (wet ? 0.8 : 1) : 0, 7, dt);
@@ -588,7 +595,7 @@ export class Journey {
   }
   swimMove(dt, go) {
     const S = this.stamina, x = this.p.x, z = this.p.z, gi = this.gaits.foot;
-    if (!this.trans && !S.drain(go ? (gi === 2 ? COST.swimFast : COST.swim) : COST.float, dt)) return this.washAshore();
+    if (!this.trans && !S.drain((go ? (gi === 2 ? COST.swimFast : COST.swim) : COST.float) * this.costK('fin'), dt)) return this.washAshore();
     this.speed = damp(this.speed, go ? [1.0, 1.5, 2.3][gi] : 0, 2.2, dt);
     const dy = clamp(wrap(this.yawT - this.yaw), -2.4 * dt, 2.4 * dt);
     this.yaw += dy; this.faceYaw = this.yaw;
@@ -632,7 +639,7 @@ export class Journey {
   // 扇一下翅膀：往上蹿一截，要用气力
   flap() {
     if (this.mode !== 'fly' || this.flapT > 0.1 || (this.trans && this.trans.kind !== 'takeoff')) return;
-    if (!this.stamina.use(COST.flap)) { this.hintOnce('气力用完了，先滑下去歇一歇'); return; }
+    if (!this.stamina.use(COST.flap * this.costK('wind'))) { this.hintOnce('气力用完了，先滑下去歇一歇'); return; }
     this.flapT = 0.5; this.vy = Math.min(9, Math.max(this.vy, 0) + 6.2); this.speed = Math.min(16, this.speed + 1.2);
     this.wingC = -1;
   }
@@ -1015,7 +1022,11 @@ export class Journey {
     if (!this.sitting && this.mode !== 'fly' && !this.trans && !busy) for (const S of this.sites) if (Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z) < 7) nearS = S;
     if (!this.sitting && nearS && nearS !== this.site) { this.site = nearS; this.fireKept = false; }
     this.nearFolk = !nearS && !this.sitting && this.mode !== 'fly' && !this.trans && !busy ? this.folk?.nearest(this.p) : null;
-    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : this.nearFolk ? '打个招呼' : '');
+    // 路上能摘的东西：步行走到跟前
+    this.nearSpot = !nearS && !this.nearFolk && !this.sitting && this.mode === 'foot' && !this.trans && !busy ? this.forage?.userData.near(this.p) || null : null;
+    const it = this.nearSpot && itemOf(this.nearSpot.kind);
+    if (this.mode === 'ride' && !this.trans && !this.told.has('rideForage') && this.forage?.userData.near(this.p, 3.2)) this.tell('rideForage', '一闪一闪的是能摘的东西\n下马（换成步行）走过去才摘得到', 5.5);
+    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : this.nearFolk ? '打个招呼' : it ? it.verb + it.name : '');
     // 提示
     if (this.hintT > 0) { this.hintT -= dt; if (this.hintT <= 0) this.ui.hint(''); }
   }
@@ -1158,6 +1169,9 @@ export class Journey {
   standUp() {
     if (!this.sitting) return;
     this.sitting = false; this.summaryShown = false;
+    if (this.pot) this.pot.visible = false;
+    // 烤过火，身上暖和一阵子
+    if (this.campT > 4) { this.buffs.warm = Math.max(this.buffs.warm || 0, 240); this.stamina.fill(); }
     this.T.set('loco', 3);
     const f = this.site.fireAt;
     this.yaw = this.yawT = Math.atan2(this.p.x - f.x, this.p.z - f.z);
@@ -1234,6 +1248,70 @@ export class Journey {
     }
   }
 
+
+  // ---------- 摘东西、做饭、吃 ----------
+  // 有某种好处的时候，对应的气力消耗打个折
+  costK(k) { return this.buffs[k] > 0 ? BUFF_K[k] : 1; }
+  // 每帧：好处一点点过去；雪地里（或者下着雪）身上不暖和，气力回得慢；新的一天摘过的又长出来
+  bodyTick(dt) {
+    if (this.phase === 'play' && !this.ff) for (const k in this.buffs) {
+      if (!(this.buffs[k] > 0)) continue;
+      this.buffs[k] -= dt;
+      if (this.buffs[k] <= 0) { delete this.buffs[k]; if (!this.sitting) this.say(`「${BUFFS[k].name}」的劲儿过去了`); }
+    }
+    const snowy = this.land.snow(this.p.x, this.p.z) > 0.5 && this.p.y - this.land.height(this.p.x, this.p.z) < 30;
+    const lit = this.lightSite && Math.hypot(this.p.x - this.lightSite.fireAt.x, this.p.z - this.lightSite.fireAt.z) < 7;
+    this.cold = snowy && !(this.buffs.warm > 0) && !lit && !this.stamina.free;
+    this.stamina.rate = this.cold ? 0.35 : 1;
+    if (this.cold && this.phase === 'play' && this.mode !== 'fly') this.tell('cold', '雪地里冷，气力回得慢\n吃点热的，或者到篝火边烤一烤，就暖和了', 6.5);
+    if (this.forageDay !== this.dayN && this.forage) {
+      this.forageDay = this.dayN;
+      for (const [i, d] of this.picked) if (d !== this.dayN) this.picked.delete(i);
+      this.forage.userData.refresh(i => this.picked.has(i));
+    }
+  }
+  // 把跟前那一处摘下来
+  pickNear() {
+    const sp = this.nearSpot; if (!sp || !sp.there || this.mode !== 'foot' || this.trans) return false;
+    const I = itemOf(sp.kind), n = 1 + (((sp.i * 7 + this.dayN * 3) % 4) === 0 ? 1 : 0);
+    this.forage.userData.take(sp); this.picked.set(sp.i, this.dayN); this.nearSpot = null;
+    this.bag[I.id] = Math.min(99, (this.bag[I.id] || 0) + n);
+    const first = !this.items.has(I.id); this.items.add(I.id);
+    this.speed = 0; this.holding = false;
+    this.faceYaw = this.yaw = this.yawT = Math.atan2(sp.x - this.p.x, sp.z - this.p.z);
+    this.T.play('Interact', 0.9, 0.15);
+    this.sound.pluck?.();
+    this.say(`${I.name} +${n}（行囊里有 ${this.bag[I.id]} 个）`, 2.6);
+    if (first) this.onItem?.(I, n);
+    this.tell('forage', `${I.verb}到了${I.name}，收在手记的「行囊」里\n到营地坐下烤火的时候可以拿来做饭`, 6.5);
+    return true;
+  }
+  // 坐在火边做饭：ings 是材料 id（一到三个，可以重复）。返回 { dish: { id, s }, D 菜谱, isNew } 或 null
+  cook(ings) {
+    if (!this.sitting || !Array.isArray(ings) || !ings.length || ings.length > 3) return null;
+    const need = {}; for (const id of ings) need[id] = (need[id] || 0) + 1;
+    for (const id in need) if (!((this.bag[id] || 0) >= need[id])) return null;
+    for (const id in need) { this.bag[id] -= need[id]; if (this.bag[id] <= 0) delete this.bag[id]; }
+    const dish = cookDish(ings), D = dishOf(dish.id), isNew = !this.recipes.has(dish.id);
+    this.recipes.add(dish.id);
+    this.note('cook', this.site.id, dish.id);
+    this.showPot();
+    return { dish, D, isNew };
+  }
+  showPot() { if (!this.pot || !this.sitting) return; const f = this.site.fireAt; this.pot.position.set(f.x, f.y - 0.02, f.z); this.pot.rotation.y = this.site.yaw || 0; this.pot.visible = true; }
+  // 做好的菜装进行囊（最多带 12 份）
+  keepDish(dish) { if (this.dishes.length >= 12) return false; this.dishes.push(dish); return true; }
+  // 吃一份：行囊里第 i 份，或者刚出锅的那份
+  eat(d) {
+    if (typeof d === 'number') { const i = d; d = this.dishes[i]; if (!d) return null; this.dishes.splice(i, 1); }
+    const e = dishEffect(d), S = this.stamina, D = dishOf(d.id);
+    S.v = Math.min(S.max, S.v + e.rest); if (S.v >= Math.min(30, S.max * 0.3)) S.spent = false;
+    S.extra = Math.max(S.extra, e.extra);
+    for (const [k, sec] of e.buff) this.buffs[k] = Math.max(this.buffs[k] || 0, sec);
+    this.sound.chime?.(0.3);
+    if (!this.sitting) this.say(`吃了${D.name}：${effectText(d)}`, 4);
+    return { D, e };
+  }
   // ---------- 存档 ----------
   snapshot() {
     const mode = this.mode === 'fly' || this.uiMode === 'fly' ? 'foot' : this.uiMode === 'ride' ? 'ride' : 'foot';
@@ -1246,6 +1324,9 @@ export class Journey {
       camps: [...this.camps], log: this.log.slice(-500), wx: this.weather?.snapshot(),
       found: this.found, tips: [...this.tips],
       st: this.stamina.snapshot(), told: [...this.told],
+      bag: { ...this.bag }, dishes: this.dishes.map(d => ({ id: d.id, s: Math.round(d.s * 100) / 100 })), recipes: [...this.recipes], items: [...this.items],
+      buffs: Object.fromEntries(Object.entries(this.buffs).filter(([, v]) => v > 1).map(([k, v]) => [k, Math.round(v)])),
+      picked: [...this.picked].filter(([, d]) => d === this.dayN),
     };
   }
   restore(s) {
@@ -1283,6 +1364,14 @@ export class Journey {
     if (this.weather && s.wx) this.weather.restore(s.wx);
     this.stamina.restore(s.st); this.told = new Set(Array.isArray(s.told) ? s.told.filter(k => typeof k === 'string').slice(0, 60) : []);
     this.shore.x = this.p.x; this.shore.z = this.p.z;
+    // 行囊
+    this.bag = {}; if (s.bag && typeof s.bag === 'object') for (const I of ITEMS) { const n = Math.min(99, s.bag[I.id] | 0); if (n > 0) this.bag[I.id] = n; }
+    this.dishes = (Array.isArray(s.dishes) ? s.dishes : []).filter(d => d && dishOf(d.id)).slice(0, 24).map(d => ({ id: d.id, s: Math.min(2, Math.max(1, +d.s || 1)) }));
+    this.recipes = new Set((Array.isArray(s.recipes) ? s.recipes : []).filter(id => dishOf(id)));
+    this.items = new Set([...(Array.isArray(s.items) ? s.items : []), ...Object.keys(this.bag)].filter(id => itemOf(id)));
+    this.buffs = {}; if (s.buffs && typeof s.buffs === 'object') for (const k of Object.keys(BUFFS)) { const v = +s.buffs[k]; if (v > 0) this.buffs[k] = Math.min(1800, v); }
+    this.picked = new Map((Array.isArray(s.picked) ? s.picked : []).filter(e => Array.isArray(e) && e[1] === this.dayN).map(e => [e[0] | 0, e[1] | 0]));
+    this.forageDay = -1;
     this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));
   }

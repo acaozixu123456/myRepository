@@ -400,6 +400,17 @@ export class Sound {
       o.connect(g); g.connect(lp); o.start(t); o.stop(t + dur + 0.2);
     }
   }
+  // 摘东西：“啵”的一小声
+  pluck() {
+    if (!this.ready || this.muted) return;
+    this.burst({ f0: 520, f1: 900, q: 3, a: 0.004, d: 0.07, vol: 0.3 });
+    this.burst({ f0: 1500, f1: 1100, q: 2, a: 0.004, d: 0.05, vol: 0.12, delay: 0.05 });
+  }
+  // 锅开了：咕嘟咕嘟几声
+  bubble() {
+    if (!this.ready || this.muted) return;
+    for (let i = 0; i < 7; i++) this.burst({ f0: 260 + Math.random() * 160, f1: 520 + Math.random() * 200, q: 4, a: 0.01, d: 0.07, vol: 0.2, delay: i * 0.17 + Math.random() * 0.06 });
+  }
   // 发现新东西：一串轻轻的风铃（五声音阶里随便挑三四个音）
   chime(v = 0.5) {
     if (!this.ready || this.muted) return;

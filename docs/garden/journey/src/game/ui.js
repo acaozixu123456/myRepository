@@ -91,11 +91,14 @@ export function initUI(h) {
   const found = $('found'); let foundT = 0;
   const KIND = { animal: '路上的动物', folk: '偶遇的人', vista: '观景点', sky: '天上的' };
   ui.found = (F, dur = 5) => {
-    found.querySelector('i').textContent = '新的见闻 · ' + (KIND[F.kind] || '');
+    found.querySelector('i').textContent = F.kind === 'item' ? '新的材料 · 收进了行囊' : '新的见闻 · ' + (KIND[F.kind] || '');
     found.querySelector('b').textContent = F.name; found.querySelector('small').textContent = F.sub;
     found.classList.remove('show'); void found.offsetWidth; found.classList.add('show');
     clearTimeout(foundT); foundT = setTimeout(() => found.classList.remove('show'), dur * 1000);
   };
+  // 身上的好处（吃了东西、烤了火）和“冷”：气力条上面一排小牌子。list: [{ t 文字, c 样式 }]
+  const buffs = $('buffs'); let buffKey = '';
+  ui.buffs = list => { const k = list.map(b => b.t).join('|'); if (k === buffKey) return; buffKey = k; buffs.innerHTML = list.map(b => `<span class="${b.c || ''}">${b.t}</span>`).join(''); };
   // 说话：底下一张卡片，点一下收起来
   const talk = $('talk'); let talkT = 0;
   ui.talk = (name, text, note = '') => {
