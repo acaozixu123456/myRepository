@@ -53,7 +53,7 @@ body.playing #hud { opacity: 1; }
 .modes button.on { background: var(--pillOn); color: var(--ink); }
 #act { pointer-events: auto; background: rgba(255, 226, 180, 0.94); color: var(--ink); border-radius: 18px; padding: 9px 18px; font-size: 15px; letter-spacing: 3px; box-shadow: 0 4px 16px rgba(80, 40, 10, 0.3); animation: breathe 2.4s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.05); } }
-.hint { margin-bottom: 0; font-size: 13px; letter-spacing: 2px; opacity: 0.85; text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); transition: opacity 1s; }
+.hint { margin-bottom: 0; text-align: center; white-space: pre-line; line-height: 1.5; font-size: 13px; letter-spacing: 2px; opacity: 0.85; text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); transition: opacity 1s; }
 .hint.off { opacity: 0; }
 
 /* ---------- 地图 ---------- */
@@ -143,9 +143,9 @@ body.holdctl #stickZone { display: none; }
 /* 开始卡片和手记里的“怎么走” */
 .ctl { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 0 12px; font-size: 13px; color: var(--ink); }
 .ctl span { opacity: 0.6; }
-.ctlPick { display: flex; background: rgba(120, 80, 50, 0.12); border-radius: 15px; padding: 2px; gap: 2px; }
-.ctlPick button { background: none; color: var(--ink); border-radius: 13px; padding: 5px 12px; font-size: 13px; }
-.ctlPick button.on { background: rgba(255, 252, 245, 0.95); box-shadow: 0 1px 4px rgba(80, 40, 10, 0.18); }
+.ctlPick, .optPick { display: flex; background: rgba(120, 80, 50, 0.12); border-radius: 15px; padding: 2px; gap: 2px; }
+.ctlPick button, .optPick button { background: none; color: var(--ink); border-radius: 13px; padding: 5px 12px; font-size: 13px; }
+.ctlPick button.on, .optPick button.on { background: rgba(255, 252, 245, 0.95); box-shadow: 0 1px 4px rgba(80, 40, 10, 0.18); }
 
 /* ---------- 拍照按钮 ---------- */
 .tools button.cam { background: rgba(255, 232, 196, 0.9); color: var(--ink); font-weight: 600; }
@@ -290,3 +290,68 @@ body.photo #found, body.photo #talk, body.resting #talk { display: none; }
 .pc.find .ph i.g { font-size: 30px; opacity: 0.5; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
 .pc.find.todo .ph i.g { opacity: 0.22; }
 .pc.find .tip { color: #a5602c; opacity: 0.9; }
+
+/* ---------- 探索：气力、跳 / 展翅 / 扇翅 的圆按钮 ---------- */
+#stam { position: absolute; left: 50%; bottom: calc(var(--sab) + 124px); transform: translateX(-50%); display: flex; gap: 3px; opacity: 0; transition: opacity 0.5s; pointer-events: none; filter: drop-shadow(0 1px 4px rgba(60, 30, 10, 0.45)); }
+#stam.show { opacity: 1; transition-duration: 0.15s; }
+#stam i { display: block; width: 17px; height: 7px; border-radius: 4px 1px 4px 1px; background: rgba(40, 28, 20, 0.42); overflow: hidden; }
+#stam i b { display: block; height: 100%; width: 100%; background: #cdeea0; border-radius: inherit; }
+#stam i.ex b { background: #ffe08a; }
+#stam.spent i b { background: #f0a08a; animation: stBlink 0.5s ease-in-out infinite alternate; }
+@keyframes stBlink { from { opacity: 1; } to { opacity: 0.45; } }
+#bAct { position: absolute; right: calc(var(--sar) + 84px); bottom: calc(var(--sab) + 14px); width: 62px; height: 62px; border-radius: 50%; pointer-events: auto; background: rgba(255, 232, 196, 0.88); color: var(--ink); font-size: 15px; font-weight: 600; letter-spacing: 1px; box-shadow: 0 4px 16px rgba(80, 40, 10, 0.3); touch-action: none; user-select: none; -webkit-user-select: none; }
+#bAct:active { transform: scale(0.93); }
+body.resting #bAct, body.resting #stam { display: none; }
+.tips .pc { display: none; }
+@media (hover: hover) and (pointer: fine) { .tips .pc { display: inline; } .tips .touch { display: none; } }
+/* 窄屏（手机竖着拿）：圆按钮挪到右边那一列工具上面，不挡下面的「步行 骑马 飞」 */
+@media (max-width: 560px) { #bAct { right: calc(var(--sar) + 12px); bottom: calc(var(--sab) + 206px); } }
+/* ---------- 做饭 ---------- */
+#cook { position: fixed; left: 0; right: 0; bottom: calc(var(--sab) + 14px); display: flex; justify-content: center; padding: 0 14px; z-index: 3; pointer-events: none; }
+#cook .card { pointer-events: auto; padding: 14px 14px 12px; width: 100%; max-width: 400px; animation: rise 0.4s ease; }
+#cook .card > b { display: block; font-size: 19px; letter-spacing: 5px; font-weight: 600; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+#cook .card > small { display: block; margin-top: 3px; font-size: 12px; opacity: 0.7; letter-spacing: 1px; }
+.potRow { display: flex; gap: 6px; margin-top: 10px; }
+.potRow button { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 2px 7px; border-radius: 13px; background: rgba(120, 80, 50, 0.08); border: 1.5px dashed rgba(120, 80, 50, 0.3); color: var(--ink); font-size: 12px; opacity: 0.55; }
+.potRow button.in { opacity: 1; background: #fff3dc; border-style: solid; border-color: #c4773a; }
+.potRow.busy button.in { animation: potShake 0.3s ease-in-out infinite alternate; }
+@keyframes potShake { to { transform: translateY(-3px); } }
+.potRow i, .ings i, .bagGrid i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(196, 119, 58, 0.16); font-style: normal; font-size: 15px; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+.potRow button:not(.in) i { background: none; border: 1.5px dashed rgba(120, 80, 50, 0.3); }
+#cook .guess { margin: 8px 2px 0; min-height: 20px; font-size: 12.5px; line-height: 1.6; opacity: 0.85; }
+.ings { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 6px; }
+.ings button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0 5px; border-radius: 11px; background: #fffaf0; color: var(--ink); font-size: 11px; box-shadow: 0 1px 5px rgba(80, 40, 10, 0.1); }
+.ings button:disabled { opacity: 0.4; box-shadow: none; }
+.ings em, .bagGrid em { position: absolute; right: 4px; top: 3px; font-style: normal; font-size: 10.5px; background: #c4773a; color: #fff8ee; border-radius: 8px; padding: 0 5px; line-height: 15px; }
+.ings .none { grid-column: 1 / -1; margin: 6px 4px; font-size: 12.5px; line-height: 1.7; opacity: 0.7; text-align: center; }
+#cook .restRow button.hot, .bagDish button { background: #c4773a; color: #fff8ee; box-shadow: 0 3px 10px rgba(160, 80, 30, 0.25); }
+#cook .restRow button:disabled { background: rgba(120, 80, 50, 0.12); color: rgba(59, 42, 30, 0.5); box-shadow: none; }
+#cook .dish { margin-top: 12px; padding: 12px; border-radius: 13px; background: #fff3dc; text-align: center; }
+#cook .dish b { display: block; font-size: 18px; letter-spacing: 3px; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
+#cook .dish b i, .bagDish b i { font-style: normal; font-size: 11px; letter-spacing: 0; background: #c4773a; color: #fff8ee; border-radius: 7px; padding: 1px 6px; vertical-align: 2px; font-family: inherit; }
+#cook .dish small { display: block; margin-top: 4px; font-size: 12.5px; opacity: 0.75; }
+#cook .dish em { display: block; margin-top: 8px; font-style: normal; font-size: 13px; color: #8a4a1c; }
+body.cooking #rest { display: none; }
+/* 身上的好处：气力条上面的小牌子 */
+#buffs { position: absolute; left: 50%; bottom: calc(var(--sab) + 138px); transform: translateX(-50%); display: flex; gap: 5px; pointer-events: none; white-space: nowrap; }
+#buffs span { font-size: 11px; letter-spacing: 1px; padding: 2px 8px; border-radius: 9px; background: rgba(40, 28, 20, 0.5); color: #fff3dc; }
+#buffs span.cold { background: rgba(70, 110, 150, 0.7); }
+body.resting #buffs { display: none; }
+/* 手记的行囊页 */
+.bagDish { display: flex; align-items: center; gap: 10px; padding: 9px 10px; margin-bottom: 7px; border-radius: 12px; background: #fffaf0; box-shadow: 0 2px 8px rgba(80, 40, 10, 0.08); }
+.bagDish div { flex: 1; min-width: 0; }
+.bagDish b { display: block; font-size: 14px; letter-spacing: 1px; }
+.bagDish small { display: block; margin-top: 2px; font-size: 11.5px; opacity: 0.7; line-height: 1.45; }
+.bagDish button { flex: none; border-radius: 12px; padding: 7px 16px; font-size: 13px; letter-spacing: 2px; }
+.bagGrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.bagGrid span { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0 6px; border-radius: 11px; background: #fffaf0; font-size: 11px; box-shadow: 0 1px 5px rgba(80, 40, 10, 0.08); }
+.bagGrid span.no { opacity: 0.45; box-shadow: none; }
+.bagNote { margin: 6px 2px 0; font-size: 12px; line-height: 1.7; opacity: 0.7; }
+.recipes { list-style: none; margin: 0; padding: 0; }
+.recipes li { padding: 7px 2px; border-bottom: 1px dashed rgba(120, 80, 50, 0.16); font-size: 13px; line-height: 1.55; }
+.recipes li b { font-weight: 600; margin-right: 6px; }
+.recipes li small { display: block; font-size: 11.5px; opacity: 0.65; }
+.recipes li.no { opacity: 0.55; }
+.buffRow { display: flex; flex-wrap: wrap; gap: 6px; }
+.buffRow span { font-size: 12px; padding: 4px 10px; border-radius: 10px; background: #fff3dc; }
+@media (max-width: 560px) { .jTabs button { letter-spacing: 1px; } .jFoot { flex-wrap: wrap; row-gap: 6px; } .jFoot .ctl span, .jFoot button { white-space: nowrap; } }

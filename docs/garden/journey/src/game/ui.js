@@ -1,7 +1,8 @@
 // 界面和操作：开始卡片（选旅人、选坐骑）、顶部地名和手记、横幅、步态 / 走法 / 工具按钮、换坐骑面板、结尾手记；
 // 手势：默认左下角方向盘走（相对镜头的方向，推远走快），屏幕其他地方拖动转镜头；老操作是按住前进、左右拖动转向
 // （飞的时候上下拖动爬升下降）；双指捏合切换俯视。
-// 电脑上：空格/W/↑ 前进，A/D/←/→ 转向，Q/E 下降/爬升，F 飞，R 骑马，G 步行，T 俯视，1/2/3 步态。
+// 电脑上：W A S D / 方向键 往哪走（相对镜头，Shift 跑，C 换成慢慢走），按住鼠标拖动转镜头，滚轮拉远拉近；
+// 空格 跳 / 展翅 / 扇翅膀，E 互动，F 飞 / 落地，R 骑马，G 步行，Q 往下压（飞的时候），T 俯视，M 地图，J 手记，P 拍照，N 下一个时辰。
 const $ = id => document.getElementById(id);
 
 export function initUI(h) {
@@ -90,11 +91,14 @@ export function initUI(h) {
   const found = $('found'); let foundT = 0;
   const KIND = { animal: '路上的动物', folk: '偶遇的人', vista: '观景点', sky: '天上的' };
   ui.found = (F, dur = 5) => {
-    found.querySelector('i').textContent = '新的见闻 · ' + (KIND[F.kind] || '');
+    found.querySelector('i').textContent = F.kind === 'item' ? '新的材料 · 收进了行囊' : '新的见闻 · ' + (KIND[F.kind] || '');
     found.querySelector('b').textContent = F.name; found.querySelector('small').textContent = F.sub;
     found.classList.remove('show'); void found.offsetWidth; found.classList.add('show');
     clearTimeout(foundT); foundT = setTimeout(() => found.classList.remove('show'), dur * 1000);
   };
+  // 身上的好处（吃了东西、烤了火）和“冷”：气力条上面一排小牌子。list: [{ t 文字, c 样式 }]
+  const buffs = $('buffs'); let buffKey = '';
+  ui.buffs = list => { const k = list.map(b => b.t).join('|'); if (k === buffKey) return; buffKey = k; buffs.innerHTML = list.map(b => `<span class="${b.c || ''}">${b.t}</span>`).join(''); };
   // 说话：底下一张卡片，点一下收起来
   const talk = $('talk'); let talkT = 0;
   ui.talk = (name, text, note = '') => {
@@ -119,6 +123,33 @@ export function initUI(h) {
   const act = $('act'); let actText = '';
   act.addEventListener('click', () => h.action(actText));
   ui.action = t => { if (t === actText) return; actText = t; act.textContent = t; act.hidden = !t; };
+  // 右下角的圆按钮：跳 / 展翅 / 蹬开 / 扇翅（按住接着扇）
+  const bAct = $('bAct'); let actName = '';
+  ui.actA = t => { if (t === actName) return; actName = t; bAct.textContent = t; bAct.hidden = !t; if (!t) h.act?.(false); };
+  bAct.addEventListener('pointerdown', e => { try { bAct.setPointerCapture(e.pointerId); } catch {} h.act?.(true); e.preventDefault(); });
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) bAct.addEventListener(ev, () => h.act?.(false));
+  bAct.addEventListener('contextmenu', e => e.preventDefault());
+  // 气力：一排小格子，没用的时候藏起来
+  const stam = $('stam'); let stKey = '', stFull = 0;
+  ui.stamina = (S, dt) => {
+    const n = Math.ceil(S.max / 20), ne = Math.ceil(S.extra / 20 - 1e-6);
+    const full = S.v >= S.max - 0.5 && S.flash <= 0;
+    stFull = full ? stFull + dt : 0;
+    stam.classList.toggle('show', !S.free && (stFull < 1.1 || ne > 0 && stFull < 2.5));
+    const key = `${n}|${ne}|${Math.round(S.v * 2)}|${Math.round(S.extra)}|${S.spent ? 1 : 0}`;
+    if (key === stKey) return; stKey = key;
+    if (stam.children.length !== n + ne) stam.innerHTML = '<i><b></b></i>'.repeat(n + ne);
+    for (let i = 0; i < n + ne; i++) {
+      const el = stam.children[i], ex = i >= n;
+      const f = ex ? Math.min(1, Math.max(0, S.extra / 20 - (i - n))) : Math.min(1, Math.max(0, S.v / 20 - i));
+      el.className = ex ? 'ex' : ''; el.firstChild.style.width = (f * 100).toFixed(0) + '%';
+    }
+    stam.classList.toggle('spent', S.spent);
+  };
+  // 气力会不会用完（手记底下换）
+  const stBtns = [...document.querySelectorAll('#stPick button')];
+  ui.free = on => { for (const b of stBtns) b.classList.toggle('on', (b.dataset.s === 'free') === !!on); };
+  for (const b of stBtns) b.addEventListener('click', () => h.setFree?.(b.dataset.s === 'free'));
   const tool = (id, f) => $(id).addEventListener('click', f);
   tool('bPhoto', () => h.photo?.()); tool('bAuto', () => h.toggleAuto()); tool('bCam', () => h.toggleCam()); tool('bMount', () => { sheet.hidden = !sheet.hidden; }); tool('bSound', () => h.toggleSound());
   ui.tool = (id, on, text) => { const b = $(id); b.classList.toggle('on', !!on); if (text) b.textContent = text; };
@@ -173,6 +204,8 @@ export function initUI(h) {
   for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
   document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
   canvas.addEventListener('contextmenu', e => e.preventDefault());
+  // 滚轮：镜头拉远拉近
+  canvas.addEventListener('wheel', e => { h.wheel?.(e.deltaY * (e.deltaMode === 1 ? 30 : 1)); e.preventDefault(); }, { passive: false });
   // ---------- 方向盘 ----------
   // 平时停在左下角；在左下这一片按下去，方向盘就挪到手指下（不用对准）。另一只手指可以同时拖屏幕转镜头。
   const zone = $('stickZone'), stick = $('stick'), knob = $('knob'), sGait = $('stickGait');
@@ -219,29 +252,46 @@ export function initUI(h) {
   for (const b of ctlBtns) b.addEventListener('click', () => h.setCtl(b.dataset.c));
   ui.goHint = () => ctl === 'stick' ? '左下角推着走\n拖屏幕转镜头' : '按住屏幕前进';
 
-  // 键盘
+  // ---------- 键盘 ----------
+  // W A S D / 方向键当方向盘用：往哪按往哪走（相对镜头），Shift 跑，C 换成慢慢走（走近动物用）
   const keys = new Set();
-  const FWD = ['Space', 'ArrowUp', 'KeyW'];
+  let slow = false, kStick = false;
+  const has = (...ks) => ks.some(k => keys.has(k));
+  const keyStick = () => {
+    const x = (has('KeyD', 'ArrowRight') ? 1 : 0) - (has('KeyA', 'ArrowLeft') ? 1 : 0), y = (has('KeyW', 'ArrowUp') ? 1 : 0) - (has('KeyS', 'ArrowDown') ? 1 : 0);
+    if (!x && !y) { if (kStick) { kStick = false; h.stick(null, true); } return; }
+    const m = has('ShiftLeft', 'ShiftRight') ? 1 : slow ? 0.4 : 0.7, l = Math.hypot(x, y);
+    kStick = true; h.stick({ x: x / l * m, y: y / l * m }, true);
+  };
+  const MOVE = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ShiftLeft', 'ShiftRight'];
   addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target?.tagName || '')) return;
+    if (MOVE.includes(e.code) || e.code === 'Space') e.preventDefault();
     if (e.repeat) return;
     keys.add(e.code);
-    if (FWD.includes(e.code)) { h.hold(true); e.preventDefault(); }
+    if (MOVE.includes(e.code)) keyStick();
+    if (e.code === 'Space') h.act?.(true);
+    if (e.code === 'KeyE' || e.code === 'Enter') { if (!act.hidden) h.action(actText); }
+    if (e.code === 'KeyC') { slow = !slow; keyStick(); h.say?.(slow ? '慢慢走（再按 C 换回来）' : '正常走'); }
     if (e.code === 'KeyT') h.toggleCam();
-    if (e.code === 'KeyF') h.mode('fly');
+    if (e.code === 'KeyF') h.flyKey?.();
     if (e.code === 'KeyR') h.mode('ride');
     if (e.code === 'KeyG') h.mode('foot');
-    if (e.code === 'KeyA' && e.shiftKey) h.toggleAuto();
     if (e.code === 'KeyN') h.skipTime?.();
     if (e.code === 'KeyM') h.openMap?.();
     if (e.code === 'KeyP') h.photo?.();
     if (e.code === 'KeyJ') h.openJournal?.();
+    if (e.code === 'Escape') h.escape?.();
     if (e.code === 'Digit1' || e.code === 'Digit2' || e.code === 'Digit3') h.gait(+e.code.slice(5) - 1);
   });
   addEventListener('keyup', e => {
-    keys.delete(e.code);
-    if (FWD.includes(e.code) && !FWD.some(k => keys.has(k))) h.hold(ctl === 'hold' && pts.size === 1);
+    if (!keys.delete(e.code)) return;
+    if (MOVE.includes(e.code)) keyStick();
+    if (e.code === 'Space') h.act?.(false);
   });
-  ui.keysTurn = () => ((keys.has('ArrowLeft') || keys.has('KeyA')) ? -1 : 0) + ((keys.has('ArrowRight') || keys.has('KeyD')) ? 1 : 0);
-  ui.keysClimb = () => (keys.has('KeyE') ? 1 : 0) - (keys.has('KeyQ') ? 1 : 0);
+  // 切到别的窗口：按着的键都算松开
+  addEventListener('blur', () => { if (!keys.size) return; keys.clear(); keyStick(); h.act?.(false); });
+  ui.keysTurn = () => 0;
+  ui.keysClimb = () => (keys.has('KeyQ') ? -1 : 0);
   return ui;
 }

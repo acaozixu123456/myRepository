@@ -1,7 +1,8 @@
-// 旅行手记：三页 ——「地方」（去过的地方和营地，第一张照片当封面）、「相册」（拍过的照片）、「日记」（每天去了哪、在哪歇脚、拍了什么，自动写的）。
+// 旅行手记：五页（还有「见闻」和「行囊」：摘的材料、做好带着的菜、菜谱）——「地方」（去过的地方和营地，第一张照片当封面）、「相册」（拍过的照片）、「日记」（每天去了哪、在哪歇脚、拍了什么，自动写的）。
 // 点地方看详情（照片、第一次去是哪天、在地图上看、一键过去）；点照片看大图（存到手机、设为封面、删掉）。
 import { periodOf } from '../world/daytime.js';
 import { FINDS, FIND_KINDS, findOf } from './finds.js';
+import { ITEMS, DISHES, BUFFS, itemOf, dishOf, effectText, mmss } from './cook.js';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -18,6 +19,7 @@ export class Journal {
       const c = e.target.closest('[data-place]'); if (c) return this.openPlace(c.dataset.place);
       const f = e.target.closest('[data-find]'); if (f) return this.openFind(f.dataset.find);
       const p = e.target.closest('[data-photo]'); if (p) return this.openPhoto(p.dataset.photo, p.dataset.set || null);
+      const eat = e.target.closest('[data-eat]'); if (eat) { const r = this.h.J.eat(+eat.dataset.eat); if (r) { this.ate = `吃了${r.D.name}。`; this.h.onBag?.(); this.render(); } }
     });
     this.detail.addEventListener('click', e => {
       if (e.target === this.detail) return this.closePlace();
@@ -40,7 +42,7 @@ export class Journal {
   }
   placeOf(id) { return this.h.J.places.find(p => p.id === id); }
   open(tab) {
-    this.isOpen = true; this.el.hidden = false;
+    this.isOpen = true; this.el.hidden = false; this.ate = '';
     this.show(tab || this.tab);
   }
   close() { if (!this.isOpen) return; this.isOpen = false; this.el.hidden = true; this.closePlace(); this.viewer.hidden = true; this.h.onClose?.(); }
@@ -65,6 +67,7 @@ export class Journal {
     if (this.tab === 'places') this.body.innerHTML = this.placesHTML();
     else if (this.tab === 'album') this.body.innerHTML = this.albumHTML();
     else if (this.tab === 'finds') this.body.innerHTML = this.findsHTML();
+    else if (this.tab === 'bag') this.body.innerHTML = this.bagHTML();
     else this.body.innerHTML = this.diaryHTML();
   }
   placesHTML() {
@@ -104,12 +107,33 @@ export class Journal {
         if (F.kind === 'sky') return `看到了<b>${esc(F.name)}</b>！${esc(F.sub)}。`;
         return `遇见了<b>${esc(F.name)}</b>。${esc(F.sub)}。`;
       }
+      if (e.k === 'cook') { const D = dishOf(e.p); return D ? `在<b>${esc(name(e.id))}</b>做了一份<b>${esc(D.name)}</b>。` : ''; }
       if (e.k === 'sleep') return `在<b>${esc(name(e.id))}</b>的火边睡了一觉。`;
       if (e.k === 'photo') { const p = A.get(e.p); return `在<b>${esc(name(e.id))}</b>拍了张照片。${p ? `<button type="button" class="dthumb" data-photo="${p.id}" data-set="all"><img src="${p.url}" alt=""></button>` : ''}`; }
       return '';
     };
     return [...days.entries()].sort((a, b) => b[0] - a[0]).map(([d, es]) =>
       `<section class="day"><h3>第 ${d} 天</h3><ul>${es.map(e => `<li><i>${periodOf(e.h).name}</i><span>${line(e)}</span></li>`).join('')}</ul></section>`).join('');
+  }
+  // ---------- 行囊 ----------
+  bagHTML() {
+    const J = this.h.J, S = J.stamina;
+    const pip = v => { const n = Math.round(v / 2) / 10; return n; };
+    const now = [`气力 ${pip(S.v)} / ${pip(S.max)} 格${S.extra > 1 ? `，另有 ${pip(S.extra)} 格临时的` : ''}${S.free ? '（用不完）' : ''}`];
+    for (const [k, v] of Object.entries(J.buffs)) if (v > 0) now.push(`${BUFFS[k].name} ${mmss(v)} · ${BUFFS[k].sub}`);
+    if (J.cold) now.push('有点冷 · 气力回得慢');
+    const dishes = J.dishes.length ? J.dishes.map((d, i) => { const D = dishOf(d.id); return `<div class="bagDish"><div><b>${esc(D.name)}${d.s > 1.05 && d.id !== 'stew' ? ' <i>加料</i>' : ''}</b><small>${esc(effectText(d))}</small></div><button type="button" data-eat="${i}">吃</button></div>`; }).join('')
+      : `<p class="bagNote">还没有做好的。到营地坐下烤火，点「做饭」，把摘来的东西下锅。</p>`;
+    const mats = ITEMS.map(I => { const n = J.bag[I.id] || 0, seen = J.items.has(I.id); return `<span class="${n ? '' : 'no'}"><i>${seen ? I.g : '？'}</i>${seen ? I.name : '？？'}${n ? `<em>${n}</em>` : ''}</span>`; }).join('');
+    const where = ITEMS.map(I => `${J.items.has(I.id) ? `<b>${I.name}</b>` : '？？'}：${esc(I.where)}`).join('<br>');
+    const known = DISHES.filter(D => J.recipes.has(D.id)), todo = DISHES.filter(D => !J.recipes.has(D.id));
+    const rec = known.map(D => `<li><b>${esc(D.name)}</b>${D.need.map(id => itemOf(id).name).join(' + ')}<small>${esc(effectText({ id: D.id, s: 1 }))}</small></li>`).join('')
+      + todo.filter(D => D.clue).map(D => `<li class="no"><b>？？？</b><small>听说：${esc(D.clue)}</small></li>`).join('')
+      + (todo.some(D => !D.clue) ? `<li class="no"><small>还有 ${todo.filter(D => !D.clue).length} 道只用一样材料的没做过</small></li>` : '');
+    return `${this.ate ? `<p class="bagNote">${esc(this.ate)}</p>` : ''}<h3>现在</h3><div class="buffRow">${now.map(t => `<span>${esc(t)}</span>`).join('')}</div>
+      <h3>吃的 ${J.dishes.length}/12 <small>路上随时可以吃</small></h3>${dishes}
+      <h3>材料 <small>路上一闪一闪的小亮光，走过去摘；第二天又长出来</small></h3><div class="bagGrid">${mats}</div><p class="bagNote">${where}</p>
+      <h3>菜谱 ${known.length}/${DISHES.length} <small>同一种多放几个是加料，更顶用</small></h3><ul class="recipes">${rec}</ul>`;
   }
   // ---------- 见闻 ----------
   findPhoto(id) { const f = this.h.J.found[id]; return f?.photo ? this.h.album.get(f.photo) : null; }

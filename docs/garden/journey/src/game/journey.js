@@ -4,6 +4,8 @@
 // 第一次到望远台有一段远景；在山口营地可以坐下烤火，看这一路的手记。
 // 时间一直在走（一天大约半小时）：清晨、白天、黄昏、夜里，坐下烤火时快进到夜里，睡一觉到第二天清晨。
 // 天气过一阵会变（晴、多云、小雨、起雾、下雪，world/weather.js），也可以在右上角定住。
+// 探索：步行时陡坡和崖壁可以爬、深水可以游、可以跳；从高处跳出去张开翅膀就是滑翔，扇一下翅膀往上蹿一截，
+// 滑进上升的风里会被托起来（world/thermals.js）。跑、爬、游、扇翅膀都要用气力（game/stamina.js）。
 import * as THREE from 'three';
 import { ROAD, STREAM, SPOTS, TRAIL, LAKE, CREEK_END, CAMP_SITES, SEAWAY, CAPEWAY, LIGHTHOUSE, SEA, coastCT, VISTAS } from '../world/route.js';
 import { DOM, CENTER, waterY, SHOAL, FALLS, lakeQ } from '../world/land.js';
@@ -11,12 +13,20 @@ import { PERIODS, periodOf } from '../world/daytime.js';
 import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 import { Explored } from './map.js';
 import { findOf } from './finds.js';
+import { ITEMS, BUFFS, BUFF_K, itemOf, dishOf, cookDish, dishEffect, effectText } from './cook.js';
+import { Stamina } from './stamina.js';
 
 export const GAITS = {
   foot: [{ name: '散步', v: 1.15 }, { name: '快走', v: 1.8 }, { name: '跑', v: 4.4 }],
   ride: [{ name: '慢步', v: 1.6 }, { name: '小跑', v: 3.3 }, { name: '奔跑', v: 5.6 }],
-  fly: [{ name: '滑翔', v: 8 }, { name: '飞', v: 12.5 }, { name: '疾飞', v: 18 }],
+  // 飞：张着翅膀往前滑，三档是滑得多快（越快掉得越快）；往上要靠扇翅膀或者上升的风
+  fly: [{ name: '慢滑', v: 7, sink: 1.05 }, { name: '滑翔', v: 10, sink: 1.5 }, { name: '俯冲', v: 14.5, sink: 3.2 }],
 };
+// 步行时的几种动作要多少气力（每秒，或者每一下）
+const COST = { run: 3.2, climbUp: 6.5, climbSide: 4.2, climbDown: 2.2, swim: 3.6, swimFast: 6.5, float: 1.0, flap: 10, takeoff: 14 };
+const CLIMB_IN = 0.95, CLIMB_STEEP = 1.3, CLIMB_OUT = 0.78;   // 往上走的坡度超过 0.95、或者脚下的坡比 1.3 还陡就算爬；缓到 0.78 以下算爬完
+const SWIM_IN = 0.95, SWIM_OUT = 0.78, SWIM_Y = 1.0;          // 水没过胸口就游；游的时候“脚下”在水面以下一米
+const GRAV = 16;
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -54,7 +64,7 @@ export function makePlaces() {
     { id: 'bamboo', name: '竹林山坳', sub: '竹子比人高好多，风一过沙沙响', where: '出发的地方往西，顺着海边小路走', x: bm.x, z: bm.z, r: 34 },
     { id: 'cove', name: '西湾沙滩', sub: '浪一层一层推上沙滩', where: '竹林里的小路走到头，就是海', x: cv.x - 17, z: cv.z - 5, r: 30 },
     { id: 'cape', name: '海角灯塔', sub: '天一暗，灯就亮了', where: '沙滩往南，顺着崖上的小路爬上海角', x: LIGHTHOUSE.x + 4, z: LIGHTHOUSE.z + 6, r: 18 },
-    { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '点“飞”，一直往上飞', alt: 50 },
+    { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '找一股上升的风，张着翅膀让它托上去', alt: 50 },
     // 野外营地：第一次到会出横幅，坐下就点起篝火（以后夜里那堆火都亮着），地图上可以一键过去
     ...CAMP_SITES.map(c => ({ id: c.id, kind: 'camp', name: c.name, sub: c.sub, where: c.where, x: c.x, z: c.z, r: 11 })),
     // 藏起来的观景点：地图上一开始没有，走上去（或者有人告诉过你、在别的观景点望见过）才标出来
@@ -93,6 +103,10 @@ export class Journey {
     this.t = 0;
     // 地图：走过的地方（4 米一格）和标记点
     this.explored = new Explored(); this.waypoint = null; this.exT = 0;
+    this.stamina = new Stamina(); this.shore = { x: 0, z: 0 }; this.told = new Set();
+    // 行囊：bag 材料 { id: 个数 }，dishes 做好带着的菜 [{ id, s 分量 }]，recipes 做出来过的菜谱，buffs 吃了以后一阵子的好处 { k: 还剩几秒 }
+    // picked：今天摘过的地方 Map(第几处 → 哪一天)，第二天又长出来；items 摘到过的种类
+    this.bag = {}; this.dishes = []; this.recipes = new Set(); this.buffs = {}; this.picked = new Map(); this.items = new Set();
     this.reset();
     this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.night = 0; this.owlT = 20;
     // 声音：三道叠水的位置、阵风、冰鸣、换曲用的区域（带一点滞后，免得在边界上来回切）
@@ -137,16 +151,17 @@ export class Journey {
   // 截图、调试用：直接摆到某处
   teleport(x, z, yaw, mode = 'ride', alt = 30) {
     this.trans = null; this.waitMount = false; this.sitting = false;
-    this.p.set(x, this.groundAt(x, z), z); this.yaw = this.yawT = yaw;
+    this.clearFoot();
+    this.p.set(x, this.groundAt(x, z), z); this.yaw = this.yawT = this.faceYaw = yaw;
     this.speed = 0; this.vy = 0;
     this.mode = mode;
     for (const M of Object.values(this.mounts)) if (M && M !== this.mount) { M.root.visible = false; M.st.shown = false; }
     const M = this.mount;
-    if (mode === 'ride') { M.st.p.copy(this.p); M.st.yaw = yaw; M.st.shown = true; M.root.visible = true; this.T.set('ride', 50); }
-    else if (mode === 'foot') { this.T.set('loco', 50); M.root.visible = false; M.st.shown = false; }
+    if (mode === 'ride') { M.st.p.copy(this.p); M.st.yaw = yaw; M.st.shown = true; M.root.visible = true; this.T.set('ride', 50); this.wings.show(false); }
+    else if (mode === 'foot') { this.T.set('loco', 50); M.root.visible = false; M.st.shown = false; this.wings.show(false); }
     else {
       this.T.set('fly', 50); M.root.visible = false; M.st.shown = false;
-      this.p.y = this.land.height(x, z) + alt; this.speed = this.gaitV('fly'); this.flyPitch = 70 * DEG;
+      this.p.y = this.land.surfaceY(x, z) + alt; this.speed = this.gaitV('fly'); this.flyPitch = 70 * DEG;
       this.wings.show(true); this.wings.open = 1;
     }
     this.cam.inited = false;
@@ -204,6 +219,11 @@ export class Journey {
     this.speed = 0; this.vy = 0; this.turn = 0; this.slope = 0; this.climb = 0; this.bank = 0; this.flyPitch = 0; this.liftT = 0; this.alt = 0;
     this.waitMount = false; this.landTo = null; this.pendingMode = null;
     this.mode = 'ride'; this.trans = null; this.phase = 'intro';
+    this.clearFoot(); this.faceYaw = this.yaw; this.liftT = 0; this.flapT = 0; this.flapHeld = false; this.inThermal = false;
+    this.stamina.bonus = 0; this.stamina.extra = 0; this.stamina.fill();
+    this.shore.x = this.p.x; this.shore.z = this.p.z; this.told.clear();
+    this.bag = {}; this.dishes = []; this.recipes.clear(); this.buffs = {}; this.picked.clear(); this.items.clear(); this.cold = false; this.nearSpot = null; this.forageDay = -1;
+    if (this.pot) this.pot.visible = false;
     this.steerT = 0; this.idleT = 0; this.travelT = 0;
     this.dist = { foot: 0, ride: 0, fly: 0 };
     this.visited = []; this.inPlace = new Set(); this.placeT = 0; this.labelT = 0;
@@ -239,8 +259,9 @@ export class Journey {
     this.steerT = 1.4;
   }
   setCtl(c) { this.ctl = c === 'hold' ? 'hold' : 'stick'; this.cam.free = this.ctl === 'stick'; this.setStick(null); }
-  setStick(v) {
-    this.stick = v;
+  // key：键盘上的方向键也当方向盘用（选了“按住屏幕”的老操作也一样）
+  setStick(v, key = false) {
+    this.stick = v; this.keyStick = !!(v && key);
     if (!v) { this.holding = false; this.stickGait = -1; return; }
     if (this.phase === 'view' && this.cam.shot) { releaseShot(this.cam, 1.2); this.phase = 'play'; }
   }
@@ -268,11 +289,17 @@ export class Journey {
   }
   keys(dt, turnKey, climbKey) {
     if (turnKey) { this.yawT -= turnKey * dt * (this.mode === 'fly' ? 1.2 : 1.9); this.steerT = 1.0; }
-    if (climbKey && this.mode === 'fly') this.climb = clamp(this.climb + climbKey * dt * 3, -1, 1);
+    if (climbKey && this.mode === 'fly') { this.climb = clamp(this.climb + climbKey * dt * 3, -1, 1); this.steerT = Math.max(this.steerT, 0.3); }
   }
 
   // 切换走法：foot / ride / fly
   setMode(m) {
+    // 步行时的特殊情况：腾空、扒在岩壁上点「飞」就是张开翅膀；在水里、出溜的时候换不了
+    if (this.mode === 'foot' && !this.trans && this.phase === 'play' && m !== 'foot') {
+      if (m === 'fly' && (this.air || this.climbing)) return this.glideStart();
+      if (this.swimming) { this.say(m === 'fly' ? '在水里飞不起来，先上岸' : '先上岸再叫坐骑'); return; }
+      if (this.air || this.climbing || this.sliding) { this.say('先站稳再叫坐骑'); return; }
+    }
     // 正在上下马、起飞降落时点的：等这一下做完再换
     if (this.trans && !this.sitting && this.phase === 'play' && this.trans.kind !== 'swap') { this.pendingMode = m; return; }
     if (this.trans || this.sitting || this.phase !== 'play' || m === this.mode) {
@@ -299,6 +326,7 @@ export class Journey {
     if (this.mode === 'foot' && this.phase === 'play') this.callMount();
   }
   takeoff() {
+    if (!this.stamina.use(COST.takeoff * this.costK('wind'))) { this.say('没力气起飞了，歇一会儿'); return; }
     const fromRide = this.mode === 'ride';
     if (fromRide) this.park(this.mount);
     this.trans = { kind: 'takeoff', t: 0, dur: 0.75, from: fromRide ? 'ride' : 'foot', p0: this.pelvisNow() };
@@ -317,6 +345,7 @@ export class Journey {
   }
   // 叫坐骑：在附近就小跑过来，太远就从身后不远处跑过来
   callMount() {
+    if (this.air || this.climbing || this.swimming || this.sliding) { this.say(this.swimming ? '先上岸再叫坐骑' : '先站稳再叫坐骑'); return; }
     const M = this.mount, S = M.st;
     const right = _v.set(-Math.cos(this.yaw), 0, Math.sin(this.yaw));
     const goal = this.p.clone().addScaledVector(right, 1.25);
@@ -340,7 +369,7 @@ export class Journey {
     if (playing && !this.sitting) this.travelT += dt;
     this.steerT = Math.max(0, this.steerT - dt);
     // yawT 不要离当前朝向太远
-    if (this.ctl === 'stick' && this.phase !== 'intro') this.stickDrive();
+    if ((this.ctl === 'stick' || this.keyStick) && this.phase !== 'intro') this.stickDrive();
     this.yawT = this.yaw + wrap(this.yawT - this.yaw);
     if (this.trans) this.transTick(dt);
     if (!this.trans && this.pendingMode) { const m = this.pendingMode; this.pendingMode = null; if (m !== this.uiMode) this.setMode(m); }
@@ -348,6 +377,9 @@ export class Journey {
     if (!tk || tk === 'descend' || tk === 'swap' || (tk === 'takeoff' && this.mode === 'fly')) {
       if (this.mode === 'fly') this.flyMove(dt); else if (!this.sitting) this.groundMove(dt);
     }
+    this.bodyTick(dt);
+    // 气力：站在地上（或者骑着马、坐着）没在用就慢慢回；爬着、游着、在天上不回
+    this.stamina.tick(dt, this.sitting || this.mode === 'ride' || (this.mode === 'foot' && !this.air && !this.climbing && !this.swimming && !this.sliding));
     this.mountsTick(dt);
     this.placeTraveler(dt);
     this.feelTick(dt);
@@ -365,6 +397,7 @@ export class Journey {
   // ---------- 地面上走（步行或骑马） ----------
   groundMove(dt) {
     const riding = this.mode === 'ride';
+    if (!riding) return this.footMove(dt);
     const can = this.phase === 'play' && !this.trans;
     let target = (this.holding || this.auto) && can ? this.gaitV() : 0;
     // 水里慢一点；太陡走不上去
@@ -385,11 +418,11 @@ export class Journey {
     if (d > 1e-5) {
       const g0 = this.groundAt(this.p.x, this.p.z), g1 = this.groundAt(nx, nz), grade = (g1 - g0) / d;
       const maxG = riding ? 0.72 : 0.95;
-      if (grade > maxG) { nx = this.p.x; nz = this.p.z; this.speed *= 0.6; this.hintOnce('太陡了，换个方向'); }
+      if (grade > maxG) { nx = this.p.x; nz = this.p.z; this.speed *= 0.6; this.hintOnce('太陡了，马上不去。下马可以爬上去'); }
       else if (grade > 0.3) this.speed *= 1 - (grade - 0.3) * dt * 1.5;
       // 太深的水不进去（步行）
       if (!riding && this.waterDepth(nx, nz) > 0.62) { nx = this.p.x; nz = this.p.z; this.speed *= 0.5; this.hintOnce(this.land.seaDepth(nx, nz) > 0.3 ? '再往前就是深海了' : '水太深了，走桥或者浅滩'); }
-      if (riding && this.land.seaDepth(nx, nz) > 1.1) { nx = this.p.x; nz = this.p.z; this.speed *= 0.5; this.hintOnce('再往前就是深海了'); }
+      if (riding && this.land.seaDepth(nx, nz) > 1.1) { nx = this.p.x; nz = this.p.z; this.speed *= 0.5; this.hintOnce('水深了，马不肯往前。下马可以游过去'); }
     }
     // 树、风车、帐篷这些挡路的东西
     const R = riding ? 0.75 : 0.32;
@@ -404,6 +437,225 @@ export class Journey {
     const hf = this.groundAt(nx + fx * 0.6, nz + fz * 0.6), hb = this.groundAt(nx - fx * 0.6, nz - fz * 0.6);
     this.slope = damp(this.slope, -Math.atan((hf - hb) / 1.2), 6, dt);
   }
+  // ---------- 步行：走、跑、跳、爬、游 ----------
+  clearFoot() { this.air = false; this.climbing = false; this.sliding = false; this.swimming = false; this.climbK = 0; this.climbPh = 0; this.climbDir = 0; this.steep = 0; this.slideV = 0; this.slideT = 0; this.swimY = 0; this.shoreT = 0; this.ripT = 0; this.vy = 0; }
+  // 马上说一句（盖掉正在显示的提示）；tell：同一件事只说一次（记在存档里）
+  say(t, dur = 2.8) { this.ui.hint(t); this.hintT = dur; }
+  tell(k, t, dur = 5) { if (this.told.has(k)) return; this.told.add(k); this.say(t, dur); }
+  // 不许走出近景范围
+  bound(nx, nz) {
+    const m = 10, x0 = DOM.x0 + m, x1 = DOM.x0 + DOM.w - m, z0 = DOM.z0 + m, z1 = DOM.z0 + DOM.d - m;
+    if (nx < x0 || nx > x1 || nz < z0 || nz > z1) { nx = clamp(nx, x0, x1); nz = clamp(nz, z0, z1); this.hintOnce(this.land.seaDepth(nx, nz) > 0.5 ? '再往外浪太大了，回去吧' : '再往外是深山，回去吧'); }
+    return [nx, nz];
+  }
+  footMove(dt) {
+    const S = this.stamina, x = this.p.x, z = this.p.z;
+    const can = this.phase === 'play' && !this.trans;
+    const go = (this.holding || this.auto) && can;
+    if (this.air) return this.airMove(dt, go);
+    const depth = this.waterDepth(x, z);
+    if (!this.swimming && depth > SWIM_IN) this.swimStart();
+    else if (this.swimming && depth < SWIM_OUT) { this.swimming = false; this.T.set('loco', 4); this.p.y = this.groundAt(x, z); }
+    if (this.swimming) return this.swimMove(dt, go);
+    // 脚下的坡：(gx, gz) 指向坡上
+    const e = 0.5, gx = (this.groundAt(x + e, z) - this.groundAt(x - e, z)) / (2 * e), gz = (this.groundAt(x, z + e) - this.groundAt(x, z - e)) / (2 * e);
+    const steep = this.steep = Math.hypot(gx, gz);
+    if (this.sliding) return this.slideMove(dt, gx, gz, steep);
+    if (this.climbing) return this.climbMove(dt, go, gx, gz, steep);
+    // 记下最近站稳过的地方（游不动了送回这里）
+    if (depth < 0.05 && steep < 0.6 && (this.shoreT -= dt) <= 0) { this.shoreT = 0.5; this.shore.x = x; this.shore.z = z; }
+    // 站在很陡的坡上（从上面蹭过来的、落在上面的）：跑着朝下就冲出去腾空，不然扒住；没力气了就出溜下去
+    if (steep > CLIMB_STEEP && can) {
+      if (this.speed > 2.6 && gx * Math.sin(this.yaw) + gz * Math.cos(this.yaw) < -0.9) { this.leap(1.0); return this.airMove(dt, go); }
+      if (S.can()) { this.grab(); return this.climbMove(dt, go, gx, gz, steep); }
+      this.sliding = true; this.slideV = 1; this.slideT = 0;
+      return this.slideMove(dt, gx, gz, steep);
+    }
+    // 走和跑：跑要用气力，气力见底了只能快走
+    let gi = this.gaits.foot;
+    if (gi === 2 && S.spent) gi = 1;
+    let target = go ? GAITS.foot[gi].v : 0;
+    if (depth > 0.12) target *= clamp(1.06 - depth * 0.5, 0.55, 1);
+    if (go && gi === 2 && this.speed > 2.6) S.drain(COST.run * this.costK('light'), dt);
+    this.speed = damp(this.speed, target, target > this.speed ? 2.5 : 4, dt);
+    if (target < 0.01 && this.speed < 0.03) this.speed = 0;
+    this.idleT = this.speed > 0.05 ? 0 : this.idleT + dt;
+    this.followRoad(dt);
+    const dy = clamp(wrap(this.yawT - this.yaw), -3.4 * dt, 3.4 * dt);
+    this.yaw += dy; this.faceYaw = this.yaw;
+    this.turn = damp(this.turn, dy / Math.max(dt, 1e-3), 5, dt);
+    const fx = Math.sin(this.yaw), fz = Math.cos(this.yaw), d = this.speed * dt;
+    let nx = x + fx * d, nz = z + fz * d;
+    if (d > 1e-5) {
+      const grade = (this.groundAt(nx, nz) - this.groundAt(x, z)) / d;
+      if (grade > CLIMB_IN) {
+        // 前面是陡坡：有力气就扒上去，没力气先歇着
+        nx = x; nz = z;
+        if (S.can()) { this.grab(); this.tell('climb', '陡坡和崖壁可以爬上去，要用气力\n气力用完了会滑下来'); }
+        else { this.speed *= 0.6; this.hintOnce('没力气爬了，歇一会儿'); }
+      } else if (grade > 0.3) this.speed *= 1 - (grade - 0.3) * dt * 1.5;
+    }
+    const res = this.colliders.resolve(nx, nz, 0.32, 0);
+    [nx, nz] = this.bound(res[0], res[1]);
+    this.dist.foot += Math.hypot(nx - x, nz - z);
+    this.p.set(nx, this.groundAt(nx, nz), nz);
+    const hf = this.groundAt(nx + fx * 0.6, nz + fz * 0.6), hb = this.groundAt(nx - fx * 0.6, nz - fz * 0.6);
+    this.slope = damp(this.slope, -Math.atan((hf - hb) / 1.2), 6, dt);
+  }
+  grab() { this.climbing = true; this.sliding = false; this.speed = 0; }
+  // 离开地面：vy 往上的速度（跳是 6.3，跑出坎边是 1）
+  leap(vy) { this.air = true; this.climbing = false; this.sliding = false; this.vy = vy; }
+  // 爬：脸朝坡上，往哪推就往哪挪（往上最费气力，横着其次，往下最省）；停着不动不耗气力
+  climbMove(dt, go, gx, gz, steep) {
+    const S = this.stamina, x = this.p.x, z = this.p.z;
+    if (steep > 0.3) this.faceYaw += wrap(Math.atan2(gx, gz) - this.faceYaw) * (1 - Math.exp(-9 * dt));
+    this.yaw += clamp(wrap(this.yawT - this.yaw), -7 * dt, 7 * dt); this.turn = 0;
+    const fx = Math.sin(this.yaw), fz = Math.cos(this.yaw);
+    const dir = (this.groundAt(x + fx * 0.4, z + fz * 0.4) - this.groundAt(x, z)) / 0.4;
+    // 爬到缓的地方（上了顶、下到底）就站起来走
+    if (steep < CLIMB_OUT && dir < CLIMB_IN * 0.85) { this.climbing = false; return; }
+    const fast = this.gaits.foot === 2, wet = (this.weather?.k.r || 0) > 0.4;
+    if (go) {
+      const rate = (dir > 0.35 ? COST.climbUp : dir < -0.35 ? COST.climbDown : COST.climbSide) * (fast ? 1.45 : 1) * (wet ? 1.5 : 1);
+      if (!S.drain(rate * this.costK('grip'), dt)) { this.climbing = false; this.sliding = true; this.slideV = 0.5; this.slideT = 0; this.say('没力气了，滑下去歇一歇'); return; }
+      if (wet) this.tell('wet', '下雨石头滑，爬起来更费气力');
+    }
+    this.speed = damp(this.speed, go ? (fast ? 1.75 : 1.25) * (wet ? 0.8 : 1) : 0, 7, dt);
+    const d = this.speed * dt / Math.sqrt(1 + dir * dir);
+    let nx = x + fx * d, nz = z + fz * d;
+    const res = this.colliders.resolve(nx, nz, 0.32, 0);
+    [nx, nz] = this.bound(res[0], res[1]);
+    this.dist.foot += Math.hypot(nx - x, nz - z);
+    this.p.set(nx, this.groundAt(nx, nz), nz);
+    this.climbDir = dir; this.idleT = 0; this.slope = damp(this.slope, 0, 6, dt);
+    const ph0 = this.climbPh; this.climbPh += this.speed * dt * 0.62;
+    if (Math.floor(ph0 * 2) !== Math.floor(this.climbPh * 2)) this.sound.foot(this.surface(nx, nz, 0.05) === 'snow' ? 'snow' : 'dirt', 0, 0.5);
+  }
+  // 没力气了：顺着坡出溜下去，到缓的地方停住
+  slideMove(dt, gx, gz, steep) {
+    const x = this.p.x, z = this.p.z, l = steep || 1;
+    this.slideT += dt;
+    if (steep < 0.62 || this.slideT > 7 || this.waterDepth(x, z) > 0.5) {
+      this.sliding = false; this.speed = 0; this.slideV = 0;
+      if (this.slideT > 7) { this.stamina.spent = false; this.stamina.v = Math.max(this.stamina.v, 30); }    // 卡在沟里了：给一口气爬出来
+      this.thud(x, z, 0.5);
+      return;
+    }
+    this.slideV = damp(this.slideV, 6.5, 1.6, dt);
+    if (steep > 0.3) this.faceYaw += wrap(Math.atan2(gx, gz) - this.faceYaw) * (1 - Math.exp(-9 * dt));
+    const d = this.slideV * dt / Math.sqrt(1 + steep * steep);
+    let nx = x - gx / l * d, nz = z - gz / l * d;
+    const res = this.colliders.resolve(nx, nz, 0.32, 0);
+    [nx, nz] = this.bound(res[0], res[1]);
+    this.p.set(nx, this.groundAt(nx, nz), nz); this.speed = 0;
+    const F = this.fx;
+    if (F?.on && (this.ripT -= dt) <= 0) { this.ripT = 0.14; F.puffs.puff(this.land.snow(nx, nz) > 0.45 ? 'snow' : 'dust', nx, this.p.y + 0.1, nz, 0.7, -gx / l, -gz / l); }
+  }
+  // 腾空：跳起来、从坎上跑出去。掉得久了翅膀自己张开
+  airMove(dt, go) {
+    const x = this.p.x, z = this.p.z;
+    this.vy -= GRAV * dt;
+    this.yaw += clamp(wrap(this.yawT - this.yaw), -1.8 * dt, 1.8 * dt); this.faceYaw = this.yaw;
+    this.turn = damp(this.turn, 0, 5, dt);
+    if (!go) this.speed *= Math.exp(-0.6 * dt);
+    const fx = Math.sin(this.yaw), fz = Math.cos(this.yaw);
+    let nx = x + fx * this.speed * dt, nz = z + fz * this.speed * dt;
+    const ny = this.p.y + this.vy * dt;
+    const res = this.colliders.resolve(nx, nz, 0.32, ny - this.groundAt(x, z));
+    [nx, nz] = this.bound(res[0], res[1]);
+    let g = this.groundAt(nx, nz);
+    // 前面的坎比脚高一截：过不去，贴着它往下掉
+    if (g > ny + 0.5) { nx = x; nz = z; g = this.groundAt(x, z); this.speed *= 0.4; }
+    this.dist.foot += Math.hypot(nx - x, nz - z);
+    const wd = this.waterDepth(nx, nz), floor = wd > SWIM_IN ? g + wd - SWIM_Y : g;
+    if (ny <= floor) {
+      const v = -this.vy;
+      this.air = false; this.vy = 0; this.p.set(nx, floor, nz);
+      if (wd > 0.3) this.thud(nx, nz, clamp(v / 9, 0.3, 1));
+      else {
+        this.T.play('Jump_Land', clamp(v / 9, 0.3, 1), 0.08);
+        this.sound.foot(this.surface(nx, nz, 0.05), 1, clamp(v / 8, 0.5, 1.2));
+        if (v > 7.5) this.thud(nx, nz, clamp((v - 7) / 8, 0.25, 1));
+      }
+      this.speed *= v > 9 ? 0.35 : 0.85;
+      return;
+    }
+    this.p.set(nx, ny, nz);
+    if (this.vy < -10.5 && ny - Math.max(g, g + wd) > 5 && this.phase === 'play' && !this.trans) {
+      this.glideStart();
+      this.tell('autoglide', '翅膀自己张开了\n腾空的时候按一下「展翅」（空格）也可以', 5);
+    }
+  }
+  // 游：水没过胸口就漂起来游，一直要用气力；游不动了会被送回岸边
+  swimStart() {
+    this.swimming = true; this.climbing = false; this.sliding = false; this.air = false;
+    this.T.set('swim', 5);
+    this.thud(this.p.x, this.p.z, 0.4);
+    this.tell('swim', '水深的地方可以游过去，要用气力\n游不动了会被送回岸边');
+  }
+  swimMove(dt, go) {
+    const S = this.stamina, x = this.p.x, z = this.p.z, gi = this.gaits.foot;
+    if (!this.trans && !S.drain((go ? (gi === 2 ? COST.swimFast : COST.swim) : COST.float) * this.costK('fin'), dt)) return this.washAshore();
+    this.speed = damp(this.speed, go ? [1.0, 1.5, 2.3][gi] : 0, 2.2, dt);
+    const dy = clamp(wrap(this.yawT - this.yaw), -2.4 * dt, 2.4 * dt);
+    this.yaw += dy; this.faceYaw = this.yaw;
+    this.turn = damp(this.turn, dy / Math.max(dt, 1e-3), 4, dt);
+    let nx = x + Math.sin(this.yaw) * this.speed * dt, nz = z + Math.cos(this.yaw) * this.speed * dt;
+    const res = this.colliders.resolve(nx, nz, 0.32, 0);
+    [nx, nz] = this.bound(res[0], res[1]);
+    this.dist.foot += Math.hypot(nx - x, nz - z);
+    const g = this.groundAt(nx, nz);
+    this.swimY = g + this.waterDepth(nx, nz);
+    this.p.set(nx, Math.max(g, this.swimY - SWIM_Y), nz);
+    this.slope = damp(this.slope, 0, 6, dt); this.idleT = 0;
+    const F = this.fx;
+    if (F?.on && (this.ripT -= dt) <= 0) { this.ripT = this.speed > 0.4 ? 0.5 : 1.5; F.ripples.add(nx + Math.sin(this.yaw) * 0.4, nz + Math.cos(this.yaw) * 0.4, 0.45 + 0.2 * this.speed); }
+  }
+  washAshore() {
+    if (this.trans) return;
+    this.trans = { kind: 'wash', t: 0, dur: 1.9 }; this.speed = 0;
+    this.ui.fade(true);
+  }
+  // 空格 / 屏幕上的圆按钮：地上是跳；腾空是张开翅膀；扒在岩壁上是蹬开；天上是扇一下翅膀（按住接着扇）
+  act(on) {
+    this.flapHeld = !!on;
+    if (!on || this.phase !== 'play' || this.sitting) return;
+    if (this.mode === 'fly') { this.flap(); return; }
+    if (this.mode !== 'foot' || this.trans) return;
+    if (this.air) return this.glideStart();
+    if (this.swimming || this.sliding) return;
+    if (this.climbing) { this.yaw = this.yawT = wrap(this.faceYaw + Math.PI); this.speed = 2.6; this.leap(3.4); return; }
+    this.leap(6.6);
+    this.T.play('Jump_Start', 0.6, 0.06);
+    this.sound.foot(this.surface(this.p.x, this.p.z, 0.05), 1, 0.7);
+  }
+  // 这个按钮现在叫什么（不能用的时候是空的）
+  get actName() {
+    if (this.phase !== 'play' || this.sitting) return '';
+    if (this.mode === 'fly') return this.trans?.kind === 'descend' || this.trans?.kind === 'land' ? '' : '扇翅';
+    if (this.mode !== 'foot' || this.trans || this.swimming || this.sliding) return '';
+    return this.air ? '展翅' : this.climbing ? '蹬开' : '跳';
+  }
+  // 扇一下翅膀：往上蹿一截，要用气力
+  flap() {
+    if (this.mode !== 'fly' || this.flapT > 0.1 || (this.trans && this.trans.kind !== 'takeoff')) return;
+    if (!this.stamina.use(COST.flap * this.costK('wind'))) { this.hintOnce('气力用完了，先滑下去歇一歇'); return; }
+    this.flapT = 0.5; this.vy = Math.min(9, Math.max(this.vy, 0) + 6.2); this.speed = Math.min(16, this.speed + 1.2);
+    this.wingC = -1;
+  }
+  // 腾空、扒在岩壁上的时候张开翅膀：直接开始滑翔（不用起飞那一下，也不费气力）
+  glideStart() {
+    if (this.mode !== 'foot' || this.trans || this.swimming || this.sliding) return;
+    if (this.climbing) { this.yaw = this.yawT = wrap(this.faceYaw + Math.PI); this.speed = 3; }
+    const vy = this.vy;
+    this.clearFoot();
+    this.mode = 'fly'; this.T.set('fly', 5); this.wings.show(true);
+    this.liftT = 0.45; this.vy = Math.max(vy, -3); this.speed = Math.max(this.speed, 5.5);
+    this.flyPitch = 35 * DEG; this.climb = 0; this.bank = 0; this.flapT = 0;
+    this.sound.whoosh(0.9);
+    this.tell('glide', '张着翅膀往前滑，会慢慢往下掉\n扇翅膀能往上蹿一截（费气力）；找到上升的风，不费力就升上去', 6.5);
+  }
+
   // 在路上、没有手动转向时，慢慢顺着路走
   followRoad(dt) {
     if (this.steerT > 0 || this.speed < 0.25) return;
@@ -446,21 +698,33 @@ export class Journey {
   // ---------- 飞 ----------
   flyMove(dt) {
     const descending = this.trans?.kind === 'descend';
-    // 刚起飞的两秒多自己往上飞一段，不用按着
+    // 刚起飞的那一小会儿自己往上飞一段
     const lifting = this.liftT > 0 && !descending; if (this.liftT > 0) this.liftT -= dt;
-    const flap = (this.holding || this.auto || lifting) && this.phase === 'play' && !descending;
-    this.flapping = flap;
-    const target = flap ? this.gaitV('fly') : descending ? 6 : Math.max(6, this.speed * 0.995);
-    this.speed = damp(this.speed, target, flap ? 0.9 : 0.35, dt);
+    // 扇翅膀是一下一下的（按住就接着扇）
+    if (this.flapT > 0) this.flapT -= dt;
+    if (this.flapHeld && this.flapT <= 0 && !descending && this.phase === 'play') this.flap();
+    this.flapping = this.flapT > 0 || lifting;
+    // 往前滑多快：推着方向盘（按住屏幕）是选的那一档，松开就慢慢滑
+    const G = GAITS.fly[(this.holding || this.auto) && this.phase === 'play' ? this.gaits.fly : 0];
+    this.speed = damp(this.speed, descending ? 6 : G.v, 0.9, dt);
     if (this.steerT <= 0) this.climb = damp(this.climb, 0, 0.8, dt);
     const maxTurn = 1.15;
     const dy = clamp(wrap(this.yawT - this.yaw), -maxTurn * dt, maxTurn * dt);
     this.yaw += dy;
     this.turn = damp(this.turn, dy / Math.max(dt, 1e-3), 3, dt);
     const g = this.land.surfaceY(this.p.x, this.p.z), alt = this.p.y - g;
-    let vyT = lifting ? 5 : flap ? 0.6 + this.climb * 7 : -1.4 + this.climb * 4.5;
+    // 滑翔只会慢慢往下（往下压可以掉得更快）；上升的风把人托起来
+    const up = this.thermals ? this.thermals.userData.lift(this.p.x, this.p.y, this.p.z) : 0;
+    this.inThermal = up > 0.05;
+    if (up > 0.3) this.tell('thermal', '这里有一股上升的风\n张着翅膀待在里面，不费力就被托上去', 5.5);
+    let vyT = -G.sink + Math.min(this.climb, 0.12) * 4.5;
+    if (up > 0) vyT = lerp(vyT, 6.5, up);
+    // 「自动」的时候不用人管：自己扇着翅膀保持在二十来米高（不算气力）
+    const cruise = this.auto && this.phase === 'play' && !descending && up <= 0;
+    if (cruise) { vyT = clamp((22 - alt) * 0.5, -1.5, 3); if (vyT > 0.6) this.flapping = true; }
+    if (lifting) vyT = Math.max(vyT, 5);
     if (descending) vyT = -Math.min(6, 1.5 + alt * 0.6);
-    this.vy = damp(this.vy, vyT, 1.6, dt);
+    this.vy = damp(this.vy, vyT, this.flapT > 0 ? 0.4 : 1.6, dt);
     const fx = Math.sin(this.yaw), fz = Math.cos(this.yaw);
     let nx = this.p.x + fx * this.speed * dt, nz = this.p.z + fz * this.speed * dt, ny = this.p.y + this.vy * dt;
     // 飞得低时躲开树干和风车
@@ -470,7 +734,7 @@ export class Journey {
     if (rr > 780) { this.yawT = this.yaw + wrap(Math.atan2(-dx, -dz) - this.yaw) * 0.04; this.steerT = 0.5; this.hintOnce('再往外云太厚了，往回飞'); }
     const ng = this.land.surfaceY(nx, nz);
     const floor = ng + 1.05, ceil = Math.min(ng + 160, 260);
-    if (ny < floor) { ny = floor; this.vy = Math.max(0, this.vy); if (descending || (!flap && this.speed < 7.5)) this.touchdown(); }
+    if (ny < floor) { ny = floor; this.vy = Math.max(0, this.vy); if (descending || !this.flapping) this.touchdown(); }
     if (ny > ceil) { ny = ceil; this.vy = Math.min(0, this.vy); }
     this.dist.fly += Math.hypot(nx - this.p.x, nz - this.p.z);
     this.p.set(nx, ny, nz);
@@ -482,6 +746,16 @@ export class Journey {
   }
   touchdown() {
     if (this.trans?.kind === 'land') return;
+    // 落在深水里：直接游起来
+    const wd = this.waterDepth(this.p.x, this.p.z);
+    if (wd > SWIM_IN) {
+      this.mode = 'foot'; this.trans = null; this.wings.show(false); this.vy = 0; this.speed = Math.min(this.speed, 2);
+      this.p.y = this.groundAt(this.p.x, this.p.z) + wd - SWIM_Y; this.swimY = this.p.y + SWIM_Y;
+      const next = this.landTo; this.landTo = null;
+      this.swimStart();
+      if (next === 'ride') this.say('先上岸再叫坐骑');
+      return;
+    }
     this.trans = { kind: 'land', t: 0, dur: 0.9 };
     this.T.play('Jump_Land', 1, 0.1);
     this.wings.show(false);
@@ -495,7 +769,7 @@ export class Journey {
     if (tr.kind === 'takeoff') {
       // 先蹲一下再跳起来，翅膀张开
       if (tr.t > 0.3 && this.mode !== 'fly') {
-        this.mode = 'fly'; this.T.set('fly', 3); this.liftT = 2.4;
+        this.mode = 'fly'; this.T.set('fly', 3); this.liftT = 1.7;
         this.vy = 6.5; this.speed = Math.max(this.speed, 4); this.p.y = Math.max(this.p.y, this.groundAt(this.p.x, this.p.z) + (tr.from === 'ride' ? 1.6 : 0.4));
         this.flyPitch = 20 * DEG;
       }
@@ -514,6 +788,17 @@ export class Journey {
       if (u >= 1) { this.mode = 'foot'; this.p.copy(tr.to); this.speed = 0; this.trans = null; this.thud(this.p.x, this.p.z, 0.55); }
     } else if (tr.kind === 'mount') {
       if (u >= 1) { this.mode = 'ride'; const S = this.mount.st; this.p.copy(S.p); this.yaw = this.yawT = S.yaw; this.speed = 0; this.trans = null; }
+    } else if (tr.kind === 'wash') {
+      // 游不动了：一暗一亮之间回到最近站过的岸上，缓过一口气
+      if (tr.t > 0.9 && !tr.done) {
+        tr.done = true;
+        const sh = this.shore;
+        this.clearFoot(); this.T.set('loco', 50);
+        this.p.set(sh.x, this.groundAt(sh.x, sh.z), sh.z); this.speed = 0; this.cam.inited = false;
+        this.stamina.v = Math.max(this.stamina.v, this.stamina.max * 0.4); this.stamina.spent = false;
+        this.ui.fade(false); this.say('游不动了，被水送回了岸边', 3.5);
+      }
+      if (u >= 1) this.trans = null;
     } else if (tr.kind === 'swap') {
       if (tr.t > 0.45 && !tr.done) {
         tr.done = true;
@@ -541,7 +826,7 @@ export class Journey {
           else if (Math.hypot(gx - S.goal.x, gz - S.goal.z) > 0.8 || this.speed > 0.2) S.goal.set(gx, 0, gz);
           S.goalYaw = this.yaw;
           // 人站住了、坐骑就在旁边：上马
-          if (!S.goal && !this.trans && this.speed < 0.5 && S.speed < 0.35) this.startMount();
+          if (!S.goal && !this.trans && this.speed < 0.5 && S.speed < 0.35 && !this.air && !this.climbing && !this.swimming && !this.sliding) this.startMount();
         }
         if (S.goal) {
           // 朝目标走，越近越慢；到了一米以内就停下（上马时人会跳过去，不用停得很准）
@@ -621,11 +906,23 @@ export class Journey {
       const flap = this.flapping ? 1 : 0;
       T.update(dt, { speed: 0, fly: { pitch: this.flyPitch, bank: this.bank, flap } });
       pelvisTarget = _w.copy(this.p).add(_o.set(0, 0.9, 0)).clone();
-    } else {
+    } else if (this.swimming) {
+      // 游泳：身子平着漂在水面，盆骨在水面下一点
       T.root.rotation.set(0, this.yaw, 0);
+      T.update(dt, { speed: 0, swim: { v: this.speed } });
+      pelvisTarget = _w.set(this.p.x, this.swimY - 0.31 + 0.03 * Math.sin(this.t * 2.1), this.p.z).clone();
+    } else {
+      // 爬（和没力气出溜的时候）：脸朝坡上，整个人顺着坡往前趴，离开岩面一点
+      const ck = this.climbK = damp(this.climbK, this.climbing || this.sliding ? 1 : 0, this.climbing || this.sliding ? 9 : 6, dt);
       const k = tr && tr.kind === 'takeoff' ? 0 : 1;
-      T.update(dt, { speed: this.speed * k, turn: this.turn, slope: this.slope, lookAt: this.lookTarget() });
+      if (ck > 0.01) {
+        const lean = ck * clamp(Math.PI / 2 - Math.atan(this.steep) - 0.12, 0.1, 0.75);
+        _e.set(lean, this.yaw + wrap(this.faceYaw - this.yaw) * ck, 0, 'YXZ'); T.root.quaternion.setFromEuler(_e);
+      } else T.root.rotation.set(0, this.yaw, 0);
+      T.update(dt, { speed: this.speed * k * (1 - ck), turn: this.turn, slope: this.slope, lookAt: this.lookTarget(), air: this.air,
+        climb: ck > 0.01 ? { k: ck, phase: this.climbPh, reach: this.sliding ? 0.25 : sstep(-0.6, 0.5, this.climbDir) * 0.75 + 0.25 } : null });
       T.root.position.copy(this.p);
+      if (ck > 0.01) { const c = Math.cos(Math.atan(this.steep)); T.root.position.x -= Math.sin(this.faceYaw) * 0.22 * ck * (1 - c); T.root.position.z -= Math.cos(this.faceYaw) * 0.22 * ck * (1 - c); T.root.position.y += 0.1 * ck * c; }
       if (tr && tr.kind === 'takeoff' && tr.from === 'foot') T.root.position.y = this.groundAt(this.p.x, this.p.z);
     }
     if (pelvisTarget) {
@@ -636,14 +933,14 @@ export class Journey {
     }
     // 翅膀
     const flying = this.mode === 'fly';
-    this.wings.update(dt, { flap: flying && this.flapping ? clamp(this.speed / 12, 0.6, 1.4) : 0, glide: flying && !this.flapping, climb: this.vy, speed: this.speed });
+    this.wings.update(dt, { flap: flying && this.flapping ? 1.5 : 0, glide: flying && !this.flapping, climb: this.vy, speed: this.speed });
     // 扇一下翅膀一声；走路一步一声
     const wc = Math.floor(this.wings.phase / (2 * Math.PI));
     if (wc !== this.wingC) { if (flying && this.flapping && this.phase !== 'intro') this.sound.whoosh(clamp(this.speed / 14, 0.5, 1.2)); this.wingC = wc; }
     const fc = Math.floor(T.phase * 2);
     if (fc !== this.footC) {
       this.footC = fc;
-      if (this.mode === 'foot' && !tr && this.speed > 0.3 && !this.sitting && this.phase !== 'intro') {
+      if (this.mode === 'foot' && !tr && this.speed > 0.3 && !this.sitting && this.phase !== 'intro' && !this.air && !this.swimming && !this.climbing && !this.sliding) {
         const x = this.p.x, z = this.p.z, wood = this.bridge.heightAt(x, z) !== null;
         this.sound.foot(wood ? 'wood' : this.surface(x, z, 0.05), sstep(2.5, 4.5, this.speed));
         if (!wood) { T.foot(fc & 1, _w); this.kick(_w.x, _w.z, this.yaw, this.speed, sstep(1.2, 5.5, this.speed), false); }
@@ -667,7 +964,7 @@ export class Journey {
   // ---------- 镜头 ----------
   camTick(dt) {
     const focus = _cr.copy(this.mode === 'ride' && !this.trans ? this.mount.root.position : this.p);
-    this.cam.update(dt, focus, this.yaw, { mode: this.trans?.kind === 'takeoff' && this.mode !== 'fly' ? 'foot' : this.mode, speed: this.speed, vy: this.vy, alt: this.alt || 0, steer: !!this.stick });
+    this.cam.update(dt, focus, this.yaw, { mode: this.trans?.kind === 'takeoff' && this.mode !== 'fly' ? 'foot' : this.mode === 'foot' && this.climbing ? 'climb' : this.mode, speed: this.speed, vy: this.vy, alt: this.alt || 0, steer: !!this.stick });
   }
 
   // ---------- 地点、远景、营地 ----------
@@ -721,10 +1018,15 @@ export class Journey {
     }
     // 营地：走近篝火时可以坐下
     let nearS = null;
-    if (!this.sitting && this.mode !== 'fly' && !this.trans) for (const S of this.sites) if (Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z) < 7) nearS = S;
+    const busy = this.air || this.climbing || this.swimming || this.sliding;
+    if (!this.sitting && this.mode !== 'fly' && !this.trans && !busy) for (const S of this.sites) if (Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z) < 7) nearS = S;
     if (!this.sitting && nearS && nearS !== this.site) { this.site = nearS; this.fireKept = false; }
-    this.nearFolk = !nearS && !this.sitting && this.mode !== 'fly' && !this.trans ? this.folk?.nearest(this.p) : null;
-    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : this.nearFolk ? '打个招呼' : '');
+    this.nearFolk = !nearS && !this.sitting && this.mode !== 'fly' && !this.trans && !busy ? this.folk?.nearest(this.p) : null;
+    // 路上能摘的东西：步行走到跟前
+    this.nearSpot = !nearS && !this.nearFolk && !this.sitting && this.mode === 'foot' && !this.trans && !busy ? this.forage?.userData.near(this.p) || null : null;
+    const it = this.nearSpot && itemOf(this.nearSpot.kind);
+    if (this.mode === 'ride' && !this.trans && !this.told.has('rideForage') && this.forage?.userData.near(this.p, 3.2)) this.tell('rideForage', '一闪一闪的是能摘的东西\n下马（换成步行）走过去才摘得到', 5.5);
+    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : this.nearFolk ? '打个招呼' : it ? it.verb + it.name : '');
     // 提示
     if (this.hintT > 0) { this.hintT -= dt; if (this.hintT <= 0) this.ui.hint(''); }
   }
@@ -762,7 +1064,7 @@ export class Journey {
 
   // 坐下烤火：一暗一亮之间换到树桩上（离得最近的那处营地）
   sitAtCamp() {
-    if (this.sitting || this.trans) return;
+    if (this.sitting || this.trans || this.air || this.climbing || this.swimming || this.sliding) return;
     let best = null, bd = 9;
     for (const S of this.sites) { const d = Math.hypot(this.p.x - S.fireAt.x, this.p.z - S.fireAt.z); if (d < bd) { bd = d; best = S; } }
     if (!best) return;
@@ -867,6 +1169,9 @@ export class Journey {
   standUp() {
     if (!this.sitting) return;
     this.sitting = false; this.summaryShown = false;
+    if (this.pot) this.pot.visible = false;
+    // 烤过火，身上暖和一阵子
+    if (this.campT > 4) { this.buffs.warm = Math.max(this.buffs.warm || 0, 240); this.stamina.fill(); }
     this.T.set('loco', 3);
     const f = this.site.fireAt;
     this.yaw = this.yawT = Math.atan2(this.p.x - f.x, this.p.z - f.z);
@@ -943,6 +1248,70 @@ export class Journey {
     }
   }
 
+
+  // ---------- 摘东西、做饭、吃 ----------
+  // 有某种好处的时候，对应的气力消耗打个折
+  costK(k) { return this.buffs[k] > 0 ? BUFF_K[k] : 1; }
+  // 每帧：好处一点点过去；雪地里（或者下着雪）身上不暖和，气力回得慢；新的一天摘过的又长出来
+  bodyTick(dt) {
+    if (this.phase === 'play' && !this.ff) for (const k in this.buffs) {
+      if (!(this.buffs[k] > 0)) continue;
+      this.buffs[k] -= dt;
+      if (this.buffs[k] <= 0) { delete this.buffs[k]; if (!this.sitting) this.say(`「${BUFFS[k].name}」的劲儿过去了`); }
+    }
+    const snowy = this.land.snow(this.p.x, this.p.z) > 0.5 && this.p.y - this.land.height(this.p.x, this.p.z) < 30;
+    const lit = this.lightSite && Math.hypot(this.p.x - this.lightSite.fireAt.x, this.p.z - this.lightSite.fireAt.z) < 7;
+    this.cold = snowy && !(this.buffs.warm > 0) && !lit && !this.stamina.free;
+    this.stamina.rate = this.cold ? 0.35 : 1;
+    if (this.cold && this.phase === 'play' && this.mode !== 'fly') this.tell('cold', '雪地里冷，气力回得慢\n吃点热的，或者到篝火边烤一烤，就暖和了', 6.5);
+    if (this.forageDay !== this.dayN && this.forage) {
+      this.forageDay = this.dayN;
+      for (const [i, d] of this.picked) if (d !== this.dayN) this.picked.delete(i);
+      this.forage.userData.refresh(i => this.picked.has(i));
+    }
+  }
+  // 把跟前那一处摘下来
+  pickNear() {
+    const sp = this.nearSpot; if (!sp || !sp.there || this.mode !== 'foot' || this.trans) return false;
+    const I = itemOf(sp.kind), n = 1 + (((sp.i * 7 + this.dayN * 3) % 4) === 0 ? 1 : 0);
+    this.forage.userData.take(sp); this.picked.set(sp.i, this.dayN); this.nearSpot = null;
+    this.bag[I.id] = Math.min(99, (this.bag[I.id] || 0) + n);
+    const first = !this.items.has(I.id); this.items.add(I.id);
+    this.speed = 0; this.holding = false;
+    this.faceYaw = this.yaw = this.yawT = Math.atan2(sp.x - this.p.x, sp.z - this.p.z);
+    this.T.play('Interact', 0.9, 0.15);
+    this.sound.pluck?.();
+    this.say(`${I.name} +${n}（行囊里有 ${this.bag[I.id]} 个）`, 2.6);
+    if (first) this.onItem?.(I, n);
+    this.tell('forage', `${I.verb}到了${I.name}，收在手记的「行囊」里\n到营地坐下烤火的时候可以拿来做饭`, 6.5);
+    return true;
+  }
+  // 坐在火边做饭：ings 是材料 id（一到三个，可以重复）。返回 { dish: { id, s }, D 菜谱, isNew } 或 null
+  cook(ings) {
+    if (!this.sitting || !Array.isArray(ings) || !ings.length || ings.length > 3) return null;
+    const need = {}; for (const id of ings) need[id] = (need[id] || 0) + 1;
+    for (const id in need) if (!((this.bag[id] || 0) >= need[id])) return null;
+    for (const id in need) { this.bag[id] -= need[id]; if (this.bag[id] <= 0) delete this.bag[id]; }
+    const dish = cookDish(ings), D = dishOf(dish.id), isNew = !this.recipes.has(dish.id);
+    this.recipes.add(dish.id);
+    this.note('cook', this.site.id, dish.id);
+    this.showPot();
+    return { dish, D, isNew };
+  }
+  showPot() { if (!this.pot || !this.sitting) return; const f = this.site.fireAt; this.pot.position.set(f.x, f.y - 0.02, f.z); this.pot.rotation.y = this.site.yaw || 0; this.pot.visible = true; }
+  // 做好的菜装进行囊（最多带 12 份）
+  keepDish(dish) { if (this.dishes.length >= 12) return false; this.dishes.push(dish); return true; }
+  // 吃一份：行囊里第 i 份，或者刚出锅的那份
+  eat(d) {
+    if (typeof d === 'number') { const i = d; d = this.dishes[i]; if (!d) return null; this.dishes.splice(i, 1); }
+    const e = dishEffect(d), S = this.stamina, D = dishOf(d.id);
+    S.v = Math.min(S.max, S.v + e.rest); if (S.v >= Math.min(30, S.max * 0.3)) S.spent = false;
+    S.extra = Math.max(S.extra, e.extra);
+    for (const [k, sec] of e.buff) this.buffs[k] = Math.max(this.buffs[k] || 0, sec);
+    this.sound.chime?.(0.3);
+    if (!this.sitting) this.say(`吃了${D.name}：${effectText(d)}`, 4);
+    return { D, e };
+  }
   // ---------- 存档 ----------
   snapshot() {
     const mode = this.mode === 'fly' || this.uiMode === 'fly' ? 'foot' : this.uiMode === 'ride' ? 'ride' : 'foot';
@@ -954,6 +1323,10 @@ export class Journey {
       ex: this.explored.encode(), way: this.waypoint ? { ...this.waypoint } : null,
       camps: [...this.camps], log: this.log.slice(-500), wx: this.weather?.snapshot(),
       found: this.found, tips: [...this.tips],
+      st: this.stamina.snapshot(), told: [...this.told],
+      bag: { ...this.bag }, dishes: this.dishes.map(d => ({ id: d.id, s: Math.round(d.s * 100) / 100 })), recipes: [...this.recipes], items: [...this.items],
+      buffs: Object.fromEntries(Object.entries(this.buffs).filter(([, v]) => v > 1).map(([k, v]) => [k, Math.round(v)])),
+      picked: [...this.picked].filter(([, d]) => d === this.dayN),
     };
   }
   restore(s) {
@@ -989,6 +1362,16 @@ export class Journey {
     this.waypoint = w && Number.isFinite(+w.x) && Number.isFinite(+w.z) ? { id: w.id || null, name: String(w.name || '标记的地方').slice(0, 20), x: +w.x, z: +w.z, r: Math.min(30, Math.max(6, +w.r || 8)) } : null;
     this.ui.progress(this.visited.length / this.places.length); this.ui.journal?.(this.visited.length, this.places.length);
     if (this.weather && s.wx) this.weather.restore(s.wx);
+    this.stamina.restore(s.st); this.told = new Set(Array.isArray(s.told) ? s.told.filter(k => typeof k === 'string').slice(0, 60) : []);
+    this.shore.x = this.p.x; this.shore.z = this.p.z;
+    // 行囊
+    this.bag = {}; if (s.bag && typeof s.bag === 'object') for (const I of ITEMS) { const n = Math.min(99, s.bag[I.id] | 0); if (n > 0) this.bag[I.id] = n; }
+    this.dishes = (Array.isArray(s.dishes) ? s.dishes : []).filter(d => d && dishOf(d.id)).slice(0, 24).map(d => ({ id: d.id, s: Math.min(2, Math.max(1, +d.s || 1)) }));
+    this.recipes = new Set((Array.isArray(s.recipes) ? s.recipes : []).filter(id => dishOf(id)));
+    this.items = new Set([...(Array.isArray(s.items) ? s.items : []), ...Object.keys(this.bag)].filter(id => itemOf(id)));
+    this.buffs = {}; if (s.buffs && typeof s.buffs === 'object') for (const k of Object.keys(BUFFS)) { const v = +s.buffs[k]; if (v > 0) this.buffs[k] = Math.min(1800, v); }
+    this.picked = new Map((Array.isArray(s.picked) ? s.picked : []).filter(e => Array.isArray(e) && e[1] === this.dayN).map(e => [e[0] | 0, e[1] | 0]));
+    this.forageDay = -1;
     this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));
   }
@@ -1041,7 +1424,7 @@ export class Journey {
     F.tread.update(dt, this.p.x, this.p.z); F.ripples.center(this.p.x, this.p.z);
     if (!F.on) return;
     const riding = this.mode === 'ride' && !this.trans;
-    if (!air && !riding && !this.sitting) F.tread.stamp(this.p.x, this.p.z, 0.6, 0.95, Math.sin(this.yaw), Math.cos(this.yaw));
+    if (!air && !riding && !this.sitting && !this.air && !this.swimming) F.tread.stamp(this.p.x, this.p.z, 0.6, 0.95, Math.sin(this.yaw), Math.cos(this.yaw));
     for (const M of Object.values(this.mounts)) {
       if (!M || !M.root.visible) continue;
       const S = M.st, fx = Math.sin(S.yaw), fz = Math.cos(S.yaw), big = M.kind === 'd' || M.kind === 'b' ? 0.85 : 1;
