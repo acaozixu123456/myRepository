@@ -10,21 +10,25 @@ import { Field, ellipsoid, roundCone } from '../horse/sdf.js';
 import { surfaceNets, relax } from '../horse/sdf.js';
 import { Builder, tube, vnoise } from '../horse/horseB.js';
 import { patch } from '../world/atmo.js';
+import { Lag } from './sway.js';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const col = h => new THREE.Color(h);
 const ARM_DOWN = 62 * Math.PI / 180;      // 手臂从水平放下来多少
 
+// 两套造型：m 短发、蓝外套红围巾；f 齐耳短发扎一小撮、紫外套黄围巾。衣服的样子一样，颜色和发型不同
+const BASE = {
+  skin: '#f1c7a2', blush: '#ea9682', hair: '#4b2f1f', hairHi: '#80573a',
+  hat: '#dbb66b', hatUnder: '#9c7a3f', band: '#8f3324', feather: '#f3ead2',
+  scarf: '#bd3a29', scarfStripe: '#f1e3c0',
+  coat: '#3d6788', coatTrim: '#ecdcae', seam: '#2b4a66',
+  belt: '#573420', brass: '#dcb65a',
+  pants: '#b3a17c', boot: '#6f4529', cuff: '#8d5e39', sole: '#33251d',
+  eye: '#24150f', mouth: '#8f3a33',
+};
 export const LOOKS = {
-  wanderer: {
-    skin: '#f1c7a2', blush: '#ea9682', hair: '#4b2f1f', hairHi: '#80573a',
-    hat: '#dbb66b', hatUnder: '#9c7a3f', band: '#8f3324', feather: '#f3ead2',
-    scarf: '#bd3a29', scarfStripe: '#f1e3c0',
-    coat: '#3d6788', coatTrim: '#ecdcae', seam: '#2b4a66',
-    belt: '#573420', brass: '#dcb65a',
-    pants: '#b3a17c', boot: '#6f4529', cuff: '#8d5e39', sole: '#33251d',
-    eye: '#24150f', mouth: '#8f3a33',
-  },
+  m: { ...BASE, hairStyle: 'short', hair: '#3f2a1d', hairHi: '#6f4c33' },
+  f: { ...BASE, hairStyle: 'bob', hair: '#5a3220', hairHi: '#96603a', coat: '#6f4d8c', seam: '#49305f', scarf: '#d9a02e', scarfStripe: '#fbf0cf', band: '#6f4d8c', feather: '#f6efdc' },
 };
 
 // ---------------- 形状的小包装 ----------------
@@ -125,7 +129,7 @@ const E = (c, r, bone, o = {}) => ({ shape: ellipsoid(c, r, o.rot || null), bone
 const C = (a, b, ra, rb, bone, o = {}) => ({ shape: roundCone(a, b, ra, rb), bone, k: o.k ?? 0.04, region: o.region || '' });
 const L = s => (s > 0 ? 'l' : 'r');
 
-function layers(arm) {
+function layers(arm, style) {
   const A = (p, s) => ({ ...p, shape: arm(p.shape, s) });
   // 左右成对的形状记下是哪一侧：算蒙皮权重时不让左腿的形状拉到右腿的点
   const both = f => [1, -1].map(s => ({ ...f(s), side: s }));
@@ -145,6 +149,7 @@ function layers(arm) {
       E([0, 1.655, 0.03], [0.1, 0.085, 0.1], 'Head', { k: 0.05 }),                           // 脸蛋和下巴
       E([0, 1.69, 0.128], [0.015, 0.016, 0.02], 'Head', { k: 0.022 }),                       // 鼻尖
       C([0, 1.47, -0.035], [0, 1.62, -0.012], 0.05, 0.048, 'neck_01', { k: 0.02 }),
+      ...(style === 'short' ? both(s => E([0.12 * s, 1.678, 0.002], [0.017, 0.03, 0.022], 'Head', { k: 0.012 })) : []),   // 短发露出耳朵
       ...both(s => A(E([0.744 * s, 1.452, -0.063], [0.058, 0.024, 0.048], 'hand_' + L(s), { k: 0 }), s)),        // 手掌
       ...both(s => A(E([0.828 * s, 1.449, -0.066], [0.054, 0.02, 0.044], 'middle_01_' + L(s), { k: 0.015 }), s)),  // 四指并成一片
       ...both(s => A(C([0.711 * s, 1.434, -0.036], [0.776 * s, 1.386, 0.002], 0.019, 0.015, 'thumb_02_' + L(s), { k: 0.012 }), s)),
@@ -178,7 +183,12 @@ function layers(arm) {
       E([0.05, 1.468, 0.078], [0.044, 0.04, 0.034], 'spine_03', { k: 0.02 }),                // 前面的结
       E([0, 1.515, -0.09], [0.07, 0.045, 0.04], 'spine_03', { k: 0.03 }),                    // 后颈堆起来的一团
     ] },
-    { name: 'hair', prims: [
+    { name: 'hair', prims: style === 'short' ? [
+      E([0, 1.716, -0.02], [0.131, 0.131, 0.125], 'Head'),                                   // 后脑勺、头顶
+      ...both(s => E([0.106 * s, 1.722, -0.012], [0.032, 0.05, 0.07], 'Head', { k: 0.025 })),   // 两侧只到耳朵上沿
+      E([0, 1.65, -0.088], [0.088, 0.062, 0.045], 'Head', { k: 0.035 }),                     // 后颈
+      E([-0.03, 1.792, 0.092], [0.085, 0.03, 0.04], 'Head', { k: 0.03 }),                    // 刘海往另一边偏
+    ] : [
       E([0, 1.71, -0.022], [0.132, 0.131, 0.124], 'Head'),                                   // 后脑勺、头顶
       ...both(s => E([0.1 * s, 1.672, -0.004], [0.041, 0.078, 0.074], 'Head', { k: 0.03 })), // 两侧垂到耳下，盖住耳朵
       E([0.025, 1.79, 0.094], [0.09, 0.03, 0.04], 'Head', { k: 0.03 }),                      // 刘海
@@ -251,7 +261,7 @@ function hat(B, P, M, w) {
 // ---------------- 主函数：捏好、绑到现有骨架上 ----------------
 export function sculptTraveler(model, opts = {}) {
   const t0 = performance.now();
-  const P = { ...LOOKS.wanderer, ...(opts.look || {}) };
+  const P = { ...(LOOKS[opts.who] || LOOKS.m), ...(opts.look || {}) };
   const bones = {}, list = [];
   model.traverse(o => { if (o.isBone) { bones[o.name] = o; list.push(o); } });
   const BI = Object.fromEntries(list.map((b, i) => [b.name, i]));
@@ -272,14 +282,14 @@ export function sculptTraveler(model, opts = {}) {
   model.updateMatrixWorld(true);
   for (const s of ['l', 'r']) D[s] = bones['upperarm_' + s].matrixWorld.clone().multiply(keep[s].m.invert());
 
-  const G = layers((shape, s) => posed(shape, D[L(s)]));
+  const G = layers((shape, s) => posed(shape, D[L(s)]), P.hairStyle);
   const F = new Layers(G);
   const cell = opts.cell || 0.0125;
   const { positions, indices } = surfaceNets(F, cell, [-0.58, -0.012, -0.26], [0.58, 1.87, 0.2]);
   relax(F, positions, 3);
 
   const B = new Builder(BI);
-  const c = {}; for (const k in P) c[k] = col(P[k]);
+  const c = {}; for (const k in P) if (P[k][0] === '#') c[k] = col(P[k]);
   const NG = G.length, nV = positions.length / 3, dg = new Float32Array(NG);
   const paintOf = G.map(g => g.paint || g.name);
   const dists = (x, y, z) => { let a = 0; for (let g = 0; g < NG; g++) { dg[g] = F.fields[g].eval(x, y, z); if (dg[g] < dg[a]) a = g; } return a; };
@@ -399,6 +409,15 @@ export function sculptTraveler(model, opts = {}) {
       weight: u => (u > 0.6 ? { spine_03: 0.6, spine_02: 0.4 } : SP),
     });
   }
+  // ---- 围巾甩在背后的一截：搭过铺盖卷、垂在行囊后面，跑起来往后飘（着色器里绕着根摆，长度不变） ----
+  const tail = { from: B.count, to: 0, seg: 8, n: 24, root: [0.03, 1.522, -0.1] };
+  const tailOpts = {
+    seg: tail.seg, samples: tail.n, flat: [1, 0, 0], width: u => 0.036 * (0.7 + 0.3 * sstep(0, 0.3, u)) * (1 - Math.pow(u, 14)) + 0.002, thick: () => 0.008,
+    color: (u, ca) => { const st = sstep(0.78, 0.8, u) * sstep(0.85, 0.83, u) + sstep(0.89, 0.91, u) * sstep(0.96, 0.94, u); return c.scarf.clone().lerp(c.scarfStripe, st).multiplyScalar(0.66 + 0.12 * ca); },
+    weight: () => ({ spine_03: 1 }),
+  };
+  tube(B, [tail.root, [0.04, 1.55, -0.15], [0.05, 1.47, -0.19], [0.055, 1.36, -0.175], [0.05, 1.25, -0.165]], tailOpts);
+  tail.to = B.count;
   // ---- 带扣、三颗扣子 ----
   {
     const p = F.ray([0, 1.047, 0], [0, 0, 1]) || [0, 1.047, 0.11];
@@ -411,10 +430,25 @@ export function sculptTraveler(model, opts = {}) {
 
   const geo = B.geometry();
   geo.userData = { buildMs: performance.now() - t0, bodyVerts, tris: B.idx.length / 3 };
+  {
+    const n = geo.attributes.position.count, root = new Float32Array(n * 3), flex = new Float32Array(n);
+    for (let i = tail.from; i < tail.to; i++) { root.set(tail.root, i * 3); flex[i] = Math.pow(Math.min(1, Math.floor((i - tail.from) / tail.seg) / tail.n), 1.15); }
+    geo.setAttribute('aRoot', new THREE.BufferAttribute(root, 3)); geo.setAttribute('aFlex', new THREE.BufferAttribute(flex, 1));
+  }
   const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.82, metalness: 0, name: 'sculpt' });
+  const sw = { uScarf: { value: new THREE.Vector3() }, uScarfF: { value: 0 } };
   // 自发光一点点：逆光时人不会只剩一个黑影；高光点（aGlow）自己亮
   mat.onBeforeCompile = sh => {
-    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aGlow; varying float vGlow;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvGlow = aGlow;');
+    Object.assign(sh.uniforms, sw);
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aGlow; varying float vGlow; attribute vec3 aRoot; attribute float aFlex; uniform vec3 uScarf; uniform float uScarfF;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+      vGlow = aGlow;
+      if ( aFlex > 0.0 ) {
+        vec3 jRel = transformed - aRoot; float jLen = length( jRel );
+        float jW = sin( uTime * 8.0 - aFlex * 5.5 ), jW2 = sin( uTime * 5.3 - aFlex * 3.0 + 1.7 );
+        vec3 jD = ( uScarf + vec3( jW * 0.16, jW2 * 0.07, 0.0 ) * uScarfF ) * aFlex;
+        if ( jLen > 1e-4 ) transformed = aRoot + normalize( jRel + jD ) * jLen;
+      }`);
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vGlow;')
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += diffuseColor.rgb * ( 0.16 + 0.8 * vGlow );');
   };
@@ -425,5 +459,32 @@ export function sculptTraveler(model, opts = {}) {
   mesh.bind(new THREE.Skeleton(list));       // 骨头这会儿是 A 字站姿，就按这个姿势绑
   for (const s of ['l', 'r']) bones['upperarm_' + s].quaternion.copy(keep[s].q);
   model.updateMatrixWorld(true);
+  // 围巾慢半拍：一个被弹簧拴在后背上的小球，落后多少（转回捏的时候的坐标）就把背后那截往哪边摆
+  const lag = new Lag({ freq: 1.5, zeta: 0.4, drag: 0.07, max: 0.6 }), sp = bones.spine_03, inv = mesh.skeleton.boneInverses[BI.spine_03];
+  const m4 = new THREE.Matrix4(), m3 = new THREE.Matrix3(), v = new THREE.Vector3();
+  mesh.userData.sway = (dt, gain = 1) => {
+    const o = lag.update(dt, sp.getWorldPosition(v));
+    m3.setFromMatrix4(m4.multiplyMatrices(sp.matrixWorld, inv)).invert();
+    v.copy(o).applyMatrix3(m3).multiplyScalar(1.6 * gain);
+    v.z = Math.min(v.z, 0.03);                 // 不往前摆（前面是行囊）
+    sw.uScarf.value.copy(v);
+    sw.uScarfF.value = gain * sstep(0.08, 0.5, o.length());
+  };
+  // 行囊是后来才挂上去的（traveler.js，按站姿量后背）：挂好后把背后那截围巾重新搭一遍。
+  // pts(root) 给出当前姿势下的路线（世界坐标，root 是围巾在后颈的那一点），这里转回捏的时候的坐标
+  mesh.userData.drape = pts => {
+    sp.updateWorldMatrix(true, false);
+    const toWorld = m4.multiplyMatrices(sp.matrixWorld, inv).clone(), toBind = toWorld.clone().invert(), nm = new THREE.Matrix3().setFromMatrix4(toBind);
+    const P2 = pts(v.set(...tail.root).applyMatrix4(toWorld).toArray());
+    const B2 = new Builder(BI); tube(B2, P2, tailOpts);
+    const pos = geo.attributes.position, nor = geo.attributes.normal, root = geo.attributes.aRoot;
+    const r = v.set(...P2[0]).applyMatrix4(toBind).toArray();
+    for (let i = 0; i < tail.to - tail.from; i++) {
+      v.set(B2.pos[i * 3], B2.pos[i * 3 + 1], B2.pos[i * 3 + 2]).applyMatrix4(toBind); pos.setXYZ(tail.from + i, v.x, v.y, v.z);
+      v.set(B2.nor[i * 3], B2.nor[i * 3 + 1], B2.nor[i * 3 + 2]).applyMatrix3(nm).normalize(); nor.setXYZ(tail.from + i, v.x, v.y, v.z);
+      root.setXYZ(tail.from + i, r[0], r[1], r[2]);
+    }
+    pos.needsUpdate = nor.needsUpdate = root.needsUpdate = true;
+  };
   return mesh;
 }
