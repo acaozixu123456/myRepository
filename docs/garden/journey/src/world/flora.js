@@ -437,7 +437,27 @@ export function placeFlora(land, farHeight, quality) {
     const x = p.x - p.tz * side * d, z = p.z + p.tx * side * d;
     push(R() < 0.5 ? 'Rock_Medium_1' : 'Rock_Medium_2', x, land.heightExact(x, z) - 0.05, z, 0.15 + R() * 0.3, 1, 0.08);
   }
-  return { trees, nearCount, small: Object.fromEntries(Object.entries(L).map(([k, v]) => [k, new Float32Array(v)])), tufts: tufts.map(a => new Float32Array(a)) };
+  // 细草（world/meadow.js）长在哪：每个地面格点一个数（0 不长，255 长满）。规矩和上面的草丛一样：
+  // 路上、踩出来的空地、水里和水边、沙滩、海里、雪地、冰湖、竹林深处不长；陡坡露岩石的地方也不长
+  const NX = land.NX, NZ = land.NZ, grassMask = new Uint8Array(NX * NZ);
+  const ramp = (a, b, v) => clamp((v - a) / (b - a), 0, 1);
+  for (let iz = 0; iz < NZ; iz++) for (let ix = 0; ix < NX; ix++) {
+    const x = DOM.x0 + ix * DOM.cell, z = DOM.z0 + iz * DOM.cell;
+    const rd = land.roadDist(x, z);
+    let k = ramp(1.0, 2.1, rd);
+    if (k <= 0) continue;
+    const y = land.H[iz * NX + ix];
+    k *= ramp(SEA.y + 0.4, SEA.y + 1.0, y) * (1 - ramp(0.2, 0.36, land.sand(x, z))) * (1 - ramp(0.14, 0.4, land.snow(x, z)));
+    if (k <= 0 || onLake(x, z)) continue;
+    if (land.bamboo(x, z) > 0.35 && rd > 2.2) k *= 0.12;
+    k *= 1 - ramp(0.24, 0.34, 1 - land.normal(x, z)[1]);
+    if (k > 0 && land.streamDist(x, z) < 14) k *= ramp(0.45, 1.3, shore(x, z));
+    k *= ramp(3.4, 6.2, Math.hypot(x - fireX, z - fireZ)) * ramp(1.2, 2.6, Math.hypot(x - view.x + 4.2, z - view.z + 0.6));
+    for (const c of CAMP_SITES) k *= ramp(3, 5.6, Math.hypot(x - c.x, z - c.z));
+    for (const v of VISTAS) k *= ramp(1.6, 3.4, Math.hypot(x - v.x, z - v.z));
+    grassMask[iz * NX + ix] = Math.round(k * 255);
+  }
+  return { trees, nearCount, small: Object.fromEntries(Object.entries(L).map(([k, v]) => [k, new Float32Array(v)])), tufts: tufts.map(a => new Float32Array(a)), grassMask };
 }
 
 // 树冠遮挡图（给地面上的叶影用）+ 林下地面

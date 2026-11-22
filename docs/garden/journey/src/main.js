@@ -109,10 +109,11 @@ function applyTier(tier) {
   if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
   const c = sun.shadow.camera; c.left = c.bottom = -T.shadowR; c.right = c.top = T.shadowR; c.updateProjectionMatrix();
   U.uShadowRadius.value = T.shadowR; U.uFine.value = tier === 'low' ? 0 : 1;
+  U.uGust.value.z = (tier === 'ultra' || tier === 'high') && P.get('gust') !== '0' ? 1 : 0;
   postOn = tier === 'ultra' || tier === 'high' || (tier === 'mid' && quality?.mode !== 'auto');
   // 极高：远处的真影子、贴地的暗
   if (post) { post.setAO(!!T.ao && P.get('ao') !== '0'); post.aoDebug = P.get('ao') === 'show'; }
-  if (W) { W.farShadow.set(!!T.far && farOK && P.get('far') !== '0', T.far?.R, T.far?.size); W.setQuality(tier); W.update(camera, focus, 0, true); }
+  if (W) { if (P.get('meadow') === '0') W.meadowOff = true; W.farShadow.set(!!T.far && farOK && P.get('far') !== '0', T.far?.R, T.far?.size); W.setQuality(tier); W.update(camera, focus, 0, true); }
   // 极高：林间光柱（要有远影那张图才做得出来）
   if (post && W) { post.setRays(!!T.rays && W.farShadow.on && P.get('rays') !== '0', W.farShadow.light); post.rayDebug = P.get('rays') === 'show'; if (P.has('rayk')) post.rayK = +P.get('rayk'); if (P.has('rayb')) post.rayBase = +P.get('rayb'); }
 }
@@ -517,6 +518,9 @@ async function load() {
   for (const [x, z, r] of camp.userData.blocks) colliders.addCircle(x, z, r, 2);
   for (const [x, z, r] of lighthouse.userData.blocks) colliders.addCircle(x, z, r, 16);
   for (const [x, z, r] of vistas.userData.blocks) colliders.addCircle(x, z, r, 3);
+  // 这些东西脚下不长细草
+  W.meadow.userData.clear(62, -118, 3);
+  for (const [x, z, r] of [...camp.userData.blocks, ...lighthouse.userData.blocks, ...vistas.userData.blocks]) if (r > 0.5) W.meadow.userData.clear(x, z, r);
   for (const [ax, az, bx, bz] of fences.userData.segs) colliders.addSeg(ax, az, bx, bz, 0.08, 1.2);
   for (const [x, z, r] of fences.userData.posts) colliders.addCircle(x, z, r, 2);
   cam = new CamRig(camera, (x, z) => W.land.height(x, z));

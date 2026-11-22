@@ -23,6 +23,8 @@ export const U = {
   // 云影：一张能无缝拼接的云团图；uCloud = 影子多深、云团多大算遮住、图现在飘到哪（两个数）
   uCloudTex: { value: null },
   uCloud: { value: new THREE.Vector4(0, 0.5, 0, 0) },
+  // 一阵一阵的风：xy 是风向，z 是开没开（画质「中」「低」不开）。草丛、花草被扫到时顺着风倒一下
+  uGust: { value: new THREE.Vector3(-0.924, -0.382, 0) },
   // 画质「低」时关掉地面凹凸、岩壁贴图这些细活（手机上省一截）
   uFine: { value: 1 },
   uWind: { value: 1 },
@@ -145,7 +147,7 @@ export function patch(mat, opts = {}) {
     Object.assign(sh.uniforms, U, extraU);
     let vs = sh.vertexShader, fs = sh.fragmentShader;
     vs = vs.replace('#include <common>', `#include <common>
-      varying vec3 vWP; uniform float uTime; uniform float uWind;${o.tread ? ' uniform sampler2D uTread; uniform vec4 uTreadP;' : ''}`);
+      varying vec3 vWP; uniform float uTime; uniform float uWind;${o.tread ? ' uniform sampler2D uTread; uniform vec4 uTreadP;' : ''}${o.wind === 'grass' ? ' uniform sampler2D uCloudTex; uniform vec3 uGust;' : ''}`);
     if (o.wind) {
       vs = vs.replace('#include <begin_vertex>', `#include <begin_vertex>
         {
@@ -162,7 +164,18 @@ export function patch(mat, opts = {}) {
                transformed.z += sin( uTime * 1.1 + ph * 1.3 ) * 0.4 * w;`
             : `float w = max( position.y, 0.0 ) * 0.12 * uWind * jTr;
                transformed.x += ( sin( uTime * 2.2 + ph ) * 0.7 + sin( uTime * 4.1 + ph * 3.0 ) * 0.3 ) * w;
-               transformed.z += sin( uTime * 1.7 + ph * 1.7 ) * 0.5 * w;`}
+               transformed.z += sin( uTime * 1.7 + ph * 1.7 ) * 0.5 * w;
+               #ifdef USE_INSTANCING
+               if ( uGust.z > 0.0 ) {
+                 // 一阵风扫过来（和细草用的是同一张图、同一个方向），整株顺着风倒一下
+                 vec2 gp = ip.xz - uGust.xy * ( uTime * 6.0 );
+                 float gu = smoothstep( 0.43, 0.63, texture2D( uCloudTex, gp * 0.0085 ).r ) * ( 0.55 + 0.9 * texture2D( uCloudTex, gp * 0.031 + 0.5 ).r );
+                 mat3 jGM = mat3( instanceMatrix );
+                 vec3 gl = ( vec3( uGust.x, 0.0, uGust.y ) * jGM ) / max( length( jGM[0] ), 1e-3 );
+                 float gh = max( position.y, 0.0 ) * gu * uGust.z * uWind * jTr * ${(o.tread || 0.5).toFixed(2)};
+                 transformed += gl * gh * 0.42; transformed.y -= gh * 0.1;
+               }
+               #endif`}
         }`);
     }
     vs = vs.replace('#include <project_vertex>', `#include <project_vertex>
@@ -271,7 +284,7 @@ export function patch(mat, opts = {}) {
     if (o.fog) fs = fs.replace('#include <opaque_fragment>', `#include <opaque_fragment>
       gl_FragColor.rgb = jFog( gl_FragColor.rgb, vWP );`);
     // 草丛、花草在画面的透明度那一格里记 0：后期那层「贴地的暗」不压它们，也不把它们当遮挡（不然草地发灰）
-    if (o.wind === 'grass' && (o.tread || 0) > 0.5) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 0.0;');
+    if (o.noAO || (o.wind === 'grass' && (o.tread || 0) > 0.5)) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 0.0;');
     else if (leaf) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 0.35;');   // 树冠只压三分之一
     sh.vertexShader = vs; sh.fragmentShader = fs;
   };

@@ -390,10 +390,13 @@ export function terrainMaterial(uni) {
 }
 
 // 草丛：颜色直接取脚下地面的草色，根部暗、尖上亮
-export function tuftMaterial(uni, fadeU) {
+// field：细草（world/meadow.js）用同一套颜色和打光，只是草叶的位置在顶点着色器里现算
+export function tuftMaterial(uni, fadeU, field = null) {
   const m = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
   m.onBeforeCompile = sh => {
     Object.assign(sh.uniforms, uni);
+    if (field) sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\n' + field.pars)
+      .replace('#include <beginnormal_vertex>', field.vs).replace('#include <begin_vertex>', 'vec3 transformed = jgP;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\n' + TERRAIN_GLSL)
       // 草叶两面都按朝上的法线打光（不然背面朝着镜头的叶子是黑的）
       .replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\nnormal = normalize( vNormal );')
@@ -407,13 +410,16 @@ export function tuftMaterial(uni, fadeU) {
           // 根上和地皮一个颜色，往叶尖亮起来、偏一点暖黄
           diffuseColor.rgb = g * mix( 0.9, 1.3, t * t ) * ( 0.95 + 0.1 * vColor.g ); diffuseColor.rgb = mix( diffuseColor.rgb, diffuseColor.rgb * vec3( 1.18, 1.12, 0.7 ), smoothstep( 0.55, 1.0, t ) * 0.6 );
           diffuseColor.rgb *= 1.0 - 0.3 * step( 0.6, 1.0 - smoothstep( 1.0, 1.4, sp.r * 10.0 ) );
+          // 一阵风扫过，倒下去的草叶面朝天，亮一截（顶点色 b = 这阵风多大，只有细草有）
+          diffuseColor.rgb *= 1.0 + vColor.b * t * vec3( 0.34, 0.32, 0.2 );
           // 天气：雨里草色深一点；下雪时草根埋在雪里，叶尖上也挂一点
           diffuseColor.rgb *= 1.0 - 0.14 * uWet;
           diffuseColor.rgb = mix( diffuseColor.rgb, uSnow * 0.92, uSnowCover * ( 0.85 * ( 1.0 - smoothstep( 0.15, 0.6, t ) ) + 0.25 ) );
         }`);
   };
-  patch(m, { wind: 'grass', tread: 1, gobo: true, sss: 0.55, fadeOut: true, uniforms: { uFadeR: fadeU } });
-  m.customProgramCacheKey = () => 'tuft';
+  if (field) patch(m, { gobo: true, sss: 0.55, noAO: true, uniforms: field.uniforms });
+  else patch(m, { wind: 'grass', tread: 1, gobo: true, sss: 0.55, fadeOut: true, uniforms: { uFadeR: fadeU } });
+  m.customProgramCacheKey = () => (field ? 'meadow' : 'tuft');
   return m;
 }
 // 一丛草的几何：几片弯弯的细叶，三段
