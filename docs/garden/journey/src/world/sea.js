@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { SEA } from './route.js';
 import { U, FOG_FN } from './atmo.js';
 import { SKY } from './sky.js';
+import { RIPPLE_GLSL } from './ripples.js';
 
 // 近处烤海底深度的范围（近景范围的西南角）
 const BOX = { x0: -528, z0: -270, w: 240, d: 366 };
@@ -23,6 +24,7 @@ uniform float uTime; uniform vec3 uSunColor; uniform vec3 uZenith; uniform vec3 
 uniform sampler2D uSeaD; uniform vec4 uSeaBox; uniform vec4 uCoast; uniform float uCoastR; uniform float uSeaY; uniform float uTide;
 uniform float uDay; uniform float uRain; uniform float uOvercast;
 ${FOG_FN}
+${RIPPLE_GLSL}
 varying vec3 vWP;
 float h21( vec2 p ) { p = fract( p * vec2( 123.34, 456.21 ) ); p += dot( p, p + 45.32 ); return fract( p.x * p.y ); }
 float vn( vec2 p ) { vec2 i = floor( p ), f = fract( p ); f = f * f * ( 3.0 - 2.0 * f );
@@ -49,6 +51,9 @@ void main() {
   float a1 = vn( q * vec2( 0.09, 0.05 ) + vec2( tm * 0.22, 0.0 ) ), a2 = vn( q * vec2( 0.31, 0.22 ) + vec2( tm * 0.5, tm * 0.11 ) );
   float a3 = vn( xz * 1.3 + vec2( tm * 0.7, -tm * 0.4 ) );
   vec3 N = normalize( vec3( ( ( a1 - 0.5 ) * 0.35 + ( a2 - 0.5 ) * 0.22 + ( a3 - 0.5 ) * 0.08 * fade ) * fade + 0.0001, 1.0, ( ( a2 - 0.5 ) * 0.3 + ( a3 - 0.5 ) * 0.1 * fade ) * fade ) );
+  // 人和马踩进浅水荡开的圈
+  vec3 rp = jRipples( xz, tm );
+  N = normalize( N + vec3( rp.x, 0.0, rp.y ) * 0.7 );
   // 颜色：浅处青绿透沙，往外蓝，再往外深蓝
   vec3 shallow = vec3( 0.33, 0.62, 0.56 ), mid = vec3( 0.08, 0.36, 0.44 ), deep = vec3( 0.035, 0.17, 0.29 );
   vec3 col = mix( shallow, mid, smoothstep( 0.2, 2.8, depth ) );
@@ -74,7 +79,7 @@ void main() {
   float lace = smoothstep( 0.45, 0.75, vn( xz * 0.9 + vec2( tm * 0.2, 0.0 ) ) + a3 * 0.3 ) * ( 1.0 - smoothstep( 0.2, 0.7, depth ) );
   // 外海偶尔的小白浪（下雨、阴天多一点）
   float cap = smoothstep( 0.86 - 0.08 * uRain, 0.95, a2 * 0.6 + a1 * 0.5 ) * smoothstep( 3.0, 8.0, depth ) * fade * 0.5;
-  float foam = clamp( max( max( edge, crest * brk ), max( lace * 0.6, cap ) ), 0.0, 1.0 );
+  float foam = clamp( max( max( edge, crest * brk ), max( lace * 0.6, max( cap, rp.z * 0.7 ) ) ), 0.0, 1.0 );
   vec3 fc = vec3( 0.95, 0.96, 0.93 ) * ( 0.55 + 0.45 * uDay ) * mix( 1.0, 0.8, uOvercast );
   col = mix( col, fc, foam * 0.9 );
   // 雨点打在海面上：一个个小圈

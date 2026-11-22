@@ -2,7 +2,8 @@
 // 全部在模型自己的绑定坐标里现做，每个顶点抄离它最近的原模型顶点的蒙皮权重，所以跟着原来的骨头一起动；
 // 鬃毛、尾巴、笼头合成一块 SkinnedMesh，一匹马只多一次绘制（加影子一次）。
 import * as THREE from 'three';
-import { patch } from '../world/atmo.js';
+import { patch, U } from '../world/atmo.js';
+import { Lag } from './sway.js';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
@@ -56,6 +57,10 @@ function ribbon(out, pts, wFn, sideFn, nFn, c0, c1, jitter) {
       out.nor.push(nn.x, nn.y, nn.z);
       out.col.push(c.r, c.g, c.b);
       out.anchor.push(out.curAnchor ? out.curAnchor(i, p) : p);
+      // 甩动：绕哪一点摆（毛根）、这一点摆多少（根上不动，越往梢越多）、是鬃毛还是尾巴、每绺不一样的随机数、沿这绺走了多远
+      const F = out.flex, R = F && F.kind ? F.root : p;
+      out.root.push(R.x, R.y, R.z);
+      out.flx.push(F && F.kind ? Math.pow(t, F.pow) * F.amp : 0, F ? F.kind : 0, F ? F.hs : 0, t);
     }
   }
   for (let i = 0; i < n - 1; i++) { const a = base + i * 2; out.idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
@@ -72,6 +77,7 @@ function tube(out, pts, r, c, closed = false) {
       const an = k / seg * Math.PI * 2, d = N.clone().multiplyScalar(Math.cos(an)).addScaledVector(B, Math.sin(an));
       const p = pts[i].clone().addScaledVector(d, r);
       out.pos.push(p.x, p.y, p.z); out.nor.push(d.x, d.y, d.z); out.col.push(c.r, c.g, c.b); out.anchor.push(pts[i]);
+      out.root.push(p.x, p.y, p.z); out.flx.push(0, 0, 0, 0);
     }
   }
   const m = closed ? n : n - 1;
@@ -85,7 +91,7 @@ const bez = (a, b, c, n) => { const out = []; for (let i = 0; i < n; i++) { cons
 
 // 做鬃毛、尾巴、笼头的几何体（模型坐标）
 function buildGroom(parts, L, ky, kz) {
-  const out = { pos: [], nor: [], col: [], idx: [], anchor: [], curAnchor: null };
+  const out = { pos: [], nor: [], col: [], idx: [], anchor: [], curAnchor: null, root: [], flx: [], flex: null };
   const hair = parts.Hair, v = new THREE.Vector3();
   const mane = [], tailV = [];
   for (let i = 0; i < hair.pos.count; i++) { v.fromBufferAttribute(hair.pos, i); (v.z > 0.5 * kz ? mane : tailV).push(v.clone()); }
@@ -114,6 +120,7 @@ function buildGroom(parts, L, ky, kz) {
       const tip = root.clone().add(V(s * (out1 + 0.04 + 0.12 * hash(k)), -len * 0.9, 0)).addScaledVector(T, -0.24 - 0.16 * hash(k * 2.2));
       const pts = []; for (let i = 0; i < 8; i++) { const t = i / 7, q = 1 - t; pts.push(root.clone().multiplyScalar(q * q * q).addScaledVector(c1, 3 * q * q * t).addScaledVector(c2, 3 * q * t * t).addScaledVector(tip, t * t * t)); }
       out.curAnchor = () => root;
+      out.flex = { kind: 1, root, pow: 1.4, amp: 1, hs: hash(k * 11.3) };
       const wRoot = 0.13 + 0.05 * hash(k * 5.5), j = 0.88 + 0.22 * hash(k * 9.7);
       const nOut = t => V(s * (0.6 + 0.3 * t), 0.75 - 0.6 * t, 0).normalize();
       ribbon(out, pts, t => wRoot * (1 - 0.8 * t * t), () => T, nOut, m0, m1, j);
@@ -126,9 +133,10 @@ function buildGroom(parts, L, ky, kz) {
       const root = poll.clone().add(V(sx, 0.02, -0.02));
       const pts = bez(root, root.clone().add(V(sx * 0.5, 0.12, 0.2)), root.clone().add(V(sx * 1.5, -0.24 - 0.06 * hash(k), 0.32)), 5);
       out.curAnchor = () => root;
+      out.flex = { kind: 1, root, pow: 1.6, amp: 0.6, hs: hash(k * 6.1 + 3) };
       ribbon(out, pts, t => 0.06 * (1 - 0.8 * t), () => V(1, 0, 0), () => V(0, 0.5, 1).normalize(), m0, m1, 0.95 + 0.1 * hash(k));
     }
-    out.curAnchor = null;
+    out.curAnchor = null; out.flex = null;
   } else {
     // 毛驴：短短的一排竖着的鬃毛
     const N = 22;
@@ -138,10 +146,11 @@ function buildGroom(parts, L, ky, kz) {
       const tip = root.clone().add(V((hash(k) - 0.5) * 0.06, L.maneLen * (0.7 + 0.3 * Math.sin(Math.PI * u)), 0)).addScaledVector(T, -0.08);
       const pts = bez(root, root.clone().lerp(tip, 0.5).add(V(0, 0, -0.03)), tip, 4);
       out.curAnchor = () => root;
+      out.flex = { kind: 1, root, pow: 1.2, amp: 0.5, hs: hash(k * 11.3) };
       ribbon(out, pts, t => 0.1 * (1 - 0.6 * t), () => T, () => V(1, 0.2, 0).normalize(), m0, m1, 0.9 + 0.2 * hash(k));
       ribbon(out, pts, t => 0.1 * (1 - 0.6 * t), () => V(1, 0, 0), () => T, m0, m1, 0.9 + 0.2 * hash(k + 50));
     }
-    out.curAnchor = null;
+    out.curAnchor = null; out.flex = null;
   }
   // 尾巴：原模型尾巴的中心线（从上往下）
   const cl = [];
@@ -163,11 +172,13 @@ function buildGroom(parts, L, ky, kz) {
       pts.push(p);
     }
     out.curAnchor = (i, p) => clAt(Math.min(1, startU + (1 - startU) * i / (n - 1)));
+    // 尾巴整条绕尾根摆；毛驴只有尾巴尖那一撮毛在甩
+    out.flex = { kind: 2, root: clAt(L.style === 'flow' ? 0 : Math.min(1, startU)), pow: L.style === 'flow' ? 1.5 : 1, amp: L.style === 'flow' ? 1 : 0.7, hs: hash(k * 8.7 + 1) };
     const tw = t => (L.style === 'flow' ? 0.12 : 0.08) * (1 - 0.7 * t * t) * (L.style === 'flow' ? 1 : 0.6 + 0.8 * t);
     const ta = V(-Math.sin(a), 0, Math.cos(a)), tn = V(Math.cos(a), 0.1, Math.sin(a)).normalize(), jj = 0.9 + 0.2 * hash(k * 2.9);
     ribbon(out, pts, tw, () => ta, () => tn, t0, t1, jj);
     ribbon(out, pts, t => tw(t) * 0.6, () => tn, () => tn, t0, t1, jj * 0.92);
-    out.curAnchor = null;
+    out.curAnchor = null; out.flex = null;
   }
   // 马笼头：鼻革一圈、两边颊革到耳后、额带
   {
@@ -232,6 +243,8 @@ function buildGroom(parts, L, ky, kz) {
   g.setAttribute('color', new THREE.Float32BufferAttribute(out.col, 3));
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4));
   g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sw, 4));
+  g.setAttribute('aRoot', new THREE.Float32BufferAttribute(out.root, 3));
+  g.setAttribute('aFlex', new THREE.Float32BufferAttribute(out.flx, 4));
   g.setIndex(out.idx);
   g.computeBoundingSphere();
   return g;
@@ -312,15 +325,47 @@ export function groomHorse(gltf, model, key) {
   }
   // 毛和皮带
   const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.62, side: THREE.DoubleSide, name: 'groom' });
-  patch(mat, { rim: 0.5, gobo: true, fog: true, grassN: 0.0, sss: 0.1 });
+  // 甩动：鬃毛、尾巴各两个“慢半拍”的小球（一个轻快、一个沉一点），每绺毛按自己的随机数在两个之间取；
+  // 在绑定姿势里把毛绕毛根摆过去（长度不变），再走原来的骨骼蒙皮
+  const sw = { uSwM: { value: [new THREE.Vector3(), new THREE.Vector3()] }, uSwT: { value: [new THREE.Vector3(), new THREE.Vector3()] }, uFlut: { value: 0 } };
+  mat.onBeforeCompile = sh => {
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', `#include <common>
+      attribute vec3 aRoot; attribute vec4 aFlex; uniform vec3 uSwM[ 2 ]; uniform vec3 uSwT[ 2 ]; uniform float uFlut;`)
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+      if ( aFlex.x > 0.0 ) {
+        vec3 jS = aFlex.y < 1.5 ? mix( uSwM[ 0 ], uSwM[ 1 ], aFlex.z ) : mix( uSwT[ 0 ], uSwT[ 1 ], aFlex.z );
+        vec3 jRel = transformed - aRoot; float jLen = length( jRel );
+        // 顺着毛往梢上走的小波浪：有风、跑得快的时候才明显
+        float jW = sin( uTime * ( 5.5 + 4.0 * aFlex.z ) - aFlex.w * 4.5 + aFlex.z * 50.0 );
+        vec3 jD = ( jS + vec3( jW * 0.11, 0.0, jW * 0.05 ) * uFlut ) * aFlex.x;
+        float jDL = length( jD ), jMx = 0.9 * jLen;
+        if ( jDL > jMx ) jD *= jMx / jDL;
+        if ( jLen > 1e-4 ) transformed = aRoot + normalize( jRel + jD ) * jLen;
+      }`);
+  };
+  patch(mat, { rim: 0.5, gobo: true, fog: true, grassN: 0.0, sss: 0.1, uniforms: sw });
   const mesh = new THREE.SkinnedMesh(C.groom, mat);
   mesh.name = 'groom'; mesh.castShadow = true; mesh.receiveShadow = true; mesh.frustumCulled = false;
   const ref = parts.Main.mesh;
   ref.parent.add(mesh);
   mesh.position.copy(ref.position); mesh.quaternion.copy(ref.quaternion); mesh.scale.copy(ref.scale);
   mesh.bind(ref.skeleton, ref.bindMatrix);
+  // 每帧（动画算完之后）：脖子、尾巴根现在在哪 → 小球落后多少 → 转回模型自己的坐标交给着色器
+  const bone = n => ref.skeleton.bones.find(b => b.name === n);
+  const neck = bone('Neck2') || bone('Neck1'), tail = bone('Tail2') || bone('Tail1');
+  const lags = { m: [new Lag({ freq: 2.3, zeta: 0.26, drag: 0.03, max: 0.3 }), new Lag({ freq: 1.35, zeta: 0.4, drag: 0.046, max: 0.36 })],
+    t: [new Lag({ freq: 1.9, zeta: 0.28, drag: 0.034, max: 0.34 }), new Lag({ freq: 1.15, zeta: 0.42, drag: 0.05, max: 0.4 })] };
+  const stiff = L.style === 'flow' ? 1 : 0.6;
+  mesh.userData.sway = (dt, speed = 0, gain = 1) => {
+    if (!neck || !tail) return;
+    _m3.setFromMatrix4(mesh.matrixWorld).invert();
+    neck.getWorldPosition(_p); for (let i = 0; i < 2; i++) sw.uSwM.value[i].copy(lags.m[i].update(dt, _p)).applyMatrix3(_m3).multiplyScalar(gain * stiff);
+    tail.getWorldPosition(_p); for (let i = 0; i < 2; i++) sw.uSwT.value[i].copy(lags.t[i].update(dt, _p)).applyMatrix3(_m3).multiplyScalar(gain * stiff);
+    sw.uFlut.value = gain * Math.min(1.5, 0.3 * U.uWind.value + speed / 5);
+  };
   return mesh;
 }
+const _m3 = new THREE.Matrix3(), _p = new THREE.Vector3();
 
 // 圆角的盒子（鞍袋、背包）：盒子顶点往球面靠一半
 export function roundBox(w, h, d) {

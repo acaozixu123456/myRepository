@@ -1,6 +1,7 @@
 // B 马的程序动作：四条腿用两段反向动力学放蹄子，蹄子落地时固定在地面不打滑；
 // 慢步是四拍（左后-左前-右后-右前），小跑是两拍对角，速度之间平滑过渡。
 import * as THREE from 'three';
+import { Lag } from '../actors/sway.js';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -38,6 +39,9 @@ export class HorseRigB {
     this.onStep = null;   // (legId, worldPos) 蹄子落地回调，用来放蹄声
     // 闲时的小动作
     this.idle = { look: 0, lookT: 0, lookTarget: 0, earL: 0, earR: 0, earT: 1, swish: 0, swishT: 3, rest: 0, nod: 0 };
+    // 尾巴慢半拍：跑起来被风带在后面，转弯、急停时甩出去
+    this.tailLag = new Lag({ freq: 1.3, zeta: 0.4, drag: 0.05, max: 0.4 });
+    this.swayGain = 1;
     this.mode = 'ride';   // ride | graze
     this.grazeW = 0;
     this.restW = 0;
@@ -113,11 +117,19 @@ export class HorseRigB {
     // 尾巴：走路时左右摆，偶尔甩一下
     const sw = Math.sin(I.swish * Math.PI * 3) * I.swish;
     const tails = ['tail1', 'tail2', 'tail3', 'tail4'];
+    // 尾巴根落后了多少（转到马自己的坐标：x 左右、z 前后），分给四节骨头
+    let lagX = 0, lagZ = 0;
+    if (this.meshQInv) {
+      const o = this.tailLag.update(dt, b.pelvis.getWorldPosition(_v));
+      _v2.copy(o).applyQuaternion(this.meshQInv);
+      lagX = THREE.MathUtils.clamp(_v2.x / 0.5, -0.8, 0.8) * this.swayGain; lagZ = THREE.MathUtils.clamp(_v2.z / 0.5, -0.8, 0.8) * this.swayGain;
+    }
     tails.forEach((n, i) => {
       const a = (4 + i * 2.2) * DEG * moving * lerp(1, 0.6, g);
       const yaw = a * Math.sin(2 * Math.PI * ph - i * 0.7) + sw * (8 + i * 6) * DEG + Math.sin(this.time * 0.9 - i * 0.5) * 2 * DEG * idleW;
       const lift = i === 0 ? -g * 14 * DEG - moving * 3 * DEG : i === 1 ? g * 6 * DEG : 0;
-      b[n].rotation.set(lift + Math.sin(this.time * 1.1 - i) * 0.6 * DEG, yaw, 0);
+      const share = i === 0 ? 0.22 : 0.3;
+      b[n].rotation.set(lift + Math.sin(this.time * 1.1 - i) * 0.6 * DEG - lagZ * share, yaw, lagX * share);
     });
 
     // ---- 世界矩阵（腿的根要跟着身体） ----

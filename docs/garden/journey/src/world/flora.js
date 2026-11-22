@@ -87,13 +87,13 @@ export async function floraMaterials(base, fadeU, tuni) {
   mk('bark', barkTexture(), { wind: 'tree', gobo: false, fadeOut: true, ...near });
   // 灌木：和树共用叶子贴图，但不淡出（它们有自己的显示半径）
   M.bushLeaf = new THREE.MeshLambertMaterial({ map: M.leaf.map, alphaTest: 0.42, side: THREE.DoubleSide });
-  patch(M.bushLeaf, { wind: 'grass', gobo: true, sss: 0.45, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
+  patch(M.bushLeaf, { wind: 'grass', tread: 0.32, gobo: true, sss: 0.45, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
   M.bushFlower = new THREE.MeshLambertMaterial({ map: tex('flowers.png'), alphaTest: 0.5, side: THREE.DoubleSide });
-  patch(M.bushFlower, { wind: 'grass', gobo: true, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
+  patch(M.bushFlower, { wind: 'grass', tread: 0.32, gobo: true, fadeOut: true, seeThrough: true, uniforms: { uFadeR: fadeU.bush } });
   const small = { uniforms: { uFadeR: fadeU.small } };
-  mk('atlas', tex('atlas.png'), { wind: 'grass', gobo: true, sss: 0.4, fadeOut: true, grassN: 0.45, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
-  mk('flowers', M.bushFlower.map, { wind: 'grass', gobo: true, sss: 0.3, fadeOut: true, grassN: 0.35, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
-  mk('grass', tex('grass.png'), { wind: 'grass', gobo: true, sss: 0.5, fadeOut: true, grassN: 0.6, ...small }, { side: THREE.DoubleSide });
+  mk('atlas', tex('atlas.png'), { wind: 'grass', tread: 0.9, gobo: true, sss: 0.4, fadeOut: true, grassN: 0.45, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
+  mk('flowers', M.bushFlower.map, { wind: 'grass', tread: 0.9, gobo: true, sss: 0.3, fadeOut: true, grassN: 0.35, ...small }, { alphaTest: 0.5, side: THREE.DoubleSide });
+  mk('grass', tex('grass.png'), { wind: 'grass', tread: 1, gobo: true, sss: 0.5, fadeOut: true, grassN: 0.6, ...small }, { side: THREE.DoubleSide });
   mk('mush', tex('mush.jpg'), { gobo: true, fadeOut: true, ...small });
   const rockU = { uniforms: { uFadeR: fadeU.rock, uBiome: tuni.uBiome, uDom: tuni.uDom } };
   mk('rock', tex('rock.jpg'), { gobo: true, fadeOut: true, cover: true, ...rockU });

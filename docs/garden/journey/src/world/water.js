@@ -4,6 +4,7 @@ import { STREAM } from './route.js';
 import { DOM, waterY, bankW, FALLS } from './land.js';
 import { U, FOG_FN } from './atmo.js';
 import { SKY } from './sky.js';
+import { RIPPLE_GLSL } from './ripples.js';
 
 const VS = /* glsl */`
 attribute float aDepth; attribute float aSlope; attribute float aU; attribute float aFoam;
@@ -17,6 +18,7 @@ const FS = /* glsl */`
 uniform float uTime; uniform vec3 uSunColor; uniform vec3 uZenith; uniform vec3 uMid;
 uniform vec3 uShallow; uniform vec3 uDeep; uniform vec3 uFoam;
 ${FOG_FN}
+${RIPPLE_GLSL}
 varying vec2 vUv; varying vec3 vWP; varying float vDepth; varying float vSlope; varying float vU; varying float vFoam;
 float h21( vec2 p ) { p = fract( p * vec2( 123.34, 456.21 ) ); p += dot( p, p + 45.32 ); return fract( p.x * p.y ); }
 float vn( vec2 p ) { vec2 i = floor( p ), f = fract( p ); f = f * f * ( 3.0 - 2.0 * f );
@@ -33,6 +35,10 @@ void main() {
   float n2 = vn( fp * vec2( 2.6, 4.0 ) + vec2( 13.0 - t * 0.5, 4.0 ) );
   float n3 = vn( vec2( vUv.x * 2.4 - t * ( 1.6 + 3.0 * rapid ), vUv.y * 9.0 ) );
   vec3 N = normalize( vec3( ( n1 - 0.5 ) * 0.5 + ( n3 - 0.5 ) * 0.25, 1.0, ( n2 - 0.5 ) * 0.5 ) );
+  // 人和马蹚水荡开的圈：把水面推歪一点（倒影和高光跟着变），圈上一道白线
+  vec3 rp = jRipples( vWP.xz, t );
+  N = normalize( N + vec3( rp.x, 0.0, rp.y ) * 0.7 );
+  float ring = clamp( rp.z, 0.0, 1.0 );
   vec3 V = normalize( cameraPosition - vWP );
   // 天空倒影（菲涅耳）
   vec3 R = reflect( -V, N );
@@ -57,6 +63,7 @@ void main() {
   // 岸边白沫
   float foam = ( 1.0 - smoothstep( 0.02, 0.16, vDepth ) ) * smoothstep( 0.35, 0.75, n2 + n3 * 0.4 );
   col = mix( col, uFoam, foam * 0.75 );
+  col = mix( col, uFoam, ring * 0.6 );
   // 急流：白浪一条条的，中间露出青绿的水，不是一整片灰白
   float white = clamp( rapid * ( 0.06 + 0.88 * smoothstep( 0.46, 0.78, n1 * 0.5 + n3 * 0.5 ) ), 0.0, 1.0 );
   col = mix( col, uFoam, white );
@@ -70,7 +77,7 @@ void main() {
   float pool = vFoam * smoothstep( 0.3, 0.72, vn( vec2( vUv.x * 1.6 - t * 1.4, vUv.y * 2.4 ) + vec2( n2 * 1.5, 0.0 ) ) + 0.25 * vFoam );
   col = mix( col, uFoam, clamp( pool, 0.0, 1.0 ) * 0.9 );
   float a = mix( 0.35, 0.94, smoothstep( 0.0, 0.5, depth ) );
-  a = max( a, max( foam * 0.8, max( white * 0.95, pool * 0.9 ) ) );
+  a = max( a, max( max( foam * 0.8, ring * 0.7 ), max( white * 0.95, pool * 0.9 ) ) );
   a = mix( a, ( 0.7 + 0.28 * smoothstep( 0.3, 0.7, sheet ) ) * edgeA, fall );
   a *= smoothstep( -0.02, 0.04, vDepth );
   col = jFog( col, vWP );
