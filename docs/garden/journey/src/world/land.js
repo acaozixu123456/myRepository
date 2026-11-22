@@ -1,6 +1,6 @@
 // 地形高度场：一张 1.5 米格子的近景高度图（路和溪都“刻”进去），外面是粗格子的远景山。
 // 纯数学，不依赖 three，Node 里也能跑（tools 里用它画俯视检查图）。
-import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL, CAMP_SITES, SEAWAY, CAPEWAY, SEA, coastCT, STACKS, LIGHTHOUSE, MIRROR, NORTHWAY, SPRINGS } from './route.js';
+import { ROAD, STREAM, SPOTS, LAKE, CREEK_END, TRAIL, CAMP_SITES, SEAWAY, CAPEWAY, SEA, coastCT, STACKS, LIGHTHOUSE, MIRROR, NORTHWAY, SPRINGS, SHROOM } from './route.js';
 import { fbm, vnoise, sstep, lerp, clamp } from './noise.js';
 import { autumnK, snowK, bambooK, sandK } from './regions.js';
 
@@ -324,6 +324,8 @@ export function buildLand() {
   { const c = atS(SPOTS.camp); flats.push({ x: c.x + 2, z: c.z - 3, r0: 9, r1: 16, y: roadY(SPOTS.camp) }); }
   { const v = atS(SPOTS.view); flats.push({ x: v.x - 3.5, z: v.z - 1, r0: 3.5, r1: 8, y: roadY(SPOTS.view) + 0.05 }); }
   flats.push({ x: 62, z: -118, r0: 4.5, r1: 9, y: null });
+  // 萤光菇林：山坡上压出一块缓一点的平地
+  flats.push({ x: SHROOM.x, z: SHROOM.z, r0: 13, r1: 36, y: null });
   // 海角上灯塔那一块平地（和海角小路的尽头一样高）
   flats.push({ x: LIGHTHOUSE.x, z: LIGHTHOUSE.z, r0: 8, r1: 15, y: WAYS[1].y(CAPEWAY.length) + 0.15 });
   // 野外营地：贴着小路的和小路一样高，其他的按溪谷里原来的地面

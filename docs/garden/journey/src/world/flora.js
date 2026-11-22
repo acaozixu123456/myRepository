@@ -1,7 +1,7 @@
 // 植被：树、灌木、草、花、石头。近处用真模型（按距离动态挑实例），远处的树用替身贴片。
 import * as THREE from 'three';
 import { DOM, CENTER, bankW, SHOAL, lakeQ, ICE_Q } from './land.js';
-import { ROAD, STREAM, SPOTS, CREEK_END, CAMP_SITES, SEA, SEAWAY, LIGHTHOUSE, STACKS, VISTAS, SPRINGS } from './route.js';
+import { ROAD, STREAM, SPOTS, CREEK_END, CAMP_SITES, SEA, SEAWAY, LIGHTHOUSE, STACKS, VISTAS, SPRINGS, SHROOM } from './route.js';
 import { bambooTextures } from './bamboo.js';
 import { patch, U, FOG_FN, CLOUD_FN } from './atmo.js';
 import { rng, fbm, vnoise, sstep, clamp } from './noise.js';
@@ -225,7 +225,7 @@ export function placeFlora(land, farHeight, quality) {
   const meadowK = (x, z) => sstep(MEADOW.r, MEADOW.r * 0.6, Math.hypot(x - MEADOW.x, z - MEADOW.z));
   const clear = (x, z) => Math.hypot(x - camp.x - 2, z - camp.z + 3) > 17 && Math.hypot(x - view.x + 4, z - view.z) > 9 && Math.hypot(x - 62, z + 118) > 13 && Math.hypot(x - bridge.x, z - bridge.z) > 13
     && Math.hypot(x - MEADOW.x, z - MEADOW.z) > MEADOW.r - 4 && Math.hypot(x - SHOAL.x, z - SHOAL.z) > 10
-    && CAMP_SITES.every(c => Math.hypot(x - c.x, z - c.z) > 10) && VISTAS.every(v => Math.hypot(x - v.x, z - v.z) > 9) && Math.hypot(x - SPRINGS.x, z - SPRINGS.z) > 13;
+    && CAMP_SITES.every(c => Math.hypot(x - c.x, z - c.z) > 10) && VISTAS.every(v => Math.hypot(x - v.x, z - v.z) > 9) && Math.hypot(x - SPRINGS.x, z - SPRINGS.z) > 13 && Math.hypot(x - SHROOM.x, z - SHROOM.z) > 17;
   // 西岭松林只种自己的树（别的步骤不往里塞），林子中间留一块空地
   const GROVE = { x: -150, z: -165 };
   const inGrove = (x, z) => Math.hypot((x - GROVE.x) / 1.2, z - GROVE.z) < 40;

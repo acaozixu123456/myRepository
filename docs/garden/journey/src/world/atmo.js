@@ -27,6 +27,8 @@ export const U = {
   uGust: { value: new THREE.Vector3(-0.924, -0.382, 0) },
   // 画质「低」时关掉地面凹凸、岩壁贴图这些细活（手机上省一截）
   uFine: { value: 1 },
+  // 后期开没开：没开的时候，草和树叶不能往透明度那一格里记数（不然直接画到屏幕上会透出网页的底色，发白）
+  uPostOn: { value: 1 },
   uWind: { value: 1 },
   // 天气：地面湿了多少（下雨）
   uWet: { value: 0 },
@@ -189,7 +191,7 @@ export function patch(mat, opts = {}) {
     fs = fs.replace('#include <common>', `#include <common>
       varying vec3 vWP; uniform float uTime;
       uniform sampler2D uGobo; uniform sampler2D uCanopy; uniform vec4 uCanopyBox; uniform float uGoboStrength; uniform vec3 uSunColor;
-      uniform vec3 uShadowCenter; uniform float uShadowRadius; uniform float uFadeR; uniform vec4 uSee;
+      uniform vec3 uShadowCenter; uniform float uShadowRadius; uniform float uFadeR; uniform vec4 uSee; uniform float uPostOn;
       float jDither() { return fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ); }
       ${FOG_FN}
       ${CLOUD_FN}
@@ -284,8 +286,8 @@ export function patch(mat, opts = {}) {
     if (o.fog) fs = fs.replace('#include <opaque_fragment>', `#include <opaque_fragment>
       gl_FragColor.rgb = jFog( gl_FragColor.rgb, vWP );`);
     // 草丛、花草在画面的透明度那一格里记 0：后期那层「贴地的暗」不压它们，也不把它们当遮挡（不然草地发灰）
-    if (o.noAO || (o.wind === 'grass' && (o.tread || 0) > 0.5)) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 0.0;');
-    else if (leaf) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 0.35;');   // 树冠只压三分之一
+    if (o.noAO || (o.wind === 'grass' && (o.tread || 0) > 0.5)) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 1.0 - uPostOn;');
+    else if (leaf) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 1.0 - 0.65 * uPostOn;');   // 树冠只压三分之一
     sh.vertexShader = vs; sh.fragmentShader = fs;
   };
   const key = 'j' + JSON.stringify(o, (k, v) => (k === 'uniforms' ? undefined : v)) + (prev ? prev.toString().length : 0);

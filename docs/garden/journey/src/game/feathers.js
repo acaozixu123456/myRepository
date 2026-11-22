@@ -90,6 +90,7 @@ export class Feathers {
     high('hStack2', '靠岸的礁石', '西湾靠岸近一点的那根礁石顶上，游过去爬上去也行', STACKS[1][0], top(STACKS[1][0], STACKS[1][1]) + 1.5, STACKS[1][1]);
     high('hLight', '灯塔尖', '海角灯塔的塔尖上面', LIGHTHOUSE.x, top(LIGHTHOUSE.x, LIGHTHOUSE.z) + 19.5, LIGHTHOUSE.z);
     { const E = ISLE_TOP, x = E.x - 3, z = E.z - 2; high('hIsle', '最高的浮岛', '镜之原上空最高的那座岛上。乘着风，一座一座上去', x, isleTop(x, z) + 1.5, z); }
+    if (o.shroomTop) high('hShroom', '最大的伞盖', '萤光菇林里最高的那朵蘑菇顶上。从小蘑菇一朵一朵弹上去', o.shroomTop.x - 1.5, o.shroomTop.y + 1.3, o.shroomTop.z - 2);
     high('hLake', '冰湖中央', '冰湖正中间的冰面上。路远，上面冷，带点热的再去', LAKE.x, top(LAKE.x, LAKE.z) + 1.6, LAKE.z);
 
     // ---- 风环 ----
