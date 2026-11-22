@@ -1,7 +1,7 @@
 // 画质档位：极高 / 高 / 中 / 低。自动模式下帧率连续几秒偏低就降一档（只减草木、阴影和地面细节，清晰度 pr 不降）；点右上角可以手动切换，手动选的档位连清晰度一起降。
 // 「极高」是给电脑准备的：远处也有真影子、贴地的暗、更远的真树和草。自动模式下电脑从它开始，手机从「高」开始。
 export const TIERS = {
-  ultra: { label: '极高', pr: 2, shadow: 4096, shadowR: 34, far: { R: 170, size: 4096 }, ao: true },
+  ultra: { label: '极高', pr: 2, shadow: 4096, shadowR: 34, far: { R: 170, size: 4096 }, ao: true, rays: true },
   high: { label: '高', pr: 2, shadow: 2048, shadowR: 26 },
   mid: { label: '中', pr: 1.5, shadow: 1536, shadowR: 24 },
   low: { label: '低', pr: 1.15, shadow: 1024, shadowR: 20 },

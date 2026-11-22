@@ -18,6 +18,14 @@ export function installShadows() {
 		#else
 			${a}
 		#endif`);
+  // 云影：带 J_CLOUD 的材质，太阳光先乘上这一点头顶有没有云（jClK 留着给后面的透光、高光用）
+  const b = 'getDirectionalLightInfo( directionalLight, directLight );';
+  if (C.lights_fragment_begin.includes(b)) C.lights_fragment_begin = C.lights_fragment_begin.replace(b, `${b}
+		#ifdef J_CLOUD
+			#if UNROLLED_LOOP_INDEX == 0
+			jClK = jCloud( vWP ); directLight.color *= jClK;
+			#endif
+		#endif`);
   return true;
 }
 
