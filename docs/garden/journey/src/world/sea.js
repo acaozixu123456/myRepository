@@ -6,6 +6,7 @@ import { SEA } from './route.js';
 import { U, FOG_FN } from './atmo.js';
 import { SKY } from './sky.js';
 import { RIPPLE_GLSL } from './ripples.js';
+import { SSRU, SSR_GLSL } from './ssr.js';
 
 // 近处烤海底深度的范围（近景范围的西南角）
 const BOX = { x0: -528, z0: -270, w: 240, d: 366 };
@@ -25,6 +26,7 @@ uniform sampler2D uSeaD; uniform vec4 uSeaBox; uniform vec4 uCoast; uniform floa
 uniform float uDay; uniform float uRain; uniform float uOvercast;
 ${FOG_FN}
 ${RIPPLE_GLSL}
+${SSR_GLSL}
 varying vec3 vWP;
 float h21( vec2 p ) { p = fract( p * vec2( 123.34, 456.21 ) ); p += dot( p, p + 45.32 ); return fract( p.x * p.y ); }
 float vn( vec2 p ) { vec2 i = floor( p ), f = fract( p ); f = f * f * ( 3.0 - 2.0 * f );
@@ -54,6 +56,13 @@ void main() {
   // 人和马踩进浅水荡开的圈
   vec3 rp = jRipples( xz, tm );
   N = normalize( N + vec3( rp.x, 0.0, rp.y ) * 0.7 );
+  // 极高画质：近处按画面上真正的水深（礁石、蹚水的腿边上也算浅）
+  vec4 bed = vec4( 0.0 ); vec3 Pv = vec3( 0.0 );
+  if ( uSSon > 0.5 ) {
+    Pv = ( viewMatrix * vec4( vWP, 1.0 ) ).xyz;
+    bed = jSSbed( gl_FragCoord.xy / uSSres, Pv, N.xz * 0.05 );
+    depth = mix( min( depth + 0.08, bed.a * max( V.y, 0.3 ) ), depth, smoothstep( 60.0, 140.0, dist ) );
+  }
   // 颜色：浅处青绿透沙，往外蓝，再往外深蓝
   vec3 shallow = vec3( 0.33, 0.62, 0.56 ), mid = vec3( 0.08, 0.36, 0.44 ), deep = vec3( 0.035, 0.17, 0.29 );
   vec3 col = mix( shallow, mid, smoothstep( 0.2, 2.8, depth ) );
@@ -64,6 +73,12 @@ void main() {
   vec3 hz = jFogColor( normalize( vec3( R.x, max( R.y, 0.0 ), R.z ) ) );
   vec3 sky = mix( hz, uMid, smoothstep( 0.05, 0.45, R.y ) );
   sky = mix( sky, uZenith, smoothstep( 0.4, 0.9, R.y ) * 0.5 );
+  // 极高画质：真的倒影（礁石、海崖、灯塔、天上的云和太阳）
+  if ( uSSon > 0.5 ) {
+    vec3 Nr = normalize( mix( vec3( 0.0, 1.0, 0.0 ), N, 0.4 ) );
+    vec4 rf = jSSR( Pv, normalize( ( viewMatrix * vec4( reflect( -V, Nr ), 0.0 ) ).xyz ), fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ) );
+    sky = mix( sky, rf.rgb, rf.a );
+  }
   float fres = 0.04 + 0.96 * pow( 1.0 - max( dot( V, N ), 0.0 ), 5.0 );
   col = mix( col * uDay, sky, clamp( fres, 0.0, 1.0 ) * 0.85 );
   // 太阳的碎金
@@ -93,6 +108,7 @@ void main() {
   a = max( a, foam * 0.92 );
   a *= smoothstep( -0.05, 0.03, depth );
   col = jFog( col, vWP );
+  if ( uSSon > 0.5 ) { col = mix( bed.rgb, col, a ); a = smoothstep( 0.0, 0.06, bed.a ); }
   gl_FragColor = vec4( col, a );
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -133,7 +149,7 @@ export function buildSea(land) {
     if (b.sub(a).cross(c.sub(a)).y < 0) { for (let i = 0; i < idx.length; i += 3) { const t = idx[i + 1]; idx[i + 1] = idx[i + 2]; idx[i + 2] = t; } geo.setIndex(idx); } }
   const mat = new THREE.ShaderMaterial({
     uniforms: {
-      ...U, ...SEA_U, uZenith: SKY.uZenith, uMid: SKY.uMid,
+      ...U, ...SEA_U, ...SSRU, uZenith: SKY.uZenith, uMid: SKY.uMid,
       uSeaD: { value: tex }, uSeaBox: { value: new THREE.Vector4(BOX.x0, BOX.z0, BOX.w, BOX.d) },
       uCoast: { value: new THREE.Vector4(SEA.x, SEA.z, SEA.nx, SEA.nz) }, uCoastR: { value: SEA.R },
     },

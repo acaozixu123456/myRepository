@@ -4,6 +4,7 @@
 // 照到的加起来就是空气里那层亮——树挡住的地方暗、树缝里漏下来的地方亮，朝着太阳看就是一道一道的光。
 import * as THREE from 'three';
 import { U, CLOUD_FN } from './atmo.js';
+import { SSRU } from './ssr.js';
 
 const VS = /* glsl */`varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4( position.xy, 0.0, 1.0 ); }`;
 const mk = (fs, uniforms, extra = {}) => new THREE.ShaderMaterial({ vertexShader: VS, fragmentShader: fs, uniforms, depthTest: false, depthWrite: false, toneMapped: false, ...extra });
@@ -145,16 +146,30 @@ export class Post {
   }
   // 「贴地的暗」要读深度图：第一次打开时才给画布配上（不开的档位、手机上不多这份开销）
   setAO(on) { this.ao = !!on; this.needDepth(); this.ao = this.ao && this.aoOK !== false; }
+  // 水面的真倒影（见 world/ssr.js）：画面分两遍画，先画岸上的，再画水和排在水后面的那些半透明的东西
+  setWater(on) {
+    // 有的设备把多重采样直接做在贴图上，那样一边画一边读同一张图是不行的，就不开
+    this.water = !!on && this.ok && !this.r.extensions.has('WEBGL_multisampled_render_to_texture');
+    this.needDepth(); this.water = this.water && this.aoOK !== false; this.scanT = 0;
+    if (!this.water) SSRU.uSSon.value = 0;
+  }
+  // 灯两遍都要在；排在水后面画的半透明的东西（水、水雾、雨、萤火虫……）挪到第二遍
+  scan(scene) {
+    scene.traverse(o => {
+      if (o.isLight) o.layers.enable(1);
+      else if (o.renderOrder >= 2 && o.material && o.material.transparent && o.layers.mask === 1) o.layers.set(1);
+    });
+  }
   // 光柱：light 是带出远影那张图的那盏灯
   setRays(on, light) { this.rays = !!on && !!light; this.rayLight = light || null; this.needDepth(); this.rays = this.rays && this.aoOK !== false; }
   needDepth() {
     if (!this.ok || this.aoOK === false) return;
-    if ((this.ao || this.rays) && !this.rt.depthTexture) {
+    if ((this.ao || this.rays || this.water) && !this.rt.depthTexture) {
       const d = new THREE.DepthTexture(this.rt.width, this.rt.height); d.type = THREE.UnsignedIntType; d.minFilter = d.magFilter = THREE.NearestFilter;
       this.rt.depthTexture = d; this.rt.dispose();
       // 这台设备配不上深度图就算了：摘掉，照原来的画
       const gl = this.r.getContext(); this.r.setRenderTarget(this.rt);
-      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) { this.aoOK = false; this.ao = this.rays = false; this.rt.depthTexture = null; d.dispose(); this.rt.dispose(); }
+      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) { this.aoOK = false; this.ao = this.rays = this.water = false; this.rt.depthTexture = null; d.dispose(); this.rt.dispose(); }
       this.r.setRenderTarget(null);
     }
   }
@@ -181,8 +196,20 @@ export class Post {
   render(scene, camera) {
     const r = this.r; this.size();
     if (!this.ok) { r.render(scene, camera); return; }
-    r.setRenderTarget(this.rt); r.render(scene, camera);
-    const sa = r.shadowMap.autoUpdate; r.shadowMap.autoUpdate = false;
+    const sa = r.shadowMap.autoUpdate;
+    if (this.water && this.rt.depthTexture) {
+      if (--this.scanT <= 0) { this.scan(scene); this.scanT = 90; }
+      const mask = camera.layers.mask, ac = r.autoClear;
+      // 第一遍：岸上的东西
+      SSRU.uSSon.value = 0; camera.layers.set(0); r.setRenderTarget(this.rt); r.render(scene, camera);
+      // 第二遍：水。上一遍的画面和远近图已经在贴图里了，接着在同一张画布上画
+      SSRU.tSSc.value = this.rt.texture; SSRU.tSSd.value = this.rt.depthTexture; SSRU.uSSres.value.set(this.rt.width, this.rt.height);
+      SSRU.uSSproj.value.copy(camera.projectionMatrix); SSRU.uSSprojI.value.copy(camera.projectionMatrixInverse); SSRU.uSSon.value = 1;
+      camera.layers.set(1); r.autoClear = false; r.shadowMap.autoUpdate = false;
+      r.render(scene, camera);
+      r.autoClear = ac; camera.layers.mask = mask; SSRU.uSSon.value = 0;
+    } else { r.setRenderTarget(this.rt); r.render(scene, camera); }
+    r.shadowMap.autoUpdate = false;
     const m = this.mips, u = this.ups;
     // 贴地的暗：半大小算一遍，横竖各抹一遍
     const useAO = this.ao && !!this.rt.depthTexture;
