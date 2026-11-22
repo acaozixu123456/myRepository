@@ -1,11 +1,12 @@
 // 偶遇的人：五个在路上碰得到的人，各有各的时辰和地方（夜里提灯散步的、上午在红叶谷画画的、下午在沙滩钓鱼的、
-// 白天沿着溪边小路走的背包客、傍晚去点灯的守灯人）。模型和旅人是同一套（换了衣服颜色），走到跟前点「打个招呼」，
-// 他们会说两句话，顺便告诉你哪儿藏着好东西（地图上会标出来）。
+// 白天沿着溪边小路走的背包客、傍晚去点灯的守灯人）。和旅人是同一种画风（用代码捏的，actors/sculpt.js），每人一身自己的打扮；
+// 走到跟前点「打个招呼」，他们会说两句话，顺便告诉你哪儿藏着好东西（地图上会标出来）。
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 import { ROAD, SPOTS, STREAM, TRAIL, CREEK_END, LIGHTHOUSE, SEA } from '../world/route.js';
 import { patch } from '../world/atmo.js';
+import { makePack } from '../actors/traveler.js';
 
 const _hp = new THREE.Vector3();
 const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
@@ -48,6 +49,16 @@ export function makeFolk(places) {
   ];
 }
 
+// 每个人的打扮：帽子、外套、围巾、头发各不一样（没写的和旅人一样，见 actors/sculptGeo.js 的 LOOKS）。
+// hatStyle：straw 宽檐帽（默认）、cone 斗笠、beret 画家帽、beanie 毛线帽、none 不戴；tail：围巾背后那一截要不要
+export const FOLK_LOOKS = {
+  lantern: { hat: '#3b3a55', hatUnder: '#24233a', band: '#d9c9a0', plume: false, coat: '#3d5a8c', seam: '#2a3f66', scarf: '#d9c9a0', scarfStripe: '#8f3324', pants: '#77736a', tail: false },
+  painter: { hatStyle: 'beret', hat: '#e2b33c', band: '#b98a22', coat: '#e6dcc3', seam: '#b3a586', coatTrim: '#c8683a', scarf: '#3f8f86', scarfStripe: '#f1e3c0', pants: '#7d6a5a', tail: false },
+  fisher: { hatStyle: 'cone', hat: '#cfae68', hatUnder: '#8f7440', coat: '#5f7a45', seam: '#44592f', scarf: '#e3d6b4', scarfStripe: '#5f7a45', hair: '#cfcabd', hairHi: '#f0ece2', beard: true, skin: '#e0b089', blush: '#d98c74', pants: '#6f6a58', tail: false },
+  hiker: { hatStyle: 'none', coat: '#d07a2c', seam: '#9c541a', scarf: '#3f6f8f', scarfStripe: '#f1e3c0', hair: '#6b4526', hairHi: '#a8743f', pants: '#5d5a4a' },
+  keeper: { hatStyle: 'beanie', hat: '#a8402c', hatUnder: '#6e2a1d', band: '#e9dcc0', coat: '#2f3d5c', seam: '#1f2a42', coatTrim: '#d9c9a0', scarf: '#e9dcc0', scarfStripe: '#a8402c', hair: '#2e211b', hairHi: '#5a4030', pants: '#8b8474', tail: false },
+};
+
 const CLIP = { sit: 'Sitting_Idle_Loop', lantern: 'Idle_Lantern_Loop', fold: 'Idle_FoldArms_Loop', walk: 'Walk_Loop', idle: 'Idle_Loop', wave: 'Interact' };
 
 // 小道具
@@ -81,12 +92,12 @@ function buildProp(kind, M) {
 }
 
 export class Folk {
-  // h: { res, groundAt(x,z), places, colliders }
+  // h: { res, groundAt(x,z), places, colliders, sculpt: false = 用原来的素材模型 }
   constructor(h) {
     this.h = h;
     this.group = new THREE.Group(); this.group.name = 'folk';
     this.list = makeFolk(h.places);
-    this.gltf = {}; this.loading = {};
+    this.gltf = {}; this.loading = {}; this.jobs = new Set();
     this.checkT = 0;
     const wood = new THREE.MeshStandardMaterial({ color: '#7a5636', roughness: 0.9 }); patch(wood, { gobo: true, fog: true });
     const line = new THREE.MeshBasicMaterial({ color: '#dddddd', transparent: true, opacity: 0.5 });
@@ -107,10 +118,22 @@ export class Folk {
     if (this.gltf[who] || this.loading[who]) return;
     this.loading[who] = new GLTFLoader().loadAsync(this.h.res + `traveler-${who}.glb`).then(g => { this.gltf[who] = g; }).catch(e => console.warn('[j] folk', e));
   }
+  // 人走近了才做。捏的造型要算零点几秒，放在后台线程里算，算好了人才出现；后台线程用不了就还用原来的素材模型
   make(F) {
+    if (F.keep) { F.o = F.keep; F.keep = null; this.group.add(F.o.root); return true; }      // 走远收起来的，回来直接用
     const g = this.gltf[F.who]; if (!g) { this.load(F.who); return false; }
+    if (F.making) return false;
     const model = SkeletonUtils.clone(g.scene);
-    model.traverse(o => {
+    if (this.h.sculpt === false) { this.finish(F, g, model, null); return true; }
+    F.making = true;
+    const job = import('../actors/sculpt.js').then(m => m.sculptTravelerAsync(model, { who: F.who, look: FOLK_LOOKS[F.id] }))
+      .catch(e => { console.warn('[j] folk sculpt', e); return null; })
+      .then(sculpt => { F.making = false; this.jobs.delete(job); this.finish(F, g, model, sculpt); });
+    this.jobs.add(job);
+    return false;
+  }
+  finish(F, g, model, sculpt) {
+    if (!sculpt) model.traverse(o => {
       if (!o.isMesh) return;
       o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
       if (F.noHood && /Hood/.test(o.name)) { o.visible = false; return; }
@@ -148,7 +171,13 @@ export class Folk {
     }
     if (F.prop === 'easel') { const e = buildProp('easel', this.M); e.position.set(0.1, 0, 1.15); e.rotation.y = Math.PI; root.add(e); }
     if (F.prop === 'rod') root.add(buildProp('rod', this.M));
-    if (F.prop === 'pack' && bones.spine_03) {
+    if (F.prop === 'pack' && sculpt) {
+      // 背包客：和旅人一样的行囊，围巾背后那一截搭在铺盖卷上（按站姿量后背）
+      const a = act.Idle_Loop; a.play(); mixer.update(0);
+      const pk = makePack(model, bones);
+      if (pk) { const k = pk.userData.at; sculpt.userData.drape(r => [r, [k.x + 0.04, k.y + 0.255, k.z - 0.005], [k.x + 0.052, k.y + 0.18, k.z - 0.064], [k.x + 0.058, k.y + 0.04, k.z - 0.088], [k.x + 0.052, k.y - 0.09, k.z - 0.096]]); }
+      a.stop();
+    } else if (F.prop === 'pack' && bones.spine_03) {
       const b = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.5, 0.22), this.M.pack); b.castShadow = true;
       const s = bones.spine_03.getWorldScale(new THREE.Vector3()).x || 1;
       const rollP = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.42, 8), this.M.bucket); rollP.rotation.z = Math.PI / 2; rollP.position.set(0, 0.3, 0);
@@ -165,7 +194,7 @@ export class Folk {
       const halo = new THREE.Sprite(this.M.halo); halo.scale.setScalar(1.6); halo.position.y = -0.24;
       lamp.add(cage, cap, light, str, halo); root.add(lamp);
     }
-    F.o = { root, mixer, act, bones, lamp, hand: bones.hand_r || bones.hand_l, cur: null, yaw: F.yaw, speed: 0, s: F.path ? F.path.s0 + Math.random() * (F.path.s1 - F.path.s0) : 0, dir: 1, talkT: 0, waveT: 0 };
+    F.o = { root, mixer, act, bones, lamp, sculpt, hand: bones.hand_r || bones.hand_l, cur: null, yaw: F.yaw, speed: 0, s: F.path ? F.path.s0 + Math.random() * (F.path.s1 - F.path.s0) : 0, dir: 1, talkT: 0, waveT: 0 };
     this.play(F, F.pose === 'walk' ? 'walk' : F.pose, 0.01);
     this.group.add(root);
     return true;
@@ -191,7 +220,7 @@ export class Folk {
       for (const F of this.list) {
         const w = this.where(F), d = Math.hypot(w.x - c.p.x, w.z - c.p.z), want = F.when(c.tod, c.wx);
         if (!F.o && want && d < 170) this.make(F);
-        else if (F.o && (d > 220 || (!want && d > 60))) { this.group.remove(F.o.root); F.o = null; }
+        else if (F.o && (d > 220 || (!want && d > 60))) { this.group.remove(F.o.root); F.keep = F.o; F.o = null; }
       }
     }
     for (const F of this.list) if (F.o) this.tick(F, dt, c);
@@ -221,7 +250,7 @@ export class Folk {
     if (!o.root.visible) return;
     o.root.position.set(x, groundAt(x, z), z); o.root.rotation.y = o.yaw;
     o.lodT = (o.lodT || 0) + dt;
-    if (o.lodT >= (cd < 40 ? 0 : 1 / 15)) { o.mixer.update(o.lodT); o.lodT = 0; }
+    if (o.lodT >= (cd < 40 ? 0 : 1 / 15)) { o.mixer.update(o.lodT); if (o.sculpt && F.path) { o.root.updateMatrixWorld(true); o.sculpt.userData.sway(o.lodT, 0.7); } o.lodT = 0; }
     if (o.lamp && o.hand) { o.root.updateMatrixWorld(true); o.hand.getWorldPosition(_hp); o.lamp.position.copy(o.root.worldToLocal(_hp)); }
   }
   // 离旅人最近、能打招呼的那个人（4.5 米内）

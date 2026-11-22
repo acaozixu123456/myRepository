@@ -547,7 +547,7 @@ async function load() {
   const water = (x, z) => J.waterDepth(x, z);
   wildlife = new Wildlife({ res: RES, groundAt: J.groundAt, water, colliders, places: J.places }); scene.add(wildlife.group);
   birds = new Birds({ groundAt: J.groundAt, water, places: J.places }); scene.add(birds.group);
-  folk = new Folk({ res: RES, groundAt: J.groundAt, places: J.places, colliders }); scene.add(folk.group);
+  folk = new Folk({ res: RES, groundAt: J.groundAt, places: J.places, colliders, sculpt: P.get('sculpt') !== '0' && P.get('folkold') !== '1' }); scene.add(folk.group);
   J.folk = folk; J.nearFinds = nearFinds; J.onFind = () => save();
   const seen = (id, A) => { if (playing && J.phase !== 'intro') J.discover(id, false, A?.p); };
   wildlife.onSeen = seen; birds.onSeen = id => seen(id, id === 'birds' ? birds.flocks.reduce((a, F) => F.seen && !a ? F : a, null) : null);
@@ -629,7 +629,7 @@ async function load() {
 }
 
 // 截图模式：直接摆到指定位置，模拟几秒，渲染三帧
-function shotSetup() {
+async function shotSetup() {
   document.body.classList.add('playing');
   if (P.get('hud') === '0') document.getElementById('hud').style.display = 'none';
   const view = P.get('cam') || 'travel';
@@ -641,6 +641,9 @@ function shotSetup() {
   if (P.has('s')) { const p = ROAD.at(+P.get('s'), {}); x = p.x; z = p.z; yaw = Math.atan2(p.tx, p.tz); }
   if (P.has('x')) x = +P.get('x'); if (P.has('z')) z = +P.get('z');
   if (P.has('ry')) yaw = +P.get('ry') * Math.PI / 180;
+  // folk=lantern|painter|fisher|hiker|keeper：站到这个人旁边（要配 wild=1、look=folk 和他在的钟点 tod）
+  const fk = P.get('folk') && folk.list.find(f => f.id === P.get('folk'));
+  if (fk) { const w = folk.where(fk); x = w.x + 3; z = w.z + 3; }
   const mode = P.get('mode') || 'ride';
   J.teleport(x, z, yaw, mode, +(P.get('alt') || 30));
   const v = +(P.get('v') || 0);
@@ -688,6 +691,8 @@ function shotSetup() {
       si++;
     }
   }
+  // 截图：路上的人要是还在后台捏，等捏好再拍
+  if (folk.jobs.size) { await Promise.all([...folk.jobs]); if (fk?.o && fk.path) { fk.o.s = fk.path.s0 + 5; fk.o.dir = 1; } for (let i = 0; i < 24; i++) step(1 / 30); }
   // 截图：把一只动物摆到人前面 put 米（侧着身子）
   if (P.has('put') && wildlife.live.length) {
     const A = wildlife.live.find(A => !P.get('sp') || A.sp === P.get('sp')) || wildlife.live[0], d = +P.get('put'), a = J.yaw + (+(P.get('pa') || 0)) * Math.PI / 180;
@@ -715,7 +720,7 @@ function shotSetup() {
   // 看某只动物 / 某个人（look=wild|folk，d=距离）：镜头摆在它斜前方
   if (P.get('look')) {
     const k = P.get('look'), d = +(P.get('d') || 5);
-    const A = k === 'folk' ? folk.list.find(F => F.o) : wildlife.live.find(A => !P.get('sp') || A.sp === P.get('sp'));
+    const A = k === 'folk' ? folk.list.find(F => F.o && (!fk || F === fk)) : wildlife.live.find(A => !P.get('sp') || A.sp === P.get('sp'));
     const o = A && (A.o ? A.o.root : A.root);
     if (o) {
       o.updateMatrixWorld(true);

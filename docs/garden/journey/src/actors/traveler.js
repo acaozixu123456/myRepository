@@ -268,7 +268,7 @@ export async function makeTraveler(url, opts = {}) {
 }
 
 // 背上的小行囊：帆布包、包盖、上面横绑一卷铺盖。按绑定姿势量出后背的位置，挂在 spine_03 上跟着身体动
-function makePack(model, bones) {
+export function makePack(model, bones) {
   const sp = bones.spine_03; if (!sp) return null;
   model.updateMatrixWorld(true);
   const c = sp.getWorldPosition(new THREE.Vector3());

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>路上偶遇的人：造型</title>
+<style>html,body{margin:0;background:#7f8c8d;overflow:hidden}canvas{display:block}</style>
+</head>
+<body>
+<script type="module">
+// 开发用：五个路人的造型并排看。?views=fq,bq &ids=lantern,painter &zoom= &cy= &pose=1（摆各自的姿势）&old=1（原来的素材模型）
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { sculptTraveler } from '../src/actors/sculpt.js';
+import { makePack } from '../src/actors/traveler.js';
+import { FOLK_LOOKS } from '../src/game/folk.js';
+const P = new URLSearchParams(location.search);
+const views = (P.get('views') || 'fq,bq').split(',');
+const WHO = { lantern: 'm', painter: 'f', fisher: 'm', hiker: 'm', keeper: 'f' };
+const POSE = { lantern: 'Idle_Lantern_Loop', painter: 'Sitting_Idle_Loop', fisher: 'Sitting_Idle_Loop', hiker: 'Walk_Loop', keeper: 'Idle_FoldArms_Loop' };
+const ids = (P.get('ids') || 'lantern,painter,fisher,hiker,keeper').split(',');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setScissorTest(true);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#a9bccb');
+scene.add(new THREE.HemisphereLight('#dfe8ff', '#7a6a50', 1.5));
+const sun = new THREE.DirectionalLight('#ffe6c8', 2.6); sun.position.set(2.5, 5, 4); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -2, right: 2, top: 2.5, bottom: -0.5, near: 0.5, far: 12 }); sun.shadow.bias = -0.0015; sun.shadow.normalBias = 0.02;
+scene.add(sun);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(4, 40), new THREE.MeshLambertMaterial({ color: '#7d8a58' })); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+const T = [], info = {};
+for (const id of ids) {
+  const g = await new GLTFLoader().loadAsync('../../public/journey/res/traveler-' + WHO[id] + '.glb');
+  const model = g.scene, mixer = new THREE.AnimationMixer(model);
+  const sc = P.has('old') ? null : sculptTraveler(model, { who: WHO[id], look: FOLK_LOOKS[id] });
+  if (sc) info[id] = Math.round(sc.geometry.userData.buildMs);
+  const bones = {}; model.traverse(o => { if (o.isBone) bones[o.name] = o; });
+  const clip = n => g.animations.find(c => c.name === n);
+  const idle = mixer.clipAction(clip('Idle_Loop')); idle.play(); mixer.update(0);
+  if (id === 'hiker' && sc) { const pk = makePack(model, bones); const k = pk.userData.at; sc.userData.drape(r => [r, [k.x + 0.04, k.y + 0.255, k.z - 0.005], [k.x + 0.052, k.y + 0.18, k.z - 0.064], [k.x + 0.058, k.y + 0.04, k.z - 0.088], [k.x + 0.052, k.y - 0.09, k.z - 0.096]]); }
+  if (P.has('pose')) { idle.stop(); mixer.clipAction(clip(POSE[id])).play(); mixer.update(0.4); }
+  model.updateMatrixWorld(true);
+  scene.add(model); T.push(model);
+}
+const zoom = +(P.get('zoom') || 1), cy = +(P.get('cy') || 0.98), H = 2.15 / zoom;
+const cam = new THREE.PerspectiveCamera(26, 1, 0.05, 100);
+const dirs = { front: [0, 0.05, 1], side: [-1, 0.05, 0], back: [0, 0.05, -1], fq: [-0.6, 0.12, 1], bq: [0.55, 0.3, -1], game: [0.25, 0.55, -1] };
+const cols = T.length, rows = views.length, Wd = innerWidth / cols, Hh = innerHeight / rows;
+T.forEach((t, i) => {
+  for (const o of T) o.visible = o === t;
+  views.forEach((vw, r) => {
+    const d = new THREE.Vector3(...(dirs[vw] || dirs.front)).normalize();
+    cam.aspect = Wd / Hh; cam.updateProjectionMatrix();
+    const dist = H * 1.05 / Math.tan(THREE.MathUtils.degToRad(13)) / 2;
+    cam.position.set(0, cy, 0).addScaledVector(d, dist); cam.lookAt(0, cy, 0);
+    const x = i * Wd, y = innerHeight - (r + 1) * Hh;
+    renderer.setViewport(x, y, Wd, Hh); renderer.setScissor(x, y, Wd, Hh);
+    renderer.render(scene, cam);
+  });
+});
+window.__info = info; window.__ready = true;
+</script>
+</body>
+</html>
