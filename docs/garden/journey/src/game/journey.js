@@ -14,7 +14,7 @@ import { viewpointShot, campShot, introShot, releaseShot } from './cam.js';
 import { Explored } from './map.js';
 import { findOf } from './finds.js';
 import { ITEMS, BUFFS, BUFF_K, itemOf, dishOf, cookDish, dishEffect, effectText } from './cook.js';
-import { Stamina } from './stamina.js';
+import { Stamina, PIP } from './stamina.js';
 
 export const GAITS = {
   foot: [{ name: '散步', v: 1.15 }, { name: '快走', v: 1.8 }, { name: '跑', v: 4.4 }],
@@ -107,6 +107,8 @@ export class Journey {
     // 行囊：bag 材料 { id: 个数 }，dishes 做好带着的菜 [{ id, s 分量 }]，recipes 做出来过的菜谱，buffs 吃了以后一阵子的好处 { k: 还剩几秒 }
     // picked：今天摘过的地方 Map(第几处 → 哪一天)，第二天又长出来；items 摘到过的种类
     this.bag = {}; this.dishes = []; this.recipes = new Set(); this.buffs = {}; this.picked = new Map(); this.items = new Set();
+    // 风羽（game/feathers.js）：拿到的羽毛、点亮的石灯、听过的心愿；每三根羽毛气力多一格
+    this.feathers = new Set(); this.lamps = new Set(); this.wishes = new Set();
     this.reset();
     this.tod = START_TOD; this.dayN = 1; this.ff = null; this.sitTo = null; this.night = 0; this.owlT = 20;
     // 声音：三道叠水的位置、阵风、冰鸣、换曲用的区域（带一点滞后，免得在边界上来回切）
@@ -224,6 +226,7 @@ export class Journey {
     this.shore.x = this.p.x; this.shore.z = this.p.z; this.told.clear();
     this.bag = {}; this.dishes = []; this.recipes.clear(); this.buffs = {}; this.picked.clear(); this.items.clear(); this.cold = false; this.nearSpot = null; this.forageDay = -1;
     if (this.pot) this.pot.visible = false;
+    this.feathers.clear(); this.lamps.clear(); this.wishes.clear(); this.quests?.refresh(this);
     this.steerT = 0; this.idleT = 0; this.travelT = 0;
     this.dist = { foot: 0, ride: 0, fly: 0 };
     this.visited = []; this.inPlace = new Set(); this.placeT = 0; this.labelT = 0;
@@ -1026,7 +1029,8 @@ export class Journey {
     this.nearSpot = !nearS && !this.nearFolk && !this.sitting && this.mode === 'foot' && !this.trans && !busy ? this.forage?.userData.near(this.p) || null : null;
     const it = this.nearSpot && itemOf(this.nearSpot.kind);
     if (this.mode === 'ride' && !this.trans && !this.told.has('rideForage') && this.forage?.userData.near(this.p, 3.2)) this.tell('rideForage', '一闪一闪的是能摘的东西\n下马（换成步行）走过去才摘得到', 5.5);
-    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : this.nearFolk ? '打个招呼' : it ? it.verb + it.name : '');
+    const qa = !nearS && !this.nearFolk && !it && !this.sitting && !this.trans && !busy && this.quests ? this.quests.actionText(this) : '';
+    this.ui.action?.(nearS ? (this.camps.has(nearS.id) ? '坐下烤火' : '点起篝火') : this.nearFolk ? '打个招呼' : it ? it.verb + it.name : qa);
     // 提示
     if (this.hintT > 0) { this.hintT -= dt; if (this.hintT <= 0) this.ui.hint(''); }
   }
@@ -1312,6 +1316,19 @@ export class Journey {
     if (!this.sitting) this.say(`吃了${D.name}：${effectText(d)}`, 4);
     return { D, e };
   }
+  // 拿到一根风羽：每三根气力多一格
+  award(id) {
+    if (this.feathers.has(id)) return false;
+    this.feathers.add(id);
+    const n = this.feathers.size, up = n % 3 === 0;
+    this.stamina.bonus = Math.floor(n / 3) * PIP;
+    if (up) this.stamina.fill();
+    this.note('feather', id);
+    this.sound.chime?.(0.75);
+    this.ui.banner('风羽 +1', up ? '攒够三根，气力多了一格' : `再找 ${3 - n % 3} 根，气力多一格`, 5);
+    this.onFeather?.(id);
+    return true;
+  }
   // ---------- 存档 ----------
   snapshot() {
     const mode = this.mode === 'fly' || this.uiMode === 'fly' ? 'foot' : this.uiMode === 'ride' ? 'ride' : 'foot';
@@ -1327,6 +1344,7 @@ export class Journey {
       bag: { ...this.bag }, dishes: this.dishes.map(d => ({ id: d.id, s: Math.round(d.s * 100) / 100 })), recipes: [...this.recipes], items: [...this.items],
       buffs: Object.fromEntries(Object.entries(this.buffs).filter(([, v]) => v > 1).map(([k, v]) => [k, Math.round(v)])),
       picked: [...this.picked].filter(([, d]) => d === this.dayN),
+      feathers: [...this.feathers], lamps: [...this.lamps], wishes: [...this.wishes],
     };
   }
   restore(s) {
@@ -1372,6 +1390,11 @@ export class Journey {
     this.buffs = {}; if (s.buffs && typeof s.buffs === 'object') for (const k of Object.keys(BUFFS)) { const v = +s.buffs[k]; if (v > 0) this.buffs[k] = Math.min(1800, v); }
     this.picked = new Map((Array.isArray(s.picked) ? s.picked : []).filter(e => Array.isArray(e) && e[1] === this.dayN).map(e => [e[0] | 0, e[1] | 0]));
     this.forageDay = -1;
+    // 风羽
+    const strs = a => (Array.isArray(a) ? a : []).filter(v => typeof v === 'string').slice(0, 60);
+    this.feathers = new Set(strs(s.feathers).filter(id => !this.quests || this.quests.of(id))); this.lamps = new Set(strs(s.lamps)); this.wishes = new Set(strs(s.wishes));
+    this.stamina.bonus = Math.floor(this.feathers.size / 3) * PIP; this.stamina.v = Math.min(this.stamina.v, this.stamina.max);
+    this.quests?.refresh(this);
     this.applyDay(0);
     this.cam.play(introShot(() => this.yaw));
   }

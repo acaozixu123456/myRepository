@@ -23,6 +23,7 @@ import { Tread } from './world/tread.js';
 import { makeThermals } from './world/thermals.js';
 import { makeForage, makePot } from './world/forage.js';
 import { CookUI } from './game/cookui.js';
+import { Feathers, WISHES, canGive, give, wishText } from './game/feathers.js';
 import { BUFFS, mmss } from './game/cook.js';
 import { Ripples } from './world/ripples.js';
 import { makePuffs } from './world/puffs.js';
@@ -85,7 +86,7 @@ setSize();
 let lighthouse = null, weather = null;
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 let mapView = null, beacon = null, journal = null, photo = null;
-let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null, thermals = null, forage = null, cookUI = null;
+let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null, thermals = null, forage = null, cookUI = null, quests = null;
 const album = new Album();
 // 每个地方的封面照片（没设就用第一张）；照片和封面都不跟着“从头再来”清掉
 let covers = {};
@@ -158,7 +159,7 @@ const ui = initUI({
   setZoom: (z, done) => { if (!cam) return; cam.zoomTarget = z; if (done) ui.tool('bCam', z > 0.5); },
   gait: i => { if (!J) return; J.gait = i; ui.gait(i); },
   mode: m => { if (J && playing) J.setMode(m); },
-  action: t => { if (t === '坐下烤火' || t === '点起篝火') J?.sitAtCamp(); else if (t === '打个招呼') greet(); else if (J?.pickNear()) save(); },
+  action: t => { if (t === '坐下烤火' || t === '点起篝火') J?.sitAtCamp(); else if (t === '打个招呼') greet(); else if (J?.pickNear() || quests?.act(J)) save(); },
   toggleAuto: () => { if (!J) return; J.auto = !J.auto; ui.tool('bAuto', J.auto); if (J.auto) ui.hint(''); },
   toggleCam: () => { if (!cam) return; cam.zoomTarget = cam.zoomTarget > 0.5 ? 0 : 1; ui.tool('bCam', cam.zoomTarget > 0.5); },
   toggleSound: () => { if (!sound) return; sound.setMuted(!sound.muted); ui.tool('bSound', !sound.muted); },
@@ -293,6 +294,12 @@ function greet() {
   const k = J.tip(F.tips);
   if (k) note = F.tips.some(id => !J.found[id] && findOf(id)?.kind !== 'sky') ? '他说的地方，地图上标出来了' : '记进了手记的「见闻」';
   if (n === 0) note = '新的见闻 · 偶遇的人' + (note ? ' · ' + note : '');
+  // 心愿：他想要的东西带来了就给他，换一根风羽；没带就再提一句
+  const W = WISHES[F.id];
+  if (W && !J.feathers.has(W.id)) {
+    if (J.wishes.has(W.id) && canGive(J, W)) { give(J, W); line = W.thanks; note = `给了他${wishText(W)}`; setTimeout(() => J.award(W.id), 1600); }
+    else { line = (n === 0 ? line : '') + W.ask; note = (note ? note + ' · ' : '') + (J.wishes.has(W.id) ? `他想要${wishText(W)}` : `他的心愿记进了手记的「行囊」页：${wishText(W)}`); J.wishes.add(W.id); }
+  }
   ui.talk(findOf(F.id).name, line, note);
   sound.chime?.(0.35);
   save();
@@ -380,6 +387,7 @@ function step(dt) {
   fx.puffs.update(px);
   thermals.userData.update(px);
   forage.userData.update(px);
+  quests.update(dt, J, px);
   ui.stamina(J.stamina, dt);
   // 身上的好处：暖和、脚步轻…（还剩多久），冷的时候也说一声
   buffList.length = 0;
@@ -514,6 +522,9 @@ async function load() {
   forage = makeForage(W.land, J.places); scene.add(forage); J.forage = forage;
   J.pot = makePot(); scene.add(J.pot);
   J.onItem = I => ui.found({ kind: 'item', name: I.name, sub: I.where }, 5);
+  // 风羽：高处的羽毛、风环、风铃、石灯
+  quests = new Feathers({ land: W.land, places: J.places, thermals: thermals.userData.list, sites: J.sites }); scene.add(quests.group); J.quests = quests; quests.refresh(J);
+  J.onFeather = () => save();
   cookUI = new CookUI({ J, sound, onChange: () => save(), onClose: () => document.body.classList.remove('cooking') });
   J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);
   // 路上的动物、鸟、偶遇的人
@@ -529,7 +540,7 @@ async function load() {
   wildlife.onFlee = () => { if (!fleeTold && playing && J.speed > 1) { fleeTold = true; setTimeout(() => ui.hint('动物怕快的东西，下次换成「散步」慢慢走过去'), 1200); J.hintT = 5; } };
   // 截图：先把动物和人的模型下载好（wild=1）
   if (SHOT && P.has('wild')) { wildlife.preload(); wildlife.load('snowfox'); folk.load('m'); folk.load('f'); await Promise.all([...Object.values(wildlife.loading), ...Object.values(folk.loading)]); }
-  if (P.has('debug')) { window.__step = (dt, n = 1) => { for (let i = 0; i < n; i++) step(dt); W.update(camera, focus, 0, true); draw(); }; window.__wild = wildlife; window.__birds = birds; window.__folk = folk; window.__sky = skyfx; window.__forage = forage; window.__cook = cookUI; }   // 截图沿用老镜头，参数好复现
+  if (P.has('debug')) { window.__step = (dt, n = 1) => { for (let i = 0; i < n; i++) step(dt); W.update(camera, focus, 0, true); draw(); }; window.__wild = wildlife; window.__birds = birds; window.__folk = folk; window.__sky = skyfx; window.__forage = forage; window.__cook = cookUI; window.__quests = quests; }   // 截图沿用老镜头，参数好复现
   if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; }   // 调试：测试脚本读状态
   beacon = makeBeacon(); scene.add(beacon);
   mapView = new MapView({
@@ -559,7 +570,7 @@ async function load() {
     setCover: (place, id) => { covers[place] = id; try { localStorage.setItem('journey.covers', JSON.stringify(covers)); } catch {} },
     openMap: id => { if (!mapView.isOpen) mapView.open(id); },
     markOf: id => markOf(id),
-    onBag: () => save(),
+    onBag: () => save(), quests: () => quests,
     travel: P => travel(P), canTravel: () => J.canTravel(),
     restart: () => {
       ui.fade(true); clearSave();
