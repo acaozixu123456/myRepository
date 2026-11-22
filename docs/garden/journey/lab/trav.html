@@ -27,7 +27,7 @@ const ground = new THREE.Mesh(new THREE.CircleGeometry(3, 32), new THREE.MeshLam
 const T = await makeTraveler('../../public/journey/res/traveler-' + (P.get('t') || 'm') + '.glb');
 scene.add(T.root);
 const pose = P.get('pose') || 'ride';
-T.set(pose, 50);
+T.set(pose === 'climb' || pose === 'air' ? 'loco' : pose, 50);
 const pitch = +(P.get('pitch') || 70) * Math.PI / 180;
 let W = null;
 if (P.get('wings')) {
@@ -39,9 +39,10 @@ if (P.get('wings')) {
   W.show(true);
 }
 if (pose === 'fly') T.root.rotation.set(pitch, 0, 0, 'YXZ');
+if (pose === 'climb') T.root.rotation.set(+(P.get('lean') || 25) * Math.PI / 180, 0, 0, 'YXZ');
 const sim = +(P.get('sim') || 2), v = +(P.get('v') || 0), flap = +(P.get('flap') || 0);
 for (let t = 0; t < sim; t += 1 / 30) {
-  T.update(1 / 30, { speed: v, ride: { lean: 0.05, spread: 1 }, fly: { pitch, bank: 0, flap } });
+  T.update(1 / 30, { speed: v, ride: { lean: 0.05, spread: 1 }, fly: { pitch, bank: 0, flap }, air: pose === 'air', climb: pose === 'climb' ? { k: 1, phase: +(P.get('ph') || 0), reach: +(P.get('reach') || 1) } : null, swim: { v } });
   W?.update(1 / 30, { flap, glide: !flap });
 }
 if (pose === 'fly') { T.root.updateMatrixWorld(true); const p = T.pelvis(new THREE.Vector3()); T.root.position.y += 1.0 - p.y; }
