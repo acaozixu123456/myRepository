@@ -12,6 +12,8 @@ import { makeBambooModel } from './bamboo.js';
 import { loadFlora, floraMaterials, ScatterLayer, placeFlora, canopyTexture, forestFloor, buildImpostors } from './flora.js';
 import { FarShadow, makeTreeShadowCards } from './shadows.js';
 import { buildMeadow } from './meadow.js';
+import { buildIsles, isleFlora } from './isles.js';
+import { buildWhale } from './whale.js';
 
 export const RES = 'res/';
 
@@ -49,6 +51,8 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   scene.add(W.ice = buildIce());
   scene.add(W.sea = buildSea(land));
   scene.add(W.mirror = buildMirror());
+  scene.add(W.isles = buildIsles());
+  scene.add(W.whale = buildWhale(land));
   await opts.yieldFn?.();
 
   say('正在种树…');
@@ -64,6 +68,12 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   const canopy = canopyTexture(placed.trees, land); lap('canopy');
   U.uCanopy.value = canopy.tex;
   forestFloor(splat, placed.trees, land);
+  // 浮岛上的树和花草：并进清单里（在算树荫、林下的地面之后，免得岛下面的地上也有树荫）
+  {
+    const F = isleFlora(Object.keys(placed.small));
+    placed.trees.push(...F.trees);
+    for (const [k, a] of Object.entries(F.small)) { const o = placed.small[k], n = new Float32Array(o.length + a.length); n.set(o); n.set(a, o.length); placed.small[k] = n; }
+  }
   // 近处的真树：按种类分层；离得近的投影子
   const byType = {};
   for (const t of placed.trees) { if (t.far) continue; (byType[t.t] ||= []).push(t); }

@@ -5,6 +5,7 @@
 import { DOM, bankW, lakeQ, ICE_Q, FALLS, mirrorE } from '../world/land.js';
 import { SEA, coastCT } from '../world/route.js';
 import { ROAD, STREAM, LAKE, SPOTS, MIRROR } from '../world/route.js';
+import { isleSpan } from '../world/isles.js';
 import { fbm } from '../world/noise.js';
 
 const sst = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -162,6 +163,12 @@ export class MapBake {
               const ed = sst(-1.4, 0, e) * 0.5; r += (150 - r) * ed; g += (176 - g) * ed; b += (200 - b) * ed;
             }
           }
+        }
+        // 浮岛：飘在镜之原上面的几块草地，带一道深色的边和一点影子
+        if (Math.abs(x - MIRROR.x) < 80 && Math.abs(z - MIRROR.z) < 70) {
+          const sp = isleSpan(x, z, 0.9), sh = isleSpan(x - 2.5, z - 2.5, 0);
+          if (sh && !isleSpan(x, z, 0)) { r *= 0.86; g *= 0.88; b *= 0.92; }
+          if (sp) { const inn = isleSpan(x, z, -0.2); if (inn) { const v = 0.5 + 0.5 * Math.sin(x * 1.3 + z * 0.7); r = 150 + 16 * v; g = 190 + 12 * v; b = 110 + 10 * v; } else { r = 96; g = 104; b = 84; } }
         }
         // 溪水：中间深一点，岸边一道深色描边
         const sd = SD[k] * w0 + SD[k1] * w1 + SD[k2] * w2 + SD[k3] * w3;

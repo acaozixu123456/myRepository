@@ -15,6 +15,7 @@ import { Explored } from './map.js';
 import { findOf } from './finds.js';
 import { ITEMS, BUFFS, BUFF_K, itemOf, dishOf, cookDish, dishEffect, effectText } from './cook.js';
 import { Stamina, PIP } from './stamina.js';
+import { ISLES, isleTop, isleSpan, isleWater } from '../world/isles.js';
 
 export const GAITS = {
   foot: [{ name: '散步', v: 1.15 }, { name: '快走', v: 1.8 }, { name: '跑', v: 4.4 }],
@@ -65,6 +66,7 @@ export function makePlaces() {
     { id: 'cove', name: '西湾沙滩', sub: '浪一层一层推上沙滩', where: '竹林里的小路走到头，就是海', x: cv.x - 17, z: cv.z - 5, r: 30 },
     { id: 'cape', name: '海角灯塔', sub: '天一暗，灯就亮了', where: '沙滩往南，顺着崖上的小路爬上海角', x: LIGHTHOUSE.x + 4, z: LIGHTHOUSE.z + 6, r: 18 },
     { id: 'mirror', name: '镜之原', sub: '天在脚下，云从蹄子边上飘过去', where: '山口营地往北有条小路，一直爬到头', x: MIRROR.x + 8, z: MIRROR.z + 38, r: 24 },
+    { id: 'isles', isle: true, name: '云上浮岛', sub: '草地飘在天上，底下是一整片镜子', where: '镜之原南岸有一股上升的风，张着翅膀让它托上去', x: ISLES[2].x, z: ISLES[2].z, r: 16 },
     { id: 'springs', name: '冰湖温泉', sub: '冒着白汽的池子，泡进去就不冷了', where: '冰湖营地往西几步，湖岸边上', x: SPRINGS.x, z: SPRINGS.z, r: 9 },
     { id: 'sky', name: '云端', sub: '整个谷地都在脚下', where: '找一股上升的风，张着翅膀让它托上去', alt: 50 },
     // 野外营地：第一次到会出横幅，坐下就点起篝火（以后夜里那堆火都亮着），地图上可以一键过去
@@ -89,7 +91,9 @@ export class Journey {
     this.sites = this.camp.userData.sites; this.site = this.sites[0];
     for (const S of this.sites) S.lit = 0;
     this.lightSite = null;
-    this.groundAt = (x, z) => { const b = this.bridge.heightAt(x, z); return b === null ? this.land.heightExact(x, z) : b; };
+    this.landAt = (x, z) => { const b = this.bridge.heightAt(x, z); return b === null ? this.land.heightExact(x, z) : b; };
+    // 浮岛（world/isles.js）：人在岛面那么高、或者更高的时候，脚下的“地”是岛面；在岛下面就还是地上
+    this.groundAt = (x, z) => { const t = isleTop(x, z); return t !== null && this.p.y > t - 1.5 ? t : this.landAt(x, z); };
     for (const [k, M] of Object.entries(this.mounts)) {
       if (!M) continue;
       M.key = k; M.st = { p: new THREE.Vector3(), yaw: 0, speed: 0, turn: 0, slope: 0, idleT: 0, goal: null, shown: false };
@@ -153,9 +157,11 @@ export class Journey {
     this.T = T; T.set(g, 50);
   }
   // 截图、调试用：直接摆到某处
-  teleport(x, z, yaw, mode = 'ride', alt = 30) {
+  teleport(x, z, yaw, mode = 'ride', alt = 30, isle = false) {
     this.trans = null; this.waitMount = false; this.sitting = false;
     this.clearFoot();
+    this.p.y = isle ? 1e4 : -1e4;       // 落在岛上还是岛下面的地上
+    if (isle && mode === 'ride') mode = 'foot';
     this.p.set(x, this.groundAt(x, z), z); this.yaw = this.yawT = this.faceYaw = yaw;
     this.speed = 0; this.vy = 0;
     this.mode = mode;
@@ -173,6 +179,8 @@ export class Journey {
 
   // 地图上点“去这里”：落在离那个地方最近的路上（或者地方边上），面朝那里；飞着的就飞到那儿上空
   arrival(P) {
+    // 浮岛：落在第一座岛上，面朝下一座
+    if (P.isle) { const A = ISLES[0], B = ISLES[1]; return { x: A.x + 2, z: A.z + 3, yaw: Math.atan2(B.x - A.x, B.z - A.z), isle: true }; }
     let best = null;
     for (const path of [ROAD, TRAIL, SEAWAY, CAPEWAY]) {
       const q = path.nearest(P.x, P.z, P.r + 25, {});
@@ -207,8 +215,9 @@ export class Journey {
   travelTo(P) {
     if (!this.canTravel()) return false;
     const a = this.arrival(P), fly = this.mode === 'fly';
-    this.teleport(a.x, a.z, a.yaw, fly ? 'fly' : this.mode === 'ride' ? 'ride' : 'foot', 22);
-    if (fly) { this.alt = 22; this.climb = 0; }
+    if (a.isle) this.teleport(a.x, a.z, a.yaw, 'foot', 0, true);
+    else this.teleport(a.x, a.z, a.yaw, fly ? 'fly' : this.mode === 'ride' ? 'ride' : 'foot', 22);
+    if (fly && !a.isle) { this.alt = 22; this.climb = 0; }
     this.phase = 'play'; this.holding = false; this.glance = null;
     this.inPlace.clear(); this.placeT = 0; this.ui.place('');
     this.explored.reveal(a.x, a.z, 46);
@@ -350,6 +359,7 @@ export class Journey {
   }
   // 叫坐骑：在附近就小跑过来，太远就从身后不远处跑过来
   callMount() {
+    if (this.onIsle()) { this.say('这么高的地方，马上不来'); return; }
     if (this.air || this.climbing || this.swimming || this.sliding) { this.say(this.swimming ? '先上岸再叫坐骑' : '先站稳再叫坐骑'); return; }
     const M = this.mount, S = M.st;
     const right = _v.set(-Math.cos(this.yaw), 0, Math.sin(this.yaw));
@@ -357,7 +367,7 @@ export class Journey {
     if (!S.shown || S.p.distanceTo(this.p) > 45) {
       const back = new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
       S.p.copy(this.p).addScaledVector(back, 16).addScaledVector(right, 5);
-      S.p.y = this.groundAt(S.p.x, S.p.z); S.yaw = this.yaw; S.shown = true; M.root.visible = true;
+      S.p.y = this.landAt(S.p.x, S.p.z); S.yaw = this.yaw; S.shown = true; M.root.visible = true;
     }
     S.goal = goal; S.goalYaw = this.yaw;
     this.waitMount = true;
@@ -463,7 +473,9 @@ export class Journey {
     else if (this.swimming && depth < SWIM_OUT) { this.swimming = false; this.T.set('loco', 4); this.p.y = this.groundAt(x, z); }
     if (this.swimming) return this.swimMove(dt, go);
     // 脚下的坡：(gx, gz) 指向坡上
-    const e = 0.5, gx = (this.groundAt(x + e, z) - this.groundAt(x - e, z)) / (2 * e), gz = (this.groundAt(x, z + e) - this.groundAt(x, z - e)) / (2 * e);
+    const e = 0.5; let gx = (this.groundAt(x + e, z) - this.groundAt(x - e, z)) / (2 * e), gz = (this.groundAt(x, z + e) - this.groundAt(x, z - e)) / (2 * e);
+    // 浮岛边上：外面是几十米的落差，不算坡（走出去就掉下去，翅膀自己张开）
+    if (Math.hypot(gx, gz) > 2.5 && this.onIsle(x, z)) gx = gz = 0;
     const steep = this.steep = Math.hypot(gx, gz);
     if (this.sliding) return this.slideMove(dt, gx, gz, steep);
     if (this.climbing) return this.climbMove(dt, go, gx, gz, steep);
@@ -503,9 +515,12 @@ export class Journey {
     const res = this.colliders.resolve(nx, nz, 0.32, 0);
     [nx, nz] = this.bound(res[0], res[1]);
     this.dist.foot += Math.hypot(nx - x, nz - z);
-    this.p.set(nx, this.groundAt(nx, nz), nz);
+    const g1 = this.groundAt(nx, nz);
+    // 从浮岛边上走出去：腾空
+    if (g1 < this.p.y - 2.5) { this.p.set(nx, this.p.y, nz); this.leap(0); this.tell('isleEdge', '从岛边走出去就掉下去了\n别怕，掉一会儿翅膀会自己张开', 5); return; }
+    this.p.set(nx, g1, nz);
     const hf = this.groundAt(nx + fx * 0.6, nz + fz * 0.6), hb = this.groundAt(nx - fx * 0.6, nz - fz * 0.6);
-    this.slope = damp(this.slope, -Math.atan((hf - hb) / 1.2), 6, dt);
+    this.slope = damp(this.slope, Math.abs(hf - hb) > 3 ? 0 : -Math.atan((hf - hb) / 1.2), 6, dt);
   }
   grab() { this.climbing = true; this.sliding = false; this.speed = 0; }
   // 离开地面：vy 往上的速度（跳是 6.3，跑出坎边是 1）
@@ -683,7 +698,12 @@ export class Journey {
     const k = sstep(4.5, 2, q.dist);
     this.yawT = this.yaw + wrap(want - this.yaw) * Math.min(1, dt * 3 * k + 0.02);
   }
+  // 是不是站在（或者飞在）浮岛上面
+  onIsle(x = this.p.x, z = this.p.z) { const t = isleTop(x, z); return t !== null && this.p.y > t - 1.5; }
+  // 这一点是不是在岛的石头里面（头顶算 1.9 米）
+  inRock(x, y, z) { const s = isleSpan(x, z); return !!s && y < s[1] - 1.5 && y + 1.9 > s[0]; }
   waterDepth(x, z) {
+    if (this.onIsle(x, z)) return isleWater(x, z);
     const sea = this.land.seaDepth(x, z);
     if (sea > 0) return sea;
     const pool = this.land.poolDepth(x, z);
@@ -696,6 +716,7 @@ export class Journey {
   }
   // 脚下是什么：水、冰、雪还是土
   surface(x, z, wet) {
+    if (this.onIsle(x, z)) return this.waterDepth(x, z) > wet ? 'water' : 'dirt';
     if (this.waterDepth(x, z) > wet) return 'water';
     if (this.land.height(x, z) - this.land.ground(x, z) > 0.02) return 'ice';
     // 沙滩上的沙子踩起来和雪差不多，软软的
@@ -739,8 +760,13 @@ export class Journey {
     // 范围：离谷地中心 780 米以内（冰湖在西北差不多 600 米远）
     const dx = nx - CENTER.x, dz = nz - CENTER.z, rr = Math.hypot(dx, dz);
     if (rr > 780) { this.yawT = this.yaw + wrap(Math.atan2(-dx, -dz) - this.yaw) * 0.04; this.steerT = 0.5; this.hintOnce('再往外云太厚了，往回飞'); }
-    const ng = this.land.surfaceY(nx, nz);
-    const floor = ng + 1.05, ceil = Math.min(ng + 160, 260);
+    // 浮岛：撞到岛的石头就挡住（从下面顶上去的只是不再升）；飞到岛面上方，岛面就是地
+    if (this.inRock(nx, ny, nz)) {
+      if (!this.inRock(nx, this.p.y, nz)) { ny = this.p.y; this.vy = Math.min(this.vy, 0); }
+      else { nx = this.p.x; nz = this.p.z; this.speed *= 0.6; if (this.inRock(nx, ny, nz)) { ny = this.p.y; this.vy = 0; } this.hintOnce('前面是岛的石头，绕一下，或者飞高一点'); }
+    }
+    const ng = this.land.surfaceY(nx, nz), it = isleTop(nx, nz), isle = it !== null && Math.max(ny, this.p.y) > it - 1.5;
+    const floor = (isle ? it : ng) + 1.05, ceil = Math.min(ng + 160, 260);
     if (ny < floor) { ny = floor; this.vy = Math.max(0, this.vy); if (descending || !this.flapping) this.touchdown(); }
     if (ny > ceil) { ny = ceil; this.vy = Math.min(0, this.vy); }
     this.dist.fly += Math.hypot(nx - this.p.x, nz - this.p.z);
@@ -844,13 +870,13 @@ export class Journey {
           S.speed = damp(S.speed, vT * Math.max(0, Math.cos(wrap(Math.atan2(dx, dz) - S.yaw))), d > 0.9 ? 2 : 4, dt);
           let nx = S.p.x + Math.sin(S.yaw) * S.speed * dt, nz = S.p.z + Math.cos(S.yaw) * S.speed * dt;
           const r = this.colliders.resolve(nx, nz, 0.7, 0); nx = r[0]; nz = r[1];
-          S.p.set(nx, this.groundAt(nx, nz), nz);
+          S.p.set(nx, this.landAt(nx, nz), nz);
           if (d < 1.2 && S.speed < 0.35) S.goal = null;   // 到了（人在旁边的话，上面会接着上马）
         } else { S.speed = damp(S.speed, 0, 3, dt); S.turn = damp(S.turn, 0, 3, dt); }
         // 离得太远就先回去了
         if (!S.goal && S.p.distanceTo(this.p) > 140 && this.mode !== 'ride') { M.root.visible = false; S.shown = false; continue; }
         const fx = Math.sin(S.yaw), fz = Math.cos(S.yaw);
-        const hf = this.groundAt(S.p.x + fx * 0.6, S.p.z + fz * 0.6), hb = this.groundAt(S.p.x - fx * 0.6, S.p.z - fz * 0.6);
+        const hf = this.landAt(S.p.x + fx * 0.6, S.p.z + fz * 0.6), hb = this.landAt(S.p.x - fx * 0.6, S.p.z - fz * 0.6);
         S.slope = damp(S.slope, -Math.atan((hf - hb) / 1.2), 6, dt);
       }
       S.idleT = S.speed > 0.05 ? 0 : S.idleT + dt;
@@ -858,7 +884,7 @@ export class Journey {
       if (M.tilt) M.root.rotation.set(S.slope, S.yaw, 0, 'YXZ'); else M.root.rotation.set(0, S.yaw, 0);
       M.root.updateMatrixWorld(true);
       const graze = !ridden && S.idleT > 4 || (this.sitting && !ridden);
-      M.update(dt, { speed: S.speed, turn: S.turn, slope: S.slope, terrain: this.groundAt, graze });
+      M.update(dt, { speed: S.speed, turn: S.turn, slope: S.slope, terrain: this.landAt, graze });
     }
   }
   startMount() {
@@ -981,7 +1007,7 @@ export class Journey {
       this.placeT = 0.3;
       const alt = this.mode === 'fly' ? this.alt : 0;
       for (const P of this.places) {
-        const inside = P.alt ? alt > P.alt : Math.hypot(this.p.x - P.x, this.p.z - P.z) < P.r;
+        const inside = P.isle ? this.mode !== 'fly' && !this.air && this.onIsle() : P.alt ? alt > P.alt : Math.hypot(this.p.x - P.x, this.p.z - P.z) < P.r;
         const was = this.inPlace.has(P.id);
         if (inside && !was) {
           this.inPlace.add(P.id);
@@ -990,7 +1016,7 @@ export class Journey {
           this.lastPlace = P;
           if (P.id === 'bridge' && !this.glanceDone && this.mode !== 'fly') { this.glanceDone = true; this.glance = { t: 0, dur: 7, x: 62, z: -118 }; }
         } else if (!inside && was) {
-          const far = P.alt ? alt < P.alt - 8 : Math.hypot(this.p.x - P.x, this.p.z - P.z) > P.r * 1.3;
+          const far = P.isle ? !this.onIsle() : P.alt ? alt < P.alt - 8 : Math.hypot(this.p.x - P.x, this.p.z - P.z) > P.r * 1.3;
           if (far) { this.inPlace.delete(P.id); if (this.lastPlace === P) this.ui.place(''); }
         }
       }
@@ -1350,7 +1376,7 @@ export class Journey {
     const mode = this.mode === 'fly' || this.uiMode === 'fly' ? 'foot' : this.uiMode === 'ride' ? 'ride' : 'foot';
     const r = v => Math.round(v * 100) / 100;
     return {
-      mount: this.mountKey, mode, x: r(this.p.x), z: r(this.p.z), yaw: r(this.yaw), tod: r(this.tod), day: this.dayN,
+      mount: this.mountKey, mode, x: r(this.p.x), z: r(this.p.z), isle: this.mode === 'foot' && !this.air && this.onIsle() ? 1 : 0, yaw: r(this.yaw), tod: r(this.tod), day: this.dayN,
       visited: [...this.visited], dist: { foot: Math.round(this.dist.foot), ride: Math.round(this.dist.ride), fly: Math.round(this.dist.fly) },
       travelT: Math.round(this.travelT), gaits: { ...this.gaits }, viewDone: this.viewDone, glanceDone: this.glanceDone,
       ex: this.explored.encode(), way: this.waypoint ? { ...this.waypoint } : null,
@@ -1373,7 +1399,7 @@ export class Journey {
         .sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
       if (P) { x = P.x; z = P.z; } else { ROAD.at(SPOTS.start, _p); x = _p.x; z = _p.z; }
     }
-    this.teleport(x, z, yaw, s.mode === 'ride' ? 'ride' : 'foot');
+    this.teleport(x, z, yaw, s.mode === 'ride' ? 'ride' : 'foot', 30, !!s.isle && isleTop(x, z) !== null);
     this.phase = 'intro';
     this.tod = Number.isFinite(+s.tod) ? ((+s.tod % 24) + 24) % 24 : START_TOD;
     this.dayN = Math.max(1, s.day | 0);

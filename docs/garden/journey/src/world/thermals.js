@@ -46,7 +46,7 @@ void main() {
   #include <colorspace_fragment>
 }`;
 
-export function makeThermals(land) {
+export function makeThermals(land, extra = []) {
   const list = [];
   // up：风能把人托到比附近最高的地面还高多少米（崖下的风要吹过崖顶才有用）
   const add = (id, x, z, r, up) => {
@@ -64,6 +64,9 @@ export function makeThermals(land) {
   { const p = STREAM.at(70, {}); add('pass', p.x + 14, p.z + 10, 10, 44); }                             // 雪原山口
   add('lake', LAKE.x + 18, LAKE.z + 30, 11, 50);                         // 冰湖上
   add('beach', -400, -20, 11, 48);                                       // 西湾沙滩
+
+  // 浮岛上的风：底在岛面上，不是在地上
+  for (const T of extra) list.push({ ...T });
 
   const n = list.length * PER;
   const aC = new Float32Array(n * 4), aI = new Float32Array(n * 4), pos = new Float32Array(n * 3);
