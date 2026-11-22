@@ -55,6 +55,19 @@ const farOK = installShadows();
 let post = null, postOn = false;
 const draw = () => { if (post && postOn) post.render(scene, camera); else renderer.render(scene, camera); };
 const canvas = document.getElementById('c');
+// 上次没打开（手机内存不够页面被系统关掉、显卡掉线）：这次自动低一档画质开，一直不行就降到「低」。
+// 打开前记一笔，玩稳了（开始走 15 秒，或停在开始画面 60 秒）或自己离开页面才擦掉；没擦掉就说明上次是半路死掉的。
+const BOOT = 'journey.boot', SAFE = 'journey.q.safe';
+let bootFails = 0, safeQ = null, safeMsg = '';
+try { const b = JSON.parse(localStorage.getItem(BOOT) || 'null'); if (b && Date.now() - b.t < 30 * 60e3) bootFails = b.n | 0; safeQ = localStorage.getItem(SAFE); } catch {}
+const markBoot = n => { try { localStorage.setItem(BOOT, JSON.stringify({ t: Date.now(), n })); } catch {} };
+let lost = false;     // 显卡掉线、正要重开：这时离开页面不算“自己离开”
+const clearBoot = () => { if (lost) return; try { localStorage.removeItem(BOOT); } catch {} };
+if (!SHOT) {
+  markBoot(bootFails + 1);
+  addEventListener('pagehide', clearBoot);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) clearBoot(); else { markBoot(1); bootOkT = 0; } });
+}
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: SHOT });
 renderer.toneMapping = THREE.CustomToneMapping;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -440,6 +453,7 @@ function frame() {
   step(dt);
   draw();
   if (quality.frame(rdt)) showPerf();
+  bootTick(Math.min(rdt, 0.5));
 }
 
 // ---------- 旅人 ----------
@@ -477,7 +491,19 @@ async function load() {
   // 电脑从「极高」开始，手机从「高」开始（帧数不够会自己往下降）；截图默认还是「高」，好和以前的图对比
   // 这台电脑上次带不动「极高」自己降下来了，就记着，下次直接从降到的那档开始（再点回「自动」会重新试）
   let autoQ = null; try { autoQ = localStorage.getItem('journey.q.auto'); } catch {}
-  const q0 = P.get('q') || (!SHOT && isDesktop() ? (TIERS[autoQ] ? autoQ : 'ultra') : 'high');
+  let q0 = P.get('q') || (!SHOT && isDesktop() ? (TIERS[autoQ] ? autoQ : 'ultra') : 'high');
+  // 上次半路死掉了：在上次的档位上再低一档，并记住（点画质按钮回到「自动」会清掉）
+
+  if (!SHOT && !P.has('q')) {
+    const ORDER = ['ultra', 'high', 'mid', 'low'];
+    if (bootFails > 0) {
+      const base = TIERS[safeQ] ? safeQ : q0;
+      safeQ = ORDER[Math.min(ORDER.indexOf(base) + 1, ORDER.length - 1)];
+      try { localStorage.setItem(SAFE, safeQ); } catch {}
+      safeMsg = `上次没能打开，这次先用「${TIERS[safeQ].label}」画质（点右上角画质可以换回「自动」）`;
+    }
+    if (TIERS[safeQ]) q0 = safeQ;
+  }
   // 先开始下载人和坐骑
   const travP = loadTraveler(travKey);
   const horseP = loadAnimal(RES + 'horseA.glb').catch(e => { console.warn('[j] horse', e); return null; });
@@ -528,8 +554,10 @@ async function load() {
   cam.blocker = (ax, az, bx, bz) => colliders.firstHit(ax, az, bx, bz);
   sound = new Sound(RES);
   quality = new Quality(applyTier, q0);
-  quality.onAutoDrop = t => { try { if (t) localStorage.setItem('journey.q.auto', t); else localStorage.removeItem('journey.q.auto'); } catch {} };
+  quality.onAutoDrop = t => { try { if (t) localStorage.setItem('journey.q.auto', t); else { localStorage.removeItem('journey.q.auto'); localStorage.removeItem(SAFE); } } catch {} };
   if (SHOT || P.has('q')) quality.mode = q0;
+  // 降到「低」还是打不开过：清晰度也降（自动模式平时不降清晰度）
+  else if (TIERS[safeQ] && safeQ === 'low' && bootFails > 0) quality.mode = 'low';
   applyTier(quality.tier);
   if (!fx.on) { T.swayGain = 0; for (const M of Object.values(mounts)) if (M) { M.swayGain = 0; if (M.rig) M.rig.swayGain = 0; } }
   J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight, weather, focus, fx, thermals });
@@ -751,10 +779,22 @@ async function shotSetup() {
   one();
 }
 
+// 显卡掉线（手机内存紧时 Safari 会这样）：画面会一直黑着，干脆记一笔、自动用低一档重开
+canvas.addEventListener('webglcontextlost', e => {
+  e.preventDefault(); if (SHOT || lost) return;
+  lost = true; markBoot(Math.max(1, bootFails + 1));
+  try { ui.hint('画面掉线了，正在用低一点的画质重新打开…'); } catch {}
+  setTimeout(() => location.reload(), 1500);
+});
+// 玩稳了就擦掉“正在打开”那一笔
+let bootOkT = 0;
+const bootTick = dt => { if (bootOkT < 0) return; bootOkT += playing ? dt : dt / 4; if (bootOkT > 15) { bootOkT = -1; clearBoot(); } };
+
 load().then(() => {
   document.body.classList.add('ready');
   if (SHOT) return shotSetup();
   ui.ready(); showPerf();
+  if (safeMsg) ui.loading(safeMsg);
   clock.getDelta();
   frame();
 }).catch(e => { console.error(e); ui.failed('出错了：' + (e && e.message || e)); });
