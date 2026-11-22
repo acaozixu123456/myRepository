@@ -20,6 +20,9 @@ export const U = {
   uShadowRadius: { value: 26 },
   // 远影（world/shadows.js）：中心 x、z，半径，开没开
   uFarShadow: { value: new THREE.Vector4(0, 0, 150, 0) },
+  // 云影：一张能无缝拼接的云团图；uCloud = 影子多深、云团多大算遮住、图现在飘到哪（两个数）
+  uCloudTex: { value: null },
+  uCloud: { value: new THREE.Vector4(0, 0.5, 0, 0) },
   // 画质「低」时关掉地面凹凸、岩壁贴图这些细活（手机上省一截）
   uFine: { value: 1 },
   uWind: { value: 1 },
@@ -72,6 +75,18 @@ vec3 jFog( vec3 col, vec3 wp ) {
   return mix( col, jFogColor( normalize( d ) ), jFogAmount( wp ) );
 }`;
 export { FOG_FN };
+
+// 云影：天上的云在地上投下一块块慢慢飘的影子。顺着太阳的方向把这一点挪到「云那一层」再查图，
+// 所以山坡上的影子会跟着地势斜过去；只压太阳直射的光，天光不动
+const CLOUD_FN = /* glsl */`
+uniform sampler2D uCloudTex; uniform vec4 uCloud;
+float jCloud( vec3 wp ) {
+  if ( uCloud.x <= 0.0 ) return 1.0;
+  vec2 p = wp.xz + ( 240.0 - wp.y ) * uSunDir.xz / max( uSunDir.y, 0.24 );
+  float n = texture2D( uCloudTex, p * ${(1 / 640).toFixed(6)} + uCloud.zw ).r;
+  return 1.0 - uCloud.x * smoothstep( uCloud.y, uCloud.y + 0.1, n );
+}`;
+export { CLOUD_FN };
 
 // 接在 <shadowmap_pars_fragment> 后面。近处的影子到圈边渐渐让给远影；远影到自己的圈边渐渐没了
 const SHADOW_FN = /* glsl */`
@@ -163,7 +178,9 @@ export function patch(mat, opts = {}) {
       uniform sampler2D uGobo; uniform sampler2D uCanopy; uniform vec4 uCanopyBox; uniform float uGoboStrength; uniform vec3 uSunColor;
       uniform vec3 uShadowCenter; uniform float uShadowRadius; uniform float uFadeR; uniform vec4 uSee;
       float jDither() { return fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ); }
-      ${FOG_FN}`);
+      ${FOG_FN}
+      ${CLOUD_FN}
+      float jClK = 1.0;`).replace('#include <common>', '#define J_CLOUD\n#include <common>');
     // 草叶：两面都按偏向朝上的法线打光（背对镜头的那一面不会黑成一条）
     if (o.grassN) fs = fs.replace('#include <normal_fragment_begin>', `#include <normal_fragment_begin>
       normal = normalize( mix( normalize( vNormal ), normalize( ( viewMatrix * vec4( 0.0, 1.0, 0.0, 0.0 ) ).xyz ), ${o.grassN.toFixed(2)} ) );`);
@@ -248,7 +265,7 @@ export function patch(mat, opts = {}) {
       {
         vec3 vd = normalize( vWP - cameraPosition );
         float bk = pow( max( dot( vd, uSunDir ), 0.0 ), 3.0 );
-        reflectedLight.directDiffuse += uSunColor * diffuseColor.rgb * bk * ${o.sss.toFixed(2)};
+        reflectedLight.directDiffuse += uSunColor * diffuseColor.rgb * bk * ${o.sss.toFixed(2)} * jClK;
       }`;
     if (post) fs = fs.replace('#include <lights_fragment_end>', '#include <lights_fragment_end>\n' + post);
     if (o.fog) fs = fs.replace('#include <opaque_fragment>', `#include <opaque_fragment>
@@ -285,6 +302,26 @@ export function makeGobo(blurWrap) {
   const b = blurWrap(a, S, 2, 2);
   const data = new Uint8Array(S * S * 4);
   for (let i = 0; i < S * S; i++) { data[i * 4] = data[i * 4 + 1] = data[i * 4 + 2] = b[i]; data[i * 4 + 3] = 255; }
+  const t = new THREE.DataTexture(data, S, S, THREE.RGBAFormat);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.NoColorSpace;
+  t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.needsUpdate = true;
+  return t;
+}
+
+// 云团图：几层大小不同的噪声叠起来，四边能无缝接上（在地上反复铺开）
+export function makeCloudTex() {
+  const S = 256, data = new Uint8Array(S * S * 4);
+  const h = (x, y, k) => { let n = Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(k + 1, 1013904223) | 0; n = Math.imul(n ^ (n >>> 13), 1274126177); return ((n ^ (n >>> 16)) >>> 0) / 4294967296; };
+  const vn = (x, y, per, k) => {
+    const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+    const a = h(ix % per, iy % per, k), b = h((ix + 1) % per, iy % per, k), c = h(ix % per, (iy + 1) % per, k), d = h((ix + 1) % per, (iy + 1) % per, k);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  };
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+    let s = 0, a = 0.5, f = 5, n = 0;
+    for (let o = 0; o < 5; o++) { s += a * vn(x / S * f, y / S * f, f, o); n += a; a *= 0.5; f *= 2; }
+    const i = (y * S + x) * 4; data[i] = data[i + 1] = data[i + 2] = Math.round(255 * s / n); data[i + 3] = 255;
+  }
   const t = new THREE.DataTexture(data, S, S, THREE.RGBAFormat);
   t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.NoColorSpace;
   t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.needsUpdate = true;

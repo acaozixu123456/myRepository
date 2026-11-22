@@ -1,6 +1,6 @@
 // 把地形、天空、水、植被、道具组装起来；每帧更新近处植被。
 import * as THREE from 'three';
-import { U, makeGobo } from './atmo.js';
+import { U, makeGobo, makeCloudTex } from './atmo.js';
 import { buildLand, DOM } from './land.js';
 import { makeDetailTex, makeDirtTex, makeSplat, makeBiome, terrainMaterial, terrainUniforms, tuftMaterial, makeTuftGeo, buildNear, buildFar, blurWrap } from './terrain.js';
 import { makeSky } from './sky.js';
@@ -34,6 +34,7 @@ export async function buildWorld(renderer, scene, quality, say, opts = {}) {
   const splat = W.splat = makeSplat(land); lap('splat');
   const biome = W.biome = makeBiome(land); lap('biome');
   U.uGobo.value = makeGobo(blurWrap); lap('gobo');
+  U.uCloudTex.value = makeCloudTex(); lap('cloud');
   U.uCanopyBox.value.set(DOM.x0, DOM.z0, DOM.w, DOM.d);
   const tuni = W.terrainUni = terrainUniforms(splat, detail, dirt, biome);
   const tmat = W.terrainMat = terrainMaterial(tuni);

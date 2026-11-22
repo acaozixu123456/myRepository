@@ -113,6 +113,8 @@ function applyTier(tier) {
   // 极高：远处的真影子、贴地的暗
   if (post) { post.setAO(!!T.ao && P.get('ao') !== '0'); post.aoDebug = P.get('ao') === 'show'; }
   if (W) { W.farShadow.set(!!T.far && farOK && P.get('far') !== '0', T.far?.R, T.far?.size); W.setQuality(tier); W.update(camera, focus, 0, true); }
+  // 极高：林间光柱（要有远影那张图才做得出来）
+  if (post && W) { post.setRays(!!T.rays && W.farShadow.on && P.get('rays') !== '0', W.farShadow.light); post.rayDebug = P.get('rays') === 'show'; if (P.has('rayk')) post.rayK = +P.get('rayk'); if (P.has('rayb')) post.rayBase = +P.get('rayb'); }
 }
 const showPerf = () => ui.perf(`${Math.round(quality.fps) || '--'} fps · ${quality.label}`);
 
@@ -495,7 +497,7 @@ async function load() {
   vistas = buildVistas(W.land); scene.add(vistas);
   skyfx = makeSkyFx(); scene.add(skyfx);
   thermals = makeThermals(W.land); scene.add(thermals);
-  weather = new Weather(); scene.add(weather.group);
+  weather = new Weather(); scene.add(weather.group); if (P.get('clouds') === '0') weather.cloudShadow = false;
   const campP = buildCamp(W.land, RES);
   say('正在牵马…');
   await nextFrame();

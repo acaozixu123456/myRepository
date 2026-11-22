@@ -114,6 +114,8 @@ function makeSnow(n) {
   return pts;
 }
 
+// 云影飘的速度：每秒 3.5 米（除以云团图铺开的边长 640 米）
+const CLOUD_V = 3.5 / 640;
 export class Weather {
   constructor() {
     this.kind = 'clear';        // 现在（或者正要变成）的天气
@@ -177,6 +179,9 @@ export class Weather {
     day.hemi.intensity *= 1 + 0.3 * o + 0.15 * f;
     U.uAmb.value.multiplyScalar(1 + 0.3 * o + 0.15 * f); U.uAmbG.value.multiplyScalar(1 + 0.3 * o + 0.15 * f);
     U.uGoboStrength.value = 0.85 * (1 - 0.85 * o);
+    // 云影：晴天、多云时地上有一块块跟着风飘的云影（云越多块越大）；阴天整片都暗了就不分了。画质「低」不画
+    { const c = U.uCloud.value, t = U.uTime.value * CLOUD_V;
+      c.set(U.uFine.value > 0.5 && this.cloudShadow !== false ? 0.7 * (1 - o) * (1 - 0.5 * f) : 0, 0.56 - 0.2 * st.cloud - 0.05 * o, t * 0.92, t * 0.38); }
     if (day.renderer) day.renderer.toneMappingExposure = st.exp * (1 + 0.12 * o + 0.05 * f);
     // 雾：浓雾一百来米外就看不清了，颜色发白（朝太阳那边也不暖了）
     const fogC = _c.copy(U.uFogFar.value); grey(fogC, 0.7, 1.08);

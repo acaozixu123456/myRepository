@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { DOM, CENTER, bankW, SHOAL, lakeQ, ICE_Q } from './land.js';
 import { ROAD, STREAM, SPOTS, CREEK_END, CAMP_SITES, SEA, SEAWAY, LIGHTHOUSE, STACKS, VISTAS } from './route.js';
 import { bambooTextures } from './bamboo.js';
-import { patch, U, FOG_FN } from './atmo.js';
+import { patch, U, FOG_FN, CLOUD_FN } from './atmo.js';
 import { rng, fbm, vnoise, sstep, clamp } from './noise.js';
 import { autumnTint, snowLine } from './regions.js';
 
@@ -548,6 +548,7 @@ export function buildImpostors(renderer, models, mats, trees, fadeU) {
       varying vec2 vUv; varying vec3 vWP; varying float vTint; varying vec3 vRight; varying float vType; varying vec3 vTint3;
       #include <common>
       ${FOG_FN}
+      ${CLOUD_FN}
       float jDither() { return fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) ); }
       void main() {
         float fd = length( vWP.xz - cameraPosition.xz ) - uFadeR;
@@ -561,9 +562,10 @@ export function buildImpostors(renderer, models, mats, trees, fadeU) {
         float ndl = max( dot( n, uSunDir ), 0.0 );
         // 秋天的树：只给绿色的叶子上色（树干不变）
         vec3 alb = c.rgb * vTint * mix( vec3( 1.0 ), vTint3, smoothstep( 0.005, 0.04, c.g - c.r ) );
-        vec3 col = alb * ( mix( uAmbG, uAmb, n.y * 0.5 + 0.5 ) * 0.95 + uSunColor * ndl * 1.6 );
+        float cl = jCloud( vWP );   // 头顶有云的地方太阳光暗下来
+        vec3 col = alb * ( mix( uAmbG, uAmb, n.y * 0.5 + 0.5 ) * 0.95 + uSunColor * ndl * 1.6 * cl );
         vec3 vd = normalize( vWP - cameraPosition );
-        col += uSunColor * alb * pow( max( dot( vd, uSunDir ), 0.0 ), 3.0 ) * 0.5;
+        col += uSunColor * alb * pow( max( dot( vd, uSunDir ), 0.0 ), 3.0 ) * 0.5 * cl;
         col = jFog( col, vWP );
         gl_FragColor = vec4( col, 1.0 );
         #include <tonemapping_fragment>
