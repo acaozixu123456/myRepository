@@ -13,7 +13,8 @@ import { makeWings } from './actors/wings.js';
 import { CamRig } from './game/cam.js';
 import { Sound } from './game/audio.js';
 import { Journey, Colliders, GAITS, START_TOD } from './game/journey.js';
-import { Quality, TIERS } from './game/quality.js';
+import { Quality, TIERS, isDesktop } from './game/quality.js';
+import { installShadows } from './world/shadows.js';
 import { initUI } from './game/ui.js';
 import { DayLight, periodOf } from './world/daytime.js';
 import { SKY } from './world/sky.js';
@@ -48,6 +49,7 @@ const nextFrame = () => new Promise(r => requestAnimationFrame(() => r()));
 const MOUNT_ORDER = ['b', 'a', 'w', 'd'];
 
 installGrade();
+const farOK = installShadows();
 // 柔光和暗角（后期）：只在画质「高」（手动选「中」也算）时开；手机不支持或帧数不够降档了就直接画，不多这一遍
 let post = null, postOn = false;
 const draw = () => { if (post && postOn) post.render(scene, camera); else renderer.render(scene, camera); };
@@ -106,8 +108,10 @@ function applyTier(tier) {
   if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
   const c = sun.shadow.camera; c.left = c.bottom = -T.shadowR; c.right = c.top = T.shadowR; c.updateProjectionMatrix();
   U.uShadowRadius.value = T.shadowR; U.uFine.value = tier === 'low' ? 0 : 1;
-  postOn = tier === 'high' || (tier === 'mid' && quality?.mode !== 'auto');
-  if (W) { W.setQuality(tier); W.update(camera, focus, 0, true); }
+  postOn = tier === 'ultra' || tier === 'high' || (tier === 'mid' && quality?.mode !== 'auto');
+  // 极高：远处的真影子、贴地的暗
+  if (post) { post.setAO(!!T.ao && P.get('ao') !== '0'); post.aoDebug = P.get('ao') === 'show'; }
+  if (W) { W.farShadow.set(!!T.far && farOK && P.get('far') !== '0', T.far?.R, T.far?.size); W.setQuality(tier); W.update(camera, focus, 0, true); }
 }
 const showPerf = () => ui.perf(`${Math.round(quality.fps) || '--'} fps · ${quality.label}`);
 
@@ -121,6 +125,7 @@ function placeSun(center) {
   _sc.copy(center).addScaledVector(_sx, Math.round(px / texel) * texel - px).addScaledVector(_sy, Math.round(py / texel) * texel - py);
   sun.target.position.copy(_sc); sun.position.copy(_sc).addScaledVector(_sz, 80);
   U.uShadowCenter.value.copy(center);
+  W.farShadow.update(center, _sz);
 }
 
 // ---------- 界面回调 ----------
@@ -457,7 +462,10 @@ async function useTraveler(k) {
 // ---------- 加载 ----------
 async function load() {
   const say = t => ui.loading(t);
-  const q0 = P.get('q') || 'high';
+  // 电脑从「极高」开始，手机从「高」开始（帧数不够会自己往下降）；截图默认还是「高」，好和以前的图对比
+  // 这台电脑上次带不动「极高」自己降下来了，就记着，下次直接从降到的那档开始（再点回「自动」会重新试）
+  let autoQ = null; try { autoQ = localStorage.getItem('journey.q.auto'); } catch {}
+  const q0 = P.get('q') || (!SHOT && isDesktop() ? (TIERS[autoQ] ? autoQ : 'ultra') : 'high');
   // 先开始下载人和坐骑
   const travP = loadTraveler(travKey);
   const horseP = loadAnimal(RES + 'horseA.glb').catch(e => { console.warn('[j] horse', e); return null; });
@@ -505,6 +513,7 @@ async function load() {
   cam.blocker = (ax, az, bx, bz) => colliders.firstHit(ax, az, bx, bz);
   sound = new Sound(RES);
   quality = new Quality(applyTier, q0);
+  quality.onAutoDrop = t => { try { if (t) localStorage.setItem('journey.q.auto', t); else localStorage.removeItem('journey.q.auto'); } catch {} };
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
   if (!fx.on) { T.swayGain = 0; for (const M of Object.values(mounts)) if (M) { M.swayGain = 0; if (M.rig) M.rig.swayGain = 0; } }
@@ -530,7 +539,7 @@ async function load() {
   // 截图：先把动物和人的模型下载好（wild=1）
   if (SHOT && P.has('wild')) { wildlife.preload(); wildlife.load('snowfox'); folk.load('m'); folk.load('f'); await Promise.all([...Object.values(wildlife.loading), ...Object.values(folk.loading)]); }
   if (P.has('debug')) { window.__step = (dt, n = 1) => { for (let i = 0; i < n; i++) step(dt); W.update(camera, focus, 0, true); draw(); }; window.__wild = wildlife; window.__birds = birds; window.__folk = folk; window.__sky = skyfx; window.__forage = forage; window.__cook = cookUI; }   // 截图沿用老镜头，参数好复现
-  if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; }   // 调试：测试脚本读状态
+  if (P.has('debug')) { window.__J = J; window.__scene = scene; window.__TRAIL = TRAIL; window.__R = renderer; window.__cam = camera; window.__W = W; window.__post = post; window.__draw = draw; window.__sun = sun; }   // 调试：测试脚本读状态
   beacon = makeBeacon(); scene.add(beacon);
   mapView = new MapView({
     land: W.land, trees: W.placed.trees, explored: J.explored,
