@@ -405,7 +405,8 @@ function attachWings(T) {
   wings.group.scale.setScalar(wings.base * 0.35);
 }
 async function loadTraveler(k) {
-  if (!travelers[k]) travelers[k] = makeTraveler(RES + `traveler-${k}.glb`);
+  // ?trav=b：换成用代码捏的旅人小样（试看用，默认还是原来的）
+  if (!travelers[k]) travelers[k] = makeTraveler(RES + `traveler-${k}.glb`, { sculpt: P.get('trav') === 'b' });
   return travelers[k];
 }
 async function useTraveler(k) {

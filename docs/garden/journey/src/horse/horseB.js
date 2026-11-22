@@ -128,14 +128,14 @@ function carvePrims() {
 // ---------------- 小工具 ----------------
 const col = h => new THREE.Color(h);
 function hash3(x, y, z) { const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return s - Math.floor(s); }
-function vnoise(x, y, z) {
+export function vnoise(x, y, z) {
   const ix = Math.floor(x), iy = Math.floor(y), iz = Math.floor(z), fx = x - ix, fy = y - iy, fz = z - iz;
   const u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy), w = fz * fz * (3 - 2 * fz);
   const L = (a, b, t) => a + (b - a) * t;
   return L(L(L(hash3(ix, iy, iz), hash3(ix + 1, iy, iz), u), L(hash3(ix, iy + 1, iz), hash3(ix + 1, iy + 1, iz), u), v),
     L(L(hash3(ix, iy, iz + 1), hash3(ix + 1, iy, iz + 1), u), L(hash3(ix, iy + 1, iz + 1), hash3(ix + 1, iy + 1, iz + 1), u), v), w);
 }
-function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+export function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 function segDist(p, a, b) {
   const ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], ap = [p[0] - a[0], p[1] - a[1], p[2] - a[2]];
@@ -144,14 +144,15 @@ function segDist(p, a, b) {
 }
 
 // 网格累加器：所有部件合成一个几何体（一张贴图都不用，全靠顶点色）
-class Builder {
-  constructor() { this.pos = []; this.nor = []; this.col = []; this.glow = []; this.si = []; this.sw = []; this.idx = []; }
+export class Builder {
+  // bi：骨头名字 → 序号（默认是马的；旅人小样传自己的）
+  constructor(bi = BI) { this.bi = bi; this.pos = []; this.nor = []; this.col = []; this.glow = []; this.si = []; this.sw = []; this.idx = []; }
   get count() { return this.pos.length / 3; }
   vert(p, n, c, weights, glow = 0) {
     this.pos.push(p[0], p[1], p[2]); this.nor.push(n[0], n[1], n[2]); this.col.push(c.r, c.g, c.b); this.glow.push(glow);
     const w = Object.entries(weights).sort((a, b) => b[1] - a[1]).slice(0, 4);
     let s = 0; for (const e of w) s += e[1];
-    for (let i = 0; i < 4; i++) { this.si.push(w[i] ? BI[w[i][0]] : 0); this.sw.push(w[i] ? w[i][1] / s : 0); }
+    for (let i = 0; i < 4; i++) { this.si.push(w[i] ? this.bi[w[i][0]] : 0); this.sw.push(w[i] ? w[i][1] / s : 0); }
     return this.count - 1;
   }
   geometry() {
@@ -192,7 +193,7 @@ function rayToSurface(field, o, dir, maxT = 0.8) {
 }
 
 // 管子（鬃毛发束、尾巴发束都用它）：中心线 + 截面宽度/厚度函数
-function tube(B, pts, opts) {
+export function tube(B, pts, opts) {
   const { seg = 8, width, thick, color, weight, upHint = [0, 1, 0], flat = [1, 0, 0] } = opts;
   const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(...p)), false, 'centripetal');
   const N = opts.samples || 20;
