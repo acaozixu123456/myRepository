@@ -18,6 +18,8 @@ export const U = {
   uGoboStrength: { value: 0.85 },
   uShadowCenter: { value: new THREE.Vector3() },
   uShadowRadius: { value: 26 },
+  // 远影（world/shadows.js）：中心 x、z，半径，开没开
+  uFarShadow: { value: new THREE.Vector4(0, 0, 150, 0) },
   // 画质「低」时关掉地面凹凸、岩壁贴图这些细活（手机上省一截）
   uFine: { value: 1 },
   uWind: { value: 1 },
@@ -70,6 +72,28 @@ vec3 jFog( vec3 col, vec3 wp ) {
   return mix( col, jFogColor( normalize( d ) ), jFogAmount( wp ) );
 }`;
 export { FOG_FN };
+
+// 接在 <shadowmap_pars_fragment> 后面。近处的影子到圈边渐渐让给远影；远影到自己的圈边渐渐没了
+const SHADOW_FN = /* glsl */`
+#if defined( USE_SHADOWMAP ) && NUM_DIR_LIGHT_SHADOWS > 0
+uniform vec4 uFarShadow;
+float jShadow() {
+  float kN = 1.0 - smoothstep( uShadowRadius * 0.7, uShadowRadius * 0.95, length( vWP.xz - uShadowCenter.xz ) );
+  float sN = 1.0, sF = 1.0;
+  if ( kN > 0.0 ) sN = getShadow( directionalShadowMap[ 0 ], directionalLightShadows[ 0 ].shadowMapSize, directionalLightShadows[ 0 ].shadowIntensity, directionalLightShadows[ 0 ].shadowBias, directionalLightShadows[ 0 ].shadowRadius, vDirectionalShadowCoord[ 0 ] );
+  #if NUM_DIR_LIGHT_SHADOWS > 1
+  if ( kN < 1.0 ) {
+    float kF = 1.0 - smoothstep( uFarShadow.z * 0.8, uFarShadow.z * 0.97, length( vWP.xz - uFarShadow.xy ) );
+    #ifdef J_LEAF
+    kF *= 0.4;   // 树叶透光：远影落在树冠上只压一点，远处的树才不会一团黑
+    #endif
+    if ( kF > 0.0 ) sF = mix( 1.0, getShadow( directionalShadowMap[ 1 ], directionalLightShadows[ 1 ].shadowMapSize, directionalLightShadows[ 1 ].shadowIntensity, directionalLightShadows[ 1 ].shadowBias, directionalLightShadows[ 1 ].shadowRadius, vDirectionalShadowCoord[ 1 ] ), kF );
+  }
+  #endif
+  return mix( sF, sN, kN );
+}
+#endif`;
+
 
 // 草被踩倒：人和马走过的地方查「踩过的草」那张图，草叶往旁边倒下去、矮下去，过一会儿晃两下弹回来。
 // k 是倒多少（草丛 1，灌木只是被拨开一点）。只有离人十米以内才查图，远处的草不多花力气
@@ -177,10 +201,12 @@ export function patch(mat, opts = {}) {
           if ( jDither() > mix( 1.0, a, uSee.w ) ) discard;
         }`);
     }
-    if (o.shadowFade) {
-      fs = fs.replace('getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowIntensity, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] )',
-        'mix( 1.0, getShadow( directionalShadowMap[ i ], directionalLightShadow.shadowMapSize, directionalLightShadow.shadowIntensity, directionalLightShadow.shadowBias, directionalLightShadow.shadowRadius, vDirectionalShadowCoord[ i ] ), 1.0 - smoothstep( uShadowRadius * 0.62, uShadowRadius * 0.95, length( vWP.xz - uShadowCenter.xz ) ) )');
-    }
+    // 远处的树：叶子贴图缩小以后镂空的地方越来越多，树冠会变稀、发虚。离得越远把不透明度乘大一点，树冠保持厚实
+    if (o.wind === 'tree' && mat.alphaTest > 0) fs = fs.replace('#include <map_fragment>', `#include <map_fragment>
+      diffuseColor.a *= 1.0 + clamp( ( length( vWP - cameraPosition ) - 30.0 ) / 45.0, 0.0, 2.2 );`);
+    // 影子：身边一圈细影子到圈边渐渐淡掉，外面接上远影（见 world/shadows.js 里给光照循环打的补丁）
+    const leaf = o.wind === 'tree' && mat.alphaTest > 0;
+    if (o.shadowFade) fs = fs.replace('#include <shadowmap_pars_fragment>', '#include <shadowmap_pars_fragment>\n' + SHADOW_FN).replace('#include <common>', '#define J_SHADOW\n' + (leaf ? '#define J_LEAF\n' : '') + '#include <common>');
     // 人和动物（带轮廓光的材质）：颜色提亮提纯一点；背光面按天光补一层，不再是一团黑；轮廓光加强
     const toon = o.rim > 0;
     if (toon) fs = fs.replace('#include <color_fragment>', `#include <color_fragment>
@@ -227,6 +253,9 @@ export function patch(mat, opts = {}) {
     if (post) fs = fs.replace('#include <lights_fragment_end>', '#include <lights_fragment_end>\n' + post);
     if (o.fog) fs = fs.replace('#include <opaque_fragment>', `#include <opaque_fragment>
       gl_FragColor.rgb = jFog( gl_FragColor.rgb, vWP );`);
+    // 草丛、花草在画面的透明度那一格里记 0：后期那层「贴地的暗」不压它们，也不把它们当遮挡（不然草地发灰）
+    if (o.wind === 'grass' && (o.tread || 0) > 0.5) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 0.0;');
+    else if (leaf) fs = fs.replace('#include <opaque_fragment>', '#include <opaque_fragment>\n      gl_FragColor.a = 0.35;');   // 树冠只压三分之一
     sh.vertexShader = vs; sh.fragmentShader = fs;
   };
   const key = 'j' + JSON.stringify(o, (k, v) => (k === 'uniforms' ? undefined : v)) + (prev ? prev.toString().length : 0);

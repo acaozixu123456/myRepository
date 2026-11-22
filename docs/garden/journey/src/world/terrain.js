@@ -531,6 +531,7 @@ export function buildNear(land, mat) {
   geo.computeBoundingSphere();
   const mesh = new THREE.Mesh(geo, mat); mesh.receiveShadow = true; mesh.matrixAutoUpdate = false;
   group.add(mesh);
+  group.userData.mesh = mesh;
   // 按离镜头的远近换粗细（留一点余量，免得在边界上来回跳）；有一块变了就重拼索引，
   // 飞得快时一秒里会变很多次，最多 0.2 秒拼一次
   let pending = false, lastT = -1e9;

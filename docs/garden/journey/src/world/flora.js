@@ -126,7 +126,7 @@ const _f = new THREE.Frustum(), _m4 = new THREE.Matrix4(), _sph = new THREE.Sphe
 export class ScatterLayer {
   // parts: [{geo, mat}], items: Float32Array [x,y,z,ry,s,r,g,b] * n
   constructor(name, parts, items, opts = {}) {
-    this.name = name; this.r = opts.radius || 50; this.rMin = opts.rMin || 0; this.cull = opts.cull !== false;
+    this.name = name; this.r = opts.radius || 50; this.rMin = opts.rMin || 0; this.cull = opts.cull !== false; this.shadow = !!opts.shadow;
     this.n = items.length / 8; this.items = items;
     this.cell = 24; this.buckets = new Map();
     for (let i = 0; i < this.n; i++) {
@@ -143,8 +143,13 @@ export class ScatterLayer {
       if (p.tint !== false) { m.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3); m.instanceColor.setUsage(THREE.DynamicDrawUsage); }
       m.count = 0; m.frustumCulled = false; m.castShadow = !!opts.shadow; m.receiveShadow = opts.receive !== false;
       m.name = name;
+      // castR > 0：只有离人 castR 米以内的投影子。它们排在实例表最前面，画影子图时只画这一段
+      let keep = 0;
+      m.onBeforeShadow = () => { keep = m.count; if (this.castR > 0) m.count = Math.min(keep, this.nearCount); };
+      m.onAfterShadow = () => { m.count = keep; };
       return m;
     });
+    this.castR = 0; this.nearCount = 0;
     this.cap = cap; this.last = new THREE.Vector3(1e9, 0, 0); this.t = 0;
     this.group = new THREE.Group(); this.group.name = name; for (const m of this.meshes) this.group.add(m);
   }
@@ -158,13 +163,21 @@ export class ScatterLayer {
     const mat = this.meshes[0].instanceMatrix.array, col = this.col;
     let c = 0;
     const half = this.cell * 0.75;
+    // 要投影子的层分两遍：先放离人近的（投影子的），再放其余的
+    const cr2 = this.castR * this.castR, fx = focus.x, fz = focus.z, passes = this.castR > 0 ? 2 : 1;
+    for (const m of this.meshes) m.castShadow = this.castR > 0 || this.shadow;
+    for (let pass = 0; pass < passes; pass++) {
+    if (pass === 1) this.nearCount = c;
     for (const b of this.buckets.values()) {
       const dx = b.cx - cx, dz = b.cz - cz;
       if (dx * dx + dz * dz > (r + half) * (r + half)) continue;
-      if (this.cull) { _sph.center.set(b.cx, b.y + 4, b.cz); _sph.radius = half + 8; if (!_f.intersectsSphere(_sph)) continue; }
+      const nearB = passes === 2 && (b.cx - fx) ** 2 + (b.cz - fz) ** 2 < (this.castR + half) ** 2;
+      if (pass === 0 && passes === 2 && !nearB) continue;
+      if (this.cull && !nearB) { _sph.center.set(b.cx, b.y + 4, b.cz); _sph.radius = half + 8; if (!_f.intersectsSphere(_sph)) continue; }
       for (const i of b.list) {
         const o = i * 8, x = it[o], z = it[o + 2], ex = x - cx, ez = z - cz, d2 = ex * ex + ez * ez;
         if (d2 > r2 || d2 < rm2 || c >= this.cap) continue;
+        if (passes === 2 && ((x - fx) ** 2 + (z - fz) ** 2 < cr2) !== (pass === 0)) continue;
         const s = it[o + 4], cs = Math.cos(it[o + 3]) * s, sn = Math.sin(it[o + 3]) * s, m = c * 16;
         mat[m] = cs; mat[m + 1] = 0; mat[m + 2] = -sn; mat[m + 3] = 0;
         mat[m + 4] = 0; mat[m + 5] = s; mat[m + 6] = 0; mat[m + 7] = 0;
@@ -173,6 +186,7 @@ export class ScatterLayer {
         col[c * 3] = it[o + 5]; col[c * 3 + 1] = it[o + 6]; col[c * 3 + 2] = it[o + 7];
         c++;
       }
+    }
     }
     for (let k = 0; k < this.meshes.length; k++) {
       const m = this.meshes[k];
