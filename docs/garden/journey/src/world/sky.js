@@ -19,6 +19,7 @@ export const SKY = {
   uMoonDir: { value: new THREE.Vector3(0, -1, 0) },
   uOvercast: { value: 0 },
   uStars: { value: 0 }, uSunVis: { value: 1 }, uMoonI: { value: 0 }, uDpr: { value: 1 },
+  uAurora: { value: 0 },
   uMwN: { value: MW_N }, uMwA: { value: MW_A }, uMwB: { value: MW_B },
 };
 
@@ -33,7 +34,7 @@ const FS = /* glsl */`
 uniform float uTime; uniform vec3 uSunColor;
 uniform vec3 uZenith; uniform vec3 uMid; uniform vec3 uCloudLit; uniform vec3 uCloudShade; uniform vec3 uSunGlow; uniform float uCloudCover; uniform float uFine; uniform float uOvercast;
 uniform vec3 uSunPos; uniform vec3 uMoonDir; uniform float uStars; uniform float uMoonI; uniform float uDpr;
-uniform vec3 uMwN; uniform vec3 uMwA; uniform vec3 uMwB;
+uniform vec3 uMwN; uniform vec3 uMwA; uniform vec3 uMwB; uniform float uAurora;
 ${FOG_FN}
 varying vec3 vDir;
 float h21( vec2 p ) { p = fract( p * vec2( 123.34, 456.21 ) ); p += dot( p, p + 45.32 ); return fract( p.x * p.y ); }
@@ -96,6 +97,27 @@ void main() {
       col = mix( col, mc, disc * min( 1.0, uMoonI * 1.4 ) );
     }
   }
+  // 极光：北边天上几道慢慢摆的光帘。把视线和高空里一层层的平面相交，每层查一次「光带」在不在，
+  // 从下到上叠起来就是一道有高度的帘子；下边缘亮绿，往上变淡、带一点紫
+  vec3 au = vec3( 0.0 );
+  if ( uAurora > 0.01 && el > 0.015 ) {
+    vec2 base = dir.xz / max( el, 0.05 );
+    float jit = fract( 52.9829189 * fract( dot( gl_FragCoord.xy, vec2( 0.06711056, 0.00583715 ) ) ) );
+    for ( int i = 0; i < 12; i++ ) {
+      float fh = ( float( i ) + jit ) / 12.0;
+      vec2 q = base * ( 1.0 + fh * 0.55 );
+      // 两道光带：都横在北边（-z），弯弯曲曲地慢慢挪
+      float w1 = sin( q.x * 0.55 + uTime * 0.05 ) * 0.7 + ( vn( vec2( q.x * 0.5 + 3.0, uTime * 0.03 ) ) - 0.5 ) * 1.6;
+      float w2 = sin( q.x * 0.4 - uTime * 0.04 + 2.0 ) * 0.9 + ( vn( vec2( q.x * 0.35 - 7.0, uTime * 0.025 + 5.0 ) ) - 0.5 ) * 1.8;
+      float d1 = -q.y - 1.35 - w1 * 0.6, d2 = -q.y - 3.3 - w2;
+      // 帘子上一条条竖的光丝，亮亮暗暗地闪
+      float ray1 = 0.35 + 0.65 * vn( vec2( q.x * 6.0 + w1 * 2.0, uTime * 0.22 ) ), ray2 = 0.35 + 0.65 * vn( vec2( q.x * 4.5 + w2 * 2.0 + 9.0, uTime * 0.18 ) );
+      float b = exp( -d1 * d1 * 9.0 ) * ray1 * ( 0.6 + 0.4 * sin( q.x * 0.3 + uTime * 0.11 ) ) + exp( -d2 * d2 * 5.0 ) * ray2 * 0.7;
+      au += mix( vec3( 0.12, 1.0, 0.5 ), vec3( 0.55, 0.3, 0.95 ), smoothstep( 0.25, 1.0, fh ) ) * b * ( 1.0 - fh * 0.75 );
+    }
+    au *= uAurora * 0.17 * smoothstep( 0.015, 0.12, el ) * smoothstep( 1.0, 0.8, el );
+    col += au * 0.6;
+  }
   // 云：高处一层被风拉长的卷云，下面是一团团积云
   if ( el > -0.02 ) {
     vec2 drift = vec2( uTime * 0.006, uTime * 0.0025 );
@@ -133,6 +155,8 @@ void main() {
     float ov = uOvercast * smoothstep( -0.02, 0.12, el );
     col = mix( col, mix( uCloudShade, uCloudLit, 0.35 + 0.3 * n ) * 0.95, ov * 0.7 );
   }
+  // 极光有一部分透过云（云薄，光帘亮）
+  col += au * 0.4;
   // 太阳本体
   float disc = smoothstep( 0.99935, 0.99965, sd );
   col += ( vec3( 1.0, 0.92, 0.78 ) * disc * 9.0 + uSunColor * pow( sd, 900.0 ) * 3.0 * step( 0.0, dot( uSunDir, uSunPos ) - 0.9 ) ) * ( 1.0 - smoothstep( 0.35, 0.8, uOvercast ) );

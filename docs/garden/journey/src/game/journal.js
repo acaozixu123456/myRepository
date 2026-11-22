@@ -110,6 +110,7 @@ export class Journal {
       }
       if (e.k === 'feather') { const F = this.h.quests?.()?.of(e.id); return `拿到一根<b>风羽</b>${F ? `（${esc(F.name)}）` : ''}。`; }
       if (e.k === 'cook') { const D = dishOf(e.p); return D ? `在<b>${esc(name(e.id))}</b>做了一份<b>${esc(D.name)}</b>。` : ''; }
+      if (e.k === 'soak') return '在<b>冰湖温泉</b>泡了一会儿，浑身都暖和了。';
       if (e.k === 'sleep') return `在<b>${esc(name(e.id))}</b>的火边睡了一觉。`;
       if (e.k === 'photo') { const p = A.get(e.p); return `在<b>${esc(name(e.id))}</b>拍了张照片。${p ? `<button type="button" class="dthumb" data-photo="${p.id}" data-set="all"><img src="${p.url}" alt=""></button>` : ''}`; }
       return '';

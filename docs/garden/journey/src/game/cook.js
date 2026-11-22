@@ -1,5 +1,5 @@
 // 路上摘的东西和营地里做的饭。
-// 材料：十样，各长在各的地方（world/forage.js 摆在地上，走到跟前点互动按钮摘），第二天又长出来。
+// 材料：十一样，各长在各的地方（world/forage.js 摆在地上，走到跟前点互动按钮摘），第二天又长出来。
 // 料理：在营地坐下点「做饭」，挑一到三样下锅。放的是哪几种决定做出什么（同一种多放是加料，更顶用）；
 //       对不上菜谱的就是一锅杂烩。做出来过的菜谱记在手记的「行囊」页。
 // 吃了回气力，有的还多出几格临时的气力（黄色的），或者一阵子的好处（BUFFS）。
@@ -15,6 +15,7 @@ export const ITEMS = [
   { id: 'shoot', g: '笋', name: '竹笋', verb: '挖', where: '竹林山坳' },
   { id: 'shell', g: '贝', name: '海贝', verb: '捡', where: '西湾沙滩上' },
   { id: 'frost', g: '冰', name: '冰莓', verb: '摘', where: '雪原山口和冰湖边的雪地里' },
+  { id: 'salt', g: '盐', name: '盐花', verb: '掰', where: '镜之原的浅水里，一簇一簇白色的结晶' },
 ];
 export const itemOf = id => ITEMS.find(i => i.id === id);
 
@@ -41,6 +42,10 @@ export const DISHES = [
   { id: 'shootGrill', name: '烤笋', need: ['shoot'], rest: 45, sub: '剥开焦黑的壳，里面又白又嫩' },
   { id: 'shellGrill', name: '烤海贝', need: ['shell'], rest: 45, buff: [['fin', 2]], sub: '壳一张开就好了' },
   { id: 'frostJelly', name: '冰莓冻', need: ['frost'], rest: 40, buff: [['wind', 3]], sub: '凉得人一激灵，翅膀都轻了' },
+  { id: 'saltCake', name: '盐花薄饼', need: ['salt'], rest: 30, buff: [['light', 2]], sub: '就是面饼撒了盐，越嚼越香' },
+  { id: 'saltShroom', name: '盐烤蘑菇', need: ['salt', 'mushroom'], rest: 80, buff: [['grip', 5]], sub: '这回真的撒了盐，汁水都锁在里面', clue: '蘑菇撒上盐花' },
+  { id: 'saltShell', name: '盐焗海贝', need: ['salt', 'shell'], rest: 70, buff: [['fin', 8]], sub: '埋在热盐里焖熟的', clue: '海贝埋进盐花里' },
+  { id: 'saltNut', name: '椒盐栗子', need: ['salt', 'chestnut'], rest: 60, extra: 20, buff: [['warm', 5]], sub: '咸香咸香的，停不下来', clue: '栗子和盐花' },
   { id: 'soup', name: '溪葱蘑菇汤', need: ['mushroom', 'herb'], rest: 80, buff: [['warm', 6]], sub: '热乎乎的一碗，喝完手脚都暖了', clue: '蘑菇和溪葱一起煮' },
   { id: 'jam', name: '蜜渍野莓', need: ['berry', 'honey'], rest: 60, extra: 20, sub: '甜得眯眼睛', clue: '野莓拌上蜜花' },
   { id: 'applePie', name: '蜜烤苹果', need: ['apple', 'honey'], rest: 100, extra: 20, sub: '苹果芯里灌了蜜', clue: '野苹果和蜜花' },
