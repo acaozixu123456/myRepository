@@ -19,10 +19,12 @@ const GROUPS = ['loco', 'ride', 'sit', 'fly'];
 const _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _q3 = new THREE.Quaternion(), _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _ax = new THREE.Vector3();
 const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
 
-export async function makeTraveler(url) {
+// opts.sculpt：换成用代码捏的旅人小样（sculpt.js），骨骼和动作不变
+export async function makeTraveler(url, opts = {}) {
   const gltf = await new GLTFLoader().loadAsync(url);
   const model = gltf.scene;
-  model.traverse(o => {
+  if (opts.sculpt) (await import('./sculpt.js')).sculptTraveler(model);
+  else model.traverse(o => {
     if (!o.isMesh) return;
     o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
     const m = o.material, eyes = /Eye/.test(m.name);

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>旅人小样对比</title>
+<style>html,body{margin:0;background:#7f8c8d;overflow:hidden}canvas{display:block}#t{position:fixed;left:6px;top:4px;font:12px sans-serif;color:#fff;text-shadow:0 1px 2px #000}</style>
+</head>
+<body>
+<div id="t"></div>
+<script type="module">
+// 开发用：现在的旅人（上排）和用代码捏的小样（下排）摆同一个姿势对比。
+// ?pose=loco|ride|sit|fly &v=速度 &sim=秒 &views=front,side,back,q &only=new|old &zoom= &cy=
+import * as THREE from 'three';
+import { makeTraveler } from '../src/actors/traveler.js';
+const P = new URLSearchParams(location.search);
+const views = (P.get('views') || 'front,fq,side,back').split(',');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setScissorTest(true);
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#a9bccb');
+scene.add(new THREE.HemisphereLight('#dfe8ff', '#7a6a50', 1.5));
+const sun = new THREE.DirectionalLight('#ffe6c8', 2.6); sun.position.set(2.5, 5, 4); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -2, right: 2, top: 2.5, bottom: -0.5, near: 0.5, far: 12 }); sun.shadow.bias = -0.0015; sun.shadow.normalBias = 0.02;
+scene.add(sun);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(4, 40), new THREE.MeshLambertMaterial({ color: '#7d8a58' })); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+const url = '../../public/journey/res/traveler-' + (P.get('t') || 'm') + '.glb';
+const only = P.get('only');
+const T = [];
+if (only !== 'new') T.push(await makeTraveler(url));
+if (only !== 'old') T.push(await makeTraveler(url, { sculpt: true }));
+for (const t of T) scene.add(t.root);
+const pose = P.get('pose') || 'loco';
+const sim = +(P.get('sim') || 1), v = +(P.get('v') || 0);
+for (const t of T) {
+  t.set(pose, 50);
+  for (let s = 0; s < sim; s += 1 / 30) { t.update(1 / 30, { speed: v, ride: { lean: 0.05, spread: 1 } }); t.after?.(1 / 30); }
+  t.root.updateMatrixWorld(true);
+}
+const info = { poses: pose, v };
+const nm = T[T.length - 1].root.getObjectByName('sculpt'); if (nm) info.sculpt = nm.geometry.userData, info.verts = nm.geometry.attributes.position.count;
+const zoom = +(P.get('zoom') || 1), cy = +(P.get('cy') || 0.95), H = 2.05 / zoom;
+const cam = new THREE.PerspectiveCamera(26, 1, 0.05, 100);
+const dirs = { front: [0, 0.05, 1], side: [-1, 0.05, 0], left: [1, 0.05, 0], back: [0, 0.05, -1], q: [0.8, 0.25, 0.9], fq: [-0.6, 0.12, 1], bq: [0.55, 0.3, -1], top: [0, 1, -0.5], game: [0.25, 0.55, -1] };
+const cols = views.length, rows = T.length, Wd = innerWidth / cols, Hh = innerHeight / rows;
+T.forEach((t, r) => {
+  for (const o of T) o.root.visible = o === t;
+  views.forEach((vw, i) => {
+    const d = new THREE.Vector3(...(dirs[vw] || dirs.front)).normalize();
+    cam.aspect = Wd / Hh; cam.updateProjectionMatrix();
+    const dist = H * 1.05 / Math.tan(THREE.MathUtils.degToRad(13)) / 2;
+    cam.position.set(0, cy, 0).addScaledVector(d, dist); cam.lookAt(0, cy, 0);
+    const x = i * Wd, y = innerHeight - (r + 1) * Hh;
+    renderer.setViewport(x, y, Wd, Hh); renderer.setScissor(x, y, Wd, Hh);
+    renderer.render(scene, cam);
+  });
+});
+window.__info = info; window.__ready = true;
+</script>
+</body>
+</html>
