@@ -20,6 +20,7 @@ import { SKY } from './world/sky.js';
 import { makeFireflies } from './world/fireflies.js';
 import { makeFalling } from './world/particles.js';
 import { Tread } from './world/tread.js';
+import { makeThermals } from './world/thermals.js';
 import { Ripples } from './world/ripples.js';
 import { makePuffs } from './world/puffs.js';
 import { loadSave, writeSave, clearSave } from './game/save.js';
@@ -81,7 +82,7 @@ setSize();
 let lighthouse = null, weather = null;
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 let mapView = null, beacon = null, journal = null, photo = null;
-let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null;
+let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null, thermals = null;
 const album = new Album();
 // 每个地方的封面照片（没设就用第一张）；照片和封面都不跟着“从头再来”清掉
 let covers = {};
@@ -135,11 +136,20 @@ const ui = initUI({
     if (on && playing && !hintTimer) hintTimer = setTimeout(() => ui.hint(''), 1800);
   },
   look: (dx, dy) => J?.look(dx, dy),
-  stick: v => {
+  stick: (v, key) => {
     if (!J || !playing) return;
-    J.setStick(v);
+    if (v && key && (journal?.isOpen || mapView?.isOpen || photo?.active)) return;
+    J.setStick(v, key);
     if (v && !hintTimer) hintTimer = setTimeout(() => ui.hint(''), 1800);
   },
+  // 空格 / 圆按钮：跳、展翅、蹬开、扇翅膀
+  act: on => { if (!J || !playing) return; if (on && (journal?.isOpen || mapView?.isOpen || photo?.active)) return; J.act(on); },
+  flyKey: () => { if (J && playing) J.setMode(J.uiMode === 'fly' ? 'foot' : 'fly'); },
+  say: t => { if (J && playing) J.say(t, 2); },
+  // Esc：关掉开着的那一层（拍照、手记、地图）
+  escape: () => { if (photo?.active) photo.exit(); else if (journal?.isOpen) journal.close(); else if (mapView?.isOpen) mapView.close(); },
+  wheel: d => { if (cam && playing && !photo?.active) cam.distK = Math.min(2.6, Math.max(0.55, cam.distK * Math.exp(d * 0.0012))); },
+  setFree: on => setFree(on, true),
   setCtl: c => setCtl(c, true),
   zoom: () => cam?.zoomTarget ?? 0,
   setZoom: (z, done) => { if (!cam) return; cam.zoomTarget = z; if (done) ui.tool('bCam', z > 0.5); },
@@ -198,6 +208,15 @@ function setCtl(c, user) {
   J?.setCtl(c); ui.ctl(c);
   if (user && playing && J && !J.auto) { clearTimeout(hintTimer); hintTimer = 0; ui.hint(ui.goHint()); }
 }
+// 气力会不会用完（自在模式：什么都不耗气力），记在本机
+function setFree(on, user) {
+  if (user) try { localStorage.setItem('journey.free', on ? '1' : '0'); } catch {}
+  if (J) { J.stamina.free = !!on; if (on) J.stamina.fill(); }
+  ui.free(!!on);
+}
+let freePref = false;
+try { freePref = localStorage.getItem('journey.free') === '1'; } catch {}
+ui.free(freePref);
 let ctlPref = 'stick';
 try { ctlPref = localStorage.getItem('journey.ctl') || 'stick'; } catch {}
 ui.ctl(ctlPref === 'hold' ? 'hold' : 'stick');
@@ -220,6 +239,7 @@ function syncUI() {
     ui.stickGait(names?.[J.gait] || '');
   }
   ui.time(periodOf(J.ff ? J.ff.to : J.tod).name, !!J.ff || (J.sitting && J.sitTo !== null));
+  ui.actA(J.actName);
   if (weather) ui.weather(wxName(weather.id), !!weather.lock);
   // 坐在火边：下面一张小卡片，选歇到什么时候、拍照、看手记、起身
   ui.rest(J.sitting && J.campT > 1.2 && !photo?.active && !journal?.isOpen ? restState() : null);
@@ -353,6 +373,8 @@ function step(dt) {
   // 红叶谷的落叶、雪线上的雪花
   falling.userData.update(J.p, px, dt);
   fx.puffs.update(px);
+  thermals.userData.update(px);
+  ui.stamina(J.stamina, dt);
   // 标记点：屏幕上方的箭头（相对镜头朝向）和远处的光柱
   const w = playing ? J.waypoint : null;
   if (w) {
@@ -445,6 +467,7 @@ async function load() {
   lighthouse = buildLighthouse(W.land); scene.add(lighthouse);
   vistas = buildVistas(W.land); scene.add(vistas);
   skyfx = makeSkyFx(); scene.add(skyfx);
+  thermals = makeThermals(W.land); scene.add(thermals);
   weather = new Weather(); scene.add(weather.group);
   const campP = buildCamp(W.land, RES);
   say('正在牵马…');
@@ -474,7 +497,8 @@ async function load() {
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
   if (!fx.on) { T.swayGain = 0; for (const M of Object.values(mounts)) if (M) { M.swayGain = 0; if (M.rig) M.rig.swayGain = 0; } }
-  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight, weather, focus, fx });
+  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight, weather, focus, fx, thermals });
+  J.stamina.free = freePref || (SHOT && !P.has('stamina'));
   J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);
   // 路上的动物、鸟、偶遇的人
   const water = (x, z) => J.waterDepth(x, z);

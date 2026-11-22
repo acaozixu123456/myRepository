@@ -53,7 +53,7 @@ body.playing #hud { opacity: 1; }
 .modes button.on { background: var(--pillOn); color: var(--ink); }
 #act { pointer-events: auto; background: rgba(255, 226, 180, 0.94); color: var(--ink); border-radius: 18px; padding: 9px 18px; font-size: 15px; letter-spacing: 3px; box-shadow: 0 4px 16px rgba(80, 40, 10, 0.3); animation: breathe 2.4s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.05); } }
-.hint { margin-bottom: 0; font-size: 13px; letter-spacing: 2px; opacity: 0.85; text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); transition: opacity 1s; }
+.hint { margin-bottom: 0; text-align: center; white-space: pre-line; line-height: 1.5; font-size: 13px; letter-spacing: 2px; opacity: 0.85; text-shadow: 0 1px 6px rgba(60, 30, 10, 0.6); transition: opacity 1s; }
 .hint.off { opacity: 0; }
 
 /* ---------- 地图 ---------- */
@@ -143,9 +143,9 @@ body.holdctl #stickZone { display: none; }
 /* 开始卡片和手记里的“怎么走” */
 .ctl { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 0 12px; font-size: 13px; color: var(--ink); }
 .ctl span { opacity: 0.6; }
-.ctlPick { display: flex; background: rgba(120, 80, 50, 0.12); border-radius: 15px; padding: 2px; gap: 2px; }
-.ctlPick button { background: none; color: var(--ink); border-radius: 13px; padding: 5px 12px; font-size: 13px; }
-.ctlPick button.on { background: rgba(255, 252, 245, 0.95); box-shadow: 0 1px 4px rgba(80, 40, 10, 0.18); }
+.ctlPick, .optPick { display: flex; background: rgba(120, 80, 50, 0.12); border-radius: 15px; padding: 2px; gap: 2px; }
+.ctlPick button, .optPick button { background: none; color: var(--ink); border-radius: 13px; padding: 5px 12px; font-size: 13px; }
+.ctlPick button.on, .optPick button.on { background: rgba(255, 252, 245, 0.95); box-shadow: 0 1px 4px rgba(80, 40, 10, 0.18); }
 
 /* ---------- 拍照按钮 ---------- */
 .tools button.cam { background: rgba(255, 232, 196, 0.9); color: var(--ink); font-weight: 600; }
@@ -290,3 +290,19 @@ body.photo #found, body.photo #talk, body.resting #talk { display: none; }
 .pc.find .ph i.g { font-size: 30px; opacity: 0.5; font-family: "Songti SC", "STSong", "Noto Serif SC", serif; }
 .pc.find.todo .ph i.g { opacity: 0.22; }
 .pc.find .tip { color: #a5602c; opacity: 0.9; }
+
+/* ---------- 探索：气力、跳 / 展翅 / 扇翅 的圆按钮 ---------- */
+#stam { position: absolute; left: 50%; bottom: calc(var(--sab) + 124px); transform: translateX(-50%); display: flex; gap: 3px; opacity: 0; transition: opacity 0.5s; pointer-events: none; filter: drop-shadow(0 1px 4px rgba(60, 30, 10, 0.45)); }
+#stam.show { opacity: 1; transition-duration: 0.15s; }
+#stam i { display: block; width: 17px; height: 7px; border-radius: 4px 1px 4px 1px; background: rgba(40, 28, 20, 0.42); overflow: hidden; }
+#stam i b { display: block; height: 100%; width: 100%; background: #cdeea0; border-radius: inherit; }
+#stam i.ex b { background: #ffe08a; }
+#stam.spent i b { background: #f0a08a; animation: stBlink 0.5s ease-in-out infinite alternate; }
+@keyframes stBlink { from { opacity: 1; } to { opacity: 0.45; } }
+#bAct { position: absolute; right: calc(var(--sar) + 84px); bottom: calc(var(--sab) + 14px); width: 62px; height: 62px; border-radius: 50%; pointer-events: auto; background: rgba(255, 232, 196, 0.88); color: var(--ink); font-size: 15px; font-weight: 600; letter-spacing: 1px; box-shadow: 0 4px 16px rgba(80, 40, 10, 0.3); touch-action: none; user-select: none; -webkit-user-select: none; }
+#bAct:active { transform: scale(0.93); }
+body.resting #bAct, body.resting #stam { display: none; }
+.tips .pc { display: none; }
+@media (hover: hover) and (pointer: fine) { .tips .pc { display: inline; } .tips .touch { display: none; } }
+/* 窄屏（手机竖着拿）：圆按钮挪到右边那一列工具上面，不挡下面的「步行 骑马 飞」 */
+@media (max-width: 560px) { #bAct { right: calc(var(--sar) + 12px); bottom: calc(var(--sab) + 206px); } }

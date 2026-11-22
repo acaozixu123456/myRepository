@@ -1,6 +1,7 @@
 // 旅人：Quaternius 游侠外套 + 基础角色的脸（CC0），动作来自 Universal Animation Library（CC0）。
 // 动作分几组按权重混合：走跑（站、走、慢跑、快跑按速度混）、骑马（开车的坐姿 + 代码把腿分开跨在马背上）、
-// 坐（坐下、坐着、站起）、飞（站姿 + 代码把身体放平、手臂后摆）、一次性动作（起跳、落地）。
+// 坐（坐下、坐着、站起）、飞（站姿 + 代码把身体放平、手臂后摆）、游泳（素材里的游泳循环）、一次性动作（起跳、落地）。
+// 另外两种是盖在走跑上面的：腾空（跳起来、掉下去，素材里的腾空循环）、攀爬（代码摆的：两手轮流往上够、两腿轮流蹬）。
 // 所有朝向：模型面朝 +Z，左手在 +X。
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -14,7 +15,7 @@ const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));
 const DEG = Math.PI / 180;
 // 走、慢跑、快跑一个循环（两步）的距离（米），用来让脚步和移动速度对上
 const LOCO = [['Walk_Loop', 1.3], ['Jog_Fwd_Loop', 5.0], ['Sprint_Loop', 5.5]];
-const GROUPS = ['loco', 'ride', 'sit', 'fly'];
+const GROUPS = ['loco', 'ride', 'sit', 'fly', 'swim'];
 
 const _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _q3 = new THREE.Quaternion(), _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _ax = new THREE.Vector3();
 const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0), Z = new THREE.Vector3(0, 0, 1);
@@ -68,7 +69,7 @@ export async function makeTraveler(url, opts = {}) {
     root, model, bones, mixer, A, pack,
     height: 1.78,
     sitPelvis,
-    w: { loco: 1, ride: 0, sit: 0, fly: 0 },        // 各组当前权重
+    w: { loco: 1, ride: 0, sit: 0, fly: 0, swim: 0 },        // 各组当前权重
     target: 'loco', fade: 4,
     phase: 0, speed: 0,
     one: null,                                       // { name, t, w, dur }
@@ -84,7 +85,8 @@ export async function makeTraveler(url, opts = {}) {
     // 一次性动作，权重 w，淡入淡出 fade 秒
     play(name, w = 1, fade = 0.12) { if (!A[name]) return; A[name].reset().play(); T.one = { name, t: 0, w, fade, dur: A[name].getClip().duration }; },
 
-    // st: { speed, turn, dt, ride: {bob, pitch, roll, lean}, fly: {pitch, bank, flap}, lookAt: Vector3|null, slope }
+    // st: { speed, turn, dt, ride: {bob, pitch, roll, lean}, fly: {pitch, bank, flap}, lookAt: Vector3|null, slope,
+    //       air: 腾空, climb: { k 0~1, phase 一圈是左右手各够一次, reach 往上爬时手伸得更高 }, swim: { v 游多快 } }
     update(dt, st = {}) {
       // 上一帧用代码改过的骨头先还原：动画混合器只在数值变了才写回骨头，不还原的话改动会一帧帧叠加
       for (const b of touched) b.quaternion.copy(orig.get(b));
@@ -102,8 +104,13 @@ export async function makeTraveler(url, opts = {}) {
       const lsum = lw[0] + lw[1] + lw[2];
       let L = 1.3; if (lsum > 0.01) L = (lw[0] * 1.3 + lw[1] * 5.0 + lw[2] * 5.5) / lsum;
       T.phase = (T.phase + dt * Math.max(v, 0) / L) % 1;
-      LOCO.forEach(([n], i) => { const a = A[n]; a.time = T.phase * a.getClip().duration; a.setEffectiveWeight(W.loco * lw[i]); });
-      A.Idle_Loop.setEffectiveWeight(W.loco * (1 - wWalk) + W.fly);
+      // 腾空：跳起来、从高处掉下去时，走跑让给腾空的姿势
+      const airK = T.airK = damp(T.airK || 0, st.air ? 1 : 0, st.air ? 14 : 9, dt), gnd = 1 - airK;
+      LOCO.forEach(([n], i) => { const a = A[n]; a.time = T.phase * a.getClip().duration; a.setEffectiveWeight(W.loco * lw[i] * gnd); });
+      A.Idle_Loop.setEffectiveWeight(W.loco * (1 - wWalk) * gnd + W.fly);
+      if (A.Jump_Loop) A.Jump_Loop.setEffectiveWeight(W.loco * airK);
+      // ---- 游泳：游得快划得快，停下来就慢慢踩水 ----
+      if (A.Swim_Fwd_Loop) { A.Swim_Fwd_Loop.setEffectiveWeight(W.swim); A.Swim_Fwd_Loop.timeScale = 0.4 + 0.75 * sstep(0.1, 1.8, st.swim?.v || 0); }
       A.Idle_Loop.timeScale = 1;
       // ---- 骑马：开车的坐姿 ----
       A.Driving_Loop.setEffectiveWeight(W.ride);
@@ -130,8 +137,9 @@ export async function makeTraveler(url, opts = {}) {
       if (W.ride > 0.01) ridePose(W.ride, st.ride || {});
       if (W.fly > 0.01) flyPose(W.fly, st.fly || {}, dt);
       if (W.loco > 0.01 && v > 0.1) leanPose(W.loco * sstep(0.1, 1.5, v), st.turn || 0, st.slope || 0, v);
+      if (W.loco > 0.01 && st.climb && st.climb.k > 0.01) climbPose(W.loco * st.climb.k, st.climb);
       headLook(dt, st.lookAt || null, st.lookW ?? 1);
-      if (pack) pack.visible = W.fly < 0.3;   // 飞的时候背上是翅膀
+      if (pack) pack.visible = W.fly < 0.3 && !T.winged;   // 飞的时候背上是翅膀
     },
     // 人摆到位之后再调：背上的行囊慢半拍地颠（走路一步一颠，跑起来、骑马小跑时颠得更欢）
     after(dt) {
@@ -211,6 +219,24 @@ export async function makeTraveler(url, opts = {}) {
     turn('calf_l', X, 10 * DEG * w * (0.7 + 0.3 * Math.sin(T._ft = (T._ft || 0) + dt * 1.3))); turn('calf_r', X, 10 * DEG * w * (0.7 + 0.3 * Math.sin(T._ft + 0.9)));
     turn('foot_l', X, 35 * DEG * w); turn('foot_r', X, 35 * DEG * w);
     turn('spine_01', Z, (f.bank || 0) * 0.4 * w);
+  }
+  // 攀爬：脸朝岩壁（整个人由外面按坡度往前倾），两手轮流往上够，两腿轮流蹬；停着不动时手脚都扒着
+  function climbPose(w, c) {
+    const ph = (c.phase || 0) * Math.PI * 2, s = Math.sin(ph), reach = c.reach ?? 1;
+    const up = x => Math.max(0, x);
+    const aL = 128 + 30 * s * reach, aR = 128 - 30 * s * reach;
+    turn('upperarm_l', X, -aL * DEG * w); turn('upperarm_r', X, -aR * DEG * w);
+    turn('upperarm_l', Z, 20 * DEG * w); turn('upperarm_r', Z, -20 * DEG * w);
+    turn('lowerarm_l', X, -(22 - 14 * s * reach) * DEG * w); turn('lowerarm_r', X, -(22 + 14 * s * reach) * DEG * w);
+    turn('hand_l', X, 40 * DEG * w); turn('hand_r', X, 40 * DEG * w);
+    // 腿和手反着来：右手往上够的时候左腿蹬上去
+    const lL = up(-s), lR = up(s);
+    turn('thigh_l', X, -(55 + 45 * lL * reach) * DEG * w); turn('thigh_r', X, -(55 + 45 * lR * reach) * DEG * w);
+    turn('thigh_l', Z, 9 * DEG * w); turn('thigh_r', Z, -9 * DEG * w);
+    turn('calf_l', X, (60 + 50 * lL * reach) * DEG * w); turn('calf_r', X, (60 + 50 * lR * reach) * DEG * w);
+    turn('foot_l', X, -20 * DEG * w); turn('foot_r', X, -20 * DEG * w);
+    turn('spine_02', X, -7 * DEG * w); turn('neck_01', X, -14 * DEG * w); turn('Head', X, -16 * DEG * w);
+    turn('spine_01', Z, 4 * DEG * s * reach * w);
   }
   // 走跑时：转弯往里倾，上坡前倾
   function leanPose(w, turnRate, slope, v) {

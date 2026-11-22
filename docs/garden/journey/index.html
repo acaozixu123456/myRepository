@@ -34,6 +34,8 @@
   <div id="banner"><b></b><small></small></div>
   <div id="found"><i></i><b></b><small></small></div>
   <div id="talk"><b></b><p></p><small></small></div>
+  <div id="stam"></div>
+  <button id="bAct" type="button" hidden></button>
   <div id="stickZone"><div id="stick"><i id="knob"></i></div><b id="stickGait"></b></div>
   <div class="bottom">
     <div class="gaits" id="gaits">
@@ -71,6 +73,7 @@
     <div class="jBody" id="jBody"></div>
     <div class="jFoot">
       <div class="ctl"><span>怎么走</span><div class="ctlPick"><button type="button" data-c="stick">方向盘</button><button type="button" data-c="hold">按住屏幕</button></div></div>
+      <div class="ctl"><span>气力</span><div class="optPick" id="stPick"><button type="button" data-s="on">会用完</button><button type="button" data-s="free">用不完</button></div></div>
       <button type="button" class="link" id="jRestart">从头再来</button>
     </div>
   </div>
@@ -136,7 +139,7 @@
     <div class="ctl"><span>怎么走</span><div class="ctlPick"><button type="button" data-c="stick">方向盘</button><button type="button" data-c="hold">按住屏幕</button></div></div>
     <button id="go" type="button" disabled>准备中…</button>
     <button class="link" id="fresh" type="button" hidden>不接着走了，从头开始</button>
-    <p class="tips">左下角的方向盘往哪推就往哪走，推得越远走得越快；屏幕其他地方拖动转镜头看风景（也可以换回“按住屏幕走”）。下面随时换成步行、骑马或者飞；点右上角的时辰可以快进到下一段，点「地图」看看去过哪儿、想去哪儿。<br>新的：野外多了四处营地，坐下就点起篝火，可以歇到清晨、正午、黄昏或者夜里；看到好看的点「拍照」，照片收进「手记」，每个地方第一张照片就是它的封面。</p>
+    <p class="tips"><span class="touch">左下角的方向盘往哪推就往哪走，推得越远走得越快；屏幕其他地方拖动转镜头。下面随时换成步行、骑马或者飞；右下角的圆按钮是跳，腾空时用它张开翅膀，在天上用它扇翅膀。</span><span class="pc">电脑上：W A S D 走（Shift 跑，C 慢慢走），按住鼠标拖动转镜头，滚轮拉远拉近；空格是跳，腾空时张开翅膀，在天上扇翅膀；E 互动，F 飞，R 骑马，G 步行，M 地图，J 手记，P 拍照。</span><br>新的：步行的时候，陡坡和崖壁可以爬，深水可以游；从高处跳出去张开翅膀就能滑翔，滑进上升的风里会被托起来。跑、爬、游、扇翅膀都要用气力，歇一下就回满。</p>
     <p class="load" id="loadText">正在铺路…</p>
     <button class="link" id="creditsBtn" type="button">音乐与素材</button>
   </div>
