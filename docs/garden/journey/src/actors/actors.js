@@ -164,14 +164,14 @@ export function makeHorseA(gltf, key = 'a') {
     head.attach(o); bit.push(o);
   }
   // 鬃毛、尾巴、马笼头和身上的花色（groom.js；放在量马背、鼻尖之后）
-  groomHorse(gltf, model, key);
+  const groom = groomHorse(gltf, model, key);
   // 动作原速：走 1.0 米/秒、跑 3.6 米/秒（按模型大小换算）
   const vWalk = 1.0 * S / 0.43, vGal = 3.6 * S / 0.43;
   // 用动画相位估算落蹄：走路一个循环 4 次，跑 4 次
   let lastQ = 0;
   const H = {
     kind: key, name: info.name, desc: info.desc, gaits: info.gaits, gaitNames: info.names,
-    root, mesh: model, seat, bit, onStep: null, tilt: true, wEat: 0,
+    root, mesh: model, seat, bit, onStep: null, tilt: true, wEat: 0, swayGain: 1,
     update(dt, st) {
       const v = st.speed;
       const g0 = vGal * 0.62, g1 = vGal * 0.8;
@@ -184,6 +184,8 @@ export function makeHorseA(gltf, key = 'a') {
       act.Walk.timeScale = Math.max(0.4, v / vWalk);
       act.Gallop.timeScale = Math.max(0.6, v / vGal);
       mixer.update(dt);
+      // 鬃毛、尾巴慢半拍地甩（groom.js）
+      groom?.userData.sway(dt, v, H.swayGain);
       // 落蹄事件
       const a = wGal > 0.5 ? act.Gallop : act.Walk;
       if (v > 0.1 && H.onStep) {

@@ -412,7 +412,7 @@ export function tuftMaterial(uni, fadeU) {
           diffuseColor.rgb = mix( diffuseColor.rgb, uSnow * 0.92, uSnowCover * ( 0.85 * ( 1.0 - smoothstep( 0.15, 0.6, t ) ) + 0.25 ) );
         }`);
   };
-  patch(m, { wind: 'grass', gobo: true, sss: 0.55, fadeOut: true, uniforms: { uFadeR: fadeU } });
+  patch(m, { wind: 'grass', tread: 1, gobo: true, sss: 0.55, fadeOut: true, uniforms: { uFadeR: fadeU } });
   m.customProgramCacheKey = () => 'tuft';
   return m;
 }

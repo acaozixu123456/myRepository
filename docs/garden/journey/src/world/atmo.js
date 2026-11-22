@@ -26,6 +26,10 @@ export const U = {
   uSnowCover: { value: 0 },      // 下雪：地上积了多少（0~0.8）
   // 看穿：xyz 是旅人胸口，w 是强度（0 关）。镜头身边、镜头到人之间的枝叶用点阵挖掉
   uSee: { value: new THREE.Vector4(0, -1e4, 0, 0) },
+  // 踩过的草：一张跟着人走的小图（rg 往哪边倒，b 倒了多少）。uTreadP = 人的 x、z，1 / 图的边长（米），开关
+  uTread: { value: null }, uTreadP: { value: new THREE.Vector4(0, 0, 1 / 25.6, 0) },
+  // 蹚水荡开的圈：每个是 x、z、开始的时刻、力度。uRipC = 人的 x、z，多远以内才算，开关
+  uRip: { value: Array.from({ length: 8 }, () => new THREE.Vector4(0, 0, -100, 0)) }, uRipC: { value: new THREE.Vector4(0, 0, 16, 0) },
   // 远处替身树的环境光（天和地两头），跟着一天的光变
   uAmb: { value: new THREE.Color('#9fb0c8') },
   uAmbG: { value: new THREE.Color('#6a6a40') },
@@ -67,7 +71,28 @@ vec3 jFog( vec3 col, vec3 wp ) {
 }`;
 export { FOG_FN };
 
-// opts: { gobo, fog, rim, wind: 'tree'|'grass'|null, shadowFade, sss, fadeOut, fadeIn, seeThrough, uniforms }
+// 草被踩倒：人和马走过的地方查「踩过的草」那张图，草叶往旁边倒下去、矮下去，过一会儿晃两下弹回来。
+// k 是倒多少（草丛 1，灌木只是被拨开一点）。只有离人十米以内才查图，远处的草不多花力气
+const treadVS = k => `{
+            mat3 jIM = mat3( instanceMatrix );
+            vec3 jWV = ip + jIM * position;
+            vec2 jDC = jWV.xz - uTreadP.xy; float jDD = dot( jDC, jDC );
+            if ( uTreadP.w > 0.0 && jDD < 121.0 ) {
+              vec4 jT = texture2D( uTread, jWV.xz * uTreadP.z );
+              float jA = jT.b * ( 1.0 - smoothstep( 81.0, 121.0, jDD ) );
+              if ( jA > 0.004 ) {
+                vec2 jD = jT.rg * 2.0 - 1.0;
+                vec3 jL = ( vec3( jD.x, 0.0, jD.y ) * jIM ) / max( length( jIM[0] ), 1e-3 );   // 世界里的方向转回这一株自己的坐标
+                float jH = max( position.y, 0.0 );
+                float jK = jA * ${k.toFixed(2)} * ( 1.0 + 0.3 * sin( uTime * 11.0 + ( ip.x + ip.z ) * 2.7 ) * ( 1.0 - jA ) );
+                transformed += jL * jH * jK * 0.95;
+                transformed.y -= jH * jK * 0.66;
+                jTr = 1.0 - 0.7 * jA;
+              }
+            }
+          }`;
+
+// opts: { gobo, fog, rim, wind: 'tree'|'grass'|null, tread, shadowFade, sss, fadeOut, fadeIn, seeThrough, uniforms }
 // seeThrough: 挡在镜头和旅人之间、或贴着镜头的部分按 uSee 挖掉（树、灌木用）
 // fadeOut/fadeIn: 用 uniforms 里的 uFadeR（米）按距离抖动淡出/淡入，和远处的替身树衔接
 export function patch(mat, opts = {}) {
@@ -81,20 +106,22 @@ export function patch(mat, opts = {}) {
     Object.assign(sh.uniforms, U, extraU);
     let vs = sh.vertexShader, fs = sh.fragmentShader;
     vs = vs.replace('#include <common>', `#include <common>
-      varying vec3 vWP; uniform float uTime; uniform float uWind;`);
+      varying vec3 vWP; uniform float uTime; uniform float uWind;${o.tread ? ' uniform sampler2D uTread; uniform vec4 uTreadP;' : ''}`);
     if (o.wind) {
       vs = vs.replace('#include <begin_vertex>', `#include <begin_vertex>
         {
           vec3 ip = vec3(0.0);
+          float jTr = 1.0;
           #ifdef USE_INSTANCING
             ip = vec3( instanceMatrix[3][0], instanceMatrix[3][1], instanceMatrix[3][2] );
+            ${o.tread ? treadVS(o.tread) : ''}
           #endif
           float ph = ip.x * 0.37 + ip.z * 0.23;
           ${o.wind === 'tree'
             ? `float w = max( position.y - 0.6, 0.0 ) * 0.016 * uWind;
                transformed.x += ( sin( uTime * 1.3 + ph ) * 0.6 + sin( uTime * 2.9 + ph * 2.0 + position.y ) * 0.25 ) * w;
                transformed.z += sin( uTime * 1.1 + ph * 1.3 ) * 0.4 * w;`
-            : `float w = max( position.y, 0.0 ) * 0.12 * uWind;
+            : `float w = max( position.y, 0.0 ) * 0.12 * uWind * jTr;
                transformed.x += ( sin( uTime * 2.2 + ph ) * 0.7 + sin( uTime * 4.1 + ph * 3.0 ) * 0.3 ) * w;
                transformed.z += sin( uTime * 1.7 + ph * 1.7 ) * 0.5 * w;`}
         }`);

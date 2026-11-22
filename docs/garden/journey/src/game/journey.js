@@ -350,6 +350,7 @@ export class Journey {
     }
     this.mountsTick(dt);
     this.placeTraveler(dt);
+    this.feelTick(dt);
     this.camTick(dt);
     if (playing) this.story(dt);
     if (this.sitting) this.campTick(dt);
@@ -500,14 +501,17 @@ export class Journey {
       }
       if (u >= 1) this.trans = null;
     } else if (tr.kind === 'land') {
-      if (this.mode === 'fly') { this.mode = 'foot'; this.T.set('loco', 5); this.p.y = this.groundAt(this.p.x, this.p.z); this.speed = Math.min(this.speed, 2); this.vy = 0; }
+      if (this.mode === 'fly') {
+        this.mode = 'foot'; this.T.set('loco', 5); this.p.y = this.groundAt(this.p.x, this.p.z); this.speed = Math.min(this.speed, 2); this.vy = 0;
+        this.thud(this.p.x, this.p.z, 1);
+      }
       this.speed = damp(this.speed, 0, 3, dt);
       if (u >= 1) { this.trans = null; if (this.landTo === 'ride') this.callMount(); this.landTo = null; }
     } else if (tr.kind === 'descend') {
       // 由 flyMove 降到地面后 touchdown() 接手
     } else if (tr.kind === 'dismount') {
       this.speed = damp(this.speed, 0, 6, dt);
-      if (u >= 1) { this.mode = 'foot'; this.p.copy(tr.to); this.speed = 0; this.trans = null; }
+      if (u >= 1) { this.mode = 'foot'; this.p.copy(tr.to); this.speed = 0; this.trans = null; this.thud(this.p.x, this.p.z, 0.55); }
     } else if (tr.kind === 'mount') {
       if (u >= 1) { this.mode = 'ride'; const S = this.mount.st; this.p.copy(S.p); this.yaw = this.yawT = S.yaw; this.speed = 0; this.trans = null; }
     } else if (tr.kind === 'swap') {
@@ -642,8 +646,10 @@ export class Journey {
       if (this.mode === 'foot' && !tr && this.speed > 0.3 && !this.sitting && this.phase !== 'intro') {
         const x = this.p.x, z = this.p.z, wood = this.bridge.heightAt(x, z) !== null;
         this.sound.foot(wood ? 'wood' : this.surface(x, z, 0.05), sstep(2.5, 4.5, this.speed));
+        if (!wood) { T.foot(fc & 1, _w); this.kick(_w.x, _w.z, this.yaw, this.speed, sstep(1.2, 5.5, this.speed), false); }
       }
     }
+    T.after?.(dt);
     // 缰绳
     const reinsOn = riding && (!tr || tr.kind === 'swap');   // 注意要是 true/false：visible 是 null 时 three.js 照样画
     this.reins.visible = reinsOn;
@@ -994,6 +1000,60 @@ export class Journey {
     if (near < 0.05) return;
     const wood = this.bridge.heightAt(pos.x, pos.z) !== null;
     this.sound.step(wood ? 'wood' : this.surface(pos.x, pos.z, 0.08), g, (leg[1] === 'F' ? 1 : 0.75) * near);
+    if (wood || near < 0.3) return;
+    // 蹄子落在哪：自己捏的马给的就是蹄子的位置；素材马给的是身子中间，按哪条腿往前后左右挪
+    const S = M.st, fx = Math.sin(S.yaw), fz = Math.cos(S.yaw);
+    let hx = pos.x, hz = pos.z;
+    if (M.kind !== 'b') { const a = leg[1] === 'F' ? 0.58 : -0.52, b = leg[0] === 'L' ? 0.14 : -0.14; hx += fx * a + fz * b; hz += fz * a - fx * b; }
+    this.kick(hx, hz, S.yaw, S.speed, sstep(1.2, 5.5, S.speed) * 0.6 + 0.4, true, leg === 'LF' || leg === 'RH');
+  }
+  // ---------- 脚下的反应：水花和水圈、尘土、雪沫、压倒的草（world/tread.js、ripples.js、puffs.js） ----------
+  // 一只脚（蹄子）落在 (x, z)：往 yaw 那边走，速度 v，力度 k（0~1）；ring = 这一下要不要在水面荡一圈
+  kick(x, z, yaw, v, k, hoof, ring = true) {
+    const F = this.fx; if (!F || !F.on) return;
+    const fx = Math.sin(yaw), fz = Math.cos(yaw), y = this.groundAt(x, z);
+    const depth = this.waterDepth(x, z);
+    if (depth > 0.03) {
+      if (ring) F.ripples.add(x, z, (hoof ? 0.75 : 0.55) + 0.5 * k);
+      if (v > 0.7) F.puffs.splash(x, y + depth, z, (hoof ? 0.55 : 0.3) + 0.6 * k, fx, fz);
+      return;
+    }
+    if (this.land.height(x, z) - this.land.ground(x, z) > 0.02) return;      // 冰面上什么也溅不起来
+    const L = this.land;
+    if (L.snow(x, z) > 0.45 || this.weather?.cover > 0.35) { if (v > 1.0) F.puffs.puff('snow', x, y, z, k, fx, fz); }
+    else if (L.sand(x, z) > 0.5) { if (v > 1.4) F.puffs.puff('sand', x, y, z, k, fx, fz); }
+    else if (v > (hoof ? 2.3 : 3.0) && L.roadDist(x, z) < 1.7 && !(this.weather?.wet > 0.3)) F.puffs.puff('dust', x, y, z, k, fx, fz);   // 土路上跑起来才扬尘，下过雨就没有
+  }
+  // 重重落一下（从天上落地、跳下马）：四周溅一圈，草压倒一片
+  thud(x, z, k) {
+    const F = this.fx; if (!F || !F.on) return;
+    const y = this.groundAt(x, z), depth = this.waterDepth(x, z);
+    F.tread.stamp(x, z, 0.7 + 0.8 * k, 1, 0, 0);
+    if (depth > 0.03) { F.ripples.add(x, z, 0.9 + 0.5 * k); F.puffs.ring('water', x, y + depth, z, 0.6 + 0.5 * k); }
+    else if (this.land.snow(x, z) > 0.45) F.puffs.ring('snow', x, y, z, k);
+    else if (this.land.sand(x, z) > 0.5) F.puffs.ring('sand', x, y, z, k);
+    else if (this.land.roadDist(x, z) < 1.7) F.puffs.ring('dust', x, y, z, k);
+  }
+  // 每帧：人和看得见的坐骑把脚下的草压倒；站在水里不动，水面也时不时荡一圈
+  feelTick(dt) {
+    const F = this.fx; if (!F) return;
+    const air = this.mode === 'fly';
+    F.tread.update(dt, this.p.x, this.p.z); F.ripples.center(this.p.x, this.p.z);
+    if (!F.on) return;
+    const riding = this.mode === 'ride' && !this.trans;
+    if (!air && !riding && !this.sitting) F.tread.stamp(this.p.x, this.p.z, 0.6, 0.95, Math.sin(this.yaw), Math.cos(this.yaw));
+    for (const M of Object.values(this.mounts)) {
+      if (!M || !M.root.visible) continue;
+      const S = M.st, fx = Math.sin(S.yaw), fz = Math.cos(S.yaw), big = M.kind === 'd' || M.kind === 'b' ? 0.85 : 1;
+      F.tread.stamp(S.p.x + fx * 0.55 * big, S.p.z + fz * 0.55 * big, 0.85 * big, 1, fx, fz);
+      F.tread.stamp(S.p.x - fx * 0.5 * big, S.p.z - fz * 0.5 * big, 0.85 * big, 1, fx, fz);
+    }
+    this.wadeT = (this.wadeT || 0) - dt;
+    if (this.wadeT < 0 && !air) {
+      this.wadeT = 1.5 + Math.random() * 0.8;
+      const who = riding ? this.mount.st : this;
+      if ((who.speed || 0) < 0.3 && this.waterDepth(who.p.x, who.p.z) > 0.05) F.ripples.add(who.p.x + (Math.random() - 0.5) * 0.3, who.p.z + (Math.random() - 0.5) * 0.3, 0.4);
+    }
   }
   // 现在该放哪种曲子：营地烤火 > 夜里 > 飞得很高 > 雪原冰湖 / 红叶谷 / 谷地（谷地黄昏换一首）
   musicMood() {

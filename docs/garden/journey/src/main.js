@@ -19,6 +19,9 @@ import { DayLight, periodOf } from './world/daytime.js';
 import { SKY } from './world/sky.js';
 import { makeFireflies } from './world/fireflies.js';
 import { makeFalling } from './world/particles.js';
+import { Tread } from './world/tread.js';
+import { Ripples } from './world/ripples.js';
+import { makePuffs } from './world/puffs.js';
 import { loadSave, writeSave, clearSave } from './game/save.js';
 import { MapView } from './game/map.js';
 import { makeBeacon } from './world/beacon.js';
@@ -78,7 +81,7 @@ setSize();
 let lighthouse = null, weather = null;
 let W = null, J = null, cam = null, sound = null, quality = null, windmill = null, wings = null, fireflies = null, falling = null, playing = false;
 let mapView = null, beacon = null, journal = null, photo = null;
-let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null;
+let wildlife = null, birds = null, folk = null, vistas = null, skyfx = null, fx = null;
 const album = new Album();
 // 每个地方的封面照片（没设就用第一张）；照片和封面都不跟着“从头再来”清掉
 let covers = {};
@@ -349,6 +352,7 @@ function step(dt) {
   fireflies.userData.update(J.p, Math.min(1, Math.max(0, (J.night - 0.3) / 0.5)) * (1 - W.land.snow(J.p.x, J.p.z)), px);
   // 红叶谷的落叶、雪线上的雪花
   falling.userData.update(J.p, px, dt);
+  fx.puffs.update(px);
   // 标记点：屏幕上方的箭头（相对镜头朝向）和远处的光柱
   const w = playing ? J.waypoint : null;
   if (w) {
@@ -361,6 +365,11 @@ function step(dt) {
     const f = cam.fwd3 || (cam.fwd3 = new THREE.Vector3()); camera.getWorldDirection(f);
     const wx = weather.id, ctx = { p: J.p, speed: J.mode === 'fly' ? 0 : J.speed, fly: J.mode === 'fly', alt: J.alt || 0, tod: J.tod, wx, camPos: camera.position, camFwd: f, onScare: () => sound.flutter?.(0.6) };
     if (J.phase !== 'intro') { wildlife.update(dt, ctx); birds.update(dt, ctx); folk.update(dt, ctx); }
+    // 路过的小动物、路上的人也会把草压倒
+    if (fx.on) {
+      for (const A of wildlife.live) if (A.root.visible) fx.tread.stamp(A.p.x, A.p.z, 0.34, 0.85);
+      for (const F of folk.list) if (F.o && F.o.root.visible) fx.tread.stamp(F.o.root.position.x, F.o.root.position.z, 0.45, 0.85);
+    }
     vistas.userData.update(Math.min(1, Math.max(0, (0.12 - J.daylight.sunPos.y) / 0.18)));
     skyfx.userData.update({ camera, sunPos: J.daylight.sunPos, night: J.night, wx: weather, dt, camFwd: f, often: J.sitting || ['cape', 'lake', 'campLake', 'campBeach', 'vSnow', 'vCove'].includes(J.lastPlace?.id) });
   }
@@ -423,6 +432,10 @@ async function load() {
   const daylight = new DayLight({ sun, hemi, renderer, water: W.stream });
   fireflies = makeFireflies(W.land); scene.add(fireflies);
   falling = makeFalling(W.land); scene.add(falling);
+  // 脚下的反应：压倒的草、水圈、溅起来的水花尘土（?feel=0 关掉，对比用）
+  fx = { tread: new Tread(), ripples: new Ripples(), puffs: makePuffs(), on: P.get('feel') !== '0' };
+  fx.tread.on = fx.ripples.on = fx.puffs.on = fx.on;
+  scene.add(fx.puffs.object);
   say('正在搭桥、种栅栏…');
   await nextFrame();
   const bridge = buildBridge(W.land); scene.add(bridge.mesh);
@@ -459,7 +472,8 @@ async function load() {
   quality = new Quality(applyTier, q0);
   if (SHOT || P.has('q')) quality.mode = q0;
   applyTier(quality.tier);
-  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight, weather, focus });
+  if (!fx.on) { T.swayGain = 0; for (const M of Object.values(mounts)) if (M) { M.swayGain = 0; if (M.rig) M.rig.swayGain = 0; } }
+  J = new Journey({ land: W.land, bridge, camp, mounts, traveler: T, wings, reins, cam, sound, ui, camera, sun, hemi, colliders, daylight, weather, focus, fx });
   J.setCtl(SHOT && !P.has('ctl') ? 'hold' : ctlPref);
   // 路上的动物、鸟、偶遇的人
   const water = (x, z) => J.waterDepth(x, z);

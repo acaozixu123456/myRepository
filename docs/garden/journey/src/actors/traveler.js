@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { patch } from '../world/atmo.js';
 import { roundBox } from './groom.js';
+import { Lag } from './sway.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const sstep = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -128,6 +129,22 @@ export async function makeTraveler(url) {
       headLook(dt, st.lookAt || null, st.lookW ?? 1);
       if (pack) pack.visible = W.fly < 0.3;   // 飞的时候背上是翅膀
     },
+    // 人摆到位之后再调：背上的行囊慢半拍地颠（走路一步一颠，跑起来、骑马小跑时颠得更欢）
+    after(dt) {
+      if (!pack || !pack.visible) return;
+      const sp = bones.spine_03, R = pack.userData.rest;
+      const o = packLag.update(dt, sp.getWorldPosition(_v));
+      sp.getWorldQuaternion(_q); _q2.copy(_q).invert();
+      const ws = sp.getWorldScale(_v2).x || 1, g = T.swayGain;
+      root.getWorldQuaternion(rq);
+      const back = -_v2.set(0, 0, 1).applyQuaternion(rq).dot(o);       // 落在身后多少
+      _ax.copy(X).applyQuaternion(rq);
+      pack.position.copy(R.p).add(_v.copy(o).applyQuaternion(_q2).multiplyScalar(0.5 * g / ws));
+      // 绕肩带那一点翻：身体往下落、往前冲的时候，包的下半截离开后背一点
+      _q3.setFromAxisAngle(_ax, Math.max(-0.03, Math.min(0.13, (o.y * 2.2 + back * 1.6) * g)));
+      pack.quaternion.copy(_q2).multiply(_q3).multiply(_q).multiply(R.q);
+    },
+    swayGain: 1,
     pelvis(out) { return bones.pelvis.getWorldPosition(out); },
     hand(i, out) {
       // 手心中间（中指根部）
@@ -145,6 +162,7 @@ export async function makeTraveler(url) {
   }
   // 绕世界坐标里的轴转一根骨头（axis 是角色自己的方向，先转到世界里）
   const rq = new THREE.Quaternion();
+  const packLag = new Lag({ freq: 2.7, zeta: 0.3, drag: 0, max: 0.07 });
   const orig = new Map(), touched = new Set();
   function turn(name, axisLocal, angle) {
     const b = bones[name]; if (!b || !angle) return;
@@ -244,9 +262,14 @@ function makePack(model, bones) {
   add(new THREE.BoxGeometry(0.025, 0.15, 0.115), '#3e2818', c.x - 0.055, y0 - 0.01, z0 - 0.006);
   add(new THREE.CylinderGeometry(0.05, 0.05, 0.32, 12), '#4f6b3a', c.x, y0 + 0.19, z0 + 0.01, Math.PI / 2);
   const g = mergeGeometries(geos);
+  // 原点放在肩带挂着的地方（包的上沿、贴后背那一面），颠的时候绕这一点翻
+  const pv = new THREE.Vector3(c.x, y0 + 0.13, z0 + 0.07);
+  g.translate(-pv.x, -pv.y, -pv.z);
   const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.88, name: 'pack' });
   patch(mat, { rim: 0.45, gobo: true, fog: true });
   const mesh = new THREE.Mesh(g, mat); mesh.name = 'pack'; mesh.castShadow = true; mesh.receiveShadow = true; mesh.frustumCulled = false;
+  mesh.position.copy(pv);
   model.add(mesh); sp.attach(mesh);
+  mesh.userData.rest = { p: mesh.position.clone(), q: mesh.quaternion.clone() };
   return mesh;
 }
